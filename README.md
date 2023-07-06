@@ -1,6 +1,6 @@
-# Turborepo starter
+# Guallet: Personal Finances Manager
 
-This is an official starter Turborepo.
+Guallet is a open-source personal finances manager. Inspired in Firefly III and other commercial apps like MoneyDashboard or Mint.
 
 ## Using this example
 
@@ -17,8 +17,8 @@ This Turborepo includes the following packages/apps:
 ### Apps and Packages
 
 - `docs`: a [Docusaurus](https://docusaurus.io/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
+- `web`: a [Next.js](https://nextjs.org/) app
+- `ui`: a stub React component library shared by all applications
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
