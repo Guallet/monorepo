@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Account } from './models/account.model';
+import { AccountType } from './models/accountType.model';
+import { Institution } from 'src/institutions/entities/institution.model';
 
 @Injectable()
 export class AccountsService {
@@ -24,6 +26,22 @@ export class AccountsService {
         name: 'Account 1',
         description: 'description',
         balance: 123.12,
+        type: AccountType.CURRENT_ACCOUNT,
+        institution: { id: '1' },
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date(),
+      },
+      {
+        id: '234',
+        name: 'Account 2',
+        description: 'description',
+        balance: 22.12,
+        type: AccountType.SAVINGS,
+        institution: { id: '3' },
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: new Date(),
       },
     ] as Account[];
   }

@@ -2,16 +2,56 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Institution {
+  id: String!
+  name: String!
+}
+
 type Account {
   id: String!
   name: String!
-  description: String
 
   """Account balance"""
   balance: Float!
+
+  """Account balance"""
+  currency: Float!
+  description: String
+  type: AccountType!
+  institution: Institution
+  created_at: DateTime!
+  updated_at: DateTime
+  deleted_at: DateTime
 }
+
+enum AccountType {
+  CURRENT_ACCOUNT
+  CREDIT_CARD
+  SAVINGS
+  INVESTMENT
+  MORTGAGE
+  LOAN
+  PENSION
+  UNKNOWN
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   accounts: [Account!]!
   account(id: Int!): Account!
+  institutions: [Institution!]!
+  institution(id: Int!): Institution!
+}
+
+type Mutation {
+  createInstitution(createInstitutionInput: CreateInstitutionInput!): Institution!
+}
+
+input CreateInstitutionInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
 }

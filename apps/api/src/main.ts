@@ -16,6 +16,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
 
+  // Start server
   await app.listen(process.env.PORT || 5000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

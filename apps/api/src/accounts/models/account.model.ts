@@ -1,4 +1,6 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { AccountType } from './accountType.model';
+import { Institution } from 'src/institutions/entities/institution.model';
 
 @ObjectType()
 export class Account {
@@ -8,12 +10,30 @@ export class Account {
   @Field()
   name: string;
 
-  @Field({ nullable: true })
-  description?: string;
-
   @Field((type) => Float, { description: 'Account balance' })
   balance: number;
 
-  //   @Field((type) => [Post])
-  //   posts: Post[];
+  @Field((type) => Float, { description: 'Account balance' })
+  currency: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field((type) => AccountType)
+  type: AccountType;
+
+  //   @Field((type) => [Transaction])
+  //   transactions: Transaction[];
+
+  @Field((type) => [Institution], { nullable: 'itemsAndList' })
+  institution?: Institution;
+
+  @Field()
+  created_at: Date;
+
+  @Field({ nullable: true })
+  updated_at?: Date;
+
+  @Field({ nullable: true })
+  deleted_at?: Date;
 }
