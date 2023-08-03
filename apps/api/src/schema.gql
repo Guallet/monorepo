@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Account {
+  id: String!
+  name: String!
+  description: String
+
+  """Account balance"""
+  balance: Float!
+}
+
+type Query {
+  accounts: [Account!]!
+  account(id: Int!): Account!
+}
