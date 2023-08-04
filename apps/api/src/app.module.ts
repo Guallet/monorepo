@@ -7,9 +7,25 @@ import { join } from 'path';
 import { AccountsModule } from './accounts/accounts.module';
 import { InstitutionsModule } from './institutions/institutions.module';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    // CONFIG AND ENVIRONMENT
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env'],
+    }),
+    // DATABASE
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      entities: [],
+      // synchronize: process.env.ENVIRONMENT == 'development',
+      autoLoadEntities: true,
+      ssl: { rejectUnauthorized: false },
+    }),
     // GRAPHQL
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

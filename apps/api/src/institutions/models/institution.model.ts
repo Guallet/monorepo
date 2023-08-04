@@ -7,4 +7,7 @@ export class Institution {
 
   @Field()
   name: string;
+
+  @Field({ nullable: true })
+  image_src?: string;
 }

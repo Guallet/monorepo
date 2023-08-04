@@ -5,6 +5,7 @@
 type Institution {
   id: String!
   name: String!
+  image_src: String
 }
 
 type Account {

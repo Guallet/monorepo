@@ -1,6 +1,6 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
 import { AccountType } from './accountType.model';
-import { Institution } from 'src/institutions/entities/institution.model';
+import { Institution } from 'src/institutions/models/institution.model';
 
 @ObjectType()
 export class Account {

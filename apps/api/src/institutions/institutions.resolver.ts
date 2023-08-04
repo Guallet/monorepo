@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { InstitutionsService } from './institutions.service';
-import { Institution } from './entities/institution.model';
+import { Institution } from './models/institution.model';
 import { CreateInstitutionInput } from './dto/create-institution.input';
 
 @Resolver(() => Institution)
