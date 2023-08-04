@@ -1,22 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { Account } from './models/account.model';
-import { AccountType } from './models/accountType.model';
-import { AccountsRepository } from './accounts.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AccountsService {
-  constructor(private repository: AccountsRepository) {}
+  constructor(
+    @InjectRepository(Account)
+    private repository: Repository<Account>,
+  ) {}
 
   async create(): Promise<Account> {
     return {} as any;
   }
 
   async findOneById(id: string): Promise<Account> {
-    return this.repository.findById(id);
+    return this.repository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        institution: true,
+      },
+    });
   }
 
   async findAll(): Promise<Account[]> {
-    return this.repository.findAll();
+    return this.repository.find({
+      relations: {
+        institution: true,
+      },
+    });
   }
 
   async remove(id: string): Promise<boolean> {

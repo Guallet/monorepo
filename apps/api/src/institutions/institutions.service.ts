@@ -1,23 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateInstitutionInput } from './dto/create-institution.input';
 import { UpdateInstitutionInput } from './dto/update-institution.input';
-import { InstitutionRepository } from './institutions.repository';
 import { Institution } from './models/institution.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class InstitutionsService {
-  constructor(private repository: InstitutionRepository) {}
+  private readonly logger = new Logger(InstitutionsService.name);
+
+  constructor(
+    @InjectRepository(Institution)
+    private repository: Repository<Institution>,
+  ) {}
 
   create(createInstitutionInput: CreateInstitutionInput) {
     return 'This action adds a new institution';
   }
 
   findAll(): Promise<Institution[]> {
-    return this.repository.findAll();
+    return this.repository.find();
   }
 
   findOne(id: string): Promise<Institution> {
-    return this.repository.findById(id);
+    return this.repository.findOne({ where: { id: id } });
   }
 
   update(id: string, updateInstitutionInput: UpdateInstitutionInput) {
