@@ -22,7 +22,11 @@ import { ConfigModule } from '@nestjs/config';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities: [],
+<<<<<<< HEAD
       // synchronize: process.env.ENVIRONMENT == 'development',
+=======
+      synchronize: process.env.ENVIRONMENT == 'development',
+>>>>>>> 0f98217 (feat: institutions and accounts relations)
       autoLoadEntities: true,
       ssl: { rejectUnauthorized: false },
     }),

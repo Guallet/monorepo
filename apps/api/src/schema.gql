@@ -3,26 +3,17 @@
 # ------------------------------------------------------
 
 type Institution {
-  id: String!
+  id: ID!
   name: String!
   image_src: String
 }
 
 type Account {
-  id: String!
+  id: ID!
   name: String!
-
-  """Account balance"""
   balance: Float!
-
-  """Account balance"""
-  currency: Float!
-  description: String
   type: AccountType!
   institution: Institution
-  created_at: DateTime!
-  updated_at: DateTime
-  deleted_at: DateTime
 }
 
 enum AccountType {
@@ -35,11 +26,6 @@ enum AccountType {
   PENSION
   UNKNOWN
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Query {
   accounts: [Account!]!

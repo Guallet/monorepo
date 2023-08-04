@@ -24,10 +24,9 @@ export class AccountsService {
       {
         id: '123',
         name: 'Account 1',
-        description: 'description',
         balance: 123.12,
         type: AccountType.CURRENT_ACCOUNT,
-        institution: { id: '1' },
+        institution: { id: 'd76559c6-e53c-48ed-83f1-832bf04a6eec' },
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: new Date(),
@@ -35,10 +34,9 @@ export class AccountsService {
       {
         id: '234',
         name: 'Account 2',
-        description: 'description',
         balance: 22.12,
         type: AccountType.SAVINGS,
-        institution: { id: '3' },
+        institution: null,
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: new Date(),

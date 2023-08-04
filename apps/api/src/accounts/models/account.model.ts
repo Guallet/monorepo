@@ -1,39 +1,67 @@
-import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { AccountType } from './accountType.model';
+<<<<<<< HEAD
+=======
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  ManyToOne,
+} from 'typeorm';
+>>>>>>> 0f98217 (feat: institutions and accounts relations)
 import { Institution } from 'src/institutions/models/institution.model';
 
+@Entity('accounts')
 @ObjectType()
 export class Account {
-  @Field()
+  @PrimaryGeneratedColumn('uuid')
+  @Field((type) => ID)
   id: string;
 
+  // @Column()
+  // @Field()
+  // user_id: string;
+
+  @Column()
   @Field()
   name: string;
 
-  @Field((type) => Float, { description: 'Account balance' })
+  @Column({ type: 'decimal' })
+  @Field((type) => Float)
   balance: number;
 
-  @Field((type) => Float, { description: 'Account balance' })
+  @Column()
+  // @Field()
   currency: string;
 
-  @Field({ nullable: true })
-  description?: string;
-
+  @Column({
+    type: 'enum',
+    enum: AccountType,
+    default: AccountType.UNKNOWN,
+  })
   @Field((type) => AccountType)
   type: AccountType;
 
-  //   @Field((type) => [Transaction])
-  //   transactions: Transaction[];
+  // relations
+  // @OneToMany(() => Transaction, (transaction) => transaction.account, {
+  //   onDelete: 'CASCADE',
+  // })
+  // transactions: Transaction[];
 
-  @Field((type) => [Institution], { nullable: 'itemsAndList' })
-  institution?: Institution;
+  @ManyToOne(() => Institution, (institution) => institution.accounts)
+  @Field((type) => Institution, { nullable: true })
+  institution: Institution;
 
-  @Field()
+  // other
+  @CreateDateColumn()
   created_at: Date;
 
-  @Field({ nullable: true })
-  updated_at?: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
-  @Field({ nullable: true })
-  deleted_at?: Date;
+  @DeleteDateColumn()
+  deleted_at: Date;
 }
