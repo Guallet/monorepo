@@ -1,7 +1,5 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { AccountType } from './accountType.model';
-<<<<<<< HEAD
-=======
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,7 +9,6 @@ import {
   DeleteDateColumn,
   ManyToOne,
 } from 'typeorm';
->>>>>>> 0f98217 (feat: institutions and accounts relations)
 import { Institution } from 'src/institutions/models/institution.model';
 
 @Entity('accounts')

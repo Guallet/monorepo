@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import { ObjectType, Field } from '@nestjs/graphql';
-
-@ObjectType()
-export class Institution {
-  @Field()
-  id: string;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  image_src?: string;
-=======
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Account } from 'src/accounts/models/account.model';
 import {
@@ -52,5 +38,4 @@ export class Institution {
 
   @DeleteDateColumn()
   deleted_at: Date;
->>>>>>> 0f98217 (feat: institutions and accounts relations)
 }
