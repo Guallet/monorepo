@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Account } from './models/account.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -33,7 +33,13 @@ export class AccountsService {
     });
   }
 
-  async remove(id: string): Promise<boolean> {
-    return true;
+  async remove(id: string): Promise<Account> {
+    const account = await this.repository.findOne({ where: { id: id } });
+    if (account) {
+      const result = await this.repository.remove(account);
+      return result;
+    }
+
+    throw new NotFoundException();
   }
 }
