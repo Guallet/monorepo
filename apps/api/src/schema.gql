@@ -36,9 +36,22 @@ type Query {
 
 type Mutation {
   createInstitution(createInstitutionInput: CreateInstitutionInput!): Institution!
+  updateInstitution(updateInstitutionInput: UpdateInstitutionInput!): Institution!
 }
 
 input CreateInstitutionInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """The name of the institution"""
+  name: String!
+
+  """The image path for the institution"""
+  image_src: String
+}
+
+input UpdateInstitutionInput {
+  """The name of the institution"""
+  name: String
+
+  """The image path for the institution"""
+  image_src: String
+  id: ID!
 }
