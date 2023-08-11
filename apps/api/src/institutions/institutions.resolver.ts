@@ -3,9 +3,12 @@ import { InstitutionsService } from './institutions.service';
 import { Institution } from './models/institution.model';
 import { CreateInstitutionInput } from './dto/create-institution.input';
 import { UpdateInstitutionInput } from './dto/update-institution.input';
+import { Logger } from '@nestjs/common';
 
 @Resolver(() => Institution)
 export class InstitutionsResolver {
+  private readonly logger = new Logger(InstitutionsResolver.name);
+
   constructor(private readonly institutionsService: InstitutionsService) {}
 
   @Query(() => [Institution], { name: 'institutions' })
@@ -27,7 +30,7 @@ export class InstitutionsResolver {
   }
 
   @Mutation(() => Institution)
-  updateInstitution(
+  async updateInstitution(
     @Args('updateInstitutionInput')
     updateInstitutionInput: UpdateInstitutionInput,
   ) {
@@ -35,5 +38,26 @@ export class InstitutionsResolver {
       updateInstitutionInput.id,
       updateInstitutionInput,
     );
+  }
+
+  @Mutation(() => String)
+  async newUpdateInstitution(
+    @Args('id')
+    id: string,
+    @Args('name')
+    name: string,
+    @Args('image_src')
+    image_src: string,
+  ) {
+    // return this.institutionsService.update(
+    //   id,
+    //   updateInstitutionInput,
+    // );
+
+    return `Called with : ${JSON.stringify({
+      id: id,
+      name: name,
+      image_src: image_src,
+    })}`;
   }
 }

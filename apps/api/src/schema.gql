@@ -37,6 +37,7 @@ type Query {
 type Mutation {
   createInstitution(createInstitutionInput: CreateInstitutionInput!): Institution!
   updateInstitution(updateInstitutionInput: UpdateInstitutionInput!): Institution!
+  newUpdateInstitution(id: String!, name: String!, image_src: String!): String!
 }
 
 input CreateInstitutionInput {

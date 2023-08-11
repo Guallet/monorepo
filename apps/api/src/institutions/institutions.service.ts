@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { CreateInstitutionInput } from "./dto/create-institution.input";
-import { UpdateInstitutionInput } from "./dto/update-institution.input";
-import { Institution } from "./models/institution.model";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Injectable, Logger } from '@nestjs/common';
+import { CreateInstitutionInput } from './dto/create-institution.input';
+import { UpdateInstitutionInput } from './dto/update-institution.input';
+import { Institution } from './models/institution.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class InstitutionsService {
@@ -11,10 +11,8 @@ export class InstitutionsService {
 
   constructor(
     @InjectRepository(Institution)
-    private repository: Repository<Institution>
+    private repository: Repository<Institution>,
   ) {}
-
-
 
   findAll(): Promise<Institution[]> {
     return this.repository.find();
@@ -29,11 +27,20 @@ export class InstitutionsService {
   }
 
   create(createInstitutionInput: CreateInstitutionInput) {
-    return "This action adds a new institution";
+    return this.repository.save({
+      name: createInstitutionInput.name,
+      image_src: createInstitutionInput.image_src,
+    });
   }
 
-  update(id: string, updateInstitutionInput: UpdateInstitutionInput) {
-    return `This action updates a #${id} institution`;
+  async update(id: string, updateInstitutionInput: UpdateInstitutionInput) {
+    const updated = await this.repository.save({
+      id: id,
+      name: updateInstitutionInput.name,
+      image_src: updateInstitutionInput.image_src,
+    });
+
+    return updated;
   }
 
   remove(id: number) {
