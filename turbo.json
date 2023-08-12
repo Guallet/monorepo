@@ -11,6 +11,10 @@
       "dependsOn": [],
       "cache": false,
       "persistent": true
+    },
+    "db:seed": {
+      "dependsOn": [],
+      "cache": false
     }
   }
 }

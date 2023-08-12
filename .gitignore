@@ -34,3 +34,4 @@ yarn-error.log*
 
 # vercel
 .vercel
+apps/api/database/seed.js

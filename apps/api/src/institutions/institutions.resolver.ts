@@ -4,6 +4,7 @@ import { Institution } from './models/institution.model';
 import { CreateInstitutionInput } from './dto/create-institution.input';
 import { UpdateInstitutionInput } from './dto/update-institution.input';
 import { Logger } from '@nestjs/common';
+import { CreateInstitutionRequest } from './dto/createInstitutionRequest.dto';
 
 @Resolver(() => Institution)
 export class InstitutionsResolver {
@@ -58,6 +59,22 @@ export class InstitutionsResolver {
       id: id,
       name: name,
       image_src: image_src,
+    })}`;
+  }
+
+  @Mutation(() => String)
+  async newNewUpdateInstitution(
+    @Args('createInstitutionRequest')
+    dto: CreateInstitutionRequest,
+  ) {
+    // return this.institutionsService.update(
+    //   id,
+    //   updateInstitutionInput,
+    // );
+
+    return `Called with : ${JSON.stringify({
+      name: dto.name,
+      image_src: dto.image_src,
     })}`;
   }
 }
