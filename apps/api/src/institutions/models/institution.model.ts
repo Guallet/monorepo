@@ -25,6 +25,10 @@ export class Institution {
   @Field({ nullable: true })
   image_src?: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  user_id?: string;
+
   // relations
   @OneToMany(() => Account, (account) => account.institution)
   accounts: Account[];

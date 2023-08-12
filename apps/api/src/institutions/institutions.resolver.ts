@@ -1,10 +1,9 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
 import { InstitutionsService } from './institutions.service';
 import { Institution } from './models/institution.model';
-import { CreateInstitutionInput } from './dto/create-institution.input';
-import { UpdateInstitutionInput } from './dto/update-institution.input';
 import { Logger } from '@nestjs/common';
-import { CreateInstitutionRequest } from './dto/createInstitutionRequest.dto';
+import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
+import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 
 @Resolver(() => Institution)
 export class InstitutionsResolver {
@@ -14,67 +13,45 @@ export class InstitutionsResolver {
 
   @Query(() => [Institution], { name: 'institutions' })
   findAll() {
-    return this.institutionsService.findAll();
+    const user_id = 'my_user-id';
+    return this.institutionsService.findAll({
+      user_id: user_id,
+    });
   }
 
   @Query(() => Institution, { name: 'institution' })
-  findOne(@Args('id', { type: () => Int }) id: string) {
+  findOne(@Args('id', { type: () => ID }) id: string) {
     return this.institutionsService.findOne(id);
   }
 
   @Mutation(() => Institution)
   createInstitution(
-    @Args('createInstitutionInput')
-    createInstitutionInput: CreateInstitutionInput,
+    @Args('createInstitutionRequest')
+    createInstitutionInput: CreateInstitutionRequest,
   ) {
-    return this.institutionsService.create(createInstitutionInput);
+    return this.institutionsService.create(
+      createInstitutionInput,
+      'my_user-id',
+    );
   }
 
   @Mutation(() => Institution)
   async updateInstitution(
-    @Args('updateInstitutionInput')
-    updateInstitutionInput: UpdateInstitutionInput,
-  ) {
-    return this.institutionsService.update(
-      updateInstitutionInput.id,
-      updateInstitutionInput,
-    );
-  }
-
-  @Mutation(() => String)
-  async newUpdateInstitution(
     @Args('id')
     id: string,
-    @Args('name')
-    name: string,
-    @Args('image_src')
-    image_src: string,
+    @Args('updateInstitutionRequest')
+    dto: UpdateInstitutionRequest,
   ) {
-    // return this.institutionsService.update(
-    //   id,
-    //   updateInstitutionInput,
-    // );
-
-    return `Called with : ${JSON.stringify({
-      id: id,
-      name: name,
-      image_src: image_src,
-    })}`;
+    this.logger.debug(`Updating institution ${id}`, dto);
+    return this.institutionsService.update(id, dto);
   }
 
-  @Mutation(() => String)
-  async newNewUpdateInstitution(
-    @Args('createInstitutionRequest')
-    dto: CreateInstitutionRequest,
+  @Mutation(() => Institution)
+  async deleteInstitution(
+    @Args('id')
+    id: string,
   ) {
-    // return this.institutionsService.update(
-    //   id,
-    //   updateInstitutionInput,
-    // );
-
-    return `Called with : ${JSON.stringify({
-      name: dto.name,
-      image_src: dto.image_src,
-    })}`;
+    this.logger.debug(`Deleting institution ${id}`);
+    return await this.institutionsService.remove(id);
   }
 }

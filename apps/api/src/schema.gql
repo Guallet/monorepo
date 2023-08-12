@@ -6,6 +6,7 @@ type Institution {
   id: ID!
   name: String!
   image_src: String
+  user_id: String
 }
 
 type Account {
@@ -31,36 +32,26 @@ type Query {
   accounts: [Account!]!
   account(id: Int!): Account!
   institutions: [Institution!]!
-  institution(id: Int!): Institution!
+  institution(id: ID!): Institution!
 }
 
 type Mutation {
-  createInstitution(createInstitutionInput: CreateInstitutionInput!): Institution!
-  updateInstitution(updateInstitutionInput: UpdateInstitutionInput!): Institution!
-  newUpdateInstitution(id: String!, name: String!, image_src: String!): String!
-  newNewUpdateInstitution(createInstitutionRequest: CreateInstitutionRequest!): String!
-}
-
-input CreateInstitutionInput {
-  """The name of the institution"""
-  name: String!
-
-  """The image path for the institution"""
-  image_src: String
-}
-
-input UpdateInstitutionInput {
-  """The name of the institution"""
-  name: String
-
-  """The image path for the institution"""
-  image_src: String
-  id: ID!
+  createInstitution(createInstitutionRequest: CreateInstitutionRequest!): Institution!
+  updateInstitution(id: String!, updateInstitutionRequest: UpdateInstitutionRequest!): Institution!
+  deleteInstitution(id: String!): Institution!
 }
 
 input CreateInstitutionRequest {
   """The name of the institution"""
   name: String!
+
+  """The image path for the institution"""
+  image_src: String
+}
+
+input UpdateInstitutionRequest {
+  """The name of the institution"""
+  name: String
 
   """The image path for the institution"""
   image_src: String
