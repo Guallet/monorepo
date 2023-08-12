@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Institution } from './models/institution.model';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 
@@ -15,11 +15,10 @@ export class InstitutionsService {
   ) {}
 
   findAll(args: { user_id: string } | null = null): Promise<Institution[]> {
+    // The institutions with null owner are common to everyone
     if (args?.user_id) {
       return this.repository.find({
-        where: {
-          user_id: args.user_id,
-        },
+        where: [{ user_id: args.user_id }, { user_id: IsNull() }],
       });
     } else {
       return this.repository.find();

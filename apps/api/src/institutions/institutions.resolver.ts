@@ -4,6 +4,8 @@ import { Institution } from './models/institution.model';
 import { Logger, NotFoundException } from '@nestjs/common';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
+import { UserPrincipal } from 'src/core/auth/user-principal';
+import { RequestUser } from 'src/core/auth/request-user.decorator';
 
 @Resolver(() => Institution)
 export class InstitutionsResolver {
@@ -12,10 +14,12 @@ export class InstitutionsResolver {
   constructor(private readonly institutionsService: InstitutionsService) {}
 
   @Query(() => [Institution], { name: 'institutions' })
-  findAll() {
-    const user_id = 'my_user-id';
+  findAll(@RequestUser() user: UserPrincipal) {
+    this.logger.debug(
+      `Getting all institutions for user\n${JSON.stringify(user, null, 2)}`,
+    );
     return this.institutionsService.findAll({
-      user_id: user_id,
+      user_id: user.id,
     });
   }
 
