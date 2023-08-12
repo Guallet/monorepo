@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -8,6 +8,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { InstitutionsModule } from './institutions/institutions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { HttpLoggerMiddleware } from './core/middleware/http-logger.middleware';
 
 @Module({
   imports: [
@@ -38,4 +39,11 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(HttpLoggerMiddleware)
+      .exclude({ path: '/graphql', method: RequestMethod.POST })
+      .forRoutes('*');
+  }
+}
