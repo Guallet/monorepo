@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
 import { InstitutionsService } from './institutions.service';
 import { Institution } from './models/institution.model';
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 
@@ -20,8 +20,13 @@ export class InstitutionsResolver {
   }
 
   @Query(() => Institution, { name: 'institution' })
-  findOne(@Args('id', { type: () => ID }) id: string) {
-    return this.institutionsService.findOne(id);
+  async findOne(@Args('id', { type: () => ID }) id: string) {
+    const entity = await this.institutionsService.findOne(id);
+    if (entity) {
+      return entity;
+    }
+
+    throw new NotFoundException();
   }
 
   @Mutation(() => Institution)
