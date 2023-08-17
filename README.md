@@ -6,7 +6,7 @@ Guallet is a open-source personal finances manager. Inspired in Firefly III and 
 In order to simplify the tech-stack, Typescript was selected for it's ability to deliver server, web apps and mobiles apps in the same language and tools.
 Also, the available tools around the TS ecosystems makes it perfect for self-hosting.
 
-Yes, other languages would have been better options, but as at this stage of the project, the benefits of having a single language outweigh those inconvinients. 
+Yes, other languages would have been better options, but as at this stage of the project the benefits of having a single language outweigh those inconvenients. 
 
 ## What's inside?
 
