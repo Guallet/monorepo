@@ -3,9 +3,11 @@ import { InstitutionsService } from './institutions.service';
 import { InstitutionsResolver } from './institutions.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Institution } from './models/institution.model';
+import { InstitutionsController } from './institutions.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Institution])],
+  controllers: [InstitutionsController],
   providers: [InstitutionsResolver, InstitutionsService],
   exports: [InstitutionsService],
 })

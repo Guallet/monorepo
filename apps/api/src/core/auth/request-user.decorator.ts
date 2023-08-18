@@ -5,8 +5,11 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 // More info: https://docs.nestjs.com/custom-decorators
 export const RequestUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
-    const request = GqlExecutionContext.create(ctx).getContext().req;
-
+    // GraphQL uses a different context, so be sure whe got
+    // the correct request in both HTTP and GRAPHQL
+    const request =
+      ctx.switchToHttp().getRequest() ??
+      GqlExecutionContext.create(ctx).getContext().req;
     const user = request.user;
 
     return data ? user?.[data] : user;
@@ -15,7 +18,7 @@ export const RequestUser = createParamDecorator(
 
 // HOW TO USE SAMPLES
 // @Get()
-// findemail(@RequestUser('email') email: string) {
+// findEmail(@RequestUser('email') email: string) {
 //   return email;
 // }
 

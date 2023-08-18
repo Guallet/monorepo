@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { InstitutionsService } from './institutions.service';
 import { Institution } from './models/institution.model';
 import { Logger, NotFoundException } from '@nestjs/common';
@@ -15,17 +15,20 @@ export class InstitutionsResolver {
 
   @Query(() => [Institution], { name: 'institutions' })
   findAll(@RequestUser() user: UserPrincipal) {
-    this.logger.debug(
-      `Getting all institutions for user\n${JSON.stringify(user, null, 2)}`,
-    );
     return this.institutionsService.findAll({
       user_id: user.id,
     });
   }
 
   @Query(() => Institution, { name: 'institution' })
-  async findOne(@Args('id', { type: () => ID }) id: string) {
-    const entity = await this.institutionsService.findOne(id);
+  async findOne(
+    @RequestUser() user: UserPrincipal,
+    @Args('id', { type: () => ID }) id: string,
+  ) {
+    const entity = await this.institutionsService.findOne({
+      id: id,
+      user_id: user.id,
+    });
     if (entity) {
       return entity;
     }
@@ -35,32 +38,42 @@ export class InstitutionsResolver {
 
   @Mutation(() => Institution)
   createInstitution(
-    @Args('createInstitutionRequest')
-    createInstitutionInput: CreateInstitutionRequest,
+    @RequestUser() user: UserPrincipal,
+    @Args('input')
+    dto: CreateInstitutionRequest,
   ) {
-    return this.institutionsService.create(
-      createInstitutionInput,
-      'my_user-id',
-    );
+    return this.institutionsService.create({
+      dto: dto,
+      user_id: user.id,
+    });
   }
 
   @Mutation(() => Institution)
   async updateInstitution(
+    @RequestUser() user: UserPrincipal,
     @Args('id')
     id: string,
-    @Args('updateInstitutionRequest')
+    @Args('input')
     dto: UpdateInstitutionRequest,
   ) {
     this.logger.debug(`Updating institution ${id}`, dto);
-    return this.institutionsService.update(id, dto);
+    return this.institutionsService.update({
+      id: id,
+      dto: dto,
+      user_id: user.id,
+    });
   }
 
   @Mutation(() => Institution)
   async deleteInstitution(
+    @RequestUser() user: UserPrincipal,
     @Args('id')
     id: string,
   ) {
     this.logger.debug(`Deleting institution ${id}`);
-    return await this.institutionsService.remove(id);
+    return await this.institutionsService.remove({
+      id: id,
+      user_id: user.id,
+    });
   }
 }

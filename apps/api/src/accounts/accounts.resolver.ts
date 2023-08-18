@@ -35,7 +35,7 @@ export class AccountsResolver {
   async getInstitution(@Parent() account: Account) {
     const { institution } = account;
     if (institution) {
-      return this.institutionsService.findOne(institution.id);
+      return this.institutionsService.findOneById(institution.id);
     } else {
       return null;
     }

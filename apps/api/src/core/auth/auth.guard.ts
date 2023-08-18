@@ -31,7 +31,10 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     // GraphQL Context is different, so decide which one to use
-    const ctx = GqlExecutionContext.create(context);
+    const ctx =
+      this.httpRequest(context) !== null
+        ? context
+        : this.graphQLContext(context);
 
     // If the endpoint is marked with @Public decorator, then bypass the auth
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -43,7 +46,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // Check if the token is valid
-    const request = ctx.getContext().req;
+    const request = this.httpRequest(context) ?? this.graphQLRequest(context);
     return this.validateRequest(request)
       .then((user) => {
         if (user == null) {
@@ -59,6 +62,18 @@ export class AuthGuard implements CanActivate {
         this.logger.error(`Error validating the auth token ${error}`);
         throw new UnauthorizedException();
       });
+  }
+
+  private httpRequest(context: ExecutionContext) {
+    return context.switchToHttp().getRequest();
+  }
+
+  private graphQLRequest(context: ExecutionContext) {
+    return this.graphQLContext(context).getContext().req as Request;
+  }
+
+  private graphQLContext(context: ExecutionContext) {
+    return GqlExecutionContext.create(context);
   }
 
   private async validateRequest(req: Request): Promise<UserPrincipal> {

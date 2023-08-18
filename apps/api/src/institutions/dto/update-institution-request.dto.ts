@@ -1,5 +1,5 @@
 import { CreateInstitutionRequest } from './create-institution-request.dto';
-import { InputType, Field, ID, PartialType } from '@nestjs/graphql';
+import { InputType, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateInstitutionRequest extends PartialType(
