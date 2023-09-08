@@ -4,10 +4,12 @@ import { AccountsResolver } from './accounts.resolver';
 import { InstitutionsModule } from 'src/institutions/institutions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './models/account.model';
+import { AccountsController } from './accounts.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Account]), InstitutionsModule],
   providers: [AccountsService, AccountsResolver],
   exports: [AccountsService],
+  controllers: [AccountsController],
 })
 export class AccountsModule {}

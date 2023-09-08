@@ -11,6 +11,7 @@ type Institution {
 
 type Account {
   id: ID!
+  user_id: ID!
   name: String!
   balance: Float!
   type: AccountType!

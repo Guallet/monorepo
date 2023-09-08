@@ -13,7 +13,9 @@ import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Bank institutions')
 @Controller('institutions')
 export class InstitutionsController {
   private readonly logger = new Logger(InstitutionsController.name);

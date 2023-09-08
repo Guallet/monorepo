@@ -18,9 +18,9 @@ export class Account {
   @Field((type) => ID)
   id: string;
 
-  // @Column()
-  // @Field()
-  // user_id: string;
+  @Column()
+  @Field((type) => ID)
+  user_id: string;
 
   @Column()
   @Field()

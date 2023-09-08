@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as compression from 'compression';
 
@@ -37,6 +38,18 @@ async function bootstrap() {
     }),
   );
   app.use(compression());
+
+  // Configure Swagger
+  const openApiConfig = new DocumentBuilder()
+    .setTitle('Guallet API')
+    .setDescription('Personal finance manager')
+    .setVersion('1.0')
+    // .addServer('htts://server-production-7ec4.up.railway.app', 'Dev')
+    // .addServer('https://api.guallet.io/v1', 'Production')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, openApiConfig);
+  SwaggerModule.setup('api', app, document);
 
   // Start server
   await app.listen(process.env.PORT || 5000);
