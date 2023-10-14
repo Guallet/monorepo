@@ -1,8 +1,9 @@
+import { RouteObject } from "react-router-dom";
 import { AuthCallbackPage } from "./AuthCallbackPage";
 import { LoginPage } from "./LoginPage";
-import { LogoutPage } from "./LogoutPage";
+import { LogoutPage, loader as logoutLoader } from "./LogoutPage";
 
-export const authRoutes = [
+export const authRoutes: RouteObject[] = [
   {
     path: "login",
     children: [
@@ -19,5 +20,6 @@ export const authRoutes = [
   {
     path: "logout",
     element: <LogoutPage />,
+    loader: logoutLoader,
   },
 ];
