@@ -5,7 +5,7 @@ import { useAuth } from "./useAuth";
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { session, loading } = useAuth();
 
-  let location = useLocation();
+  const location = useLocation();
 
   if (loading) {
     return (
