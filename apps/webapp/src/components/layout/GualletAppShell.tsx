@@ -1,6 +1,6 @@
 import { AppShell } from "@mantine/core";
 import { Outlet } from "react-router-dom";
-import { AppNavBar } from "./AppNavBar";
+import { AppNavBar } from "./AppNavBar/AppNavBar";
 import { useDisclosure } from "@mantine/hooks";
 import AppHeader from "./AppHeader";
 
