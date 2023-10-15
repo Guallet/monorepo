@@ -3,7 +3,7 @@
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 
-import GualletApp from "./GualletRouter";
+import GualletApp from "./RootRouter";
 import { AuthProvider } from "./core/auth/useAuth";
 
 function App() {

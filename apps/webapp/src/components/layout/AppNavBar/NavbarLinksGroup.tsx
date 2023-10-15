@@ -10,23 +10,29 @@ import {
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import classes from "./NavbarLinksGroup.module.css";
+import { useNavigate } from "react-router-dom";
 
 interface LinksGroupProps {
   icon: React.FC<any>;
   label: string;
   initiallyOpened?: boolean;
-  links?: { label: string; link: string }[];
+  link?: string;
+  subLinks?: { label: string; link: string }[];
 }
 
 export function LinksGroup({
   icon: Icon,
   label,
   initiallyOpened,
-  links,
+  link,
+  subLinks,
 }: LinksGroupProps) {
-  const hasLinks = Array.isArray(links);
+  const hasLinks = Array.isArray(subLinks);
   const [opened, setOpened] = useState(initiallyOpened || false);
-  const items = (hasLinks ? links : []).map((link) => (
+
+  const navigation = useNavigate();
+
+  const items = (hasLinks ? subLinks : []).map((link) => (
     <Text<"a">
       component="a"
       className={classes.link}
@@ -41,7 +47,13 @@ export function LinksGroup({
   return (
     <>
       <UnstyledButton
-        onClick={() => setOpened((o) => !o)}
+        onClick={() => {
+          setOpened((o) => !o);
+
+          if (link) {
+            navigation(link);
+          }
+        }}
         className={classes.control}
       >
         <Group justify="space-between" gap={0}>

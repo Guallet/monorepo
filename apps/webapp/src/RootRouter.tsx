@@ -32,6 +32,10 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <DashboardPage />,
       },
+      {
+        path: "accounts",
+        element: "accounts",
+      },
       // ...accountRoutes,
       // ...transactionRoutes,
       // ...categoriesRoutes,
@@ -45,6 +49,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-export default function GualletRouter() {
+export default function RootRouter() {
   return <RouterProvider router={router} />;
 }

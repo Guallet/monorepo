@@ -7,7 +7,7 @@ import {
   IconLogout,
   IconTools,
 } from "@tabler/icons-react";
-import { Group, ScrollArea } from "@mantine/core";
+import { ScrollArea } from "@mantine/core";
 import classes from "./AppNavBar.module.css";
 import { LinksGroup } from "./NavbarLinksGroup";
 import { UserButton } from "../../UserButton/UserButton";
@@ -16,15 +16,22 @@ type MenuData = {
   label: string;
   icon: React.FC<any>;
   initiallyOpened?: boolean;
-  links?: { label: string; link: string }[];
+  link?: string;
+  subLinks?: { label: string; link: string }[];
 };
 
 const menuData: MenuData[] = [
-  { label: "Dashboard", icon: IconGauge, initiallyOpened: true },
+  {
+    label: "Dashboard",
+    icon: IconGauge,
+    initiallyOpened: true,
+    link: "/dashboard",
+  },
   {
     label: "Accounts",
     icon: IconBuildingBank,
-    links: [
+    link: "/accounts",
+    subLinks: [
       { label: "Overview", link: "/" },
       { label: "Connections", link: "/" },
     ],
@@ -32,7 +39,7 @@ const menuData: MenuData[] = [
   {
     label: "Transactions",
     icon: IconCash,
-    links: [
+    subLinks: [
       { label: "Pending (4)", link: "/" },
       { label: "Categories", link: "/" },
       { label: "Upcoming", link: "/" },
@@ -41,7 +48,7 @@ const menuData: MenuData[] = [
   {
     label: "Reports",
     icon: IconPresentationAnalytics,
-    links: [
+    subLinks: [
       { label: "Security", link: "/" },
       { label: "App", link: "/" },
       { label: "User", link: "/" },
@@ -50,7 +57,7 @@ const menuData: MenuData[] = [
   {
     label: "Tools",
     icon: IconTools,
-    links: [
+    subLinks: [
       { label: "Pensions", link: "/" },
       { label: "Investments", link: "/" },
       { label: "Loans", link: "/" },
@@ -60,7 +67,7 @@ const menuData: MenuData[] = [
   {
     label: "Settings",
     icon: IconSettings,
-    links: [
+    subLinks: [
       { label: "Security", link: "/" },
       { label: "App", link: "/" },
       { label: "User", link: "/" },
