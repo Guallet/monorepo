@@ -1,13 +1,13 @@
 import {
   createBrowserRouter,
   Navigate,
-  Outlet,
   RouterProvider,
 } from "react-router-dom";
 import { ProtectedRoute } from "./core/auth/ProtectedRoute";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { authRoutes } from "./features/auth/Routes";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
+import GualletAppShell from "./components/layout/GualletAppShell";
 
 const router = createBrowserRouter([
   {
@@ -24,8 +24,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <ProtectedRoute>
-        {/* <GualletAppShell /> */}
-        <Outlet />
+        <GualletAppShell />
       </ProtectedRoute>
     ),
     children: [
