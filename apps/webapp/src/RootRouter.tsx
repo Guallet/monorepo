@@ -8,6 +8,7 @@ import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { authRoutes } from "./features/auth/Routes";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 import GualletAppShell from "./components/layout/GualletAppShell";
+import { accountRoutes } from "./features/accounts/Routes";
 
 const router = createBrowserRouter([
   {
@@ -32,11 +33,7 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <DashboardPage />,
       },
-      {
-        path: "accounts",
-        element: "accounts",
-      },
-      // ...accountRoutes,
+      ...accountRoutes,
       // ...transactionRoutes,
       // ...categoriesRoutes,
       // ...reportsRoutes,
