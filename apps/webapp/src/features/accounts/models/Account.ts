@@ -18,6 +18,7 @@ export type AccountConnectionDto = {
   status: string;
 };
 
+// TODO: Extract this type to shared package
 export const AccountType = {
   CURRENT_ACCOUNT: "current-account",
   CREDIT_CARD: "credit-card",

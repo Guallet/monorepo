@@ -1,11 +1,19 @@
 import { Flex, Group, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
-import { loadAccounts } from "./api/accounts.api";
+import {
+  ActionFunctionArgs,
+  LoaderFunction,
+  ParamParseKey,
+  Params,
+  useLoaderData,
+  useNavigate,
+} from "react-router-dom";
+import { getAccount, loadAccounts } from "./api/accounts.api";
 
-export async function loader() {
-  return (await loadAccounts())[0];
-}
+export const loader: LoaderFunction = async ({ params }) => {
+  const { id } = params;
+  return await getAccount(id!);
+};
 
 export function AccountDetailsPage() {
   const data = useLoaderData();
