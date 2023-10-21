@@ -7,6 +7,7 @@ import { Stack } from "@mantine/core";
 
 interface Props {
   accounts: Account[];
+  onAccountSelected: (account: Account) => void;
 }
 
 // export function AccountsList({ accounts }: Props) {
@@ -39,7 +40,7 @@ function compareAccountTypes(a: string, b: string) {
   return a.localeCompare(b);
 }
 
-export function AccountsList({ accounts }: Props) {
+export function AccountsList({ accounts, onAccountSelected }: Props) {
   // @ts-ignore
   const data = accounts.groupBy((account: Account) => {
     return account.account_type;
@@ -59,7 +60,13 @@ export function AccountsList({ accounts }: Props) {
             />
             <p>
               {(value as Account[]).map((account: Account) => (
-                <AccountRow key={account.id} account={account} />
+                <AccountRow
+                  key={account.id}
+                  account={account}
+                  onClick={() => {
+                    onAccountSelected(account);
+                  }}
+                />
               ))}
             </p>
           </Stack>

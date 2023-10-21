@@ -4,7 +4,7 @@ import { AddAccountPage, action as addAccountAction } from "./AddAccountPage";
 import {
   AccountDetailsPage,
   loader as accountDetailsLoader,
-} from "./AccountDetailsPage";
+} from "./AccountDetails/AccountDetailsPage";
 
 export const accountRoutes: RouteObject[] = [
   {
