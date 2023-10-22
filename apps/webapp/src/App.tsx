@@ -5,6 +5,9 @@ import { MantineProvider } from "@mantine/core";
 
 import GualletApp from "./RootRouter";
 import { AuthProvider } from "./core/auth/useAuth";
+import { initSentry } from "./sentry";
+
+initSentry();
 
 function App() {
   return (

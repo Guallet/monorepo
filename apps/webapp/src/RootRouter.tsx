@@ -9,8 +9,13 @@ import { authRoutes } from "./features/auth/Routes";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 import GualletAppShell from "./components/layout/GualletAppShell";
 import { accountRoutes } from "./features/accounts/Routes";
+import * as Sentry from "@sentry/react";
 
-const router = createBrowserRouter([
+const sentryCreateBrowserRouter =
+  Sentry.wrapCreateBrowserRouter(createBrowserRouter);
+
+// const router = createBrowserRouter([
+const router = sentryCreateBrowserRouter([
   {
     path: "/",
     element: <Navigate to="/login" />,
