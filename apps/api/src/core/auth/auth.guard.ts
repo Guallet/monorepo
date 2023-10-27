@@ -59,7 +59,7 @@ export class AuthGuard implements CanActivate {
         return true;
       })
       .catch((error) => {
-        this.logger.error(`Error validating the auth token ${error}`);
+        this.logger.warn(`Error validating the auth token ${error}`);
         throw new UnauthorizedException();
       });
   }

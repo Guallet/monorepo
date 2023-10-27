@@ -56,23 +56,25 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // Init Sentry
-  Sentry.init({
-    dsn: 'https://5a32cae961e2f278378bc957e9c4d872@o4506092862636032.ingest.sentry.io/4506093032374272',
-    integrations: [
-      // enable HTTP calls tracing
-      new Sentry.Integrations.Http({ tracing: true }),
-      // enable Express.js middleware tracing
-      // new Sentry.Integrations.Express({ app }),
-      // new ProfilingIntegration(),
-    ],
-    // Performance Monitoring
-    tracesSampleRate: 1.0,
-    // Set sampling rate for profiling - this is relative to tracesSampleRate
-    profilesSampleRate: 1.0,
-  });
+  if (process.env.SENTRY_ENABLED === 'true') {
+    Sentry.init({
+      dsn: 'https://5a32cae961e2f278378bc957e9c4d872@o4506092862636032.ingest.sentry.io/4506093032374272',
+      integrations: [
+        // enable HTTP calls tracing
+        new Sentry.Integrations.Http({ tracing: true }),
+        // enable Express.js middleware tracing
+        // new Sentry.Integrations.Express({ app }),
+        // new ProfilingIntegration(),
+      ],
+      // Performance Monitoring
+      tracesSampleRate: 1.0,
+      // Set sampling rate for profiling - this is relative to tracesSampleRate
+      profilesSampleRate: 1.0,
+    });
 
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
+    // TracingHandler creates a trace for every incoming request
+    app.use(Sentry.Handlers.tracingHandler());
+  }
 
   // Start server
   await app.listen(process.env.PORT || 5000);
