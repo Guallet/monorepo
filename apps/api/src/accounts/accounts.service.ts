@@ -54,7 +54,7 @@ export class AccountsService {
       name: dto.name,
       balance: dto.initial_balance ?? 0,
       currency: dto.currency ?? 'GBP',
-      type: AccountType[dto.type] ?? AccountType.UNKNOWN,
+      type: (dto.type as AccountType) ?? AccountType.UNKNOWN,
     });
   }
 
@@ -72,18 +72,18 @@ export class AccountsService {
       },
     });
 
-    if (dbEntity) {
-      const updated = {
-        balance: dto.initial_balance ?? dbEntity.balance,
-        id: accountId,
-        user_id: userId,
-        name: dto.name ?? dbEntity.name,
-        currency: dto.currency ?? dbEntity.currency,
-        type: dbEntity.type,
-      };
-      return await this.accountRepository.save(updated);
+    if (!dbEntity) {
+      throw new NotFoundException();
     }
-    throw new NotFoundException();
+
+    return await this.accountRepository.save({
+      balance: dto.initial_balance ?? dbEntity.balance,
+      id: accountId,
+      user_id: userId,
+      name: dto.name ?? dbEntity.name,
+      currency: dto.currency ?? dbEntity.currency,
+      type: (dto.type as AccountType) ?? dbEntity.type,
+    });
   }
 
   async findOneById(id: string): Promise<Account> {

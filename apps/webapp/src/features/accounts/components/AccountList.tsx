@@ -45,8 +45,6 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
     return account.type;
   });
 
-  console.log("Account groups", data);
-
   return (
     <>
       {Object.entries(data)

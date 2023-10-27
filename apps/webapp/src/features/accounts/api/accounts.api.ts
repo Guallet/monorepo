@@ -13,8 +13,14 @@ export async function createAccount(account: CreateAccountRequest) {
   return await post<Account, CreateAccountRequest>("accounts", account);
 }
 
-export async function updateAccount(account: UpdateAccountRequest) {
-  return await patch<Account, UpdateAccountRequest>("accounts", account);
+export async function updateAccount(
+  accountId: string,
+  account: UpdateAccountRequest
+) {
+  return await patch<Account, UpdateAccountRequest>(
+    `accounts/${accountId}`,
+    account
+  );
 }
 
 export type CreateAccountRequest = {
