@@ -55,6 +55,7 @@ export function AccountDetailsPage() {
       >
         <DeleteAccountDialog
           account={account}
+          onCancel={hideModal}
           onAccountDeleted={() => {
             navigation("/accounts", { replace: true });
           }}
@@ -96,9 +97,14 @@ export function AccountDetailsPage() {
 
 interface DialogProps {
   account: Account;
+  onCancel: () => void;
   onAccountDeleted: () => void;
 }
-function DeleteAccountDialog({ account, onAccountDeleted }: DialogProps) {
+function DeleteAccountDialog({
+  account,
+  onCancel,
+  onAccountDeleted,
+}: DialogProps) {
   async function deleteAccount() {
     const deleted = await fetch_delete(`accounts/${account.id}`);
     onAccountDeleted();
@@ -109,7 +115,7 @@ function DeleteAccountDialog({ account, onAccountDeleted }: DialogProps) {
       <Text>Are you sure you want to delete the account?</Text>
       <Text size="sm"> This action and cannot be undone.</Text>
       <Group justify="flex-end">
-        <Button>Cancel</Button>
+        <Button onClick={onCancel}>Cancel</Button>
         <Button
           color="red"
           onClick={() => {
