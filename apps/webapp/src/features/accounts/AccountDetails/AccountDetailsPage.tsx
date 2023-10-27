@@ -74,7 +74,7 @@ export function AccountDetailsPage() {
       {/* <Text>Mortgage options?</Text>
       <Text>Loan options?</Text>
       <Text>Saving account options?</Text> */}
-      {/* {account.account_type == "current-account" && (
+      {/* {account.type == "current-account" && (
         <CurrentAccountDetails account={account} />
       )} */}
       <CurrentAccountDetails account={account} />

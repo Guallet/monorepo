@@ -1,6 +1,5 @@
 import { Account, AccountType } from "../models/Account";
-import "core-js/actual/array/group-by";
-import "core-js/actual/array/group-by-to-map";
+import "core-js";
 import { AccountRow } from "./AccountRow";
 import { AccountsListHeader } from "./AccountsListHeader";
 import { Stack } from "@mantine/core";
@@ -12,7 +11,7 @@ interface Props {
 
 // export function AccountsList({ accounts }: Props) {
 //   const data: Map<string, Account[]> = accounts.groupByToMap((account: Account) => {
-//     return account.account_type;
+//     return account.type;
 //   });
 
 //   let reactNodes = [];
@@ -43,8 +42,10 @@ function compareAccountTypes(a: string, b: string) {
 export function AccountsList({ accounts, onAccountSelected }: Props) {
   // @ts-ignore
   const data = accounts.groupBy((account: Account) => {
-    return account.account_type;
+    return account.type;
   });
+
+  console.log("Account groups", data);
 
   return (
     <>

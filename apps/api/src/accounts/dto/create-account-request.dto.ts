@@ -9,7 +9,7 @@ export class CreateAccountRequest {
   initial_balance?: number;
 
   @Field({ description: 'The account type', nullable: false })
-  account_type: string;
+  type: string;
 
   @Field({ description: 'The institution id', nullable: true })
   institution_id?: string;

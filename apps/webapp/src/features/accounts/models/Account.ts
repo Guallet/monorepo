@@ -1,6 +1,6 @@
 export type Account = {
   id: string;
-  account_type: AccountType;
+  type: AccountType;
   name: string;
   balance: number;
   currency: string;
@@ -19,14 +19,25 @@ export type AccountConnectionDto = {
 };
 
 // TODO: Extract this type to shared package
-export const AccountType = {
-  CURRENT_ACCOUNT: "current-account",
-  CREDIT_CARD: "credit-card",
-  SAVINGS: "savings-account",
-  INVESTMENT: "investment",
-  MORTGAGE: "mortgage",
-  LOAN: "loan",
-  PENSION: "pension",
-  UNKNOWN: "unknown",
-} as const;
-export type AccountType = (typeof AccountType)[keyof typeof AccountType];
+export enum AccountType {
+  CURRENT_ACCOUNT = "current-account",
+  CREDIT_CARD = "credit-card",
+  SAVINGS = "savings-account",
+  INVESTMENT = "investment",
+  MORTGAGE = "mortgage",
+  LOAN = "loan",
+  PENSION = "pension",
+  UNKNOWN = "unknown",
+}
+
+// export const AccountType = {
+//   CURRENT_ACCOUNT: "current-account",
+//   CREDIT_CARD: "credit-card",
+//   SAVINGS: "savings-account",
+//   INVESTMENT: "investment",
+//   MORTGAGE: "mortgage",
+//   LOAN: "loan",
+//   PENSION: "pension",
+//   UNKNOWN: "unknown",
+// } as const;
+// export type AccountType = (typeof AccountType)[keyof typeof AccountType];

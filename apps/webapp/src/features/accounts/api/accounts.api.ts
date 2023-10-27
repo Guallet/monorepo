@@ -19,7 +19,7 @@ export async function updateAccount(account: UpdateAccountRequest) {
 
 export type CreateAccountRequest = {
   name: string;
-  account_type: string;
+  type: string;
   currency: string;
   initial_balance?: number;
   institution_id?: string;
@@ -27,7 +27,7 @@ export type CreateAccountRequest = {
 
 export type UpdateAccountRequest = {
   name?: string;
-  account_type?: string;
+  type?: string;
   currency?: string;
   initial_balance?: number;
   institution_id?: string;

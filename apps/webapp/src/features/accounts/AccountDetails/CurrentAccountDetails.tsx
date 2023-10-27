@@ -19,7 +19,7 @@ interface Props {
 }
 
 ChartJS.register(
-  CategoryScale,
+  // CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
@@ -80,8 +80,8 @@ export function CurrentAccountDetails({ account }: Props) {
         }}
         data={data}
       /> */}
-
-      <Chart type="bar" data={data} />
+      {/* <Chart type="bar" data={data} /> */}
+      Chart here
     </>
   );
 }

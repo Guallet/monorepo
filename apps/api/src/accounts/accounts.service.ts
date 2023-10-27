@@ -47,13 +47,14 @@ export class AccountsService {
     user_id: string;
     dto: CreateAccountRequest;
   }): Promise<Account> {
+    const { user_id, dto } = args;
+
     return await this.accountRepository.save({
-      user_id: args.user_id,
-      name: args.dto.name,
-      balance: args.dto.initial_balance ?? 0,
-      currency: args.dto.currency ?? 'GBP',
-      // institution: args.dto.institution_id ?? null,
-      account_type: AccountType.CURRENT_ACCOUNT,
+      user_id: user_id,
+      name: dto.name,
+      balance: dto.initial_balance ?? 0,
+      currency: dto.currency ?? 'GBP',
+      type: AccountType[dto.type] ?? AccountType.UNKNOWN,
     });
   }
 

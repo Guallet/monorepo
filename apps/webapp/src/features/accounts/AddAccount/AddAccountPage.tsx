@@ -19,7 +19,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const accountRequest: CreateAccountRequest = {
     name: inputValues.name,
-    account_type: "",
+    type: inputValues.account_type,
     currency: inputValues.currency,
     initial_balance: inputValues.balance,
   };
