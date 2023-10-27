@@ -18,6 +18,7 @@ interface LinksGroupProps {
   initiallyOpened?: boolean;
   link?: string;
   subLinks?: { label: string; link: string }[];
+  onItemSelected: () => void;
 }
 
 export function LinksGroup({
@@ -26,6 +27,7 @@ export function LinksGroup({
   initiallyOpened,
   link,
   subLinks,
+  onItemSelected,
 }: LinksGroupProps) {
   const hasLinks = Array.isArray(subLinks);
   const [opened, setOpened] = useState(initiallyOpened || false);
@@ -52,6 +54,7 @@ export function LinksGroup({
 
           if (link) {
             navigation(link);
+            onItemSelected();
           }
         }}
         className={classes.control}

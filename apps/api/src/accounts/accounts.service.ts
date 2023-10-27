@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { AccountType } from './models/accountType.model';
+import { UpdateAccountRequest } from './dto/update-account-request.dto';
 
 @Injectable()
 export class AccountsService {
@@ -54,6 +55,34 @@ export class AccountsService {
       // institution: args.dto.institution_id ?? null,
       account_type: AccountType.CURRENT_ACCOUNT,
     });
+  }
+
+  async update(args: {
+    accountId: string;
+    dto: UpdateAccountRequest;
+    userId: string;
+  }): Promise<Account> {
+    const { accountId, dto, userId } = args;
+
+    const dbEntity = await this.accountRepository.findOne({
+      where: {
+        id: accountId,
+        user_id: userId,
+      },
+    });
+
+    if (dbEntity) {
+      const updated = {
+        balance: dto.initial_balance ?? dbEntity.balance,
+        id: accountId,
+        user_id: userId,
+        name: dto.name ?? dbEntity.name,
+        currency: dto.currency ?? dbEntity.currency,
+        type: dbEntity.type,
+      };
+      return await this.accountRepository.save(updated);
+    }
+    throw new NotFoundException();
   }
 
   async findOneById(id: string): Promise<Account> {

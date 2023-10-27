@@ -6,6 +6,7 @@ import {
   Logger,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
@@ -13,6 +14,7 @@ import { UserPrincipal } from 'src/core/auth/user-principal';
 import { AccountsService } from './accounts.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
+import { UpdateAccountRequest } from './dto/update-account-request.dto';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -70,18 +72,18 @@ export class AccountsController {
   //     return transactions.map((tx) => new TransactionDto(tx));
   //   }
 
-  //   @Patch(':id')
-  //   update(
-  //     @RequestUser() user: UserPrincipal,
-  //     @Param('id') id: string,
-  //     @Body() dto: UpdateAccountRequest,
-  //   ) {
-  //     return this.accountsService.update({
-  //       id: id,
-  //       dto: dto,
-  //       user_id: user.id,
-  //     });
-  //   }
+  @Patch(':id')
+  update(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+    @Body() dto: UpdateAccountRequest,
+  ) {
+    return this.accountsService.update({
+      accountId: id,
+      dto: dto,
+      userId: user.id,
+    });
+  }
 
   @Delete(':id')
   remove(

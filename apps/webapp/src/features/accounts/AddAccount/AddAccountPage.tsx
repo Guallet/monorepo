@@ -1,8 +1,8 @@
 import { ActionFunction, Form, redirect, useNavigate } from "react-router-dom";
-import { CreateAccountRequest, createAccount } from "./api/accounts.api";
+import { CreateAccountRequest, createAccount } from "../api/accounts.api";
 import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { AccountType } from "./models/Account";
+import { AccountType } from "../models/Account";
 
 type FormData = {
   name: string;
@@ -37,7 +37,7 @@ export function AddAccountPage() {
         rightSection={
           <IconChevronDown style={{ width: rem(16), height: rem(16) }} />
         }
-        label="Right section"
+        label="Account type"
         data={Object.keys(AccountType)}
         mt="md"
         name="account_type"

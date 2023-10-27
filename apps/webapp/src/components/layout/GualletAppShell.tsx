@@ -18,7 +18,7 @@ export default function GualletAppShell() {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        <AppNavBar />
+        <AppNavBar onItemSelected={toggle} />
       </AppShell.Navbar>
 
       <AppShell.Main>

@@ -76,9 +76,13 @@ const menuData: MenuData[] = [
   },
 ];
 
-export function AppNavBar() {
+interface Props {
+  onItemSelected: () => void;
+}
+
+export function AppNavBar({ onItemSelected }: Props) {
   const links = menuData.map((item) => (
-    <LinksGroup {...item} key={item.label} />
+    <LinksGroup {...item} key={item.label} onItemSelected={onItemSelected} />
   ));
 
   return (
