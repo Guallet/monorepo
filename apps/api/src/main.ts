@@ -3,9 +3,13 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as compression from 'compression';
+import { SentryLogger } from './utils/sentry.logger';
+import * as Sentry from '@sentry/node';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new SentryLogger(),
+  });
 
   // Set the root path to "api"
   // Updated: Since we are hosting the api in a different domain,
@@ -50,6 +54,25 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, openApiConfig);
   SwaggerModule.setup('api', app, document);
+
+  // Init Sentry
+  Sentry.init({
+    dsn: 'https://5a32cae961e2f278378bc957e9c4d872@o4506092862636032.ingest.sentry.io/4506093032374272',
+    integrations: [
+      // enable HTTP calls tracing
+      new Sentry.Integrations.Http({ tracing: true }),
+      // enable Express.js middleware tracing
+      // new Sentry.Integrations.Express({ app }),
+      // new ProfilingIntegration(),
+    ],
+    // Performance Monitoring
+    tracesSampleRate: 1.0,
+    // Set sampling rate for profiling - this is relative to tracesSampleRate
+    profilesSampleRate: 1.0,
+  });
+
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
 
   // Start server
   await app.listen(process.env.PORT || 5000);
