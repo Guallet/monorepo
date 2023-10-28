@@ -10,6 +10,7 @@ import { HttpLoggerMiddleware } from './core/middleware/http-logger.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './core/auth/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -34,8 +35,9 @@ import { JwtService } from '@nestjs/jwt';
       playground: true,
     }),
     // APP MODULES
-    AccountsModule,
     InstitutionsModule,
+    AccountsModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [
