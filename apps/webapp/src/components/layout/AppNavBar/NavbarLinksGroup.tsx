@@ -40,7 +40,13 @@ export function LinksGroup({
       className={classes.link}
       href={link.link}
       key={link.label}
-      onClick={(event) => event.preventDefault()}
+      onClick={(event) => {
+        // Do it this way to preserve the menu state
+        // If we relay in just the href, then the navbar state
+        // will be lost after navigation, collapsing all the items
+        event.preventDefault();
+        navigation(link.link);
+      }}
     >
       {link.label}
     </Text>

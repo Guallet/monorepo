@@ -10,6 +10,7 @@ import { DashboardPage } from "./features/dashboard/DashboardPage";
 import GualletAppShell from "./components/layout/GualletAppShell";
 import { accountRoutes } from "./features/accounts/Routes";
 import * as Sentry from "@sentry/react";
+import { categoriesRoutes } from "./features/categories/Routes";
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouter(createBrowserRouter);
@@ -40,7 +41,7 @@ const router = sentryCreateBrowserRouter([
       },
       ...accountRoutes,
       // ...transactionRoutes,
-      // ...categoriesRoutes,
+      ...categoriesRoutes,
       // ...reportsRoutes,
       // ...settingsRoutes,
     ],
