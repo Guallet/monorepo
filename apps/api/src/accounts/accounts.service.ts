@@ -12,12 +12,12 @@ export class AccountsService {
 
   constructor(
     @InjectRepository(Account)
-    private accountRepository: Repository<Account>,
+    private repository: Repository<Account>,
   ) {}
 
   async findAllUserAccounts(userId: string): Promise<Account[]> {
     this.logger.debug(`Getting accounts for user ${userId}`);
-    return await this.accountRepository.find({
+    return await this.repository.find({
       where: { user_id: userId },
       relations: {
         institution: true,
@@ -26,7 +26,7 @@ export class AccountsService {
   }
 
   async getUserAccount(userId: string, accountId: string): Promise<Account> {
-    const account = await this.accountRepository.findOne({
+    const account = await this.repository.findOne({
       where: {
         id: accountId,
         user_id: userId,
@@ -49,7 +49,7 @@ export class AccountsService {
   }): Promise<Account> {
     const { user_id, dto } = args;
 
-    return await this.accountRepository.save({
+    return await this.repository.save({
       user_id: user_id,
       name: dto.name,
       balance: dto.initial_balance ?? 0,
@@ -65,7 +65,7 @@ export class AccountsService {
   }): Promise<Account> {
     const { accountId, dto, userId } = args;
 
-    const dbEntity = await this.accountRepository.findOne({
+    const dbEntity = await this.repository.findOne({
       where: {
         id: accountId,
         user_id: userId,
@@ -76,7 +76,7 @@ export class AccountsService {
       throw new NotFoundException();
     }
 
-    return await this.accountRepository.save({
+    return await this.repository.save({
       balance: dto.initial_balance ?? dbEntity.balance,
       id: accountId,
       user_id: userId,
@@ -87,7 +87,7 @@ export class AccountsService {
   }
 
   async findOneById(id: string): Promise<Account> {
-    return this.accountRepository.findOne({
+    return this.repository.findOne({
       where: {
         id: id,
       },
@@ -98,7 +98,7 @@ export class AccountsService {
   }
 
   async findAll(): Promise<Account[]> {
-    return this.accountRepository.find({
+    return this.repository.find({
       relations: {
         institution: true,
       },
@@ -109,7 +109,7 @@ export class AccountsService {
     user_id: string;
     account_id: string;
   }): Promise<Account> {
-    const account = await this.accountRepository.findOne({
+    const account = await this.repository.findOne({
       where: {
         id: args.account_id,
         user_id: args.user_id,
@@ -117,7 +117,7 @@ export class AccountsService {
     });
 
     if (account) {
-      const result = await this.accountRepository.remove(account);
+      const result = await this.repository.remove(account);
       return result;
     }
 
@@ -125,9 +125,9 @@ export class AccountsService {
   }
 
   async remove(id: string): Promise<Account> {
-    const account = await this.accountRepository.findOne({ where: { id: id } });
+    const account = await this.repository.findOne({ where: { id: id } });
     if (account) {
-      const result = await this.accountRepository.remove(account);
+      const result = await this.repository.remove(account);
       return result;
     }
 

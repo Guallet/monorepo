@@ -1,3 +1,4 @@
+import { Transaction } from 'src/transactions/models/transaction.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -35,6 +36,11 @@ export class Category {
 
   @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.category, {
+    onDelete: 'SET NULL',
+  })
+  transactions: Transaction[];
 
   // other
   @CreateDateColumn()

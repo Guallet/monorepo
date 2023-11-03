@@ -8,8 +8,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Institution } from 'src/institutions/models/institution.model';
+import { Transaction } from 'src/transactions/models/transaction.entity';
 
 @Entity('accounts')
 @ObjectType()
@@ -43,10 +45,10 @@ export class Account {
   type: AccountType;
 
   // relations
-  // @OneToMany(() => Transaction, (transaction) => transaction.account, {
-  //   onDelete: 'CASCADE',
-  // })
-  // transactions: Transaction[];
+  @OneToMany(() => Transaction, (transaction) => transaction.account, {
+    onDelete: 'CASCADE',
+  })
+  transactions: Transaction[];
 
   @ManyToOne(() => Institution, (institution) => institution.accounts)
   @Field((type) => Institution, { nullable: true })

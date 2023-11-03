@@ -11,6 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './core/auth/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { CategoriesModule } from './categories/categories.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CategoriesModule } from './categories/categories.module';
     InstitutionsModule,
     AccountsModule,
     CategoriesModule,
+    TransactionsModule,
   ],
   controllers: [],
   providers: [
