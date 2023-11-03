@@ -1,4 +1,3 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import dns from "dns";
@@ -15,16 +14,5 @@ export default defineConfig({
     open: true,
   },
 
-  plugins: [
-    react(),
-    // TODO: Move this to a env file
-    sentryVitePlugin({
-      org: "guallet",
-      project: "webapp",
-    }),
-  ],
-
-  build: {
-    sourcemap: true,
-  },
+  plugins: [react()],
 });

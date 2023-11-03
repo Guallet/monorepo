@@ -33,8 +33,6 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.10",
     "@nestjs/typeorm": "^10.0.0",
-    "@sentry/node": "^7.75.1",
-    "@sentry/profiling-node": "^1.2.1",
     "compression": "^1.7.4",
     "graphql": "^16.7.1",
     "helmet": "^7.0.0",
