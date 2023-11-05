@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('transaction')
+@Entity('transactions')
 export class Transaction extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -32,6 +32,9 @@ export class Transaction extends BaseDbEntity {
   // relations
   @ManyToOne(() => Account, (account) => account.transactions)
   account: Account;
+
+  @Column({ nullable: true })
+  accountId: string;
 
   @ManyToOne(() => Category, (category) => category.transactions, {
     onDelete: 'SET NULL',

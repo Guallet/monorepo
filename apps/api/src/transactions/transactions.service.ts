@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,12 +14,48 @@ export class TransactionsService {
     private repository: Repository<Transaction>,
   ) {}
 
-  create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+  async getUserTransactions(args: {
+    userId: string;
+    page: number;
+    pageSize: number;
+  }): Promise<Transaction[]> {
+    const { userId, page, pageSize } = args;
+
+    const offset = (page - 1) * pageSize;
+    if (offset < 0) {
+      throw new BadRequestException('Offset cannot be negative');
+    }
+
+    return this.repository.find({
+      relations: {
+        account: true,
+        category: true,
+      },
+      where: {
+        account: { user_id: userId },
+      },
+      order: {
+        date: 'DESC',
+      },
+      take: pageSize,
+      skip: offset,
+    });
   }
 
-  findAll() {
-    return `This action returns all transactions`;
+  async create(dto: CreateTransactionDto): Promise<Transaction> {
+    const entity = {
+      accountId: dto.accountId,
+      description: dto.description,
+      notes: dto.notes,
+      amount: dto.amount,
+      currency: dto.currency,
+      date: dto.date,
+    };
+    return this.repository.save(entity);
+  }
+
+  async findAll(): Promise<Transaction[]> {
+    return [];
   }
 
   findOne(id: string) {
