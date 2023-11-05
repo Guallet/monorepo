@@ -162,6 +162,9 @@ importers:
       '@remix-run/serve':
         specifier: ^2.2.0
         version: 2.2.0(typescript@5.1.6)
+      '@tabler/icons-react':
+        specifier: ^2.39.0
+        version: 2.39.0(react@18.2.0)
       isbot:
         specifier: ^3.6.8
         version: 3.7.0

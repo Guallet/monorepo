@@ -1,11 +1,14 @@
-import { Button, Group, Text } from "@mantine/core";
-import type { MetaFunction } from "@remix-run/node";
+import { Group, Stack } from "@mantine/core";
+import { FeatureCards } from "~/components/FeatureCards/FeatureCards";
+import { Footer } from "~/components/Footer/Footer";
+import { HeroCard } from "~/components/HeroCard/HeroCard";
 
 export default function Index() {
   return (
-    <Group>
-      <Text>This is the main landing page for the project</Text>
-      <Button>Click here to subscribe</Button>
-    </Group>
+    <Stack>
+      <HeroCard />
+      <FeatureCards />
+      <Footer />
+    </Stack>
   );
 }
