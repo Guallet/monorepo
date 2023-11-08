@@ -45,6 +45,7 @@ export function LinksGroup({
         // If we relay in just the href, then the navbar state
         // will be lost after navigation, collapsing all the items
         event.preventDefault();
+        onItemSelected();
         navigation(link.link);
       }}
     >

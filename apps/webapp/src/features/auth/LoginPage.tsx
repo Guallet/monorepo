@@ -22,15 +22,15 @@ const EMAIL_MODAL_OPEN_QUERY = "email_sent";
 
 export function LoginPage() {
   const navigation = useNavigate();
-  let location = useLocation();
+  const location = useLocation();
   const { session, loading } = useAuth();
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const isModalOpen = searchParams.get(EMAIL_MODAL_OPEN_QUERY) === "true";
 
   const locationState = location.state as { from: { pathname: string } };
-  let navigationOrigin = locationState?.from?.pathname || "/dashboard";
+  const navigationOrigin = locationState?.from?.pathname || "/dashboard";
 
   async function socialLogin(provider: Provider) {
     await supabase.auth.signInWithOAuth({
