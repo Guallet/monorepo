@@ -27,7 +27,7 @@ export function CategoriesList({
       return appCategory;
     });
 
-  for (let parent of roots) {
+  for (const parent of roots) {
     const children = categories
       .filter((x) => x.parentId === parent.id)
       .map((x: Category) => {

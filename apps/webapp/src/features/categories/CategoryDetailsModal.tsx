@@ -1,33 +1,101 @@
 import { Button, ColorInput, Group, Stack, TextInput } from "@mantine/core";
 import { Category } from "./models/Category";
+import { useEffect, useState } from "react";
 
 interface Props {
   category: Category | null;
-  //   onSubmit: (category: AppCategory) => void;
-  //   onCancel: (category: AppCategory) => void;
-  //   onDelete: (category: AppCategory) => void;
+  onSave: (data: CategoryFormData) => void;
+  onUpdate: (category: Category, data: CategoryFormData) => void;
+  onCancel: () => void;
+  onDelete: (category: Category) => void;
 }
 
-export function CategoriesDetailsModal({ category }: Props) {
+export type CategoryFormData = {
+  name: string;
+  icon: string;
+  colour: string;
+  parentId?: string;
+};
+
+export function CategoriesDetailsModal({
+  category,
+  onSave,
+  onUpdate,
+  onCancel,
+  onDelete,
+}: Props) {
+  const [name, setName] = useState(category?.name ?? "");
+  const [nameError, setNameError] = useState(false);
+
+  const [icon, setIcon] = useState(category?.icon ?? "");
+  const [iconError, setIconError] = useState(false);
+
+  const [colour, setColour] = useState(category?.colour ?? "");
+  const [colourError, setColourError] = useState(false);
+
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  function save() {
+    // Validate form
+    if (validateForm()) {
+      const formData: CategoryFormData = {
+        name: name ?? "",
+        icon: icon ?? "",
+        colour: colour,
+        parentId: category?.parentId,
+      };
+      if (category) {
+        onUpdate(category, formData);
+      } else {
+        onSave(formData);
+      }
+    } else {
+      // Show error
+    }
+  }
+
+  function validateForm(): boolean {
+    const nameError = name.length === 0;
+    const iconError = icon.length === 0;
+    const colourError = colour.length === 0;
+
+    setNameError(nameError);
+    setIconError(iconError);
+    setColourError(colourError);
+
+    return !nameError && !iconError && !colourError;
+  }
+
+  useEffect(() => {
+    // Check if we can enable or disable the submit button
+    setIsFormValid(name.length > 0 && icon.length > 0 && colour.length > 0);
+  }, [name, icon, colour]);
+
   return (
     <Stack>
       <TextInput
         label="Name"
         description="Category name"
         placeholder="Enter the name of the category"
-        defaultValue={category?.name}
+        value={name}
+        onChange={(event) => setName(event.currentTarget.value)}
+        error={nameError && "Invalid name"}
       />
       <TextInput
         label="Icon"
         description="Category Icon"
         placeholder="Select the category icon"
-        defaultValue={category?.icon}
+        value={icon}
+        onChange={(event) => setIcon(event.currentTarget.value)}
+        error={iconError && "Invalid icon"}
       />
       <ColorInput
         closeOnColorSwatchClick
         label="Colour"
         placeholder="Select the category colour"
-        defaultValue={category?.colour}
+        value={colour}
+        onChange={(value) => setColour(value)}
+        error={colourError && "Invalid selected colour"}
         format="hex"
         swatches={[
           "#25262b",
@@ -49,8 +117,26 @@ export function CategoriesDetailsModal({ category }: Props) {
         ]}
       />
       <Group>
-        <Button>Save</Button>
-        <Button>Cancel</Button>
+        <Button onClick={save} disabled={!isFormValid}>
+          {category ? "Update" : "Create"}
+        </Button>
+        <Button
+          onClick={() => {
+            onCancel();
+          }}
+        >
+          Cancel
+        </Button>
+        {category && (
+          <Button
+            color="red"
+            onClick={() => {
+              onDelete(category);
+            }}
+          >
+            Delete
+          </Button>
+        )}
       </Group>
     </Stack>
   );

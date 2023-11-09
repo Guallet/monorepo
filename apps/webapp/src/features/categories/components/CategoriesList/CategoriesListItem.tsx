@@ -8,6 +8,7 @@ import {
   Stack,
   Center,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconDots,
@@ -22,18 +23,30 @@ import { AppCategory } from "../../models/Category";
 
 interface HeaderProps {
   title: string;
+  iconName: string;
+  iconColour: string;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-function ItemHeader({ title, onEdit, onDelete }: HeaderProps) {
+function ItemHeader({
+  title,
+  iconName,
+  iconColour,
+  onEdit,
+  onDelete,
+}: HeaderProps) {
   const [menuOpened, setMenuOpened] = useState(false);
+  const { primaryColor: defaultColor } = useMantineTheme();
+
   return (
     <Center>
       <Accordion.Control>
         <Group>
-          <IconPhoto color={"red"} />
-          <Text>{title}</Text>
+          <IconPhoto color={iconColour ?? defaultColor} />
+          <Text>
+            {title} / {iconName}
+          </Text>
         </Group>
       </Accordion.Control>
       <Menu
@@ -108,11 +121,14 @@ interface SubCategoryItemProps {
 
 function SubCategoryItem({ category, onEdit, onDelete }: SubCategoryItemProps) {
   const [menuOpened, setMenuOpened] = useState(false);
+  const { primaryColor: defaultColor } = useMantineTheme();
 
   return (
     <Group style={{ marginLeft: "4em" }}>
-      <IconWallet color="grey" />
-      <Text>{category.name}</Text>
+      <IconWallet color={category.colour ?? defaultColor} />
+      <Text>
+        {category.name} / {category.icon}
+      </Text>
       <Menu
         opened={menuOpened}
         onChange={setMenuOpened}
@@ -180,6 +196,8 @@ export function CategoriesListItem({
             title={category.name}
             onEdit={() => onEdit(category)}
             onDelete={() => onDelete(category)}
+            iconName={category.icon}
+            iconColour={category.colour}
           />
           <Accordion.Panel>
             <Stack>
