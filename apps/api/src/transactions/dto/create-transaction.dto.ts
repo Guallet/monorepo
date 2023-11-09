@@ -5,4 +5,5 @@ export class CreateTransactionDto {
   amount: number;
   currency: string;
   date: Date;
+  categoryId?: string;
 }

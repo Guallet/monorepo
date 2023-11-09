@@ -40,4 +40,7 @@ export class Transaction extends BaseDbEntity {
     onDelete: 'SET NULL',
   })
   category: Category;
+
+  @Column({ nullable: true })
+  categoryId: string;
 }

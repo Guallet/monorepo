@@ -50,6 +50,7 @@ export class TransactionsService {
       amount: dto.amount,
       currency: dto.currency,
       date: dto.date,
+      categoryId: dto.categoryId,
     };
     return this.repository.save(entity);
   }
