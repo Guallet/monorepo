@@ -2,7 +2,7 @@ import { Button, ColorInput, Group, Stack, TextInput } from "@mantine/core";
 import { Category } from "./models/Category";
 
 interface Props {
-  category?: Category;
+  category: Category | null;
   //   onSubmit: (category: AppCategory) => void;
   //   onCancel: (category: AppCategory) => void;
   //   onDelete: (category: AppCategory) => void;

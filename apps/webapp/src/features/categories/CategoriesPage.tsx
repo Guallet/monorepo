@@ -65,7 +65,7 @@ export function CategoriesPage() {
         }
       >
         <CategoriesDetailsModal
-          category={data.find((x) => x.id === parentCategoryId)?.name}
+          category={data.find((x) => x.id === parentCategoryId) ?? null}
         />
       </Modal>
       <Stack>

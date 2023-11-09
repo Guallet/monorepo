@@ -11,7 +11,6 @@ import GualletAppShell from "./components/layout/GualletAppShell";
 import { accountRoutes } from "./features/accounts/Routes";
 import { categoriesRoutes } from "./features/categories/Routes";
 
-// const router = createBrowserRouter([
 const router = createBrowserRouter([
   {
     path: "/",
