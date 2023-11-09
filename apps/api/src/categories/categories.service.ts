@@ -4,6 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './models/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { defaultCategories } from './defaulCategories';
 
 @Injectable()
 export class CategoriesService {
@@ -27,6 +28,35 @@ export class CategoriesService {
     return await this.categoryRepository.save(entity);
   }
 
+  async createDefaultCategoriesForUser(userId: string): Promise<Category[]> {
+    const newCategories = [];
+    for (const category of defaultCategories) {
+      const entity = {
+        user_id: userId,
+        name: category.name,
+        icon: category.icon,
+        colour: category.color,
+      };
+      const dbEntity = await this.categoryRepository.save(entity);
+      newCategories.push(dbEntity);
+      for (const subcategory of category.subcategories) {
+        const subCategoryEntity = {
+          user_id: userId,
+          name: subcategory.name,
+          icon: subcategory.icon,
+          colour: subcategory.color,
+          parentId: dbEntity.id,
+        };
+        const subcategoriesDbEntity = await this.categoryRepository.save(
+          subCategoryEntity,
+        );
+        newCategories.push(subcategoriesDbEntity);
+      }
+    }
+
+    return newCategories;
+  }
+
   async findAll() {
     return await this.categoryRepository.find();
   }
@@ -36,6 +66,7 @@ export class CategoriesService {
       where: {
         user_id: user_id,
       },
+      order: { id: 'ASC' },
     });
   }
 

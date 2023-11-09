@@ -44,9 +44,7 @@ function ItemHeader({
       <Accordion.Control>
         <Group>
           <IconPhoto color={iconColour ?? defaultColor} />
-          <Text>
-            {title} / {iconName}
-          </Text>
+          <Text>{title}</Text>
         </Group>
       </Accordion.Control>
       <Menu
@@ -126,9 +124,7 @@ function SubCategoryItem({ category, onEdit, onDelete }: SubCategoryItemProps) {
   return (
     <Group style={{ marginLeft: "4em" }}>
       <IconWallet color={category.colour ?? defaultColor} />
-      <Text>
-        {category.name} / {category.icon}
-      </Text>
+      <Text>{category.name}</Text>
       <Menu
         opened={menuOpened}
         onChange={setMenuOpened}

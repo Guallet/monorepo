@@ -31,10 +31,14 @@ export class Category {
   parentId: string;
 
   // Relations
-  @ManyToOne(() => Category, (category) => category.children)
+  @ManyToOne(() => Category, (category) => category.children, {
+    onDelete: 'CASCADE',
+  })
   parent: Category;
 
-  @OneToMany(() => Category, (category) => category.parent)
+  @OneToMany(() => Category, (category) => category.parent, {
+    onDelete: 'SET NULL',
+  })
   children: Category[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.category, {

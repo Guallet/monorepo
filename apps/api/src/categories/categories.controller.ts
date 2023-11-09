@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Logger,
+  HttpCode,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -44,6 +45,12 @@ export class CategoriesController {
       user_id: user.id,
       dto: createCategoryDto,
     });
+  }
+
+  @Post('seed')
+  @HttpCode(201)
+  async createDefaultCategoriesForUser(@RequestUser() user: UserPrincipal) {
+    return await this.categoriesService.createDefaultCategoriesForUser(user.id);
   }
 
   @Patch(':id')
