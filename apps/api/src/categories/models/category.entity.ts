@@ -12,7 +12,7 @@ import {
 
 @Entity('categories')
 export class Category {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { primaryKeyConstraintName: 'PK_categories' })
   id: string;
 
   @Column()

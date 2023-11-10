@@ -49,7 +49,7 @@ export const defaultCategories: Category[] = [
       { name: 'Sale', icon: 'salary', color: '#4caf50' },
       { name: 'Tax refund', icon: 'salary', color: '#4caf50' },
       { name: 'Loan', icon: 'salary', color: '#4caf50' },
-      { name: 'Other', icon: 'salary', color: '#4caf50' },
+      { name: 'Pension', icon: 'salary', color: '#4caf50' },
     ],
   },
   {
@@ -187,7 +187,7 @@ export const defaultCategories: Category[] = [
     color: '#4caf50',
     subcategories: [
       { name: 'Lunch + Snacks + Coffee', icon: 'salary', color: '#4caf50' },
-      { name: 'Mean Deals + Work Lunches', icon: 'salary', color: '#4caf50' },
+      { name: 'Meal Deals + Work Lunches', icon: 'salary', color: '#4caf50' },
       { name: 'Restaurants', icon: 'salary', color: '#4caf50' },
       { name: 'Take Away', icon: 'salary', color: '#4caf50' },
     ],
@@ -241,15 +241,6 @@ export const defaultCategories: Category[] = [
       { name: 'Hotel / B&B', icon: 'salary', color: '#4caf50' },
       { name: 'Parking + Transport', icon: 'salary', color: '#4caf50' },
       { name: 'Flights', icon: 'salary', color: '#4caf50' },
-    ],
-  },
-  {
-    name: 'Transfer',
-    icon: 'money',
-    color: '#4caf50',
-    subcategories: [
-      { name: 'Outside', icon: 'salary', color: '#4caf50' },
-      { name: 'Outside', icon: 'salary', color: '#4caf50' },
     ],
   },
   {

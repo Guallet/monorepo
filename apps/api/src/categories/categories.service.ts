@@ -66,7 +66,7 @@ export class CategoriesService {
       where: {
         user_id: user_id,
       },
-      order: { id: 'ASC' },
+      order: { name: 'ASC' },
     });
   }
 
