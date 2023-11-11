@@ -106,7 +106,7 @@ export function TransactionsPage() {
         siblings={1}
         value={data.meta.page}
         onChange={(page) => {
-          navigate("/transactions?page=" + page.toString(), { replace: true });
+          navigate(`/transactions?page=${page}`, { replace: true });
         }}
       />
       ;
