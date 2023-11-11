@@ -4,7 +4,7 @@ import { TransactionQueryResultDto } from "../models/Transaction";
 export async function loadTransactions(
   page: number,
   pageSize: number
-): Promise<TransactionQueryResultDto[]> {
+): Promise<TransactionQueryResultDto> {
   const queryPath = `transactions?page=${page}&pageSize=${pageSize}`;
-  return await get<TransactionQueryResultDto[]>(queryPath);
+  return await get<TransactionQueryResultDto>(queryPath);
 }

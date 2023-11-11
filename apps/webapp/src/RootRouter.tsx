@@ -11,6 +11,7 @@ import GualletAppShell from "./components/layout/GualletAppShell";
 import { accountRoutes } from "./features/accounts/Routes";
 import { categoriesRoutes } from "./features/categories/Routes";
 import { transactionsRoutes } from "./features/transactions/Routes";
+import { toolsRoutes } from "./features/tools/Routes";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       ...categoriesRoutes,
       // ...reportsRoutes,
       // ...settingsRoutes,
+      ...toolsRoutes,
     ],
   },
   {

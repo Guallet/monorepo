@@ -13,7 +13,7 @@ import classes from "./NavbarLinksGroup.module.css";
 import { useNavigate } from "react-router-dom";
 
 interface LinksGroupProps {
-  icon: React.FC<any>;
+  icon: React.FC<unknown>;
   label: string;
   initiallyOpened?: boolean;
   link?: string;

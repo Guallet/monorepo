@@ -62,7 +62,7 @@ const menuData: MenuData[] = [
       { label: "Pensions", link: "/" },
       { label: "Investments", link: "/" },
       { label: "Loans", link: "/" },
-      { label: "Mortgages", link: "/" },
+      { label: "Mortgages", link: "/tools/mortgage" },
     ],
   },
   {

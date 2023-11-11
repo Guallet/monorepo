@@ -1,9 +1,17 @@
+import { Account } from "../../accounts/models/Account";
+import { Category } from "../../categories/models/Category";
+
 export type Transaction = {
   id: string;
-  name: string;
-  icon: string;
-  colour: string;
-  parentId: string;
+  accountId: string;
+  account: Account | null;
+  amount: number;
+  currency: string;
+  date: Date;
+  description: string;
+  notes: string | null;
+  categoryId: string | null;
+  category: Category | null;
 };
 
 export type TransactionQueryResultDto = {
@@ -14,6 +22,16 @@ export type TransactionQueryResultDto = {
     hasMore: boolean;
   };
   transactions: TransactionDto[];
+};
+
+export type TransactionQueryResult = {
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    hasMore: boolean;
+  };
+  transactions: Transaction[];
 };
 
 export type TransactionDto = {

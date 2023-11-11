@@ -1,7 +1,12 @@
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
-import { TransactionQueryResultDto } from "../models/Transaction";
+import {
+  TransactionQueryResult,
+  TransactionQueryResultDto,
+} from "../models/Transaction";
 import { Stack, Text, Table, Pagination } from "@mantine/core";
 import { loadTransactions } from "../api/transactions.api";
+import { loadAccounts } from "../../accounts/api/accounts.api";
+import { loadCategories } from "../../categories/api/categories.api";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -11,7 +16,22 @@ export const loader: LoaderFunction = async ({ request }) => {
   const sanitizedPage = page === 0 ? 1 : page;
   const sanitizedPageSize = pageSize === 0 ? 50 : pageSize;
 
-  return await loadTransactions(sanitizedPage, sanitizedPageSize);
+  const accounts = await loadAccounts();
+  const categories = await loadCategories();
+
+  const result = await loadTransactions(sanitizedPage, sanitizedPageSize);
+
+  const rehydratedTransactions = result.transactions.map((transaction) => {
+    return {
+      ...transaction,
+      account: accounts.find((account) => account.id === transaction.accountId),
+      category: categories.find(
+        (category) => category.id === transaction.categoryId
+      ),
+    };
+  });
+
+  return { ...result, transactions: rehydratedTransactions };
 };
 
 function formatDate(date: Date): string {
@@ -36,7 +56,7 @@ function formatDate(date: Date): string {
 }
 
 export function TransactionsPage() {
-  const data = useLoaderData() as TransactionQueryResultDto;
+  const data = useLoaderData() as TransactionQueryResult;
   console.log("Page data", data);
   const navigate = useNavigate();
   const totalPages = Math.ceil(data.meta.total / data.meta.pageSize);
@@ -52,11 +72,11 @@ export function TransactionsPage() {
   const rows = data.transactions.map((transaction) => (
     <Table.Tr key={transaction.id}>
       <Table.Td>{formatDate(new Date(transaction.date))}</Table.Td>
-      <Table.Td>{transaction.accountId}</Table.Td>
+      <Table.Td>{transaction.account?.name}</Table.Td>
       <Table.Td>{transaction.description}</Table.Td>
       {/* <Table.Td>{transaction.notes}</Table.Td> */}
       <Table.Td>{transaction.amount}</Table.Td>
-      <Table.Td>{transaction.categoryId}</Table.Td>
+      <Table.Td>{transaction.category?.name}</Table.Td>
     </Table.Tr>
   ));
 
