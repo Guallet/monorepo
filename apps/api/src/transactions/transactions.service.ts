@@ -14,6 +14,15 @@ export class TransactionsService {
     private repository: Repository<Transaction>,
   ) {}
 
+  // get total transactions count for a user
+  async getUserTransactionsCount(userId: string): Promise<number> {
+    return this.repository.count({
+      where: {
+        account: { user_id: userId },
+      },
+    });
+  }
+
   async getUserTransactions(args: {
     userId: string;
     page: number;

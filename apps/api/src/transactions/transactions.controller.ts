@@ -13,7 +13,7 @@ import {
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { TransactionDto } from './dto/transaction.dto';
+import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -45,7 +45,7 @@ export class TransactionsController {
     // Cannot use a IntPipe since doesn't support optional query params
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
-  ): Promise<TransactionDto[]> {
+  ): Promise<TransactionsResultDto> {
     if (page === null || page == undefined) {
       page = 1;
     }
@@ -69,7 +69,17 @@ export class TransactionsController {
       page: page,
       pageSize: pageSize,
     });
-    return transactions.map((x) => TransactionDto.fromDomain(x));
+    const total = await this.transactionsService.getUserTransactionsCount(
+      user.id,
+    );
+
+    return TransactionsResultDto.fromDomain({
+      transactions: transactions,
+      total: total,
+      page: page,
+      pageSize: pageSize,
+      hasMore: total >= page * pageSize,
+    });
   }
 
   @Post()

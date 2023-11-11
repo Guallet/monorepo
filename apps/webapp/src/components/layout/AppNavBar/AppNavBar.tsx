@@ -39,6 +39,7 @@ const menuData: MenuData[] = [
   {
     label: "Transactions",
     icon: IconCash,
+    link: "/transactions",
     subLinks: [
       { label: "Pending (4)", link: "/" },
       { label: "Categories", link: "/categories" },

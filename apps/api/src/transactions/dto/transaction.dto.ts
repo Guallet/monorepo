@@ -1,6 +1,7 @@
 import { Transaction } from '../models/transaction.entity';
 
 export class TransactionDto {
+  id: string;
   accountId: string;
   description: string;
   notes?: string;
@@ -10,15 +11,41 @@ export class TransactionDto {
   categoryId?: string;
 
   static fromDomain(domain: Transaction): TransactionDto {
-    // mapping goes here
     return {
-      accountId: domain.account.id,
+      id: domain.id,
+      accountId: domain.accountId,
       amount: domain.amount,
       currency: domain.currency,
       date: domain.date,
       description: domain.description,
       notes: domain.notes,
-      categoryId: domain.category.id,
-    } as TransactionDto;
+      categoryId: domain.categoryId,
+    };
+  }
+}
+
+export type TransactionsResultMetadataDto = {
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+};
+
+export class TransactionsResultDto {
+  meta: TransactionsResultMetadataDto;
+  transactions: TransactionDto[];
+
+  static fromDomain(args: {
+    transactions: Transaction[];
+    total: number;
+    page: number;
+    pageSize: number;
+    hasMore: boolean;
+  }): TransactionsResultDto {
+    const { transactions, total, page, pageSize, hasMore } = args;
+    return {
+      meta: { total: total, page: page, pageSize: pageSize, hasMore: hasMore },
+      transactions: transactions.map((x) => TransactionDto.fromDomain(x)),
+    };
   }
 }

@@ -10,6 +10,7 @@ import { DashboardPage } from "./features/dashboard/DashboardPage";
 import GualletAppShell from "./components/layout/GualletAppShell";
 import { accountRoutes } from "./features/accounts/Routes";
 import { categoriesRoutes } from "./features/categories/Routes";
+import { transactionsRoutes } from "./features/transactions/Routes";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
         element: <DashboardPage />,
       },
       ...accountRoutes,
-      // ...transactionRoutes,
+      ...transactionsRoutes,
       ...categoriesRoutes,
       // ...reportsRoutes,
       // ...settingsRoutes,
