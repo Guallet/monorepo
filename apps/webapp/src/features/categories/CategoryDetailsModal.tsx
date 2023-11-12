@@ -14,7 +14,7 @@ export type CategoryFormData = {
   name: string;
   icon: string;
   colour: string;
-  parentId?: string;
+  parentId: string | null;
 };
 
 export function CategoriesDetailsModal({
@@ -42,7 +42,7 @@ export function CategoriesDetailsModal({
         name: name ?? "",
         icon: icon ?? "",
         colour: colour,
-        parentId: category?.parentId,
+        parentId: category?.parentId ?? null,
       };
       if (category) {
         onUpdate(category, formData);
