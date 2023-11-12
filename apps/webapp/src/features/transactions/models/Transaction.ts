@@ -24,13 +24,15 @@ export type TransactionQueryResultDto = {
   transactions: TransactionDto[];
 };
 
+export type QueryMetadata = {
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+};
+
 export type TransactionQueryResult = {
-  meta: {
-    total: number;
-    page: number;
-    pageSize: number;
-    hasMore: boolean;
-  };
+  meta: QueryMetadata;
   transactions: Transaction[];
 };
 

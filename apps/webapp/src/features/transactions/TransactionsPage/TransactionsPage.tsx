@@ -1,12 +1,33 @@
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import {
-  TransactionQueryResult,
+  LoaderFunction,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+  useSearchParams,
+} from "react-router-dom";
+import {
+  QueryMetadata,
+  Transaction,
   TransactionQueryResultDto,
 } from "../models/Transaction";
-import { Stack, Text, Table, Pagination } from "@mantine/core";
+import { Stack, Text, Table, Pagination, Modal } from "@mantine/core";
 import { loadTransactions } from "../api/transactions.api";
 import { loadAccounts } from "../../accounts/api/accounts.api";
 import { loadCategories } from "../../categories/api/categories.api";
+import { SelectCategoryModal } from "./SelectCategoryModal";
+import { Category } from "../../categories/models/Category";
+import { useMediaQuery } from "@mantine/hooks";
+
+const SELECTED_TRANSACTION_ID_QUERY = "id";
+const EDIT_PARAM_ID_QUERY = "edit";
+const EDIT_NOTES_QUERY_VALUE = "notes";
+const EDIT_CATEGORY_QUERY_VALUE = "category";
+
+interface ILoaderData {
+  queryMeta: QueryMetadata;
+  transactions: Transaction[];
+  categories: Category[];
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -19,7 +40,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const accounts = await loadAccounts();
   const categories = await loadCategories();
 
-  const result = await loadTransactions(sanitizedPage, sanitizedPageSize);
+  const result: TransactionQueryResultDto = await loadTransactions(
+    sanitizedPage,
+    sanitizedPageSize
+  );
 
   const rehydratedTransactions = result.transactions.map((transaction) => {
     return {
@@ -31,7 +55,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     };
   });
 
-  return { ...result, transactions: rehydratedTransactions };
+  return {
+    queryMeta: result.meta,
+    transactions: rehydratedTransactions,
+    categories: categories,
+  };
 };
 
 function formatDate(date: Date): string {
@@ -56,12 +84,44 @@ function formatDate(date: Date): string {
 }
 
 export function TransactionsPage() {
-  const data = useLoaderData() as TransactionQueryResult;
-  console.log("Page data", data);
+  const { queryMeta, transactions, categories } =
+    useLoaderData() as ILoaderData;
+  console.log("Page data", { queryMeta, transactions, categories });
   const navigate = useNavigate();
-  const totalPages = Math.ceil(data.meta.total / data.meta.pageSize);
+  const revalidator = useRevalidator();
+  const totalPages = Math.ceil(queryMeta.total / queryMeta.pageSize);
 
-  if (data.transactions.length == 0) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isMobile = useMediaQuery("(max-width: 50em)");
+
+  const isSelectCategoryModalOpen =
+    searchParams.get(EDIT_PARAM_ID_QUERY) === EDIT_CATEGORY_QUERY_VALUE;
+  const selectedTransactionId = searchParams.get(SELECTED_TRANSACTION_ID_QUERY);
+  const selectedTransaction = transactions.find(
+    (transaction) => transaction.id === selectedTransactionId
+  );
+
+  function hideModal(forceRefresh: boolean = false) {
+    setSearchParams((params) => {
+      params.delete(SELECTED_TRANSACTION_ID_QUERY);
+      params.delete(EDIT_PARAM_ID_QUERY);
+      return params;
+    });
+
+    if (forceRefresh) {
+      revalidator.revalidate();
+    }
+  }
+
+  function showEditCategoryModal(transactionId: string) {
+    setSearchParams((params) => {
+      params.set(SELECTED_TRANSACTION_ID_QUERY, transactionId);
+      params.set(EDIT_PARAM_ID_QUERY, EDIT_CATEGORY_QUERY_VALUE);
+      return params;
+    });
+  }
+
+  if (transactions.length == 0) {
     return (
       <Stack>
         <Text>You don't have any transactions yet</Text>
@@ -69,47 +129,76 @@ export function TransactionsPage() {
     );
   }
 
-  const rows = data.transactions.map((transaction) => (
+  const rows = transactions.map((transaction) => (
     <Table.Tr key={transaction.id}>
       <Table.Td>{formatDate(new Date(transaction.date))}</Table.Td>
       <Table.Td>{transaction.account?.name}</Table.Td>
-      <Table.Td>{transaction.description}</Table.Td>
+      <Table.Td
+        onClick={() => {
+          console.log("Clicked on description", transaction);
+        }}
+      >
+        {transaction.description}
+      </Table.Td>
       {/* <Table.Td>{transaction.notes}</Table.Td> */}
       <Table.Td>{transaction.amount}</Table.Td>
-      <Table.Td>{transaction.category?.name}</Table.Td>
+      <Table.Td
+        onClick={() => {
+          showEditCategoryModal(transaction.id);
+        }}
+      >
+        {transaction.category?.name}
+      </Table.Td>
     </Table.Tr>
   ));
 
   return (
-    <Stack>
-      <Text>Transactions list</Text>
-      <Table
-        striped
-        highlightOnHover
-        withColumnBorders
-        stickyHeader
-        stickyHeaderOffset={60}
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Date</Table.Th>
-            <Table.Th>Account</Table.Th>
-            <Table.Th>Description</Table.Th>
-            <Table.Th>Amount</Table.Th>
-            <Table.Th>Category</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Pagination
-        total={totalPages}
-        siblings={1}
-        value={data.meta.page}
-        onChange={(page) => {
-          navigate(`/transactions?page=${page}`, { replace: true });
+    <>
+      <Modal
+        title="Select category"
+        opened={isSelectCategoryModalOpen}
+        fullScreen={isMobile}
+        onClose={() => {
+          hideModal();
         }}
-      />
-      ;
-    </Stack>
+      >
+        <SelectCategoryModal
+          categories={categories}
+          onSelectCategory={(category) => {
+            console.log("Selected category", category);
+          }}
+        />
+      </Modal>
+      <Stack>
+        <Text>Transactions list</Text>
+        <Table
+          striped
+          highlightOnHover
+          withColumnBorders
+          stickyHeader
+          stickyHeaderOffset={60}
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Date</Table.Th>
+              <Table.Th>Account</Table.Th>
+              <Table.Th>Description</Table.Th>
+              <Table.Th>Amount</Table.Th>
+              <Table.Th>Category</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Pagination
+          total={totalPages}
+          siblings={1}
+          value={queryMeta.page}
+          onChange={(page) => {
+            navigate(`/transactions?page=${page}`, { replace: true });
+          }}
+        />
+        ;
+      </Stack>
+    </>
   );
 }
