@@ -5,18 +5,21 @@ import {
   useRevalidator,
   useSearchParams,
 } from "react-router-dom";
-import {
-  QueryMetadata,
-  Transaction,
-  TransactionQueryResultDto,
-} from "../models/Transaction";
+import { QueryMetadata, Transaction } from "../models/Transaction";
 import { Stack, Text, Table, Pagination, Modal } from "@mantine/core";
-import { loadTransactions } from "../api/transactions.api";
+import {
+  TransactionQueryResultDto,
+  loadTransactions,
+  updateTransactionCategory as remoteUpdateTransactionCategory,
+  updateTransactionNotes as remoteUpdateTransactionNotes,
+  updateTransactionNotes,
+} from "../api/transactions.api";
 import { loadAccounts } from "../../accounts/api/accounts.api";
 import { loadCategories } from "../../categories/api/categories.api";
 import { SelectCategoryModal } from "./SelectCategoryModal";
 import { Category } from "../../categories/models/Category";
 import { useMediaQuery } from "@mantine/hooks";
+import { EditNotesModal } from "./EditNotesModal";
 
 const SELECTED_TRANSACTION_ID_QUERY = "id";
 const EDIT_PARAM_ID_QUERY = "edit";
@@ -96,6 +99,9 @@ export function TransactionsPage() {
 
   const isSelectCategoryModalOpen =
     searchParams.get(EDIT_PARAM_ID_QUERY) === EDIT_CATEGORY_QUERY_VALUE;
+  const isEditNotesModalOpen =
+    searchParams.get(EDIT_PARAM_ID_QUERY) === EDIT_NOTES_QUERY_VALUE;
+
   const selectedTransactionId = searchParams.get(SELECTED_TRANSACTION_ID_QUERY);
   const selectedTransaction = transactions.find(
     (transaction) => transaction.id === selectedTransactionId
@@ -113,10 +119,37 @@ export function TransactionsPage() {
     }
   }
 
+  async function updateTransactionCategory(
+    transactionId: string,
+    categoryId: string
+  ) {
+    await remoteUpdateTransactionCategory({
+      transactionId: transactionId,
+      categoryId: categoryId,
+    });
+    hideModal(true);
+  }
+
+  async function updateTransactionNotes(transactionId: string, notes: string) {
+    await remoteUpdateTransactionNotes({
+      transactionId: transactionId,
+      notes: notes,
+    });
+    hideModal(true);
+  }
+
   function showEditCategoryModal(transactionId: string) {
     setSearchParams((params) => {
       params.set(SELECTED_TRANSACTION_ID_QUERY, transactionId);
       params.set(EDIT_PARAM_ID_QUERY, EDIT_CATEGORY_QUERY_VALUE);
+      return params;
+    });
+  }
+
+  function showEditNotesModal(transactionId: string) {
+    setSearchParams((params) => {
+      params.set(SELECTED_TRANSACTION_ID_QUERY, transactionId);
+      params.set(EDIT_PARAM_ID_QUERY, EDIT_NOTES_QUERY_VALUE);
       return params;
     });
   }
@@ -135,12 +168,14 @@ export function TransactionsPage() {
       <Table.Td>{transaction.account?.name}</Table.Td>
       <Table.Td
         onClick={() => {
-          console.log("Clicked on description", transaction);
+          showEditNotesModal(transaction.id);
         }}
       >
-        {transaction.description}
+        <Stack>
+          <Text> {transaction.description}</Text>
+          {transaction.notes && <Text size="xs">{transaction.notes}</Text>}
+        </Stack>
       </Table.Td>
-      {/* <Table.Td>{transaction.notes}</Table.Td> */}
       <Table.Td>{transaction.amount}</Table.Td>
       <Table.Td
         onClick={() => {
@@ -156,18 +191,41 @@ export function TransactionsPage() {
     <>
       <Modal
         title="Select category"
-        opened={isSelectCategoryModalOpen}
+        opened={isSelectCategoryModalOpen || isEditNotesModalOpen}
         fullScreen={isMobile}
         onClose={() => {
           hideModal();
         }}
       >
-        <SelectCategoryModal
-          categories={categories}
-          onSelectCategory={(category) => {
-            console.log("Selected category", category);
-          }}
-        />
+        {isSelectCategoryModalOpen && (
+          <SelectCategoryModal
+            categories={categories}
+            onSelectCategory={(category) => {
+              if (selectedTransactionId) {
+                updateTransactionCategory(selectedTransactionId, category.id);
+              } else {
+                console.error("No transaction selected");
+                hideModal();
+              }
+            }}
+          />
+        )}
+        {isEditNotesModalOpen && (
+          <EditNotesModal
+            notes={selectedTransaction?.notes ?? ""}
+            onSave={async (x) => {
+              if (selectedTransactionId) {
+                await updateTransactionNotes(selectedTransactionId, x);
+              } else {
+                console.error("No transaction selected");
+                hideModal();
+              }
+            }}
+            onCancel={() => {
+              hideModal();
+            }}
+          />
+        )}
       </Modal>
       <Stack>
         <Text>Transactions list</Text>

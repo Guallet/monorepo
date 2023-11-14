@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -78,5 +83,34 @@ export class TransactionsService {
 
   remove(id: string) {
     return `This action removes a #${id} transaction`;
+  }
+
+  async updateUserTransaction(args: {
+    user_id: string;
+    transaction_id: string;
+    dto: UpdateTransactionDto;
+  }): Promise<Transaction> {
+    const { user_id, transaction_id, dto } = args;
+    const dbEntity = await this.repository.findOne({
+      where: {
+        id: transaction_id,
+        account: { user_id: user_id },
+      },
+    });
+
+    if (!dbEntity) {
+      throw new NotFoundException();
+    }
+
+    const updatedEntity = {
+      ...dbEntity,
+      amount: dto.amount ?? dbEntity.amount,
+      description: dto.description ?? dbEntity.description,
+      notes: dto.notes ?? dbEntity.notes,
+      currency: dto.currency ?? dbEntity.currency,
+      date: dto.date ?? dbEntity.date,
+      categoryId: dto.categoryId ?? dbEntity.categoryId,
+    };
+    return await this.repository.save(updatedEntity);
   }
 }

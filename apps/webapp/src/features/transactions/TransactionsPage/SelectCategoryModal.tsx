@@ -109,7 +109,7 @@ function CategoryListItem({
   onSelectCategory,
 }: CategoryListItemProps) {
   return (
-    <Group key={category.id} onClick={() => onSelectCategory}>
+    <Group key={category.id} onClick={() => onSelectCategory(category)}>
       <Text>
         [{category.icon}]{category.name}
       </Text>
