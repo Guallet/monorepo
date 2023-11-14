@@ -229,24 +229,26 @@ export function TransactionsPage() {
       </Modal>
       <Stack>
         <Text>Transactions list</Text>
-        <Table
-          striped
-          highlightOnHover
-          withColumnBorders
-          stickyHeader
-          stickyHeaderOffset={60}
-        >
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Date</Table.Th>
-              <Table.Th>Account</Table.Th>
-              <Table.Th>Description</Table.Th>
-              <Table.Th>Amount</Table.Th>
-              <Table.Th>Category</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
+        <Table.ScrollContainer minWidth={500}>
+          <Table
+            striped
+            highlightOnHover
+            withColumnBorders
+            stickyHeader
+            // stickyHeaderOffset={60}
+          >
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Date</Table.Th>
+                <Table.Th>Account</Table.Th>
+                <Table.Th>Description</Table.Th>
+                <Table.Th>Amount</Table.Th>
+                <Table.Th>Category</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
         <Pagination
           total={totalPages}
           siblings={1}
