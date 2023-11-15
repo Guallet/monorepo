@@ -10,6 +10,7 @@ import {
   BadRequestException,
   Query,
   ParseBoolPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -43,9 +44,20 @@ export class TransactionsController {
   })
   async getUserAccounts(
     @RequestUser() user: UserPrincipal,
-    // Cannot use a IntPipe since doesn't support optional query params
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number,
+    @Query(
+      'page',
+      new ParseIntPipe({
+        optional: true,
+      }),
+    )
+    page: number,
+    @Query(
+      'pageSize',
+      new ParseIntPipe({
+        optional: true,
+      }),
+    )
+    pageSize: number,
     @Query('inbox', new ParseBoolPipe({ optional: true })) inbox: boolean,
   ): Promise<TransactionsResultDto> {
     if (inbox == true) {
