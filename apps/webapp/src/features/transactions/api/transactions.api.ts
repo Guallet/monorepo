@@ -8,6 +8,11 @@ export async function loadTransactions(
   return await get<TransactionQueryResultDto>(queryPath);
 }
 
+export async function getTransactionsInbox(): Promise<TransactionQueryResultDto> {
+  const queryPath = "transactions?inbox=true";
+  return await get<TransactionQueryResultDto>(queryPath);
+}
+
 export async function updateTransactionCategory(args: {
   transactionId: string;
   categoryId: string;

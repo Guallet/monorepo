@@ -41,7 +41,7 @@ const menuData: MenuData[] = [
     icon: IconCash,
     link: "/transactions",
     subLinks: [
-      { label: "Pending (4)", link: "/" },
+      { label: "Inbox (4)", link: "/transactions/inbox" },
       { label: "Categories", link: "/categories" },
       { label: "Upcoming", link: "/" },
     ],

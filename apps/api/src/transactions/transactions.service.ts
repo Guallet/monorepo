@@ -7,7 +7,7 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Transaction } from './models/transaction.entity';
 
 @Injectable()
@@ -24,6 +24,23 @@ export class TransactionsService {
     return this.repository.count({
       where: {
         account: { user_id: userId },
+      },
+    });
+  }
+
+  async getUserTransactionsInbox(args: {
+    userId: string;
+  }): Promise<Transaction[]> {
+    return await this.repository.find({
+      relations: { account: true, category: true },
+      where: {
+        account: { user_id: args.userId },
+        category: {
+          id: IsNull(),
+        },
+      },
+      order: {
+        date: 'DESC',
       },
     });
   }

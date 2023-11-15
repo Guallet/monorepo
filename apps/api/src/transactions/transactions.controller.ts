@@ -9,6 +9,7 @@ import {
   Logger,
   BadRequestException,
   Query,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -45,41 +46,56 @@ export class TransactionsController {
     // Cannot use a IntPipe since doesn't support optional query params
     @Query('page') page: number,
     @Query('pageSize') pageSize: number,
+    @Query('inbox', new ParseBoolPipe({ optional: true })) inbox: boolean,
   ): Promise<TransactionsResultDto> {
-    if (page === null || page == undefined) {
-      page = 1;
-    }
-    if (pageSize === null || pageSize == undefined) {
-      pageSize = 50;
-    }
+    if (inbox == true) {
+      const transactions =
+        await this.transactionsService.getUserTransactionsInbox({
+          userId: user.id,
+        });
+      return TransactionsResultDto.fromDomain({
+        transactions: transactions,
+        total: transactions.length,
+        page: 1,
+        pageSize: transactions.length,
+        hasMore: false,
+      });
+    } else {
+      if (page === null || page == undefined) {
+        page = 1;
+      }
+      if (pageSize === null || pageSize == undefined) {
+        pageSize = 50;
+      }
 
-    if (!Number.isInteger(+page)) {
-      throw new BadRequestException(
-        'Query Param `page` is not valid. Has to be a number greater than 0',
+      if (!Number.isInteger(+page)) {
+        throw new BadRequestException(
+          'Query Param `page` is not valid. Has to be a number greater than 0',
+        );
+      }
+      if (!Number.isInteger(+pageSize)) {
+        throw new BadRequestException(
+          'Query Param `pageSize` is not valid. Has to be a number greater than 0',
+        );
+      }
+
+      const transactions = await this.transactionsService.getUserTransactions({
+        userId: user.id,
+        page: page,
+        pageSize: pageSize,
+      });
+      const total = await this.transactionsService.getUserTransactionsCount(
+        user.id,
       );
-    }
-    if (!Number.isInteger(+pageSize)) {
-      throw new BadRequestException(
-        'Query Param `pageSize` is not valid. Has to be a number greater than 0',
-      );
-    }
 
-    const transactions = await this.transactionsService.getUserTransactions({
-      userId: user.id,
-      page: page,
-      pageSize: pageSize,
-    });
-    const total = await this.transactionsService.getUserTransactionsCount(
-      user.id,
-    );
-
-    return TransactionsResultDto.fromDomain({
-      transactions: transactions,
-      total: total,
-      page: page,
-      pageSize: pageSize,
-      hasMore: total >= page * pageSize,
-    });
+      return TransactionsResultDto.fromDomain({
+        transactions: transactions,
+        total: total,
+        page: page,
+        pageSize: pageSize,
+        hasMore: total >= page * pageSize,
+      });
+    }
   }
 
   @Post()

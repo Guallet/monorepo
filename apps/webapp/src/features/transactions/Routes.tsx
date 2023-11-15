@@ -3,6 +3,10 @@ import {
   TransactionsPage,
   loader as transactionsLoader,
 } from "./TransactionsPage/TransactionsPage";
+import {
+  TransactionsInboxPage,
+  loader as inboxLoader,
+} from "./Inbox/TransactionsInboxPage";
 
 export const transactionsRoutes: RouteObject[] = [
   {
@@ -13,6 +17,11 @@ export const transactionsRoutes: RouteObject[] = [
         index: true,
         element: <TransactionsPage />,
         loader: transactionsLoader,
+      },
+      {
+        path: "inbox",
+        element: <TransactionsInboxPage />,
+        loader: inboxLoader,
       },
     ],
   },

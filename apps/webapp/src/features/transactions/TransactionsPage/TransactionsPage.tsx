@@ -12,7 +12,6 @@ import {
   loadTransactions,
   updateTransactionCategory as remoteUpdateTransactionCategory,
   updateTransactionNotes as remoteUpdateTransactionNotes,
-  updateTransactionNotes,
 } from "../api/transactions.api";
 import { loadAccounts } from "../../accounts/api/accounts.api";
 import { loadCategories } from "../../categories/api/categories.api";
