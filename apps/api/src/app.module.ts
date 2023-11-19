@@ -12,6 +12,7 @@ import { AuthGuard } from './core/auth/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { RulesModule } from './rules/rules.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     AccountsModule,
     CategoriesModule,
     TransactionsModule,
+    RulesModule,
   ],
   controllers: [],
   providers: [

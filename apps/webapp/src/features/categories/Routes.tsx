@@ -1,5 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import { CategoriesPage, loader as categoriesLoader } from "./CategoriesPage";
+import { RulesPage, loader as rulesLoader } from "./rules/RulesPage";
 
 export const categoriesRoutes: RouteObject[] = [
   {
@@ -10,6 +11,11 @@ export const categoriesRoutes: RouteObject[] = [
         index: true,
         element: <CategoriesPage />,
         loader: categoriesLoader,
+      },
+      {
+        path: "rules",
+        element: <RulesPage />,
+        loader: rulesLoader,
       },
     ],
   },
