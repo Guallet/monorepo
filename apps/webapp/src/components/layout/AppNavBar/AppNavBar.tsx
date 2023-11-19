@@ -49,11 +49,8 @@ const menuData: MenuData[] = [
   {
     label: "Reports",
     icon: IconPresentationAnalytics,
-    subLinks: [
-      { label: "Security", link: "/" },
-      { label: "App", link: "/" },
-      { label: "User", link: "/" },
-    ],
+    link: "/reports",
+    subLinks: [{ label: "Cashflow", link: "/reports/cashflow" }],
   },
   {
     label: "Tools",

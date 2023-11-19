@@ -12,6 +12,7 @@ import { accountRoutes } from "./features/accounts/Routes";
 import { categoriesRoutes } from "./features/categories/Routes";
 import { transactionsRoutes } from "./features/transactions/Routes";
 import { toolsRoutes } from "./features/tools/Routes";
+import { reportsRoutes } from "./features/reports/Routes";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,7 @@ const router = createBrowserRouter([
       ...accountRoutes,
       ...transactionsRoutes,
       ...categoriesRoutes,
-      // ...reportsRoutes,
+      ...reportsRoutes,
       // ...settingsRoutes,
       ...toolsRoutes,
     ],

@@ -26,7 +26,7 @@ export function AccountDetailsPage() {
   const navigation = useNavigate();
   const account = useLoaderData() as Account;
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isDeleteAccountModalOpen =
     searchParams.get(DELETE_ACCOUNT_MODAL_QUERY) === "true";
 

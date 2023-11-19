@@ -1,4 +1,4 @@
-import { Paper, SimpleGrid } from "@mantine/core";
+import { SimpleGrid } from "@mantine/core";
 import { TotalBalanceCard } from "./components/cards/TotalBalanceCard";
 import { CategoriesCard } from "./components/cards/CategoriesCard";
 import { BudgetsCard } from "./components/cards/BudgetsCard";
