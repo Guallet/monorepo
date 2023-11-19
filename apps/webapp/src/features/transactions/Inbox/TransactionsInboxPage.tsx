@@ -28,6 +28,7 @@ import {
 import { IconDeviceFloppy, IconEdit } from "@tabler/icons-react";
 import { SelectCategoryModal } from "../TransactionsPage/SelectCategoryModal";
 import { useMediaQuery } from "@mantine/hooks";
+import { RulesEngine } from "../../categories/rules/RulesEngine";
 
 type LoaderData = {
   accounts: Account[];
@@ -70,6 +71,8 @@ export function TransactionsInboxPage() {
   //   const theme = useMantineTheme();
   const revalidator = useRevalidator();
 
+  const rulesEngine = new RulesEngine(categories);
+
   return (
     <Stack>
       <Group>
@@ -77,16 +80,34 @@ export function TransactionsInboxPage() {
         <Badge>{transactions.length}</Badge>
       </Group>
       <List>
-        {transactions.map((transaction) => (
-          <TransactionCard
-            key={transaction.id}
-            categories={categories}
-            transaction={transaction}
-            onSaved={() => {
-              revalidator.revalidate();
-            }}
-          />
-        ))}
+        {transactions
+          .map((transaction) => {
+            return {
+              ...transaction,
+              category: rulesEngine.getCategoryForTransaction(transaction),
+            };
+          })
+          .sort((a, b) => {
+            if (a.category && b.category) {
+              return a.category.name.localeCompare(b.category.name);
+            } else if (a.category) {
+              return -1;
+            } else if (b.category) {
+              return 1;
+            } else {
+              return 0;
+            }
+          })
+          .map((transaction) => (
+            <TransactionCard
+              key={transaction.id}
+              categories={categories}
+              transaction={transaction}
+              onSaved={() => {
+                revalidator.revalidate();
+              }}
+            />
+          ))}
       </List>
       {selectedTransaction && (
         <Card>
