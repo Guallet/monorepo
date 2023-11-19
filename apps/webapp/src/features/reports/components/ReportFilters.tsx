@@ -3,6 +3,7 @@ import { Category } from "../../categories/models/Category";
 import { Account } from "../../accounts/models/Account";
 import { useState } from "react";
 import { DateRangeButton } from "../../../components/DateRangeButton/DateRangeButton";
+import { MultiSelectCheckbox } from "../../../components/MultiSelectCheckbox/MultiComboBox";
 
 export type FilterData = {
   selectedAccounts: Account[];
@@ -39,20 +40,31 @@ export function ReportFilters({
     <div>
       <h1>Reports Filters</h1>
       <Group>
-        <MultiSelect
+        <MultiSelectCheckbox
+          data={[...new Set(accounts.map((x) => x.name))]}
+          placeholder="Select the accounts"
+          allItemsSelectedMessage="All accounts selected"
+        />
+        <MultiSelectCheckbox
+          data={[...new Set(categories.map((x) => x.name))]}
+          placeholder="Select the categories"
+          allItemsSelectedMessage="All categories selected"
+        />
+
+        {/* <MultiSelect
           label="Selected accounts"
           placeholder="No accounts selected"
           searchable
           clearable
           data={[...new Set(accounts.map((x) => x.name))]}
-        />
-        <MultiSelect
+        /> */}
+        {/* <MultiSelect
           label="Selected categories"
           placeholder="No categories selected"
           searchable
           clearable
           data={[...new Set(categories.map((x) => x.name))]}
-        />
+        /> */}
         <DateRangeButton
           selectedRange={dateRange}
           onRangeSelected={(selectedRange) => {

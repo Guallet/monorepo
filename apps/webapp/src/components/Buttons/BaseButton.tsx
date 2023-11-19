@@ -1,4 +1,4 @@
-import { UnstyledButton, Group, Avatar, Text, rem } from "@mantine/core";
+import { UnstyledButton } from "@mantine/core";
 import classes from "./BaseButton.module.css";
 import { ReactNode } from "react";
 

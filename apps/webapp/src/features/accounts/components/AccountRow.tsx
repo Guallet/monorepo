@@ -1,4 +1,4 @@
-import { Avatar, Group, Text, rem, UnstyledButton } from "@mantine/core";
+import { Avatar, Group, Text, rem } from "@mantine/core";
 import { Account } from "../models/Account";
 import { IconChevronRight } from "@tabler/icons-react";
 import { BaseButton } from "../../../components/Buttons/BaseButton";
