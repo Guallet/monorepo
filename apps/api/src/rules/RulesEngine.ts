@@ -1,5 +1,14 @@
 import { Category } from 'src/categories/models/category.entity';
 import { Rule } from './entities/rule.entity';
+import { Transaction } from 'src/transactions/models/transaction.entity';
+import { Account } from 'src/accounts/models/account.model';
+
+export type TransactionField =
+  | 'description'
+  | 'account'
+  | 'amount'
+  | 'currency'
+  | 'date';
 
 export class RulesEngine {
   rules: Rule[];
@@ -7,120 +16,120 @@ export class RulesEngine {
 
   constructor(userCategories: Category[]) {
     this.userCategories = userCategories;
-
-    this.rules = [
-      {
-        id: '1',
-        order: 1,
-        name: 'Groceries',
-        description:
-          "All Sainsbury's, Lidl, Aldi, Asda or Tesco transactions are Groceries",
-        conditions: [
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'Sainsbury',
-          },
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'Aldi',
-          },
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'Asda',
-          },
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'Tesco',
-          },
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'Lidl',
-          },
-          {
-            field: 'description',
-            operator: 'not-contains',
-            value: 'petrol',
-          },
-          {
-            field: 'description',
-            operator: 'not-contains',
-            value: 'fuel',
-          },
-        ],
-        resultCategory: this.userCategories.find((c) =>
-          c.name.includes('Groceries'),
-        )!,
-      },
-      {
-        id: '2',
-        order: 2,
-        name: 'Petrol',
-        description: 'All fuel transactions are Petrol',
-        conditions: [
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'petrol',
-          },
-        ],
-        resultCategory: this.userCategories.find((c) =>
-          c.name.includes('Fuel'),
-        )!,
-      },
-      {
-        id: '3',
-        order: 4,
-        name: 'Fuel',
-        description: 'All fuel transactions are Fuel',
-        conditions: [
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'fuel',
-          },
-        ],
-        resultCategory: this.userCategories.find((c) =>
-          c.name.includes('Fuel'),
-        )!,
-      },
-      {
-        id: '4',
-        order: 5,
-        name: 'PERKS AT WORK',
-        description: 'All bills transactions are Bills',
-        conditions: [
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'PERKS AT WORK',
-          },
-        ],
-        resultCategory: this.userCategories.find((c) =>
-          c.name.includes('Bills'),
-        )!,
-      },
-      {
-        id: '4',
-        order: 5,
-        name: 'PERKS AT WORK - CORPORATE PERKS',
-        description: 'All coporate perks transactions are Groceries',
-        conditions: [
-          {
-            field: 'description',
-            operator: 'contains',
-            value: 'CORPORATE PERKS',
-          },
-        ],
-        resultCategory: this.userCategories.find((c) =>
-          c.name.includes('Groceries'),
-        )!,
-      },
-    ];
+    this.rules = [];
+    //   this.rules = [
+    //     {
+    //       id: '1',
+    //       order: 1,
+    //       name: 'Groceries',
+    //       description:
+    //         "All Sainsbury's, Lidl, Aldi, Asda or Tesco transactions are Groceries",
+    //       conditions: [
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'Sainsbury',
+    //         },
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'Aldi',
+    //         },
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'Asda',
+    //         },
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'Tesco',
+    //         },
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'Lidl',
+    //         },
+    //         {
+    //           field: 'description',
+    //           operator: 'not-contains',
+    //           value: 'petrol',
+    //         },
+    //         {
+    //           field: 'description',
+    //           operator: 'not-contains',
+    //           value: 'fuel',
+    //         },
+    //       ],
+    //       resultCategory: this.userCategories.find((c) =>
+    //         c.name.includes('Groceries'),
+    //       )!,
+    //     },
+    //     {
+    //       id: '2',
+    //       order: 2,
+    //       name: 'Petrol',
+    //       description: 'All fuel transactions are Petrol',
+    //       conditions: [
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'petrol',
+    //         },
+    //       ],
+    //       resultCategory: this.userCategories.find((c) =>
+    //         c.name.includes('Fuel'),
+    //       )!,
+    //     },
+    //     {
+    //       id: '3',
+    //       order: 4,
+    //       name: 'Fuel',
+    //       description: 'All fuel transactions are Fuel',
+    //       conditions: [
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'fuel',
+    //         },
+    //       ],
+    //       resultCategory: this.userCategories.find((c) =>
+    //         c.name.includes('Fuel'),
+    //       )!,
+    //     },
+    //     {
+    //       id: '4',
+    //       order: 5,
+    //       name: 'PERKS AT WORK',
+    //       description: 'All bills transactions are Bills',
+    //       conditions: [
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'PERKS AT WORK',
+    //         },
+    //       ],
+    //       resultCategory: this.userCategories.find((c) =>
+    //         c.name.includes('Bills'),
+    //       )!,
+    //     },
+    //     {
+    //       id: '4',
+    //       order: 5,
+    //       name: 'PERKS AT WORK - CORPORATE PERKS',
+    //       description: 'All coporate perks transactions are Groceries',
+    //       conditions: [
+    //         {
+    //           field: 'description',
+    //           operator: 'contains',
+    //           value: 'CORPORATE PERKS',
+    //         },
+    //       ],
+    //       resultCategory: this.userCategories.find((c) =>
+    //         c.name.includes('Groceries'),
+    //       )!,
+    //     },
+    //   ];
   }
 
   getIsValidFieldType(
@@ -142,7 +151,7 @@ export class RulesEngine {
     }
   }
 
-  getCategoryForTransaction(transaction: Transaction): Category | null {
+  getCategoryForTransaction(transaction: Transaction): string | null {
     let category = null;
 
     this.rules
@@ -152,7 +161,7 @@ export class RulesEngine {
           const value = transaction[condition.field];
 
           const isValidFieldType = this.getIsValidFieldType(
-            condition.field,
+            condition.field as TransactionField,
             value,
           );
           if (isValidFieldType === false) {
@@ -219,7 +228,7 @@ export class RulesEngine {
           console.log(
             `Matched rule ${rule.name} for transaction ${transaction.description}`,
           );
-          category = rule.resultCategory;
+          category = rule.resultCategoryId;
           return category;
         }
       });
