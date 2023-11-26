@@ -7,114 +7,31 @@ import { loadAccounts } from "../../accounts/api/accounts.api";
 import { loadCategories } from "../../categories/api/categories.api";
 import { YearPickerInput } from "@mantine/dates";
 import { useState } from "react";
+import { getCashflowReportData } from "../api/reports.api";
+import { CashflowDataDto } from "../api/cashflow.models";
 
 type LoaderData = {
   accounts: Account[];
   categories: Category[];
-  tableData: CashFlowTableRowData[];
+  tableData: CashflowDataDto;
 };
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const { id } = params;
+  const url = new URL(request.url);
+  const year =
+    Number(url.searchParams.get("year")) === 0
+      ? new Date().getUTCFullYear()
+      : Number(url.searchParams.get("year"));
 
   const accounts = await loadAccounts();
   const categories = await loadCategories();
+  const reportData = await getCashflowReportData(year);
 
   return {
     accounts: accounts,
     categories: categories,
-    tableData: [
-      {
-        category: "Income",
-        isSubcategory: false,
-        data: {
-          January: 100,
-          February: 200,
-          March: 300,
-          April: 400,
-          May: 500,
-          June: 600,
-          July: 700,
-          August: 800,
-          September: 900,
-          October: 1000,
-          November: 1100,
-          December: 1200,
-        },
-      },
-      {
-        category: "Salary",
-        isSubcategory: true,
-        data: {
-          January: 100,
-          February: 200,
-          March: 300,
-          April: 400,
-          May: 500,
-          June: 600,
-          July: 700,
-          August: 800,
-          September: 900,
-          October: 1000,
-          November: 1100,
-          December: 1200,
-        },
-      },
-      {
-        category: "Bonus",
-        isSubcategory: true,
-        data: {
-          January: 100,
-          February: 200,
-          March: 300,
-          April: 400,
-          May: 500,
-          June: 600,
-          July: 700,
-          August: 800,
-          September: 900,
-          October: 1000,
-          November: 1100,
-          December: 1200,
-        },
-      },
-      {
-        category: "Expenses",
-        isSubcategory: false,
-        data: {
-          January: 100,
-          February: 200,
-          March: 300,
-          April: 400,
-          May: 500,
-          June: 600,
-          July: 700,
-          August: 800,
-          September: 900,
-          October: 1000,
-          November: 1100,
-          December: 1200,
-        },
-      },
-      {
-        category: "Food",
-        isSubcategory: false,
-        data: {
-          January: 100,
-          February: 200,
-          March: 300,
-          April: 400,
-          May: 500,
-          June: 600,
-          July: 700,
-          August: 800,
-          September: 900,
-          October: 1000,
-          November: 1100,
-          December: 1200,
-        },
-      },
-    ],
+    tableData: reportData,
   } as LoaderData;
 };
 
@@ -141,64 +58,71 @@ export function CashFlowPage() {
         value={selectedYear}
         onChange={setSelectedYear}
       />
-      <CashFlowTable data={tableData} />
+      <CashFlowTable reportData={tableData} />
     </Stack>
   );
 }
 
 interface CashFlowTableProps {
-  data: CashFlowTableRowData[];
+  reportData: CashflowDataDto;
 }
 
-interface CashFlowTableRowData {
-  category: string;
-  isSubcategory: boolean;
-  data: {
-    January: number;
-    February: number;
-    March: number;
-    April: number;
-    May: number;
-    June: number;
-    July: number;
-    August: number;
-    September: number;
-    October: number;
-    November: number;
-    December: number;
-  };
-}
-
-function CashFlowTable({ data }: CashFlowTableProps) {
+function CashFlowTable({ reportData }: CashFlowTableProps) {
   const theme = useMantineTheme();
 
-  const rows = data.map((row, index) => (
-    <Table.Tr
-      key={index}
-      style={{
-        fontWeight: row.isSubcategory ? "normal" : "bold",
-        // backgroundColor: row.isSubcategory
-        //   ? "transparent"
-        //   : theme.colors.gray[0],
-      }}
-    >
-      <Table.Td>{row.category}</Table.Td>
-      <Table.Td>{row.data.January}</Table.Td>
-      <Table.Td>{row.data.February}</Table.Td>
-      <Table.Td>{row.data.March}</Table.Td>
-      <Table.Td>{row.data.April}</Table.Td>
-      <Table.Td>{row.data.May}</Table.Td>
-      <Table.Td>{row.data.June}</Table.Td>
-      <Table.Td>{row.data.July}</Table.Td>
-      <Table.Td>{row.data.August}</Table.Td>
-      <Table.Td>{row.data.September}</Table.Td>
-      <Table.Td>{row.data.October}</Table.Td>
-      <Table.Td>{row.data.November}</Table.Td>
-      <Table.Td>{row.data.December}</Table.Td>
-    </Table.Tr>
-  ));
+  const rows = reportData.data.map((row) => {
+    const subCategoryRows = row.subcategories.map((subCategory) => {
+      return (
+        <Table.Tr
+          key={row.categoryId}
+          style={{
+            fontWeight: "normal",
+          }}
+        >
+          <Table.Td>{subCategory.categoryName}</Table.Td>
+          <Table.Td>{subCategory.values[0]}</Table.Td>
+          <Table.Td>{subCategory.values[1]}</Table.Td>
+          <Table.Td>{subCategory.values[2]}</Table.Td>
+          <Table.Td>{subCategory.values[3]}</Table.Td>
+          <Table.Td>{subCategory.values[4]}</Table.Td>
+          <Table.Td>{subCategory.values[5]}</Table.Td>
+          <Table.Td>{subCategory.values[6]}</Table.Td>
+          <Table.Td>{subCategory.values[7]}</Table.Td>
+          <Table.Td>{subCategory.values[8]}</Table.Td>
+          <Table.Td>{subCategory.values[9]}</Table.Td>
+          <Table.Td>{subCategory.values[10]}</Table.Td>
+          <Table.Td>{subCategory.values[11]}</Table.Td>
+        </Table.Tr>
+      );
+    });
 
-  const rootCategoriesData = data.filter((x) => !x.isSubcategory);
+    const parentRow = (
+      <Table.Tr
+        key={row.categoryId}
+        style={{
+          fontWeight: row.isParent ? "bold" : "normal",
+        }}
+      >
+        <Table.Td>{row.categoryName}</Table.Td>
+        <Table.Td>{row.values[0]}</Table.Td>
+        <Table.Td>{row.values[1]}</Table.Td>
+        <Table.Td>{row.values[2]}</Table.Td>
+        <Table.Td>{row.values[3]}</Table.Td>
+        <Table.Td>{row.values[4]}</Table.Td>
+        <Table.Td>{row.values[5]}</Table.Td>
+        <Table.Td>{row.values[6]}</Table.Td>
+        <Table.Td>{row.values[7]}</Table.Td>
+        <Table.Td>{row.values[8]}</Table.Td>
+        <Table.Td>{row.values[9]}</Table.Td>
+        <Table.Td>{row.values[10]}</Table.Td>
+        <Table.Td>{row.values[11]}</Table.Td>
+      </Table.Tr>
+    );
+
+    return [parentRow, ...subCategoryRows];
+  });
+
+  const rootCategoriesData = reportData.data.filter((x) => x.isParent);
   const totalRow = (
     <Table.Tr
       key="totalRow"
@@ -210,40 +134,40 @@ function CashFlowTable({ data }: CashFlowTableProps) {
     >
       <Table.Td>Total</Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.January))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[0]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.February))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[1]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.March))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[2]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.April))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[3]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.May))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[4]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.June))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[5]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.July))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[6]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.August))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[7]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.September))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[8]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.October))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[9]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.November))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[10]))}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.data.December))}
+        {getArraySum(rootCategoriesData.map((x) => x.values[11]))}
       </Table.Td>
     </Table.Tr>
   );
@@ -274,10 +198,10 @@ function CashFlowTable({ data }: CashFlowTableProps) {
   );
 }
 
-function getArraySum(array: number[]): number {
+function getArraySum(array: string[]): string {
   let sum = 0;
   for (let i = 0; i < array.length; i++) {
-    sum += array[i];
+    sum += Number(array[i]);
   }
-  return sum;
+  return sum.toFixed(2);
 }

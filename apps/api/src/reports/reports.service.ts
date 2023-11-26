@@ -60,11 +60,15 @@ export class ReportsService {
         row.isParent = category.parentId === null;
 
         const categoryTransactions = transactions.filter((t) => {
-          return t.category.id === category.id;
+          return t.categoryId === category.id;
         });
 
         const subcategoriesTransactions = transactions.filter((t) => {
-          return t.category.parentId === category.id;
+          return (
+            t.category !== null &&
+            t.category.parentId !== null &&
+            t.category.parentId === category.id
+          );
         });
 
         const allTransactions = [
@@ -116,7 +120,6 @@ function getTotalMonthly(
   const total = validTransactions.reduce((sum, t) => {
     return sum + Number(t.amount);
   }, 0);
-  console.log(`Total sum for month ${monthNumber} is ${total}`);
 
   return total.toFixed(2);
 }
@@ -134,7 +137,7 @@ function getSubCategoryRows(
     const row = new SubCategoryDataRow();
 
     const validTransactions = transactions.filter((t) => {
-      return t.category.id === subcategory.id;
+      return t.categoryId === subcategory.id;
     });
 
     row.categoryId = subcategory.id;
