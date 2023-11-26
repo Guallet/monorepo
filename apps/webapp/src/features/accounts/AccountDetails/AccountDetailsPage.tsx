@@ -1,16 +1,11 @@
-import { Flex, Group, Loader, Modal, Stack, Text, Button } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { Group, Loader, Modal, Stack, Text, Button } from "@mantine/core";
 import {
-  ActionFunctionArgs,
   LoaderFunction,
-  ParamParseKey,
-  Params,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { getAccount, loadAccounts } from "../api/accounts.api";
+import { getAccount } from "../api/accounts.api";
 import { Account } from "../models/Account";
 import { CurrentAccountDetails } from "./CurrentAccountDetails";
 import { fetch_delete } from "../../../core/api/fetchHelper";

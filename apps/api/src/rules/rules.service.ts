@@ -21,8 +21,11 @@ export class RulesService {
     return 'This action adds a new rule';
   }
 
-  findAll() {
-    return `This action returns all rules`;
+  async findAll(args: { userId: string }): Promise<Rule[]> {
+    return this.rulesRepository.find({
+      relations: ['conditions'],
+      where: { user_id: args.userId },
+    });
   }
 
   findOne(id: number) {

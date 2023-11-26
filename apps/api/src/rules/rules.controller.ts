@@ -11,6 +11,9 @@ import {
 import { RulesService } from './rules.service';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
+import { RuleDto } from './dto/rule.dto';
+import { RequestUser } from 'src/core/auth/request-user.decorator';
+import { UserPrincipal } from 'src/core/auth/user-principal';
 
 @Controller('rules')
 export class RulesController {
@@ -24,8 +27,11 @@ export class RulesController {
   }
 
   @Get()
-  findAll() {
-    return this.rulesService.findAll();
+  async findAll(@RequestUser() user: UserPrincipal) {
+    const rules = await this.rulesService.findAll({
+      userId: user.id,
+    });
+    return rules.map((rule) => RuleDto.fromDomain(rule));
   }
 
   @Get(':id')

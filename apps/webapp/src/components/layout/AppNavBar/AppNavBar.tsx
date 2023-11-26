@@ -43,7 +43,7 @@ const menuData: MenuData[] = [
     subLinks: [
       { label: "Inbox (4)", link: "/transactions/inbox" },
       { label: "Categories", link: "/categories" },
-      { label: "Upcoming", link: "/" },
+      { label: "Rules", link: "/categories/rules" },
     ],
   },
   {
