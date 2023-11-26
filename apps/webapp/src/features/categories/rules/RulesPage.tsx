@@ -4,6 +4,7 @@ import {
   Accordion,
   ActionIcon,
   Avatar,
+  Button,
   Group,
   List,
   Stack,
@@ -33,6 +34,7 @@ export function RulesPage() {
   return (
     <Stack>
       <Text>Rules</Text>
+      <Button>Create new rule</Button>
       <Accordion chevronPosition="right" variant="contained">
         {rules.map((rule) => (
           <RuleRow rule={rule} />
