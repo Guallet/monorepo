@@ -9,6 +9,7 @@ import { YearPickerInput } from "@mantine/dates";
 import { useState } from "react";
 import { getCashflowReportData } from "../api/reports.api";
 import { CashflowDataDto } from "../api/cashflow.models";
+import { CashFlowRow } from "./CashFlowCategoryRow";
 
 type LoaderData = {
   accounts: Account[];
@@ -70,57 +71,7 @@ interface CashFlowTableProps {
 function CashFlowTable({ reportData }: CashFlowTableProps) {
   const theme = useMantineTheme();
 
-  const rows = reportData.data.map((row) => {
-    const subCategoryRows = row.subcategories.map((subCategory) => {
-      return (
-        <Table.Tr
-          key={row.categoryId}
-          style={{
-            fontWeight: "normal",
-          }}
-        >
-          <Table.Td>{subCategory.categoryName}</Table.Td>
-          <Table.Td>{subCategory.values[0]}</Table.Td>
-          <Table.Td>{subCategory.values[1]}</Table.Td>
-          <Table.Td>{subCategory.values[2]}</Table.Td>
-          <Table.Td>{subCategory.values[3]}</Table.Td>
-          <Table.Td>{subCategory.values[4]}</Table.Td>
-          <Table.Td>{subCategory.values[5]}</Table.Td>
-          <Table.Td>{subCategory.values[6]}</Table.Td>
-          <Table.Td>{subCategory.values[7]}</Table.Td>
-          <Table.Td>{subCategory.values[8]}</Table.Td>
-          <Table.Td>{subCategory.values[9]}</Table.Td>
-          <Table.Td>{subCategory.values[10]}</Table.Td>
-          <Table.Td>{subCategory.values[11]}</Table.Td>
-        </Table.Tr>
-      );
-    });
-
-    const parentRow = (
-      <Table.Tr
-        key={row.categoryId}
-        style={{
-          fontWeight: row.isParent ? "bold" : "normal",
-        }}
-      >
-        <Table.Td>{row.categoryName}</Table.Td>
-        <Table.Td>{row.values[0]}</Table.Td>
-        <Table.Td>{row.values[1]}</Table.Td>
-        <Table.Td>{row.values[2]}</Table.Td>
-        <Table.Td>{row.values[3]}</Table.Td>
-        <Table.Td>{row.values[4]}</Table.Td>
-        <Table.Td>{row.values[5]}</Table.Td>
-        <Table.Td>{row.values[6]}</Table.Td>
-        <Table.Td>{row.values[7]}</Table.Td>
-        <Table.Td>{row.values[8]}</Table.Td>
-        <Table.Td>{row.values[9]}</Table.Td>
-        <Table.Td>{row.values[10]}</Table.Td>
-        <Table.Td>{row.values[11]}</Table.Td>
-      </Table.Tr>
-    );
-
-    return [parentRow, ...subCategoryRows];
-  });
+  const rows = reportData.data.map((row) => <CashFlowRow row={row} />);
 
   const rootCategoriesData = reportData.data.filter((x) => x.isParent);
   const totalRow = (
@@ -175,23 +126,7 @@ function CashFlowTable({ reportData }: CashFlowTableProps) {
   return (
     <Table.ScrollContainer minWidth={500}>
       <Table highlightOnHover withTableBorder withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Category</Table.Th>
-            <Table.Th>Jan</Table.Th>
-            <Table.Th>Feb</Table.Th>
-            <Table.Th>Mar</Table.Th>
-            <Table.Th>Apr</Table.Th>
-            <Table.Th>May</Table.Th>
-            <Table.Th>Jun</Table.Th>
-            <Table.Th>Jul</Table.Th>
-            <Table.Th>Aug</Table.Th>
-            <Table.Th>Sep</Table.Th>
-            <Table.Th>Oct</Table.Th>
-            <Table.Th>Nov</Table.Th>
-            <Table.Th>Dec</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
+        <CashFlowHeadRow />
         <Table.Tbody>{[...rows, totalRow]}</Table.Tbody>
       </Table>
     </Table.ScrollContainer>
@@ -204,4 +139,26 @@ function getArraySum(array: string[]): string {
     sum += Number(array[i]);
   }
   return sum.toFixed(2);
+}
+
+function CashFlowHeadRow() {
+  return (
+    <Table.Thead>
+      <Table.Tr>
+        <Table.Th>Category</Table.Th>
+        <Table.Th>Jan</Table.Th>
+        <Table.Th>Feb</Table.Th>
+        <Table.Th>Mar</Table.Th>
+        <Table.Th>Apr</Table.Th>
+        <Table.Th>May</Table.Th>
+        <Table.Th>Jun</Table.Th>
+        <Table.Th>Jul</Table.Th>
+        <Table.Th>Aug</Table.Th>
+        <Table.Th>Sep</Table.Th>
+        <Table.Th>Oct</Table.Th>
+        <Table.Th>Nov</Table.Th>
+        <Table.Th>Dec</Table.Th>
+      </Table.Tr>
+    </Table.Thead>
+  );
 }
