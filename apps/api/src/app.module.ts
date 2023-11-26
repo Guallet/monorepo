@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { RulesModule } from './rules/rules.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { RulesModule } from './rules/rules.module';
     CategoriesModule,
     TransactionsModule,
     RulesModule,
+    ReportsModule,
   ],
   controllers: [],
   providers: [
