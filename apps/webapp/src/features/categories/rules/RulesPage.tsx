@@ -5,6 +5,7 @@ import {
   ActionIcon,
   Avatar,
   Button,
+  Center,
   Group,
   List,
   Stack,
@@ -50,9 +51,31 @@ interface RuleRowProps {
 export function RuleRow({ rule }: RuleRowProps) {
   return (
     <Accordion.Item value={rule.name} key={rule.id}>
-      <Accordion.Control>
-        <AccordionLabel rule={rule} />
-      </Accordion.Control>
+      <Center>
+        <Accordion.Control>
+          <AccordionLabel rule={rule} />
+        </Accordion.Control>
+        <Group
+          justify="flex-end"
+          style={{
+            minWidth: "fit-content",
+            marginRight: "20px",
+          }}
+        >
+          <Tooltip label="Edit">
+            <ActionIcon variant="light">
+              <IconEdit />
+            </ActionIcon>
+          </Tooltip>
+
+          <Tooltip label="Delete">
+            <ActionIcon variant="light" color="red">
+              <IconTrash />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      </Center>
+
       <Accordion.Panel>
         <Text>Conditions</Text>
         <List>
@@ -86,24 +109,6 @@ function AccordionLabel({ rule }: AccordionLabelProps) {
           {rule.description}
         </Text>
       </Stack>
-      <Group
-        justify="flex-end"
-        style={{
-          marginRight: "20px",
-        }}
-      >
-        <Tooltip label="Edit">
-          <ActionIcon variant="light">
-            <IconEdit />
-          </ActionIcon>
-        </Tooltip>
-
-        <Tooltip label="Delete">
-          <ActionIcon variant="light" color="red">
-            <IconTrash />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
     </Group>
   );
 }
