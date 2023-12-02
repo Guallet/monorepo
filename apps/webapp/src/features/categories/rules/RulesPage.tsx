@@ -1,9 +1,7 @@
 import { useLoaderData } from "react-router-dom";
-import { CategoryRule } from "./RulesEngine";
 import {
   Accordion,
   ActionIcon,
-  Avatar,
   Button,
   Center,
   Group,
@@ -16,7 +14,6 @@ import { RuleDto, loadRules } from "./api/rules.api";
 import { loadCategories } from "../api/categories.api";
 import { Category } from "../models/Category";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { ListView } from "../../../components/ListView/ListView";
 
 interface RulesPageData {
   rules: RuleDto[];
