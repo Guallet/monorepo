@@ -15,4 +15,10 @@ export default defineConfig({
   },
 
   plugins: [react()],
+  // resolve: {
+  //   alias: {
+  //     "@": "/src",
+  //     "@guallet/ui-react": "/src/ui-react",
+  //   },
+  // },
 });

@@ -18,7 +18,12 @@
     "strict": true,
     "noUnusedLocals": false, // TODO: Re-enable for prod
     "noUnusedParameters": false, // TODO: Re-enable for prod
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // PATHS
+    "paths": {
+      "@guallet/ui-react": ["./packages/guallet-ui-react/*"]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

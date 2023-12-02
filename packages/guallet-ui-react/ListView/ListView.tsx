@@ -1,4 +1,5 @@
 import { Stack } from "@mantine/core";
+import React from "react";
 
 interface IProps<T> {
   items: T[];

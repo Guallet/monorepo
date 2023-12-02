@@ -1,5 +1,5 @@
+import { ListView } from "@guallet/ui-react";
 import { Button, Stack, Title, Text } from "@mantine/core";
-import { ListView } from "../../components/ListView/ListView";
 
 export function SettingsPage() {
   return (
@@ -11,7 +11,7 @@ export function SettingsPage() {
       <ListView
         items={["hello", "world"]}
         itemTemplate={(item: string) => {
-          return <Text key={item}>{`Item ${item + 1}: ${item}`}</Text>;
+          return <Text key={item}>{`Item ${1}: ${item}`}</Text>;
         }}
       />
     </Stack>
