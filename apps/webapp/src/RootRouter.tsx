@@ -13,6 +13,7 @@ import { categoriesRoutes } from "./features/categories/Routes";
 import { transactionsRoutes } from "./features/transactions/Routes";
 import { toolsRoutes } from "./features/tools/Routes";
 import { reportsRoutes } from "./features/reports/Routes";
+import { settingsRoutes } from "./features/settings/Routes";
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
       ...transactionsRoutes,
       ...categoriesRoutes,
       ...reportsRoutes,
-      // ...settingsRoutes,
+      ...settingsRoutes,
       ...toolsRoutes,
     ],
   },

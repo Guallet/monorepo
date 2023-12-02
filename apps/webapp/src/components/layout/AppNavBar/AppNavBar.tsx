@@ -65,12 +65,7 @@ const menuData: MenuData[] = [
   {
     label: "Settings",
     icon: IconSettings,
-    subLinks: [
-      { label: "Security", link: "/" },
-      { label: "App", link: "/" },
-      { label: "User", link: "/" },
-      { label: "Export data", link: "/" },
-    ],
+    link: "/settings",
   },
 ];
 
