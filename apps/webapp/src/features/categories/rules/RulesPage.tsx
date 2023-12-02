@@ -15,7 +15,8 @@ import {
 import { RuleDto, loadRules } from "./api/rules.api";
 import { loadCategories } from "../api/categories.api";
 import { Category } from "../models/Category";
-import { IconEdit, IconEditCircleOff, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { ListView } from "../../../components/ListView/ListView";
 
 interface RulesPageData {
   rules: RuleDto[];
@@ -36,6 +37,7 @@ export function RulesPage() {
     <Stack>
       <Text>Rules</Text>
       <Button>Create new rule</Button>
+
       <Accordion chevronPosition="right" variant="contained">
         {rules.map((rule) => (
           <RuleRow rule={rule} />
