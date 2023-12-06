@@ -33,7 +33,7 @@ const menuData: MenuData[] = [
     link: "/accounts",
     subLinks: [
       { label: "Overview", link: "/" },
-      { label: "Connections", link: "/" },
+      { label: "Connections", link: "/connections" },
     ],
   },
   {

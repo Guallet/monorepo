@@ -14,6 +14,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { RulesModule } from './rules/rules.module';
 import { ReportsModule } from './reports/reports.module';
+import { OpenbankingModule } from './openbanking/openbanking.module';
+import { NordigenModule } from './nordigen/nordigen.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { ReportsModule } from './reports/reports.module';
     TransactionsModule,
     RulesModule,
     ReportsModule,
+    OpenbankingModule,
+    NordigenModule,
   ],
   controllers: [],
   providers: [

@@ -29,7 +29,7 @@ export function SearchBoxInput({
           <IconSquareRoundedXFilled
             onClick={() => {
               setSearchQuery("");
-              onSearchQueryChanged?.(query);
+              onSearchQueryChanged?.("");
             }}
           />
         )
