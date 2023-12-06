@@ -13,10 +13,12 @@ export function SearchableListView<T>({
   itemTemplate,
   emptyView,
 }: IProps<T>) {
-  const [filteredItems, setFilteredItems] = useState(items);
+  const [filteredItems, setFilteredItems] = useState([] as T[]);
 
   useEffect(() => {
-    setFilteredItems(items);
+    if (items !== null || items !== undefined) {
+      setFilteredItems(items);
+    }
   }, [items]);
 
   return (
