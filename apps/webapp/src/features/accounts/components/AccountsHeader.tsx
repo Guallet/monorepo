@@ -1,5 +1,5 @@
 import { Group, Button } from "@mantine/core";
-import { SearchBoxInput } from "../../../components/SearchBoxInput/SearchBoxInput";
+import { SearchBoxInput } from "@guallet/ui-react";
 
 interface Props {
   onAddNewAccount: () => void;

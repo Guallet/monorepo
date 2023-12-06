@@ -1,16 +1,13 @@
 import {
   Avatar,
-  Button,
   ComboboxItem,
   Group,
-  Image,
   OptionsFilter,
   Select,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
-import { ReactNode, useState } from "react";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import {
   CountryDto,
@@ -18,7 +15,7 @@ import {
   getInstitutions,
   getSupportedCountries,
 } from "./api/connections.api";
-import { SearchableListView } from "../../components/ListView/SearchableListView";
+import { SearchableListView } from "@guallet/ui-react";
 
 interface LoaderData {
   countries: CountryDto[];
@@ -48,8 +45,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 export function AddConnectionPage() {
   const { countries, selectedCountry, banks } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
-
-  const [selectedBank, setSelectedBank] = useState<string | null>(null);
 
   function selectedCountryChange(value: string | null) {
     if (!value) {
@@ -116,28 +111,6 @@ export function AddConnectionPage() {
               );
             }}
           />
-          {/* <Select
-            label="Select a bank"
-            placeholder="Pick a bank"
-            data={banks.map((bank) => bank.name)}
-            filter={optionsFilter}
-            searchable
-            nothingFoundMessage="No banks found"
-            checkIconPosition="right"
-            allowDeselect={false}
-            withScrollArea={false}
-            styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-            mt="md"
-            onChange={setSelectedBank}
-          />
-          <Button
-            disabled={selectedBank === null}
-            onClick={() => {
-              onCreateConnection();
-            }}
-          >
-            Connect
-          </Button> */}
         </>
       )}
     </Stack>
