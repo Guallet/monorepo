@@ -11,7 +11,7 @@ import {
 export const connectionsRoutes: RouteObject[] = [
   {
     path: "connections",
-    errorElement: <div>Error loading settings</div>,
+    errorElement: <div>Error loading the open banking settings</div>,
     children: [
       {
         index: true,
