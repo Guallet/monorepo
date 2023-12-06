@@ -15,11 +15,11 @@ export function SearchableListView<T>({
 }: IProps<T>) {
   const [filteredItems, setFilteredItems] = useState([] as T[]);
 
-  useEffect(() => {
-    if (items !== null || items !== undefined) {
-      setFilteredItems(items);
-    }
-  }, [items]);
+  // useEffect(() => {
+  //   if (items !== null || items !== undefined) {
+  //     setFilteredItems(items);
+  //   }
+  // }, [items]);
 
   return (
     <Stack>
