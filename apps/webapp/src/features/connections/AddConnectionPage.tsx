@@ -87,32 +87,30 @@ export function AddConnectionPage() {
         }}
       />
 
-      {selectedCountry && (
-        <>
-          <SearchableListView
-            items={banks}
-            emptyView={
-              <Stack>
-                <Text>No banks found</Text>
-                <Text>
-                  Some bank names are different than their commercial names.
-                  Please try another name for the bank
-                </Text>
-              </Stack>
-            }
-            itemTemplate={(institution: InstitutionDto) => {
-              return (
-                <InstitutionRow
-                  institution={institution}
-                  onRowSelected={(institution: InstitutionDto) => {
-                    onCreateConnection(institution);
-                  }}
-                />
-              );
-            }}
-          />
-        </>
-      )}
+      {/* {selectedCountry && ( */}
+      <SearchableListView
+        items={banks}
+        emptyView={
+          <Stack>
+            <Text>No banks found</Text>
+            <Text>
+              Some bank names are different than their commercial names. Please
+              try another name for the bank
+            </Text>
+          </Stack>
+        }
+        itemTemplate={(institution: InstitutionDto) => {
+          return (
+            <InstitutionRow
+              institution={institution}
+              onRowSelected={(institution: InstitutionDto) => {
+                onCreateConnection(institution);
+              }}
+            />
+          );
+        }}
+      />
+      {/* )} */}
     </Stack>
   );
 }
