@@ -6,12 +6,13 @@ import { NordigenService } from 'src/nordigen/nordigen.service';
 import { NordigenModule } from 'src/nordigen/nordigen.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
+import { ObConnection } from './entities/connection.entity';
 
 @Module({
   imports: [
     HttpModule,
     NordigenModule,
-    TypeOrmModule.forFeature([NordigenService]),
+    TypeOrmModule.forFeature([ObConnection]),
   ],
   controllers: [OpenbankingController, ObConnectionsController],
   providers: [OpenbankingService, NordigenService],

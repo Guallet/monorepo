@@ -3,20 +3,53 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('ob_connections')
+@Entity('nordigen_requisitions')
 export class ObConnection {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   id: string;
+
+  @Column()
+  created: Date;
+
+  @Column({ nullable: false })
+  redirect: string;
+
+  @Column()
+  status: string;
+
+  @Column({ nullable: false })
+  institution_id: string;
+
+  @Column()
+  agreement: string;
+
+  @Column()
+  reference: string;
 
   @Column()
   user_id: string;
 
+  @Column('simple-array')
+  accounts: string[];
+
+  @Column({ nullable: true })
+  user_language: string;
+
   @Column()
-  accountId: string;
+  link: string;
+
+  @Column({ nullable: true })
+  ssn: string;
+
+  @Column({ nullable: true })
+  account_selection: boolean;
+
+  @Column({ nullable: true })
+  redirect_immediate: boolean;
 
   // other
   @CreateDateColumn()

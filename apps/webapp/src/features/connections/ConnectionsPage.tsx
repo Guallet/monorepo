@@ -22,7 +22,7 @@ export function ConnectionsPage() {
       <Title>Connections</Title>
       <Button
         onClick={() => {
-          navigate("/connections/add");
+          navigate("/connections/connect");
         }}
       >
         Add a new connection
@@ -41,7 +41,7 @@ function EmptyConnectionsView() {
     <Stack>
       <Button
         onClick={() => {
-          navigate("/connections/add");
+          navigate("/connections/connect");
         }}
       >
         Add your first connection

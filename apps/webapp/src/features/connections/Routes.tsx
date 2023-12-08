@@ -7,6 +7,10 @@ import {
   AddConnectionPage,
   loader as addConnectionLoader,
 } from "./AddConnectionPage";
+import {
+  AddConnectionCallbackPage,
+  loader as addConnectionCallbackLoader,
+} from "./AddConnectionCallbackPage";
 
 export const connectionsRoutes: RouteObject[] = [
   {
@@ -19,9 +23,14 @@ export const connectionsRoutes: RouteObject[] = [
         loader: connectionsLoader,
       },
       {
-        path: "add",
+        path: "connect",
         element: <AddConnectionPage />,
         loader: addConnectionLoader,
+      },
+      {
+        path: "connect/callback",
+        element: <AddConnectionCallbackPage />,
+        loader: addConnectionCallbackLoader,
       },
     ],
   },

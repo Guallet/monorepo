@@ -1,4 +1,4 @@
-export class RequisitionDto {
+export class NordigenRequisitionDto {
   id: string;
   created: Date;
   redirect: string;

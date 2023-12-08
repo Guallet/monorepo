@@ -1,7 +1,7 @@
 import {
   BalanceTypeDto,
   NordigenAccountBalanceDto,
-} from 'src/nordigen/dto/account.dto';
+} from 'src/nordigen/dto/nordige-account.dto';
 
 export function getBalanceAmountFrom(
   balances: NordigenAccountBalanceDto[],

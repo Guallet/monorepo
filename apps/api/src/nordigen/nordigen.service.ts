@@ -10,22 +10,22 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
-import { NordigenInstitutionDto } from './dto/institution.dto';
+import { NordigenInstitutionDto } from './dto/nordigen-institution.dto';
 import {
   NordigenAccountBalanceDto,
   NordigenAccountBalancesDto,
   NordigenAccountDetailsDto,
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from './dto/account.dto';
+} from './dto/nordige-account.dto';
 import {
   NordigenTransactionDto,
   NordigenTransactionsDto,
-} from './dto/transaction.dto';
-import { RequisitionDto } from './dto/requisition.dto';
+} from './dto/nordigen-transaction.dto';
 import { NordigenToken } from './entities/nordigen-token.entity';
-import { NordigenTokenDto } from './dto/nordigentoken.dto';
+import { NordigenTokenDto } from './dto/nordigen-token.dto';
 import { NordigenRepository } from './nordigen.repository';
+import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
 
 @Injectable()
 export class NordigenService {
@@ -306,11 +306,13 @@ export class NordigenService {
     }
   }
 
-  async getRequisition(requisition_id: string): Promise<RequisitionDto> {
+  async getRequisition(
+    requisition_id: string,
+  ): Promise<NordigenRequisitionDto> {
     this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
     const path = `/api/v2/requisitions/${requisition_id}`;
 
-    const response = await this.makeGetRequest<RequisitionDto>(path);
+    const response = await this.makeGetRequest<NordigenRequisitionDto>(path);
     return response;
   }
 
