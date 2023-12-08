@@ -31,7 +31,7 @@ interface HeaderProps {
 
 export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
   function sumArray(array: number[]): number {
-    let sum = array.reduce(function (a, b) {
+    const sum = array.reduce(function (a, b) {
       return a + b;
     }, 0);
 

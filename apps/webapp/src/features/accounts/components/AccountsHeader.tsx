@@ -1,5 +1,4 @@
 import { Group, Button } from "@mantine/core";
-import { SearchBoxInput } from "@guallet/ui-react";
 
 interface Props {
   onAddNewAccount: () => void;
@@ -12,11 +11,12 @@ export function AccountsHeader({
 }: Props) {
   return (
     <Group justify="space-between">
-      <SearchBoxInput
+      TODO: Restore this view
+      {/* <SearchBoxInput
         onSearchQueryChanged={(query) => {
           onSearchQueryChanged(query);
         }}
-      />
+      /> */}
       <Button variant="outline" radius="xl" onClick={onAddNewAccount}>
         Add new account
       </Button>

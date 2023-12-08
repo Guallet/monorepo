@@ -36,9 +36,9 @@ export function SearchBoxInput({
       }
       value={query}
       onChange={(event) => {
-        const query = event.currentTarget.value;
-        setSearchQuery(query);
-        onSearchQueryChanged?.(query);
+        const input = event.currentTarget.value;
+        setSearchQuery(input);
+        onSearchQueryChanged?.(input);
       }}
     />
   );
