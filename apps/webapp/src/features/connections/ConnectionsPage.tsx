@@ -1,13 +1,26 @@
-import { Button, Stack, Title } from "@mantine/core";
+import {
+  Avatar,
+  Button,
+  Group,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from "@mantine/core";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
+import { ObConnection, loadConnections } from "./api/connections.api";
 
 type LoaderData = {
-  connections: string[];
+  connections: ObConnection[];
 };
 
 export const loader: LoaderFunction = async () => {
+  const connections = await loadConnections();
+
+  // Load the insititutions from the API to get the src for the logo
+
   return {
-    connections: ["🏦 Bank 1", "🏦 Bank 2", "🏦 Bank 3"],
+    connections: connections,
   } as LoaderData;
 };
 
@@ -29,7 +42,13 @@ export function ConnectionsPage() {
       </Button>
 
       {connections.map((connection) => (
-        <div key={connection}>{connection}</div>
+        <Group>
+          <Tooltip label={connection.institution_id}>
+            <Avatar src={connection.institution_id} />
+          </Tooltip>
+          <Text>{connection.status}</Text>
+          <Text>{connection.created}</Text>
+        </Group>
       ))}
     </Stack>
   );

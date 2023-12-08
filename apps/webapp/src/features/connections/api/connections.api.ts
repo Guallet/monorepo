@@ -2,11 +2,25 @@ import { get, post } from "../../../core/api/fetchHelper";
 
 export type ObConnection = {
   id: string;
-  name: string;
-  lastRefreshed: string;
+  created: string;
+  redirect: string;
+  status: string;
+  institution_id: string;
+  agreement: string;
+  reference: string;
+  user_id: string;
+  accounts: any[]; //TODO: Replace 'any' with the actual type of the accounts if known
+  user_language: string | null;
+  link: string;
+  ssn: string | null;
+  account_selection: boolean;
+  redirect_immediate: boolean;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 };
 
-export async function loadCategories(): Promise<ObConnection[]> {
+export async function loadConnections(): Promise<ObConnection[]> {
   return await get<ObConnection[]>("openbanking/connections");
 }
 

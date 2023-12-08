@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { OpenbankingService } from './openbanking.service';
-import { OpenbankingController } from './openbanking.controller';
 import { ObConnectionsController } from './connections.controller';
 import { NordigenService } from 'src/nordigen/nordigen.service';
 import { NordigenModule } from 'src/nordigen/nordigen.module';
@@ -14,7 +13,7 @@ import { ObConnection } from './entities/connection.entity';
     NordigenModule,
     TypeOrmModule.forFeature([ObConnection]),
   ],
-  controllers: [OpenbankingController, ObConnectionsController],
+  controllers: [ObConnectionsController],
   providers: [OpenbankingService, NordigenService],
 })
 export class OpenbankingModule {}

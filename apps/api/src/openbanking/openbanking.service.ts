@@ -62,18 +62,6 @@ export class OpenbankingService {
     });
   }
 
-  create(createOpenbankingDto: CreateOpenbankingDto) {
-    return 'This action adds a new openbanking';
-  }
-
-  findAll() {
-    return `This action returns all openbanking`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} openbanking`;
-  }
-
   update(id: number, updateOpenbankingDto: UpdateOpenbankingDto) {
     return `This action updates a #${id} openbanking`;
   }
@@ -82,7 +70,7 @@ export class OpenbankingService {
     return `This action removes a #${id} openbanking`;
   }
 
-  saveRequisition(user_id: string, dto: NordigenRequisitionDto) {
+  async saveRequisition(user_id: string, dto: NordigenRequisitionDto) {
     const connection = new ObConnection();
     connection.id = dto.id;
     connection.created = dto.created;
@@ -98,6 +86,14 @@ export class OpenbankingService {
     connection.ssn = dto.ssn;
     connection.account_selection = dto.account_selection;
     connection.redirect_immediate = dto.redirect_immediate;
-    this.repository.save(connection);
+    await this.repository.save(connection);
+  }
+
+  async getConnections(user_id: string) {
+    return await this.repository.find({
+      where: {
+        user_id: user_id,
+      },
+    });
   }
 }

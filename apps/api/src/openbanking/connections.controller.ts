@@ -50,6 +50,11 @@ export class ObConnectionsController {
     return accounts;
   }
 
+  @Get()
+  async getConnections(@RequestUser() user: UserPrincipal) {
+    return this.openbankingService.getConnections(user.id);
+  }
+
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
