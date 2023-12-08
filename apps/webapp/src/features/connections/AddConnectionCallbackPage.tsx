@@ -1,6 +1,12 @@
 import { Button, Card, Loader, Stack, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
-import { ObAccountDto, getObAccounts } from "./api/connections.api";
+import {
+  ObAccountDto,
+  getObAccounts,
+  linkObAccounts,
+} from "./api/connections.api";
+import { useEffect, useState } from "react";
 
 interface LoaderData {
   reference: string | null;
@@ -31,6 +37,35 @@ export const loader: LoaderFunction = async ({ request }) => {
 export function AddConnectionCallbackPage() {
   const { error, errorDetails, accounts } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function linkAccounts() {
+    // For each account, call the API to create the connection
+    const response = await linkObAccounts(
+      accounts.map((a) => a.resourceId).filter((a) => a !== null) as string[]
+    );
+    console.log(response);
+  }
+
+  useEffect(() => {
+    if (!error) {
+      // Connect the accounts to the user
+      setIsLoading(true);
+      linkAccounts()
+        .then(() => {})
+        .catch((error) => {
+          console.error(error);
+          notifications.show({
+            title: "Error connecting the accounts",
+            message: `${error}`,
+            color: "red",
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [accounts, error, navigate]);
 
   if (error) {
     return (
@@ -54,6 +89,10 @@ export function AddConnectionCallbackPage() {
     );
   }
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Stack>
       <Text>Connected to the following accounts:</Text>
@@ -73,10 +112,10 @@ export function AddConnectionCallbackPage() {
       })}
       <Button
         onClick={() => {
-          navigate("/connections", { replace: true });
+          navigate("/accounts", { replace: true });
         }}
       >
-        Go back to connections
+        Go back to accounts
       </Button>
     </Stack>
   );

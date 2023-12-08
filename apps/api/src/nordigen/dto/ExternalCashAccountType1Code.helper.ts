@@ -49,7 +49,7 @@ export enum ExternalCashAccountType1Code {
   CASH_TRADING = 'TRAS',
   VIRTUAL_ACCOUNT = 'VACC',
   NON_RESIDENT_FOREIGN_CURRENCY = 'NFCA',
-  UNKNOW = 'UNKNOW',
+  UNKNOWN = 'UNKNOWN',
 }
 
 export function getAccountTypeFrom(

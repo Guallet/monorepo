@@ -92,3 +92,19 @@ export async function getObAccounts(
     `openbanking/connections/${requisitionId}/accounts`
   );
 }
+
+export type ConnectAccountsRequest = {
+  /**
+   * The IDs of the open banking accounts to be connected to
+   */
+  account_ids: string[];
+};
+
+export async function linkObAccounts(accounts: string[]) {
+  return await post<ObAccountDto[], ConnectAccountsRequest>(
+    `openbanking/connections/connect`,
+    {
+      account_ids: accounts,
+    }
+  );
+}

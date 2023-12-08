@@ -4,6 +4,7 @@ import { NordigenService } from 'src/nordigen/nordigen.service';
 import { ConnectBankInstitutionRequestDto } from './dto/connect-account-request.dto';
 import { UserPrincipal } from 'src/core/auth/user-principal';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
+import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto';
 
 @Controller('openbanking/connections')
 export class ObConnectionsController {
@@ -71,5 +72,29 @@ export class ObConnectionsController {
       link: requisition.link,
       institution_id: requisition.institution_id,
     };
+  }
+
+  @Post('/connect')
+  async connectToAccount(
+    @RequestUser() user: UserPrincipal,
+    @Body() dto: ConnectAccountsRequestDto,
+  ) {
+    // Get Nordigen Account Metadata
+    // Get Nordigen Account Details
+    // Save the Nordigen account in the DB
+    const openBankAccount = await this.openbankingService.connectToAccounts(
+      user.id,
+      dto.account_ids,
+    );
+
+    // Create Account in DB and link it with this open banking account
+
+    // Get Nordigen Account Balances
+    // Sync the account balance
+    // Get Nordigen Account Transactions
+    // Sync the account transactions
+    // TDOD: Can this sync be a external microservice? Refactor this with enough time
+
+    return openBankAccount;
   }
 }

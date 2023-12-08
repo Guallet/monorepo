@@ -1,10 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { CreateOpenbankingDto } from './dto/create-openbanking.dto';
-import { UpdateOpenbankingDto } from './dto/update-openbanking.dto';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { NordigenRequisitionDto } from 'src/nordigen/dto/nordigen-requisition.dto';
 import { ObConnection } from './entities/connection.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NordigenAccountRepository } from './repositories/nordigen-account.repository';
+import { NordigenService } from 'src/nordigen/nordigen.service';
+import { NordigenAccount } from './entities/nordigen-account.entity';
+import { Account } from 'src/accounts/models/account.model';
+import { getBalanceAmountFrom } from 'src/nordigen/dto/nordigen-balances.helper';
+import { getAccountTypeFrom } from 'src/nordigen/dto/ExternalCashAccountType1Code.helper';
 
 const supportedCountries = [
   'AT', // Austria
@@ -47,6 +55,10 @@ export class OpenbankingService {
   constructor(
     @InjectRepository(ObConnection)
     private repository: Repository<ObConnection>,
+    private nordigenService: NordigenService,
+    private nordigenAccountsRepository: NordigenAccountRepository,
+    @InjectRepository(Account)
+    private accountRepository: Repository<Account>,
   ) {}
 
   async getAvailableCountries(locale: string) {
@@ -60,14 +72,6 @@ export class OpenbankingService {
         name: regionNames.of(code),
       };
     });
-  }
-
-  update(id: number, updateOpenbankingDto: UpdateOpenbankingDto) {
-    return `This action updates a #${id} openbanking`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} openbanking`;
   }
 
   async saveRequisition(user_id: string, dto: NordigenRequisitionDto) {
@@ -95,5 +99,100 @@ export class OpenbankingService {
         user_id: user_id,
       },
     });
+  }
+
+  async connectToAccounts(userId: string, accountIds: string[]) {
+    try {
+      for (const accountId of accountIds) {
+        await this.connectToAccount(userId, accountId);
+      }
+
+      return {
+        accounts_count: accountIds.length,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  // Should this method just deal with the "Nordige Accounts" and
+  // leave the app accounts alone?
+  async connectToAccount(user_id: string, nordigen_accountId: string) {
+    // If there is an existing account linked to this nordigen account, dont create it again
+    const existingAccount = await this.nordigenAccountsRepository.find(
+      nordigen_accountId,
+    );
+
+    // Get nordigen account metadata
+    this.logger.debug(`Getting Account Metadata: ${nordigen_accountId}`);
+    const metadata = await this.nordigenService.getAccountMetadata(
+      nordigen_accountId,
+    );
+    this.logger.debug(`Getting Account balances: ${nordigen_accountId}`);
+    const balances = await this.nordigenService.getAccountBalance(
+      nordigen_accountId,
+    );
+    this.logger.debug(`Getting Account details: ${nordigen_accountId}`);
+    const details = await this.nordigenService.getAccountDetails(
+      nordigen_accountId,
+    );
+
+    this.logger.debug(
+      `Getting Account institution: ${metadata.institution_id}`,
+    );
+
+    // Creates the app account
+    const tmpAccount = await this.accountRepository.findOne({
+      where: {
+        user_id: user_id,
+        id: existingAccount?.accountId,
+      },
+    });
+    let account = tmpAccount ?? new Account();
+    if (account.id == null) {
+      account.user_id = user_id;
+      account.name = details.name ?? details.ownerName;
+      account.currency = details.currency;
+      account.balance = getBalanceAmountFrom(balances);
+      account.institutionId = metadata.institution_id;
+      account.type = getAccountTypeFrom(details.cashAccountType);
+    } else {
+      account.balance = getBalanceAmountFrom(balances);
+    }
+
+    this.logger.debug(`Creating or updating new account`);
+    account = await this.accountRepository.save(account);
+
+    // Creates the nordigen account
+    const nordigenAccount = existingAccount ?? new NordigenAccount();
+    nordigenAccount.id = nordigen_accountId;
+    nordigenAccount.accountId = account.id;
+    nordigenAccount.resource_id = details.resourceId;
+    nordigenAccount.currency = details.currency;
+    nordigenAccount.institution_id = metadata.institution_id;
+    nordigenAccount.owner_name = details.ownerName;
+    nordigenAccount.cashAccountType = details.cashAccountType;
+    nordigenAccount.maskedPan = details.maskedPan;
+    nordigenAccount.details = details.details;
+    nordigenAccount.name = details.name;
+    nordigenAccount.bic = details.bic;
+    nordigenAccount.iban = details.iban;
+    nordigenAccount.status = details.status;
+
+    this.logger.debug(`Saving Nordigen Account`);
+    await this.nordigenAccountsRepository.save(nordigenAccount);
+
+    // TODO: Trigger event to start syncing the account
+    // this.eventEmitter.emit(
+    //   ACCOUNT_ADDED,
+    //   new AccountCreatedEvent({
+    //     id: account.id,
+    //   }),
+    // );
+
+    return {
+      account: account,
+      open_banking_account: nordigenAccount,
+    };
   }
 }

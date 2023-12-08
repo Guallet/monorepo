@@ -54,6 +54,9 @@ export class Account {
   @Field((type) => Institution, { nullable: true })
   institution: Institution;
 
+  @Column({ nullable: true })
+  institutionId: string;
+
   // other
   @CreateDateColumn()
   created_at: Date;
