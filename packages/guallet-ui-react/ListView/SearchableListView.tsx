@@ -13,33 +13,33 @@ export function SearchableListView<T>({
   itemTemplate,
   emptyView,
 }: IProps<T>) {
-  // const [filteredItems, setFilteredItems] = useState([] as T[]);
+  const [filteredItems, setFilteredItems] = useState([] as T[]);
 
-  // useEffect(() => {
-  //   if (items !== null || items !== undefined) {
-  //     setFilteredItems(items);
-  //   }
-  // }, [items]);
+  useEffect(() => {
+    if (items !== null || items !== undefined) {
+      setFilteredItems(items);
+    }
+  }, [items]);
 
   return (
     <Stack>
       <SearchBoxInput
         placeholder="Search bank name..."
         onSearchQueryChanged={(query) => {
-          // setFilteredItems(
-          //   items.filter((item) =>
-          //     // TODO: Improve this hack of converting to JSON
-          //     JSON.stringify(item).toLowerCase().includes(query)
-          //   )
-          // );
+          setFilteredItems(
+            items.filter((item) =>
+              // TODO: Improve this hack of converting to JSON
+              JSON.stringify(item).toLowerCase().includes(query)
+            )
+          );
         }}
       />
-      {/* {filteredItems.length === 0 && (emptyView || <DefaultEmptyView />)} */}
-      {items.map(itemTemplate)}
+      {filteredItems.length === 0 && (emptyView || <DefaultEmptyView />)}
+      {/* {items.map(itemTemplate)} */}
       {/* TODO: How to render this properly with the correct key? */}
-      {/* {filteredItems.map((item, index) => {
+      {filteredItems.map((item, index) => {
         return <div key={index}>{itemTemplate(item, index)}</div>;
-      })} */}
+      })}
     </Stack>
   );
 }

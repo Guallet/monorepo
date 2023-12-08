@@ -15,7 +15,8 @@ import {
   getInstitutions,
   getSupportedCountries,
 } from "./api/connections.api";
-import { SearchableListView } from "@guallet/ui-react";
+import { ListView, SearchableListView } from "@guallet/ui-react";
+import { ReactNode } from "react";
 
 interface LoaderData {
   countries: CountryDto[];
@@ -88,7 +89,7 @@ export function AddConnectionPage() {
       />
 
       {selectedCountry && (
-        <SearchableListView
+        <ListView
           items={banks}
           emptyView={
             <Stack>
@@ -110,6 +111,28 @@ export function AddConnectionPage() {
             );
           }}
         />
+        // <SearchableListView
+        //   items={banks}
+        //   emptyView={
+        //     <Stack>
+        //       <Text>No banks found</Text>
+        //       <Text>
+        //         Some bank names are different than their commercial names.
+        //         Please try another name for the bank
+        //       </Text>
+        //     </Stack>
+        //   }
+        //   itemTemplate={(institution: InstitutionDto) => {
+        //     return (
+        //       <InstitutionRow
+        //         institution={institution}
+        //         onRowSelected={(institution: InstitutionDto) => {
+        //           onCreateConnection(institution);
+        //         }}
+        //       />
+        //     );
+        //   }}
+        // />
       )}
     </Stack>
   );
