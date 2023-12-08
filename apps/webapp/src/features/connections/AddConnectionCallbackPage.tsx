@@ -1,4 +1,4 @@
-import { Button, Loader, Stack, Text } from "@mantine/core";
+import { Button, Card, Loader, Stack, Text } from "@mantine/core";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import { ObAccountDto, getObAccounts } from "./api/connections.api";
 
@@ -56,12 +56,28 @@ export function AddConnectionCallbackPage() {
 
   return (
     <Stack>
-      <Text>
-        Connect to the following accounts: {accounts.map((x) => x.name)}
-        {accounts.map((x) => {
-          return <Text>{x.name}</Text>;
-        })}
-      </Text>
+      <Text>Connected to the following accounts:</Text>
+      {accounts.map((account) => {
+        return (
+          <Card withBorder>
+            <Stack key={account.id}>
+              <Text>{account.name ?? account.ownerName}</Text>
+              <Text>Details: {account.details}</Text>
+              <Text>Account number: {account.bban}</Text>
+              <Text>Iban: {account.iban}</Text>
+              <Text>Currency: {account.currency}</Text>
+              <Text>Type: {account.cashAccountType}</Text>
+            </Stack>
+          </Card>
+        );
+      })}
+      <Button
+        onClick={() => {
+          navigate("/connections", { replace: true });
+        }}
+      >
+        Go back to connections
+      </Button>
     </Stack>
   );
 }
