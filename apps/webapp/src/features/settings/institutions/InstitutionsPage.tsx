@@ -1,4 +1,4 @@
-import { Button, Stack, Title, Text } from "@mantine/core";
+import { Stack, Title, Text, Group, Badge } from "@mantine/core";
 import { useLoaderData } from "react-router-dom";
 import { InstitutionDto, getUserInstitutions } from "./api/institutions.api";
 
@@ -22,11 +22,17 @@ export function InstitutionsPage() {
 
   return (
     <Stack>
-      <Title>User institutions</Title>
+      <Group>
+        <Title>User institutions</Title>
+        <Badge color="red">{user_institutions.length}</Badge>
+      </Group>
       {user_institutions.map((institution) => {
         return <Text key={institution.id}>{institution.name}</Text>;
       })}
-      <Title>System institutions</Title>
+      <Group>
+        <Title>System institutions</Title>
+        <Badge variant="light">{system_institutions.length}</Badge>
+      </Group>
       {system_institutions.map((institution) => {
         return <Text key={institution.id}>{institution.name}</Text>;
       })}
