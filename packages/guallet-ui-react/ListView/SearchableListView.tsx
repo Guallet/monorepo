@@ -14,6 +14,7 @@ export function SearchableListView<T>({
   emptyView,
 }: IProps<T>) {
   const [filteredItems, setFilteredItems] = useState([] as T[]);
+  const [queryString, setQueryString] = useState("");
 
   useEffect(() => {
     if (items !== null || items !== undefined) {
@@ -25,6 +26,7 @@ export function SearchableListView<T>({
     <Stack>
       <SearchBoxInput
         placeholder="Search bank name..."
+        query={queryString}
         onSearchQueryChanged={(query) => {
           setFilteredItems(
             items.filter((item) =>
@@ -35,11 +37,11 @@ export function SearchableListView<T>({
         }}
       />
       {filteredItems.length === 0 && (emptyView || <DefaultEmptyView />)}
-      {/* {items.map(itemTemplate)} */}
+      {items.map(itemTemplate)}
       {/* TODO: How to render this properly with the correct key? */}
-      {filteredItems.map((item, index) => {
+      {/* {filteredItems.map((item, index) => {
         return <div key={index}>{itemTemplate(item, index)}</div>;
-      })}
+      })} */}
     </Stack>
   );
 }

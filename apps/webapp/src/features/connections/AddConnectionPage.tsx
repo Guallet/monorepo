@@ -50,8 +50,6 @@ export function AddConnectionPage() {
 
   const { countries, selectedCountry, banks } = useLoaderData() as LoaderData;
 
-  const [selectedBank, setSelectedBank] = useState<InstitutionDto | null>(null);
-  const [canContinue, setCanContinue] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   function selectedCountryChange(value: string | null) {
@@ -94,6 +92,11 @@ export function AddConnectionPage() {
         label="Select a country"
         placeholder="Pick a country"
         data={countries.map((country) => country.name)}
+        value={
+          selectedCountry !== null
+            ? countries.find((x) => x.code === selectedCountry)?.name
+            : ""
+        }
         filter={optionsFilter}
         searchable
         nothingFoundMessage="No countries found"
@@ -106,60 +109,31 @@ export function AddConnectionPage() {
           selectedCountryChange(value);
         }}
       />
-
-      <Select
-        label="Select a bank"
-        placeholder="Pick a bank"
-        data={banks.map((bank) => bank.name)}
-        filter={optionsFilter}
-        searchable
-        nothingFoundMessage="No banks found"
-        checkIconPosition="right"
-        allowDeselect={false}
-        withScrollArea={false}
-        styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-        mt="md"
-        onChange={(bankName) => {
-          setSelectedBank(banks.find((x) => x.name === bankName) ?? null);
-          setCanContinue(bankName !== null || bankName !== undefined);
-        }}
-      />
-      {
-        // <SearchableListView
-        //   items={banks}
-        //   emptyView={
-        //     <Stack>
-        //       <Text>No banks found</Text>
-        //       <Text>
-        //         Some bank names are different than their commercial names.
-        //         Please try another name for the bank
-        //       </Text>
-        //     </Stack>
-        //   }
-        //   itemTemplate={(institution: InstitutionDto) => {
-        //     return (
-        //       <InstitutionRow
-        //         institution={institution}
-        //         onRowSelected={(institution: InstitutionDto) => {
-        //           onCreateConnection(institution);
-        //         }}
-        //       />
-        //     );
-        //   }}
-        // />
-      }
-
-      <Button
-        loading={isLoading}
-        disabled={!canContinue}
-        onClick={() => {
-          if (selectedBank) {
-            onCreateConnection(selectedBank);
+      {selectedCountry && (
+        <SearchableListView
+          items={banks}
+          emptyView={
+            <Stack>
+              <Text>No banks found</Text>
+              <Text>
+                Some bank names are different than their commercial names.
+                Please try another name for the bank
+              </Text>
+            </Stack>
           }
-        }}
-      >
-        Add Connection
-      </Button>
+          itemTemplate={(institution: InstitutionDto) => {
+            return (
+              <InstitutionRow
+                key={institution.id}
+                institution={institution}
+                onRowSelected={(institution: InstitutionDto) => {
+                  onCreateConnection(institution);
+                }}
+              />
+            );
+          }}
+        />
+      )}
     </Stack>
   );
 }

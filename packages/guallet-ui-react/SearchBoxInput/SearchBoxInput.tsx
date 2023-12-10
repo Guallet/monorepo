@@ -1,9 +1,9 @@
 import { TextInput } from "@mantine/core";
 import { IconSearch, IconSquareRoundedXFilled } from "@tabler/icons-react";
-import { useState } from "react";
 
 interface IProps {
   label?: string;
+  query: string;
   description?: string;
   placeholder?: string;
   onSearchQueryChanged?: (newSearchQuery: string) => void;
@@ -11,12 +11,11 @@ interface IProps {
 
 export function SearchBoxInput({
   label,
+  query,
   description,
   placeholder,
   onSearchQueryChanged,
 }: IProps) {
-  const [query, setSearchQuery] = useState("");
-
   return (
     <TextInput
       placeholder={placeholder ?? "Search..."}
@@ -28,7 +27,6 @@ export function SearchBoxInput({
         query !== "" && (
           <IconSquareRoundedXFilled
             onClick={() => {
-              setSearchQuery("");
               onSearchQueryChanged?.("");
             }}
           />
@@ -37,7 +35,6 @@ export function SearchBoxInput({
       value={query}
       onChange={(event) => {
         const input = event.currentTarget.value;
-        setSearchQuery(input);
         onSearchQueryChanged?.(input);
       }}
     />
