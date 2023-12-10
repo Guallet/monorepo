@@ -109,4 +109,10 @@ export class InstitutionsService {
       throw new NotFoundException();
     }
   }
+
+  // TODO: This only be called from admin, so check the role of the user calling this
+  async saveAll(entities: Institution[]): Promise<Institution[]> {
+    await this.repository.upsert(entities, ['nordigen_id']);
+    return entities;
+  }
 }

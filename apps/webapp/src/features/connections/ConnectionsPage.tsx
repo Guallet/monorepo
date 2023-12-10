@@ -42,7 +42,12 @@ export function ConnectionsPage() {
       </Button>
 
       {connections.map((connection) => (
-        <Group>
+        <Group
+          key={connection.id}
+          onClick={() => {
+            navigate(`/connections/${connection.id}`);
+          }}
+        >
           <Tooltip label={connection.institution_id}>
             <Avatar src={connection.institution_id} />
           </Tooltip>
