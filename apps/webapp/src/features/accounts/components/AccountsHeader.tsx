@@ -15,7 +15,6 @@ export function AccountsHeader({
 
   return (
     <Group justify="space-between">
-      TODO: Restore this view
       <SearchBoxInput
         query={query}
         onSearchQueryChanged={(query) => {
