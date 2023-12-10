@@ -17,11 +17,11 @@ export function AccountsHeader({
     <Group justify="space-between">
       TODO: Restore this view
       <SearchBoxInput
+        query={query}
         onSearchQueryChanged={(query) => {
           setQuery(query);
           onSearchQueryChanged(query);
         }}
-        query={query}
       />
       <Button variant="outline" radius="xl" onClick={onAddNewAccount}>
         Add new account

@@ -28,6 +28,7 @@ export function SearchableListView<T>({
         placeholder="Search bank name..."
         query={queryString}
         onSearchQueryChanged={(query) => {
+          setQueryString(query);
           setFilteredItems(
             items.filter((item) =>
               // TODO: Improve this hack of converting to JSON
@@ -37,11 +38,7 @@ export function SearchableListView<T>({
         }}
       />
       {filteredItems.length === 0 && (emptyView || <DefaultEmptyView />)}
-      {items.map(itemTemplate)}
-      {/* TODO: How to render this properly with the correct key? */}
-      {/* {filteredItems.map((item, index) => {
-        return <div key={index}>{itemTemplate(item, index)}</div>;
-      })} */}
+      {filteredItems.map(itemTemplate)}
     </Stack>
   );
 }
