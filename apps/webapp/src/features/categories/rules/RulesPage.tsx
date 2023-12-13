@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import {
   Accordion,
   ActionIcon,
@@ -30,13 +30,14 @@ export async function loader() {
 
 export function RulesPage() {
   const { rules } = useLoaderData() as RulesPageData;
+  const navigate = useNavigate();
 
   return (
     <Stack>
       <Text>Rules</Text>
       <Button
         onClick={() => {
-          Analytics.captureEvent("Add new rule");
+          navigate("/categories/rules/create");
         }}
       >
         Create new rule

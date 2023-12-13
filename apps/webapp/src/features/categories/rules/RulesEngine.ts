@@ -12,18 +12,38 @@ export type CategoryRule = {
   resultCategory: Category;
 };
 
-export type TransactionField =
-  | "description"
-  | "account"
-  | "amount"
-  | "currency"
-  | "date";
+// export type TransactionField =
+//   | "description"
+//   | "account"
+//   | "amount"
+//   | "currency"
+//   | "date";
 
+export const TransactionField = {
+  DESCRIPTION: "description",
+  ACCOUNT: "account",
+  AMOUNT: "amount",
+  CURRENCY: "currency",
+  DATE: "date",
+} as const;
+
+export type TransactionFieldKeys = keyof typeof TransactionField;
+export type TransactionFieldValues =
+  (typeof TransactionField)[keyof typeof TransactionField];
+
+export const RuleConditionsOperatorValues = [
+  "equals",
+  "not-equals",
+  "contains",
+  "not-contains",
+] as const;
 export type RuleConditionsOperator =
-  | "equals"
-  | "not-equals"
-  | "contains"
-  | "not-contains";
+  (typeof RuleConditionsOperatorValues)[number];
+// export type RuleConditionsOperator =
+//   | "equals"
+//   | "not-equals"
+//   | "contains"
+//   | "not-contains";
 //   | "greater-than"
 //   | "less-than"
 //   | "greater-than-equals"
@@ -42,7 +62,7 @@ export type RuleConditionsOperator =
 //   | "is-not-undefined";
 
 export type RuleConditions = {
-  field: TransactionField;
+  field: TransactionFieldValues;
   operator: RuleConditionsOperator;
   value: string;
 };
@@ -170,7 +190,7 @@ export class RulesEngine {
   }
 
   getIsValidFieldType(
-    field: TransactionField,
+    field: TransactionFieldValues,
     value: string | number | Date | Account | null
   ): boolean {
     switch (field) {

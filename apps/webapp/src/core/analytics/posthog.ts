@@ -50,12 +50,10 @@ export class Analytics {
     userId: string,
     extra: { name: string; email: string; user_id: string } | null
   ) {
-    console.log("Setting analytics identity", { userId, extra });
     setIdentity(userId, extra);
   }
 
   public static resetIdentity() {
-    console.log("Resetting analytics identity");
     resetIdentity();
   }
 
