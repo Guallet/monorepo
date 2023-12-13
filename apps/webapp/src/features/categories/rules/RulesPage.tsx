@@ -14,6 +14,7 @@ import { RuleDto, loadRules } from "./api/rules.api";
 import { loadCategories } from "../api/categories.api";
 import { Category } from "../models/Category";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { Analytics } from "../../../core/analytics/posthog";
 
 interface RulesPageData {
   rules: RuleDto[];
@@ -33,7 +34,13 @@ export function RulesPage() {
   return (
     <Stack>
       <Text>Rules</Text>
-      <Button>Create new rule</Button>
+      <Button
+        onClick={() => {
+          Analytics.captureEvent("Add new rule");
+        }}
+      >
+        Create new rule
+      </Button>
 
       <Accordion chevronPosition="right" variant="contained">
         {rules.map((rule) => (

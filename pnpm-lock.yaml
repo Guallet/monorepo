@@ -183,6 +183,9 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
+      posthog-js:
+        specifier: ^1.95.1
+        version: 1.95.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -5245,6 +5248,10 @@ packages:
       bser: 2.1.1
     dev: true
 
+  /fflate@0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+    dev: false
+
   /figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
@@ -7678,6 +7685,12 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       xtend: 4.0.2
+    dev: false
+
+  /posthog-js@1.95.1:
+    resolution: {integrity: sha512-79HPLoBqENBEEGFhn+hueKliYH66Qbu4WcRTEd8WaqtvqHrK9qAQkcrShZNkg1V5vM4kHp0iMIkJYBXg1sq06Q==}
+    dependencies:
+      fflate: 0.4.8
     dev: false
 
   /prelude-ls@1.2.1:

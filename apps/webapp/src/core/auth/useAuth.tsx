@@ -1,6 +1,7 @@
 import { Session, User } from "@supabase/supabase-js";
 import React, { useState, useEffect, useContext } from "react";
 import { supabase } from "./supabaseClient";
+import { Analytics } from "../analytics/posthog";
 
 interface AuthContextType {
   user: User | null;
@@ -37,6 +38,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   };
 
+  const setAnalyticsIdentity = (user: User | null) => {
+    if (user) {
+      Analytics.setIdentity(user.id, {
+        email: user.email ?? "",
+        name: user.user_metadata?.name ?? "",
+      });
+    } else {
+      Analytics.resetIdentity();
+    }
+  };
+
   useEffect(() => {
     init();
 
@@ -44,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        setAnalyticsIdentity(session?.user ?? null);
         setLoading(false);
       }
     );

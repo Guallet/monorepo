@@ -8,6 +8,9 @@ import { Notifications } from "@mantine/notifications";
 
 import GualletApp from "./RootRouter";
 import { AuthProvider } from "./core/auth/useAuth";
+import { initializePostHog } from "./core/analytics/posthog";
+
+initializePostHog();
 
 function App() {
   return (
