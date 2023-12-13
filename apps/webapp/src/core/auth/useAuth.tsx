@@ -43,6 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       Analytics.setIdentity(user.id, {
         email: user.email ?? "",
         name: user.user_metadata?.name ?? "",
+        user_id: user.id,
       });
     } else {
       Analytics.resetIdentity();

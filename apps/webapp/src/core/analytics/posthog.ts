@@ -5,7 +5,8 @@ const api_host = import.meta.env.VITE_POSTHOG_API_URL;
 const token = import.meta.env.VITE_POSTHOG_TOKEN;
 
 export function initializePostHog() {
-  if (isEnabled) {
+  if (isEnabled === true) {
+    console.log("Initializing PostHog");
     posthog.init(token, {
       api_host: api_host,
     });
@@ -27,7 +28,7 @@ async function captureEvent(
 
 async function setIdentity(
   userId: string,
-  extra: { name: string; email: string } | null
+  extra: { name: string; email: string; user_id: string } | null
 ) {
   if (isEnabled) {
     if (extra) {
@@ -47,7 +48,7 @@ async function resetIdentity() {
 export class Analytics {
   public static setIdentity(
     userId: string,
-    extra: { name: string; email: string } | null
+    extra: { name: string; email: string; user_id: string } | null
   ) {
     console.log("Setting analytics identity", { userId, extra });
     setIdentity(userId, extra);
