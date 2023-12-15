@@ -1,12 +1,12 @@
 import posthog from "posthog-js";
 
-const isEnabled = import.meta.env.VITE_POSTHOG_ENABLED;
+const isEnabled = import.meta.env.VITE_POSTHOG_ENABLED === "true";
 const api_host = import.meta.env.VITE_POSTHOG_API_URL;
 const token = import.meta.env.VITE_POSTHOG_TOKEN;
 
 export function initializePostHog() {
-  if (isEnabled === true) {
-    console.log("Initializing PostHog");
+  console.log("Initializing PostHog", { isEnabled });
+  if (isEnabled) {
     posthog.init(token, {
       api_host: api_host,
     });
