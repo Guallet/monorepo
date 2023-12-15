@@ -128,7 +128,7 @@ export function ConnectionsTable({
   ));
 
   return (
-    <Table>
+    <Table stickyHeader striped highlightOnHover withColumnBorders>
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Institution</Table.Th>
