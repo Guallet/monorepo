@@ -18,6 +18,16 @@ export class NordigenAccountMetadataDto {
 //  { "SUSPENDED": "Account has been suspended (more than 10 consecutive failed attempts to access the account)" } ]
 // }
 
+// Status short	Status long	Description	Stage
+// CR	CREATED	Requisition has been successfully created	1
+// GC	GIVING_CONSENT	End-user is giving consent at GoCardless's consent screen	2
+// UA	UNDERGOING_AUTHENTICATION	End-user is redirected to the financial institution for authentication	3
+// RJ	REJECTED	Either SSN verification has failed or end-user has entered incorrect credentials	4
+// SA	SELECTING_ACCOUNTS	End-user is selecting accounts	5
+// GA	GRANTING_ACCESS	End-user is granting access to their account information	6
+// LN	LINKED	Account has been successfully linked to requisition	7
+// EX	EXPIRED Access to accounts has expired as set in End User Agreement 8
+
 export class NordigenAccountBalancesDto {
   balances: NordigenAccountBalanceDto[];
 }

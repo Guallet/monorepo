@@ -15,3 +15,7 @@ export type InstitutionDto = {
 export async function getUserInstitutions(): Promise<InstitutionDto[]> {
   return await get<InstitutionDto[]>("institutions");
 }
+
+export async function getInstitution(id: string): Promise<InstitutionDto> {
+  return await get<InstitutionDto>(`institutions/${id}`);
+}

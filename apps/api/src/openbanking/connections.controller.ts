@@ -24,6 +24,12 @@ export class ObConnectionsController {
     return this.nordigenService.getInstitutions(country);
   }
 
+  @Get('institutions/:id')
+  getInstitution(@Param('id') id: string) {
+    // TODO: Cache this call in the DB? We should sync only once a day or less
+    return this.nordigenService.getInstitution(id);
+  }
+
   @Get(':id/accounts')
   async getObAccounts(
     @RequestUser() user: UserPrincipal,

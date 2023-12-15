@@ -50,6 +50,14 @@ export async function getInstitutions(
   );
 }
 
+export async function getInstitution(
+  instituionId: string
+): Promise<InstitutionDto> {
+  return await get<InstitutionDto>(
+    `openbanking/connections/institutions/${instituionId}/`
+  );
+}
+
 export type ObConnectionRequest = {
   institution_id: string;
   redirect_to: string;

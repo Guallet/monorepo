@@ -154,6 +154,12 @@ export class NordigenService {
       `/api/v2/institutions/?country=${countyCode}`,
     );
   }
+
+  async getInstitution(institutionId: string): Promise<NordigenInstitutionDto> {
+    return await this.makeGetRequest<NordigenInstitutionDto>(
+      `/api/v2/institutions/${institutionId}`,
+    );
+  }
   //#endregion
 
   //#region accounts
