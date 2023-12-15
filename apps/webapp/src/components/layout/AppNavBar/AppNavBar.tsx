@@ -7,10 +7,11 @@ import {
   IconLogout,
   IconTools,
 } from "@tabler/icons-react";
-import { ScrollArea } from "@mantine/core";
+import { Button, ScrollArea } from "@mantine/core";
 import classes from "./AppNavBar.module.css";
 import { LinksGroup } from "./NavbarLinksGroup";
 import { UserButton } from "../../UserButton/UserButton";
+import { useNavigate } from "react-router-dom";
 
 type MenuData = {
   label: string;
@@ -74,6 +75,7 @@ interface Props {
 }
 
 export function AppNavBar({ onItemSelected }: Props) {
+  const navigate = useNavigate();
   const links = menuData.map((item) => (
     <LinksGroup {...item} key={item.label} onItemSelected={onItemSelected} />
   ));
@@ -88,7 +90,17 @@ export function AppNavBar({ onItemSelected }: Props) {
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      <div className={classes.footer}></div>
+      <div className={classes.footer}>
+        <Button
+          variant="transparent"
+          onClick={() => {
+            navigate("/logout");
+          }}
+        >
+          <IconLogout />
+          Logout
+        </Button>
+      </div>
     </nav>
   );
 }
