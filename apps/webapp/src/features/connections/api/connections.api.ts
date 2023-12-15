@@ -1,4 +1,5 @@
 import { get, post } from "../../../core/api/fetchHelper";
+import { InstitutionDto as GualletInstitutionDto } from "../../settings/institutions/api/institutions.api";
 
 export type ObConnection = {
   id: string;
@@ -52,8 +53,8 @@ export async function getInstitutions(
 
 export async function getInstitution(
   instituionId: string
-): Promise<InstitutionDto> {
-  return await get<InstitutionDto>(
+): Promise<GualletInstitutionDto> {
+  return await get<GualletInstitutionDto>(
     `openbanking/connections/institutions/${instituionId}/`
   );
 }

@@ -5,12 +5,14 @@ import { ConnectBankInstitutionRequestDto } from './dto/connect-account-request.
 import { UserPrincipal } from 'src/core/auth/user-principal';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto';
+import { InstitutionsService } from 'src/institutions/institutions.service';
 
 @Controller('openbanking/connections')
 export class ObConnectionsController {
   constructor(
     private readonly openbankingService: OpenbankingService,
     private readonly nordigenService: NordigenService,
+    private readonly institutionService: InstitutionsService,
   ) {}
 
   @Get('countries')
@@ -26,8 +28,7 @@ export class ObConnectionsController {
 
   @Get('institutions/:id')
   getInstitution(@Param('id') id: string) {
-    // TODO: Cache this call in the DB? We should sync only once a day or less
-    return this.nordigenService.getInstitution(id);
+    return this.institutionService.findOneByNordigenId(id);
   }
 
   @Get(':id/accounts')

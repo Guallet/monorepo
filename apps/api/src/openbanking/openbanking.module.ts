@@ -9,14 +9,28 @@ import { ObConnection } from './entities/connection.entity';
 import { NordigenAccount } from './entities/nordigen-account.entity';
 import { NordigenAccountRepository } from './repositories/nordigen-account.repository';
 import { Account } from 'src/accounts/models/account.model';
+import { InstitutionsModule } from 'src/institutions/institutions.module';
+import { InstitutionsService } from 'src/institutions/institutions.service';
+import { Institution } from 'src/institutions/models/institution.model';
 
 @Module({
   imports: [
     HttpModule,
     NordigenModule,
-    TypeOrmModule.forFeature([ObConnection, NordigenAccount, Account]),
+    InstitutionsModule,
+    TypeOrmModule.forFeature([
+      ObConnection,
+      NordigenAccount,
+      Account,
+      Institution,
+    ]),
   ],
   controllers: [ObConnectionsController],
-  providers: [OpenbankingService, NordigenService, NordigenAccountRepository],
+  providers: [
+    OpenbankingService,
+    NordigenService,
+    NordigenAccountRepository,
+    InstitutionsService,
+  ],
 })
 export class OpenbankingModule {}

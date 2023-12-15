@@ -52,6 +52,14 @@ export class InstitutionsService {
     });
   }
 
+  findOneByNordigenId(nordigen_id: string): Promise<Institution> {
+    return this.repository.findOne({
+      where: {
+        nordigen_id: nordigen_id,
+      },
+    });
+  }
+
   create(args: { dto: CreateInstitutionRequest; user_id: string }) {
     return this.repository.save({
       name: args.dto.name,

@@ -11,12 +11,12 @@ import {
 } from "@mantine/core";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import {
-  InstitutionDto,
   ObConnection,
   getInstitution,
   loadConnections,
 } from "./api/connections.api";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { InstitutionDto } from "../settings/institutions/api/institutions.api";
 
 type LoaderData = {
   connections: ObConnection[];
@@ -154,7 +154,7 @@ export function ConnectionTableRow({
   onClick: (connection: ObConnection) => void;
 }) {
   const institution = institutions.find(
-    (x) => x.id === connection.institution_id
+    (x) => x.nordigen_id === connection.institution_id
   );
 
   return (
@@ -167,7 +167,7 @@ export function ConnectionTableRow({
       <Table.Td>
         <Group>
           <Tooltip label={institution?.name}>
-            <Avatar radius="sm" src={institution?.logo} />
+            <Avatar radius="sm" src={institution?.image_src} />
           </Tooltip>
           <Text>
             {institutions.find((x) => x.id === connection.institution_id)?.name}
