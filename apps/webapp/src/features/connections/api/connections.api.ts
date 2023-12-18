@@ -25,6 +25,10 @@ export async function loadConnections(): Promise<ObConnection[]> {
   return await get<ObConnection[]>("openbanking/connections");
 }
 
+export async function loadConnection(id: string): Promise<ObConnection> {
+  return await get<ObConnection>(`openbanking/connections/${id}`);
+}
+
 export type CountryDto = {
   code: string;
   name: string;

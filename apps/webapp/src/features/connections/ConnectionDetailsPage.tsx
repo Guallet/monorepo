@@ -7,46 +7,63 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
-import { ObConnection, loadConnections } from "./api/connections.api";
+import { LoaderFunction, useLoaderData } from "react-router-dom";
+import {
+  ObAccountDto,
+  ObConnection,
+  getInstitution,
+  getObAccounts,
+  loadConnection,
+} from "./api/connections.api";
+import { InstitutionDto } from "../settings/institutions/api/institutions.api";
 
 type LoaderData = {
   connection: ObConnection;
+  institution: InstitutionDto;
+  accounts: ObAccountDto[];
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { id } = params;
-  const connections = await loadConnections();
+  if (!id) {
+    throw Error("Invalid navigation args");
+  }
 
-  // Load the insititutions from the API to get the src for the logo
+  const connection = await loadConnection(id);
+  const institution = await getInstitution(connection.institution_id);
+  const accounts = await getObAccounts(id);
 
   return {
-    connection: connections.find((connection) => connection.id === id),
+    connection: connection,
+    institution: institution,
+    accounts: accounts,
   } as LoaderData;
 };
 
 export function ConnectionDetailsPage() {
-  const { connection } = useLoaderData() as LoaderData;
-  const navigate = useNavigate();
-
-  console.log("Page data:", connection);
+  const { connection, accounts, institution } = useLoaderData() as LoaderData;
 
   return (
     <Stack>
-      <Title>Connection {connection.id}</Title>
       <Group>
-        <Tooltip label={connection.institution_id}>
-          <Avatar
-            src={connection.institution_id}
-            alt={connection.institution_id}
-          />
+        <Tooltip label={institution.name}>
+          <Avatar src={institution.image_src} alt={institution.name} />
         </Tooltip>
-        <Stack>
-          <Text>Accounts: {connection.accounts}</Text>
-          <Text>{connection.link}</Text>
-          <Text>{JSON.stringify(connection, null, 2)}</Text>
-        </Stack>
+        <Title>{institution.name}</Title>
       </Group>
+      <Stack>
+        <Text>Accounts: </Text>
+        {accounts.map((a) => {
+          return (
+            <Stack key={a.id}>
+              <Text>{a.name ?? a.ownerName}</Text>
+              <Text>Details: {a.details}</Text>
+              <Text>Account type: {a.cashAccountType}</Text>
+              <Text>Currency: {a.currency}</Text>
+            </Stack>
+          );
+        })}
+      </Stack>
       <Button>Refresh connection</Button>
       <Button>Update data now</Button>
       <Button color="red">Delete connection</Button>

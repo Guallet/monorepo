@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { OpenbankingService } from './openbanking.service';
 import { NordigenService } from 'src/nordigen/nordigen.service';
 import { ConnectBankInstitutionRequestDto } from './dto/connect-account-request.dto';
@@ -6,6 +14,7 @@ import { UserPrincipal } from 'src/core/auth/user-principal';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto';
 import { InstitutionsService } from 'src/institutions/institutions.service';
+import { NotFoundError } from 'rxjs';
 
 @Controller('openbanking/connections')
 export class ObConnectionsController {
@@ -61,6 +70,20 @@ export class ObConnectionsController {
   @Get()
   async getConnections(@RequestUser() user: UserPrincipal) {
     return this.openbankingService.getConnections(user.id);
+  }
+
+  @Get(':id')
+  async getConnectionDetails(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ) {
+    const connections = await this.openbankingService.getConnections(user.id);
+    const connection = connections.find((x) => x.id === id);
+    if (connection !== undefined && connection !== null) {
+      return connection;
+    } else {
+      throw new NotFoundException();
+    }
   }
 
   @Post()
