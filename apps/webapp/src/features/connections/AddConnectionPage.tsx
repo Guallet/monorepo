@@ -17,7 +17,7 @@ import {
   getInstitutions,
   getSupportedCountries,
 } from "./api/connections.api";
-import { ListView, SearchableListView } from "@guallet/ui-react";
+import { SearchableListView } from "@guallet/ui-react";
 import { useState } from "react";
 
 interface LoaderData {

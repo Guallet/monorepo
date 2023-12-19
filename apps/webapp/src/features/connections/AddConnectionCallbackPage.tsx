@@ -7,6 +7,7 @@ import {
   linkObAccounts,
 } from "./api/connections.api";
 import { useEffect, useState } from "react";
+import { AppRoutes } from "../../router/AppRoutes";
 
 interface LoaderData {
   reference: string | null;
@@ -112,7 +113,7 @@ export function AddConnectionCallbackPage() {
       })}
       <Button
         onClick={() => {
-          navigate("/accounts", { replace: true });
+          navigate(AppRoutes.Accounts.ACCOUNTS, { replace: true });
         }}
       >
         Go back to accounts

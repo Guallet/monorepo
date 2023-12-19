@@ -14,7 +14,7 @@ import { RuleDto, loadRules } from "./api/rules.api";
 import { loadCategories } from "../api/categories.api";
 import { Category } from "../models/Category";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { Analytics } from "../../../core/analytics/posthog";
+import { AppRoutes } from "../../../router/AppRoutes";
 
 interface RulesPageData {
   rules: RuleDto[];
@@ -37,7 +37,7 @@ export function RulesPage() {
       <Text>Rules</Text>
       <Button
         onClick={() => {
-          navigate("/categories/rules/create");
+          navigate(AppRoutes.Categories.Rules.RULE_CREATE);
         }}
       >
         Create new rule

@@ -1,4 +1,4 @@
-import { Group, Loader, Modal, Stack, Text, Button } from "@mantine/core";
+import { Group, Modal, Stack, Text, Button } from "@mantine/core";
 import {
   LoaderFunction,
   useLoaderData,
@@ -9,6 +9,7 @@ import { getAccount } from "../api/accounts.api";
 import { Account } from "../models/Account";
 import { CurrentAccountDetails } from "./CurrentAccountDetails";
 import { fetch_delete } from "../../../core/api/fetchHelper";
+import { AppRoutes } from "../../../router/AppRoutes";
 
 const DELETE_ACCOUNT_MODAL_QUERY = "delete";
 
@@ -52,7 +53,7 @@ export function AccountDetailsPage() {
           account={account}
           onCancel={hideModal}
           onAccountDeleted={() => {
-            navigation("/accounts", { replace: true });
+            navigation(AppRoutes.Accounts.ACCOUNTS, { replace: true });
           }}
         />
       </Modal>

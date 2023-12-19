@@ -7,7 +7,6 @@ import {
 export const institutionsRoutes: RouteObject[] = [
   {
     path: "institutions",
-    errorElement: <div>Error loading institutions</div>,
     children: [
       {
         index: true,

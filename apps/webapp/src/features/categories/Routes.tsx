@@ -5,7 +5,6 @@ import { rulesRoutes } from "./rules/Routes";
 export const categoriesRoutes: RouteObject[] = [
   {
     path: "categories",
-    errorElement: <div>Error loading categories</div>,
     children: [
       {
         index: true,

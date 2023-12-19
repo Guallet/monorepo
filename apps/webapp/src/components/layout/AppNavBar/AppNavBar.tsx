@@ -12,6 +12,7 @@ import classes from "./AppNavBar.module.css";
 import { LinksGroup } from "./NavbarLinksGroup";
 import { UserButton } from "../../UserButton/UserButton";
 import { useNavigate } from "react-router-dom";
+import { AppRoutes } from "../../../router/AppRoutes";
 
 type MenuData = {
   label: string;
@@ -94,7 +95,7 @@ export function AppNavBar({ onItemSelected }: Props) {
         <Button
           variant="transparent"
           onClick={() => {
-            navigate("/logout");
+            navigate(AppRoutes.Auth.LOGOUT);
           }}
         >
           <IconLogout />

@@ -26,7 +26,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async () => {
   const connections = await loadConnections();
 
-  // Load the insititutions from the API to get the src for the logo
+  // Load the institutions from the API to get the src for the logo
   const institutions: InstitutionDto[] = [];
   for (const institutionId of connections.map((c) => c.institution_id)) {
     const institution = await getInstitution(institutionId);

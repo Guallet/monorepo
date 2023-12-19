@@ -14,6 +14,7 @@ import {
 } from "../api/accounts.api";
 import { Account, AccountType } from "../models/Account";
 import { IconChevronDown } from "@tabler/icons-react";
+import { AppRoutes } from "../../../router/AppRoutes";
 
 type FormData = {
   accountId: string;
@@ -44,7 +45,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     inputValues.accountId,
     accountRequest
   );
-  return redirect(`/accounts/${updatedAccount.id}`);
+  return redirect(AppRoutes.Accounts.ACCOUNT_DETAILS(updatedAccount.id));
 };
 
 function getLocalizedType(name: AccountType): string {

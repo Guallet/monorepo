@@ -17,7 +17,6 @@ import {
 export const accountRoutes: RouteObject[] = [
   {
     path: "accounts",
-    errorElement: <div>Error loading accounts</div>,
     children: [
       {
         index: true,

@@ -5,7 +5,6 @@ import { institutionsRoutes } from "./institutions/Routes";
 export const settingsRoutes: RouteObject[] = [
   {
     path: "settings",
-    errorElement: <div>Error loading settings</div>,
     children: [
       {
         index: true,

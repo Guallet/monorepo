@@ -5,6 +5,7 @@ import { AccountsList } from "./components/AccountList";
 import { Account } from "./models/Account";
 import { AccountsHeader } from "./components/AccountsHeader";
 import { useState } from "react";
+import { AppRoutes } from "../../router/AppRoutes";
 
 export async function loader() {
   return await loadAccounts();
@@ -18,7 +19,7 @@ export function AccountsPage() {
   return (
     <>
       <AccountsHeader
-        onAddNewAccount={() => navigation("/accounts/add")}
+        onAddNewAccount={() => navigation(AppRoutes.Accounts.ACCOUNT_ADD)}
         onSearchQueryChanged={(searchQuery: string) => {
           if (searchQuery.length === 0) {
             setFilteredAccounts(allAccounts);

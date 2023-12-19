@@ -17,6 +17,7 @@ import { useForm } from "@mantine/form";
 import { supabase } from "../../core/auth/supabaseClient";
 import { useAuth } from "../../core/auth/useAuth";
 import { GoogleButton } from "../../components/SocialButtons/GoogleButton";
+import { AppRoutes } from "../../router/AppRoutes";
 
 const EMAIL_MODAL_OPEN_QUERY = "email_sent";
 
@@ -30,13 +31,13 @@ export function LoginPage() {
   const isModalOpen = searchParams.get(EMAIL_MODAL_OPEN_QUERY) === "true";
 
   const locationState = location.state as { from: { pathname: string } };
-  const navigationOrigin = locationState?.from?.pathname || "/dashboard";
+  const navigationOrigin = locationState?.from?.pathname || AppRoutes.DASHBOARD;
 
   async function socialLogin(provider: Provider) {
     await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: `${window.location.origin}/login/callback`,
+        redirectTo: `${window.location.origin}${AppRoutes.Auth.LOGIN_CALLBACK}`,
       },
     });
   }

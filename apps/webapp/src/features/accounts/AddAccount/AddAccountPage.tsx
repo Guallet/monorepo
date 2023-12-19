@@ -3,6 +3,7 @@ import { CreateAccountRequest, createAccount } from "../api/accounts.api";
 import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { AccountType } from "../models/Account";
+import { AppRoutes } from "../../../router/AppRoutes";
 
 type FormData = {
   name: string;
@@ -25,7 +26,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   };
 
   const newAccount = await createAccount(accountRequest);
-  return redirect(`/accounts/${newAccount.id}`);
+  return redirect(AppRoutes.Accounts.ACCOUNT_DETAILS(newAccount.id));
 };
 
 function getLocalizedType(name: AccountType): string {

@@ -4,7 +4,6 @@ import { MortgageCalculator } from "./calculators/MortgageCalculator";
 export const toolsRoutes: RouteObject[] = [
   {
     path: "tools",
-    errorElement: <div>Error loading tools</div>,
     children: [
       {
         index: true,

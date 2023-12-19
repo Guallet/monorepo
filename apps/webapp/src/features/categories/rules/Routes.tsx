@@ -5,7 +5,6 @@ import { CreateRulePage, loader as createRuleLoader } from "./CreateRulePage";
 export const rulesRoutes: RouteObject[] = [
   {
     path: "rules",
-    errorElement: <div>Error loading categories</div>,
     children: [
       {
         index: true,

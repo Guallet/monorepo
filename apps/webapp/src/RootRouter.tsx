@@ -15,11 +15,13 @@ import { toolsRoutes } from "./features/tools/Routes";
 import { reportsRoutes } from "./features/reports/Routes";
 import { settingsRoutes } from "./features/settings/Routes";
 import { connectionsRoutes } from "./features/connections/Routes";
+import { AppErrorBoundary } from "./AppErrorBoundary";
+import { AppRoutes } from "./router/AppRoutes";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/login" />,
+    element: <Navigate to={AppRoutes.Auth.LOGIN} />,
   },
   {
     path: "404",
@@ -29,6 +31,7 @@ const router = createBrowserRouter([
   // PROTECTED ROUTES
   {
     path: "/",
+    errorElement: <AppErrorBoundary />,
     element: (
       <ProtectedRoute>
         <GualletAppShell />
@@ -50,7 +53,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to="/404" replace={true} />,
+    element: <Navigate to={AppRoutes.NOT_FOUND} replace={true} />,
   },
 ]);
 

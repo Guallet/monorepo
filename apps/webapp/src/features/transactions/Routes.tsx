@@ -11,7 +11,6 @@ import {
 export const transactionsRoutes: RouteObject[] = [
   {
     path: "transactions",
-    errorElement: <div>Error loading transaction</div>,
     children: [
       {
         index: true,

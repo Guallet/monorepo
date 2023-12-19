@@ -2,6 +2,7 @@ import { Button, Loader, Modal, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../core/auth/supabaseClient";
+import { AppRoutes } from "../../router/AppRoutes";
 
 export function AuthCallbackPage() {
   const navigation = useNavigate();
@@ -34,7 +35,7 @@ export function AuthCallbackPage() {
     const session = data.session;
     if (session) {
       // Navigate to dashboard
-      navigation("/dashboard", {
+      navigation(AppRoutes.DASHBOARD, {
         replace: true,
       });
 
@@ -61,7 +62,7 @@ export function AuthCallbackPage() {
       //     handleError('Error login user');
       //   }
     } else {
-      navigation("/login", {
+      navigation(AppRoutes.Auth.LOGIN, {
         replace: true,
       });
     }
@@ -111,7 +112,7 @@ export function AuthCallbackPage() {
           <Text>If the error persists, please contact support.</Text>
           <Text>Error details</Text>
           <div>{error.toString()}</div>
-          <Link to={"/login"} replace={true}>
+          <Link to={AppRoutes.Auth.LOGIN} replace={true}>
             <Button>Try again</Button>
           </Link>
         </>

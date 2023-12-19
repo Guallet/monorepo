@@ -8,7 +8,6 @@ import { ReportsPage } from "./ReportsPage";
 export const reportsRoutes: RouteObject[] = [
   {
     path: "reports",
-    errorElement: <div>Error loading reports</div>,
     children: [
       {
         index: true,
