@@ -1,5 +1,4 @@
 import posthog from "posthog-js";
-import { FeatureFlagKeys } from "../feature-flags/FeatureFlags";
 
 const isAnalyticsEnabled = import.meta.env.VITE_POSTHOG_ENABLED === "true";
 const api_host = import.meta.env.VITE_POSTHOG_API_URL;
@@ -13,17 +12,32 @@ export function initializePostHog() {
     capture_pageview: isAnalyticsEnabled,
     capture_pageleave: isAnalyticsEnabled,
     disable_session_recording: !isAnalyticsEnabled,
+
     loaded: function (posthog) {
-      if (
-        posthog.isFeatureEnabled(FeatureFlagKeys.ANALYTICS_AUTOCAPTURE_ENABLED)
-      ) {
-        console.log("Enabling PostHog autocapture via feature flag");
+      if (import.meta.env.DEV) {
+        console.log("Posthog loaded", {
+          bootstrap: posthog.config.bootstrap,
+        });
+      }
+
+      if (posthog.isFeatureEnabled("autocapture-enabled")) {
+        if (import.meta.env.DEV) {
+          console.log("Enabling PostHog auto capture via feature flag");
+        }
         posthog.config.autocapture = true;
         posthog.config.capture_pageview = true;
         posthog.config.capture_pageleave = true;
         posthog.config.disable_session_recording = false;
       }
     },
+  });
+
+  posthog.onFeatureFlags(function (featureFlags) {
+    if (import.meta.env.DEV) {
+      console.log("Posthog feature flags loaded", {
+        featureflags: featureFlags,
+      });
+    }
   });
 }
 
