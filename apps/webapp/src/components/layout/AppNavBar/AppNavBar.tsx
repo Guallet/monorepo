@@ -83,7 +83,12 @@ export function AppNavBar({ onItemSelected }: Props) {
 
   return (
     <nav className={classes.navbar}>
-      <div className={classes.header}>
+      <div
+        className={classes.header}
+        onClick={() => {
+          navigate(AppRoutes.User.USER_DETAILS);
+        }}
+      >
         <UserButton />
       </div>
 
