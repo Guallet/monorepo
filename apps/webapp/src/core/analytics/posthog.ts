@@ -1,36 +1,50 @@
 import posthog from "posthog-js";
+import { FeatureFlagKeys } from "../feature-flags/FeatureFlags";
 
-const isEnabled = import.meta.env.VITE_POSTHOG_ENABLED === "true";
+const isAnalyticsEnabled = import.meta.env.VITE_POSTHOG_ENABLED === "true";
 const api_host = import.meta.env.VITE_POSTHOG_API_URL;
 const token = import.meta.env.VITE_POSTHOG_TOKEN;
 
 export function initializePostHog() {
-  console.log("Initializing PostHog", { isEnabled });
-  if (isEnabled) {
-    posthog.init(token, {
-      api_host: api_host,
-    });
-  }
+  console.log("Initializing PostHog", { AnalyticsEnabled: isAnalyticsEnabled });
+  posthog.init(token, {
+    api_host: api_host,
+    autocapture: isAnalyticsEnabled,
+    capture_pageview: isAnalyticsEnabled,
+    capture_pageleave: isAnalyticsEnabled,
+    disable_session_recording: !isAnalyticsEnabled,
+    loaded: function (posthog) {
+      if (
+        posthog.isFeatureEnabled(FeatureFlagKeys.ANALYTICS_AUTOCAPTURE_ENABLED)
+      ) {
+        console.log("Enabling PostHog autocapture via feature flag");
+        posthog.config.autocapture = true;
+        posthog.config.capture_pageview = true;
+        posthog.config.capture_pageleave = true;
+        posthog.config.disable_session_recording = false;
+      }
+    },
+  });
 }
 
 declare type Property = unknown;
 declare type Properties = Record<string, Property>;
 
-async function captureEvent(
+export async function captureEvent(
   eventName: string,
   properties: Properties | null = null
 ) {
-  if (isEnabled) {
+  if (isAnalyticsEnabled) {
     const allProperties = { ...properties };
     posthog.capture(eventName, allProperties);
   }
 }
 
-async function setIdentity(
+export async function setIdentity(
   userId: string,
   extra: { name: string; email: string; user_id: string } | null
 ) {
-  if (isEnabled) {
+  if (isAnalyticsEnabled) {
     if (extra) {
       posthog.identify(userId, extra);
     } else {
@@ -39,32 +53,8 @@ async function setIdentity(
   }
 }
 
-async function resetIdentity() {
-  if (isEnabled) {
+export async function resetIdentity() {
+  if (isAnalyticsEnabled) {
     posthog.reset();
-  }
-}
-
-export class Analytics {
-  public static setIdentity(
-    userId: string,
-    extra: { name: string; email: string; user_id: string } | null
-  ) {
-    setIdentity(userId, extra);
-  }
-
-  public static resetIdentity() {
-    resetIdentity();
-  }
-
-  public static captureEvent(
-    eventName: string,
-    properties: Properties | null = null
-  ) {
-    console.log(`Tracking event: ${eventName}`, {
-      event: eventName,
-      properties: properties,
-    });
-    captureEvent(eventName, properties);
   }
 }
