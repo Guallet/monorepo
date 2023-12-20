@@ -1,6 +1,7 @@
 class AuthRoutes {
   static LOGIN = "/login";
   static LOGIN_CALLBACK = "/login/callback";
+  static REGISTER = "/onboarding/register";
   static LOGOUT = "/logout";
 }
 
@@ -22,7 +23,6 @@ class CategoryRoutes {
 
 class UserRoutes {
   static USER_DETAILS = "/user";
-  static REGISTER = "/user/register";
   static EDIT = "/user/edit";
 }
 

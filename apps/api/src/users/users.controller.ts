@@ -32,8 +32,15 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async registerUser(
+    @RequestUser() user: UserPrincipal,
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserDto> {
+    const entity = await this.usersService.registerUser({
+      user_id: user.id,
+      dto: createUserDto,
+    });
+    return UserDto.fromDomain(entity);
   }
 
   @Patch(':id')

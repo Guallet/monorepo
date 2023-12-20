@@ -5,11 +5,6 @@ import {
   loader as editUserLoader,
   action as editUserAction,
 } from "./EditUserPage";
-import {
-  RegisterUserPage,
-  loader as registerUserLoader,
-  action as registerUserAction,
-} from "./RegisterUserPage";
 
 export const userProfileRoutes: RouteObject[] = [
   {
@@ -19,12 +14,6 @@ export const userProfileRoutes: RouteObject[] = [
         index: true,
         element: <UserDetailsPage />,
         loader: userLoader,
-      },
-      {
-        path: "register",
-        element: <RegisterUserPage />,
-        loader: registerUserLoader,
-        action: registerUserAction,
       },
       {
         path: "edit",

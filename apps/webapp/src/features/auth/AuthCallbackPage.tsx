@@ -51,7 +51,7 @@ export function AuthCallbackPage() {
           });
         } else if (response.status == 404) {
           // Navigate to register user
-          navigation(AppRoutes.User.REGISTER, {
+          navigation(AppRoutes.Auth.REGISTER, {
             replace: true,
           });
         } else {
