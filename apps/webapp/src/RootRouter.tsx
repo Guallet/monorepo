@@ -17,6 +17,7 @@ import { settingsRoutes } from "./features/settings/Routes";
 import { connectionsRoutes } from "./features/connections/Routes";
 import { AppErrorBoundary } from "./AppErrorBoundary";
 import { AppRoutes } from "./router/AppRoutes";
+import { userProfileRoutes } from "./features/user/Routes";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <DashboardPage />,
       },
+      ...userProfileRoutes,
       ...accountRoutes,
       ...connectionsRoutes,
       ...transactionsRoutes,

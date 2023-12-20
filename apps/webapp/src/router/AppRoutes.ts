@@ -20,8 +20,15 @@ class CategoryRoutes {
   static Rules = RulesRoutes;
 }
 
+class UserRoutes {
+  static USER_DETAILS = "/user";
+  static REGISTER = "/user/register";
+  static EDIT = "/user/edit";
+}
+
 export class AppRoutes {
   static Auth = AuthRoutes;
+  static User = UserRoutes;
   static Accounts = AccountRoutes;
   static Categories = CategoryRoutes;
   static HOME = "/";

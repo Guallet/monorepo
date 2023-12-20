@@ -17,6 +17,7 @@ import { ReportsModule } from './reports/reports.module';
 import { OpenbankingModule } from './openbanking/openbanking.module';
 import { NordigenModule } from './nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AdminModule } from './admin/admin.module';
       playground: true,
     }),
     // APP MODULES
+    UsersModule,
     InstitutionsModule,
     AccountsModule,
     CategoriesModule,

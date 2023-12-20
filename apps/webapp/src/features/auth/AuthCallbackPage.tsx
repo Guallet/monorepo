@@ -1,4 +1,4 @@
-import { Button, Loader, Modal, Text } from "@mantine/core";
+import { Button, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../core/auth/supabaseClient";
@@ -11,6 +11,7 @@ export function AuthCallbackPage() {
   const [error, setError] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
 
+  // TODO: Move this to an API file
   const getUser = (token: string) => {
     return fetch(`${import.meta.env.VITE_API_URL}/users`, {
       method: "GET",
@@ -35,32 +36,30 @@ export function AuthCallbackPage() {
     const session = data.session;
     if (session) {
       // Navigate to dashboard
-      navigation(AppRoutes.DASHBOARD, {
-        replace: true,
-      });
+      // navigation(AppRoutes.DASHBOARD, {
+      //   replace: true,
+      // });
 
-      // TODO: Restore the logic below to create the user the first time it logs in into the app
-      //   // Check if the user exists. If not, redirect to "register" page. If yes, just to dashboard
-      //   try {
-      //     const response = await getUser(session.access_token);
-      //     setIsLoading(false);
-      //     if (response.ok) {
-      //       // Navigate to dashboard
-      //       navigation('/dashboard', {
-      //         replace: true,
-      //       });
-      //     } else if (response.status == 404) {
-      //       // Navigate to register user
-      //       navigation('/user/register', {
-      //         replace: true,
-      //       });
-      //     } else {
-      //       handleError(`${response.status} : ${response.statusText}`);
-      //     }
-      //   } catch (error) {
-      //     console.error('Error login user', error);
-      //     handleError('Error login user');
-      //   }
+      // Check if the user exists. If not, redirect to "register" page. If yes, just to dashboard
+      try {
+        const response = await getUser(session.access_token);
+        setIsLoading(false);
+        if (response.ok) {
+          // Navigate to dashboard
+          navigation(AppRoutes.DASHBOARD, {
+            replace: true,
+          });
+        } else if (response.status == 404) {
+          // Navigate to register user
+          navigation(AppRoutes.User.REGISTER, {
+            replace: true,
+          });
+        } else {
+          handleError(`${response.status} : ${response.statusText}`);
+        }
+      } catch (error) {
+        handleError("Error login user");
+      }
     } else {
       navigation(AppRoutes.Auth.LOGIN, {
         replace: true,
@@ -77,33 +76,31 @@ export function AuthCallbackPage() {
 
   if (isLoading) {
     return <Loader />;
-  } else {
-    return "not loading";
   }
 
   return (
     <>
-      {/* <Modal
-                centered
-                withCloseButton={false}
-                opened={error !== ''}
-                onClose={() => navigation("/login", { replace: true })}
-                title="Error login the user"
-            >
-                <div>
-                    <Text>There is an error login the user. Please try again later.</Text>
-                    <Text>If the error persists, please contact support.</Text>
-                    <Text>Error details:</Text>
-                    <Text>{error}</Text>
-                    <Link to={'/login'} replace={true}>
-                        <Button>Login again</Button>
-                    </Link>
-                </div>
-            </Modal> */}
       <Modal
         centered
         withCloseButton={false}
-        onClose={() => navigation("/login", { replace: true })}
+        opened={error !== ""}
+        onClose={() => navigation(AppRoutes.Auth.LOGIN, { replace: true })}
+        title="Error login the user"
+      >
+        <Stack>
+          <Text>There is an error login the user. Please try again later.</Text>
+          <Text>If the error persists, please contact support.</Text>
+          <Text>Error details:</Text>
+          <Text>{error}</Text>
+          <Link to={AppRoutes.Auth.LOGIN} replace={true}>
+            <Button>Login again</Button>
+          </Link>
+        </Stack>
+      </Modal>
+      <Modal
+        centered
+        withCloseButton={false}
+        onClose={() => navigation(AppRoutes.Auth.LOGIN, { replace: true })}
         title="Error login the user"
         opened={modalOpened}
       >
