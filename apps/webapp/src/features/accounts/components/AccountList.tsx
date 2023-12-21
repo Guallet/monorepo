@@ -2,7 +2,7 @@ import "core-js";
 import { AccountRow } from "./AccountRow";
 import { AccountsListHeader } from "./AccountsListHeader";
 import { Stack } from "@mantine/core";
-import { Account } from "@accounts/models/Account";
+import { Account, AccountType } from "@accounts/models/Account";
 
 interface Props {
   accounts: Account[];
