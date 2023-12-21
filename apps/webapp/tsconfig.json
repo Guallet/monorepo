@@ -23,6 +23,8 @@
     // PATHS
     "baseUrl": ".",
     "paths": {
+      // Root
+      "@/*": ["./src/*"],
       "@core/*": ["./src/core/*"],
       "@components/*": ["./src/components/*"],
       "@router/*": ["./src/router/*"],
@@ -42,10 +44,7 @@
       "@user/*": ["./src/features/user/*"],
 
       //Packages
-      "@guallet/ui-react": ["./packages/guallet-ui-react/*"],
-
-      // Root
-      "@/*": ["./src/*"]
+      "@guallet/ui-react": ["./packages/guallet-ui-react/*"]
     }
   },
   "include": ["src"],

@@ -20,6 +20,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
       "@core": fileURLToPath(new URL("./src/core", import.meta.url)),
       "@components": fileURLToPath(
         new URL("./src/components", import.meta.url)
@@ -53,10 +54,7 @@ export default defineConfig({
         new URL("./src/features/transactions", import.meta.url)
       ),
       "@user": fileURLToPath(new URL("./src/features/user", import.meta.url)),
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
 
-      // "@": "/src",
-      // "@guallet/accounts": "/src/features/accounts/*",
       // "@guallet/ui-react": "/src/ui-react",
     },
   },
