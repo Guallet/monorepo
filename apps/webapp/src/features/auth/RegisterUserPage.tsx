@@ -17,11 +17,11 @@ import {
   useLoaderData,
   useNavigate,
 } from "react-router-dom";
-import { AppRoutes } from "../../router/AppRoutes";
-import { getCurrentUser } from "../../core/auth/auth.helper";
 import { registerUser } from "./user-register.api";
-import { UserDto } from "../user/api/user.api";
 import { useEffect, useState } from "react";
+import { getCurrentUser } from "@core/auth/auth.helper";
+import { AppRoutes } from "@router/AppRoutes";
+import { UserDto } from "@user/api/user.api";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isUserDto(object: any): object is UserDto {

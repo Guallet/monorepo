@@ -1,9 +1,12 @@
 import { ActionFunction, Form, redirect, useNavigate } from "react-router-dom";
-import { CreateAccountRequest, createAccount } from "../api/accounts.api";
 import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { AccountType } from "../models/Account";
-import { AppRoutes } from "../../../router/AppRoutes";
+import { AppRoutes } from "@/router/AppRoutes";
+import {
+  CreateAccountRequest,
+  createAccount,
+} from "@accounts/api/accounts.api";
+import { AccountType } from "@accounts/models/Account";
 
 type FormData = {
   name: string;

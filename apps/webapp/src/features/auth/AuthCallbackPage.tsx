@@ -1,8 +1,8 @@
+import { AppRoutes } from "@router/AppRoutes";
+import { supabase } from "@core/auth/supabaseClient";
 import { Button, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../core/auth/supabaseClient";
-import { AppRoutes } from "../../router/AppRoutes";
 
 export function AuthCallbackPage() {
   const navigation = useNavigate();

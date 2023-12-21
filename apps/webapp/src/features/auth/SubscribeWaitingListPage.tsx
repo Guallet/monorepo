@@ -1,12 +1,5 @@
-import {
-  TextInput,
-  Button,
-  Group,
-  Stack,
-  Title,
-  Avatar,
-  Text,
-} from "@mantine/core";
+import { AppRoutes } from "@router/AppRoutes";
+import { TextInput, Button, Group, Stack, Title, Text } from "@mantine/core";
 import {
   ActionFunction,
   Form,
@@ -15,7 +8,6 @@ import {
   useLoaderData,
   useNavigate,
 } from "react-router-dom";
-import { AppRoutes } from "../../router/AppRoutes";
 
 type LoaderData = {
   name: string;

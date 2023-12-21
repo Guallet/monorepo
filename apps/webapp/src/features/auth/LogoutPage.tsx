@@ -4,8 +4,8 @@ import {
   useLoaderData,
   Link,
 } from "react-router-dom";
-import { getCurrentSession, signOut } from "../../core/auth/auth.helper";
-import { AppRoutes } from "../../router/AppRoutes";
+import { getCurrentSession, signOut } from "@core/auth/auth.helper";
+import { AppRoutes } from "@router/AppRoutes";
 
 export const loader: LoaderFunction = async () => {
   const session = await getCurrentSession();

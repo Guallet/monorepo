@@ -1,5 +1,5 @@
-import GroupHeader from "../../../components/GroupHeader/GroupHeader";
-import { Account, AccountType } from "../models/Account";
+import GroupHeader from "@/components/GroupHeader/GroupHeader";
+import { Account, AccountType } from "@accounts/models/Account";
 import "core-js/actual/array/group-by";
 
 function getAccountTypeTitle(type: AccountType): string {

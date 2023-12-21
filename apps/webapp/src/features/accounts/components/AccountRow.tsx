@@ -1,7 +1,7 @@
 import { Avatar, Group, Text, rem } from "@mantine/core";
 import { Account } from "../models/Account";
 import { IconChevronRight } from "@tabler/icons-react";
-import { BaseButton } from "../../../components/Buttons/BaseButton";
+import { BaseButton } from "@/components/Buttons/BaseButton";
 
 interface Props {
   account: Account;

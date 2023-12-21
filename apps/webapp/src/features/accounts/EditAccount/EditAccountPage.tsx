@@ -11,10 +11,10 @@ import {
   UpdateAccountRequest,
   getAccount,
   updateAccount,
-} from "../api/accounts.api";
-import { Account, AccountType } from "../models/Account";
+} from "@accounts/api/accounts.api";
+import { Account, AccountType } from "@accounts/models/Account";
 import { IconChevronDown } from "@tabler/icons-react";
-import { AppRoutes } from "../../../router/AppRoutes";
+import { AppRoutes } from "@/router/AppRoutes";
 
 type FormData = {
   accountId: string;

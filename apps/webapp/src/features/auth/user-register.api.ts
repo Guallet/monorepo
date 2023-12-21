@@ -1,5 +1,5 @@
-import { post } from "../../core/api/fetchHelper";
-import { UserDto } from "../user/api/user.api";
+import { post } from "@/core/api/fetchHelper";
+import { UserDto } from "@user/api/user.api";
 
 export type CreateUserRequest = {
   name: string;

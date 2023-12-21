@@ -14,10 +14,10 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Provider } from "@supabase/supabase-js";
 import { useForm } from "@mantine/form";
-import { supabase } from "../../core/auth/supabaseClient";
-import { useAuth } from "../../core/auth/useAuth";
-import { GoogleButton } from "../../components/SocialButtons/GoogleButton";
-import { AppRoutes } from "../../router/AppRoutes";
+import { useAuth } from "@core/auth/useAuth";
+import { GoogleButton } from "@components/SocialButtons/GoogleButton";
+import { supabase } from "@core/auth/supabaseClient";
+import { AppRoutes } from "@router/AppRoutes";
 
 const EMAIL_MODAL_OPEN_QUERY = "email_sent";
 
