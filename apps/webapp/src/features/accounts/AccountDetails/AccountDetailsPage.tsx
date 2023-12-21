@@ -6,10 +6,10 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { CurrentAccountDetails } from "./CurrentAccountDetails";
-import { fetch_delete } from "@/core/api/fetchHelper";
-import { AppRoutes } from "@/router/AppRoutes";
-import { Account } from "@/accounts/models/Account";
-import { getAccount } from "@/accounts/api/accounts.api";
+import { fetch_delete } from "@core/api/fetchHelper";
+import { AppRoutes } from "@router/AppRoutes";
+import { Account } from "@accounts/models/Account";
+import { getAccount } from "@accounts/api/accounts.api";
 
 const DELETE_ACCOUNT_MODAL_QUERY = "delete";
 

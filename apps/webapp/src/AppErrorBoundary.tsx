@@ -1,6 +1,6 @@
 import { Stack } from "@mantine/core";
 import { Link, isRouteErrorResponse, useRouteError } from "react-router-dom";
-import { AppRoutes } from "@/router/AppRoutes";
+import { AppRoutes } from "@router/AppRoutes";
 
 export function AppErrorBoundary() {
   const error = useRouteError();

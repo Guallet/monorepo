@@ -3,9 +3,9 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { loadAccounts } from "./api/accounts.api";
 import { AccountsHeader } from "./components/AccountsHeader";
 import { useState } from "react";
-import { AppRoutes } from "../../router/AppRoutes";
-import { Account } from "@/accounts/models/Account";
+import { Account } from "@accounts/models/Account";
 import { AccountsList } from "./components/AccountList";
+import { AppRoutes } from "@router/AppRoutes";
 
 export async function loader() {
   return await loadAccounts();

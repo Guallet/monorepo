@@ -1,5 +1,5 @@
-import { get, patch, post } from "@/core/api/fetchHelper";
-import { Account } from "../models/Account";
+import { Account } from "@accounts/models/Account";
+import { get, patch, post } from "@core/api/fetchHelper";
 
 export async function loadAccounts(): Promise<Account[]> {
   return await get<Account[]>("accounts");

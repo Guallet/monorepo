@@ -1,4 +1,4 @@
-import { Account } from "@/accounts/models/Account";
+import { Account } from "@accounts/models/Account";
 import {
   LineChart,
   Line,

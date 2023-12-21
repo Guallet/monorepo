@@ -1,4 +1,4 @@
-import { getCurrentUserToken } from "@/core/auth/auth.helper";
+import { getCurrentUserToken } from "@core/auth/auth.helper";
 
 export async function get<TDto>(path: string): Promise<TDto> {
   const access_token = await getCurrentUserToken();
