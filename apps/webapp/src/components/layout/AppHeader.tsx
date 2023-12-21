@@ -1,4 +1,6 @@
-import { Burger } from "@mantine/core";
+import { Burger, Group, Image, Title, UnstyledButton } from "@mantine/core";
+import logo from "@/assets/guallet.svg";
+import { AppRoutes } from "@/router/AppRoutes";
 
 interface Props {
   isOpened: boolean;
@@ -7,9 +9,26 @@ interface Props {
 
 export default function AppHeader({ isOpened, onToggle }: Props) {
   return (
-    <>
+    <Group>
       <Burger opened={isOpened} onClick={onToggle} hiddenFrom="sm" size="sm" />
-      <div>Logo</div>
-    </>
+      <UnstyledButton
+        component="a"
+        variant="transparent"
+        href={AppRoutes.HOME}
+        onClick={(event) => event.preventDefault()}
+      >
+        <Group>
+          <Image
+            src={logo}
+            radius="md"
+            h={40}
+            w="auto"
+            fit="fill"
+            alt="Guallet logo"
+          />
+          <Title order={2}>Guallet</Title>
+        </Group>
+      </UnstyledButton>
+    </Group>
   );
 }
