@@ -124,12 +124,23 @@ export function RegisterUserPage() {
         <Stack>
           <Text>It's not possible to complete the registration:</Text>
           {`${registrationError?.statusCode} - ${registrationError?.message}`}
+          {/* // TODO: Handle this case with better options. What should we do here?
+          For starters, we should check if the user has permission to create a new account. 
+          If not, we should redirect to the logout page.
+          */}
           <Button
             onClick={() => {
               navigate(AppRoutes.DASHBOARD, { replace: true });
             }}
           >
-            Continue to dashboard
+            Continue to dashboard (not recommended)
+          </Button>
+          <Button
+            onClick={() => {
+              navigate(AppRoutes.Auth.LOGOUT, { replace: true });
+            }}
+          >
+            Try again later
           </Button>
         </Stack>
       </Modal>

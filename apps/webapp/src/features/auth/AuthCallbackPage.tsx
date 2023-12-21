@@ -35,11 +35,6 @@ export function AuthCallbackPage() {
     const { data } = await supabase.auth.getSession();
     const session = data.session;
     if (session) {
-      // Navigate to dashboard
-      // navigation(AppRoutes.DASHBOARD, {
-      //   replace: true,
-      // });
-
       // Check if the user exists. If not, redirect to "register" page. If yes, just to dashboard
       try {
         const response = await getUser(session.access_token);
@@ -52,6 +47,11 @@ export function AuthCallbackPage() {
         } else if (response.status == 404) {
           // Navigate to register user
           navigation(AppRoutes.Auth.REGISTER, {
+            replace: true,
+          });
+        } else if (response.status == 403) {
+          // User is not in the whitelist. So redirect to "Get an invitation" page
+          navigation(AppRoutes.Auth.WAITING_LIST, {
             replace: true,
           });
         } else {

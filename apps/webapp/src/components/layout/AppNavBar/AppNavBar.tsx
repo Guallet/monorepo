@@ -32,9 +32,8 @@ const menuData: MenuData[] = [
   {
     label: "Accounts",
     icon: IconBuildingBank,
-    link: "/accounts",
     subLinks: [
-      { label: "Overview", link: "/" },
+      { label: "Overview", link: "/accounts" },
       { label: "Connections", link: "/connections" },
     ],
   },

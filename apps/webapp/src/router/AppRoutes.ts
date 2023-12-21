@@ -2,6 +2,7 @@ class AuthRoutes {
   static LOGIN = "/login";
   static LOGIN_CALLBACK = "/login/callback";
   static REGISTER = "/onboarding/register";
+  static WAITING_LIST = "/onboarding/waiting-list";
   static LOGOUT = "/logout";
 }
 
