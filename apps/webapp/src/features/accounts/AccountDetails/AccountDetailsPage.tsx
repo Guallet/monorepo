@@ -5,11 +5,11 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { getAccount } from "../api/accounts.api";
-import { Account } from "../models/Account";
 import { CurrentAccountDetails } from "./CurrentAccountDetails";
-import { fetch_delete } from "../../../core/api/fetchHelper";
-import { AppRoutes } from "../../../router/AppRoutes";
+import { fetch_delete } from "@/core/api/fetchHelper";
+import { AppRoutes } from "@/router/AppRoutes";
+import { Account } from "@/accounts/models/Account";
+import { getAccount } from "@/accounts/api/accounts.api";
 
 const DELETE_ACCOUNT_MODAL_QUERY = "delete";
 

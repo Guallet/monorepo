@@ -40,7 +40,7 @@ function compareAccountTypes(a: string, b: string) {
 }
 
 export function AccountsList({ accounts, onAccountSelected }: Props) {
-  // @ts-ignore
+  // @ts-expect-error
   const data = accounts.groupBy((account: Account) => {
     return account.type;
   });
@@ -52,7 +52,7 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
           return compareAccountTypes(a[0], b[0]);
         })
         .map(([key, value]) => (
-          <Stack>
+          <Stack key={key}>
             <AccountsListHeader
               accountType={key as AccountType}
               accounts={value as Account[]}

@@ -21,8 +21,31 @@
     "noFallthroughCasesInSwitch": true,
 
     // PATHS
+    "baseUrl": ".",
     "paths": {
-      "@guallet/ui-react": ["./packages/guallet-ui-react/*"]
+      "@/core": ["./src/core/*"],
+      "@/components": ["./src/components/*"],
+      "@/router": ["./src/router/*"],
+      "@/theme": ["./src/theme/*"],
+      "@/utils": ["./src/utils/*"],
+
+      // Features
+      "@/accounts/*": ["./src/features/accounts/*"],
+      "@/auth/*": ["./src/features/auth/*"],
+      "@/categories/*": ["./src/features/categories/*"],
+      "@/connections/*": ["./src/features/connections/*"],
+      "@/dashboard/*": ["./src/features/dashboard/*"],
+      "@/reports/*": ["./src/features/reports/*"],
+      "@/settings/*": ["./src/features/settings/*"],
+      "@/tools/*": ["./src/features/tools/*"],
+      "@/transactions/*": ["./src/features/transactions/*"],
+      "@/user/*": ["./src/features/user/*"],
+
+      //Packages
+      "@guallet/ui-react": ["./packages/guallet-ui-react/*"],
+
+      // Root
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],

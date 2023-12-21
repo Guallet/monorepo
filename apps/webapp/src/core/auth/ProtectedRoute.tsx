@@ -1,7 +1,7 @@
 import { Center, Loader } from "@mantine/core";
 import { useLocation, Navigate } from "react-router-dom";
+import { AppRoutes } from "@/router/AppRoutes";
 import { useAuth } from "./useAuth";
-import { AppRoutes } from "../../router/AppRoutes";
 
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { session, loading } = useAuth();

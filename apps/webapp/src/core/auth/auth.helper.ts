@@ -1,5 +1,5 @@
 import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "./supabaseClient";
+import { supabase } from "@/core/auth/supabaseClient";
 
 export async function getCurrentUserToken(): Promise<string | null> {
   const { data } = await supabase.auth.getSession();

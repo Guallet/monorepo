@@ -1,11 +1,11 @@
 import { Stack } from "@mantine/core";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { loadAccounts } from "./api/accounts.api";
-import { AccountsList } from "./components/AccountList";
-import { Account } from "./models/Account";
 import { AccountsHeader } from "./components/AccountsHeader";
 import { useState } from "react";
 import { AppRoutes } from "../../router/AppRoutes";
+import { Account } from "@/accounts/models/Account";
+import { AccountsList } from "./components/AccountList";
 
 export async function loader() {
   return await loadAccounts();
