@@ -3,7 +3,6 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import { ProtectedRoute } from "./core/auth/ProtectedRoute";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { authRoutes } from "./features/auth/Routes";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
