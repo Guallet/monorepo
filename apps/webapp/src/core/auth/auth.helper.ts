@@ -1,24 +1,23 @@
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@core/auth/supabaseClient";
+import Session from "supertokens-auth-react/recipe/session";
 
 export async function getCurrentUserToken(): Promise<string | null> {
-  const { data } = await supabase.auth.getSession();
+  if (await Session.doesSessionExist()) {
+    const jwt = await Session.getAccessToken();
+    return jwt ?? null;
+  }
 
-  return data.session?.access_token ?? null;
+  return null;
 }
 
-export async function getCurrentSession(): Promise<Session | null> {
-  const { data } = await supabase.auth.getSession();
+export async function getCurrentUserId(): Promise<string | null> {
+  if (await Session.doesSessionExist()) {
+    const userId = await Session.getUserId();
+    return userId ?? null;
+  }
 
-  return data.session;
-}
-
-export async function getCurrentUser(): Promise<User | null> {
-  const { data } = await supabase.auth.getUser();
-
-  return data.user;
+  return null;
 }
 
 export async function signOut() {
-  return await supabase.auth.signOut();
+  await Session.signOut();
 }

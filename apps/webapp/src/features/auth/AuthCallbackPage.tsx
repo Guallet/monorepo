@@ -1,12 +1,11 @@
 import { AppRoutes } from "@router/AppRoutes";
-import { supabase } from "@core/auth/supabaseClient";
 import { Button, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getCurrentUserId, getCurrentUserToken } from "@/core/auth/auth.helper";
 
 export function AuthCallbackPage() {
   const navigation = useNavigate();
-  // const { session } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
@@ -31,13 +30,16 @@ export function AuthCallbackPage() {
   };
 
   const getUserSession = async () => {
-    // We need to wait until Supabase sets the session properly
-    const { data } = await supabase.auth.getSession();
-    const session = data.session;
-    if (session) {
+    const userId = await getCurrentUserId();
+    if (userId) {
       // Check if the user exists. If not, redirect to "register" page. If yes, just to dashboard
       try {
-        const response = await getUser(session.access_token);
+        const token = await getCurrentUserToken();
+        if (token === null) {
+          handleError("Error login user: No token found");
+          return;
+        }
+        const response = await getUser(token);
         setIsLoading(false);
         if (response.ok) {
           // Navigate to dashboard

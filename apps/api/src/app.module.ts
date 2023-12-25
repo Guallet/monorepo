@@ -8,7 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { HttpLoggerMiddleware } from './core/middleware/http-logger.middleware';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './core/auth/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
@@ -18,6 +17,9 @@ import { OpenbankingModule } from './openbanking/openbanking.module';
 import { NordigenModule } from './nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './core/auth/auth.module';
+import { AuthGuard } from './core/auth/auth.guard';
+import * as SuperTokensConfig from './core/auth/supertokens.config';
 
 @Module({
   imports: [
@@ -34,6 +36,12 @@ import { UsersModule } from './users/users.module';
       synchronize: process.env.ENVIRONMENT == 'development',
       autoLoadEntities: true,
       ssl: { rejectUnauthorized: false },
+    }),
+    // Supertokens config
+    AuthModule.forRoot({
+      connectionURI: process.env.SUPERTOKENS_CONNECTION_URI,
+      apiKey: process.env.SUPERTOKENS_API_KEY,
+      appInfo: SuperTokensConfig.appInfo,
     }),
     // GRAPHQL
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -56,6 +64,8 @@ import { UsersModule } from './users/users.module';
   controllers: [],
   providers: [
     JwtService,
+    // This will protect all the routes using the AuthGuard
+    // If you want to allow a specific route, sue the @Public decorator
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

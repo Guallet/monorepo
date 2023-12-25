@@ -14,19 +14,19 @@ import {
 } from "./SubscribeWaitingListPage";
 
 export const authRoutes: RouteObject[] = [
-  {
-    path: "login",
-    children: [
-      {
-        index: true,
-        element: <LoginPage />,
-      },
-      {
-        path: "callback",
-        element: <AuthCallbackPage />,
-      },
-    ],
-  },
+  // {
+  //   path: "login",
+  //   children: [
+  //     {
+  //       index: true,
+  //       element: <LoginPage />,
+  //     },
+  //     {
+  //       path: "callback",
+  //       element: <AuthCallbackPage />,
+  //     },
+  //   ],
+  // },
   {
     path: "onboarding/register",
     element: <RegisterUserPage />,

@@ -26,3 +26,15 @@ export const RequestUser = createParamDecorator(
 // findAll(@RequestUser() user: UserPrincipal) {
 //   return user;
 // }
+
+export const RequestSession = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.session;
+  },
+);
+
+// @Get('all')
+// findAll(@RequestSession() session: SessionContainer,) {
+//   return session;
+// }

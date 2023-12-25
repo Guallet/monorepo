@@ -12,11 +12,9 @@ import {
 } from "@mantine/core";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
-import { Provider } from "@supabase/supabase-js";
 import { useForm } from "@mantine/form";
 import { useAuth } from "@core/auth/useAuth";
 import { GoogleButton } from "@components/SocialButtons/GoogleButton";
-import { supabase } from "@core/auth/supabaseClient";
 import { AppRoutes } from "@router/AppRoutes";
 
 const EMAIL_MODAL_OPEN_QUERY = "email_sent";
@@ -24,7 +22,7 @@ const EMAIL_MODAL_OPEN_QUERY = "email_sent";
 export function LoginPage() {
   const navigation = useNavigate();
   const location = useLocation();
-  const { session, loading } = useAuth();
+  // const { userId, loading } = useAuth();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -33,14 +31,15 @@ export function LoginPage() {
   const locationState = location.state as { from: { pathname: string } };
   const navigationOrigin = locationState?.from?.pathname || AppRoutes.DASHBOARD;
 
-  async function socialLogin(provider: Provider) {
-    await supabase.auth.signInWithOAuth({
-      provider: provider,
-      options: {
-        redirectTo: `${window.location.origin}${AppRoutes.Auth.LOGIN_CALLBACK}`,
-      },
-    });
-  }
+  // async function socialLogin(provider: Provider) {
+  // TODO: Replace with supertokens call
+  // await supabase.auth.signInWithOAuth({
+  //   provider: provider,
+  //   options: {
+  //     redirectTo: `${window.location.origin}${AppRoutes.Auth.LOGIN_CALLBACK}`,
+  //   },
+  // });
+  // }
 
   const form = useForm({
     initialValues: {
@@ -68,22 +67,23 @@ export function LoginPage() {
   }
 
   async function sendMagicLink() {
-    const { error } = await supabase.auth.signInWithOtp({
-      email: form.values.email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/login/callback`,
-      },
-    });
+    // TODO: Replace with supertokens call
+    // const { error } = await supabase.auth.signInWithOtp({
+    //   email: form.values.email,
+    //   options: {
+    //     emailRedirectTo: `${window.location.origin}/login/callback`,
+    //   },
+    // });
 
     showModal();
   }
 
-  useEffect(() => {
-    if (session !== null && loading === false) {
-      navigation(navigationOrigin, { replace: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, loading]);
+  // useEffect(() => {
+  //   if (session !== null && loading === false) {
+  //     navigation(navigationOrigin, { replace: true });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [loading]);
 
   return (
     <>
@@ -119,7 +119,7 @@ export function LoginPage() {
               <GoogleButton
                 radius="xl"
                 onClick={() => {
-                  socialLogin("google");
+                  // socialLogin("google");
                 }}
               >
                 Google

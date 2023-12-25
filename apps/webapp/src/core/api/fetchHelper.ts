@@ -8,7 +8,6 @@ export async function get<TDto>(path: string): Promise<TDto> {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
-      "Access-Control-Allow-Origin": "*",
     },
   });
 
@@ -26,7 +25,6 @@ export async function post<TDto, TPayload>(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify(payload),
   });
@@ -45,7 +43,6 @@ export async function put<TDto, TPayload>(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify(payload),
   });
@@ -64,7 +61,6 @@ export async function patch<TDto, TPartialPayload>(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
-      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify(payload),
   });
@@ -80,7 +76,6 @@ export async function fetch_delete<TDto>(path: string): Promise<TDto> {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
-      "Access-Control-Allow-Origin": "*",
     },
   });
 
