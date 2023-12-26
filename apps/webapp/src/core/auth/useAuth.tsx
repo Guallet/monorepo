@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
       recipeList: [
         ThirdPartyPasswordless.init({
-          contactMethod: "EMAIL_OR_PHONE",
+          contactMethod: "EMAIL",
           signInUpFeature: {
             providers: [
               ThirdPartyPasswordless.Google.init(),
