@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as compression from 'compression';
+import { SupertokensExceptionFilter } from './core/auth/auth.filter';
+import { appInfo as SuperTokensConfig } from './core/auth/supertokens.config';
+import supertokens from 'supertokens-node';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +16,17 @@ async function bootstrap() {
   // app.setGlobalPrefix("api");
 
   // Configure EXPRESS server
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      SuperTokensConfig.websiteDomain,
+      process.env.SUPERTOKENS_WEBSITE_DOMAIN,
+    ],
+    allowedHeaders: ['Content-Type', ...supertokens.getAllCORSHeaders()],
+    credentials: true,
+  });
+
+  // Configure SuperTokens Exceptions
+  app.useGlobalFilters(new SupertokensExceptionFilter());
 
   // Enable Helmet with GraphQL as per https://docs.nestjs.com/security/helmet
   app.use(

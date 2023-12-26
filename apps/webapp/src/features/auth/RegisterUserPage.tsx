@@ -19,9 +19,9 @@ import {
 } from "react-router-dom";
 import { registerUser } from "./user-register.api";
 import { useEffect, useState } from "react";
-import { getCurrentUser } from "@core/auth/auth.helper";
 import { AppRoutes } from "@router/AppRoutes";
-import { UserDto } from "@user/api/user.api";
+import { UserDto, getUserDetails } from "@user/api/user.api";
+import { getCurrentUserId } from "@/core/auth/auth.helper";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isUserDto(object: any): object is UserDto {
@@ -42,9 +42,9 @@ type ActionData = {
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-  const user = await getCurrentUser();
-
-  if (user === null) {
+  // TODO: Do we need to check if the user is logged in? Or just returns whatever the API returns?
+  const userId = await getCurrentUserId();
+  if (userId === null) {
     return {
       name: "",
       email: "",
@@ -52,10 +52,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     } as LoaderData;
   }
 
+  const user = await getUserDetails();
   return {
-    name: user.user_metadata.full_name,
+    name: user.name,
     email: user.email,
-    profile_src: user.user_metadata.avatar_url,
+    profile_src: user.profile_src,
   } as LoaderData;
 };
 

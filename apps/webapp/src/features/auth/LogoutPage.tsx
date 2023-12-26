@@ -4,17 +4,11 @@ import {
   useLoaderData,
   Link,
 } from "react-router-dom";
-import { getCurrentSession, signOut } from "@core/auth/auth.helper";
+import { signOut } from "@core/auth/auth.helper";
 import { AppRoutes } from "@router/AppRoutes";
 
 export const loader: LoaderFunction = async () => {
-  const session = await getCurrentSession();
-  if (session) {
-    const { error } = await signOut();
-    if (error) {
-      return error;
-    }
-  }
+  await signOut();
   return redirect("/login");
 };
 

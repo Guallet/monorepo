@@ -3,23 +3,26 @@
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-
-import GualletApp from "./RootRouter";
-import { AuthProvider } from "@core/auth/useAuth";
+import { SuperTokensWrapper } from "supertokens-auth-react";
 import { initializePostHog } from "@core/analytics/posthog";
+import { AuthProvider } from "./core/auth/useAuth";
+import RootRouter from "./RootRouter";
 
 initializePostHog();
 
 function App() {
   return (
-    <MantineProvider>
-      <Notifications />
-      <AuthProvider>
-        <GualletApp />
-      </AuthProvider>
-    </MantineProvider>
+    <SuperTokensWrapper>
+      <MantineProvider>
+        <Notifications />
+        <AuthProvider>
+          <RootRouter />
+        </AuthProvider>
+      </MantineProvider>
+    </SuperTokensWrapper>
   );
 }
 

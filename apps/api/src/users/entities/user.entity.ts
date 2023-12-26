@@ -9,7 +9,7 @@ import {
 
 @Entity('user')
 export class User {
-  // This is the same ID as the one returned by the Auth Provider (Supabase at this time)
+  // This is the same ID as the one returned by the Auth Provider (Supertokens at this time)
   @PrimaryColumn('uuid')
   id: string;
 
