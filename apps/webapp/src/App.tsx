@@ -8,20 +8,19 @@ import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { SuperTokensWrapper } from "supertokens-auth-react";
 import { initializePostHog } from "@core/analytics/posthog";
-import { initSupertokens } from "./core/auth/supertokens.config";
-import GualletApp from "./RootRouter";
+import { AuthProvider } from "./core/auth/useAuth";
+import RootRouter from "./RootRouter";
 
 initializePostHog();
-initSupertokens();
 
 function App() {
   return (
     <SuperTokensWrapper>
       <MantineProvider>
         <Notifications />
-        {/* <AuthProvider> */}
-        <GualletApp />
-        {/* </AuthProvider> */}
+        <AuthProvider>
+          <RootRouter />
+        </AuthProvider>
       </MantineProvider>
     </SuperTokensWrapper>
   );

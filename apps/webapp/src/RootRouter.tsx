@@ -22,52 +22,55 @@ import { SessionAuth } from "supertokens-auth-react/recipe/session";
 import * as reactRouterDom from "react-router-dom";
 import { getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react/ui";
 import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
+import { useMemo } from "react";
 
 export default function RootRouter() {
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Navigate to={AppRoutes.DASHBOARD} />,
-    },
-    {
-      path: "404",
-      element: <PageNotFound />,
-    },
-    // Supertokens Login Routes
-    ...getSuperTokensRoutesForReactRouterDom(reactRouterDom, [
-      ThirdPartyPasswordlessPreBuiltUI,
-    ]).map((r) => r.props),
-    ...authRoutes,
-    // PROTECTED ROUTES
-    {
-      path: "/",
-      errorElement: <AppErrorBoundary />,
-      element: (
-        // <ProtectedRoute>
-        <SessionAuth>
-          <GualletAppShell />
-        </SessionAuth>
-        // </ProtectedRoute>
-      ),
-      children: [
-        {
-          path: "dashboard",
-          element: <DashboardPage />,
-        },
-        ...userProfileRoutes,
-        ...accountRoutes,
-        ...connectionsRoutes,
-        ...transactionsRoutes,
-        ...categoriesRoutes,
-        ...reportsRoutes,
-        ...settingsRoutes,
-        ...toolsRoutes,
-      ],
-    },
-    {
-      path: "*",
-      element: <Navigate to={AppRoutes.NOT_FOUND} replace={true} />,
-    },
-  ]);
+  const router = useMemo(() => {
+    return createBrowserRouter([
+      {
+        path: "/",
+        element: <Navigate to={AppRoutes.DASHBOARD} />,
+      },
+      {
+        path: "404",
+        element: <PageNotFound />,
+      },
+      // Supertokens Login Routes
+      ...getSuperTokensRoutesForReactRouterDom(reactRouterDom, [
+        ThirdPartyPasswordlessPreBuiltUI,
+      ]).map((r) => r.props),
+      ...authRoutes,
+      // PROTECTED ROUTES
+      {
+        path: "/",
+        errorElement: <AppErrorBoundary />,
+        element: (
+          // <ProtectedRoute>
+          <SessionAuth>
+            <GualletAppShell />
+          </SessionAuth>
+          // </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: "dashboard",
+            element: <DashboardPage />,
+          },
+          ...userProfileRoutes,
+          ...accountRoutes,
+          ...connectionsRoutes,
+          ...transactionsRoutes,
+          ...categoriesRoutes,
+          ...reportsRoutes,
+          ...settingsRoutes,
+          ...toolsRoutes,
+        ],
+      },
+      {
+        path: "*",
+        element: <Navigate to={AppRoutes.NOT_FOUND} replace={true} />,
+      },
+    ]);
+  }, []);
   return <RouterProvider router={router} />;
 }
