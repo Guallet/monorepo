@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { Error as STError, getUser } from 'supertokens-node';
+import { Error as STError } from 'supertokens-node';
 import { SessionContainer } from 'supertokens-node/recipe/session';
 
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
@@ -77,10 +77,8 @@ export class AuthGuard implements CanActivate {
     const request = this.httpRequest(context) ?? this.graphQLRequest(context);
     const session = request.session as SessionContainer;
     const userId = session.getUserId();
-    const userInfo = await getUser(userId);
-    const email = userInfo.emails.length > 0 ? userInfo.emails[0] : null;
 
-    request.user = new UserPrincipal(userId, email, session);
+    request.user = new UserPrincipal(userId, session);
     return true;
   }
 }

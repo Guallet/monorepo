@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import { Analytics } from "@core/analytics/Analytics";
 import Session, {
   useSessionContext,
@@ -118,6 +118,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   init();
   // }, []);
 
+  useEffect(() => {
+    onUserChangeHandler();
+  }, [userId]);
+
   const resetUser = () => {
     setUser(null);
     setUserId(null);
@@ -152,7 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getUserProfile = async () => {
     if (userId) {
-      const user = await get<UserDto>(`/users/${userId}`);
+      const user = await get<UserDto>(`users`);
       setUser(user);
       setAnalyticsIdentity(user);
       return user;
