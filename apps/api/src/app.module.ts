@@ -20,6 +20,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './core/auth/auth.module';
 import { AuthGuard } from './core/auth/auth.guard';
 import * as SuperTokensConfig from './core/auth/supertokens.config';
+import configuration from './configuration';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import * as SuperTokensConfig from './core/auth/supertokens.config';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
+      load: [configuration],
     }),
     // DATABASE
     TypeOrmModule.forRoot({

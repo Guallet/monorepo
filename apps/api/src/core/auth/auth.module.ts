@@ -8,8 +8,10 @@ import {
 import { ConfigInjectionToken, AuthModuleConfig } from './supertokens.config';
 import { SupertokensService } from './supertokens.service';
 import { AuthMiddleware } from './auth.middleware';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
+  imports: [ConfigModule],
   providers: [SupertokensService],
   exports: [],
   controllers: [],

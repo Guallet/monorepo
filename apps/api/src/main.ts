@@ -4,11 +4,13 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { SupertokensExceptionFilter } from './core/auth/auth.filter';
-import { appInfo as SuperTokensConfig } from './core/auth/supertokens.config';
 import supertokens from 'supertokens-node';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const configService = app.get(ConfigService);
 
   // Set the root path to "api"
   // Updated: Since we are hosting the api in a different domain,
@@ -18,7 +20,7 @@ async function bootstrap() {
   // Configure EXPRESS server
   app.enableCors({
     origin: [
-      SuperTokensConfig.websiteDomain,
+      configService.get<string>('auth.supertokens.appInfo.websiteDomain'),
       process.env.SUPERTOKENS_WEBSITE_DOMAIN,
     ],
     allowedHeaders: ['Content-Type', ...supertokens.getAllCORSHeaders()],

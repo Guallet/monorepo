@@ -4,6 +4,7 @@ import Dashboard from 'supertokens-node/recipe/dashboard';
 import UserRoles from 'supertokens-node/recipe/userroles';
 
 import { AppInfo } from 'supertokens-node/types';
+import { ConfigService } from '@nestjs/config';
 
 export const ConfigInjectionToken = 'ConfigInjectionToken';
 
@@ -22,7 +23,7 @@ export const appInfo = {
   websiteBasePath: process.env.SUPERTOKENS_WEBSITE_PATH || '/login',
 };
 
-export const recipeList = [
+export const recipeList = (configService: ConfigService) => [
   Session.init({
     exposeAccessTokenToFrontendInCookieBasedAuth: true,
   }),
@@ -40,8 +41,10 @@ export const recipeList = [
           thirdPartyId: 'google',
           clients: [
             {
-              clientId: process.env.GOOGLE_CLIENT_ID,
-              clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+              clientId: configService.get<string>('auth.google.clientId'),
+              clientSecret: configService.get<string>(
+                'auth.google.clientSecret',
+              ),
             },
           ],
         },
