@@ -45,8 +45,14 @@ async function bootstrap() {
             `'self'`,
             'data:',
             'apollo-server-landing-page.cdn.apollographql.com',
+            'https://cdn.jsdelivr.net/gh/supertokens/',
           ],
-          scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+          scriptSrc: [
+            `'self'`,
+            `https: 'unsafe-inline'`,
+            'unsafe-inline', // Do we need this? Is not this covered by the above? Required for supertokens though
+            'https://cdn.jsdelivr.net/gh/supertokens/',
+          ],
           manifestSrc: [
             `'self'`,
             'apollo-server-landing-page.cdn.apollographql.com',

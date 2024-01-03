@@ -7,6 +7,8 @@ import {
   Param,
   Logger,
   NotFoundException,
+  Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -48,5 +50,12 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete()
+  @HttpCode(202)
+  async deleteAccount(@RequestUser() user: UserPrincipal) {
+    const result = await this.usersService.deleteUserData(user.id);
+    return { message: 'User deleted successfully' };
   }
 }

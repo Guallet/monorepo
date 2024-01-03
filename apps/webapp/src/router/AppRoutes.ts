@@ -36,6 +36,7 @@ export class AppRoutes {
   static DASHBOARD = "/dashboard";
   static ABOUT = "/about";
   static CONTACT = "/contact";
+  static APP_ACCOUNT_DELETED = "/delete-confirmation";
   static NOT_FOUND = "/404";
   static CATCH_ALL = "*";
   // Add more routes here

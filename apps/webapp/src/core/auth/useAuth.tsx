@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (await Session.doesSessionExist()) {
       const user_id = await Session.getUserId();
       setUserId(user_id);
-      getUserProfile();
+      getUserProfile(user_id);
       onTokenPayloadChangeHandler();
     } else {
       resetUser();
@@ -158,20 +158,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const userIsInAllowedList = async () => {
-    // TODO: Check if user is in the allowed list
+    // TODO: Check if user is in the allowed waiting list
     return true;
   };
 
-  const getUserProfile = async () => {
+  const getUserProfile = async (userId: string) => {
     if (userId) {
       const user = await get<UserDto>(`users`);
       setUser(user);
       setAnalyticsIdentity(user);
-      return user;
     } else {
       setUser(null);
       setAnalyticsIdentity(null);
-      return null;
     }
   };
 

@@ -23,6 +23,7 @@ import * as reactRouterDom from "react-router-dom";
 import { getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react/ui";
 import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
 import { useMemo } from "react";
+import { DeleteAccountConfirmationPage } from "./features/user/DeleteAccountConfirmationPage";
 
 export default function RootRouter() {
   const router = useMemo(() => {
@@ -40,6 +41,12 @@ export default function RootRouter() {
         ThirdPartyPasswordlessPreBuiltUI,
       ]).map((r) => r.props),
       ...authRoutes,
+      // This cannot be protected because the user needs to be deleted and logged out
+      {
+        path: "delete-confirmation",
+        index: true,
+        element: <DeleteAccountConfirmationPage />,
+      },
       // PROTECTED ROUTES
       {
         path: "/",

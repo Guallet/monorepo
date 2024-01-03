@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import supertokens from 'supertokens-node';
 
 @Injectable()
 export class UsersService {
@@ -56,7 +57,19 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async deleteUserData(userId: string) {
+    // delete user from supertokens
+    await this.repository.softDelete({ id: userId });
+    // await this.supertokensService.deleteUser(userId);
+
+    await supertokens.deleteUser(userId, true);
+
+    // const userProfile = await this.repository.findOne({
+    //   where: {
+    //     id: userId,
+    //   },
+    // });
+
+    // await this.repository.remove(userProfile);
   }
 }

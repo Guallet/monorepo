@@ -23,4 +23,8 @@ export class SupertokensService {
   getRecipeList() {
     return SuperTokensConfig.recipeList(this.configService);
   }
+
+  async deleteUser(userId: string): Promise<void> {
+    await supertokens.deleteUser(userId, true);
+  }
 }
