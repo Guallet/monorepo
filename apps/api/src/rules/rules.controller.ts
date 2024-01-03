@@ -14,7 +14,9 @@ import { UpdateRuleDto } from './dto/update-rule.dto';
 import { RuleDto } from './dto/rule.dto';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auto-Categorization Rules')
 @Controller('rules')
 export class RulesController {
   private readonly logger = new Logger(RulesController.name);

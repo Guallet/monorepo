@@ -3,7 +3,9 @@ import { ReportsService } from './reports.service';
 import { UserPrincipal } from 'src/core/auth/user-principal';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { ReportQueryFilter } from './dto/report-query-filter';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Reports')
 @Controller('reports')
 export class ReportsController {
   private readonly logger = new Logger(ReportsController.name);
