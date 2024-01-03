@@ -2,10 +2,11 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { LoggerModule } from 'nestjs-pino';
 import { AccountsModule } from './accounts/accounts.module';
 import { InstitutionsModule } from './institutions/institutions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpLoggerMiddleware } from './core/middleware/http-logger.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -29,6 +30,39 @@ import configuration from './configuration';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
       load: [configuration],
+    }),
+    // LOGGING
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        return {
+          exclude: [{ method: RequestMethod.POST, path: '/graphql' }],
+          pinoHttp: {
+            autoLogging: false,
+            level: config.get<string>('logging.level'),
+            redact: ['req.headers.authorization', 'req.headers.cookie'],
+            transport: {
+              targets: [
+                {
+                  target: 'pino-pretty',
+                },
+                ...(config.get<boolean>('logging.axiom.isEnabled')
+                  ? [
+                      {
+                        target: '@axiomhq/pino',
+                        options: {
+                          dataset: config.get<string>('logging.axiom.dataset'),
+                          token: config.get<string>('logging.axiom.token'),
+                        },
+                      },
+                    ]
+                  : []),
+              ],
+            },
+          },
+        };
+      },
     }),
     // DATABASE
     TypeOrmModule.forRoot({

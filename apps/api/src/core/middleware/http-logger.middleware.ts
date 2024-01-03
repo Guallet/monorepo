@@ -3,13 +3,12 @@ import { Request, Response } from 'express';
 
 @Injectable()
 export class HttpLoggerMiddleware implements NestMiddleware {
-  private logger = new Logger('HTTP REQUEST');
+  private logger = new Logger();
 
   use(request: Request, response: Response, next: () => void) {
     const { ip } = request;
     const userAgent = request.get('user-agent') || '';
 
-    // response.on("close", () => {
     response.on('finish', () => {
       // const log_message = `${request.method} ${request.originalUrl} - ${userAgent} ${ip} => ${response.statusCode}`;
       const log_message = `${request.method} ${request.originalUrl} => ${response.statusCode}`;

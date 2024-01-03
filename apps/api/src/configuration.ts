@@ -1,5 +1,13 @@
 export default () => ({
   database: process.env.DATABASE_URL,
+  logging: {
+    level: process.env.NODE_ENV !== 'production' ? 'debug' : 'warning',
+    axiom: {
+      isEnabled: process.env.AXIOM_ENABLED === 'true',
+      dataset: process.env.AXIOM_DATASET,
+      token: process.env.AXIOM_TOKEN,
+    },
+  },
   auth: {
     supertokens: {
       connectionURI: process.env.SUPERTOKENS_CONNECTION_URI,

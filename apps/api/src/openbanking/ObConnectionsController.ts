@@ -127,7 +127,7 @@ export class ObConnectionsController {
     // Sync the account balance
     // Get Nordigen Account Transactions
     // Sync the account transactions
-    // TDOD: Can this sync be a external microservice? Refactor this with enough time
+    // TODO: Can this sync be a external microservice? Refactor this with enough time
     return openBankAccount;
   }
 }
