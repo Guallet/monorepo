@@ -1,7 +1,7 @@
 export default () => ({
   database: process.env.DATABASE_URL,
   logging: {
-    level: process.env.NODE_ENV !== 'production' ? 'debug' : 'warning',
+    level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
     axiom: {
       isEnabled: process.env.AXIOM_ENABLED === 'true',
       dataset: process.env.AXIOM_DATASET,
