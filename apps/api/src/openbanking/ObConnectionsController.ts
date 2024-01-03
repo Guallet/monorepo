@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   NotFoundException,
   Param,
   Post,
@@ -14,10 +15,13 @@ import { UserPrincipal } from 'src/core/auth/user-principal';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto';
 import { InstitutionsService } from 'src/institutions/institutions.service';
-import { NotFoundError } from 'rxjs';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Open Banking')
 @Controller('openbanking/connections')
 export class ObConnectionsController {
+  private readonly logger = new Logger(ObConnectionsController.name);
+
   constructor(
     private readonly openbankingService: OpenbankingService,
     private readonly nordigenService: NordigenService,
@@ -109,6 +113,7 @@ export class ObConnectionsController {
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectAccountsRequestDto,
   ) {
+    this.logger.debug(`Connecting to accounts: ${dto.account_ids}`);
     // Get Nordigen Account Metadata
     // Get Nordigen Account Details
     // Save the Nordigen account in the DB
@@ -118,13 +123,11 @@ export class ObConnectionsController {
     );
 
     // Create Account in DB and link it with this open banking account
-
     // Get Nordigen Account Balances
     // Sync the account balance
     // Get Nordigen Account Transactions
     // Sync the account transactions
     // TDOD: Can this sync be a external microservice? Refactor this with enough time
-
     return openBankAccount;
   }
 }

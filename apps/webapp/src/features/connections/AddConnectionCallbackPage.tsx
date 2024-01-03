@@ -1,4 +1,4 @@
-import { Button, Card, Loader, Stack, Text } from "@mantine/core";
+import { Button, Card, Center, Flex, Loader, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import {
@@ -43,7 +43,7 @@ export function AddConnectionCallbackPage() {
   async function linkAccounts() {
     // For each account, call the API to create the connection
     const response = await linkObAccounts(
-      accounts.map((a) => a.resourceId).filter((a) => a !== null) as string[]
+      accounts.map((a) => a.id).filter((a) => a !== null) as string[]
     );
     console.log(response);
   }
@@ -91,7 +91,19 @@ export function AddConnectionCallbackPage() {
   }
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <Flex
+        mih={50}
+        gap="md"
+        justify="center"
+        align="center"
+        direction="column"
+        wrap="wrap"
+      >
+        <Loader />
+        <Text>Syncing accounts...</Text>
+      </Flex>
+    );
   }
 
   return (
@@ -99,7 +111,7 @@ export function AddConnectionCallbackPage() {
       <Text>Connected to the following accounts:</Text>
       {accounts.map((account) => {
         return (
-          <Card withBorder>
+          <Card withBorder key={account.id}>
             <Stack key={account.id}>
               <Text>{account.name ?? account.ownerName}</Text>
               <Text>Details: {account.details}</Text>

@@ -1,12 +1,9 @@
-import { Account } from 'src/accounts/models/account.model';
 import { ExternalCashAccountType1Code } from 'src/nordigen/dto/ExternalCashAccountType1Code.helper';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';

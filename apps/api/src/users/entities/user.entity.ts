@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('user')
+@Entity('users')
 export class User {
   // This is the same ID as the one returned by the Auth Provider (Supertokens at this time)
   @PrimaryColumn('uuid')

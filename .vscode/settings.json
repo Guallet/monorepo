@@ -1,3 +1,9 @@
 {
-  "cSpell.words": ["Nordigen", "posthog", "typeorm"]
+  "cSpell.words": [
+    "Nordigen",
+    "Passwordless",
+    "posthog",
+    "thirdpartypasswordless",
+    "typeorm"
+  ]
 }

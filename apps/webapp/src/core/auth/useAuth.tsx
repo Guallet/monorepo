@@ -37,7 +37,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [jwtPayload, setJwtPayload] = useState<unknown | null>(null);
   const { loading } = useSessionContext();
 
-  const init = useCallback(() => {
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+  const init = () => {
+    if (isInitialized) {
+      return;
+    }
+
     console.log("Initializing Supertokens");
     SuperTokens.init({
       appInfo: {
@@ -112,7 +118,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }),
       ],
     });
-  }, []);
+
+    setIsInitialized(true);
+  };
 
   // useEffect(() => {
   init();

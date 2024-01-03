@@ -12,7 +12,6 @@ export class NordigenAccountRepository {
 
   async find(nordigen_accountId: string) {
     return await this.repository.findOne({
-      //   relations: { account: true },
       where: {
         id: nordigen_accountId,
       },
