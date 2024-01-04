@@ -13,6 +13,13 @@ class AccountRoutes {
   static ACCOUNT_ADD = "/accounts/add";
 }
 
+class AccountConnectionRoutes {
+  static CONNECTIONS = "/connections";
+  static CONNECTION_DETAILS = (id: string) => `/connections/${id}`;
+  static CONNECT = "/connections/connect";
+  static CONNECT_CALLBACK = "/connections/connect/callback";
+}
+
 class RulesRoutes {
   static RULES = "/categories/rules";
   static RULE_CREATE = "/categories/rules/create";
@@ -31,6 +38,7 @@ export class AppRoutes {
   static Auth = AuthRoutes;
   static User = UserRoutes;
   static Accounts = AccountRoutes;
+  static Connections = AccountConnectionRoutes;
   static Categories = CategoryRoutes;
   static HOME = "/";
   static DASHBOARD = "/dashboard";
