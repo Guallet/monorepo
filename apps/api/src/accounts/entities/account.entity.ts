@@ -12,6 +12,11 @@ import {
 } from 'typeorm';
 import { Institution } from 'src/institutions/entities/institution.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import {
+  CreditCardProperties,
+  CurrentAccountProperties,
+  SavingAccountProperties,
+} from './account-properties.model';
 
 @Entity('accounts')
 @ObjectType()
@@ -43,6 +48,15 @@ export class Account {
   })
   @Field((type) => AccountType)
   type: AccountType;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  public properties:
+    | CurrentAccountProperties
+    | CreditCardProperties
+    | SavingAccountProperties;
 
   // relations
   @OneToMany(() => Transaction, (transaction) => transaction.account, {
