@@ -8,8 +8,9 @@ import {
 import { CurrentAccountDetails } from "./CurrentAccountDetails";
 import { fetch_delete } from "@core/api/fetchHelper";
 import { AppRoutes } from "@router/AppRoutes";
-import { Account } from "@accounts/models/Account";
+import { Account, AccountType } from "@accounts/models/Account";
 import { getAccount } from "@accounts/api/accounts.api";
+import { CreditCardDetails } from "./CreditCardDetails";
 
 const DELETE_ACCOUNT_MODAL_QUERY = "delete";
 
@@ -66,15 +67,10 @@ export function AccountDetailsPage() {
       <Text size="lg" fw={700}>
         {account.name}
       </Text>
-      // TODO: Create different components for each account type
-      {/* <Text>{JSON.stringify(account)}</Text> */}
-      {/* <Text>Mortgage options?</Text>
-      <Text>Loan options?</Text>
-      <Text>Saving account options?</Text> */}
-      {/* {account.type == "current-account" && (
-        <CurrentAccountDetails account={account} />
-      )} */}
-      <CurrentAccountDetails account={account} />
+
+      {/* Show info dependent on account type */}
+      {AccountDetailsSelector(account)}
+
       <Stack justify="flex-start">
         <Button fullWidth>View Transactions</Button>
         <Button fullWidth disabled>
@@ -123,4 +119,16 @@ function DeleteAccountDialog({
       </Group>
     </Stack>
   );
+}
+
+function AccountDetailsSelector(account: Account) {
+  // TODO: Create different components for each account type
+  switch (account.type) {
+    case AccountType.CURRENT_ACCOUNT:
+      return <CurrentAccountDetails account={account} />;
+    case AccountType.CREDIT_CARD:
+      return <CreditCardDetails account={account} />;
+    default:
+      return null;
+  }
 }
