@@ -6,9 +6,9 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { Account } from './models/account.model';
+import { Account } from './entities/account.entity';
 import { AccountsService } from './accounts.service';
-import { Institution } from 'src/institutions/models/institution.model';
+import { Institution } from 'src/institutions/entities/institution.entity';
 import { InstitutionsService } from 'src/institutions/institutions.service';
 
 @Resolver((of) => Account)

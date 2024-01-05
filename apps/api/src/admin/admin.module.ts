@@ -6,7 +6,7 @@ import { NordigenModule } from 'src/nordigen/nordigen.module';
 import { InstitutionsModule } from 'src/institutions/institutions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NordigenToken } from 'src/nordigen/entities/nordigen-token.entity';
-import { Institution } from 'src/institutions/models/institution.model';
+import { Institution } from 'src/institutions/entities/institution.entity';
 import { NordigenService } from 'src/nordigen/nordigen.service';
 import { NordigenRepository } from 'src/nordigen/nordigen.repository';
 import { InstitutionsService } from 'src/institutions/institutions.service';

@@ -23,7 +23,7 @@
 // VACC	VirtualAccount	Account created virtually to facilitate collection and reconciliation.
 // NFCA	NonResidentForeignCurrencyAccount	Non-Resident Individual / Entity Foreign Current held domestically.
 
-import { AccountType } from 'src/accounts/models/accountType.model';
+import { AccountType } from 'src/accounts/entities/accountType.model';
 
 export enum ExternalCashAccountType1Code {
   CURRENT_ACCOUNT = 'CACC',

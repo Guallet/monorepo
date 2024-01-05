@@ -4,7 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Institution } from './models/institution.model';
+import { Institution } from './entities/institution.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';

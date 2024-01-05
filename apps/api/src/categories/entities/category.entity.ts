@@ -1,4 +1,4 @@
-import { Transaction } from 'src/transactions/models/transaction.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -1,4 +1,4 @@
-import { Transaction } from '../models/transaction.entity';
+import { Transaction } from '../entities/transaction.entity';
 
 export class TransactionDto {
   id: string;

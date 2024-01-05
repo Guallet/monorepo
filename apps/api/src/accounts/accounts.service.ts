@@ -1,9 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Account } from './models/account.model';
+import { Account } from './entities/account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
-import { AccountType } from './models/accountType.model';
+import { AccountType } from './entities/accountType.model';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 
 @Injectable()

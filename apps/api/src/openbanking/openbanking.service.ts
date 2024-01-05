@@ -9,11 +9,11 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NordigenService } from 'src/nordigen/nordigen.service';
 import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/accounts/models/account.model';
+import { Account } from 'src/accounts/entities/account.entity';
 import { getBalanceAmountFrom } from 'src/nordigen/dto/nordigen-balances.helper';
 import { getAccountTypeFrom } from 'src/nordigen/dto/ExternalCashAccountType1Code.helper';
 import { supportedCountries } from 'src/admin/admin.service';
-import { Institution } from 'src/institutions/models/institution.model';
+import { Institution } from 'src/institutions/entities/institution.entity';
 
 @Injectable()
 export class OpenbankingService {

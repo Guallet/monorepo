@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Between, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from 'src/categories/models/category.entity';
-import { Account } from 'src/accounts/models/account.model';
-import { Transaction } from 'src/transactions/models/transaction.entity';
+import { Category } from 'src/categories/entities/category.entity';
+import { Account } from 'src/accounts/entities/account.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import {
   CashflowDataDto,
   CategoryDataRowDto,

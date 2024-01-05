@@ -1,5 +1,5 @@
-import { Account } from 'src/accounts/models/account.model';
-import { Institution } from 'src/institutions/models/institution.model';
+import { Account } from 'src/accounts/entities/account.entity';
+import { Institution } from 'src/institutions/entities/institution.entity';
 import { DataSource } from 'typeorm';
 
 seed();

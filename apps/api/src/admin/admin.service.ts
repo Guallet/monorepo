@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InstitutionsService } from 'src/institutions/institutions.service';
-import { Institution } from 'src/institutions/models/institution.model';
+import { Institution } from 'src/institutions/entities/institution.entity';
 import { NordigenInstitutionDto } from 'src/nordigen/dto/nordigen-institution.dto';
 import { NordigenService } from 'src/nordigen/nordigen.service';
 

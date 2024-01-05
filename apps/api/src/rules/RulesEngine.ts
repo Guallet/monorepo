@@ -1,7 +1,7 @@
-import { Category } from 'src/categories/models/category.entity';
+import { Category } from 'src/categories/entities/category.entity';
 import { Rule } from './entities/rule.entity';
-import { Transaction } from 'src/transactions/models/transaction.entity';
-import { Account } from 'src/accounts/models/account.model';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { Account } from 'src/accounts/entities/account.entity';
 
 export type TransactionField =
   | 'description'

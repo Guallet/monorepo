@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { InstitutionsService } from './institutions.service';
-import { Institution } from './models/institution.model';
+import { Institution } from './entities/institution.entity';
 import { Logger, NotFoundException } from '@nestjs/common';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';

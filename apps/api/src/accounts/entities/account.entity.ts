@@ -10,8 +10,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Institution } from 'src/institutions/models/institution.model';
-import { Transaction } from 'src/transactions/models/transaction.entity';
+import { Institution } from 'src/institutions/entities/institution.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @Entity('accounts')
 @ObjectType()

@@ -8,10 +8,10 @@ import { HttpModule } from '@nestjs/axios';
 import { ObConnection } from './entities/connection.entity';
 import { NordigenAccount } from './entities/nordigen-account.entity';
 import { NordigenAccountRepository } from './repositories/nordigen-account.repository';
-import { Account } from 'src/accounts/models/account.model';
+import { Account } from 'src/accounts/entities/account.entity';
 import { InstitutionsModule } from 'src/institutions/institutions.module';
 import { InstitutionsService } from 'src/institutions/institutions.service';
-import { Institution } from 'src/institutions/models/institution.model';
+import { Institution } from 'src/institutions/entities/institution.entity';
 
 @Module({
   imports: [
