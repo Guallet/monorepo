@@ -19,6 +19,8 @@ import { SelectCategoryModal } from "./SelectCategoryModal";
 import { Category } from "../../categories/models/Category";
 import { useMediaQuery } from "@mantine/hooks";
 import { EditNotesModal } from "./EditNotesModal";
+import { TransactionsFilter } from "../components/TransactionsFilter";
+import { Account } from "@/features/accounts/models/Account";
 
 const SELECTED_TRANSACTION_ID_QUERY = "id";
 const EDIT_PARAM_ID_QUERY = "edit";
@@ -28,6 +30,7 @@ const EDIT_CATEGORY_QUERY_VALUE = "category";
 interface ILoaderData {
   queryMeta: QueryMetadata;
   transactions: Transaction[];
+  accounts: Account[];
   categories: Category[];
 }
 
@@ -60,6 +63,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return {
     queryMeta: result.meta,
     transactions: rehydratedTransactions,
+    accounts: accounts,
     categories: categories,
   };
 };
@@ -86,7 +90,7 @@ function formatDate(date: Date): string {
 }
 
 export function TransactionsPage() {
-  const { queryMeta, transactions, categories } =
+  const { queryMeta, transactions, accounts, categories } =
     useLoaderData() as ILoaderData;
   console.log("Page data", { queryMeta, transactions, categories });
   const navigate = useNavigate();
@@ -227,7 +231,15 @@ export function TransactionsPage() {
         )}
       </Modal>
       <Stack>
-        <Text>Transactions list</Text>
+        <TransactionsFilter
+          accounts={accounts}
+          selectedAccounts={[]}
+          categories={categories}
+          selectedCategories={[]}
+          onFiltersUpdate={(filters) => {
+            console.log("Filters updated", filters);
+          }}
+        />
         <Table.ScrollContainer minWidth={500}>
           <Table
             striped

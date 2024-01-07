@@ -64,6 +64,8 @@ export function MultiSelectCheckbox({
             value.length > 0
               ? value.length === data.length
                 ? allItemsSelectedMessage
+                : value.length === 1
+                ? value[0] // The item value
                 : `${value.length} accounts selected`
               : emptyMessage
           }
