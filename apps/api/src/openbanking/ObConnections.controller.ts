@@ -5,6 +5,7 @@ import {
   Logger,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -18,7 +19,7 @@ import { InstitutionsService } from 'src/institutions/institutions.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Open Banking')
-@Controller('openbanking/connections')
+@Controller('openbanking')
 export class ObConnectionsController {
   private readonly logger = new Logger(ObConnectionsController.name);
 
@@ -39,47 +40,21 @@ export class ObConnectionsController {
     return this.nordigenService.getInstitutions(country);
   }
 
+  @ApiTags('Open Banking')
   @Get('institutions/:id')
-  getInstitution(@Param('id') id: string) {
-    return this.institutionService.findOneByNordigenId(id);
+  async getInstitution(@Param('id') id: string) {
+    const institution = await this.institutionService.findOneByNordigenId(id);
+    if (institution === undefined || institution === null) {
+      throw new NotFoundException();
+    } else {
+      return institution;
+    }
   }
 
-  @Get(':id/accounts')
-  async getObAccounts(
-    @RequestUser() user: UserPrincipal,
-    @Param('id') requisition_id: string,
-  ) {
-    const requisition = await this.nordigenService.getRequisition(
-      requisition_id,
-    );
-
-    await this.openbankingService.saveRequisition(user.id, requisition);
-
-    // Update the accounts info and Return the accounts
-    const getAccountInfo = async (accountId) => {
-      return {
-        id: accountId,
-        ...(await this.nordigenService.getAccountDetails(accountId)),
-      };
-    };
-    const accountIds = requisition.accounts;
-
-    const accounts = await Promise.all(
-      accountIds.map((x) => getAccountInfo(x)),
-    );
-
-    return accounts;
-  }
-
-  @Get()
-  async getConnections(@RequestUser() user: UserPrincipal) {
-    return this.openbankingService.getConnections(user.id);
-  }
-
-  @Get(':id')
+  @Get('connections/:id')
   async getConnectionDetails(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
     const connections = await this.openbankingService.getConnections(user.id);
     const connection = connections.find((x) => x.id === id);
@@ -90,7 +65,67 @@ export class ObConnectionsController {
     }
   }
 
-  @Post()
+  @Get('connections/:id/accounts')
+  async getObAccounts(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') requisition_id: string,
+  ) {
+    const requisition = await this.nordigenService.getRequisition(
+      requisition_id,
+    );
+
+    await this.openbankingService.saveRequisition(user.id, requisition);
+
+    try {
+      // Update the accounts info and Return the accounts
+      const accountIds = requisition.accounts;
+      const remoteAccounts = [];
+      for (const accountId of accountIds) {
+        try {
+          const accountMetadata = await this.nordigenService.getAccountMetadata(
+            accountId,
+          );
+          if (accountMetadata.status === 'READY') {
+            try {
+              const accountDetails =
+                await this.nordigenService.getAccountDetails(accountId);
+              remoteAccounts.push({
+                id: accountId,
+                metadata: accountMetadata,
+                details: accountDetails,
+              });
+            } catch (error) {
+              this.logger.error(
+                `Couldn't get details metadata for account ${accountId}`,
+              );
+            }
+          } else {
+            remoteAccounts.push({
+              id: accountId,
+              metadata: accountMetadata,
+              details: null,
+            });
+          }
+        } catch (error) {
+          this.logger.error(
+            `Couldn't get account metadata for account ${accountId}`,
+          );
+        }
+      }
+
+      return remoteAccounts;
+    } catch (error) {
+      this.logger.error("Couldn't get accounts");
+      return { error: error, requisition: requisition };
+    }
+  }
+
+  @Get('connections')
+  async getConnections(@RequestUser() user: UserPrincipal) {
+    return this.openbankingService.getConnections(user.id);
+  }
+
+  @Post('connections')
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectBankInstitutionRequestDto,
@@ -108,7 +143,7 @@ export class ObConnectionsController {
     };
   }
 
-  @Post('/connect')
+  @Post('connections/connect')
   async connectToAccount(
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectAccountsRequestDto,
@@ -129,5 +164,25 @@ export class ObConnectionsController {
     // Sync the account transactions
     // TODO: Can this sync be a external microservice? Refactor this with enough time
     return openBankAccount;
+  }
+
+  @Get('connections/:id/sync')
+  async getObAccountTransactions(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    try {
+      const transactions =
+        await this.openbankingService.syncAccountTransactions(id);
+      return {
+        meta: {
+          transactions_count: transactions.length,
+        },
+        transactions: transactions,
+      };
+    } catch (error) {
+      this.logger.error("Couldn't get transactions");
+      throw error;
+    }
   }
 }

@@ -50,7 +50,7 @@ export default function RootRouter() {
       // PROTECTED ROUTES
       {
         path: "/",
-        errorElement: <AppErrorBoundary />,
+        // errorElement: <AppErrorBoundary />,
         element: (
           // <ProtectedRoute>
           <SessionAuth>

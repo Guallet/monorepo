@@ -10,7 +10,7 @@ export type ObConnection = {
   agreement: string;
   reference: string;
   user_id: string;
-  accounts: any[]; //TODO: Replace 'any' with the actual type of the accounts if known
+  accounts: string[];
   user_language: string | null;
   link: string;
   ssn: string | null;
@@ -35,7 +35,7 @@ export type CountryDto = {
 };
 
 export async function getSupportedCountries(): Promise<CountryDto[]> {
-  return await get<CountryDto[]>("openbanking/connections/countries");
+  return await get<CountryDto[]>("openbanking/countries");
 }
 
 export type InstitutionDto = {
@@ -50,16 +50,14 @@ export type InstitutionDto = {
 export async function getInstitutions(
   countryCode: string
 ): Promise<InstitutionDto[]> {
-  return await get<InstitutionDto[]>(
-    `openbanking/connections/${countryCode}/institutions`
-  );
+  return await get<InstitutionDto[]>(`openbanking/${countryCode}/institutions`);
 }
 
 export async function getInstitution(
   instituionId: string
 ): Promise<GualletInstitutionDto> {
   return await get<GualletInstitutionDto>(
-    `openbanking/connections/institutions/${instituionId}/`
+    `openbanking/institutions/${instituionId}/`
   );
 }
 
@@ -83,6 +81,12 @@ export async function createConnection(
 }
 
 export type ObAccountDto = {
+  id: string;
+  metadata: ObAccountMetadataDto;
+  details: ObAccountDetailsDto;
+};
+
+export type ObAccountDetailsDto = {
   id: string | null;
   resourceId: string | null;
   iban: string | null;
@@ -98,7 +102,17 @@ export type ObAccountDto = {
   details: string | null;
 };
 
-export async function getObAccounts(
+export type ObAccountMetadataDto = {
+  id: string;
+  created: Date;
+  last_accessed: Date;
+  iban: string;
+  institution_id: string;
+  status: "DISCOVERED" | "PROCESSING" | "READY" | "ERROR" | "SUSPENDED";
+  owner_name: string;
+};
+
+export async function getObAccountsForConnection(
   requisitionId: string
 ): Promise<ObAccountDto[]> {
   return await get<ObAccountDto[]>(
@@ -120,4 +134,8 @@ export async function linkObAccounts(accounts: string[]) {
       account_ids: accounts,
     }
   );
+}
+
+export async function syncAccountData(account_id: string) {
+  return await get<any>(`openbanking/connections/${account_id}/sync`);
 }

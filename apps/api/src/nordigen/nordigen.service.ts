@@ -175,6 +175,13 @@ export class NordigenService {
     const response = await this.makeGetRequest<NordigenAccountDetailsDto>(
       `/api/v2/accounts/${account_id}/details/`,
     );
+    this.logger.error(
+      `Getting Nordigen account details for ${account_id}. Response: ${JSON.stringify(
+        response,
+        null,
+        4,
+      )}`,
+    );
     return response.account;
   }
 
@@ -190,6 +197,9 @@ export class NordigenService {
   async getAccountTransactions(
     account_id: string,
   ): Promise<NordigenTransactionDto[]> {
+    this.logger.debug(
+      `Getting Nordigen transactions for account ${account_id}`,
+    );
     const response = await this.makeGetRequest<NordigenTransactionsDto>(
       `/api/v2/accounts/${account_id}/transactions/`,
     );
@@ -224,6 +234,7 @@ export class NordigenService {
       // If no exception thrown in the step before, then return the data
       return response.data;
     } catch (response) {
+      this.logger.error(`Error making Nordigen GET request to ${path}`);
       this.handleHttpStatusCodes(response, true);
     }
   }

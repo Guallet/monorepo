@@ -3,7 +3,7 @@ import { notifications } from "@mantine/notifications";
 import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import {
   ObAccountDto,
-  getObAccounts,
+  getObAccountsForConnection,
   linkObAccounts,
 } from "./api/connections.api";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   let accounts: ObAccountDto[] = [];
 
   if (!error && reference) {
-    accounts = await getObAccounts(reference);
+    accounts = await getObAccountsForConnection(reference);
   }
 
   return {
@@ -113,12 +113,12 @@ export function AddConnectionCallbackPage() {
         return (
           <Card withBorder key={account.id}>
             <Stack key={account.id}>
-              <Text>{account.name ?? account.ownerName}</Text>
-              <Text>Details: {account.details}</Text>
-              <Text>Account number: {account.bban}</Text>
-              <Text>Iban: {account.iban}</Text>
-              <Text>Currency: {account.currency}</Text>
-              <Text>Type: {account.cashAccountType}</Text>
+              <Text>{account.details.name ?? account.details.ownerName}</Text>
+              <Text>Details: {account.details.details}</Text>
+              <Text>Account number: {account.details.bban}</Text>
+              <Text>Iban: {account.details.iban}</Text>
+              <Text>Currency: {account.details.currency}</Text>
+              <Text>Type: {account.details.cashAccountType}</Text>
             </Stack>
           </Card>
         );

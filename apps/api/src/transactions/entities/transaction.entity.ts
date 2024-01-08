@@ -1,13 +1,9 @@
 import { Account } from 'src/accounts/entities/account.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { BaseDbEntity } from 'src/core/baseDbEntity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { NordigenTransactionDto } from 'src/nordigen/dto/nordigen-transaction.dto';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TransactionMetadata } from './transaction-metadata.model';
 
 @Entity('transactions')
 export class Transaction extends BaseDbEntity {
@@ -29,6 +25,9 @@ export class Transaction extends BaseDbEntity {
   @Column()
   date: Date;
 
+  @Column({ type: 'jsonb', nullable: true })
+  metadata: TransactionMetadata;
+
   // relations
   @ManyToOne(() => Account, (account) => account.transactions)
   account: Account;
@@ -43,4 +42,25 @@ export class Transaction extends BaseDbEntity {
 
   @Column({ nullable: true })
   categoryId: string;
+
+  // Mappers
+  static fromNordigenDto(
+    account_id: string,
+    nordigenTransaction: NordigenTransactionDto,
+  ) {
+    const entity = new Transaction();
+    entity.metadata = {
+      openBanking: {
+        provider: 'nordigen',
+        data: nordigenTransaction,
+      },
+    } as TransactionMetadata;
+    entity.amount = Number(nordigenTransaction.transactionAmount.amount);
+    entity.currency = nordigenTransaction.transactionAmount.currency;
+    entity.accountId = account_id;
+    entity.date = nordigenTransaction.bookingDate;
+
+    entity.description = nordigenTransaction.remittanceInformationUnstructured;
+    return entity;
+  }
 }

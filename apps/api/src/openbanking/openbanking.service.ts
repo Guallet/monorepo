@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { NordigenRequisitionDto } from 'src/nordigen/dto/nordigen-requisition.dto';
 import { ObConnection } from './entities/connection.entity';
@@ -14,6 +15,7 @@ import { getBalanceAmountFrom } from 'src/nordigen/dto/nordigen-balances.helper'
 import { getAccountTypeFrom } from 'src/nordigen/dto/ExternalCashAccountType1Code.helper';
 import { supportedCountries } from 'src/admin/admin.service';
 import { Institution } from 'src/institutions/entities/institution.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @Injectable()
 export class OpenbankingService {
@@ -30,6 +32,8 @@ export class OpenbankingService {
     private accountRepository: Repository<Account>,
     @InjectRepository(Institution)
     private institutionRepository: Repository<Institution>,
+    @InjectRepository(Transaction)
+    private transactionsRepository: Repository<Transaction>,
   ) {}
 
   async getAvailableCountries(locale: string) {
@@ -211,5 +215,59 @@ export class OpenbankingService {
       account: account,
       open_banking_account: nordigenAccount,
     };
+  }
+
+  async syncAccountTransactions(accountId: string): Promise<Transaction[]> {
+    this.logger.debug(`Syncing Nordigen account ${accountId}`);
+    const nordigenAccount = await this.nordigenAccountsRepository.findOne({
+      where: {
+        id: accountId,
+      },
+    });
+
+    if (nordigenAccount === null) {
+      this.logger.error(`Nordigen Account with id '${accountId}' not found`);
+      throw new NotFoundException(`Account not found`);
+    }
+
+    const gualletAccount = await this.accountRepository.findOne({
+      where: {
+        // For now, the app assumes the Nordigen Account ID and the Guallet app account ID are the same
+        id: nordigenAccount.accountId,
+      },
+    });
+
+    if (gualletAccount === null) {
+      this.logger.error(`Account with id '${accountId}' not found`);
+      throw new NotFoundException(`Account mismatch: not found`);
+    }
+
+    try {
+      // Sync the balances
+      const balances = await this.nordigenService.getAccountBalance(
+        nordigenAccount.id,
+      );
+      gualletAccount.balance = getBalanceAmountFrom(balances);
+      await this.accountRepository.save(gualletAccount);
+
+      // Sync the transactions
+      const transactions = await this.nordigenService.getAccountTransactions(
+        nordigenAccount.id,
+      );
+
+      // Convert from NordigenTransaction to Guallet Transaction
+      const data = transactions.map((t) =>
+        Transaction.fromNordigenDto(nordigenAccount.accountId, t),
+      );
+      const savedTransactions = await this.transactionsRepository.save(data);
+
+      // Update nordigen account
+      nordigenAccount.last_refreshed = new Date();
+      await this.nordigenAccountsRepository.save(nordigenAccount);
+      return savedTransactions;
+    } catch (error) {
+      this.logger.error(`Error syncing account`, error);
+      throw error;
+    }
   }
 }
