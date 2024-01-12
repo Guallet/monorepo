@@ -94,5 +94,14 @@ export class AccountsController {
       account_id: id,
       user_id: user.id,
     });
+
+    /*
+    TODO: Delete user:
+    - Transactions
+    - Categories
+    - Institutions
+    - Connections
+    - Rules
+    */
   }
 }
