@@ -22,6 +22,7 @@ import {
 } from "./api/connections.api";
 import { InstitutionDto } from "../settings/institutions/api/institutions.api";
 import { useState } from "react";
+import { notifications } from "@mantine/notifications";
 
 type LoaderData = {
   connection: ObConnection;
@@ -62,14 +63,32 @@ export function ConnectionDetailsPage() {
           setLoadingMessage(
             `Syncing account ${syncCounter} of ${accounts.length}`
           );
-          await syncAccountData(account.id);
+          const accountResponse = await syncAccountData(account.id);
+          if (accountResponse.ok === false) {
+            const errorMessage = await accountResponse.json();
+            console.error("Account sync failed", errorMessage);
+            throw new Error("Account sync failed: " + errorMessage.message);
+          }
         } else {
           console.error("Account has no id", account);
         }
         syncCounter++;
       }
+
+      // Display notification
+      notifications.show({
+        title: "Account sync",
+        message: `${accounts.length} ${
+          accounts.length === 1 ? "account" : "accounts"
+        } synced! 🤩`,
+      });
     } catch (e) {
       console.error("Error syncing accounts", e);
+      notifications.show({
+        color: "red",
+        title: "Sync error",
+        message: "Something went wrong: " + e,
+      });
     } finally {
       setIsLoading(false);
     }

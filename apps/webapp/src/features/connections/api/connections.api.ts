@@ -1,5 +1,5 @@
-import { get, post } from "../../../core/api/fetchHelper";
-import { InstitutionDto as GualletInstitutionDto } from "../../settings/institutions/api/institutions.api";
+import { get, getRawResponse, post } from "@/core/api/fetchHelper";
+import { InstitutionDto as GualletInstitutionDto } from "@settings/institutions/api/institutions.api";
 
 export type ObConnection = {
   id: string;
@@ -137,5 +137,5 @@ export async function linkObAccounts(accounts: string[]) {
 }
 
 export async function syncAccountData(account_id: string) {
-  return await get<any>(`openbanking/connections/${account_id}/sync`);
+  return await getRawResponse(`openbanking/connections/${account_id}/sync`);
 }
