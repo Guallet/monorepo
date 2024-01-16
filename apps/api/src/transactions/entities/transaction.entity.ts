@@ -2,7 +2,13 @@ import { Account } from 'src/accounts/entities/account.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { BaseDbEntity } from 'src/core/baseDbEntity';
 import { NordigenTransactionDto } from 'src/nordigen/dto/nordigen-transaction.dto';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { TransactionMetadata } from './transaction-metadata.model';
 
 @Entity('transactions')
@@ -24,6 +30,12 @@ export class Transaction extends BaseDbEntity {
 
   @Column()
   date: Date;
+
+  @Index()
+  @Column({ nullable: true, unique: true })
+  // NOTE: In theory, we don't need this as it's already in the metadata
+  // but it's useful for improving performance and make queries easier
+  externalId: string;
 
   @Column({ type: 'jsonb', nullable: true })
   metadata: TransactionMetadata;
@@ -50,17 +62,17 @@ export class Transaction extends BaseDbEntity {
   ) {
     const entity = new Transaction();
     entity.metadata = {
-      openBanking: {
-        provider: 'nordigen',
-        data: nordigenTransaction,
-      },
-    } as TransactionMetadata;
+      provider: 'nordigen',
+      data: nordigenTransaction,
+    };
+    entity.externalId = nordigenTransaction.transactionId;
     entity.amount = Number(nordigenTransaction.transactionAmount.amount);
     entity.currency = nordigenTransaction.transactionAmount.currency;
     entity.accountId = account_id;
     entity.date = nordigenTransaction.bookingDate;
 
     entity.description = nordigenTransaction.remittanceInformationUnstructured;
+
     return entity;
   }
 }

@@ -172,14 +172,10 @@ export class ObConnectionsController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     try {
-      const transactions =
-        await this.openbankingService.syncAccountTransactions(id);
-      return {
-        meta: {
-          transactions_count: transactions.length,
-        },
-        transactions: transactions,
-      };
+      const syncResult = await this.openbankingService.syncAccountTransactions(
+        id,
+      );
+      return syncResult;
     } catch (error) {
       this.logger.error("Couldn't get transactions");
       throw error;

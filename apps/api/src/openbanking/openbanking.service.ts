@@ -16,6 +16,7 @@ import { getAccountTypeFrom } from 'src/nordigen/dto/ExternalCashAccountType1Cod
 import { supportedCountries } from 'src/admin/admin.service';
 import { Institution } from 'src/institutions/entities/institution.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { NordigenTransactionDto } from 'src/nordigen/dto/nordigen-transaction.dto';
 
 @Injectable()
 export class OpenbankingService {
@@ -217,7 +218,7 @@ export class OpenbankingService {
     };
   }
 
-  async syncAccountTransactions(accountId: string): Promise<Transaction[]> {
+  async syncAccountTransactions(accountId: string) {
     this.logger.debug(`Syncing Nordigen account ${accountId}`);
     const nordigenAccount = await this.nordigenAccountsRepository.findOne({
       where: {
@@ -251,6 +252,7 @@ export class OpenbankingService {
       await this.accountRepository.save(gualletAccount);
 
       // Sync the transactions
+      // TODO: As we know the last sync date, should we only sync the transactions since then?
       const transactions = await this.nordigenService.getAccountTransactions(
         nordigenAccount.id,
       );
@@ -259,12 +261,14 @@ export class OpenbankingService {
       const data = transactions.map((t) =>
         Transaction.fromNordigenDto(nordigenAccount.accountId, t),
       );
-      const savedTransactions = await this.transactionsRepository.save(data);
+      const savedTransactions = await this.transactionsRepository.upsert(data, {
+        conflictPaths: ['externalId'],
+        skipUpdateIfNoValuesChanged: true,
+      });
 
       // Update nordigen account
       nordigenAccount.last_refreshed = new Date();
       await this.nordigenAccountsRepository.save(nordigenAccount);
-      return savedTransactions;
     } catch (error) {
       this.logger.error(`Error syncing account`, error);
       throw error;

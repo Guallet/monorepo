@@ -1,14 +1,11 @@
 import { NordigenTransactionDto } from 'src/nordigen/dto/nordigen-transaction.dto';
 
 export interface TransactionMetadata {
-  openBanking: {
-    provider: 'nordigen';
-    data: NordigenTransactionDto | null;
-  } | null;
-  impoter: {
-    source: 'moneydashboard' | 'csv' | 'manual';
-    original: string;
-  } | null;
+  provider: TransactionDataProvider;
+  data: NordigenTransactionDto | string | null;
 }
 
-export type OpenBankingProvider = 'nordigen';
+export type TransactionDataProvider =
+  | 'nordigen'
+  | 'moneydashboard-importer'
+  | 'csv-importer';
