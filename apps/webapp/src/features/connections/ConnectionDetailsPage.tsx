@@ -11,10 +11,11 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { LoaderFunction, useLoaderData } from "react-router-dom";
+import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
 import {
   ObAccountDto,
   ObConnection,
+  deleteConnection,
   getInstitution,
   getObAccountsForConnection,
   loadConnection,
@@ -49,9 +50,31 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 export function ConnectionDetailsPage() {
   const { connection, accounts, institution } = useLoaderData() as LoaderData;
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Loading data...");
+
+  const onDeleteConnection = async () => {
+    try {
+      setIsLoading(true);
+      await deleteConnection(connection.id);
+      navigate("/connections");
+      notifications.show({
+        title: "Connection deleted",
+        message: "Open Banking Connection deleted",
+      });
+    } catch (e) {
+      console.error("Error syncing accounts", e);
+      notifications.show({
+        color: "red",
+        title: "Error deleting the connection",
+        message: "Something went wrong: " + e,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const syncConnectionData = async () => {
     try {
@@ -166,7 +189,14 @@ export function ConnectionDetailsPage() {
           >
             Update data now
           </Button>
-          <Button color="red">Delete connection</Button>
+          <Button
+            color="red"
+            onClick={() => {
+              onDeleteConnection();
+            }}
+          >
+            Delete connection
+          </Button>
         </Stack>
       </Box>
     </>

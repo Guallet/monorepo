@@ -16,7 +16,6 @@ import { getAccountTypeFrom } from 'src/nordigen/dto/ExternalCashAccountType1Cod
 import { supportedCountries } from 'src/admin/admin.service';
 import { Institution } from 'src/institutions/entities/institution.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
-import { NordigenTransactionDto } from 'src/nordigen/dto/nordigen-transaction.dto';
 
 @Injectable()
 export class OpenbankingService {
@@ -48,6 +47,37 @@ export class OpenbankingService {
         name: regionNames.of(code),
       };
     });
+  }
+
+  async deleteConnection(args: { user_id: string; connection_id: string }) {
+    const { user_id, connection_id } = args;
+    const connection = await this.repository.findOne({
+      where: {
+        user_id: user_id,
+        id: connection_id,
+      },
+    });
+
+    if (connection === null) {
+      throw new NotFoundException();
+    }
+
+    // TODO: Delete the OB accounts from the DB
+    const accountsToDelete = connection.accounts;
+    const deletedAccounts = [];
+    for (const accountId of accountsToDelete) {
+      const deletedAccount = await this.nordigenAccountsRepository.delete({
+        id: accountId,
+      });
+      deletedAccounts.push(deletedAccount);
+    }
+
+    const removed = await this.repository.remove(connection);
+
+    return {
+      connection: removed,
+      accounts: deletedAccounts,
+    };
   }
 
   async saveRequisition(user_id: string, dto: NordigenRequisitionDto) {

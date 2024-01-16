@@ -1,4 +1,9 @@
-import { get, getRawResponse, post } from "@/core/api/fetchHelper";
+import {
+  fetch_delete,
+  get,
+  getRawResponse,
+  post,
+} from "@/core/api/fetchHelper";
 import { InstitutionDto as GualletInstitutionDto } from "@settings/institutions/api/institutions.api";
 
 export type ObConnection = {
@@ -138,4 +143,8 @@ export async function linkObAccounts(accounts: string[]) {
 
 export async function syncAccountData(account_id: string) {
   return await getRawResponse(`openbanking/connections/${account_id}/sync`);
+}
+
+export async function deleteConnection(connection_id: string) {
+  return await fetch_delete(`openbanking/connections/${connection_id}`);
 }

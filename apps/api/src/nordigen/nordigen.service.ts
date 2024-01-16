@@ -296,6 +296,36 @@ export class NordigenService {
       this.handleHttpStatusCodes(response, true);
     }
   }
+
+  async makeDeleteRequest<T>(path: string): Promise<T> {
+    const url = `${this.BASE_URL}${path}`;
+    const token = await this.getAccessToken();
+
+    try {
+      const response = await firstValueFrom(
+        this.httpService
+          .delete(url, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/json',
+            },
+          })
+          .pipe(
+            catchError((e) => {
+              throw e.response;
+            }),
+          ),
+      );
+      // Search for common HTTP status codes
+      this.handleHttpStatusCodes(response);
+
+      // If no exception thrown in the step before, then return the data
+      return response.data;
+    } catch (response) {
+      this.logger.error(`Error making Nordigen GET request to ${path}`);
+      this.handleHttpStatusCodes(response, true);
+    }
+  }
   //#endregion
 
   //# region requisitions
@@ -333,5 +363,22 @@ export class NordigenService {
     return response;
   }
 
+  async deleteRequisition(
+    requisition_id: string,
+  ): Promise<DeleteRequisitionResponse> {
+    this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
+    const path = `/api/v2/requisitions/${requisition_id}`;
+
+    const response = await this.makeDeleteRequest<DeleteRequisitionResponse>(
+      path,
+    );
+    return response;
+  }
+
   //#endregion
 }
+
+export type DeleteRequisitionResponse = {
+  summary: string;
+  detail: string;
+};

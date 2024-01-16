@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Logger,
   NotFoundException,
@@ -40,7 +41,6 @@ export class ObConnectionsController {
     return this.nordigenService.getInstitutions(country);
   }
 
-  @ApiTags('Open Banking')
   @Get('institutions/:id')
   async getInstitution(@Param('id') id: string) {
     const institution = await this.institutionService.findOneByNordigenId(id);
@@ -63,6 +63,29 @@ export class ObConnectionsController {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  @Delete('connections/:id')
+  async deleteConnection(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const deleteResult = await this.openbankingService.deleteConnection({
+      connection_id: id,
+      user_id: user.id,
+    });
+
+    try {
+      await this.nordigenService.deleteRequisition(deleteResult.connection.id);
+    } catch (error) {
+      // Log the error but don't throw it
+      this.logger.error(
+        `Couldn't delete requisition ${id} from Nordigen`,
+        error,
+      );
+    }
+
+    return deleteResult;
   }
 
   @Get('connections/:id/accounts')
