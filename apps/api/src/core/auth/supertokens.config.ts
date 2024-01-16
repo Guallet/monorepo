@@ -68,5 +68,67 @@ export const recipeList = (configService: ConfigService) => [
     ],
     contactMethod: 'EMAIL',
     flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
+    // override: {
+    //   functions: (originalImplementation) => {
+    //     return {
+    //       ...originalImplementation,
+    //       // override the thirdparty sign in / up API
+    //       thirdPartySignInUp: async function (input) {
+    //         // TODO: Some pre sign in / up logic
+
+    //         const response = await originalImplementation.thirdPartySignInUp(
+    //           input,
+    //         );
+
+    //         if (response.status === 'OK') {
+    //           const { id, emails } = response.user;
+
+    //           // This is the response from the OAuth 2 provider that contains their tokens or user info.
+    //           const providerAccessToken = response.oAuthTokens['access_token'];
+    //           const firstName =
+    //             response.rawUserInfoFromProvider.fromUserInfoAPI!['first_name'];
+
+    //           if (
+    //             response.createdNewRecipeUser &&
+    //             response.user.loginMethods.length === 1
+    //           ) {
+    //             // TODO: Post sign up logic
+    //             // TODO: Emit message for "new user created"
+    //           } else {
+    //             // TODO: Post sign in logic
+    //             // nothing really to do here...maybe update the profile image?
+    //           }
+    //         }
+
+    //         return response;
+    //       },
+
+    //       consumeCode: async (input) => {
+    //         // First we call the original implementation of consumeCodePOST.
+    //         const response = await originalImplementation.consumeCode(input);
+
+    //         // Post sign up response, we check if it was successful
+    //         if (response.status === 'OK') {
+    //           if ('phoneNumber' in response.user) {
+    //             const { id, phoneNumbers } = response.user;
+    //           } else {
+    //             const { id, emails } = response.user;
+    //           }
+
+    //           if (
+    //             response.createdNewRecipeUser &&
+    //             response.user.loginMethods.length === 1
+    //           ) {
+    //             // TODO: post sign up logic
+    //             // TODO: Emit message for "new user created"
+    //           } else {
+    //             // TODO: post sign in logic
+    //           }
+    //         }
+    //         return response;
+    //       },
+    //     };
+    //   },
+    // },
   }),
 ];
