@@ -7,6 +7,8 @@ import {
   createAccount,
 } from "@accounts/api/accounts.api";
 import { AccountType } from "@accounts/models/Account";
+import { useState } from "react";
+import { AccountMetadataForm } from "./components/AccountMetadataForm";
 
 type FormData = {
   name: string;
@@ -59,6 +61,8 @@ function getLocalizedType(name: AccountType): string {
 export function AddAccountPage() {
   const navigate = useNavigate();
 
+  const [accountType, setAccountType] = useState<AccountType | null>(null);
+
   const accountTypes = Object.entries(AccountType).map(
     ({ "0": name, "1": accountType }) => {
       return {
@@ -70,7 +74,15 @@ export function AddAccountPage() {
 
   return (
     <Form method="post" id="add-account-form">
+      <TextInput
+        name="name"
+        label="Account name"
+        required
+        placeholder="Enter account name"
+      />
+
       <NativeSelect
+        required
         rightSection={
           <IconChevronDown style={{ width: rem(16), height: rem(16) }} />
         }
@@ -78,13 +90,10 @@ export function AddAccountPage() {
         data={accountTypes}
         mt="md"
         name="account_type"
-      />
-
-      <TextInput
-        name="name"
-        label="Account name"
-        required
-        placeholder="Enter account name"
+        value={accountType ?? ""}
+        onChange={(event) => {
+          setAccountType(event.currentTarget.value as AccountType);
+        }}
       />
 
       <TextInput
@@ -98,13 +107,15 @@ export function AddAccountPage() {
 
       <TextInput
         name="balance"
-        label="Account balance"
+        label="Initial balance"
         required
         description="Initial balance of the account"
         defaultValue={0}
         type="number"
         leftSection={"£"}
       />
+      {accountType && <AccountMetadataForm accountType={accountType} />}
+
       <Group>
         <Button type="submit">Save</Button>
         <Button
