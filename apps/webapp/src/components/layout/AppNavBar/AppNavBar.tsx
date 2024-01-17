@@ -42,7 +42,7 @@ const menuData: MenuData[] = [
     icon: IconCash,
     subLinks: [
       { label: "All transactions", link: "/transactions" },
-      { label: "Inbox (4)", link: "/transactions/inbox" },
+      { label: "Inbox", link: "/transactions/inbox" },
       { label: "Categories", link: "/categories" },
       { label: "Rules", link: "/categories/rules" },
     ],
@@ -76,6 +76,7 @@ interface Props {
 
 export function AppNavBar({ onItemSelected }: Props) {
   const navigate = useNavigate();
+
   const links = menuData.map((item) => (
     <LinksGroup {...item} key={item.label} onItemSelected={onItemSelected} />
   ));
