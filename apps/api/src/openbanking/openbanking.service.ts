@@ -263,7 +263,7 @@ export class OpenbankingService {
 
     const gualletAccount = await this.accountRepository.findOne({
       where: {
-        // For now, the app assumes the Nordigen Account ID and the Guallet app account ID are the same
+        // NOTE: For now, the app assumes the Nordigen Account ID and the Guallet app account ID are the same
         id: nordigenAccount.accountId,
       },
     });
@@ -291,7 +291,7 @@ export class OpenbankingService {
       const data = transactions.map((t) =>
         Transaction.fromNordigenDto(nordigenAccount.accountId, t),
       );
-      const savedTransactions = await this.transactionsRepository.upsert(data, {
+      await this.transactionsRepository.upsert(data, {
         conflictPaths: ['externalId'],
         skipUpdateIfNoValuesChanged: true,
       });
