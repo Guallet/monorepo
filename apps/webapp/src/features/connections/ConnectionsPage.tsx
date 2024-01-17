@@ -136,7 +136,7 @@ export function ConnectionsTable({
           <Table.Th>Status</Table.Th>
           <Table.Th>Created</Table.Th>
           <Table.Th>Expires in</Table.Th>
-          <Table.Th>Actions</Table.Th>
+          {/* <Table.Th>Actions</Table.Th> */}
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
@@ -189,7 +189,7 @@ export function ConnectionTableRow({
         {/* <Text>{connection.agreement} days left</Text> */}
         <Text>X days left</Text>
       </Table.Td>
-      <Table.Td>
+      {/* <Table.Td>
         <Group>
           <Tooltip label="Edit">
             <ActionIcon>
@@ -202,7 +202,7 @@ export function ConnectionTableRow({
             </ActionIcon>
           </Tooltip>
         </Group>
-      </Table.Td>
+      </Table.Td> */}
     </Table.Tr>
   );
 }
