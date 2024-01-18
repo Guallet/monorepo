@@ -1,4 +1,9 @@
 import { AccountType } from "@accounts/models/Account";
+import { CreditCardForm } from "./CreditCardForm";
+import { CurrentAccountForm } from "./CurrentAccountForm";
+import { LoanForm } from "./LoanForm";
+import { MortgageForm } from "./MortgageForm";
+import { SavingsForm } from "./SavingsForm";
 
 export interface AccountMetadataFormProps {
   accountType: AccountType;
