@@ -2,6 +2,7 @@ import { Avatar, Group, Text, rem } from "@mantine/core";
 import { Account } from "../models/Account";
 import { IconChevronRight } from "@tabler/icons-react";
 import { BaseButton } from "@/components/Buttons/BaseButton";
+import { Money } from "@guallet/money";
 
 interface Props {
   account: Account;
@@ -9,10 +10,7 @@ interface Props {
 }
 
 export function AccountRow({ account, onClick }: Props) {
-  const currencyFormatter = Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: account.currency,
-  });
+  const money = Money.fromCode(account.balance, account.currency);
 
   return (
     <BaseButton
@@ -30,7 +28,7 @@ export function AccountRow({ account, onClick }: Props) {
           alt={account.financial_institution?.name}
         />
         <Text>{account.name}</Text>
-        <Text>{currencyFormatter.format(account.balance)}</Text>
+        <Text>{money.format()}</Text>
         {/* <Text>{'Last update: ' + account.connection_details?.last_refreshed}</Text> */}
         {/* <Button radius="xl">Refresh</Button> */}
 

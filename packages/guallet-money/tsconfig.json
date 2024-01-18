@@ -1,0 +1,11 @@
+{
+  "extends": "tsconfig/ts-library.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["/*"]
+    }
+  }
+}

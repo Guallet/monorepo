@@ -44,7 +44,8 @@
       "@user/*": ["./src/features/user/*"],
 
       //Packages
-      "@guallet/ui-react": ["./packages/guallet-ui-react/*"]
+      "@guallet/ui-react": ["./packages/guallet-ui-react/*"],
+      "@guallet/money": ["./packages/guallet-money/*"]
     }
   },
   "include": ["src"],

@@ -1,5 +1,6 @@
 import GroupHeader from "@/components/GroupHeader/GroupHeader";
 import { Account, AccountType } from "@accounts/models/Account";
+import { Money } from "@guallet/money";
 import "core-js/actual/array/group-by";
 
 function getAccountTypeTitle(type: AccountType): string {
@@ -45,34 +46,27 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
     );
 
     if (currencies.length == 1) {
-      // let currencyFormat = Intl.NumberFormat('en-GB', {
-      const currencyFormatter = Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency: currencies[0][0],
-      });
-
       // Display Single Balance
-      let total = accounts.map((e) => +e.balance);
-      let sum = sumArray(total);
+      const total = accounts.map((e) => +e.balance);
+      const sum = sumArray(total);
 
-      return currencyFormatter.format(sum);
+      const money = Money.fromCode(sum, currencies[0][0]);
+      return money.format();
     } else if (currencies.length == 2) {
       // Display 2 Balances
       const balances = currencies.map((entry) => {
         const currency = entry[0];
         const accounts = entry[1] as Account[];
 
-        let total = accounts.map((e) => +e.balance);
-        let sum = sumArray(total);
-        const currencyFormatter = Intl.NumberFormat(undefined, {
-          style: "currency",
-          currency: currency,
-        });
-        return currencyFormatter.format(sum);
+        const total = accounts.map((e) => +e.balance);
+        const sum = sumArray(total);
+
+        const money = Money.fromCode(sum, currency);
+        return money.format();
       });
       return balances.join(" + ");
     } else {
-      // Dont' display anything. Too many balances
+      // Don't display anything. Too many balances
       return "";
     }
   }
