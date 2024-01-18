@@ -9,7 +9,7 @@ import {
 import { AccountType } from "@accounts/models/Account";
 import { useState } from "react";
 import { AccountMetadataForm } from "./components/AccountMetadataForm";
-import { ISO4217Currencies } from "@guallet/money";
+import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
 
 type FormData = {
   name: string;
@@ -59,14 +59,6 @@ function getLocalizedType(name: AccountType): string {
   }
 }
 
-const currencyCodes = Object.values(ISO4217Currencies)
-  .map((currency) => {
-    return currency.code;
-  })
-  .sort();
-// Remove the first element (antartica)
-currencyCodes.shift();
-
 export function AddAccountPage() {
   const navigate = useNavigate();
 
@@ -105,15 +97,12 @@ export function AddAccountPage() {
           setAccountType(event.currentTarget.value as AccountType);
         }}
       />
-      <NativeSelect
+      <CurrencyPicker
         name="currency"
-        label="Account currency"
-        description="The currency of the account"
         required
-        data={currencyCodes}
         value={currency}
-        onChange={(event) => {
-          setCurrency(event.currentTarget.value);
+        onValueChanged={(newValue) => {
+          setCurrency(newValue);
         }}
       />
 
