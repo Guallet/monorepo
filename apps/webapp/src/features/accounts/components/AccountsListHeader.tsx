@@ -50,7 +50,7 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
       const total = accounts.map((e) => +e.balance);
       const sum = sumArray(total);
 
-      const money = Money.fromCode(sum, currencies[0][0]);
+      const money = Money.withCurrencyCode(sum, currencies[0][0]);
       return money.format();
     } else if (currencies.length == 2) {
       // Display 2 Balances
@@ -61,7 +61,7 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
         const total = accounts.map((e) => +e.balance);
         const sum = sumArray(total);
 
-        const money = Money.fromCode(sum, currency);
+        const money = Money.withCurrencyCode(sum, currency);
         return money.format();
       });
       return balances.join(" + ");

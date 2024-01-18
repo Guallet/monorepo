@@ -9,7 +9,7 @@ export class Money {
     this.currency = currency;
   }
 
-  static fromCode(amount: number, currencyCode: string): Money {
+  static withCurrencyCode(amount: number, currencyCode: string): Money {
     return new Money(amount, Currency.fromCode(currencyCode));
   }
 

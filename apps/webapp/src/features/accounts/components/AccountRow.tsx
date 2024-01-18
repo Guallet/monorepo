@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function AccountRow({ account, onClick }: Props) {
-  const money = Money.fromCode(account.balance, account.currency);
+  const money = Money.withCurrencyCode(account.balance, account.currency);
 
   return (
     <BaseButton
