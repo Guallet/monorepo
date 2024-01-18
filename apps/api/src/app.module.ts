@@ -1,15 +1,19 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ScheduleModule } from '@nestjs/schedule';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { join } from 'path';
 import { LoggerModule } from 'nestjs-pino';
 import { AccountsModule } from './accounts/accounts.module';
 import { InstitutionsModule } from './institutions/institutions.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { HttpLoggerMiddleware } from './core/middleware/http-logger.middleware';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+
 import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { RulesModule } from './rules/rules.module';
@@ -31,6 +35,8 @@ import configuration from './configuration';
       envFilePath: ['.env.local', '.env'],
       load: [configuration],
     }),
+    // CRON
+    ScheduleModule.forRoot(),
     // LOGGING
     LoggerModule.forRootAsync({
       imports: [ConfigModule],

@@ -14,6 +14,7 @@ import { InstitutionsService } from 'src/institutions/institutions.service';
 import { Institution } from 'src/institutions/entities/institution.entity';
 import { ObAccountsController } from './ObAccounts.controller';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { SyncService } from './sync.service';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { Transaction } from 'src/transactions/entities/transaction.entity';
     NordigenService,
     NordigenAccountRepository,
     InstitutionsService,
+    SyncService,
   ],
 })
 export class OpenbankingModule {}
