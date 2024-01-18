@@ -17,11 +17,12 @@ This Turborepo includes the following packages/apps:
 
 - `api`: a [NestJS](https://nestjs.com/) app, providing a REST and GraphQL apis
 - `webapp`: a Vite+React app
-- `ui`: a stub React component library shared by all applications
+- `guallet-money`: utility package with functions and classes to work with money and currencies
+- `guallet-ui-react`: a stub React component library shared by all applications
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
 
