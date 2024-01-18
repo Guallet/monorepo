@@ -335,30 +335,6 @@ importers:
 
   packages/tsconfig: {}
 
-  packages/ui:
-    devDependencies:
-      '@types/react':
-        specifier: ^18.2.0
-        version: 18.2.37
-      '@types/react-dom':
-        specifier: ^18.2.0
-        version: 18.2.15
-      eslint:
-        specifier: ^7.32.0
-        version: 7.32.0
-      eslint-config-custom:
-        specifier: workspace:*
-        version: link:../eslint-config-custom
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      tsconfig:
-        specifier: workspace:*
-        version: link:../tsconfig
-      typescript:
-        specifier: ^4.5.2
-        version: 4.9.5
-
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
