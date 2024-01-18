@@ -10,7 +10,7 @@ export class Money {
   }
 
   static withCurrencyCode(amount: number, currencyCode: string): Money {
-    return new Money(amount, Currency.fromCode(currencyCode));
+    return new Money(amount, Currency.fromISOCode(currencyCode));
   }
 
   format(): string {

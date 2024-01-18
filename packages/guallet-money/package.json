@@ -4,7 +4,9 @@
   "description": "Common Money utils",
   "main": "./index.ts",
   "types": "./index.ts",
-  "dependencies": {},
+  "dependencies": {
+    "@iso4217/json": "^20230101.1.10"
+  },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-custom": "workspace:*",

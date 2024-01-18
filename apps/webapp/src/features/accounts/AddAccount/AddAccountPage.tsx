@@ -9,6 +9,7 @@ import {
 import { AccountType } from "@accounts/models/Account";
 import { useState } from "react";
 import { AccountMetadataForm } from "./components/AccountMetadataForm";
+import { ISO4217Currencies } from "@guallet/money";
 
 type FormData = {
   name: string;
@@ -58,10 +59,19 @@ function getLocalizedType(name: AccountType): string {
   }
 }
 
+const currencyCodes = Object.values(ISO4217Currencies)
+  .map((currency) => {
+    return currency.code;
+  })
+  .sort();
+// Remove the first element (antartica)
+currencyCodes.shift();
+
 export function AddAccountPage() {
   const navigate = useNavigate();
 
   const [accountType, setAccountType] = useState<AccountType | null>(null);
+  const [currency, setCurrency] = useState("GBP"); // Get the default currency from the user settings
 
   const accountTypes = Object.entries(AccountType).map(
     ({ "0": name, "1": accountType }) => {
@@ -95,14 +105,16 @@ export function AddAccountPage() {
           setAccountType(event.currentTarget.value as AccountType);
         }}
       />
-
-      <TextInput
+      <NativeSelect
         name="currency"
         label="Account currency"
-        required
-        type="text"
         description="The currency of the account"
-        defaultValue={"GBP"} // Get this from the user settings
+        required
+        data={currencyCodes}
+        value={currency}
+        onChange={(event) => {
+          setCurrency(event.currentTarget.value);
+        }}
       />
 
       <TextInput

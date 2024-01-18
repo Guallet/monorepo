@@ -279,6 +279,10 @@ importers:
         version: 7.33.2(eslint@8.53.0)
 
   packages/guallet-money:
+    dependencies:
+      '@iso4217/json':
+        specifier: ^20230101.1.10
+        version: 20230101.1.10(typescript@4.9.5)
     devDependencies:
       eslint:
         specifier: ^7.32.0
@@ -1379,6 +1383,18 @@ packages:
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: /wrap-ansi@7.0.0
     dev: true
+
+  /@iso4217/json@20230101.1.10(typescript@4.9.5):
+    resolution: {integrity: sha512-DqGMsgDGR169L9eB5YJ9bzOl5RBQ9R5uERS6dINsF6uPaoGzL8zKIy/chGYDezV7C+XpHxEtNhFPs94fgwYW5g==}
+    requiresBuild: true
+    peerDependencies:
+      typescript: '>=1.5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 4.9.5
+    dev: false
 
   /@istanbuljs/load-nyc-config@1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -9515,7 +9531,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /typescript@5.2.2:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
