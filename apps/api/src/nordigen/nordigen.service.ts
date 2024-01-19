@@ -175,7 +175,7 @@ export class NordigenService {
     const response = await this.makeGetRequest<NordigenAccountDetailsDto>(
       `/api/v2/accounts/${account_id}/details/`,
     );
-    this.logger.error(
+    this.logger.log(
       `Getting Nordigen account details for ${account_id}. Response: ${JSON.stringify(
         response,
         null,
