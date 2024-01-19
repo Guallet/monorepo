@@ -35,8 +35,6 @@ import configuration from './configuration';
       envFilePath: ['.env.local', '.env'],
       load: [configuration],
     }),
-    // CRON
-    ScheduleModule.forRoot(),
     // LOGGING
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
@@ -91,6 +89,8 @@ import configuration from './configuration';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
     }),
+    // CRON
+    ScheduleModule.forRoot(),
     // APP MODULES
     UsersModule,
     InstitutionsModule,
