@@ -42,7 +42,7 @@ export class SyncService {
     this.logger.debug('Syncing Open Banking institutions completed');
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10PM, {
+  @Cron(CronExpression.EVERY_DAY_AT_11AM, {
     name: CRON_JOB_SYNC_ACCOUNTS_NAME,
     timeZone: CRON_JOB_TIMEZONE,
   })
