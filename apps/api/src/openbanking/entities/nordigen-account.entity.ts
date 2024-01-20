@@ -1,5 +1,10 @@
 import { ExternalCashAccountType1Code } from 'src/nordigen/dto/ExternalCashAccountType1Code.helper';
 import {
+  NordigenAccountDto,
+  NordigenAccountMetadataDto,
+  NordigenAccountStatus,
+} from 'src/nordigen/dto/nordigen-account.dto';
+import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -42,7 +47,16 @@ export class NordigenAccount {
   owner_name: string;
 
   //metadata
+  @Column({ nullable: true })
+  metadata_status: NordigenAccountStatus;
+
+  @Column({ type: 'jsonb', nullable: true })
+  metadata_raw: NordigenAccountMetadataDto;
+
   //details
+  @Column({ type: 'jsonb', nullable: true })
+  details_raw: NordigenAccountDto;
+
   @Column({ nullable: true })
   currency: string;
 

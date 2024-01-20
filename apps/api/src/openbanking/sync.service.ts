@@ -1,9 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NordigenAccount } from './entities/nordigen-account.entity';
 import { OpenbankingService } from './openbanking.service';
+import { NordigenService } from 'src/nordigen/nordigen.service';
+import { Account } from 'src/accounts/entities/account.entity';
+import {
+  Money,
+  getBalanceAmountFrom,
+  getMoneyBalanceFrom,
+} from 'src/nordigen/dto/nordigen-balances.helper';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
@@ -16,6 +28,9 @@ export class SyncService {
   constructor(
     @InjectRepository(NordigenAccount)
     private nordigenAccountsRepository: Repository<NordigenAccount>,
+    @InjectRepository(Account)
+    private accountsRepository: Repository<Account>,
+    private nordigenService: NordigenService,
     private openBankingService: OpenbankingService, // private nordigenAccountsRepository: NordigenAccountRepository,
   ) {}
 
@@ -53,13 +68,139 @@ export class SyncService {
 
   async syncConnectedAccounts() {
     // Get all connected accounts
-    const accounts = await this.nordigenAccountsRepository.find();
+    const accounts = await this.nordigenAccountsRepository.find({
+      where: {
+        status: 'READY',
+      },
+    });
     for (const account of accounts) {
-      await this.openBankingService.syncAccountTransactions(account.id);
+      await this.syncNordigenAccount(account.id);
     }
 
     this.logger.log(
       `Transactions sync completed => Accounts synced: ${accounts.length}`,
     );
+  }
+
+  async syncNordigenAccount(account_id: string) {
+    try {
+      console.log(`Syncing Nordigen Account: ${account_id}`);
+      // Get the accounts from the DB
+      const nordigenAccount = await this.nordigenAccountsRepository.findOne({
+        where: {
+          id: account_id,
+        },
+      });
+
+      if (nordigenAccount === null) {
+        this.logger.error(`Nordigen Account with id '${account_id}' not found`);
+        throw new NotFoundException(`Account not found`);
+      }
+
+      // Validate the account can be updated
+      if (nordigenAccount.metadata_status !== 'READY') {
+        this.logger.error(
+          `Nordigen Account with id '${account_id}' is not ready for sync`,
+        );
+        throw new BadGatewayException();
+      }
+
+      // Get the linked guallet account in the DB
+      const gualletAccount = await this.accountsRepository.findOne({
+        where: {
+          // NOTE: For now, the app assumes the Nordigen Account ID and the Guallet app account ID are the same
+          id: account_id,
+        },
+      });
+
+      if (gualletAccount === null) {
+        this.logger.error(`Account with id '${account_id}' not found`);
+        // TODO: Do we need to delete this Nordigen account as there is no matching account in the app?
+        throw new NotFoundException(`Account mismatch: app account not found`);
+      }
+
+      // Get the new data from Nordigen
+      await this.updateNordigenAccountMetadata(nordigenAccount);
+      await this.updateNordigenAccountDetails(nordigenAccount);
+
+      const balance = await this.getAccountBalance(nordigenAccount);
+      if (balance === null) {
+        this.logger.error(
+          `Account Balance not found for account: ${nordigenAccount.id}`,
+        );
+      } else {
+        // Update the account balance
+        gualletAccount.balance = balance.amount;
+        this.accountsRepository.save(gualletAccount);
+      }
+
+      // Update the DB account
+      nordigenAccount.last_refreshed = new Date();
+      await this.nordigenAccountsRepository.save(nordigenAccount);
+    } catch (error) {
+      console.error(`Error syncing Nordigen Account: ${account_id}`, error);
+      throw error;
+    }
+  }
+
+  private async updateNordigenAccountMetadata(
+    account: NordigenAccount,
+  ): Promise<NordigenAccount> {
+    try {
+      // Refresh the account metadata
+      const metadata = await this.nordigenService.getAccountMetadata(
+        account.id,
+      );
+
+      account.metadata_raw = metadata;
+      account.metadata_status = metadata.status;
+
+      return account;
+    } catch (error) {
+      console.error(
+        `Error refreshing Nordigen Account Metadata: ${account.id}`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  private async updateNordigenAccountDetails(
+    account: NordigenAccount,
+  ): Promise<NordigenAccount> {
+    try {
+      const details = await this.nordigenService.getAccountDetails(account.id);
+
+      // Update the DB account
+      account.details_raw = details;
+      account.status = details.status;
+      // The rest of the details should not be changed as they are "immutable"
+
+      return account;
+    } catch (error) {
+      console.error(
+        `Error refreshing Nordigen Account Details: ${account.id}`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  private async getAccountBalance(account: NordigenAccount): Promise<Money> {
+    try {
+      this.logger.log(`Syncing Account Balance:${account.id}`);
+
+      // Sync the balances
+      const balances = await this.nordigenService.getAccountBalance(account.id);
+
+      const balance = getMoneyBalanceFrom(balances);
+      return balance;
+    } catch (error) {
+      console.error(
+        `Error refreshing Nordigen Account Balance: ${account.id}`,
+        error,
+      );
+      throw error;
+    }
   }
 }

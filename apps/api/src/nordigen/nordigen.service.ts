@@ -17,7 +17,7 @@ import {
   NordigenAccountDetailsDto,
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from './dto/nordige-account.dto';
+} from './dto/nordigen-account.dto';
 import {
   NordigenTransactionDto,
   NordigenTransactionsDto,
@@ -70,7 +70,7 @@ export class NordigenService {
       }
     } else {
       // Get a new one
-      this.logger.log('No existing token. Getting a new one');
+      this.logger.warn('No existing token. Getting a new one');
       return await this.getNewToken();
     }
   }
@@ -143,7 +143,7 @@ export class NordigenService {
 
   private isTokenExpired(token: NordigenToken): boolean {
     const now = new Date();
-    return token.access_expires_on <= now;
+    return token.access_expires_on < now;
   }
 
   //#endregion
@@ -234,7 +234,9 @@ export class NordigenService {
       // If no exception thrown in the step before, then return the data
       return response.data;
     } catch (response) {
-      this.logger.error(`Error making Nordigen GET request to ${path}`);
+      this.logger.error(
+        `Error making Nordigen GET request to ${path}. Error: ${typeof response}}`,
+      );
       this.handleHttpStatusCodes(response, true);
     }
   }

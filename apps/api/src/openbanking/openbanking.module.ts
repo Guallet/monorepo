@@ -15,6 +15,7 @@ import { Institution } from 'src/institutions/entities/institution.entity';
 import { ObAccountsController } from './ObAccounts.controller';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { SyncService } from './sync.service';
+import { ObASyncController } from './ObSync.controller';
 
 @Module({
   imports: [
@@ -29,7 +30,11 @@ import { SyncService } from './sync.service';
       Transaction,
     ]),
   ],
-  controllers: [ObConnectionsController, ObAccountsController],
+  controllers: [
+    ObConnectionsController,
+    ObAccountsController,
+    ObASyncController,
+  ],
   providers: [
     OpenbankingService,
     NordigenService,

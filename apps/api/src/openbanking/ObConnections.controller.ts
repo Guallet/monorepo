@@ -108,6 +108,7 @@ export class ObConnectionsController {
           const accountMetadata = await this.nordigenService.getAccountMetadata(
             accountId,
           );
+
           if (accountMetadata.status === 'READY') {
             try {
               const accountDetails =

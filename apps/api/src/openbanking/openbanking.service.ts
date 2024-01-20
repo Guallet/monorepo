@@ -110,15 +110,16 @@ export class OpenbankingService {
   async connectToAccounts(userId: string, accountIds: string[]) {
     try {
       for (const accountId of accountIds) {
-        this.logger.debug(`Syncing nordigen account: ${accountId}`);
+        this.logger.log(`Syncing nordigen account: ${accountId}`);
         await this.connectToAccount(userId, accountId);
-        this.logger.debug(`Nordigen account synced: ${accountId}`);
+        this.logger.log(`Nordigen account synced: ${accountId}`);
       }
 
       return {
         accounts_count: accountIds.length,
       };
     } catch (error) {
+      this.logger.error(`Error syncing accounts: ${error}`);
       throw new InternalServerErrorException();
     }
   }
@@ -248,8 +249,11 @@ export class OpenbankingService {
     };
   }
 
+  /**
+   * @deprecated The method should not be used as is no longer maintained. Use 'SyncService.syncNordigenAccount()' instead.
+   */
   async syncAccountTransactions(accountId: string) {
-    this.logger.debug(`Syncing Nordigen account ${accountId}`);
+    this.logger.log(`Syncing Nordigen account ${accountId}`);
     const nordigenAccount = await this.nordigenAccountsRepository.findOne({
       where: {
         id: accountId,
@@ -274,6 +278,12 @@ export class OpenbankingService {
     }
 
     try {
+      // Sync Account Details and metadata
+      const metadata = await this.nordigenService.getAccountMetadata(
+        nordigenAccount.id,
+      );
+      nordigenAccount.status = metadata.status;
+
       // Sync the balances
       const balances = await this.nordigenService.getAccountBalance(
         nordigenAccount.id,
