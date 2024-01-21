@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +21,11 @@ import {
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
 const CRON_JOB_TIMEZONE = 'Europe/London';
+
+export type SyncAccountsResult = {
+  accounts_synced: number;
+  errors: string[];
+};
 
 @Injectable()
 export class SyncService {
@@ -66,20 +72,44 @@ export class SyncService {
     this.syncConnectedAccounts();
   }
 
-  async syncConnectedAccounts() {
+  async syncConnectedAccounts(): Promise<SyncAccountsResult> {
     // Get all connected accounts
     const accounts = await this.nordigenAccountsRepository.find({
       where: {
         metadata_status: 'READY',
       },
     });
+
+    const errors = [];
+
     for (const account of accounts) {
-      await this.syncNordigenAccount(account.id);
+      try {
+        await this.syncNordigenAccount(account.id);
+      } catch (error) {
+        if (error instanceof UnauthorizedException) {
+          errors.push(
+            `Access to '${account.id}' has expired or it has been revoked`,
+          );
+        } else {
+          this.logger.error(
+            `Error syncing Nordigen Account: ${account.id}`,
+            error,
+          );
+          errors.push(`Error syncing Nordigen Account: ${account.id}`);
+        }
+      }
     }
 
+    const result = {
+      accounts_synced: accounts.length,
+      errors: errors,
+    } as SyncAccountsResult;
+
     this.logger.log(
-      `Transactions sync completed => Accounts synced: ${accounts.length}`,
+      `Accounts sync completed => Accounts synced: ${JSON.stringify(result)}`,
     );
+
+    return result;
   }
 
   async syncNordigenAccount(account_id: string) {
@@ -154,6 +184,9 @@ export class SyncService {
       account.metadata_raw = metadata;
       account.metadata_status = metadata.status;
 
+      // Save the account in the DB with the new metadata
+      await this.nordigenAccountsRepository.save(account);
+
       return account;
     } catch (error) {
       console.error(
@@ -175,13 +208,25 @@ export class SyncService {
       account.status = details.status;
       // The rest of the details should not be changed as they are "immutable"
 
+      // Save the account in the DB with the new details
+      await this.nordigenAccountsRepository.save(account);
+
       return account;
     } catch (error) {
-      console.error(
-        `Error refreshing Nordigen Account Details: ${account.id}`,
-        error,
-      );
-      throw error;
+      if (error instanceof UnauthorizedException) {
+        // "Access has expired or it has been revoked. To restore access reconnect the account.",
+        console.error(
+          `Access has expired or it has been revoked. To restore access reconnect the account ${account.id}`,
+          error,
+        );
+        throw error;
+      } else {
+        console.error(
+          `Error refreshing Nordigen Account Details: ${account.id}`,
+          error,
+        );
+        throw error;
+      }
     }
   }
 

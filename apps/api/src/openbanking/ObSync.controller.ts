@@ -15,12 +15,8 @@ export class ObASyncController {
   async getObAccounts(@RequestUser() user: UserPrincipal) {
     if (user.isAdmin()) {
       this.logger.log('Syncing accounts triggered by user: ' + user.id);
-      try {
-        await this.syncService.syncConnectedAccounts();
-        return { status: 'SUCCESS' };
-      } catch (error) {
-        return { status: 'ERROR', error };
-      }
+      const result = await this.syncService.syncConnectedAccounts();
+      return result;
     } else {
       throw new ForbiddenException();
     }
