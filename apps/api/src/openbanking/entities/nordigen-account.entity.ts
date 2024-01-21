@@ -79,12 +79,10 @@ export class NordigenAccount {
 
   @Column({ nullable: true })
   details: string;
-  //balances
-  //transactions
 
   // Relations
   @Column({ nullable: true })
-  accountId: string;
+  linked_account_id: string;
 
   // other
   @CreateDateColumn()

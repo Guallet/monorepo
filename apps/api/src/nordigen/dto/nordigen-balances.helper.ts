@@ -3,6 +3,34 @@ import {
   NordigenAccountBalanceDto,
 } from 'src/nordigen/dto/nordigen-account.dto';
 
+// TODO: Use "@guallet/money" instead of this
+export class Money {
+  amount: number;
+  currency: string;
+
+  constructor(amount: number, currency: string) {
+    this.amount = amount;
+    this.currency = currency;
+  }
+
+  static fromCurrencyCode(args: {
+    amount: number;
+    currencyCode: string;
+  }): Money {
+    const { amount, currencyCode } = args;
+    return new Money(amount, currencyCode);
+  }
+
+  format(): string {
+    const currencyFormatter = Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: this.currency,
+    });
+
+    return currencyFormatter.format(this.amount);
+  }
+}
+
 /**
  * @deprecated The method should not be used. Use 'getMoneyBalanceFrom' instead.
  */
@@ -43,14 +71,6 @@ export function getBalanceAmountFrom(
   return 0;
 }
 
-/**
- * @deprecated Temporary while I fix the "@guallet/money" library.
- */
-export interface Money {
-  amount: number;
-  currency: string;
-}
-
 export function getMoneyBalanceFrom(
   balances: NordigenAccountBalanceDto[],
 ): Money | null {
@@ -62,40 +82,40 @@ export function getMoneyBalanceFrom(
   // If there is only 1 balance, then return it
   if (balances.length === 1) {
     const balance = balances[0];
-    return {
+    return Money.fromCurrencyCode({
       amount: Number(balance.balanceAmount.amount),
-      currency: balance.balanceAmount.currency,
-    } as Money;
+      currencyCode: balance.balanceAmount.currency,
+    });
   }
 
   const interim = balances.find(
     (a) => a.balanceType == BalanceTypeDto.INTERIM_AVAILABLE,
   );
   if (interim != null) {
-    return {
+    return Money.fromCurrencyCode({
       amount: Number(interim.balanceAmount.amount),
-      currency: interim.balanceAmount.currency,
-    } as Money;
+      currencyCode: interim.balanceAmount.currency,
+    });
   }
 
   const forwardAvailable = balances.find(
     (a) => a.balanceType == BalanceTypeDto.FORWARD_AVAILABLE,
   );
   if (forwardAvailable != null) {
-    return {
+    return Money.fromCurrencyCode({
       amount: Number(forwardAvailable.balanceAmount.amount),
-      currency: forwardAvailable.balanceAmount.currency,
-    } as Money;
+      currencyCode: forwardAvailable.balanceAmount.currency,
+    });
   }
 
   const interimBooked = balances.find(
     (a) => a.balanceType == BalanceTypeDto.INTERIM_BOOKED,
   );
   if (interimBooked != null) {
-    return {
+    return Money.fromCurrencyCode({
       amount: Number(interimBooked.balanceAmount.amount),
-      currency: interimBooked.balanceAmount.currency,
-    } as Money;
+      currencyCode: interimBooked.balanceAmount.currency,
+    });
   }
 
   return null;

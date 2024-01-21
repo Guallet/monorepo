@@ -70,7 +70,7 @@ export class SyncService {
     // Get all connected accounts
     const accounts = await this.nordigenAccountsRepository.find({
       where: {
-        status: 'READY',
+        metadata_status: 'READY',
       },
     });
     for (const account of accounts) {
@@ -108,8 +108,7 @@ export class SyncService {
       // Get the linked guallet account in the DB
       const gualletAccount = await this.accountsRepository.findOne({
         where: {
-          // NOTE: For now, the app assumes the Nordigen Account ID and the Guallet app account ID are the same
-          id: account_id,
+          id: nordigenAccount.linked_account_id,
         },
       });
 

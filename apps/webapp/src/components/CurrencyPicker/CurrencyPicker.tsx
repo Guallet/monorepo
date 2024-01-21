@@ -11,7 +11,7 @@ const currencyCodes = Object.values(ISO4217Currencies)
     return currency.code;
   })
   .sort();
-// Remove the first element (antartica)
+// Remove the first element (antarctica)
 currencyCodes.shift();
 
 export function CurrencyPicker({

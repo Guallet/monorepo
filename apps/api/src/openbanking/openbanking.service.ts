@@ -159,7 +159,7 @@ export class OpenbankingService {
 
     if (
       existingNordigenAccount === null ||
-      existingNordigenAccount.accountId === null
+      existingNordigenAccount.linked_account_id === null
     ) {
       // Creates the app account
       const tmpAccount = await this.accountRepository.findOne({
@@ -212,8 +212,8 @@ export class OpenbankingService {
     // Creates or updates the nordigen account
     const nordigenAccount = existingNordigenAccount ?? new NordigenAccount();
     nordigenAccount.id = nordigen_accountId;
-    nordigenAccount.accountId =
-      existingNordigenAccount?.accountId ?? account.id;
+    nordigenAccount.linked_account_id =
+      existingNordigenAccount?.linked_account_id ?? account.id;
     nordigenAccount.resource_id = details.resourceId;
     nordigenAccount.currency = details.currency;
     nordigenAccount.institution_id = metadata.institution_id;
@@ -267,8 +267,7 @@ export class OpenbankingService {
 
     const gualletAccount = await this.accountRepository.findOne({
       where: {
-        // NOTE: For now, the app assumes the Nordigen Account ID and the Guallet app account ID are the same
-        id: nordigenAccount.accountId,
+        id: nordigenAccount.linked_account_id,
       },
     });
 
@@ -299,7 +298,7 @@ export class OpenbankingService {
 
       // Convert from NordigenTransaction to Guallet Transaction
       const data = transactions.map((t) =>
-        Transaction.fromNordigenDto(nordigenAccount.accountId, t),
+        Transaction.fromNordigenDto(nordigenAccount.linked_account_id, t),
       );
       await this.transactionsRepository.upsert(data, {
         conflictPaths: ['externalId'],

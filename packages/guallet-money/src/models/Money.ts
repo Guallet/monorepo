@@ -9,7 +9,11 @@ export class Money {
     this.currency = currency;
   }
 
-  static fromCurrencyCode(amount: number, currencyCode: string): Money {
+  static fromCurrencyCode(args: {
+    amount: number;
+    currencyCode: string;
+  }): Money {
+    const { amount, currencyCode } = args;
     return new Money(amount, Currency.fromISOCode(currencyCode));
   }
 

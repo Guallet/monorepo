@@ -2,8 +2,9 @@
   "name": "@guallet/money",
   "version": "0.0.1",
   "description": "Common Money utils",
-  "main": "./index.ts",
-  "types": "./index.ts",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "dependencies": {
     "@iso4217/json": "^20230101.1.10"
   },
