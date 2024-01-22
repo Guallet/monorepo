@@ -14,9 +14,9 @@ import { NordigenService } from 'src/nordigen/nordigen.service';
 import { Account } from 'src/accounts/entities/account.entity';
 import {
   Money,
-  getBalanceAmountFrom,
   getMoneyBalanceFrom,
 } from 'src/nordigen/dto/nordigen-balances.helper';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
@@ -36,8 +36,10 @@ export class SyncService {
     private nordigenAccountsRepository: Repository<NordigenAccount>,
     @InjectRepository(Account)
     private accountsRepository: Repository<Account>,
+    @InjectRepository(Transaction)
+    private transactionsRepository: Repository<Transaction>,
     private nordigenService: NordigenService,
-    private openBankingService: OpenbankingService, // private nordigenAccountsRepository: NordigenAccountRepository,
+    private openBankingService: OpenbankingService,
   ) {}
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
@@ -151,17 +153,14 @@ export class SyncService {
       // Get the new data from Nordigen
       await this.updateNordigenAccountMetadata(nordigenAccount);
       await this.updateNordigenAccountDetails(nordigenAccount);
+      await this.syncAccountBalance(nordigenAccount, gualletAccount);
 
-      const balance = await this.getAccountBalance(nordigenAccount);
-      if (balance === null) {
-        this.logger.error(
-          `Account Balance not found for account: ${nordigenAccount.id}`,
-        );
-      } else {
-        // Update the account balance
-        gualletAccount.balance = balance.amount;
-        this.accountsRepository.save(gualletAccount);
-      }
+      // Sync the transactions
+      await this.syncAccountTransactions(nordigenAccount);
+
+      // Update nordigen account
+      nordigenAccount.last_refreshed = new Date();
+      await this.nordigenAccountsRepository.save(nordigenAccount);
 
       // Update the DB account
       nordigenAccount.last_refreshed = new Date();
@@ -230,18 +229,67 @@ export class SyncService {
     }
   }
 
-  private async getAccountBalance(account: NordigenAccount): Promise<Money> {
+  private async syncAccountBalance(
+    nordigen_account: NordigenAccount,
+    guallet_account: Account,
+  ) {
     try {
-      this.logger.log(`Syncing Account Balance:${account.id}`);
+      this.logger.log(`Syncing Account Balance:${nordigen_account.id}`);
 
       // Sync the balances
-      const balances = await this.nordigenService.getAccountBalance(account.id);
+      const balances = await this.nordigenService.getAccountBalance(
+        nordigen_account.id,
+      );
 
       const balance = getMoneyBalanceFrom(balances);
-      return balance;
+
+      if (balance === null) {
+        this.logger.error(
+          `Account Balance not found for account: ${nordigen_account.id}`,
+        );
+      } else {
+        // Update the account balance
+        guallet_account.balance = balance.amount;
+        this.accountsRepository.save(guallet_account);
+      }
+
+      if (balance === null) {
+        this.logger.error(
+          `Account Balance not found for account: ${nordigen_account.id}`,
+        );
+      } else {
+        guallet_account.balance = balance.amount;
+        this.accountsRepository.save(guallet_account);
+      }
     } catch (error) {
       console.error(
-        `Error refreshing Nordigen Account Balance: ${account.id}`,
+        `Error refreshing Nordigen Account Balance: ${nordigen_account.id}`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  private async syncAccountTransactions(account: NordigenAccount) {
+    try {
+      this.logger.log(`Syncing Account Transactions:${account.id}`);
+
+      // TODO: As we know the last sync date, should we only sync the transactions since then?
+      const transactions = await this.nordigenService.getAccountTransactions(
+        account.id,
+      );
+
+      // Convert from NordigenTransaction to Guallet Transaction
+      const data = transactions.map((t) =>
+        Transaction.fromNordigenDto(account.linked_account_id, t),
+      );
+      await this.transactionsRepository.upsert(data, {
+        conflictPaths: ['externalId'],
+        skipUpdateIfNoValuesChanged: true,
+      });
+    } catch (error) {
+      console.error(
+        `Error refreshing Nordigen Account Transactions: ${account.id}`,
         error,
       );
       throw error;
