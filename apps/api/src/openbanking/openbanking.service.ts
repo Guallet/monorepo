@@ -13,9 +13,9 @@ import { NordigenAccount } from './entities/nordigen-account.entity';
 import { Account } from 'src/accounts/entities/account.entity';
 import { getBalanceAmountFrom } from 'src/nordigen/dto/nordigen-balances.helper';
 import { getAccountTypeFrom } from 'src/nordigen/dto/ExternalCashAccountType1Code.helper';
-import { supportedCountries } from 'src/admin/admin.service';
 import { Institution } from 'src/institutions/entities/institution.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { supportedCountries } from './sync.service';
 
 @Injectable()
 export class OpenbankingService {

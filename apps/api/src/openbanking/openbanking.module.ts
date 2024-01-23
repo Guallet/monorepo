@@ -42,5 +42,6 @@ import { ObASyncController } from './ObSync.controller';
     InstitutionsService,
     SyncService,
   ],
+  exports: [SyncService, OpenbankingService],
 })
 export class OpenbankingModule {}

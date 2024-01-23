@@ -9,18 +9,52 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NordigenAccount } from './entities/nordigen-account.entity';
-import { OpenbankingService } from './openbanking.service';
 import { NordigenService } from 'src/nordigen/nordigen.service';
 import { Account } from 'src/accounts/entities/account.entity';
-import {
-  Money,
-  getMoneyBalanceFrom,
-} from 'src/nordigen/dto/nordigen-balances.helper';
+import { getMoneyBalanceFrom } from 'src/nordigen/dto/nordigen-balances.helper';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { InstitutionsService } from 'src/institutions/institutions.service';
+import { NordigenInstitutionDto } from 'src/nordigen/dto/nordigen-institution.dto';
+import { Institution } from 'src/institutions/entities/institution.entity';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
 const CRON_JOB_TIMEZONE = 'Europe/London';
+
+// Refactor this. Maybe saved in the DB?
+export const supportedCountries = [
+  'AT', // Austria
+  'BE', // Belgium
+  'BG', // Bulgaria
+  'HR', // Croatia
+  'CY', // Cyprus
+  'CZ', //Czechia
+  'DK', //Denmark
+  'EE', //Estonia
+  'FI', //Finland
+  'FR', //France
+  'DE', //Germany
+  'GR', //Greece
+  'HU', //Hungary
+  'IS', //Iceland
+  'IE', //Ireland
+  'IT', //Italy
+  'LV', //Latvia
+  'LI', //Liechtenstein
+  'LT', //Lithuania
+  'LU', //Luxembourg
+  'MT', //Malta
+  'NL', //Netherlands
+  'NO', //Norway
+  'PL', //Poland
+  'PT', //Portugal
+  'RO', //Romania
+  'SK', //Slovakia
+  'SI', //Slovenia
+  'ES', //Spain
+  'SE', //Sweden
+  'GB', //United Kingdom
+];
 
 export type SyncAccountsResult = {
   accounts_synced: number;
@@ -39,7 +73,7 @@ export class SyncService {
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
     private nordigenService: NordigenService,
-    private openBankingService: OpenbankingService,
+    private institutionsService: InstitutionsService,
   ) {}
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
@@ -47,21 +81,27 @@ export class SyncService {
     timeZone: CRON_JOB_TIMEZONE,
   })
   syncOpenBankingInstitutions() {
-    // for (const country of this.supportedCountries) {
-    //   this.logger.debug(`Syncing Open Banking institutions for ${country}`);
-    //   const institutions = await this.nordigenService.getInsitutions(country);
-    //   const entities = institutions.map((x: NordigenInstitutionDto) => {
-    //     const bank = new Institution();
-    //     bank.nordigen_id = x.id;
-    //     bank.name = x.name;
-    //     bank.image_src = x.logo;
-    //     bank.countries = x.countries;
+    this.logger.log('Syncing Nordigen institutions via cron job');
+    this.syncOpenBankingInstitutionsFromNordigen();
+  }
 
-    //     return bank;
-    //   });
-    //   this.institutionsService.saveAll(entities);
-    // }
+  async syncOpenBankingInstitutionsFromNordigen() {
+    for (const country of supportedCountries) {
+      this.logger.log(
+        `Syncing Open Banking institutions for country: ${country}`,
+      );
+      const institutions = await this.nordigenService.getInstitutions(country);
+      const entities = institutions.map((x: NordigenInstitutionDto) => {
+        const bank = new Institution();
+        bank.nordigen_id = x.id;
+        bank.name = x.name;
+        bank.image_src = x.logo;
+        bank.countries = x.countries;
 
+        return bank;
+      });
+      this.institutionsService.saveAll(entities);
+    }
     this.logger.log('Syncing Open Banking institutions completed');
   }
 
