@@ -1,26 +1,45 @@
-import { Button, Card, Center, Flex, Loader, Stack, Text } from "@mantine/core";
+import { FileRoute, useNavigate } from "@tanstack/react-router";
+
+import { Button, Card, Flex, Loader, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { z } from "zod";
 import {
   ObAccountDto,
   getObAccountsForConnection,
   linkObAccounts,
-} from "./api/connections.api";
-import { useEffect, useState } from "react";
-import { AppRoutes } from "../../router/AppRoutes";
+} from "@/features/connections/api/connections.api";
 
-interface LoaderData {
+const pageSearchSchema = z.object({
+  ref: z.string().optional().nullable(),
+  error: z.string().optional().nullable(),
+  details: z.string().optional().nullable(),
+});
+
+export const Route = new FileRoute(
+  "/_app/connections/connect/callback"
+).createRoute({
+  component: AddConnectionCallbackPage,
+  validateSearch: pageSearchSchema,
+  loaderDeps: ({ search: { ref, error, details } }) => ({
+    ref,
+    error,
+    details,
+  }),
+  loader: async ({ deps: { ref, error, details } }) =>
+    loader({
+      reference: ref ?? null,
+      error: error ?? null,
+      details: details ?? null,
+    }),
+});
+
+async function loader(args: {
   reference: string | null;
   error: string | null;
-  errorDetails: string | null;
-  accounts: ObAccountDto[];
-}
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const reference = url.searchParams.get("ref");
-  const error = url.searchParams.get("error");
-  const details = url.searchParams.get("details");
+  details: string | null;
+}) {
+  const { reference, error, details } = args;
   let accounts: ObAccountDto[] = [];
 
   if (!error && reference) {
@@ -32,11 +51,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     error,
     errorDetails: details,
     accounts,
-  } as LoaderData;
-};
+  };
+}
 
-export function AddConnectionCallbackPage() {
-  const { error, errorDetails, accounts } = useLoaderData() as LoaderData;
+function AddConnectionCallbackPage() {
+  const { error, errorDetails, accounts } = Route.useLoaderData();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -74,7 +93,7 @@ export function AddConnectionCallbackPage() {
         error={error}
         details={errorDetails}
         onActionPressed={() => {
-          navigate("/connections", { replace: true });
+          navigate({ to: "/connections", replace: true });
         }}
       />
     );
@@ -84,7 +103,7 @@ export function AddConnectionCallbackPage() {
     return (
       <EmptyAccountsView
         onActionPressed={() => {
-          navigate("/connections", { replace: true });
+          navigate({ to: "/connections", replace: true });
         }}
       />
     );
@@ -125,7 +144,7 @@ export function AddConnectionCallbackPage() {
       })}
       <Button
         onClick={() => {
-          navigate(AppRoutes.Accounts.ACCOUNTS, { replace: true });
+          navigate({ to: "/accounts", replace: true });
         }}
       >
         Go back to accounts

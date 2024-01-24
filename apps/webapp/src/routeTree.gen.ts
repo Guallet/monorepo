@@ -12,14 +12,18 @@ import { Route as AppUserIndexImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexImport } from './routes/_app/transactions/index'
 import { Route as AppSettingsIndexImport } from './routes/_app/settings/index'
 import { Route as AppDashboardIndexImport } from './routes/_app/dashboard/index'
+import { Route as AppConnectionsIndexImport } from './routes/_app/connections/index'
 import { Route as AppCategoriesIndexImport } from './routes/_app/categories/index'
 import { Route as AppAccountsIndexImport } from './routes/_app/accounts/index'
 import { Route as AppUserEditImport } from './routes/_app/user/edit'
 import { Route as AppTransactionsInboxImport } from './routes/_app/transactions/inbox'
+import { Route as AppConnectionsIdImport } from './routes/_app/connections/$id'
 import { Route as AppAccountsAddImport } from './routes/_app/accounts/add'
 import { Route as AppAccountsIdImport } from './routes/_app/accounts/$id'
 import { Route as AppSettingsInstitutionsIndexImport } from './routes/_app/settings/institutions/index'
+import { Route as AppConnectionsConnectIndexImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexImport } from './routes/_app/categories/rules/index'
+import { Route as AppConnectionsConnectCallbackImport } from './routes/_app/connections/connect/callback'
 import { Route as AppCategoriesRulesCreateImport } from './routes/_app/categories/rules/create'
 import { Route as AppAccountsIdEditImport } from './routes/_app/accounts/$id.edit'
 
@@ -88,6 +92,11 @@ const AppDashboardIndexRoute = AppDashboardIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppConnectionsIndexRoute = AppConnectionsIndexImport.update({
+  path: '/connections/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppCategoriesIndexRoute = AppCategoriesIndexImport.update({
   path: '/categories/',
   getParentRoute: () => AppRoute,
@@ -118,6 +127,11 @@ const AppTransactionsInboxRoute = AppTransactionsInboxImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppConnectionsIdRoute = AppConnectionsIdImport.update({
+  path: '/connections/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppAccountsAddRoute = AppAccountsAddImport.update({
   path: '/accounts/add',
   getParentRoute: () => AppRoute,
@@ -134,10 +148,23 @@ const AppSettingsInstitutionsIndexRoute =
     getParentRoute: () => AppRoute,
   } as any)
 
+const AppConnectionsConnectIndexRoute = AppConnectionsConnectIndexImport.update(
+  {
+    path: '/connections/connect/',
+    getParentRoute: () => AppRoute,
+  } as any,
+)
+
 const AppCategoriesRulesIndexRoute = AppCategoriesRulesIndexImport.update({
   path: '/categories/rules/',
   getParentRoute: () => AppRoute,
 } as any)
+
+const AppConnectionsConnectCallbackRoute =
+  AppConnectionsConnectCallbackImport.update({
+    path: '/connections/connect/callback',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 const AppCategoriesRulesCreateRoute = AppCategoriesRulesCreateImport.update({
   path: '/categories/rules/create',
@@ -181,6 +208,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsAddImport
       parentRoute: typeof AppImport
     }
+    '/_app/connections/$id': {
+      preLoaderRoute: typeof AppConnectionsIdImport
+      parentRoute: typeof AppImport
+    }
     '/_app/transactions/inbox': {
       preLoaderRoute: typeof AppTransactionsInboxImport
       parentRoute: typeof AppImport
@@ -199,6 +230,10 @@ declare module '@tanstack/react-router' {
     }
     '/_app/categories/': {
       preLoaderRoute: typeof AppCategoriesIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/connections/': {
+      preLoaderRoute: typeof AppConnectionsIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/dashboard/': {
@@ -225,8 +260,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriesRulesCreateImport
       parentRoute: typeof AppImport
     }
+    '/_app/connections/connect/callback': {
+      preLoaderRoute: typeof AppConnectionsConnectCallbackImport
+      parentRoute: typeof AppImport
+    }
     '/_app/categories/rules/': {
       preLoaderRoute: typeof AppCategoriesRulesIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/connections/connect/': {
+      preLoaderRoute: typeof AppConnectionsConnectIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/settings/institutions/': {
@@ -243,17 +286,21 @@ export const routeTree = rootRoute.addChildren([
   AppRoute.addChildren([
     AppAccountsIdRoute.addChildren([AppAccountsIdEditRoute]),
     AppAccountsAddRoute,
+    AppConnectionsIdRoute,
     AppTransactionsInboxRoute,
     AppUserEditRoute,
     AppToolsMortgageComponentRoute,
     AppAccountsIndexRoute,
     AppCategoriesIndexRoute,
+    AppConnectionsIndexRoute,
     AppDashboardIndexRoute,
     AppSettingsIndexRoute,
     AppTransactionsIndexRoute,
     AppUserIndexRoute,
     AppCategoriesRulesCreateRoute,
+    AppConnectionsConnectCallbackRoute,
     AppCategoriesRulesIndexRoute,
+    AppConnectionsConnectIndexRoute,
     AppSettingsInstitutionsIndexRoute,
   ]),
   LoginRoute,

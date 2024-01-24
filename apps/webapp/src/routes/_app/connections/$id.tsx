@@ -1,37 +1,37 @@
+// path: ":id",
+// element: <ConnectionDetailsPage />,
+// loader: connectionDetailsLoader,
+
 import {
-  Avatar,
+  loadConnection,
+  getObAccountsForConnection,
+  deleteConnection,
+  syncAccountData,
+  getInstitution,
+} from "@/features/connections/api/connections.api";
+import {
   Box,
-  Button,
-  Card,
-  Group,
-  Loader,
   LoadingOverlay,
   Stack,
-  Text,
+  Loader,
+  Group,
+  Avatar,
   Title,
+  Card,
+  Button,
+  Text,
   Tooltip,
 } from "@mantine/core";
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
-import {
-  ObAccountDto,
-  ObConnection,
-  deleteConnection,
-  getInstitution,
-  getObAccountsForConnection,
-  loadConnection,
-  syncAccountData,
-} from "./api/connections.api";
-import { InstitutionDto } from "../institutions/api/institutions.api";
-import { useState } from "react";
 import { notifications } from "@mantine/notifications";
+import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
-type LoaderData = {
-  connection: ObConnection;
-  institution: InstitutionDto;
-  accounts: ObAccountDto[];
-};
+export const Route = new FileRoute("/_app/connections/$id").createRoute({
+  component: ConnectionDetailsPage,
+  loader: async ({ params }) => loader({ id: params.id }),
+});
 
-export const loader: LoaderFunction = async ({ params }) => {
+async function loader(params: { id: string }) {
   const { id } = params;
   if (!id) {
     throw Error("Invalid navigation args");
@@ -45,11 +45,11 @@ export const loader: LoaderFunction = async ({ params }) => {
     connection: connection,
     institution: institution,
     accounts: accounts,
-  } as LoaderData;
-};
+  };
+}
 
-export function ConnectionDetailsPage() {
-  const { connection, accounts, institution } = useLoaderData() as LoaderData;
+function ConnectionDetailsPage() {
+  const { connection, accounts, institution } = Route.useLoaderData();
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +59,7 @@ export function ConnectionDetailsPage() {
     try {
       setIsLoading(true);
       await deleteConnection(connection.id);
-      navigate("/connections");
+      navigate({ to: "/connections" });
       notifications.show({
         title: "Connection deleted",
         message: "Open Banking Connection deleted",

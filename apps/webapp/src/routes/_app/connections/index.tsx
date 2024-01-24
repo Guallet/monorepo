@@ -1,5 +1,10 @@
 import {
-  ActionIcon,
+  ObConnection,
+  getInstitution,
+  loadConnections,
+} from "@/features/connections/api/connections.api";
+import { InstitutionDto } from "@/features/institutions/api/institutions.api";
+import {
   Avatar,
   Button,
   Group,
@@ -9,21 +14,15 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
-import {
-  ObConnection,
-  getInstitution,
-  loadConnections,
-} from "./api/connections.api";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { InstitutionDto } from "../institutions/api/institutions.api";
 
-type LoaderData = {
-  connections: ObConnection[];
-  institutions: InstitutionDto[];
-};
+import { FileRoute, useNavigate } from "@tanstack/react-router";
 
-export const loader: LoaderFunction = async () => {
+export const Route = new FileRoute("/_app/connections/").createRoute({
+  component: ConnectionsPage,
+  loader: loader,
+});
+
+async function loader() {
   const connections = await loadConnections();
 
   // Load the institutions from the API to get the src for the logo
@@ -36,11 +35,11 @@ export const loader: LoaderFunction = async () => {
   return {
     connections: connections,
     institutions: institutions,
-  } as LoaderData;
-};
+  };
+}
 
-export function ConnectionsPage() {
-  const { connections, institutions } = useLoaderData() as LoaderData;
+function ConnectionsPage() {
+  const { connections, institutions } = Route.useLoaderData();
   const navigate = useNavigate();
 
   if (connections.length === 0) return <EmptyConnectionsView />;
@@ -50,7 +49,7 @@ export function ConnectionsPage() {
       <Title>Connections</Title>
       <Button
         onClick={() => {
-          navigate("/connections/connect");
+          navigate({ to: "/connections/connect" });
         }}
       >
         Add a new connection
@@ -98,7 +97,7 @@ function EmptyConnectionsView() {
     <Stack>
       <Button
         onClick={() => {
-          navigate("/connections/connect");
+          navigate({ to: "/connections/connect" });
         }}
       >
         Add your first connection
@@ -122,7 +121,7 @@ export function ConnectionsTable({
       connection={connection}
       institutions={institutions}
       onClick={() => {
-        navigate(`/connections/${connection.id}`);
+        navigate({ to: `/connections/${connection.id}` });
       }}
     />
   ));
@@ -190,19 +189,19 @@ export function ConnectionTableRow({
         <Text>X days left</Text>
       </Table.Td>
       {/* <Table.Td>
-        <Group>
-          <Tooltip label="Edit">
-            <ActionIcon>
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="Delete">
-            <ActionIcon color="red">
-              <IconTrash />
-            </ActionIcon>
-          </Tooltip>
-        </Group>
-      </Table.Td> */}
+          <Group>
+            <Tooltip label="Edit">
+              <ActionIcon>
+                <IconEdit />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Delete">
+              <ActionIcon color="red">
+                <IconTrash />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Table.Td> */}
     </Table.Tr>
   );
 }

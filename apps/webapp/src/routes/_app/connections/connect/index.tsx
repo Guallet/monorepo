@@ -1,6 +1,7 @@
+import { FileRoute, useNavigate } from "@tanstack/react-router";
+
 import {
   Avatar,
-  Button,
   ComboboxItem,
   Group,
   OptionsFilter,
@@ -9,46 +10,49 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { LoaderFunction, useLoaderData, useNavigate } from "react-router-dom";
+
+import { SearchableListView } from "@guallet/ui-react";
+import { useState } from "react";
+
+import { z } from "zod";
 import {
-  CountryDto,
   InstitutionDto,
   createConnection,
   getInstitutions,
   getSupportedCountries,
-} from "./api/connections.api";
-import { SearchableListView } from "@guallet/ui-react";
-import { useState } from "react";
+} from "@/features/connections/api/connections.api";
 
-interface LoaderData {
-  countries: CountryDto[];
-  selectedCountry: string | null;
-  banks: InstitutionDto[];
-}
+const pageSearchSchema = z.object({
+  country: z.string().optional(), //.catch("GB"),
+});
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const selectedCountry = url.searchParams.get("country");
+export const Route = new FileRoute("/_app/connections/connect/").createRoute({
+  component: AddConnectionPage,
+  validateSearch: pageSearchSchema,
+  loaderDeps: ({ search: { country } }) => ({ country }),
+  loader: async ({ deps: { country } }) => loader({ country }),
+});
 
+async function loader(args: { country: string | undefined }) {
   const countries = await getSupportedCountries();
-
+  const { country } = args;
   let banks: InstitutionDto[] = [];
 
-  if (selectedCountry) {
-    banks = await getInstitutions(selectedCountry);
+  if (country) {
+    banks = await getInstitutions(country);
   }
 
   return {
     countries: countries,
-    selectedCountry: selectedCountry,
+    selectedCountry: country,
     banks: banks,
-  } as LoaderData;
-};
+  };
+}
 
 export function AddConnectionPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: Route.fullPath });
 
-  const { countries, selectedCountry, banks } = useLoaderData() as LoaderData;
+  const { countries, selectedCountry, banks } = Route.useLoaderData();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -59,8 +63,11 @@ export function AddConnectionPage() {
       const country = countries.find((country) => country.name === value);
 
       if (country) {
-        // TODO: Use the query params rather than full navigation
-        navigate(`/connections/connect?country=${country?.code}`);
+        navigate({
+          search: () => ({
+            country: country?.code ?? undefined,
+          }),
+        });
       } else {
         console.error("Country not found", value);
       }

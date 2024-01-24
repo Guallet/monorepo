@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Text, TextInput } from "@mantine/core";
 
-export function MortgageCalculator() {
+export const component = function MortgageCalculator() {
   const [loanAmount, setLoanAmount] = useState<number>(200000);
   const [interestRate, setInterestRate] = useState<number>(5.0);
   const [loanTerm, setLoanTerm] = useState<number>(25);
@@ -58,4 +58,4 @@ export function MortgageCalculator() {
       </Text>
     </div>
   );
-}
+};
