@@ -16,7 +16,7 @@ import {
   loadConnections,
 } from "./api/connections.api";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { InstitutionDto } from "../settings/institutions/api/institutions.api";
+import { InstitutionDto } from "../institutions/api/institutions.api";
 
 type LoaderData = {
   connections: ObConnection[];

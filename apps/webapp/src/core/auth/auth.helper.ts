@@ -1,4 +1,5 @@
 import Session from "supertokens-auth-react/recipe/session";
+import { signOut as supabaseSignOut } from "supertokens-auth-react/recipe/thirdpartypasswordless";
 
 export async function getCurrentUserToken(): Promise<string | null> {
   if (await Session.doesSessionExist()) {
@@ -19,5 +20,6 @@ export async function getCurrentUserId(): Promise<string | null> {
 }
 
 export async function signOut() {
-  await Session.signOut();
+  // await Session.signOut();
+  await supabaseSignOut();
 }

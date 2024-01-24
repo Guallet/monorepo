@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import dns from "dns";
 
 // To enable path alias
@@ -11,13 +12,14 @@ dns.setDefaultResultOrder("verbatim");
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [react(), TanStackRouterVite()],
+
   server: {
     port: 3000,
     strictPort: true,
     open: true,
   },
 
-  plugins: [react()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

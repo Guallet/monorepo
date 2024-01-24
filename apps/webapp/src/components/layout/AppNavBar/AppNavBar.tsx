@@ -6,13 +6,14 @@ import {
   IconSettings,
   IconLogout,
   IconTools,
+  IconCategory2,
 } from "@tabler/icons-react";
 import { Button, ScrollArea } from "@mantine/core";
 import classes from "./AppNavBar.module.css";
 import { LinksGroup } from "./NavbarLinksGroup";
 import { UserButton } from "../../UserButton/UserButton";
-import { useNavigate } from "react-router-dom";
 import { AppRoutes } from "../../../router/AppRoutes";
+import { useNavigate } from "@tanstack/react-router";
 
 type MenuData = {
   label: string;
@@ -43,7 +44,13 @@ const menuData: MenuData[] = [
     subLinks: [
       { label: "All transactions", link: "/transactions" },
       { label: "Inbox", link: "/transactions/inbox" },
-      { label: "Categories", link: "/categories" },
+    ],
+  },
+  {
+    label: "Categories",
+    icon: IconCategory2,
+    subLinks: [
+      { label: "Manage Categories", link: "/categories" },
       { label: "Rules", link: "/categories/rules" },
     ],
   },
@@ -75,6 +82,7 @@ interface Props {
 }
 
 export function AppNavBar({ onItemSelected }: Props) {
+  // TODO: Instead of this hook, the navbar should use the <Link> component
   const navigate = useNavigate();
 
   const links = menuData.map((item) => (
@@ -86,7 +94,7 @@ export function AppNavBar({ onItemSelected }: Props) {
       <div
         className={classes.header}
         onClick={() => {
-          navigate(AppRoutes.User.USER_DETAILS);
+          navigate({ to: AppRoutes.User.USER_DETAILS });
         }}
       >
         <UserButton />
@@ -100,7 +108,7 @@ export function AppNavBar({ onItemSelected }: Props) {
         <Button
           variant="transparent"
           onClick={() => {
-            navigate(AppRoutes.Auth.LOGOUT);
+            navigate({ to: AppRoutes.Auth.LOGOUT });
           }}
         >
           <IconLogout />

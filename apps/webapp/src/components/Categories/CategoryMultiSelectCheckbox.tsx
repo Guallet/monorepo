@@ -68,7 +68,7 @@ export function CategoryMultiSelectCheckbox({
         title="Select categories"
         size="auto"
       >
-        <SelectCategoryModal
+        <MultiSelectCategoryModal
           categories={appCategories}
           onClose={close}
           onSelectCompleted={(categories: Category[]) => {
@@ -130,17 +130,17 @@ function mapCategoriesToAppCategories(
   return roots;
 }
 
-interface SelectCategoryModalProps {
+interface MultiSelectCategoryModalProps {
   categories: AppCategoryWithSelection[];
   onClose: () => void;
   onSelectCompleted: (categories: Category[]) => void;
 }
 
-export function SelectCategoryModal({
+export function MultiSelectCategoryModal({
   categories,
   onClose,
   onSelectCompleted,
-}: SelectCategoryModalProps) {
+}: MultiSelectCategoryModalProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selected, setSelected] =
     useState<AppCategoryWithSelection[]>(categories);

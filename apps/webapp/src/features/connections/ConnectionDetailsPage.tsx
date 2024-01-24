@@ -21,7 +21,7 @@ import {
   loadConnection,
   syncAccountData,
 } from "./api/connections.api";
-import { InstitutionDto } from "../settings/institutions/api/institutions.api";
+import { InstitutionDto } from "../institutions/api/institutions.api";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 

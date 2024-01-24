@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import classes from "./NavbarLinksGroup.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 
 interface LinksGroupProps {
   icon: React.FC<any>;
@@ -32,6 +32,7 @@ export function LinksGroup({
   const hasLinks = Array.isArray(subLinks);
   const [opened, setOpened] = useState(initiallyOpened || false);
 
+  // TODO: Instead of using the navigate hook, we should use the <Link> component
   const navigation = useNavigate();
 
   const items = (hasLinks ? subLinks : []).map((link) => (
@@ -46,7 +47,7 @@ export function LinksGroup({
         // will be lost after navigation, collapsing all the items
         event.preventDefault();
         onItemSelected();
-        navigation(link.link);
+        navigation({ to: link.link });
       }}
     >
       {link.label}
@@ -60,7 +61,7 @@ export function LinksGroup({
           setOpened((o) => !o);
 
           if (link) {
-            navigation(link);
+            navigation({ to: link });
             onItemSelected();
           }
         }}
