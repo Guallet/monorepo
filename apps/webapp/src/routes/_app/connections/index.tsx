@@ -121,7 +121,10 @@ export function ConnectionsTable({
       connection={connection}
       institutions={institutions}
       onClick={() => {
-        navigate({ to: `/connections/${connection.id}` });
+        navigate({
+          to: `/connections/$id`,
+          params: { id: connection.id },
+        });
       }}
     />
   ));

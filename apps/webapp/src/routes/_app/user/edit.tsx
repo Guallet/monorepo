@@ -7,7 +7,6 @@
 //   },
 
 import { TextInput, Button, Group } from "@mantine/core";
-import { AppRoutes } from "../../../router/AppRoutes";
 import { IconChevronDown } from "@tabler/icons-react";
 import { FileRoute, useNavigate } from "@tanstack/react-router";
 import { getUserDetails } from "@/features/user/api/user.api";
@@ -81,7 +80,7 @@ function EditUserPage() {
           variant="outline"
           onClick={() => {
             navigate({
-              to: AppRoutes.User.USER_DETAILS,
+              to: "/user",
             });
           }}
         >

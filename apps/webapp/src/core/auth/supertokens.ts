@@ -1,4 +1,3 @@
-import { AppRoutes } from "@/router/AppRoutes";
 import SuperTokens from "supertokens-auth-react";
 import Session from "supertokens-auth-react/recipe/session";
 import ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
@@ -28,7 +27,7 @@ export const initializeSupertokens = () =>
             if (context.isNewPrimaryUser) {
               // user signed up
               // TODO: Check if user has account and/or it's in the waiting list
-              return AppRoutes.Auth.REGISTER;
+              return "/register";
             } else {
               // Check if user can register
               if (await userIsInAllowedList()) {
@@ -38,10 +37,10 @@ export const initializeSupertokens = () =>
                   return redirectToPath;
                 }
                 // user signed in
-                return AppRoutes.DASHBOARD;
+                return "/dashboard";
               } else {
                 // User is not in the waiting list. So redirect to "Get an invitation" page
-                return AppRoutes.Auth.WAITING_LIST;
+                return "/invitation";
               }
             }
           }

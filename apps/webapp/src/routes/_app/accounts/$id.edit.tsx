@@ -6,7 +6,7 @@
 //     action: editAccountAction,
 //   }
 
-import { FileRoute } from "@tanstack/react-router";
+import { FileRoute, useNavigate } from "@tanstack/react-router";
 
 import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
 import {
@@ -16,7 +16,6 @@ import {
 } from "@accounts/api/accounts.api";
 import { Account, AccountType } from "@accounts/models/Account";
 import { IconChevronDown } from "@tabler/icons-react";
-import { AppRoutes } from "@/router/AppRoutes";
 
 type FormData = {
   accountId: string;
@@ -80,7 +79,7 @@ function getLocalizedType(name: AccountType): string {
 }
 
 function EditAccountPage() {
-  const account = useLoaderData() as Account;
+  const account = Route.useLoaderData();
   const navigate = useNavigate();
 
   const accountTypes = Object.entries(AccountType).map(
@@ -93,7 +92,7 @@ function EditAccountPage() {
   );
 
   return (
-    <Form method="post" id="add-account-form">
+    <form method="post" id="add-account-form">
       <input type="hidden" id="accountId" name="accountId" value={account.id} />
       <NativeSelect
         rightSection={
@@ -139,12 +138,16 @@ function EditAccountPage() {
           variant="outline"
           onClick={() => {
             // Go back
-            navigate(-1);
+            navigate({
+              from: Route.fullPath,
+              to: `/accounts/$id`,
+              params: { id: account.id },
+            });
           }}
         >
           Cancel
         </Button>
       </Group>
-    </Form>
+    </form>
   );
 }

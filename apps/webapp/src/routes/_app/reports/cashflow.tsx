@@ -1,30 +1,28 @@
 import { Stack, Table, Text, useMantineTheme } from "@mantine/core";
-import { ReportFilters } from "../components/ReportFilters";
-import { LoaderFunction, useLoaderData } from "react-router-dom";
-import { Category } from "../../categories/models/Category";
-import { Account } from "../../accounts/models/Account";
-import { loadAccounts } from "../../accounts/api/accounts.api";
-import { loadCategories } from "../../categories/api/categories.api";
 import { YearPickerInput } from "@mantine/dates";
 import { useState } from "react";
-import { getCashflowReportData } from "../api/reports.api";
-import { CashflowDataDto } from "../api/cashflow.models";
-import { CashFlowRow } from "./CashFlowCategoryRow";
+import { FileRoute } from "@tanstack/react-router";
+import { loadAccounts } from "@/features/accounts/api/accounts.api";
+import { loadCategories } from "@/features/categories/api/categories.api";
+import { getCashflowReportData } from "@/features/reports/api/reports.api";
+import { ReportFilters } from "@/features/reports/components/ReportFilters";
+import { CashflowDataDto } from "@/features/reports/api/cashflow.models";
+import { CashFlowRow } from "@/features/reports/CashFlow/CashFlowCategoryRow";
 
-type LoaderData = {
-  accounts: Account[];
-  categories: Category[];
-  tableData: CashflowDataDto;
-};
+import { z } from "zod";
+const pageSearchSchema = z.object({
+  year: z.number().catch(new Date().getUTCFullYear()),
+});
 
-export const loader: LoaderFunction = async ({ params, request }) => {
-  const { id } = params;
-  const url = new URL(request.url);
-  const year =
-    Number(url.searchParams.get("year")) === 0
-      ? new Date().getUTCFullYear()
-      : Number(url.searchParams.get("year"));
+export const Route = new FileRoute("/_app/reports/cashflow").createRoute({
+  component: CashFlowPage,
+  validateSearch: pageSearchSchema,
+  loaderDeps: ({ search: { year } }) => ({ year }),
+  loader: async ({ deps: { year } }) => loader({ year }),
+});
 
+async function loader(args: { year: number }) {
+  const { year } = args;
   const accounts = await loadAccounts();
   const categories = await loadCategories();
   const reportData = await getCashflowReportData(year);
@@ -33,12 +31,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     accounts: accounts,
     categories: categories,
     tableData: reportData,
-  } as LoaderData;
-};
+  };
+}
 
 export function CashFlowPage() {
-  const { accounts, categories, tableData } = useLoaderData() as LoaderData;
-
+  const { accounts, categories, tableData } = Route.useLoaderData();
   const [selectedYear, setSelectedYear] = useState<Date | null>(null);
 
   return (

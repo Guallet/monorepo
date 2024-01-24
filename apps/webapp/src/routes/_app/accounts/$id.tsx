@@ -1,7 +1,6 @@
 import { FileRoute, useNavigate } from "@tanstack/react-router";
 import { Group, Modal, Stack, Text, Button } from "@mantine/core";
 import { fetch_delete } from "@core/api/fetchHelper";
-import { AppRoutes } from "@router/AppRoutes";
 import { Account, AccountType } from "@accounts/models/Account";
 import { getAccount } from "@accounts/api/accounts.api";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
@@ -54,7 +53,7 @@ function AccountDetailsPage() {
           account={account}
           onCancel={hideModal}
           onAccountDeleted={() => {
-            navigation({ to: AppRoutes.Accounts.ACCOUNTS, replace: true });
+            navigation({ to: "/accounts", replace: true });
           }}
         />
       </Modal>

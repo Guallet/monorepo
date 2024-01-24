@@ -13,8 +13,6 @@ import {
 
 import { SearchableListView } from "@guallet/ui-react";
 import { useState } from "react";
-
-import { z } from "zod";
 import {
   InstitutionDto,
   createConnection,
@@ -22,6 +20,7 @@ import {
   getSupportedCountries,
 } from "@/features/connections/api/connections.api";
 
+import { z } from "zod";
 const pageSearchSchema = z.object({
   country: z.string().optional(), //.catch("GB"),
 });

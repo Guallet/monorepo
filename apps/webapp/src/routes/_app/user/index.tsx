@@ -1,6 +1,5 @@
 import { Text, Button, Stack, Image, Modal, Group } from "@mantine/core";
 import { FileRoute, useNavigate } from "@tanstack/react-router";
-import { AppRoutes } from "@/router/AppRoutes";
 import { useDisclosure } from "@mantine/hooks";
 import {
   deleteUserAccount,
@@ -30,7 +29,7 @@ function UserDetailsPage() {
 
   const deleteAccount = async () => {
     await deleteUserAccount();
-    navigate({ to: AppRoutes.APP_ACCOUNT_DELETED });
+    navigate({ to: "/userdeleted", replace: true });
   };
 
   return (
@@ -85,7 +84,7 @@ function UserDetailsPage() {
         </Stack>
         <Button
           onClick={() => {
-            navigate({ to: AppRoutes.User.EDIT });
+            navigate({ to: "/user/edit" });
           }}
         >
           Edit Profile

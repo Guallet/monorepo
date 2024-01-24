@@ -2,7 +2,6 @@ import { loadAccounts } from "@/features/accounts/api/accounts.api";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { Account } from "@/features/accounts/models/Account";
-import { AppRoutes } from "@/router/AppRoutes";
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { FileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -17,7 +16,7 @@ async function loader() {
 }
 
 function AccountsPage() {
-  const navigation = useNavigate({ from: "/_app/accounts/" });
+  const navigation = useNavigate();
   const allAccounts = Route.useLoaderData();
   const [filteredAccounts, setFilteredAccounts] = useState(allAccounts);
 
@@ -26,13 +25,12 @@ function AccountsPage() {
       <EmptyAccountsPage
         onCreateNewAccount={() => {
           navigation({
-            to: "/add",
+            to: "/accounts/add",
           });
         }}
         onConnectBank={() => {
           navigation({
-            from: "/_app/connect",
-            to: AppRoutes.Connections.CONNECT,
+            to: "/connections/connect",
           });
         }}
       />
@@ -42,9 +40,7 @@ function AccountsPage() {
   return (
     <>
       <AccountsHeader
-        onAddNewAccount={() =>
-          navigation({ to: AppRoutes.Accounts.ACCOUNT_ADD })
-        }
+        onAddNewAccount={() => navigation({ to: "/accounts/add" })}
         onSearchQueryChanged={(searchQuery: string) => {
           if (searchQuery.length === 0) {
             setFilteredAccounts(allAccounts);
@@ -62,8 +58,8 @@ function AccountsPage() {
           accounts={filteredAccounts}
           onAccountSelected={(account: Account) => {
             navigation({
-              to: `/accounts/$accountId`,
-              params: { accountId: account.id },
+              to: "/accounts/$id",
+              params: { id: account.id },
             });
           }}
         />
