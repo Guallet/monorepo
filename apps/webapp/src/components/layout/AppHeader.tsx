@@ -1,6 +1,5 @@
 import { Burger, Group, Image, Title, UnstyledButton } from "@mantine/core";
 import logo from "@/assets/guallet.svg";
-import { AppRoutes } from "@/router/AppRoutes";
 
 interface Props {
   isOpened: boolean;
@@ -14,7 +13,7 @@ export default function AppHeader({ isOpened, onToggle }: Props) {
       <UnstyledButton
         component="a"
         variant="transparent"
-        href={AppRoutes.HOME}
+        href={"/"}
         onClick={(event) => event.preventDefault()}
       >
         <Group>

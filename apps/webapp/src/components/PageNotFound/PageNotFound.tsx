@@ -1,6 +1,6 @@
 import { Title, Text, Button, Container, Group } from "@mantine/core";
-import { Link } from "react-router-dom";
 import classes from "./PageNotFound.module.css";
+import { Link } from "@tanstack/react-router";
 
 export default function PageNotFound() {
   return (

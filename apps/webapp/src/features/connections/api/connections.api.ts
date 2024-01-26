@@ -4,7 +4,7 @@ import {
   getRawResponse,
   post,
 } from "@/core/api/fetchHelper";
-import { InstitutionDto as GualletInstitutionDto } from "@settings/institutions/api/institutions.api";
+import { InstitutionDto as GualletInstitutionDto } from "@/features/institutions/api/institutions.api";
 
 export type ObConnection = {
   id: string;

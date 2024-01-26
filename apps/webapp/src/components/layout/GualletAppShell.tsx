@@ -1,8 +1,8 @@
 import { AppShell } from "@mantine/core";
-import { Outlet } from "react-router-dom";
 import { AppNavBar } from "./AppNavBar/AppNavBar";
 import { useDisclosure } from "@mantine/hooks";
 import AppHeader from "./AppHeader";
+import { Outlet } from "@tanstack/react-router";
 
 export default function GualletAppShell() {
   const [opened, { toggle }] = useDisclosure();
