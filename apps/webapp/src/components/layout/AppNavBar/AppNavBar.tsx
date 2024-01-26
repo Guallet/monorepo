@@ -12,7 +12,6 @@ import { Button, ScrollArea } from "@mantine/core";
 import classes from "./AppNavBar.module.css";
 import { LinksGroup } from "./NavbarLinksGroup";
 import { UserButton } from "../../UserButton/UserButton";
-import { AppRoutes } from "../../../router/AppRoutes";
 import { useNavigate } from "@tanstack/react-router";
 
 type MenuData = {
@@ -94,7 +93,7 @@ export function AppNavBar({ onItemSelected }: Props) {
       <div
         className={classes.header}
         onClick={() => {
-          navigate({ to: AppRoutes.User.USER_DETAILS });
+          navigate({ to: "/user" });
         }}
       >
         <UserButton />
@@ -108,7 +107,7 @@ export function AppNavBar({ onItemSelected }: Props) {
         <Button
           variant="transparent"
           onClick={() => {
-            navigate({ to: AppRoutes.Auth.LOGOUT });
+            navigate({ to: "/logout" });
           }}
         >
           <IconLogout />

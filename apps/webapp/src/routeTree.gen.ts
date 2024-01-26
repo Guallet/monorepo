@@ -8,6 +8,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
 import { Route as AppImport } from './routes/_app'
+import { Route as OnboardingWaitinglistImport } from './routes/onboarding/waiting_list'
+import { Route as OnboardingRegisterImport } from './routes/onboarding/register'
 import { Route as AppUserIndexImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexImport } from './routes/_app/transactions/index'
 import { Route as AppSettingsIndexImport } from './routes/_app/settings/index'
@@ -73,6 +75,16 @@ const IndexComponentRoute = IndexComponentImport.update({
     'component',
   ),
 })
+
+const OnboardingWaitinglistRoute = OnboardingWaitinglistImport.update({
+  path: '/onboarding/waiting_list',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const OnboardingRegisterRoute = OnboardingRegisterImport.update({
+  path: '/onboarding/register',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AppUserIndexRoute = AppUserIndexImport.update({
   path: '/user/',
@@ -212,6 +224,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserdeletedComponentImport
       parentRoute: typeof rootRoute
     }
+    '/onboarding/register': {
+      preLoaderRoute: typeof OnboardingRegisterImport
+      parentRoute: typeof rootRoute
+    }
+    '/onboarding/waiting_list': {
+      preLoaderRoute: typeof OnboardingWaitinglistImport
+      parentRoute: typeof rootRoute
+    }
     '/_app/accounts/$id': {
       preLoaderRoute: typeof AppAccountsIdImport
       parentRoute: typeof AppImport
@@ -328,4 +348,6 @@ export const routeTree = rootRoute.addChildren([
   LoginRoute,
   LogoutRoute,
   UserdeletedComponentRoute,
+  OnboardingRegisterRoute,
+  OnboardingWaitinglistRoute,
 ])

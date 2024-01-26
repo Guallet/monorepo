@@ -1,18 +1,10 @@
-import { AppRoutes } from "@router/AppRoutes";
 import { TextInput, Button, Group, Stack, Title, Text } from "@mantine/core";
-import {
-  ActionFunction,
-  Form,
-  LoaderFunction,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "react-router-dom";
+import { FileRoute, useNavigate } from "@tanstack/react-router";
 
-type LoaderData = {
-  name: string;
-  email: string;
-};
+export const Route = new FileRoute("/onboarding/waiting_list").createRoute({
+  component: SubscribeWaitingListPage,
+  loader: loader,
+});
 
 type ActionData = {
   rawError: unknown;
@@ -21,41 +13,40 @@ type ActionData = {
   message: string;
 };
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+function loader() {
   return {
     name: "",
     email: "",
-  } as LoaderData;
-};
+  };
+}
 
 type FormData = {
   name: string;
   email: string;
 };
 
-export const action: ActionFunction = async ({ request, params }) => {
-  const formData = await request.formData();
-  const values = Object.fromEntries(formData);
-  // TODO: Ugly as hell, I need to find a better way to do this
-  const inputValues = JSON.parse(JSON.stringify(values)) as FormData;
+// export const action: ActionFunction = async ({ request, params }) => {
+//   const formData = await request.formData();
+//   const values = Object.fromEntries(formData);
+//   // TODO: Ugly as hell, I need to find a better way to do this
+//   const inputValues = JSON.parse(JSON.stringify(values)) as FormData;
 
-  return {
-    error: "",
-    message: "",
-    rawError: null,
-    statusCode: 200,
-  } as ActionData;
-};
+//   return {
+//     error: "",
+//     message: "",
+//     rawError: null,
+//     statusCode: 200,
+//   } as ActionData;
+// };
 
-export function SubscribeWaitingListPage() {
-  const { name, email } = useLoaderData() as LoaderData;
-  const actionData = useActionData() as ActionData;
+function SubscribeWaitingListPage() {
+  const { name, email } = Route.useLoaderData();
   const navigate = useNavigate();
 
   return (
     <Stack>
       <Title order={2}>You need an invitation to use the app</Title>
-      <Form method="post" id="add-account-form">
+      <form method="post" id="add-account-form">
         <Text>
           Enter your email and name to be one of the first to try the app
         </Text>
@@ -82,13 +73,13 @@ export function SubscribeWaitingListPage() {
           <Button
             variant="outline"
             onClick={() => {
-              navigate(AppRoutes.Auth.LOGOUT, { replace: true });
+              navigate({ to: "/logout", replace: true });
             }}
           >
             Cancel
           </Button>
         </Group>
-      </Form>
+      </form>
     </Stack>
   );
 }
