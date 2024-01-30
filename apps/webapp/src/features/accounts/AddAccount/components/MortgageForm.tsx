@@ -1,25 +1,38 @@
-import { TextInput, Stack } from "@mantine/core";
+import { Stack, NumberInput } from "@mantine/core";
+import { Controller, useFormContext } from "react-hook-form";
 
 export function MortgageForm() {
+  const { control } = useFormContext();
+
   return (
     <Stack>
-      <TextInput
+      <Controller
         name="remaining_balance"
-        label="Remaining balance"
-        required
-        description="The remaining balance of the account"
-        defaultValue={0}
-        type="number"
-        leftSection={"%"}
+        control={control}
+        render={({ field }) => (
+          <NumberInput
+            {...field}
+            label="Remaining balance"
+            required
+            description="The remaining balance of the account"
+            defaultValue={0}
+            leftSection={"%"}
+          />
+        )}
       />
-      <TextInput
+      <Controller
         name="interest_rate"
-        label="Interest rate"
-        required
-        description="The interest rate of the account"
-        defaultValue={0}
-        type="number"
-        leftSection={"%"}
+        control={control}
+        render={({ field }) => (
+          <NumberInput
+            {...field}
+            label="Interest rate"
+            required
+            description="The interest rate of the account"
+            defaultValue={0}
+            leftSection={"%"}
+          />
+        )}
       />
     </Stack>
   );

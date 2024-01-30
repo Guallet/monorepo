@@ -1,4 +1,11 @@
-import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
+import {
+  TextInput,
+  Button,
+  Group,
+  NativeSelect,
+  rem,
+  NumberInput,
+} from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { AccountType } from "@accounts/models/Account";
 import { useState } from "react";
@@ -6,34 +13,29 @@ import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
 
 import { FileRoute, useNavigate } from "@tanstack/react-router";
 import { AccountMetadataForm } from "@/features/accounts/AddAccount/components/AccountMetadataForm";
+import {
+  CreateAccountRequest,
+  createAccount,
+} from "@/features/accounts/api/accounts.api";
+import { useForm, FormProvider, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Currency } from "@guallet/money";
+import { notifications } from "@mantine/notifications";
 
 export const Route = new FileRoute("/_app/accounts/add").createRoute({
   component: AddAccountPage,
 });
 
-type FormData = {
-  name: string;
-  currency: string;
-  balance: number;
-  account_type: AccountType;
-};
-
-// export const action: ActionFunction = async ({ request, params }) => {
-//   const formData = await request.formData();
-//   const values = Object.fromEntries(formData);
-//   // TODO: Ugly as hell, I need to find a better way to do this
-//   const inputValues = JSON.parse(JSON.stringify(values)) as FormData;
-
-//   const accountRequest: CreateAccountRequest = {
-//     name: inputValues.name,
-//     type: inputValues.account_type,
-//     currency: inputValues.currency,
-//     initial_balance: inputValues.balance,
-//   };
-
-//   const newAccount = await createAccount(accountRequest);
-//   return redirect(AppRoutes.Accounts.ACCOUNT_DETAILS(newAccount.id));
-// };
+const accountFormDataSchema = z.object({
+  name: z.string().min(1, { message: "Account name is required" }),
+  currency: z.string().default("GBP"),
+  balance: z.number().default(0),
+  account_type: z.nativeEnum(AccountType).catch(AccountType.UNKNOWN),
+  credit_limit: z.string().nullable().optional(),
+  interest_rate: z.string().nullable().optional(),
+});
+type AddAccountFormData = z.infer<typeof accountFormDataSchema>;
 
 function getLocalizedType(name: AccountType): string {
   // TODO: Localize this
@@ -60,10 +62,51 @@ function getLocalizedType(name: AccountType): string {
 }
 
 export function AddAccountPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: Route.fullPath });
 
-  const [accountType, setAccountType] = useState<AccountType | null>(null);
-  const [currency, setCurrency] = useState("GBP"); // Get the default currency from the user settings
+  const [accountType, setAccountType] = useState<AccountType>(
+    AccountType.CURRENT_ACCOUNT
+  );
+
+  const form = useForm<AddAccountFormData>({
+    defaultValues: {
+      account_type: AccountType.CURRENT_ACCOUNT,
+      currency: "GBP", // Get this from user settings
+      balance: 0,
+      credit_limit: null,
+      interest_rate: null,
+    },
+    resolver: zodResolver(accountFormDataSchema),
+  });
+  const { watch } = form;
+  const currencyValue = watch("currency");
+  const currency = Currency.fromISOCode(currencyValue);
+
+  async function onFormSubmit(data: AddAccountFormData) {
+    console.log("onFormSubmit", data);
+    const accountRequest: CreateAccountRequest = {
+      name: data.name,
+      type: data.account_type,
+      currency: data.currency,
+      initial_balance: data.balance,
+    };
+    try {
+      const newAccount = await createAccount(accountRequest);
+      notifications.show({
+        title: "Account created",
+        message: `Account ${newAccount.name} created`,
+        color: "blue",
+      });
+      navigate({
+        to: "/accounts/$id",
+        params: {
+          id: newAccount.id,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating the account", error);
+    }
+  }
 
   const accountTypes = Object.entries(AccountType).map(
     ({ "0": name, "1": accountType }) => {
@@ -75,60 +118,99 @@ export function AddAccountPage() {
   );
 
   return (
-    <form method="post" id="add-account-form">
-      <TextInput
-        name="name"
-        label="Account name"
-        required
-        placeholder="Enter account name"
-      />
-
-      <NativeSelect
-        required
-        rightSection={
-          <IconChevronDown style={{ width: rem(16), height: rem(16) }} />
-        }
-        label="Account type"
-        data={accountTypes}
-        mt="md"
-        name="account_type"
-        value={accountType ?? ""}
-        onChange={(event) => {
-          setAccountType(event.currentTarget.value as AccountType);
-        }}
-      />
-      <CurrencyPicker
-        name="currency"
-        required
-        value={currency}
-        onValueChanged={(newValue) => {
-          setCurrency(newValue);
-        }}
-      />
-
-      <TextInput
-        name="balance"
-        label="Initial balance"
-        required
-        description="Initial balance of the account"
-        defaultValue={0}
-        type="number"
-        leftSection={"£"}
-      />
-      {accountType && <AccountMetadataForm accountType={accountType} />}
-
-      <Group>
-        <Button type="submit">Save</Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            // Go back
-            navigate({ to: "/accounts" });
+    <FormProvider {...form}>
+      <form onSubmit={form.handleSubmit(onFormSubmit)}>
+        Errors:{" "}
+        {JSON.stringify({
+          name: form.formState.errors.name?.message,
+          currency: form.formState.errors.currency?.message,
+          balance: form.formState.errors.balance?.message,
+          account_type: form.formState.errors.account_type?.message,
+          credit_limit: form.formState.errors.credit_limit?.message,
+          interest_rate: form.formState.errors.interest_rate?.message,
+        })}
+        <Controller
+          name="name"
+          control={form.control}
+          render={({ field }) => (
+            <TextInput
+              {...field}
+              label="Account name"
+              placeholder="Enter account name"
+              error={form.formState.errors.name?.message}
+            />
+          )}
+        />
+        <Controller
+          name="account_type"
+          control={form.control}
+          render={({ field }) => (
+            <NativeSelect
+              {...field}
+              required
+              rightSection={
+                <IconChevronDown style={{ width: rem(16), height: rem(16) }} />
+              }
+              label="Account type"
+              data={accountTypes}
+              mt="md"
+              value={field.value}
+              onChange={(event) => {
+                const type = event.currentTarget.value as AccountType;
+                setAccountType(type);
+                field.onChange(type);
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="currency"
+          control={form.control}
+          render={({ field }) => (
+            <CurrencyPicker
+              {...field}
+              name="currency"
+              required
+              value={field.value}
+              onValueChanged={(newValue) => {
+                field.onChange(newValue);
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="balance"
+          control={form.control}
+          render={({ field }) => {
+            return (
+              <NumberInput
+                {...field}
+                label="Initial balance"
+                required
+                description="Initial balance of the account"
+                defaultValue={field.value}
+                onChange={(newValue) => {
+                  field.onChange(newValue);
+                }}
+                leftSection={currency.symbol}
+                decimalScale={currency.decimalPlaces}
+              />
+            );
           }}
-        >
-          Cancel
-        </Button>
-      </Group>
-    </form>
+        />
+        {accountType && <AccountMetadataForm accountType={accountType} />}
+        <Group>
+          <Button type="submit">Save</Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              navigate({ to: "/accounts" });
+            }}
+          >
+            Cancel
+          </Button>
+        </Group>
+      </form>
+    </FormProvider>
   );
 }

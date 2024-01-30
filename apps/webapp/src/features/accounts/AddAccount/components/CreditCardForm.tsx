@@ -1,25 +1,38 @@
-import { TextInput, Stack } from "@mantine/core";
+import { Stack, NumberInput } from "@mantine/core";
+import { Controller, useFormContext } from "react-hook-form";
 
 export function CreditCardForm() {
+  const { control } = useFormContext();
+
   return (
     <Stack>
-      <TextInput
+      <Controller
         name="credit_limit"
-        label="Credit limit"
-        required
-        description="The credit limit of the account"
-        defaultValue={0}
-        type="number"
-        leftSection={"£"}
+        control={control}
+        render={({ field }) => (
+          <NumberInput
+            {...field}
+            label="Credit limit"
+            required
+            description="The credit limit of the account"
+            defaultValue={0}
+            leftSection={"£"} // TODO: Get the currency from the parent form
+          />
+        )}
       />
-      <TextInput
+      <Controller
         name="interest_rate"
-        label="Interest rate"
-        required
-        description="The interest rate of the account"
-        defaultValue={0}
-        type="number"
-        leftSection={"%"}
+        control={control}
+        render={({ field }) => (
+          <NumberInput
+            {...field}
+            label="Interest rate"
+            required
+            description="The interest rate of the account"
+            defaultValue={0}
+            leftSection={"%"}
+          />
+        )}
       />
     </Stack>
   );
