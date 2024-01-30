@@ -91,6 +91,7 @@ function onUserChangeHandler() {
 function onTokenPayloadChangeHandler() {
   console.error("'onTokenPayloadChangeHandler': Function not implemented.");
 }
+
 function resetUser() {
   console.error("'resetUser': Function not implemented.");
 }

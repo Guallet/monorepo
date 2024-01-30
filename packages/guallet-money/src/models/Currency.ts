@@ -43,7 +43,7 @@ export class Currency {
     const symbol = getCurrencySymbol(code);
     const c = CURRENCIES[code];
     if (c) {
-      return new Currency(c.name, symbol, code, c.decimalPlaces);
+      return new Currency(c.name, symbol, code, Number(c.decimalPlaces));
     } else {
       throw new Error(
         `Currency ${code} not found. Is this a valid ISO 4217 code?. See https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml for valid data`

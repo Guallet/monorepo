@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Logger,
-  Param,
-  ParseUUIDPipe,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Logger, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
@@ -30,7 +23,7 @@ export class ObAccountsController {
   @Get(':id')
   async getObAccount(
     @RequestUser() user: UserPrincipal,
-    @Query('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
     return await this.nordigenService.getAccountMetadata(id);
   }
