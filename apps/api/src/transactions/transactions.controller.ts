@@ -42,7 +42,7 @@ export class TransactionsController {
     description: 'The number of items to return. Default is 50',
     required: false,
   })
-  async getUserAccounts(
+  async getTransactions(
     @RequestUser() user: UserPrincipal,
     @Query(
       'page',
@@ -58,56 +58,52 @@ export class TransactionsController {
       }),
     )
     pageSize: number,
-    @Query('inbox', new ParseBoolPipe({ optional: true })) inbox: boolean,
   ): Promise<TransactionsResultDto> {
-    if (inbox == true) {
-      const transactions =
-        await this.transactionsService.getUserTransactionsInbox({
-          userId: user.id,
-        });
-      return TransactionsResultDto.fromDomain({
-        transactions: transactions,
-        total: transactions.length,
-        page: 1,
-        pageSize: transactions.length,
-        hasMore: false,
-      });
-    } else {
-      if (page === null || page == undefined) {
-        page = 1;
-      }
-      if (pageSize === null || pageSize == undefined) {
-        pageSize = 50;
-      }
-
-      if (!Number.isInteger(+page)) {
-        throw new BadRequestException(
-          'Query Param `page` is not valid. Has to be a number greater than 0',
-        );
-      }
-      if (!Number.isInteger(+pageSize)) {
-        throw new BadRequestException(
-          'Query Param `pageSize` is not valid. Has to be a number greater than 0',
-        );
-      }
-
-      const transactions = await this.transactionsService.getUserTransactions({
-        userId: user.id,
-        page: page,
-        pageSize: pageSize,
-      });
-      const total = await this.transactionsService.getUserTransactionsCount(
-        user.id,
-      );
-
-      return TransactionsResultDto.fromDomain({
-        transactions: transactions,
-        total: total,
-        page: page,
-        pageSize: pageSize,
-        hasMore: total >= page * pageSize,
-      });
+    if (page === null || page == undefined) {
+      page = 1;
     }
+    if (pageSize === null || pageSize == undefined) {
+      pageSize = 50;
+    }
+
+    if (!Number.isInteger(+page)) {
+      throw new BadRequestException(
+        'Query Param `page` is not valid. Has to be a number greater than 0',
+      );
+    }
+    if (!Number.isInteger(+pageSize)) {
+      throw new BadRequestException(
+        'Query Param `pageSize` is not valid. Has to be a number greater than 0',
+      );
+    }
+
+    const transactions = await this.transactionsService.getUserTransactions({
+      userId: user.id,
+      page: page,
+      pageSize: pageSize,
+    });
+    const total = await this.transactionsService.getUserTransactionsCount(
+      user.id,
+    );
+
+    return TransactionsResultDto.fromDomain({
+      transactions: transactions,
+      total: total,
+      page: page,
+      pageSize: pageSize,
+      hasMore: total >= page * pageSize,
+    });
+  }
+
+  @Get('/inbox')
+  async getUserTransactionInbox(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<TransactionDto[]> {
+    const transactions =
+      await this.transactionsService.getUserTransactionsInbox({
+        userId: user.id,
+      });
+    return transactions.map((x) => TransactionDto.fromDomain(x));
   }
 
   @Post()

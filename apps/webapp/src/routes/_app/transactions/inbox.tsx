@@ -35,8 +35,8 @@ async function loader() {
   const accounts = await loadAccounts();
   const categories = await loadCategories();
 
-  const result = await getTransactionsInbox();
-  const rehydratedTransactions = result.transactions.map((transaction) => {
+  const transactions = await getTransactionsInbox();
+  const rehydratedTransactions = transactions.map((transaction) => {
     return {
       ...transaction,
       account: accounts.find((account) => account.id === transaction.accountId),
@@ -54,7 +54,7 @@ async function loader() {
 }
 
 function TransactionsInboxPage() {
-  const { transactions, categories, accounts } = Route.useLoaderData();
+  const { transactions, categories } = Route.useLoaderData();
 
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
