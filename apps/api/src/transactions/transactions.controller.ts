@@ -9,8 +9,8 @@ import {
   Logger,
   BadRequestException,
   Query,
-  ParseBoolPipe,
   ParseIntPipe,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -27,7 +27,6 @@ export class TransactionsController {
 
   constructor(private readonly transactionsService: TransactionsService) {}
 
-  @Get()
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -42,6 +41,15 @@ export class TransactionsController {
     description: 'The number of items to return. Default is 50',
     required: false,
   })
+  @ApiQuery({
+    name: 'accounts',
+    type: String,
+    example: 'id1, id2, id3',
+    description:
+      'The id of the accounts to filter by. Is empty or null, use all accounts. Default is null',
+    required: false,
+  })
+  @Get()
   async getTransactions(
     @RequestUser() user: UserPrincipal,
     @Query(
@@ -58,6 +66,16 @@ export class TransactionsController {
       }),
     )
     pageSize: number,
+
+    @Query(
+      'accounts',
+      new ParseArrayPipe({
+        optional: true,
+        items: String,
+        separator: ',',
+      }),
+    )
+    accounts: string[],
   ): Promise<TransactionsResultDto> {
     if (page === null || page == undefined) {
       page = 1;
@@ -81,6 +99,7 @@ export class TransactionsController {
       userId: user.id,
       page: page,
       pageSize: pageSize,
+      accounts: accounts,
     });
     const total = await this.transactionsService.getUserTransactionsCount(
       user.id,

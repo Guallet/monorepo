@@ -7,7 +7,7 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 
 @Injectable()
@@ -49,8 +49,9 @@ export class TransactionsService {
     userId: string;
     page: number;
     pageSize: number;
+    accounts?: string[];
   }): Promise<Transaction[]> {
-    const { userId, page, pageSize } = args;
+    const { userId, page, pageSize, accounts } = args;
 
     const offset = (page - 1) * pageSize;
     if (offset < 0) {
@@ -64,6 +65,7 @@ export class TransactionsService {
       },
       where: {
         account: { user_id: userId },
+        ...(accounts && { accountId: In(accounts) }),
       },
       order: {
         date: 'DESC',

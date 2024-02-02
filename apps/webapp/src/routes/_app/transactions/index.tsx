@@ -19,31 +19,41 @@ const transactionsSearchSchema = z.object({
   page: z.number().catch(1),
   pageSize: z.number().catch(50),
   transactionId: z.string().optional(),
+  accounts: z.array(z.string()).nullable().catch(null),
   editProperty: z.enum(["notes", "category"]).optional(),
 });
+type SearchParams = z.infer<typeof transactionsSearchSchema>;
 
 export const Route = new FileRoute("/_app/transactions/").createRoute({
   component: TransactionsPage,
   validateSearch: transactionsSearchSchema,
-  loaderDeps: ({ search: { page, pageSize } }) => ({ page, pageSize }),
-  loader: ({ deps: { page, pageSize } }) => loader({ page, pageSize }),
+  loaderDeps: ({ search: { page, pageSize, accounts } }) => ({
+    page,
+    pageSize,
+    accounts,
+  }),
+  loader: ({ deps: { page, pageSize, accounts } }) =>
+    loader({ page, pageSize, accounts }),
 });
 
-async function loader(args: { page: number; pageSize: number }) {
-  const { page, pageSize } = args;
+async function loader(args: SearchParams) {
+  const { page, pageSize, accounts } = args;
 
-  const accounts = await loadAccounts();
+  const allAccounts = await loadAccounts();
   const categories = await loadCategories();
 
   const result: TransactionQueryResultDto = await loadTransactions(
     page,
-    pageSize
+    pageSize,
+    accounts
   );
 
   const rehydratedTransactions = result.transactions.map((transaction) => {
     return {
       ...transaction,
-      account: accounts.find((account) => account.id === transaction.accountId),
+      account: allAccounts.find(
+        (account) => account.id === transaction.accountId
+      ),
       category: categories.find(
         (category) => category.id === transaction.categoryId
       ),
@@ -53,7 +63,7 @@ async function loader(args: { page: number; pageSize: number }) {
   return {
     queryMeta: result.meta,
     transactions: rehydratedTransactions,
-    accounts: accounts,
+    accounts: allAccounts,
     categories: categories,
   };
 }
@@ -89,7 +99,7 @@ function TransactionsPage() {
 
   const isMobile = useMediaQuery("(max-width: 50em)");
 
-  const { page, pageSize, transactionId, editProperty } = Route.useSearch();
+  const { transactionId, editProperty } = Route.useSearch();
 
   const isSelectCategoryModalOpen = editProperty === "category";
   const isEditNotesModalOpen = editProperty === "notes";
@@ -100,9 +110,10 @@ function TransactionsPage() {
 
   function hideModal(forceRefresh: boolean = false) {
     navigate({
-      search: () => ({
-        page: page,
-        pageSize: pageSize,
+      search: (prev) => ({
+        ...prev,
+        transactionId: undefined,
+        editProperty: undefined,
       }),
     });
 
@@ -113,9 +124,8 @@ function TransactionsPage() {
 
   function showEditCategoryModal(transactionId: string) {
     navigate({
-      search: () => ({
-        page: page,
-        pageSize: pageSize,
+      search: (prev) => ({
+        ...prev,
         transactionId: transactionId,
         editProperty: "category",
       }),
@@ -124,9 +134,8 @@ function TransactionsPage() {
 
   function showEditNotesModal(transactionId: string) {
     navigate({
-      search: () => ({
-        page: page,
-        pageSize: pageSize,
+      search: (prev) => ({
+        ...prev,
         transactionId: transactionId,
         editProperty: "notes",
       }),

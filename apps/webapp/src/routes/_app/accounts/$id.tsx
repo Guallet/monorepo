@@ -5,6 +5,9 @@ import { Account, AccountType } from "@accounts/models/Account";
 import { getAccount } from "@accounts/api/accounts.api";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
+import { useState } from "react";
+import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
+import { AccountsList } from "@/features/accounts/components/AccountList";
 // import { CreditCardDetails } from "./CreditCardDetails";
 
 export const Route = new FileRoute("/_app/accounts/$id").createRoute({
@@ -18,33 +21,25 @@ export const Route = new FileRoute("/_app/accounts/$id").createRoute({
 // const DELETE_ACCOUNT_MODAL_QUERY = "delete";
 
 function AccountDetailsPage() {
-  const navigation = useNavigate();
   const account = Route.useLoaderData();
+  const navigation = useNavigate();
 
-  //   const [searchParams, setSearchParams] = Route.useSearch();
-  //   const isDeleteAccountModalOpen =
-  //     searchParams.get(DELETE_ACCOUNT_MODAL_QUERY) === "true";
+  const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
+    useState(false);
 
   function showDeleteAccountModal() {
-    // setSearchParams((params) => {
-    //   params.append(DELETE_ACCOUNT_MODAL_QUERY, "true");
-    //   return params;
-    // });
+    setIsDeleteAccountModalOpen(true);
   }
 
   function hideModal() {
-    // setSearchParams((params) => {
-    //   params.delete(DELETE_ACCOUNT_MODAL_QUERY);
-    //   return params;
-    // });
+    setIsDeleteAccountModalOpen(false);
   }
 
   return (
     <>
       <Modal
         centered
-        // opened={isDeleteAccountModalOpen}
-        opened={false}
+        opened={isDeleteAccountModalOpen}
         onClose={hideModal}
         title="Delete account"
         size="auto"
@@ -57,12 +52,6 @@ function AccountDetailsPage() {
           }}
         />
       </Modal>
-      {/* <AccountsHeader
-        onAddNewAccount={() => setIsAddAccountModalOpened(true)}
-      />
-      <Stack justify="flex-start">
-        <AccountsList accounts={data} />
-      </Stack> */}
       <Text size="lg" fw={700}>
         {account.name}
       </Text>
@@ -71,7 +60,21 @@ function AccountDetailsPage() {
       {AccountDetailsSelector(account)}
 
       <Stack justify="flex-start">
-        <Button fullWidth>View Transactions</Button>
+        <Button
+          fullWidth
+          onClick={() => {
+            navigation({
+              to: `/transactions`,
+              search: () => ({
+                accounts: [account.id],
+                page: 1,
+                pageSize: 50,
+              }),
+            });
+          }}
+        >
+          View Transactions
+        </Button>
         <Button fullWidth disabled>
           Manage connection
         </Button>

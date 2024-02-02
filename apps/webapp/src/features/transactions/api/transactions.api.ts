@@ -2,9 +2,13 @@ import { get, patch } from "../../../core/api/fetchHelper";
 
 export async function loadTransactions(
   page: number,
-  pageSize: number
+  pageSize: number,
+  accounts: string[] | null
 ): Promise<TransactionQueryResultDto> {
-  const queryPath = `transactions?page=${page}&pageSize=${pageSize}`;
+  let queryPath = `transactions?page=${page}&pageSize=${pageSize}`;
+  if (accounts) {
+    queryPath = `${queryPath}&accounts=${accounts.join(",")}`;
+  }
   return await get<TransactionQueryResultDto>(queryPath);
 }
 
