@@ -1,24 +1,19 @@
 import { CURRENCIES } from "./iso_4217";
 
 function getCurrencySymbol(code: string): string {
+  const locale = navigator.language ?? undefined;
   return (0)
-    .toLocaleString([], {
+    .toLocaleString([locale], {
       style: "currency",
       currency: code,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
+      currencySign: "standard",
+      currencyDisplay: "narrowSymbol",
+      useGrouping: true,
     })
     .replace(/\d/g, "")
     .trim();
-
-  // let currencyFormat = new Intl.NumberFormat(undefined, {
-  //     style: "currency",
-  //     currency: code,
-  //   });
-
-  // const symbol =
-  //   currencyFormat.formatToParts(0).find((part) => part.type === "currency")
-  //     ?.value ?? code;
 }
 
 export class Currency {

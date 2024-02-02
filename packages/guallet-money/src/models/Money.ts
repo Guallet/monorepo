@@ -18,9 +18,13 @@ export class Money {
   }
 
   format(): string {
-    const currencyFormatter = Intl.NumberFormat(undefined, {
+    const locale = navigator.language ?? undefined;
+    const currencyFormatter = Intl.NumberFormat(locale, {
       style: "currency",
       currency: this.currency.code,
+      currencySign: "standard",
+      currencyDisplay: "narrowSymbol",
+      useGrouping: true,
     });
 
     return currencyFormatter.format(this.amount);
