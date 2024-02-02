@@ -23,14 +23,20 @@ export function AccountRow({ account, onClick }: Props) {
         }
       }}
     >
-      <Group grow gap="sm">
+      <Group gap="sm">
         <Avatar
           radius="xl"
           size={50}
-          src={account.financial_institution?.logo}
-          alt={account.financial_institution?.name}
+          src={account.institution?.image_src}
+          alt={account.institution?.name}
         />
-        <Text>{account.name}</Text>
+        <Text
+          style={{
+            flex: 1,
+          }}
+        >
+          {account.name}
+        </Text>
         <Text>{money.format()}</Text>
         {/* <Text>{'Last update: ' + account.connection_details?.last_refreshed}</Text> */}
         {/* <Button radius="xl">Refresh</Button> */}

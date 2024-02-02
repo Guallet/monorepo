@@ -5,11 +5,11 @@ export type Account = {
   balance: number;
   currency: string;
   connection_details?: AccountConnectionDto;
-
-  financial_institution?: {
+  institutionId: null | string;
+  institution?: {
     id: string;
     name: string;
-    logo: string;
+    image_src: string;
   };
 };
 
