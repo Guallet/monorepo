@@ -1,22 +1,48 @@
 import { FileRoute, useNavigate } from "@tanstack/react-router";
 import { Group, Modal, Stack, Text, Button } from "@mantine/core";
-import { fetch_delete } from "@core/api/fetchHelper";
+import { ApiError, fetch_delete } from "@core/api/fetchHelper";
 import { Account, AccountType } from "@accounts/models/Account";
 import { getAccount } from "@accounts/api/accounts.api";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
 import { useState } from "react";
-import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
-import { AccountsList } from "@/features/accounts/components/AccountList";
+import { notifications } from "@mantine/notifications";
 // import { CreditCardDetails } from "./CreditCardDetails";
 
 export const Route = new FileRoute("/_app/accounts/$id").createRoute({
   component: AccountDetailsPage,
-  loader: async ({ params }) => {
-    const { id } = params;
-    return await getAccount(id);
+  loader: async ({ params }) => loader(params.id),
+  errorComponent: (error) => {
+    console.error("Error loading account", error);
+    return (
+      <Stack>
+        <Text>Error loading account</Text>
+        <Text>{`${JSON.stringify(error)}`}</Text>
+      </Stack>
+    );
   },
 });
+
+async function loader(id: string): Promise<Account> {
+  try {
+    return await getAccount(id);
+  } catch (error) {
+    console.error("Error loading account", error);
+    if (error instanceof ApiError) {
+      switch (error.status) {
+        case 404:
+          // return redirect({ from: "/", to: "/404" });
+          throw new Error("Account not found");
+        // throw notFound();
+        // https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors
+        default:
+          console.error("Unhandled error", error);
+          throw error;
+      }
+    }
+    throw error;
+  }
+}
 
 // const DELETE_ACCOUNT_MODAL_QUERY = "delete";
 
@@ -48,7 +74,12 @@ function AccountDetailsPage() {
           account={account}
           onCancel={hideModal}
           onAccountDeleted={() => {
-            navigation({ to: "/accounts", replace: true });
+            notifications.show({
+              title: "Account deleted",
+              message: "The account has been deleted",
+              color: "green",
+            });
+            navigation({ to: "/accounts" });
           }}
         />
       </Modal>

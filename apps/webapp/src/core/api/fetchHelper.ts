@@ -23,6 +23,8 @@ export async function get<TDto>(path: string): Promise<TDto> {
     },
   });
 
+  handleHttpErrors(response);
+
   return (await response.json()) as TDto;
 }
 
@@ -92,4 +94,16 @@ export async function fetch_delete<TDto>(path: string): Promise<TDto> {
   });
 
   return (await response.json()) as TDto;
+}
+
+function handleHttpErrors(response: Response) {
+  if (!response.ok) {
+    throw new ApiError(response.statusText, response.status);
+  }
+}
+
+export class ApiError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+  }
 }
