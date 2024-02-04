@@ -10,7 +10,7 @@ import { Notifications } from "@mantine/notifications";
 import { SuperTokensWrapper } from "supertokens-auth-react";
 import { initializePostHog } from "@core/analytics/posthog";
 import { AuthProvider } from "./core/auth/useAuth";
-import { RouterProvider, Router } from "@tanstack/react-router";
+import { RouterProvider, Router, ErrorComponent } from "@tanstack/react-router";
 import { NotFoundRoute } from "@tanstack/react-router";
 import { Route as rootRoute } from "./routes/__root.tsx";
 
@@ -28,7 +28,11 @@ const notFoundRoute = new NotFoundRoute({
 });
 
 // Create a new router instance
-const router = new Router({ routeTree, notFoundRoute });
+const router = new Router({
+  routeTree,
+  notFoundRoute,
+  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {

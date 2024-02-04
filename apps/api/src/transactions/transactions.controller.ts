@@ -66,7 +66,6 @@ export class TransactionsController {
       }),
     )
     pageSize: number,
-
     @Query(
       'accounts',
       new ParseArrayPipe({
@@ -95,15 +94,21 @@ export class TransactionsController {
       );
     }
 
+    this.logger.debug(`Accounts filter: ${JSON.stringify(accounts)}`);
+    console.log(`Accounts filter:`, accounts);
+
+    validateAccountsQuery(accounts);
+
     const transactions = await this.transactionsService.getUserTransactions({
       userId: user.id,
       page: page,
       pageSize: pageSize,
       accounts: accounts,
     });
-    const total = await this.transactionsService.getUserTransactionsCount(
-      user.id,
-    );
+    const total = await this.transactionsService.getUserTransactionsCount({
+      userId: user.id,
+      filters: { accounts: accounts },
+    });
 
     return TransactionsResultDto.fromDomain({
       transactions: transactions,
@@ -160,5 +165,17 @@ export class TransactionsController {
   @Delete(':id')
   remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
     return this.transactionsService.remove(id);
+  }
+}
+
+function validateAccountsQuery(accounts: string[]) {
+  if (
+    accounts !== undefined &&
+    accounts !== null &&
+    accounts.every((x) => x === '')
+  ) {
+    throw new BadRequestException(
+      'Query Param `accounts` is not valid. Cannot be empty',
+    );
   }
 }

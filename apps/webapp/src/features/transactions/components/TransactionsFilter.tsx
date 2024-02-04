@@ -1,9 +1,9 @@
+import { AccountsPicker } from "@/components/AccountPicker/AccountsPicker";
 import { CategoryMultiSelectCheckbox } from "@/components/Categories/CategoryMultiSelectCheckbox";
 import { DateRangeButton } from "@/components/DateRangeButton/DateRangeButton";
-import { MultiSelectCheckbox } from "@/components/MultiSelectCheckbox/MultiComboBox";
 import { Account } from "@/features/accounts/models/Account";
 import { Category } from "@/features/categories/models/Category";
-import { Flex, Text } from "@mantine/core";
+import { Card, Group, Modal, Text } from "@mantine/core";
 import { useState } from "react";
 
 export type FilterData = {
@@ -37,51 +37,73 @@ export function TransactionsFilter({
     endDate: Date;
   } | null>(null);
 
-  return (
-    <Flex>
-      <Text>Filter</Text>
-      <MultiSelectCheckbox
-        data={[...new Set(accounts.map((x) => x.name))]}
-        placeholder="Select the accounts"
-        allItemsSelectedMessage="All accounts selected"
-      />
-      <CategoryMultiSelectCheckbox
-        categories={categories}
-        selectedCategories={[]}
-        onSelectionChanged={(selectedCategories: Category[]) => {
-          console.log("Selected Categories from filter: ", selectedCategories);
-          onFiltersUpdate({
-            selectedAccounts: selectedAccounts,
-            selectedCategories: selectedCategories,
-            dateRange: dateRange,
-          });
-        }}
-      />
-      <DateRangeButton
-        selectedRange={dateRange}
-        onRangeSelected={(selectedRange) => {
-          console.log("Selected Date Range from filter: ", selectedRange);
-          let filterDateRange: {
-            startDate: Date;
-            endDate: Date;
-          } | null = null;
-          if (selectedRange) {
-            filterDateRange = {
-              startDate: selectedRange.startDate,
-              endDate: selectedRange.endDate,
-            };
-            setDateRange(filterDateRange);
-          } else {
-            setDateRange(null);
-          }
+  const [modalOpened, setModalOpened] = useState(false);
 
-          onFiltersUpdate({
-            selectedAccounts: selectedAccounts,
-            selectedCategories: selectedCategories,
-            dateRange: filterDateRange,
-          });
+  return (
+    <>
+      <Modal
+        opened={modalOpened}
+        onClose={() => {
+          setModalOpened(false);
         }}
-      />
-    </Flex>
+      >
+        <Text>Hello modal</Text>
+      </Modal>
+      <Card withBorder radius="md">
+        <Group>
+          <AccountsPicker
+            accounts={accounts}
+            selectedAccounts={selectedAccounts}
+            onSelectedAccountsChange={(value) => {
+              onFiltersUpdate({
+                selectedAccounts: value,
+                selectedCategories: selectedCategories,
+                dateRange: dateRange,
+              });
+            }}
+          />
+          <CategoryMultiSelectCheckbox
+            categories={categories}
+            selectedCategories={[]}
+            onSelectionChanged={(selectedCategories: Category[]) => {
+              console.log(
+                "Selected Categories from filter: ",
+                selectedCategories
+              );
+              onFiltersUpdate({
+                selectedAccounts: selectedAccounts,
+                selectedCategories: selectedCategories,
+                dateRange: dateRange,
+              });
+            }}
+          />
+          <DateRangeButton
+            selectedRange={dateRange}
+            onRangeSelected={(selectedRange) => {
+              console.log("Selected Date Range from filter: ", selectedRange);
+              let filterDateRange: {
+                startDate: Date;
+                endDate: Date;
+              } | null = null;
+              if (selectedRange) {
+                filterDateRange = {
+                  startDate: selectedRange.startDate,
+                  endDate: selectedRange.endDate,
+                };
+                setDateRange(filterDateRange);
+              } else {
+                setDateRange(null);
+              }
+
+              onFiltersUpdate({
+                selectedAccounts: selectedAccounts,
+                selectedCategories: selectedCategories,
+                dateRange: filterDateRange,
+              });
+            }}
+          />
+        </Group>
+      </Card>
+    </>
   );
 }

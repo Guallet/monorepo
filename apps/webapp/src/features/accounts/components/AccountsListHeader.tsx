@@ -1,29 +1,11 @@
 import GroupHeader from "@/components/GroupHeader/GroupHeader";
-import { Account, AccountType } from "@accounts/models/Account";
+import {
+  Account,
+  AccountType,
+  getAccountTypeTitle,
+} from "@accounts/models/Account";
 import { Money } from "@guallet/money";
 import "core-js/actual/array/group-by";
-
-function getAccountTypeTitle(type: AccountType): string {
-  switch (type) {
-    case AccountType.CURRENT_ACCOUNT:
-      return "Current Accounts";
-    case AccountType.CREDIT_CARD:
-      return "Credit cards";
-    case AccountType.INVESTMENT:
-      return "Investment accounts";
-    case AccountType.LOAN:
-      return "Loans";
-    case AccountType.MORTGAGE:
-      return "Mortgages";
-    case AccountType.PENSION:
-      return "Pensions";
-    case AccountType.SAVINGS:
-      return "Saving accounts";
-
-    default:
-      return "Other";
-  }
-}
 
 interface HeaderProps {
   accountType: AccountType;

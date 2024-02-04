@@ -35,6 +35,7 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
     >
       <Popover.Target>
         <Button
+          variant="outline"
           onClick={() => {
             setOpened(!opened);
           }}

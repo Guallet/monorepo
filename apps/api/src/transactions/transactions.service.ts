@@ -19,11 +19,22 @@ export class TransactionsService {
     private repository: Repository<Transaction>,
   ) {}
 
-  // get total transactions count for a user
-  async getUserTransactionsCount(userId: string): Promise<number> {
+  // get total transactions count for a user, with query filters
+  async getUserTransactionsCount(args: {
+    userId: string;
+    filters: { accounts?: string[] };
+  }): Promise<number> {
+    const { userId, filters } = args;
+    const { accounts } = filters;
+
+    if (accounts && accounts.length === 0) {
+      throw new BadRequestException('Accounts cannot be empty');
+    }
+
     return this.repository.count({
       where: {
         account: { user_id: userId },
+        ...(accounts && { accountId: In(accounts) }),
       },
     });
   }
@@ -52,6 +63,10 @@ export class TransactionsService {
     accounts?: string[];
   }): Promise<Transaction[]> {
     const { userId, page, pageSize, accounts } = args;
+
+    if (accounts && accounts.length === 0) {
+      throw new BadRequestException('Accounts cannot be empty');
+    }
 
     const offset = (page - 1) * pageSize;
     if (offset < 0) {

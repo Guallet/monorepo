@@ -203,6 +203,13 @@ export function MultiSelectCategoryModal({
 
   return (
     <Stack w={"30em"}>
+      <SearchBoxInput
+        query={searchTerm}
+        placeholder="Search categories..."
+        onSearchQueryChanged={(query) => {
+          setSearchTerm(query);
+        }}
+      />
       <Group justify="flex-end">
         <Button
           variant="transparent"
@@ -220,16 +227,9 @@ export function MultiSelectCategoryModal({
             deselectAll();
           }}
         >
-          Deselect all
+          Clear all
         </Button>
       </Group>
-      <SearchBoxInput
-        query={searchTerm}
-        placeholder="Search categories..."
-        onSearchQueryChanged={(query) => {
-          setSearchTerm(query);
-        }}
-      />
 
       <ScrollArea.Autosize mah={300}>
         <Stack>

@@ -1,4 +1,5 @@
 import { loadAccounts } from "@/features/accounts/api/accounts.api";
+import { Account } from "@/features/accounts/models/Account";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { EditNotesModal } from "@/features/transactions/TransactionsPage/EditNotesModal";
 import { SelectCategoryModal } from "@/features/transactions/TransactionsPage/SelectCategoryModal";
@@ -8,7 +9,11 @@ import {
   updateTransactionCategory as remoteUpdateTransactionCategory,
   updateTransactionNotes as remoteUpdateTransactionNotes,
 } from "@/features/transactions/api/transactions.api";
-import { TransactionsFilter } from "@/features/transactions/components/TransactionsFilter";
+import {
+  FilterData,
+  TransactionsFilter,
+} from "@/features/transactions/components/TransactionsFilter";
+import { Transaction } from "@/features/transactions/models/Transaction";
 
 import { Stack, Table, Modal, Pagination, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -19,7 +24,7 @@ const transactionsSearchSchema = z.object({
   page: z.number().catch(1),
   pageSize: z.number().catch(50),
   transactionId: z.string().optional(),
-  accounts: z.array(z.string()).nullable().catch(null),
+  accounts: z.array(z.string()).optional(),
   editProperty: z.enum(["notes", "category"]).optional(),
 });
 type SearchParams = z.infer<typeof transactionsSearchSchema>;
@@ -34,6 +39,12 @@ export const Route = new FileRoute("/_app/transactions/").createRoute({
   }),
   loader: ({ deps: { page, pageSize, accounts } }) =>
     loader({ page, pageSize, accounts }),
+  // errorComponent: (error) => (
+  //   <Stack>
+  //     <Text>Error loading transactions</Text>
+  //     <Text>{JSON.stringify(error)}</Text>
+  //   </Stack>
+  // ),
 });
 
 async function loader(args: SearchParams) {
@@ -45,7 +56,7 @@ async function loader(args: SearchParams) {
   const result: TransactionQueryResultDto = await loadTransactions(
     page,
     pageSize,
-    accounts
+    accounts ?? null
   );
 
   const rehydratedTransactions = result.transactions.map((transaction) => {
@@ -62,7 +73,7 @@ async function loader(args: SearchParams) {
 
   return {
     queryMeta: result.meta,
-    transactions: rehydratedTransactions,
+    transactions: rehydratedTransactions as Transaction[],
     accounts: allAccounts,
     categories: categories,
   };
@@ -98,15 +109,29 @@ function TransactionsPage() {
   const totalPages = Math.ceil(queryMeta.total / queryMeta.pageSize);
 
   const isMobile = useMediaQuery("(max-width: 50em)");
-
   const { transactionId, editProperty } = Route.useSearch();
+  let { accounts: selectedAccountsIds } = Route.useSearch();
 
   const isSelectCategoryModalOpen = editProperty === "category";
   const isEditNotesModalOpen = editProperty === "notes";
 
+  if (
+    selectedAccountsIds === undefined ||
+    selectedAccountsIds === null ||
+    selectedAccountsIds.length === 0
+  ) {
+    // Map all the accounts to the selected accounts
+    selectedAccountsIds = accounts.map((account) => account.id);
+  }
+
+  const selectedAccounts =
+    selectedAccountsIds
+      ?.map((id) => accounts.find((account) => account.id === id))
+      .filter((item): item is Account => !!item) ?? [];
+
   const selectedTransaction = transactions.find(
     (transaction) => transaction.id === transactionId
-  );
+  ) as Transaction | null;
 
   function hideModal(forceRefresh: boolean = false) {
     navigate({
@@ -161,38 +186,15 @@ function TransactionsPage() {
     hideModal(true);
   }
 
-  if (transactions.length == 0) {
-    return (
-      <Stack>
-        <Text>You don't have any transactions yet</Text>
-      </Stack>
-    );
+  function updateFiltersQuery(filters: FilterData) {
+    console.log("Filters updated", filters);
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        accounts: filters.selectedAccounts.map((account) => account.id),
+      }),
+    });
   }
-
-  const rows = transactions.map((transaction) => (
-    <Table.Tr key={transaction.id}>
-      <Table.Td>{formatDate(new Date(transaction.date))}</Table.Td>
-      <Table.Td>{transaction.account?.name}</Table.Td>
-      <Table.Td
-        onClick={() => {
-          showEditNotesModal(transaction.id);
-        }}
-      >
-        <Stack>
-          <Text> {transaction.description}</Text>
-          {transaction.notes && <Text size="xs">{transaction.notes}</Text>}
-        </Stack>
-      </Table.Td>
-      <Table.Td>{transaction.amount}</Table.Td>
-      <Table.Td
-        onClick={() => {
-          showEditCategoryModal(transaction.id);
-        }}
-      >
-        {transaction.category?.name}
-      </Table.Td>
-    </Table.Tr>
-  ));
 
   return (
     <>
@@ -237,48 +239,108 @@ function TransactionsPage() {
       <Stack>
         <TransactionsFilter
           accounts={accounts}
-          selectedAccounts={[]}
+          selectedAccounts={selectedAccounts}
           categories={categories}
           selectedCategories={[]}
           onFiltersUpdate={(filters) => {
-            console.log("Filters updated", filters);
+            updateFiltersQuery(filters);
           }}
         />
-        <Table.ScrollContainer minWidth={500}>
-          <Table
-            striped
-            highlightOnHover
-            withColumnBorders
-            stickyHeader
-            // stickyHeaderOffset={60}
-          >
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Date</Table.Th>
-                <Table.Th>Account</Table.Th>
-                <Table.Th>Description</Table.Th>
-                <Table.Th>Amount</Table.Th>
-                <Table.Th>Category</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-        </Table.ScrollContainer>
-        <Pagination
-          total={totalPages}
-          siblings={1}
-          value={queryMeta.page}
-          onChange={(page) => {
-            navigate({
-              search: (prev) => ({
-                ...prev,
-                page: page,
-              }),
-            });
-          }}
-        />
-        ;
+        {transactions.length == 0 && <NoTransactionsFound />}
+        {transactions.length > 0 && (
+          <TransactionsTable
+            transactions={transactions}
+            onEditCategory={(transaction) => {
+              showEditCategoryModal(transaction.id);
+            }}
+            onEditNotes={(transaction) => {
+              showEditNotesModal(transaction.id);
+            }}
+          />
+        )}
+        {totalPages > 1 && (
+          <Pagination
+            total={totalPages}
+            siblings={1}
+            value={queryMeta.page}
+            onChange={(page) => {
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  page: page,
+                }),
+              });
+            }}
+          />
+        )}
       </Stack>
     </>
+  );
+}
+
+function NoTransactionsFound() {
+  return (
+    <Stack>
+      <Text>There are no transactions matching the filter criteria</Text>
+    </Stack>
+  );
+}
+
+interface TransactionsTableProps {
+  transactions: Transaction[];
+  onEditCategory: (transaction: Transaction) => void;
+  onEditNotes: (transaction: Transaction) => void;
+}
+function TransactionsTable({
+  transactions,
+  onEditCategory,
+  onEditNotes,
+}: TransactionsTableProps) {
+  const rows = transactions.map((transaction) => (
+    <Table.Tr key={transaction.id}>
+      <Table.Td>{formatDate(new Date(transaction.date))}</Table.Td>
+      <Table.Td>{transaction.account?.name}</Table.Td>
+      <Table.Td
+        onClick={() => {
+          onEditNotes(transaction);
+        }}
+      >
+        <Stack>
+          <Text>{transaction.description}</Text>
+          {transaction.notes && <Text size="xs">{transaction.notes}</Text>}
+        </Stack>
+      </Table.Td>
+      <Table.Td>{transaction.amount}</Table.Td>
+      <Table.Td
+        onClick={() => {
+          onEditCategory(transaction);
+        }}
+      >
+        {transaction.category?.name}
+      </Table.Td>
+    </Table.Tr>
+  ));
+
+  return (
+    <Table.ScrollContainer minWidth={500}>
+      <Table
+        striped
+        highlightOnHover
+        withColumnBorders
+        stickyHeader
+        // stickyHeaderOffset={60}
+      >
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Date</Table.Th>
+            <Table.Th>Account</Table.Th>
+            <Table.Th>Description</Table.Th>
+            <Table.Th>Amount</Table.Th>
+            <Table.Th>Category</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
