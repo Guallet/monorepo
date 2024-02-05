@@ -23,10 +23,10 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = new FileRoute("/_app/connections/$id").createRoute({
+export const Route = createFileRoute("/_app/connections/$id")({
   component: ConnectionDetailsPage,
   loader: async ({ params }) => loader({ id: params.id }),
 });

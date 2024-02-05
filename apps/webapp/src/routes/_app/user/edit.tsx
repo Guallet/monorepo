@@ -8,7 +8,7 @@
 
 import { TextInput, Button, Group } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { getUserDetails } from "@/features/user/api/user.api";
 
 type FormData = {
@@ -17,7 +17,7 @@ type FormData = {
   profile_image: string;
 };
 
-export const Route = new FileRoute("/_app/user/edit").createRoute({
+export const Route = createFileRoute("/_app/user/edit")({
   loader: loader,
   component: EditUserPage,
 });

@@ -11,7 +11,7 @@ import { AccountType } from "@accounts/models/Account";
 import { useState } from "react";
 import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
 
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AccountMetadataForm } from "@/features/accounts/AddAccount/components/AccountMetadataForm";
 import {
   CreateAccountRequest,
@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
 
-export const Route = new FileRoute("/_app/accounts/add").createRoute({
+export const Route = createFileRoute("/_app/accounts/add")({
   component: AddAccountPage,
 });
 

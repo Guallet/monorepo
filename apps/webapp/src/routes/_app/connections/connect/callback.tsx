@@ -1,4 +1,4 @@
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Button, Card, Flex, Loader, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -16,9 +16,7 @@ const pageSearchSchema = z.object({
   details: z.string().optional().nullable(),
 });
 
-export const Route = new FileRoute(
-  "/_app/connections/connect/callback"
-).createRoute({
+export const Route = createFileRoute("/_app/connections/connect/callback")({
   component: AddConnectionCallbackPage,
   validateSearch: pageSearchSchema,
   loaderDeps: ({ search: { ref, error, details } }) => ({

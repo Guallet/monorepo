@@ -1,4 +1,4 @@
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import {
   Avatar,
@@ -25,7 +25,7 @@ const pageSearchSchema = z.object({
   country: z.string().optional(), //.catch("GB"),
 });
 
-export const Route = new FileRoute("/_app/connections/connect/").createRoute({
+export const Route = createFileRoute("/_app/connections/connect/")({
   component: AddConnectionPage,
   validateSearch: pageSearchSchema,
   loaderDeps: ({ search: { country } }) => ({ country }),

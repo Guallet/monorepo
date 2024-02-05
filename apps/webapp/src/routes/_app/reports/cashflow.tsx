@@ -1,7 +1,7 @@
 import { Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import { useState } from "react";
-import { FileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { loadAccounts } from "@/features/accounts/api/accounts.api";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { getCashflowReportData } from "@/features/reports/api/reports.api";
@@ -14,7 +14,7 @@ const pageSearchSchema = z.object({
   year: z.number().catch(new Date().getUTCFullYear()),
 });
 
-export const Route = new FileRoute("/_app/reports/cashflow").createRoute({
+export const Route = createFileRoute("/_app/reports/cashflow")({
   component: CashFlowPage,
   validateSearch: pageSearchSchema,
   loaderDeps: ({ search: { year } }) => ({ year }),

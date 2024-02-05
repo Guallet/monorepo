@@ -6,9 +6,9 @@ import { PendingTransactionsCard } from "@/features/dashboard/components/cards/P
 import { ScheduledTransactionsCard } from "@/features/dashboard/components/cards/ScheduledTransactionsCard";
 import { TotalBalanceCard } from "@/features/dashboard/components/cards/TotalBalanceCard";
 import { SimpleGrid } from "@mantine/core";
-import { FileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = new FileRoute("/_app/dashboard/").createRoute({
+export const Route = createFileRoute("/_app/dashboard/")({
   component: DashboardPage,
 });
 

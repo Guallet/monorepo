@@ -1,8 +1,8 @@
 import GualletAppShell from "@/components/layout/GualletAppShell";
-import { FileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SessionAuth } from "supertokens-auth-react/recipe/session";
 
-export const Route = new FileRoute("/_app").createRoute({
+export const Route = createFileRoute("/_app")({
   component: ProtectedRoute,
 });
 

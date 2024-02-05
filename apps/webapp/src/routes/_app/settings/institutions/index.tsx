@@ -1,8 +1,8 @@
 import { getUserInstitutions } from "@/features/institutions/api/institutions.api";
 import { Stack, Title, Text, Group, Badge } from "@mantine/core";
-import { FileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = new FileRoute("/_app/settings/institutions/").createRoute({
+export const Route = createFileRoute("/_app/settings/institutions/")({
   component: InstitutionsPage,
   loader: loader,
 });

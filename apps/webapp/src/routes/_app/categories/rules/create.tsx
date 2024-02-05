@@ -12,7 +12,7 @@ import { notifications } from "@mantine/notifications";
 
 import { useState } from "react";
 import { IconTrash } from "@tabler/icons-react";
-import { FileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { Category } from "@/features/categories/models/Category";
 import {
@@ -22,12 +22,10 @@ import {
   TransactionFieldValues,
 } from "@/features/categories/rules/RulesEngine";
 
-export const Route = new FileRoute("/_app/categories/rules/create").createRoute(
-  {
-    component: CreateRulePage,
-    loader: loader,
-  }
-);
+export const Route = createFileRoute("/_app/categories/rules/create")({
+  component: CreateRulePage,
+  loader: loader,
+});
 
 interface CreateRuleData {
   categories: Category[];

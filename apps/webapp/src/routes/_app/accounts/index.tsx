@@ -3,10 +3,10 @@ import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { Account } from "@/features/accounts/models/Account";
 import { Button, Group, Stack, Text } from "@mantine/core";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = new FileRoute("/_app/accounts/").createRoute({
+export const Route = createFileRoute("/_app/accounts/")({
   component: AccountsPage,
   loader: loader,
 });

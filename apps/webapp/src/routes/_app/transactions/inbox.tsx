@@ -1,4 +1,4 @@
-import { FileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { useState } from "react";
 import {
@@ -26,7 +26,7 @@ import {
 } from "@/features/transactions/api/transactions.api";
 import { Transaction } from "@/features/transactions/models/Transaction";
 
-export const Route = new FileRoute("/_app/transactions/inbox").createRoute({
+export const Route = createFileRoute("/_app/transactions/inbox")({
   loader: loader,
   component: TransactionsInboxPage,
 });

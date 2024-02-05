@@ -1,4 +1,4 @@
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { useMediaQuery } from "@mantine/hooks";
 import {
@@ -22,7 +22,7 @@ const categoriesSearchSchema = z.object({
   parentId: z.string().optional(),
 });
 
-export const Route = new FileRoute("/_app/categories/").createRoute({
+export const Route = createFileRoute("/_app/categories/")({
   component: CategoriesPage,
   validateSearch: categoriesSearchSchema,
   loader: loader,

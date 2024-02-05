@@ -15,9 +15,9 @@ import {
   Tooltip,
 } from "@mantine/core";
 
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-export const Route = new FileRoute("/_app/connections/").createRoute({
+export const Route = createFileRoute("/_app/connections/")({
   component: ConnectionsPage,
   loader: loader,
 });

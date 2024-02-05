@@ -1,8 +1,8 @@
 import { ListView } from "@guallet/ui-react";
 import { Button, Stack, Title, Text } from "@mantine/core";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-export const Route = new FileRoute("/_app/settings/").createRoute({
+export const Route = createFileRoute("/_app/settings/")({
   component: SettingsPage,
 });
 

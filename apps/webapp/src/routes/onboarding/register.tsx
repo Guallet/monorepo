@@ -12,10 +12,10 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { UserDto, getUserDetails } from "@user/api/user.api";
 import { getCurrentUserId } from "@/core/auth/auth.helper";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { registerUser } from "@/features/auth/user-register.api";
 
-export const Route = new FileRoute("/onboarding/register").createRoute({
+export const Route = createFileRoute("/onboarding/register")({
   component: RegisterUserPage,
   loader: loader,
 });

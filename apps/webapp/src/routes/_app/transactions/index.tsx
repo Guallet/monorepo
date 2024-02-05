@@ -17,7 +17,7 @@ import { Transaction } from "@/features/transactions/models/Transaction";
 
 import { Stack, Table, Modal, Pagination, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
 const transactionsSearchSchema = z.object({
@@ -29,7 +29,7 @@ const transactionsSearchSchema = z.object({
 });
 type SearchParams = z.infer<typeof transactionsSearchSchema>;
 
-export const Route = new FileRoute("/_app/transactions/").createRoute({
+export const Route = createFileRoute("/_app/transactions/")({
   component: TransactionsPage,
   validateSearch: transactionsSearchSchema,
   loaderDeps: ({ search: { page, pageSize, accounts } }) => ({

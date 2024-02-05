@@ -1,12 +1,12 @@
 import { Text, Button, Stack, Image, Modal, Group } from "@mantine/core";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useDisclosure } from "@mantine/hooks";
 import {
   deleteUserAccount,
   getUserDetails,
 } from "@/features/user/api/user.api";
 
-export const Route = new FileRoute("/_app/user/").createRoute({
+export const Route = createFileRoute("/_app/user/")({
   loader: loader,
   component: UserDetailsPage,
 });

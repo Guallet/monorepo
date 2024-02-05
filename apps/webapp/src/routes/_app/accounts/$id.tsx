@@ -1,4 +1,4 @@
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, notFound, createFileRoute } from "@tanstack/react-router";
 import { Group, Modal, Stack, Text, Button } from "@mantine/core";
 import { ApiError, fetch_delete } from "@core/api/fetchHelper";
 import { Account, AccountType } from "@accounts/models/Account";
@@ -7,11 +7,13 @@ import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/Curren
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
-// import { CreditCardDetails } from "./CreditCardDetails";
 
-export const Route = new FileRoute("/_app/accounts/$id").createRoute({
+export const Route = createFileRoute("/_app/accounts/$id")({
   component: AccountDetailsPage,
   loader: async ({ params }) => loader(params.id),
+  notFoundComponent: () => {
+    return <p>Account not found</p>;
+  },
   errorComponent: (error) => {
     console.error("Error loading account", error);
     return (
@@ -31,10 +33,8 @@ async function loader(id: string): Promise<Account> {
     if (error instanceof ApiError) {
       switch (error.status) {
         case 404:
-          // return redirect({ from: "/", to: "/404" });
-          throw new Error("Account not found");
-        // throw notFound();
-        // https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors
+          // https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors
+          throw notFound();
         default:
           console.error("Unhandled error", error);
           throw error;

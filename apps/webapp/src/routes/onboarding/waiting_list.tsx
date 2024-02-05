@@ -1,7 +1,7 @@
 import { TextInput, Button, Group, Stack, Title, Text } from "@mantine/core";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-export const Route = new FileRoute("/onboarding/waiting_list").createRoute({
+export const Route = createFileRoute("/onboarding/waiting_list")({
   component: SubscribeWaitingListPage,
   loader: loader,
 });

@@ -11,11 +11,11 @@ import {
 } from "@mantine/core";
 
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { RuleDto, loadRules } from "@/features/categories/rules/api/rules.api";
 
-export const Route = new FileRoute("/_app/categories/rules/").createRoute({
+export const Route = createFileRoute("/_app/categories/rules/")({
   component: RulesPage,
   loader: loader,
 });

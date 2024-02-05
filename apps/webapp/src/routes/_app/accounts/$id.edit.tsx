@@ -6,7 +6,7 @@
 //     action: editAccountAction,
 //   }
 
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
 import {
@@ -25,7 +25,7 @@ type FormData = {
   account_type: AccountType;
 };
 
-export const Route = new FileRoute("/_app/accounts/$id/edit").createRoute({
+export const Route = createFileRoute("/_app/accounts/$id/edit")({
   component: EditAccountPage,
   loader: async ({ params }) => await loader({ id: params.id! }),
 });
