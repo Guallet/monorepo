@@ -1,4 +1,5 @@
 import { Transaction } from '../entities/transaction.entity';
+import { TransactionsQueryFilter } from './transaction.query';
 
 export class TransactionDto {
   id: string;
@@ -29,6 +30,7 @@ export type TransactionsResultMetadataDto = {
   page: number;
   pageSize: number;
   hasMore: boolean;
+  query: TransactionsQueryFilter;
 };
 
 export class TransactionsResultDto {
@@ -38,13 +40,18 @@ export class TransactionsResultDto {
   static fromDomain(args: {
     transactions: Transaction[];
     total: number;
-    page: number;
-    pageSize: number;
     hasMore: boolean;
+    query: TransactionsQueryFilter;
   }): TransactionsResultDto {
-    const { transactions, total, page, pageSize, hasMore } = args;
+    const { transactions, total, hasMore, query } = args;
     return {
-      meta: { total: total, page: page, pageSize: pageSize, hasMore: hasMore },
+      meta: {
+        total: total,
+        page: query.page,
+        pageSize: query.pageSize,
+        hasMore: hasMore,
+        query: query,
+      },
       transactions: transactions.map((x) => TransactionDto.fromDomain(x)),
     };
   }

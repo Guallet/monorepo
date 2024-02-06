@@ -24,21 +24,30 @@ const transactionsSearchSchema = z.object({
   page: z.number().catch(1),
   pageSize: z.number().catch(50),
   transactionId: z.string().optional(),
-  accounts: z.array(z.string()).optional(),
   editProperty: z.enum(["notes", "category"]).optional(),
+  accounts: z.array(z.string()).optional(),
+  categories: z.array(z.string()).optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
 });
 type SearchParams = z.infer<typeof transactionsSearchSchema>;
 
 export const Route = createFileRoute("/_app/transactions/")({
   component: TransactionsPage,
   validateSearch: transactionsSearchSchema,
-  loaderDeps: ({ search: { page, pageSize, accounts } }) => ({
+  loaderDeps: ({
+    search: { page, pageSize, accounts, categories, startDate, endDate },
+  }) => ({
     page,
     pageSize,
     accounts,
+    categories,
+    startDate,
+    endDate,
   }),
-  loader: ({ deps: { page, pageSize, accounts } }) =>
-    loader({ page, pageSize, accounts }),
+  loader: ({
+    deps: { page, pageSize, accounts, categories, startDate, endDate },
+  }) => loader({ page, pageSize, accounts, categories, startDate, endDate }),
   // errorComponent: (error) => (
   //   <Stack>
   //     <Text>Error loading transactions</Text>
@@ -48,16 +57,19 @@ export const Route = createFileRoute("/_app/transactions/")({
 });
 
 async function loader(args: SearchParams) {
-  const { page, pageSize, accounts } = args;
+  const { page, pageSize, accounts, categories, startDate, endDate } = args;
 
   const allAccounts = await loadAccounts();
-  const categories = await loadCategories();
+  const allCategories = await loadCategories();
 
-  const result: TransactionQueryResultDto = await loadTransactions(
-    page,
-    pageSize,
-    accounts ?? null
-  );
+  const result: TransactionQueryResultDto = await loadTransactions({
+    page: page,
+    pageSize: pageSize,
+    accounts: accounts ?? null,
+    categories: categories ?? null,
+    startDate: startDate ?? null,
+    endDate: endDate ?? null,
+  });
 
   const rehydratedTransactions = result.transactions.map((transaction) => {
     return {
@@ -65,7 +77,7 @@ async function loader(args: SearchParams) {
       account: allAccounts.find(
         (account) => account.id === transaction.accountId
       ),
-      category: categories.find(
+      category: allCategories.find(
         (category) => category.id === transaction.categoryId
       ),
     };
@@ -75,7 +87,7 @@ async function loader(args: SearchParams) {
     queryMeta: result.meta,
     transactions: rehydratedTransactions as Transaction[],
     accounts: allAccounts,
-    categories: categories,
+    categories: allCategories,
   };
 }
 
@@ -105,7 +117,6 @@ function TransactionsPage() {
     Route.useLoaderData();
 
   const navigate = useNavigate({ from: Route.fullPath });
-  // const revalidator = useRevalidator();
   const totalPages = Math.ceil(queryMeta.total / queryMeta.pageSize);
 
   const isMobile = useMediaQuery("(max-width: 50em)");
@@ -192,6 +203,9 @@ function TransactionsPage() {
       search: (prev) => ({
         ...prev,
         accounts: filters.selectedAccounts.map((account) => account.id),
+        categories: filters.selectedCategories.map((category) => category.id),
+        startDate: filters.dateRange?.startDate,
+        endDate: filters.dateRange?.endDate,
       }),
     });
   }

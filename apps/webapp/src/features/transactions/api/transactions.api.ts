@@ -1,13 +1,26 @@
 import { get, patch } from "../../../core/api/fetchHelper";
 
-export async function loadTransactions(
-  page: number,
-  pageSize: number,
-  accounts: string[] | null
-): Promise<TransactionQueryResultDto> {
+export async function loadTransactions(args: {
+  page: number;
+  pageSize: number;
+  accounts: string[] | null;
+  categories: string[] | null;
+  startDate: Date | null;
+  endDate: Date | null;
+}): Promise<TransactionQueryResultDto> {
+  const { page, pageSize, accounts, categories, startDate, endDate } = args;
   let queryPath = `transactions?page=${page}&pageSize=${pageSize}`;
-  if (accounts) {
+  if (accounts && accounts.length > 0) {
     queryPath = `${queryPath}&accounts=${accounts.join(",")}`;
+  }
+  if (categories && categories.length > 0) {
+    queryPath = `${queryPath}&categories=${categories.join(",")}`;
+  }
+  if (startDate) {
+    queryPath = `${queryPath}&startDate=${startDate.toISOString()}`;
+  }
+  if (endDate) {
+    queryPath = `${queryPath}&endDate=${endDate.toISOString()}`;
   }
   return await get<TransactionQueryResultDto>(queryPath);
 }

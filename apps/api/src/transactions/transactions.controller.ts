@@ -9,8 +9,6 @@ import {
   Logger,
   BadRequestException,
   Query,
-  ParseIntPipe,
-  ParseArrayPipe,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -19,6 +17,11 @@ import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  TransactionsQueryFilter,
+  transactionsQueryFilterSchema,
+} from './dto/transaction.query';
+import { ZodValidationPipe } from 'src/core/pipes/zodvalidator.pipe';
 
 @ApiTags('Transactions')
 @Controller('transactions')
@@ -52,30 +55,14 @@ export class TransactionsController {
   @Get()
   async getTransactions(
     @RequestUser() user: UserPrincipal,
-    @Query(
-      'page',
-      new ParseIntPipe({
-        optional: true,
-      }),
-    )
-    page: number,
-    @Query(
-      'pageSize',
-      new ParseIntPipe({
-        optional: true,
-      }),
-    )
-    pageSize: number,
-    @Query(
-      'accounts',
-      new ParseArrayPipe({
-        optional: true,
-        items: String,
-        separator: ',',
-      }),
-    )
-    accounts: string[],
+    @Query(new ZodValidationPipe(transactionsQueryFilterSchema))
+    query: TransactionsQueryFilter,
   ): Promise<TransactionsResultDto> {
+    console.log(`Transaction Query: ${JSON.stringify(query)}`);
+
+    let { page, pageSize, startDate, endDate } = query;
+    const { accounts } = query;
+
     if (page === null || page == undefined) {
       page = 1;
     }
@@ -94,8 +81,14 @@ export class TransactionsController {
       );
     }
 
-    this.logger.debug(`Accounts filter: ${JSON.stringify(accounts)}`);
-    console.log(`Accounts filter:`, accounts);
+    if (startDate) {
+      // Move it to the start of the day
+      startDate.setHours(0, 0, 0, 0);
+    }
+    if (endDate) {
+      // Move it to the end of the day
+      endDate.setHours(23, 59, 59, 999);
+    }
 
     validateAccountsQuery(accounts);
 
@@ -104,18 +97,19 @@ export class TransactionsController {
       page: page,
       pageSize: pageSize,
       accounts: accounts,
+      startDate: query.startDate,
+      endDate: query.endDate,
     });
     const total = await this.transactionsService.getUserTransactionsCount({
       userId: user.id,
-      filters: { accounts: accounts },
+      filters: { accounts: accounts, startDate: startDate, endDate: endDate },
     });
 
     return TransactionsResultDto.fromDomain({
       transactions: transactions,
       total: total,
-      page: page,
-      pageSize: pageSize,
       hasMore: total >= page * pageSize,
+      query: query,
     });
   }
 
@@ -174,8 +168,6 @@ function validateAccountsQuery(accounts: string[]) {
     accounts !== null &&
     accounts.every((x) => x === '')
   ) {
-    throw new BadRequestException(
-      'Query Param `accounts` is not valid. Cannot be empty',
-    );
+    throw new BadRequestException('Query Param `accounts` is not valid');
   }
 }

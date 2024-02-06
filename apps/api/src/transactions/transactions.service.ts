@@ -7,7 +7,7 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, IsNull, Repository } from 'typeorm';
+import { Between, In, IsNull, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 
 @Injectable()
@@ -22,10 +22,15 @@ export class TransactionsService {
   // get total transactions count for a user, with query filters
   async getUserTransactionsCount(args: {
     userId: string;
-    filters: { accounts?: string[] };
+    filters: {
+      accounts?: string[];
+      categories?: string[];
+      startDate?: Date;
+      endDate?: Date;
+    };
   }): Promise<number> {
     const { userId, filters } = args;
-    const { accounts } = filters;
+    const { accounts, categories, startDate, endDate } = filters;
 
     if (accounts && accounts.length === 0) {
       throw new BadRequestException('Accounts cannot be empty');
@@ -35,6 +40,8 @@ export class TransactionsService {
       where: {
         account: { user_id: userId },
         ...(accounts && { accountId: In(accounts) }),
+        ...(categories && { categoryId: In(categories) }),
+        ...(startDate && endDate && { date: Between(startDate, endDate) }),
       },
     });
   }
@@ -61,8 +68,14 @@ export class TransactionsService {
     page: number;
     pageSize: number;
     accounts?: string[];
+    categories?: string[];
+    startDate?: Date;
+    endDate?: Date;
   }): Promise<Transaction[]> {
-    const { userId, page, pageSize, accounts } = args;
+    console.log(`Transaction Query: ${JSON.stringify(args)}`);
+
+    const { userId, page, pageSize, accounts, categories, startDate, endDate } =
+      args;
 
     if (accounts && accounts.length === 0) {
       throw new BadRequestException('Accounts cannot be empty');
@@ -81,9 +94,15 @@ export class TransactionsService {
       where: {
         account: { user_id: userId },
         ...(accounts && { accountId: In(accounts) }),
+        ...(categories && { categoryId: In(categories) }),
+        // ...(startDate && { date: MoreThanOrEqual(startDate) }),
+        ...(startDate && endDate && { date: Between(startDate, endDate) }),
+        // ...(endDate && { date: LessThanOrEqual(endDate) }),
+        // date: MoreThanOrEqual(startDate), // LessThanOrEqual(endDate),
       },
       order: {
         date: 'DESC',
+        // created_at: 'DESC',
       },
       take: pageSize,
       skip: offset,
