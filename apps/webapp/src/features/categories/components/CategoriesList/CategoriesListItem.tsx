@@ -9,15 +9,10 @@ import {
   Center,
   Text,
 } from "@mantine/core";
-import {
-  IconDots,
-  IconEdit,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconDots, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 import { AppCategory } from "../../models/Category";
-import { CategoryIcon } from "../CategoryIcon/CategoryIcon";
+import { CategoryIcon, GualletIcon } from "../CategoryIcon/CategoryIcon";
 
 interface HeaderProps {
   title: string;
@@ -40,7 +35,7 @@ function ItemHeader({
     <Center>
       <Accordion.Control>
         <Group>
-          <CategoryIcon icon={iconName} colour={iconColour} />
+          <CategoryIcon icon={iconName as GualletIcon} colour={iconColour} />
           <Text>{title}</Text>
         </Group>
       </Accordion.Control>

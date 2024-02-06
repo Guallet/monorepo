@@ -1,11 +1,24 @@
 import { useMantineTheme } from "@mantine/core";
-import { TablerIconsProps } from "@tabler/icons-react";
-import * as allIcons from "@tabler/icons-react";
+import {
+  IconCategory,
+  IconMoneybag,
+  TablerIconsProps,
+} from "@tabler/icons-react";
+import {
+  IconPigMoney,
+  IconStatusChange,
+  IconCashBanknote,
+} from "@tabler/icons-react";
 
-export type CategoryIcon = "money" | "salary";
+export enum GualletCategoryIcon {
+  Money = "money",
+  Salary = "salary",
+  Transfer = "transfer",
+  Savings = "savings",
+}
 
 interface CategoryIconProps {
-  icon: string;
+  icon: string | GualletCategoryIcon;
   colour: string;
 }
 
@@ -16,14 +29,20 @@ export function CategoryIcon({
 }: CategoryIconProps & TablerIconsProps) {
   const { primaryColor: defaultColor } = useMantineTheme();
 
-  let IconToBeUsed = allIcons.IconCategory;
-  console.log("Icon name", icon);
+  let IconToBeUsed = IconCategory;
+
   switch (icon) {
-    case "money":
-      IconToBeUsed = allIcons.IconMoneybag;
+    case GualletCategoryIcon.Money:
+      IconToBeUsed = IconMoneybag;
       break;
-    case "salary":
-      IconToBeUsed = allIcons.IconCashBanknote;
+    case GualletCategoryIcon.Salary:
+      IconToBeUsed = IconCashBanknote;
+      break;
+    case GualletCategoryIcon.Transfer:
+      IconToBeUsed = IconStatusChange;
+      break;
+    case GualletCategoryIcon.Savings:
+      IconToBeUsed = IconPigMoney;
       break;
   }
 
