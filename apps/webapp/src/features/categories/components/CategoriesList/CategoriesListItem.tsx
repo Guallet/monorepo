@@ -8,18 +8,16 @@ import {
   Stack,
   Center,
   Text,
-  useMantineTheme,
 } from "@mantine/core";
 import {
   IconDots,
   IconEdit,
-  IconPhoto,
   IconPlus,
   IconTrash,
-  IconWallet,
 } from "@tabler/icons-react";
 import { useState } from "react";
 import { AppCategory } from "../../models/Category";
+import { CategoryIcon } from "../CategoryIcon/CategoryIcon";
 
 interface HeaderProps {
   title: string;
@@ -37,13 +35,12 @@ function ItemHeader({
   onDelete,
 }: HeaderProps) {
   const [menuOpened, setMenuOpened] = useState(false);
-  const { primaryColor: defaultColor } = useMantineTheme();
 
   return (
     <Center>
       <Accordion.Control>
         <Group>
-          <IconPhoto color={iconColour ?? defaultColor} />
+          <CategoryIcon icon={iconName} colour={iconColour} />
           <Text>{title}</Text>
         </Group>
       </Accordion.Control>
@@ -119,11 +116,10 @@ interface SubCategoryItemProps {
 
 function SubCategoryItem({ category, onEdit, onDelete }: SubCategoryItemProps) {
   const [menuOpened, setMenuOpened] = useState(false);
-  const { primaryColor: defaultColor } = useMantineTheme();
 
   return (
     <Group style={{ marginLeft: "4em" }}>
-      <IconWallet color={category.colour ?? defaultColor} />
+      <CategoryIcon icon={category.icon} colour={category.colour} />
       <Text>{category.name}</Text>
       <Menu
         opened={menuOpened}
