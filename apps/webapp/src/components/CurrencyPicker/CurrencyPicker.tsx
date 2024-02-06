@@ -19,11 +19,13 @@ import { useEffect, useState } from "react";
 interface CurrencyPickerProps extends InputWrapperProps {
   value: string;
   onValueChanged: (value: string) => void;
+  name: string | undefined;
 }
 
 export function CurrencyPicker({
   value,
   onValueChanged,
+  name,
   ...props
 }: CurrencyPickerProps) {
   const isMobile = useMediaQuery("(max-width: 50em)");
@@ -54,6 +56,7 @@ export function CurrencyPicker({
         {...props}
       >
         <Input
+          name={name}
           placeholder="Select currency"
           component="button"
           pointer
@@ -113,24 +116,6 @@ function CurrencyPickerModal({
       <ScrollArea.Autosize mah={300}>
         {filteredCurrencies.length === 0 && <Text>No currencies found</Text>}
         {filteredCurrencies.map((currency) => (
-          // <AccountCheckbox
-          //   key={account.id}
-          //   account={account}
-          //   style={{
-          //     marginBottom: "5px",
-          //   }}
-          // />
-          // <Group grow>
-          //   <UnstyledButton>
-          //     <Group>
-          //       <Text>{currency.symbol}</Text>
-          //       <Text>{currency.code}</Text>
-          //       <Text truncate="end" style={{ flex: 1 }}>
-          //         {currency.name}
-          //       </Text>
-          //     </Group>
-          //   </UnstyledButton>
-          // </Group>
           <Group grow key={currency.code}>
             <UnstyledButton
               onClick={() => {

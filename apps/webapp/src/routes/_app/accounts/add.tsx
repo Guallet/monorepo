@@ -159,7 +159,6 @@ export function AddAccountPage() {
           control={form.control}
           render={({ field }) => (
             <CurrencyPicker
-              {...field}
               name="currency"
               required
               value={field.value}
