@@ -103,6 +103,34 @@ export class ReportsService {
 
         return row;
       });
+
+    // Add the transactions without category at the end
+    const untaggedTransactions = transactions.filter(
+      (t) => t.categoryId === null,
+    );
+    dto.data.push({
+      categoryId: null,
+      categoryName: 'Untagged',
+      isParent: true,
+      totalTransactions: transactions.filter((t) => t.categoryId === null)
+        .length,
+      values: [
+        getTotalMonthly(untaggedTransactions, 0),
+        getTotalMonthly(untaggedTransactions, 1),
+        getTotalMonthly(untaggedTransactions, 2),
+        getTotalMonthly(untaggedTransactions, 3),
+        getTotalMonthly(untaggedTransactions, 4),
+        getTotalMonthly(untaggedTransactions, 5),
+        getTotalMonthly(untaggedTransactions, 6),
+        getTotalMonthly(untaggedTransactions, 7),
+        getTotalMonthly(untaggedTransactions, 8),
+        getTotalMonthly(untaggedTransactions, 9),
+        getTotalMonthly(untaggedTransactions, 10),
+        getTotalMonthly(untaggedTransactions, 11),
+      ],
+      subcategories: [],
+    });
+
     return dto;
   }
 }
