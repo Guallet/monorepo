@@ -120,15 +120,6 @@ export function AddAccountPage() {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onFormSubmit)}>
-        Errors:{" "}
-        {JSON.stringify({
-          name: form.formState.errors.name?.message,
-          currency: form.formState.errors.currency?.message,
-          balance: form.formState.errors.balance?.message,
-          account_type: form.formState.errors.account_type?.message,
-          credit_limit: form.formState.errors.credit_limit?.message,
-          interest_rate: form.formState.errors.interest_rate?.message,
-        })}
         <Controller
           name="name"
           control={form.control}
