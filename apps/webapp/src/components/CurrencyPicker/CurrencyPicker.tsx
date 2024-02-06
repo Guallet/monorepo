@@ -15,6 +15,7 @@ import {
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { IconSelector } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import classes from "./CurrencyPicker.module.css";
 
 interface CurrencyPickerProps extends InputWrapperProps {
   value: string;
@@ -118,6 +119,7 @@ function CurrencyPickerModal({
         {filteredCurrencies.map((currency) => (
           <Group grow key={currency.code}>
             <UnstyledButton
+              className={classes.baseButton}
               onClick={() => {
                 onCurrencySelected(currency);
               }}
