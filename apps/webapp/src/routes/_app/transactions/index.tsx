@@ -65,8 +65,10 @@ async function loader(args: SearchParams) {
   const result: TransactionQueryResultDto = await loadTransactions({
     page: page,
     pageSize: pageSize,
-    accounts: accounts ?? null,
-    categories: categories ?? null,
+    // If all accounts selected, there is no need to filter by accounts
+    accounts:
+      (accounts?.length !== allAccounts.length ? accounts : null) ?? null,
+    categories: categories && categories.length > 0 ? categories : null,
     startDate: startDate ?? null,
     endDate: endDate ?? null,
   });
@@ -199,11 +201,18 @@ function TransactionsPage() {
 
   function updateFiltersQuery(filters: FilterData) {
     console.log("Filters updated", filters);
+    const isAllAccountsSelected =
+      filters.selectedAccounts.length === accounts.length;
     navigate({
       search: (prev) => ({
         ...prev,
-        accounts: filters.selectedAccounts.map((account) => account.id),
-        categories: filters.selectedCategories.map((category) => category.id),
+        accounts: isAllAccountsSelected
+          ? undefined //If all accounts are selected, there is no need to filter by accounts
+          : filters.selectedAccounts.map((account) => account.id),
+        categories:
+          filters.selectedCategories.length > 0
+            ? filters.selectedCategories.map((category) => category.id)
+            : undefined,
         startDate: filters.dateRange?.startDate,
         endDate: filters.dateRange?.endDate,
       }),
