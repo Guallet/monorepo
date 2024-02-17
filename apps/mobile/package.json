@@ -4,14 +4,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "echo 'run pnpm start' from the mobile directory to run metro independently",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
+    "dev": "echo run expo start from the app/mobile directory to run metro",
     "lint": "eslint --ext js,ts,tsx .",
-    "build": "expo export --output-dir ./build --platform all"
+    "build": "expo export --output-dir ./build --platform all",
+    "eas-build-post-install": "pnpm run -w build:mobile"
   },
   "jest": {
     "preset": "jest-expo"
@@ -41,5 +42,5 @@
     "jest-expo": "~50.0.2",
     "react-test-renderer": "18.2.0",
     "typescript": "^5.1.3"
-  }
+  },
 }
