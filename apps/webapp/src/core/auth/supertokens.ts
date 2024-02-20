@@ -2,9 +2,9 @@ import SuperTokens from "supertokens-auth-react";
 import Session from "supertokens-auth-react/recipe/session";
 import ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
 
-console.log("Initializing Supertokens");
+export const initializeSupertokens = () => {
+  console.log("Initializing Supertokens");
 
-export const initializeSupertokens = () =>
   SuperTokens.init({
     appInfo: {
       appName: "Guallet",
@@ -78,6 +78,7 @@ export const initializeSupertokens = () =>
       }),
     ],
   });
+};
 
 const userIsInAllowedList = async () => {
   // TODO: Check if user is in the allowed waiting list
