@@ -1,3 +1,4 @@
+import { UserRole } from 'src/core/auth/user-principal';
 import {
   Column,
   CreateDateColumn,
@@ -22,8 +23,13 @@ export class User {
   @Column({ nullable: true })
   profile_image_url: string;
 
-  @Column('simple-array', { default: [], nullable: true })
-  roles: string[];
+  @Column({
+    // type: 'set',
+    type: 'simple-array',
+    default: [],
+    nullable: true,
+  })
+  roles: UserRole[];
 
   // relations
 

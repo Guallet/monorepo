@@ -9,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserRole } from 'src/core/auth/user-principal';
 
 @Injectable()
 export class UsersService {
@@ -67,7 +68,7 @@ export class UsersService {
     // TODO: Delete User from Supabase
   }
 
-  async getUserRoles(userId: string): Promise<string[]> {
+  async getUserRoles(userId: string): Promise<UserRole[]> {
     const user = await this.repository.findOne({ where: { id: userId } });
     if (user) {
       return user.roles;

@@ -1,9 +1,9 @@
 export class UserPrincipal {
   id: string;
   email: string;
-  roles: string[];
+  roles: UserRole[];
 
-  constructor(id: string, email: string, roles: string[] = []) {
+  constructor(id: string, email: string, roles: UserRole[] = []) {
     this.id = id;
     this.email = email;
     this.roles = roles;
@@ -13,3 +13,5 @@ export class UserPrincipal {
     return this.roles.includes('admin');
   }
 }
+
+export type UserRole = 'admin' | 'beta';
