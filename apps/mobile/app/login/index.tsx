@@ -4,23 +4,31 @@ import React, { useState } from "react";
 import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
 
 export default function Auth() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("cjgaliana@gmail.com");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function signInWithEmail() {
+  async function signInWithOtp() {
     setLoading(true);
-    const { error, data } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithOtp({
       email: email,
-      password: password,
+      //   password: password,
+      options: {
+        emailRedirectTo: "https://guallet.com",
+        shouldCreateUser: false, // Only by invitation (for now)
+      },
     });
 
     if (error) Alert.alert(error.message);
     setLoading(false);
 
     if (data) {
-      console.log(data);
-      router.replace("/(app)");
+      router.push({
+        pathname: "/login/validate",
+        params: {
+          email: email,
+        },
+      });
     }
   }
 
@@ -52,7 +60,7 @@ export default function Auth() {
           autoCapitalize={"none"}
         />
       </View>
-      <View style={styles.verticallySpaced}>
+      {/* <View style={styles.verticallySpaced}>
         <TextInput
           //   label="Password"
           //   leftIcon={{ type: "font-awesome", name: "lock" }}
@@ -62,21 +70,21 @@ export default function Auth() {
           placeholder="Password"
           autoCapitalize={"none"}
         />
-      </View>
+      </View> */}
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
           title="Sign in"
           disabled={loading}
-          onPress={() => signInWithEmail()}
+          onPress={() => signInWithOtp()}
         />
       </View>
-      <View style={styles.verticallySpaced}>
+      {/* <View style={styles.verticallySpaced}>
         <Button
           title="Sign up"
           disabled={loading}
           onPress={() => signUpWithEmail()}
         />
-      </View>
+      </View> */}
     </View>
   );
 }
