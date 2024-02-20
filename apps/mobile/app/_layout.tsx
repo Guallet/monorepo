@@ -20,6 +20,7 @@ import {
 import { useOnlineManager } from "@/hooks/useOnlineManager";
 import { useAppState } from "@/hooks/useAppState";
 import { AppStateStatus, Platform } from "react-native";
+import { AuthProvider } from "@/auth/useAuth";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -28,7 +29,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: "(app)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -80,10 +81,13 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <QueryClientProvider client={queryClient}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
+        <AuthProvider>
+          {/* <Slot /> */}
+          <Stack>
+            <Stack.Screen name="(app)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
