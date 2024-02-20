@@ -1,23 +1,24 @@
-import React, { useEffect } from "react";
-import SuperTokens from "supertokens-react-native";
+import { Session } from "@supabase/supabase-js";
+import React, { useContext, useEffect, useState } from "react";
+import { supabase } from "./supabase";
 
-const AuthContext = React.createContext<{
-  signIn: () => void;
-  signOut: () => void;
-  hasSession: boolean;
-  user?: string | null;
+interface AuthContextType {
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
+  session?: Session | null;
   isLoading: boolean;
-}>({
-  signIn: () => null,
-  signOut: () => null,
-  hasSession: false,
-  user: null,
+}
+
+const AuthContext = React.createContext<AuthContextType>({
+  signIn: () => Promise.resolve(),
+  signOut: () => Promise.resolve(),
+  session: null,
   isLoading: false,
 });
 
 // This hook can be used to access the user info.
 export function useAuth() {
-  const value = React.useContext(AuthContext);
+  const value = useContext(AuthContext);
   if (process.env.NODE_ENV !== "production") {
     if (!value) {
       throw new Error("useAuth must be wrapped in a <AuthProvider />");
@@ -28,35 +29,41 @@ export function useAuth() {
 }
 
 export function AuthProvider(props: React.PropsWithChildren) {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [hasSession, setHasSession] = React.useState<boolean>(false);
-  const [user, setUser] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<string | null>(null);
 
   useEffect(() => {
-    // Perform any async loading here
     setIsLoading(true);
-    SuperTokens.doesSessionExist()
-      .then((exists) => {
-        setHasSession(exists);
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
       })
-      .catch((err) => {})
+      .catch((error) => {
+        setSession(null);
+        console.error("Error loading the session", error);
+      })
       .finally(() => {
         setIsLoading(false);
       });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: () => {
+        signIn: async () => {
           // Perform sign-in logic here
           //   setSession("xxx");
         },
-        signOut: () => {
-          //   setSession(null);
+        signOut: async () => {
+          await supabase.auth.signOut();
         },
-        hasSession,
-        user,
+        session,
         isLoading,
       }}
     >

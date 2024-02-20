@@ -1,15 +1,37 @@
 import GualletAppShell from "@/components/layout/GualletAppShell";
-import { createFileRoute } from "@tanstack/react-router";
-import { SessionAuth } from "supertokens-auth-react/recipe/session";
+import { useAuth } from "@/core/auth/useAuth";
+import { Center, Loader } from "@mantine/core";
+import {
+  Navigate,
+  createFileRoute,
+  useRouterState,
+} from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app")({
   component: ProtectedRoute,
 });
 
 function ProtectedRoute() {
-  return (
-    <SessionAuth>
-      <GualletAppShell />
-    </SessionAuth>
-  );
+  const { session, isLoading } = useAuth();
+  const router = useRouterState();
+
+  if (isLoading) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  } else {
+    if (!session) {
+      // Redirect them to the /login page, but save the current location they were
+      // trying to go to when they were redirected. This allows us to send them
+      // along to that page after they login, which is a nicer user experience
+      // than dropping them off on the home page.
+      return (
+        <Navigate to="/login" search={{ redirect: router.location.pathname }} />
+      );
+    }
+
+    return <GualletAppShell />;
+  }
 }

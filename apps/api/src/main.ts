@@ -3,8 +3,6 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import * as compression from 'compression';
-import { SupertokensExceptionFilter } from './core/auth/auth.filter';
-import supertokens from 'supertokens-node';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 
@@ -22,17 +20,7 @@ async function bootstrap() {
   // app.setGlobalPrefix("api");
 
   // Configure EXPRESS server
-  app.enableCors({
-    origin: [
-      configService.get<string>('auth.supertokens.appInfo.websiteDomain'),
-      process.env.SUPERTOKENS_WEBSITE_DOMAIN,
-    ],
-    allowedHeaders: ['Content-Type', ...supertokens.getAllCORSHeaders()],
-    credentials: true,
-  });
-
-  // Configure SuperTokens Exceptions
-  app.useGlobalFilters(new SupertokensExceptionFilter());
+  app.enableCors();
 
   // Enable Helmet with GraphQL as per https://docs.nestjs.com/security/helmet
   app.use(
@@ -45,13 +33,11 @@ async function bootstrap() {
             `'self'`,
             'data:',
             'apollo-server-landing-page.cdn.apollographql.com',
-            'https://cdn.jsdelivr.net/gh/supertokens/',
           ],
           scriptSrc: [
             `'self'`,
             `https: 'unsafe-inline'`,
-            'unsafe-inline', // Do we need this? Is not this covered by the above? Required for supertokens though
-            'https://cdn.jsdelivr.net/gh/supertokens/',
+            'unsafe-inline', // Do we need this? Is not this covered by the above?
           ],
           manifestSrc: [
             `'self'`,

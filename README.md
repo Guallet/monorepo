@@ -79,4 +79,4 @@ Learn more about the power of Turborepo:
 
 ### Dependencies
 
-- [Supertokens](https://supertokens.com/): Used for AUTH only. I didn't want to implement my own auth mechanism, so better idea to rely on a third party. Supertokens was selected because can be self-hosted in your server very easily. It provides: MagicLink Login, 3th Party (Google, Apple, etc...) and Roles.
+- [Supabase](https://supabase.com/): Used for AUTH only. I didn't want to implement my own auth mechanism, so better idea to rely on a third party.

@@ -10,7 +10,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
-import { initializeSupertokens } from "@/auth/supertokens";
 
 import {
   QueryClient,
@@ -34,8 +33,6 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-initializeSupertokens();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -79,7 +76,8 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           {/* <Slot /> */}

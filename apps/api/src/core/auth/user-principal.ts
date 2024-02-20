@@ -1,17 +1,11 @@
-import { SessionContainer } from 'supertokens-node/recipe/session';
-
 export class UserPrincipal {
   id: string;
-  session?: SessionContainer;
-  roles: string[];
+  email: string;
+  roles: UserRole[];
 
-  constructor(
-    id: string,
-    session: SessionContainer | null = null,
-    roles: string[] = [],
-  ) {
+  constructor(id: string, email: string, roles: UserRole[] = []) {
     this.id = id;
-    this.session = session;
+    this.email = email;
     this.roles = roles;
   }
 
@@ -19,3 +13,5 @@ export class UserPrincipal {
     return this.roles.includes('admin');
   }
 }
+
+export type UserRole = 'admin' | 'beta';
