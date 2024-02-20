@@ -1,27 +1,30 @@
-import { StyleSheet } from "react-native";
+import { Button, ScrollView, StyleSheet } from "react-native";
 
-import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
-import { Money, Currency } from "@guallet/money";
+import { useAuth } from "@/auth/useAuth";
 
 export default function TabOneScreen() {
-  const currency = Currency.fromISOCode("GBP");
-  const money = Money.fromCurrencyCode({
-    amount: 100,
-    currencyCode: "GBP",
-  });
+  const { session, signOut } = useAuth();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-      <Text style={styles.title}>Money: {money.format()}</Text>
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Tab One</Text>
+        <Button
+          title="Sign Out"
+          onPress={async () => {
+            await signOut();
+          }}
+        />
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+        <Text>Session</Text>
+        <Text>{JSON.stringify(session, null, 2)}</Text>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -30,6 +33,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  scrollView: {
+    backgroundColor: "pink",
   },
   title: {
     fontSize: 20,
