@@ -1,10 +1,14 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import supertokens from 'supertokens-node';
 
 @Injectable()
 export class UsersService {
@@ -58,18 +62,16 @@ export class UsersService {
   }
 
   async deleteUserData(userId: string) {
-    // delete user from supertokens
-    await this.repository.softDelete({ id: userId });
-    // await this.supertokensService.deleteUser(userId);
+    await this.repository.delete({ id: userId });
 
-    await supertokens.deleteUser(userId, true);
+    // TODO: Delete User from Supabase
+  }
 
-    // const userProfile = await this.repository.findOne({
-    //   where: {
-    //     id: userId,
-    //   },
-    // });
-
-    // await this.repository.remove(userProfile);
+  async getUserRoles(userId: string): Promise<string[]> {
+    const user = await this.repository.findOne({ where: { id: userId } });
+    if (user) {
+      return user.roles;
+    }
+    throw new NotFoundException('User not found');
   }
 }

@@ -1,17 +1,11 @@
-import { SessionContainer } from 'supertokens-node/recipe/session';
-
 export class UserPrincipal {
   id: string;
-  session?: SessionContainer;
+  email: string;
   roles: string[];
 
-  constructor(
-    id: string,
-    session: SessionContainer | null = null,
-    roles: string[] = [],
-  ) {
+  constructor(id: string, email: string, roles: string[] = []) {
     this.id = id;
-    this.session = session;
+    this.email = email;
     this.roles = roles;
   }
 

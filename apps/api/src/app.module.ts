@@ -6,14 +6,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 import { join } from 'path';
 import { LoggerModule } from 'nestjs-pino';
 import { AccountsModule } from './accounts/accounts.module';
 import { InstitutionsModule } from './institutions/institutions.module';
-
 import { HttpLoggerMiddleware } from './core/middleware/http-logger.middleware';
-
 import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { RulesModule } from './rules/rules.module';
@@ -22,10 +19,10 @@ import { OpenbankingModule } from './openbanking/openbanking.module';
 import { NordigenModule } from './nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './core/auth/auth.module';
 import { AuthGuard } from './core/auth/auth.guard';
-import * as SuperTokensConfig from './core/auth/supertokens.config';
 import configuration from './configuration';
+import { UsersService } from './users/users.service';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -77,12 +74,6 @@ import configuration from './configuration';
       autoLoadEntities: true,
       ssl: { rejectUnauthorized: false },
     }),
-    // Supertokens config
-    AuthModule.forRoot({
-      connectionURI: process.env.SUPERTOKENS_CONNECTION_URI,
-      apiKey: process.env.SUPERTOKENS_API_KEY,
-      appInfo: SuperTokensConfig.appInfo,
-    }),
     // GRAPHQL
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -102,6 +93,8 @@ import configuration from './configuration';
     OpenbankingModule,
     NordigenModule,
     AdminModule,
+    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [],
   providers: [
@@ -112,6 +105,7 @@ import configuration from './configuration';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    UsersService,
   ],
 })
 export class AppModule {

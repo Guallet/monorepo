@@ -9,7 +9,7 @@ import {
 
 @Entity('users')
 export class User {
-  // This is the same ID as the one returned by the Auth Provider (Supertokens at this time)
+  // This is the same ID as the one returned by the Auth Provider (Supabase at this time)
   @PrimaryColumn('uuid')
   id: string;
 
@@ -21,6 +21,9 @@ export class User {
 
   @Column({ nullable: true })
   profile_image_url: string;
+
+  @Column('simple-array', { default: [], nullable: true })
+  roles: string[];
 
   // relations
 
