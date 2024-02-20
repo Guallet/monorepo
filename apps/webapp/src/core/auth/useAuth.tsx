@@ -1,25 +1,22 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Analytics } from "@core/analytics/Analytics";
-import Session, {
-  useSessionContext,
-} from "supertokens-auth-react/recipe/session";
 import { UserDto } from "@/features/user/api/user.api";
-import { signOut } from "./auth.helper";
 import { get } from "../api/fetchHelper";
+
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "./supabase";
 
 interface AuthContextType {
   user: UserDto | null;
-  userId: string | null;
-  loading: boolean;
-  jwtPayload: unknown | null;
+  session?: Session | null;
+  isLoading: boolean;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = React.createContext<AuthContextType>({
   user: null,
-  userId: null,
-  loading: false,
-  jwtPayload: null,
+  session: null,
+  isLoading: false,
   signOut: async () => {},
 });
 
@@ -28,41 +25,40 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [userId, setUserId] = useState<string | null>(null);
   const [user, setUser] = useState<UserDto | null>(null);
-  const [jwtPayload, setJwtPayload] = useState<unknown | null>(null);
-  const { loading } = useSessionContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+
+  async function onSessionChanged(session: Session | null) {
+    setSession(session);
+
+    if (session) {
+      // await getUserProfile(session?.user?.id);
+    } else {
+      setUser(null);
+      setAnalyticsIdentity(null);
+    }
+  }
 
   useEffect(() => {
-    onUserChangeHandler();
-  }, [userId]);
+    setIsLoading(true);
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+      })
+      .catch((error) => {
+        setSession(null);
+        console.error("Error loading the session", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
-  const resetUser = () => {
-    setUser(null);
-    setUserId(null);
-    setAnalyticsIdentity(null);
-    setJwtPayload(null);
-  };
-
-  const onUserChangeHandler = async () => {
-    if (await Session.doesSessionExist()) {
-      const user_id = await Session.getUserId();
-      setUserId(user_id);
-      getUserProfile(user_id);
-      onTokenPayloadChangeHandler();
-    } else {
-      resetUser();
-    }
-  };
-
-  const onTokenPayloadChangeHandler = async () => {
-    if (await Session.doesSessionExist()) {
-      const jwt_payload = await Session.getAccessTokenPayloadSecurely();
-      setJwtPayload(jwt_payload);
-    } else {
-      setJwtPayload(null);
-    }
-  };
+    supabase.auth.onAuthStateChange(async (_event, session) => {
+      await onSessionChanged(session);
+    });
+  }, []);
 
   const getUserProfile = async (userId: string) => {
     if (userId) {
@@ -76,11 +72,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setAnalyticsIdentity = (user: UserDto | null) => {
-    if (userId && user) {
-      Analytics.setIdentity(userId, {
+    if (session && user) {
+      Analytics.setIdentity(session.user.id, {
         email: user.email,
         name: user.name,
-        user_id: userId,
+        user_id: session.user.id,
       });
     } else {
       Analytics.resetIdentity();
@@ -88,17 +84,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    await signOut();
+    await supabase.auth.signOut();
     setUser(null);
-    setUserId(null);
     setAnalyticsIdentity(null);
   };
 
   const state = {
     user: user,
-    userId: userId,
-    loading: loading,
-    jwtPayload: jwtPayload,
+    session: session,
+    isLoading: isLoading,
     signOut: logout,
   };
 

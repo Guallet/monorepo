@@ -90,9 +90,11 @@ export class AuthGuard implements CanActivate {
 
   private async verifyToken(jwt: string): Promise<UserPrincipal> {
     try {
+      this.logger.log(`Validating token: ${jwt}`);
       const payload = await this.jwtService.verifyAsync(jwt, {
         secret: this.jwtSecret,
       });
+      this.logger.log(`Token payload: ${JSON.stringify(payload)}`);
       const email = payload.email as string;
 
       const expireEpochInSeconds = payload.exp ?? 0;
@@ -109,8 +111,15 @@ export class AuthGuard implements CanActivate {
       const uid = payload.sub;
 
       // Make a request to get the user roles
-      const roles = await this.userService.getUserRoles(uid);
-      return new UserPrincipal(uid, email, roles);
+      // TODO: This is a good place to check if the user is registered or not,
+      // to implement an invitation only system
+      try {
+        const roles = await this.userService.getUserRoles(uid);
+        return new UserPrincipal(uid, email, roles);
+      } catch (e) {
+        this.logger.warn(`Error getting user roles: ${e}`);
+        return new UserPrincipal(uid, email);
+      }
     } catch (e) {
       this.logger.warn(`Error validating the token: ${e}`);
       throw new UnauthorizedException();

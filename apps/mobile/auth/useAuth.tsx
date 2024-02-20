@@ -2,12 +2,14 @@ import { Session } from "@supabase/supabase-js";
 import React, { useContext, useEffect, useState } from "react";
 import { supabase } from "./supabase";
 
-const AuthContext = React.createContext<{
+interface AuthContextType {
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
   session?: Session | null;
   isLoading: boolean;
-}>({
+}
+
+const AuthContext = React.createContext<AuthContextType>({
   signIn: () => Promise.resolve(),
   signOut: () => Promise.resolve(),
   session: null,

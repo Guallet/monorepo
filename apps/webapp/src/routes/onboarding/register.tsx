@@ -11,9 +11,10 @@ import {
 
 import { useEffect, useMemo, useState } from "react";
 import { UserDto, getUserDetails } from "@user/api/user.api";
-import { getCurrentUserId } from "@/core/auth/auth.helper";
+// import { getCurrentUserId } from "@/core/auth/auth.helper";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { registerUser } from "@/features/auth/user-register.api";
+import { supabase } from "@/core/auth/supabase";
+// import { registerUser } from "@/features/auth/user-register.api";
 
 export const Route = createFileRoute("/onboarding/register")({
   component: RegisterUserPage,
@@ -34,8 +35,8 @@ type ActionData = {
 
 async function loader() {
   // TODO: Do we need to check if the user is logged in? Or just returns whatever the API returns?
-  const userId = await getCurrentUserId();
-  if (userId === null) {
+  const { data } = await supabase.auth.getSession();
+  if (data && data.session?.user.id === null) {
     return {
       name: "",
       email: "",

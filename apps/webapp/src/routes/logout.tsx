@@ -1,4 +1,4 @@
-import { signOut } from "@/core/auth/auth.helper";
+import { useAuth } from "@/core/auth/useAuth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 
@@ -16,6 +16,8 @@ export const Route = createFileRoute("/logout")({
 // }
 
 function LogoutPage() {
+  const { signOut } = useAuth();
+
   useEffect(() => {
     signOut()
       .then(() => {
