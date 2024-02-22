@@ -5,14 +5,18 @@
   "private": true,
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
     "dev": "echo run expo start from the app/mobile directory to run metro",
     "lint": "eslint --ext js,ts,tsx .",
     "build": "expo export --output-dir ./build --platform all",
-    "eas-build-post-install": "pnpm run -w build:mobile"
+    "eas-build-post-install": "pnpm run -w build:mobile",
+    "expo:prebuild": "npx expo prebuild",
+    "expo:prebuild:ios": "npx expo prebuild --platform ios",
+    "expo:prebuild:android": "npx expo prebuild --platform android",
+    "expo:prebuild:clean": "npx expo prebuild --clean"
   },
   "jest": {
     "preset": "jest-expo"
