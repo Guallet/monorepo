@@ -13,19 +13,19 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.guallet.mobile"
+      "bundleIdentifier": "io.guallet.mobile",
+      "googleServicesFile": "./auth/firebase/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "io.guallet.mobile"
+      "package": "io.guallet.mobile",
+      "googleServicesFile": "./auth/firebase/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +34,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true
