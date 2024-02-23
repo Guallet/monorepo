@@ -5,7 +5,7 @@ import { supabase } from "@/core/auth/supabase";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useAuth } from "@/core/auth/useAuth";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/login/")({
   validateSearch: z.object({
     redirect: z.string().catch("/dashboard"),
   }),
@@ -14,8 +14,13 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const { session, isLoading } = useAuth();
-  // const navigate = useNavigate();
   const { redirect } = Route.useSearch();
+  // const redirectTo = window.location.host + redirect || "/dashboard";
+  // const redirectTo = `${window.location.origin}/login/callback`;
+  const redirectTo = `${window.location.origin}/login/callback`;
+  // ?redirect=${
+  //   redirect || "dashboard"
+  // }`;
 
   // function handleLogin() {
   //   navigate({ to: redirect });
@@ -34,7 +39,7 @@ function LoginPage() {
       supabaseClient={supabase}
       appearance={{ theme: ThemeSupa }}
       providers={["google"]}
-      redirectTo={redirect}
+      redirectTo={redirectTo}
     />
   );
 }
