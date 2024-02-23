@@ -16,7 +16,7 @@ function TabBarIcon(props: {
 }
 
 import { useAuth } from "@/auth/useAuth";
-import { Redirect, Slot, Stack } from "expo-router";
+import { Redirect } from "expo-router";
 import { Text } from "react-native";
 
 export default function AppLayout() {
@@ -33,8 +33,7 @@ export default function AppLayout() {
   if (!session) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
-    // return <Redirect href="/login/" />;
-    router.replace("/login/");
+    return <Redirect href="/login/" />;
   }
 
   // This layout can be deferred because it's not the root layout.
