@@ -3,13 +3,13 @@ import { Button, ScrollView, StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useAuth } from "@/auth/useAuth";
 
-export default function TabOneScreen() {
+export default function DashboardScreen() {
   const { session, signOut } = useAuth();
 
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
-        <Text style={styles.title}>Tab One</Text>
+        <Text style={styles.title}>Dashboard screen</Text>
         <Button
           title="Sign Out"
           onPress={async () => {

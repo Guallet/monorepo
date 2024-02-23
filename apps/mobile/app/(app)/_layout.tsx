@@ -4,8 +4,12 @@ import { Link, Tabs, router } from "expo-router";
 import { Pressable } from "react-native";
 
 import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+
+import { useAuth } from "@/auth/useAuth";
+import { Redirect } from "expo-router";
+import { Text } from "react-native";
+import * as SystemUI from "expo-system-ui";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -15,13 +19,11 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-import { useAuth } from "@/auth/useAuth";
-import { Redirect } from "expo-router";
-import { Text } from "react-native";
+// TODO: Set the default background color from the Colors scheme
+SystemUI.setBackgroundColorAsync("white");
 
 export default function AppLayout() {
   const { session, isLoading } = useAuth();
-  const colorScheme = useColorScheme();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -40,7 +42,8 @@ export default function AppLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors.primary.tint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -49,8 +52,11 @@ export default function AppLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Dashboard",
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="tachometer" color={color} />
+          ),
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -58,7 +64,7 @@ export default function AppLayout() {
                   <FontAwesome
                     name="info-circle"
                     size={25}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={Colors.light.text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -68,10 +74,38 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="accounts"
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Accounts",
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => <TabBarIcon name="money" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          title: "Transactions",
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="reports"
+        options={{
+          title: "Reports",
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="bar-chart" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          // title: "Settings",
+          headerShown: false,
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />
     </Tabs>

@@ -54,6 +54,7 @@ export default function Auth() {
         if (error) {
           Alert.alert("Error Google Signin", JSON.stringify(error));
         } else {
+          // TODO: Check if the user is already registered, and then redirect to the app
           router.replace("/(app)/");
         }
       } else {
