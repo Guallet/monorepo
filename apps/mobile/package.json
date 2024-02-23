@@ -13,10 +13,16 @@
     "lint": "eslint --ext js,ts,tsx .",
     "build": "expo export --output-dir ./build --platform all",
     "eas-build-post-install": "pnpm run -w build:mobile",
+    "credentials": "eas credentials",
+    "credentials:android": "cd android && ./gradlew signingReport",
     "expo:prebuild": "npx expo prebuild",
+    "expo:prebuild:clean": "npx expo prebuild --clean",
     "expo:prebuild:ios": "npx expo prebuild --platform ios",
     "expo:prebuild:android": "npx expo prebuild --platform android",
-    "expo:prebuild:clean": "npx expo prebuild --clean"
+    "expo:prebuild:android:clean": "npx expo prebuild --platform android --clean",
+    "expo:prebuild:ios:clean": "npx expo prebuild --platform ios --clean",
+    "build:android": "expo run:android --variant release",
+    "build:android:local": "eas build --platform android --local"
   },
   "jest": {
     "preset": "jest-expo"
@@ -31,6 +37,7 @@
     "@tanstack/react-query": "^5.21.4",
     "aes-js": "^3.1.2",
     "expo": "~50.0.7",
+    "expo-dev-client": "~3.3.8",
     "expo-font": "~11.10.3",
     "expo-linking": "~6.2.2",
     "expo-router": "~3.4.7",
