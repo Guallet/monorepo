@@ -1,11 +1,12 @@
 import { supabase } from "@/auth/supabase";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
+import { Alert, Button, StyleSheet, View } from "react-native";
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { PrimaryButton, TextInput } from "@guallet/ui-react-native";
 
 GoogleSignin.configure({
   webClientId:
@@ -76,19 +77,24 @@ export default function Auth() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextInput
-          //   label="Email"
-          //   leftIcon={{ type: "font-awesome", name: "envelope" }}
+          label="Email"
+          // leftIcon={{ type: "font-awesome", name: "envelope" }}
           onChangeText={(text) => setEmail(text)}
           value={email}
-          placeholder="email@address.com"
+          placeholder="Enter your email..."
           autoCapitalize={"none"}
         />
       </View>
-      {/* <View style={styles.verticallySpaced}>
+      <View style={styles.verticallySpaced}>
         <TextInput
-          //   label="Password"
+          label="Password"
           //   leftIcon={{ type: "font-awesome", name: "lock" }}
           onChangeText={(text) => setPassword(text)}
           value={password}
@@ -96,19 +102,20 @@ export default function Auth() {
           placeholder="Password"
           autoCapitalize={"none"}
         />
-      </View> */}
+      </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title="Sign in"
+        <PrimaryButton
+          title="Send magic link"
           disabled={loading}
-          onPress={() => signInWithOtp()}
+          onClick={() => signInWithOtp()}
         />
       </View>
       <View style={styles.verticallySpaced}>
-        <Button
+        <PrimaryButton
           title="Sign in with google"
           disabled={loading}
-          onPress={() => signUpWithGoogle()}
+          onClick={() => signUpWithGoogle()}
+          leftIconName="google"
         />
       </View>
     </View>

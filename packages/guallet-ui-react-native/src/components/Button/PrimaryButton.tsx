@@ -52,7 +52,7 @@ export function PrimaryButton({
             size={24}
             color={tint ?? "white"}
             style={{
-              marginStart: 24,
+              marginStart: 16,
             }}
           />
         )}
@@ -62,8 +62,11 @@ export function PrimaryButton({
             {
               flex: 1,
               color: tint ?? "white",
-              marginStart: 24,
-              marginEnd: 24,
+              // marginStart: leftIconName ? 8 : 24,
+              // marginEnd: rightIconName ? 8 : 24,
+              marginStart: leftIconName ? 8 : 48,
+              marginEnd: rightIconName ? 8 : 48,
+              textAlign: "center",
             },
           ]}
         >
@@ -75,7 +78,7 @@ export function PrimaryButton({
             size={24}
             color={tint ?? "white"}
             style={{
-              marginEnd: 24,
+              marginEnd: 16,
             }}
           />
         )}

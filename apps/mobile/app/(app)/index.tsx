@@ -57,6 +57,26 @@ export default function DashboardScreen() {
           marginStart: 24,
           marginEnd: 24,
         }}
+      />
+      <PrimaryButton
+        title="Add account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+        leftIconName="money"
+        rightIconName="chevron-circle-right"
+      />
+      <PrimaryButton
+        title="Add account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
         leftIconName="money"
       />
       <PrimaryButton
