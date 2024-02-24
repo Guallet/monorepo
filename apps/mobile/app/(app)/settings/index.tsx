@@ -2,8 +2,8 @@ import { ScrollView, StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { Stack, router } from "expo-router";
-import { Divider } from "@guallet/ui-react-native/src/Divider/Divider";
 import { UserProfileRow } from "@/components/UserProfileRow";
+import { Divider } from "@guallet/ui-react-native";
 
 export default function SettingsScreen() {
   return (
