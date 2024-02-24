@@ -1,29 +1,103 @@
-import { Button, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
-import { Text, View } from "@/components/Themed";
-import { useAuth } from "@/auth/useAuth";
+import React from "react";
+import {
+  DangerButton,
+  PrimaryButton,
+  SecondaryButton,
+  TextInput,
+} from "@guallet/ui-react-native";
 
 export default function DashboardScreen() {
-  const { session, signOut } = useAuth();
-
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Dashboard screen</Text>
-        <Button
-          title="Sign Out"
-          onPress={async () => {
-            await signOut();
-          }}
-        />
-        <View
-          style={styles.separator}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
-        />
-        <Text>Session</Text>
-        <Text>{JSON.stringify(session, null, 2)}</Text>
-      </View>
+    <ScrollView style={styles.container}>
+      <TextInput
+        placeholder="This is the placeholder"
+        label="This is the label"
+        description="This is the description"
+        required
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+      />
+
+      <TextInput
+        label="This is the label"
+        description="This is the description"
+        placeholder="This is the placeholder for a disabled input"
+        value="This is the value"
+        disabled
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+      />
+
+      <TextInput
+        placeholder="This is the placeholder"
+        label="This is the label"
+        description="This is the description"
+        required
+        error="This is the error"
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+      />
+
+      <PrimaryButton
+        title="Add account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+        leftIconName="money"
+      />
+      <PrimaryButton
+        title="Add account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+        rightIconName="chevron-circle-right"
+      />
+      <SecondaryButton
+        title="Search account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+        leftIconName="search"
+      />
+      <SecondaryButton
+        title="Remove account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+        rightIconName="plus"
+      />
+      <DangerButton
+        title="Remove account"
+        onClick={async () => {}}
+        style={{
+          marginTop: 16,
+          marginStart: 24,
+          marginEnd: 24,
+        }}
+      />
     </ScrollView>
   );
 }
@@ -31,19 +105,11 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  scrollView: {
-    backgroundColor: "pink",
+    backgroundColor: "white",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+    color: "black",
   },
 });

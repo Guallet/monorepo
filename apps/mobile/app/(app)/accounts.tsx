@@ -1,92 +1,49 @@
-import { StyleSheet } from "react-native";
+import { Button, ScrollView, StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import React from "react";
-import {
-  DangerButton,
-  PrimaryButton,
-  SecondaryButton,
-} from "@guallet/ui-react-native";
+import { useAuth } from "@/auth/useAuth";
 
 export default function AccountsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Accounts</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+  const { session, signOut } = useAuth();
 
-      <PrimaryButton
-        title="Add account"
-        onClick={async () => {}}
-        style={{
-          marginTop: 16,
-          marginStart: 24,
-          marginEnd: 24,
-        }}
-        leftIconName="money"
-      />
-      <PrimaryButton
-        title="Add account"
-        onClick={async () => {}}
-        style={{
-          marginTop: 16,
-          marginStart: 24,
-          marginEnd: 24,
-        }}
-        rightIconName="chevron-circle-right"
-      />
-      <SecondaryButton
-        title="Search account"
-        onClick={async () => {}}
-        style={{
-          marginTop: 16,
-          marginStart: 24,
-          marginEnd: 24,
-        }}
-        leftIconName="search"
-      />
-      <SecondaryButton
-        title="Remove account"
-        onClick={async () => {}}
-        style={{
-          marginTop: 16,
-          marginStart: 24,
-          marginEnd: 24,
-        }}
-        rightIconName="plus"
-      />
-      <DangerButton
-        title="Remove account"
-        onClick={async () => {}}
-        style={{
-          marginTop: 16,
-          marginStart: 24,
-          marginEnd: 24,
-        }}
-      />
-    </View>
+  return (
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Accounts screen</Text>
+        <Button
+          title="Sign Out"
+          onPress={async () => {
+            await signOut();
+          }}
+        />
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+        <Text>Session</Text>
+        <Text>{JSON.stringify(session, null, 2)}</Text>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    // alignItems: "center",
-    // justifyContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  scrollView: {
+    backgroundColor: "pink",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "black",
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: "80%",
-    color: "black",
   },
 });
