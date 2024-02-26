@@ -1,6 +1,6 @@
 import { useAuth } from "@/auth/useAuth";
-import { Pressable, View, Text, Image, TouchableOpacity } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Icon from "@guallet/ui-react-native/src/components/Icon/Icon";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 
 interface UserProfileRowProps {
   onClick: () => void;
@@ -37,11 +37,7 @@ export function UserProfileRow({ onClick }: UserProfileRowProps) {
           <Text>{user?.email}</Text>
         </View>
 
-        <FontAwesome
-          style={{ marginHorizontal: 10 }}
-          name="chevron-right"
-          size={20}
-        />
+        <Icon style={{ marginHorizontal: 10 }} name="chevron-right" size={20} />
       </View>
     </TouchableOpacity>
   );

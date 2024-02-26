@@ -1,6 +1,6 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { View, Text, TouchableOpacity } from "react-native";
 import { BaseButton } from "./BaseButton";
+import { Icon } from "../Icon/Icon";
 
 export interface ButtonProps
   extends React.ComponentProps<typeof TouchableOpacity> {
@@ -10,8 +10,8 @@ export interface ButtonProps
   // style: StyleProp<TouchableOpacity>;
   // fontStyle?: StyleProp<TextStyle>;
   tint?: string;
-  leftIconName?: React.ComponentProps<typeof FontAwesome>["name"];
-  rightIconName?: React.ComponentProps<typeof FontAwesome>["name"];
+  leftIconName?: React.ComponentProps<typeof Icon>["name"];
+  rightIconName?: React.ComponentProps<typeof Icon>["name"];
 }
 
 export function PrimaryButton({
@@ -47,7 +47,7 @@ export function PrimaryButton({
         }}
       >
         {leftIconName && (
-          <FontAwesome
+          <Icon
             name={leftIconName}
             size={24}
             color={tint ?? "white"}
@@ -73,7 +73,7 @@ export function PrimaryButton({
           {title}
         </Text>
         {rightIconName && (
-          <FontAwesome
+          <Icon
             name={rightIconName}
             size={24}
             color={tint ?? "white"}

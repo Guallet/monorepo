@@ -1,5 +1,4 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs, router } from "expo-router";
 import { Pressable } from "react-native";
 
@@ -10,13 +9,14 @@ import { useAuth } from "@/auth/useAuth";
 import { Redirect } from "expo-router";
 import { Text } from "react-native";
 import * as SystemUI from "expo-system-ui";
+import { Icon } from "@guallet/ui-react-native/src/components/Icon/Icon";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
+  name: React.ComponentProps<typeof Icon>["name"];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <Icon size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
 // TODO: Set the default background color from the Colors scheme
@@ -61,7 +61,7 @@ export default function AppLayout() {
             <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <FontAwesome
+                  <Icon
                     name="info-circle"
                     size={25}
                     color={Colors.light.text}
@@ -78,7 +78,9 @@ export default function AppLayout() {
         options={{
           title: "Accounts",
           headerTitleAlign: "center",
-          tabBarIcon: ({ color }) => <TabBarIcon name="money" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="money-check" color={color} />
+          ),
         }}
       />
       <Tabs.Screen

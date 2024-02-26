@@ -66,8 +66,8 @@ export default function DashboardScreen() {
           marginStart: 24,
           marginEnd: 24,
         }}
-        leftIconName="money"
-        rightIconName="chevron-circle-right"
+        leftIconName="money-check"
+        rightIconName="chevron-right"
       />
       <PrimaryButton
         title="Add account"
@@ -77,7 +77,7 @@ export default function DashboardScreen() {
           marginStart: 24,
           marginEnd: 24,
         }}
-        leftIconName="money"
+        leftIconName="money-check"
       />
       <PrimaryButton
         title="Add account"
@@ -87,7 +87,7 @@ export default function DashboardScreen() {
           marginStart: 24,
           marginEnd: 24,
         }}
-        rightIconName="chevron-circle-right"
+        rightIconName="chevron-right"
       />
       <SecondaryButton
         title="Search account"
@@ -97,7 +97,7 @@ export default function DashboardScreen() {
           marginStart: 24,
           marginEnd: 24,
         }}
-        leftIconName="search"
+        leftIconName="magnifying-glass"
       />
       <SecondaryButton
         title="Remove account"

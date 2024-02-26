@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { Stack, router } from "expo-router";
 import { UserProfileRow } from "@/components/UserProfileRow";
-import { Divider } from "@guallet/ui-react-native";
+import { Divider, TextRow } from "@guallet/ui-react-native";
 
 export default function SettingsScreen() {
   return (
@@ -23,7 +23,7 @@ export default function SettingsScreen() {
         }}
       />
       <ScrollView>
-        <View>
+        <View style={styles.container}>
           <Text>User</Text>
           <UserProfileRow
             onClick={() => {
@@ -32,6 +32,20 @@ export default function SettingsScreen() {
           />
           <Divider />
           <Text>Settings</Text>
+          <TextRow
+            label={"Touchable with divider"}
+            onClick={() => {
+              router.push("/settings/user");
+            }}
+            leftIconName={"user"}
+          />
+          <TextRow
+            showDivider={false}
+            label={"This is the text row label"}
+            onClick={() => {
+              router.push("/settings/user");
+            }}
+          />
           <Divider />
           <Text>Settings</Text>
           <Divider />
@@ -52,6 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
+    backgroundColor: "white",
   },
   title: {
     fontSize: 20,
