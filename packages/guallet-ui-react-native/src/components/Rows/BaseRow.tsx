@@ -20,12 +20,18 @@ export function BaseRow({
   return (
     <TouchableRow onClick={onClick}>
       <View
-        style={{
-          flexDirection: "column",
-          alignItems: "flex-start",
-          alignContent: "center",
-          justifyContent: "flex-start",
-        }}
+        style={[
+          {
+            flexDirection: "column",
+            alignItems: "flex-start",
+            alignContent: "center",
+            justifyContent: "flex-start",
+          },
+          showDivider && {
+            borderBottomWidth: 1,
+            borderBottomColor: "grey",
+          },
+        ]}
       >
         <View
           style={{
@@ -58,7 +64,6 @@ export function BaseRow({
             style={{ marginHorizontal: Spacing.small }}
           />
         </View>
-        {showDivider && <Divider color="black" width={35} />}
       </View>
     </TouchableRow>
   );

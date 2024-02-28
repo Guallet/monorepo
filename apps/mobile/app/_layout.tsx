@@ -14,6 +14,8 @@ import { useOnlineManager } from "@/hooks/useOnlineManager";
 import { useAppState } from "@/hooks/useAppState";
 import { AppStateStatus, Platform } from "react-native";
 import { AuthProvider } from "@/auth/useAuth";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -72,10 +74,17 @@ function RootLayoutNav() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           {/* <Slot /> */}
-          <Stack>
-            <Stack.Screen name="(app)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <BottomSheetModalProvider>
+              <Stack>
+                <Stack.Screen name="(app)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: "modal" }}
+                />
+              </Stack>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
