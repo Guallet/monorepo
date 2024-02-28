@@ -1,5 +1,5 @@
 import { useAuth } from "@/auth/useAuth";
-import Icon from "@guallet/ui-react-native/src/components/Icon/Icon";
+import { Icon } from "@guallet/ui-react-native/src/components/Icon/Icon";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 interface UserProfileRowProps {

@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { TouchableRow } from "./TouchableRow";
 import { Divider } from "../Divider/Divider";
 import { Spacing } from "../../..";
-import Icon from "../Icon/Icon";
+import { Icon } from "../Icon/Icon";
 
 interface BaseRowProps extends React.ComponentProps<typeof View> {
   children?: React.ReactNode;

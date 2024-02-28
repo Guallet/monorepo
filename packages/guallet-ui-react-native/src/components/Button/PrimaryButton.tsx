@@ -5,7 +5,7 @@ import { Icon } from "../Icon/Icon";
 export interface ButtonProps
   extends React.ComponentProps<typeof TouchableOpacity> {
   title: string;
-  onClick: () => void;
+  onClick?: () => void;
   // style?: CSSProperties;
   // style: StyleProp<TouchableOpacity>;
   // fontStyle?: StyleProp<TextStyle>;

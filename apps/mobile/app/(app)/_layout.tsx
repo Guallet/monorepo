@@ -55,7 +55,7 @@ export default function AppLayout() {
           title: "Dashboard",
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="tachometer" color={color} />
+            <TabBarIcon name="gauge-high" color={color} />
           ),
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -76,6 +76,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="accounts"
         options={{
+          headerShown: false,
           title: "Accounts",
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
@@ -107,7 +108,7 @@ export default function AppLayout() {
           // title: "Settings",
           headerShown: false,
           headerTitleAlign: "center",
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
         }}
       />
     </Tabs>
