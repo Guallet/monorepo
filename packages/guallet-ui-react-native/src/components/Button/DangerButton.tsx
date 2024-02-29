@@ -12,7 +12,7 @@ export function DangerButton({ title, onClick, style }: ButtonProps) {
         style,
       ]}
       tint="red"
-      rightIconName="warning"
+      rightIconName="triangle-exclamation"
     />
   );
 }
