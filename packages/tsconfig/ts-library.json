@@ -3,8 +3,13 @@
   "display": "Typescript Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["ES2021", "DOM"],
+    "lib": ["ES2021", "DOM", "ESNext"],
     "module": "ESNext",
-    "target": "ES2021"
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   }
 }

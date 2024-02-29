@@ -5,9 +5,10 @@ import {
   useBottomSheetModal,
 } from "@gorhom/bottom-sheet";
 import { Icon, Spacing } from "@guallet/ui-react-native";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, StyleSheet, Button, BackHandler } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity, FlatList } from "react-native-gesture-handler";
+import { SearchBoxInput } from "./SearchBoxInput";
 
 interface SelectInputProps<T> {
   label?: string;
@@ -18,8 +19,10 @@ interface SelectInputProps<T> {
   disabled?: boolean;
   error?: string;
   data: T[];
+  searchable?: boolean;
   itemTemplate: (item: T) => React.ReactNode;
   onItemSelected: (item: T) => void;
+  keyExtractor?: ((item: T, index: number) => string) | undefined;
 }
 
 export function SelectInput<T>({
@@ -30,11 +33,26 @@ export function SelectInput<T>({
   disabled,
   error,
   data,
+  searchable,
   itemTemplate,
   onItemSelected,
+  keyExtractor,
 }: SelectInputProps<T>) {
   // handle back button
   const { dismiss } = useBottomSheetModal();
+  const [query, setQuery] = useState("");
+  const [filteredData, setFilteredData] = useState(data);
+
+  useEffect(() => {
+    if (query === "" || query === null || query === undefined) {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter((item) => {
+        return JSON.stringify(item).toLowerCase().includes(query.toLowerCase());
+      });
+      setFilteredData(filtered);
+    }
+  }, [query]);
 
   useEffect(() => {
     const handleBackButton = () => {
@@ -145,20 +163,22 @@ export function SelectInput<T>({
             />
           </View>
 
-          <View
-            style={{
-              flex: 1,
-              flexGrow: 1,
-              justifyContent: "flex-start",
-              flexDirection: "column",
-              alignContent: "stretch",
-            }}
-          >
-            {data.map((item, index) => {
-              return (
-                // TODO: Fix the key warning
+          {searchable && (
+            <SearchBoxInput
+              query={query}
+              onSearchQueryChanged={(query) => {
+                setQuery(query);
+              }}
+            />
+          )}
+
+          {filteredData.length === 0 ? (
+            <Text style={{ margin: Spacing.medium }}>No items found</Text>
+          ) : (
+            <FlatList
+              data={filteredData}
+              renderItem={({ item }) => (
                 <TouchableOpacity
-                  key={index}
                   onPress={() => {
                     onItemSelected(item);
                     dismiss();
@@ -172,9 +192,10 @@ export function SelectInput<T>({
                 >
                   {itemTemplate(item)}
                 </TouchableOpacity>
-              );
-            })}
-          </View>
+              )}
+              keyExtractor={keyExtractor}
+            />
+          )}
         </BottomSheetView>
       </BottomSheetModal>
     </TouchableOpacity>

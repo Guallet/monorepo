@@ -6,7 +6,7 @@ interface TextInputProps extends React.ComponentProps<typeof RNTextInput> {
   error?: string;
   disabled?: boolean;
   required?: boolean;
-  style?: React.ComponentProps<typeof View>["style"];
+  // style?: React.ComponentProps<typeof View>["style"];
 }
 
 export function TextInput({

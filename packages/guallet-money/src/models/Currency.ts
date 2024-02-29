@@ -1,9 +1,25 @@
 import { CURRENCIES } from "./iso_4217";
 
-function getCurrencySymbol(code: string): string {
-  const locale = navigator.language ?? undefined;
+function getCurrencySymbol(code: string, locale: string | undefined): string {
+  // TODO: Restore this code when it's possible to get the locale from the device
+  // This code below doesn't work on React Native (at least on Android). Investigate how to fix it
+  // const locale = navigator.language ?? undefined;
+  // return (0)
+  //   .toLocaleString([locale], {
+  //     style: "currency",
+  //     currency: code,
+  //     minimumFractionDigits: 0,
+  //     maximumFractionDigits: 0,
+  //     currencySign: "standard",
+  //     currencyDisplay: "narrowSymbol",
+  //     useGrouping: true,
+  //   })
+  //   .replace(/\d/g, "")
+  //   .trim();
+
+  // RN Android compatible code
   return (0)
-    .toLocaleString([locale], {
+    .toLocaleString(locale, {
       style: "currency",
       currency: code,
       minimumFractionDigits: 0,
@@ -34,8 +50,11 @@ export class Currency {
     this.decimalPlaces = decimalPlaces;
   }
 
-  static fromISOCode(code: string): Currency {
-    const symbol = getCurrencySymbol(code);
+  static fromISOCode(
+    code: string,
+    locale: string | undefined = navigator.language
+  ): Currency {
+    const symbol = getCurrencySymbol(code, locale);
     const c = CURRENCIES[code];
     if (c) {
       return new Currency(c.name, symbol, code, Number(c.decimalPlaces));

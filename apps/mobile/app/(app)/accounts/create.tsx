@@ -1,4 +1,5 @@
-import { SelectInput } from "@/components/SelectInput";
+import { CurrencyPicker } from "@/components/CurrencyPicker";
+import { Currency } from "@guallet/money";
 import {
   Divider,
   PrimaryButton,
@@ -7,10 +8,12 @@ import {
 } from "@guallet/ui-react-native";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { View, Text, ScrollView, LogBox } from "react-native";
+import { View, ScrollView } from "react-native";
 
 export default function CreateAccountScreen() {
-  const [selectedCurrency, setSelectedCurrency] = useState<string>("");
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency | null>(
+    null
+  );
 
   return (
     <View
@@ -32,16 +35,9 @@ export default function CreateAccountScreen() {
           placeholder="Enter the account name"
           required
         />
-        <SelectInput
-          label="Currency"
-          placeholder="Pick a currency"
-          required
-          data={["Option 1", "Option 2", "Option 3"]}
-          value={selectedCurrency}
-          itemTemplate={(item) => {
-            return <Text key={item}>{item}</Text>;
-          }}
-          onItemSelected={(item) => {
+        <CurrencyPicker
+          currency={selectedCurrency}
+          onCurrencyChanged={(item) => {
             setSelectedCurrency(item);
           }}
         />
