@@ -1,2 +1,2 @@
-export { GualletClient } from "./GualletClient";
 export * from "./accounts";
+export { GualletClient } from "./GualletClient";

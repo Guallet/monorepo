@@ -1,42 +1,34 @@
+import {
+  AccountDto,
+  CreateAccountRequest,
+  UpdateAccountRequest,
+} from "./accounts.models";
 import { GualletClient } from "GualletClient";
-import { AccountDto } from "./accounts.models";
 
-export async function loadAccounts(
-  client: GualletClient
-): Promise<AccountDto[]> {
-  return await client.get<AccountDto[]>("accounts");
+const ACCOUNTS_PATH = "accounts";
+
+export class AccountsApi {
+  constructor(private client: GualletClient) {}
+
+  async getAll(): Promise<AccountDto[]> {
+    return await this.client.get<AccountDto[]>(ACCOUNTS_PATH);
+  }
+
+  async get(accountId: string): Promise<AccountDto> {
+    return await this.client.get<AccountDto>(`${ACCOUNTS_PATH}/${accountId}`);
+  }
+
+  async create(account: CreateAccountRequest) {
+    return await this.client.post<AccountDto, CreateAccountRequest>(
+      ACCOUNTS_PATH,
+      account
+    );
+  }
+
+  async update(accountId: string, account: UpdateAccountRequest) {
+    return await this.client.patch<AccountDto, UpdateAccountRequest>(
+      `${ACCOUNTS_PATH}/${accountId}`,
+      account
+    );
+  }
 }
-
-// export async function getAccount(accountId: string): Promise<Account> {
-//   return await get<Account>(`accounts/${accountId}`);
-// }
-
-// export async function createAccount(account: CreateAccountRequest) {
-//   return await post<Account, CreateAccountRequest>("accounts", account);
-// }
-
-// export async function updateAccount(
-//   accountId: string,
-//   account: UpdateAccountRequest
-// ) {
-//   return await patch<Account, UpdateAccountRequest>(
-//     `accounts/${accountId}`,
-//     account
-//   );
-// }
-
-export type CreateAccountRequest = {
-  name: string;
-  type: string;
-  currency: string;
-  initial_balance?: number;
-  institution_id?: string;
-};
-
-export type UpdateAccountRequest = {
-  name?: string;
-  type?: string;
-  currency?: string;
-  initial_balance?: number;
-  institution_id?: string;
-};

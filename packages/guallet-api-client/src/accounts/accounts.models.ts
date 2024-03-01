@@ -40,3 +40,19 @@ export enum AccountTypeDto {
 //   UNKNOWN: "unknown",
 // } as const;
 // export type AccountType = (typeof AccountType)[keyof typeof AccountType];
+
+export type CreateAccountRequest = {
+  name: string;
+  type: string;
+  currency: string;
+  initial_balance?: number;
+  institution_id?: string;
+};
+
+export type UpdateAccountRequest = {
+  name?: string;
+  type?: string;
+  currency?: string;
+  initial_balance?: number;
+  institution_id?: string;
+};

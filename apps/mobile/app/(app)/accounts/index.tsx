@@ -9,7 +9,7 @@ export default function AccountsScreen() {
   const { data, isLoading } = useQuery({
     queryKey: ["accounts"],
     queryFn: async () => {
-      return gualletClient.accounts.loadAccounts();
+      return await gualletClient.accounts.getAll();
     },
   });
 

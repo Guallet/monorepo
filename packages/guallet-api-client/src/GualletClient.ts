@@ -1,8 +1,14 @@
-import { AccountDto } from "accounts";
-
 export class GualletClient {
   private baseUrl: string;
   private getTokenFunction: () => Promise<string | null>;
+
+  constructor(args: {
+    baseUrl: string;
+    getTokenFunction: () => Promise<string | null>;
+  }) {
+    this.baseUrl = args.baseUrl;
+    this.getTokenFunction = args.getTokenFunction;
+  }
 
   static createClient(args: {
     baseUrl: string;
@@ -13,20 +19,6 @@ export class GualletClient {
       getTokenFunction: args.getTokenFunction,
     });
   }
-
-  constructor(args: {
-    baseUrl: string;
-    getTokenFunction: () => Promise<string | null>;
-  }) {
-    this.baseUrl = args.baseUrl;
-    this.getTokenFunction = args.getTokenFunction;
-  }
-
-  accounts = {
-    loadAccounts: async () => {
-      return await this.get<AccountDto[]>("accounts");
-    },
-  };
 
   async get<TDto>(path: string): Promise<TDto> {
     const access_token = await this.getTokenFunction();
