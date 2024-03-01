@@ -180,6 +180,9 @@ importers:
       '@gorhom/bottom-sheet':
         specifier: ^4
         version: 4.6.1(@types/react@18.2.56)(react-native-gesture-handler@2.14.1)(react-native-reanimated@3.6.3)(react-native@0.73.4)(react@18.2.0)
+      '@guallet/api-client':
+        specifier: workspace:*
+        version: link:../../packages/guallet-api-client
       '@guallet/money':
         specifier: workspace:*
         version: link:../../packages/guallet-money
@@ -426,6 +429,21 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.53.0)
 
+  packages/guallet-api-client:
+    devDependencies:
+      eslint:
+        specifier: ^7.32.0
+        version: 7.32.0
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../eslint-config-custom
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^4.5.2
+        version: 4.9.5
+
   packages/guallet-money:
     dependencies:
       '@iso4217/json':
@@ -438,9 +456,6 @@ importers:
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -13289,14 +13304,6 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
-
-  /react@17.0.2:
-    resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-    dev: true
 
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}

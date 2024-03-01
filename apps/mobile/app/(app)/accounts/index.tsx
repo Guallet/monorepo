@@ -1,10 +1,18 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
-import { View } from "@/components/Themed";
 import { Stack, router } from "expo-router";
 import { EmptyAccountsList } from "@/components/EmptyList/EmptyAccountsList";
+import { useQuery } from "@tanstack/react-query";
+import { gualletClient } from "@/api/gualletClient";
 
 export default function AccountsScreen() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["accounts"],
+    queryFn: async () => {
+      return gualletClient.accounts.loadAccounts();
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -13,12 +21,22 @@ export default function AccountsScreen() {
           headerTitleAlign: "center",
         }}
       />
-      <EmptyAccountsList
-        onCreateAccount={() => {
-          router.navigate("/accounts/create");
-        }}
-        onConnectToBank={() => {}}
-      />
+      {isLoading && <Text>Loading...</Text>}
+      {data?.length === 0 ? (
+        <EmptyAccountsList
+          onCreateAccount={() => {
+            router.navigate("/accounts/create");
+          }}
+          onConnectToBank={() => {}}
+        />
+      ) : (
+        <View>
+          <Text>Accounts</Text>
+          {data?.map((account) => (
+            <Text key={account.id}>{account.name}</Text>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
