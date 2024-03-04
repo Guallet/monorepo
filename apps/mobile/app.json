@@ -20,6 +20,21 @@
       "googleServicesFile": "./auth/firebase/GoogleService-Info.plist"
     },
     "android": {
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "guallet.io",
+              "pathPrefix": "/",
+              "pathPattern": ".*"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

@@ -84,6 +84,16 @@ export default function AppLayout() {
           ),
         }}
       />
+      // TODO: This should be inside settings
+      <Tabs.Screen
+        name="connections"
+        options={{
+          // title: "Settings",
+          headerShown: false,
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color }) => <TabBarIcon name="globe" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="transactions"
         options={{

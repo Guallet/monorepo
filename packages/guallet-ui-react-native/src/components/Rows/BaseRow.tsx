@@ -18,21 +18,22 @@ export function BaseRow({
   leftIconName,
 }: BaseRowProps) {
   return (
-    <TouchableRow onClick={onClick}>
-      <View
-        style={[
-          {
-            flexDirection: "column",
-            alignItems: "flex-start",
-            alignContent: "center",
-            justifyContent: "flex-start",
-          },
-          showDivider && {
-            borderBottomWidth: 1,
-            borderBottomColor: "grey",
-          },
-        ]}
-      >
+    <View
+      style={[
+        {
+          height: 50,
+          flexDirection: "column",
+          alignItems: "stretch",
+          alignContent: "center",
+          justifyContent: "flex-start",
+        },
+        showDivider && {
+          borderBottomWidth: 1,
+          // borderBottomColor: "grey",
+        },
+      ]}
+    >
+      <TouchableRow onClick={onClick}>
         <View
           style={{
             flexGrow: 1,
@@ -58,13 +59,15 @@ export function BaseRow({
             {children}
           </View>
 
-          <Icon
-            name="chevron-right"
-            size={24}
-            style={{ marginHorizontal: Spacing.small }}
-          />
+          {onClick && (
+            <Icon
+              name="chevron-right"
+              size={24}
+              style={{ marginHorizontal: Spacing.small }}
+            />
+          )}
         </View>
-      </View>
-    </TouchableRow>
+      </TouchableRow>
+    </View>
   );
 }

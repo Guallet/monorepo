@@ -17,6 +17,8 @@ export function SearchBoxInput({
   disabled,
   placeholder,
   onSearchQueryChanged,
+  style,
+  ...props
 }: SearchBoxInputProps) {
   return (
     <View
@@ -33,7 +35,9 @@ export function SearchBoxInput({
           //   justifyContent: "center",
         },
         disabled && { backgroundColor: "#F8F8F8" },
+        style,
       ]}
+      {...props}
     >
       <Icon
         name="magnifying-glass"

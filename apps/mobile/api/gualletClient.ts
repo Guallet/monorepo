@@ -1,5 +1,9 @@
 import { supabase } from "@/auth/supabase";
-import { AccountsApi, GualletClient } from "@guallet/api-client";
+import {
+  AccountsApi,
+  ConnectionsApi,
+  GualletClient,
+} from "@guallet/api-client";
 
 const innerClient = GualletClient.createClient({
   baseUrl: "https://guallet-api.fzx1cu.easypanel.host",
@@ -15,4 +19,5 @@ async function getCurrentUserToken(): Promise<string | null> {
 // something like "gualletClient.accounts.getAll()"
 export const gualletClient = {
   accounts: new AccountsApi(innerClient),
+  connections: new ConnectionsApi(innerClient),
 };
