@@ -15,6 +15,7 @@ import { AccountsService } from './accounts.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
+import { AccountDto } from './dto/account.dto';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -26,7 +27,7 @@ export class AccountsController {
   @Get()
   async getUserAccounts(@RequestUser() user: UserPrincipal) {
     const accounts = await this.accountsService.findAllUserAccounts(user.id);
-    return accounts;
+    return accounts.map((a) => AccountDto.fromDomain(a));
   }
 
   @Post()

@@ -84,14 +84,13 @@ export default function AppLayout() {
           ),
         }}
       />
-      // TODO: This should be inside settings
+      // This should be inside settings, not in the main tabs
       <Tabs.Screen
         name="connections"
         options={{
-          // title: "Settings",
+          // This tab will no longer show up in the tab bar.
+          href: null,
           headerShown: false,
-          headerTitleAlign: "center",
-          tabBarIcon: ({ color }) => <TabBarIcon name="globe" color={color} />,
         }}
       />
       <Tabs.Screen

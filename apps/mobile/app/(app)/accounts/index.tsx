@@ -1,9 +1,11 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 
 import { Stack, router } from "expo-router";
 import { EmptyAccountsList } from "@/components/EmptyList/EmptyAccountsList";
 import { useQuery } from "@tanstack/react-query";
 import { gualletClient } from "@/api/gualletClient";
+import { PrimaryButton, Spacing } from "@guallet/ui-react-native";
+import { AccountsList } from "@/components/Accounts/AccountsList";
 
 export default function AccountsScreen() {
   const { data, isLoading } = useQuery({
@@ -30,11 +32,40 @@ export default function AccountsScreen() {
           onConnectToBank={() => {}}
         />
       ) : (
-        <View>
-          <Text>Accounts</Text>
-          {data?.map((account) => (
-            <Text key={account.id}>{account.name}</Text>
-          ))}
+        <View style={styles.container}>
+          <View
+            style={{
+              backgroundColor: "white",
+              borderRadius: Spacing.small,
+              flexDirection: "column",
+              padding: Spacing.medium,
+              margin: Spacing.medium,
+              flex: 1,
+            }}
+          >
+            {data && (
+              <AccountsList
+                accounts={data}
+                onAccountSelected={(account) => {
+                  console.log(`Account selected: ${account.id}`);
+                }}
+              />
+            )}
+          </View>
+          <View
+            style={{
+              justifyContent: "flex-end",
+            }}
+          >
+            <PrimaryButton
+              title="Add new account"
+              onPress={() => {}}
+              style={{
+                marginHorizontal: Spacing.medium,
+                marginBottom: Spacing.medium,
+              }}
+            />
+          </View>
         </View>
       )}
     </View>
@@ -45,8 +76,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "stretch",
-    justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: "#EFEFEF",
   },
   title: {
     fontSize: 20,

@@ -9,6 +9,7 @@ interface BaseRowProps extends React.ComponentProps<typeof View> {
   onClick?: () => void;
   showDivider?: boolean;
   leftIconName?: React.ComponentProps<typeof Icon>["name"];
+  rightIconName?: React.ComponentProps<typeof Icon>["name"];
 }
 
 export function BaseRow({
@@ -16,6 +17,8 @@ export function BaseRow({
   onClick,
   showDivider = true,
   leftIconName,
+  rightIconName = "chevron-right",
+  ...props
 }: BaseRowProps) {
   return (
     <View
@@ -31,6 +34,7 @@ export function BaseRow({
           borderBottomWidth: 1,
           // borderBottomColor: "grey",
         },
+        props.style,
       ]}
     >
       <TouchableRow onClick={onClick}>
@@ -61,8 +65,8 @@ export function BaseRow({
 
           {onClick && (
             <Icon
-              name="chevron-right"
-              size={24}
+              name={rightIconName}
+              size={20}
               style={{ marginHorizontal: Spacing.small }}
             />
           )}
