@@ -22,7 +22,8 @@
     "expo:prebuild:android:clean": "npx expo prebuild --platform android --clean",
     "expo:prebuild:ios:clean": "npx expo prebuild --platform ios --clean",
     "build:android": "expo run:android --variant release",
-    "build:android:local": "eas build --platform android --local"
+    "build:android:local": "eas build --platform android --local",
+    "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android"
   },
   "jest": {
     "preset": "jest-expo"

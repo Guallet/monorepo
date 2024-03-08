@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { AppColors } from "../../..";
+import { AppColors } from "../../theme/colors";
 
 interface DividerProps extends React.ComponentProps<typeof View> {
   color?: string;

@@ -1,3 +1,3 @@
-export { AppColors } from "./colors";
-export { Spacing } from "./spacing";
-export { AppFontFamily, AppFontSizes, AppFontStyle } from "./typography";
+export * from "./colors";
+export * from "./spacing";
+export * from "./typography";

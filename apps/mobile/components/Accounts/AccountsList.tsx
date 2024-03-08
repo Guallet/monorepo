@@ -52,6 +52,8 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
   return (
     <SectionList
       sections={groupedData}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
       keyExtractor={(item) => item.id}
       refreshControl={
         <RefreshControl refreshing={false} onRefresh={() => {}} />

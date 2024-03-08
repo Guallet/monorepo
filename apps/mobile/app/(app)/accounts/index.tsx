@@ -2,18 +2,12 @@ import { StyleSheet, View, Text, FlatList } from "react-native";
 
 import { Stack, router } from "expo-router";
 import { EmptyAccountsList } from "@/components/EmptyList/EmptyAccountsList";
-import { useQuery } from "@tanstack/react-query";
-import { gualletClient } from "@/api/gualletClient";
 import { PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { AccountsList } from "@/components/Accounts/AccountsList";
+import { useAccounts } from "@/features/accounts/useAccounts";
 
 export default function AccountsScreen() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["accounts"],
-    queryFn: async () => {
-      return await gualletClient.accounts.getAll();
-    },
-  });
+  const { accounts, isLoading } = useAccounts();
 
   return (
     <View style={styles.container}>
@@ -24,7 +18,7 @@ export default function AccountsScreen() {
         }}
       />
       {isLoading && <Text>Loading...</Text>}
-      {data?.length === 0 ? (
+      {accounts?.length === 0 ? (
         <EmptyAccountsList
           onCreateAccount={() => {
             router.navigate("/accounts/create");
@@ -43,9 +37,9 @@ export default function AccountsScreen() {
               flex: 1,
             }}
           >
-            {data && (
+            {accounts && (
               <AccountsList
-                accounts={data}
+                accounts={accounts}
                 onAccountSelected={(account) => {
                   // router.push(`/accounts/${account.id}`);
                   router.navigate({

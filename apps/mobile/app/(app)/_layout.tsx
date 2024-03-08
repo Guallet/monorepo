@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Tabs, router } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 
 import Colors from "@/constants/Colors";
@@ -84,7 +84,8 @@ export default function AppLayout() {
           ),
         }}
       />
-      // This should be inside settings, not in the main tabs
+
+      {/* // This should be inside settings, not in the main tabs */}
       <Tabs.Screen
         name="connections"
         options={{
