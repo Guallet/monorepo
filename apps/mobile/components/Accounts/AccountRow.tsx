@@ -2,6 +2,8 @@ import { Money } from "@guallet/money";
 import { AccountDto } from "@guallet/api-client";
 import { View, TouchableOpacity, Button } from "react-native";
 import { Avatar, Label, Spacing } from "@guallet/ui-react-native";
+import { useQuery } from "@tanstack/react-query";
+import { gualletClient } from "@/api/gualletClient";
 
 interface Props {
   account: AccountDto;
@@ -9,8 +11,16 @@ interface Props {
 }
 
 export function AccountRow({ account, onClick }: Props) {
+  const { data: institution, isLoading } = useQuery({
+    queryKey: ["institution", account.institutionId],
+    enabled: !!account.institutionId,
+    queryFn: async () => {
+      return await gualletClient.institutions.get(account.institutionId);
+    },
+  });
+
   const amount = Money.fromCurrencyCode({
-    amount: account.balance,
+    amount: account.balance.amount,
     currencyCode: account.currency,
   });
 
@@ -26,8 +36,8 @@ export function AccountRow({ account, onClick }: Props) {
       >
         <Avatar
           size={40}
-          imageUrl={account.institution?.image_src ?? ""}
-          alt={account.institution?.name}
+          imageUrl={institution?.image_src ?? ""}
+          alt={institution?.name ?? account.name}
         />
         <Label
           style={{

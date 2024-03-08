@@ -51,7 +51,7 @@ export class AccountsController {
       user.id,
       accountId,
     );
-    return account;
+    return AccountDto.fromDomain(account);
   }
 
   //   @Get(':id/transactions')

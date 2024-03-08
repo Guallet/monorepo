@@ -3,6 +3,7 @@ import {
   AccountsApi,
   ConnectionsApi,
   GualletClient,
+  InstitutionsApi,
 } from "@guallet/api-client";
 
 const innerClient = GualletClient.createClient({
@@ -20,4 +21,5 @@ async function getCurrentUserToken(): Promise<string | null> {
 export const gualletClient = {
   accounts: new AccountsApi(innerClient),
   connections: new ConnectionsApi(innerClient),
+  institutions: new InstitutionsApi(innerClient),
 };

@@ -47,7 +47,11 @@ export default function AccountsScreen() {
               <AccountsList
                 accounts={data}
                 onAccountSelected={(account) => {
-                  console.log(`Account selected: ${account.id}`);
+                  // router.push(`/accounts/${account.id}`);
+                  router.navigate({
+                    pathname: "/accounts/[id]",
+                    params: { id: account.id },
+                  });
                 }}
               />
             )}

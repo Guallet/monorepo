@@ -1,17 +1,9 @@
 // import "core-js";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { AccountsListHeader } from "./AccountsListHeader";
-import {
-  FlatList,
-  SectionList,
-  View,
-  StyleSheet,
-  Text,
-  StatusBar,
-  RefreshControl,
-} from "react-native";
+import { SectionList, View, RefreshControl } from "react-native";
 import { AccountRow } from "./AccountRow";
-import { Spacing } from "@guallet/ui-react-native";
+import { Label, Spacing } from "@guallet/ui-react-native";
 
 interface Props {
   accounts: AccountDto[];

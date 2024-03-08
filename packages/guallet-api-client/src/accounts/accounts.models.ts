@@ -1,16 +1,28 @@
 export type AccountDto = {
+  // id: string;
+  // type: AccountTypeDto;
+  // name: string;
+  // balance: number;
+  // currency: string;
+  // connection_details?: AccountConnectionDto;
+  // institutionId: null | string;
+  // institution?: {
+  //   id: string;
+  //   name: string;
+  //   image_src: string;
+  // };
+
   id: string;
-  type: AccountTypeDto;
   name: string;
-  balance: number;
+  balance: { amount: number; currency: string };
   currency: string;
-  connection_details?: AccountConnectionDto;
-  institutionId: null | string;
-  institution?: {
-    id: string;
-    name: string;
-    image_src: string;
-  };
+  type: AccountTypeDto;
+  institutionId: string;
+  properties?:
+    | CurrentAccountProperties
+    | CreditCardProperties
+    | SavingAccountProperties
+    | null;
 };
 
 export type AccountConnectionDto = {
@@ -56,3 +68,22 @@ export type UpdateAccountRequest = {
   initial_balance?: number;
   institution_id?: string;
 };
+
+export interface CurrentAccountProperties {
+  details: {
+    accountNumber: string;
+    sortCode: string;
+  };
+  overdraft: number | null;
+}
+
+export interface CreditCardProperties {
+  accountNumber: string;
+  interestRate: number;
+  creditLimit: number;
+  cycleDay: "number" | "string";
+}
+
+export interface SavingAccountProperties {
+  interestRate: number;
+}

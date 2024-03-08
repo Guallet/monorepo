@@ -25,7 +25,7 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
 
     if (currencies.length == 1) {
       // Display Single Balance
-      const total = accounts.map((e) => +e.balance);
+      const total = accounts.map((e) => +e.balance.amount);
       const sum = sumArray(total);
 
       const money = Money.fromCurrencyCode({
@@ -39,7 +39,7 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
         const currency = entry[0];
         const accounts = entry[1] as AccountDto[];
 
-        const total = accounts.map((e) => +e.balance);
+        const total = accounts.map((e) => +e.balance.amount);
         const sum = sumArray(total);
 
         const money = Money.fromCurrencyCode({
