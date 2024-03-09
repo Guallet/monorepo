@@ -1,24 +1,37 @@
-import { StyleSheet, View, Text, FlatList } from "react-native";
-
-import { Stack, router } from "expo-router";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
+import { router, useNavigation } from "expo-router";
 import { EmptyAccountsList } from "@/components/EmptyList/EmptyAccountsList";
 import { PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { AccountsList } from "@/components/Accounts/AccountsList";
 import { useAccounts } from "@/features/accounts/useAccounts";
+import React from "react";
 
 export default function AccountsScreen() {
   const { accounts, isLoading } = useAccounts();
 
+  // Set the title of the screen
+  const navigation = useNavigation();
+  navigation.setOptions({
+    title: "Accounts",
+    headerTitleAlign: "center",
+  });
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: "Accounts",
-          headerTitleAlign: "center",
-        }}
-      />
-      {isLoading && <Text>Loading...</Text>}
-      {accounts?.length === 0 ? (
+      {accounts.length === 0 ? (
         <EmptyAccountsList
           onCreateAccount={() => {
             router.navigate("/accounts/create");
@@ -41,7 +54,7 @@ export default function AccountsScreen() {
               <AccountsList
                 accounts={accounts}
                 onAccountSelected={(account) => {
-                  // router.push(`/accounts/${account.id}`);
+                  // router.navigate(`/accounts/${account.id}`);
                   router.navigate({
                     pathname: "/accounts/[id]",
                     params: { id: account.id },

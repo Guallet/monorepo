@@ -99,6 +99,7 @@ export default function AppLayout() {
         options={{
           title: "Transactions",
           headerTitleAlign: "center",
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />
@@ -108,7 +109,7 @@ export default function AppLayout() {
           title: "Reports",
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="bar-chart" color={color} />
+            <TabBarIcon name="chart-line" color={color} />
           ),
         }}
       />

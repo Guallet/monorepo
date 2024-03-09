@@ -1,4 +1,5 @@
 import { gualletClient } from "@/api/gualletClient";
+import { AccountDto } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
 
 const ACCOUNTS_QUERY_KEY = "accounts";
@@ -11,7 +12,12 @@ export function useAccounts() {
     },
   });
 
-  return { accounts: data, isLoading, refetch, isFetching };
+  return {
+    accounts: data?.filter((dto): dto is AccountDto => dto !== undefined) ?? [],
+    isLoading,
+    refetch,
+    isFetching,
+  };
 }
 
 export function useAccount(id: string) {

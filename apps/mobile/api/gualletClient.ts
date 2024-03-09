@@ -4,6 +4,7 @@ import {
   ConnectionsApi,
   GualletClient,
   InstitutionsApi,
+  TransactionsApi,
 } from "@guallet/api-client";
 
 const innerClient = GualletClient.createClient({
@@ -22,4 +23,5 @@ export const gualletClient = {
   accounts: new AccountsApi(innerClient),
   connections: new ConnectionsApi(innerClient),
   institutions: new InstitutionsApi(innerClient),
+  transactions: new TransactionsApi(innerClient),
 };
