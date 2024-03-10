@@ -28,7 +28,7 @@ export function useAccount(id: string) {
     },
   });
 
-  return { account: data, isLoading, refetch, isFetching };
+  return { account: data ?? null, isLoading, refetch, isFetching };
 }
 
 // export function useAccountsF(){

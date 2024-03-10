@@ -10,11 +10,16 @@ export function useTransactions() {
     queryFn: async () => {
       return await gualletClient.transactions.getAll();
     },
+    gcTime: 1000 * 60 * 60, // 1 Hour
+    staleTime: 1000 * 60 * 60, // 1 Hour
   });
 
   return {
     transactions:
-      data?.filter((dto): dto is TransactionDto => dto !== undefined) ?? [],
+      data?.transactions.filter(
+        (dto): dto is TransactionDto => dto !== undefined
+      ) ?? [],
+    metadata: data?.meta ?? null,
     isLoading,
     refetch,
     isFetching,
@@ -27,6 +32,8 @@ export function useTransaction(id: string) {
     queryFn: async () => {
       return await gualletClient.transactions.get(id);
     },
+    gcTime: 1000 * 60 * 60, // 1 Hour
+    staleTime: 1000 * 60 * 60, // 1 Hour
   });
 
   return { transaction: data ?? null, isLoading, refetch, isFetching, error };
