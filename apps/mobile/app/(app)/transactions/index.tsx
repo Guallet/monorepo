@@ -1,6 +1,7 @@
+import { TransactionRow } from "@/components/Rows/TransactionRow";
 import { useTransactions } from "@/features/transactions/useTransactions";
 import { Icon, Label } from "@guallet/ui-react-native";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -17,7 +18,7 @@ type FilterData = {
 export default function AccountsScreen() {
   const [filter, setFilter] = useState<FilterData | null>(null);
 
-  const { transactions, isLoading } = useTransactions();
+  const { transactions, metadata, isLoading } = useTransactions();
 
   return (
     <View>
@@ -27,7 +28,11 @@ export default function AccountsScreen() {
           headerTitleAlign: "center",
           headerRight: () => {
             return (
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  // router.push("/(app)/transactions/filters");
+                }}
+              >
                 <Icon
                   name={filter === null ? "filter" : "filter-circle-xmark"}
                   size={24}
@@ -44,15 +49,25 @@ export default function AccountsScreen() {
         </View>
       )}
 
-      <Label>Transactions</Label>
-      <FlatList
-        data={transactions}
-        renderItem={({ item }) => (
-          <View>
-            <Label>{item.description}</Label>
-          </View>
-        )}
-      />
+      <TransactionsList />
     </View>
+  );
+}
+
+function TransactionsList() {
+  const { transactions, metadata, isLoading } = useTransactions();
+
+  return (
+    <FlatList
+      data={transactions}
+      renderItem={({ item }) => (
+        <TransactionRow
+          transaction={item}
+          onClick={(transaction) => {
+            console.log("Transaction clicked", transaction);
+          }}
+        />
+      )}
+    />
   );
 }

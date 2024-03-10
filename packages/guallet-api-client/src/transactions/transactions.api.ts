@@ -9,8 +9,8 @@ const TRANSACTIONS_PATH = "transactions";
 export class TransactionsApi {
   constructor(private client: GualletClient) {}
 
-  async getAll(): Promise<TransactionDto[]> {
-    return await this.client.get<TransactionDto[]>(TRANSACTIONS_PATH);
+  async getAll(): Promise<TransactionQueryResultDto> {
+    return await this.client.get<TransactionQueryResultDto>(TRANSACTIONS_PATH);
   }
 
   async loadTransactions(args: {
