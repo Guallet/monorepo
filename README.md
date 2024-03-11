@@ -4,8 +4,8 @@ Guallet is a open-source personal finances manager. Inspired in Firefly III and 
 
 ## (Almost) 100% Typescript
 
-In order to simplify the tech-stack, Typescript was selected for it's ability to deliver server, web apps and mobiles apps in the same language and tools.
-Also, the available tools around the TS ecosystems makes it perfect for self-hosting.
+In order to simplify the tech-stack, Typescript was selected for its ability to deliver server, web apps and mobile apps in the same language and tools.
+Also, the available tools around the TS ecosystems makes it a good option for self-hosting.
 
 Yes, other languages would have been better options, but as at this stage of the project the benefits of having a single language outweigh those inconveniences.
 
@@ -17,6 +17,7 @@ This Turborepo includes the following packages/apps:
 
 - `api`: a [NestJS](https://nestjs.com/) app, providing a REST and GraphQL apis
 - `webapp`: a Vite+React app
+- `mobile`: a React Native app targeting iOS and Android
 - `guallet-money`: utility package with functions and classes to work with money and currencies
 - `guallet-ui-react`: a stub React component library shared by all applications
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
@@ -42,7 +43,7 @@ pnpm build
 
 ### Develop
 
-To develop all apps and packages, run the following command:
+To run the API and the WebApp in develop mode, run the following command:
 
 ```
 pnpm dev
@@ -65,17 +66,6 @@ Next, you can link your Turborepo to your Remote Cache by running the following 
 ```
 npx turbo link
 ```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
 
 ### Dependencies
 
