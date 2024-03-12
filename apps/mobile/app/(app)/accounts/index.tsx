@@ -70,7 +70,11 @@ export default function AccountsScreen() {
           >
             <PrimaryButton
               title="Add new account"
-              onPress={() => {}}
+              onClick={() => {
+                router.navigate({
+                  pathname: "/accounts/create",
+                });
+              }}
               style={{
                 marginHorizontal: Spacing.medium,
                 marginBottom: Spacing.medium,

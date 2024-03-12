@@ -18,18 +18,22 @@ function getCurrencySymbol(code: string, locale: string | undefined): string {
   //   .trim();
 
   // RN Android compatible code
-  return (0)
-    .toLocaleString(locale, {
-      style: "currency",
-      currency: code,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-      currencySign: "standard",
-      currencyDisplay: "narrowSymbol",
-      useGrouping: true,
-    })
-    .replace(/\d/g, "")
-    .trim();
+  try {
+    return (0)
+      .toLocaleString(locale, {
+        style: "currency",
+        currency: code,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+        currencySign: "standard",
+        currencyDisplay: "narrowSymbol",
+        useGrouping: true,
+      })
+      .replace(/\d/g, "")
+      .trim();
+  } catch (e) {
+    console.error("Error getting currency symbol " + code, e);
+  }
 }
 
 export class Currency {

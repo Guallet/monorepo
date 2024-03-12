@@ -1,5 +1,5 @@
 import { TransactionDto } from "@guallet/api-client";
-import { Label, Spacing } from "@guallet/ui-react-native";
+import { Avatar, Label, Spacing } from "@guallet/ui-react-native";
 import { BaseRow } from "@guallet/ui-react-native/src/components/Rows/BaseRow";
 import { View } from "react-native";
 import { Image } from "expo-image";
@@ -31,21 +31,7 @@ export function TransactionRow({ transaction, onClick }: TransactionRowProps) {
           alignItems: "center",
         }}
       >
-        <Image
-          style={{
-            backgroundColor: "#0553", // TODO: Replace with a theme color
-            width: 40,
-            height: 40,
-            alignSelf: "center",
-            borderRadius: 40 / 2,
-          }}
-          source={{
-            uri: institution?.image_src,
-          }}
-          placeholder={blurHash}
-          contentFit="contain"
-          transition={1000}
-        />
+        <Avatar imageUrl={institution?.image_src} size={40} />
         <Label
           style={{
             marginHorizontal: Spacing.small,
