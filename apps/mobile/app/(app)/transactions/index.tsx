@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 type FilterData = {
   accounts: string[];
@@ -84,15 +85,17 @@ function TransactionsList() {
 
 export function TransactionsFilter() {
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
+    <ScrollView
+      style={
+        {
+          // flex: 1,
+        }
+      }
     >
       <Label>Accounts</Label>
       <Label>Categories</Label>
       <Label>Date range</Label>
       <PrimaryButton title="Save filters" />
-    </View>
+    </ScrollView>
   );
 }
