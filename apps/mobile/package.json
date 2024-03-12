@@ -12,7 +12,6 @@
     "dev": "echo run expo start from the app/mobile directory to run metro",
     "lint": "eslint --ext js,ts,tsx .",
     "build": "expo export --output-dir ./build --platform all",
-    "eas-build-post-install": "pnpm run -w build:mobile",
     "credentials": "eas credentials",
     "credentials:android": "cd android && ./gradlew signingReport",
     "expo:prebuild": "npx expo prebuild",
@@ -23,7 +22,8 @@
     "expo:prebuild:ios:clean": "npx expo prebuild --platform ios --clean",
     "build:android": "expo run:android --variant release",
     "build:android:local": "eas build --platform android --local",
-    "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android"
+    "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android",
+    "eas:android:development": "eas build --profile development --platform android"
   },
   "jest": {
     "preset": "jest-expo"
