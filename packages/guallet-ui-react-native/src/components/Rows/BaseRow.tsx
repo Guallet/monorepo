@@ -49,7 +49,7 @@ export function BaseRow({
             <Icon
               name={leftIconName}
               size={24}
-              style={{ marginStart: Spacing.medium }}
+              style={{ marginStart: Spacing.small }}
             />
           )}
 
