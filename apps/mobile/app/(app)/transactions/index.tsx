@@ -1,15 +1,14 @@
+import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { TransactionRow } from "@/components/Rows/TransactionRow";
 import { useTransactions } from "@/features/transactions/useTransactions";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Icon, Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { Stack } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   TouchableOpacity,
   View,
-  StyleSheet,
 } from "react-native";
 
 type FilterData = {
@@ -18,20 +17,10 @@ type FilterData = {
 };
 
 export default function AccountsScreen() {
-  const [filter, setFilter] = useState<FilterData | null>(null);
-
   const { transactions, metadata, isLoading } = useTransactions();
 
-  // hooks
-  const filtersBottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // callbacks
-  const closeFilters = useCallback(() => {
-    filtersBottomSheetModalRef.current?.dismiss();
-  }, []);
-  const openFilters = useCallback(() => {
-    filtersBottomSheetModalRef.current?.present();
-  }, []);
+  const [filter, setFilter] = useState<FilterData | null>(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   return (
     <View>
@@ -43,7 +32,7 @@ export default function AccountsScreen() {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  openFilters();
+                  setIsFilterModalOpen(true);
                 }}
               >
                 <Icon name="sliders" size={24} />
@@ -61,47 +50,16 @@ export default function AccountsScreen() {
 
       <TransactionsList />
 
-      <BottomSheetModal
-        ref={filtersBottomSheetModalRef}
-        // enableDynamicSizing={true}
-        snapPoints={["90%"]}
+      <ModalSheet
+        title="Transactions filters"
+        snapPoints={["80%"]}
+        isOpen={isFilterModalOpen}
+        onClose={() => {
+          setIsFilterModalOpen(false);
+        }}
       >
-        <BottomSheetScrollView
-          contentContainerStyle={styles.modalContentContainer}
-        >
-          <>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: Spacing.medium,
-                marginTop: Spacing.small,
-              }}
-            >
-              <Label
-                style={{
-                  flexGrow: 1,
-                  marginHorizontal: Spacing.medium,
-                  textAlign: "center",
-                }}
-              >
-                Transactions filters
-              </Label>
-              <Icon
-                name="xmark"
-                size={24}
-                onPress={() => {
-                  closeFilters();
-                }}
-                style={{
-                  marginHorizontal: Spacing.medium,
-                }}
-              />
-            </View>
-            <TransactionsFilter />
-          </>
-        </BottomSheetScrollView>
-      </BottomSheetModal>
+        <TransactionsFilter />
+      </ModalSheet>
     </View>
   );
 }
@@ -138,10 +96,3 @@ export function TransactionsFilter() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  modalContentContainer: {
-    flex: 1,
-    alignItems: "stretch",
-  },
-});
