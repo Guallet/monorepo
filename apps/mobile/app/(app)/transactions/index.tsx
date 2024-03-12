@@ -1,15 +1,10 @@
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
-import { TransactionRow } from "@/components/Rows/TransactionRow";
+import { TransactionsList } from "@/components/Transactions/TransactionsList";
 import { useTransactions } from "@/features/transactions/useTransactions";
-import { Icon, Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";
+import { Icon, Label, PrimaryButton } from "@guallet/ui-react-native";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 type FilterData = {
@@ -17,8 +12,8 @@ type FilterData = {
   categories: string[];
 };
 
-export default function AccountsScreen() {
-  const { transactions, metadata, isLoading } = useTransactions();
+export default function TransactionsScreen() {
+  const { isLoading } = useTransactions();
 
   const [filter, setFilter] = useState<FilterData | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -62,24 +57,6 @@ export default function AccountsScreen() {
         <TransactionsFilter />
       </ModalSheet>
     </View>
-  );
-}
-
-function TransactionsList() {
-  const { transactions, metadata, isLoading } = useTransactions();
-
-  return (
-    <FlatList
-      data={transactions}
-      renderItem={({ item }) => (
-        <TransactionRow
-          transaction={item}
-          onClick={(transaction) => {
-            console.log("Transaction clicked", transaction);
-          }}
-        />
-      )}
-    />
   );
 }
 

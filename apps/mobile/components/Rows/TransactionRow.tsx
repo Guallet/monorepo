@@ -24,6 +24,7 @@ export function TransactionRow({ transaction, onClick }: TransactionRowProps) {
       onClick={() => {
         onClick?.(transaction);
       }}
+      showDivider={false}
     >
       <View
         style={{
@@ -36,6 +37,7 @@ export function TransactionRow({ transaction, onClick }: TransactionRowProps) {
           style={{
             marginHorizontal: Spacing.small,
           }}
+          numberOfLines={1}
         >
           {transaction.description}
         </Label>
