@@ -51,10 +51,9 @@ export function ModalSheet({
         <View>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
               marginBottom: Spacing.medium,
               marginTop: Spacing.small,
+              justifyContent: "center",
             }}
           >
             <Label
@@ -62,21 +61,30 @@ export function ModalSheet({
                 flexGrow: 1,
                 marginHorizontal: Spacing.extraLarge,
                 textAlign: "center",
+                fontSize: 16,
+                fontWeight: "bold",
               }}
               numberOfLines={1}
             >
               {title}
             </Label>
-            <Icon
-              name="xmark"
-              size={24}
-              onPress={() => {
-                closeFilters();
-              }}
+            <View
               style={{
-                marginHorizontal: Spacing.medium,
+                position: "absolute",
+                alignSelf: "flex-end",
               }}
-            />
+            >
+              <Icon
+                name="xmark"
+                size={30}
+                onPress={() => {
+                  closeFilters();
+                }}
+                style={{
+                  marginHorizontal: Spacing.medium,
+                }}
+              />
+            </View>
           </View>
           {children}
         </View>
