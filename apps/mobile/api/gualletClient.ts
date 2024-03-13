@@ -8,7 +8,9 @@ import {
 } from "@guallet/api-client";
 
 const innerClient = GualletClient.createClient({
-  baseUrl: "https://guallet-api.fzx1cu.easypanel.host",
+  // baseUrl: "https://guallet.cjgaliana.com",
+  // baseUrl: "https://guallet-dev.cjgaliana.com",
+  baseUrl: "https://guallet-api-develop.fzx1cu.easypanel.host",
   getTokenFunction: getCurrentUserToken,
 });
 
