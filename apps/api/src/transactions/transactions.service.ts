@@ -126,8 +126,13 @@ export class TransactionsService {
     return [];
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: string): Promise<Transaction> {
+    return await this.repository.findOne({
+      relations: { account: true, category: true },
+      where: {
+        id: id,
+      },
+    });
   }
 
   update(id: string, updateTransactionDto: UpdateTransactionDto) {

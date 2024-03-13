@@ -14,7 +14,12 @@ export type GroupedTransactions = {
   data: TransactionDto[];
 }[];
 
-export function TransactionsList() {
+interface TransactionsListProps {
+  onTransactionSelected: (transaction: TransactionDto) => void;
+}
+export function TransactionsList({
+  onTransactionSelected,
+}: TransactionsListProps) {
   const { transactions, metadata, isLoading } = useTransactions();
 
   const groupedTransactions = transactions.reduce(
@@ -35,7 +40,12 @@ export function TransactionsList() {
       sections={groupedTransactions}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <TransactionRow transaction={item} onClick={() => {}} />
+        <TransactionRow
+          transaction={item}
+          onClick={() => {
+            onTransactionSelected(item);
+          }}
+        />
       )}
       renderSectionHeader={({ section: { date } }) => (
         <View
