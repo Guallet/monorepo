@@ -6,9 +6,11 @@ import { useTransaction } from "@/features/transactions/useTransactions";
 import { Money } from "@guallet/money";
 import {
   Avatar,
+  DangerButton,
   Divider,
   Label,
   PrimaryButton,
+  SecondaryButton,
   Spacing,
   ValueRow,
 } from "@guallet/ui-react-native";
@@ -38,83 +40,112 @@ export default function TransactionDetailsScreen() {
     });
 
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        padding: Spacing.medium,
+      }}
+    >
       <Stack.Screen
         options={{
           title: "Transaction details",
           headerTitleAlign: "center",
         }}
       />
-      <View>
+      <View
+        style={{
+          flexDirection: "column",
+          flexGrow: 1,
+        }}
+      >
         <View
           style={{
-            flexDirection: "row",
-            padding: Spacing.medium,
+            flexDirection: "column",
           }}
         >
-          <Avatar imageUrl={institution?.image_src} size={40} />
-          <View
+          <Label
             style={{
-              flexDirection: "column",
-              paddingHorizontal: Spacing.medium,
+              padding: Spacing.medium,
+              fontSize: 20,
+              fontWeight: "bold",
+              alignSelf: "center",
             }}
           >
-            <Label
-              style={{
-                fontWeight: "bold",
-                fontSize: 16,
-              }}
-            >
-              {money?.format()}
-            </Label>
-            <Label>{dayjs(transaction?.date).format("LL")}</Label>
-          </View>
+            {transaction?.description}
+          </Label>
+
+          <Label
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+              alignSelf: "center",
+            }}
+          >
+            {money?.format()}
+          </Label>
+          <Label
+            style={{
+              alignSelf: "center",
+            }}
+          >
+            {dayjs(transaction?.date).format("LL")}
+          </Label>
         </View>
 
-        <Label
-          style={{
-            padding: Spacing.medium,
-            fontSize: 20,
-            fontWeight: "bold",
-            alignSelf: "center",
-          }}
-        >
-          {transaction?.description}
-        </Label>
-
-        <Divider style={{ margin: 20 }} />
-        <ValueRow
-          title="Account"
-          value={account?.name ?? "Unknown account"}
-          showDivider={false}
-        />
-        {institution && (
+        <View>
+          <Divider style={{ margin: 20 }} />
           <ValueRow
-            title="Institution"
-            value={institution?.name ?? ""}
+            title="Account"
+            value={account?.name ?? "Unknown account"}
             showDivider={false}
           />
-        )}
+          {institution && (
+            <View style={{ flexDirection: "row" }}>
+              <ValueRow
+                title="Institution"
+                value={institution.name}
+                showDivider={false}
+                style={{ flex: 1 }}
+              />
+              <Avatar
+                imageUrl={institution.image_src}
+                size={40}
+                style={{ marginEnd: Spacing.small }}
+              />
+            </View>
+          )}
 
-        <ValueRow
-          title="Category"
-          value={transaction?.categoryId ?? "Unknown"}
-          showDivider={false}
-          rightIconName="pen-to-square"
-          onClick={() => {
-            setIsCategoryModalOpen(true);
-          }}
-        />
+          <ValueRow
+            title="Category"
+            value={transaction?.categoryId ?? "Unknown"}
+            showDivider={false}
+            rightIconName="pen-to-square"
+            onClick={() => {
+              setIsCategoryModalOpen(true);
+            }}
+          />
 
-        <ValueRow
-          title="Notes"
-          value={transaction?.notes ?? "Add notes"}
-          showDivider={false}
-          rightIconName="pen-to-square"
-          onClick={() => {
-            setIsNotesModalOpen(true);
+          <ValueRow
+            title="Notes"
+            value={transaction?.notes ?? "Add notes"}
+            showDivider={false}
+            rightIconName="pen-to-square"
+            onClick={() => {
+              setIsNotesModalOpen(true);
+            }}
+          />
+        </View>
+        <View
+          style={{
+            flexGrow: 1,
+            justifyContent: "flex-end",
+            gap: Spacing.small,
           }}
-        />
+        >
+          <SecondaryButton title="Edit transaction" />
+          <DangerButton title="Delete transaction" />
+        </View>
       </View>
 
       {/* MODALS */}
