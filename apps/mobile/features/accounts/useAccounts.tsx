@@ -30,12 +30,3 @@ export function useAccount(id: string) {
 
   return { account: data ?? null, isLoading, refetch, isFetching };
 }
-
-// export function useAccountsF(){
-//     const results = useQueries({
-//         queries: [
-//           { queryKey: ['post', 1], queryFn: fetchPost, staleTime: Infinity },
-//           { queryKey: ['post', 2], queryFn: fetchPost, staleTime: Infinity },
-//         ],
-//       })
-// }
