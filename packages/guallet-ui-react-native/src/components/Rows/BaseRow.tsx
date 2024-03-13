@@ -3,7 +3,7 @@ import { TouchableRow } from "./TouchableRow";
 import { Icon } from "../Icon/Icon";
 import { Spacing } from "./../../theme/spacing";
 
-interface BaseRowProps extends React.ComponentProps<typeof View> {
+export interface BaseRowProps extends React.ComponentProps<typeof View> {
   children?: React.ReactNode;
   onClick?: () => void;
   showDivider?: boolean;
