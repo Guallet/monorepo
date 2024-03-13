@@ -2,7 +2,7 @@ import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { TransactionsList } from "@/components/Transactions/TransactionsList";
 import { useTransactions } from "@/features/transactions/useTransactions";
 import { Icon, Label, PrimaryButton } from "@guallet/ui-react-native";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -44,7 +44,13 @@ export default function TransactionsScreen() {
         </View>
       )}
 
-      <TransactionsList />
+      <TransactionsList
+        onTransactionSelected={(transaction) => {
+          router.navigate({
+            pathname: `/transactions/${transaction.id}`,
+          });
+        }}
+      />
 
       <ModalSheet
         title="Transactions filters"

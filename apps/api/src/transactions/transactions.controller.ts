@@ -9,6 +9,7 @@ import {
   Logger,
   BadRequestException,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -139,8 +140,12 @@ export class TransactionsController {
   }
 
   @Get(':id')
-  findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
-    return this.transactionsService.findOne(id);
+  async findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
+    const transaction = await this.transactionsService.findOne(id);
+    if (transaction.account.user_id !== user.id) {
+      throw new NotFoundException('Transaction not found');
+    }
+    return TransactionDto.fromDomain(transaction);
   }
 
   @Patch(':id')

@@ -213,6 +213,9 @@ importers:
       aes-js:
         specifier: ^3.1.2
         version: 3.1.2
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
       expo:
         specifier: ~50.0.7
         version: 50.0.7(@babel/core@7.23.3)(@react-native/babel-preset@0.73.21)
