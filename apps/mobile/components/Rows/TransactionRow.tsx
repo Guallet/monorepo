@@ -2,20 +2,20 @@ import { TransactionDto } from "@guallet/api-client";
 import { Avatar, Label, Spacing } from "@guallet/ui-react-native";
 import { BaseRow } from "@guallet/ui-react-native/src/components/Rows/BaseRow";
 import { View } from "react-native";
-import { Image } from "expo-image";
 import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
 
-interface TransactionRowProps {
+interface TransactionRowProps extends React.ComponentProps<typeof View> {
   // TODO: Replace this from the DTO to the domain model
   transaction: TransactionDto;
   onClick?: (transaction: TransactionDto) => void;
 }
 
-const blurHash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
-
-export function TransactionRow({ transaction, onClick }: TransactionRowProps) {
+export function TransactionRow({
+  transaction,
+  onClick,
+  ...props
+}: TransactionRowProps) {
   const { account } = useAccount(transaction.accountId);
   const { institution } = useInstitution(account?.institutionId);
 
@@ -25,6 +25,7 @@ export function TransactionRow({ transaction, onClick }: TransactionRowProps) {
         onClick?.(transaction);
       }}
       showDivider={false}
+      style={[props.style]}
     >
       <View
         style={{
@@ -32,10 +33,11 @@ export function TransactionRow({ transaction, onClick }: TransactionRowProps) {
           alignItems: "center",
         }}
       >
-        <Avatar imageUrl={institution?.image_src} size={40} />
+        <Avatar imageUrl={institution?.image_src} size={32} />
         <Label
           style={{
             marginHorizontal: Spacing.small,
+            flex: 1,
           }}
           numberOfLines={1}
         >

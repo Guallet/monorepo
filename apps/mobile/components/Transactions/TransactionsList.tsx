@@ -39,11 +39,28 @@ export function TransactionsList({
     <SectionList
       sections={groupedTransactions}
       keyExtractor={(item) => item.id}
+      stickySectionHeadersEnabled={true}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+      ListEmptyComponent={
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Label>No transactions</Label>
+        </View>
+      }
       renderItem={({ item }) => (
         <TransactionRow
           transaction={item}
           onClick={() => {
             onTransactionSelected(item);
+          }}
+          style={{
+            backgroundColor: "white",
           }}
         />
       )}
@@ -53,7 +70,11 @@ export function TransactionsList({
             height: 50,
             paddingTop: Spacing.medium,
             paddingHorizontal: Spacing.medium,
-            backgroundColor: "grey",
+            backgroundColor: "white",
+            flexDirection: "column",
+            borderTopStartRadius: Spacing.small,
+            borderTopEndRadius: Spacing.small,
+            borderBottomWidth: 1,
           }}
         >
           <Label
@@ -67,29 +88,17 @@ export function TransactionsList({
           </Label>
         </View>
       )}
+      renderSectionFooter={() => (
+        <View
+          style={{
+            height: Spacing.extraSmall,
+            backgroundColor: "white",
+            borderBottomStartRadius: Spacing.small,
+            borderBottomEndRadius: Spacing.small,
+            marginBottom: Spacing.small,
+          }}
+        />
+      )}
     />
   );
 }
-
-// export function TransactionsList() {
-//   const { transactions, metadata, isLoading } = useTransactions();
-
-//   return (
-//     <View style={{ height: "100%", width: Dimensions.get("screen").width }}>
-//       <FlashList
-//         data={transactions}
-//         estimatedItemSize={
-//           transactions.length === 0 ? 100 : transactions.length
-//         }
-//         renderItem={({ item }) => (
-//           <TransactionRow
-//             transaction={item}
-//             onClick={(transaction) => {
-//               console.log("Transaction clicked", transaction);
-//             }}
-//           />
-//         )}
-//       />
-//     </View>
-//   );
-// }

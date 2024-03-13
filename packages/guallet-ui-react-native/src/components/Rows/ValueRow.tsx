@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { BaseRow } from "./BaseRow";
 import { Label } from "../Text";
-import { Spacing } from "../../..";
+import { Spacing } from "../../theme/";
 
 interface ValueRowProps extends React.ComponentProps<typeof BaseRow> {
   title: string;
