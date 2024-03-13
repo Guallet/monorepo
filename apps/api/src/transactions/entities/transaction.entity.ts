@@ -69,7 +69,7 @@ export class Transaction extends BaseDbEntity {
     entity.amount = Number(nordigenTransaction.transactionAmount.amount);
     entity.currency = nordigenTransaction.transactionAmount.currency;
     entity.accountId = account_id;
-    entity.date = nordigenTransaction.bookingDate;
+    entity.date = nordigenTransaction.bookingDateTime;
 
     entity.description = nordigenTransaction.remittanceInformationUnstructured;
 

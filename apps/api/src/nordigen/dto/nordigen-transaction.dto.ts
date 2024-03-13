@@ -8,6 +8,7 @@ export class NordigenTransactionsDto {
 export class NordigenTransactionDto {
   transactionId: string;
   bookingDate: Date;
+  bookingDateTime: Date;
   transactionAmount: TransactionAmountDto;
   proprietaryBankTransactionCode: string;
   remittanceInformationUnstructured: string;
