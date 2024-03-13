@@ -33,6 +33,7 @@ function getCurrencySymbol(code: string, locale: string | undefined): string {
       .trim();
   } catch (e) {
     console.error("Error getting currency symbol " + code, e);
+    return code;
   }
 }
 
