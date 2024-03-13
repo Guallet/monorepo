@@ -22,7 +22,8 @@
     "build:android": "expo run:android --variant release",
     "build:android:local": "eas build --platform android --local",
     "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android",
-    "eas:android:development": "eas build --profile development --platform android"
+    "eas:android:development": "eas build --profile development --platform android",
+    "eas:update-branch": "eas update --auto"
   },
   "jest": {
     "preset": "jest-expo"

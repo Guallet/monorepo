@@ -17,7 +17,7 @@ import {
 } from "@guallet/ui-react-native";
 import dayjs from "dayjs";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -27,7 +27,7 @@ dayjs.extend(localizedFormat);
 export default function TransactionDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { transaction } = useTransaction(id);
-  const { updateTransactionNotes } = useTransactionMutations();
+  const { updateTransactionNotesMutation } = useTransactionMutations();
   const { account } = useAccount(transaction?.accountId ?? "");
   const { institution } = useInstitution(account?.institutionId ?? "");
 
@@ -43,10 +43,12 @@ export default function TransactionDetailsScreen() {
       amount: transaction.amount,
     });
 
-  function onSaveNotes(notes: string) {
-    // Save the notes
+  async function onSaveNotes(notes: string) {
     if (transaction) {
-      updateTransactionNotes(transaction.id, notes);
+      updateTransactionNotesMutation.mutate({
+        id: transaction.id,
+        notes,
+      });
     }
   }
 
