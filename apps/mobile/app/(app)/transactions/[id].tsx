@@ -2,6 +2,7 @@ import { AutoSizeModalSheet } from "@/components/ModalSheet/AutoSizeModalSheet";
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
+import { useTransactionMutations } from "@/features/transactions/useTransactionMutations";
 import { useTransaction } from "@/features/transactions/useTransactions";
 import { Money } from "@guallet/money";
 import {
@@ -16,7 +17,7 @@ import {
 } from "@guallet/ui-react-native";
 import dayjs from "dayjs";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -26,11 +27,14 @@ dayjs.extend(localizedFormat);
 export default function TransactionDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { transaction } = useTransaction(id);
+  const { updateTransactionNotes } = useTransactionMutations();
   const { account } = useAccount(transaction?.accountId ?? "");
   const { institution } = useInstitution(account?.institutionId ?? "");
 
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
+  const [notes, setNotes] = useState(transaction?.notes ?? "");
 
   const money =
     transaction &&
@@ -38,6 +42,13 @@ export default function TransactionDetailsScreen() {
       currencyCode: transaction.currency,
       amount: transaction.amount,
     });
+
+  function onSaveNotes(notes: string) {
+    // Save the notes
+    if (transaction) {
+      updateTransactionNotes(transaction.id, notes);
+    }
+  }
 
   return (
     <View
@@ -128,7 +139,7 @@ export default function TransactionDetailsScreen() {
 
           <ValueRow
             title="Notes"
-            value={transaction?.notes ?? "Add notes"}
+            value={notes.length === 0 ? "Add notes" : notes}
             showDivider={false}
             rightIconName="pen-to-square"
             onClick={() => {
@@ -181,6 +192,8 @@ export default function TransactionDetailsScreen() {
               flexGrow: 1,
               marginBottom: Spacing.medium,
             }}
+            value={notes}
+            onChangeText={setNotes}
             multiline
             inputMode="text"
             textAlignVertical="top"
@@ -198,6 +211,7 @@ export default function TransactionDetailsScreen() {
               onClick={() => {
                 // Save the notes
                 setIsNotesModalOpen(false);
+                onSaveNotes(notes);
               }}
             />
           </View>
