@@ -86,15 +86,6 @@ export default function AppLayout() {
         }}
       />
 
-      {/* // This should be inside settings, not in the main tabs */}
-      <Tabs.Screen
-        name="connections"
-        options={{
-          // This tab will no longer show up in the tab bar.
-          href: null,
-          headerShown: false,
-        }}
-      />
       <Tabs.Screen
         name="transactions"
         options={{
@@ -121,6 +112,24 @@ export default function AppLayout() {
           headerShown: false,
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
+        }}
+      />
+
+      {/* // This should be inside settings, not in the main tabs */}
+      <Tabs.Screen
+        name="connections"
+        options={{
+          // This tab will no longer show up in the tab bar.
+          href: null,
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="categories"
+        options={{
+          // This tab will no longer show up in the tab bar.
+          href: null,
+          headerShown: false,
         }}
       />
     </Tabs>

@@ -61,7 +61,7 @@ export default function SettingsScreen() {
             <TextRow
               label="Categories"
               onClick={() => {
-                router.navigate("/(app)/connections");
+                router.navigate("/(app)/categories");
               }}
               leftIconName="list"
               showDivider={false}

@@ -1,6 +1,7 @@
 import { supabase } from "@/auth/supabase";
 import {
   AccountsApi,
+  CategoriesApi,
   ConnectionsApi,
   GualletClient,
   InstitutionsApi,
@@ -23,6 +24,7 @@ async function getCurrentUserToken(): Promise<string | null> {
 // something like "gualletClient.accounts.getAll()"
 export const gualletClient = {
   accounts: new AccountsApi(innerClient),
+  categories: new CategoriesApi(innerClient),
   connections: new ConnectionsApi(innerClient),
   institutions: new InstitutionsApi(innerClient),
   transactions: new TransactionsApi(innerClient),
