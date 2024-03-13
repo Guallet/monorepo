@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { BaseRow } from "./BaseRow";
 import { Label } from "../Text";
+import { Spacing } from "../../..";
 
 interface ValueRowProps extends React.ComponentProps<typeof BaseRow> {
   title: string;
@@ -14,6 +15,7 @@ export function ValueRow({ title, value, ...props }: ValueRowProps) {
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
+          paddingEnd: Spacing.small,
         }}
       >
         <Label

@@ -1,25 +1,24 @@
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { Icon, Label, Spacing } from "@guallet/ui-react-native";
 import { useCallback, useEffect, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-interface ModalSheetProps
+interface AutoSizeModalSheetProps
   extends React.ComponentProps<typeof BottomSheetModal> {
   title: string;
   children: React.ReactNode;
-  snapPoints?: string[];
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function ModalSheet({
+export function AutoSizeModalSheet({
   title,
   isOpen,
   onClose,
-  snapPoints,
   children,
   ...props
-}: ModalSheetProps) {
+}: AutoSizeModalSheetProps) {
   // hooks
   const filtersBottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -43,12 +42,18 @@ export function ModalSheet({
   return (
     <BottomSheetModal
       ref={filtersBottomSheetModalRef}
-      snapPoints={snapPoints || ["90%"]}
+      enablePanDownToClose={true}
+      enableDynamicSizing={true}
       onDismiss={onClose}
       {...props}
     >
-      <BottomSheetScrollView
-        contentContainerStyle={styles.modalContentContainer}
+      <BottomSheetView
+        style={{
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingHorizontal: 16,
+        }}
+        enableFooterMarginAdjustment={true}
       >
         <View>
           <View
@@ -88,16 +93,9 @@ export function ModalSheet({
               />
             </View>
           </View>
-          {children}
+          <View>{children}</View>
         </View>
-      </BottomSheetScrollView>
+      </BottomSheetView>
     </BottomSheetModal>
   );
 }
-
-const styles = StyleSheet.create({
-  modalContentContainer: {
-    flex: 1,
-    alignItems: "stretch",
-  },
-});
