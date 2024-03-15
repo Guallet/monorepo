@@ -2,6 +2,10 @@ import { gualletClient } from "@/api/gualletClient";
 import { CategoryDto } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
 
+export type AppCategory = {
+  subCategories: AppCategory[];
+} & CategoryDto;
+
 const CATEGORIES_QUERY_KEY = "categories";
 
 export function useCategories() {
@@ -22,16 +26,10 @@ export function useCategories() {
 }
 
 export function useGroupedCategories() {
-  const { data, isLoading, isFetching, refetch } = useQuery({
-    queryKey: [CATEGORIES_QUERY_KEY],
-    queryFn: async () => {
-      return await gualletClient.categories.getAll();
-    },
-  });
+  const { categories, isLoading, isFetching, refetch } = useCategories();
 
   return {
-    categories:
-      data?.filter((dto): dto is CategoryDto => dto !== undefined) ?? [],
+    categories: mapAppCategories(categories ?? []),
     isLoading,
     refetch,
     isFetching,
@@ -49,4 +47,39 @@ export function useTransaction(id: string) {
   });
 
   return { category: data ?? null, isLoading, refetch, isFetching, error };
+}
+
+function mapAppCategories(categories: CategoryDto[]): AppCategory[] {
+  const roots = categories
+    .filter((x) => x.parentId === null || x.parentId === undefined)
+    .map((x: CategoryDto) => {
+      const appCategory: AppCategory = {
+        id: x.id,
+        name: x.name,
+        icon: x.icon,
+        colour: x.colour,
+        parentId: null,
+        subCategories: [],
+      };
+      return appCategory;
+    });
+
+  for (const parent of roots) {
+    const children = categories
+      .filter((x) => x.parentId === parent.id)
+      .map((x: CategoryDto) => {
+        const appCategory: AppCategory = {
+          id: x.id,
+          name: x.name,
+          icon: x.icon,
+          colour: x.colour,
+          parentId: x.parentId,
+          subCategories: [],
+        };
+
+        return appCategory;
+      });
+    parent.subCategories = children;
+  }
+  return roots ?? [];
 }
