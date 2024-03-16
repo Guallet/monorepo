@@ -36,7 +36,21 @@ export function useGroupedCategories() {
   };
 }
 
-export function useTransaction(id: string) {
+export function useGroupedCategory(id: string) {
+  const { categories, isLoading, isFetching, refetch } = useGroupedCategories();
+
+  return {
+    category:
+      categories.find((x) => x.id === id) ??
+      categories.flatMap((x) => x.subCategories).find((x) => x.id === id) ??
+      null,
+    isLoading,
+    refetch,
+    isFetching,
+  };
+}
+
+export function useCategory(id: string) {
   const { data, isLoading, isFetching, refetch, error } = useQuery({
     queryKey: [CATEGORIES_QUERY_KEY, id],
     queryFn: async () => {

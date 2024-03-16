@@ -17,7 +17,10 @@ function getCategoryIconName(name: string) {
   }
 }
 
-interface CategoryIconProps extends React.ComponentProps<typeof Icon> {}
+interface CategoryIconProps extends React.ComponentProps<typeof Icon> {
+  name: string;
+  color: string;
+}
 
 export function CategoryIcon({ name, color, ...props }: CategoryIconProps) {
   return <Icon name={getCategoryIconName(name)} color={color} {...props} />;
