@@ -38,3 +38,20 @@ export function useTransaction(id: string) {
 
   return { transaction: data ?? null, isLoading, refetch, isFetching, error };
 }
+
+export function useTransactionInbox() {
+  const { data, isLoading, isFetching, refetch } = useQuery({
+    queryKey: [TRANSACTIONS_QUERY_KEY, "inbox"],
+    queryFn: async () => {
+      return await gualletClient.transactions.getInbox();
+    },
+  });
+
+  return {
+    transactions:
+      data?.filter((dto): dto is TransactionDto => dto !== undefined) ?? [],
+    isLoading,
+    refetch,
+    isFetching,
+  };
+}
