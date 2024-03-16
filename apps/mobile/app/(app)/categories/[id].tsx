@@ -16,18 +16,18 @@ import {
 } from "@guallet/ui-react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { FlatList, View } from "react-native";
-import { RootCategoriesList } from ".";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { CategoryDto } from "@guallet/api-client";
 import { CategoryColourPicker } from "@/components/Categories/CategoryColourPicker";
 import { useState } from "react";
-import Colors from "@/constants/Colors";
+import { CategoryIconPicker } from "@/components/Categories/CategoryIconPicker";
 
 export default function CategoryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { category, isLoading } = useGroupedCategory(id);
 
   const [colour, setColour] = useState(category?.colour ?? "#000000");
+  const [icon, setIcon] = useState(category?.icon ?? null);
 
   return (
     <View style={{ flex: 1 }}>
@@ -53,11 +53,11 @@ export default function CategoryDetailsScreen() {
               flexGrow: 1,
             }}
           >
-            <IconHeader
-              category={category}
+            <CategoryIconPicker
+              icon={icon ?? ""}
               colour={colour}
-              onClick={(category: CategoryDto | AppCategory) => {
-                console.log("Edit category icon", category);
+              onIconChange={(newIcon) => {
+                setIcon(newIcon);
               }}
             />
             <ValueRow
@@ -104,13 +104,6 @@ export default function CategoryDetailsScreen() {
                       borderRadius: 50,
                     }}
                   />
-                  {/* <PrimaryButton
-                    title="+"
-                    style={{
-                      flexGrow: 1,
-                      maxWidth: 50,
-                    }}
-                  /> */}
                 </View>
                 <Divider />
                 <FlatList
@@ -147,46 +140,5 @@ export default function CategoryDetailsScreen() {
         <DangerButton title="Delete category" />
       </View>
     </View>
-  );
-}
-
-interface IconHeaderProps {
-  category: AppCategory | CategoryDto;
-  colour: string;
-  onClick: (category: AppCategory | CategoryDto) => void;
-}
-function IconHeader({ category, colour, onClick }: IconHeaderProps) {
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        onClick(category);
-      }}
-      style={{
-        borderRadius: 50,
-        height: 100,
-        width: 100,
-        borderWidth: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        alignSelf: "center",
-      }}
-    >
-      <CategoryIcon name={category.icon} color={colour} size={50} />
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          end: -Spacing.medium,
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 50,
-          backgroundColor: "#ececec",
-          height: 30,
-          width: 30,
-        }}
-      >
-        <Icon name="pencil" size={20} />
-      </View>
-    </TouchableOpacity>
   );
 }
