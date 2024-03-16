@@ -8,4 +8,5 @@ interface IconProps extends React.ComponentProps<typeof FontAwesome6> {
 
 export function Icon({ name, ...props }: IconProps) {
   return <FontAwesome6 name={name} {...props} />;
+  // return <FontAwesome6.Button name={name} {...props} />;
 }

@@ -20,8 +20,20 @@ function getCategoryIconName(name: string) {
 interface CategoryIconProps extends React.ComponentProps<typeof Icon> {
   name: string;
   color: string;
+  isFontAwesomeName?: boolean;
 }
 
-export function CategoryIcon({ name, color, ...props }: CategoryIconProps) {
-  return <Icon name={getCategoryIconName(name)} color={color} {...props} />;
+export function CategoryIcon({
+  name,
+  color,
+  isFontAwesomeName = false,
+  ...props
+}: CategoryIconProps) {
+  return (
+    <Icon
+      name={isFontAwesomeName ? name : getCategoryIconName(name)}
+      color={color}
+      {...props}
+    />
+  );
 }
