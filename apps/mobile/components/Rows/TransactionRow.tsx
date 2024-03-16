@@ -25,7 +25,12 @@ export function TransactionRow({
         onClick?.(transaction);
       }}
       showDivider={false}
-      style={[props.style]}
+      style={[
+        {
+          // height: 64,
+        },
+        props.style,
+      ]}
     >
       <View
         style={{
@@ -34,16 +39,24 @@ export function TransactionRow({
         }}
       >
         <Avatar imageUrl={institution?.image_src} size={32} />
-        <Label
+        <View
           style={{
-            marginHorizontal: Spacing.small,
+            flexDirection: "column",
             flex: 1,
+            justifyContent: "center",
+            alignContent: "center",
+            alignSelf: "center",
+            marginHorizontal: Spacing.small,
           }}
-          numberOfLines={1}
         >
-          {transaction.description}
-        </Label>
-        <Label>{transaction.notes}</Label>
+          <Label numberOfLines={1}>{transaction.description}</Label>
+          {transaction.notes && (
+            <Label numberOfLines={1} style={{ fontWeight: "300" }}>
+              {transaction.notes}
+            </Label>
+          )}
+        </View>
+        <Label style={{ fontWeight: "bold" }}>{transaction.amount}</Label>
       </View>
     </BaseRow>
   );
