@@ -21,9 +21,11 @@ export function TransactionRow({
 
   return (
     <BaseRow
-      onClick={() => {
-        onClick?.(transaction);
-      }}
+      onClick={
+        onClick !== undefined && onClick !== null
+          ? () => onClick(transaction)
+          : undefined
+      }
       showDivider={false}
       style={[
         {
