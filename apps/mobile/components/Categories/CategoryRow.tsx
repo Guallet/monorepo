@@ -36,6 +36,7 @@ export function CategoryRow({ category, onClick, ...props }: CategoryRowProps) {
         <CategoryIcon name={category.icon} size={24} color={category.colour} />
       </View>
       <Label style={{ flexGrow: 1 }}>{category.name}</Label>
+      {onClick && <Icon name="chevron-right" size={24} />}
     </TouchableOpacity>
   );
 }
