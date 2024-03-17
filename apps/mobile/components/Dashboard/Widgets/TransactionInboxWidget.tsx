@@ -1,6 +1,6 @@
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
-import { Label } from "@guallet/ui-react-native";
+import { Label, Spacing } from "@guallet/ui-react-native";
 import { useTransactionInbox } from "@/features/transactions/useTransactions";
 import { FlatList } from "react-native-gesture-handler";
 import { TransactionRow } from "@/components/Rows/TransactionRow";
@@ -18,12 +18,16 @@ export function TransactionsInboxWidget({
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <>
-          <Label>
-            You have{" "}
+        <View>
+          <Label
+            style={{
+              marginBottom: Spacing.extraSmall,
+            }}
+          >
+            You have
             <Label style={{ color: "blue", fontWeight: "bold" }}>
-              {transactions.length}
-            </Label>{" "}
+              {` ${transactions.length} `}
+            </Label>
             transactions to categorize
           </Label>
           <FlatList
@@ -33,7 +37,7 @@ export function TransactionsInboxWidget({
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <TransactionRow transaction={item} />}
           />
-        </>
+        </View>
       )}
     </WidgetCard>
   );
