@@ -4,7 +4,7 @@ import {
   BottomSheetView,
   useBottomSheetModal,
 } from "@gorhom/bottom-sheet";
-import { Icon, Spacing } from "@guallet/ui-react-native";
+import { Icon, Label, Spacing } from "@guallet/ui-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, StyleSheet, Button, BackHandler } from "react-native";
 import { TouchableOpacity, FlatList } from "react-native-gesture-handler";
@@ -14,12 +14,14 @@ interface SelectInputProps<T> {
   label?: string;
   description?: string;
   value?: string;
+  displayValue?: string; // If you want to display a different value than the selected value. for example a transformation
   required?: boolean;
   placeholder?: string;
   disabled?: boolean;
   error?: string;
   data: T[];
   searchable?: boolean;
+  modalTitle?: string;
   itemTemplate: (item: T) => React.ReactNode;
   onItemSelected: (item: T) => void;
   keyExtractor?: ((item: T, index: number) => string) | undefined;
@@ -29,11 +31,13 @@ export function SelectInput<T>({
   label,
   description,
   value,
+  displayValue,
   required,
   disabled,
   error,
   data,
   searchable,
+  modalTitle,
   itemTemplate,
   onItemSelected,
   keyExtractor,
@@ -114,7 +118,7 @@ export function SelectInput<T>({
           disabled && { backgroundColor: "#F8F8F8" },
         ]}
       >
-        <Text>{value}</Text>
+        {!!displayValue ? <Label>{displayValue}</Label> : <Text>{value}</Text>}
       </View>
       {error && (
         <Text
@@ -149,7 +153,7 @@ export function SelectInput<T>({
                 textAlign: "center",
               }}
             >
-              Select a currency
+              {modalTitle}
             </Text>
             <Icon
               name="xmark"
