@@ -6,16 +6,20 @@ interface OverlayLoaderProps {
   loadingMessage?: string;
 }
 
-export function OverlayLoader({
+export function ModalLoaderOverlay({
   isVisible,
   loadingMessage,
 }: OverlayLoaderProps) {
-  if (!isVisible) {
-    return null;
-  }
-
   return (
-    <Modal transparent={true}>
+    <Modal
+      transparent={true}
+      visible={isVisible}
+      animationType="fade"
+      onRequestClose={() => {
+        // do nothing... this is controlled by the parent.
+        // The user cannot dismiss this view
+      }}
+    >
       <View
         style={{
           position: "absolute",
