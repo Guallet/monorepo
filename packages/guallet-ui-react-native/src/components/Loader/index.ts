@@ -1,1 +1,1 @@
-export * from "./OverlayLoader";
+export * from "./ModalLoaderOverlay";

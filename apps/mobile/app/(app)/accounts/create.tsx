@@ -4,7 +4,7 @@ import { useAccountMutations } from "@/features/accounts/useAccountMutations";
 import { AccountTypeDto } from "@guallet/api-client";
 import { Currency } from "@guallet/money";
 import {
-  OverlayLoader,
+  ModalLoaderOverlay,
   PrimaryButton,
   Spacing,
   TextInput,
@@ -66,8 +66,9 @@ export default function CreateAccountScreen() {
           headerTitleAlign: "center",
         }}
       />
-      <OverlayLoader
-        isVisible={createAccountMutation.status === "pending"}
+      <ModalLoaderOverlay
+        // isVisible={createAccountMutation.status === "pending"}
+        isVisible={true}
         loadingMessage="Creating account..."
       />
       <ScrollView>
