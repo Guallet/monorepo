@@ -29,7 +29,7 @@ export function WidgetCard({
       <View
         style={[
           {
-            margin: Spacing.small,
+            marginTop: Spacing.small,
             padding: Spacing.small,
             backgroundColor: "white",
             borderRadius: 16,

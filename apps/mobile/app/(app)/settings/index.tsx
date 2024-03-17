@@ -67,6 +67,14 @@ export default function SettingsScreen() {
               showDivider={false}
             />
             <TextRow
+              label="Budgets"
+              onClick={() => {
+                router.navigate("/(app)/categories");
+              }}
+              leftIconName="sack-dollar"
+              showDivider={false}
+            />
+            <TextRow
               label="Currencies"
               onClick={() => {
                 router.navigate("/(app)/connections");
