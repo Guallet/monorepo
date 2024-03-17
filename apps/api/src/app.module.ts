@@ -23,6 +23,7 @@ import { AuthGuard } from './core/auth/auth.guard';
 import configuration from './configuration';
 import { UsersService } from './users/users.service';
 import { User } from './users/entities/user.entity';
+import { BudgetsModule } from './budgets/budgets.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { User } from './users/entities/user.entity';
     OpenbankingModule,
     NordigenModule,
     AdminModule,
+    BudgetsModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
   ],

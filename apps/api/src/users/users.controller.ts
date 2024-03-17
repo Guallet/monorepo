@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Logger,
   NotFoundException,
   Delete,
