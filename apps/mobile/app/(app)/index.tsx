@@ -7,7 +7,7 @@ import { AppScreen } from "@/components/Layout/AppScreen";
 
 export default function DashboardScreen() {
   return (
-    <AppScreen isLoading={true} loadingMessage="Loading data">
+    <AppScreen>
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
