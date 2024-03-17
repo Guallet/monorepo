@@ -67,8 +67,7 @@ export default function CreateAccountScreen() {
         }}
       />
       <ModalLoaderOverlay
-        // isVisible={createAccountMutation.status === "pending"}
-        isVisible={true}
+        isVisible={createAccountMutation.status === "pending"}
         loadingMessage="Creating account..."
       />
       <ScrollView>
