@@ -42,12 +42,9 @@ export default function AccountsScreen() {
         <View style={styles.container}>
           <View
             style={{
-              backgroundColor: "white",
-              borderRadius: Spacing.small,
-              flexDirection: "column",
-              padding: Spacing.medium,
-              margin: Spacing.medium,
               flex: 1,
+              paddingHorizontal: Spacing.medium,
+              paddingBottom: Spacing.medium,
             }}
           >
             {accounts && (

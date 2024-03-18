@@ -25,6 +25,8 @@ export function AccountRow({ account, onClick }: Props) {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start",
+          backgroundColor: "white",
+          paddingHorizontal: Spacing.small,
         }}
       >
         <Avatar

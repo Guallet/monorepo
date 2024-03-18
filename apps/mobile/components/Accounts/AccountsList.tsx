@@ -1,4 +1,3 @@
-// import "core-js";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { AccountsListHeader } from "./AccountsListHeader";
 import { SectionList, View, RefreshControl } from "react-native";
@@ -67,6 +66,28 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
           accounts={section.section.data}
         />
       )}
+      renderSectionFooter={() => (
+        <View
+          style={{
+            height: Spacing.extraSmall,
+            backgroundColor: "white",
+            borderBottomStartRadius: Spacing.small,
+            borderBottomEndRadius: Spacing.small,
+            marginBottom: Spacing.small,
+          }}
+        />
+      )}
+      ListEmptyComponent={
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Label>No Accounts</Label>
+        </View>
+      }
     />
   );
 }
