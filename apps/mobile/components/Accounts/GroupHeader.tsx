@@ -1,4 +1,3 @@
-import Colors from "@/constants/Colors";
 import { Label, Spacing } from "@guallet/ui-react-native";
 import { View, StyleSheet } from "react-native";
 
@@ -15,6 +14,12 @@ export function GroupHeader({ title, rightContent }: Props) {
         flexDirection: "row",
         borderBottomWidth: 1,
         marginTop: Spacing.medium,
+        height: 50,
+        paddingTop: Spacing.medium,
+        paddingHorizontal: Spacing.medium,
+        backgroundColor: "white",
+        borderTopStartRadius: Spacing.small,
+        borderTopEndRadius: Spacing.small,
       }}
     >
       <Label style={styles.label}>{title}</Label>
