@@ -1,30 +1,14 @@
-import {
-  ActionIcon,
-  Label,
-  PrimaryButton,
-  Spacing,
-} from "@guallet/ui-react-native";
+import { ActionIcon, Label, Spacing } from "@guallet/ui-react-native";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
 import { FlatList } from "react-native-gesture-handler";
+import { useBudgets } from "@/features/budgets/useBudgets";
+import { Money } from "@guallet/money";
 
 interface BudgetsWidgetProps extends React.ComponentProps<typeof WidgetCard> {}
 export function BudgetsWidget(props: BudgetsWidgetProps) {
-  //   const { budgets, isLoading } = useBudgets();
-  const isLoading = false;
-  const budgets = [
-    {
-      name: "Groceries",
-      amount: 600,
-      spent: 500,
-    },
-    {
-      name: "Takeaway",
-      amount: 100,
-      spent: 50,
-    },
-  ];
+  const { budgets, isLoading } = useBudgets();
 
   return (
     <WidgetCard title="Budgets">
@@ -52,7 +36,10 @@ export function BudgetsWidget(props: BudgetsWidgetProps) {
                 <BudgetRow
                   name={item.name}
                   amount={item.amount}
-                  spent={item.spent}
+                  spent={Money.fromCurrencyCode({
+                    amount: item.spent,
+                    currencyCode: "GBP",
+                  })}
                 />
               );
             }}
@@ -90,10 +77,10 @@ function EmptyBudgetsView() {
 interface BudgetRowProps {
   name: string;
   amount: number;
-  spent: number;
+  spent: Money;
 }
 function BudgetRow({ name, amount, spent }: BudgetRowProps) {
-  const percentage = (spent / amount) * 100;
+  const percentage = (spent.amount / amount) * 100;
 
   return (
     <View>
@@ -113,8 +100,11 @@ function BudgetRow({ name, amount, spent }: BudgetRowProps) {
           gap: Spacing.medium,
         }}
       >
-        <Label>{`£${spent} / £${amount}`}</Label>
-        <Label>{`${percentage}% spent`}</Label>
+        <Label>{`${spent.format()} / ${Money.fromCurrencyCode({
+          amount: amount,
+          currencyCode: spent.currency.code,
+        }).format()}`}</Label>
+        <Label>{`${percentage.toFixed(0)}% spent`}</Label>
       </View>
 
       <ProgressBar progress={percentage} />
@@ -126,16 +116,19 @@ interface ProgressBarProps {
   progress: number;
 }
 function ProgressBar({ progress }: ProgressBarProps) {
+  const color = progress >= 100 ? "red" : progress > 80 ? "orange" : "green";
   return (
     <View
       style={{
         backgroundColor: "grey",
         height: 20,
+        borderRadius: 10,
+        overflow: "hidden",
       }}
     >
       <View
         style={{
-          backgroundColor: "green",
+          backgroundColor: color,
           height: "100%",
           width: `${progress}%`,
         }}

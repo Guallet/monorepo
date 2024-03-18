@@ -1,6 +1,7 @@
 import { supabase } from "@/auth/supabase";
 import {
   AccountsApi,
+  BudgetsApi,
   CategoriesApi,
   ConnectionsApi,
   GualletClient,
@@ -28,4 +29,5 @@ export const gualletClient = {
   connections: new ConnectionsApi(innerClient),
   institutions: new InstitutionsApi(innerClient),
   transactions: new TransactionsApi(innerClient),
+  budgets: new BudgetsApi(innerClient),
 };
