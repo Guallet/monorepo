@@ -77,6 +77,9 @@ export default function CategoryDetailsScreen() {
               <View
                 style={{
                   paddingVertical: Spacing.medium,
+                  backgroundColor: "white",
+                  borderRadius: Spacing.small,
+                  marginVertical: Spacing.medium,
                 }}
               >
                 <View

@@ -1,4 +1,5 @@
 import { CategoryRow } from "@/components/Categories/CategoryRow";
+import { AppScreen } from "@/components/Layout/AppScreen";
 import {
   AppCategory,
   useGroupedCategories,
@@ -13,22 +14,23 @@ export default function CategoriesScreen() {
   const { categories, isLoading } = useGroupedCategories();
 
   return (
-    <View style={{ flex: 1 }}>
-      <Stack.Screen
-        options={{
-          title: "Categories",
-          headerTitleAlign: "center",
-        }}
-      />
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        // <CategoriesList
-        //   onCategorySelected={(category) => {
-        //     console.log("Selected category", category);
-        //   }}
-        // />
-        <View style={{ flex: 1, flexDirection: "column" }}>
+    <AppScreen isLoading={isLoading}>
+      <View style={{ flex: 1 }}>
+        <Stack.Screen
+          options={{
+            title: "Categories",
+            headerTitleAlign: "center",
+          }}
+        />
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            paddingHorizontal: Spacing.medium,
+            paddingTop: Spacing.small,
+          }}
+        >
           <RootCategoriesList
             categories={categories}
             onCategorySelected={(category) => {
@@ -41,15 +43,15 @@ export default function CategoriesScreen() {
             style={{
               alignContent: "flex-end",
               justifyContent: "flex-end",
-              padding: Spacing.medium,
+              paddingVertical: Spacing.medium,
               flexGrow: 1,
             }}
           >
             <PrimaryButton title="Create category" />
           </View>
         </View>
-      )}
-    </View>
+      </View>
+    </AppScreen>
   );
 }
 
@@ -65,6 +67,10 @@ export function RootCategoriesList({
     <FlatList
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
+      style={{
+        backgroundColor: "white",
+        borderRadius: Spacing.small,
+      }}
       data={categories}
       renderItem={({ item }) => (
         <CategoryRow

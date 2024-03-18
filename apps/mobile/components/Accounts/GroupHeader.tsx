@@ -13,7 +13,6 @@ export function GroupHeader({ title, rightContent }: Props) {
         justifyContent: "space-between",
         flexDirection: "row",
         borderBottomWidth: 1,
-        marginTop: Spacing.medium,
         height: 50,
         paddingTop: Spacing.medium,
         paddingHorizontal: Spacing.medium,

@@ -43,6 +43,7 @@ export default function AccountsScreen() {
           <View
             style={{
               flex: 1,
+              paddingTop: Spacing.small,
               paddingHorizontal: Spacing.medium,
               paddingBottom: Spacing.medium,
             }}
