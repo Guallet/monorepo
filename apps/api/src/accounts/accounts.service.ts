@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { AccountType } from './entities/accountType.model';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
+import { AccountSource } from './entities/accountSource.model';
 
 @Injectable()
 export class AccountsService {
@@ -55,6 +56,8 @@ export class AccountsService {
       balance: dto.initial_balance ?? 0,
       currency: dto.currency ?? 'GBP',
       type: (dto.type as AccountType) ?? AccountType.UNKNOWN,
+      source: (dto.source as AccountSource) ?? AccountSource.UNKNOWN,
+      source_name: dto.source_name,
     });
   }
 
