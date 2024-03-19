@@ -4,6 +4,7 @@ import { BaseRow } from "@guallet/ui-react-native/src/components/Rows/BaseRow";
 import { View } from "react-native";
 import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
+import { Money } from "@guallet/money";
 
 interface TransactionRowProps extends React.ComponentProps<typeof View> {
   // TODO: Replace this from the DTO to the domain model
@@ -18,6 +19,13 @@ export function TransactionRow({
 }: TransactionRowProps) {
   const { account } = useAccount(transaction.accountId);
   const { institution } = useInstitution(account?.institutionId);
+
+  const money =
+    account &&
+    Money.fromCurrencyCode({
+      amount: transaction.amount,
+      currencyCode: account?.currency ?? "GBP",
+    });
 
   return (
     <BaseRow
@@ -58,7 +66,7 @@ export function TransactionRow({
             </Label>
           )}
         </View>
-        <Label style={{ fontWeight: "bold" }}>{transaction.amount}</Label>
+        <Label style={{ fontWeight: "bold" }}>{money?.format()}</Label>
       </View>
     </BaseRow>
   );
