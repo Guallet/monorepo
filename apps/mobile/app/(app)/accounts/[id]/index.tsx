@@ -16,9 +16,6 @@ import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { AccountDto } from "@guallet/api-client";
 
-const blurHash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
-
 export default function AccountDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { account, isLoading } = useAccount(id);
@@ -95,7 +92,6 @@ function AccountCharts() {
           width: "100%",
           // backgroundColor: "#0553",
         }}
-        placeholder={blurHash}
         contentFit="contain"
         source={{
           uri: "https://scottmurray.org/content/03-tutorials/01-d3/130-making-a-bar-chart/1.png",
@@ -106,7 +102,10 @@ function AccountCharts() {
   );
 }
 
-function AccountActions() {
+interface AccountActionsProps {
+  account: AccountDto;
+}
+function AccountActions({ account }: AccountActionsProps) {
   return (
     <View
       style={{
@@ -116,7 +115,12 @@ function AccountActions() {
       }}
     >
       <PrimaryButton title="View transactions" onPress={() => {}} />
-      <PrimaryButton title="Manage connection" onPress={() => {}} />
+      {account?.source === "synced" && (
+        <>
+          <PrimaryButton title="Manage connection" onPress={() => {}} />
+          <PrimaryButton title="Refresh connection" onPress={() => {}} />
+        </>
+      )}
       <DangerButton title="Delete account" onPress={() => {}} />
     </View>
   );
