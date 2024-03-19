@@ -1,23 +1,12 @@
 export type AccountDto = {
-  // id: string;
-  // type: AccountTypeDto;
-  // name: string;
-  // balance: number;
-  // currency: string;
-  // connection_details?: AccountConnectionDto;
-  // institutionId: null | string;
-  // institution?: {
-  //   id: string;
-  //   name: string;
-  //   image_src: string;
-  // };
-
   id: string;
   name: string;
   balance: { amount: number; currency: string };
   currency: string;
   type: AccountTypeDto;
   institutionId: string;
+  source?: string;
+  sourceName?: string;
   properties?:
     | CurrentAccountProperties
     | CreditCardProperties
@@ -53,12 +42,21 @@ export enum AccountTypeDto {
 // } as const;
 // export type AccountType = (typeof AccountType)[keyof typeof AccountType];
 
+export enum AccountSourceDto {
+  MANUAL = "manual",
+  IMPORTED = "imported",
+  SYNCED = "synced",
+  UNKNOWN = "unknown",
+}
+
 export type CreateAccountRequest = {
   name: string;
   type: string;
   currency: string;
   initial_balance?: number;
   institution_id?: string;
+  source?: AccountSourceDto;
+  source_name?: string;
 };
 
 export type UpdateAccountRequest = {

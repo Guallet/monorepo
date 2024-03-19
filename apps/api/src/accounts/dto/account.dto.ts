@@ -13,6 +13,8 @@ export class AccountDto {
   currency: string;
   type: AccountType;
   institutionId: string;
+  source?: string;
+  sourceName?: string;
   properties?:
     | CurrentAccountProperties
     | CreditCardProperties
@@ -31,6 +33,8 @@ export class AccountDto {
       type: domain.type,
       institutionId: domain.institutionId,
       properties: domain.properties,
+      source: domain.source,
+      sourceName: domain.source_name,
     };
   }
 }

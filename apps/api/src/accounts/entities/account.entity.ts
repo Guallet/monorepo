@@ -17,6 +17,7 @@ import {
   CurrentAccountProperties,
   SavingAccountProperties,
 } from './account-properties.model';
+import { AccountSource } from './accountSource.model';
 
 @Entity('accounts')
 @ObjectType()
@@ -48,6 +49,19 @@ export class Account {
   })
   @Field((type) => AccountType)
   type: AccountType;
+
+  @Column({
+    type: 'enum',
+    enum: AccountSource,
+    default: AccountSource.UNKNOWN,
+  })
+  source: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  source_name: string;
 
   @Column({
     type: 'jsonb',
