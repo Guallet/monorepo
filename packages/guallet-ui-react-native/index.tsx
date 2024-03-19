@@ -1,6 +1,7 @@
 export * from "./src/theme";
 export * from "./src/components/Avatar";
 export * from "./src/components/Button";
+export * from "./src/components/Containers";
 export * from "./src/components/Input";
 export * from "./src/components/Loader";
 export * from "./src/components/Divider/Divider";
