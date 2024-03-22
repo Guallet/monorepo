@@ -1,5 +1,6 @@
 import { GualletClient } from "GualletClient";
 import {
+  InboxTransactionDto,
   TransactionDto,
   TransactionQueryResultDto,
 } from "./transactions.models";
@@ -38,8 +39,8 @@ export class TransactionsApi {
     return await this.client.get<TransactionQueryResultDto>(queryPath);
   }
 
-  async getInbox(): Promise<TransactionDto[]> {
-    return await this.client.get<TransactionDto[]>(
+  async getInbox(): Promise<InboxTransactionDto[]> {
+    return await this.client.get<InboxTransactionDto[]>(
       `${TRANSACTIONS_PATH}/inbox`
     );
   }

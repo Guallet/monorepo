@@ -9,6 +9,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, IsNull, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
+import { InboxTransaction } from './entities/inbox-transaction.model';
 
 @Injectable()
 export class TransactionsService {
@@ -48,8 +49,8 @@ export class TransactionsService {
 
   async getUserTransactionsInbox(args: {
     userId: string;
-  }): Promise<Transaction[]> {
-    return await this.repository.find({
+  }): Promise<InboxTransaction[]> {
+    const transactions = await this.repository.find({
       relations: { account: true, category: true },
       where: {
         account: { user_id: args.userId },
@@ -60,6 +61,15 @@ export class TransactionsService {
       order: {
         date: 'DESC',
       },
+    });
+
+    // TODO: Apply the rules to the transactions and get the processed category
+    return transactions.map((x) => {
+      return {
+        ...x,
+        rule_id: null,
+        processed_category_id: null,
+      };
     });
   }
 
