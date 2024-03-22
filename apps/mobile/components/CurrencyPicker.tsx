@@ -2,27 +2,26 @@ import { Currency, ISO4217Currencies } from "@guallet/money";
 import { SelectInput } from "./SelectInput";
 import { CurrencyRow } from "./Rows/CurrencyRow";
 
-interface CurrencyPickerProps {
-  currency?: Currency | null;
-  onCurrencyChanged: (newCurrency: Currency) => void;
-}
-
 const allCurrencies = Object.values(ISO4217Currencies)
   .sort()
-  // Remove Antarctica
-  .filter((currency) => currency.country !== "ANTARCTICA")
-  .filter((currency) => currency.code !== "XXX")
   .map((currency) => {
     return Currency.fromISOCode(currency.code, "en-GB");
   });
 
+interface CurrencyPickerProps {
+  currency?: Currency | null;
+  onCurrencyChanged: (newCurrency: Currency) => void;
+  showLabel?: boolean;
+}
+
 export function CurrencyPicker({
   currency,
+  showLabel = true,
   onCurrencyChanged,
 }: CurrencyPickerProps) {
   return (
     <SelectInput
-      label="Currency"
+      label={showLabel ? "Currency" : undefined}
       placeholder="Pick a currency"
       required
       searchable

@@ -87,7 +87,7 @@ export function SelectInput<T>({
   return (
     <TouchableOpacity
       style={{
-        flex: 1,
+        flexGrow: 1,
       }}
       onPress={() => {
         if (disabled) return;
@@ -169,6 +169,10 @@ export function SelectInput<T>({
 
           {searchable && (
             <SearchBoxInput
+              style={{
+                marginHorizontal: Spacing.small,
+                marginBottom: Spacing.small,
+              }}
               query={query}
               onSearchQueryChanged={(query) => {
                 setQuery(query);

@@ -21,6 +21,7 @@ export function PrimaryButton({
   tint,
   leftIconName,
   rightIconName,
+  disabled = false,
 }: ButtonProps) {
   return (
     <BaseButton
@@ -28,7 +29,7 @@ export function PrimaryButton({
       style={[
         {
           height: 48,
-          backgroundColor: "blue",
+          backgroundColor: disabled ? "grey" : "blue",
           borderRadius: 20,
           borderColor: tint ?? "blue",
           borderWidth: 1,
