@@ -3,9 +3,11 @@ import { AccountTypeRow } from "@/components/Rows/AccountTypeRow";
 import { AccountTypeDto } from "@guallet/api-client";
 import { Column, Label, PrimaryButton } from "@guallet/ui-react-native";
 import { router } from "expo-router";
+import { useAtomValue, useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { FlatList } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { createAccountAtom } from ".";
 
 const availableAccountTypes = [
   AccountTypeDto.CURRENT_ACCOUNT,
@@ -18,7 +20,8 @@ const availableAccountTypes = [
 ];
 
 export default function AccountTypeScreen() {
-  const [selectedType, setSelectedType] = useState<AccountTypeDto | null>(null);
+  const flowState = useAtomValue(createAccountAtom);
+  const setFlowState = useSetAtom(createAccountAtom);
 
   return (
     <FlowScreen
@@ -43,12 +46,15 @@ export default function AccountTypeScreen() {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    setSelectedType(item);
+                    setFlowState((state) => ({
+                      ...state,
+                      accountType: item,
+                    }));
                   }}
                 >
                   <AccountTypeRow
                     type={item}
-                    isSelected={item === selectedType}
+                    isSelected={item === flowState.accountType}
                   />
                 </TouchableOpacity>
               );
@@ -57,7 +63,7 @@ export default function AccountTypeScreen() {
         </Column>
         <PrimaryButton
           title="Continue"
-          disabled={selectedType === null}
+          disabled={flowState.accountType === null}
           onClick={() => {
             router.navigate({
               pathname: "/(app)/accounts/create/balance",

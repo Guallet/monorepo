@@ -6,10 +6,12 @@ import {
   TextInput,
 } from "@guallet/ui-react-native";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { createAccountAtom } from ".";
 
 export default function AccountNameScreen() {
-  const [name, setName] = useState<string>("");
+  const flowState = useAtomValue(createAccountAtom);
+  const setFlowState = useSetAtom(createAccountAtom);
 
   return (
     <FlowScreen
@@ -31,15 +33,18 @@ export default function AccountNameScreen() {
           <TextInput
             placeholder="Enter the account name"
             required
-            value={name}
+            value={flowState.accountName}
             onChangeText={(text) => {
-              setName(text);
+              setFlowState((state) => ({
+                ...state,
+                accountName: text,
+              }));
             }}
           />
         </Column>
         <PrimaryButton
           title="Continue"
-          disabled={name === ""}
+          disabled={flowState.accountName === ""}
           onClick={() => {
             router.navigate({
               pathname: "/(app)/accounts/create/accountType",

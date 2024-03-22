@@ -252,6 +252,9 @@ importers:
       expo-web-browser:
         specifier: ~12.8.2
         version: 12.8.2(expo@50.0.7)
+      jotai:
+        specifier: ^2.7.1
+        version: 2.7.1(@types/react@18.2.56)(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -10831,6 +10834,22 @@ packages:
 
   /join-component@1.1.0:
     resolution: {integrity: sha512-bF7vcQxbODoGK1imE2P9GS9aw4zD0Sd+Hni68IMZLj7zRnquH7dXUmMw9hDI5S/Jzt7q+IyTXN0rSg2GI0IKhQ==}
+    dev: false
+
+  /jotai@2.7.1(@types/react@18.2.56)(react@18.2.0):
+    resolution: {integrity: sha512-bsaTPn02nFgWNP6cBtg/htZhCu4s0wxqoklRHePp6l/vlsypR9eLn7diRliwXYWMXDpPvW/LLA2afI8vwgFFaw==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.56
+      react: 18.2.0
     dev: false
 
   /joycon@3.1.1:

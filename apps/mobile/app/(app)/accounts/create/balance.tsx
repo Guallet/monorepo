@@ -10,34 +10,46 @@ import {
   Spacing,
   TextInput,
 } from "@guallet/ui-react-native";
-import { router } from "expo-router";
+import { StackActions } from "@react-navigation/native";
+import { router, useNavigation, useRouter } from "expo-router";
+import { useAtomValue, useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { ToastAndroid } from "react-native";
+import { createAccountAtom } from ".";
 
 export default function AccountBalanceScreen() {
   const { createAccountMutation } = useAccountMutations();
 
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
-    Currency.fromISOCode("GBP")
-  );
+  const flowState = useAtomValue(createAccountAtom);
+  const setFlowState = useSetAtom(createAccountAtom);
+  // Used only for input validation
+  const [balance, setBalance] = useState<string>(flowState.balance.toString());
 
-  const [balance, setBalance] = useState<string>("0");
-  const money = new Money(+balance, selectedCurrency);
+  const navigation = useNavigation();
+
+  const money = new Money(flowState.balance, flowState.currency);
 
   async function onCreateAccount() {
     // TODO: validate the form data
     createAccountMutation.mutate(
       {
         request: {
-          type: AccountTypeDto.CURRENT_ACCOUNT,
-          name: "TODO: GET ACCOUNT NAME AND ACCOUNT TYPE FROM THE USER",
-          currency: selectedCurrency.code,
-          initial_balance: parseFloat(balance),
+          type: flowState.accountType,
+          name: flowState.accountName,
+          currency: flowState.currency.code,
+          initial_balance: flowState.balance,
         },
       },
       {
         onSuccess: (data, variables, context) => {
           ToastAndroid.show("Account created!", ToastAndroid.SHORT);
+          setFlowState({
+            accountName: "",
+            accountType: AccountTypeDto.CURRENT_ACCOUNT,
+            currency: Currency.fromISOCode("GBP"),
+            balance: 0,
+          });
+          navigation.dispatch(StackActions.popToTop());
           router.replace(`/(app)/accounts/${data.id}`);
         },
         onError: (error, variables, context) => {
@@ -73,9 +85,12 @@ export default function AccountBalanceScreen() {
         >
           <Label>Select the account currency</Label>
           <CurrencyPicker
-            currency={selectedCurrency}
+            currency={flowState.currency}
             onCurrencyChanged={(item) => {
-              setSelectedCurrency(item);
+              setFlowState((state) => ({
+                ...state,
+                currency: item,
+              }));
             }}
             showLabel={false}
           />
@@ -91,6 +106,12 @@ export default function AccountBalanceScreen() {
             value={balance}
             onChangeText={(text) => {
               setBalance(text);
+              if (isNaN(+text) === false) {
+                setFlowState((state) => ({
+                  ...state,
+                  balance: +text,
+                }));
+              }
             }}
             error={isNaN(+balance) ? "Please enter a valid number" : undefined}
           />
@@ -102,7 +123,7 @@ export default function AccountBalanceScreen() {
           <PrimaryButton
             title="Save account"
             disabled={
-              selectedCurrency === null || balance === "" || isNaN(+balance)
+              flowState.currency === null || balance === "" || isNaN(+balance)
             }
             onClick={() => {
               onCreateAccount();
