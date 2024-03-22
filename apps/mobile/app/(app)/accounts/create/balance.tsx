@@ -50,7 +50,7 @@ export default function AccountBalanceScreen() {
             balance: 0,
           });
           navigation.dispatch(StackActions.popToTop());
-          router.replace(`/(app)/accounts/${data.id}`);
+          router.navigate(`/(app)/accounts/${data.id}`);
         },
         onError: (error, variables, context) => {
           // I will fire second!
