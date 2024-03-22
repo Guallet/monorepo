@@ -1,5 +1,5 @@
 import { gualletClient } from "@/api/gualletClient";
-import { TransactionDto } from "@guallet/api-client";
+import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
 
 const TRANSACTIONS_QUERY_KEY = "transactions";
@@ -49,7 +49,8 @@ export function useTransactionInbox() {
 
   return {
     transactions:
-      data?.filter((dto): dto is TransactionDto => dto !== undefined) ?? [],
+      data?.filter((dto): dto is InboxTransactionDto => dto !== undefined) ??
+      [],
     isLoading,
     refetch,
     isFetching,

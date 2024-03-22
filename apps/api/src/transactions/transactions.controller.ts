@@ -23,6 +23,7 @@ import {
   transactionsQueryFilterSchema,
 } from './dto/transaction.query';
 import { ZodValidationPipe } from 'src/core/pipes/zodvalidator.pipe';
+import { InboxTransactionDto } from './dto/inbox-transaction.dto';
 
 @ApiTags('Transactions')
 @Controller('transactions')
@@ -61,7 +62,8 @@ export class TransactionsController {
   ): Promise<TransactionsResultDto> {
     console.log(`Transaction Query: ${JSON.stringify(query)}`);
 
-    let { page, pageSize, startDate, endDate } = query;
+    let { page, pageSize } = query;
+    const { startDate, endDate } = query;
     const { accounts } = query;
 
     if (page === null || page == undefined) {
@@ -117,12 +119,12 @@ export class TransactionsController {
   @Get('/inbox')
   async getUserTransactionInbox(
     @RequestUser() user: UserPrincipal,
-  ): Promise<TransactionDto[]> {
+  ): Promise<InboxTransactionDto[]> {
     const transactions =
       await this.transactionsService.getUserTransactionsInbox({
         userId: user.id,
       });
-    return transactions.map((x) => TransactionDto.fromDomain(x));
+    return transactions.map((x) => InboxTransactionDto.fromDomain(x));
   }
 
   @Post()

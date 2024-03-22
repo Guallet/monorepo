@@ -27,3 +27,15 @@ export type UpdateTransactionRequest = {
   date: Date | null;
   categoryId: string | null;
 };
+
+export type InboxTransactionDto = {
+  id: string;
+  accountId: string;
+  description: string;
+  notes?: string;
+  amount: number;
+  currency: string;
+  date: Date;
+  processedCategoryId?: string; // Processed category id based by rules
+  ruleId?: string; // Rule that processed this transaction
+};
