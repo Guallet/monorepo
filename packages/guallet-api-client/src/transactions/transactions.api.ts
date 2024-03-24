@@ -16,11 +16,11 @@ export class TransactionsApi {
 
   async loadTransactions(args: {
     page: number;
-    pageSize: number;
-    accounts: string[] | null;
-    categories: string[] | null;
-    startDate: Date | null;
-    endDate: Date | null;
+    pageSize?: number | null;
+    accounts?: string[] | null;
+    categories?: string[] | null;
+    startDate?: Date | null;
+    endDate?: Date | null;
   }): Promise<TransactionQueryResultDto> {
     const { page, pageSize, accounts, categories, startDate, endDate } = args;
     let queryPath = `transactions?page=${page}&pageSize=${pageSize}`;

@@ -1,10 +1,10 @@
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { TransactionsList } from "@/components/Transactions/TransactionsList";
-import { useTransactions } from "@/features/transactions/useTransactions";
+import { useInfiniteTransactions } from "@/features/transactions/useTransactions";
 import { Icon, Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 type FilterData = {
@@ -13,7 +13,8 @@ type FilterData = {
 };
 
 export default function TransactionsScreen() {
-  const { isLoading } = useTransactions();
+  const { transactions, isFetching, fetchNextPage, status } =
+    useInfiniteTransactions();
 
   const [filter, setFilter] = useState<FilterData | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -38,11 +39,11 @@ export default function TransactionsScreen() {
         }}
       />
 
-      {isLoading && (
+      {/* {status === "pending" && (
         <View>
           <ActivityIndicator />
         </View>
-      )}
+      )} */}
 
       <View
         style={{
@@ -51,6 +52,17 @@ export default function TransactionsScreen() {
         }}
       >
         <TransactionsList
+          transactions={transactions}
+          onEndReached={() => {
+            fetchNextPage();
+            // if (metadata?.hasMore) {
+            //   // Load next page
+            //   console.log("Load next page", metadata.page + 1);
+            //   fetchNextPage();
+            // } else {
+            //   console.log("No more pages. Last page: " + metadata?.page);
+            // }
+          }}
           onTransactionSelected={(transaction) => {
             router.navigate({
               pathname: `/transactions/${transaction.id}`,

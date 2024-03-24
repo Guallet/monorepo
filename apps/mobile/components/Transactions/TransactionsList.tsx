@@ -1,4 +1,3 @@
-import { useTransactions } from "@/features/transactions/useTransactions";
 import { TransactionRow } from "../Rows/TransactionRow";
 import { SectionList, View } from "react-native";
 import { Label, Spacing } from "@guallet/ui-react-native";
@@ -15,13 +14,15 @@ export type GroupedTransactions = {
 }[];
 
 interface TransactionsListProps {
+  transactions: TransactionDto[];
+  onEndReached: () => void;
   onTransactionSelected: (transaction: TransactionDto) => void;
 }
 export function TransactionsList({
+  transactions,
+  onEndReached,
   onTransactionSelected,
 }: TransactionsListProps) {
-  const { transactions, metadata, isLoading } = useTransactions();
-
   const groupedTransactions = transactions.reduce(
     (result: GroupedTransactions, current: TransactionDto) => {
       let dateGroup = result.find((x) => x.date === current.date);
@@ -42,6 +43,10 @@ export function TransactionsList({
       stickySectionHeadersEnabled={true}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
+      // onEndReachedThreshold={0.3}
+      onEndReached={() => {
+        onEndReached();
+      }}
       ListEmptyComponent={
         <View
           style={{
