@@ -1,7 +1,14 @@
+import { AppScreen } from "@/components/Layout/AppScreen";
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { TransactionsList } from "@/components/Transactions/TransactionsList";
 import { useInfiniteTransactions } from "@/features/transactions/useTransactions";
-import { Icon, Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";
+import {
+  ActionIcon,
+  Label,
+  PrimaryButton,
+  Row,
+  Spacing,
+} from "@guallet/ui-react-native";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -20,25 +27,38 @@ export default function TransactionsScreen() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   return (
-    <View>
-      <Stack.Screen
-        options={{
-          title: "Transactions",
-          headerTitleAlign: "center",
-          headerRight: () => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
+    <AppScreen
+      headerOptions={{
+        title: "Transactions",
+        headerTitleAlign: "center",
+        headerRight: () => {
+          return (
+            <Row
+              style={{
+                gap: Spacing.medium,
+              }}
+            >
+              <ActionIcon
+                name="add"
+                size={24}
+                onClick={() => {
+                  router.navigate({
+                    pathname: "/transactions/create",
+                  });
+                }}
+              />
+              <ActionIcon
+                name="sliders"
+                size={24}
+                onClick={() => {
                   setIsFilterModalOpen(true);
                 }}
-              >
-                <Icon name="sliders" size={24} />
-              </TouchableOpacity>
-            );
-          },
-        }}
-      />
-
+              />
+            </Row>
+          );
+        },
+      }}
+    >
       {/* {status === "pending" && (
         <View>
           <ActivityIndicator />
@@ -81,7 +101,7 @@ export default function TransactionsScreen() {
       >
         <TransactionsFilter />
       </ModalSheet>
-    </View>
+    </AppScreen>
   );
 }
 

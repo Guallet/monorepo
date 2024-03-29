@@ -1,6 +1,8 @@
 import { Currency, ISO4217Currencies } from "@guallet/money";
-import { SelectInput } from "./SelectInput";
 import { CurrencyRow } from "./Rows/CurrencyRow";
+import { BasePicker } from "./BasePicker";
+import { View } from "react-native";
+import { BaseRow, Label } from "@guallet/ui-react-native";
 
 const allCurrencies = Object.values(ISO4217Currencies)
   .sort()
@@ -9,29 +11,39 @@ const allCurrencies = Object.values(ISO4217Currencies)
   });
 
 interface CurrencyPickerProps {
-  currency?: Currency | null;
-  onCurrencyChanged: (newCurrency: Currency) => void;
-  showLabel?: boolean;
+  currency: Currency | null;
+  onCurrencyChanged: (newCurrency: Currency | null) => void;
 }
 
 export function CurrencyPicker({
   currency,
-  showLabel = true,
   onCurrencyChanged,
 }: CurrencyPickerProps) {
   return (
-    <SelectInput
-      label={showLabel ? "Currency" : undefined}
-      placeholder="Pick a currency"
-      required
-      searchable
-      data={allCurrencies}
-      value={currency?.name}
-      itemTemplate={(item) => {
+    <BasePicker
+      items={allCurrencies}
+      selectedItem={currency}
+      placeholder="Select currency"
+      modalTitle="Select currency"
+      renderItem={(item) => {
         return <CurrencyRow currency={item} />;
       }}
       onItemSelected={(item) => {
         onCurrencyChanged(item);
+      }}
+      renderButton={(item) => {
+        return (
+          <BaseRow showDivider={false}>
+            <View
+              style={{
+                height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Label>{item.name}</Label>
+            </View>
+          </BaseRow>
+        );
       }}
     />
   );

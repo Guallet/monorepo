@@ -4,7 +4,6 @@ import { AccountTypeDto } from "@guallet/api-client";
 import { Column, Label, PrimaryButton } from "@guallet/ui-react-native";
 import { router } from "expo-router";
 import { useAtomValue, useSetAtom } from "jotai";
-import React, { useState } from "react";
 import { FlatList } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { createAccountAtom } from ".";

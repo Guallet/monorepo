@@ -36,9 +36,9 @@ export function TextInput({
           {
             height: 48,
             borderWidth: 1,
-            borderRadius: 20,
             borderColor: error ? "red" : disabled ? "grey" : "blue",
             padding: 8,
+            backgroundColor: "white",
           },
           disabled && { backgroundColor: "#F8F8F8" },
         ]}

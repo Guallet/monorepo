@@ -6,6 +6,7 @@ import { Stack } from "expo-router";
 interface AppScreenProps extends React.ComponentProps<typeof View> {
   isLoading?: boolean;
   loadingMessage?: string;
+  headerTitle?: string;
   headerOptions?: NativeStackNavigationOptions;
 }
 
@@ -14,8 +15,26 @@ export function AppScreen({
   loadingMessage,
   children,
   headerOptions,
+  headerTitle,
   ...props
 }: AppScreenProps) {
+  let combinedHeaderOptions: NativeStackNavigationOptions = {
+    headerTitleAlign: "center",
+  };
+
+  if (headerTitle && headerTitle !== "") {
+    combinedHeaderOptions = {
+      ...combinedHeaderOptions,
+      title: headerTitle,
+    };
+  }
+
+  // Overrides all the header values with the one passed as parameter
+  combinedHeaderOptions = {
+    ...combinedHeaderOptions,
+    ...headerOptions,
+  };
+
   return (
     <View
       style={[
@@ -25,7 +44,7 @@ export function AppScreen({
         props.style,
       ]}
     >
-      {headerOptions && <Stack.Screen options={headerOptions} />}
+      <Stack.Screen options={combinedHeaderOptions} />
       <ModalLoaderOverlay
         isVisible={isLoading}
         loadingMessage={loadingMessage}

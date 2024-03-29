@@ -5,7 +5,7 @@ import { View, StyleSheet } from "react-native";
 
 interface ModalSheetProps
   extends React.ComponentProps<typeof BottomSheetModal> {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   snapPoints?: string[];
   isOpen: boolean;
@@ -58,18 +58,20 @@ export function ModalSheet({
               justifyContent: "center",
             }}
           >
-            <Label
-              style={{
-                flexGrow: 1,
-                marginHorizontal: Spacing.extraLarge,
-                textAlign: "center",
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-              numberOfLines={1}
-            >
-              {title}
-            </Label>
+            {title && (
+              <Label
+                style={{
+                  flexGrow: 1,
+                  marginHorizontal: Spacing.extraLarge,
+                  textAlign: "center",
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+                numberOfLines={1}
+              >
+                {title}
+              </Label>
+            )}
             <View
               style={{
                 position: "absolute",

@@ -10,18 +10,33 @@ interface CategoryRowProps extends React.ComponentProps<typeof View> {
 }
 
 export function CategoryRow({ category, onClick, ...props }: CategoryRowProps) {
+  return <BaseCategoryRow category={category} onClick={onClick} {...props} />;
+}
+
+export function ClickableCategoryRow({
+  category,
+  onClick,
+  ...props
+}: CategoryRowProps) {
   return (
-    <TouchableOpacity
-      onPress={() => onClick?.(category)}
+    <TouchableOpacity onPress={() => onClick?.(category)}>
+      <BaseCategoryRow category={category} onClick={onClick} {...props} />
+    </TouchableOpacity>
+  );
+}
+
+function BaseCategoryRow({ category, onClick, ...props }: CategoryRowProps) {
+  return (
+    <View
       style={[
         {
-          // height: 50,
           padding: Spacing.medium,
           flexDirection: "row",
           gap: Spacing.small,
           alignContent: "center",
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "white",
         },
         props.style,
       ]}
@@ -37,6 +52,6 @@ export function CategoryRow({ category, onClick, ...props }: CategoryRowProps) {
       </View>
       <Label style={{ flexGrow: 1 }}>{category.name}</Label>
       {onClick && <Icon name="chevron-right" size={24} />}
-    </TouchableOpacity>
+    </View>
   );
 }

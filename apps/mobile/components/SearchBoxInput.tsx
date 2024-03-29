@@ -7,7 +7,7 @@ interface SearchBoxInputProps extends React.ComponentProps<typeof View> {
   disabled?: boolean;
   description?: string;
   placeholder?: string;
-  onSearchQueryChanged?: (newSearchQuery: string) => void;
+  onSearchQueryChanged: (newSearchQuery: string) => void;
 }
 
 export function SearchBoxInput({
