@@ -70,3 +70,8 @@ npx turbo link
 ### Dependencies
 
 - [Supabase](https://supabase.com/): Used for AUTH only. I didn't want to implement my own auth mechanism, so better idea to rely on a third party.
+
+### Support
+
+![KO-FI](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)
+![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)
