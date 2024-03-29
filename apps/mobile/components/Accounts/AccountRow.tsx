@@ -7,9 +7,29 @@ import { useInstitution } from "@/features/institutions/useInstitutions";
 interface Props {
   account: AccountDto;
   onClick?: () => void;
+  displayBalance?: boolean;
+}
+export function AccountRow(props: Props) {
+  if (props.onClick) {
+    return <ClickableAccountRow {...props} />;
+  } else {
+    return <BaseAccountRow {...props} />;
+  }
 }
 
-export function AccountRow({ account, onClick }: Props) {
+export function ClickableAccountRow({
+  account,
+  onClick,
+  displayBalance = true,
+}: Props) {
+  return (
+    <TouchableOpacity onPress={onClick}>
+      <BaseAccountRow account={account} displayBalance={displayBalance} />
+    </TouchableOpacity>
+  );
+}
+
+function BaseAccountRow({ account, displayBalance = true }: Props) {
   const { institution } = useInstitution(account.institutionId);
 
   const amount = Money.fromCurrencyCode({
@@ -18,31 +38,31 @@ export function AccountRow({ account, onClick }: Props) {
   });
 
   return (
-    <TouchableOpacity onPress={onClick}>
-      <View
+    <View
+      style={{
+        height: 60,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        backgroundColor: "white",
+        paddingHorizontal: Spacing.small,
+      }}
+    >
+      <Avatar
+        size={40}
+        imageUrl={institution?.image_src ?? ""}
+        alt={institution?.name ?? account.name}
+      />
+      <Label
         style={{
-          height: 60,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          backgroundColor: "white",
-          paddingHorizontal: Spacing.small,
+          flex: 1,
+          marginHorizontal: Spacing.small,
         }}
+        numberOfLines={1}
       >
-        <Avatar
-          size={40}
-          imageUrl={institution?.image_src ?? ""}
-          alt={institution?.name ?? account.name}
-        />
-        <Label
-          style={{
-            flex: 1,
-            marginHorizontal: Spacing.small,
-          }}
-          numberOfLines={1}
-        >
-          {account.name}
-        </Label>
+        {account.name}
+      </Label>
+      {displayBalance && (
         <Label
           style={{
             fontSize: 16,
@@ -52,7 +72,7 @@ export function AccountRow({ account, onClick }: Props) {
         >
           {amount.format()}
         </Label>
-      </View>
-    </TouchableOpacity>
+      )}
+    </View>
   );
 }

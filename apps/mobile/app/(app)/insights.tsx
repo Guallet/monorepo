@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 
-export default function ReportsScreen() {
+export default function insightsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reports screen</Text>
+      <Text style={styles.title}>Insights screen</Text>
       <View
         style={styles.separator}
         lightColor="#eee"

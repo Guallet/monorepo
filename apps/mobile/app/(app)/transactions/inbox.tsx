@@ -1,4 +1,3 @@
-import { JsonView } from "@/components/JsonLabel";
 import { AppScreen } from "@/components/Layout/AppScreen";
 import { View } from "@/components/Themed";
 import { useAccount } from "@/features/accounts/useAccounts";
@@ -16,7 +15,6 @@ import {
   Spacing,
 } from "@guallet/ui-react-native";
 import dayjs from "dayjs";
-import { Stack } from "expo-router";
 import { FlatList } from "react-native";
 
 export default function TransactionsInboxScreen() {

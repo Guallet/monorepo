@@ -5,17 +5,21 @@ import { atom } from "jotai";
 
 export type CreateAccountFlowState = {
   accountName: string;
-  accountType: AccountTypeDto;
-  currency: Currency;
+  accountType: AccountTypeDto | null;
+  currency: Currency | null;
   balance: number;
 };
 
-export const createAccountAtom = atom<CreateAccountFlowState>({
+export const initialCreateAccountFlowState: CreateAccountFlowState = {
   accountName: "",
-  accountType: AccountTypeDto.CURRENT_ACCOUNT,
-  currency: Currency.fromISOCode("GBP"),
+  accountType: null, // AccountTypeDto.CURRENT_ACCOUNT,
+  currency: null, //Currency.fromISOCode("GBP"),
   balance: 0,
-});
+};
+
+export const createAccountAtom = atom<CreateAccountFlowState>(
+  initialCreateAccountFlowState
+);
 
 export default function CreateAccountScree() {
   return <Redirect href="/(app)/accounts/create/name" />;

@@ -96,9 +96,9 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="reports"
+        name="insights"
         options={{
-          title: "Reports",
+          title: "Insights",
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="chart-line" color={color} />
@@ -108,7 +108,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          // title: "Settings",
+          title: "Settings",
           headerShown: false,
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,

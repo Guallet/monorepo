@@ -27,39 +27,44 @@ export default function AccountBalanceScreen() {
 
   const navigation = useNavigation();
 
-  const money = new Money(flowState.balance, flowState.currency);
+  const money = new Money(
+    flowState.balance,
+    flowState.currency ?? Currency.fromISOCode("GBP")
+  );
 
   async function onCreateAccount() {
-    // TODO: validate the form data
-    createAccountMutation.mutate(
-      {
-        request: {
-          type: flowState.accountType,
-          name: flowState.accountName,
-          currency: flowState.currency.code,
-          initial_balance: flowState.balance,
+    if (flowState.accountType !== null && flowState.currency !== null) {
+      // TODO: validate the form data
+      createAccountMutation.mutate(
+        {
+          request: {
+            type: flowState.accountType,
+            name: flowState.accountName,
+            currency: flowState.currency.code,
+            initial_balance: flowState.balance,
+          },
         },
-      },
-      {
-        onSuccess: (data, variables, context) => {
-          ToastAndroid.show("Account created!", ToastAndroid.SHORT);
-          setFlowState({
-            accountName: "",
-            accountType: AccountTypeDto.CURRENT_ACCOUNT,
-            currency: Currency.fromISOCode("GBP"),
-            balance: 0,
-          });
-          navigation.dispatch(StackActions.popToTop());
-          router.navigate(`/(app)/accounts/${data.id}`);
-        },
-        onError: (error, variables, context) => {
-          // I will fire second!
-        },
-        onSettled: (data, error, variables, context) => {
-          // I will fire second!
-        },
-      }
-    );
+        {
+          onSuccess: (data, variables, context) => {
+            ToastAndroid.show("Account created!", ToastAndroid.SHORT);
+            setFlowState({
+              accountName: "",
+              accountType: AccountTypeDto.CURRENT_ACCOUNT,
+              currency: Currency.fromISOCode("GBP"),
+              balance: 0,
+            });
+            navigation.dispatch(StackActions.popToTop());
+            router.navigate(`/(app)/accounts/${data.id}`);
+          },
+          onError: (error, variables, context) => {
+            // I will fire second!
+          },
+          onSettled: (data, error, variables, context) => {
+            // I will fire second!
+          },
+        }
+      );
+    }
   }
 
   return (
@@ -92,7 +97,6 @@ export default function AccountBalanceScreen() {
                 currency: item,
               }));
             }}
-            showLabel={false}
           />
           <Label>Enter the initial balance of the account</Label>
           <TextInput

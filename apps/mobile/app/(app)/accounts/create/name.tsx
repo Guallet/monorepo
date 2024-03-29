@@ -7,7 +7,7 @@ import {
 } from "@guallet/ui-react-native";
 import { router } from "expo-router";
 import { useAtomValue, useSetAtom } from "jotai";
-import { createAccountAtom } from ".";
+import { createAccountAtom, initialCreateAccountFlowState } from ".";
 
 export default function AccountNameScreen() {
   const flowState = useAtomValue(createAccountAtom);
@@ -19,6 +19,8 @@ export default function AccountNameScreen() {
       canGoBack={false}
       showCloseConfirmation={false}
       onClose={() => {
+        // Reset the flow state
+        setFlowState(initialCreateAccountFlowState);
         router.back();
       }}
     >

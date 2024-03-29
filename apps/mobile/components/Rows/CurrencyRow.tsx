@@ -10,6 +10,7 @@ export function CurrencyRow({ currency }: CurrencyRowProps) {
   return (
     <View
       style={{
+        height: 30,
         flexDirection: "row",
         justifyContent: "space-around",
         alignContent: "stretch",
