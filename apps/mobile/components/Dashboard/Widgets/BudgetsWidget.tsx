@@ -2,7 +2,6 @@ import { ActionIcon, Label, Spacing } from "@guallet/ui-react-native";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
-import { FlatList } from "react-native-gesture-handler";
 import { useBudgets } from "@/features/budgets/useBudgets";
 import { Money } from "@guallet/money";
 
@@ -18,32 +17,26 @@ export function BudgetsWidget(props: BudgetsWidgetProps) {
         <View
           style={{
             flex: 1,
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
+            alignContent: "stretch",
+            alignItems: "stretch",
             gap: Spacing.medium,
           }}
         >
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            data={budgets}
-            ItemSeparatorComponent={() => (
-              <View style={{ height: Spacing.small }} />
-            )}
-            renderItem={({ item }) => {
-              return (
-                <BudgetRow
-                  name={item.name}
-                  amount={item.amount}
-                  spent={Money.fromCurrencyCode({
-                    amount: item.spent,
-                    currencyCode: "GBP",
-                  })}
-                />
-              );
-            }}
-          />
+          {budgets.map((budget) => {
+            return (
+              <BudgetRow
+                key={budget.id}
+                name={budget.name}
+                amount={budget.amount}
+                spent={Money.fromCurrencyCode({
+                  amount: budget.spent,
+                  currencyCode: "GBP",
+                })}
+              />
+            );
+          })}
         </View>
       ) : (
         <EmptyBudgetsView />

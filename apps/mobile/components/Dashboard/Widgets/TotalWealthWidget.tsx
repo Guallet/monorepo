@@ -1,7 +1,6 @@
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
 import { Label } from "@guallet/ui-react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { useAccounts } from "@/features/accounts/useAccounts";
 import { Money } from "@guallet/money";
 
@@ -34,12 +33,10 @@ export function TotalWealthWidget(props: TotalWealthWidgetProps) {
         <ActivityIndicator />
       ) : (
         <View>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            data={balances}
-            renderItem={({ item }) => (
+          {balances.map((balance) => {
+            return (
               <Label
+                key={balance.currency.code}
                 style={{
                   fontWeight: "500",
                   fontSize: 20,
@@ -47,10 +44,10 @@ export function TotalWealthWidget(props: TotalWealthWidgetProps) {
                   marginBottom: 10,
                 }}
               >
-                {item.format()}
+                {balance.format()}
               </Label>
-            )}
-          />
+            );
+          })}
         </View>
       )}
     </WidgetCard>

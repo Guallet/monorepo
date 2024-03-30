@@ -2,7 +2,6 @@ import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
 import { Label, Spacing } from "@guallet/ui-react-native";
 import { useTransactionInbox } from "@/features/transactions/useTransactions";
-import { FlatList } from "react-native-gesture-handler";
 import { TransactionRow } from "@/components/Rows/TransactionRow";
 
 interface TransactionsInboxWidgetProps
@@ -30,13 +29,9 @@ export function TransactionsInboxWidget({
             </Label>
             transactions to categorize
           </Label>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            data={transactions.slice(0, 3)}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <TransactionRow transaction={item} />}
-          />
+          {transactions.slice(0, 3).map((item) => {
+            return <TransactionRow key={item.id} transaction={item} />;
+          })}
         </View>
       )}
     </WidgetCard>
