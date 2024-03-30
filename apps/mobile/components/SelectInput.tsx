@@ -6,7 +6,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Icon, Label, Spacing } from "@guallet/ui-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet, Button, BackHandler } from "react-native";
+import { View, Text, StyleSheet, BackHandler } from "react-native";
 import { TouchableOpacity, FlatList } from "react-native-gesture-handler";
 import { SearchBoxInput } from "./SearchBoxInput";
 
