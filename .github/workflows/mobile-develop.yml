@@ -9,6 +9,8 @@ jobs:
       run:
         working-directory: apps/mobile
     steps:
+      - name: Debug
+        run: pwd
       - name: Check for EXPO_TOKEN
         run: |
           if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
