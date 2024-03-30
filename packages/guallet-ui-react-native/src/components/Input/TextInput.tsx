@@ -19,7 +19,7 @@ export function TextInput({
   ...props
 }: TextInputProps) {
   return (
-    <View style={style}>
+    <View>
       {label && (
         <View
           style={{
@@ -34,7 +34,7 @@ export function TextInput({
       <View
         style={[
           {
-            height: 48,
+            minHeight: 48,
             borderWidth: 1,
             borderColor: error ? "red" : disabled ? "grey" : "blue",
             padding: 8,
@@ -46,8 +46,12 @@ export function TextInput({
         <RNTextInput
           readOnly={disabled === true}
           style={[
-            { flex: 1, color: error ? "red" : "black" },
+            {
+              flex: 1,
+              color: error ? "red" : "black",
+            },
             disabled && { color: "black" },
+            style,
           ]}
           placeholderTextColor={error ? "red" : disabled ? "black" : "grey"}
           {...props}

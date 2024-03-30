@@ -4,7 +4,8 @@ import {
   useGroupedCategories,
 } from "@/features/categories/useCategories";
 import { CategoryRow } from "./CategoryRow";
-import { Label, Spacing } from "@guallet/ui-react-native";
+import { Spacing } from "@guallet/ui-react-native";
+import { useEffect, useState } from "react";
 
 interface CategoryPickerProps {
   category: AppCategory | null;
@@ -14,17 +15,19 @@ export function CategoryPicker({
   category,
   onCategorySelected,
 }: CategoryPickerProps) {
-  const { categories } = useGroupedCategories();
+  const { categories, isLoading } = useGroupedCategories();
+  const [flattenCategories, setFlattenCategories] = useState<AppCategory[]>([]);
 
-  const flattenCategories = categories.reduce((acc, category) => {
-    acc.push(category);
-    if (category.subCategories.length > 0) {
-      acc = acc.concat(category.subCategories);
-    }
-    return acc;
-  }, [] as AppCategory[]);
-
-  console.log("flattenCategories", flattenCategories);
+  useEffect(() => {
+    const flattenCategories = categories.reduce((acc, category) => {
+      acc.push(category);
+      if (category.subCategories.length > 0) {
+        acc = acc.concat(category.subCategories);
+      }
+      return acc;
+    }, [] as AppCategory[]);
+    setFlattenCategories(flattenCategories);
+  }, [categories]);
 
   return (
     <BasePicker

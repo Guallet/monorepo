@@ -11,6 +11,7 @@ import {
   PrimaryButton,
   SecondaryButton,
   Spacing,
+  TextInput,
 } from "@guallet/ui-react-native";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -66,16 +67,33 @@ export default function CreateTransactionCreateScreen() {
               setSelectedCurrency(newCurrency);
             }}
           />
-          <Label>Select Amount</Label>
-          <Label>Add description</Label>
-          <Label>Category</Label>
+          <TextInput
+            label="Enter transaction amount"
+            keyboardType="numeric"
+            placeholder="0.00"
+            required
+          />
+          <TextInput
+            label="Enter transaction description"
+            placeholder="What is this transaction for?"
+            required
+          />
+          <Label>Pick a Category</Label>
           <CategoryPicker
             category={selectedCategory}
             onCategorySelected={(category) => {
               setSelectedCategory(category);
             }}
           />
-          <Label>Add notes</Label>
+          <TextInput
+            label="Enter transaction notes"
+            multiline={true}
+            textAlignVertical="top"
+            maxLength={256}
+            style={{
+              height: 150,
+            }}
+          />
         </ScrollView>
 
         <Column
