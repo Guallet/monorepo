@@ -24,18 +24,14 @@ jobs:
         with:
           version: 8
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-
       - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
-      - name: Setup Working directory
-        run: cd apps/mobile
+      #   - name: Setup Working directory
+      #     run: cd apps/mobile
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -45,6 +41,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        working-directory: apps/mobile
 
       - name: Publish update
         run: eas update --auto
+        working-directory: apps/mobile
