@@ -44,6 +44,12 @@ jobs:
         run: pnpm install
         working-directory: apps/mobile
 
+      - name: Create DEV .env file
+        working-directory: apps/mobile
+        run: |
+          touch .env
+          echo {{ secrets.MOBILE_ENV_FILE_DEV }} >> .env
+
       - name: Publish update
         run: eas update --auto
         working-directory: apps/mobile

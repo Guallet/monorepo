@@ -43,6 +43,12 @@ jobs:
         run: pnpm install
         working-directory: apps/mobile
 
+      - name: Create PROD .env file
+        working-directory: apps/mobile
+        run: |
+          touch .env
+          echo {{ secrets.MOBILE_ENV_FILE_PROD }} >> .env
+
       - name: Build on EAS
         run: eas build --platform all --non-interactive --no-wait
         working-directory: apps/mobile
