@@ -5,12 +5,7 @@ jobs:
   update:
     name: EAS Update
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/mobile
     steps:
-      - name: Debug
-        run: pwd
       - name: Check for EXPO_TOKEN
         run: |
           if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
@@ -26,6 +21,9 @@ jobs:
         with:
           node-version: 20.x
           cache: pnpm
+
+      - name: Setup Working directory
+        run: cd apps/mobile
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
