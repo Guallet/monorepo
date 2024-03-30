@@ -1,9 +1,12 @@
-name: EAS Update - Development
-on: push
-
+name: EAS Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 jobs:
-  update:
-    name: EAS Update
+  build:
+    name: EAS build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -12,8 +15,8 @@ jobs:
       - name: Check for EXPO_TOKEN
         run: |
           if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-            exit 1
+          echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+          exit 1
           fi
 
       - name: Checkout repository
@@ -30,9 +33,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
-      #   - name: Setup Working directory
-      #     run: cd apps/mobile
-
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
@@ -43,6 +43,6 @@ jobs:
         run: pnpm install
         working-directory: apps/mobile
 
-      - name: Publish update
-        run: eas update --auto
+      - name: Build on EAS
+        run: eas build --platform all --non-interactive --no-wait
         working-directory: apps/mobile
