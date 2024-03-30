@@ -2,10 +2,10 @@ import { AppState } from "react-native";
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
 import { LargeSecureStore } from "./LargeSecureStore";
+import { BuildConfig } from "@/buildConfig";
 
-const supabaseUrl = "https://tmqyfmfilopdrhovpnrr.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtcXlmbWZpbG9wZHJob3ZwbnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTExNTQ0NTYsImV4cCI6MjAwNjczMDQ1Nn0.clzAs88Sw_RfW4E24hfZUJKNaff15TXeVpYF8AfwO74";
+const supabaseUrl = BuildConfig.Auth.SUPABASE_URL;
+const supabaseAnonKey = BuildConfig.Auth.SUPABASE_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {

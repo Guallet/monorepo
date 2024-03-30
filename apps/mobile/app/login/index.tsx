@@ -1,16 +1,16 @@
 import { supabase } from "@/auth/supabase";
 import { Stack, router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import { PrimaryButton, TextInput } from "@guallet/ui-react-native";
+import { BuildConfig } from "@/buildConfig";
 
 GoogleSignin.configure({
-  webClientId:
-    "218442007864-a1cu28dbsvqkjm3f6t1snh84f9hpj7ir.apps.googleusercontent.com",
+  webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
 });
 
 export default function Auth() {
