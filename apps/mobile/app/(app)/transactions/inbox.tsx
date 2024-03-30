@@ -1,9 +1,8 @@
 import { AppScreen } from "@/components/Layout/AppScreen";
-import { View } from "@/components/Themed";
 import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
 import { useTransactionInbox } from "@/features/transactions/useTransactions";
-import { TransactionDto } from "@guallet/api-client";
+import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
 import { Money } from "@guallet/money";
 import {
   ActionIcon,
@@ -15,7 +14,7 @@ import {
   Spacing,
 } from "@guallet/ui-react-native";
 import dayjs from "dayjs";
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 
 export default function TransactionsInboxScreen() {
   const { transactions, isLoading } = useTransactionInbox();
@@ -62,7 +61,7 @@ export default function TransactionsInboxScreen() {
 }
 
 interface InboxTransactionProps {
-  transaction: TransactionDto;
+  transaction: InboxTransactionDto | TransactionDto;
 }
 function InboxTransaction({ transaction }: InboxTransactionProps) {
   const { account, isLoading: isAccountLoading } = useAccount(

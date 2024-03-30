@@ -1,6 +1,5 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
-import { Text, View } from "@/components/Themed";
 import { Stack, router } from "expo-router";
 import { UserProfileRow } from "@/components/UserProfileRow";
 import {
@@ -8,6 +7,7 @@ import {
   Spacing,
   TextRow,
   ExternalLinkRow,
+  Label,
 } from "@guallet/ui-react-native";
 import { useAuth } from "@/auth/useAuth";
 import React from "react";
@@ -192,7 +192,7 @@ function SettingsGroup({ title, children }: SettingsGroupProps) {
         margin: 10,
       }}
     >
-      <Text
+      <Label
         style={{
           fontSize: 20,
           fontWeight: "bold",
@@ -200,7 +200,7 @@ function SettingsGroup({ title, children }: SettingsGroupProps) {
         }}
       >
         {title}
-      </Text>
+      </Label>
       {children}
     </View>
   );
