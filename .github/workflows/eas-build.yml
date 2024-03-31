@@ -49,6 +49,18 @@ jobs:
           touch .env
           echo {{ secrets.MOBILE_ENV_FILE_PROD }} >> .env
 
+      - name: Create Firebase Android config file
+        working-directory: apps/mobile/auth/firebase
+        run: |
+          touch google-services.json
+          echo {{ secrets.FIREBASE_ANDROID_FILE_PROD }} >> google-services.json
+
+      - name: Create Firebase iOS config file
+        working-directory: apps/mobile/auth/firebase
+        run: |
+          touch GoogleService-Info.plist
+          echo {{ secrets.FIREBASE_IOS_FILE_PROD }} >> GoogleService-Info.plist
+
       - name: Build on EAS
         run: eas build --platform all --non-interactive --no-wait
         working-directory: apps/mobile

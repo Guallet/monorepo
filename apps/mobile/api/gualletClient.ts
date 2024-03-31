@@ -1,4 +1,5 @@
 import { supabase } from "@/auth/supabase";
+import { BuildConfig } from "@/buildConfig";
 import {
   AccountsApi,
   BudgetsApi,
@@ -10,9 +11,7 @@ import {
 } from "@guallet/api-client";
 
 const innerClient = GualletClient.createClient({
-  // baseUrl: "https://guallet.cjgaliana.com",
-  // baseUrl: "https://guallet-dev.cjgaliana.com",
-  baseUrl: "https://guallet-api-develop.fzx1cu.easypanel.host",
+  baseUrl: BuildConfig.BASE_API_URL,
   getTokenFunction: getCurrentUserToken,
 });
 
