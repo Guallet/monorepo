@@ -9,9 +9,9 @@ import {
   Row,
   Spacing,
 } from "@guallet/ui-react-native";
-import { Stack, router } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 type FilterData = {
@@ -42,9 +42,7 @@ export default function TransactionsScreen() {
                 name="add"
                 size={24}
                 onClick={() => {
-                  router.navigate({
-                    pathname: "/transactions/create",
-                  });
+                  router.push("/(app)/transactions/create");
                 }}
               />
               <ActionIcon

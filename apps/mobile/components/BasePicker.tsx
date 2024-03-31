@@ -45,7 +45,7 @@ export function BasePicker<T>({
         })
       );
     }
-  }, [searchQuery]);
+  }, [searchQuery, items]);
 
   return (
     <TouchableOpacity

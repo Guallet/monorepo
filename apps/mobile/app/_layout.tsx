@@ -73,7 +73,6 @@ function RootLayoutNav() {
     <ThemeProvider value={DefaultTheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          {/* <Slot /> */}
           <GestureHandlerRootView style={{ flex: 1 }}>
             <BottomSheetModalProvider>
               <Stack>

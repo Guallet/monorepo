@@ -16,18 +16,14 @@ export function CategoryPicker({
   onCategorySelected,
 }: CategoryPickerProps) {
   const { categories, isLoading } = useGroupedCategories();
-  const [flattenCategories, setFlattenCategories] = useState<AppCategory[]>([]);
 
-  useEffect(() => {
-    const flattenCategories = categories.reduce((acc, category) => {
-      acc.push(category);
-      if (category.subCategories.length > 0) {
-        acc = acc.concat(category.subCategories);
-      }
-      return acc;
-    }, [] as AppCategory[]);
-    setFlattenCategories(flattenCategories);
-  }, [categories]);
+  const flattenCategories = categories.reduce((acc, category) => {
+    acc.push(category);
+    if (category.subCategories.length > 0) {
+      acc = acc.concat(category.subCategories);
+    }
+    return acc;
+  }, [] as AppCategory[]);
 
   return (
     <BasePicker

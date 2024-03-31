@@ -25,7 +25,7 @@ export function EmptyAccountsList({
           height: 200,
           marginTop: Spacing.extraLarge,
         }}
-        contentFit="fill"
+        contentFit="contain"
         contentPosition="center"
       />
       <Text>It looks you don't have any account yet</Text>
