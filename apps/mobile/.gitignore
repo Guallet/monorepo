@@ -43,3 +43,7 @@ expo-env.d.ts
 # Expo Prebuild
 android
 ios
+
+# Firebase config
+**/google-services.json
+**/GoogleService-Info.plist
