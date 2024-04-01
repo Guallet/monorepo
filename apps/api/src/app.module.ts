@@ -1,12 +1,9 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { GraphQLModule } from '@nestjs/graphql';
 import { ScheduleModule } from '@nestjs/schedule';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
 import { LoggerModule } from 'nestjs-pino';
 import { AccountsModule } from './accounts/accounts.module';
 import { InstitutionsModule } from './institutions/institutions.module';
@@ -74,12 +71,6 @@ import { BudgetsModule } from './budgets/budgets.module';
       synchronize: process.env.ENVIRONMENT == 'development',
       autoLoadEntities: true,
       ssl: { rejectUnauthorized: false },
-    }),
-    // GRAPHQL
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      playground: true,
     }),
     // CRON
     ScheduleModule.forRoot(),
