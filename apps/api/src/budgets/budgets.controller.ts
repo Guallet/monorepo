@@ -13,8 +13,10 @@ import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('budgets')
+@ApiTags('Budgets')
 export class BudgetsController {
   private readonly logger = new Logger(BudgetsController.name);
 
