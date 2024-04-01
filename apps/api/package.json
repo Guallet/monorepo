@@ -23,14 +23,11 @@
     "db:seed:trace": "ts-node --showConfig"
   },
   "dependencies": {
-    "@apollo/server": "^4.9.0",
     "@axiomhq/pino": "1.0.0-rc.1",
-    "@nestjs/apollo": "^12.0.7",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.0.0",
-    "@nestjs/graphql": "^12.0.8",
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.0.0",
@@ -40,7 +37,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "compression": "^1.7.4",
-    "graphql": "^16.7.1",
     "helmet": "^7.0.0",
     "nestjs-pino": "^4.0.0",
     "pg": "^8.11.2",

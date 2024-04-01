@@ -1,4 +1,3 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Account } from 'src/accounts/entities/account.entity';
 import {
   Column,
@@ -11,23 +10,18 @@ import {
 } from 'typeorm';
 
 @Entity('institutions')
-@ObjectType()
 export class Institution {
   @PrimaryGeneratedColumn('uuid')
-  @Field((type) => ID)
   id: string;
 
   @Column()
-  @Field()
   name: string;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
   image_src?: string;
 
   // If this is not null, it's because the user created this manually. We need a UI to manage this from the user app
   @Column({ nullable: true })
-  @Field({ nullable: true })
   user_id?: string;
 
   // THIS IS BECAUSE NORDIGEN OPEN BANKING

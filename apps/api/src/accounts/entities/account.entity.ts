@@ -1,4 +1,3 @@
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { AccountType } from './accountType.model';
 import {
   Entity,
@@ -20,22 +19,17 @@ import {
 import { AccountSource } from './accountSource.model';
 
 @Entity('accounts')
-@ObjectType()
 export class Account {
   @PrimaryGeneratedColumn('uuid')
-  @Field((type) => ID)
   id: string;
 
   @Column()
-  @Field((type) => ID)
   user_id: string;
 
   @Column()
-  @Field()
   name: string;
 
   @Column({ type: 'decimal' })
-  @Field((type) => Float)
   balance: number;
 
   @Column()
@@ -47,7 +41,6 @@ export class Account {
     enum: AccountType,
     default: AccountType.UNKNOWN,
   })
-  @Field((type) => AccountType)
   type: AccountType;
 
   @Column({
@@ -79,7 +72,6 @@ export class Account {
   transactions: Transaction[];
 
   @ManyToOne(() => Institution, (institution) => institution.accounts)
-  @Field((type) => Institution, { nullable: true })
   institution: Institution;
 
   @Column({ nullable: true })

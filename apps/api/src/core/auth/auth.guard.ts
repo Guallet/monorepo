@@ -12,7 +12,6 @@ import { Request } from 'express';
 import { IS_PUBLIC_KEY } from './is-public.decorator';
 import { UserPrincipal } from './user-principal';
 import { JwtService } from '@nestjs/jwt';
-import { GqlExecutionContext } from '@nestjs/graphql';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -32,23 +31,17 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    // GraphQL Context is different, so decide which one to use
-    const ctx =
-      this.httpRequest(context) !== null
-        ? context
-        : this.graphQLContext(context);
-
     // If the endpoint is marked with @Public decorator, then bypass the auth
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      ctx.getHandler(),
-      ctx.getClass(),
+      context.getHandler(),
+      context.getClass(),
     ]);
     if (isPublic) {
       return true;
     }
 
     // Check if the token is valid
-    const request = this.httpRequest(context) ?? this.graphQLRequest(context);
+    const request = context.switchToHttp().getRequest();
     return this.validateRequest(request)
       .then((user) => {
         if (user == null) {
@@ -64,18 +57,6 @@ export class AuthGuard implements CanActivate {
         this.logger.warn(`Error validating the auth token ${error}`);
         throw new UnauthorizedException();
       });
-  }
-
-  private httpRequest(context: ExecutionContext) {
-    return context.switchToHttp().getRequest();
-  }
-
-  private graphQLRequest(context: ExecutionContext) {
-    return this.graphQLContext(context).getContext().req as Request;
-  }
-
-  private graphQLContext(context: ExecutionContext) {
-    return GqlExecutionContext.create(context);
   }
 
   private async validateRequest(req: Request): Promise<UserPrincipal> {
