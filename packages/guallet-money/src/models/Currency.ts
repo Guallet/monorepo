@@ -32,7 +32,10 @@ function getCurrencySymbol(code: string, locale: string | undefined): string {
       .replace(/\d/g, "")
       .trim();
   } catch (e) {
-    console.error("Error getting currency symbol " + code, e);
+    console.error(`Error getting currency symbol: ${code}`, {
+      error: e,
+      code: code,
+    });
     return code;
   }
 }

@@ -2046,14 +2046,6 @@ export const json = {
           $name: "CcyNtry",
           $attr: {},
           $data: [
-            { $name: "CtryNm", $attr: {}, $data: "PALESTINE, STATE OF" },
-            { $name: "CcyNm", $attr: {}, $data: "No universal currency" },
-          ],
-        },
-        {
-          $name: "CcyNtry",
-          $attr: {},
-          $data: [
             { $name: "CtryNm", $attr: {}, $data: "PANAMA" },
             { $name: "CcyNm", $attr: {}, $data: "Balboa" },
             { $name: "Ccy", $attr: {}, $data: "PAB" },
@@ -2483,18 +2475,6 @@ export const json = {
             { $name: "Ccy", $attr: {}, $data: "ZAR" },
             { $name: "CcyNbr", $attr: {}, $data: 710 },
             { $name: "CcyMnrUnts", $attr: {}, $data: 2 },
-          ],
-        },
-        {
-          $name: "CcyNtry",
-          $attr: {},
-          $data: [
-            {
-              $name: "CtryNm",
-              $attr: {},
-              $data: "SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS",
-            },
-            { $name: "CcyNm", $attr: {}, $data: "No universal currency" },
           ],
         },
         {

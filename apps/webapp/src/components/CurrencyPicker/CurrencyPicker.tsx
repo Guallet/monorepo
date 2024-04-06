@@ -74,8 +74,6 @@ export function CurrencyPicker({
 const currencyCodes = Object.values(ISO4217Currencies)
   .sort()
   // Remove Antarctica
-  .filter((currency) => currency.country !== "ANTARCTICA")
-  .filter((currency) => currency.code !== "XXX")
   .map((currency) => {
     return Currency.fromISOCode(currency.code);
   });
