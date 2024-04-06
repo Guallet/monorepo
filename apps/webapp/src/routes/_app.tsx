@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_app")({
 
 function ProtectedRoute() {
   const { session, isLoading } = useAuth();
-  const router = useRouterState();
+  // const { resolvedLocation } = useRouterState();
 
   if (isLoading) {
     return (
@@ -28,7 +28,11 @@ function ProtectedRoute() {
       // along to that page after they login, which is a nicer user experience
       // than dropping them off on the home page.
       return (
-        <Navigate to="/login" search={{ redirect: router.location.pathname }} />
+        <Navigate
+          to="/login"
+          search={{ redirect: "/dashboard" }}
+          // search={{ redirect: resolvedLocation.pathname }}
+        />
       );
     }
 
