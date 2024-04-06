@@ -18,6 +18,7 @@ import { Route as AppImport } from './routes/_app'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as OnboardingWaitinglistImport } from './routes/onboarding/waiting_list'
 import { Route as OnboardingRegisterImport } from './routes/onboarding/register'
+import { Route as LoginValidateotpImport } from './routes/login/validateotp'
 import { Route as LoginCallbackImport } from './routes/login/callback'
 import { Route as AppUserIndexImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexImport } from './routes/_app/transactions/index'
@@ -92,6 +93,11 @@ const OnboardingWaitinglistRoute = OnboardingWaitinglistImport.update({
 
 const OnboardingRegisterRoute = OnboardingRegisterImport.update({
   path: '/onboarding/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginValidateotpRoute = LoginValidateotpImport.update({
+  path: '/login/validateotp',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -238,6 +244,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginCallbackImport
       parentRoute: typeof rootRoute
     }
+    '/login/validateotp': {
+      preLoaderRoute: typeof LoginValidateotpImport
+      parentRoute: typeof rootRoute
+    }
     '/onboarding/register': {
       preLoaderRoute: typeof OnboardingRegisterImport
       parentRoute: typeof rootRoute
@@ -366,6 +376,7 @@ export const routeTree = rootRoute.addChildren([
   LogoutRoute,
   UserdeletedComponentRoute,
   LoginCallbackRoute,
+  LoginValidateotpRoute,
   OnboardingRegisterRoute,
   OnboardingWaitinglistRoute,
   LoginIndexRoute,

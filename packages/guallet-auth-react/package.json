@@ -1,9 +1,9 @@
 {
-  "name": "@guallet/auth-ui-react",
+  "name": "@guallet/auth-react",
   "version": "0.0.1",
   "description": "Auth UI components for Guallet apps",
-  "main": "./index.tsx",
-  "types": "./index.tsx",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
   "license": "MIT",
   "scripts": {
     "lint": "eslint \"**/*.ts*\""
@@ -11,6 +11,7 @@
   "dependencies": {
     "@mantine/core": "^7.1.3",
     "@mantine/hooks": "^7.1.3",
+    "@mantine/form": "^7.1.3",
     "@tabler/icons-react": "^2.39.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

@@ -3,7 +3,7 @@ import { Analytics } from "@core/analytics/Analytics";
 import { UserDto } from "@/features/user/api/user.api";
 import { get } from "../api/fetchHelper";
 
-import { Session } from "@supabase/supabase-js";
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
 interface AuthContextType {
@@ -29,7 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
-  async function onSessionChanged(session: Session | null) {
+  async function onSessionChanged(
+    event: AuthChangeEvent,
+    session: Session | null
+  ) {
+    console.log("Session changed", { event, session });
     setSession(session);
 
     if (session) {
@@ -55,9 +59,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       });
 
-    supabase.auth.onAuthStateChange(async (_event, session) => {
-      await onSessionChanged(session);
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        onSessionChanged(event, session);
+      }
+    );
+
+    return () => {
+      authListener.subscription;
+    };
   }, []);
 
   const getUserProfile = async (userId: string) => {

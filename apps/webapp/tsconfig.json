@@ -45,6 +45,7 @@
 
       //Packages
       "@guallet/ui-react": ["./packages/guallet-ui-react/*"],
+      "@guallet/auth-react": ["./packages/guallet-auth-react/*"],
       "@guallet/money": ["./packages/guallet-money/*"]
     }
   },
