@@ -12,6 +12,7 @@
   "dependencies": {
     "@guallet/money": "workspace:*",
     "@guallet/ui-react": "workspace:*",
+    "@guallet/auth-ui-react": "workspace:*",
     "@hookform/resolvers": "^3.3.4",
     "@mantine/charts": "^7.4.0",
     "@mantine/core": "^7.1.3",
