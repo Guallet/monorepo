@@ -33,7 +33,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     event: AuthChangeEvent,
     session: Session | null
   ) {
-    console.log("Session changed", { event, session });
     setSession(session);
 
     if (session) {
