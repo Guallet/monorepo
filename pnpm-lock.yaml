@@ -304,6 +304,9 @@ importers:
 
   apps/webapp:
     dependencies:
+      '@guallet/api-client':
+        specifier: workspace:*
+        version: link:../../packages/guallet-api-client
       '@guallet/auth-react':
         specifier: workspace:*
         version: link:../../packages/guallet-auth-react
