@@ -12,6 +12,8 @@ import { AuthProvider } from "./core/auth/useAuth";
 import { RouterProvider, Router, ErrorComponent } from "@tanstack/react-router";
 import { NotFoundRoute } from "@tanstack/react-router";
 import { Route as rootRoute } from "./routes/__root.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -37,12 +39,18 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// Create a Query client
+const queryClient = new QueryClient();
+
 export default function App() {
   return (
     <MantineProvider>
       <Notifications />
       <AuthProvider>
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </AuthProvider>
     </MantineProvider>
   );

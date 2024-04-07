@@ -1,4 +1,4 @@
-import { GualletClient } from "GualletClient";
+import { GualletClient } from "./../GualletClient";
 import {
   InboxTransactionDto,
   TransactionDto,

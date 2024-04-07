@@ -1,4 +1,4 @@
-import { GualletClient } from "GualletClient";
+import { GualletClient } from "./../GualletClient";
 import { BudgetDto } from "./budgets.models";
 
 const BUDGETS_PATH = "budgets";

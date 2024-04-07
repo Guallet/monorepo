@@ -1,15 +1,12 @@
 import GroupHeader from "@/components/GroupHeader/GroupHeader";
-import {
-  Account,
-  AccountType,
-  getAccountTypeTitle,
-} from "@accounts/models/Account";
+import { AccountType, getAccountTypeTitle } from "@accounts/models/Account";
+import { AccountDto } from "@guallet/api-client";
 import { Money } from "@guallet/money";
 import "core-js/actual/array/group-by";
 
 interface HeaderProps {
   accountType: AccountType;
-  accounts: Account[];
+  accounts: AccountDto[];
 }
 
 export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
@@ -24,12 +21,12 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
   function getTotalBalance(): string {
     const currencies = Object.entries(
       // @ts-ignore
-      accounts.groupBy((x: Account) => x.currency)
+      accounts.groupBy((x: AccountDto) => x.currency)
     );
 
     if (currencies.length == 1) {
       // Display Single Balance
-      const total = accounts.map((e) => +e.balance);
+      const total = accounts.map((e) => +e.balance.amount);
       const sum = sumArray(total);
 
       const money = Money.fromCurrencyCode({
@@ -41,9 +38,9 @@ export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
       // Display 2 Balances
       const balances = currencies.map((entry) => {
         const currency = entry[0];
-        const accounts = entry[1] as Account[];
+        const accounts = entry[1] as AccountDto[];
 
-        const total = accounts.map((e) => +e.balance);
+        const total = accounts.map((e) => +e.balance.amount);
         const sum = sumArray(total);
 
         const money = Money.fromCurrencyCode({

@@ -30,6 +30,7 @@
       "@router/*": ["./src/router/*"],
       "@theme/*": ["./src/theme/*"],
       "@utils/*": ["./src/utils/*"],
+      "@api/*": ["./src/core/api/*"],
 
       // Features
       "@accounts/*": ["./src/features/accounts/*"],

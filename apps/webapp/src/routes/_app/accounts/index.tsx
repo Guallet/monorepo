@@ -1,26 +1,25 @@
-import { loadAccounts } from "@/features/accounts/api/accounts.api";
+import { useAccounts } from "@/core/api/accounts/useAccounts";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
-import { Account } from "@/features/accounts/models/Account";
+import { AccountDto } from "@guallet/api-client";
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_app/accounts/")({
   component: AccountsPage,
-  loader: loader,
 });
-
-async function loader() {
-  return await loadAccounts();
-}
 
 function AccountsPage() {
   const navigation = useNavigate();
-  const allAccounts = Route.useLoaderData();
-  const [filteredAccounts, setFilteredAccounts] = useState(allAccounts);
+  const { accounts } = useAccounts();
+  const [filteredAccounts, setFilteredAccounts] = useState(accounts);
 
-  if (allAccounts.length === 0) {
+  useEffect(() => {
+    setFilteredAccounts(accounts);
+  }, [accounts]);
+
+  if (accounts.length === 0) {
     return (
       <EmptyAccountsPage
         onCreateNewAccount={() => {
@@ -43,10 +42,10 @@ function AccountsPage() {
         onAddNewAccount={() => navigation({ to: "/accounts/add" })}
         onSearchQueryChanged={(searchQuery: string) => {
           if (searchQuery.length === 0) {
-            setFilteredAccounts(allAccounts);
+            setFilteredAccounts(accounts);
           } else {
             setFilteredAccounts(
-              allAccounts.filter((x) =>
+              accounts.filter((x) =>
                 x.name.toLowerCase().includes(searchQuery.toLowerCase())
               )
             );
@@ -56,7 +55,7 @@ function AccountsPage() {
       <Stack justify="flex-start">
         <AccountsList
           accounts={filteredAccounts}
-          onAccountSelected={(account: Account) => {
+          onAccountSelected={(account: AccountDto) => {
             navigation({
               to: "/accounts/$id",
               params: { id: account.id },

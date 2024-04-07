@@ -3,10 +3,11 @@ import { AccountRow } from "./AccountRow";
 import { AccountsListHeader } from "./AccountsListHeader";
 import { Stack } from "@mantine/core";
 import { Account, AccountType } from "@accounts/models/Account";
+import { AccountDto } from "@guallet/api-client";
 
 interface Props {
-  accounts: Account[];
-  onAccountSelected: (account: Account) => void;
+  accounts: AccountDto[];
+  onAccountSelected: (account: AccountDto) => void;
 }
 
 // export function AccountsList({ accounts }: Props) {
@@ -55,10 +56,10 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
           <Stack key={key}>
             <AccountsListHeader
               accountType={key as AccountType}
-              accounts={value as Account[]}
+              accounts={value as AccountDto[]}
             />
             <p>
-              {(value as Account[]).map((account: Account) => (
+              {(value as AccountDto[]).map((account: AccountDto) => (
                 <AccountRow
                   key={account.id}
                   account={account}

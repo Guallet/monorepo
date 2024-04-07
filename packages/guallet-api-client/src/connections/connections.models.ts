@@ -3,7 +3,7 @@ export type OpenBankingCountryDto = {
   name: string;
 };
 
-export type InstitutionDto = {
+export type ObInstitutionDto = {
   id: string;
   name: string;
   bic: string;

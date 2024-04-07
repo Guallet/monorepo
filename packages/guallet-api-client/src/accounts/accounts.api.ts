@@ -3,7 +3,7 @@ import {
   CreateAccountRequest,
   UpdateAccountRequest,
 } from "./accounts.models";
-import { GualletClient } from "GualletClient";
+import { GualletClient } from "./../GualletClient";
 
 const ACCOUNTS_PATH = "accounts";
 

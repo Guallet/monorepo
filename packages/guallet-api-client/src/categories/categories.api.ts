@@ -1,4 +1,4 @@
-import { GualletClient } from "GualletClient";
+import { GualletClient } from "./../GualletClient";
 import { CategoryDto } from "./categories.models";
 
 const CATEGORIES_PATH = "categories";

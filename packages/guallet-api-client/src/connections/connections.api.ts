@@ -1,9 +1,9 @@
-import { GualletClient } from "GualletClient";
+import { GualletClient } from "./../GualletClient";
 import {
   GualletInstitutionDto,
-  InstitutionDto,
   ObConnection,
   ObConnectionRequest,
+  ObInstitutionDto,
   ObRConnectionPermissionDto,
   OpenBankingCountryDto,
 } from "./connections.models";
@@ -21,14 +21,14 @@ export class ConnectionsApi {
 
   async getInstitutionsForCountry(
     countryCode: string
-  ): Promise<InstitutionDto[]> {
-    return await this.client.get<InstitutionDto[]>(
+  ): Promise<ObInstitutionDto[]> {
+    return await this.client.get<ObInstitutionDto[]>(
       `openbanking/${countryCode}/institutions`
     );
   }
 
-  async getInstitution(institutionId: string): Promise<InstitutionDto> {
-    return await this.client.get<InstitutionDto>(
+  async getInstitution(institutionId: string): Promise<ObInstitutionDto> {
+    return await this.client.get<ObInstitutionDto>(
       `openbanking/institutions/${institutionId}/`
     );
   }
