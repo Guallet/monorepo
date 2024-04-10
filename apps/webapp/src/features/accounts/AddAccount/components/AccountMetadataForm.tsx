@@ -1,4 +1,4 @@
-import { AccountType } from "@accounts/models/Account";
+import { AccountTypeDto } from "@guallet/api-client";
 import { CreditCardForm } from "./CreditCardForm";
 import { CurrentAccountForm } from "./CurrentAccountForm";
 import { LoanForm } from "./LoanForm";
@@ -6,29 +6,29 @@ import { MortgageForm } from "./MortgageForm";
 import { SavingsForm } from "./SavingsForm";
 
 export interface AccountMetadataFormProps {
-  accountType: AccountType;
+  accountType: AccountTypeDto;
 }
 
 export function AccountMetadataForm({ accountType }: AccountMetadataFormProps) {
   switch (accountType) {
-    case AccountType.CURRENT_ACCOUNT:
+    case AccountTypeDto.CURRENT_ACCOUNT:
       return <CurrentAccountForm />;
 
-    case AccountType.CREDIT_CARD:
+    case AccountTypeDto.CREDIT_CARD:
       return <CreditCardForm />;
 
-    case AccountType.LOAN:
+    case AccountTypeDto.LOAN:
       return <LoanForm />;
 
-    case AccountType.MORTGAGE:
+    case AccountTypeDto.MORTGAGE:
       return <MortgageForm />;
 
-    case AccountType.SAVINGS:
+    case AccountTypeDto.SAVINGS:
       return <SavingsForm />;
 
-    case AccountType.PENSION:
-    case AccountType.INVESTMENT:
-    case AccountType.UNKNOWN:
+    case AccountTypeDto.PENSION:
+    case AccountTypeDto.INVESTMENT:
+    case AccountTypeDto.UNKNOWN:
     default:
       return null;
   }

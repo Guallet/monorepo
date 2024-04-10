@@ -1,28 +1,16 @@
-// {
-//     path: ":id/edit",
-//     index: true,
-//     element: <EditAccountPage />,
-//     loader: editAccountLoader,
-//     action: editAccountAction,
-//   }
-
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { TextInput, Button, Group, NativeSelect, rem } from "@mantine/core";
-import {
-  UpdateAccountRequest,
-  getAccount,
-  updateAccount,
-} from "@accounts/api/accounts.api";
-import { Account, AccountType } from "@accounts/models/Account";
 import { IconChevronDown } from "@tabler/icons-react";
+import { AccountTypeDto } from "@guallet/api-client";
+import { gualletClient } from "@/App";
 
 type FormData = {
   accountId: string;
   name: string;
   currency: string;
   balance: number;
-  account_type: AccountType;
+  account_type: AccountTypeDto;
 };
 
 export const Route = createFileRoute("/_app/accounts/$id/edit")({
@@ -32,7 +20,7 @@ export const Route = createFileRoute("/_app/accounts/$id/edit")({
 
 async function loader(params: { id: string }) {
   const { id } = params;
-  return await getAccount(id!);
+  return await gualletClient.accounts.get(id!);
 }
 
 // export const action: ActionFunction = async ({ request, params }) => {
@@ -54,25 +42,24 @@ async function loader(params: { id: string }) {
 //   return redirect(AppRoutes.Accounts.ACCOUNT_DETAILS(updatedAccount.id));
 // };
 
-function getLocalizedType(name: AccountType): string {
+function getLocalizedType(name: AccountTypeDto): string {
   // TODO: Localize this
   switch (name) {
-    case AccountType.CREDIT_CARD:
+    case AccountTypeDto.CREDIT_CARD:
       return "Credit Card";
-    case AccountType.CURRENT_ACCOUNT:
+    case AccountTypeDto.CURRENT_ACCOUNT:
       return "Current account";
-    case AccountType.INVESTMENT:
+    case AccountTypeDto.INVESTMENT:
       return "Investment";
-    case AccountType.LOAN:
+    case AccountTypeDto.LOAN:
       return "Loan";
-    case AccountType.MORTGAGE:
+    case AccountTypeDto.MORTGAGE:
       return "Mortgage";
-    case AccountType.PENSION:
+    case AccountTypeDto.PENSION:
       return "Pension";
-    case AccountType.SAVINGS:
+    case AccountTypeDto.SAVINGS:
       return "Savings account";
-    case AccountType.UNKNOWN:
-      return "Other";
+    case AccountTypeDto.UNKNOWN:
     default:
       return "Other";
   }
@@ -82,7 +69,7 @@ function EditAccountPage() {
   const account = Route.useLoaderData();
   const navigate = useNavigate();
 
-  const accountTypes = Object.entries(AccountType).map(
+  const accountTypes = Object.entries(AccountTypeDto).map(
     ({ "0": name, "1": accountType }) => {
       return {
         label: getLocalizedType(accountType),
@@ -128,7 +115,7 @@ function EditAccountPage() {
         label="Account balance"
         required
         description="Initial balance of the account"
-        defaultValue={account.balance}
+        defaultValue={account.balance.amount}
         type="number"
         leftSection={"£"}
       />

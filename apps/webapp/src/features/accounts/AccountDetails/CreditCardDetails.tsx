@@ -1,4 +1,4 @@
-import { Account } from "@accounts/models/Account";
+import { AccountDto } from "@guallet/api-client";
 import {
   LineChart,
   ChartTooltip,
@@ -6,7 +6,7 @@ import {
 } from "@mantine/charts";
 
 interface Props {
-  account: Account;
+  account: AccountDto;
 }
 const data = [
   {

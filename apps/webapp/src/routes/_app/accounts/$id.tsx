@@ -1,12 +1,12 @@
 import { useNavigate, notFound, createFileRoute } from "@tanstack/react-router";
 import { Group, Modal, Stack, Text, Button } from "@mantine/core";
 import { ApiError, fetch_delete } from "@core/api/fetchHelper";
-import { Account, AccountType } from "@accounts/models/Account";
-import { getAccount } from "@accounts/api/accounts.api";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
+import { AccountDto, AccountTypeDto } from "@guallet/api-client";
+import { gualletClient } from "@/App";
 
 export const Route = createFileRoute("/_app/accounts/$id")({
   component: AccountDetailsPage,
@@ -25,9 +25,10 @@ export const Route = createFileRoute("/_app/accounts/$id")({
   },
 });
 
-async function loader(id: string): Promise<Account> {
+async function loader(id: string): Promise<AccountDto> {
   try {
-    return await getAccount(id);
+    // return await getAccount(id);
+    return await gualletClient.accounts.get(id);
   } catch (error) {
     console.error("Error loading account", error);
     if (error instanceof ApiError) {
@@ -121,7 +122,7 @@ function AccountDetailsPage() {
 }
 
 interface DialogProps {
-  account: Account;
+  account: AccountDto;
   onCancel: () => void;
   onAccountDeleted: () => void;
 }
@@ -154,12 +155,12 @@ function DeleteAccountDialog({
   );
 }
 
-function AccountDetailsSelector(account: Account) {
+function AccountDetailsSelector(account: AccountDto) {
   // TODO: Create different components for each account type
   switch (account.type) {
-    case AccountType.CURRENT_ACCOUNT:
+    case AccountTypeDto.CURRENT_ACCOUNT:
       return <CurrentAccountDetails account={account} />;
-    case AccountType.CREDIT_CARD:
+    case AccountTypeDto.CREDIT_CARD:
       return <CreditCardDetails account={account} />;
     default:
       return null;

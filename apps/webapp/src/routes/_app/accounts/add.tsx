@@ -7,21 +7,18 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { AccountType } from "@accounts/models/Account";
 import { useState } from "react";
 import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AccountMetadataForm } from "@/features/accounts/AddAccount/components/AccountMetadataForm";
-import {
-  CreateAccountRequest,
-  createAccount,
-} from "@/features/accounts/api/accounts.api";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
+import { useAccountMutations } from "@guallet/api-react";
+import { AccountTypeDto, CreateAccountRequest } from "@guallet/api-client";
 
 export const Route = createFileRoute("/_app/accounts/add")({
   component: AddAccountPage,
@@ -31,30 +28,30 @@ const accountFormDataSchema = z.object({
   name: z.string().min(1, { message: "Account name is required" }),
   currency: z.string().default("GBP"),
   balance: z.number().default(0),
-  account_type: z.nativeEnum(AccountType).catch(AccountType.UNKNOWN),
+  account_type: z.nativeEnum(AccountTypeDto).catch(AccountTypeDto.UNKNOWN),
   credit_limit: z.string().nullable().optional(),
   interest_rate: z.string().nullable().optional(),
 });
 type AddAccountFormData = z.infer<typeof accountFormDataSchema>;
 
-function getLocalizedType(name: AccountType): string {
+function getLocalizedType(name: AccountTypeDto): string {
   // TODO: Localize this
   switch (name) {
-    case AccountType.CREDIT_CARD:
+    case AccountTypeDto.CREDIT_CARD:
       return "Credit Card";
-    case AccountType.CURRENT_ACCOUNT:
+    case AccountTypeDto.CURRENT_ACCOUNT:
       return "Current account";
-    case AccountType.INVESTMENT:
+    case AccountTypeDto.INVESTMENT:
       return "Investment";
-    case AccountType.LOAN:
+    case AccountTypeDto.LOAN:
       return "Loan";
-    case AccountType.MORTGAGE:
+    case AccountTypeDto.MORTGAGE:
       return "Mortgage";
-    case AccountType.PENSION:
+    case AccountTypeDto.PENSION:
       return "Pension";
-    case AccountType.SAVINGS:
+    case AccountTypeDto.SAVINGS:
       return "Savings account";
-    case AccountType.UNKNOWN:
+    case AccountTypeDto.UNKNOWN:
       return "Other";
     default:
       return "Other";
@@ -63,14 +60,15 @@ function getLocalizedType(name: AccountType): string {
 
 export function AddAccountPage() {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { createAccountMutation } = useAccountMutations();
 
-  const [accountType, setAccountType] = useState<AccountType>(
-    AccountType.CURRENT_ACCOUNT
+  const [accountType, setAccountType] = useState<AccountTypeDto>(
+    AccountTypeDto.CURRENT_ACCOUNT
   );
 
   const form = useForm<AddAccountFormData>({
     defaultValues: {
-      account_type: AccountType.CURRENT_ACCOUNT,
+      account_type: AccountTypeDto.CURRENT_ACCOUNT,
       currency: "GBP", // Get this from user settings
       balance: 0,
       credit_limit: null,
@@ -91,7 +89,9 @@ export function AddAccountPage() {
       initial_balance: data.balance,
     };
     try {
-      const newAccount = await createAccount(accountRequest);
+      const newAccount = await createAccountMutation.mutateAsync({
+        request: accountRequest,
+      });
       notifications.show({
         title: "Account created",
         message: `Account ${newAccount.name} created`,
@@ -108,7 +108,7 @@ export function AddAccountPage() {
     }
   }
 
-  const accountTypes = Object.entries(AccountType).map(
+  const accountTypes = Object.entries(AccountTypeDto).map(
     ({ "0": name, "1": accountType }) => {
       return {
         label: getLocalizedType(accountType),
@@ -147,7 +147,7 @@ export function AddAccountPage() {
               mt="md"
               value={field.value}
               onChange={(event) => {
-                const type = event.currentTarget.value as AccountType;
+                const type = event.currentTarget.value as AccountTypeDto;
                 setAccountType(type);
                 field.onChange(type);
               }}

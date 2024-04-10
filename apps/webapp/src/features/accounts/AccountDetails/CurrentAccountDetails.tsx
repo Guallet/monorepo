@@ -1,4 +1,4 @@
-import { Account } from "@accounts/models/Account";
+import { AccountDto } from "@guallet/api-client";
 import {
   LineChart,
   Line,
@@ -11,7 +11,7 @@ import {
 } from "recharts";
 
 interface Props {
-  account: Account;
+  account: AccountDto;
 }
 const data = [
   {

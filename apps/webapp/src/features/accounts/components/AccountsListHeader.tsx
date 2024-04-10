@@ -1,11 +1,11 @@
 import GroupHeader from "@/components/GroupHeader/GroupHeader";
-import { AccountType, getAccountTypeTitle } from "@accounts/models/Account";
-import { AccountDto } from "@guallet/api-client";
+import { getAccountTypeTitle } from "@accounts/models/Account";
+import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { Money } from "@guallet/money";
 import "core-js/actual/array/group-by";
 
 interface HeaderProps {
-  accountType: AccountType;
+  accountType: AccountTypeDto;
   accounts: AccountDto[];
 }
 

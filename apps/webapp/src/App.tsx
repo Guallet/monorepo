@@ -46,7 +46,8 @@ declare module "@tanstack/react-router" {
 // Create a Query client
 const queryClient = new QueryClient();
 
-const gualletClient = GualletClient.createClient({
+// eslint-disable-next-line react-refresh/only-export-components
+export const gualletClient = GualletClient.createClient({
   baseUrl: BuildConfig.BASE_API_URL,
   getTokenFunction: getCurrentUserToken,
 });

@@ -2,8 +2,7 @@ import "core-js";
 import { AccountRow } from "./AccountRow";
 import { AccountsListHeader } from "./AccountsListHeader";
 import { Stack } from "@mantine/core";
-import { Account, AccountType } from "@accounts/models/Account";
-import { AccountDto } from "@guallet/api-client";
+import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 
 interface Props {
   accounts: AccountDto[];
@@ -29,11 +28,11 @@ function compareAccountTypes(a: string, b: string) {
     return 0;
   }
 
-  if (a === AccountType.UNKNOWN) {
+  if (a === AccountTypeDto.UNKNOWN) {
     return 1;
   }
 
-  if (b === AccountType.UNKNOWN) {
+  if (b === AccountTypeDto.UNKNOWN) {
     return -1;
   }
 
@@ -55,7 +54,7 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
         .map(([key, value]) => (
           <Stack key={key}>
             <AccountsListHeader
-              accountType={key as AccountType}
+              accountType={key as AccountTypeDto}
               accounts={value as AccountDto[]}
             />
             <p>

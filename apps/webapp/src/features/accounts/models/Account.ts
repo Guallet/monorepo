@@ -1,6 +1,8 @@
+import { AccountTypeDto } from "@guallet/api-client";
+
 export type Account = {
   id: string;
-  type: AccountType;
+  type: AccountTypeDto;
   name: string;
   balance: number;
   currency: string;
@@ -19,16 +21,16 @@ export type AccountConnectionDto = {
 };
 
 // TODO: Extract this type to shared package
-export enum AccountType {
-  CURRENT_ACCOUNT = "current-account",
-  CREDIT_CARD = "credit-card",
-  SAVINGS = "savings-account",
-  INVESTMENT = "investment",
-  MORTGAGE = "mortgage",
-  LOAN = "loan",
-  PENSION = "pension",
-  UNKNOWN = "unknown",
-}
+// export enum AccountType {
+//   CURRENT_ACCOUNT = "current-account",
+//   CREDIT_CARD = "credit-card",
+//   SAVINGS = "savings-account",
+//   INVESTMENT = "investment",
+//   MORTGAGE = "mortgage",
+//   LOAN = "loan",
+//   PENSION = "pension",
+//   UNKNOWN = "unknown",
+// }
 
 // export const AccountType = {
 //   CURRENT_ACCOUNT: "current-account",
@@ -43,21 +45,21 @@ export enum AccountType {
 // export type AccountType = (typeof AccountType)[keyof typeof AccountType];
 
 // TODO: Extract this function to shared package
-export function getAccountTypeTitle(type: AccountType): string {
+export function getAccountTypeTitle(type: AccountTypeDto): string {
   switch (type) {
-    case AccountType.CURRENT_ACCOUNT:
+    case AccountTypeDto.CURRENT_ACCOUNT:
       return "Current Accounts";
-    case AccountType.CREDIT_CARD:
+    case AccountTypeDto.CREDIT_CARD:
       return "Credit cards";
-    case AccountType.INVESTMENT:
+    case AccountTypeDto.INVESTMENT:
       return "Investment accounts";
-    case AccountType.LOAN:
+    case AccountTypeDto.LOAN:
       return "Loans";
-    case AccountType.MORTGAGE:
+    case AccountTypeDto.MORTGAGE:
       return "Mortgages";
-    case AccountType.PENSION:
+    case AccountTypeDto.PENSION:
       return "Pensions";
-    case AccountType.SAVINGS:
+    case AccountTypeDto.SAVINGS:
       return "Saving accounts";
 
     default:
