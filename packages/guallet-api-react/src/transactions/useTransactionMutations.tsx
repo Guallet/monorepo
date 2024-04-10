@@ -1,9 +1,10 @@
-import { gualletClient } from "@api/gualletClient";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useGualletClient } from "./../GualletClientProvider";
 
 const TRANSACTIONS_QUERY_KEY = "transactions";
 
 export function useTransactionMutations() {
+  const gualletClient = useGualletClient();
   const queryClient = useQueryClient();
 
   const updateTransactionNotesMutation = useMutation({

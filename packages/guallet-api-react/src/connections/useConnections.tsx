@@ -1,4 +1,3 @@
-import { gualletClient } from "@api/gualletClient";
 import {
   AccountDto,
   GualletInstitutionDto,
@@ -6,10 +5,13 @@ import {
   ObConnection,
 } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
+import { useGualletClient } from "./../GualletClientProvider";
 
 const CONNECTIONS_QUERY_KEY = "connections";
 
 export function useOpenBankingConnections() {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY],
     queryFn: async () => {
@@ -27,6 +29,8 @@ export function useOpenBankingConnections() {
 }
 
 export function useOpenBankingConnection(id: string) {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY, id],
     queryFn: async () => {
@@ -38,6 +42,8 @@ export function useOpenBankingConnection(id: string) {
 }
 
 export function useOpenBankingInstitution(institutionId: string) {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY, "institutions", institutionId],
     queryFn: async () => {

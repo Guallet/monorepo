@@ -14,6 +14,10 @@ import { NotFoundRoute } from "@tanstack/react-router";
 import { Route as rootRoute } from "./routes/__root.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { getCurrentUserToken } from "./core/auth/auth.helper.ts";
+import { GualletClient } from "@guallet/api-client";
+import { BuildConfig } from "./core/BuildConfig.ts";
+import { GualletClientProvider } from "@guallet/api-react";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -42,14 +46,21 @@ declare module "@tanstack/react-router" {
 // Create a Query client
 const queryClient = new QueryClient();
 
+const gualletClient = GualletClient.createClient({
+  baseUrl: BuildConfig.BASE_API_URL,
+  getTokenFunction: getCurrentUserToken,
+});
+
 export default function App() {
   return (
     <MantineProvider>
       <Notifications />
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <GualletClientProvider client={gualletClient}>
+            <RouterProvider router={router} />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </GualletClientProvider>
         </QueryClientProvider>
       </AuthProvider>
     </MantineProvider>

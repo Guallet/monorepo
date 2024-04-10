@@ -1,7 +1,7 @@
-import { useAccounts } from "@/core/api/accounts/useAccounts";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
+import { useAccounts } from "@guallet/api-react";
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";

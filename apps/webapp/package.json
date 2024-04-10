@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@guallet/api-client": "workspace:*",
+    "@guallet/api-react": "workspace:*",
     "@guallet/auth-react": "workspace:*",
     "@guallet/money": "workspace:*",
     "@guallet/ui-react": "workspace:*",

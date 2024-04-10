@@ -1,6 +1,20 @@
+import { AccountsApi } from "./accounts";
+import { BudgetsApi } from "./budgets";
+import { CategoriesApi } from "./categories";
+import { ConnectionsApi } from "./connections";
+import { InstitutionsApi } from "./institutions";
+import { TransactionsApi } from "./transactions";
+
 export class GualletClient {
   private baseUrl: string;
   private getTokenFunction: () => Promise<string | null>;
+
+  accounts: AccountsApi;
+  categories: CategoriesApi;
+  connections: ConnectionsApi;
+  institutions: InstitutionsApi;
+  transactions: TransactionsApi;
+  budgets: BudgetsApi;
 
   constructor(args: {
     baseUrl: string;
@@ -8,6 +22,13 @@ export class GualletClient {
   }) {
     this.baseUrl = args.baseUrl;
     this.getTokenFunction = args.getTokenFunction;
+
+    this.accounts = new AccountsApi(this);
+    this.categories = new CategoriesApi(this);
+    this.connections = new ConnectionsApi(this);
+    this.institutions = new InstitutionsApi(this);
+    this.transactions = new TransactionsApi(this);
+    this.budgets = new BudgetsApi(this);
   }
 
   static createClient(args: {

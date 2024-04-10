@@ -1,6 +1,6 @@
-import { gualletClient } from "@api/gualletClient";
 import { CategoryDto } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
+import { useGualletClient } from "./../GualletClientProvider";
 
 export type AppCategory = {
   subCategories: AppCategory[];
@@ -9,6 +9,8 @@ export type AppCategory = {
 const CATEGORIES_QUERY_KEY = "categories";
 
 export function useCategories() {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [CATEGORIES_QUERY_KEY],
     queryFn: async () => {
@@ -51,6 +53,8 @@ export function useGroupedCategory(id: string) {
 }
 
 export function useCategory(id: string) {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch, error } = useQuery({
     queryKey: [CATEGORIES_QUERY_KEY, id],
     queryFn: async () => {

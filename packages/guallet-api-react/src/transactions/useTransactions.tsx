@@ -1,11 +1,13 @@
-import { gualletClient } from "@api/gualletClient";
 import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useGualletClient } from "./../GualletClientProvider";
 
 const TRANSACTIONS_QUERY_KEY = "transactions";
 const TRANSACTIONS_DEFAULT_PAGE_SIZE = 50;
 
 export function useTransactions() {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY],
     queryFn: async () => {
@@ -28,6 +30,8 @@ export function useTransactions() {
 }
 
 export function useInfiniteTransactions() {
+  const gualletClient = useGualletClient();
+
   const {
     data,
     error,
@@ -76,6 +80,7 @@ export function useInfiniteTransactions() {
 }
 
 export function useTransaction(id: string) {
+  const gualletClient = useGualletClient();
   const { data, isLoading, isFetching, refetch, error } = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY, id],
     queryFn: async () => {
@@ -89,6 +94,7 @@ export function useTransaction(id: string) {
 }
 
 export function useTransactionInbox() {
+  const gualletClient = useGualletClient();
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY, "inbox"],
     queryFn: async () => {

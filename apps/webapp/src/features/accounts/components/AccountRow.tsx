@@ -3,7 +3,7 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { BaseButton } from "@/components/Buttons/BaseButton";
 import { Money } from "@guallet/money";
 import { AccountDto } from "@guallet/api-client";
-import { useInstitution } from "@/core/api/institutions/useInstitutions";
+import { useInstitution } from "@guallet/api-react";
 
 interface Props {
   account: AccountDto;

@@ -1,10 +1,12 @@
 import { InstitutionDto } from "@guallet/api-client/src/institutions";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { gualletClient } from "../gualletClient";
+import { useGualletClient } from "./../GualletClientProvider";
 
 const INSTITUTIONS_QUERY_KEY = "institutions";
 
 export function useAllInstitutions() {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [INSTITUTIONS_QUERY_KEY],
     queryFn: async () => {
@@ -18,6 +20,8 @@ export function useAllInstitutions() {
 }
 
 export function useInstitution(id: string | null | undefined) {
+  const gualletClient = useGualletClient();
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: [INSTITUTIONS_QUERY_KEY, id],
     enabled: !!id,
@@ -32,6 +36,8 @@ export function useInstitution(id: string | null | undefined) {
 }
 
 export function useInstitutions(ids: string[]) {
+  const gualletClient = useGualletClient();
+
   if (ids.length === 0)
     return {
       accounts: [],
