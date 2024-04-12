@@ -1,8 +1,8 @@
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
 import { Label } from "@guallet/ui-react-native";
-import { useAccounts } from "@/features/accounts/useAccounts";
 import { Money } from "@guallet/money";
+import { useAccounts } from "@guallet/api-react";
 
 interface TotalWealthWidgetProps
   extends React.ComponentProps<typeof WidgetCard> {}

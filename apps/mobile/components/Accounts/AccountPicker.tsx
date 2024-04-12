@@ -1,7 +1,7 @@
-import { useAccounts } from "@/features/accounts/useAccounts";
 import { AccountDto } from "@guallet/api-client";
 import { BasePicker } from "../BasePicker";
 import { AccountRow } from "./AccountRow";
+import { useAccounts } from "@guallet/api-react";
 
 interface AccountPickerProps {
   account: AccountDto | null;

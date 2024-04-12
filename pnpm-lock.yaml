@@ -171,6 +171,9 @@ importers:
       '@guallet/api-client':
         specifier: workspace:*
         version: link:../../packages/guallet-api-client
+      '@guallet/api-react':
+        specifier: workspace:*
+        version: link:../../packages/guallet-api-react
       '@guallet/money':
         specifier: workspace:*
         version: link:../../packages/guallet-money

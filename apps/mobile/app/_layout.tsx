@@ -16,6 +16,10 @@ import { AppStateStatus, Platform } from "react-native";
 import { AuthProvider } from "@/auth/useAuth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GualletClient } from "@guallet/api-client";
+import { GualletClientProvider } from "@guallet/api-react";
+import { BuildConfig } from "@/buildConfig";
+import { getCurrentUserToken, supabase } from "@/auth/supabase";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -65,6 +69,11 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 2 } },
 });
 
+export const gualletClient = GualletClient.createClient({
+  baseUrl: BuildConfig.BASE_API_URL,
+  getTokenFunction: getCurrentUserToken,
+});
+
 function RootLayoutNav() {
   useOnlineManager();
   useAppState(onAppStateChange);
@@ -73,17 +82,19 @@ function RootLayoutNav() {
     <ThemeProvider value={DefaultTheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <BottomSheetModalProvider>
-              <Stack>
-                <Stack.Screen name="(app)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="modal"
-                  options={{ presentation: "modal" }}
-                />
-              </Stack>
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
+          <GualletClientProvider client={gualletClient}>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <BottomSheetModalProvider>
+                <Stack>
+                  <Stack.Screen name="(app)" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="modal"
+                    options={{ presentation: "modal" }}
+                  />
+                </Stack>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </GualletClientProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>

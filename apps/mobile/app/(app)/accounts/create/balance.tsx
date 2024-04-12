@@ -1,6 +1,5 @@
 import { CurrencyPicker } from "@/components/CurrencyPicker";
 import { FlowScreen } from "@/components/Layout/FlowScreen";
-import { useAccountMutations } from "@/features/accounts/useAccountMutations";
 import { AccountTypeDto } from "@guallet/api-client";
 import { Currency, Money } from "@guallet/money";
 import {
@@ -16,6 +15,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { ToastAndroid } from "react-native";
 import { createAccountAtom } from ".";
+import { useAccountMutations } from "@guallet/api-react";
 
 export default function AccountBalanceScreen() {
   const { createAccountMutation } = useAccountMutations();

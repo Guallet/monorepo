@@ -1,5 +1,5 @@
-import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
+import { useAccount } from "@guallet/api-react";
 import { Icon, Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";

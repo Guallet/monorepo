@@ -1,8 +1,8 @@
 import { AppScreen } from "@/components/Layout/AppScreen";
-import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
 import { useTransactionInbox } from "@/features/transactions/useTransactions";
 import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
+import { useAccount } from "@guallet/api-react";
 import { Money } from "@guallet/money";
 import {
   ActionIcon,

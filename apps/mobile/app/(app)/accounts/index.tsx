@@ -3,8 +3,8 @@ import { router, useNavigation } from "expo-router";
 import { EmptyAccountsList } from "@/components/EmptyList/EmptyAccountsList";
 import { PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { AccountsList } from "@/components/Accounts/AccountsList";
-import { useAccounts } from "@/features/accounts/useAccounts";
 import React from "react";
+import { useAccounts } from "@guallet/api-react";
 
 export default function AccountsScreen() {
   const { accounts, isLoading } = useAccounts();

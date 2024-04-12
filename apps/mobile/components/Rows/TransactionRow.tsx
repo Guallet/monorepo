@@ -2,9 +2,9 @@ import { TransactionDto } from "@guallet/api-client";
 import { Avatar, Label, Spacing } from "@guallet/ui-react-native";
 import { BaseRow } from "@guallet/ui-react-native/src/components/Rows/BaseRow";
 import { View } from "react-native";
-import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
 import { Money } from "@guallet/money";
+import { useAccount } from "@guallet/api-react";
 
 interface TransactionRowProps extends React.ComponentProps<typeof View> {
   // TODO: Replace this from the DTO to the domain model

@@ -1,9 +1,9 @@
 import { AutoSizeModalSheet } from "@/components/ModalSheet/AutoSizeModalSheet";
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
-import { useAccount } from "@/features/accounts/useAccounts";
 import { useInstitution } from "@/features/institutions/useInstitutions";
 import { useTransactionMutations } from "@/features/transactions/useTransactionMutations";
 import { useTransaction } from "@/features/transactions/useTransactions";
+import { useAccount } from "@guallet/api-react";
 import { Money } from "@guallet/money";
 import {
   Avatar,
