@@ -6,10 +6,9 @@
 //     action: editUserAction,
 //   },
 
+import { gualletClient } from "@/App";
 import { TextInput, Button, Group } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { getUserDetails } from "@/features/user/api/user.api";
 
 type FormData = {
   name: string;
@@ -23,7 +22,7 @@ export const Route = createFileRoute("/_app/user/edit")({
 });
 
 async function loader() {
-  const user = await getUserDetails();
+  const user = await gualletClient.user.getUserDetails();
   return { user };
 }
 

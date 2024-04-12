@@ -1,10 +1,7 @@
 import { Text, Button, Stack, Image, Modal, Group } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  deleteUserAccount,
-  getUserDetails,
-} from "@/features/user/api/user.api";
+import { gualletClient } from "@/App";
 
 export const Route = createFileRoute("/_app/user/")({
   loader: loader,
@@ -12,7 +9,7 @@ export const Route = createFileRoute("/_app/user/")({
 });
 
 async function loader() {
-  const user = await getUserDetails();
+  const user = await gualletClient.user.getUserDetails();
   return { user };
 }
 
@@ -28,7 +25,7 @@ function UserDetailsPage() {
   ] = useDisclosure(false);
 
   const deleteAccount = async () => {
-    await deleteUserAccount();
+    await gualletClient.user.deleteUserAccount();
     navigate({ to: "/userdeleted", replace: true });
   };
 

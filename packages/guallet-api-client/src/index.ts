@@ -4,4 +4,5 @@ export * from "./institutions";
 export * from "./budgets";
 export * from "./categories";
 export * from "./transactions";
+export * from "./user";
 export { GualletClient } from "./GualletClient";

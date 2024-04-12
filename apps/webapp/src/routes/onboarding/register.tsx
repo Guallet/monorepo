@@ -10,10 +10,10 @@ import {
 } from "@mantine/core";
 
 import { useEffect, useMemo, useState } from "react";
-import { UserDto, getUserDetails } from "@user/api/user.api";
-// import { getCurrentUserId } from "@/core/auth/auth.helper";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/core/auth/supabase";
+import { User } from "@guallet/api-client";
+import { gualletClient } from "@/App";
 // import { registerUser } from "@/features/auth/user-register.api";
 
 export const Route = createFileRoute("/onboarding/register")({
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/onboarding/register")({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUserDto(object: any): object is UserDto {
+function isUserDto(object: any): object is User {
   return "name" in object && "email" in object && "profile_src" in object;
 }
 
@@ -44,7 +44,7 @@ async function loader() {
     };
   }
 
-  const user = await getUserDetails();
+  const user = await gualletClient.user.getUserDetails();
   return {
     name: user.name,
     email: user.email,

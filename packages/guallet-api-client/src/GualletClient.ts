@@ -4,6 +4,7 @@ import { CategoriesApi } from "./categories";
 import { ConnectionsApi } from "./connections";
 import { InstitutionsApi } from "./institutions";
 import { TransactionsApi } from "./transactions";
+import { UserApi } from "./user";
 
 export class GualletClient {
   private baseUrl: string;
@@ -15,6 +16,7 @@ export class GualletClient {
   institutions: InstitutionsApi;
   transactions: TransactionsApi;
   budgets: BudgetsApi;
+  user: UserApi;
 
   constructor(args: {
     baseUrl: string;
@@ -29,6 +31,7 @@ export class GualletClient {
     this.institutions = new InstitutionsApi(this);
     this.transactions = new TransactionsApi(this);
     this.budgets = new BudgetsApi(this);
+    this.user = new UserApi(this);
   }
 
   static createClient(args: {

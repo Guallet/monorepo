@@ -1,5 +1,5 @@
 import { post } from "@/core/api/fetchHelper";
-import { UserDto } from "@user/api/user.api";
+import { User } from "@guallet/api-client";
 
 export type CreateUserRequest = {
   name: string;
@@ -7,7 +7,7 @@ export type CreateUserRequest = {
   profile_src: string;
 };
 
-export async function registerUser(dto: CreateUserRequest): Promise<UserDto> {
+export async function registerUser(dto: CreateUserRequest): Promise<User> {
   const queryPath = `users`;
-  return await post<UserDto, CreateUserRequest>(queryPath, dto);
+  return await post<User, CreateUserRequest>(queryPath, dto);
 }

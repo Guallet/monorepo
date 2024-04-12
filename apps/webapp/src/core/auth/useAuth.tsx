@@ -1,13 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Analytics } from "@core/analytics/Analytics";
-import { UserDto } from "@/features/user/api/user.api";
-import { get } from "../api/fetchHelper";
 
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { User } from "@guallet/api-client";
+import { gualletClient } from "@/App";
 
 interface AuthContextType {
-  user: UserDto | null;
+  user: User | null;
   session?: Session | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
@@ -25,7 +25,7 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserDto | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getUserProfile = async (userId: string) => {
     if (userId) {
-      const user = await get<UserDto>(`users`);
+      const user = await gualletClient.user.getUserDetails();
       setUser(user);
       setAnalyticsIdentity(user);
     } else {
@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setAnalyticsIdentity = (user: UserDto | null) => {
+  const setAnalyticsIdentity = (user: User | null) => {
     if (session && user) {
       Analytics.setIdentity(session.user.id, {
         email: user.email,
