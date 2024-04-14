@@ -1,4 +1,3 @@
-import { useInstitution } from "@/features/institutions/useInstitutions";
 import {
   Avatar,
   DangerButton,
@@ -14,7 +13,7 @@ import { Stack, router, useLocalSearchParams } from "expo-router";
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { AccountDto } from "@guallet/api-client";
-import { useAccount } from "@guallet/api-react";
+import { useAccount, useInstitution } from "@guallet/api-react";
 
 export default function AccountDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -51,7 +50,7 @@ export default function AccountDetailsScreen() {
       >
         <AccountCharts />
         {account && <AccountDetails account={account} />}
-        <AccountActions />
+        {account && <AccountActions account={account} />}
       </ScrollView>
     </View>
   );

@@ -2,7 +2,7 @@ import { Money } from "@guallet/money";
 import { AccountDto } from "@guallet/api-client";
 import { View, TouchableOpacity, Button } from "react-native";
 import { Avatar, Label, Spacing } from "@guallet/ui-react-native";
-import { useInstitution } from "@/features/institutions/useInstitutions";
+import { useInstitution } from "@guallet/api-react";
 
 interface Props {
   account: AccountDto;

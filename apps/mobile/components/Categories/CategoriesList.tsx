@@ -1,13 +1,9 @@
-import {
-  AppCategory,
-  useGroupedCategories,
-} from "@/features/categories/useCategories";
+import { AppCategory, useGroupedCategories } from "@guallet/api-react";
 import React, { useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 import { CategoryRow } from "./CategoryRow";
 import { CategoryDto } from "@guallet/api-client";
 import { ActionIcon, Label, Spacing } from "@guallet/ui-react-native";
-import { View } from "../Themed";
 
 interface CategoryListProps {
   onCategorySelected: (category: CategoryDto | AppCategory) => void;

@@ -1,8 +1,8 @@
-import { AppCategory } from "@/features/categories/useCategories";
 import { CategoryDto } from "@guallet/api-client";
 import { Icon, Label, Spacing } from "@guallet/ui-react-native";
 import { Touchable, TouchableOpacity, View } from "react-native";
 import { CategoryIcon } from "./CategoryIcon";
+import { AppCategory } from "@guallet/api-react";
 
 interface CategoryRowProps extends React.ComponentProps<typeof View> {
   category: CategoryDto | AppCategory;

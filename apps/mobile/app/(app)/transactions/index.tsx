@@ -1,7 +1,7 @@
 import { AppScreen } from "@/components/Layout/AppScreen";
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { TransactionsList } from "@/components/Transactions/TransactionsList";
-import { useInfiniteTransactions } from "@/features/transactions/useTransactions";
+import { useInfiniteTransactions } from "@guallet/api-react";
 import {
   ActionIcon,
   Label,

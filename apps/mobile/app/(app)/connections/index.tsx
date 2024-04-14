@@ -1,10 +1,9 @@
+import { ObConnection } from "@guallet/api-client";
 import {
   useOpenBankingConnection,
   useOpenBankingConnections,
   useOpenBankingInstitution,
-} from "@/features/connections/useConnections";
-import { useInstitution } from "@/features/institutions/useInstitutions";
-import { ObConnection } from "@guallet/api-client";
+} from "@guallet/api-react";
 import { Avatar } from "@guallet/ui-react-native";
 import { Stack, router } from "expo-router";
 import { Button, FlatList, Text, View } from "react-native";

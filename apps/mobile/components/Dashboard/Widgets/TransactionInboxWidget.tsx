@@ -1,7 +1,7 @@
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
 import { Label, Spacing } from "@guallet/ui-react-native";
-import { useTransactionInbox } from "@/features/transactions/useTransactions";
+import { useTransactionInbox } from "@guallet/api-react";
 import { TransactionRow } from "@/components/Rows/TransactionRow";
 
 interface TransactionsInboxWidgetProps

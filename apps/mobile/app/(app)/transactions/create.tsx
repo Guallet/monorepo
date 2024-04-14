@@ -2,8 +2,8 @@ import { AccountPicker } from "@/components/Accounts/AccountPicker";
 import { CategoryPicker } from "@/components/Categories/CategoryPicker";
 import { CurrencyPicker } from "@/components/CurrencyPicker";
 import { AppScreen } from "@/components/Layout/AppScreen";
-import { AppCategory } from "@/features/categories/useCategories";
 import { AccountDto } from "@guallet/api-client";
+import { AppCategory } from "@guallet/api-react";
 import { Currency } from "@guallet/money";
 import {
   Column,

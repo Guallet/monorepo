@@ -2,7 +2,7 @@ import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
 import { Icon, Label, Spacing } from "@guallet/ui-react-native";
 import { Money } from "@guallet/money";
-import { useTransactions } from "@/features/transactions/useTransactions";
+import { useTransactions } from "@guallet/api-react";
 
 interface MonthlyInAndOutWidgetProps
   extends React.ComponentProps<typeof WidgetCard> {}

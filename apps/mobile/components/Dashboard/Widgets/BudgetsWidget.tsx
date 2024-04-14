@@ -2,7 +2,7 @@ import { ActionIcon, Label, Spacing } from "@guallet/ui-react-native";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { WidgetCard } from "./WidgetCard";
-import { useBudgets } from "@/features/budgets/useBudgets";
+import { useBudgets } from "@guallet/api-react";
 import { Money } from "@guallet/money";
 
 interface BudgetsWidgetProps extends React.ComponentProps<typeof WidgetCard> {}

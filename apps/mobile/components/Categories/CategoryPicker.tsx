@@ -1,8 +1,5 @@
 import { BasePicker } from "../BasePicker";
-import {
-  AppCategory,
-  useGroupedCategories,
-} from "@/features/categories/useCategories";
+import { AppCategory, useGroupedCategories } from "@guallet/api-react";
 import { CategoryRow } from "./CategoryRow";
 import { Spacing } from "@guallet/ui-react-native";
 import { useEffect, useState } from "react";

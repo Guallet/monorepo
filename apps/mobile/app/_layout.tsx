@@ -16,10 +16,8 @@ import { AppStateStatus, Platform } from "react-native";
 import { AuthProvider } from "@/auth/useAuth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { GualletClient } from "@guallet/api-client";
 import { GualletClientProvider } from "@guallet/api-react";
-import { BuildConfig } from "@/buildConfig";
-import { getCurrentUserToken, supabase } from "@/auth/supabase";
+import { gualletClient } from "@/api/gualletClient";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -67,11 +65,6 @@ function onAppStateChange(status: AppStateStatus) {
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 2 } },
-});
-
-export const gualletClient = GualletClient.createClient({
-  baseUrl: BuildConfig.BASE_API_URL,
-  getTokenFunction: getCurrentUserToken,
 });
 
 function RootLayoutNav() {

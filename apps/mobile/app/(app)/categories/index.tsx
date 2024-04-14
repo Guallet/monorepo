@@ -1,13 +1,10 @@
 import { CategoryRow } from "@/components/Categories/CategoryRow";
 import { AppScreen } from "@/components/Layout/AppScreen";
-import {
-  AppCategory,
-  useGroupedCategories,
-} from "@/features/categories/useCategories";
 import { CategoryDto } from "@guallet/api-client";
+import { AppCategory, useGroupedCategories } from "@guallet/api-react";
 import { Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";
 import { Stack, router } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 export default function CategoriesScreen() {

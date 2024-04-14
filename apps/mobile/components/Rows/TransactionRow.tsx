@@ -2,7 +2,7 @@ import { TransactionDto } from "@guallet/api-client";
 import { Avatar, Label, Spacing } from "@guallet/ui-react-native";
 import { BaseRow } from "@guallet/ui-react-native/src/components/Rows/BaseRow";
 import { View } from "react-native";
-import { useInstitution } from "@/features/institutions/useInstitutions";
+import { useInstitution } from "@guallet/api-react";
 import { Money } from "@guallet/money";
 import { useAccount } from "@guallet/api-react";
 

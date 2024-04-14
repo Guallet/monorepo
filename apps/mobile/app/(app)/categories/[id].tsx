@@ -1,9 +1,4 @@
-import { CategoryIcon } from "@/components/Categories/CategoryIcon";
 import { CategoryRow } from "@/components/Categories/CategoryRow";
-import {
-  AppCategory,
-  useGroupedCategory,
-} from "@/features/categories/useCategories";
 import {
   ActionIcon,
   DangerButton,
@@ -16,11 +11,11 @@ import {
 } from "@guallet/ui-react-native";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { FlatList, View } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { CategoryDto } from "@guallet/api-client";
+import { ScrollView } from "react-native-gesture-handler";
 import { CategoryColourPicker } from "@/components/Categories/CategoryColourPicker";
 import { useState } from "react";
 import { CategoryIconPicker } from "@/components/Categories/CategoryIconPicker";
+import { useGroupedCategory } from "@guallet/api-react";
 
 export default function CategoryDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
