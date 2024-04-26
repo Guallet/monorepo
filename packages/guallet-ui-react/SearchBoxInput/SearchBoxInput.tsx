@@ -1,7 +1,7 @@
 import { TextInput } from "@mantine/core";
 import { IconSearch, IconSquareRoundedXFilled } from "@tabler/icons-react";
 
-interface IProps {
+interface IProps  extends React.ComponentProps<typeof TextInput>{
   label?: string;
   query: string;
   description?: string;
@@ -15,6 +15,7 @@ export function SearchBoxInput({
   description,
   placeholder,
   onSearchQueryChanged,
+  ...props
 }: IProps) {
   return (
     <TextInput
@@ -37,6 +38,7 @@ export function SearchBoxInput({
         const input = event.currentTarget.value;
         onSearchQueryChanged?.(input);
       }}
+      {...props}
     />
   );
 }

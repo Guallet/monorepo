@@ -2,7 +2,7 @@ import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import { Button, Group, Stack, Text } from "@mantine/core";
+import { Box, Button, Group, Space, Stack, Text } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -37,7 +37,7 @@ function AccountsPage() {
   }
 
   return (
-    <>
+    <Box >
       <AccountsHeader
         onAddNewAccount={() => navigation({ to: "/accounts/add" })}
         onSearchQueryChanged={(searchQuery: string) => {
@@ -52,18 +52,18 @@ function AccountsPage() {
           }
         }}
       />
-      <Stack justify="flex-start">
-        <AccountsList
-          accounts={filteredAccounts}
-          onAccountSelected={(account: AccountDto) => {
-            navigation({
-              to: "/accounts/$id",
-              params: { id: account.id },
-            });
-          }}
-        />
-      </Stack>
-    </>
+      <Space h="md" />
+      <AccountsList
+        accounts={filteredAccounts}
+        onAccountSelected={(account: AccountDto) => {
+          navigation({
+            to: "/accounts/$id",
+            params: { id: account.id },
+          });
+        }}
+      />
+      <Space h="md" />
+    </Box>
   );
 }
 

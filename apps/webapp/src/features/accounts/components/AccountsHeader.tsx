@@ -1,3 +1,4 @@
+import { Colors } from "@/theme/colors";
 import { SearchBoxInput } from "@guallet/ui-react";
 import { Group, Button } from "@mantine/core";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export function AccountsHeader({
           onSearchQueryChanged(query);
         }}
       />
-      <Button variant="outline" radius="xl" onClick={onAddNewAccount}>
+      <Button variant="outline" radius="xl" onClick={onAddNewAccount} bg={Colors.white}>
         Add new account
       </Button>
     </Group>

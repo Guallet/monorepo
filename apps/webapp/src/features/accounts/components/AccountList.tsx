@@ -1,7 +1,7 @@
 import "core-js";
 import { AccountRow } from "./AccountRow";
 import { AccountsListHeader } from "./AccountsListHeader";
-import { Stack } from "@mantine/core";
+import { Box, Card, Divider, Stack } from "@mantine/core";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 
 interface Props {
@@ -52,23 +52,38 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
           return compareAccountTypes(a[0], b[0]);
         })
         .map(([key, value]) => (
-          <Stack key={key}>
-            <AccountsListHeader
-              accountType={key as AccountTypeDto}
-              accounts={value as AccountDto[]}
-            />
-            <p>
-              {(value as AccountDto[]).map((account: AccountDto) => (
-                <AccountRow
-                  key={account.id}
-                  account={account}
-                  onClick={() => {
-                    onAccountSelected(account);
-                  }}
-                />
-              ))}
-            </p>
-          </Stack>
+          <Box p={"md"}>
+            <>
+              <AccountsListHeader
+                accountType={key as AccountTypeDto}
+                accounts={value as AccountDto[]}
+              />
+              <Card withBorder shadow="sm" radius="lg">
+                <Stack key={key}>
+                  {(value as AccountDto[]).map(
+                    (
+                      account: AccountDto,
+                      index: number,
+                      array: AccountDto[]
+                    ) => {
+                      return (
+                        <>
+                          <AccountRow
+                            key={account.id}
+                            account={account}
+                            onClick={() => {
+                              onAccountSelected(account);
+                            }}
+                          />
+                          {index < array.length - 1 && <Divider />}
+                        </>
+                      );
+                    }
+                  )}
+                </Stack>
+              </Card>
+            </>
+          </Box>
         ))}
     </>
   );

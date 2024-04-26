@@ -7,26 +7,29 @@ export const Colors = {
     dark: "black",
   },
 
-  //  Main Colours
+  //  Background Colors
+  pageBackground: "#F7FAFC",
+
+  //  Main Colors
   darkAccent: "#003087",
   brightAccent: "#0072ce",
   lightAccent: "#41b6e6",
   aquaAccent: "#00a9ce",
 
-  // Supporting Colours
+  // Supporting Colors
   darkSupport: "#006747",
   support: "#009639",
   lightSupport: "#78BE20",
   aquaSupport: "#00A499",
 
-  // Neutral colours
+  // Neutral Colors
   black: "#231f20",
   darkGrey: "#425563",
   midGrey: "#768692",
   paleGrey: "#E8EDEE",
   white: "white",
 
-  // Alerts Colours
+  // Alerts Colors
   error: "#DA291C",
   success: "#78BE20",
 
