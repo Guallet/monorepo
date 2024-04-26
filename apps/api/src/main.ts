@@ -33,7 +33,7 @@ async function bootstrap() {
   console.log(`Guallet is running on PORT: ${port}`);
   console.log(`Version:  ${version}`);
   console.log(
-    `Visit:  ${await app.getUrl()}/api to open the Swagger documentation`,
+    `Visit:  ${await app.getUrl()}/swagger to open the Swagger documentation`,
   );
 }
 bootstrap();
