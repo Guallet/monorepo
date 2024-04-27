@@ -80,7 +80,7 @@ export class AccountsService {
     }
 
     return await this.repository.save({
-      balance: dto.initial_balance ?? dbEntity.balance,
+      balance: dto.balance ?? dbEntity.balance,
       id: accountId,
       user_id: userId,
       name: dto.name ?? dbEntity.name,
