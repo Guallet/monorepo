@@ -2,7 +2,7 @@ import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import { Box, Button, Group, Space, Stack, Text } from "@mantine/core";
+import { Button, Group, Space, Stack, Text } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
