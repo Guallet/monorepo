@@ -37,7 +37,7 @@ function AccountsPage() {
   }
 
   return (
-    <Box >
+    <Stack>
       <AccountsHeader
         onAddNewAccount={() => navigation({ to: "/accounts/add" })}
         onSearchQueryChanged={(searchQuery: string) => {
@@ -63,7 +63,7 @@ function AccountsPage() {
         }}
       />
       <Space h="md" />
-    </Box>
+    </Stack>
   );
 }
 

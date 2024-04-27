@@ -1,6 +1,5 @@
-import { Avatar, Group, Text, rem } from "@mantine/core";
+import { Avatar, Group, Text, UnstyledButton, rem } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
-import { BaseButton } from "@/components/Buttons/BaseButton";
 import { Money } from "@guallet/money";
 import { AccountDto } from "@guallet/api-client";
 import { useInstitution } from "@guallet/api-react";
@@ -19,7 +18,9 @@ export function AccountRow({ account, onClick }: Props) {
   });
 
   return (
-    <BaseButton
+    <UnstyledButton
+      pt={"md"}
+      pb={"md"}
       onClick={() => {
         if (onClick) {
           onClick();
@@ -40,15 +41,13 @@ export function AccountRow({ account, onClick }: Props) {
         >
           {account.name}
         </Text>
-        <Text>{money.format()}</Text>
-        {/* <Text>{'Last update: ' + account.connection_details?.last_refreshed}</Text> */}
-        {/* <Button radius="xl">Refresh</Button> */}
+        <Text fw={700}>{money.format()}</Text>
 
         <IconChevronRight
           style={{ width: rem(14), height: rem(14) }}
-          stroke={1.5}
+          stroke={2}
         />
       </Group>
-    </BaseButton>
+    </UnstyledButton>
   );
 }

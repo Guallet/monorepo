@@ -1,27 +1,13 @@
 import "core-js";
 import { AccountRow } from "./AccountRow";
 import { AccountsListHeader } from "./AccountsListHeader";
-import { Box, Card, Divider, Stack } from "@mantine/core";
+import { Box, Card, Divider, Space } from "@mantine/core";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 
 interface Props {
   accounts: AccountDto[];
   onAccountSelected: (account: AccountDto) => void;
 }
-
-// export function AccountsList({ accounts }: Props) {
-//   const data: Map<string, Account[]> = accounts.groupByToMap((account: Account) => {
-//     return account.type;
-//   });
-
-//   let reactNodes = [];
-//   for (let [key, value] of data) {
-//     reactNodes.push(<p>{key}</p>);
-//     reactNodes.push(value.map((x) => <AccountRow key={x.id} account={x} />));
-//   }
-
-//   return <>{reactNodes}</>;
-// }
 
 function compareAccountTypes(a: string, b: string) {
   if (a === b) {
@@ -34,6 +20,14 @@ function compareAccountTypes(a: string, b: string) {
 
   if (b === AccountTypeDto.UNKNOWN) {
     return -1;
+  }
+
+  if (a === AccountTypeDto.CURRENT_ACCOUNT) {
+    return -1;
+  }
+
+  if (b === AccountTypeDto.CURRENT_ACCOUNT) {
+    return 1;
   }
 
   return a.localeCompare(b);
@@ -58,29 +52,24 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
                 accountType={key as AccountTypeDto}
                 accounts={value as AccountDto[]}
               />
+              <Space h="xs" />
               <Card withBorder shadow="sm" radius="lg">
-                <Stack key={key}>
-                  {(value as AccountDto[]).map(
-                    (
-                      account: AccountDto,
-                      index: number,
-                      array: AccountDto[]
-                    ) => {
-                      return (
-                        <>
-                          <AccountRow
-                            key={account.id}
-                            account={account}
-                            onClick={() => {
-                              onAccountSelected(account);
-                            }}
-                          />
-                          {index < array.length - 1 && <Divider />}
-                        </>
-                      );
-                    }
-                  )}
-                </Stack>
+                {(value as AccountDto[]).map(
+                  (account: AccountDto, index: number, array: AccountDto[]) => {
+                    return (
+                      <>
+                        <AccountRow
+                          key={account.id}
+                          account={account}
+                          onClick={() => {
+                            onAccountSelected(account);
+                          }}
+                        />
+                        {index < array.length - 1 && <Divider />}
+                      </>
+                    );
+                  }
+                )}
               </Card>
             </>
           </Box>
