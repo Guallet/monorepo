@@ -8,7 +8,7 @@ interface Props {
 
 export default function AppHeader({ isOpened, onToggle }: Props) {
   return (
-    <Group>
+    <Group h="100%" px="md">
       <Burger opened={isOpened} onClick={onToggle} hiddenFrom="sm" size="sm" />
       <UnstyledButton
         component="a"

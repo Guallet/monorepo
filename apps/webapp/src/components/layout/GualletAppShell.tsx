@@ -13,12 +13,13 @@ export default function GualletAppShell() {
       header={{ height: 60 }}
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
       bg={Colors.pageBackground}
+      padding="md"
     >
       <AppShell.Header>
         <AppHeader isOpened={opened} onToggle={toggle} />
       </AppShell.Header>
 
-      <AppShell.Navbar p="md">
+      <AppShell.Navbar>
         <AppNavBar onItemSelected={toggle} />
       </AppShell.Navbar>
 

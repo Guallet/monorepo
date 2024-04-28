@@ -8,8 +8,7 @@ import {
   IconTools,
   IconCategory2,
 } from "@tabler/icons-react";
-import { Button, ScrollArea } from "@mantine/core";
-import classes from "./AppNavBar.module.css";
+import { AppShell, Button, Divider, ScrollArea } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
 import { UserButton } from "../../UserButton/UserButton";
 import { useNavigate } from "@tanstack/react-router";
@@ -84,26 +83,26 @@ export function AppNavBar({ onItemSelected }: Props) {
   // TODO: Instead of this hook, the navbar should use the <Link> component
   const navigate = useNavigate();
 
-  const links = menuData.map((item) => (
-    <LinksGroup {...item} key={item.label} onItemSelected={onItemSelected} />
-  ));
-
   return (
-    <nav className={classes.navbar}>
-      <div
-        className={classes.header}
-        onClick={() => {
-          navigate({ to: "/user" });
-        }}
-      >
+    <>
+      <AppShell.Section>
         <UserButton />
-      </div>
+        <Divider />
+      </AppShell.Section>
+      <AppShell.Section grow my="md" component={ScrollArea}>
+        {menuData.map((item) => {
+          return (
+            <LinksGroup
+              {...item}
+              key={item.label}
+              onItemSelected={onItemSelected}
+            />
+          );
+        })}
+      </AppShell.Section>
+      <AppShell.Section>
+        <Divider />
 
-      <ScrollArea w={300} h={200} className={classes.links}>
-        <div className={classes.linksInner}>{links}</div>
-      </ScrollArea>
-
-      <div className={classes.footer}>
         <Button
           variant="transparent"
           onClick={() => {
@@ -113,7 +112,45 @@ export function AppNavBar({ onItemSelected }: Props) {
           <IconLogout />
           Logout
         </Button>
-      </div>
-    </nav>
+      </AppShell.Section>
+    </>
   );
 }
+
+// export function AppNavBar({ onItemSelected }: Props) {
+//   // TODO: Instead of this hook, the navbar should use the <Link> component
+//   const navigate = useNavigate();
+
+//   const links = menuData.map((item) => (
+//     <LinksGroup {...item} key={item.label} onItemSelected={onItemSelected} />
+//   ));
+
+//   return (
+//     <nav className={classes.navbar}>
+//       <div
+//         className={classes.header}
+//         onClick={() => {
+//           navigate({ to: "/user" });
+//         }}
+//       >
+//         <UserButton />
+//       </div>
+
+//       <ScrollArea w={300} h={200} className={classes.links}>
+//         <div className={classes.linksInner}>{links}</div>
+//       </ScrollArea>
+
+//       <div className={classes.footer}>
+//         <Button
+//           variant="transparent"
+//           onClick={() => {
+//             navigate({ to: "/logout" });
+//           }}
+//         >
+//           <IconLogout />
+//           Logout
+//         </Button>
+//       </div>
+//     </nav>
+//   );
+// }
