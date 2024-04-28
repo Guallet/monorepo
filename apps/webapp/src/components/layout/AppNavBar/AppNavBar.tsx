@@ -64,7 +64,7 @@ const menuData: MenuData[] = [
     subLinks: [
       { label: "Pensions", link: "/" },
       { label: "Investments", link: "/" },
-      { label: "Loans", link: "/" },
+      { label: "Loans", link: "/tools/loan" },
       { label: "Mortgages", link: "/tools/mortgage" },
     ],
   },

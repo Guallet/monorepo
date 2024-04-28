@@ -48,6 +48,7 @@ const IndexComponentImport = createFileRoute('/')()
 const AppToolsMortgageComponentImport = createFileRoute(
   '/_app/tools/mortgage',
 )()
+const AppToolsLoanLazyImport = createFileRoute('/_app/tools/loan')()
 
 // Create/Update Routes
 
@@ -155,6 +156,13 @@ const AppToolsMortgageComponentRoute = AppToolsMortgageComponentImport.update({
     'component',
   ),
 })
+
+const AppToolsLoanLazyRoute = AppToolsLoanLazyImport.update({
+  path: '/tools/loan',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/_app/tools/loan.lazy').then((d) => d.Route),
+)
 
 const AppUserEditRoute = AppUserEditImport.update({
   path: '/user/edit',
@@ -284,6 +292,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserEditImport
       parentRoute: typeof AppImport
     }
+    '/_app/tools/loan': {
+      preLoaderRoute: typeof AppToolsLoanLazyImport
+      parentRoute: typeof AppImport
+    }
     '/_app/tools/mortgage': {
       preLoaderRoute: typeof AppToolsMortgageComponentImport
       parentRoute: typeof AppImport
@@ -358,6 +370,7 @@ export const routeTree = rootRoute.addChildren([
     AppReportsCashflowRoute,
     AppTransactionsInboxRoute,
     AppUserEditRoute,
+    AppToolsLoanLazyRoute,
     AppToolsMortgageComponentRoute,
     AppAccountsIndexRoute,
     AppCategoriesIndexRoute,
