@@ -2,7 +2,7 @@ import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import { Button, Group, Space, Stack, Text } from "@mantine/core";
+import { Button, Group, Loader, Space, Stack, Text } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -12,12 +12,16 @@ export const Route = createFileRoute("/_app/accounts/")({
 
 function AccountsPage() {
   const navigation = useNavigate();
-  const { accounts } = useAccounts();
+  const { accounts, isLoading } = useAccounts();
   const [filteredAccounts, setFilteredAccounts] = useState(accounts);
 
   useEffect(() => {
     setFilteredAccounts(accounts);
   }, [accounts]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   if (accounts.length === 0) {
     return (

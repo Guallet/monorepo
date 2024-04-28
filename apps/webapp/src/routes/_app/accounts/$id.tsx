@@ -1,16 +1,18 @@
 import { useNavigate, notFound, createFileRoute } from "@tanstack/react-router";
-import { Group, Modal, Stack, Text, Button } from "@mantine/core";
-import { ApiError, fetch_delete } from "@core/api/fetchHelper";
+import { Group, Modal, Stack, Text, Button, Loader } from "@mantine/core";
+import { fetch_delete } from "@core/api/fetchHelper";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { gualletClient } from "@/App";
+import { ApiError } from "@guallet/api-client/src/GualletClient";
+import { useAccount } from "@guallet/api-react";
 
 export const Route = createFileRoute("/_app/accounts/$id")({
   component: AccountDetailsPage,
-  loader: async ({ params }) => loader(params.id),
+  // loader: async ({ params }) => loader(params.id),
   notFoundComponent: () => {
     return <p>Account not found</p>;
   },
@@ -25,30 +27,30 @@ export const Route = createFileRoute("/_app/accounts/$id")({
   },
 });
 
-async function loader(id: string): Promise<AccountDto> {
-  try {
-    // return await getAccount(id);
-    return await gualletClient.accounts.get(id);
-  } catch (error) {
-    console.error("Error loading account", error);
-    if (error instanceof ApiError) {
-      switch (error.status) {
-        case 404:
-          // https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors
-          throw notFound();
-        default:
-          console.error("Unhandled error", error);
-          throw error;
-      }
-    }
-    throw error;
-  }
-}
-
-// const DELETE_ACCOUNT_MODAL_QUERY = "delete";
+// async function loader(id: string): Promise<AccountDto> {
+//   try {
+//     // return await getAccount(id);
+//     return await gualletClient.accounts.get(id);
+//   } catch (error) {
+//     console.error("Error loading account", error);
+//     if (error instanceof ApiError) {
+//       switch (error.status) {
+//         case 404:
+//           // https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors
+//           throw notFound();
+//         default:
+//           console.error("Unhandled error", error);
+//           throw error;
+//       }
+//     }
+//     throw error;
+//   }
+// }
 
 function AccountDetailsPage() {
-  const account = Route.useLoaderData();
+  // const account = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { account, isLoading, isError } = useAccount(id);
   const navigation = useNavigate();
 
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
@@ -60,6 +62,14 @@ function AccountDetailsPage() {
 
   function hideModal() {
     setIsDeleteAccountModalOpen(false);
+  }
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (!account) {
+    throw notFound();
   }
 
   return (

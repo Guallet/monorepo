@@ -25,12 +25,19 @@ export function useAccounts() {
 export function useAccount(id: string) {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery({
     queryKey: [ACCOUNTS_QUERY_KEY, id],
     queryFn: async () => {
       return await gualletClient.accounts.get(id);
     },
   });
 
-  return { account: data ?? null, isLoading, refetch, isFetching };
+  return {
+    account: data ?? null,
+    isLoading,
+    refetch,
+    isFetching,
+    error,
+    isError,
+  };
 }
