@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Button, Text, TextInput } from "@mantine/core";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const component = function MortgageCalculator() {
+export const Route = createLazyFileRoute("/_app/tools/mortgage")({
+  component: () => MortgageCalculator(),
+});
+
+function MortgageCalculator() {
   const [loanAmount, setLoanAmount] = useState<number>(200000);
   const [interestRate, setInterestRate] = useState<number>(5.0);
   const [loanTerm, setLoanTerm] = useState<number>(25);
@@ -58,4 +63,4 @@ export const component = function MortgageCalculator() {
       </Text>
     </div>
   );
-};
+}

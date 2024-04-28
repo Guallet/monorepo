@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-
 import { Button, Input, Stack, Table } from "@mantine/core";
+
 export const Route = createLazyFileRoute("/_app/tools/loan")({
   component: () => LoanCalculator(),
 });

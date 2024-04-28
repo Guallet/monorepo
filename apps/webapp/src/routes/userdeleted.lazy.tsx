@@ -1,9 +1,13 @@
 import { useAuth } from "@/core/auth/useAuth";
 import { Loader, Stack, Text } from "@mantine/core";
-import { Link } from "@tanstack/react-router";
+import { Link, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const component = function DeleteAccountConfirmationPage() {
+export const Route = createLazyFileRoute("/userdeleted")({
+  component: () => DeleteAccountConfirmationPage(),
+});
+
+function DeleteAccountConfirmationPage() {
   const { signOut } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -32,4 +36,4 @@ export const component = function DeleteAccountConfirmationPage() {
       <Link to="/">Go to home page</Link>
     </Stack>
   );
-};
+}
