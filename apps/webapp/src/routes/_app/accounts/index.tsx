@@ -1,8 +1,9 @@
+import { AppScreen } from "@/components/layout/AppScreen";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import { Button, Group, Loader, Space, Stack, Text } from "@mantine/core";
+import { Button, Group, Space, Stack, Text } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -19,55 +20,51 @@ function AccountsPage() {
     setFilteredAccounts(accounts);
   }, [accounts]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (accounts.length === 0) {
-    return (
-      <EmptyAccountsPage
-        onCreateNewAccount={() => {
-          navigation({
-            to: "/accounts/add",
-          });
-        }}
-        onConnectBank={() => {
-          navigation({
-            to: "/connections/connect",
-          });
-        }}
-      />
-    );
-  }
-
   return (
-    <Stack>
-      <AccountsHeader
-        onAddNewAccount={() => navigation({ to: "/accounts/add" })}
-        onSearchQueryChanged={(searchQuery: string) => {
-          if (searchQuery.length === 0) {
-            setFilteredAccounts(accounts);
-          } else {
-            setFilteredAccounts(
-              accounts.filter((x) =>
-                x.name.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-            );
-          }
-        }}
-      />
-      <Space h="md" />
-      <AccountsList
-        accounts={filteredAccounts}
-        onAccountSelected={(account: AccountDto) => {
-          navigation({
-            to: "/accounts/$id",
-            params: { id: account.id },
-          });
-        }}
-      />
-      <Space h="md" />
-    </Stack>
+    <AppScreen isLoading={isLoading}>
+      {accounts.length === 0 ? (
+        <EmptyAccountsPage
+          onCreateNewAccount={() => {
+            navigation({
+              to: "/accounts/add",
+            });
+          }}
+          onConnectBank={() => {
+            navigation({
+              to: "/connections/connect",
+            });
+          }}
+        />
+      ) : (
+        <Stack>
+          <AccountsHeader
+            onAddNewAccount={() => navigation({ to: "/accounts/add" })}
+            onSearchQueryChanged={(searchQuery: string) => {
+              if (searchQuery.length === 0) {
+                setFilteredAccounts(accounts);
+              } else {
+                setFilteredAccounts(
+                  accounts.filter((x) =>
+                    x.name.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                );
+              }
+            }}
+          />
+          <Space h="md" />
+          <AccountsList
+            accounts={filteredAccounts}
+            onAccountSelected={(account: AccountDto) => {
+              navigation({
+                to: "/accounts/$id",
+                params: { id: account.id },
+              });
+            }}
+          />
+          <Space h="md" />
+        </Stack>
+      )}
+    </AppScreen>
   );
 }
 
