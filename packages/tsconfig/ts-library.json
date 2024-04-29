@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Typescript Library",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "lib": ["ES2021", "DOM", "ESNext"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  }
+}

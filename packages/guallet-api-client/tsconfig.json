@@ -1,0 +1,16 @@
+{
+  "extends": "tsconfig/ts-library.json",
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./src/**/*.d.ts",
+    "./src/**/*.json"
+  ],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["/*"]
+    }
+  }
+}

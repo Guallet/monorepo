@@ -1,0 +1,12 @@
+.baseButton {
+  display: block;
+  /* padding: var(--mantine-spacing-xs); */
+  padding: 5px;
+
+  @mixin hover {
+    background-color: light-dark(
+      var(--mantine-color-gray-0),
+      var(--mantine-color-dark-8)
+    );
+  }
+}

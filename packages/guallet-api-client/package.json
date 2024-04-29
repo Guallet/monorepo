@@ -1,0 +1,15 @@
+{
+  "name": "@guallet/api-client",
+  "version": "0.0.1",
+  "description": "Guallet API Client",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.5.2"
+  }
+}

@@ -1,0 +1,37 @@
+import { Box, Center, Loader, LoadingOverlay } from "@mantine/core";
+import { ReactNode } from "react";
+
+interface AppScreenProps {
+  isLoading?: boolean;
+  children: ReactNode;
+}
+
+export function AppScreen({ children, isLoading = false }: AppScreenProps) {
+  if (isLoading) {
+    return (
+      <Box
+        style={{
+          display: "grid",
+          gridRow: 1,
+          height: "100vh",
+          placeItems: "center",
+        }}
+      >
+        <Center>
+          <Loader />
+        </Center>
+      </Box>
+    );
+  }
+
+  return (
+    <Box pos="relative">
+      <LoadingOverlay
+        visible={isLoading}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
+      {children}
+    </Box>
+  );
+}
