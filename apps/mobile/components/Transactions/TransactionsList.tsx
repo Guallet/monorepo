@@ -3,7 +3,7 @@ import { SectionList, View } from "react-native";
 import { Label, Spacing } from "@guallet/ui-react-native";
 import { TransactionDto } from "@guallet/api-client";
 import dayjs from "dayjs";
-var relativeTime = require("dayjs/plugin/relativeTime");
+let relativeTime = require("dayjs/plugin/relativeTime");
 // TODO: This should be in a date time formatter helper
 dayjs.extend(relativeTime);
 

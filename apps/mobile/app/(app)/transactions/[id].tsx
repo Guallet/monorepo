@@ -23,7 +23,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
-var localizedFormat = require("dayjs/plugin/localizedFormat");
+let localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
 export default function TransactionDetailsScreen() {
