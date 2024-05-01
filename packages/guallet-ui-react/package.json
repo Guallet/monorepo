@@ -4,7 +4,7 @@
   "description": "Common React Components fow Web using Mantine",
   "main": "./index.tsx",
   "types": "./index.tsx",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "scripts": {
     "lint": "eslint \"**/*.ts*\""
   },

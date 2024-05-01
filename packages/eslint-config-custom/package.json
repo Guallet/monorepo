@@ -2,7 +2,7 @@
   "name": "eslint-config-custom",
   "version": "0.0.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "dependencies": {
     "eslint-config-next": "^13.4.1",
     "eslint-config-prettier": "^8.3.0",
