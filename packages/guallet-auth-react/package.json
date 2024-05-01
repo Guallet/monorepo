@@ -4,7 +4,7 @@
   "description": "Auth UI components for Guallet apps",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "scripts": {
     "lint": "eslint \"**/*.ts*\""
   },
