@@ -56,17 +56,6 @@ import * as Joi from 'joi';
                 {
                   target: 'pino-pretty',
                 },
-                ...(config.get<boolean>('logging.axiom.isEnabled')
-                  ? [
-                      {
-                        target: '@axiomhq/pino',
-                        options: {
-                          dataset: config.get<string>('logging.axiom.dataset'),
-                          token: config.get<string>('logging.axiom.token'),
-                        },
-                      },
-                    ]
-                  : []),
               ],
             },
           },
