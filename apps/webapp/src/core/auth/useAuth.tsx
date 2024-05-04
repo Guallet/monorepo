@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Analytics } from "@core/analytics/Analytics";
 
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
@@ -39,7 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // await getUserProfile(session?.user?.id);
     } else {
       setUser(null);
-      setAnalyticsIdentity(null);
     }
   }
 
@@ -73,29 +71,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (userId) {
       const user = await gualletClient.user.getUserDetails();
       setUser(user);
-      setAnalyticsIdentity(user);
     } else {
       setUser(null);
-      setAnalyticsIdentity(null);
-    }
-  };
-
-  const setAnalyticsIdentity = (user: User | null) => {
-    if (session && user) {
-      Analytics.setIdentity(session.user.id, {
-        email: user.email,
-        name: user.name,
-        user_id: session.user.id,
-      });
-    } else {
-      Analytics.resetIdentity();
     }
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    setAnalyticsIdentity(null);
   };
 
   const state = {

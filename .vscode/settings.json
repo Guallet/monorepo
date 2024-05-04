@@ -7,9 +7,9 @@
     "nestjs",
     "Nordigen",
     "Passwordless",
-    "posthog",
     "Pressable",
     "Signin",
+    "SUPABASE",
     "tanstack",
     "thirdpartypasswordless",
     "typeorm"

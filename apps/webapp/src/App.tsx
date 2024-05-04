@@ -7,7 +7,6 @@ import "@mantine/charts/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import { initializePostHog } from "@core/analytics/posthog";
 import { AuthProvider } from "./core/auth/useAuth";
 import { RouterProvider, Router, ErrorComponent } from "@tanstack/react-router";
 import { NotFoundRoute } from "@tanstack/react-router";
@@ -21,8 +20,6 @@ import { GualletClientProvider } from "@guallet/api-react";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
-
-initializePostHog();
 
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
