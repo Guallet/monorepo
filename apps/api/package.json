@@ -23,7 +23,6 @@
     "db:seed:trace": "ts-node --showConfig"
   },
   "dependencies": {
-    "@axiomhq/pino": "1.0.0-rc.1",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",
