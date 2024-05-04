@@ -21,6 +21,7 @@ import configuration from './configuration';
 import { UsersService } from './users/users.service';
 import { User } from './users/entities/user.entity';
 import { BudgetsModule } from './budgets/budgets.module';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
@@ -29,6 +30,15 @@ import { BudgetsModule } from './budgets/budgets.module';
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
       load: [configuration],
+      cache: true,
+      validationSchema: Joi.object({
+        ENVIRONMENT: Joi.string()
+          .valid('development', 'production')
+          .default('development'),
+        DATABASE_URL: Joi.string().required(),
+        NORDIGEN_SECRET_ID: Joi.string().required(),
+        NORDIGEN_SECRET_KEY: Joi.string().required(),
+      }),
     }),
     // LOGGING
     LoggerModule.forRootAsync({
