@@ -17,20 +17,9 @@ This Turborepo includes the following packages/apps:
 
 - `api`: a [NestJS](https://nestjs.com/) app, providing a REST and GraphQL apis
 - `webapp`: a Vite+React app
-- `guallet-money`: utility package with functions and classes to work with money and currencies
-- `guallet-ui-react`: a stub React component library shared by all applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `mobile`: a Expo app for iOS and Android
 
 Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
@@ -66,19 +55,9 @@ Next, you can link your Turborepo to your Remote Cache by running the following 
 npx turbo link
 ```
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
-
 ### Dependencies
 
+- [PostgreSQL](https://www.postgresql.org/): The API requires a PostgreSQL database to read/write data.
 - [Supabase](https://supabase.com/): Used for AUTH only. I didn't want to implement my own auth mechanism, so better idea to rely on a third party.
 
 ### Support
