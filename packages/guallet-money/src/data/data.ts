@@ -1105,7 +1105,7 @@ export const json = {
           $attr: {},
           $data: [
             { $name: "CtryNm", $attr: {}, $data: "GUERNSEY" },
-            { $name: "CcyNm", $attr: {}, $data: "Pound Sterling" },
+            { $name: "CcyNm", $attr: {}, $data: "British Pound Sterling" },
             { $name: "Ccy", $attr: {}, $data: "GBP" },
             { $name: "CcyNbr", $attr: {}, $data: 826 },
             { $name: "CcyMnrUnts", $attr: {}, $data: 2 },
@@ -1311,7 +1311,7 @@ export const json = {
           $attr: {},
           $data: [
             { $name: "CtryNm", $attr: {}, $data: "ISLE OF MAN" },
-            { $name: "CcyNm", $attr: {}, $data: "Pound Sterling" },
+            { $name: "CcyNm", $attr: {}, $data: "British Pound Sterling" },
             { $name: "Ccy", $attr: {}, $data: "GBP" },
             { $name: "CcyNbr", $attr: {}, $data: 826 },
             { $name: "CcyMnrUnts", $attr: {}, $data: 2 },
@@ -1366,7 +1366,7 @@ export const json = {
           $attr: {},
           $data: [
             { $name: "CtryNm", $attr: {}, $data: "JERSEY" },
-            { $name: "CcyNm", $attr: {}, $data: "Pound Sterling" },
+            { $name: "CcyNm", $attr: {}, $data: "British Pound Sterling" },
             { $name: "Ccy", $attr: {}, $data: "GBP" },
             { $name: "CcyNbr", $attr: {}, $data: 826 },
             { $name: "CcyMnrUnts", $attr: {}, $data: 2 },
@@ -2782,7 +2782,7 @@ export const json = {
               $data:
                 "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND (THE)",
             },
-            { $name: "CcyNm", $attr: {}, $data: "Pound Sterling" },
+            { $name: "CcyNm", $attr: {}, $data: "British Pound Sterling" },
             { $name: "Ccy", $attr: {}, $data: "GBP" },
             { $name: "CcyNbr", $attr: {}, $data: 826 },
             { $name: "CcyMnrUnts", $attr: {}, $data: 2 },

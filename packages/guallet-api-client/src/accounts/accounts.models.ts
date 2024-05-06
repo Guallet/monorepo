@@ -63,7 +63,7 @@ export type UpdateAccountRequest = {
   name?: string;
   type?: string;
   currency?: string;
-  initial_balance?: number;
+  balance?: number;
   institution_id?: string;
 };
 

@@ -1,6 +1,7 @@
 import { Currency, ISO4217Currencies } from "@guallet/money";
 import { SearchBoxInput } from "@guallet/ui-react";
 import {
+  Box,
   Button,
   Grid,
   Group,
@@ -94,13 +95,9 @@ function CurrencyPickerModal({
     if (query === "" || query === null || query === undefined) {
       setFilteredCurrencies(currencyCodes);
     } else {
-      const filtered = currencyCodes.filter((currency) => {
-        return (
-          currency.name.toLowerCase().includes(query.toLowerCase()) ||
-          currency.symbol.toLowerCase().includes(query.toLowerCase()) ||
-          currency.code.toLowerCase().includes(query.toLowerCase())
-        );
-      });
+      const filtered = currencyCodes.filter((currency) =>
+        JSON.stringify(currency).toLowerCase().includes(query.toLowerCase())
+      );
       setFilteredCurrencies(filtered);
     }
   }, [query]);
@@ -113,7 +110,7 @@ function CurrencyPickerModal({
           setQuery(newQuery);
         }}
       />
-      <ScrollArea.Autosize mah={300}>
+      <ScrollArea.Autosize h={300}>
         {filteredCurrencies.length === 0 && <Text>No currencies found</Text>}
         {filteredCurrencies.map((currency) => (
           <Group grow key={currency.code}>
