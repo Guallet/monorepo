@@ -6,8 +6,6 @@ import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCard
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
-import { gualletClient } from "@/App";
-import { ApiError } from "@guallet/api-client/src/GualletClient";
 import { useAccount } from "@guallet/api-react";
 
 export const Route = createFileRoute("/_app/accounts/$id")({
@@ -120,7 +118,12 @@ function AccountDetailsPage() {
         <Button fullWidth disabled>
           Manage connection
         </Button>
-        <Button component="a" fullWidth href={`/accounts/${account.id}/edit`}>
+        <Button
+          fullWidth
+          onClick={() => {
+            navigation({ to: `/accounts/$id/edit`, params: { id } });
+          }}
+        >
           Edit
         </Button>
         <Button fullWidth color="red" onClick={showDeleteAccountModal}>
