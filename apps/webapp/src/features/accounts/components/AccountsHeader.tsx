@@ -17,13 +17,19 @@ export function AccountsHeader({
   return (
     <Group justify="space-between">
       <SearchBoxInput
+        style={{ flexGrow: 1 }}
         query={query}
         onSearchQueryChanged={(query) => {
           setQuery(query);
           onSearchQueryChanged(query);
         }}
       />
-      <Button variant="outline" radius="xl" onClick={onAddNewAccount} bg={Colors.white}>
+      <Button
+        variant="outline"
+        radius="xl"
+        onClick={onAddNewAccount}
+        bg={Colors.white}
+      >
         Add new account
       </Button>
     </Group>

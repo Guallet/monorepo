@@ -52,7 +52,6 @@ function AccountsPage() {
               setSearchQuery(searchQuery);
             }}
           />
-          <Space h="md" />
           <AccountsList
             accounts={filteredAccounts}
             onAccountSelected={(account: AccountDto) => {
