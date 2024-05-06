@@ -1,4 +1,8 @@
-import { CreateAccountRequest } from "@guallet/api-client";
+import {
+  CreateAccountRequest,
+  UpdateAccountRequest,
+  UpdateAccountRequest,
+} from "@guallet/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
 
@@ -22,7 +26,28 @@ export function useAccountMutations() {
     },
   });
 
+  const updateAccountMutation = useMutation({
+    mutationFn: async ({
+      id,
+      request,
+    }: {
+      id: string;
+      request: UpdateAccountRequest;
+    }) => {
+      return await gualletClient.accounts.update(id, request);
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [ACCOUNTS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
   return {
     createAccountMutation,
+    updateAccountMutation,
   };
 }

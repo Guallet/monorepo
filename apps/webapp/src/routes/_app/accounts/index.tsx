@@ -15,10 +15,19 @@ function AccountsPage() {
   const navigation = useNavigate();
   const { accounts, isLoading } = useAccounts();
   const [filteredAccounts, setFilteredAccounts] = useState(accounts);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    setFilteredAccounts(accounts);
-  }, [accounts]);
+    if (searchQuery.length === 0) {
+      setFilteredAccounts(accounts);
+    } else {
+      setFilteredAccounts(
+        accounts.filter((x) =>
+          x.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+  }, [accounts, searchQuery]);
 
   return (
     <AppScreen isLoading={isLoading}>
@@ -40,15 +49,7 @@ function AccountsPage() {
           <AccountsHeader
             onAddNewAccount={() => navigation({ to: "/accounts/add" })}
             onSearchQueryChanged={(searchQuery: string) => {
-              if (searchQuery.length === 0) {
-                setFilteredAccounts(accounts);
-              } else {
-                setFilteredAccounts(
-                  accounts.filter((x) =>
-                    x.name.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                );
-              }
+              setSearchQuery(searchQuery);
             }}
           />
           <Space h="md" />

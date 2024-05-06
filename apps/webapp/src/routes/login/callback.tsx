@@ -1,4 +1,5 @@
 import { useAuth } from "@/core/auth/useAuth";
+import { Center, Loader } from "@mantine/core";
 import { Navigate, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login/callback")({
@@ -9,7 +10,11 @@ function LoginCallbackPage() {
   const { isLoading, session } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
   }
 
   if (!session) {
