@@ -13,7 +13,7 @@ export function AppScreen({ children, isLoading = false }: AppScreenProps) {
         style={{
           display: "grid",
           gridRow: 1,
-          height: "100vh",
+          height: "50vh",
           placeItems: "center",
         }}
       >

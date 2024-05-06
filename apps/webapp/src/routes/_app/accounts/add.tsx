@@ -19,6 +19,7 @@ import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
 import { useAccountMutations } from "@guallet/api-react";
 import { AccountTypeDto, CreateAccountRequest } from "@guallet/api-client";
+import { AppSection } from "@/components/Cards/AppSection";
 
 export const Route = createFileRoute("/_app/accounts/add")({
   component: AddAccountPage,
@@ -121,75 +122,79 @@ export function AddAccountPage() {
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onFormSubmit)}>
         <Stack>
-          <Controller
-            name="name"
-            control={form.control}
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                label="Account name"
-                placeholder="Enter account name"
-                error={form.formState.errors.name?.message}
-              />
-            )}
-          />
-          <Controller
-            name="account_type"
-            control={form.control}
-            render={({ field }) => (
-              <NativeSelect
-                {...field}
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
+          <AppSection title="Account details">
+            <Stack>
+              <Controller
+                name="name"
+                control={form.control}
+                render={({ field }) => (
+                  <TextInput
+                    {...field}
+                    label="Account name"
+                    placeholder="Enter account name"
+                    error={form.formState.errors.name?.message}
                   />
-                }
-                label="Account type"
-                data={accountTypes}
-                value={field.value}
-                onChange={(event) => {
-                  const type = event.currentTarget.value as AccountTypeDto;
-                  setAccountType(type);
-                  field.onChange(type);
-                }}
+                )}
               />
-            )}
-          />
-          <Controller
-            name="currency"
-            control={form.control}
-            render={({ field }) => (
-              <CurrencyPicker
+              <Controller
+                name="account_type"
+                control={form.control}
+                render={({ field }) => (
+                  <NativeSelect
+                    {...field}
+                    required
+                    rightSection={
+                      <IconChevronDown
+                        style={{ width: rem(16), height: rem(16) }}
+                      />
+                    }
+                    label="Account type"
+                    data={accountTypes}
+                    value={field.value}
+                    onChange={(event) => {
+                      const type = event.currentTarget.value as AccountTypeDto;
+                      setAccountType(type);
+                      field.onChange(type);
+                    }}
+                  />
+                )}
+              />
+              <Controller
                 name="currency"
-                required
-                value={field.value}
-                onValueChanged={(newValue) => {
-                  field.onChange(newValue);
+                control={form.control}
+                render={({ field }) => (
+                  <CurrencyPicker
+                    name="currency"
+                    required
+                    value={field.value}
+                    onValueChanged={(newValue) => {
+                      field.onChange(newValue);
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="balance"
+                control={form.control}
+                render={({ field }) => {
+                  return (
+                    <NumberInput
+                      {...field}
+                      label="Initial balance"
+                      required
+                      description="Initial balance of the account"
+                      defaultValue={field.value}
+                      onChange={(newValue) => {
+                        field.onChange(newValue);
+                      }}
+                      leftSection={currency.symbol}
+                      decimalScale={currency.decimalPlaces}
+                    />
+                  );
                 }}
               />
-            )}
-          />
-          <Controller
-            name="balance"
-            control={form.control}
-            render={({ field }) => {
-              return (
-                <NumberInput
-                  {...field}
-                  label="Initial balance"
-                  required
-                  description="Initial balance of the account"
-                  defaultValue={field.value}
-                  onChange={(newValue) => {
-                    field.onChange(newValue);
-                  }}
-                  leftSection={currency.symbol}
-                  decimalScale={currency.decimalPlaces}
-                />
-              );
-            }}
-          />
+            </Stack>
+          </AppSection>
           <Group>
             <Button type="submit">Save</Button>
             <Button

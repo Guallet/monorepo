@@ -1,4 +1,4 @@
-import { AppScreen } from "@/components/layout/AppScreen";
+import { AppScreen } from "@/components/Layout/AppScreen";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
@@ -77,7 +77,7 @@ interface EmptyAccountsPageProps {
 function EmptyAccountsPage({
   onCreateNewAccount,
   onConnectBank,
-}: EmptyAccountsPageProps) {
+}: Readonly<EmptyAccountsPageProps>) {
   return (
     <Stack>
       <Text>It looks you don't have any account yet</Text>

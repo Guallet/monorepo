@@ -85,10 +85,6 @@ export function AppNavBar({ onItemSelected }: Props) {
 
   return (
     <>
-      <AppShell.Section>
-        <UserButton />
-        <Divider />
-      </AppShell.Section>
       <AppShell.Section grow my="md" component={ScrollArea}>
         {menuData.map((item) => {
           return (
@@ -116,41 +112,3 @@ export function AppNavBar({ onItemSelected }: Props) {
     </>
   );
 }
-
-// export function AppNavBar({ onItemSelected }: Props) {
-//   // TODO: Instead of this hook, the navbar should use the <Link> component
-//   const navigate = useNavigate();
-
-//   const links = menuData.map((item) => (
-//     <LinksGroup {...item} key={item.label} onItemSelected={onItemSelected} />
-//   ));
-
-//   return (
-//     <nav className={classes.navbar}>
-//       <div
-//         className={classes.header}
-//         onClick={() => {
-//           navigate({ to: "/user" });
-//         }}
-//       >
-//         <UserButton />
-//       </div>
-
-//       <ScrollArea w={300} h={200} className={classes.links}>
-//         <div className={classes.linksInner}>{links}</div>
-//       </ScrollArea>
-
-//       <div className={classes.footer}>
-//         <Button
-//           variant="transparent"
-//           onClick={() => {
-//             navigate({ to: "/logout" });
-//           }}
-//         >
-//           <IconLogout />
-//           Logout
-//         </Button>
-//       </div>
-//     </nav>
-//   );
-// }
