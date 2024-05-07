@@ -9,8 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
   Bar,
-  Line,
-  ComposedChart,
+  BarChart,
 } from "recharts";
 
 function compareChartItems(a: AccountChartData, b: AccountChartData): number {
@@ -31,8 +30,8 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
       month: "long",
     }),
     total: (x.total_in + x.total_out).toFixed(2),
-    in: x.total_in,
-    out: x.total_out,
+    in: Math.abs(x.total_in),
+    out: Math.abs(x.total_out),
   }));
 
   if (isLoading) {
@@ -41,7 +40,7 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
 
   return (
     <ResponsiveContainer width="100%" height={500}>
-      <ComposedChart
+      <BarChart
         width={500}
         height={300}
         data={chartData}
@@ -59,8 +58,7 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
         <Legend />
         <Bar dataKey="in" fill="#AFE1AF" />
         <Bar dataKey="out" fill="#FF2400" />
-        <Line type="monotone" dataKey="total" stroke="#36454F" />
-      </ComposedChart>
+      </BarChart>
     </ResponsiveContainer>
   );
 }
