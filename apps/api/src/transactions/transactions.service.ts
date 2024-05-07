@@ -181,4 +181,24 @@ export class TransactionsService {
     };
     return await this.repository.save(updatedEntity);
   }
+
+  async getAccountTransactions(args: {
+    accountId: string;
+    startDate: Date;
+    endDate: Date;
+  }): Promise<Transaction[]> {
+    const { accountId, startDate, endDate } = args;
+
+    const transactions = await this.repository.find({
+      where: {
+        accountId: accountId,
+        date: Between(startDate, endDate),
+      },
+      order: {
+        date: 'DESC',
+      },
+    });
+
+    return transactions;
+  }
 }

@@ -16,13 +16,19 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { AccountDto } from './dto/account.dto';
+import { TransactionsService } from 'src/transactions/transactions.service';
+import { AccountChartsDto, ChartData } from './dto/account-charts.dto';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @ApiTags('Accounts')
 @Controller('accounts')
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
 
-  constructor(private readonly accountsService: AccountsService) {}
+  constructor(
+    private readonly accountsService: AccountsService,
+    private readonly transactionsService: TransactionsService,
+  ) {}
 
   @Get()
   async getUserAccounts(@RequestUser() user: UserPrincipal) {
@@ -54,24 +60,95 @@ export class AccountsController {
     return AccountDto.fromDomain(account);
   }
 
-  //   @Get(':id/transactions')
-  //   async getAccountTransactions(
-  //     @RequestUser() user: UserPrincipal,
-  //     @Param('id', ParseUUIDPipe) accountId: string,
-  //   ): Promise<TransactionDto[]> {
-  //     const account = await this.accountsService.getUserAccount(
-  //       user.id,
-  //       accountId,
-  //     );
+  // @Get(':id/transactions')
+  // async getAccountTransactions(
+  //   @RequestUser() user: UserPrincipal,
+  //   @Param('id', ParseUUIDPipe) accountId: string,
+  // ): Promise<TransactionDto[]> {
+  //   const account = await this.accountsService.getUserAccount(
+  //     user.id,
+  //     accountId,
+  //   );
 
-  //     const transactions = await this.transactionsService.getAccountTransactions(
-  //       account.id,
-  //       1,
-  //       50,
-  //     );
+  //   const transactions = await this.transactionsService.getUserTransactions(
+  //     user.id,
+  //     1,
+  //     50
+  //   );
 
-  //     return transactions.map((tx) => new TransactionDto(tx));
-  //   }
+  //   return transactions.map((x) => new TransactionDto(x));
+  // }
+
+  @Get(':id/charts')
+  async getAccountChart(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) accountId: string,
+  ): Promise<AccountChartsDto> {
+    const account = await this.accountsService.getUserAccount(
+      user.id,
+      accountId,
+    );
+
+    // Get the transactions for the account in the last 6 months
+    const sixMothsAgo = new Date();
+    sixMothsAgo.setMonth(sixMothsAgo.getMonth() - 6);
+    sixMothsAgo.setDate(1); // set the day to the first day of the month
+    sixMothsAgo.setHours(0, 0, 0, 0); // set the time to 00:00:00.000
+
+    const transactions = await this.transactionsService.getAccountTransactions({
+      accountId: account.id,
+      startDate: sixMothsAgo,
+      endDate: new Date(),
+    });
+
+    // Group the transactions by month
+    const transactionsByMonth = transactions.reduce((acc, transaction) => {
+      const month = transaction.date.getMonth();
+      const year = transaction.date.getFullYear();
+      const key = `${year}-${month}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(transaction);
+      return acc;
+    }, {});
+
+    // Convert the grouped transactions into AccountChartsDto format
+    const accountCharts = Object.entries(transactionsByMonth).map(
+      ([key, transactions]) => {
+        const [year, month] = key.split('-');
+
+        const totalIn = (transactions as Transaction[])
+          .filter((t) => t.amount > 0)
+          .reduce((acc, t) => acc + Number(t.amount), 0);
+
+        const totalOut = (transactions as Transaction[])
+          .filter((t) => t.amount < 0)
+          .reduce((acc, t) => acc + Number(t.amount), 0);
+
+        return {
+          year: Number(year),
+          month: Number(month),
+          total_in: totalIn,
+          total_out: totalOut,
+        };
+      },
+    );
+
+    return AccountChartsDto.fromDomain(
+      sixMothsAgo,
+      new Date(),
+      accountCharts.map(
+        (d) =>
+          new ChartData(
+            d.month,
+            d.year,
+            Math.round(d.total_in * 100) / 100,
+            Math.round(d.total_out * 100) / 100,
+          ),
+      ),
+    );
+  }
 
   @Patch(':id')
   update(

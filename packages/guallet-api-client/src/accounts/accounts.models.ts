@@ -85,3 +85,17 @@ export interface CreditCardProperties {
 export interface SavingAccountProperties {
   interestRate: number;
 }
+
+export interface AccountChartsDto {
+  startDate: Date;
+  endDate: Date;
+
+  chart: AccountChartData[];
+}
+
+export interface AccountChartData {
+  month: number;
+  year: number;
+  total_in: number;
+  total_out: number;
+}

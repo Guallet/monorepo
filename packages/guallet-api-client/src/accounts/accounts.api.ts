@@ -1,4 +1,5 @@
 import {
+  AccountChartsDto,
   AccountDto,
   CreateAccountRequest,
   UpdateAccountRequest,
@@ -32,6 +33,12 @@ export class AccountsApi {
     return await this.client.patch<AccountDto, UpdateAccountRequest>(
       `${ACCOUNTS_PATH}/${accountId}`,
       account
+    );
+  }
+
+  getAccountChartData(accountId: string) {
+    return this.client.get<AccountChartsDto>(
+      `${ACCOUNTS_PATH}/${accountId}/charts`
     );
   }
 }

@@ -25,30 +25,9 @@ export const Route = createFileRoute("/_app/accounts/$id")({
   },
 });
 
-// async function loader(id: string): Promise<AccountDto> {
-//   try {
-//     // return await getAccount(id);
-//     return await gualletClient.accounts.get(id);
-//   } catch (error) {
-//     console.error("Error loading account", error);
-//     if (error instanceof ApiError) {
-//       switch (error.status) {
-//         case 404:
-//           // https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors
-//           throw notFound();
-//         default:
-//           console.error("Unhandled error", error);
-//           throw error;
-//       }
-//     }
-//     throw error;
-//   }
-// }
-
 function AccountDetailsPage() {
-  // const account = Route.useLoaderData();
   const { id } = Route.useParams();
-  const { account, isLoading, isError } = useAccount(id);
+  const { account, isLoading } = useAccount(id);
   const navigation = useNavigate();
 
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
@@ -143,7 +122,7 @@ function DeleteAccountDialog({
   account,
   onCancel,
   onAccountDeleted,
-}: DialogProps) {
+}: Readonly<DialogProps>) {
   async function deleteAccount() {
     await fetch_delete(`accounts/${account.id}`);
     onAccountDeleted();
@@ -168,7 +147,7 @@ function DeleteAccountDialog({
   );
 }
 
-function AccountDetailsSelector(account: AccountDto) {
+function AccountDetailsSelector(account: Readonly<AccountDto>) {
   // TODO: Create different components for each account type
   switch (account.type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
