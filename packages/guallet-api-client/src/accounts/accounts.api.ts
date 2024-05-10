@@ -5,6 +5,7 @@ import {
   UpdateAccountRequest,
 } from "./accounts.models";
 import { GualletClient } from "./../GualletClient";
+import { TransactionDto } from "./../transactions/transactions.models";
 
 const ACCOUNTS_PATH = "accounts";
 
@@ -36,9 +37,16 @@ export class AccountsApi {
     );
   }
 
-  getAccountChartData(accountId: string) {
-    return this.client.get<AccountChartsDto>(
+  async getAccountChartData(accountId: string): Promise<AccountChartsDto> {
+    return await this.client.get<AccountChartsDto>(
       `${ACCOUNTS_PATH}/${accountId}/charts`
+    );
+  }
+
+  // Gets the transactions for the account in the current month
+  async getAccountTransactions(accountId: string): Promise<TransactionDto[]> {
+    return await this.client.get<TransactionDto[]>(
+      `${ACCOUNTS_PATH}/${accountId}/transactions`
     );
   }
 }

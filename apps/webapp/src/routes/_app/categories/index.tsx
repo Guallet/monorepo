@@ -14,7 +14,6 @@ import {
 import { z } from "zod";
 import { Button, Modal, Stack, Text } from "@mantine/core";
 import { CategoriesList } from "@/features/categories/components/CategoriesList/CategoriesList";
-import { IconEditCircle } from "@tabler/icons-react";
 
 const categoriesSearchSchema = z.object({
   modal: z.enum(["create", "edit"]).optional(),

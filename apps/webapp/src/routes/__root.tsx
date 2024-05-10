@@ -1,4 +1,4 @@
-import { Loader } from "@mantine/core";
+import { Center, Loader } from "@mantine/core";
 import { RootRoute, Outlet } from "@tanstack/react-router";
 import React, { Suspense } from "react";
 // import { TanStackRouterDevtools } from "@tanstack/router-devtools";
@@ -18,7 +18,13 @@ export const Route = new RootRoute({
   component: () => (
     <>
       <Outlet />
-      <Suspense fallback={<Loader />}>
+      <Suspense
+        fallback={
+          <Center>
+            <Loader />
+          </Center>
+        }
+      >
         <TanStackRouterDevtools />
       </Suspense>
     </>

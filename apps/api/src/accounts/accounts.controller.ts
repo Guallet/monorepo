@@ -19,6 +19,7 @@ import { AccountDto } from './dto/account.dto';
 import { TransactionsService } from 'src/transactions/transactions.service';
 import { AccountChartsDto, ChartData } from './dto/account-charts.dto';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { TransactionDto } from 'src/transactions/dto/transaction.dto';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -60,24 +61,30 @@ export class AccountsController {
     return AccountDto.fromDomain(account);
   }
 
-  // @Get(':id/transactions')
-  // async getAccountTransactions(
-  //   @RequestUser() user: UserPrincipal,
-  //   @Param('id', ParseUUIDPipe) accountId: string,
-  // ): Promise<TransactionDto[]> {
-  //   const account = await this.accountsService.getUserAccount(
-  //     user.id,
-  //     accountId,
-  //   );
+  @Get(':id/transactions')
+  // Get the transactions for the account in the current month
+  async getAccountTransactions(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) accountId: string,
+  ): Promise<TransactionDto[]> {
+    const account = await this.accountsService.getUserAccount(
+      user.id,
+      accountId,
+    );
 
-  //   const transactions = await this.transactionsService.getUserTransactions(
-  //     user.id,
-  //     1,
-  //     50
-  //   );
+    // Get the transactions for the account in the last 6 months
+    const startDate = new Date();
+    startDate.setDate(1); // set the day to the first day of the month
+    startDate.setHours(0, 0, 0, 0); // set the time to 00:00:00.000
 
-  //   return transactions.map((x) => new TransactionDto(x));
-  // }
+    const transactions = await this.transactionsService.getAccountTransactions({
+      accountId: account.id,
+      startDate: startDate,
+      endDate: new Date(),
+    });
+
+    return transactions.map((x) => TransactionDto.fromDomain(x));
+  }
 
   @Get(':id/charts')
   async getAccountChart(

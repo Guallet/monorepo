@@ -1,12 +1,32 @@
 import { useNavigate, notFound, createFileRoute } from "@tanstack/react-router";
-import { Group, Modal, Stack, Text, Button, Loader } from "@mantine/core";
+import {
+  Group,
+  Modal,
+  Stack,
+  Text,
+  Button,
+  Loader,
+  Center,
+  Avatar,
+  ButtonGroup,
+} from "@mantine/core";
 import { fetch_delete } from "@core/api/fetchHelper";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { AccountDto, AccountTypeDto } from "@guallet/api-client";
-import { useAccount } from "@guallet/api-react";
+import {
+  AccountDto,
+  AccountTypeDto,
+  TransactionDto,
+} from "@guallet/api-client";
+import { useAccount, useAccountTransactions } from "@guallet/api-react";
+import { AppSection } from "@/components/Cards/AppSection";
+import { TransactionCard } from "../transactions/inbox";
+import { Money } from "@guallet/money";
+import { InstitutionLogo } from "@/components/InstitutionLogo/InstitutionLogo";
+import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
+import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
 
 export const Route = createFileRoute("/_app/accounts/$id")({
   component: AccountDetailsPage,
@@ -26,9 +46,10 @@ export const Route = createFileRoute("/_app/accounts/$id")({
 });
 
 function AccountDetailsPage() {
+  const navigation = useNavigate();
+
   const { id } = Route.useParams();
   const { account, isLoading } = useAccount(id);
-  const navigation = useNavigate();
 
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
     useState(false);
@@ -78,22 +99,9 @@ function AccountDetailsPage() {
       {/* Show info dependent on account type */}
       {AccountDetailsSelector(account)}
 
-      <Stack justify="flex-start">
-        <Button
-          fullWidth
-          onClick={() => {
-            navigation({
-              to: `/transactions`,
-              search: () => ({
-                accounts: [account.id],
-                page: 1,
-                pageSize: 50,
-              }),
-            });
-          }}
-        >
-          View Transactions
-        </Button>
+      <Stack>
+        <TransactionsSection accountId={account.id} />
+
         <Button fullWidth disabled>
           Manage connection
         </Button>
@@ -157,4 +165,70 @@ function AccountDetailsSelector(account: Readonly<AccountDto>) {
     default:
       return null;
   }
+}
+
+interface TransactionsSectionProps {
+  accountId: string;
+}
+function TransactionsSection({
+  accountId,
+}: Readonly<TransactionsSectionProps>) {
+  const navigation = useNavigate();
+  const { transactions, isLoading } = useAccountTransactions(accountId);
+
+  return (
+    <AppSection title="Latest transactions">
+      {isLoading ? (
+        <Center>
+          <Loader />
+        </Center>
+      ) : transactions.length === 0 ? (
+        <Center>
+          <Text>No transactions found for this month</Text>
+        </Center>
+      ) : (
+        <Stack>
+          {transactions.map((transaction) => (
+            <TransactionRow key={transaction.id} transaction={transaction} />
+          ))}
+        </Stack>
+      )}
+      <Button
+        variant="outline"
+        onClick={() => {
+          navigation({
+            to: "/transactions",
+            search: {
+              accounts: [accountId],
+              page: 1,
+              pageSize: 50,
+            },
+          });
+        }}
+      >
+        View all account transactions
+      </Button>
+    </AppSection>
+  );
+}
+
+function TransactionRow({ transaction }: { transaction: TransactionDto }) {
+  const amount = Money.fromCurrencyCode({
+    amount: transaction.amount,
+    currencyCode: transaction.currency,
+  });
+
+  return (
+    <Group>
+      <CategoryAvatar categoryId={transaction.categoryId} size={40} />
+      <Text
+        style={{
+          flexGrow: 1,
+        }}
+      >
+        {transaction.description}
+      </Text>
+      <Text>{amount.format()}</Text>
+    </Group>
+  );
 }
