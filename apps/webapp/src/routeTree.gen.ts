@@ -32,6 +32,7 @@ import { Route as AppUserEditImport } from './routes/_app/user/edit'
 import { Route as AppTransactionsInboxImport } from './routes/_app/transactions/inbox'
 import { Route as AppReportsCashflowImport } from './routes/_app/reports/cashflow'
 import { Route as AppConnectionsIdImport } from './routes/_app/connections/$id'
+import { Route as AppCategoriesOldImport } from './routes/_app/categories/old'
 import { Route as AppAccountsAddImport } from './routes/_app/accounts/add'
 import { Route as AppAccountsIdImport } from './routes/_app/accounts/$id'
 import { Route as AppSettingsInstitutionsIndexImport } from './routes/_app/settings/institutions/index'
@@ -169,6 +170,11 @@ const AppConnectionsIdRoute = AppConnectionsIdImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppCategoriesOldRoute = AppCategoriesOldImport.update({
+  path: '/categories/old',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppAccountsAddRoute = AppAccountsAddImport.update({
   path: '/accounts/add',
   getParentRoute: () => AppRoute,
@@ -261,6 +267,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsAddImport
       parentRoute: typeof AppImport
     }
+    '/_app/categories/old': {
+      preLoaderRoute: typeof AppCategoriesOldImport
+      parentRoute: typeof AppImport
+    }
     '/_app/connections/$id': {
       preLoaderRoute: typeof AppConnectionsIdImport
       parentRoute: typeof AppImport
@@ -351,6 +361,7 @@ export const routeTree = rootRoute.addChildren([
   AppRoute.addChildren([
     AppAccountsIdRoute,
     AppAccountsAddRoute,
+    AppCategoriesOldRoute,
     AppConnectionsIdRoute,
     AppReportsCashflowRoute,
     AppTransactionsInboxRoute,
