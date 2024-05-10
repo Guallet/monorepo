@@ -7,8 +7,7 @@ import {
   Button,
   Loader,
   Center,
-  Avatar,
-  ButtonGroup,
+  Space,
 } from "@mantine/core";
 import { fetch_delete } from "@core/api/fetchHelper";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
@@ -22,11 +21,11 @@ import {
 } from "@guallet/api-client";
 import { useAccount, useAccountTransactions } from "@guallet/api-react";
 import { AppSection } from "@/components/Cards/AppSection";
-import { TransactionCard } from "../transactions/inbox";
 import { Money } from "@guallet/money";
-import { InstitutionLogo } from "@/components/InstitutionLogo/InstitutionLogo";
 import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
 import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
+import { AmountLabel } from "@/components/Amount/AmountLabel";
+import { getAccountTypeTitleSingular } from "@/features/accounts/models/Account";
 
 export const Route = createFileRoute("/_app/accounts/$id")({
   component: AccountDetailsPage,
@@ -92,19 +91,38 @@ function AccountDetailsPage() {
           }}
         />
       </Modal>
-      <Text size="lg" fw={700}>
-        {account.name}
-      </Text>
-
-      {/* Show info dependent on account type */}
-      {AccountDetailsSelector(account)}
 
       <Stack>
+        <Group justify="space-between">
+          <AccountAvatar accountId={account.id} />
+
+          <Stack
+            gap={0}
+            style={{
+              flexGrow: 1,
+            }}
+          >
+            <Text size="lg" fw={700}>
+              {account.name}
+            </Text>
+            <Text size="sm" c="dimmed">
+              {getAccountTypeTitleSingular(account.type)}
+            </Text>
+          </Stack>
+
+          <AmountLabel
+            amount={account.balance.amount}
+            currencyCode={account.currency}
+          />
+        </Group>
+
+        {/* Show info dependent on account type */}
+        {AccountDetailsSelector(account)}
+        <Space />
         <TransactionsSection accountId={account.id} />
 
-        <Button fullWidth disabled>
-          Manage connection
-        </Button>
+        <Space />
+
         <Button
           fullWidth
           onClick={() => {
