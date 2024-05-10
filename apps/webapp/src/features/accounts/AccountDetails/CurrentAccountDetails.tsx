@@ -1,6 +1,7 @@
+import { AppSection } from "@/components/Cards/AppSection";
 import { AccountChartData, AccountDto } from "@guallet/api-client";
 import { useAccountCharts } from "@guallet/api-react";
-import { Loader } from "@mantine/core";
+import { Center, Loader, Text } from "@mantine/core";
 import {
   XAxis,
   YAxis,
@@ -36,6 +37,19 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (chartData?.length === 0) {
+    return (
+      <AppSection title="">
+        <Center>
+          <Text>
+            No data available yet. Add some transactions to start seeing some
+            insights
+          </Text>
+        </Center>
+      </AppSection>
+    );
   }
 
   return (
