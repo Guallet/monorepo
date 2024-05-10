@@ -3,7 +3,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   createCategory,
-  loadCategories,
   updateCategory as serverUpdateCategory,
   deleteCategory as serverDeleteCategory,
 } from "@/features/categories/api/categories.api";
@@ -14,6 +13,7 @@ import {
 import { z } from "zod";
 import { Button, Modal, Stack, Text } from "@mantine/core";
 import { CategoriesList } from "@/features/categories/components/CategoriesList/CategoriesList";
+import { useCategories } from "@guallet/api-react";
 
 const categoriesSearchSchema = z.object({
   modal: z.enum(["create", "edit"]).optional(),
@@ -24,15 +24,11 @@ const categoriesSearchSchema = z.object({
 export const Route = createFileRoute("/_app/categories/")({
   component: CategoriesPage,
   validateSearch: categoriesSearchSchema,
-  loader: loader,
 });
 
-async function loader() {
-  return await loadCategories();
-}
-
 function CategoriesPage() {
-  const data = Route.useLoaderData();
+  const { categories } = useCategories();
+
   const { modal, categoryId, parentId } = Route.useSearch();
 
   const isMobile = useMediaQuery("(max-width: 50em)");
@@ -100,7 +96,7 @@ function CategoriesPage() {
     }
   }
 
-  if (data.length == 0) {
+  if (categories.length == 0) {
     return (
       <Stack>
         <Text>You don't have any category yet</Text>
@@ -129,11 +125,13 @@ function CategoriesPage() {
         title={
           !parentId
             ? "Add new category"
-            : `Add subcategory for ${data.find((x) => x.id === parentId)?.name}`
+            : `Add subcategory for ${
+                categories.find((x) => x.id === parentId)?.name
+              }`
         }
       >
         <CategoriesDetailsModal
-          category={data.find((x) => x.id === categoryId) ?? null}
+          category={categories.find((x) => x.id === categoryId) ?? null}
           onCancel={hideModal}
           onSave={(x) => {
             if (parentId) {
@@ -162,7 +160,7 @@ function CategoriesPage() {
           Add new parent category
         </Button>
         <CategoriesList
-          categories={data}
+          categories={categories}
           onAddSubcategory={(parent) => {
             showModal({
               categoryId: null,

@@ -8,11 +8,13 @@ import {
   Stack,
   Center,
   Text,
+  Avatar,
 } from "@mantine/core";
 import { IconDots, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 import { AppCategory } from "../../models/Category";
-import { CategoryIcon } from "../CategoryIcon/CategoryIcon";
+import { GualletIcon } from "@/components/GualletIcon/GualletIcon";
+import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
 
 interface HeaderProps {
   title: string;
@@ -35,7 +37,9 @@ function ItemHeader({
     <Center>
       <Accordion.Control>
         <Group>
-          <CategoryIcon icon={iconName} colour={iconColour} />
+          <Avatar color="blue" radius="sm">
+            <GualletIcon iconName={iconName} iconColor={iconColour} />
+          </Avatar>
           <Text>{title}</Text>
         </Group>
       </Accordion.Control>
@@ -114,7 +118,7 @@ function SubCategoryItem({ category, onEdit, onDelete }: SubCategoryItemProps) {
 
   return (
     <Group style={{ marginLeft: "4em" }}>
-      <CategoryIcon icon={category.icon} colour={category.colour} />
+      <CategoryAvatar categoryId={category.id} />
       <Text>{category.name}</Text>
       <Menu
         opened={menuOpened}
