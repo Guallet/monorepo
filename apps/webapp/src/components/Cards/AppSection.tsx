@@ -1,7 +1,7 @@
 import { Card, Space, Stack, Text } from "@mantine/core";
 
 interface AppSectionProps {
-  title: string;
+  title?: string;
   children: React.ReactNode;
 }
 
@@ -12,10 +12,14 @@ export function AppSection({ title, children }: Readonly<AppSectionProps>) {
         gap: "0",
       }}
     >
-      <Text fw={700} pl="md" pr="md">
-        {title}
-      </Text>
-      <Space h="xs" />
+      {title && (
+        <>
+          <Text fw={700} pl="md" pr="md">
+            {title}
+          </Text>
+          <Space h="xs" />
+        </>
+      )}
 
       <Card withBorder shadow="sm" radius="lg">
         <Stack>{children}</Stack>

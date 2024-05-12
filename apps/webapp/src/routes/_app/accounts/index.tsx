@@ -35,7 +35,7 @@ function AccountsPage() {
         <EmptyAccountsPage
           onCreateNewAccount={() => {
             navigation({
-              to: "/accounts/add",
+              to: "/accounts/new",
             });
           }}
           onConnectBank={() => {
@@ -47,7 +47,7 @@ function AccountsPage() {
       ) : (
         <Stack>
           <AccountsHeader
-            onAddNewAccount={() => navigation({ to: "/accounts/add" })}
+            onAddNewAccount={() => navigation({ to: "/accounts/new" })}
             onSearchQueryChanged={(searchQuery: string) => {
               setSearchQuery(searchQuery);
             }}

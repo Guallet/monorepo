@@ -52,13 +52,18 @@ export function useGroupedCategory(id: string) {
   };
 }
 
-export function useCategory(id: string) {
+export function useCategory(id: string | null) {
   const gualletClient = useGualletClient();
 
   const { data, isLoading, isFetching, refetch, error } = useQuery({
+    enabled: !!id,
     queryKey: [CATEGORIES_QUERY_KEY, id],
     queryFn: async () => {
-      return await gualletClient.categories.get(id);
+      if (id) {
+        return await gualletClient.categories.get(id);
+      } else {
+        throw Error("Category ID is null");
+      }
     },
     gcTime: 1000 * 60 * 60, // 1 Hour
     staleTime: 1000 * 60 * 60, // 1 Hour

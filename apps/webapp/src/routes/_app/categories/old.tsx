@@ -37,9 +37,7 @@ function CategoriesPage() {
   const navigate = useNavigate({ from: Route.fullPath });
 
   async function saveCategory(data: CategoryFormData) {
-    /* eslint-disable */ console.log(
-      ...oo_oo(`1772182918_40_4_40_44_4`, "Create new category", data)
-    );
+    console.log("Create new category", data);
     if (data.parentId === null && parentId) {
       data.parentId = parentId;
     }
@@ -48,9 +46,7 @@ function CategoriesPage() {
   }
 
   async function updateCategory(id: string, data: CategoryFormData) {
-    /* eslint-disable */ console.log(
-      ...oo_oo(`1772182918_49_4_49_43_4`, "Update from cat form", id)
-    );
+    console.log("Update from cat form", id);
     try {
       await serverUpdateCategory(id, data);
     } catch (e) {
@@ -61,9 +57,8 @@ function CategoriesPage() {
   }
 
   async function deleteCategory(id: string) {
-    /* eslint-disable */ console.log(
-      ...oo_oo(`1772182918_60_4_60_45_4`, "OnDelete from cat form", id)
-    );
+    console.log("OnDelete from cat form", id);
+
     try {
       await serverDeleteCategory(id);
     } catch (e) {
@@ -143,9 +138,7 @@ function CategoriesPage() {
             if (parentId) {
               x.parentId = parentId;
             }
-            /* eslint-disable */ console.log(
-              ...oo_oo(`1772182918_140_12_140_47_4`, "OnSubmit cat form", x)
-            );
+            console.log("OnSubmit cat form", x);
             saveCategory(x);
           }}
           onUpdate={(category, formData) => {
