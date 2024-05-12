@@ -1,9 +1,15 @@
+import { AppSection } from "@/components/Cards/AppSection";
+import { CategoryIcon } from "@/components/Categories/CategoryIcon";
 import { AppScreen } from "@/components/Layout/AppScreen";
 import { CategoryRow } from "@/features/categories/components/CategoryRow/CategoryRow";
-import { useCategory, useGroupedCategory } from "@guallet/api-react";
-import { Stack, Button } from "@mantine/core";
+import { useGroupedCategory } from "@guallet/api-react";
+import {
+  Stack,
+  Button,
+  Text,
+  ColorInput,
+} from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 
 export const Route = createFileRoute("/_app/categories/$id")({
   component: CategoryDetailsPage,
@@ -19,19 +25,60 @@ function CategoryDetailsPage() {
   return (
     <AppScreen isLoading={isLoading}>
       <Stack>
-        {category && <CategoryRow category={category} />}
+        <AppSection>
+          <Stack align="center">
+            <CategoryIcon categoryId={category?.id ?? null} />
+            <Text>{category?.name}</Text>
+            <ColorInput
+              closeOnColorSwatchClick
+              label="Colour"
+              placeholder="Select the category colour"
+              value={category?.colour}
+              //   onChange={(value) => setColour(value)}
+              //   error={colourError && "Invalid selected colour"}
+              format="hex"
+              swatches={[
+                "#25262b",
+                "#868e96",
+                "#fa5252",
+                "#e64980",
+                "#be4bdb",
+                "#7950f2",
+                "#4c6ef5",
+                "#228be6",
+                "#15aabf",
+                "#12b886",
+                "#40c057",
+                "#82c91e",
+                "#fab005",
+                "#fd7e14",
+                "#fd7e14",
+                "#fd7e14",
+              ]}
+            />
+          </Stack>
+        </AppSection>
 
         {isParent && (
-          <Button
-            onClick={() =>
-              navigation({
-                to: "/categories/new",
-                search: { parent: id },
-              })
-            }
-          >
-            Add new sub category
-          </Button>
+          <Stack>
+            <AppSection title="Sub-categories">
+              {category?.subCategories.map((subCategory) => (
+                <CategoryRow key={subCategory.id} category={subCategory} />
+              ))}
+
+              <Button
+                variant="outline"
+                onClick={() =>
+                  navigation({
+                    to: "/categories/new",
+                    search: { parent: id },
+                  })
+                }
+              >
+                Add new sub category
+              </Button>
+            </AppSection>
+          </Stack>
         )}
       </Stack>
     </AppScreen>
