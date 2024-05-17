@@ -3,12 +3,7 @@ import { CategoryIcon } from "@/components/Categories/CategoryIcon";
 import { AppScreen } from "@/components/Layout/AppScreen";
 import { CategoryRow } from "@/features/categories/components/CategoryRow/CategoryRow";
 import { useGroupedCategory } from "@guallet/api-react";
-import {
-  Stack,
-  Button,
-  Text,
-  ColorInput,
-} from "@mantine/core";
+import { Stack, Button, Text, ColorInput } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/categories/$id")({
@@ -20,7 +15,7 @@ function CategoryDetailsPage() {
   const { category, isLoading } = useGroupedCategory(id);
   const navigation = useNavigate();
 
-  const isParent = category?.parentId === null ?? false;
+  const isParent = category?.parentId ?? false;
 
   return (
     <AppScreen isLoading={isLoading}>
