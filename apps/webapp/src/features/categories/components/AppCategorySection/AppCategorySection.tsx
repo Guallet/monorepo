@@ -17,8 +17,13 @@ export function AppCategorySection({
   category,
   onCategorySelected,
   onAddSubcategoryClick,
+<<<<<<< HEAD
 }: Readonly<AppCategorySectionProps>) {
   const [isExpanded, setIsExpanded] = useState(false);
+=======
+}: AppCategorySectionProps) {
+  const [isExpanded, setExpanded] = useState(false);
+>>>>>>> ba84897 (Develop into Main (#19))
 
   return (
     <AppSection>
@@ -27,7 +32,11 @@ export function AppCategorySection({
           <ActionIcon
             variant="transparent"
             onClick={() => {
+<<<<<<< HEAD
               setIsExpanded(false);
+=======
+              setExpanded(false);
+>>>>>>> ba84897 (Develop into Main (#19))
             }}
           >
             <IconChevronDown />
@@ -36,7 +45,11 @@ export function AppCategorySection({
           <ActionIcon
             variant="transparent"
             onClick={() => {
+<<<<<<< HEAD
               setIsExpanded(true);
+=======
+              setExpanded(true);
+>>>>>>> ba84897 (Develop into Main (#19))
             }}
           >
             <IconChevronRight />

@@ -14,7 +14,11 @@ export function CategoryIcon({ categoryId }: CategoryIconProps) {
   );
 }
 
+<<<<<<< HEAD
 function GualletCategoryIcon({ categoryId }: Readonly<{ categoryId: string }>) {
+=======
+function GualletCategoryIcon({ categoryId }: { categoryId: string }) {
+>>>>>>> ba84897 (Develop into Main (#19))
   const { category } = useCategory(categoryId);
 
   if (category) {

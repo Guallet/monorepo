@@ -12,7 +12,11 @@ export class CategoryDto {
   icon: string;
 
   @ApiProperty({ description: 'The color of the category' })
+<<<<<<< HEAD
   colour: string;
+=======
+  color: string;
+>>>>>>> ba84897 (Develop into Main (#19))
 
   @ApiProperty({ description: 'The parent of the category', nullable: true })
   parentId?: string;
@@ -22,7 +26,11 @@ export class CategoryDto {
       id: domain.id,
       name: domain.name,
       icon: domain.icon,
+<<<<<<< HEAD
       colour: domain.colour,
+=======
+      color: domain.colour,
+>>>>>>> ba84897 (Develop into Main (#19))
       parentId: domain.parentId,
     };
   }

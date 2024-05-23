@@ -1,9 +1,13 @@
 import { GualletClient } from "./../GualletClient";
+<<<<<<< HEAD
 import {
   CategoryDto,
   CreateCategoryRequest,
   UpdateCategoryRequest,
 } from "./categories.models";
+=======
+import { CategoryDto, CreateCategoryRequest } from "./categories.models";
+>>>>>>> ba84897 (Develop into Main (#19))
 
 const CATEGORIES_PATH = "categories";
 
@@ -24,6 +28,7 @@ export class CategoriesApi {
       category
     );
   }
+<<<<<<< HEAD
 
   async update({
     id,
@@ -41,4 +46,6 @@ export class CategoriesApi {
   async delete(id: string): Promise<void> {
     await this.client.fetch_delete<CategoryDto>(`${CATEGORIES_PATH}/${id}`);
   }
+=======
+>>>>>>> ba84897 (Develop into Main (#19))
 }
