@@ -1,8 +1,9 @@
+import { CategoryDto } from "@guallet/api-client";
 import { AppCategory, Category } from "../../models/Category";
 import { CategoriesListItem } from "./CategoriesListItem";
 
 interface Props {
-  categories: Category[];
+  categories: CategoryDto[];
   onAddSubcategory: (parentCategory: AppCategory) => void;
   onEdit: (category: AppCategory) => void;
   onDelete: (category: AppCategory) => void;

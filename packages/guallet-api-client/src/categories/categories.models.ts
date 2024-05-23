@@ -5,3 +5,10 @@ export type CategoryDto = {
   colour: string;
   parentId: string | null;
 };
+
+export type CreateCategoryRequest = {
+  name: string;
+  icon: string;
+  colour: string;
+  parentId?: string;
+};

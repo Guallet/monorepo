@@ -21,7 +21,7 @@ import { useAccountMutations } from "@guallet/api-react";
 import { AccountTypeDto, CreateAccountRequest } from "@guallet/api-client";
 import { AppSection } from "@/components/Cards/AppSection";
 
-export const Route = createFileRoute("/_app/accounts/add")({
+export const Route = createFileRoute("/_app/accounts/new")({
   component: AddAccountPage,
 });
 

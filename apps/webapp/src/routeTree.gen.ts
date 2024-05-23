@@ -32,13 +32,17 @@ import { Route as AppUserEditImport } from './routes/_app/user/edit'
 import { Route as AppTransactionsInboxImport } from './routes/_app/transactions/inbox'
 import { Route as AppReportsCashflowImport } from './routes/_app/reports/cashflow'
 import { Route as AppConnectionsIdImport } from './routes/_app/connections/$id'
-import { Route as AppAccountsAddImport } from './routes/_app/accounts/add'
+import { Route as AppCategoriesOldImport } from './routes/_app/categories/old'
+import { Route as AppCategoriesNewImport } from './routes/_app/categories/new'
+import { Route as AppCategoriesIdImport } from './routes/_app/categories/$id'
+import { Route as AppAccountsNewImport } from './routes/_app/accounts/new'
 import { Route as AppAccountsIdImport } from './routes/_app/accounts/$id'
 import { Route as AppSettingsInstitutionsIndexImport } from './routes/_app/settings/institutions/index'
 import { Route as AppConnectionsConnectIndexImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexImport } from './routes/_app/categories/rules/index'
 import { Route as AppConnectionsConnectCallbackImport } from './routes/_app/connections/connect/callback'
 import { Route as AppCategoriesRulesCreateImport } from './routes/_app/categories/rules/create'
+import { Route as AppCategoriesIdEditImport } from './routes/_app/categories/$id_.edit'
 import { Route as AppAccountsIdEditImport } from './routes/_app/accounts/$id_.edit'
 
 // Create Virtual Routes
@@ -169,8 +173,23 @@ const AppConnectionsIdRoute = AppConnectionsIdImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
-const AppAccountsAddRoute = AppAccountsAddImport.update({
-  path: '/accounts/add',
+const AppCategoriesOldRoute = AppCategoriesOldImport.update({
+  path: '/categories/old',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppCategoriesNewRoute = AppCategoriesNewImport.update({
+  path: '/categories/new',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppCategoriesIdRoute = AppCategoriesIdImport.update({
+  path: '/categories/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppAccountsNewRoute = AppAccountsNewImport.update({
+  path: '/accounts/new',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -205,6 +224,11 @@ const AppConnectionsConnectCallbackRoute =
 
 const AppCategoriesRulesCreateRoute = AppCategoriesRulesCreateImport.update({
   path: '/categories/rules/create',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppCategoriesIdEditRoute = AppCategoriesIdEditImport.update({
+  path: '/categories/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -257,8 +281,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIdImport
       parentRoute: typeof AppImport
     }
-    '/_app/accounts/add': {
-      preLoaderRoute: typeof AppAccountsAddImport
+    '/_app/accounts/new': {
+      preLoaderRoute: typeof AppAccountsNewImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/categories/$id': {
+      preLoaderRoute: typeof AppCategoriesIdImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/categories/new': {
+      preLoaderRoute: typeof AppCategoriesNewImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/categories/old': {
+      preLoaderRoute: typeof AppCategoriesOldImport
       parentRoute: typeof AppImport
     }
     '/_app/connections/$id': {
@@ -321,6 +357,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIdEditImport
       parentRoute: typeof AppImport
     }
+    '/_app/categories/$id/edit': {
+      preLoaderRoute: typeof AppCategoriesIdEditImport
+      parentRoute: typeof AppImport
+    }
     '/_app/categories/rules/create': {
       preLoaderRoute: typeof AppCategoriesRulesCreateImport
       parentRoute: typeof AppImport
@@ -350,7 +390,10 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AppRoute.addChildren([
     AppAccountsIdRoute,
-    AppAccountsAddRoute,
+    AppAccountsNewRoute,
+    AppCategoriesIdRoute,
+    AppCategoriesNewRoute,
+    AppCategoriesOldRoute,
     AppConnectionsIdRoute,
     AppReportsCashflowRoute,
     AppTransactionsInboxRoute,
@@ -366,6 +409,7 @@ export const routeTree = rootRoute.addChildren([
     AppTransactionsIndexRoute,
     AppUserIndexRoute,
     AppAccountsIdEditRoute,
+    AppCategoriesIdEditRoute,
     AppCategoriesRulesCreateRoute,
     AppConnectionsConnectCallbackRoute,
     AppCategoriesRulesIndexRoute,

@@ -66,3 +66,25 @@ export function getAccountTypeTitle(type: AccountTypeDto): string {
       return "Other";
   }
 }
+
+export function getAccountTypeTitleSingular(type: AccountTypeDto): string {
+  switch (type) {
+    case AccountTypeDto.CURRENT_ACCOUNT:
+      return "Current Account";
+    case AccountTypeDto.CREDIT_CARD:
+      return "Credit card";
+    case AccountTypeDto.INVESTMENT:
+      return "Investment account";
+    case AccountTypeDto.LOAN:
+      return "Loan";
+    case AccountTypeDto.MORTGAGE:
+      return "Mortgage";
+    case AccountTypeDto.PENSION:
+      return "Pension";
+    case AccountTypeDto.SAVINGS:
+      return "Saving account";
+
+    default:
+      return "Other";
+  }
+}

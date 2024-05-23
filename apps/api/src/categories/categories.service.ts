@@ -15,7 +15,10 @@ export class CategoriesService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async create(args: { user_id: string; dto: CreateCategoryDto }) {
+  async create(args: {
+    user_id: string;
+    dto: CreateCategoryDto;
+  }): Promise<Category> {
     const { user_id, dto } = args;
 
     const entity = {

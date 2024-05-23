@@ -17,9 +17,13 @@ import { getCurrentUserToken } from "./core/auth/auth.helper.ts";
 import { GualletClient } from "@guallet/api-client";
 import { BuildConfig } from "./core/BuildConfig.ts";
 import { GualletClientProvider } from "@guallet/api-react";
+import { initFontAwesome6 } from "./core/FontAwesome6.ts";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
+
+// Initialize FontAwesome6 for React
+initFontAwesome6();
 
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,

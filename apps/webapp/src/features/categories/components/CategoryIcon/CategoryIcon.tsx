@@ -22,6 +22,9 @@ interface CategoryIconProps {
   colour: string;
 }
 
+/**
+ * @deprecated This component is deprecated and should not be used.
+ */
 export function CategoryIcon({
   icon,
   colour,

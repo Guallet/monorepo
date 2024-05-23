@@ -1,8 +1,8 @@
-import { Avatar, Group, Text, UnstyledButton, rem } from "@mantine/core";
+import { Group, Text, UnstyledButton, rem } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import { Money } from "@guallet/money";
 import { AccountDto } from "@guallet/api-client";
-import { useInstitution } from "@guallet/api-react";
+import { InstitutionLogo } from "@/components/InstitutionLogo/InstitutionLogo";
 
 interface Props {
   account: AccountDto;
@@ -10,8 +10,6 @@ interface Props {
 }
 
 export function AccountRow({ account, onClick }: Props) {
-  const { institution } = useInstitution(account.institutionId);
-
   const money = Money.fromCurrencyCode({
     amount: account.balance.amount,
     currencyCode: account.currency,
@@ -28,11 +26,10 @@ export function AccountRow({ account, onClick }: Props) {
       }}
     >
       <Group gap="sm">
-        <Avatar
+        <InstitutionLogo
           radius="xl"
           size={50}
-          src={institution?.image_src}
-          alt={institution?.name}
+          institutionId={account.institutionId}
         />
         <Text
           style={{
