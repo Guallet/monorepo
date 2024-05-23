@@ -1,5 +1,5 @@
 import { GualletClient } from "./../GualletClient";
-import { CategoryDto } from "./categories.models";
+import { CategoryDto, CreateCategoryRequest } from "./categories.models";
 
 const CATEGORIES_PATH = "categories";
 
@@ -12,5 +12,12 @@ export class CategoriesApi {
 
   async get(id: string): Promise<CategoryDto> {
     return await this.client.get<CategoryDto>(`${CATEGORIES_PATH}/${id}`);
+  }
+
+  async create(category: CreateCategoryRequest): Promise<CategoryDto> {
+    return await this.client.post<CategoryDto, CreateCategoryRequest>(
+      CATEGORIES_PATH,
+      category
+    );
   }
 }

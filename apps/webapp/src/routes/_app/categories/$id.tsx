@@ -1,10 +1,11 @@
 import { AppSection } from "@/components/Cards/AppSection";
-import { CategoryIcon } from "@/components/Categories/CategoryIcon";
+import { GualletIcon } from "@/components/GualletIcon/GualletIcon";
 import { AppScreen } from "@/components/Layout/AppScreen";
 import { CategoryRow } from "@/features/categories/components/CategoryRow/CategoryRow";
 import { useGroupedCategory } from "@guallet/api-react";
 import { Stack, Button, Text, ColorInput } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_app/categories/$id")({
   component: CategoryDetailsPage,
@@ -12,25 +13,35 @@ export const Route = createFileRoute("/_app/categories/$id")({
 
 function CategoryDetailsPage() {
   const { id } = Route.useParams();
-  const { category, isLoading } = useGroupedCategory(id);
   const navigation = useNavigate();
+  const { category, isLoading } = useGroupedCategory(id);
 
-  const isParent = category?.parentId ?? false;
+  const [color, setColor] = useState<string>(category?.colour ?? "#25262b");
+
+  useEffect(() => {
+    setColor(category?.colour ?? "#25262b");
+  }, [id]);
+
+  const isParent =
+    category?.parentId === null || category?.parentId === undefined;
 
   return (
     <AppScreen isLoading={isLoading}>
       <Stack>
         <AppSection>
           <Stack align="center">
-            <CategoryIcon categoryId={category?.id ?? null} />
+            {/* <CategoryIcon categoryId={category?.id ?? null} /> */}
+            <GualletIcon
+              iconName={category?.icon ?? "question"}
+              iconColor={color}
+            />
             <Text>{category?.name}</Text>
             <ColorInput
               closeOnColorSwatchClick
               label="Colour"
               placeholder="Select the category colour"
-              value={category?.colour}
-              //   onChange={(value) => setColour(value)}
-              //   error={colourError && "Invalid selected colour"}
+              value={color}
+              onChange={(value) => setColor(value)}
               format="hex"
               swatches={[
                 "#25262b",
@@ -58,7 +69,16 @@ function CategoryDetailsPage() {
           <Stack>
             <AppSection title="Sub-categories">
               {category?.subCategories.map((subCategory) => (
-                <CategoryRow key={subCategory.id} category={subCategory} />
+                <CategoryRow
+                  key={subCategory.id}
+                  category={subCategory}
+                  onClick={() => {
+                    navigation({
+                      to: "/categories/$id",
+                      params: { id: subCategory.id },
+                    });
+                  }}
+                />
               ))}
 
               <Button

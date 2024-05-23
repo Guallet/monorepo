@@ -15,6 +15,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { UserPrincipal } from 'src/core/auth/user-principal';
+import { CategoryDto } from './dto/category.dto';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -24,27 +25,34 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  findAll(@RequestUser() user: UserPrincipal) {
-    return this.categoriesService.findAllUserCategories(user.id);
+  async findAll(@RequestUser() user: UserPrincipal) {
+    const categories = await this.categoriesService.findAllUserCategories(
+      user.id,
+    );
+
+    return categories.map((category) => CategoryDto.fromDomain(category));
   }
 
   @Get(':id')
-  findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
-    return this.categoriesService.findUserCategory({
+  async findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
+    const category = await this.categoriesService.findUserCategory({
       id: id,
       user_id: user.id,
     });
+
+    return CategoryDto.fromDomain(category);
   }
 
   @Post()
-  create(
+  async create(
     @RequestUser() user: UserPrincipal,
     @Body() createCategoryDto: CreateCategoryDto,
   ) {
-    return this.categoriesService.create({
+    const category = await this.categoriesService.create({
       user_id: user.id,
       dto: createCategoryDto,
     });
+    return CategoryDto.fromDomain(category);
   }
 
   @Post('seed')
