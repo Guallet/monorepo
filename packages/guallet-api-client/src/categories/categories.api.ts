@@ -1,5 +1,9 @@
 import { GualletClient } from "./../GualletClient";
-import { CategoryDto, CreateCategoryRequest } from "./categories.models";
+import {
+  CategoryDto,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from "./categories.models";
 
 const CATEGORIES_PATH = "categories";
 
@@ -19,5 +23,22 @@ export class CategoriesApi {
       CATEGORIES_PATH,
       category
     );
+  }
+
+  async update({
+    id,
+    dto,
+  }: {
+    id: string;
+    dto: UpdateCategoryRequest;
+  }): Promise<CategoryDto> {
+    return await this.client.patch<CategoryDto, UpdateCategoryRequest>(
+      `${CATEGORIES_PATH}/${id}`,
+      dto
+    );
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.client.fetch_delete<CategoryDto>(`${CATEGORIES_PATH}/${id}`);
   }
 }

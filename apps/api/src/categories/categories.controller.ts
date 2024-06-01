@@ -75,10 +75,12 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
-    return this.categoriesService.removeUserCategory({
+  async remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
+    const deletedCategory = await this.categoriesService.removeUserCategory({
       user_id: user.id,
       category_id: id,
     });
+
+    return CategoryDto.fromDomain(deletedCategory);
   }
 }

@@ -3,8 +3,6 @@ import {
   IconCategory,
   IconMoneybag,
   TablerIconsProps,
-} from "@tabler/icons-react";
-import {
   IconPigMoney,
   IconStatusChange,
   IconCashBanknote,

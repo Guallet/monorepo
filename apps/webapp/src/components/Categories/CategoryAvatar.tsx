@@ -5,7 +5,10 @@ interface CategoryAvatarProps extends AvatarProps {
   categoryId: string | null;
 }
 
-export function CategoryAvatar({ categoryId, ...props }: CategoryAvatarProps) {
+export function CategoryAvatar({
+  categoryId,
+  ...props
+}: Readonly<CategoryAvatarProps>) {
   return (
     <Avatar color="blue" radius="sm" {...props}>
       <CategoryIcon categoryId={categoryId} />
