@@ -14,7 +14,7 @@ export function CategoryIcon({ categoryId }: CategoryIconProps) {
   );
 }
 
-function GualletCategoryIcon({ categoryId }: { categoryId: string }) {
+function GualletCategoryIcon({ categoryId }: Readonly<{ categoryId: string }>) {
   const { category } = useCategory(categoryId);
 
   if (category) {

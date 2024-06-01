@@ -12,3 +12,10 @@ export type CreateCategoryRequest = {
   colour: string;
   parentId?: string;
 };
+
+export type UpdateCategoryRequest = {
+  name: string;
+  icon: string;
+  colour: string;
+  parentId?: string | null;
+};

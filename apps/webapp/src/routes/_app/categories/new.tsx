@@ -1,10 +1,10 @@
 import { gualletClient } from "@/App";
 import { AppSection } from "@/components/Cards/AppSection";
 import { AppScreen } from "@/components/Layout/AppScreen";
-import { useCategories, useCategory } from "@guallet/api-react";
-import { Button, ColorInput, Stack, Text, TextInput } from "@mantine/core";
+import { useCategory } from "@guallet/api-react";
+import { Button, ColorInput, Stack, TextInput } from "@mantine/core";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 
 const addCategorySearchSchema = z.object({
