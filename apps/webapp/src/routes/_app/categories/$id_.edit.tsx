@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { gualletClient } from "@/App";
 import { AppSection } from "@/components/Cards/AppSection";
 import { AppScreen } from "@/components/Layout/AppScreen";
@@ -119,10 +118,3 @@ function EditCategoryPage() {
     </AppScreen>
   );
 }
-=======
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/_app/categories/$id/edit')({
-  component: () => <div>Hello /_app/categories/$id/edit!</div>
-})
->>>>>>> ba84897 (Develop into Main (#19))

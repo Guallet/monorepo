@@ -12,7 +12,6 @@ export type CreateCategoryRequest = {
   colour: string;
   parentId?: string;
 };
-<<<<<<< HEAD
 
 export type UpdateCategoryRequest = {
   name: string;
@@ -20,5 +19,3 @@ export type UpdateCategoryRequest = {
   colour: string;
   parentId?: string | null;
 };
-=======
->>>>>>> ba84897 (Develop into Main (#19))

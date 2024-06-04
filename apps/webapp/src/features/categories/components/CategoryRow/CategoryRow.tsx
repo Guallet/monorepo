@@ -7,11 +7,7 @@ interface CategoryRowProps {
   onClick?: (category: CategoryDto) => void;
 }
 
-<<<<<<< HEAD
 export function CategoryRow({ category, onClick }: Readonly<CategoryRowProps>) {
-=======
-export function CategoryRow({ category, onClick }: CategoryRowProps) {
->>>>>>> ba84897 (Develop into Main (#19))
   return (
     <UnstyledButton
       onClick={() => {
