@@ -1,4 +1,3 @@
-import { gualletClient } from "@/App";
 import { DeleteButton } from "@/components/Buttons/DeleteButton";
 import { AppSection } from "@/components/Cards/AppSection";
 import { GualletIcon } from "@/components/GualletIcon/GualletIcon";
