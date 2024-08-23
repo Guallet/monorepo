@@ -30,7 +30,10 @@ export function DeleteButton({
       >
         <DeleteDialog
           message={modalMessage}
-          onDelete={onDelete}
+          onDelete={() => {
+            closeModal();
+            onDelete();
+          }}
           onCancel={() => {
             closeModal();
 

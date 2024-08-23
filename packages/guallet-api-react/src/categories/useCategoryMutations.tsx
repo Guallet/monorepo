@@ -48,8 +48,23 @@ export function useCategoryMutations() {
     },
   });
 
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return await gualletClient.categories.delete(id);
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [CATEGORIES_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
   return {
     createCategoryMutation,
     updateCategoryMutation,
+    deleteCategoryMutation,
   };
 }

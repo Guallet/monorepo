@@ -17,7 +17,7 @@ function CategoryDetailsPage() {
   const { id } = Route.useParams();
   const navigation = useNavigate();
   const { category, isLoading } = useGroupedCategory(id);
-  const { updateCategoryMutation } = useCategoryMutations();
+  const { deleteCategoryMutation } = useCategoryMutations();
 
   const [color, setColor] = useState<string>(category?.colour ?? "#25262b");
 
@@ -30,21 +30,15 @@ function CategoryDetailsPage() {
 
   const onDeleteCategory = async () => {
     if (category) {
-      updateCategoryMutation.mutate(
+      deleteCategoryMutation.mutate(
         {
           id: category.id,
-          request: {
-            name: category.name,
-            icon: category.icon,
-            colour: category.colour,
-            parentId: null,
-          },
         },
         {
           onSuccess: async (data, variables) => {
             notifications.show({
-              title: "Category updated",
-              message: `Category ${data.name} has been updated`,
+              title: "Category deleted",
+              message: `Category has been deleted`,
               color: "green",
             });
             if (isParent && category.parentId !== null) {
