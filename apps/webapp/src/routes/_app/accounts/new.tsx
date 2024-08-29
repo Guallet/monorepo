@@ -122,8 +122,12 @@ export function AddAccountPage() {
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onFormSubmit)}>
         <Stack>
-          <AppSection title="Account details">
-            <Stack>
+          <AppSection title="Create new account">
+            <Stack
+              style={{
+                margin: "auto",
+              }}
+            >
               <Controller
                 name="name"
                 control={form.control}
@@ -196,7 +200,7 @@ export function AddAccountPage() {
             </Stack>
           </AppSection>
           <Group>
-            <Button type="submit">Save</Button>
+            <Button type="submit">Create account</Button>
             <Button
               variant="outline"
               onClick={() => {

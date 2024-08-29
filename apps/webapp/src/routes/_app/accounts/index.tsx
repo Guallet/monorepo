@@ -45,7 +45,7 @@ function AccountsPage() {
           }}
         />
       ) : (
-        <Stack>
+        <Stack p={"md"}>
           <AccountsHeader
             onAddNewAccount={() => navigation({ to: "/accounts/new" })}
             onSearchQueryChanged={(searchQuery: string) => {

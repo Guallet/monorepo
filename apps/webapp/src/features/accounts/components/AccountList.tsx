@@ -46,7 +46,7 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
           return compareAccountTypes(a[0], b[0]);
         })
         .map(([key, value]) => (
-          <Box p={"md"}>
+          <Box>
             <>
               <AccountsListHeader
                 accountType={key as AccountTypeDto}

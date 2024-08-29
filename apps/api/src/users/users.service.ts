@@ -73,6 +73,7 @@ export class UsersService {
     if (user) {
       return user.roles;
     }
+    this.logger.warn(`User not found: ${userId}`);
     throw new NotFoundException('User not found');
   }
 }

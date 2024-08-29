@@ -71,11 +71,11 @@ export class AuthGuard implements CanActivate {
 
   private async verifyToken(jwt: string): Promise<UserPrincipal> {
     try {
-      this.logger.log(`Validating token: ${jwt}`);
+      this.logger.debug(`Validating token: ${jwt}`);
       const payload = await this.jwtService.verifyAsync(jwt, {
         secret: this.jwtSecret,
       });
-      this.logger.log(`Token payload: ${JSON.stringify(payload)}`);
+      this.logger.debug(`Token payload: ${JSON.stringify(payload)}`);
       const email = payload.email as string;
 
       const expireEpochInSeconds = payload.exp ?? 0;
