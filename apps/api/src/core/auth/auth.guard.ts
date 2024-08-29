@@ -51,6 +51,14 @@ export class AuthGuard implements CanActivate {
         // Set the user in the request so it can be accessed later on
         // from request.user
         request.user = user;
+
+        // Set the Apitally user
+        request.apitallyConsumer = {
+          identifier: user.id,
+          name: user.email,
+          group: JSON.stringify(user.roles),
+        };
+
         return true;
       })
       .catch((error) => {

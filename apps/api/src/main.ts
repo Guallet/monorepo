@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import * as compression from 'compression';
 import { Logger } from 'nestjs-pino';
 import { version } from './../package.json';
+import { useApitally } from 'apitally/nestjs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -26,6 +27,17 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, openApiConfig);
   SwaggerModule.setup('swagger', app, document);
+
+  // Enable Apitally
+  const isApitallyEnabled = process.env.APITALLY_ENABLED === 'true';
+  if (isApitallyEnabled) {
+    const expressInstance = app.getHttpAdapter().getInstance();
+
+    useApitally(expressInstance, {
+      clientId: process.env.APITALLY_CLIENT_ID,
+      env: process.env.APITALLY_ENV || 'dev', // or "prod" etc.
+    });
+  }
 
   // Start server
   const port = process.env.PORT || 5000;
