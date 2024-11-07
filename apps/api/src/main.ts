@@ -13,6 +13,15 @@ async function bootstrap() {
   });
   app.useLogger(app.get(Logger));
 
+  // Enable Apitally
+  const isApitallyEnabled = process.env.APITALLY_ENABLED === 'true';
+  if (isApitallyEnabled) {
+    useApitally(app, {
+      clientId: process.env.APITALLY_CLIENT_ID,
+      env: process.env.APITALLY_ENV || 'dev', // or "prod" etc.
+    });
+  }
+
   // Configure EXPRESS server
   app.enableCors();
   app.use(helmet());
@@ -27,17 +36,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, openApiConfig);
   SwaggerModule.setup('swagger', app, document);
-
-  // Enable Apitally
-  const isApitallyEnabled = process.env.APITALLY_ENABLED === 'true';
-  if (isApitallyEnabled) {
-    const expressInstance = app.getHttpAdapter().getInstance();
-
-    useApitally(expressInstance, {
-      clientId: process.env.APITALLY_CLIENT_ID,
-      env: process.env.APITALLY_ENV || 'dev', // or "prod" etc.
-    });
-  }
 
   // Start server
   const port = process.env.PORT || 5000;

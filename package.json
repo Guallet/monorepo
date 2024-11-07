@@ -14,5 +14,10 @@
     "turbo": "^1.13.2"
   },
   "packageManager": "pnpm@7.15.0",
-  "name": "monorepo"
+  "name": "monorepo",
+  "pnpm": {
+    "overrides": {
+      "@supabase/gotrue-js": "2.43.1"
+    }
+  }
 }
