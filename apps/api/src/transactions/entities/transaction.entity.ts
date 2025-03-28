@@ -8,6 +8,7 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { TransactionMetadata } from './transaction-metadata.model';
 
@@ -42,7 +43,7 @@ export class Transaction extends BaseDbEntity {
 
   // relations
   @ManyToOne(() => Account, (account) => account.transactions)
-  account: Account;
+  account: Relation<Account>;
 
   @Column({ nullable: true })
   accountId: string;
