@@ -1,20 +1,13 @@
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { ExternalCashAccountType1Code } from 'src/features/nordigen/dto/ExternalCashAccountType1Code.helper';
 import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-  NordigenAccountStatus,
 } from 'src/features/nordigen/dto/nordigen-account.dto';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('nordigen_accounts')
-export class NordigenAccount {
+export class NordigenAccount extends BaseDbEntity {
   @PrimaryColumn()
   id: string;
 
@@ -83,14 +76,4 @@ export class NordigenAccount {
   // Relations
   @Column({ nullable: true })
   linked_account_id?: string;
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

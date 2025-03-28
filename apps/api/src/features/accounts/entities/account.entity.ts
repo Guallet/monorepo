@@ -3,9 +3,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
@@ -17,9 +14,10 @@ import {
   SavingAccountProperties,
 } from './account-properties.model';
 import { AccountSource } from './accountSource.model';
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
 
 @Entity('accounts')
-export class Account {
+export class Account extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -76,14 +74,4 @@ export class Account {
 
   @Column({ nullable: true })
   institutionId: string;
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

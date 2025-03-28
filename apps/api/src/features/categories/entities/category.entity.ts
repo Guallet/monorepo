@@ -1,17 +1,15 @@
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
 
 @Entity('categories')
-export class Category {
+export class Category extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid', { primaryKeyConstraintName: 'PK_categories' })
   id: string;
 
@@ -45,14 +43,4 @@ export class Category {
     onDelete: 'SET NULL',
   })
   transactions: Transaction[];
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

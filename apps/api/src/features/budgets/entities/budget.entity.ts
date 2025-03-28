@@ -1,14 +1,8 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('budgets')
-export class Budget {
+export class Budget extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -29,14 +23,4 @@ export class Budget {
 
   @Column('simple-array')
   categories: string[];
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

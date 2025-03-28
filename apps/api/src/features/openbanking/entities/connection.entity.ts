@@ -1,14 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('nordigen_requisitions')
-export class ObConnection {
+export class ObConnection extends BaseDbEntity {
   @PrimaryColumn()
   id: string;
 
@@ -50,14 +44,4 @@ export class ObConnection {
 
   @Column({ nullable: true })
   redirect_immediate: boolean;
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

@@ -1,15 +1,9 @@
 import { UserRole } from 'src/auth/user-principal';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
-export class User {
+export class User extends BaseDbEntity {
   // This is the same ID as the one returned by the Auth Provider (Supabase at this time)
   @PrimaryColumn('uuid')
   id: string;
@@ -32,14 +26,4 @@ export class User {
   roles: UserRole[];
 
   // relations
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

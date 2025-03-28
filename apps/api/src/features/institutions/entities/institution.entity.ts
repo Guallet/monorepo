@@ -1,16 +1,9 @@
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { Account } from 'src/features/accounts/entities/account.entity';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('institutions')
-export class Institution {
+export class Institution extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -34,14 +27,4 @@ export class Institution {
   // relations
   @OneToMany(() => Account, (account) => account.institution)
   accounts: Account[];
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }

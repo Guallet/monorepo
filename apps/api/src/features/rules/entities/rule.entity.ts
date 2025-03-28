@@ -1,16 +1,14 @@
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('rules')
-export class Rule {
+export class Rule extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid', { primaryKeyConstraintName: 'PK_rules_id' })
   id: string;
 
@@ -33,20 +31,10 @@ export class Rule {
 
   @Column()
   resultCategoryId: string;
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }
 
 @Entity('rule_conditions')
-export class RuleCondition {
+export class RuleCondition extends BaseDbEntity {
   // export type RuleConditions = {
   //     field: TransactionField;
   //     operator: RuleConditionsOperator;
@@ -73,16 +61,6 @@ export class RuleCondition {
   // Relations
   @ManyToOne(() => Rule, (x) => x.conditions)
   rule: Rule;
-
-  // other
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }
 
 export type TransactionField =

@@ -1,15 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 // @Entity({ schema: 'nordigen' })
 @Entity()
-export class NordigenToken {
+export class NordigenToken extends BaseDbEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,13 +18,4 @@ export class NordigenToken {
 
   @Column()
   refresh_expires_on: Date;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @DeleteDateColumn()
-  deleted_at: Date;
 }
