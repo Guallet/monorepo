@@ -22,13 +22,13 @@ export class Category {
   name: string;
 
   @Column({ nullable: true })
-  icon: string;
+  icon?: string;
 
   @Column({ nullable: true })
-  colour: string;
+  colour?: string;
 
   @Column({ nullable: true })
-  parentId: string;
+  parentId?: string;
 
   // Relations
   @ManyToOne(() => Category, (category) => category.children, {

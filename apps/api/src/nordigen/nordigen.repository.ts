@@ -60,6 +60,6 @@ export class NordigenRepository {
       },
     );
 
-    return await this.repository.findOneBy({ id: id });
+    return await this.repository.findOneByOrFail({ id: id });
   }
 }

@@ -122,7 +122,7 @@ export class SyncService {
       },
     });
 
-    const errors = [];
+    const errors: string[] = [];
 
     for (const account of accounts) {
       try {
@@ -178,6 +178,12 @@ export class SyncService {
       }
 
       // Get the linked guallet account in the DB
+      if (nordigenAccount.linked_account_id === null) {
+        this.logger.error(
+          `Nordigen Account with id '${account_id}' has no linked account`,
+        );
+        throw new NotFoundException(`Account mismatch: app account not found`);
+      }
       const gualletAccount = await this.accountsRepository.findOne({
         where: {
           id: nordigenAccount.linked_account_id,
@@ -313,6 +319,14 @@ export class SyncService {
   private async syncAccountTransactions(account: NordigenAccount) {
     try {
       this.logger.log(`Syncing Account Transactions:${account.id}`);
+      const { linked_account_id } = account;
+
+      if (linked_account_id == null) {
+        this.logger.error(
+          `Nordigen Account with id '${account.id}' has no linked account`,
+        );
+        throw new NotFoundException(`Account mismatch: app account not found`);
+      }
 
       // TODO: As we know the last sync date, should we only sync the transactions since then?
       const transactions = await this.nordigenService.getAccountTransactions(
@@ -321,7 +335,7 @@ export class SyncService {
 
       // Convert from NordigenTransaction to Guallet Transaction
       const data = transactions.map((t) =>
-        Transaction.fromNordigenDto(account.linked_account_id, t),
+        Transaction.fromNordigenDto(linked_account_id, t),
       );
       await this.transactionsRepository.upsert(data, {
         conflictPaths: ['externalId'],

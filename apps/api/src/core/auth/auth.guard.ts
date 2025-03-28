@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     private jwtService: JwtService,
     private userService: UsersService,
   ) {
-    this.jwtSecret = this.configService.get<string>('auth.jwtSecret');
+    this.jwtSecret = this.configService.getOrThrow<string>('auth.jwtSecret');
   }
 
   canActivate(
@@ -67,11 +67,10 @@ export class AuthGuard implements CanActivate {
       });
   }
 
-  private async validateRequest(req: Request): Promise<UserPrincipal> {
+  private async validateRequest(req: Request): Promise<UserPrincipal | null> {
     const token = req.headers.authorization;
     if (token != null && token != '') {
-      const user = await this.verifyToken(token.replace('Bearer ', ''));
-      return user;
+      return await this.verifyToken(token.replace('Bearer ', ''));
     } else {
       return null;
     }

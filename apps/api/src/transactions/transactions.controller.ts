@@ -60,53 +60,40 @@ export class TransactionsController {
     @Query(new ZodValidationPipe(transactionsQueryFilterSchema))
     query: TransactionsQueryFilter,
   ): Promise<TransactionsResultDto> {
+    if (!query) {
+      throw new BadRequestException('Query Params are not valid');
+    }
+    const { page = 1, pageSize = 50, startDate, endDate, accounts } = query;
+
     console.log(`Transaction Query: ${JSON.stringify(query)}`);
 
-    let { page, pageSize } = query;
-    const { startDate, endDate } = query;
-    const { accounts } = query;
-
-    if (page === null || page == undefined) {
-      page = 1;
-    }
-    if (pageSize === null || pageSize == undefined) {
-      pageSize = 50;
-    }
-
-    if (!Number.isInteger(+page)) {
+    if (!Number.isInteger(+page) || !Number.isInteger(+pageSize)) {
       throw new BadRequestException(
-        'Query Param `page` is not valid. Has to be a number greater than 0',
-      );
-    }
-    if (!Number.isInteger(+pageSize)) {
-      throw new BadRequestException(
-        'Query Param `pageSize` is not valid. Has to be a number greater than 0',
+        'Query Params `page` and `pageSize` must be integers greater than 0',
       );
     }
 
-    if (startDate) {
-      // Move it to the start of the day
-      startDate.setHours(0, 0, 0, 0);
-    }
-    if (endDate) {
-      // Move it to the end of the day
-      endDate.setHours(23, 59, 59, 999);
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+    if (endDate) endDate.setHours(23, 59, 59, 999);
+
+    if (accounts?.every((x) => x === '')) {
+      throw new BadRequestException('Query Param `accounts` is not valid');
     }
 
-    validateAccountsQuery(accounts);
-
-    const transactions = await this.transactionsService.getUserTransactions({
-      userId: user.id,
-      page: page,
-      pageSize: pageSize,
-      accounts: accounts,
-      startDate: query.startDate,
-      endDate: query.endDate,
-    });
-    const total = await this.transactionsService.getUserTransactionsCount({
-      userId: user.id,
-      filters: { accounts: accounts, startDate: startDate, endDate: endDate },
-    });
+    const [transactions, total] = await Promise.all([
+      this.transactionsService.getUserTransactions({
+        userId: user.id,
+        page: page,
+        pageSize: pageSize,
+        accounts: accounts,
+        startDate: startDate,
+        endDate: endDate,
+      }),
+      this.transactionsService.getUserTransactionsCount({
+        userId: user.id,
+        filters: { accounts: accounts, startDate: startDate, endDate: endDate },
+      }),
+    ]);
 
     return TransactionsResultDto.fromDomain({
       transactions: transactions,
@@ -135,12 +122,6 @@ export class TransactionsController {
     return this.transactionsService.create(createTransactionDto);
   }
 
-  @Get()
-  async findAll(@RequestUser() user: UserPrincipal): Promise<TransactionDto[]> {
-    const transactions = await this.transactionsService.findAll();
-    return transactions.map((x) => TransactionDto.fromDomain(x));
-  }
-
   @Get(':id')
   async findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
     const transaction = await this.transactionsService.findOne(id);
@@ -165,16 +146,6 @@ export class TransactionsController {
 
   @Delete(':id')
   remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
-    return this.transactionsService.remove(id);
-  }
-}
-
-function validateAccountsQuery(accounts: string[]) {
-  if (
-    accounts !== undefined &&
-    accounts !== null &&
-    accounts.every((x) => x === '')
-  ) {
-    throw new BadRequestException('Query Param `accounts` is not valid');
+    throw new Error('Method not implemented.');
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -64,12 +65,12 @@ export class OpenbankingService {
 
     // TODO: Delete the OB accounts from the DB
     const accountsToDelete = connection.accounts;
-    const deletedAccounts = [];
+    const deletedAccounts: string[] = [];
     for (const accountId of accountsToDelete) {
-      const deletedAccount = await this.nordigenAccountsRepository.delete({
+      await this.nordigenAccountsRepository.delete({
         id: accountId,
       });
-      deletedAccounts.push(deletedAccount);
+      deletedAccounts.push(accountId);
     }
 
     const removed = await this.repository.remove(connection);
@@ -265,9 +266,17 @@ export class OpenbankingService {
       throw new NotFoundException(`Account not found`);
     }
 
+    const { linked_account_id } = nordigenAccount;
+    if (!linked_account_id) {
+      this.logger.error(
+        `Nordigen Account with id '${accountId}' doesn't have a linked account`,
+      );
+      throw new BadRequestException(`Invalid account state`);
+    }
+
     const gualletAccount = await this.accountRepository.findOne({
       where: {
-        id: nordigenAccount.linked_account_id,
+        id: linked_account_id,
       },
     });
 
@@ -298,7 +307,7 @@ export class OpenbankingService {
 
       // Convert from NordigenTransaction to Guallet Transaction
       const data = transactions.map((t) =>
-        Transaction.fromNordigenDto(nordigenAccount.linked_account_id, t),
+        Transaction.fromNordigenDto(linked_account_id, t),
       );
       await this.transactionsRepository.upsert(data, {
         conflictPaths: ['externalId'],

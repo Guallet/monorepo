@@ -53,7 +53,7 @@ export enum ExternalCashAccountType1Code {
 }
 
 export function getAccountTypeFrom(
-  type: ExternalCashAccountType1Code,
+  type: ExternalCashAccountType1Code | undefined | null,
 ): AccountType {
   switch (type) {
     case ExternalCashAccountType1Code.CURRENT_ACCOUNT:

@@ -28,36 +28,54 @@ export class InstitutionsService {
     });
   }
 
-  findOne(args: { id: string; user_id: string | null }): Promise<Institution> {
+  async findOne({
+    id,
+    user_id,
+  }: {
+    id: string;
+    user_id: string | null;
+  }): Promise<Institution> {
     // We want the user institutions, OR the common to all users
-    return this.repository.findOne({
-      where: [
-        {
-          id: args.id,
-          user_id: args.user_id,
-        },
-        {
-          id: args.id,
-          user_id: IsNull(),
-        },
-      ],
-    });
-  }
-
-  findOneById(id: string): Promise<Institution> {
-    return this.repository.findOne({
+    const entity = await this.repository.findOne({
       where: {
         id: id,
       },
     });
+
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    if (entity.user_id !== null && entity.user_id !== user_id) {
+      // You cannot access institutions that are not yours
+      // Return not found to avoid leaking information about the existence of the institution
+      throw new NotFoundException();
+    }
+    return entity;
   }
 
-  findOneByNordigenId(nordigen_id: string): Promise<Institution> {
-    return this.repository.findOne({
+  async findOneById(id: string): Promise<Institution> {
+    const entity = await this.repository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    return entity;
+  }
+
+  async findOneByNordigenId(nordigen_id: string): Promise<Institution> {
+    const entity = await this.repository.findOne({
       where: {
         nordigen_id: nordigen_id,
       },
     });
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    return entity;
   }
 
   create(args: { dto: CreateInstitutionRequest; user_id: string }) {

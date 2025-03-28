@@ -238,6 +238,7 @@ export class NordigenService {
         `Error making Nordigen GET request to ${path}. Error: ${typeof response}}`,
       );
       this.handleHttpStatusCodes(response, true);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -296,6 +297,7 @@ export class NordigenService {
         )}`,
       );
       this.handleHttpStatusCodes(response, true);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -326,6 +328,7 @@ export class NordigenService {
     } catch (response) {
       this.logger.error(`Error making Nordigen GET request to ${path}`);
       this.handleHttpStatusCodes(response, true);
+      throw response;
     }
   }
   //#endregion

@@ -5,7 +5,7 @@ export class CashflowDataDto {
 }
 
 export class CategoryDataRowDto {
-  categoryId: string;
+  categoryId: string | null;
   categoryName: string;
   isParent: boolean;
   totalTransactions: number;

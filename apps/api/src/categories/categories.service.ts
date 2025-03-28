@@ -15,31 +15,32 @@ export class CategoriesService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async create(args: {
+  async create({
+    user_id,
+    dto,
+  }: {
     user_id: string;
     dto: CreateCategoryDto;
   }): Promise<Category> {
-    const { user_id, dto } = args;
-
-    const entity = {
+    const entity = this.categoryRepository.create({
       user_id: user_id,
       name: dto.name,
       icon: dto.icon,
       colour: dto.colour,
-      parentId: dto.parentId,
-    };
+      parentId: dto.parentId ?? undefined,
+    });
     return await this.categoryRepository.save(entity);
   }
 
   async createDefaultCategoriesForUser(userId: string): Promise<Category[]> {
-    const newCategories = [];
+    const newCategories: Category[] = [];
     for (const category of defaultCategories) {
-      const entity = {
+      const entity = this.categoryRepository.create({
         user_id: userId,
         name: category.name,
         icon: category.icon,
         colour: category.color,
-      };
+      });
       const dbEntity = await this.categoryRepository.save(entity);
       newCategories.push(dbEntity);
       for (const subcategory of category.subcategories) {

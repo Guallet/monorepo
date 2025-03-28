@@ -17,7 +17,7 @@ async function bootstrap() {
   const isApitallyEnabled = process.env.APITALLY_ENABLED === 'true';
   if (isApitallyEnabled) {
     useApitally(app, {
-      clientId: process.env.APITALLY_CLIENT_ID,
+      clientId: process.env.APITALLY_CLIENT_ID || '',
       env: process.env.APITALLY_ENV || 'dev', // or "prod" etc.
     });
   }

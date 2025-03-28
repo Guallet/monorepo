@@ -90,7 +90,7 @@ export class AccountsService {
   }
 
   async findOneById(id: string): Promise<Account> {
-    return this.repository.findOne({
+    const entity = await this.repository.findOne({
       where: {
         id: id,
       },
@@ -98,6 +98,11 @@ export class AccountsService {
         institution: true,
       },
     });
+
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    return entity;
   }
 
   async findAll(): Promise<Account[]> {

@@ -67,8 +67,8 @@ export class TransactionsService {
     return transactions.map((x) => {
       return {
         ...x,
-        rule_id: null,
-        processed_category_id: null,
+        rule_id: undefined,
+        processed_category_id: undefined,
       };
     });
   }
@@ -132,25 +132,18 @@ export class TransactionsService {
     return this.repository.save(entity);
   }
 
-  async findAll(): Promise<Transaction[]> {
-    return [];
-  }
-
   async findOne(id: string): Promise<Transaction> {
-    return await this.repository.findOne({
+    const entity = await this.repository.findOne({
       relations: { account: true, category: true },
       where: {
         id: id,
       },
     });
-  }
 
-  update(id: string, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} transaction`;
+    if (!entity) {
+      throw new NotFoundException('Transaction not found');
+    }
+    return entity;
   }
 
   async updateUserTransaction(args: {

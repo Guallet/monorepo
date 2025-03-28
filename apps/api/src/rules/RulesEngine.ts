@@ -152,7 +152,7 @@ export class RulesEngine {
   }
 
   getCategoryForTransaction(transaction: Transaction): string | null {
-    let category = null;
+    let categoryId: string | null = null;
 
     this.rules
       .sort((a, b) => a.order - b.order)
@@ -228,11 +228,11 @@ export class RulesEngine {
           console.log(
             `Matched rule ${rule.name} for transaction ${transaction.description}`,
           );
-          category = rule.resultCategoryId;
-          return category;
+          categoryId = rule.resultCategoryId;
+          return categoryId;
         }
       });
 
-    return category;
+    return categoryId;
   }
 }

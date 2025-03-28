@@ -20,69 +20,70 @@ export class NordigenAccount {
   id: string;
 
   @Column({ nullable: true })
-  resource_id: string;
+  resource_id?: string;
 
   @Column({ nullable: true })
-  created: Date;
+  created?: Date;
 
   @Column({ nullable: true })
-  last_accessed: Date;
+  last_accessed?: Date;
 
   @Column({ nullable: true })
-  last_refreshed: Date;
+  last_refreshed?: Date;
 
   @Column({ nullable: true })
-  iban: string;
+  iban?: string;
 
   @Column({ nullable: false })
-  institution_id: string;
+  institution_id?: string;
 
   @Column({ nullable: true })
-  status: string;
+  status?: string;
 
   @Column({ nullable: true })
-  bic: string;
+  bic?: string;
 
   @Column({ nullable: true })
-  owner_name: string;
+  owner_name?: string;
 
   //metadata
   @Column({ nullable: true })
-  metadata_status: NordigenAccountStatus;
+  metadata_status?: NordigenAccountStatus;
 
   @Column({ type: 'jsonb', nullable: true })
-  metadata_raw: NordigenAccountMetadataDto;
+  metadata_raw?: NordigenAccountMetadataDto;
 
   //details
   @Column({ type: 'jsonb', nullable: true })
-  details_raw: NordigenAccountDto;
+  details_raw?: NordigenAccountDto;
 
   @Column({ nullable: true })
-  currency: string;
+  currency?: string;
 
   @Column({ nullable: true })
-  name: string;
+  name?: string;
 
   @Column({ nullable: true })
-  product: string;
+  product?: string;
 
   // @Column({ nullable: true })
   @Column({
     type: 'enum',
     enum: ExternalCashAccountType1Code,
     default: ExternalCashAccountType1Code.UNKNOWN,
+    nullable: true,
   })
-  cashAccountType: ExternalCashAccountType1Code;
+  cashAccountType?: ExternalCashAccountType1Code;
 
   @Column({ nullable: true })
-  maskedPan: string;
+  maskedPan?: string;
 
   @Column({ nullable: true })
-  details: string;
+  details?: string;
 
   // Relations
   @Column({ nullable: true })
-  linked_account_id: string;
+  linked_account_id?: string;
 
   // other
   @CreateDateColumn()

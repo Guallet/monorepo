@@ -8,6 +8,7 @@ import {
   Delete,
   Logger,
   HttpCode,
+  NotFoundException,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -40,6 +41,9 @@ export class CategoriesController {
       user_id: user.id,
     });
 
+    if (!category) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
     return CategoryDto.fromDomain(category);
   }
 

@@ -37,18 +37,29 @@ export class TransactionsResultDto {
   meta: TransactionsResultMetadataDto;
   transactions: TransactionDto[];
 
-  static fromDomain(args: {
+  static fromDomain({
+    transactions,
+    total,
+    hasMore,
+    query,
+  }: {
     transactions: Transaction[];
     total: number;
     hasMore: boolean;
     query: TransactionsQueryFilter;
   }): TransactionsResultDto {
-    const { transactions, total, hasMore, query } = args;
+    if (!query) {
+      query = {
+        page: 1,
+        pageSize: 50,
+      };
+    }
+    const { page = 1, pageSize = 50 } = query;
     return {
       meta: {
         total: total,
-        page: query.page,
-        pageSize: query.pageSize,
+        page: page,
+        pageSize: pageSize,
         hasMore: hasMore,
         query: query,
       },

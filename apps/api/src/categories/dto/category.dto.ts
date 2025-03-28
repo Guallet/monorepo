@@ -9,21 +9,21 @@ export class CategoryDto {
   name: string;
 
   @ApiProperty({ description: 'The icon of the category' })
-  icon: string;
+  icon: string | null;
 
   @ApiProperty({ description: 'The color of the category' })
-  colour: string;
+  colour: string | null;
 
   @ApiProperty({ description: 'The parent of the category', nullable: true })
-  parentId?: string;
+  parentId: string | null;
 
   static fromDomain(domain: Category): CategoryDto {
     return {
       id: domain.id,
       name: domain.name,
-      icon: domain.icon,
-      colour: domain.colour,
-      parentId: domain.parentId,
+      icon: domain.icon ?? null,
+      colour: domain.colour ?? null,
+      parentId: domain.parentId ?? null,
     };
   }
 }

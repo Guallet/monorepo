@@ -23,12 +23,13 @@ export class ReportsService {
     private transactionsRepository: Repository<Transaction>,
   ) {}
 
-  async getCashFlowReport(args: {
+  async getCashFlowReport({
+    user_id,
+    year,
+  }: {
     user_id: string;
     year: number;
   }): Promise<CashflowDataDto> {
-    const { user_id, year } = args;
-
     const categories = await this.categoriesRepository.find({
       where: {
         user_id: user_id,

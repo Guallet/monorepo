@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
   Param,
@@ -18,6 +19,10 @@ import { RequestUser } from 'src/core/auth/request-user.decorator';
 import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto';
 import { InstitutionsService } from 'src/institutions/institutions.service';
 import { ApiTags } from '@nestjs/swagger';
+import {
+  NordigenAccountDto,
+  NordigenAccountMetadataDto,
+} from 'src/nordigen/dto/nordigen-account.dto';
 
 @ApiTags('Open Banking')
 @Controller('openbanking')
@@ -92,7 +97,13 @@ export class ObConnectionsController {
   async getObAccounts(
     @RequestUser() user: UserPrincipal,
     @Param('id') requisition_id: string,
-  ) {
+  ): Promise<
+    {
+      id: string;
+      metadata: NordigenAccountMetadataDto;
+      details: NordigenAccountDto | null;
+    }[]
+  > {
     const requisition = await this.nordigenService.getRequisition(
       requisition_id,
     );
@@ -102,7 +113,11 @@ export class ObConnectionsController {
     try {
       // Update the accounts info and Return the accounts
       const accountIds = requisition.accounts;
-      const remoteAccounts = [];
+      const remoteAccounts: {
+        id: string;
+        metadata: NordigenAccountMetadataDto;
+        details: NordigenAccountDto | null;
+      }[] = [];
       for (const accountId of accountIds) {
         try {
           const accountMetadata = await this.nordigenService.getAccountMetadata(
@@ -140,7 +155,10 @@ export class ObConnectionsController {
       return remoteAccounts;
     } catch (error) {
       this.logger.error("Couldn't get accounts");
-      return { error: error, requisition: requisition };
+      throw new InternalServerErrorException({
+        error: error,
+        requisition: requisition,
+      });
     }
   }
 

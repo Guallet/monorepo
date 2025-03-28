@@ -12,7 +12,7 @@ export class AdminController {
   @HttpCode(202)
   @Get('sync/institutions')
   async syncBanks(@RequestUser() user: UserPrincipal) {
-    if (user.isAdmin) {
+    if (user.isAdmin()) {
       this.syncService.syncOpenBankingInstitutions();
     } else {
       throw new ForbiddenException();
