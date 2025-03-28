@@ -13,7 +13,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-// @Entity({ schema: 'nordigen' })
 @Entity('nordigen_accounts')
 export class NordigenAccount {
   @PrimaryColumn()
@@ -48,7 +47,7 @@ export class NordigenAccount {
 
   //metadata
   @Column({ nullable: true })
-  metadata_status?: NordigenAccountStatus;
+  metadata_status?: string;
 
   @Column({ type: 'jsonb', nullable: true })
   metadata_raw?: NordigenAccountMetadataDto;
