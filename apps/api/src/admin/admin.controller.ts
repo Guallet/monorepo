@@ -1,8 +1,8 @@
 import { Controller, ForbiddenException, Get, HttpCode } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/core/auth/request-user.decorator';
-import { UserPrincipal } from 'src/core/auth/user-principal';
-import { SyncService } from 'src/openbanking/sync.service';
+import { RequestUser } from 'src/auth/request-user.decorator';
+import { UserPrincipal } from 'src/auth/user-principal';
+import { SyncService } from 'src/features/openbanking/sync.service';
 
 @ApiTags('Admin Tasks')
 @Controller('admin')
