@@ -1,4 +1,4 @@
-import { getCurrentUserToken } from "@core/auth/auth.helper";
+import { getCurrentUserToken } from "../auth/supabase";
 
 export async function getRawResponse(path: string): Promise<Response> {
   const access_token = await getCurrentUserToken();
@@ -103,7 +103,10 @@ function handleHttpErrors(response: Response) {
 }
 
 export class ApiError extends Error {
-  constructor(message: string, public status: number) {
+  constructor(
+    message: string,
+    public status: number
+  ) {
     super(message);
   }
 }

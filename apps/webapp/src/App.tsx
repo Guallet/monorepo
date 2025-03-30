@@ -11,12 +11,12 @@ import { AuthProvider } from "./core/auth/useAuth";
 import { RouterProvider } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { getCurrentUserToken } from "./core/auth/auth.helper.ts";
 import { GualletClient } from "@guallet/api-client";
-import { BuildConfig } from "./core/BuildConfig.ts";
+import { BuildConfig } from "./build.config.ts";
 import { GualletClientProvider } from "@guallet/api-react";
 import { initFontAwesome6 } from "./core/FontAwesome6.ts";
 import { router } from "./router.tsx";
+import { getCurrentUserToken } from "./core/auth/supabase.ts";
 
 // Initialize FontAwesome6 for React
 initFontAwesome6();
