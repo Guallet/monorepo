@@ -12,7 +12,7 @@ const CONNECTIONS_QUERY_KEY = "connections";
 export function useOpenBankingConnections() {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY],
     queryFn: async () => {
       return await gualletClient.connections.getAll();
@@ -21,30 +21,28 @@ export function useOpenBankingConnections() {
 
   return {
     connections:
-      data?.filter((dto): dto is ObConnection => dto !== undefined) ?? [],
-    isLoading,
-    refetch,
-    isFetching,
+      query.data?.filter((dto): dto is ObConnection => dto !== undefined) ?? [],
+    ...query,
   };
 }
 
 export function useOpenBankingConnection(id: string) {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY, id],
     queryFn: async () => {
       return await gualletClient.connections.get(id);
     },
   });
 
-  return { connection: data ?? null, isLoading, refetch, isFetching };
+  return { connection: query.data ?? null, ...query };
 }
 
 export function useOpenBankingInstitution(institutionId: string) {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY, "institutions", institutionId],
     queryFn: async () => {
       return await gualletClient.connections.getInstitutionDetails(
@@ -53,14 +51,5 @@ export function useOpenBankingInstitution(institutionId: string) {
     },
   });
 
-  return { institution: data ?? null, isLoading, refetch, isFetching };
+  return { institution: query.data ?? null, ...query };
 }
-
-// export function useAccountsF(){
-//     const results = useQueries({
-//         queries: [
-//           { queryKey: ['post', 1], queryFn: fetchPost, staleTime: Infinity },
-//           { queryKey: ['post', 2], queryFn: fetchPost, staleTime: Infinity },
-//         ],
-//       })
-// }

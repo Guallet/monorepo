@@ -8,7 +8,7 @@ const TRANSACTIONS_DEFAULT_PAGE_SIZE = 50;
 export function useTransactions() {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY],
     queryFn: async () => {
       return await gualletClient.transactions.getAll();
@@ -19,28 +19,18 @@ export function useTransactions() {
 
   return {
     transactions:
-      data?.transactions.filter(
+      query.data?.transactions.filter(
         (dto): dto is TransactionDto => dto !== undefined
       ) ?? [],
-    metadata: data?.meta ?? null,
-    isLoading,
-    refetch,
-    isFetching,
+    metadata: query.data?.meta ?? null,
+    ...query,
   };
 }
 
 export function useInfiniteTransactions() {
   const gualletClient = useGualletClient();
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery({
+  const query = useInfiniteQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY + "-infinite"],
     queryFn: async ({ pageParam }) => {
       console.log("queryFn", pageParam);
@@ -66,22 +56,17 @@ export function useInfiniteTransactions() {
 
   return {
     transactions:
-      data?.pages
+      query.data?.pages
         .flatMap((x) => x.transactions)
         .filter((dto): dto is TransactionDto => dto !== undefined) ?? [],
     // metadata: data?.pages.pop()?.meta ?? null,
-    error,
-    isFetching,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-    status,
+    ...query,
   };
 }
 
 export function useTransaction(id: string) {
   const gualletClient = useGualletClient();
-  const { data, isLoading, isFetching, refetch, error } = useQuery({
+  const query = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY, id],
     queryFn: async () => {
       return await gualletClient.transactions.get(id);
@@ -90,12 +75,12 @@ export function useTransaction(id: string) {
     staleTime: 1000 * 60 * 60, // 1 Hour
   });
 
-  return { transaction: data ?? null, isLoading, refetch, isFetching, error };
+  return { transaction: query.data ?? null, ...query };
 }
 
 export function useTransactionInbox() {
   const gualletClient = useGualletClient();
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY, "inbox"],
     queryFn: async () => {
       return await gualletClient.transactions.getInbox();
@@ -104,10 +89,9 @@ export function useTransactionInbox() {
 
   return {
     transactions:
-      data?.filter((dto): dto is InboxTransactionDto => dto !== undefined) ??
-      [],
-    isLoading,
-    refetch,
-    isFetching,
+      query.data?.filter(
+        (dto): dto is InboxTransactionDto => dto !== undefined
+      ) ?? [],
+    ...query,
   };
 }

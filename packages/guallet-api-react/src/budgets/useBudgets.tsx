@@ -7,7 +7,7 @@ const BUDGETS_QUERY_KEY = "budgets";
 export function useBudgets() {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [BUDGETS_QUERY_KEY],
     queryFn: async () => {
       return await gualletClient.budgets.getAll();
@@ -17,9 +17,8 @@ export function useBudgets() {
   });
 
   return {
-    budgets: data?.filter((dto): dto is BudgetDto => dto !== undefined) ?? [],
-    isLoading,
-    refetch,
-    isFetching,
+    budgets:
+      query.data?.filter((dto): dto is BudgetDto => dto !== undefined) ?? [],
+    ...query,
   };
 }

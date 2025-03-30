@@ -7,7 +7,7 @@ const ACCOUNT_TRANSACTIONS_QUERY_KEY = "accounts-transactions";
 export function useAccountTransactions(accountId: string) {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [ACCOUNT_TRANSACTIONS_QUERY_KEY, accountId],
     queryFn: async () => {
       return await gualletClient.accounts.getAccountTransactions(accountId);
@@ -16,9 +16,8 @@ export function useAccountTransactions(accountId: string) {
 
   return {
     transactions:
-      data?.filter((dto): dto is TransactionDto => dto !== undefined) ?? [],
-    isLoading,
-    refetch,
-    isFetching,
+      query.data?.filter((dto): dto is TransactionDto => dto !== undefined) ??
+      [],
+    ...query,
   };
 }

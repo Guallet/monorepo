@@ -7,7 +7,7 @@ const INSTITUTIONS_QUERY_KEY = "institutions";
 export function useAllInstitutions() {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [INSTITUTIONS_QUERY_KEY],
     queryFn: async () => {
       return await gualletClient.institutions.getAll();
@@ -16,13 +16,13 @@ export function useAllInstitutions() {
     gcTime: Infinity,
   });
 
-  return { institutions: data ?? null, isLoading, refetch, isFetching };
+  return { institutions: query.data ?? null, ...query };
 }
 
 export function useInstitution(id: string | null | undefined) {
   const gualletClient = useGualletClient();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const query = useQuery({
     queryKey: [INSTITUTIONS_QUERY_KEY, id],
     enabled: !!id,
     queryFn: async () => {
@@ -32,7 +32,7 @@ export function useInstitution(id: string | null | undefined) {
     gcTime: Infinity,
   });
 
-  return { institution: data ?? null, isLoading, refetch, isFetching };
+  return { institution: query.data ?? null, ...query };
 }
 
 export function useInstitutions(ids: string[]) {
@@ -62,5 +62,6 @@ export function useInstitutions(ids: string[]) {
       .filter((dto): dto is InstitutionDto => dto !== undefined),
     isLoading: results.some((r) => r.isLoading),
     errors: results.find((r) => r.error) ?? null,
+    ...results,
   };
 }
