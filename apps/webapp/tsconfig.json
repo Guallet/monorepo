@@ -1,54 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": false, // TODO: Re-enable for prod
-    "noUnusedParameters": false, // TODO: Re-enable for prod
-    "noFallthroughCasesInSwitch": true,
-
-    // PATHS
-    "baseUrl": ".",
-    "paths": {
-      // Root
-      "@/*": ["./src/*"],
-      "@core/*": ["./src/core/*"],
-      "@components/*": ["./src/components/*"],
-      "@router/*": ["./src/router/*"],
-      "@theme/*": ["./src/theme/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@api/*": ["./src/core/api/*"],
-
-      // Features
-      "@accounts/*": ["./src/features/accounts/*"],
-      "@auth/*": ["./src/features/auth/*"],
-      "@categories/*": ["./src/features/categories/*"],
-      "@connections/*": ["./src/features/connections/*"],
-      "@dashboard/*": ["./src/features/dashboard/*"],
-      "@reports/*": ["./src/features/reports/*"],
-      "@settings/*": ["./src/features/settings/*"],
-      "@tools/*": ["./src/features/tools/*"],
-      "@transactions/*": ["./src/features/transactions/*"],
-      "@user/*": ["./src/features/user/*"],
-
-      //Packages
-      "@guallet/ui-react": ["./packages/guallet-ui-react/*"],
-      "@guallet/money": ["./packages/guallet-money/*"]
-    }
-  },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
