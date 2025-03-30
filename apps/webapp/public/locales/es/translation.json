@@ -1,0 +1,10 @@
+{
+  "screens": {
+    "login": {
+      "title": "",
+      "form": {
+        "continueWithDivider": ""
+      }
+    }
+  }
+}

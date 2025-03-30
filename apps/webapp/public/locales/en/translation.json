@@ -1,0 +1,10 @@
+{
+  "screens": {
+    "login": {
+      "title": "Welcome to Guallet, continue with",
+      "form": {
+        "continueWithDivider": "Or continue with email"
+      }
+    }
+  }
+}

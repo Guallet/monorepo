@@ -17,6 +17,7 @@ import { GoogleButton } from "../components/GoogleButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 
 // Define a schema for form validation using Zod
 const schema = z.object({
@@ -42,6 +43,7 @@ export function LoginScreen({
   onMagicLink,
   onPassword,
 }: LoginScreenProps) {
+  const { t } = useTranslation();
   const [loginType, setLoginType] = useState<"magic-link" | "password">(
     "magic-link"
   );
@@ -75,7 +77,7 @@ export function LoginScreen({
         }}
       >
         <Text size="lg" fw={500}>
-          Welcome to Guallet, continue with
+          {t("screens.login.title")}
         </Text>
 
         <Group grow mb="md" mt="md">
@@ -90,7 +92,7 @@ export function LoginScreen({
         </Group>
 
         <Divider
-          label="Or continue with email"
+          label={t("screens.login.form.continueWithDivider")}
           labelPosition="center"
           my="lg"
         />
