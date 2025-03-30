@@ -1,5 +1,11 @@
 import { Button, ButtonProps } from "@mantine/core";
 
+export function GoogleButton(
+  props: ButtonProps & React.ComponentPropsWithoutRef<"button">
+) {
+  return <Button leftSection={<GoogleIcon />} variant="default" {...props} />;
+}
+
 function GoogleIcon(props: React.ComponentPropsWithoutRef<"svg">) {
   return (
     <svg
@@ -27,10 +33,4 @@ function GoogleIcon(props: React.ComponentPropsWithoutRef<"svg">) {
       />
     </svg>
   );
-}
-
-export function GoogleButton(
-  props: ButtonProps & React.ComponentPropsWithoutRef<"button">
-) {
-  return <Button leftSection={<GoogleIcon />} variant="default" {...props} />;
 }

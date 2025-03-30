@@ -1,17 +1,16 @@
-import { Button, Center, Paper, Stack, Text, TextInput } from "@mantine/core";
+import { Center, Paper, Stack, Text, TextInput, Button } from "@mantine/core";
 import { useState } from "react";
 
-interface ValidateOtpProps {
+interface ValidateOtpScreenProps {
   email: string;
   onValidateOtp: (code: string) => void;
-  onGoBack: () => void;
 }
-export function ValidateOtp({
+
+export function ValidateOtpScreen({
   email,
   onValidateOtp,
-  onGoBack,
-}: ValidateOtpProps) {
-  const [code, setCode] = useState("");
+}: ValidateOtpScreenProps) {
+  const [code, setCode] = useState<string>("");
 
   return (
     <Center>

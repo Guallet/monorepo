@@ -1,51 +1,68 @@
 import {
-  Anchor,
-  Button,
-  Checkbox,
-  Divider,
-  Group,
-  Paper,
-  PasswordInput,
-  Stack,
-  TextInput,
-  Text,
   Center,
+  Paper,
+  Group,
+  Divider,
+  Stack,
+  Anchor,
+  TextInput,
+  Button,
+  Text,
+  PasswordInput,
+  Checkbox,
 } from "@mantine/core";
-import { useToggle, upperFirst } from "@mantine/hooks";
-import { GoogleButton } from "./SocialButtons/GoogleButton";
-import { useForm } from "@mantine/form";
+import { upperFirst } from "@mantine/hooks";
 import { useState } from "react";
+import { GoogleButton } from "../components/GoogleButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-interface GualletLoginProps {
+// Define a schema for form validation using Zod
+const schema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+  terms: z.boolean().refine((value) => value === true, {
+    message: "You must accept the terms and conditions",
+  }),
+});
+
+type FormData = z.infer<typeof schema>;
+
+interface LoginScreenProps {
   onGoogleLogin: () => void;
   onMagicLink: (email: string) => void;
   onPassword: (email: string, password: string) => void;
 }
-export function GualletLogin({
+
+export function LoginScreen({
   onGoogleLogin,
   onMagicLink,
   onPassword,
-}: GualletLoginProps) {
+}: LoginScreenProps) {
   const [loginType, setLoginType] = useState<"magic-link" | "password">(
     "magic-link"
   );
 
-  const form = useForm({
-    initialValues: {
+  // Initialize react-hook-form with Zod resolver
+  const form = useForm<FormData>({
+    resolver: zodResolver<FormData>(schema),
+    defaultValues: {
       email: "",
-      name: "",
       password: "",
-      terms: true,
-    },
-
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
-          : null,
+      terms: false,
     },
   });
+
+  const onSubmitMagicLink = (data: FormData) => {
+    onMagicLink(data.email);
+  };
+
+  const onSubmitPassword = (data: FormData) => {
+    onPassword(data.email, data.password);
+  };
 
   return (
     <Center>
@@ -78,7 +95,13 @@ export function GualletLogin({
           my="lg"
         />
 
-        <form onSubmit={form.onSubmit(() => {})}>
+        <form
+          onSubmit={
+            loginType === "magic-link"
+              ? form.handleSubmit(onSubmitMagicLink)
+              : form.handleSubmit(onSubmitPassword)
+          }
+        >
           <Stack>
             {loginType === "magic-link" ? (
               <Anchor
@@ -100,23 +123,14 @@ export function GualletLogin({
               required
               label="Email"
               placeholder="Enter your email here"
-              value={form.values.email}
-              onChange={(event) =>
-                form.setFieldValue("email", event.currentTarget.value)
-              }
-              error={form.errors.email && "Invalid email"}
+              {...form.register("email")}
+              error={form.formState.errors.email?.message}
               radius="md"
             />
 
             {loginType === "magic-link" ? (
               <Stack>
-                <Button
-                  type="submit"
-                  radius="xl"
-                  onClick={() => {
-                    onMagicLink(form.values.email);
-                  }}
-                >
+                <Button type="submit" radius="xl">
                   {upperFirst("Send magic link")}
                 </Button>
               </Stack>
@@ -126,23 +140,11 @@ export function GualletLogin({
                   required
                   label="Password"
                   placeholder="Your password"
-                  value={form.values.password}
-                  onChange={(event) =>
-                    form.setFieldValue("password", event.currentTarget.value)
-                  }
-                  error={
-                    form.errors.password &&
-                    "Password should include at least 6 characters"
-                  }
+                  {...form.register("password")}
+                  error={form.formState.errors.password?.message}
                   radius="md"
                 />
-                <Button
-                  type="submit"
-                  radius="xl"
-                  onClick={() => {
-                    onPassword(form.values.email, form.values.password);
-                  }}
-                >
+                <Button type="submit" radius="xl">
                   {upperFirst("Login with password")}
                 </Button>
               </Stack>
@@ -150,10 +152,8 @@ export function GualletLogin({
 
             <Checkbox
               label="I accept the terms and conditions"
-              checked={form.values.terms}
-              onChange={(event) =>
-                form.setFieldValue("terms", event.currentTarget.checked)
-              }
+              {...form.register("terms")}
+              error={form.formState.errors.terms?.message}
             />
           </Stack>
         </form>

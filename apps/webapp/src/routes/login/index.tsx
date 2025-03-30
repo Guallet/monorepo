@@ -2,7 +2,7 @@ import { Navigate, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabase } from "@/core/auth/supabase";
 import { useAuth } from "@/core/auth/useAuth";
-import { GualletLogin } from "@guallet/auth-react"; // Import the missing component
+import { LoginScreen } from "@/features/auth/screens/LoginScreen";
 
 export const Route = createFileRoute("/login/")({
   validateSearch: z.object({
@@ -27,7 +27,7 @@ function LoginPage() {
   }
 
   return (
-    <GualletLogin
+    <LoginScreen
       onGoogleLogin={async () => {
         console.log("Logging in with Google", redirectTo);
         await supabase.auth.signInWithOAuth({

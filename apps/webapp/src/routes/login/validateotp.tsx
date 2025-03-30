@@ -1,5 +1,5 @@
 import { supabase } from "@/core/auth/supabase";
-import { ValidateOtp } from "@guallet/auth-react";
+import { ValidateOtpScreen } from "@/features/auth/screens/ValidateOtpScreen";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -15,7 +15,7 @@ function ValidateOtpPage() {
   const navigate = useNavigate();
 
   return (
-    <ValidateOtp
+    <ValidateOtpScreen
       email={email}
       onValidateOtp={async (code: string) => {
         const { error, data } = await supabase.auth.verifyOtp({
@@ -32,9 +32,6 @@ function ValidateOtpPage() {
             to: "/dashboard",
           });
         }
-      }}
-      onGoBack={() => {
-        console.log("Going back");
       }}
     />
   );
