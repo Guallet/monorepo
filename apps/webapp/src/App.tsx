@@ -8,9 +8,7 @@ import "@mantine/charts/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { AuthProvider } from "./core/auth/useAuth";
-import { RouterProvider, Router, ErrorComponent } from "@tanstack/react-router";
-import { NotFoundRoute } from "@tanstack/react-router";
-import { Route as rootRoute } from "./routes/__root.tsx";
+import { RouterProvider } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { getCurrentUserToken } from "./core/auth/auth.helper.ts";
@@ -18,31 +16,10 @@ import { GualletClient } from "@guallet/api-client";
 import { BuildConfig } from "./core/BuildConfig.ts";
 import { GualletClientProvider } from "@guallet/api-react";
 import { initFontAwesome6 } from "./core/FontAwesome6.ts";
-
-// Import the generated route tree
-import { routeTree } from "./routeTree.gen";
+import { router } from "./router.tsx";
 
 // Initialize FontAwesome6 for React
 initFontAwesome6();
-
-const notFoundRoute = new NotFoundRoute({
-  getParentRoute: () => rootRoute,
-  component: () => "Use <PageNotFound/> instead",
-});
-
-// Create a new router instance
-const router = new Router({
-  routeTree,
-  notFoundRoute,
-  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
-});
-
-// Register the router instance for type safety
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
 
 // Create a Query client
 const queryClient = new QueryClient();
