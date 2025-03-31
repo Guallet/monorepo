@@ -67,22 +67,22 @@ export class SyncService {
 
   constructor(
     @InjectRepository(NordigenAccount)
-    private nordigenAccountsRepository: Repository<NordigenAccount>,
+    private readonly nordigenAccountsRepository: Repository<NordigenAccount>,
     @InjectRepository(Account)
-    private accountsRepository: Repository<Account>,
+    private readonly accountsRepository: Repository<Account>,
     @InjectRepository(Transaction)
-    private transactionsRepository: Repository<Transaction>,
-    private nordigenService: NordigenService,
-    private institutionsService: InstitutionsService,
+    private readonly transactionsRepository: Repository<Transaction>,
+    private readonly nordigenService: NordigenService,
+    private readonly institutionsService: InstitutionsService,
   ) {}
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
     name: CRON_JOB_SYNC_INSTITUTIONS_NAME,
     timeZone: CRON_JOB_TIMEZONE,
   })
-  syncOpenBankingInstitutions() {
+  async syncOpenBankingInstitutions(): Promise<void> {
     this.logger.log('Syncing Nordigen institutions via cron job');
-    this.syncOpenBankingInstitutionsFromNordigen();
+    await this.syncOpenBankingInstitutionsFromNordigen();
   }
 
   async syncOpenBankingInstitutionsFromNordigen() {
@@ -100,7 +100,7 @@ export class SyncService {
 
         return bank;
       });
-      this.institutionsService.saveAll(entities);
+      await this.institutionsService.saveAll(entities);
     }
     this.logger.log('Syncing Open Banking institutions completed');
   }

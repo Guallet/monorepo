@@ -19,5 +19,9 @@
     "thirdpartypasswordless",
     "typeorm",
     "VITE"
-  ]
+  ],
+  "sonarlint.connectedMode.project": {
+    "connectionId": "guallet",
+    "projectKey": "Guallet_monorepo"
+  }
 }

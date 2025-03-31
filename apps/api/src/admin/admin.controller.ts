@@ -11,9 +11,9 @@ export class AdminController {
 
   @HttpCode(202)
   @Get('sync/institutions')
-  async syncBanks(@RequestUser() user: UserPrincipal) {
+  async syncBanks(@RequestUser() user: UserPrincipal): Promise<void> {
     if (user.isAdmin()) {
-      this.syncService.syncOpenBankingInstitutions();
+      await this.syncService.syncOpenBankingInstitutions();
     } else {
       throw new ForbiddenException();
     }

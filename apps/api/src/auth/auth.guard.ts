@@ -16,14 +16,14 @@ import { UsersService } from 'src/features/users/users.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private logger = new Logger('AUTH GUARD');
-  private jwtSecret: string;
+  private readonly logger = new Logger('AUTH GUARD');
+  private readonly jwtSecret: string;
 
   constructor(
-    private reflector: Reflector,
+    private readonly reflector: Reflector,
     private readonly configService: ConfigService,
-    private jwtService: JwtService,
-    private userService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly userService: UsersService,
   ) {
     this.jwtSecret = this.configService.getOrThrow<string>('auth.jwtSecret');
   }
@@ -84,19 +84,22 @@ export class AuthGuard implements CanActivate {
       });
       this.logger.debug(`Token payload: ${JSON.stringify(payload)}`);
       const email = payload.email as string;
+      const uid = payload.sub as string;
+
+      if (!email) {
+        throw new Error('Invalid token');
+      }
+
+      if (!uid) {
+        throw new Error('Invalid token');
+      }
 
       const expireEpochInSeconds = payload.exp ?? 0;
       const expireDate = new Date(expireEpochInSeconds * 1000); //From Seconds to Milliseconds
 
       if (expireDate <= new Date()) {
-        throw 'Expired token';
+        throw new Error('Expired token');
       }
-
-      if (!email) {
-        throw 'Invalid token';
-      }
-
-      const uid = payload.sub;
 
       // Make a request to get the user roles
       // TODO: This is a good place to check if the user is registered or not,
