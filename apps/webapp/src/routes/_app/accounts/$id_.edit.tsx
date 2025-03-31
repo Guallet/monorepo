@@ -30,7 +30,7 @@ const editAccountFormDataSchema = z.object({
 });
 type EditAccountFormData = z.infer<typeof editAccountFormDataSchema>;
 
-export const Route = createFileRoute("/_app/accounts/$id/edit")({
+export const Route = createFileRoute("/_app/accounts/$id_/edit")({
   component: EditAccountPage,
 });
 

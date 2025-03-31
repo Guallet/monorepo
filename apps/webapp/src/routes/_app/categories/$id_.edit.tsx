@@ -7,7 +7,7 @@ import { notifications } from "@mantine/notifications";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-export const Route = createFileRoute("/_app/categories/$id/edit")({
+export const Route = createFileRoute("/_app/categories/$id_/edit")({
   component: EditCategoryPage,
 });
 
