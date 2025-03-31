@@ -41,7 +41,7 @@ function CategoryDetailsPage() {
               message: `Category has been deleted`,
               color: "green",
             });
-            if (isParent && category.parentId !== null) {
+            if (isParent) {
               navigation({ to: "/categories" });
             } else {
               navigation({
