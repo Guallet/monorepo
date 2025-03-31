@@ -17,6 +17,7 @@
     "tabler",
     "tanstack",
     "thirdpartypasswordless",
-    "typeorm"
+    "typeorm",
+    "VITE"
   ]
 }

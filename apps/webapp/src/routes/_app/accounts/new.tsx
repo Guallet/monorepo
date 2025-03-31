@@ -12,14 +12,14 @@ import { useState } from "react";
 import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import { useForm } from "@mantine/form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
 import { useAccountMutations } from "@guallet/api-react";
 import { AccountTypeDto, CreateAccountRequest } from "@guallet/api-client";
 import { AppSection } from "@/components/Cards/AppSection";
+import { zodResolver } from "@mantine/form";
 
 export const Route = createFileRoute("/_app/accounts/new")({
   component: AddAccountPage,
@@ -68,20 +68,21 @@ export function AddAccountPage() {
   );
 
   const form = useForm<AddAccountFormData>({
-    defaultValues: {
+    validate: zodResolver(accountFormDataSchema),
+    initialValues: {
+      name: "",
       account_type: AccountTypeDto.CURRENT_ACCOUNT,
       currency: "GBP", // Get this from user settings
       balance: 0,
       credit_limit: null,
       interest_rate: null,
     },
-    resolver: zodResolver(accountFormDataSchema),
   });
-  const { watch } = form;
-  const currencyValue = watch("currency");
+  const { values } = form;
+  const currencyValue = values.currency;
   const currency = Currency.fromISOCode(currencyValue);
 
-  async function onFormSubmit(data: AddAccountFormData) {
+  async function onFormSubmit(data: AddAccountFormData): Promise<void> {
     console.log("onFormSubmit", data);
     const accountRequest: CreateAccountRequest = {
       name: data.name,
@@ -119,99 +120,69 @@ export function AddAccountPage() {
   );
 
   return (
-    <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)}>
-        <Stack>
-          <AppSection title="Create new account">
-            <Stack
-              style={{
-                margin: "auto",
+    // TODOL: Restore the form state from the parent form
+    // <FormProvider {...form}>
+    <form onSubmit={form.onSubmit(onFormSubmit)}>
+      <Stack>
+        <AppSection title="Create new account">
+          <Stack
+            style={{
+              margin: "auto",
+            }}
+          >
+            <TextInput
+              label="Account name"
+              placeholder="Enter account name"
+              {...form.getInputProps("name")}
+              error={form.errors.name}
+            />
+            <NativeSelect
+              required
+              rightSection={
+                <IconChevronDown style={{ width: rem(16), height: rem(16) }} />
+              }
+              label="Account type"
+              data={accountTypes}
+              {...form.getInputProps("account_type")}
+              onChange={(event) => {
+                const type = event.currentTarget.value as AccountTypeDto;
+                setAccountType(type);
+                form.setFieldValue("account_type", type);
               }}
-            >
-              <Controller
-                name="name"
-                control={form.control}
-                render={({ field }) => (
-                  <TextInput
-                    {...field}
-                    label="Account name"
-                    placeholder="Enter account name"
-                    error={form.formState.errors.name?.message}
-                  />
-                )}
-              />
-              <Controller
-                name="account_type"
-                control={form.control}
-                render={({ field }) => (
-                  <NativeSelect
-                    {...field}
-                    required
-                    rightSection={
-                      <IconChevronDown
-                        style={{ width: rem(16), height: rem(16) }}
-                      />
-                    }
-                    label="Account type"
-                    data={accountTypes}
-                    value={field.value}
-                    onChange={(event) => {
-                      const type = event.currentTarget.value as AccountTypeDto;
-                      setAccountType(type);
-                      field.onChange(type);
-                    }}
-                  />
-                )}
-              />
-              <Controller
-                name="currency"
-                control={form.control}
-                render={({ field }) => (
-                  <CurrencyPicker
-                    name="currency"
-                    required
-                    value={field.value}
-                    onValueChanged={(newValue) => {
-                      field.onChange(newValue);
-                    }}
-                  />
-                )}
-              />
-              <Controller
-                name="balance"
-                control={form.control}
-                render={({ field }) => {
-                  return (
-                    <NumberInput
-                      {...field}
-                      label="Initial balance"
-                      required
-                      description="Initial balance of the account"
-                      defaultValue={field.value}
-                      onChange={(newValue) => {
-                        field.onChange(newValue);
-                      }}
-                      leftSection={currency.symbol}
-                      decimalScale={currency.decimalPlaces}
-                    />
-                  );
-                }}
-              />
-            </Stack>
-          </AppSection>
-          <Group>
-            <Button type="submit">Create account</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigate({ to: "/accounts" });
+            />
+            <CurrencyPicker
+              name="currency"
+              required
+              value={values.currency}
+              onValueChanged={(newValue) => {
+                form.setFieldValue("currency", newValue);
               }}
-            >
-              Cancel
-            </Button>
-          </Group>
-        </Stack>
-      </form>
-    </FormProvider>
+            />
+            <NumberInput
+              label="Initial balance"
+              required
+              description="Initial balance of the account"
+              {...form.getInputProps("balance", {
+                parser: (value: string) => parseFloat(value),
+              })}
+              leftSection={currency.symbol}
+              decimalScale={currency.decimalPlaces}
+            />
+          </Stack>
+        </AppSection>
+        <Group>
+          <Button type="submit">Create account</Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              navigate({ to: "/accounts" });
+            }}
+          >
+            Cancel
+          </Button>
+        </Group>
+      </Stack>
+    </form>
+    // </FormProvider>
   );
 }

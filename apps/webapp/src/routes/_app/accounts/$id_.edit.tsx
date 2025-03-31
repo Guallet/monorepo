@@ -14,8 +14,7 @@ import { AccountTypeDto, UpdateAccountRequest } from "@guallet/api-client";
 import { useEffect, useState } from "react";
 import { useAccount, useAccountMutations } from "@guallet/api-react";
 import { z } from "zod";
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, zodResolver } from "@mantine/form";
 import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
 import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
@@ -69,22 +68,21 @@ function EditAccountPage() {
   );
 
   const form = useForm<EditAccountFormData>({
-    defaultValues: {
+    initialValues: {
       name: account?.name ?? "",
       account_type: account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
       currency: account?.currency ?? "GBP",
       balance: account?.balance.amount ?? 0,
     },
-    resolver: zodResolver(editAccountFormDataSchema),
+    validate: zodResolver(editAccountFormDataSchema),
   });
-  const { watch } = form;
-  const currencyValue = watch("currency");
-  const currency = Currency.fromISOCode(currencyValue);
+  const { values } = form;
+  const currency = Currency.fromISOCode(values.currency);
 
   useEffect(() => {
     if (account) {
       setAccountType(account.type as AccountTypeDto);
-      form.reset({
+      form.setValues({
         name: account.name,
         account_type: account.type,
         currency: account.currency,
@@ -133,104 +131,74 @@ function EditAccountPage() {
 
   return (
     <AppScreen isLoading={isLoading}>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onFormSubmit)}>
-          <Stack>
-            <AppSection title="Account details">
-              <Stack>
-                <Controller
-                  name="name"
-                  control={form.control}
-                  render={({ field }) => (
-                    <TextInput
-                      {...field}
-                      required
-                      label="Account name"
-                      placeholder="Enter account name"
-                      error={form.formState.errors.name?.message}
-                    />
-                  )}
-                />
-                <Controller
-                  name="account_type"
-                  control={form.control}
-                  render={({ field }) => (
-                    <NativeSelect
-                      {...field}
-                      required
-                      rightSection={
-                        <IconChevronDown
-                          style={{ width: rem(16), height: rem(16) }}
-                        />
-                      }
-                      label="Account type"
-                      data={accountTypes}
-                      value={field.value}
-                      onChange={(event) => {
-                        const type = event.currentTarget
-                          .value as AccountTypeDto;
-                        setAccountType(type);
-                        field.onChange(type);
-                      }}
-                    />
-                  )}
-                />
-                <Controller
-                  name="currency"
-                  control={form.control}
-                  render={({ field }) => (
-                    <CurrencyPicker
-                      name="currency"
-                      required
-                      value={field.value}
-                      onValueChanged={(newValue) => {
-                        field.onChange(newValue);
-                      }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="balance"
-                  control={form.control}
-                  render={({ field }) => {
-                    return (
-                      <NumberInput
-                        {...field}
-                        label="Balance"
-                        required
-                        description="Current balance of the account"
-                        defaultValue={field.value}
-                        onChange={(newValue) => {
-                          field.onChange(newValue);
-                        }}
-                        leftSection={currency.symbol}
-                        decimalScale={currency.decimalPlaces}
-                      />
-                    );
-                  }}
-                />
-              </Stack>
-            </AppSection>
-            <Group>
-              <Button type="submit">Update account</Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  // Go back
-                  navigate({
-                    from: Route.fullPath,
-                    to: `/accounts/$id`,
-                    params: { id: id },
-                  });
+      <form onSubmit={form.onSubmit((values) => onFormSubmit(values))}>
+        <Stack>
+          <AppSection title="Account details">
+            <Stack>
+              <TextInput
+                key={form.key("name")}
+                {...form.getInputProps("name")}
+                required
+                label="Account name"
+                placeholder="Enter account name"
+                error={form.errors.name}
+              />
+              <NativeSelect
+                key={form.key("account_type")}
+                {...form.getInputProps("account_type")}
+                required
+                rightSection={
+                  <IconChevronDown
+                    style={{ width: rem(16), height: rem(16) }}
+                  />
+                }
+                label="Account type"
+                data={accountTypes}
+              />
+              <CurrencyPicker
+                name="currency"
+                required
+                value={form.values.currency}
+                onValueChanged={(newValue) => {
+                  form.setFieldValue("currency", newValue);
                 }}
-              >
-                Cancel
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      </FormProvider>
+              />
+              <NumberInput
+                key={form.key("balance")}
+                {...form.getInputProps("balance", {
+                  parser: (value: string) => {
+                    return value ? parseFloat(value) : 0;
+                  },
+                  formatter: (value) => {
+                    return value?.toString() || "";
+                  },
+                })}
+                label="Balance"
+                required
+                description="Current balance of the account"
+                leftSection={currency.symbol}
+                decimalScale={currency.decimalPlaces}
+              />
+            </Stack>
+          </AppSection>
+          <Group>
+            <Button type="submit">Update account</Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                // Go back
+                navigate({
+                  from: Route.fullPath,
+                  to: `/accounts/$id`,
+                  params: { id: id },
+                });
+              }}
+            >
+              Cancel
+            </Button>
+          </Group>
+        </Stack>
+      </form>
     </AppScreen>
   );
 }

@@ -14,10 +14,9 @@ import {
 import { upperFirst } from "@mantine/hooks";
 import { useState } from "react";
 import { GoogleButton } from "../components/GoogleButton";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
+import { useForm, zodResolver } from "@mantine/form";
 
 // Define a schema for form validation using Zod
 const schema = z.object({
@@ -48,10 +47,10 @@ export function LoginScreen({
     "magic-link"
   );
 
-  // Initialize react-hook-form with Zod resolver
   const form = useForm<FormData>({
-    resolver: zodResolver<FormData>(schema),
-    defaultValues: {
+    mode: "uncontrolled",
+    validate: zodResolver(schema),
+    initialValues: {
       email: "",
       password: "",
       terms: false,
@@ -100,8 +99,8 @@ export function LoginScreen({
         <form
           onSubmit={
             loginType === "magic-link"
-              ? form.handleSubmit(onSubmitMagicLink)
-              : form.handleSubmit(onSubmitPassword)
+              ? form.onSubmit(onSubmitMagicLink)
+              : form.onSubmit(onSubmitPassword)
           }
         >
           <Stack>
@@ -122,11 +121,13 @@ export function LoginScreen({
             )}
 
             <TextInput
+              key={form.key("email")}
+              {...form.getInputProps("email")}
               required
               label="Email"
               placeholder="Enter your email here"
-              {...form.register("email")}
-              error={form.formState.errors.email?.message}
+              // error={form.errors.errors.email?.message}
+              error={form.errors.email}
               radius="md"
             />
 
@@ -139,11 +140,12 @@ export function LoginScreen({
             ) : (
               <Stack>
                 <PasswordInput
+                  key={form.key("password")}
+                  {...form.getInputProps("password")}
                   required
                   label="Password"
                   placeholder="Your password"
-                  {...form.register("password")}
-                  error={form.formState.errors.password?.message}
+                  error={form.errors.password}
                   radius="md"
                 />
                 <Button type="submit" radius="xl">
@@ -153,9 +155,10 @@ export function LoginScreen({
             )}
 
             <Checkbox
+              key={form.key("terms")}
+              {...form.getInputProps("terms")}
               label="I accept the terms and conditions"
-              {...form.register("terms")}
-              error={form.formState.errors.terms?.message}
+              error={form.errors.terms}
             />
           </Stack>
         </form>

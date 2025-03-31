@@ -8,7 +8,6 @@ The main libraries used to build this app are:
 - [Tanstack Router](https://tanstack.com/router): Router
 - [Mantine UI](https://mantine.dev/): React components library
 - [Supabase](https:/supabase.com/): Used for auth. In Sync with the backend
-- [React Hook Form](https://react-hook-form.com/): To manage forms
 - [Zod](https://zod.dev/): Validation
 
 ## Build and run the project
