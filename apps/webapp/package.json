@@ -12,11 +12,6 @@
     "i18n:extract": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.5.2",
-    "@fortawesome/free-brands-svg-icons": "^6.5.2",
-    "@fortawesome/free-regular-svg-icons": "^6.5.2",
-    "@fortawesome/free-solid-svg-icons": "^6.5.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
     "@guallet/money": "workspace:*",

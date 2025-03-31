@@ -1,30 +1,32 @@
-import { FontAwesome6IconNames } from "@/core/FontAwesome6";
-import { IconName } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconQuestionMark } from "@tabler/icons-react";
+import { Icon } from "@tabler/icons-react";
+import * as TablerIcons from "@tabler/icons-react";
 
-export type CategoryIconName = IconName;
-export const CategoryIconNames = FontAwesome6IconNames;
+export type GualletIconName = keyof typeof TablerIcons;
 
-const unknownIcon: IconName = "question";
+const validIconNames = Object.keys(TablerIcons).filter(
+  (name) => name.startsWith("Icon") && name !== "Icon"
+);
+
+function isValidIcon(iconName: string): boolean {
+  return validIconNames.includes(iconName);
+}
 
 interface GualletIconProps {
   iconName: string;
   iconColor?: string;
+  size?: number;
 }
 export function GualletIcon({
   iconName,
   iconColor = "black",
+  size = 24,
 }: GualletIconProps) {
   if (isValidIcon(iconName)) {
-    return (
-      <FontAwesomeIcon icon={iconName as CategoryIconName} color={iconColor} />
-    );
+    const IconComponent = TablerIcons[iconName as GualletIconName] as Icon;
+    return <IconComponent color={iconColor} size={size} />;
   } else {
     console.error(`Invalid category icon name ${iconName}`);
-    return <FontAwesomeIcon icon={unknownIcon} color={iconColor} />;
+    return <IconQuestionMark color={iconColor} size={size} />;
   }
-}
-
-function isValidIcon(iconName: string): boolean {
-  return CategoryIconNames.includes(iconName);
 }
