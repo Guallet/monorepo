@@ -9,10 +9,6 @@ export function InstitutionsSettingsScreen() {
   const client = useGualletClient();
   const { institutions } = useInstitutions();
 
-  console.log("InstitutionsSettingsScreen", {
-    institutions,
-  });
-
   async function onSyncBanks() {
     try {
       setIsSyncingBanks(true);
@@ -37,6 +33,12 @@ export function InstitutionsSettingsScreen() {
           color: "red",
         });
         throw new Error("Failed to sync banks");
+      } else {
+        notifications.show({
+          title: "Success",
+          message: "Banks synced successfully",
+          color: "green",
+        });
       }
 
       // Handle success

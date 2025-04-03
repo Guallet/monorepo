@@ -12,8 +12,14 @@ export function useInstitutions() {
     queryFn: async () => {
       return await gualletClient.institutions.getAll();
     },
+    // Disable automatic refetching. This info should not change often.
     staleTime: Infinity,
     gcTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
   });
 
   const institutions =
