@@ -7,11 +7,15 @@ import { Logger } from 'nestjs-pino';
 import { version } from './../package.json';
 import { useApitally } from 'apitally/nestjs';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
-  app.useLogger(app.get(Logger));
+  if (isProduction) {
+    app.useLogger(app.get(Logger));
+  }
 
   // Enable Apitally
   const isApitallyEnabled = process.env.APITALLY_ENABLED === 'true';
@@ -28,6 +32,7 @@ async function bootstrap() {
   app.use(compression());
 
   // Configure Swagger
+  const docsPath = 'swagger';
   const openApiConfig = new DocumentBuilder()
     .setTitle('Guallet API')
     .setDescription('Personal finance manager')
@@ -35,7 +40,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, openApiConfig);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup(docsPath, app, document);
 
   // Start server
   const port = process.env.PORT ?? 5000;
@@ -43,7 +48,7 @@ async function bootstrap() {
   console.log(`Guallet is running on PORT: ${port}`);
   console.log(`Version:  ${version}`);
   console.log(
-    `Visit:  ${await app.getUrl()}/swagger to open the Swagger documentation`,
+    `Visit:  ${await app.getUrl()}/${docsPath} to open the Swagger documentation`,
   );
 }
 
