@@ -9,3 +9,15 @@ export type InstitutionDto = {
   updated_at: string;
   deleted_at: string | null;
 };
+
+export type CreateInstitutionRequest = {
+  name: string;
+  image_src?: string;
+  country?: string;
+};
+
+export type UpdateInstitutionRequest = {
+  name: string;
+  image_src?: string;
+  country?: string;
+};

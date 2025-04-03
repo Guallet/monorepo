@@ -20,7 +20,7 @@ export class User extends BaseDbEntity {
   @Column({
     // type: 'set',
     type: 'simple-array',
-    default: [],
+    default: '',
     nullable: true,
   })
   roles: UserRole[];

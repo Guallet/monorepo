@@ -4,7 +4,7 @@ import { useGualletClient } from "./../GualletClientProvider";
 
 const INSTITUTIONS_QUERY_KEY = "institutions";
 
-export function useAllInstitutions() {
+export function useInstitutions() {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
@@ -16,7 +16,15 @@ export function useAllInstitutions() {
     gcTime: Infinity,
   });
 
-  return { institutions: query.data ?? null, ...query };
+  const institutions =
+    query.data?.filter((dto): dto is InstitutionDto => dto !== undefined) ?? [];
+
+  return {
+    institutions: institutions,
+    userInstitutions: institutions.filter((i) => i.user_id !== null),
+    systemInstitutions: institutions.filter((i) => i.user_id === null),
+    ...query,
+  };
 }
 
 export function useInstitution(id: string | null | undefined) {
@@ -35,16 +43,9 @@ export function useInstitution(id: string | null | undefined) {
   return { institution: query.data ?? null, ...query };
 }
 
-export function useInstitutions(ids: string[]) {
+export function useInstitutionsWithId(ids: string[]) {
   const gualletClient = useGualletClient();
 
-  if (ids.length === 0)
-    return {
-      accounts: [],
-      isLoading: false,
-      refetch: () => {},
-      isFetching: false,
-    };
   const results = useQueries({
     queries: ids.map((id) => ({
       queryKey: [INSTITUTIONS_QUERY_KEY, id],

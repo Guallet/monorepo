@@ -1,3 +1,4 @@
+import { AdminApi } from "./admin";
 import { AccountsApi } from "./accounts";
 import { BudgetsApi } from "./budgets";
 import { CategoriesApi } from "./categories";
@@ -7,9 +8,10 @@ import { TransactionsApi } from "./transactions";
 import { UserApi } from "./user";
 
 export class GualletClient {
-  private baseUrl: string;
-  private getTokenFunction: () => Promise<string | null>;
+  private readonly baseUrl: string;
+  private readonly getTokenFunction: () => Promise<string | null>;
 
+  admin: AdminApi;
   accounts: AccountsApi;
   categories: CategoriesApi;
   connections: ConnectionsApi;
@@ -25,6 +27,7 @@ export class GualletClient {
     this.baseUrl = args.baseUrl;
     this.getTokenFunction = args.getTokenFunction;
 
+    this.admin = new AdminApi(this);
     this.accounts = new AccountsApi(this);
     this.categories = new CategoriesApi(this);
     this.connections = new ConnectionsApi(this);
@@ -142,7 +145,10 @@ export class GualletClient {
 }
 
 export class ApiError extends Error {
-  constructor(message: string, public status: number) {
+  constructor(
+    message: string,
+    public status: number
+  ) {
     super(message);
   }
 }

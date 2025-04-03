@@ -78,33 +78,53 @@ export class InstitutionsService {
     return entity;
   }
 
-  create(args: { dto: CreateInstitutionRequest; user_id: string }) {
-    return this.repository.save({
-      name: args.dto.name,
-      image_src: args.dto.image_src,
-      user_id: args.user_id,
+  async create({
+    user_id,
+    dto,
+  }: {
+    user_id: string;
+    dto: CreateInstitutionRequest;
+  }): Promise<Institution> {
+    const entity = this.repository.create({
+      name: dto.name,
+      image_src: dto.image_src,
+      countries: dto.country ? [dto.country] : [],
+      user_id: user_id,
     });
+
+    return await this.repository.save(entity);
   }
 
-  async update(args: {
+  async update({
+    id,
+    dto,
+    user_id,
+  }: {
     id: string;
     dto: UpdateInstitutionRequest;
     user_id: string;
   }) {
     const institutionToUpdate = await this.findOne({
-      id: args.id,
-      user_id: args.user_id,
+      id: id,
+      user_id: user_id,
     });
 
     if (institutionToUpdate) {
       if (institutionToUpdate.user_id === null) {
-        // You cannot update common institutions!
+        // You cannot update system institutions!
         throw new ForbiddenException();
       }
 
-      institutionToUpdate.name = args.dto.name ?? institutionToUpdate.name;
+      institutionToUpdate.name = dto.name ?? institutionToUpdate.name;
       institutionToUpdate.image_src =
-        args.dto.image_src ?? institutionToUpdate.image_src;
+        dto.image_src ?? institutionToUpdate.image_src;
+
+      // If the country is not null, add it to the list of countries, but don't repeat it
+      if (dto.country) {
+        institutionToUpdate.countries = Array.from(
+          new Set([...institutionToUpdate.countries, dto.country]),
+        );
+      }
 
       return await this.repository.save(institutionToUpdate);
     } else {
@@ -119,7 +139,7 @@ export class InstitutionsService {
     });
     if (entityToDelete) {
       if (entityToDelete.user_id === null) {
-        // You cannot delete common institutions!
+        // You cannot delete system institutions!
         throw new ForbiddenException();
       }
 

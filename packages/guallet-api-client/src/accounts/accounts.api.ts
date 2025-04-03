@@ -10,7 +10,7 @@ import { TransactionDto } from "./../transactions/transactions.models";
 const ACCOUNTS_PATH = "accounts";
 
 export class AccountsApi {
-  constructor(private client: GualletClient) {}
+  constructor(private readonly client: GualletClient) {}
 
   async getAll(): Promise<AccountDto[]> {
     return await this.client.get<AccountDto[]>(ACCOUNTS_PATH);

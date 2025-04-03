@@ -10,6 +10,12 @@ export class CreateInstitutionRequest {
   })
   image_src?: string;
 
+  @ApiProperty({
+    description: 'The country the institution',
+    nullable: true,
+  })
+  country?: string;
+
   constructor(props: CreateInstitutionRequest) {
     Object.assign(this, props);
   }
