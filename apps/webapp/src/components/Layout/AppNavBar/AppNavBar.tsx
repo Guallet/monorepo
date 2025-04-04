@@ -10,7 +10,6 @@ import {
 } from "@tabler/icons-react";
 import { AppShell, Button, Divider, ScrollArea } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
-import { UserButton } from "../../UserButton/UserButton";
 import { useNavigate } from "@tanstack/react-router";
 
 type MenuData = {

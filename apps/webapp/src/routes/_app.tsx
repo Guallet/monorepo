@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_app")({
 });
 
 function ProtectedRoute() {
-  const { session, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const { state } = useRouter();
   const resolvedLocation = state.resolvedLocation;
 
@@ -19,7 +19,7 @@ function ProtectedRoute() {
       </Center>
     );
   } else {
-    if (!session) {
+    if (!isAuthenticated) {
       // Redirect them to the /login page, but save the current location they were
       // trying to go to when they were redirected. This allows us to send them
       // along to that page after they login, which is a nicer user experience

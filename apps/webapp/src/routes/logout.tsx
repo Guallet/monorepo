@@ -7,11 +7,11 @@ export const Route = createFileRoute("/logout")({
 });
 
 function LogoutPage() {
-  const { signOut } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    signOut()
+    logout()
       .then(() => {
         navigate({
           to: "/",

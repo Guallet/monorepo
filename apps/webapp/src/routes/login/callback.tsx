@@ -7,7 +7,7 @@ export const Route = createFileRoute("/login/callback")({
 });
 
 function LoginCallbackPage() {
-  const { isLoading, session } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
 
   // Read the destination redirection from the localstorage
   const redirectTo = localStorage.getItem("redirectDestination") ?? "dashboard";
@@ -20,7 +20,7 @@ function LoginCallbackPage() {
     );
   }
 
-  if (!session) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" search={{ redirect: `${redirectTo}` }} />;
   }
 

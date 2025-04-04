@@ -1,49 +1,31 @@
 import React, { useState, useContext, useEffect } from "react";
 
-import { AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { AuthChangeEvent, Provider, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
-import { User } from "@guallet/api-client";
-import { gualletClient } from "@/api/gualletClient";
-
-interface AuthContextType {
-  user: User | null;
-  session?: Session | null;
-  isLoading: boolean;
-  signOut: () => Promise<void>;
-}
-
-const AuthContext = React.createContext<AuthContextType>({
-  user: null,
-  session: null,
-  isLoading: false,
-  signOut: async () => {},
-});
+import { AuthContext, AuthContextType } from "@/auth/AuthContext";
 
 export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export function AuthProvider({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
-  const [user, setUser] = useState<User | null>(null);
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   async function onSessionChanged(
-    event: AuthChangeEvent,
+    _event: AuthChangeEvent,
     session: Session | null
   ) {
     setSession(session);
-
-    if (session) {
-      await getUserProfile(session?.user?.id);
-    } else {
-      setUser(null);
-    }
+    setIsAuthenticated(session !== null);
   }
 
   useEffect(() => {
+    console.log("Initializing auth");
     setIsLoading(true);
     supabase.auth
       .getSession()
@@ -65,30 +47,103 @@ export function AuthProvider({
     );
 
     return () => {
-      authListener.subscription;
+      authListener.subscription.unsubscribe();
     };
   }, []);
 
-  const getUserProfile = async (userId: string) => {
-    if (userId) {
-      const user = await gualletClient.user.getUserDetails();
-      setUser(user);
-    } else {
-      setUser(null);
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      console.error("Error logging in", error);
+      throw error;
     }
+    setIsAuthenticated(true);
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
   };
 
-  const state = {
-    user: user,
-    session: session,
+  const createAccount = async ({
+    name,
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+    name: string;
+  }) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name },
+      },
+    });
+    if (error) {
+      console.error("Error creating account", error);
+      throw error;
+    }
+  };
+
+  const loginWithProvider = async (provider: string) => {
+    let supabaseProvider: Provider | null = null;
+    switch (provider) {
+      case "google":
+        supabaseProvider = "google";
+        break;
+      case "github":
+        supabaseProvider = "github";
+        break;
+      case "microsoft":
+        supabaseProvider = "azure";
+        break;
+      default:
+        console.error("Unsupported provider");
+        throw new Error("Unsupported provider");
+    }
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: supabaseProvider,
+      options: {
+        redirectTo: `${window.location.origin}/login/callback`,
+      },
+    });
+    if (error) {
+      console.error("Error logging in with provider", error);
+      throw error;
+    }
+  };
+
+  const state: AuthContextType = {
     isLoading: isLoading,
-    signOut: logout,
+    isAuthenticated: isAuthenticated,
+    userId: session?.user?.id ?? null,
+    login: login,
+    logout: logout,
+    createAccount: createAccount,
+    loginWithProvider: loginWithProvider,
   };
 
-  return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>;
+  const memoizedState = React.useMemo(
+    () => state,
+    [
+      isLoading,
+      isAuthenticated,
+      session?.user?.id,
+      login,
+      logout,
+      createAccount,
+      loginWithProvider,
+    ]
+  );
+
+  return (
+    <AuthContext.Provider value={memoizedState}>
+      {children}
+    </AuthContext.Provider>
+  );
 }

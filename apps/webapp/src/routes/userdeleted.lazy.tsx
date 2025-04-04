@@ -8,12 +8,12 @@ export const Route = createLazyFileRoute("/userdeleted")({
 });
 
 function DeleteAccountConfirmationPage() {
-  const { signOut } = useAuth();
+  const { logout } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoading(true);
-    signOut()
+    logout()
       .then(() => {})
       .catch(() => {})
       .finally(() => {

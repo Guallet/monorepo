@@ -14,12 +14,12 @@ export const Route = createFileRoute("/login/")({
 });
 
 function LoginPage() {
-  const { session, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const { redirect } = Route.useSearch();
   const navigation = useNavigate();
   const redirectTo = `${window.location.origin}/login/callback`;
 
-  if (session) {
+  if (isAuthenticated) {
     return <Navigate to={redirect || "dashboard"} />;
   }
 
