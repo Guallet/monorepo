@@ -1,60 +1,57 @@
 import {
-  Center,
   Paper,
   Group,
   Divider,
   Stack,
-  Anchor,
   TextInput,
   Button,
   Text,
   PasswordInput,
-  Checkbox,
+  Container,
 } from "@mantine/core";
-import { upperFirst } from "@mantine/hooks";
 import { useState } from "react";
-import { GoogleButton } from "../components/GoogleButton";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { useForm, zodResolver } from "@mantine/form";
+import { GualletLogo } from "@/components/GualletLogo/GualletLogo";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { GoogleButton } from "../components/GoogleButton";
+import { NavLinkButton } from "@/components/Buttons/NavLinkButton";
 
 // Define a schema for form validation using Zod
-const schema = z.object({
+const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
-  terms: z.boolean().refine((value) => value === true, {
-    message: "You must accept the terms and conditions",
-  }),
 });
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<typeof formSchema>;
 
 interface LoginScreenProps {
+  isLoading?: boolean;
   onGoogleLogin: () => void;
   onMagicLink: (email: string) => void;
   onPassword: (email: string, password: string) => void;
 }
 
 export function LoginScreen({
+  isLoading,
   onGoogleLogin,
   onMagicLink,
   onPassword,
-}: LoginScreenProps) {
+}: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
   const [loginType, setLoginType] = useState<"magic-link" | "password">(
     "magic-link"
   );
 
   const form = useForm<FormData>({
-    mode: "uncontrolled",
-    validate: zodResolver(schema),
     initialValues: {
       email: "",
       password: "",
-      terms: false,
     },
+    validate: zodResolver(formSchema),
   });
 
   const onSubmitMagicLink = (data: FormData) => {
@@ -66,103 +63,93 @@ export function LoginScreen({
   };
 
   return (
-    <Center>
-      <Paper
-        radius="md"
-        p="xl"
-        withBorder
+    <BaseScreen isLoading={isLoading}>
+      <Container
+        size={420}
         style={{
-          margin: "1.5rem",
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
         }}
       >
-        <Text size="lg" fw={500}>
-          {t("screens.login.title")}
-        </Text>
-
-        <Group grow mb="md" mt="md">
-          <GoogleButton
-            radius="xl"
-            onClick={() => {
-              onGoogleLogin();
-            }}
-          >
-            Google
-          </GoogleButton>
-        </Group>
-
-        <Divider
-          label={t("screens.login.form.continueWithDivider")}
-          labelPosition="center"
-          my="lg"
-        />
-
-        <form
-          onSubmit={
-            loginType === "magic-link"
-              ? form.onSubmit(onSubmitMagicLink)
-              : form.onSubmit(onSubmitPassword)
-          }
-        >
-          <Stack>
-            {loginType === "magic-link" ? (
-              <Anchor
-                onClick={() => setLoginType("password")}
-                style={{ textAlign: "center" }}
-              >
-                Login with password
-              </Anchor>
-            ) : (
-              <Anchor
-                onClick={() => setLoginType("magic-link")}
-                style={{ textAlign: "center" }}
-              >
-                Login with magic link
-              </Anchor>
+        <Stack justify="center" align="center">
+          <GualletLogo size={50} />
+          <Text ta="center" size="lg" w={500}>
+            {t(
+              "screens.login.form.email.label",
+              "CNF: Sign in to your account"
             )}
+          </Text>
+        </Stack>
 
+        <Paper withBorder shadow="md" p={30} mt={20} radius="md">
+          <form onSubmit={form.onSubmit(() => {})}>
             <TextInput
-              key={form.key("email")}
               {...form.getInputProps("email")}
+              label={t("screens.login.form.email.label", "CNF: Email")}
+              type="email"
+              placeholder={t(
+                "screens.login.form.email.placeholder",
+                "CNF: Enter your email"
+              )}
               required
-              label="Email"
-              placeholder="Enter your email here"
-              // error={form.errors.errors.email?.message}
-              error={form.errors.email}
-              radius="md"
             />
 
-            {loginType === "magic-link" ? (
-              <Stack>
-                <Button type="submit" radius="xl">
-                  {upperFirst("Send magic link")}
-                </Button>
-              </Stack>
-            ) : (
-              <Stack>
-                <PasswordInput
-                  key={form.key("password")}
-                  {...form.getInputProps("password")}
-                  required
-                  label="Password"
-                  placeholder="Your password"
-                  error={form.errors.password}
-                  radius="md"
-                />
-                <Button type="submit" radius="xl">
-                  {upperFirst("Login with password")}
-                </Button>
-              </Stack>
+            <PasswordInput
+              {...form.getInputProps("password")}
+              label={t("screens.login.form.password.label", "CNF: Password")}
+              placeholder={t(
+                "screens.login.form.password.placeholder",
+                "CNF: Enter your password"
+              )}
+              required
+              mt="md"
+            />
+
+            <Group justify="flex-end" mt="md">
+              <NavLinkButton to="/login/forgot-password" size="sm">
+                {t(
+                  "screens.login.form.forgotPassword.label",
+                  "CNF: Forgot password?"
+                )}
+              </NavLinkButton>
+            </Group>
+
+            <Button fullWidth mt="md" type="submit" color="blue">
+              {t("screens.login.form.submitButton.label", "CNF: Sign in")}
+            </Button>
+          </form>
+
+          <Divider
+            label={t(
+              "screens.login.form.divider.label",
+              "CNF: Or continue with"
             )}
+            labelPosition="center"
+            my="lg"
+          />
 
-            <Checkbox
-              key={form.key("terms")}
-              {...form.getInputProps("terms")}
-              label="I accept the terms and conditions"
-              error={form.errors.terms}
-            />
-          </Stack>
-        </form>
-      </Paper>
-    </Center>
+          <Group grow>
+            <GoogleButton onClick={onGoogleLogin}>
+              {t(
+                "screens.login.form.googleLoginButton.label",
+                "CNF: Continue with Google"
+              )}
+            </GoogleButton>
+          </Group>
+        </Paper>
+
+        <Text ta="center" size="sm" mt="md">
+          {t(
+            "screens.login.createAccount.label",
+            "CNF: Don't have an account?"
+          )}{" "}
+          <NavLinkButton to="/register">
+            {t("screens.login.createAccount.cta", "CNF: Sign up!")}
+          </NavLinkButton>
+        </Text>
+      </Container>
+    </BaseScreen>
   );
 }

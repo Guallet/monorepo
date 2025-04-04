@@ -6,7 +6,13 @@ interface AppScreenProps {
   children: ReactNode;
 }
 
-export function AppScreen({ children, isLoading = false }: AppScreenProps) {
+/**
+ * @deprecated Use BaseScreen instead
+ */
+export function AppScreen({
+  children,
+  isLoading = false,
+}: Readonly<AppScreenProps>) {
   if (isLoading) {
     return (
       <Box

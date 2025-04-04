@@ -2,7 +2,6 @@ import {
   Burger,
   Center,
   Group,
-  Image,
   Indicator,
   Popover,
   Title,
@@ -10,15 +9,15 @@ import {
   UnstyledButton,
   Text,
 } from "@mantine/core";
-import logo from "@/assets/guallet.svg";
 import { IconBell, IconUser } from "@tabler/icons-react";
+import { GualletLogo } from "../GualletLogo/GualletLogo";
 
 interface Props {
   isOpened: boolean;
   onToggle: () => void;
 }
 
-export default function AppHeader({ isOpened, onToggle }: Props) {
+export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
   return (
     <Group h="100%" px="md" justify="space-between">
       <Group>
@@ -35,14 +34,7 @@ export default function AppHeader({ isOpened, onToggle }: Props) {
           onClick={(event) => event.preventDefault()}
         >
           <Group>
-            <Image
-              src={logo}
-              radius="md"
-              h={40}
-              w="auto"
-              fit="fill"
-              alt="Guallet logo"
-            />
+            <GualletLogo />
             <Title order={2}>Guallet</Title>
           </Group>
         </UnstyledButton>

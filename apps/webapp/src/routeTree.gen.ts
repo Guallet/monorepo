@@ -13,12 +13,14 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RegisterImport } from './routes/register'
 import { Route as LogoutImport } from './routes/logout'
 import { Route as AppImport } from './routes/_app'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as OnboardingWaitinglistImport } from './routes/onboarding/waiting_list'
 import { Route as OnboardingRegisterImport } from './routes/onboarding/register'
 import { Route as LoginValidateotpImport } from './routes/login/validateotp'
+import { Route as LoginForgotPasswordImport } from './routes/login/forgot-password'
 import { Route as LoginCallbackImport } from './routes/login/callback'
 import { Route as AppUserIndexImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexImport } from './routes/_app/transactions/index'
@@ -60,6 +62,12 @@ const UserdeletedLazyRoute = UserdeletedLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/userdeleted.lazy').then((d) => d.Route))
 
+const RegisterRoute = RegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const LogoutRoute = LogoutImport.update({
   id: '/logout',
   path: '/logout',
@@ -98,6 +106,12 @@ const OnboardingRegisterRoute = OnboardingRegisterImport.update({
 const LoginValidateotpRoute = LoginValidateotpImport.update({
   id: '/login/validateotp',
   path: '/login/validateotp',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginForgotPasswordRoute = LoginForgotPasswordImport.update({
+  id: '/login/forgot-password',
+  path: '/login/forgot-password',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -296,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogoutImport
       parentRoute: typeof rootRoute
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
     '/userdeleted': {
       id: '/userdeleted'
       path: '/userdeleted'
@@ -308,6 +329,13 @@ declare module '@tanstack/react-router' {
       path: '/login/callback'
       fullPath: '/login/callback'
       preLoaderRoute: typeof LoginCallbackImport
+      parentRoute: typeof rootRoute
+    }
+    '/login/forgot-password': {
+      id: '/login/forgot-password'
+      path: '/login/forgot-password'
+      fullPath: '/login/forgot-password'
+      preLoaderRoute: typeof LoginForgotPasswordImport
       parentRoute: typeof rootRoute
     }
     '/login/validateotp': {
@@ -589,8 +617,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
+  '/register': typeof RegisterRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
+  '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
   '/onboarding/waiting_list': typeof OnboardingWaitinglistRoute
@@ -627,8 +657,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
+  '/register': typeof RegisterRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
+  '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
   '/onboarding/waiting_list': typeof OnboardingWaitinglistRoute
@@ -666,8 +698,10 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/_app': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
+  '/register': typeof RegisterRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
+  '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
   '/onboarding/waiting_list': typeof OnboardingWaitinglistRoute
@@ -706,8 +740,10 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/logout'
+    | '/register'
     | '/userdeleted'
     | '/login/callback'
+    | '/login/forgot-password'
     | '/login/validateotp'
     | '/onboarding/register'
     | '/onboarding/waiting_list'
@@ -743,8 +779,10 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/logout'
+    | '/register'
     | '/userdeleted'
     | '/login/callback'
+    | '/login/forgot-password'
     | '/login/validateotp'
     | '/onboarding/register'
     | '/onboarding/waiting_list'
@@ -780,8 +818,10 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/logout'
+    | '/register'
     | '/userdeleted'
     | '/login/callback'
+    | '/login/forgot-password'
     | '/login/validateotp'
     | '/onboarding/register'
     | '/onboarding/waiting_list'
@@ -819,8 +859,10 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AppRoute: typeof AppRouteWithChildren
   LogoutRoute: typeof LogoutRoute
+  RegisterRoute: typeof RegisterRoute
   UserdeletedLazyRoute: typeof UserdeletedLazyRoute
   LoginCallbackRoute: typeof LoginCallbackRoute
+  LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
   LoginValidateotpRoute: typeof LoginValidateotpRoute
   OnboardingRegisterRoute: typeof OnboardingRegisterRoute
   OnboardingWaitinglistRoute: typeof OnboardingWaitinglistRoute
@@ -831,8 +873,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AppRoute: AppRouteWithChildren,
   LogoutRoute: LogoutRoute,
+  RegisterRoute: RegisterRoute,
   UserdeletedLazyRoute: UserdeletedLazyRoute,
   LoginCallbackRoute: LoginCallbackRoute,
+  LoginForgotPasswordRoute: LoginForgotPasswordRoute,
   LoginValidateotpRoute: LoginValidateotpRoute,
   OnboardingRegisterRoute: OnboardingRegisterRoute,
   OnboardingWaitinglistRoute: OnboardingWaitinglistRoute,
@@ -852,8 +896,10 @@ export const routeTree = rootRoute
         "/",
         "/_app",
         "/logout",
+        "/register",
         "/userdeleted",
         "/login/callback",
+        "/login/forgot-password",
         "/login/validateotp",
         "/onboarding/register",
         "/onboarding/waiting_list",
@@ -897,11 +943,17 @@ export const routeTree = rootRoute
     "/logout": {
       "filePath": "logout.tsx"
     },
+    "/register": {
+      "filePath": "register.tsx"
+    },
     "/userdeleted": {
       "filePath": "userdeleted.lazy.tsx"
     },
     "/login/callback": {
       "filePath": "login/callback.tsx"
+    },
+    "/login/forgot-password": {
+      "filePath": "login/forgot-password.tsx"
     },
     "/login/validateotp": {
       "filePath": "login/validateotp.tsx"

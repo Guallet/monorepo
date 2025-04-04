@@ -1,9 +1,31 @@
 {
   "screens": {
     "login": {
-      "title": "",
       "form": {
-        "continueWithDivider": ""
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Introduce tu correo electrónico"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Introduce tu contraseña"
+        },
+        "forgotPassword": {
+          "label": "¿Olvidaste tu contraseña?"
+        },
+        "submitButton": {
+          "label": "Iniciar sesión"
+        },
+        "divider": {
+          "label": "O continuar con"
+        },
+        "googleLoginButton": {
+          "label": "Continuar con Google"
+        }
+      },
+      "createAccount": {
+        "label": "¿No tienes una cuenta?",
+        "cta": "¡Regístrate!"
       }
     }
   }

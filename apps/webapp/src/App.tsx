@@ -12,7 +12,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GualletClientProvider } from "@guallet/api-react";
-import { router } from "./router.tsx";
+import { router, TanStackRouterDevtools } from "./router.tsx";
 import { gualletClient } from "./core/api/gualletClient.ts";
 
 // Init i18n
@@ -29,7 +29,10 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
           <GualletClientProvider client={gualletClient}>
             <RouterProvider router={router} />
+            {/* Tanstack Dev Tools */}
+            <TanStackRouterDevtools router={router} />
             <ReactQueryDevtools initialIsOpen={false} />
+            {/* END Tanstack Dev Tools */}
           </GualletClientProvider>
         </QueryClientProvider>
       </AuthProvider>

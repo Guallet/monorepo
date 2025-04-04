@@ -19,15 +19,13 @@ function LoginPage() {
   const navigation = useNavigate();
   const redirectTo = `${window.location.origin}/login/callback`;
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
   if (session) {
     return <Navigate to={redirect || "dashboard"} />;
   }
 
   return (
     <LoginScreen
+      isLoading={isLoading}
       onGoogleLogin={async () => {
         console.log("Logging in with Google");
         // Save the redirect url in the local storage to be able to restore it later
@@ -58,7 +56,7 @@ function LoginPage() {
             to: "/login/validateotp",
             search: {
               email: email,
-              redirect: redirect,
+              redirectTo: redirect,
             },
           });
         }
