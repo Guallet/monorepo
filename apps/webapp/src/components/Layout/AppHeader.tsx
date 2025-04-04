@@ -34,7 +34,7 @@ export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
           onClick={(event) => event.preventDefault()}
         >
           <Group>
-            <GualletLogo />
+            <GualletLogo size={40} />
             <Title order={2}>Guallet</Title>
           </Group>
         </UnstyledButton>

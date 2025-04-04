@@ -44,6 +44,6 @@ function CategoriesPage() {
           />
         ))}
       </Stack>
-    </BAses>
+    </BaseScreen>
   );
 }
