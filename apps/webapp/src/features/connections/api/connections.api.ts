@@ -1,9 +1,4 @@
-import {
-  fetch_delete,
-  get,
-  getRawResponse,
-  post,
-} from "@/core/api/fetchHelper";
+import { fetch_delete, get, getRawResponse, post } from "@/api/fetchHelper";
 import { InstitutionDto as GualletInstitutionDto } from "@/features/institutions/api/institutions.api";
 
 export type ObConnection = {

@@ -1,4 +1,4 @@
-import { useAuth } from "@/core/auth/useAuth";
+import { useAuth } from "@/auth/useAuth";
 import { Loader, Stack, Text } from "@mantine/core";
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";

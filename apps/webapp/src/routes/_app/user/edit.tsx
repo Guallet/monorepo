@@ -6,7 +6,7 @@
 //     action: editUserAction,
 //   },
 
-import { gualletClient } from "@/core/api/gualletClient";
+import { gualletClient } from "@/api/gualletClient";
 import { TextInput, Button, Group } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 

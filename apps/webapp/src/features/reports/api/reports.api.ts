@@ -1,4 +1,4 @@
-import { get } from "../../../core/api/fetchHelper";
+import { get } from "@/api/fetchHelper";
 import { CashflowDataDto } from "./cashflow.models";
 
 export async function getCashflowReportData(

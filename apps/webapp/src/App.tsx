@@ -7,13 +7,13 @@ import "@mantine/charts/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import { AuthProvider } from "./core/auth/useAuth";
+import { AuthProvider } from "@/auth/useAuth.tsx";
 import { RouterProvider } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GualletClientProvider } from "@guallet/api-react";
 import { router, TanStackRouterDevtools } from "./router.tsx";
-import { gualletClient } from "./core/api/gualletClient.ts";
+import { gualletClient } from "@/api/gualletClient.ts";
 
 // Init i18n
 import "./i18n/i18n";

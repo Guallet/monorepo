@@ -9,7 +9,7 @@ import {
   Center,
   Space,
 } from "@mantine/core";
-import { fetch_delete } from "@core/api/fetchHelper";
+import { fetch_delete } from "@/api/fetchHelper";
 import { CurrentAccountDetails } from "@/features/accounts/AccountDetails/CurrentAccountDetails";
 import { CreditCardDetails } from "@/features/accounts/AccountDetails/CreditCardDetails";
 import { useState } from "react";

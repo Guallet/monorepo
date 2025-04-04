@@ -1,4 +1,4 @@
-import { get } from "../../../../core/api/fetchHelper";
+import { get } from "@/api/fetchHelper";
 
 export async function loadRules(): Promise<RuleDto[]> {
   return await get<RuleDto[]>("rules");

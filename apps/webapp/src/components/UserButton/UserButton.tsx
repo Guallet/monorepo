@@ -1,6 +1,6 @@
 import { UnstyledButton, Group, Avatar, Text, rem } from "@mantine/core";
 import classes from "./UserButton.module.css";
-import { useAuth } from "@/core/auth/useAuth";
+import { useAuth } from "@/auth/useAuth";
 import { IconChevronRight } from "@tabler/icons-react";
 
 export function UserButton() {

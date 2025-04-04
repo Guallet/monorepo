@@ -1,4 +1,4 @@
-import { supabase } from "@/core/auth/supabase";
+import { supabase } from "@/auth/supabase";
 
 // TODO: Remove this file and use the gualletClient/hooks instead
 export async function getRawResponse(path: string): Promise<Response> {

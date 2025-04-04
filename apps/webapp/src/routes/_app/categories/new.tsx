@@ -1,6 +1,6 @@
 import { AppSection } from "@/components/Cards/AppSection";
 import { AppScreen } from "@/components/Layout/AppScreen";
-import { gualletClient } from "@/core/api/gualletClient";
+import { gualletClient } from "@/api/gualletClient";
 import { useCategory } from "@guallet/api-react";
 import { Button, ColorInput, Stack, TextInput } from "@mantine/core";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";

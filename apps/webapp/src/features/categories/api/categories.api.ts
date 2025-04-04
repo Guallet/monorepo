@@ -1,4 +1,4 @@
-import { fetch_delete, get, patch, post } from "../../../core/api/fetchHelper";
+import { fetch_delete, get, patch, post } from "@/api/fetchHelper";
 import { CategoryFormData } from "../CategoryDetailsModal";
 import { Category } from "../models/Category";
 

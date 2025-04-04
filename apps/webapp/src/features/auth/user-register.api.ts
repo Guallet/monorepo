@@ -1,4 +1,4 @@
-import { post } from "@/core/api/fetchHelper";
+import { post } from "@/api/fetchHelper";
 import { User } from "@guallet/api-client";
 
 export type CreateUserRequest = {

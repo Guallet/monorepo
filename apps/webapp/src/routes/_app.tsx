@@ -1,5 +1,5 @@
 import GualletAppShell from "@/components/Layout/GualletAppShell";
-import { useAuth } from "@/core/auth/useAuth";
+import { useAuth } from "@/auth/useAuth";
 import { Center, Loader } from "@mantine/core";
 import { Navigate, createFileRoute, useRouter } from "@tanstack/react-router";
 

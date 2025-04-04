@@ -1,7 +1,7 @@
 import { Navigate, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { supabase } from "@/core/auth/supabase";
-import { useAuth } from "@/core/auth/useAuth";
+import { supabase } from "@/auth/supabase";
+import { useAuth } from "@/auth/useAuth";
 import { LoginScreen } from "@/features/auth/screens/LoginScreen";
 
 const loginSearchSchema = z.object({

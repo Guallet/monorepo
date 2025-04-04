@@ -11,9 +11,9 @@ import {
 
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { supabase } from "@/core/auth/supabase";
+import { supabase } from "@/auth/supabase";
 import { User } from "@guallet/api-client";
-import { gualletClient } from "@/core/api/gualletClient";
+import { gualletClient } from "@/api/gualletClient";
 
 export const Route = createFileRoute("/onboarding/register")({
   component: RegisterUserPage,

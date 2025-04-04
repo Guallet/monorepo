@@ -1,4 +1,4 @@
-import { get, patch } from "../../../core/api/fetchHelper";
+import { get, patch } from "@/api/fetchHelper";
 
 export async function loadTransactions(args: {
   page: number;

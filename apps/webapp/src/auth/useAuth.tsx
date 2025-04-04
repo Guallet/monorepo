@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { User } from "@guallet/api-client";
-import { gualletClient } from "@/core/api/gualletClient";
+import { gualletClient } from "@/api/gualletClient";
 
 interface AuthContextType {
   user: User | null;

@@ -1,4 +1,4 @@
-import { supabase } from "@/core/auth/supabase";
+import { supabase } from "@/auth/supabase";
 import { ValidateOtpScreen } from "@/features/auth/screens/ValidateOtpScreen";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
