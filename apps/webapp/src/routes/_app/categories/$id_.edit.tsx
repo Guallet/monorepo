@@ -1,11 +1,11 @@
 import { AppSection } from "@/components/Cards/AppSection";
-import { AppScreen } from "@/components/Layout/AppScreen";
 import { gualletClient } from "@/api/gualletClient";
 import { useCategory } from "@guallet/api-react";
 import { Stack, TextInput, ColorInput, Button } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
 
 export const Route = createFileRoute("/_app/categories/$id_/edit")({
   component: EditCategoryPage,
@@ -64,7 +64,7 @@ function EditCategoryPage() {
   };
 
   return (
-    <AppScreen isLoading={isLoading}>
+    <BaseScreen isLoading={isLoading}>
       <Stack>
         <AppSection title="Category details">
           <TextInput
@@ -115,6 +115,6 @@ function EditCategoryPage() {
           Save
         </Button>
       </Stack>
-    </AppScreen>
+    </Bases>
   );
 }

@@ -2,7 +2,7 @@ import { Colors } from "@/theme/colors";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { ReactNode } from "react";
 
-interface AppScreenProps {
+interface BaseScreenProps {
   isLoading?: boolean;
   children: ReactNode;
 }
@@ -10,7 +10,7 @@ interface AppScreenProps {
 export function BaseScreen({
   children,
   isLoading = false,
-}: Readonly<AppScreenProps>) {
+}: Readonly<BaseScreenProps>) {
   return (
     <Box
       style={{

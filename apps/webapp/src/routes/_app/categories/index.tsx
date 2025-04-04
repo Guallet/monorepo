@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button, Stack } from "@mantine/core";
 import { useGroupedCategories } from "@guallet/api-react";
-import { AppScreen } from "@/components/Layout/AppScreen";
 
 import { AppCategorySection } from "@/features/categories/components/AppCategorySection/AppCategorySection";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
 
 export const Route = createFileRoute("/_app/categories/")({
   component: CategoriesPage,
@@ -14,7 +14,7 @@ function CategoriesPage() {
   const navigation = useNavigate();
 
   return (
-    <AppScreen isLoading={isLoading}>
+    <BaseScreen isLoading={isLoading}>
       <Stack>
         <Button
           onClick={() =>
@@ -44,6 +44,6 @@ function CategoriesPage() {
           />
         ))}
       </Stack>
-    </AppScreen>
+    </BAses>
   );
 }

@@ -6,7 +6,7 @@ import { Outlet } from "@tanstack/react-router";
 import { Colors } from "@/theme/colors";
 
 export default function GualletAppShell() {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { close, toggle }] = useDisclosure();
 
   return (
     <AppShell
@@ -20,7 +20,7 @@ export default function GualletAppShell() {
       </AppShell.Header>
 
       <AppShell.Navbar>
-        <AppNavBar onItemSelected={toggle} />
+        <AppNavBar onItemSelected={close} />
       </AppShell.Navbar>
 
       <AppShell.Main>

@@ -1,11 +1,11 @@
 import { AppSection } from "@/components/Cards/AppSection";
-import { AppScreen } from "@/components/Layout/AppScreen";
 import { gualletClient } from "@/api/gualletClient";
 import { useCategory } from "@guallet/api-react";
 import { Button, ColorInput, Stack, TextInput } from "@mantine/core";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
 
 const addCategorySearchSchema = z.object({
   parent: z.string().optional(),
@@ -60,7 +60,7 @@ function AddCategoryPage() {
   };
 
   return (
-    <AppScreen isLoading={isLoading}>
+    <BaseScreen isLoading={isLoading}>
       <Stack>
         <AppSection title="Category details">
           <TextInput
@@ -110,6 +110,6 @@ function AddCategoryPage() {
           Save
         </Button>
       </Stack>
-    </AppScreen>
+    </BaseScreen>
   );
 }

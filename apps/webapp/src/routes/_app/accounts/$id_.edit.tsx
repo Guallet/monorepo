@@ -19,7 +19,7 @@ import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
 import { CurrencyPicker } from "@/components/CurrencyPicker/CurrencyPicker";
 import { AppSection } from "@/components/Cards/AppSection";
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
 
 const editAccountFormDataSchema = z.object({
   name: z.string().min(1, { message: "Account name is required" }),
@@ -130,7 +130,7 @@ function EditAccountPage() {
   }
 
   return (
-    <AppScreen isLoading={isLoading}>
+    <BaseScreen isLoading={isLoading}>
       <form onSubmit={form.onSubmit((values) => onFormSubmit(values))}>
         <Stack>
           <AppSection title="Account details">
@@ -199,6 +199,6 @@ function EditAccountPage() {
           </Group>
         </Stack>
       </form>
-    </AppScreen>
+    </BAses>
   );
 }

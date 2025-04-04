@@ -1,7 +1,7 @@
 import { DeleteButton } from "@/components/Buttons/DeleteButton";
 import { AppSection } from "@/components/Cards/AppSection";
 import { GualletIcon } from "@/components/GualletIcon/GualletIcon";
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { CategoryRow } from "@/features/categories/components/CategoryRow/CategoryRow";
 import { useCategoryMutations, useGroupedCategory } from "@guallet/api-react";
 import { Stack, Button, Text, ColorInput } from "@mantine/core";
@@ -64,7 +64,7 @@ function CategoryDetailsPage() {
   };
 
   return (
-    <AppScreen isLoading={isLoading}>
+    <BaseScreen isLoading={isLoading}>
       <Stack>
         <AppSection>
           <Stack align="center">
@@ -159,6 +159,6 @@ function CategoryDetailsPage() {
           </Stack>
         </AppSection>
       </Stack>
-    </AppScreen>
+    </Bases>
   );
 }

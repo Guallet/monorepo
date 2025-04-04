@@ -1,4 +1,4 @@
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
@@ -30,7 +30,7 @@ function AccountsPage() {
   }, [accounts, searchQuery]);
 
   return (
-    <AppScreen isLoading={isLoading}>
+    <BaseScreen isLoading={isLoading}>
       {accounts.length === 0 ? (
         <EmptyAccountsPage
           onCreateNewAccount={() => {
@@ -64,7 +64,7 @@ function AccountsPage() {
           <Space h="md" />
         </Stack>
       )}
-    </AppScreen>
+    </Bases>
   );
 }
 
