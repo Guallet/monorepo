@@ -1,4 +1,12 @@
-export type ClerkWebhookUserPayloadType = 'INSERT' | 'UPDATE' | 'DELETE';
+export type SupabaseWebhookUserPayloadType = 'INSERT' | 'UPDATE' | 'DELETE';
+
+export type SupabaseWebhookUserPayload = {
+  type: SupabaseWebhookUserPayloadType;
+  table: string;
+  schema: string;
+  record: SupabaseUserRecord | null;
+  old_record: SupabaseUserRecord | null;
+};
 
 export type InsertPayload = {
   type: 'INSERT';
