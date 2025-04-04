@@ -64,7 +64,7 @@ function AccountsPage() {
           <Space h="md" />
         </Stack>
       )}
-    </Bases>
+    </BaseScreen>
   );
 }
 

@@ -159,6 +159,6 @@ function CategoryDetailsPage() {
           </Stack>
         </AppSection>
       </Stack>
-    </Bases>
+    </BaseScreen>
   );
 }

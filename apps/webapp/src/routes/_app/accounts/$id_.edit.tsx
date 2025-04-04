@@ -199,6 +199,6 @@ function EditAccountPage() {
           </Group>
         </Stack>
       </form>
-    </BAses>
+    </BaseScreen>
   );
 }

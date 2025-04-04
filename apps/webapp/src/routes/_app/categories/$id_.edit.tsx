@@ -115,6 +115,6 @@ function EditCategoryPage() {
           Save
         </Button>
       </Stack>
-    </Bases>
+    </BaseScreen>
   );
 }
