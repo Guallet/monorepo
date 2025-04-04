@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { User } from "@guallet/api-client";
-import { gualletClient } from "@/App";
+import { gualletClient } from "@/core/api/gualletClient";
 
 interface AuthContextType {
   user: User | null;
@@ -23,7 +23,9 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
@@ -35,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(session);
 
     if (session) {
-      // await getUserProfile(session?.user?.id);
+      await getUserProfile(session?.user?.id);
     } else {
       setUser(null);
     }

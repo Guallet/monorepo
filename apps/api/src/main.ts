@@ -27,7 +27,14 @@ async function bootstrap() {
   }
 
   // Configure EXPRESS server
-  app.enableCors();
+  const allowedOriginsRawValue = process.env.ALLOWED_CORS_ORIGINS ?? '';
+  const allowedOrigins = allowedOriginsRawValue.split(',');
+
+  app.enableCors({
+    origin: allowedOrigins,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   app.use(helmet());
   app.use(compression());
 

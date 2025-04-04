@@ -6,4 +6,6 @@ export * from "./budgets";
 export * from "./categories";
 export * from "./transactions";
 export * from "./user";
-export { GualletClient } from "./GualletClient";
+
+export { ApiError, createClient } from "./GualletClient";
+export type { GualletClient, TokenHelper } from "./GualletClient";

@@ -55,6 +55,7 @@ export function useInstitutionsWithId(ids: string[]) {
   const results = useQueries({
     queries: ids.map((id) => ({
       queryKey: [INSTITUTIONS_QUERY_KEY, id],
+      enabled: !!id,
       queryFn: async () => {
         return await gualletClient.institutions.get(id);
       },

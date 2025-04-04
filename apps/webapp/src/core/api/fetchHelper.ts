@@ -1,5 +1,6 @@
-import { getCurrentUserToken } from "../auth/supabase";
+import { supabase } from "@/core/auth/supabase";
 
+// TODO: Remove this file and use the gualletClient/hooks instead
 export async function getRawResponse(path: string): Promise<Response> {
   const access_token = await getCurrentUserToken();
   return await fetch(`${import.meta.env.VITE_API_URL}/${path}`, {
@@ -109,4 +110,9 @@ export class ApiError extends Error {
   ) {
     super(message);
   }
+}
+
+async function getCurrentUserToken(): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? "";
 }

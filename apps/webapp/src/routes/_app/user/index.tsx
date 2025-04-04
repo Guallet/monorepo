@@ -1,7 +1,7 @@
 import { Text, Button, Stack, Image, Modal, Group } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useDisclosure } from "@mantine/hooks";
-import { gualletClient } from "@/App";
+import { gualletClient } from "@/core/api/gualletClient";
 
 export const Route = createFileRoute("/_app/user/")({
   loader: loader,

@@ -1,4 +1,4 @@
-import { GualletClient } from "./../GualletClient";
+import { GualletClientImpl } from "./../GualletClient";
 import {
   GualletInstitutionDto,
   ObConnection,
@@ -8,43 +8,47 @@ import {
   OpenBankingCountryDto,
 } from "./connections.models";
 
-// const OPENBANKING_PATH = "openbanking";
+const OPEN_BANKING_PATH = "openbanking";
 
 export class ConnectionsApi {
-  constructor(private client: GualletClient) {}
+  constructor(private readonly client: GualletClientImpl) {}
 
   async getSupportedCountries(): Promise<OpenBankingCountryDto[]> {
-    return await this.client.get<OpenBankingCountryDto[]>(
-      "openbanking/countries"
-    );
+    return await this.client.get<OpenBankingCountryDto[]>({
+      path: `${OPEN_BANKING_PATH}/countries`,
+    });
   }
 
   async getInstitutionsForCountry(
     countryCode: string
   ): Promise<ObInstitutionDto[]> {
-    return await this.client.get<ObInstitutionDto[]>(
-      `openbanking/${countryCode}/institutions`
-    );
+    return await this.client.get<ObInstitutionDto[]>({
+      path: `${OPEN_BANKING_PATH}/${countryCode}/institutions`,
+    });
   }
 
   async getInstitution(institutionId: string): Promise<ObInstitutionDto> {
-    return await this.client.get<ObInstitutionDto>(
-      `openbanking/institutions/${institutionId}/`
-    );
+    return await this.client.get<ObInstitutionDto>({
+      path: `${OPEN_BANKING_PATH}/institutions/${institutionId}/`,
+    });
   }
 
   async getAll(): Promise<ObConnection[]> {
-    return await this.client.get<ObConnection[]>("openbanking/connections");
+    return await this.client.get<ObConnection[]>({
+      path: `${OPEN_BANKING_PATH}/connections`,
+    });
   }
 
   async get(id: string): Promise<ObConnection> {
-    return await this.client.get<ObConnection>(`openbanking/connections/${id}`);
+    return await this.client.get<ObConnection>({
+      path: `${OPEN_BANKING_PATH}/connections/${id}`,
+    });
   }
 
   async getInstitutionDetails(id: string): Promise<GualletInstitutionDto> {
-    return await this.client.get<GualletInstitutionDto>(
-      `openbanking/institutions/${id}/`
-    );
+    return await this.client.get<GualletInstitutionDto>({
+      path: `${OPEN_BANKING_PATH}/institutions/${id}/`,
+    });
   }
 
   async createOpenBankingConnection(args: {
@@ -54,10 +58,13 @@ export class ConnectionsApi {
     return await this.client.post<
       ObRConnectionPermissionDto,
       ObConnectionRequest
-    >("openbanking/connections", {
-      institution_id: args.institutionId,
-      // redirect_to: `${window.location.origin}/connections/connect/callback`,
-      redirect_to: args.redirectTo,
+    >({
+      path: `${OPEN_BANKING_PATH}/connections`,
+      payload: {
+        institution_id: args.institutionId,
+        // redirect_to: `${window.location.origin}/connections/connect/callback`,
+        redirect_to: args.redirectTo,
+      },
     });
   }
 }

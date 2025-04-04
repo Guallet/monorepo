@@ -7,9 +7,52 @@ import { InstitutionsApi } from "./institutions";
 import { TransactionsApi } from "./transactions";
 import { UserApi } from "./user";
 
-export class GualletClient {
+export interface GualletClient {
+  admin: AdminApi;
+  accounts: AccountsApi;
+  categories: CategoriesApi;
+  connections: ConnectionsApi;
+  institutions: InstitutionsApi;
+  transactions: TransactionsApi;
+  budgets: BudgetsApi;
+  user: UserApi;
+}
+
+export interface TokenHelper {
+  getAccessToken(): Promise<string | null>;
+}
+/**
+ * Creates an instance of GualletClient.
+ *
+ * @remarks
+ * This function is used to create a new GualletClient instance with the provided configuration.
+ *
+ * @param args - The configuration object for the client.
+ * @param args.baseUrl - The base URL for the API.
+ * @param args.storage - The storage mechanism for tokens.
+ * @param args.tokenHelper - The helper for managing tokens.
+ *
+ * @returns A new instance of GualletClient.
+ *
+ * @note This function is necessary due to the current use of Supabase.
+ *       It should be removed when Supabase is replaced.
+ */
+export function createClient({
+  baseUrl,
+  tokenHelper,
+}: {
+  baseUrl: string;
+  tokenHelper: TokenHelper;
+}): GualletClient {
+  return new GualletClientImpl({
+    baseUrl: baseUrl,
+    tokenHelper: tokenHelper,
+  });
+}
+
+export class GualletClientImpl implements GualletClient {
   private readonly baseUrl: string;
-  private readonly getTokenFunction: () => Promise<string | null>;
+  private tokenHelper: TokenHelper;
 
   admin: AdminApi;
   accounts: AccountsApi;
@@ -20,12 +63,15 @@ export class GualletClient {
   budgets: BudgetsApi;
   user: UserApi;
 
-  constructor(args: {
+  constructor({
+    baseUrl,
+    tokenHelper,
+  }: {
     baseUrl: string;
-    getTokenFunction: () => Promise<string | null>;
+    tokenHelper: TokenHelper;
   }) {
-    this.baseUrl = args.baseUrl;
-    this.getTokenFunction = args.getTokenFunction;
+    this.baseUrl = baseUrl;
+    this.tokenHelper = tokenHelper;
 
     this.admin = new AdminApi(this);
     this.accounts = new AccountsApi(this);
@@ -37,104 +83,133 @@ export class GualletClient {
     this.user = new UserApi(this);
   }
 
-  static createClient(args: {
-    baseUrl: string;
-    getTokenFunction: () => Promise<string | null>;
-  }): GualletClient {
-    return new GualletClient({
-      baseUrl: args.baseUrl,
-      getTokenFunction: args.getTokenFunction,
-    });
-  }
-
-  async get<TDto>(path: string): Promise<TDto> {
-    const access_token = await this.getTokenFunction();
-    const response = await fetch(`${this.baseUrl}/${path}`, {
+  async get<TDto>({
+    path,
+    options,
+  }: {
+    path: string;
+    options?: RequestInit;
+  }): Promise<TDto> {
+    return await this.executeRequest<TDto>({
       method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
+      path,
+      options,
     });
-
-    this.handleHttpErrors(response);
-
-    return (await response.json()) as TDto;
   }
 
-  async post<TDto, TPayload>(path: string, payload: TPayload): Promise<TDto> {
-    const access_token = await this.getTokenFunction();
-    const response = await fetch(`${this.baseUrl}/${path}`, {
+  async post<TDto, TPayload>({
+    path,
+    payload,
+    options,
+  }: {
+    path: string;
+    payload: TPayload;
+    options?: RequestInit;
+  }): Promise<TDto> {
+    return await this.executeRequest<TDto, TPayload>({
       method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-      body: JSON.stringify(payload),
+      path,
+      payload,
+      options,
     });
-
-    return (await response.json()) as TDto;
   }
 
-  async put<TDto, TPayload>(path: string, payload: TPayload): Promise<TDto> {
-    const access_token = await this.getTokenFunction();
-    const response = await fetch(`${this.baseUrl}/${path}`, {
+  async put<TDto, TPayload>({
+    path,
+    payload,
+    options,
+  }: {
+    path: string;
+    payload: TPayload;
+    options?: RequestInit;
+  }): Promise<TDto> {
+    return await this.executeRequest<TDto, TPayload>({
       method: "PUT",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-      body: JSON.stringify(payload),
+      path,
+      payload,
+      options,
     });
-
-    return (await response.json()) as TDto;
   }
 
-  async patch<TDto, TPartialPayload>(
-    path: string,
-    payload: TPartialPayload
-  ): Promise<TDto> {
-    const access_token = await this.getTokenFunction();
-    const response = await fetch(`${this.baseUrl}/${path}`, {
+  async patch<TDto, TPartialPayload>({
+    path,
+    payload,
+    options,
+  }: {
+    path: string;
+    payload: TPartialPayload;
+    options?: RequestInit;
+  }): Promise<TDto> {
+    return await this.executeRequest<TDto, TPartialPayload>({
       method: "PATCH",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-      body: JSON.stringify(payload),
+      path,
+      payload,
+      options,
     });
-
-    return (await response.json()) as TDto;
   }
 
-  async fetch_delete<TDto>(path: string): Promise<TDto> {
-    const access_token = await this.getTokenFunction();
-    const response = await fetch(`${this.baseUrl}/${path}`, {
+  async fetch_delete<TDto>({
+    path,
+    options,
+  }: {
+    path: string;
+    options?: RequestInit;
+  }): Promise<TDto> {
+    return await this.executeRequest<TDto>({
       method: "DELETE",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
+      path,
+      options,
     });
-
-    return (await response.json()) as TDto;
   }
 
-  async getRawResponse(path: string): Promise<Response> {
-    const access_token = await this.getTokenFunction();
+  async getRawResponse({ path }: { path: string }): Promise<Response> {
+    const access_token = await this.tokenHelper.getAccessToken();
     return await fetch(`${this.baseUrl}/${path}`, {
       method: "GET",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
+        "Access-Control-Allow-Origin": "*",
+        ...(access_token && { Authorization: `Bearer ${access_token}` }),
       },
+      ...(access_token && { credentials: "include" }),
     });
+  }
+
+  private async executeRequest<TDto, TRequest = any>({
+    method,
+    path,
+    payload,
+    options,
+  }: {
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    path: string;
+    payload?: TRequest;
+    options?: RequestInit;
+  }): Promise<TDto> {
+    const access_token = await this.tokenHelper.getAccessToken();
+
+    const requestOptions: RequestInit = {
+      ...options,
+      method: method,
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        ...(access_token && { Authorization: `Bearer ${access_token}` }),
+      },
+      ...(access_token && { credentials: "include" }),
+    };
+
+    if (payload) {
+      requestOptions.body = JSON.stringify(payload);
+    }
+
+    console.log(`Making request to:${this.baseUrl}/${path}`, requestOptions);
+
+    const response = await fetch(`${this.baseUrl}/${path}`, requestOptions);
+    this.handleHttpErrors(response);
+    const json = await response.json();
+    return json as TDto;
   }
 
   private handleHttpErrors(response: Response) {

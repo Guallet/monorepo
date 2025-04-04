@@ -1,11 +1,13 @@
-import { GualletClient } from "./../GualletClient";
+import { GualletClientImpl } from "./../GualletClient";
 
 const ADMIN_PATH = "admin";
 
 export class AdminApi {
-  constructor(private readonly client: GualletClient) {}
+  constructor(private readonly client: GualletClientImpl) {}
 
   async syncOpenBankingInstitutions(): Promise<Response> {
-    return await this.client.getRawResponse(`${ADMIN_PATH}/sync/institutions`);
+    return await this.client.getRawResponse({
+      path: `${ADMIN_PATH}/sync/institutions`,
+    });
   }
 }

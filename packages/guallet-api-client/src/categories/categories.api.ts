@@ -1,4 +1,4 @@
-import { GualletClient } from "./../GualletClient";
+import { GualletClientImpl } from "./../GualletClient";
 import {
   CategoryDto,
   CreateCategoryRequest,
@@ -8,21 +8,23 @@ import {
 const CATEGORIES_PATH = "categories";
 
 export class CategoriesApi {
-  constructor(private client: GualletClient) {}
+  constructor(private readonly client: GualletClientImpl) {}
 
   async getAll(): Promise<CategoryDto[]> {
-    return await this.client.get<CategoryDto[]>(CATEGORIES_PATH);
+    return await this.client.get<CategoryDto[]>({ path: CATEGORIES_PATH });
   }
 
   async get(id: string): Promise<CategoryDto> {
-    return await this.client.get<CategoryDto>(`${CATEGORIES_PATH}/${id}`);
+    return await this.client.get<CategoryDto>({
+      path: `${CATEGORIES_PATH}/${id}`,
+    });
   }
 
   async create(category: CreateCategoryRequest): Promise<CategoryDto> {
-    return await this.client.post<CategoryDto, CreateCategoryRequest>(
-      CATEGORIES_PATH,
-      category
-    );
+    return await this.client.post<CategoryDto, CreateCategoryRequest>({
+      path: CATEGORIES_PATH,
+      payload: category,
+    });
   }
 
   async update({
@@ -32,13 +34,15 @@ export class CategoriesApi {
     id: string;
     dto: UpdateCategoryRequest;
   }): Promise<CategoryDto> {
-    return await this.client.patch<CategoryDto, UpdateCategoryRequest>(
-      `${CATEGORIES_PATH}/${id}`,
-      dto
-    );
+    return await this.client.patch<CategoryDto, UpdateCategoryRequest>({
+      path: `${CATEGORIES_PATH}/${id}`,
+      payload: dto,
+    });
   }
 
   async delete(id: string): Promise<void> {
-    await this.client.fetch_delete<CategoryDto>(`${CATEGORIES_PATH}/${id}`);
+    await this.client.fetch_delete<CategoryDto>({
+      path: `${CATEGORIES_PATH}/${id}`,
+    });
   }
 }

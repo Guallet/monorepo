@@ -1,4 +1,4 @@
-import { GualletClient } from "./../GualletClient";
+import { GualletClientImpl } from "./../GualletClient";
 import {
   InboxTransactionDto,
   TransactionDto,
@@ -8,10 +8,12 @@ import {
 const TRANSACTIONS_PATH = "transactions";
 
 export class TransactionsApi {
-  constructor(private client: GualletClient) {}
+  constructor(private readonly client: GualletClientImpl) {}
 
   async getAll(): Promise<TransactionQueryResultDto> {
-    return await this.client.get<TransactionQueryResultDto>(TRANSACTIONS_PATH);
+    return await this.client.get<TransactionQueryResultDto>({
+      path: TRANSACTIONS_PATH,
+    });
   }
 
   async loadTransactions(args: {
@@ -36,17 +38,21 @@ export class TransactionsApi {
     if (endDate) {
       queryPath = `${queryPath}&endDate=${endDate.toISOString()}`;
     }
-    return await this.client.get<TransactionQueryResultDto>(queryPath);
+    return await this.client.get<TransactionQueryResultDto>({
+      path: queryPath,
+    });
   }
 
   async getInbox(): Promise<InboxTransactionDto[]> {
-    return await this.client.get<InboxTransactionDto[]>(
-      `${TRANSACTIONS_PATH}/inbox`
-    );
+    return await this.client.get<InboxTransactionDto[]>({
+      path: `${TRANSACTIONS_PATH}/inbox`,
+    });
   }
 
   async get(id: string): Promise<TransactionDto> {
-    return await this.client.get<TransactionDto>(`${TRANSACTIONS_PATH}/${id}`);
+    return await this.client.get<TransactionDto>({
+      path: `${TRANSACTIONS_PATH}/${id}`,
+    });
   }
 
   async updateTransactionCategory(args: {
@@ -54,12 +60,12 @@ export class TransactionsApi {
     categoryId: string;
   }): Promise<TransactionDto> {
     const queryPath = `transactions/${args.transactionId}`;
-    return await this.client.patch<TransactionDto, { categoryId: string }>(
-      queryPath,
-      {
+    return await this.client.patch<TransactionDto, { categoryId: string }>({
+      path: queryPath,
+      payload: {
         categoryId: args.categoryId,
-      }
-    );
+      },
+    });
   }
 
   async updateTransactionNotes(args: {
@@ -67,11 +73,11 @@ export class TransactionsApi {
     notes: string;
   }): Promise<TransactionDto> {
     const queryPath = `transactions/${args.transactionId}`;
-    return await this.client.patch<TransactionDto, { notes: string }>(
-      queryPath,
-      {
+    return await this.client.patch<TransactionDto, { notes: string }>({
+      path: queryPath,
+      payload: {
         notes: args.notes,
-      }
-    );
+      },
+    });
   }
 }
