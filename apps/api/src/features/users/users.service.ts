@@ -20,7 +20,7 @@ export class UsersService {
     private readonly repository: Repository<User>,
   ) {}
 
-  async createUser({
+  async upsertUser({
     id,
     email,
     name,
@@ -28,8 +28,8 @@ export class UsersService {
   }: {
     id: string;
     email: string;
-    name: string;
-    avatar_url: string;
+    name?: string;
+    avatar_url?: string;
   }) {
     const existingUser = await this.repository.findOne({
       where: {
@@ -41,16 +41,31 @@ export class UsersService {
       throw new ConflictException('User already registered');
     }
 
-    return await this.repository.save({
-      id: id,
-      name: name,
-      email: email,
-      profile_src: avatar_url,
+    await this.repository.upsert(
+      {
+        id: id,
+        name: name,
+        email: email,
+        profile_image_url: avatar_url,
+      },
+      {
+        conflictPaths: ['id'],
+      },
+    );
+
+    const entity = await this.repository.findOne({
+      where: {
+        id: id,
+      },
     });
+    if (!entity) {
+      throw new NotFoundException('User not found');
+    }
+    return entity;
   }
 
   /**
-   * @deprecated Use createUser instead
+   * @deprecated Use upsertUser instead
    */
   async registerUser({
     user_id,
