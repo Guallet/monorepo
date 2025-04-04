@@ -4,10 +4,12 @@ import { supabase } from "@/core/auth/supabase";
 import { useAuth } from "@/core/auth/useAuth";
 import { LoginScreen } from "@/features/auth/screens/LoginScreen";
 
+const loginSearchSchema = z.object({
+  redirect: z.string().catch("/dashboard"),
+});
+
 export const Route = createFileRoute("/login/")({
-  validateSearch: z.object({
-    redirect: z.string().catch("/dashboard"),
-  }),
+  validateSearch: loginSearchSchema,
   component: LoginPage,
 });
 
@@ -15,9 +17,7 @@ function LoginPage() {
   const { session, isLoading } = useAuth();
   const { redirect } = Route.useSearch();
   const navigation = useNavigate();
-  const redirectTo = `${window.location.origin}/login/callback?redirect=${
-    redirect || "dashboard"
-  }`;
+  const redirectTo = `${window.location.origin}/login/callback`;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -29,7 +29,9 @@ function LoginPage() {
   return (
     <LoginScreen
       onGoogleLogin={async () => {
-        console.log("Logging in with Google", redirectTo);
+        console.log("Logging in with Google");
+        // Save the redirect url in the local storage to be able to restore it later
+        localStorage.setItem("redirectDestination", redirect);
         await supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
@@ -39,6 +41,7 @@ function LoginPage() {
       }}
       onMagicLink={async (email: string) => {
         console.log("Sending magic link to", email);
+
         const { data, error } = await supabase.auth.signInWithOtp({
           email,
           options: {
@@ -55,6 +58,7 @@ function LoginPage() {
             to: "/login/validateotp",
             search: {
               email: email,
+              redirect: redirect,
             },
           });
         }

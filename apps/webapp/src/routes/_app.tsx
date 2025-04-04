@@ -1,7 +1,7 @@
 import GualletAppShell from "@/components/Layout/GualletAppShell";
 import { useAuth } from "@/core/auth/useAuth";
 import { Center, Loader } from "@mantine/core";
-import { Navigate, createFileRoute } from "@tanstack/react-router";
+import { Navigate, createFileRoute, useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app")({
   component: ProtectedRoute,
@@ -9,7 +9,8 @@ export const Route = createFileRoute("/_app")({
 
 function ProtectedRoute() {
   const { session, isLoading } = useAuth();
-  // const { resolvedLocation } = useRouterState();
+  const { state } = useRouter();
+  const resolvedLocation = state.resolvedLocation;
 
   if (isLoading) {
     return (
@@ -26,8 +27,7 @@ function ProtectedRoute() {
       return (
         <Navigate
           to="/login"
-          search={{ redirect: "/dashboard" }}
-          // search={{ redirect: resolvedLocation.pathname }}
+          search={{ redirect: resolvedLocation?.pathname }}
         />
       );
     }

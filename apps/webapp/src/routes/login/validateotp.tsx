@@ -6,12 +6,13 @@ import { z } from "zod";
 export const Route = createFileRoute("/login/validateotp")({
   validateSearch: z.object({
     email: z.string(),
+    redirectTo: z.string().optional(),
   }),
   component: ValidateOtpPage,
 });
 
 function ValidateOtpPage() {
-  const { email } = Route.useSearch();
+  const { email, redirectTo } = Route.useSearch();
   const navigate = useNavigate();
 
   return (
@@ -29,7 +30,7 @@ function ValidateOtpPage() {
         }
         if (data) {
           navigate({
-            to: "/dashboard",
+            to: redirectTo ?? "/dashboard",
           });
         }
       }}
