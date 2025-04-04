@@ -47,17 +47,23 @@ export class UsersController {
   }
 
   @Patch()
-  update(
+  async updateUser(
     @RequestUser() user: UserPrincipal,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.update(user.id, updateUserDto);
+  ): Promise<UserDto> {
+    const userEntity = await this.usersService.updateUser({
+      user_id: user.id,
+      dto: updateUserDto,
+    });
+    return UserDto.fromDomain(userEntity);
   }
 
   @Delete()
   @HttpCode(202)
-  async deleteAccount(@RequestUser() user: UserPrincipal) {
-    const result = await this.usersService.deleteUserData(user.id);
+  async deleteUser(@RequestUser() user: UserPrincipal) {
+    await this.usersService.removeUser(user.id, {
+      deleteFromAuthService: true,
+    });
     return { message: 'User deleted successfully' };
   }
 }
