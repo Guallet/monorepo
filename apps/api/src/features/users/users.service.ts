@@ -17,16 +17,23 @@ export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private repository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {}
 
-  async registerUser(args: {
-    user_id: string;
-    dto: CreateUserDto;
-  }): Promise<User> {
+  async createUser({
+    id,
+    email,
+    name,
+    avatar_url,
+  }: {
+    id: string;
+    email: string;
+    name: string;
+    avatar_url: string;
+  }) {
     const existingUser = await this.repository.findOne({
       where: {
-        id: args.user_id,
+        id: id,
       },
     });
 
@@ -35,10 +42,38 @@ export class UsersService {
     }
 
     return await this.repository.save({
-      id: args.user_id,
-      name: args.dto.name,
-      email: args.dto.email,
-      profile_src: args.dto.profile_src,
+      id: id,
+      name: name,
+      email: email,
+      profile_src: avatar_url,
+    });
+  }
+
+  /**
+   * @deprecated Use createUser instead
+   */
+  async registerUser({
+    user_id,
+    dto,
+  }: {
+    user_id: string;
+    dto: CreateUserDto;
+  }): Promise<User> {
+    const existingUser = await this.repository.findOne({
+      where: {
+        id: user_id,
+      },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('User already registered');
+    }
+
+    return await this.repository.save({
+      id: user_id,
+      name: dto.name,
+      email: dto.email,
+      profile_src: dto.profile_src,
     });
   }
 
@@ -50,22 +85,51 @@ export class UsersService {
     });
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} user`;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateUser({
+    user_id,
+    dto,
+  }: {
+    user_id: string;
+    dto: UpdateUserDto;
+  }): Promise<User> {
+    const dbEntity = await this.repository.findOne({
+      where: { id: user_id },
+    });
+
+    if (dbEntity === null) {
+      throw new NotFoundException();
+    }
+
+    dbEntity.email = dto.email ?? dbEntity.email;
+    dbEntity.name = dto.name ?? dbEntity.name;
+    dbEntity.profile_image_url = dto.profile_src ?? dbEntity.profile_image_url;
+
+    return await this.repository.save(dbEntity);
   }
 
-  async deleteUserData(userId: string) {
-    await this.repository.delete({ id: userId });
+  async removeUser(
+    userId: string,
+    options: { deleteFromAuthService: boolean },
+  ): Promise<User> {
+    const user = await this.repository.findOne({ where: { id: userId } });
+    if (!user) {
+      this.logger.warn(`User not found: ${userId}`);
+      throw new NotFoundException('User not found');
+    }
+    const removed = await this.repository.remove(user);
+    this.logger.log(`User removed from DB: ${userId}`);
 
-    // TODO: Delete User from Supabase
+    // TODO: Remove from auth service
+    if (options.deleteFromAuthService === true) {
+      // Call auth service to remove user
+      this.logger.log(`User removed from auth service: ${userId}`);
+    }
+
+    return removed;
   }
 
   async getUserRoles(userId: string): Promise<UserRole[]> {
