@@ -1,4 +1,5 @@
 import { useAuth } from "@/auth/useAuth";
+import { notifications } from "@mantine/notifications";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
@@ -19,6 +20,11 @@ function LogoutPage() {
       })
       .catch((err) => {
         console.error("Error logging out the user", err);
+        notifications.show({
+          title: "Error",
+          message: "Error logging out the user",
+          color: "red",
+        });
       });
   }, []);
 

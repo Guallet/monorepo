@@ -31,16 +31,6 @@ export class UsersService {
     name?: string;
     avatar_url?: string;
   }) {
-    const existingUser = await this.repository.findOne({
-      where: {
-        id: id,
-      },
-    });
-
-    if (existingUser) {
-      throw new ConflictException('User already registered');
-    }
-
     await this.repository.upsert(
       {
         id: id,

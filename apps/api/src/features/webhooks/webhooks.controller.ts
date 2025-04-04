@@ -18,15 +18,15 @@ export class WebhooksController {
   async create(@Body() payload: SupabaseWebhookUserPayload): Promise<void> {
     this.logger.log('Received supabase user webhook', payload);
 
-    const payloadData = payload.record;
-    if (payloadData === null || payloadData === undefined) {
-      this.logger.error('Payload data is null or bad format', payload);
-      return;
-    }
-
     switch (payload.type) {
       case 'INSERT':
         try {
+          const payloadData = payload.record;
+          if (payloadData === null || payloadData === undefined) {
+            this.logger.error('Payload data is null or bad format', payload);
+            return;
+          }
+
           this.logger.debug(
             `Creating user ${payloadData.id} from supabase webhook`,
           );
@@ -57,6 +57,12 @@ export class WebhooksController {
         break;
       case 'DELETE':
         try {
+          const payloadData = payload.old_record;
+          if (payloadData === null || payloadData === undefined) {
+            this.logger.error('Payload data is null or bad format', payload);
+            return;
+          }
+
           this.logger.debug(`Deleting user ${payloadData.id} from webhook`);
 
           await this.userService.removeUser(payloadData.id, {
@@ -69,6 +75,12 @@ export class WebhooksController {
       case 'UPDATE':
         // No idea why Supabase sends UPDATE when it's a new user registered via Google
         try {
+          const payloadData = payload.record;
+          if (payloadData === null || payloadData === undefined) {
+            this.logger.error('Payload data is null or bad format', payload);
+            return;
+          }
+
           const { id, email, raw_user_meta_data } = payloadData;
           this.logger.debug(`Updating user ${payloadData.id} from webhook`);
 
