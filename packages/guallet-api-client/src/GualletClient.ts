@@ -204,8 +204,6 @@ export class GualletClientImpl implements GualletClient {
       requestOptions.body = JSON.stringify(payload);
     }
 
-    console.log(`Making request to:${this.baseUrl}/${path}`, requestOptions);
-
     const response = await fetch(`${this.baseUrl}/${path}`, requestOptions);
     this.handleHttpErrors(response);
     const json = await response.json();
