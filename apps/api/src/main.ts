@@ -5,7 +5,6 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { Logger } from 'nestjs-pino';
 import { version } from './../package.json';
-import { useApitally } from 'apitally/nestjs';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -15,15 +14,6 @@ async function bootstrap() {
   });
   if (isProduction) {
     app.useLogger(app.get(Logger));
-  }
-
-  // Enable Apitally
-  const isApitallyEnabled = process.env.APITALLY_ENABLED === 'true';
-  if (isApitallyEnabled) {
-    useApitally(app, {
-      clientId: process.env.APITALLY_CLIENT_ID ?? '',
-      env: process.env.APITALLY_ENV ?? 'dev', // or "prod" etc.
-    });
   }
 
   // Configure EXPRESS server
