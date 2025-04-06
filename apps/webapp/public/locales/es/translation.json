@@ -1,6 +1,9 @@
 {
   "screens": {
     "login": {
+      "title": {
+        "label": "Inicia session en tu cuenta"
+      },
       "form": {
         "email": {
           "label": "Correo electrónico",

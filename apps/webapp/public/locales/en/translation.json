@@ -1,6 +1,9 @@
 {
   "screens": {
     "login": {
+      "title": {
+        "label": "Sign in to your account"
+      },
       "form": {
         "email": {
           "label": "Email",

@@ -76,10 +76,7 @@ export function LoginScreen({
         <Stack justify="center" align="center">
           <GualletLogo size={50} />
           <Text ta="center" size="lg" w={500}>
-            {t(
-              "screens.login.form.email.label",
-              "CNF: Sign in to your account"
-            )}
+            {t("screens.login.title.label", "CNF: Sign in to your account")}
           </Text>
         </Stack>
 
