@@ -1,17 +1,20 @@
+import EmptyState from "@/components/EmptyState/EmptyState";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { AccountsList } from "@/features/accounts/components/AccountList";
 import { AccountsHeader } from "@/features/accounts/components/AccountsHeader";
 import { AccountDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import { Button, Group, Space, Stack, Text } from "@mantine/core";
+import { Space, Stack } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_app/accounts/")({
   component: AccountsPage,
 });
 
 function AccountsPage() {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { accounts, isLoading } = useAccounts();
   const [filteredAccounts, setFilteredAccounts] = useState(accounts);
@@ -32,15 +35,15 @@ function AccountsPage() {
   return (
     <BaseScreen isLoading={isLoading}>
       {accounts.length === 0 ? (
-        <EmptyAccountsPage
-          onCreateNewAccount={() => {
+        <EmptyState
+          iconName="IconCreditCard"
+          text={t(
+            "screens.accounts.list.emptyState.text",
+            "CNF: Create your first account"
+          )}
+          onClick={() => {
             navigation({
               to: "/accounts/new",
-            });
-          }}
-          onConnectBank={() => {
-            navigation({
-              to: "/connections/connect",
             });
           }}
         />
@@ -65,26 +68,5 @@ function AccountsPage() {
         </Stack>
       )}
     </BaseScreen>
-  );
-}
-
-interface EmptyAccountsPageProps {
-  onCreateNewAccount: () => void;
-  onConnectBank: () => void;
-}
-
-function EmptyAccountsPage({
-  onCreateNewAccount,
-  onConnectBank,
-}: Readonly<EmptyAccountsPageProps>) {
-  return (
-    <Stack>
-      <Text>It looks you don't have any account yet</Text>
-      <Text>Create a new manual account or connect with your bank</Text>
-      <Group justify="center">
-        <Button onClick={onCreateNewAccount}>Create new account</Button>
-        <Button onClick={onConnectBank}>Connect your bank</Button>
-      </Group>
-    </Stack>
   );
 }

@@ -5,18 +5,20 @@ import { ReactNode } from "react";
 interface BaseScreenProps {
   isLoading?: boolean;
   children: ReactNode;
+  fullScreen?: boolean;
 }
 
 export function BaseScreen({
   children,
   isLoading = false,
+  fullScreen = false,
 }: Readonly<BaseScreenProps>) {
   return (
     <Box
       style={{
         backgroundColor: Colors.pageBackground,
-        height: "100vh",
-        width: "100vw",
+        height: fullScreen ? "100vh" : undefined,
+        width: fullScreen ? "100vw" : undefined,
       }}
     >
       <LoadingOverlay

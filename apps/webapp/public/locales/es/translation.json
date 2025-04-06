@@ -30,6 +30,13 @@
         "label": "¿No tienes una cuenta?",
         "cta": "¡Regístrate!"
       }
+    },
+    "accounts": {
+      "list": {
+        "emptyState": {
+          "text": "Crea tu primera cuenta"
+        }
+      }
     }
   }
 }

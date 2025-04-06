@@ -94,7 +94,7 @@ function RouteComponent() {
   };
 
   return (
-    <BaseScreen>
+    <BaseScreen fullScreen>
       <Container size={450}>
         {/* <LoginScreenHeader /> */}
         <Paper withBorder shadow="md" p={30} radius="md">
