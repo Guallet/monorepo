@@ -7,7 +7,6 @@ import {
 interface EmptyStateProps {
   iconName: GualletIconName;
   text: string;
-  primaryCtaLabel: string;
   onClick: () => void;
 }
 
