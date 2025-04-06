@@ -68,6 +68,14 @@ function LoginCallbackPage() {
     }
   };
 
+  if (isAuthLoading) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  }
+
   // Handle possible errors
   if (error) {
     return (
@@ -117,17 +125,9 @@ function LoginCallbackPage() {
     );
   }
 
-  // if (isLoading) {
-  //   return (
-  //     <Center>
-  //       <Loader />
-  //     </Center>
-  //   );
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" search={{ redirect: `${redirectTo}` }} />;
+  }
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" search={{ redirect: `${redirectTo}` }} />;
-  // }
-
-  // return <Navigate from="/" to={redirectTo} />;
+  return <Navigate from="/" to={redirectTo} />;
 }
