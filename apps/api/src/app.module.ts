@@ -22,6 +22,7 @@ import { UsersService } from './features/users/users.service';
 import { User } from './features/users/entities/user.entity';
 import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
+import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -89,6 +90,7 @@ import * as Joi from 'joi';
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     WebhooksModule,
+    WaitingListModule,
   ],
   controllers: [],
   providers: [

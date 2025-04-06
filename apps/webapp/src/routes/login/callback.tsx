@@ -1,4 +1,5 @@
 import { useAuth } from "@/auth/useAuth";
+import { BuildConfig } from "@/build.config";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import {
   Center,
@@ -9,8 +10,10 @@ import {
   Title,
   Button,
   TextInput,
+  em,
 } from "@mantine/core";
 import { Link, Navigate, createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { z } from "zod";
 
 const callbackSearchSchema = z.object({
@@ -25,16 +28,50 @@ export const Route = createFileRoute("/login/callback")({
 });
 
 function LoginCallbackPage() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading: isAuthLoading, isAuthenticated } = useAuth();
   const { error, error_code, error_description } = Route.useSearch();
+  const [email, setEmail] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Read the destination redirection from the localstorage
   const redirectTo = localStorage.getItem("redirectDestination") ?? "dashboard";
 
+  const onJoinWaitingList = async () => {
+    try {
+      setIsLoading(true);
+
+      // TODO: Do a proper email validation using zod
+      if (!email) {
+        alert("Please enter a valid email");
+        return;
+      }
+
+      const response = await fetch(`${BuildConfig.BASE_API_URL}/waitinglist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        alert("An error occurred");
+        return;
+      } else {
+        alert("You have been added to the waiting list");
+      }
+    } catch {
+      alert("An error occurred");
+      return;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Handle possible errors
   if (error) {
     return (
-      <BaseScreen isLoading={isLoading}>
+      <BaseScreen isLoading={isAuthLoading}>
         <Stack justify="center" align="center" h="100%">
           <Paper withBorder shadow="md" p={30} mt={20} radius="md">
             <Stack>
@@ -49,12 +86,16 @@ function LoginCallbackPage() {
                     label="Email"
                     placeholder="your@email.com"
                     description="We will send you an invitation when we are ready"
+                    value={email}
+                    onChange={(e) => setEmail(e.currentTarget.value)}
+                    required
+                    type="email"
                   />
                   <Button
+                    loading={isLoading}
+                    disabled={email.length <= 0}
                     onClick={() => {
-                      alert(
-                        "Sorry! This feature has not been implemented yet, but you can send us an email to add you to the waiting list manually"
-                      );
+                      onJoinWaitingList();
                     }}
                   >
                     Join the waiting list
@@ -76,17 +117,17 @@ function LoginCallbackPage() {
     );
   }
 
-  if (isLoading) {
-    return (
-      <Center>
-        <Loader />
-      </Center>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Center>
+  //       <Loader />
+  //     </Center>
+  //   );
+  // }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" search={{ redirect: `${redirectTo}` }} />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" search={{ redirect: `${redirectTo}` }} />;
+  // }
 
-  return <Navigate from="/" to={redirectTo} />;
+  // return <Navigate from="/" to={redirectTo} />;
 }
