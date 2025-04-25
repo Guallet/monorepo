@@ -33,7 +33,7 @@ function compareAccountTypes(a: string, b: string) {
   return a.localeCompare(b);
 }
 
-export function AccountsList({ accounts, onAccountSelected }: Props) {
+export function AccountsList({ accounts, onAccountSelected }: Readonly<Props>) {
   // @ts-expect-error
   const data = accounts.groupBy((account: Account) => {
     return account.type;
@@ -46,7 +46,7 @@ export function AccountsList({ accounts, onAccountSelected }: Props) {
           return compareAccountTypes(a[0], b[0]);
         })
         .map(([key, value]) => (
-          <Box>
+          <Box key={key}>
             <>
               <AccountsListHeader
                 accountType={key as AccountTypeDto}

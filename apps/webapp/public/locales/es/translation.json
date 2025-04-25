@@ -1,5 +1,10 @@
 {
   "screens": {
+    "accounts": {
+      "list": {
+        "emptyQuery": "No hay resultados para esa busqueda"
+      }
+    },
     "login": {
       "title": {
         "label": "Inicia session en tu cuenta"
@@ -29,13 +34,6 @@
       "createAccount": {
         "label": "¿No tienes una cuenta?",
         "cta": "¡Regístrate!"
-      }
-    },
-    "accounts": {
-      "list": {
-        "emptyState": {
-          "text": "Crea tu primera cuenta"
-        }
       }
     }
   }

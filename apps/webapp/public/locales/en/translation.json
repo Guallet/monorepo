@@ -1,5 +1,10 @@
 {
   "screens": {
+    "accounts": {
+      "list": {
+        "emptyQuery": "No bank accounts found"
+      }
+    },
     "login": {
       "title": {
         "label": "Sign in to your account"
@@ -29,13 +34,6 @@
       "createAccount": {
         "label": "Don't have an account?",
         "cta": "Sign up!"
-      }
-    },
-    "accounts": {
-      "list": {
-        "emptyState": {
-          "text": "CNF: Create your first account"
-        }
       }
     }
   }
