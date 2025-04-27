@@ -1,7 +1,7 @@
 {
   "name": "mobile",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -9,7 +9,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "credentials": "eas credentials",
+    "credentials:android": "cd android && ./gradlew signingReport",
+    "build:android:local": "eas build --platform android --profile development --local",
+    "build:android:development:local": "eas build --platform android --profile development --local"
   },
   "jest": {
     "preset": "jest-expo"
