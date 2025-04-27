@@ -35,4 +35,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-app-example
+# Expo Prebuild
+android
+ios
+
+# Firebase config
+**/google-services.json
+**/GoogleService-Info.plist
