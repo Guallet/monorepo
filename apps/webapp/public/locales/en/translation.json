@@ -1,4 +1,46 @@
 {
+  "app": {
+    "navbar": {
+      "menu": {
+        "dashboard": {
+          "title": "Dashboard"
+        },
+        "accounts": {
+          "title": "Accounts",
+          "overview": "Overview",
+          "connections": "Connections"
+        },
+        "transactions": {
+          "title": "Transactions",
+          "allTransactions": "All transactions",
+          "inbox": "Inbox"
+        },
+        "categories": {
+          "title": "Categories",
+          "manage": "Manage categories",
+          "rules": "Rules"
+        },
+        "reports": {
+          "title": "Reports",
+          "cashflow": "Cashflow",
+          "inout": "In/Out"
+        },
+        "budgets": {
+          "title": "Budgets"
+        },
+        "tools": {
+          "title": "Tools",
+          "loansCalculator": "Loans calculator",
+          "mortgageCalculator": "Mortgage calculator",
+          "taxCalculator": "Tax calculator",
+          "stampDutyCalculator": "Stamp duty calculator"
+        },
+        "settings": {
+          "title": "Settings"
+        }
+      }
+    }
+  },
   "screens": {
     "accounts": {
       "list": {

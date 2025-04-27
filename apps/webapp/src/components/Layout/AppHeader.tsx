@@ -17,7 +17,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
+export function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
   return (
     <Group h="100%" px="md" justify="space-between">
       <Group>

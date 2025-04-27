@@ -1,4 +1,46 @@
 {
+  "app": {
+    "navbar": {
+      "menu": {
+        "dashboard": {
+          "title": "Panel de control"
+        },
+        "accounts": {
+          "title": "Cuentas",
+          "overview": "General",
+          "connections": "Conexiones"
+        },
+        "transactions": {
+          "title": "Transacciones",
+          "allTransactions": "General",
+          "inbox": "Bandeja de entrada"
+        },
+        "categories": {
+          "title": "Categorías",
+          "manage": "Gestionar categorías",
+          "rules": "Reglas"
+        },
+        "reports": {
+          "title": "Informes",
+          "cashflow": "Flujo de caja",
+          "inout": "Entradas/Salidas"
+        },
+        "budgets": {
+          "title": "Presupuestos"
+        },
+        "tools": {
+          "title": "Herramientas",
+          "loansCalculator": "Calculadora de préstamos",
+          "mortgageCalculator": "Calculadora de hipotecas",
+          "taxCalculator": "Calculadora de impuestos",
+          "stampDutyCalculator": "Calculadora de impuesto de timbre"
+        },
+        "settings": {
+          "title": "Opciones"
+        }
+      }
+    }
+  },
   "screens": {
     "accounts": {
       "list": {
