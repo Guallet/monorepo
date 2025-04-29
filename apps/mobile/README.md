@@ -1,5 +1,6 @@
 # Welcome to your Expo app 👋
 
+
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
@@ -7,14 +8,48 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 1. Install dependencies
 
    ```bash
-   npm install
+   pnpm install
    ```
 
-2. Start the app
+
+2. Prebuild
+
+   ```bash
+   pnpm expo:prebuild
+   ```
+
+3. Create a development build
+
+   ```bash
+   pnpm android
+   ```
+
+   or
+
+   ```bash
+   pnpm ios
+   ```
+
+
+4. Start the app
+
+   ```bash
+    pnpm start
+   ```
+
+   or, for dev build
+
+   ```bash
+    pnpm start:dev
+   ```
+
+
+5. Create a local build
 
    ```bash
     npx expo start
    ```
+
 
 In the output, you'll find options to open the app in a
 
