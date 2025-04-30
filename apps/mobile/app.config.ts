@@ -1,6 +1,9 @@
-const IS_DEV = process.env.APP_ENV === "development";
+import { ConfigContext, ExpoConfig } from "expo/config";
 
-export default {
+const IS_DEV = process.env.APP_VARIANT === "development";
+
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
   name: IS_DEV ? "Guallet Dev" : "Guallet",
   owner: "guallet",
   slug: "guallet",
@@ -49,4 +52,4 @@ export default {
       projectId: "4933c830-42b4-4f94-b2f7-a4ee70331431",
     },
   },
-};
+});

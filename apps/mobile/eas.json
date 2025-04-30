@@ -8,8 +8,14 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "APP_ENV": "development"
+        "APP_VARIANT": "development"
       },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "ios-simulator": {
+      "extends": "development",
       "ios": {
         "simulator": true
       }
@@ -23,7 +29,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "APP_ENV": "production"
+        "APP_VARIANT": "production"
       }
     }
   },
