@@ -14,7 +14,7 @@ export function Divider({
   width = 1,
   label,
   style,
-}: DividerProps) {
+}: Readonly<DividerProps>) {
   if (!label) {
     return (
       <View

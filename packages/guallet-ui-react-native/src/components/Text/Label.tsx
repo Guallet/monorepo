@@ -14,6 +14,9 @@ export function Label({ variant, style, children, ...props }: LabelProps) {
       };
       break;
     }
+    default: {
+      break;
+    }
   }
   return (
     <Text style={[styles.label, variantStyle, style]} {...props}>
