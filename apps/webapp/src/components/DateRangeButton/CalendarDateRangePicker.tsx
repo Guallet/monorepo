@@ -50,8 +50,8 @@ export function CalendarDateRangePicker({
         value={[startDate ?? null, endDate ?? null]}
         onChange={(x) => {
           onRangeChanged({
-            startDate: x[0],
-            endDate: x[1],
+            startDate: new Date(x[0]),
+            endDate: new Date(x[1]),
           });
         }}
       />
