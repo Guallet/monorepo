@@ -17,8 +17,8 @@ export function BaseScreen({
     <Box
       style={{
         backgroundColor: Colors.pageBackground,
-        height: fullScreen ? "100vh" : undefined,
-        width: fullScreen ? "100vw" : undefined,
+        height: fullScreen ? "100dvh" : undefined,
+        width: fullScreen ? "100dvw" : undefined,
       }}
     >
       <LoadingOverlay
