@@ -4,11 +4,27 @@
   "version": "0.1.0",
   "scripts": {
     "start": "expo start",
+    "start:dev": "APP_VARIANT=development npx expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test": "jest --watchAll",
+    "credentials": "eas credentials",
+    "credentials:android": "cd android && ./gradlew signingReport",
+    "expo:prebuild": "npx expo prebuild",
+    "expo:prebuild:clean": "npx expo prebuild --clean",
+    "expo:prebuild:ios": "npx expo prebuild --platform ios",
+    "expo:prebuild:android": "npx expo prebuild --platform android",
+    "expo:prebuild:android:clean": "npx expo prebuild --platform android --clean",
+    "expo:prebuild:ios:clean": "npx expo prebuild --platform ios --clean",
+    "build:android": "expo run:android --variant release",
+    "build:android:local": "eas build --platform android --local",
+    "build:android:local:development": "eas build --platform android --profile development --local",
+    "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android",
+    "eas:android:development": "eas build --profile development --platform android",
+    "eas:update-branch": "eas update --auto"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
