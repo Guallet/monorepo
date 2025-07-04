@@ -52,7 +52,7 @@ export function createClient({
 
 export class GualletClientImpl implements GualletClient {
   private readonly baseUrl: string;
-  private tokenHelper: TokenHelper;
+  private readonly tokenHelper: TokenHelper;
 
   admin: AdminApi;
   accounts: AccountsApi;
