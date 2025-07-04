@@ -9,19 +9,19 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@mantine/core": "*",
-    "@mantine/hooks": "*",
-    "@tabler/icons-react": "*",
-    "react": "*",
-    "react-dom": "*"
+    "@mantine/core": "workspace:*",
+    "@mantine/hooks": "workspace:*",
+    "@tabler/icons-react": "workspace:*",
+    "react": "workspace:*",
+    "react-dom": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "eslint": "*",
+    "@types/react": "workspace:*",
+    "@types/react-dom": "workspace:*",
+    "eslint": "workspace:*",
     "eslint-config-custom": "workspace:*",
-    "react": "*",
+    "react": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "*"
+    "typescript": "workspace:*"
   }
 }

@@ -4,10 +4,10 @@
   "main": "index.js",
   "license": "AGPL-3.0",
   "dependencies": {
-    "eslint-config-next": "*",
-    "eslint-config-prettier": "*",
-    "eslint-plugin-react": "*",
-    "eslint-config-turbo": "*"
+    "eslint-config-next": "workspace:*",
+    "eslint-config-prettier": "workspace:*",
+    "eslint-plugin-react": "workspace:*",
+    "eslint-config-turbo": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
