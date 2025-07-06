@@ -8,3 +8,4 @@ onlyBuiltDependencies:
   - core-js
   - esbuild
   - nestjs-pino
+  - unrs-resolver
