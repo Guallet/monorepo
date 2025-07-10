@@ -13,6 +13,7 @@ export default {
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? "io.guallet.mobile.dev" : "io.guallet.mobile",
+    googleServicesFile: "./auth/firebase/GoogleService-Info.plist",
   },
   android: {
     adaptiveIcon: {
@@ -21,6 +22,7 @@ export default {
     },
     edgeToEdgeEnabled: true,
     package: IS_DEV ? "io.guallet.mobile.dev" : "io.guallet.mobile",
+    googleServicesFile: "./auth/firebase/google-services.json",
   },
   web: {
     bundler: "metro",
@@ -37,6 +39,12 @@ export default {
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#ffffff",
+      },
+    ],
+    [
+      "@react-native-google-signin/google-signin",
+      {
+        iosUrlScheme: process.env.EXPO_PUBLIC_GOOGLE_IOS_URL_SCHEME,
       },
     ],
   ],

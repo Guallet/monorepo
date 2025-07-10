@@ -9,7 +9,7 @@ interface OverlayLoaderProps {
 export function ModalLoaderOverlay({
   isVisible,
   loadingMessage,
-}: OverlayLoaderProps) {
+}: Readonly<OverlayLoaderProps>) {
   return (
     <Modal
       transparent={true}
