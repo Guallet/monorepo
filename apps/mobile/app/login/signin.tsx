@@ -63,7 +63,7 @@ export default function SigninScreen() {
     if (error) {
       Alert.alert("Error", error.message);
     } else {
-      router.replace("/(app)");
+      router.replace("/(app)/");
     }
     setLoading(false);
   }
@@ -73,23 +73,21 @@ export default function SigninScreen() {
       setLoading(true);
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log("Google user info:", userInfo);
-      if (userInfo.data?.idToken) {
+      if (userInfo.idToken) {
         const { data, error } = await supabase.auth.signInWithIdToken({
           provider: "google",
-          token: userInfo.data.idToken,
+          token: userInfo.idToken,
         });
         if (error) {
           Alert.alert("Error Google Signin", JSON.stringify(error));
         } else {
           // TODO: Check if the user is already registered, and then redirect to the app
-          router.replace("/(app)");
+          router.replace("/(app)/");
         }
       } else {
         Alert.alert("Error Google Signin", "No idToken");
       }
     } catch (error: any) {
-      console.error("Google Signin error:", error);
       setLoading(false);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -161,7 +159,7 @@ interface SocialLoginSectionProps {
 function SocialLoginSection({
   isLoading,
   onProviderClick,
-}: Readonly<SocialLoginSectionProps>) {
+}: SocialLoginSectionProps) {
   return (
     <Column>
       <PrimaryButton
@@ -183,7 +181,7 @@ function MagicLinkLoginSection({
   isLoading,
   onLogin,
   onSwitchMode,
-}: Readonly<MagicLinkLoginSectionProps>) {
+}: MagicLinkLoginSectionProps) {
   const [email, setEmail] = useState("");
   return (
     <Column>
@@ -220,7 +218,7 @@ function EmailPasswordLoginSection({
   isLoading,
   onLogin,
   onSwitchMode,
-}: Readonly<EmailPasswordLoginSectionProps>) {
+}: EmailPasswordLoginSectionProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

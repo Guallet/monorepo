@@ -21,6 +21,7 @@ import { useAppState } from "@/hooks/useAppState";
 import React, { useEffect } from "react";
 import { gualletClient } from "@/api/gualletClient";
 import { GualletClientProvider } from "@guallet/api-react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -70,11 +71,13 @@ function GualletApp() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <GualletClientProvider client={gualletClient}>
-            <Stack>
-              <Stack.Screen name="(app)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Stack>
+                <Stack.Screen name="(app)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </GestureHandlerRootView>
           </GualletClientProvider>
         </AuthProvider>
       </QueryClientProvider>

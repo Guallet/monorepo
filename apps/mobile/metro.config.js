@@ -3,6 +3,10 @@ const { getDefaultConfig } = require("expo/metro-config");
 const { FileStore } = require("metro-cache");
 const path = require("path");
 
+const {
+  wrapWithReanimatedMetroConfig,
+} = require("react-native-reanimated/metro-config");
+
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, "../..");
 
@@ -25,4 +29,4 @@ config.cacheStores = [
   }),
 ];
 
-module.exports = config;
+module.exports = wrapWithReanimatedMetroConfig(config);

@@ -1,12 +1,15 @@
 import React from "react";
-import { Link, Tabs, Redirect } from "expo-router";
-import { Pressable, Text } from "react-native";
+import { Link, Tabs } from "expo-router";
+import { Pressable } from "react-native";
 
-import Colors from "@/theme/Colors";
+import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
 import { useAuth } from "@/auth/useAuth";
+import { Redirect } from "expo-router";
+import { Text } from "react-native";
 import * as SystemUI from "expo-system-ui";
 import { Icon } from "@guallet/ui-react-native/src/components/Icon/Icon";
+import Colors from "@/theme/Colors";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -32,7 +35,7 @@ export default function AppLayout() {
   if (!session) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/login" />;
+    return <Redirect href="/login/" />;
   }
 
   // This layout can be deferred because it's not the root layout.
@@ -44,7 +47,7 @@ export default function AppLayout() {
         tabBarHideOnKeyboard: true,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
-        headerShown: true,
+        headerShown: useClientOnlyValue(false, true),
       }}
     >
       <Tabs.Screen

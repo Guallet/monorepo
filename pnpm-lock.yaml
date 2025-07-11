@@ -201,6 +201,9 @@ importers:
       '@expo/vector-icons':
         specifier: ^14.1.0
         version: 14.1.0(expo-font@13.3.2(expo@53.0.17(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0)))(graphql@15.8.0)(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react@19.1.0))(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)
+      '@gorhom/bottom-sheet':
+        specifier: ^5.1.6
+        version: 5.1.6(@types/react-native@0.70.19)(@types/react@19.0.12)(react-native-gesture-handler@2.24.0(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@3.17.5(@babel/core@7.26.10)(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)
       '@guallet/api-client':
         specifier: workspace:*
         version: link:../../packages/guallet-api-client
@@ -288,6 +291,9 @@ importers:
       expo-web-browser:
         specifier: ~14.2.0
         version: 14.2.0(expo@53.0.17(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0)))(graphql@15.8.0)(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))
+      jotai:
+        specifier: ^2.12.5
+        version: 2.12.5(@types/react@19.0.12)(react@19.1.0)
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -304,7 +310,7 @@ importers:
         specifier: ^1.11.0
         version: 1.11.0(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))
       react-native-reanimated:
-        specifier: ~3.17.4
+        specifier: ~3.17.5
         version: 3.17.5(@babel/core@7.26.10)(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)
       react-native-safe-area-context:
         specifier: 5.4.0
@@ -2041,6 +2047,27 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@gorhom/bottom-sheet@5.1.6':
+    resolution: {integrity: sha512-0b5tQj4fTaZAjST1PnkCp0p7d8iRqMezibTcqc8Kkn3N23Vn6upORNTD1fH0bLfwRt6e0WnZ7DjAmq315lrcKQ==}
+    peerDependencies:
+      '@types/react': ^19.0.12
+      '@types/react-native': '*'
+      react: ^19.1.0
+      react-native: '*'
+      react-native-gesture-handler: '>=2.16.1'
+      react-native-reanimated: '>=3.16.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-native':
+        optional: true
+
+  '@gorhom/portal@1.0.14':
+    resolution: {integrity: sha512-MXyL4xvCjmgaORr/rtryDNFy3kU4qUbKlwtQqqsygd0xX3mhKjOLn6mQK8wfu0RkoE0pBE0nAasRoHua+/QZ7A==}
+    peerDependencies:
+      react: ^19.1.0
+      react-native: '*'
 
   '@gulpjs/to-absolute-glob@4.0.0':
     resolution: {integrity: sha512-kjotm7XJrJ6v+7knhPaRgaT6q8F8K2jiafwYdNHLzmV0uGLuZY43FK6smNSHUPrhq5kX2slCUy+RGG/xGqmIKA==}
@@ -6438,6 +6465,18 @@ packages:
 
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
+
+  jotai@2.12.5:
+    resolution: {integrity: sha512-G8m32HW3lSmcz/4mbqx0hgJIQ0ekndKWiYP7kWVKi0p6saLXdSoye+FZiOFyonnd7Q482LCzm8sMDl7Ar1NWDw==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': ^19.0.12
+      react: ^19.1.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
 
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
@@ -11155,6 +11194,24 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
+  '@gorhom/bottom-sheet@5.1.6(@types/react-native@0.70.19)(@types/react@19.0.12)(react-native-gesture-handler@2.24.0(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@3.17.5(@babel/core@7.26.10)(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0))(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@gorhom/portal': 1.0.14(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)
+      invariant: 2.2.4
+      react: 19.1.0
+      react-native: 0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0)
+      react-native-gesture-handler: 2.24.0(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)
+      react-native-reanimated: 3.17.5(@babel/core@7.26.10)(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)
+    optionalDependencies:
+      '@types/react': 19.0.12
+      '@types/react-native': 0.70.19
+
+  '@gorhom/portal@1.0.14(react-native@0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      nanoid: 3.3.11
+      react: 19.1.0
+      react-native: 0.79.5(@babel/core@7.26.10)(@react-native-community/cli@12.3.2)(@types/react@19.0.12)(react@19.1.0)
+
   '@gulpjs/to-absolute-glob@4.0.0':
     dependencies:
       is-negated-glob: 1.0.0
@@ -14776,7 +14833,7 @@ snapshots:
       eslint: 9.23.0
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint@9.23.0))(eslint@9.23.0)
       eslint-plugin-expo: 0.1.4(eslint@9.23.0)(typescript@5.8.3)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint@9.23.0))(eslint@9.23.0))(eslint@9.23.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.23.0)
       eslint-plugin-react: 7.37.4(eslint@9.23.0)
       eslint-plugin-react-hooks: 5.2.0(eslint@9.23.0)
       globals: 16.0.0
@@ -14834,7 +14891,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.10.1
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint@9.23.0))(eslint@9.23.0))(eslint@9.23.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.23.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -14886,7 +14943,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint@9.23.0))(eslint@9.23.0))(eslint@9.23.0):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@9.23.0)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.23.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -16571,6 +16628,11 @@ snapshots:
       '@sideway/address': 4.1.5
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+
+  jotai@2.12.5(@types/react@19.0.12)(react@19.1.0):
+    optionalDependencies:
+      '@types/react': 19.0.12
+      react: 19.1.0
 
   joycon@3.1.1: {}
 

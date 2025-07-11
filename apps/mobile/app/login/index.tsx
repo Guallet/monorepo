@@ -5,9 +5,9 @@ import {
   Spacing,
 } from "@guallet/ui-react-native";
 import { Image } from "expo-image";
+import { AppScreen } from "@/components/layout/AppScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { AppScreen } from "@/components/layout/AppScreen";
 
 export default function Auth() {
   const insets = useSafeAreaInsets();
@@ -30,7 +30,7 @@ export default function Auth() {
         <Column>
           <Label style={{ alignSelf: "center" }}>Guallet</Label>
           {/* TODO: This could be a pager view with multiple content */}
-          {/* <Image
+          <Image
             source={require("@/assets/images/illustrations/login_welcome.svg")}
             style={{
               width: "auto",
@@ -39,7 +39,7 @@ export default function Auth() {
             }}
             contentFit="contain"
             contentPosition="center"
-          /> */}
+          />
           <Label style={{ alignSelf: "center" }} variant="title">
             See all your money in one place
           </Label>
