@@ -1,4 +1,4 @@
-import { FlowScreen } from "@/components/Layout/FlowScreen";
+import { FlowScreen } from "@/components/layout/FlowScreen";
 import {
   Column,
   Label,

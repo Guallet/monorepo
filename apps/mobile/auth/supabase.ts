@@ -1,8 +1,8 @@
 import { AppState } from "react-native";
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
-import { LargeSecureStore } from "./LargeSecureStore";
 import { BuildConfig } from "@/buildConfig";
+import { LargeSecureStore } from "./LargeSecureStore";
 
 const supabaseUrl = BuildConfig.Auth.SUPABASE_URL;
 const supabaseAnonKey = BuildConfig.Auth.SUPABASE_KEY;
@@ -28,8 +28,3 @@ AppState.addEventListener("change", (state) => {
     supabase.auth.stopAutoRefresh();
   }
 });
-
-export async function getCurrentUserToken(): Promise<string | null> {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? null;
-}

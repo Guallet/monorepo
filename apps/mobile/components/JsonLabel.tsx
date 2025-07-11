@@ -5,6 +5,6 @@ interface JsonViewProps<T> {
 }
 
 // Used for Debugging
-export function JsonView<T>({ data }: JsonViewProps<T>) {
+export function JsonView<T>({ data }: Readonly<JsonViewProps<T>>) {
   return <Label>{JSON.stringify(data, null, 2)}</Label>;
 }

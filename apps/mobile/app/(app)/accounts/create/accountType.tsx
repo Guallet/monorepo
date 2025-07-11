@@ -1,4 +1,4 @@
-import { FlowScreen } from "@/components/Layout/FlowScreen";
+import { FlowScreen } from "@/components/layout/FlowScreen";
 import { AccountTypeRow } from "@/components/Rows/AccountTypeRow";
 import { AccountTypeDto } from "@guallet/api-client";
 import { Column, Label, PrimaryButton } from "@guallet/ui-react-native";

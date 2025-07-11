@@ -41,7 +41,7 @@ export function SelectInput<T>({
   itemTemplate,
   onItemSelected,
   keyExtractor,
-}: SelectInputProps<T>) {
+}: Readonly<SelectInputProps<T>>) {
   // handle back button
   const { dismiss } = useBottomSheetModal();
   const [query, setQuery] = useState("");

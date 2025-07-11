@@ -15,7 +15,7 @@ import {
   TextInput,
 } from "@guallet/ui-react-native";
 import { BuildConfig } from "@/buildConfig";
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { AppScreen } from "@/components/layout/AppScreen";
 
 GoogleSignin.configure({
   webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,

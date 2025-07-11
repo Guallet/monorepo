@@ -1,4 +1,4 @@
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { AppScreen } from "@/components/layout/AppScreen";
 import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
 import {
   useAccount,

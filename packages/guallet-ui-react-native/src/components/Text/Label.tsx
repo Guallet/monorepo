@@ -1,31 +1,52 @@
 import React from "react";
-import { Text, StyleSheet, TextStyle } from "react-native";
+import { Text, StyleSheet, TextProps } from "react-native";
 
-interface LabelProps extends React.ComponentProps<typeof Text> {
-  variant?: "body" | "title" | "header" | "bold";
-}
+export type LabelProps = TextProps & {
+  variant?: "body" | "bold" | "header" | "title" | "subtitle";
+};
 
-export function Label({ variant, style, children, ...props }: LabelProps) {
-  let variantStyle: TextStyle = {};
-  switch (variant) {
-    case "bold": {
-      variantStyle = {
-        fontWeight: "bold",
-      };
-      break;
-    }
-  }
+export function Label({
+  style,
+  variant = "body",
+  ...rest
+}: Readonly<LabelProps>) {
   return (
-    <Text style={[styles.label, variantStyle, style]} {...props}>
-      {children}
-    </Text>
+    <Text
+      style={[
+        variant === "body" ? styles.body : undefined,
+        variant === "bold" ? styles.bodyBold : undefined,
+        variant === "header" ? styles.header : undefined,
+        variant === "title" ? styles.title : undefined,
+        variant === "subtitle" ? styles.subtitle : undefined,
+        style,
+      ]}
+      {...rest}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  label: {
-    // fontSize: 16,
-    // fontWeight: "bold",
-    // color: "black",
+  body: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  bodyBold: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "600",
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    lineHeight: 32,
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  header: {
+    lineHeight: 30,
+    fontSize: 16,
+    color: "#0a7ea4",
   },
 });

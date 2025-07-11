@@ -1,4 +1,4 @@
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { AppScreen } from "@/components/layout/AppScreen";
 import { ModalSheet } from "@/components/ModalSheet/ModalSheet";
 import { TransactionsList } from "@/components/Transactions/TransactionsList";
 import { useInfiniteTransactions } from "@guallet/api-react";

@@ -1,5 +1,5 @@
 import { CategoryRow } from "@/components/Categories/CategoryRow";
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { AppScreen } from "@/components/layout/AppScreen";
 import { CategoryDto } from "@guallet/api-client";
 import { AppCategory, useGroupedCategories } from "@guallet/api-react";
 import { Label, PrimaryButton, Spacing } from "@guallet/ui-react-native";

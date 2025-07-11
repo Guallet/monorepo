@@ -1,5 +1,5 @@
 import { CurrencyPicker } from "@/components/CurrencyPicker";
-import { FlowScreen } from "@/components/Layout/FlowScreen";
+import { FlowScreen } from "@/components/layout/FlowScreen";
 import { AccountTypeDto } from "@guallet/api-client";
 import { Currency, Money } from "@guallet/money";
 import {

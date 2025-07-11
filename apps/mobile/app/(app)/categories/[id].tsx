@@ -3,9 +3,7 @@ import {
   ActionIcon,
   DangerButton,
   Divider,
-  Icon,
   Label,
-  PrimaryButton,
   Spacing,
   ValueRow,
 } from "@guallet/ui-react-native";

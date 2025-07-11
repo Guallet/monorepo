@@ -3,7 +3,7 @@ import { ScrollView } from "react-native";
 import React from "react";
 import { TransactionsInboxWidget } from "@/components/Dashboard/Widgets/TransactionInboxWidget";
 import { router } from "expo-router";
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { AppScreen } from "@/components/layout/AppScreen";
 import { TotalWealthWidget } from "@/components/Dashboard/Widgets/TotalWealthWidget";
 import { Spacing } from "@guallet/ui-react-native";
 import { MonthlyInAndOutWidget } from "@/components/Dashboard/Widgets/MonthlyInAndOutWidget";

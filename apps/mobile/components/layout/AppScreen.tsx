@@ -17,7 +17,7 @@ export function AppScreen({
   headerOptions,
   headerTitle,
   ...props
-}: AppScreenProps) {
+}: Readonly<AppScreenProps>) {
   let combinedHeaderOptions: NativeStackNavigationOptions = {
     headerTitleAlign: "center",
   };

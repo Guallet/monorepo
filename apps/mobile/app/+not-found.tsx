@@ -1,18 +1,16 @@
-import { Link, Stack, usePathname } from "expo-router";
-import { StyleSheet, View, Text } from "react-native";
+import { Link, Stack } from "expo-router";
+import { StyleSheet, View } from "react-native";
+
+import { Label } from "@guallet/ui-react-native";
 
 export default function NotFoundScreen() {
-  const pathname = usePathname();
-
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
       <View style={styles.container}>
-        <Text style={styles.title}>{pathname}</Text>
-        <Text style={styles.title}>This screen doesn't exist.</Text>
-
+        <Label variant="title">This screen does not exist.</Label>
         <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Go to home screen!</Text>
+          <Label variant="bold">Go to home screen!</Label>
         </Link>
       </View>
     </>
@@ -26,16 +24,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
   link: {
     marginTop: 15,
     paddingVertical: 15,
-  },
-  linkText: {
-    fontSize: 14,
-    color: "#2e78b7",
   },
 });

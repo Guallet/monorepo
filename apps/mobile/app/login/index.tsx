@@ -5,7 +5,7 @@ import {
   Spacing,
 } from "@guallet/ui-react-native";
 import { Image } from "expo-image";
-import { AppScreen } from "@/components/Layout/AppScreen";
+import { AppScreen } from "@/components/layout/AppScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 

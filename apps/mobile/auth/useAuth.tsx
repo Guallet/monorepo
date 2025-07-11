@@ -28,7 +28,7 @@ export function useAuth() {
   return value;
 }
 
-export function AuthProvider(props: React.PropsWithChildren) {
+export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<string | null>(null);

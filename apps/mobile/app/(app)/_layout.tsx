@@ -2,7 +2,6 @@ import React from "react";
 import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 
-import Colors from "@/constants/Colors";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 
 import { useAuth } from "@/auth/useAuth";
@@ -10,6 +9,7 @@ import { Redirect } from "expo-router";
 import { Text } from "react-native";
 import * as SystemUI from "expo-system-ui";
 import { Icon } from "@guallet/ui-react-native/src/components/Icon/Icon";
+import Colors from "@/theme/Colors";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
