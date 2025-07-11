@@ -19,7 +19,7 @@ export function SearchBoxInput({
   onSearchQueryChanged,
   style,
   ...props
-}: SearchBoxInputProps) {
+}: Readonly<SearchBoxInputProps>) {
   return (
     <View
       style={[
