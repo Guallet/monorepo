@@ -1,4 +1,18 @@
 {
+  "app": {
+    "accounts": {
+      "accountType": {
+        "currentAccounts": "Current Accounts",
+        "creditCards": "Credit Cards",
+        "investmentAccounts": "Investment Accounts",
+        "loans": "Loans",
+        "mortgages": "Mortgages",
+        "pensions": "Pensions",
+        "savingsAccounts": "Savings Accounts",
+        "unknown": "Other"
+      }
+    }
+  },
   "screens": {
     "accounts": {
       "list": {

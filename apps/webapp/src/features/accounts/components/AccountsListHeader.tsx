@@ -1,5 +1,5 @@
 import GroupHeader from "@/components/GroupHeader/GroupHeader";
-import { getAccountTypeTitle } from "@accounts/models/Account";
+import { getAccountTypeTitle } from "@/features/accounts/models/Account";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { Money } from "@guallet/money";
 import "core-js/actual/array/group-by";
@@ -9,7 +9,10 @@ interface HeaderProps {
   accounts: AccountDto[];
 }
 
-export function AccountsListHeader({ accountType, accounts }: HeaderProps) {
+export function AccountsListHeader({
+  accountType,
+  accounts,
+}: Readonly<HeaderProps>) {
   function sumArray(array: number[]): number {
     const sum = array.reduce(function (a, b) {
       return a + b;

@@ -44,26 +44,37 @@ export type AccountConnectionDto = {
 // } as const;
 // export type AccountType = (typeof AccountType)[keyof typeof AccountType];
 
+import i118n from "@/i18n/i18n";
+
 // TODO: Extract this function to shared package
 export function getAccountTypeTitle(type: AccountTypeDto): string {
   switch (type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
-      return "Current Accounts";
+      return i118n.t(
+        "app.accounts.accountType.currentAccounts",
+        "Current Accounts"
+      );
     case AccountTypeDto.CREDIT_CARD:
-      return "Credit cards";
+      return i118n.t("app.accounts.accountType.creditCards", "Credit Cards");
     case AccountTypeDto.INVESTMENT:
-      return "Investment accounts";
+      return i118n.t(
+        "app.accounts.accountType.investmentAccounts",
+        "Investment Accounts"
+      );
     case AccountTypeDto.LOAN:
-      return "Loans";
+      return i118n.t("app.accounts.accountType.loans", "Loans");
     case AccountTypeDto.MORTGAGE:
-      return "Mortgages";
+      return i118n.t("app.accounts.accountType.mortgages", "Mortgages");
     case AccountTypeDto.PENSION:
-      return "Pensions";
+      return i118n.t("app.accounts.accountType.pensions", "Pensions");
     case AccountTypeDto.SAVINGS:
-      return "Saving accounts";
+      return i118n.t(
+        "app.accounts.accountType.savingsAccounts",
+        "Savings Accounts"
+      );
 
     default:
-      return "Other";
+      return i118n.t("app.accounts.accountType.unknown", "Other");
   }
 }
 

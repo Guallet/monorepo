@@ -9,7 +9,7 @@ interface Props {
   onClick?: () => void;
 }
 
-export function AccountRow({ account, onClick }: Props) {
+export function AccountRow({ account, onClick }: Readonly<Props>) {
   const money = Money.fromCurrencyCode({
     amount: account.balance.amount,
     currencyCode: account.currency,
