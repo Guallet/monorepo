@@ -193,10 +193,9 @@ function SettingsGroup({ title, children }: SettingsGroupProps) {
       }}
     >
       <Label
+        variant="title"
         style={{
-          fontSize: 20,
-          fontWeight: "bold",
-          marginBottom: 10,
+          margin: Spacing.small,
         }}
       >
         {title}

@@ -18,7 +18,7 @@ export function BaseRow({
   leftIconName,
   rightIconName = "chevron-right",
   ...props
-}: BaseRowProps) {
+}: Readonly<BaseRowProps>) {
   return (
     <View
       style={[

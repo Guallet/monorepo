@@ -8,7 +8,7 @@ interface ValueRowProps extends React.ComponentProps<typeof BaseRow> {
   value: string | number;
 }
 
-export function ValueRow({ title, value, ...props }: ValueRowProps) {
+export function ValueRow({ title, value, ...props }: Readonly<ValueRowProps>) {
   return (
     <BaseRow {...props}>
       <View

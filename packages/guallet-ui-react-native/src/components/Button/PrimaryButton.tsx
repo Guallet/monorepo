@@ -22,7 +22,7 @@ export function PrimaryButton({
   leftIconName,
   rightIconName,
   disabled = false,
-}: ButtonProps) {
+}: Readonly<ButtonProps>) {
   return (
     <BaseButton
       onClick={onClick}

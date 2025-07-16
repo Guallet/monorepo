@@ -1,14 +1,14 @@
-import { Text } from "react-native";
 import { BaseRow } from "./BaseRow";
+import { Label } from "../Text";
 
 interface TextRowProps extends React.ComponentProps<typeof BaseRow> {
   label: string;
 }
 
-export function TextRow({ label, ...props }: TextRowProps) {
+export function TextRow({ label, ...props }: Readonly<TextRowProps>) {
   return (
     <BaseRow {...props}>
-      <Text>{label}</Text>
+      <Label variant="body">{label}</Label>
     </BaseRow>
   );
 }

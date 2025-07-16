@@ -6,7 +6,7 @@ export function SecondaryButton({
   style,
   leftIconName,
   rightIconName,
-}: ButtonProps) {
+}: Readonly<ButtonProps>) {
   return (
     <PrimaryButton
       title={title}
