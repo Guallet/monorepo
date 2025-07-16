@@ -21,6 +21,13 @@ This Turborepo includes the following packages/apps:
 
 Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 
+### Requirements
+In order to compile/run the project locally, you will need
+- Node >=v22.x 
+- PNPM
+- Postgres database
+- Supabase project (could be used to host your DB too)
+
 ### Build
 
 To build all apps and packages, run the following command:

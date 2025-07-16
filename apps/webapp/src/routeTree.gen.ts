@@ -10,612 +10,243 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LogoutRouteImport } from './routes/logout'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as OnboardingWaiting_listRouteImport } from './routes/onboarding/waiting_list'
+import { Route as OnboardingRegisterRouteImport } from './routes/onboarding/register'
+import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp'
+import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
+import { Route as LoginCallbackRouteImport } from './routes/login/callback'
+import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
+import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transactions/index'
+import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
+import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index'
+import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
+import { Route as AppConnectionsIndexRouteImport } from './routes/_app/connections/index'
+import { Route as AppCategoriesIndexRouteImport } from './routes/_app/categories/index'
+import { Route as AppAccountsIndexRouteImport } from './routes/_app/accounts/index'
+import { Route as AppUserEditRouteImport } from './routes/_app/user/edit'
+import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
+import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
+import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
+import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
+import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/new'
+import { Route as AppCategoriesIdRouteImport } from './routes/_app/categories/$id'
+import { Route as AppAccountsNewRouteImport } from './routes/_app/accounts/new'
+import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
+import { Route as AppSettingsInstitutionsIndexRouteImport } from './routes/_app/settings/institutions/index'
+import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/connections/connect/index'
+import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
+import { Route as AppConnectionsConnectCallbackRouteImport } from './routes/_app/connections/connect/callback'
+import { Route as AppCategoriesRulesCreateRouteImport } from './routes/_app/categories/rules/create'
+import { Route as AppCategoriesIdEditRouteImport } from './routes/_app/categories/$id_.edit'
+import { Route as AppAccountsIdEditRouteImport } from './routes/_app/accounts/$id_.edit'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as RegisterImport } from './routes/register'
-import { Route as LogoutImport } from './routes/logout'
-import { Route as AppImport } from './routes/_app'
-import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as OnboardingWaitinglistImport } from './routes/onboarding/waiting_list'
-import { Route as OnboardingRegisterImport } from './routes/onboarding/register'
-import { Route as LoginValidateotpImport } from './routes/login/validateotp'
-import { Route as LoginForgotPasswordImport } from './routes/login/forgot-password'
-import { Route as LoginCallbackImport } from './routes/login/callback'
-import { Route as AppUserIndexImport } from './routes/_app/user/index'
-import { Route as AppTransactionsIndexImport } from './routes/_app/transactions/index'
-import { Route as AppSettingsIndexImport } from './routes/_app/settings/index'
-import { Route as AppReportsIndexImport } from './routes/_app/reports/index'
-import { Route as AppDashboardIndexImport } from './routes/_app/dashboard/index'
-import { Route as AppConnectionsIndexImport } from './routes/_app/connections/index'
-import { Route as AppCategoriesIndexImport } from './routes/_app/categories/index'
-import { Route as AppAccountsIndexImport } from './routes/_app/accounts/index'
-import { Route as AppUserEditImport } from './routes/_app/user/edit'
-import { Route as AppTransactionsInboxImport } from './routes/_app/transactions/inbox'
-import { Route as AppReportsCashflowImport } from './routes/_app/reports/cashflow'
-import { Route as AppConnectionsIdImport } from './routes/_app/connections/$id'
-import { Route as AppCategoriesOldImport } from './routes/_app/categories/old'
-import { Route as AppCategoriesNewImport } from './routes/_app/categories/new'
-import { Route as AppCategoriesIdImport } from './routes/_app/categories/$id'
-import { Route as AppAccountsNewImport } from './routes/_app/accounts/new'
-import { Route as AppAccountsIdImport } from './routes/_app/accounts/$id'
-import { Route as AppSettingsInstitutionsIndexImport } from './routes/_app/settings/institutions/index'
-import { Route as AppConnectionsConnectIndexImport } from './routes/_app/connections/connect/index'
-import { Route as AppCategoriesRulesIndexImport } from './routes/_app/categories/rules/index'
-import { Route as AppConnectionsConnectCallbackImport } from './routes/_app/connections/connect/callback'
-import { Route as AppCategoriesRulesCreateImport } from './routes/_app/categories/rules/create'
-import { Route as AppCategoriesIdEditImport } from './routes/_app/categories/$id_.edit'
-import { Route as AppAccountsIdEditImport } from './routes/_app/accounts/$id_.edit'
+const UserdeletedLazyRouteImport = createFileRoute('/userdeleted')()
+const IndexLazyRouteImport = createFileRoute('/')()
+const AppToolsMortgageLazyRouteImport = createFileRoute(
+  '/_app/tools/mortgage',
+)()
+const AppToolsLoanLazyRouteImport = createFileRoute('/_app/tools/loan')()
 
-// Create Virtual Routes
-
-const UserdeletedLazyImport = createFileRoute('/userdeleted')()
-const IndexLazyImport = createFileRoute('/')()
-const AppToolsMortgageLazyImport = createFileRoute('/_app/tools/mortgage')()
-const AppToolsLoanLazyImport = createFileRoute('/_app/tools/loan')()
-
-// Create/Update Routes
-
-const UserdeletedLazyRoute = UserdeletedLazyImport.update({
+const UserdeletedLazyRoute = UserdeletedLazyRouteImport.update({
   id: '/userdeleted',
   path: '/userdeleted',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/userdeleted.lazy').then((d) => d.Route))
-
-const RegisterRoute = RegisterImport.update({
+const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const LogoutRoute = LogoutImport.update({
+const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AppRoute = AppImport.update({
+const AppRoute = AppRouteImport.update({
   id: '/_app',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexLazyRoute = IndexLazyRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-
-const LoginIndexRoute = LoginIndexImport.update({
+const LoginIndexRoute = LoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const OnboardingWaitinglistRoute = OnboardingWaitinglistImport.update({
+const OnboardingWaiting_listRoute = OnboardingWaiting_listRouteImport.update({
   id: '/onboarding/waiting_list',
   path: '/onboarding/waiting_list',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const OnboardingRegisterRoute = OnboardingRegisterImport.update({
+const OnboardingRegisterRoute = OnboardingRegisterRouteImport.update({
   id: '/onboarding/register',
   path: '/onboarding/register',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const LoginValidateotpRoute = LoginValidateotpImport.update({
+const LoginValidateotpRoute = LoginValidateotpRouteImport.update({
   id: '/login/validateotp',
   path: '/login/validateotp',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const LoginForgotPasswordRoute = LoginForgotPasswordImport.update({
+const LoginForgotPasswordRoute = LoginForgotPasswordRouteImport.update({
   id: '/login/forgot-password',
   path: '/login/forgot-password',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const LoginCallbackRoute = LoginCallbackImport.update({
+const LoginCallbackRoute = LoginCallbackRouteImport.update({
   id: '/login/callback',
   path: '/login/callback',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AppUserIndexRoute = AppUserIndexImport.update({
+const AppUserIndexRoute = AppUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppTransactionsIndexRoute = AppTransactionsIndexImport.update({
+const AppTransactionsIndexRoute = AppTransactionsIndexRouteImport.update({
   id: '/transactions/',
   path: '/transactions/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppSettingsIndexRoute = AppSettingsIndexImport.update({
+const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppReportsIndexRoute = AppReportsIndexImport.update({
+const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppDashboardIndexRoute = AppDashboardIndexImport.update({
+const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppConnectionsIndexRoute = AppConnectionsIndexImport.update({
+const AppConnectionsIndexRoute = AppConnectionsIndexRouteImport.update({
   id: '/connections/',
   path: '/connections/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppCategoriesIndexRoute = AppCategoriesIndexImport.update({
+const AppCategoriesIndexRoute = AppCategoriesIndexRouteImport.update({
   id: '/categories/',
   path: '/categories/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppAccountsIndexRoute = AppAccountsIndexImport.update({
+const AppAccountsIndexRoute = AppAccountsIndexRouteImport.update({
   id: '/accounts/',
   path: '/accounts/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppToolsMortgageLazyRoute = AppToolsMortgageLazyImport.update({
+const AppToolsMortgageLazyRoute = AppToolsMortgageLazyRouteImport.update({
   id: '/tools/mortgage',
   path: '/tools/mortgage',
   getParentRoute: () => AppRoute,
 } as any).lazy(() =>
   import('./routes/_app/tools/mortgage.lazy').then((d) => d.Route),
 )
-
-const AppToolsLoanLazyRoute = AppToolsLoanLazyImport.update({
+const AppToolsLoanLazyRoute = AppToolsLoanLazyRouteImport.update({
   id: '/tools/loan',
   path: '/tools/loan',
   getParentRoute: () => AppRoute,
 } as any).lazy(() =>
   import('./routes/_app/tools/loan.lazy').then((d) => d.Route),
 )
-
-const AppUserEditRoute = AppUserEditImport.update({
+const AppUserEditRoute = AppUserEditRouteImport.update({
   id: '/user/edit',
   path: '/user/edit',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppTransactionsInboxRoute = AppTransactionsInboxImport.update({
+const AppTransactionsInboxRoute = AppTransactionsInboxRouteImport.update({
   id: '/transactions/inbox',
   path: '/transactions/inbox',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppReportsCashflowRoute = AppReportsCashflowImport.update({
+const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   id: '/reports/cashflow',
   path: '/reports/cashflow',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppConnectionsIdRoute = AppConnectionsIdImport.update({
+const AppConnectionsIdRoute = AppConnectionsIdRouteImport.update({
   id: '/connections/$id',
   path: '/connections/$id',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppCategoriesOldRoute = AppCategoriesOldImport.update({
+const AppCategoriesOldRoute = AppCategoriesOldRouteImport.update({
   id: '/categories/old',
   path: '/categories/old',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppCategoriesNewRoute = AppCategoriesNewImport.update({
+const AppCategoriesNewRoute = AppCategoriesNewRouteImport.update({
   id: '/categories/new',
   path: '/categories/new',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppCategoriesIdRoute = AppCategoriesIdImport.update({
+const AppCategoriesIdRoute = AppCategoriesIdRouteImport.update({
   id: '/categories/$id',
   path: '/categories/$id',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppAccountsNewRoute = AppAccountsNewImport.update({
+const AppAccountsNewRoute = AppAccountsNewRouteImport.update({
   id: '/accounts/new',
   path: '/accounts/new',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppAccountsIdRoute = AppAccountsIdImport.update({
+const AppAccountsIdRoute = AppAccountsIdRouteImport.update({
   id: '/accounts/$id',
   path: '/accounts/$id',
   getParentRoute: () => AppRoute,
 } as any)
-
 const AppSettingsInstitutionsIndexRoute =
-  AppSettingsInstitutionsIndexImport.update({
+  AppSettingsInstitutionsIndexRouteImport.update({
     id: '/settings/institutions/',
     path: '/settings/institutions/',
     getParentRoute: () => AppRoute,
   } as any)
-
-const AppConnectionsConnectIndexRoute = AppConnectionsConnectIndexImport.update(
-  {
+const AppConnectionsConnectIndexRoute =
+  AppConnectionsConnectIndexRouteImport.update({
     id: '/connections/connect/',
     path: '/connections/connect/',
     getParentRoute: () => AppRoute,
-  } as any,
-)
-
-const AppCategoriesRulesIndexRoute = AppCategoriesRulesIndexImport.update({
+  } as any)
+const AppCategoriesRulesIndexRoute = AppCategoriesRulesIndexRouteImport.update({
   id: '/categories/rules/',
   path: '/categories/rules/',
   getParentRoute: () => AppRoute,
 } as any)
-
 const AppConnectionsConnectCallbackRoute =
-  AppConnectionsConnectCallbackImport.update({
+  AppConnectionsConnectCallbackRouteImport.update({
     id: '/connections/connect/callback',
     path: '/connections/connect/callback',
     getParentRoute: () => AppRoute,
   } as any)
-
-const AppCategoriesRulesCreateRoute = AppCategoriesRulesCreateImport.update({
-  id: '/categories/rules/create',
-  path: '/categories/rules/create',
-  getParentRoute: () => AppRoute,
-} as any)
-
-const AppCategoriesIdEditRoute = AppCategoriesIdEditImport.update({
+const AppCategoriesRulesCreateRoute =
+  AppCategoriesRulesCreateRouteImport.update({
+    id: '/categories/rules/create',
+    path: '/categories/rules/create',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCategoriesIdEditRoute = AppCategoriesIdEditRouteImport.update({
   id: '/categories/$id_/edit',
   path: '/categories/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppAccountsIdEditRoute = AppAccountsIdEditImport.update({
+const AppAccountsIdEditRoute = AppAccountsIdEditRouteImport.update({
   id: '/accounts/$id_/edit',
   path: '/accounts/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AppImport
-      parentRoute: typeof rootRoute
-    }
-    '/logout': {
-      id: '/logout'
-      path: '/logout'
-      fullPath: '/logout'
-      preLoaderRoute: typeof LogoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterImport
-      parentRoute: typeof rootRoute
-    }
-    '/userdeleted': {
-      id: '/userdeleted'
-      path: '/userdeleted'
-      fullPath: '/userdeleted'
-      preLoaderRoute: typeof UserdeletedLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/login/callback': {
-      id: '/login/callback'
-      path: '/login/callback'
-      fullPath: '/login/callback'
-      preLoaderRoute: typeof LoginCallbackImport
-      parentRoute: typeof rootRoute
-    }
-    '/login/forgot-password': {
-      id: '/login/forgot-password'
-      path: '/login/forgot-password'
-      fullPath: '/login/forgot-password'
-      preLoaderRoute: typeof LoginForgotPasswordImport
-      parentRoute: typeof rootRoute
-    }
-    '/login/validateotp': {
-      id: '/login/validateotp'
-      path: '/login/validateotp'
-      fullPath: '/login/validateotp'
-      preLoaderRoute: typeof LoginValidateotpImport
-      parentRoute: typeof rootRoute
-    }
-    '/onboarding/register': {
-      id: '/onboarding/register'
-      path: '/onboarding/register'
-      fullPath: '/onboarding/register'
-      preLoaderRoute: typeof OnboardingRegisterImport
-      parentRoute: typeof rootRoute
-    }
-    '/onboarding/waiting_list': {
-      id: '/onboarding/waiting_list'
-      path: '/onboarding/waiting_list'
-      fullPath: '/onboarding/waiting_list'
-      preLoaderRoute: typeof OnboardingWaitinglistImport
-      parentRoute: typeof rootRoute
-    }
-    '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_app/accounts/$id': {
-      id: '/_app/accounts/$id'
-      path: '/accounts/$id'
-      fullPath: '/accounts/$id'
-      preLoaderRoute: typeof AppAccountsIdImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/accounts/new': {
-      id: '/_app/accounts/new'
-      path: '/accounts/new'
-      fullPath: '/accounts/new'
-      preLoaderRoute: typeof AppAccountsNewImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/$id': {
-      id: '/_app/categories/$id'
-      path: '/categories/$id'
-      fullPath: '/categories/$id'
-      preLoaderRoute: typeof AppCategoriesIdImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/new': {
-      id: '/_app/categories/new'
-      path: '/categories/new'
-      fullPath: '/categories/new'
-      preLoaderRoute: typeof AppCategoriesNewImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/old': {
-      id: '/_app/categories/old'
-      path: '/categories/old'
-      fullPath: '/categories/old'
-      preLoaderRoute: typeof AppCategoriesOldImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/connections/$id': {
-      id: '/_app/connections/$id'
-      path: '/connections/$id'
-      fullPath: '/connections/$id'
-      preLoaderRoute: typeof AppConnectionsIdImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/reports/cashflow': {
-      id: '/_app/reports/cashflow'
-      path: '/reports/cashflow'
-      fullPath: '/reports/cashflow'
-      preLoaderRoute: typeof AppReportsCashflowImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/transactions/inbox': {
-      id: '/_app/transactions/inbox'
-      path: '/transactions/inbox'
-      fullPath: '/transactions/inbox'
-      preLoaderRoute: typeof AppTransactionsInboxImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/user/edit': {
-      id: '/_app/user/edit'
-      path: '/user/edit'
-      fullPath: '/user/edit'
-      preLoaderRoute: typeof AppUserEditImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/tools/loan': {
-      id: '/_app/tools/loan'
-      path: '/tools/loan'
-      fullPath: '/tools/loan'
-      preLoaderRoute: typeof AppToolsLoanLazyImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/tools/mortgage': {
-      id: '/_app/tools/mortgage'
-      path: '/tools/mortgage'
-      fullPath: '/tools/mortgage'
-      preLoaderRoute: typeof AppToolsMortgageLazyImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/accounts/': {
-      id: '/_app/accounts/'
-      path: '/accounts'
-      fullPath: '/accounts'
-      preLoaderRoute: typeof AppAccountsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/': {
-      id: '/_app/categories/'
-      path: '/categories'
-      fullPath: '/categories'
-      preLoaderRoute: typeof AppCategoriesIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/connections/': {
-      id: '/_app/connections/'
-      path: '/connections'
-      fullPath: '/connections'
-      preLoaderRoute: typeof AppConnectionsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/dashboard/': {
-      id: '/_app/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/reports/': {
-      id: '/_app/reports/'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof AppReportsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/settings/': {
-      id: '/_app/settings/'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/transactions/': {
-      id: '/_app/transactions/'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof AppTransactionsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/user/': {
-      id: '/_app/user/'
-      path: '/user'
-      fullPath: '/user'
-      preLoaderRoute: typeof AppUserIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/accounts/$id_/edit': {
-      id: '/_app/accounts/$id_/edit'
-      path: '/accounts/$id/edit'
-      fullPath: '/accounts/$id/edit'
-      preLoaderRoute: typeof AppAccountsIdEditImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/$id_/edit': {
-      id: '/_app/categories/$id_/edit'
-      path: '/categories/$id/edit'
-      fullPath: '/categories/$id/edit'
-      preLoaderRoute: typeof AppCategoriesIdEditImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/rules/create': {
-      id: '/_app/categories/rules/create'
-      path: '/categories/rules/create'
-      fullPath: '/categories/rules/create'
-      preLoaderRoute: typeof AppCategoriesRulesCreateImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/connections/connect/callback': {
-      id: '/_app/connections/connect/callback'
-      path: '/connections/connect/callback'
-      fullPath: '/connections/connect/callback'
-      preLoaderRoute: typeof AppConnectionsConnectCallbackImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/categories/rules/': {
-      id: '/_app/categories/rules/'
-      path: '/categories/rules'
-      fullPath: '/categories/rules'
-      preLoaderRoute: typeof AppCategoriesRulesIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/connections/connect/': {
-      id: '/_app/connections/connect/'
-      path: '/connections/connect'
-      fullPath: '/connections/connect'
-      preLoaderRoute: typeof AppConnectionsConnectIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/settings/institutions/': {
-      id: '/_app/settings/institutions/'
-      path: '/settings/institutions'
-      fullPath: '/settings/institutions'
-      preLoaderRoute: typeof AppSettingsInstitutionsIndexImport
-      parentRoute: typeof AppImport
-    }
-  }
-}
-
-// Create and export the route tree
-
-interface AppRouteChildren {
-  AppAccountsIdRoute: typeof AppAccountsIdRoute
-  AppAccountsNewRoute: typeof AppAccountsNewRoute
-  AppCategoriesIdRoute: typeof AppCategoriesIdRoute
-  AppCategoriesNewRoute: typeof AppCategoriesNewRoute
-  AppCategoriesOldRoute: typeof AppCategoriesOldRoute
-  AppConnectionsIdRoute: typeof AppConnectionsIdRoute
-  AppReportsCashflowRoute: typeof AppReportsCashflowRoute
-  AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
-  AppUserEditRoute: typeof AppUserEditRoute
-  AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
-  AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
-  AppAccountsIndexRoute: typeof AppAccountsIndexRoute
-  AppCategoriesIndexRoute: typeof AppCategoriesIndexRoute
-  AppConnectionsIndexRoute: typeof AppConnectionsIndexRoute
-  AppDashboardIndexRoute: typeof AppDashboardIndexRoute
-  AppReportsIndexRoute: typeof AppReportsIndexRoute
-  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
-  AppTransactionsIndexRoute: typeof AppTransactionsIndexRoute
-  AppUserIndexRoute: typeof AppUserIndexRoute
-  AppAccountsIdEditRoute: typeof AppAccountsIdEditRoute
-  AppCategoriesIdEditRoute: typeof AppCategoriesIdEditRoute
-  AppCategoriesRulesCreateRoute: typeof AppCategoriesRulesCreateRoute
-  AppConnectionsConnectCallbackRoute: typeof AppConnectionsConnectCallbackRoute
-  AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
-  AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
-  AppSettingsInstitutionsIndexRoute: typeof AppSettingsInstitutionsIndexRoute
-}
-
-const AppRouteChildren: AppRouteChildren = {
-  AppAccountsIdRoute: AppAccountsIdRoute,
-  AppAccountsNewRoute: AppAccountsNewRoute,
-  AppCategoriesIdRoute: AppCategoriesIdRoute,
-  AppCategoriesNewRoute: AppCategoriesNewRoute,
-  AppCategoriesOldRoute: AppCategoriesOldRoute,
-  AppConnectionsIdRoute: AppConnectionsIdRoute,
-  AppReportsCashflowRoute: AppReportsCashflowRoute,
-  AppTransactionsInboxRoute: AppTransactionsInboxRoute,
-  AppUserEditRoute: AppUserEditRoute,
-  AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
-  AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,
-  AppAccountsIndexRoute: AppAccountsIndexRoute,
-  AppCategoriesIndexRoute: AppCategoriesIndexRoute,
-  AppConnectionsIndexRoute: AppConnectionsIndexRoute,
-  AppDashboardIndexRoute: AppDashboardIndexRoute,
-  AppReportsIndexRoute: AppReportsIndexRoute,
-  AppSettingsIndexRoute: AppSettingsIndexRoute,
-  AppTransactionsIndexRoute: AppTransactionsIndexRoute,
-  AppUserIndexRoute: AppUserIndexRoute,
-  AppAccountsIdEditRoute: AppAccountsIdEditRoute,
-  AppCategoriesIdEditRoute: AppCategoriesIdEditRoute,
-  AppCategoriesRulesCreateRoute: AppCategoriesRulesCreateRoute,
-  AppConnectionsConnectCallbackRoute: AppConnectionsConnectCallbackRoute,
-  AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
-  AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
-  AppSettingsInstitutionsIndexRoute: AppSettingsInstitutionsIndexRoute,
-}
-
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
   '/userdeleted': typeof UserdeletedLazyRoute
@@ -623,7 +254,7 @@ export interface FileRoutesByFullPath {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaitinglistRoute
+  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -652,10 +283,8 @@ export interface FileRoutesByFullPath {
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/settings/institutions': typeof AppSettingsInstitutionsIndexRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
   '/userdeleted': typeof UserdeletedLazyRoute
@@ -663,7 +292,7 @@ export interface FileRoutesByTo {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaitinglistRoute
+  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -692,9 +321,8 @@ export interface FileRoutesByTo {
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/settings/institutions': typeof AppSettingsInstitutionsIndexRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
   '/_app': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
@@ -704,7 +332,7 @@ export interface FileRoutesById {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaitinglistRoute
+  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
@@ -733,12 +361,10 @@ export interface FileRoutesById {
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/settings/institutions/': typeof AppSettingsInstitutionsIndexRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | ''
     | '/logout'
     | '/register'
     | '/userdeleted'
@@ -777,7 +403,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | ''
     | '/logout'
     | '/register'
     | '/userdeleted'
@@ -854,7 +479,6 @@ export interface FileRouteTypes {
     | '/_app/settings/institutions/'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AppRoute: typeof AppRouteWithChildren
@@ -865,9 +489,333 @@ export interface RootRouteChildren {
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
   LoginValidateotpRoute: typeof LoginValidateotpRoute
   OnboardingRegisterRoute: typeof OnboardingRegisterRoute
-  OnboardingWaitinglistRoute: typeof OnboardingWaitinglistRoute
+  OnboardingWaiting_listRoute: typeof OnboardingWaiting_listRoute
   LoginIndexRoute: typeof LoginIndexRoute
 }
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/userdeleted': {
+      id: '/userdeleted'
+      path: '/userdeleted'
+      fullPath: '/userdeleted'
+      preLoaderRoute: typeof UserdeletedLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logout': {
+      id: '/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof LogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/waiting_list': {
+      id: '/onboarding/waiting_list'
+      path: '/onboarding/waiting_list'
+      fullPath: '/onboarding/waiting_list'
+      preLoaderRoute: typeof OnboardingWaiting_listRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/register': {
+      id: '/onboarding/register'
+      path: '/onboarding/register'
+      fullPath: '/onboarding/register'
+      preLoaderRoute: typeof OnboardingRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/validateotp': {
+      id: '/login/validateotp'
+      path: '/login/validateotp'
+      fullPath: '/login/validateotp'
+      preLoaderRoute: typeof LoginValidateotpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/forgot-password': {
+      id: '/login/forgot-password'
+      path: '/login/forgot-password'
+      fullPath: '/login/forgot-password'
+      preLoaderRoute: typeof LoginForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/callback': {
+      id: '/login/callback'
+      path: '/login/callback'
+      fullPath: '/login/callback'
+      preLoaderRoute: typeof LoginCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/user/': {
+      id: '/_app/user/'
+      path: '/user'
+      fullPath: '/user'
+      preLoaderRoute: typeof AppUserIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/transactions/': {
+      id: '/_app/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AppTransactionsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/': {
+      id: '/_app/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/reports/': {
+      id: '/_app/reports/'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AppReportsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard/': {
+      id: '/_app/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/connections/': {
+      id: '/_app/connections/'
+      path: '/connections'
+      fullPath: '/connections'
+      preLoaderRoute: typeof AppConnectionsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/': {
+      id: '/_app/categories/'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof AppCategoriesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/accounts/': {
+      id: '/_app/accounts/'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof AppAccountsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tools/mortgage': {
+      id: '/_app/tools/mortgage'
+      path: '/tools/mortgage'
+      fullPath: '/tools/mortgage'
+      preLoaderRoute: typeof AppToolsMortgageLazyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tools/loan': {
+      id: '/_app/tools/loan'
+      path: '/tools/loan'
+      fullPath: '/tools/loan'
+      preLoaderRoute: typeof AppToolsLoanLazyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/user/edit': {
+      id: '/_app/user/edit'
+      path: '/user/edit'
+      fullPath: '/user/edit'
+      preLoaderRoute: typeof AppUserEditRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/transactions/inbox': {
+      id: '/_app/transactions/inbox'
+      path: '/transactions/inbox'
+      fullPath: '/transactions/inbox'
+      preLoaderRoute: typeof AppTransactionsInboxRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/reports/cashflow': {
+      id: '/_app/reports/cashflow'
+      path: '/reports/cashflow'
+      fullPath: '/reports/cashflow'
+      preLoaderRoute: typeof AppReportsCashflowRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/connections/$id': {
+      id: '/_app/connections/$id'
+      path: '/connections/$id'
+      fullPath: '/connections/$id'
+      preLoaderRoute: typeof AppConnectionsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/old': {
+      id: '/_app/categories/old'
+      path: '/categories/old'
+      fullPath: '/categories/old'
+      preLoaderRoute: typeof AppCategoriesOldRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/new': {
+      id: '/_app/categories/new'
+      path: '/categories/new'
+      fullPath: '/categories/new'
+      preLoaderRoute: typeof AppCategoriesNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/$id': {
+      id: '/_app/categories/$id'
+      path: '/categories/$id'
+      fullPath: '/categories/$id'
+      preLoaderRoute: typeof AppCategoriesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/accounts/new': {
+      id: '/_app/accounts/new'
+      path: '/accounts/new'
+      fullPath: '/accounts/new'
+      preLoaderRoute: typeof AppAccountsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/accounts/$id': {
+      id: '/_app/accounts/$id'
+      path: '/accounts/$id'
+      fullPath: '/accounts/$id'
+      preLoaderRoute: typeof AppAccountsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/institutions/': {
+      id: '/_app/settings/institutions/'
+      path: '/settings/institutions'
+      fullPath: '/settings/institutions'
+      preLoaderRoute: typeof AppSettingsInstitutionsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/connections/connect/': {
+      id: '/_app/connections/connect/'
+      path: '/connections/connect'
+      fullPath: '/connections/connect'
+      preLoaderRoute: typeof AppConnectionsConnectIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/rules/': {
+      id: '/_app/categories/rules/'
+      path: '/categories/rules'
+      fullPath: '/categories/rules'
+      preLoaderRoute: typeof AppCategoriesRulesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/connections/connect/callback': {
+      id: '/_app/connections/connect/callback'
+      path: '/connections/connect/callback'
+      fullPath: '/connections/connect/callback'
+      preLoaderRoute: typeof AppConnectionsConnectCallbackRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/rules/create': {
+      id: '/_app/categories/rules/create'
+      path: '/categories/rules/create'
+      fullPath: '/categories/rules/create'
+      preLoaderRoute: typeof AppCategoriesRulesCreateRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/$id_/edit': {
+      id: '/_app/categories/$id_/edit'
+      path: '/categories/$id/edit'
+      fullPath: '/categories/$id/edit'
+      preLoaderRoute: typeof AppCategoriesIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/accounts/$id_/edit': {
+      id: '/_app/accounts/$id_/edit'
+      path: '/accounts/$id/edit'
+      fullPath: '/accounts/$id/edit'
+      preLoaderRoute: typeof AppAccountsIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
+  }
+}
+
+interface AppRouteChildren {
+  AppAccountsIdRoute: typeof AppAccountsIdRoute
+  AppAccountsNewRoute: typeof AppAccountsNewRoute
+  AppCategoriesIdRoute: typeof AppCategoriesIdRoute
+  AppCategoriesNewRoute: typeof AppCategoriesNewRoute
+  AppCategoriesOldRoute: typeof AppCategoriesOldRoute
+  AppConnectionsIdRoute: typeof AppConnectionsIdRoute
+  AppReportsCashflowRoute: typeof AppReportsCashflowRoute
+  AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
+  AppUserEditRoute: typeof AppUserEditRoute
+  AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
+  AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
+  AppAccountsIndexRoute: typeof AppAccountsIndexRoute
+  AppCategoriesIndexRoute: typeof AppCategoriesIndexRoute
+  AppConnectionsIndexRoute: typeof AppConnectionsIndexRoute
+  AppDashboardIndexRoute: typeof AppDashboardIndexRoute
+  AppReportsIndexRoute: typeof AppReportsIndexRoute
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+  AppTransactionsIndexRoute: typeof AppTransactionsIndexRoute
+  AppUserIndexRoute: typeof AppUserIndexRoute
+  AppAccountsIdEditRoute: typeof AppAccountsIdEditRoute
+  AppCategoriesIdEditRoute: typeof AppCategoriesIdEditRoute
+  AppCategoriesRulesCreateRoute: typeof AppCategoriesRulesCreateRoute
+  AppConnectionsConnectCallbackRoute: typeof AppConnectionsConnectCallbackRoute
+  AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
+  AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
+  AppSettingsInstitutionsIndexRoute: typeof AppSettingsInstitutionsIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAccountsIdRoute: AppAccountsIdRoute,
+  AppAccountsNewRoute: AppAccountsNewRoute,
+  AppCategoriesIdRoute: AppCategoriesIdRoute,
+  AppCategoriesNewRoute: AppCategoriesNewRoute,
+  AppCategoriesOldRoute: AppCategoriesOldRoute,
+  AppConnectionsIdRoute: AppConnectionsIdRoute,
+  AppReportsCashflowRoute: AppReportsCashflowRoute,
+  AppTransactionsInboxRoute: AppTransactionsInboxRoute,
+  AppUserEditRoute: AppUserEditRoute,
+  AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
+  AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,
+  AppAccountsIndexRoute: AppAccountsIndexRoute,
+  AppCategoriesIndexRoute: AppCategoriesIndexRoute,
+  AppConnectionsIndexRoute: AppConnectionsIndexRoute,
+  AppDashboardIndexRoute: AppDashboardIndexRoute,
+  AppReportsIndexRoute: AppReportsIndexRoute,
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
+  AppTransactionsIndexRoute: AppTransactionsIndexRoute,
+  AppUserIndexRoute: AppUserIndexRoute,
+  AppAccountsIdEditRoute: AppAccountsIdEditRoute,
+  AppCategoriesIdEditRoute: AppCategoriesIdEditRoute,
+  AppCategoriesRulesCreateRoute: AppCategoriesRulesCreateRoute,
+  AppConnectionsConnectCallbackRoute: AppConnectionsConnectCallbackRoute,
+  AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
+  AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
+  AppSettingsInstitutionsIndexRoute: AppSettingsInstitutionsIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
@@ -879,198 +827,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,
   LoginValidateotpRoute: LoginValidateotpRoute,
   OnboardingRegisterRoute: OnboardingRegisterRoute,
-  OnboardingWaitinglistRoute: OnboardingWaitinglistRoute,
+  OnboardingWaiting_listRoute: OnboardingWaiting_listRoute,
   LoginIndexRoute: LoginIndexRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/_app",
-        "/logout",
-        "/register",
-        "/userdeleted",
-        "/login/callback",
-        "/login/forgot-password",
-        "/login/validateotp",
-        "/onboarding/register",
-        "/onboarding/waiting_list",
-        "/login/"
-      ]
-    },
-    "/": {
-      "filePath": "index.lazy.tsx"
-    },
-    "/_app": {
-      "filePath": "_app.tsx",
-      "children": [
-        "/_app/accounts/$id",
-        "/_app/accounts/new",
-        "/_app/categories/$id",
-        "/_app/categories/new",
-        "/_app/categories/old",
-        "/_app/connections/$id",
-        "/_app/reports/cashflow",
-        "/_app/transactions/inbox",
-        "/_app/user/edit",
-        "/_app/tools/loan",
-        "/_app/tools/mortgage",
-        "/_app/accounts/",
-        "/_app/categories/",
-        "/_app/connections/",
-        "/_app/dashboard/",
-        "/_app/reports/",
-        "/_app/settings/",
-        "/_app/transactions/",
-        "/_app/user/",
-        "/_app/accounts/$id_/edit",
-        "/_app/categories/$id_/edit",
-        "/_app/categories/rules/create",
-        "/_app/connections/connect/callback",
-        "/_app/categories/rules/",
-        "/_app/connections/connect/",
-        "/_app/settings/institutions/"
-      ]
-    },
-    "/logout": {
-      "filePath": "logout.tsx"
-    },
-    "/register": {
-      "filePath": "register.tsx"
-    },
-    "/userdeleted": {
-      "filePath": "userdeleted.lazy.tsx"
-    },
-    "/login/callback": {
-      "filePath": "login/callback.tsx"
-    },
-    "/login/forgot-password": {
-      "filePath": "login/forgot-password.tsx"
-    },
-    "/login/validateotp": {
-      "filePath": "login/validateotp.tsx"
-    },
-    "/onboarding/register": {
-      "filePath": "onboarding/register.tsx"
-    },
-    "/onboarding/waiting_list": {
-      "filePath": "onboarding/waiting_list.tsx"
-    },
-    "/login/": {
-      "filePath": "login/index.tsx"
-    },
-    "/_app/accounts/$id": {
-      "filePath": "_app/accounts/$id.tsx",
-      "parent": "/_app"
-    },
-    "/_app/accounts/new": {
-      "filePath": "_app/accounts/new.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/$id": {
-      "filePath": "_app/categories/$id.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/new": {
-      "filePath": "_app/categories/new.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/old": {
-      "filePath": "_app/categories/old.tsx",
-      "parent": "/_app"
-    },
-    "/_app/connections/$id": {
-      "filePath": "_app/connections/$id.tsx",
-      "parent": "/_app"
-    },
-    "/_app/reports/cashflow": {
-      "filePath": "_app/reports/cashflow.tsx",
-      "parent": "/_app"
-    },
-    "/_app/transactions/inbox": {
-      "filePath": "_app/transactions/inbox.tsx",
-      "parent": "/_app"
-    },
-    "/_app/user/edit": {
-      "filePath": "_app/user/edit.tsx",
-      "parent": "/_app"
-    },
-    "/_app/tools/loan": {
-      "filePath": "_app/tools/loan.lazy.tsx",
-      "parent": "/_app"
-    },
-    "/_app/tools/mortgage": {
-      "filePath": "_app/tools/mortgage.lazy.tsx",
-      "parent": "/_app"
-    },
-    "/_app/accounts/": {
-      "filePath": "_app/accounts/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/": {
-      "filePath": "_app/categories/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/connections/": {
-      "filePath": "_app/connections/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/dashboard/": {
-      "filePath": "_app/dashboard/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/reports/": {
-      "filePath": "_app/reports/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/": {
-      "filePath": "_app/settings/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/transactions/": {
-      "filePath": "_app/transactions/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/user/": {
-      "filePath": "_app/user/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/accounts/$id_/edit": {
-      "filePath": "_app/accounts/$id_.edit.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/$id_/edit": {
-      "filePath": "_app/categories/$id_.edit.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/rules/create": {
-      "filePath": "_app/categories/rules/create.tsx",
-      "parent": "/_app"
-    },
-    "/_app/connections/connect/callback": {
-      "filePath": "_app/connections/connect/callback.tsx",
-      "parent": "/_app"
-    },
-    "/_app/categories/rules/": {
-      "filePath": "_app/categories/rules/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/connections/connect/": {
-      "filePath": "_app/connections/connect/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/institutions/": {
-      "filePath": "_app/settings/institutions/index.tsx",
-      "parent": "/_app"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
