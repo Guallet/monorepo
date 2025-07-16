@@ -13,7 +13,7 @@ export function CalendarDateRangePicker({
   startDate,
   endDate,
   onRangeChanged,
-}: IProps) {
+}: Readonly<IProps>) {
   return (
     <Stack>
       <Group>
@@ -50,8 +50,8 @@ export function CalendarDateRangePicker({
         value={[startDate ?? null, endDate ?? null]}
         onChange={(x) => {
           onRangeChanged({
-            startDate: new Date(x[0]),
-            endDate: new Date(x[1]),
+            startDate: x[0] ? new Date(x[0]) : null,
+            endDate: x[1] ? new Date(x[1]) : null,
           });
         }}
       />
