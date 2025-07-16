@@ -3,7 +3,7 @@ export default {
   output: "public/locales/$LOCALE/$NAMESPACE.json", // Output path for the translation files
   defaultNamespace: "translation",
   createOldCatalogs: false, // Save previous translations to the \_old files
-  keepRemoved: [/app.accounts.accountType.*/], // Keep removed keys in the translation files
+  keepRemoved: [/feature.accounts.accountType.*/], // Keep removed keys in the translation files
   lexers: {
     js: ["JsxLexer"], // Use JsxLexer for JavaScript files
     ts: ["JsxLexer"], // Use JsxLexer for TypeScript files

@@ -1,15 +1,22 @@
 {
-  "app": {
+  "feature": {
     "accounts": {
       "accountType": {
-        "currentAccounts": "Cuentas corrientes",
-        "creditCards": "Tarjetas de crédito",
-        "investmentAccounts": "Cuentas de inversión",
-        "loans": "Prestamos",
+        "currentAccounts": "Cuentas Corrientes",
+        "creditCards": "Tarjetas de Crédito",
+        "investmentAccounts": "Cuentas de Inversión",
+        "loans": "Préstamos",
         "mortgages": "Hipotecas",
         "pensions": "Pensiones",
-        "savingsAccounts": "Cuentas de ahorro",
-        "unknown": "Otros"
+        "savingsAccounts": "Cuentas de Ahorro",
+        "unknown": "Otros",
+        "currentAccount": "Cuenta Corriente",
+        "creditCard": "Tarjeta de Crédito",
+        "investment": "Cuenta de Inversión",
+        "loan": "Préstamo",
+        "mortgage": "Hipoteca",
+        "pension": "Pensión",
+        "savingsAccount": "Cuenta de Ahorro"
       }
     }
   },

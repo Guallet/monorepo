@@ -51,51 +51,63 @@ export function getAccountTypeTitle(type: AccountTypeDto): string {
   switch (type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
       return i118n.t(
-        "app.accounts.accountType.currentAccounts",
+        "feature.accounts.accountType.currentAccounts",
         "Current Accounts"
       );
     case AccountTypeDto.CREDIT_CARD:
-      return i118n.t("app.accounts.accountType.creditCards", "Credit Cards");
+      return i118n.t(
+        "feature.accounts.accountType.creditCards",
+        "Credit Cards"
+      );
     case AccountTypeDto.INVESTMENT:
       return i118n.t(
-        "app.accounts.accountType.investmentAccounts",
+        "feature.accounts.accountType.investmentAccounts",
         "Investment Accounts"
       );
     case AccountTypeDto.LOAN:
-      return i118n.t("app.accounts.accountType.loans", "Loans");
+      return i118n.t("feature.accounts.accountType.loans", "Loans");
     case AccountTypeDto.MORTGAGE:
-      return i118n.t("app.accounts.accountType.mortgages", "Mortgages");
+      return i118n.t("feature.accounts.accountType.mortgages", "Mortgages");
     case AccountTypeDto.PENSION:
-      return i118n.t("app.accounts.accountType.pensions", "Pensions");
+      return i118n.t("feature.accounts.accountType.pensions", "Pensions");
     case AccountTypeDto.SAVINGS:
       return i118n.t(
-        "app.accounts.accountType.savingsAccounts",
+        "feature.accounts.accountType.savingsAccounts",
         "Savings Accounts"
       );
 
     default:
-      return i118n.t("app.accounts.accountType.unknown", "Other");
+      return i118n.t("feature.accounts.accountType.unknown", "Other");
   }
 }
 
 export function getAccountTypeTitleSingular(type: AccountTypeDto): string {
   switch (type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
-      return "Current Account";
+      return i118n.t(
+        "feature.accounts.accountType.currentAccount",
+        "Current Account"
+      );
     case AccountTypeDto.CREDIT_CARD:
-      return "Credit card";
+      return i118n.t("feature.accounts.accountType.creditCard", "Credit Card");
     case AccountTypeDto.INVESTMENT:
-      return "Investment account";
+      return i118n.t(
+        "feature.accounts.accountType.investment",
+        "Investments Account"
+      );
     case AccountTypeDto.LOAN:
-      return "Loan";
+      return i118n.t("feature.accounts.accountType.loan", "Loan");
     case AccountTypeDto.MORTGAGE:
-      return "Mortgage";
+      return i118n.t("feature.accounts.accountType.mortgage", "Mortgage");
     case AccountTypeDto.PENSION:
-      return "Pension";
+      return i118n.t("feature.accounts.accountType.pension", "Pension");
     case AccountTypeDto.SAVINGS:
-      return "Saving account";
+      return i118n.t(
+        "feature.accounts.accountType.savingsAccount",
+        "Savings Account"
+      );
 
     default:
-      return "Other";
+      return i118n.t("feature.accounts.accountType.unknown", "Other");
   }
 }

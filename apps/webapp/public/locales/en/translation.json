@@ -1,5 +1,5 @@
 {
-  "app": {
+  "feature": {
     "accounts": {
       "accountType": {
         "currentAccounts": "Current Accounts",
@@ -9,7 +9,14 @@
         "mortgages": "Mortgages",
         "pensions": "Pensions",
         "savingsAccounts": "Savings Accounts",
-        "unknown": "Other"
+        "unknown": "Other",
+        "currentAccount": "Current Account",
+        "creditCard": "Credit Card",
+        "investment": "Investments Account",
+        "loan": "Loan",
+        "mortgage": "Mortgage",
+        "pension": "Pension",
+        "savingsAccount": "Savings Account"
       }
     }
   },
