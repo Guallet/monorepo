@@ -9,7 +9,9 @@ export interface Section<T> {
 
 interface SearchableSectionLisProps<T> {
   data: Section<T>[];
-  sectionWrapperTemplate?: (children: React.ReactNode) => React.ReactNode;
+  sectionWrapperTemplate?: (
+    children: React.ReactNode
+  ) => React.ReactNode | null;
   sectionHeaderTemplate: (section: Section<T>) => React.ReactNode;
   itemTemplate: (item: T, index: number) => React.ReactNode;
   emptyView?: React.ReactNode;
@@ -18,7 +20,7 @@ interface SearchableSectionLisProps<T> {
 
 export function SearchableSectionListView<T>({
   data,
-  sectionWrapperTemplate = null,
+  sectionWrapperTemplate,
   sectionHeaderTemplate,
   itemTemplate,
   emptyView,
@@ -59,18 +61,15 @@ export function SearchableSectionListView<T>({
       {filteredData.length === 0 && (emptyView || <DefaultEmptyView />)}
       {filteredData.map((section) => (
         <Stack key={section.title}>
+          {sectionHeaderTemplate(section)}
           {sectionWrapperTemplate ? (
             sectionWrapperTemplate(
               <>
-                {sectionHeaderTemplate(section)}
                 {section.data.map((item, index) => itemTemplate(item, index))}
               </>
             )
           ) : (
-            <>
-              {sectionHeaderTemplate(section)}
-              {section.data.map((item, index) => itemTemplate(item, index))}
-            </>
+            <>{section.data.map((item, index) => itemTemplate(item, index))}</>
           )}
         </Stack>
       ))}
