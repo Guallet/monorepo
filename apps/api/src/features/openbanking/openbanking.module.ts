@@ -16,10 +16,12 @@ import { ObAccountsController } from './ObAccounts.controller';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { SyncService } from './sync.service';
 import { ObASyncController } from './ObSync.controller';
+import { StorageModule } from 'src/storage/storage.module';
 
 @Module({
   imports: [
     HttpModule,
+    StorageModule,
     NordigenModule,
     InstitutionsModule,
     TypeOrmModule.forFeature([

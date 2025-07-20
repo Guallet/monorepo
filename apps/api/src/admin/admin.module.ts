@@ -16,10 +16,12 @@ import { NordigenAccount } from 'src/features/openbanking/entities/nordigen-acco
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { OpenbankingService } from 'src/features/openbanking/openbanking.service';
 import { NordigenAccountRepository } from 'src/features/openbanking/repositories/nordigen-account.repository';
+import { StorageModule } from 'src/storage/storage.module';
 
 @Module({
   imports: [
     HttpModule,
+    StorageModule,
     NordigenModule,
     InstitutionsModule,
     OpenbankingModule,

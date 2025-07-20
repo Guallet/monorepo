@@ -24,6 +24,7 @@ import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
 import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import * as Joi from 'joi';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -40,13 +41,15 @@ import * as Joi from 'joi';
         DATABASE_URL: Joi.string().required(),
         NORDIGEN_SECRET_ID: Joi.string().required(),
         NORDIGEN_SECRET_KEY: Joi.string().required(),
+        SUPABASE_URL: Joi.string().required(),
+        SUPABASE_KEY: Joi.string().required(),
       }),
     }),
     // LOGGING
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
+      useFactory: (config: ConfigService) => {
         return {
           exclude: [{ method: RequestMethod.POST, path: '/graphql' }],
           pinoHttp: {
@@ -75,6 +78,8 @@ import * as Joi from 'joi';
     }),
     // CRON
     ScheduleModule.forRoot(),
+    // STORAGE
+    StorageModule,
     // APP MODULES
     UsersModule,
     InstitutionsModule,

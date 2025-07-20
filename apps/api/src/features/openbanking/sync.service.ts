@@ -16,6 +16,9 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { InstitutionsService } from 'src/features/institutions/institutions.service';
 import { NordigenInstitutionDto } from 'src/features/nordigen/dto/nordigen-institution.dto';
 import { Institution } from 'src/features/institutions/entities/institution.entity';
+import { StorageService } from 'src/storage/storage.service';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
@@ -23,36 +26,36 @@ const CRON_JOB_TIMEZONE = 'Europe/London';
 
 // Refactor this. Maybe saved in the DB?
 export const supportedCountries = [
-  'AT', // Austria
-  'BE', // Belgium
-  'BG', // Bulgaria
-  'HR', // Croatia
-  'CY', // Cyprus
-  'CZ', //Czechia
-  'DK', //Denmark
-  'EE', //Estonia
-  'FI', //Finland
-  'FR', //France
-  'DE', //Germany
-  'GR', //Greece
-  'HU', //Hungary
-  'IS', //Iceland
-  'IE', //Ireland
-  'IT', //Italy
-  'LV', //Latvia
-  'LI', //Liechtenstein
-  'LT', //Lithuania
-  'LU', //Luxembourg
-  'MT', //Malta
-  'NL', //Netherlands
-  'NO', //Norway
-  'PL', //Poland
-  'PT', //Portugal
-  'RO', //Romania
-  'SK', //Slovakia
-  'SI', //Slovenia
-  'ES', //Spain
-  'SE', //Sweden
+  // 'AT', // Austria
+  // 'BE', // Belgium
+  // 'BG', // Bulgaria
+  // 'HR', // Croatia
+  // 'CY', // Cyprus
+  // 'CZ', //Czechia
+  // 'DK', //Denmark
+  // 'EE', //Estonia
+  // 'FI', //Finland
+  // 'FR', //France
+  // 'DE', //Germany
+  // 'GR', //Greece
+  // 'HU', //Hungary
+  // 'IS', //Iceland
+  // 'IE', //Ireland
+  // 'IT', //Italy
+  // 'LV', //Latvia
+  // 'LI', //Liechtenstein
+  // 'LT', //Lithuania
+  // 'LU', //Luxembourg
+  // 'MT', //Malta
+  // 'NL', //Netherlands
+  // 'NO', //Norway
+  // 'PL', //Poland
+  // 'PT', //Portugal
+  // 'RO', //Romania
+  // 'SK', //Slovakia
+  // 'SI', //Slovenia
+  // 'ES', //Spain
+  // 'SE', //Sweden
   'GB', //United Kingdom
 ];
 
@@ -74,6 +77,8 @@ export class SyncService {
     private readonly transactionsRepository: Repository<Transaction>,
     private readonly nordigenService: NordigenService,
     private readonly institutionsService: InstitutionsService,
+    private readonly storageService: StorageService,
+    private readonly httpService: HttpService,
   ) {}
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
@@ -91,17 +96,27 @@ export class SyncService {
         `Syncing Open Banking institutions for country: ${country}`,
       );
       const institutions = await this.nordigenService.getInstitutions(country);
-      const entities = institutions.map((x: NordigenInstitutionDto) => {
-        const bank = new Institution();
-        bank.nordigen_id = x.id;
-        bank.name = x.name;
-        bank.image_src = x.logo;
-        bank.countries = x.countries;
+      const allPromises = institutions.map(
+        async (x: NordigenInstitutionDto) => {
+          const bank = new Institution();
 
-        return bank;
-      });
+          const logoUrl = await this.saveImage(
+            x.logo,
+            'institutions/' + x.id + '.png',
+          );
+
+          bank.nordigen_id = x.id;
+          bank.name = x.name;
+          bank.image_src = logoUrl;
+          bank.countries = x.countries;
+
+          return bank;
+        },
+      );
+      const entities = await Promise.all(allPromises);
       await this.institutionsService.saveAll(entities);
     }
+
     this.logger.log('Syncing Open Banking institutions completed');
   }
 
@@ -111,7 +126,7 @@ export class SyncService {
   })
   syncAccountsCronJob() {
     this.logger.log('Syncing accounts via cron job');
-    this.syncConnectedAccounts();
+    void this.syncConnectedAccounts();
   }
 
   async syncConnectedAccounts(): Promise<SyncAccountsResult> {
@@ -346,6 +361,35 @@ export class SyncService {
         `Error refreshing Nordigen Account Transactions: ${account.id}`,
         error,
       );
+      throw error;
+    }
+  }
+
+  private async saveImage(
+    remoteUrl: string,
+    localPath: string,
+  ): Promise<string> {
+    try {
+      this.logger.log(
+        `Saving image from URL: ${remoteUrl} into path: ${localPath}`,
+      );
+
+      const response = await firstValueFrom(this.httpService.get(remoteUrl));
+      if (response.status !== 200) {
+        this.logger.error(
+          `Failed to fetch image from URL: ${remoteUrl}, status: ${response.status}`,
+        );
+        throw new BadGatewayException(
+          `Failed to fetch image from URL: ${remoteUrl}`,
+        );
+      }
+      const imageBuffer = response.data;
+
+      // Save the image to the storage service
+      await this.storageService.saveImage(imageBuffer, localPath);
+      return '';
+    } catch (error) {
+      this.logger.error(`Error saving image from URL: ${remoteUrl}`, error);
       throw error;
     }
   }

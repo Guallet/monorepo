@@ -10,4 +10,8 @@ export default () => ({
     clientId: process.env.NORDIGEN_CLIENT_ID,
     clientSecret: process.env.NORDIGEN_CLIENT_SECRET,
   },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+  },
 });
