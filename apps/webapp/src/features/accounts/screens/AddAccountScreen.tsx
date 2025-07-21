@@ -106,12 +106,9 @@ export function AddAccountScreen() {
       <form onSubmit={form.onSubmit(onFormSubmit)}>
         <Stack>
           <AppSection title="Create new account">
-            <Stack
-              style={{
-                margin: "auto",
-              }}
-            >
+            <Stack>
               <TextInput
+                required
                 label="Account name"
                 placeholder="Enter account name"
                 {...form.getInputProps("name")}
