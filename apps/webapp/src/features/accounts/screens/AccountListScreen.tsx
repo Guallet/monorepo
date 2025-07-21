@@ -1,16 +1,47 @@
 import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { AccountDto } from "@guallet/api-client";
+import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
 import {
   SearchableSectionListView,
   Section,
 } from "@guallet/ui-react/ListView/SearchableSectionListView";
-import { Stack, Button, Text, Card, Divider } from "@mantine/core";
+import { Stack, Button, Text, Card } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { AccountRow } from "../components/AccountRow";
 import { AccountsListHeader } from "../components/AccountsListHeader";
+
+// We want the Current accounts first, then credit cards, then alphabetically, and last the unknown accounts
+const compareAccountTypes = (
+  a: Section<AccountDto>,
+  b: Section<AccountDto>
+) => {
+  const typeA = a.data[0].type;
+  const typeB = b.data[0].type;
+
+  if (typeA === typeB) {
+    return 0;
+  }
+
+  if (typeA === AccountTypeDto.UNKNOWN) {
+    return 1;
+  }
+
+  if (typeB === AccountTypeDto.UNKNOWN) {
+    return -1;
+  }
+
+  if (typeA === AccountTypeDto.CURRENT_ACCOUNT) {
+    return -1;
+  }
+
+  if (typeB === AccountTypeDto.CURRENT_ACCOUNT) {
+    return 1;
+  }
+
+  return typeA.localeCompare(typeB);
+};
 
 export function AccountListScreen() {
   const { t } = useTranslation();
@@ -27,6 +58,7 @@ export function AccountListScreen() {
       title: type,
       data: accounts,
     }));
+    groups.sort(compareAccountTypes);
     return groups;
   }, [accounts, isLoading]);
 
