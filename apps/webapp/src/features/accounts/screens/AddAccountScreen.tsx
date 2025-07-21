@@ -15,7 +15,7 @@ import {
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { IconChevronDown } from "@tabler/icons-react";
-import { Route, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { getAccountTypeTitleSingular } from "../models/Account";
