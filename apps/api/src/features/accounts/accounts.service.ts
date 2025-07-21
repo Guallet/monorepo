@@ -50,6 +50,23 @@ export class AccountsService {
   }): Promise<Account> {
     const { user_id, dto } = args;
 
+    // Depending on the account type, the balance would be negative or positive
+    if (dto.initial_balance) {
+      switch (dto.type as AccountType) {
+        case AccountType.CREDIT_CARD:
+        case AccountType.LOAN:
+        case AccountType.MORTGAGE:
+          // If balance is positive, flip the sign
+          // because credit cards and loans are negative balances
+          // (you owe money)
+          dto.initial_balance = -Math.abs(dto.initial_balance);
+          break;
+        default:
+          // NO-OP
+          break;
+      }
+    }
+
     return await this.repository.save({
       user_id: user_id,
       name: dto.name,
