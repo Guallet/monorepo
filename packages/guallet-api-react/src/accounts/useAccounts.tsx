@@ -1,6 +1,7 @@
-import { AccountDto } from "@guallet/api-client";
+import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
+import { useMemo } from "react";
 
 const ACCOUNTS_QUERY_KEY = "accounts";
 
@@ -21,6 +22,25 @@ export function useAccounts() {
   };
 }
 
+export function useGroupedAccounts() {
+  const { accounts, ...rest } = useAccounts();
+
+  const groupedAccounts = useMemo(() => {
+    const grouped = Object.groupBy(accounts, (account) => account.type);
+    const groups = Object.entries(grouped).map(([type, accounts]) => ({
+      type,
+      accounts,
+    }));
+    groups.sort(compareAccountTypes);
+    return groups;
+  }, [accounts]);
+
+  return {
+    accounts: groupedAccounts,
+    ...rest,
+  };
+}
+
 export function useAccount(id: string) {
   const gualletClient = useGualletClient();
 
@@ -36,3 +56,33 @@ export function useAccount(id: string) {
     ...query,
   };
 }
+
+const compareAccountTypes = (
+  a: { type: string; accounts: AccountDto[] },
+  b: { type: string; accounts: AccountDto[] }
+) => {
+  const typeA = a.type;
+  const typeB = b.type;
+
+  if (typeA === typeB) {
+    return 0;
+  }
+
+  if (typeA === AccountTypeDto.UNKNOWN) {
+    return 1;
+  }
+
+  if (typeB === AccountTypeDto.UNKNOWN) {
+    return -1;
+  }
+
+  if (typeA === AccountTypeDto.CURRENT_ACCOUNT) {
+    return -1;
+  }
+
+  if (typeB === AccountTypeDto.CURRENT_ACCOUNT) {
+    return 1;
+  }
+
+  return typeA.localeCompare(typeB);
+};
