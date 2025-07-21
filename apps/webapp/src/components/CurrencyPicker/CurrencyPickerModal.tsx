@@ -8,10 +8,10 @@ import {
   Button,
   Text,
   Flex,
-  Box,
 } from "@mantine/core";
 import { useState, useEffect } from "react";
 import classes from "./CurrencyPicker.module.css";
+import { useMediaQuery } from "@mantine/hooks";
 
 const currencyCodes = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -28,6 +28,7 @@ export function CurrencyPickerModal({
   onCurrencySelected,
   onCancel,
 }: Readonly<CurrencyPickerModalProps>) {
+  const isMobile = useMediaQuery("(max-width: 50em)");
   const [query, setQuery] = useState("");
   const [filteredCurrencies, setFilteredCurrencies] =
     useState<Currency[]>(currencyCodes);
@@ -43,27 +44,15 @@ export function CurrencyPickerModal({
     }
   }, [query]);
 
-  //   return (
-  //     <Flex
-  //       align="stretch"
-  //       justify="center"
-  //       direction="column"
-  //       gap={"md"}
-  //       style={{ background: "pink", height: "100%" }}
-  //     >
-  //       <Box h={50} style={{ background: "red" }} />
-  //       <Box h={50} style={{ flexGrow: 1, background: "green" }} />
-  //       <Box h={50} style={{ background: "yellow" }} />
-  //     </Flex>
-  //   );
-
   return (
     <Flex
       align="stretch"
       justify="center"
       direction="column"
-      gap={"md"}
-      style={{ height: "100%" }}
+      gap="sm"
+      style={{
+        height: isMobile ? "calc(100dvh - 80px)" : "400px",
+      }}
     >
       <SearchBoxInput
         query={query}
@@ -71,11 +60,7 @@ export function CurrencyPickerModal({
           setQuery(newQuery);
         }}
       />
-      <ScrollArea
-        type="scroll"
-        scrollbars="y"
-        style={{ flex: 1, minHeight: 0 }}
-      >
+      <ScrollArea type="scroll" scrollbars="y" style={{ flex: 1 }}>
         {filteredCurrencies.length === 0 && <Text>No currencies found</Text>}
         {filteredCurrencies.map((currency) => (
           <Group grow key={currency.code}>

@@ -1,5 +1,5 @@
 import { Currency } from "@guallet/money";
-import { Box, Input, InputWrapperProps, Modal } from "@mantine/core";
+import { Input, InputWrapperProps, Modal } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { IconSelector } from "@tabler/icons-react";
 import { CurrencyPickerModal } from "./CurrencyPickerModal";
