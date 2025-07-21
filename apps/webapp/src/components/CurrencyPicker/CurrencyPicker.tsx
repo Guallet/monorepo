@@ -1,26 +1,12 @@
-import { Currency, ISO4217Currencies } from "@guallet/money";
-import { SearchBoxInput } from "@guallet/ui-react";
-import {
-  Box,
-  Button,
-  Grid,
-  Group,
-  Input,
-  InputWrapperProps,
-  Modal,
-  ScrollArea,
-  Stack,
-  Text,
-  UnstyledButton,
-} from "@mantine/core";
+import { Currency } from "@guallet/money";
+import { Box, Input, InputWrapperProps, Modal } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { IconSelector } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import classes from "./CurrencyPicker.module.css";
+import { CurrencyPickerModal } from "./CurrencyPickerModal";
 
 interface CurrencyPickerProps extends InputWrapperProps {
-  value: string;
-  onValueChanged: (value: string) => void;
+  value: string | null;
+  onValueChanged: (value: string | null) => void;
   name: string | undefined;
 }
 
@@ -29,11 +15,11 @@ export function CurrencyPicker({
   onValueChanged,
   name,
   ...props
-}: CurrencyPickerProps) {
+}: Readonly<CurrencyPickerProps>) {
   const isMobile = useMediaQuery("(max-width: 50em)");
   const [opened, { open, close }] = useDisclosure(false);
 
-  const currency = Currency.fromISOCode(value);
+  const currency = value ? Currency.fromISOCode(value) : null;
 
   return (
     <>
@@ -42,6 +28,11 @@ export function CurrencyPicker({
         fullScreen={isMobile}
         onClose={close}
         title="Select currency"
+        centered
+        size="lg"
+        {...(isMobile && {
+          transitionProps: { transition: "fade", duration: 200 },
+        })}
       >
         <CurrencyPickerModal
           onCurrencySelected={(currency) => {
@@ -59,85 +50,18 @@ export function CurrencyPicker({
       >
         <Input
           name={name}
-          placeholder="Select currency"
           component="button"
           pointer
           onClick={open}
           rightSection={<IconSelector />}
         >
-          {currency.symbol} - {currency.name} - {currency.code}
+          {currency !== null ? (
+            `${currency.symbol} - ${currency.name} - ${currency.code}`
+          ) : (
+            <Input.Placeholder>Select currency</Input.Placeholder>
+          )}
         </Input>
       </Input.Wrapper>
     </>
-  );
-}
-
-const currencyCodes = Object.values(ISO4217Currencies)
-  .sort()
-  // Remove Antarctica
-  .map((currency) => {
-    return Currency.fromISOCode(currency.code);
-  });
-
-interface CurrencyPickerModalProps {
-  onCurrencySelected: (currency: Currency) => void;
-  onCancel: () => void;
-}
-function CurrencyPickerModal({
-  onCurrencySelected,
-  onCancel,
-}: CurrencyPickerModalProps) {
-  const [query, setQuery] = useState("");
-  const [filteredCurrencies, setFilteredCurrencies] =
-    useState<Currency[]>(currencyCodes);
-
-  useEffect(() => {
-    if (query === "" || query === null || query === undefined) {
-      setFilteredCurrencies(currencyCodes);
-    } else {
-      const filtered = currencyCodes.filter((currency) =>
-        JSON.stringify(currency).toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredCurrencies(filtered);
-    }
-  }, [query]);
-
-  return (
-    <Stack>
-      <SearchBoxInput
-        query={query}
-        onSearchQueryChanged={(newQuery) => {
-          setQuery(newQuery);
-        }}
-      />
-      <ScrollArea.Autosize h={300}>
-        {filteredCurrencies.length === 0 && <Text>No currencies found</Text>}
-        {filteredCurrencies.map((currency) => (
-          <Group grow key={currency.code}>
-            <UnstyledButton
-              className={classes.baseButton}
-              onClick={() => {
-                onCurrencySelected(currency);
-              }}
-            >
-              <Grid>
-                <Grid.Col span={2}>
-                  <Text>{currency.symbol}</Text>
-                </Grid.Col>
-                <Grid.Col span={2}>
-                  <Text>{currency.code}</Text>
-                </Grid.Col>
-                <Grid.Col span={8}>
-                  <Text truncate="end">{currency.name}</Text>
-                </Grid.Col>
-              </Grid>
-            </UnstyledButton>
-          </Group>
-        ))}
-      </ScrollArea.Autosize>
-      <Group justify="end">
-        <Button onClick={() => onCancel()}>Cancel</Button>
-      </Group>
-    </Stack>
   );
 }
