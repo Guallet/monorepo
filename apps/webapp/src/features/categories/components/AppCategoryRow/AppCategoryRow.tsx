@@ -6,7 +6,10 @@ interface AppCategoryRowProps {
   category: AppCategory;
   onClick?: (category: AppCategory) => void;
 }
-export function AppCategoryRow({ category, onClick }: AppCategoryRowProps) {
+export function AppCategoryRow({
+  category,
+  onClick,
+}: Readonly<AppCategoryRowProps>) {
   return (
     <Group>
       <CategoryRow
