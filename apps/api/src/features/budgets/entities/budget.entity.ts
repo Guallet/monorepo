@@ -15,6 +15,9 @@ export class Budget extends BaseDbEntity {
   @Column({ type: 'decimal' })
   amount: number;
 
+  @Column({ nullable: false })
+  currency: string;
+
   @Column({ type: 'text', nullable: true })
   colour: string;
 

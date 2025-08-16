@@ -22,3 +22,19 @@ export function useBudgets() {
     ...query,
   };
 }
+
+export function useBudget(budgetId: string) {
+  const gualletClient = useGualletClient();
+
+  const query = useQuery({
+    queryKey: [BUDGETS_QUERY_KEY, budgetId],
+    queryFn: async () => {
+      return await gualletClient.budgets.getById(budgetId);
+    },
+  });
+
+  return {
+    budget: query.data ?? null,
+    ...query,
+  };
+}

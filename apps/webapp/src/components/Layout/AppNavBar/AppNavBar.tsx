@@ -7,6 +7,7 @@ import {
   IconLogout,
   IconTools,
   IconCategory2,
+  IconChartFunnel,
 } from "@tabler/icons-react";
 import { AppShell, Button, Divider, ScrollArea } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
@@ -50,6 +51,11 @@ const menuData: MenuData[] = [
       { label: "Manage Categories", link: "/categories" },
       { label: "Rules", link: "/categories/rules" },
     ],
+  },
+  {
+    label: "Budgets",
+    icon: IconChartFunnel,
+    link: "/budgets",
   },
   {
     label: "Reports",

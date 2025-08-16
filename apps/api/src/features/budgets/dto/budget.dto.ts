@@ -4,6 +4,7 @@ export class BudgetDto {
   id: string;
   name: string;
   amount: number;
+  currency: string;
   spent: number;
   colour?: string;
   icon?: string;
@@ -14,6 +15,7 @@ export class BudgetDto {
       id: domain.id,
       name: domain.name,
       amount: domain.amount,
+      currency: domain.currency,
       spent: spent,
       colour: domain.colour,
       icon: domain.icon,

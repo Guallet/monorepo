@@ -14,6 +14,7 @@ import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { ApiTags } from '@nestjs/swagger';
+import { BudgetDto } from './dto/budget.dto';
 
 @Controller('budgets')
 @ApiTags('Budgets')
@@ -28,16 +29,23 @@ export class BudgetsController {
   // }
 
   @Get()
-  findAll(@RequestUser() user: UserPrincipal) {
-    return this.budgetsService.findAllForUser(user.id);
+  async findAll(@RequestUser() user: UserPrincipal): Promise<BudgetDto[]> {
+    const budgets = await this.budgetsService.findAllForUser(user.id);
+    // TODO: Calculate the spent budget in the given timeframe
+    return budgets.map((budget) => BudgetDto.fromDomain(budget, 0));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @RequestUser() user: UserPrincipal) {
-    return this.budgetsService.findOneForUser({
+  async findOne(
+    @Param('id') id: string,
+    @RequestUser() user: UserPrincipal,
+  ): Promise<BudgetDto> {
+    const budget = await this.budgetsService.findOneForUser({
       id: id,
       userId: user.id,
     });
+    // TODO: Calculate the spent budget in the given timeframe
+    return BudgetDto.fromDomain(budget, 0);
   }
 
   // @Patch(':id')

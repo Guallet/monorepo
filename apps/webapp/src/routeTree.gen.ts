@@ -27,6 +27,7 @@ import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
 import { Route as AppConnectionsIndexRouteImport } from './routes/_app/connections/index'
 import { Route as AppCategoriesIndexRouteImport } from './routes/_app/categories/index'
+import { Route as AppBudgetsIndexRouteImport } from './routes/_app/budgets/index'
 import { Route as AppAccountsIndexRouteImport } from './routes/_app/accounts/index'
 import { Route as AppUserEditRouteImport } from './routes/_app/user/edit'
 import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
@@ -139,6 +140,11 @@ const AppConnectionsIndexRoute = AppConnectionsIndexRouteImport.update({
 const AppCategoriesIndexRoute = AppCategoriesIndexRouteImport.update({
   id: '/categories/',
   path: '/categories/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBudgetsIndexRoute = AppBudgetsIndexRouteImport.update({
+  id: '/budgets/',
+  path: '/budgets/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAccountsIndexRoute = AppAccountsIndexRouteImport.update({
@@ -268,6 +274,7 @@ export interface FileRoutesByFullPath {
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
   '/accounts': typeof AppAccountsIndexRoute
+  '/budgets': typeof AppBudgetsIndexRoute
   '/categories': typeof AppCategoriesIndexRoute
   '/connections': typeof AppConnectionsIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByTo {
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
   '/accounts': typeof AppAccountsIndexRoute
+  '/budgets': typeof AppBudgetsIndexRoute
   '/categories': typeof AppCategoriesIndexRoute
   '/connections': typeof AppConnectionsIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
@@ -346,6 +354,7 @@ export interface FileRoutesById {
   '/_app/tools/loan': typeof AppToolsLoanLazyRoute
   '/_app/tools/mortgage': typeof AppToolsMortgageLazyRoute
   '/_app/accounts/': typeof AppAccountsIndexRoute
+  '/_app/budgets/': typeof AppBudgetsIndexRoute
   '/_app/categories/': typeof AppCategoriesIndexRoute
   '/_app/connections/': typeof AppConnectionsIndexRoute
   '/_app/dashboard/': typeof AppDashboardIndexRoute
@@ -386,6 +395,7 @@ export interface FileRouteTypes {
     | '/tools/loan'
     | '/tools/mortgage'
     | '/accounts'
+    | '/budgets'
     | '/categories'
     | '/connections'
     | '/dashboard'
@@ -424,6 +434,7 @@ export interface FileRouteTypes {
     | '/tools/loan'
     | '/tools/mortgage'
     | '/accounts'
+    | '/budgets'
     | '/categories'
     | '/connections'
     | '/dashboard'
@@ -463,6 +474,7 @@ export interface FileRouteTypes {
     | '/_app/tools/loan'
     | '/_app/tools/mortgage'
     | '/_app/accounts/'
+    | '/_app/budgets/'
     | '/_app/categories/'
     | '/_app/connections/'
     | '/_app/dashboard/'
@@ -621,6 +633,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budgets/': {
+      id: '/_app/budgets/'
+      path: '/budgets'
+      fullPath: '/budgets'
+      preLoaderRoute: typeof AppBudgetsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/accounts/': {
       id: '/_app/accounts/'
       path: '/accounts'
@@ -770,6 +789,7 @@ interface AppRouteChildren {
   AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
   AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
   AppAccountsIndexRoute: typeof AppAccountsIndexRoute
+  AppBudgetsIndexRoute: typeof AppBudgetsIndexRoute
   AppCategoriesIndexRoute: typeof AppCategoriesIndexRoute
   AppConnectionsIndexRoute: typeof AppConnectionsIndexRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
@@ -799,6 +819,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
   AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,
   AppAccountsIndexRoute: AppAccountsIndexRoute,
+  AppBudgetsIndexRoute: AppBudgetsIndexRoute,
   AppCategoriesIndexRoute: AppCategoriesIndexRoute,
   AppConnectionsIndexRoute: AppConnectionsIndexRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
