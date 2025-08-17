@@ -35,15 +35,22 @@ export function BudgetCard({ budgetId }: Readonly<BudgetCardProps>) {
   return (
     <Card withBorder shadow="sm" radius="md">
       <Group align="center" mb={8}>
-        {budget.icon && budget.colour && (
-          <GualletIcon iconName={budget.icon} iconColor={budget.colour} />
-        )}
-        <Text fw={600}>{budget.name}</Text>
+        <Group
+          align="center"
+          gap={8}
+          style={{
+            flexGrow: 1,
+          }}
+        >
+          {budget.icon && budget.colour && (
+            <GualletIcon iconName={budget.icon} iconColor={budget.colour} />
+          )}
+          <Text fw={600}>{budget.name}</Text>
+        </Group>
+        <Text size="sm" c="dimmed">
+          {spentMoney.format()} / {amountMoney.format()}
+        </Text>
       </Group>
-
-      <Text size="sm" c="dimmed">
-        {spentMoney.format()} / {amountMoney.format()}
-      </Text>
 
       <Group align="end">
         <Progress
