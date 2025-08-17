@@ -6,7 +6,9 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
+import { Budget } from 'src/features/budgets/entities/budget.entity';
 
 @Entity('categories')
 export class Category extends BaseDbEntity {
@@ -43,4 +45,6 @@ export class Category extends BaseDbEntity {
     onDelete: 'SET NULL',
   })
   transactions: Transaction[];
+  @ManyToMany(() => Budget, (budget) => budget.categories)
+  budgets: Budget[];
 }

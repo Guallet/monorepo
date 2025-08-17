@@ -19,7 +19,7 @@ export class BudgetDto {
       spent: spent,
       colour: domain.colour,
       icon: domain.icon,
-      categories: domain.categories,
+      categories: domain.categories.map((category) => category.id),
     };
   }
 }

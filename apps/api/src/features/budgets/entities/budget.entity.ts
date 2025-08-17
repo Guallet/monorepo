@@ -1,5 +1,12 @@
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Category } from 'src/features/categories/entities/category.entity';
 
 @Entity('budgets')
 export class Budget extends BaseDbEntity {
@@ -24,6 +31,11 @@ export class Budget extends BaseDbEntity {
   @Column({ type: 'text', nullable: true })
   icon: string;
 
-  @Column('simple-array')
-  categories: string[];
+  @ManyToMany(() => Category, (category) => category.budgets, { cascade: true })
+  @JoinTable({
+    name: 'budget_categories',
+    joinColumn: { name: 'budget_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
+  })
+  categories: Category[];
 }
