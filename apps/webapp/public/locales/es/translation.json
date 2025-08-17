@@ -1,4 +1,12 @@
 {
+  "common": {
+    "components": {
+      "colorPicker": {
+        "label": "Color",
+        "placeholder": "Selecciona el color de la categoría"
+      }
+    }
+  },
   "feature": {
     "accounts": {
       "accountType": {
@@ -55,6 +63,14 @@
       "createAccount": {
         "label": "¿No tienes una cuenta?",
         "cta": "¡Regístrate!"
+      }
+    },
+    "budget": {
+      "list": {
+        "emptyState": "No se encontraron presupuestos. Crea un nuevo presupuesto para empezar.",
+        "createBudgetButton": {
+          "label": "Crear nuevo presupuesto"
+        }
       }
     }
   }

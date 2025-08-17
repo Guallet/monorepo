@@ -1,5 +1,5 @@
 import { GualletClient } from "@guallet/api-client";
-import React from "react";
+import React, { JSX } from "react";
 
 export const GualletClientContext = React.createContext<
   GualletClient | undefined

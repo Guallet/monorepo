@@ -36,6 +36,7 @@ import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/
 import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
 import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/new'
 import { Route as AppCategoriesIdRouteImport } from './routes/_app/categories/$id'
+import { Route as AppBudgetsCreateRouteImport } from './routes/_app/budgets/create'
 import { Route as AppAccountsNewRouteImport } from './routes/_app/accounts/new'
 import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
 import { Route as AppSettingsInstitutionsIndexRouteImport } from './routes/_app/settings/institutions/index'
@@ -201,6 +202,11 @@ const AppCategoriesIdRoute = AppCategoriesIdRouteImport.update({
   path: '/categories/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBudgetsCreateRoute = AppBudgetsCreateRouteImport.update({
+  id: '/budgets/create',
+  path: '/budgets/create',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAccountsNewRoute = AppAccountsNewRouteImport.update({
   id: '/accounts/new',
   path: '/accounts/new',
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
+  '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
   '/categories/old': typeof AppCategoriesOldRoute
@@ -303,6 +310,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
+  '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
   '/categories/old': typeof AppCategoriesOldRoute
@@ -344,6 +352,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
+  '/_app/budgets/create': typeof AppBudgetsCreateRoute
   '/_app/categories/$id': typeof AppCategoriesIdRoute
   '/_app/categories/new': typeof AppCategoriesNewRoute
   '/_app/categories/old': typeof AppCategoriesOldRoute
@@ -385,6 +394,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
+    | '/budgets/create'
     | '/categories/$id'
     | '/categories/new'
     | '/categories/old'
@@ -424,6 +434,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
+    | '/budgets/create'
     | '/categories/$id'
     | '/categories/new'
     | '/categories/old'
@@ -464,6 +475,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/_app/accounts/$id'
     | '/_app/accounts/new'
+    | '/_app/budgets/create'
     | '/_app/categories/$id'
     | '/_app/categories/new'
     | '/_app/categories/old'
@@ -710,6 +722,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriesIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/budgets/create': {
+      id: '/_app/budgets/create'
+      path: '/budgets/create'
+      fullPath: '/budgets/create'
+      preLoaderRoute: typeof AppBudgetsCreateRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/accounts/new': {
       id: '/_app/accounts/new'
       path: '/accounts/new'
@@ -779,6 +798,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppAccountsIdRoute: typeof AppAccountsIdRoute
   AppAccountsNewRoute: typeof AppAccountsNewRoute
+  AppBudgetsCreateRoute: typeof AppBudgetsCreateRoute
   AppCategoriesIdRoute: typeof AppCategoriesIdRoute
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
   AppCategoriesOldRoute: typeof AppCategoriesOldRoute
@@ -809,6 +829,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAccountsIdRoute: AppAccountsIdRoute,
   AppAccountsNewRoute: AppAccountsNewRoute,
+  AppBudgetsCreateRoute: AppBudgetsCreateRoute,
   AppCategoriesIdRoute: AppCategoriesIdRoute,
   AppCategoriesNewRoute: AppCategoriesNewRoute,
   AppCategoriesOldRoute: AppCategoriesOldRoute,

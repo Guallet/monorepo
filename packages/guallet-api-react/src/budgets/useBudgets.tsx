@@ -29,7 +29,9 @@ export function useBudget(budgetId: string) {
   const query = useQuery({
     queryKey: [BUDGETS_QUERY_KEY, budgetId],
     queryFn: async () => {
-      return await gualletClient.budgets.getById(budgetId);
+      return await gualletClient.budgets.getById({
+        budgetId,
+      });
     },
   });
 

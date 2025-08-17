@@ -14,7 +14,7 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
     <Stack>
       <Group align="apart" mb="xs">
         <Text fz="md" fw={500}>
-          Budget total (2)
+          Budget total
         </Text>
         <Text fz="md" fw={500}>
           £{remaining}
