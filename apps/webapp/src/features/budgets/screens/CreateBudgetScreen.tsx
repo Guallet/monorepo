@@ -117,6 +117,7 @@ export function CreateBudgetScreen() {
               required
             />
             <CategoryMultiSelect
+              required
               selectedCategories={form.values.categories}
               onSelectionChanged={(categories) =>
                 console.log("Selected categories:", categories)

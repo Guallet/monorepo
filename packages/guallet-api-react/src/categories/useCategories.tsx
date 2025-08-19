@@ -1,5 +1,5 @@
 import { CategoryDto } from "@guallet/api-client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
 
 export type AppCategory = {
@@ -10,11 +10,20 @@ const CATEGORIES_QUERY_KEY = "categories";
 
 export function useCategories() {
   const gualletClient = useGualletClient();
+  const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: [CATEGORIES_QUERY_KEY],
     queryFn: async () => {
-      return await gualletClient.categories.getAll();
+      const categories = await gualletClient.categories.getAll();
+
+      // Populate the cache with the categories
+      // Prime the cache for each category by ID
+      categories?.forEach((category) => {
+        queryClient.setQueryData([CATEGORIES_QUERY_KEY, category.id], category);
+      });
+
+      return categories;
     },
   });
 
