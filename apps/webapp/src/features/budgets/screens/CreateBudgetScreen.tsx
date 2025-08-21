@@ -77,7 +77,6 @@ export function CreateBudgetScreen() {
     });
   };
 
-  console.log("Rendering <CreateBudgetScreen />");
   return (
     <BaseScreen>
       <form onSubmit={form.onSubmit(handleSubmit)}>
