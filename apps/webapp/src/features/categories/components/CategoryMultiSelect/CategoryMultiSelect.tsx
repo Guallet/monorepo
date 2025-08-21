@@ -15,7 +15,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { CategoryTreeNode } from "./CategoryTreeNode";
 import { useIsMobile } from "@/utils/useIsMobile";
 import { SearchBoxInput } from "@guallet/ui-react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+interface CategoryMultiSelectProps
+  extends React.ComponentProps<typeof Input.Wrapper> {
+  selectedCategories: CategoryDto[];
+  onSelectionChanged: (selectedCategories: CategoryDto[]) => void;
+}
 
 function mapCategoriesToTreeData(categories: CategoryDto[]): TreeNodeData[] {
   const rootCategories = categories.filter((category) => !category.parentId);
@@ -39,88 +46,152 @@ function mapCategoriesToTreeData(categories: CategoryDto[]): TreeNodeData[] {
   return data;
 }
 
-interface CategoryMultiSelectProps {
-  selectedCategories: CategoryDto[];
-  onSelectionChanged: (selectedCategories: CategoryDto[]) => void;
-  required?: boolean;
-}
-
 export function CategoryMultiSelect({
   selectedCategories,
   onSelectionChanged,
-  required = false,
+  ...props
 }: Readonly<CategoryMultiSelectProps>) {
+  const { t } = useTranslation();
   const { categories } = useCategories();
   const isMobile = useIsMobile();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [filterQuery, setFilterQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<TreeNodeData[]>([]);
 
   const tree = useTree({
     // initialExpandedState: getTreeExpandedState(data, "*"),
     initialCheckedState: selectedCategories.map((cat) => cat.id),
   });
 
-  useEffect(() => {
+  const onSubmitSelectedCategories = () => {
+    const selectedNodes = tree.getCheckedNodes();
+    const selectedCategories = selectedNodes
+      .map((node) => categories.find((cat) => cat.id === node.value))
+      .filter((category): category is CategoryDto => category !== undefined);
+
+    onSelectionChanged(selectedCategories);
+    close();
+  };
+
+  const filteredData = useMemo(() => {
     if (filterQuery.trim() === "") {
-      setFilteredData(mapCategoriesToTreeData(categories));
+      return mapCategoriesToTreeData(categories);
     } else {
       const filteredCategories = categories.filter((item: CategoryDto) => {
-        // Poor's man filter: this way we filter all fields
-        // and we can keep the parent nodes of the subcategories with matches
-        const json = JSON.stringify(item);
+        const json = JSON.stringify(item.name);
         return json.toLowerCase().includes(filterQuery.toLowerCase());
       });
-      const newTreeData = mapCategoriesToTreeData(filteredCategories);
-      setFilteredData(newTreeData);
+
+      const missingParentCategories = [
+        ...new Set(
+          filteredCategories
+            .map((item: CategoryDto) => {
+              if (item.parentId) {
+                return categories.find((cat) => cat.id === item.parentId);
+              }
+              return null;
+            })
+            .filter(
+              (item): item is CategoryDto => item !== null && item !== undefined
+            )
+        ),
+      ];
+
+      const allCategories = [...filteredCategories, ...missingParentCategories];
+
+      return mapCategoriesToTreeData(allCategories);
     }
-  }, [filterQuery]);
+  }, [filterQuery, categories]);
+
+  const inputValue = useMemo(() => {
+    if (selectedCategories.length === 0) {
+      // We don't want to return anything, so it falls back to the placeholder
+      return undefined;
+    }
+
+    return t("components.categoryMultiSelect.input.value", {
+      count: selectedCategories.length,
+    });
+  }, [selectedCategories, t]);
 
   return (
     <>
-      <Input.Wrapper label="Categories" required={required}>
+      <Input.Wrapper {...props}>
         <Input
           readOnly
-          value={`${selectedCategories.length} categories selected`}
+          value={inputValue}
           onClick={open}
-          placeholder="Pick categories"
-          style={{ cursor: "pointer" }}
+          placeholder={t(
+            "components.categoryMultiSelect.input.placeholder",
+            "Select categories"
+          )}
+          pointer={true}
         />
       </Input.Wrapper>
       <Modal
         opened={opened}
         onClose={close}
-        title="Select Categories"
+        title={
+          <Text>
+            {t(
+              "components.categoryMultiSelect.modal.title",
+              "Select Categories"
+            )}
+          </Text>
+        }
         size="lg"
         fullScreen={isMobile}
       >
         <Stack>
           <Group mb="md">
             <Button variant="outline" onClick={() => tree.checkAllNodes()}>
-              Check all
+              {t(
+                "components.categoryMultiSelect.modal.checkAllButton.label",
+                "Check all"
+              )}
             </Button>
             <Button variant="outline" onClick={() => tree.uncheckAllNodes()}>
-              Uncheck all
+              {t(
+                "components.categoryMultiSelect.modal.uncheckAllButton.label",
+                "Uncheck all"
+              )}
             </Button>
             <Button variant="outline" onClick={() => tree.expandAllNodes()}>
-              Expand all
+              {t(
+                "components.categoryMultiSelect.modal.expandAllButton.label",
+                "Expand all"
+              )}
             </Button>
             <Button variant="outline" onClick={() => tree.collapseAllNodes()}>
-              Collapse all
+              {t(
+                "components.categoryMultiSelect.modal.collapseAllButton.label",
+                "Collapse all"
+              )}
             </Button>
           </Group>
           <Group justify="flex-end">
-            <Button onClick={close}>Select categories</Button>
+            <Button onClick={onSubmitSelectedCategories}>
+              {t(
+                "components.categoryMultiSelect.modal.selectButton.label",
+                "Select categories"
+              )}
+            </Button>
           </Group>
           <SearchBoxInput
-            placeholder="Filter categories"
+            placeholder={t(
+              "components.categoryMultiSelect.modal.searchBox.placeholder",
+              "Search categories"
+            )}
             query={filterQuery}
+            debounceWait={350}
             onSearchQueryChanged={(value) => setFilterQuery(value)}
           />
           {filteredData.length === 0 && (
             <Text c="dimmed" size="sm">
-              No categories found
+              {t(
+                "components.categoryMultiSelect.modal.searchBox.emptyResults",
+                "No categories found"
+              )}
             </Text>
           )}
           <Tree
@@ -128,7 +199,6 @@ export function CategoryMultiSelect({
               flexGrow: 1,
             }}
             tree={tree}
-            // data={data}
             data={filteredData}
             levelOffset={23}
             expandOnClick={false}

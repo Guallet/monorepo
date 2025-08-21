@@ -73,5 +73,37 @@
         }
       }
     }
+  },
+  "components": {
+    "categoryMultiSelect": {
+      "input": {
+        "value_one": "{{count}} categoría seleccionada",
+        "value_many": "",
+        "value_other": "{{count}} categorías seleccionadas",
+        "placeholder": "Selecciona las categorías"
+      },
+      "modal": {
+        "title": "Seleccionar Categorías",
+        "checkAllButton": {
+          "label": "Seleccionar todo"
+        },
+        "uncheckAllButton": {
+          "label": "Deseleccionar todo"
+        },
+        "expandAllButton": {
+          "label": "Expandir todo"
+        },
+        "collapseAllButton": {
+          "label": "Contraer todo"
+        },
+        "selectButton": {
+          "label": "Seleccionar categorías"
+        },
+        "searchBox": {
+          "placeholder": "Buscar categorías",
+          "emptyResults": "No se encontraron categorías"
+        }
+      }
+    }
   }
 }

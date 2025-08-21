@@ -4,7 +4,6 @@ import {
   TextInput,
   NumberInput,
   Select,
-  MultiSelect,
   Button,
   Stack,
   Group,
@@ -15,51 +14,55 @@ import { AppSection } from "@/components/Cards/AppSection";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { useLocale } from "@/i18n/useLocale";
 import { CategoryMultiSelect } from "@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect";
-
-const categoryOptions = [
-  { value: "groceries", label: "Groceries" },
-  { value: "rent", label: "Rent" },
-  { value: "utilities", label: "Utilities" },
-  { value: "entertainment", label: "Entertainment" },
-  { value: "transportation", label: "Transportation" },
-  { value: "health", label: "Health" },
-  { value: "other", label: "Other" },
-];
+import { useMemo } from "react";
+import { CategoryDto } from "@guallet/api-client";
 
 export function CreateBudgetScreen() {
   const { createBudgetMutation } = useBudgetMutations();
   const { locale } = useLocale();
-
   const { accounts } = useAccounts();
-  // Only available currencies from the existing accounts
-  const availableCurrencies = accounts
-    .map((account) => account.currency)
-    // remove duplicates
-    .filter((currencyCode, index, self) => self.indexOf(currencyCode) === index)
-    .map((currencyCode) => Currency.fromISOCode(currencyCode, locale));
-
-  const currencyOptions = availableCurrencies.map((currency) => ({
-    value: currency.code,
-    label: `${currency.symbol} - ${currency.name} - ${currency.code}`,
-  }));
 
   const form = useForm({
     initialValues: {
       name: "",
       amount: 0,
-      currency: "USD",
+      currency: "USD", // TODO: Use the default one from the user settings
       colour: "",
       icon: "",
-      categories: [],
+      categories: [] as CategoryDto[],
     },
+    // TODO: Validate using Zod
     validate: {
       name: (value) => (value.length < 2 ? "Name is too short" : null),
       amount: (value) => (value <= 0 ? "Amount must be positive" : null),
       currency: (value) => (!value ? "Currency is required" : null),
-      categories: (value) =>
+      categories: (value: CategoryDto[]) =>
         value.length === 0 ? "Select at least one category" : null,
     },
   });
+
+  // Only available currencies from the existing accounts
+  // TODO: Create a hook to get the user currencies. The default one and the ones used by their accounts
+  const availableCurrencies = useMemo(
+    () =>
+      accounts
+        .map((account) => account.currency)
+        // remove duplicates
+        .filter(
+          (currencyCode, index, self) => self.indexOf(currencyCode) === index
+        )
+        .map((currencyCode) => Currency.fromISOCode(currencyCode, locale)),
+    [accounts, locale]
+  );
+
+  const currencyOptions = useMemo(
+    () =>
+      availableCurrencies.map((currency) => ({
+        value: currency.code,
+        label: `${currency.symbol} - ${currency.name} - ${currency.code}`,
+      })),
+    [availableCurrencies]
+  );
 
   const handleSubmit = (values: typeof form.values) => {
     createBudgetMutation.mutate({
@@ -69,11 +72,12 @@ export function CreateBudgetScreen() {
         currency: values.currency,
         colour: values.colour || undefined,
         icon: values.icon || undefined,
-        categories: values.categories,
+        categories: values.categories.map((category) => category.id),
       },
     });
   };
 
+  console.log("Rendering <CreateBudgetScreen />");
   return (
     <BaseScreen>
       <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -109,19 +113,14 @@ export function CreateBudgetScreen() {
               placeholder="icon-name"
               {...form.getInputProps("icon")}
             />
-            <MultiSelect
-              label="Categories"
-              data={categoryOptions}
-              placeholder="Pick categories"
-              {...form.getInputProps("categories")}
-              required
-            />
             <CategoryMultiSelect
               required
+              label="Categories"
               selectedCategories={form.values.categories}
-              onSelectionChanged={(categories) =>
-                console.log("Selected categories:", categories)
-              }
+              onSelectionChanged={(categories: CategoryDto[]) => {
+                console.log("Selected categories:", categories);
+                form.setFieldValue("categories", categories);
+              }}
             />
           </AppSection>
           <Group justify="flex-end" mt="md">
