@@ -94,6 +94,8 @@ export function CategoryMultiSelectModal({
     }
   }, [filterQuery, categories]);
 
+  // TODO: There is a known issue with re-rendering the tree when the data changes
+  // https://github.com/mantinedev/mantine/issues/7266
   const tree = useTree({
     initialExpandedState: getTreeExpandedState(filteredData, "*"),
     initialCheckedState: selectedCategories.map((cat) => cat.id),
