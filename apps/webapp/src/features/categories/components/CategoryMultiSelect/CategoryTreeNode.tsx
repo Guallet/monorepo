@@ -1,5 +1,4 @@
 import { CategoryIcon } from "@/components/Categories/CategoryIcon";
-import { useCategory } from "@guallet/api-react";
 import { Checkbox, Group, RenderTreeNodePayload, Text } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 
@@ -12,8 +11,6 @@ export function CategoryTreeNode({
 }: Readonly<RenderTreeNodePayload>) {
   const checked = tree.isNodeChecked(node.value);
   const indeterminate = tree.isNodeIndeterminate(node.value);
-
-  const { category } = useCategory(node.value);
 
   return (
     <Group gap="xs" {...elementProps}>
