@@ -4,8 +4,9 @@ import { BudgetCard } from "../components/BudgetCard";
 import { Stack, Title, Text } from "@mantine/core";
 import { useState } from "react";
 import { MonthSelectorHeader } from "@/components/MonthSelectorHeader/MonthSelectorHeader";
-import { DebugJson } from "@guallet/ui-react";
 import { useTranslation } from "react-i18next";
+import { TransactionRow } from "@/features/transactions/components/TransactionRow";
+import { AppSection } from "@/components/Cards/AppSection";
 
 interface BudgetDetailsScreenProps {
   budgetId: string;
@@ -39,14 +40,15 @@ export function BudgetDetailsScreen({
         <Title order={2}>
           {t("screens.budgets.details.transactions.title", "Transactions")}
         </Title>
-        {transactions.length > 0 ? (
-          transactions.map((transaction) => (
-            // TODO: Implement transaction row card
-            <DebugJson key={transaction.id} data={transaction} />
-          ))
-        ) : (
-          <EmptyTransactionsView />
-        )}
+        <AppSection>
+          {transactions.length > 0 ? (
+            transactions.map((transaction) => (
+              <TransactionRow key={transaction.id} transaction={transaction} />
+            ))
+          ) : (
+            <EmptyTransactionsView />
+          )}
+        </AppSection>
       </Stack>
     </BaseScreen>
   );
