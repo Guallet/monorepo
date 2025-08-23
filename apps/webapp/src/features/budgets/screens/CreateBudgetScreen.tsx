@@ -16,19 +16,24 @@ import { useLocale } from "@/i18n/useLocale";
 import { CategoryMultiSelect } from "@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect";
 import { useMemo } from "react";
 import { CategoryDto } from "@guallet/api-client";
+import { notifications } from "@mantine/notifications";
+import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 export function CreateBudgetScreen() {
   const { createBudgetMutation } = useBudgetMutations();
   const { locale } = useLocale();
   const { accounts } = useAccounts();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const form = useForm({
     initialValues: {
       name: "",
       amount: 0,
-      currency: "USD", // TODO: Use the default one from the user settings
+      currency: "GBP", // TODO: Use the default one from the user settings
       colour: "",
-      icon: "",
+      icon: "IconCalendarDollar",
       categories: [] as CategoryDto[],
     },
     // TODO: Validate using Zod
@@ -36,6 +41,7 @@ export function CreateBudgetScreen() {
       name: (value) => (value.length < 2 ? "Name is too short" : null),
       amount: (value) => (value <= 0 ? "Amount must be positive" : null),
       currency: (value) => (!value ? "Currency is required" : null),
+      colour: (value) => (!value ? "Colour is required" : null),
       categories: (value: CategoryDto[]) =>
         value.length === 0 ? "Select at least one category" : null,
     },
@@ -65,56 +71,116 @@ export function CreateBudgetScreen() {
   );
 
   const handleSubmit = (values: typeof form.values) => {
-    createBudgetMutation.mutate({
-      request: {
-        name: values.name,
-        amount: values.amount,
-        currency: values.currency,
-        colour: values.colour || undefined,
-        icon: values.icon || undefined,
-        categories: values.categories.map((category) => category.id),
+    console.log("Submitting budget:", values);
+    createBudgetMutation.mutate(
+      {
+        request: {
+          name: values.name,
+          amount: values.amount,
+          currency: values.currency,
+          colour: values.colour || undefined,
+          icon: values.icon || undefined,
+          categories: values.categories.map((category) => category.id),
+        },
       },
-    });
+      {
+        onSuccess: (data, variables, context) => {
+          notifications.show({
+            title: t(
+              "screens.budgets.create.notifications.success.title",
+              "Budget Created"
+            ),
+            message: t(
+              "screens.budgets.create.notifications.success.message",
+              `Your new budget has been created successfully.`
+            ),
+            color: "green",
+          });
+          navigate({ to: "/budgets" });
+        },
+        onError: (error, variables, context) => {
+          notifications.show({
+            title: t(
+              "screens.budgets.create.notifications.error.title",
+              "Error Creating Budget"
+            ),
+            message: error.message,
+            color: "red",
+          });
+        },
+      }
+    );
   };
 
   return (
     <BaseScreen>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
-          <AppSection title="Create new Budget">
+          <AppSection
+            title={t("screens.budgets.create.form.title", "Create new Budget")}
+          >
             <TextInput
-              label="Name"
-              placeholder="Budget name"
+              label={t("screens.budgets.create.form.name.label", "Name")}
+              placeholder={t(
+                "screens.budgets.create.form.name.placeholder",
+                "Budget name"
+              )}
               {...form.getInputProps("name")}
               required
             />
             <Select
-              label="Currency"
-              description="Only available currencies from your existing accounts are shown."
-              placeholder="Select currency"
+              label={t(
+                "screens.budgets.create.form.currency.label",
+                "Currency"
+              )}
+              description={t(
+                "screens.budgets.create.form.currency.description",
+                "Only available currencies from your existing accounts are shown."
+              )}
+              placeholder={t(
+                "screens.budgets.create.form.currency.placeholder",
+                "Select currency"
+              )}
               data={currencyOptions}
               {...form.getInputProps("currency")}
               required
             />
             <NumberInput
-              label="Budget Amount"
+              label={t(
+                "screens.budgets.create.form.amount.label",
+                "Budget Amount"
+              )}
               min={0}
               {...form.getInputProps("amount")}
               required
             />
             <GualletColorPicker
-              label="Color"
-              placeholder="#FF0000"
-              {...form.getInputProps("colour")}
+              label={t(
+                "screens.budgets.create.form.colorPicker.label",
+                "Color"
+              )}
+              placeholder={t(
+                "screens.budgets.create.form.colorPicker.placeholder",
+                "Select the category colour"
+              )}
+              // {...form.getInputProps("colour")}
+              value={form.values.colour}
+              onColourSelected={(colour: string) => {
+                console.log("Selected colour:", colour);
+                form.setFieldValue("colour", colour);
+              }}
             />
             <TextInput
-              label="Icon"
-              placeholder="icon-name"
+              label={t("screens.budgets.create.form.icon.label", "Icon")}
+              // placeholder={ Default icon name}
               {...form.getInputProps("icon")}
             />
             <CategoryMultiSelect
               required
-              label="Categories"
+              label={t(
+                "screens.budgets.create.form.categories.label",
+                "Categories"
+              )}
               selectedCategories={form.values.categories}
               onSelectionChanged={(categories: CategoryDto[]) => {
                 console.log("Selected categories:", categories);
@@ -127,16 +193,16 @@ export function CreateBudgetScreen() {
               type="submit"
               loading={createBudgetMutation.status === "pending"}
             >
-              Create Budget
+              {t(
+                "screens.budgets.create.form.submitButton.label",
+                "Create Budget"
+              )}
             </Button>
           </Group>
           {createBudgetMutation.status === "error" && (
             <div style={{ color: "red" }}>
               Error: {createBudgetMutation.error?.message}
             </div>
-          )}
-          {createBudgetMutation.status === "success" && (
-            <div style={{ color: "green" }}>Budget created!</div>
           )}
         </Stack>
       </form>

@@ -48,8 +48,6 @@ export function CategoryMultiSelectModal({
   onSelectionChanged,
   close,
 }: Readonly<CategoryMultiSelectModalProps>) {
-  console.log("Rendering <CategoryMultiSelectModal />");
-
   const { t } = useTranslation();
   const { categories } = useCategories();
   const [filterQuery, setFilterQuery] = useState("");

@@ -1,107 +1,135 @@
 {
-  "common": {
-    "components": {
-      "colorPicker": {
-        "label": "Color",
-        "placeholder": "Selecciona el color de la categoría"
+  "components": {
+    "colorPicker": {
+      "label": "Colour",
+      "placeholder": "Select the colour"
+    },
+    "categoryMultiSelect": {
+      "input": {
+        "value_one": "",
+        "value_many": "",
+        "value_other": "",
+        "placeholder": "Select categories"
+      },
+      "modal": {
+        "title": "Select Categories",
+        "checkAllButton": {
+          "label": "Check all"
+        },
+        "uncheckAllButton": {
+          "label": "Uncheck all"
+        },
+        "expandAllButton": {
+          "label": "Expand all"
+        },
+        "collapseAllButton": {
+          "label": "Collapse all"
+        },
+        "selectButton": {
+          "label": "Select categories"
+        },
+        "searchBox": {
+          "placeholder": "Search categories",
+          "emptyResults": "No categories found"
+        }
       }
     }
   },
   "feature": {
     "accounts": {
       "accountType": {
-        "currentAccounts": "Cuentas Corrientes",
-        "creditCards": "Tarjetas de Crédito",
-        "investmentAccounts": "Cuentas de Inversión",
-        "loans": "Préstamos",
-        "mortgages": "Hipotecas",
-        "pensions": "Pensiones",
-        "savingsAccounts": "Cuentas de Ahorro",
-        "unknown": "Otros",
-        "currentAccount": "Cuenta Corriente",
-        "creditCard": "Tarjeta de Crédito",
-        "investment": "Cuenta de Inversión",
-        "loan": "Préstamo",
-        "mortgage": "Hipoteca",
-        "pension": "Pensión",
-        "savingsAccount": "Cuenta de Ahorro"
+        "currentAccounts": "Current Accounts",
+        "creditCards": "Credit Cards",
+        "investmentAccounts": "Investment Accounts",
+        "loans": "Loans",
+        "mortgages": "Mortgages",
+        "pensions": "Pensions",
+        "savingsAccounts": "Savings Accounts",
+        "unknown": "Other",
+        "currentAccount": "Current Account",
+        "creditCard": "Credit Card",
+        "investment": "Investments Account",
+        "loan": "Loan",
+        "mortgage": "Mortgage",
+        "pension": "Pension",
+        "savingsAccount": "Savings Account"
       }
     }
   },
   "screens": {
     "accounts": {
       "list": {
-        "emptyQuery": "No hay resultados para esa busqueda"
+        "emptyQuery": "CFN: No bank accounts found"
       }
     },
     "login": {
       "title": {
-        "label": "Inicia session en tu cuenta"
+        "label": "CNF: Sign in to your account"
       },
       "form": {
         "email": {
-          "label": "Correo electrónico",
-          "placeholder": "Introduce tu correo electrónico"
+          "label": "CNF: Email",
+          "placeholder": "CNF: Enter your email"
         },
         "password": {
-          "label": "Contraseña",
-          "placeholder": "Introduce tu contraseña"
+          "label": "CNF: Password",
+          "placeholder": "CNF: Enter your password"
         },
         "forgotPassword": {
-          "label": "¿Olvidaste tu contraseña?"
+          "label": "CNF: Forgot password?"
         },
         "submitButton": {
-          "label": "Iniciar sesión"
+          "label": "CNF: Sign in"
         },
         "divider": {
-          "label": "O continuar con"
+          "label": "CNF: Or continue with"
         },
         "googleLoginButton": {
-          "label": "Continuar con Google"
+          "label": "CNF: Continue with Google"
         }
       },
       "createAccount": {
-        "label": "¿No tienes una cuenta?",
-        "cta": "¡Regístrate!"
+        "label": "CNF: Don't have an account?",
+        "cta": "CNF: Sign up!"
       }
     },
     "budget": {
       "list": {
-        "emptyState": "No se encontraron presupuestos. Crea un nuevo presupuesto para empezar.",
+        "emptyState": "No Budgets Found. Create a new budget to get started.",
         "createBudgetButton": {
-          "label": "Crear nuevo presupuesto"
+          "label": "Create new Budget"
         }
       }
-    }
-  },
-  "components": {
-    "categoryMultiSelect": {
-      "input": {
-        "value_one": "{{count}} categoría seleccionada",
-        "value_many": "",
-        "value_other": "{{count}} categorías seleccionadas",
-        "placeholder": "Selecciona las categorías"
-      },
-      "modal": {
-        "title": "Seleccionar Categorías",
-        "checkAllButton": {
-          "label": "Seleccionar todo"
-        },
-        "uncheckAllButton": {
-          "label": "Deseleccionar todo"
-        },
-        "expandAllButton": {
-          "label": "Expandir todo"
-        },
-        "collapseAllButton": {
-          "label": "Contraer todo"
-        },
-        "selectButton": {
-          "label": "Seleccionar categorías"
-        },
-        "searchBox": {
-          "placeholder": "Buscar categorías",
-          "emptyResults": "No se encontraron categorías"
+    },
+    "budgets": {
+      "create": {
+        "form": {
+          "title": "Create new Budget",
+          "name": {
+            "label": "Name",
+            "placeholder": "Budget name"
+          },
+          "currency": {
+            "label": "Currency",
+            "description": "Only available currencies from your existing accounts are shown.",
+            "placeholder": "Select currency"
+          },
+          "amount": {
+            "label": "Budget Amount"
+          },
+          "colorPicker": {
+            "label": "Color",
+            "placeholder": "Select the category colour"
+          },
+          "icon": {
+            "label": "Icon"
+          },
+          "categories": {
+            "label": "Categories"
+          },
+          "submitButton": {
+            "label": "Create Budget"
+          }
         }
       }
     }

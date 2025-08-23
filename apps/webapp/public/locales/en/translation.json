@@ -1,9 +1,36 @@
 {
-  "common": {
-    "components": {
-      "colorPicker": {
-        "label": "Colour",
-        "placeholder": "Select the category colour"
+  "components": {
+    "colorPicker": {
+      "label": "Colour",
+      "placeholder": "Select the colour"
+    },
+    "categoryMultiSelect": {
+      "input": {
+        "value_one": "",
+        "value_other": "",
+        "placeholder": "Select categories"
+      },
+      "modal": {
+        "title": "Select Categories",
+        "checkAllButton": {
+          "label": "Check all"
+        },
+        "uncheckAllButton": {
+          "label": "Uncheck all"
+        },
+        "expandAllButton": {
+          "label": "Expand all"
+        },
+        "collapseAllButton": {
+          "label": "Collapse all"
+        },
+        "selectButton": {
+          "label": "Select categories"
+        },
+        "searchBox": {
+          "placeholder": "Search categories",
+          "emptyResults": "No categories found"
+        }
       }
     }
   },
@@ -31,76 +58,77 @@
   "screens": {
     "accounts": {
       "list": {
-        "emptyQuery": "No bank accounts found"
+        "emptyQuery": "CFN: No bank accounts found"
       }
     },
     "login": {
       "title": {
-        "label": "Sign in to your account"
+        "label": "CNF: Sign in to your account"
       },
       "form": {
         "email": {
-          "label": "Email",
-          "placeholder": "Enter your email"
+          "label": "CNF: Email",
+          "placeholder": "CNF: Enter your email"
         },
         "password": {
-          "label": "Password",
-          "placeholder": "Enter your password"
+          "label": "CNF: Password",
+          "placeholder": "CNF: Enter your password"
         },
         "forgotPassword": {
-          "label": "Forgot password?"
+          "label": "CNF: Forgot password?"
         },
         "submitButton": {
-          "label": "Sign in"
+          "label": "CNF: Sign in"
         },
         "divider": {
-          "label": "Or continue with"
+          "label": "CNF: Or continue with"
         },
         "googleLoginButton": {
-          "label": "Continue with Google"
+          "label": "CNF: Continue with Google"
         }
       },
       "createAccount": {
-        "label": "Don't have an account?",
-        "cta": "Sign up!"
+        "label": "CNF: Don't have an account?",
+        "cta": "CNF: Sign up!"
       }
     },
     "budget": {
       "list": {
-        "emptyState": "No Budgets found. Create a new budget to get started.",
+        "emptyState": "No Budgets Found. Create a new budget to get started.",
         "createBudgetButton": {
           "label": "Create new Budget"
         }
       }
-    }
-  },
-  "components": {
-    "categoryMultiSelect": {
-      "input": {
-        "value_one": "{{count}} category selected",
-        "value_other": "{{count}} categories selected",
-        "placeholder": "Select categories"
-      },
-      "modal": {
-        "title": "Select Categories",
-        "checkAllButton": {
-          "label": "Check all"
-        },
-        "uncheckAllButton": {
-          "label": "Uncheck all"
-        },
-        "expandAllButton": {
-          "label": "Expand all"
-        },
-        "collapseAllButton": {
-          "label": "Collapse all"
-        },
-        "selectButton": {
-          "label": "Select categories"
-        },
-        "searchBox": {
-          "placeholder": "Search categories",
-          "emptyResults": "No categories found"
+    },
+    "budgets": {
+      "create": {
+        "form": {
+          "title": "Create new Budget",
+          "name": {
+            "label": "Name",
+            "placeholder": "Budget name"
+          },
+          "currency": {
+            "label": "Currency",
+            "description": "Only available currencies from your existing accounts are shown.",
+            "placeholder": "Select currency"
+          },
+          "amount": {
+            "label": "Budget Amount"
+          },
+          "colorPicker": {
+            "label": "Color",
+            "placeholder": "Select the category colour"
+          },
+          "icon": {
+            "label": "Icon"
+          },
+          "categories": {
+            "label": "Categories"
+          },
+          "submitButton": {
+            "label": "Create Budget"
+          }
         }
       }
     }

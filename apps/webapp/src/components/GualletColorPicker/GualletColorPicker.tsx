@@ -21,11 +21,13 @@ const defaultSwatches = [
 ];
 
 interface GualletColorPickerProps
-  extends React.ComponentProps<typeof ColorInput> {}
+  extends React.ComponentProps<typeof ColorInput> {
+  onColourSelected: (colour: string) => void;
+}
 
 export function GualletColorPicker({
   value,
-  onChange,
+  onColourSelected,
   ...props
 }: Readonly<GualletColorPickerProps>) {
   const { t } = useTranslation();
@@ -33,14 +35,12 @@ export function GualletColorPicker({
   return (
     <ColorInput
       closeOnColorSwatchClick
-      label={t("common.components.colorPicker.label", "Colour")}
-      placeholder={t(
-        "common.components.colorPicker.placeholder",
-        "Select the category colour"
-      )}
-      //   value={value}
-      //   onChange={onChange}
-      //   error={colourError && "Invalid selected colour"}
+      label={t("components.colorPicker.label", "Colour")}
+      placeholder={t("components.colorPicker.placeholder", "Select the colour")}
+      defaultValue="#4c6ef5"
+      onChangeEnd={(colour: string) => {
+        onColourSelected(colour);
+      }}
       format="hex"
       swatches={defaultSwatches}
       {...props}
