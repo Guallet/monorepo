@@ -5,9 +5,10 @@ import { Progress, Group, Text, Card, Loader } from "@mantine/core";
 
 interface BudgetCardProps {
   budgetId: string;
+  onClick?: () => void;
 }
 
-export function BudgetCard({ budgetId }: Readonly<BudgetCardProps>) {
+export function BudgetCard({ budgetId, onClick }: Readonly<BudgetCardProps>) {
   const { budget } = useBudget(budgetId);
 
   if (!budget) {
@@ -33,7 +34,16 @@ export function BudgetCard({ budgetId }: Readonly<BudgetCardProps>) {
   });
 
   return (
-    <Card withBorder shadow="sm" radius="md">
+    <Card
+      withBorder
+      shadow="sm"
+      radius="md"
+      onClick={onClick}
+      {...(onClick && {
+        role: "button",
+        style: { cursor: "pointer" },
+      })}
+    >
       <Group align="center" mb={8}>
         <Group
           align="center"

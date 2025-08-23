@@ -18,7 +18,7 @@ export function BudgetListScreen() {
       {budgets.length === 0 ? (
         <EmptyState
           text={t(
-            "screens.budget.list.emptyState",
+            "screens.budgets.list.emptyState",
             "No Budgets Found. Create a new budget to get started."
           )}
           iconName="IconPlus"
@@ -34,13 +34,24 @@ export function BudgetListScreen() {
             }}
           >
             {t(
-              "screens.budget.list.createBudgetButton.label",
+              "screens.budgets.list.createBudgetButton.label",
               "Create new Budget"
             )}
           </Button>
           <BudgetListHeader budgets={budgets} />
           {budgets.map((budget) => (
-            <BudgetCard key={budget.id} budgetId={budget.id} />
+            <BudgetCard
+              key={budget.id}
+              budgetId={budget.id}
+              onClick={() => {
+                navigate({
+                  to: "/budgets/$id",
+                  params: {
+                    id: budget.id,
+                  },
+                });
+              }}
+            />
           ))}
         </Stack>
       )}

@@ -92,16 +92,30 @@
         "cta": "CNF: Sign up!"
       }
     },
-    "budget": {
+    "budgets": {
+      "details": {
+        "transactions": {
+          "emptyView": {
+            "body": "No transactions found for the current selected month"
+          }
+        }
+      },
       "list": {
         "emptyState": "No Budgets Found. Create a new budget to get started.",
         "createBudgetButton": {
           "label": "Create new Budget"
         }
-      }
-    },
-    "budgets": {
+      },
       "create": {
+        "notifications": {
+          "success": {
+            "title": "Budget Created",
+            "message": "Your new budget has been created successfully."
+          },
+          "error": {
+            "title": "Error Creating Budget"
+          }
+        },
         "form": {
           "title": "Create new Budget",
           "name": {

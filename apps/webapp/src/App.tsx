@@ -14,9 +14,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GualletClientProvider } from "@guallet/api-react";
 import { router, TanStackRouterDevtools } from "./router.tsx";
 import { gualletClient } from "@/api/gualletClient.ts";
+import { DatesProvider } from "@mantine/dates";
 
 // Init i18n
-import "./i18n/i18n";
+import i18next from "./i18n/i18n";
 
 // Create a Query client
 const queryClient = new QueryClient();
@@ -24,18 +25,24 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <MantineProvider>
-      <Notifications />
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <GualletClientProvider client={gualletClient}>
-            <RouterProvider router={router} />
-            {/* Tanstack Dev Tools */}
-            <TanStackRouterDevtools router={router} />
-            <ReactQueryDevtools initialIsOpen={false} />
-            {/* END Tanstack Dev Tools */}
-          </GualletClientProvider>
-        </QueryClientProvider>
-      </AuthProvider>
+      <DatesProvider
+        settings={{
+          locale: i18next.language,
+        }}
+      >
+        <Notifications />
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <GualletClientProvider client={gualletClient}>
+              <RouterProvider router={router} />
+              {/* Tanstack Dev Tools */}
+              <TanStackRouterDevtools router={router} />
+              <ReactQueryDevtools initialIsOpen={false} />
+              {/* END Tanstack Dev Tools */}
+            </GualletClientProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      </DatesProvider>
     </MantineProvider>
   );
 }

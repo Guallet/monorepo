@@ -1,8 +1,7 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Stack, Text } from "@mantine/core";
 
 import { AccountDetailsScreen } from "@/features/accounts/screens/AccountDetailsScreen";
-import { useAccount } from "@guallet/api-react";
 
 export const Route = createFileRoute("/_app/accounts/$id")({
   component: AccountDetailsPage,
