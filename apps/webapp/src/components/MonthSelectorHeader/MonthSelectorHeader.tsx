@@ -31,8 +31,9 @@ export function MonthSelectorHeader({
       <ActionIcon
         variant="outline"
         onClick={() => {
-          const previousMonth = new Date(selectedDate);
-          previousMonth.setMonth(selectedDate.getMonth() - 1);
+          const selectedMonth = selectedDate.getMonth();
+          const selectedYear = selectedDate.getFullYear();
+          const previousMonth = new Date(selectedYear, selectedMonth - 1, 1);
           onDateChanged(previousMonth);
         }}
         disabled={selectedDate <= minDate}
@@ -50,8 +51,9 @@ export function MonthSelectorHeader({
       <ActionIcon
         variant="outline"
         onClick={() => {
-          const nextMonth = new Date(selectedDate);
-          nextMonth.setMonth(selectedDate.getMonth() + 1);
+          const selectedMonth = selectedDate.getMonth();
+          const selectedYear = selectedDate.getFullYear();
+          const nextMonth = new Date(selectedYear, selectedMonth + 1, 1);
           onDateChanged(nextMonth);
         }}
         disabled={selectedDate >= maxDate}

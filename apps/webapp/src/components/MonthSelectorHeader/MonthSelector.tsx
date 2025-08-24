@@ -44,7 +44,6 @@ export function MonthSelector({
           maxDate={maxDate}
           value={date}
           onChange={(newValue) => {
-            console.log("MonthPicker onChange", newValue);
             if (newValue && typeof newValue === "string") {
               onDateSelected(new Date(newValue));
               setOpened(false);

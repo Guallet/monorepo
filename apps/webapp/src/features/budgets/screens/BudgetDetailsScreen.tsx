@@ -32,8 +32,8 @@ export function BudgetDetailsScreen({
       <Stack align="stretch">
         <MonthSelectorHeader
           date={selectedDate}
-          onDateChanged={(date: Date) => {
-            setSelectedDate(date);
+          onDateChanged={(newDate: Date) => {
+            setSelectedDate(newDate);
           }}
         />
         {budget && <BudgetCard budgetId={budget.id} />}
