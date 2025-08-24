@@ -45,8 +45,23 @@ export function useBudgetMutations() {
     },
   });
 
+  const deleteBudgetMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await gualletClient.budgets.delete({ budgetId: id });
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [BUDGETS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
   return {
     createBudgetMutation,
     updateBudgetMutation,
+    deleteBudgetMutation,
   };
 }

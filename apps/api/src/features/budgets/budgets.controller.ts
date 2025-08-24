@@ -152,6 +152,7 @@ export class BudgetsController {
       budgetId: id,
     });
     // No need to get the final spent amount as this has been deleted
+    console.log('Budget deleted', budget);
     return BudgetDto.fromDomain(budget, 0);
   }
 }

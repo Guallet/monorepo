@@ -173,6 +173,9 @@ export class BudgetsService {
     budgetId: string;
   }): Promise<Budget> {
     const budget = await this.repository.findOne({
+      relations: {
+        categories: true,
+      },
       where: { id: budgetId, user_id: userId },
     });
 

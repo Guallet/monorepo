@@ -3,7 +3,7 @@ import { MonthSelector } from "./MonthSelector";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useMemo } from "react";
 
-interface MonthSelectorHeaderProps {
+interface MonthSelectorHeaderProps extends React.ComponentProps<typeof Group> {
   date: Date;
   onDateChanged: (date: Date) => void;
 }
@@ -11,6 +11,7 @@ interface MonthSelectorHeaderProps {
 export function MonthSelectorHeader({
   date,
   onDateChanged,
+  ...props
 }: Readonly<MonthSelectorHeaderProps>) {
   const selectedDate = useMemo(() => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -27,7 +28,7 @@ export function MonthSelectorHeader({
   }, []);
 
   return (
-    <Group justify="space-between">
+    <Group justify="space-between" {...props}>
       <ActionIcon
         variant="outline"
         onClick={() => {
