@@ -5,8 +5,8 @@ import { Stack, Title, Text } from "@mantine/core";
 import { useState } from "react";
 import { MonthSelectorHeader } from "@/components/MonthSelectorHeader/MonthSelectorHeader";
 import { useTranslation } from "react-i18next";
-import { TransactionRow } from "@/features/transactions/components/TransactionRow";
 import { AppSection } from "@/components/Cards/AppSection";
+import { TransactionRow } from "@/features/transactions/components/TransactionRow";
 
 interface BudgetDetailsScreenProps {
   budgetId: string;
@@ -43,7 +43,11 @@ export function BudgetDetailsScreen({
         <AppSection>
           {transactions.length > 0 ? (
             transactions.map((transaction) => (
-              <TransactionRow key={transaction.id} transaction={transaction} />
+              <TransactionRow
+                key={transaction.id}
+                transaction={transaction}
+                avatarType="category"
+              />
             ))
           ) : (
             <EmptyTransactionsView />
