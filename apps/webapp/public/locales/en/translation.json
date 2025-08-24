@@ -94,6 +94,26 @@
     },
     "budgets": {
       "details": {
+        "delete": {
+          "dialog": {
+            "title": "Deleted budget",
+            "message": "Are you sure you want to delete the budget?"
+          },
+          "notifications": {
+            "title": "Budget deleted",
+            "message": "The budget has been deleted.",
+            "error": {
+              "title": "Error deleting budget",
+              "message": "An error occurred while deleting the budget."
+            }
+          }
+        },
+        "editButton": {
+          "tooltip": "Edit"
+        },
+        "deleteButton": {
+          "tooltip": "Delete"
+        },
         "transactions": {
           "title": "Transactions",
           "emptyView": {

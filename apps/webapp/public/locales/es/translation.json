@@ -95,6 +95,26 @@
     },
     "budgets": {
       "details": {
+        "delete": {
+          "dialog": {
+            "title": "Eliminar presupuesto",
+            "message": "¿Estás seguro de que deseas eliminar el presupuesto?"
+          },
+          "notifications": {
+            "title": "Presupuesto eliminado",
+            "message": "El presupuesto ha sido eliminado.",
+            "error": {
+              "title": "Error al eliminar el presupuesto",
+              "message": "Ocurrió un error al eliminar el presupuesto."
+            }
+          }
+        },
+        "editButton": {
+          "tooltip": "Editar"
+        },
+        "deleteButton": {
+          "tooltip": "Eliminar"
+        },
         "transactions": {
           "title": "Transacciones",
           "emptyView": {
