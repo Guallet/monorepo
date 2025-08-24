@@ -63,38 +63,39 @@
     },
     "login": {
       "title": {
-        "label": "CNF: Sign in to your account"
+        "label": "Sign in to your account"
       },
       "form": {
         "email": {
-          "label": "CNF: Email",
-          "placeholder": "CNF: Enter your email"
+          "label": "Email",
+          "placeholder": "Enter your email"
         },
         "password": {
-          "label": "CNF: Password",
-          "placeholder": "CNF: Enter your password"
+          "label": "Password",
+          "placeholder": "Enter your password"
         },
         "forgotPassword": {
-          "label": "CNF: Forgot password?"
+          "label": "Forgot password?"
         },
         "submitButton": {
-          "label": "CNF: Sign in"
+          "label": "Sign in"
         },
         "divider": {
-          "label": "CNF: Or continue with"
+          "label": "Or continue with"
         },
         "googleLoginButton": {
-          "label": "CNF: Continue with Google"
+          "label": "Continue with Google"
         }
       },
       "createAccount": {
-        "label": "CNF: Don't have an account?",
-        "cta": "CNF: Sign up!"
+        "label": "Don't have an account?",
+        "cta": "Sign up!"
       }
     },
     "budgets": {
       "details": {
         "transactions": {
+          "title": "Transactions",
           "emptyView": {
             "body": "No transactions found for the current selected month"
           }

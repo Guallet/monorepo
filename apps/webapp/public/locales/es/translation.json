@@ -1,36 +1,36 @@
 {
   "components": {
     "colorPicker": {
-      "label": "Colour",
-      "placeholder": "Select the colour"
+      "label": "Color",
+      "placeholder": "Selecciona el color"
     },
     "categoryMultiSelect": {
       "input": {
         "value_one": "",
         "value_many": "",
         "value_other": "",
-        "placeholder": "Select categories"
+        "placeholder": "Selecciona categorías"
       },
       "modal": {
-        "title": "Select Categories",
+        "title": "Seleccionar categorías",
         "checkAllButton": {
-          "label": "Check all"
+          "label": "Seleccionar todo"
         },
         "uncheckAllButton": {
-          "label": "Uncheck all"
+          "label": "Deseleccionar todo"
         },
         "expandAllButton": {
-          "label": "Expand all"
+          "label": "Expandir todo"
         },
         "collapseAllButton": {
-          "label": "Collapse all"
+          "label": "Colapsar todo"
         },
         "selectButton": {
-          "label": "Select categories"
+          "label": "Seleccionar categorías"
         },
         "searchBox": {
-          "placeholder": "Search categories",
-          "emptyResults": "No categories found"
+          "placeholder": "Buscar categorías",
+          "emptyResults": "No se encontraron categorías"
         }
       }
     }
@@ -38,111 +38,112 @@
   "feature": {
     "accounts": {
       "accountType": {
-        "currentAccounts": "Current Accounts",
-        "creditCards": "Credit Cards",
-        "investmentAccounts": "Investment Accounts",
-        "loans": "Loans",
-        "mortgages": "Mortgages",
-        "pensions": "Pensions",
-        "savingsAccounts": "Savings Accounts",
-        "unknown": "Other",
-        "currentAccount": "Current Account",
-        "creditCard": "Credit Card",
-        "investment": "Investments Account",
-        "loan": "Loan",
-        "mortgage": "Mortgage",
-        "pension": "Pension",
-        "savingsAccount": "Savings Account"
+        "currentAccounts": "Cuentas corrientes",
+        "creditCards": "Tarjetas de crédito",
+        "investmentAccounts": "Cuentas de inversión",
+        "loans": "Préstamos",
+        "mortgages": "Hipotecas",
+        "pensions": "Pensiones",
+        "savingsAccounts": "Cuentas de ahorro",
+        "unknown": "Otro",
+        "currentAccount": "Cuenta corriente",
+        "creditCard": "Tarjeta de crédito",
+        "investment": "Cuenta de inversiones",
+        "loan": "Préstamo",
+        "mortgage": "Hipoteca",
+        "pension": "Pensión",
+        "savingsAccount": "Cuenta de ahorro"
       }
     }
   },
   "screens": {
     "accounts": {
       "list": {
-        "emptyQuery": "CFN: No bank accounts found"
+        "emptyQuery": "CFN: No se encontraron cuentas bancarias"
       }
     },
     "login": {
       "title": {
-        "label": "CNF: Sign in to your account"
+        "label": "Inicia sesión en tu cuenta"
       },
       "form": {
         "email": {
-          "label": "CNF: Email",
-          "placeholder": "CNF: Enter your email"
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
         },
         "password": {
-          "label": "CNF: Password",
-          "placeholder": "CNF: Enter your password"
+          "label": "Contraseña",
+          "placeholder": "Ingresa tu contraseña"
         },
         "forgotPassword": {
-          "label": "CNF: Forgot password?"
+          "label": "¿Olvidaste tu contraseña?"
         },
         "submitButton": {
-          "label": "CNF: Sign in"
+          "label": "Iniciar sesión"
         },
         "divider": {
-          "label": "CNF: Or continue with"
+          "label": "O continúa con"
         },
         "googleLoginButton": {
-          "label": "CNF: Continue with Google"
+          "label": "Continuar con Google"
         }
       },
       "createAccount": {
-        "label": "CNF: Don't have an account?",
-        "cta": "CNF: Sign up!"
+        "label": "¿No tienes una cuenta?",
+        "cta": "¡Regístrate!"
       }
     },
     "budgets": {
       "details": {
         "transactions": {
+          "title": "Transacciones",
           "emptyView": {
-            "body": "No transactions found for the current selected month"
+            "body": "No se encontraron transacciones para el mes seleccionado"
           }
         }
       },
       "list": {
-        "emptyState": "No Budgets Found. Create a new budget to get started.",
+        "emptyState": "No se encontraron presupuestos. Crea un nuevo presupuesto para comenzar.",
         "createBudgetButton": {
-          "label": "Create new Budget"
+          "label": "Crear nuevo presupuesto"
         }
       },
       "create": {
         "notifications": {
           "success": {
-            "title": "Budget Created",
-            "message": "Your new budget has been created successfully."
+            "title": "Presupuesto creado",
+            "message": "Tu nuevo presupuesto ha sido creado exitosamente."
           },
           "error": {
-            "title": "Error Creating Budget"
+            "title": "Error al crear el presupuesto"
           }
         },
         "form": {
-          "title": "Create new Budget",
+          "title": "Crear nuevo presupuesto",
           "name": {
-            "label": "Name",
-            "placeholder": "Budget name"
+            "label": "Nombre",
+            "placeholder": "Nombre del presupuesto"
           },
           "currency": {
-            "label": "Currency",
-            "description": "Only available currencies from your existing accounts are shown.",
-            "placeholder": "Select currency"
+            "label": "Moneda",
+            "description": "Solo se muestran monedas disponibles de tus cuentas existentes.",
+            "placeholder": "Selecciona la moneda"
           },
           "amount": {
-            "label": "Budget Amount"
+            "label": "Monto del presupuesto"
           },
           "colorPicker": {
             "label": "Color",
-            "placeholder": "Select the category colour"
+            "placeholder": "Selecciona el color de la categoría"
           },
           "icon": {
-            "label": "Icon"
+            "label": "Ícono"
           },
           "categories": {
-            "label": "Categories"
+            "label": "Categorías"
           },
           "submitButton": {
-            "label": "Create Budget"
+            "label": "Crear presupuesto"
           }
         }
       }
