@@ -5,7 +5,6 @@ import {
   Card,
   Text,
   Button,
-  List,
   Group,
   Stack,
   Badge,
@@ -67,7 +66,7 @@ function TransactionsInboxPage() {
         <Text>Transactions Inbox</Text>
         <Badge>{transactions.length}</Badge>
       </Group>
-      <List>
+      <Stack>
         {transactions
           .map((transaction) => {
             return {
@@ -96,7 +95,7 @@ function TransactionsInboxPage() {
               }}
             />
           ))}
-      </List>
+      </Stack>
       {selectedTransaction && (
         <Card>
           <Text>{selectedTransaction.description}</Text>
