@@ -1,5 +1,23 @@
 {
   "components": {
+    "buttons": {
+      "deleteIconButton": {
+        "tooltip": "Delete"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "cancelButton": {
+          "label": "Cancel"
+        },
+        "deleteButton": {
+          "label": "Delete"
+        },
+        "subWarning": {
+          "text": "This action cannot be undone."
+        }
+      }
+    },
     "colorPicker": {
       "label": "Colour",
       "placeholder": "Select the colour"
@@ -94,6 +112,12 @@
     },
     "budgets": {
       "details": {
+        "editButton": {
+          "tooltip": "Edit"
+        },
+        "deleteButton": {
+          "tooltip": "Delete"
+        },
         "delete": {
           "dialog": {
             "title": "Deleted budget",
@@ -107,12 +131,6 @@
               "message": "An error occurred while deleting the budget."
             }
           }
-        },
-        "editButton": {
-          "tooltip": "Edit"
-        },
-        "deleteButton": {
-          "tooltip": "Delete"
         },
         "transactions": {
           "title": "Transactions",
