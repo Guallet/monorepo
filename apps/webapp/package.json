@@ -28,7 +28,7 @@
     "@tanstack/react-query": "workspace:*",
     "@tanstack/react-query-devtools": "^5.83.0",
     "@tanstack/react-router": "^1.127.9",
-    "@tanstack/router-devtools": "^1.127.9",
+    "@tanstack/react-router-devtools": "^1.131.27",
     "core-js": "^3.44.0",
     "dayjs": "^1.11.13",
     "i18next": "^25.3.2",
