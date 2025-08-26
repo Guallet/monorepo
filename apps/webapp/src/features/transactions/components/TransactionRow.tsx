@@ -33,6 +33,7 @@ export function TransactionRow({
     <Group
       justify="space-between"
       align="center"
+      wrap="nowrap"
       {...(onClick && {
         onClick: () => onClick(transaction),
         style: { cursor: "pointer" },
@@ -46,6 +47,7 @@ export function TransactionRow({
       <Stack
         style={{
           flexGrow: 1,
+          overflow: "hidden",
         }}
       >
         <Text lineClamp={1} truncate="end">
