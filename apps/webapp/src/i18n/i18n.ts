@@ -12,7 +12,11 @@ const initPromise = i18next
     debug: !BuildConfig.IS_PRODUCTION,
     lng: "en-GB",
     supportedLngs: ["en-GB", "es-ES"],
-    fallbackLng: "en-GB",
+    fallbackLng: {
+      en: ["en-GB"],
+      es: ["es-ES"],
+      default: ["en-GB"],
+    },
     fallbackNS: "translation",
     ns: ["translation"],
     defaultNS: "translation",

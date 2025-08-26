@@ -1,5 +1,5 @@
 export default {
-  locales: ["en", "es"], // Add your supported locales here
+  locales: ["en-GB", "es-ES"], // Add your supported locales here
   output: "public/locales/$LOCALE/$NAMESPACE.json", // Output path for the translation files
   defaultNamespace: "translation",
   createOldCatalogs: false, // Save previous translations to the \_old files
