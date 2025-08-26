@@ -44,8 +44,9 @@ export function TransactionList({
                 month: "long",
                 year: "numeric",
               })}
+              p={0}
             >
-              <Stack>
+              <Stack gap={0}>
                 {transactions.map((transaction) => (
                   <TransactionRow
                     key={transaction.id}

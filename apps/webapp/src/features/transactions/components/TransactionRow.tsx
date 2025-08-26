@@ -4,10 +4,12 @@ import { TransactionDto } from "@guallet/api-client";
 import { Money } from "@guallet/money";
 import { Group, Stack, Text } from "@mantine/core";
 import { useMemo } from "react";
+import classes from "./TransactionRow.module.css";
 
 type AvatarType = "account" | "category";
 
-interface TransactionRowProps {
+interface TransactionRowProps
+  extends Omit<React.ComponentProps<typeof Group>, "onClick"> {
   transaction: TransactionDto;
   avatarType: AvatarType;
   showNotes?: boolean;
@@ -19,6 +21,7 @@ export function TransactionRow({
   avatarType = "account",
   showNotes = false,
   onClick,
+  ...props
 }: Readonly<TransactionRowProps>) {
   const money = useMemo(
     () =>
@@ -34,10 +37,13 @@ export function TransactionRow({
       justify="space-between"
       align="center"
       wrap="nowrap"
+      p="md"
       {...(onClick && {
         onClick: () => onClick(transaction),
         style: { cursor: "pointer" },
+        className: classes.transactionRow,
       })}
+      {...props}
     >
       {avatarType === "category" ? (
         <CategoryAvatar categoryId={transaction.categoryId} />
