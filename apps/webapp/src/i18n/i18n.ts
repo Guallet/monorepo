@@ -10,9 +10,9 @@ const initPromise = i18next
   .use(initReactI18next)
   .init({
     debug: !BuildConfig.IS_PRODUCTION,
-    lng: "en",
-    supportedLngs: ["en", "es"],
-    fallbackLng: "en",
+    lng: "en-GB",
+    supportedLngs: ["en-GB", "es-ES"],
+    fallbackLng: "en-GB",
     fallbackNS: "translation",
     ns: ["translation"],
     defaultNS: "translation",

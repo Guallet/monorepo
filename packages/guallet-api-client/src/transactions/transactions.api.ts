@@ -16,7 +16,14 @@ export class TransactionsApi {
     });
   }
 
-  async loadTransactions(args: {
+  async loadTransactions({
+    page,
+    pageSize,
+    accounts,
+    categories,
+    startDate,
+    endDate,
+  }: {
     page: number;
     pageSize?: number | null;
     accounts?: string[] | null;
@@ -24,20 +31,28 @@ export class TransactionsApi {
     startDate?: Date | null;
     endDate?: Date | null;
   }): Promise<TransactionQueryResultDto> {
-    const { page, pageSize, accounts, categories, startDate, endDate } = args;
-    let queryPath = `transactions?page=${page}&pageSize=${pageSize}`;
-    if (accounts && accounts.length > 0) {
-      queryPath = `${queryPath}&accounts=${accounts.join(",")}`;
+    const params = new URLSearchParams({
+      page: page.toString(),
+    });
+
+    if (pageSize) {
+      params.append("pageSize", pageSize.toString());
     }
-    if (categories && categories.length > 0) {
-      queryPath = `${queryPath}&categories=${categories.join(",")}`;
+
+    if (accounts?.length) {
+      params.append("accounts", accounts.join(","));
+    }
+    if (categories?.length) {
+      params.append("categories", categories.join(","));
     }
     if (startDate) {
-      queryPath = `${queryPath}&startDate=${startDate.toISOString()}`;
+      params.append("startDate", startDate.toISOString());
     }
     if (endDate) {
-      queryPath = `${queryPath}&endDate=${endDate.toISOString()}`;
+      params.append("endDate", endDate.toISOString());
     }
+
+    const queryPath = `${TRANSACTIONS_PATH}?${params.toString()}`;
     return await this.client.get<TransactionQueryResultDto>({
       path: queryPath,
     });

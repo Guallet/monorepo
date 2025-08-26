@@ -1,5 +1,9 @@
 import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
 
 const TRANSACTIONS_QUERY_KEY = "transactions";
@@ -92,6 +96,47 @@ export function useTransactionInbox() {
       query.data?.filter(
         (dto): dto is InboxTransactionDto => dto !== undefined
       ) ?? [],
+    ...query,
+  };
+}
+
+export function useTransactionsWithFilter(filters: {
+  page: number;
+  pageSize?: number | null;
+  accounts?: string[] | null;
+  categories?: string[] | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
+}) {
+  const gualletClient = useGualletClient();
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: [TRANSACTIONS_QUERY_KEY, "filter", filters],
+    queryFn: async ({ queryKey }) => {
+      const transactions = await gualletClient.transactions.loadTransactions({
+        ...filters,
+      });
+
+      // Add the individual transactions to the cache
+      transactions.transactions.forEach((transaction: TransactionDto) => {
+        queryClient.setQueryData(
+          [TRANSACTIONS_QUERY_KEY, transaction.id],
+          transaction
+        );
+      });
+
+      return transactions;
+    },
+  });
+
+  return {
+    transactions:
+      query.data?.transactions?.filter(
+        (dto: TransactionDto | undefined): dto is TransactionDto =>
+          dto !== undefined
+      ) ?? [],
+    metadata: query.data?.meta ?? null,
     ...query,
   };
 }

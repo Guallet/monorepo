@@ -30,6 +30,7 @@ import { Route as AppCategoriesIndexRouteImport } from './routes/_app/categories
 import { Route as AppBudgetsIndexRouteImport } from './routes/_app/budgets/index'
 import { Route as AppAccountsIndexRouteImport } from './routes/_app/accounts/index'
 import { Route as AppUserEditRouteImport } from './routes/_app/user/edit'
+import { Route as AppTransactionsNewIndexRouteImport } from './routes/_app/transactions/newIndex'
 import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
@@ -173,6 +174,11 @@ const AppUserEditRoute = AppUserEditRouteImport.update({
   path: '/user/edit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTransactionsNewIndexRoute = AppTransactionsNewIndexRouteImport.update({
+  id: '/transactions/newIndex',
+  path: '/transactions/newIndex',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTransactionsInboxRoute = AppTransactionsInboxRouteImport.update({
   id: '/transactions/inbox',
   path: '/transactions/inbox',
@@ -284,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
+  '/transactions/newIndex': typeof AppTransactionsNewIndexRoute
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -325,6 +332,7 @@ export interface FileRoutesByTo {
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
+  '/transactions/newIndex': typeof AppTransactionsNewIndexRoute
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -368,6 +376,7 @@ export interface FileRoutesById {
   '/_app/connections/$id': typeof AppConnectionsIdRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/transactions/inbox': typeof AppTransactionsInboxRoute
+  '/_app/transactions/newIndex': typeof AppTransactionsNewIndexRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/tools/loan': typeof AppToolsLoanLazyRoute
   '/_app/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -411,6 +420,7 @@ export interface FileRouteTypes {
     | '/connections/$id'
     | '/reports/cashflow'
     | '/transactions/inbox'
+    | '/transactions/newIndex'
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
@@ -452,6 +462,7 @@ export interface FileRouteTypes {
     | '/connections/$id'
     | '/reports/cashflow'
     | '/transactions/inbox'
+    | '/transactions/newIndex'
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
@@ -494,6 +505,7 @@ export interface FileRouteTypes {
     | '/_app/connections/$id'
     | '/_app/reports/cashflow'
     | '/_app/transactions/inbox'
+    | '/_app/transactions/newIndex'
     | '/_app/user/edit'
     | '/_app/tools/loan'
     | '/_app/tools/mortgage'
@@ -692,6 +704,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserEditRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/transactions/newIndex': {
+      id: '/_app/transactions/newIndex'
+      path: '/transactions/newIndex'
+      fullPath: '/transactions/newIndex'
+      preLoaderRoute: typeof AppTransactionsNewIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/transactions/inbox': {
       id: '/_app/transactions/inbox'
       path: '/transactions/inbox'
@@ -825,6 +844,7 @@ interface AppRouteChildren {
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
+  AppTransactionsNewIndexRoute: typeof AppTransactionsNewIndexRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
   AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
@@ -857,6 +877,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConnectionsIdRoute: AppConnectionsIdRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppTransactionsInboxRoute: AppTransactionsInboxRoute,
+  AppTransactionsNewIndexRoute: AppTransactionsNewIndexRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
   AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,

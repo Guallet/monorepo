@@ -48,7 +48,9 @@ export function TransactionRow({
           flexGrow: 1,
         }}
       >
-        <Text lineClamp={1}>{transaction.description}</Text>
+        <Text lineClamp={1} truncate="end">
+          {transaction.description}
+        </Text>
         {showNotes && transaction.notes && (
           <Text lineClamp={1} style={{ fontWeight: "300" }}>
             {transaction.notes}
