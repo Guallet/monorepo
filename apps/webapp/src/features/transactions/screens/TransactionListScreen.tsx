@@ -32,6 +32,7 @@ export function TransactionListScreen({
         <TransactionScreenHeader
           onAddTransaction={() => console.log("Add transaction")}
         />
+
         <TransactionList
           transactions={transactions}
           onTransactionClicked={(transaction) =>
