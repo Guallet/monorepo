@@ -1,6 +1,8 @@
 import { useTransactionsWithFilter } from "@guallet/api-react";
 import { Pagination, Stack } from "@mantine/core";
 import { TransactionList } from "../components/TransactionList";
+import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { TransactionScreenHeader } from "../components/TransactionScreenHeader";
 
 interface TransactionListScreenProps {
   page: number;
@@ -15,7 +17,7 @@ export function TransactionListScreen({
   accounts,
   onPageChange,
 }: Readonly<TransactionListScreenProps>) {
-  const { transactions, metadata } = useTransactionsWithFilter({
+  const { transactions, metadata, isLoading } = useTransactionsWithFilter({
     page: page,
     pageSize: pageSize,
     accounts: accounts,
@@ -25,22 +27,28 @@ export function TransactionListScreen({
   });
 
   return (
-    <Stack>
-      <TransactionList
-        transactions={transactions}
-        onTransactionClicked={(transaction) =>
-          console.log("Transaction clicked:", transaction.id)
-        }
-      />
-      <Pagination
-        withEdges
-        total={metadata?.total ?? 0}
-        siblings={1}
-        value={page}
-        onChange={(page) => {
-          onPageChange(page);
-        }}
-      />
-    </Stack>
+    <BaseScreen isLoading={isLoading}>
+      <Stack>
+        <TransactionScreenHeader
+          onAddTransaction={() => console.log("Add transaction")}
+        />
+        <TransactionList
+          transactions={transactions}
+          onTransactionClicked={(transaction) =>
+            console.log("Transaction clicked:", transaction.id)
+          }
+        />
+        <Pagination
+          style={{ alignSelf: "center" }}
+          withEdges
+          total={metadata?.total ?? 0}
+          siblings={1}
+          value={page}
+          onChange={(page) => {
+            onPageChange(page);
+          }}
+        />
+      </Stack>
+    </BaseScreen>
   );
 }
