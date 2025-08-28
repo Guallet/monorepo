@@ -1,33 +1,40 @@
-import { useAccounts, useTransactionsWithFilter } from "@guallet/api-react";
+import { useTransactionsWithFilter } from "@guallet/api-react";
 import { Pagination, Stack } from "@mantine/core";
 import { TransactionList } from "../components/TransactionList";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { TransactionScreenHeader } from "../components/TransactionScreenHeader";
 import {
   FilterData,
-  TransactionsFilter,
-} from "../components/TransactionsFilter/TransactionsFilter";
-import { TransactionsFilterDataWrapper } from "../components/TransactionsFilter";
+  TransactionsFilterDataWrapper,
+} from "../components/TransactionsFilter";
 
 interface TransactionListScreenProps {
   page: number;
   pageSize: number;
-  accounts: string[];
+  accounts: string[] | null;
   onPageChange: (page: number) => void;
   onAddTransaction: () => void;
+  onFiltersUpdated: (filters: FilterData) => void;
 }
 
 export function TransactionListScreen({
   page,
   pageSize,
-  accounts,
+  accounts: selectedAccounts,
   onPageChange,
   onAddTransaction,
+  onFiltersUpdated,
 }: Readonly<TransactionListScreenProps>) {
+  console.log("Rendered TransactionListScreen with params: ", {
+    page,
+    pageSize,
+    selectedAccounts,
+  });
+
   const { transactions, metadata, isLoading } = useTransactionsWithFilter({
     page: page,
     pageSize: pageSize,
-    accounts: accounts,
+    accounts: selectedAccounts,
     categories: null,
     startDate: null,
     endDate: null,
@@ -38,10 +45,10 @@ export function TransactionListScreen({
       <Stack>
         <TransactionScreenHeader onAddTransaction={onAddTransaction} />
         <TransactionsFilterDataWrapper
-          selectedAccounts={[]}
+          selectedAccounts={selectedAccounts}
           selectedCategories={[]}
           onFiltersUpdate={(filters: FilterData) => {
-            console.log("Filters updated:", filters);
+            onFiltersUpdated(filters);
           }}
         />
         <TransactionList

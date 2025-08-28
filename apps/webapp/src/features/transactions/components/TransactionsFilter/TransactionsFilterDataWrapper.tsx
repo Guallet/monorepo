@@ -4,7 +4,7 @@ import { FilterData } from "./FilterData";
 import { useAccounts, useCategories } from "@guallet/api-react";
 
 interface TransactionsFilterDataWrapperProps {
-  selectedAccounts: AccountDto[] | string[];
+  selectedAccounts: AccountDto[] | string[] | null;
   selectedCategories: CategoryDto[] | string[];
   onFiltersUpdate: (filters: FilterData) => void;
 }
@@ -17,8 +17,7 @@ export function TransactionsFilterDataWrapper({
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
-  // If the selectedAccounts array is string[], map them to an AccountDto[] first
-  const mappedSelectedAccounts = selectedAccounts
+  const mappedSelectedAccounts = (selectedAccounts ?? accounts)
     .map((account) =>
       typeof account === "string"
         ? accounts.find((a) => a.id === account)
@@ -40,7 +39,18 @@ export function TransactionsFilterDataWrapper({
       selectedAccounts={mappedSelectedAccounts}
       categories={categories}
       selectedCategories={mappedSelectedCategories}
-      onFiltersUpdate={onFiltersUpdate}
+      onFiltersUpdate={(newFilters) => {
+        console.log("New filters from TransactionsFilterDataWrapper: ");
+        if (newFilters.selectedAccounts?.length === accounts.length) {
+          // Because all the accounts are selected, just return null or undefined
+          onFiltersUpdate({
+            ...newFilters,
+            selectedAccounts: undefined,
+          });
+        } else {
+          onFiltersUpdate(newFilters);
+        }
+      }}
     />
   );
 }

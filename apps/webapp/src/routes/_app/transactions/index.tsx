@@ -5,6 +5,7 @@ import { z } from "zod";
 const transactionsSearchSchema = z.object({
   page: z.number().optional().default(1),
   pageSize: z.number().optional().default(50),
+  accounts: z.array(z.string()).nullable().optional(),
 });
 
 export const Route = createFileRoute("/_app/transactions/")({
@@ -15,16 +16,27 @@ export const Route = createFileRoute("/_app/transactions/")({
 function TransactionPage() {
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const { page, pageSize } = Route.useSearch();
+  const { page, pageSize, accounts } = Route.useSearch();
 
   return (
     <TransactionListScreen
       page={page}
       pageSize={pageSize}
-      accounts={[]}
+      accounts={accounts ?? null}
       onAddTransaction={() => {
         navigate({
           to: "/transactions/create",
+        });
+      }}
+      onFiltersUpdated={(filters) => {
+        navigate({
+          search: (prev) => ({
+            ...prev,
+            accounts:
+              filters.selectedAccounts && filters.selectedAccounts.length > 0
+                ? filters.selectedAccounts.map((a) => a.id)
+                : undefined,
+          }),
         });
       }}
       onPageChange={(page) => {
