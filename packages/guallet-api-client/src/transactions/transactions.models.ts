@@ -19,6 +19,16 @@ export type TransactionQueryResultDto = {
   transactions: TransactionDto[];
 };
 
+export type CreateTransactionRequest = {
+  accountId: string;
+  description: string;
+  notes?: string | null;
+  amount: number;
+  currency?: string;
+  date: Date;
+  categoryId?: string | null;
+};
+
 export type UpdateTransactionRequest = {
   description: string | null;
   notes: string | null;

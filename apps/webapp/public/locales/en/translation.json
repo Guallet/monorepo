@@ -22,6 +22,11 @@
       "label": "Colour",
       "placeholder": "Select the colour"
     },
+    "accountInput": {
+      "label": "Account",
+      "placeholder": "Select an account",
+      "nothingFoundMessage": "No accounts found"
+    },
     "categoryMultiSelect": {
       "input": {
         "value_one": "",
@@ -48,6 +53,24 @@
         "searchBox": {
           "placeholder": "Search categories",
           "emptyResults": "No categories found"
+        }
+      }
+    },
+    "categoryPicker": {
+      "input": {
+        "placeholder": "Select category"
+      },
+      "modal": {
+        "title": "Select Category",
+        "searchBox": {
+          "placeholder": "Search categories",
+          "emptyResults": "No categories found"
+        },
+        "expandAllButton": {
+          "label": "Expand all"
+        },
+        "collapseAllButton": {
+          "label": "Collapse all"
         }
       }
     }
@@ -181,6 +204,48 @@
           },
           "submitButton": {
             "label": "Create Budget"
+          }
+        }
+      }
+    },
+    "transactions": {
+      "list": {
+        "header": {
+          "title": "Transactions",
+          "add": {
+            "tooltip": "Add new transaction"
+          }
+        }
+      },
+      "create": {
+        "title": "Add Transaction",
+        "form": {
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter transaction description"
+          },
+          "notes": {
+            "label": "Notes",
+            "placeholder": "Enter transaction notes"
+          },
+          "account": {
+            "label": "Account",
+            "placeholder": "Select an account"
+          },
+          "amount": {
+            "label": "Amount",
+            "placeholder": "Enter transaction amount"
+          },
+          "date": {
+            "label": "Date",
+            "placeholder": "Select transaction date"
+          },
+          "category": {
+            "label": "Category",
+            "placeholder": "Select a category"
+          },
+          "submitButton": {
+            "label": "Add Transaction"
           }
         }
       }

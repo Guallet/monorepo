@@ -115,11 +115,15 @@ export class TransactionsController {
   }
 
   @Post()
-  create(
+  async create(
     @RequestUser() user: UserPrincipal,
     @Body() createTransactionDto: CreateTransactionDto,
-  ) {
-    return this.transactionsService.create(createTransactionDto);
+  ): Promise<TransactionDto> {
+    const transaction = await this.transactionsService.create({
+      userId: user.id,
+      dto: createTransactionDto,
+    });
+    return TransactionDto.fromDomain(transaction);
   }
 
   @Get(':id')

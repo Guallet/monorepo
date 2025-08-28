@@ -22,6 +22,11 @@ function TransactionPage() {
       page={page}
       pageSize={pageSize}
       accounts={[]}
+      onAddTransaction={() => {
+        navigate({
+          to: "/transactions/create",
+        });
+      }}
       onPageChange={(page) => {
         navigate({
           search: (prev) => ({

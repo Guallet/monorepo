@@ -9,6 +9,7 @@ interface TransactionListScreenProps {
   pageSize: number;
   accounts: string[];
   onPageChange: (page: number) => void;
+  onAddTransaction: () => void;
 }
 
 export function TransactionListScreen({
@@ -16,6 +17,7 @@ export function TransactionListScreen({
   pageSize,
   accounts,
   onPageChange,
+  onAddTransaction,
 }: Readonly<TransactionListScreenProps>) {
   const { transactions, metadata, isLoading } = useTransactionsWithFilter({
     page: page,
@@ -29,9 +31,7 @@ export function TransactionListScreen({
   return (
     <BaseScreen isLoading={isLoading}>
       <Stack>
-        <TransactionScreenHeader
-          onAddTransaction={() => console.log("Add transaction")}
-        />
+        <TransactionScreenHeader onAddTransaction={onAddTransaction} />
 
         <TransactionList
           transactions={transactions}

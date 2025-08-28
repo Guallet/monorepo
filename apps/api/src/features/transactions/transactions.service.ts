@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, IsNull, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { InboxTransaction } from './entities/inbox-transaction.model';
+import { AccountsService } from '../accounts/accounts.service';
 
 @Injectable()
 export class TransactionsService {
@@ -17,7 +18,8 @@ export class TransactionsService {
 
   constructor(
     @InjectRepository(Transaction)
-    private repository: Repository<Transaction>,
+    private readonly repository: Repository<Transaction>,
+    private readonly accountService: AccountsService,
   ) {}
 
   // get total transactions count for a user, with query filters
@@ -119,13 +121,26 @@ export class TransactionsService {
     });
   }
 
-  async create(dto: CreateTransactionDto): Promise<Transaction> {
+  async create({
+    userId,
+    dto,
+  }: {
+    userId: string;
+    dto: CreateTransactionDto;
+  }): Promise<Transaction> {
+    // Validate the user can access the account
+    const account = await this.accountService.getUserAccount(
+      userId,
+      dto.accountId,
+    );
+
     const entity = {
       accountId: dto.accountId,
       description: dto.description,
       notes: dto.notes,
       amount: dto.amount,
-      currency: dto.currency,
+      // Get the current currency of the account in case the user doesn't provide one
+      currency: dto.currency ?? account.currency,
       date: dto.date,
       categoryId: dto.categoryId,
     };

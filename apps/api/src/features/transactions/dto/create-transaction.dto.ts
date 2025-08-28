@@ -3,7 +3,7 @@ export class CreateTransactionDto {
   description: string;
   notes?: string;
   amount: number;
-  currency: string;
+  currency?: string;
   date: Date;
   categoryId?: string;
 }

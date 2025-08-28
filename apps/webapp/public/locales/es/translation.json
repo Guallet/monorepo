@@ -2,25 +2,30 @@
   "components": {
     "buttons": {
       "deleteIconButton": {
-        "tooltip": "Delete"
+        "tooltip": "Eliminar"
       }
     },
     "dialogs": {
       "delete": {
         "cancelButton": {
-          "label": "Cancel"
+          "label": "Cancelar"
         },
         "deleteButton": {
-          "label": "Delete"
+          "label": "Eliminar"
         },
         "subWarning": {
-          "text": "This action cannot be undone."
+          "text": "Esta acción no se puede deshacer."
         }
       }
     },
     "colorPicker": {
       "label": "Color",
       "placeholder": "Selecciona el color"
+    },
+    "accountInput": {
+      "label": "Cuenta",
+      "placeholder": "Selecciona una cuenta",
+      "nothingFoundMessage": "No se encontraron cuentas"
     },
     "categoryMultiSelect": {
       "input": {
@@ -49,6 +54,24 @@
         "searchBox": {
           "placeholder": "Buscar categorías",
           "emptyResults": "No se encontraron categorías"
+        }
+      }
+    },
+    "categoryPicker": {
+      "input": {
+        "placeholder": "Select category"
+      },
+      "modal": {
+        "title": "Select Category",
+        "searchBox": {
+          "placeholder": "Search categories",
+          "emptyResults": "No categories found"
+        },
+        "expandAllButton": {
+          "label": "Expand all"
+        },
+        "collapseAllButton": {
+          "label": "Collapse all"
         }
       }
     }
@@ -182,6 +205,48 @@
           },
           "submitButton": {
             "label": "Crear presupuesto"
+          }
+        }
+      }
+    },
+    "transactions": {
+      "list": {
+        "header": {
+          "title": "Transacciones",
+          "add": {
+            "tooltip": "Agregar nueva transacción"
+          }
+        }
+      },
+      "create": {
+        "title": "Agregar transacción",
+        "form": {
+          "description": {
+            "label": "Descripción",
+            "placeholder": "Ingresa la descripción de la transacción"
+          },
+          "notes": {
+            "label": "Notas",
+            "placeholder": "Ingresa notas de la transacción"
+          },
+          "account": {
+            "label": "Cuenta",
+            "placeholder": "Selecciona una cuenta"
+          },
+          "amount": {
+            "label": "Monto",
+            "placeholder": "Ingresa el monto de la transacción"
+          },
+          "date": {
+            "label": "Fecha",
+            "placeholder": "Selecciona la fecha de la transacción"
+          },
+          "category": {
+            "label": "Category",
+            "placeholder": "Select a category"
+          },
+          "submitButton": {
+            "label": "Agregar transacción"
           }
         }
       }

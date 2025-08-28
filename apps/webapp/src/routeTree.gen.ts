@@ -32,6 +32,7 @@ import { Route as AppAccountsIndexRouteImport } from './routes/_app/accounts/ind
 import { Route as AppUserEditRouteImport } from './routes/_app/user/edit'
 import { Route as AppTransactionsOldIndexRouteImport } from './routes/_app/transactions/oldIndex'
 import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
+import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transactions/create'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
 import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
@@ -184,6 +185,11 @@ const AppTransactionsInboxRoute = AppTransactionsInboxRouteImport.update({
   path: '/transactions/inbox',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTransactionsCreateRoute = AppTransactionsCreateRouteImport.update({
+  id: '/transactions/create',
+  path: '/transactions/create',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   id: '/reports/cashflow',
   path: '/reports/cashflow',
@@ -289,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
+  '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
   '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
   '/user/edit': typeof AppUserEditRoute
@@ -331,6 +338,7 @@ export interface FileRoutesByTo {
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
+  '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
   '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
   '/user/edit': typeof AppUserEditRoute
@@ -375,6 +383,7 @@ export interface FileRoutesById {
   '/_app/categories/old': typeof AppCategoriesOldRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
+  '/_app/transactions/create': typeof AppTransactionsCreateRoute
   '/_app/transactions/inbox': typeof AppTransactionsInboxRoute
   '/_app/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
   '/_app/user/edit': typeof AppUserEditRoute
@@ -419,6 +428,7 @@ export interface FileRouteTypes {
     | '/categories/old'
     | '/connections/$id'
     | '/reports/cashflow'
+    | '/transactions/create'
     | '/transactions/inbox'
     | '/transactions/oldIndex'
     | '/user/edit'
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/categories/old'
     | '/connections/$id'
     | '/reports/cashflow'
+    | '/transactions/create'
     | '/transactions/inbox'
     | '/transactions/oldIndex'
     | '/user/edit'
@@ -504,6 +515,7 @@ export interface FileRouteTypes {
     | '/_app/categories/old'
     | '/_app/connections/$id'
     | '/_app/reports/cashflow'
+    | '/_app/transactions/create'
     | '/_app/transactions/inbox'
     | '/_app/transactions/oldIndex'
     | '/_app/user/edit'
@@ -718,6 +730,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTransactionsInboxRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/transactions/create': {
+      id: '/_app/transactions/create'
+      path: '/transactions/create'
+      fullPath: '/transactions/create'
+      preLoaderRoute: typeof AppTransactionsCreateRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/reports/cashflow': {
       id: '/_app/reports/cashflow'
       path: '/reports/cashflow'
@@ -843,6 +862,7 @@ interface AppRouteChildren {
   AppCategoriesOldRoute: typeof AppCategoriesOldRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
+  AppTransactionsCreateRoute: typeof AppTransactionsCreateRoute
   AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
   AppTransactionsOldIndexRoute: typeof AppTransactionsOldIndexRoute
   AppUserEditRoute: typeof AppUserEditRoute
@@ -876,6 +896,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesOldRoute: AppCategoriesOldRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
+  AppTransactionsCreateRoute: AppTransactionsCreateRoute,
   AppTransactionsInboxRoute: AppTransactionsInboxRoute,
   AppTransactionsOldIndexRoute: AppTransactionsOldIndexRoute,
   AppUserEditRoute: AppUserEditRoute,
