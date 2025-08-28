@@ -1,23 +1,23 @@
 import { get, patch, post } from "@/api/fetchHelper";
-import { Account } from "../models/Account";
+import { AccountDto } from "@guallet/api-client";
 
-export async function loadAccounts(): Promise<Account[]> {
-  return await get<Account[]>("accounts");
+export async function loadAccounts(): Promise<AccountDto[]> {
+  return await get<AccountDto[]>("accounts");
 }
 
-export async function getAccount(accountId: string): Promise<Account> {
-  return await get<Account>(`accounts/${accountId}`);
+export async function getAccount(accountId: string): Promise<AccountDto> {
+  return await get<AccountDto>(`accounts/${accountId}`);
 }
 
 export async function createAccount(account: CreateAccountRequest) {
-  return await post<Account, CreateAccountRequest>("accounts", account);
+  return await post<AccountDto, CreateAccountRequest>("accounts", account);
 }
 
 export async function updateAccount(
   accountId: string,
   account: UpdateAccountRequest
 ) {
-  return await patch<Account, UpdateAccountRequest>(
+  return await patch<AccountDto, UpdateAccountRequest>(
     `accounts/${accountId}`,
     account
   );

@@ -1,26 +1,18 @@
-import { AccountsPicker } from "@/components/AccountPicker/AccountsPicker";
+import { AccountsPicker } from "@/features/accounts/components/AccountPicker/AccountsPicker";
 import { CategoryMultiSelectCheckbox } from "@/components/Categories/CategoryMultiSelectCheckbox";
 import { DateRangeButton } from "@/components/DateRangeButton/DateRangeButton";
-import { Account } from "@/features/accounts/models/Account";
 import { Category } from "@/features/categories/models/Category";
 import { Card, Group, Modal, Text } from "@mantine/core";
 import { useState } from "react";
+import { FilterData } from "./FilterData";
+import { AccountDto, CategoryDto } from "@guallet/api-client";
 
-export type FilterData = {
-  selectedAccounts: Account[];
-  selectedCategories: Category[];
-  dateRange: {
-    startDate: Date;
-    endDate: Date;
-  } | null;
-};
+interface TransactionsFilterProps {
+  accounts: AccountDto[];
+  selectedAccounts: AccountDto[];
 
-interface IProps {
-  accounts: Account[];
-  selectedAccounts: Account[];
-
-  categories: Category[];
-  selectedCategories: Category[];
+  categories: CategoryDto[];
+  selectedCategories: CategoryDto[];
 
   onFiltersUpdate: (filters: FilterData) => void;
 }
@@ -31,7 +23,7 @@ export function TransactionsFilter({
   categories,
   selectedCategories,
   onFiltersUpdate,
-}: IProps) {
+}: Readonly<TransactionsFilterProps>) {
   const [dateRange, setDateRange] = useState<{
     startDate: Date;
     endDate: Date;
@@ -52,7 +44,6 @@ export function TransactionsFilter({
       <Card withBorder radius="md">
         <Group>
           <AccountsPicker
-            accounts={accounts}
             selectedAccounts={selectedAccounts}
             onSelectedAccountsChange={(value) => {
               onFiltersUpdate({

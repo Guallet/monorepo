@@ -1,16 +1,13 @@
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import {
-  SearchableSectionListView,
-  Section,
-} from "@guallet/ui-react/ListView/SearchableSectionListView";
 import { Stack, Button, Text, Card } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { AccountRow } from "../components/AccountRow";
 import { AccountsListHeader } from "../components/AccountsListHeader";
+import { SearchableSectionListView, Section } from "@guallet/ui-react";
 
 // We want the Current accounts first, then credit cards, then alphabetically, and last the unknown accounts
 const compareAccountTypes = (

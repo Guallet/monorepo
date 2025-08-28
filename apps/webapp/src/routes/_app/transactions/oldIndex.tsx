@@ -1,5 +1,3 @@
-import { loadAccounts } from "@/features/accounts/api/accounts.api";
-import { Account } from "@/features/accounts/models/Account";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { EditNotesModal } from "@/features/transactions/TransactionsPage/EditNotesModal";
 import { SelectCategoryModal } from "@/features/transactions/TransactionsPage/SelectCategoryModal";
@@ -9,11 +7,10 @@ import {
   updateTransactionCategory as remoteUpdateTransactionCategory,
   updateTransactionNotes as remoteUpdateTransactionNotes,
 } from "@/features/transactions/api/transactions.api";
-import {
-  FilterData,
-  TransactionsFilter,
-} from "@/features/transactions/components/TransactionsFilter";
+import { FilterData } from "@/features/transactions/components/TransactionsFilter";
+import { TransactionsFilter } from "@/features/transactions/components/TransactionsFilter/TransactionsFilter";
 import { Transaction } from "@/features/transactions/models/Transaction";
+import { AccountDto } from "@guallet/api-client";
 
 import { Stack, Table, Modal, Pagination, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -59,7 +56,7 @@ export const Route = createFileRoute("/_app/transactions/oldIndex")({
 async function loader(args: SearchParams) {
   const { page, pageSize, accounts, categories, startDate, endDate } = args;
 
-  const allAccounts = await loadAccounts();
+  const allAccounts: AccountDto[] = [];
   const allCategories = await loadCategories();
 
   const result: TransactionQueryResultDto = await loadTransactions({
@@ -140,7 +137,7 @@ function TransactionsPage() {
   const selectedAccounts =
     selectedAccountsIds
       ?.map((id) => accounts.find((account) => account.id === id))
-      .filter((item): item is Account => !!item) ?? [];
+      .filter((item): item is AccountDto => !!item) ?? [];
 
   const selectedTransaction = transactions.find(
     (transaction) => transaction.id === transactionId
@@ -318,7 +315,7 @@ function TransactionsTable({
   transactions,
   onEditCategory,
   onEditNotes,
-}: TransactionsTableProps) {
+}: Readonly<TransactionsTableProps>) {
   const rows = transactions.map((transaction) => (
     <Table.Tr key={transaction.id}>
       <Table.Td>{formatDate(new Date(transaction.date))}</Table.Td>

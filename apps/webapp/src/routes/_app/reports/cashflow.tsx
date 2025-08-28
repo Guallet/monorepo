@@ -2,7 +2,6 @@ import { Stack, Table, Text, useMantineTheme } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { loadAccounts } from "@/features/accounts/api/accounts.api";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { getCashflowReportData } from "@/features/reports/api/reports.api";
 import { ReportFilters } from "@/features/reports/components/ReportFilters";
@@ -10,6 +9,7 @@ import { CashflowDataDto } from "@/features/reports/api/cashflow.models";
 import { CashFlowRow } from "@/features/reports/CashFlow/CashFlowCategoryRow";
 
 import { z } from "zod";
+import { useAccounts } from "@guallet/api-react";
 const pageSearchSchema = z.object({
   year: z.number().catch(new Date().getUTCFullYear()),
 });
@@ -23,20 +23,20 @@ export const Route = createFileRoute("/_app/reports/cashflow")({
 
 async function loader(args: { year: number }) {
   const { year } = args;
-  const accounts = await loadAccounts();
   const categories = await loadCategories();
   const reportData = await getCashflowReportData(year);
 
   return {
-    accounts: accounts,
     categories: categories,
     tableData: reportData,
   };
 }
 
 export function CashFlowPage() {
-  const { accounts, categories, tableData } = Route.useLoaderData();
+  const { categories, tableData } = Route.useLoaderData();
   const [selectedYear, setSelectedYear] = useState<Date | null>(null);
+
+  const { accounts } = useAccounts();
 
   return (
     <Stack>

@@ -17,7 +17,7 @@ export class Money {
     return new Money(amount, Currency.fromISOCode(currencyCode));
   }
 
-  format(locale: string | undefined): string {
+  format(locale?: string): string {
     // TODO: This only works on web. Check equivalent for React Native too
     locale ??= navigator.language;
 

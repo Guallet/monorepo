@@ -1,8 +1,13 @@
-import { useTransactionsWithFilter } from "@guallet/api-react";
+import { useAccounts, useTransactionsWithFilter } from "@guallet/api-react";
 import { Pagination, Stack } from "@mantine/core";
 import { TransactionList } from "../components/TransactionList";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { TransactionScreenHeader } from "../components/TransactionScreenHeader";
+import {
+  FilterData,
+  TransactionsFilter,
+} from "../components/TransactionsFilter/TransactionsFilter";
+import { TransactionsFilterDataWrapper } from "../components/TransactionsFilter";
 
 interface TransactionListScreenProps {
   page: number;
@@ -32,7 +37,13 @@ export function TransactionListScreen({
     <BaseScreen isLoading={isLoading}>
       <Stack>
         <TransactionScreenHeader onAddTransaction={onAddTransaction} />
-
+        <TransactionsFilterDataWrapper
+          selectedAccounts={[]}
+          selectedCategories={[]}
+          onFiltersUpdate={(filters: FilterData) => {
+            console.log("Filters updated:", filters);
+          }}
+        />
         <TransactionList
           transactions={transactions}
           onTransactionClicked={(transaction) =>
