@@ -8,12 +8,20 @@ import {
   useTree,
   getTreeExpandedState,
   TreeNodeData,
+  Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { CategoryTreeNode } from "./CategoryTreeNode";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "@guallet/api-react";
 import { CategoryDto } from "@guallet/api-client";
+import {
+  IconChevronsDown,
+  IconChevronsUp,
+  IconDeselect,
+  IconSelectAll,
+} from "@tabler/icons-react";
 
 interface CategoryMultiSelectModalProps {
   selectedCategories: CategoryDto[];
@@ -101,31 +109,61 @@ export function CategoryMultiSelectModal({
 
   return (
     <Stack>
-      <Group mb="md">
-        <Button variant="outline" onClick={() => tree.checkAllNodes()}>
-          {t(
+      <Group wrap="nowrap">
+        <SearchBoxInput
+          style={{ flexGrow: 1 }}
+          placeholder={t(
+            "components.categoryMultiSelect.modal.searchBox.placeholder",
+            "Search categories"
+          )}
+          query={filterQuery}
+          debounceWait={350}
+          onSearchQueryChanged={(value) => setFilterQuery(value)}
+        />
+
+        <Tooltip
+          label={t(
             "components.categoryMultiSelect.modal.checkAllButton.label",
             "Check all"
           )}
-        </Button>
-        <Button variant="outline" onClick={() => tree.uncheckAllNodes()}>
-          {t(
+        >
+          <ActionIcon variant="outline" onClick={() => tree.checkAllNodes()}>
+            <IconSelectAll />
+          </ActionIcon>
+        </Tooltip>
+
+        <Tooltip
+          label={t(
             "components.categoryMultiSelect.modal.uncheckAllButton.label",
             "Uncheck all"
           )}
-        </Button>
-        <Button variant="outline" onClick={() => tree.expandAllNodes()}>
-          {t(
+        >
+          <ActionIcon variant="outline" onClick={() => tree.uncheckAllNodes()}>
+            <IconDeselect />
+          </ActionIcon>
+        </Tooltip>
+
+        <Tooltip
+          label={t(
             "components.categoryMultiSelect.modal.expandAllButton.label",
             "Expand all"
           )}
-        </Button>
-        <Button variant="outline" onClick={() => tree.collapseAllNodes()}>
-          {t(
+        >
+          <ActionIcon variant="outline" onClick={() => tree.expandAllNodes()}>
+            <IconChevronsDown />
+          </ActionIcon>
+        </Tooltip>
+
+        <Tooltip
+          label={t(
             "components.categoryMultiSelect.modal.collapseAllButton.label",
             "Collapse all"
           )}
-        </Button>
+        >
+          <ActionIcon variant="outline" onClick={() => tree.collapseAllNodes()}>
+            <IconChevronsUp />
+          </ActionIcon>
+        </Tooltip>
       </Group>
       <Group justify="flex-end">
         <Button onClick={onSubmitSelectedCategories}>
@@ -135,15 +173,7 @@ export function CategoryMultiSelectModal({
           )}
         </Button>
       </Group>
-      <SearchBoxInput
-        placeholder={t(
-          "components.categoryMultiSelect.modal.searchBox.placeholder",
-          "Search categories"
-        )}
-        query={filterQuery}
-        debounceWait={350}
-        onSearchQueryChanged={(value) => setFilterQuery(value)}
-      />
+
       {filteredData.length === 0 && (
         <Text c="dimmed" size="sm">
           {t(

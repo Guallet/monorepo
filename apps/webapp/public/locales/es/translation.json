@@ -29,13 +29,18 @@
     },
     "categoryMultiSelect": {
       "input": {
-        "value_one": "",
-        "value_many": "",
-        "value_other": "",
+        "valueAll": "Todas las categorías seleccionadas",
+        "value_one": "{{count}} categoría seleccionada",
+        "value_many": "{{count}} categorías seleccionadas",
+        "value_other": "{{count}} categorías seleccionadas",
         "placeholder": "Selecciona categorías"
       },
       "modal": {
         "title": "Seleccionar categorías",
+        "searchBox": {
+          "placeholder": "Buscar categorías",
+          "emptyResults": "No se encontraron categorías"
+        },
         "checkAllButton": {
           "label": "Seleccionar todo"
         },
@@ -50,10 +55,6 @@
         },
         "selectButton": {
           "label": "Seleccionar categorías"
-        },
-        "searchBox": {
-          "placeholder": "Buscar categorías",
-          "emptyResults": "No se encontraron categorías"
         }
       }
     },
@@ -73,6 +74,11 @@
         "collapseAllButton": {
           "label": "Collapse all"
         }
+      }
+    },
+    "transactionsFilter": {
+      "categories": {
+        "label": "Categories"
       }
     }
   },

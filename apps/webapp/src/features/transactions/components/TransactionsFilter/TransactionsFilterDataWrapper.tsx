@@ -5,7 +5,7 @@ import { useAccounts, useCategories } from "@guallet/api-react";
 
 interface TransactionsFilterDataWrapperProps {
   selectedAccounts: AccountDto[] | string[] | null;
-  selectedCategories: CategoryDto[] | string[];
+  selectedCategories: CategoryDto[] | string[] | null;
   onFiltersUpdate: (filters: FilterData) => void;
 }
 
@@ -25,7 +25,7 @@ export function TransactionsFilterDataWrapper({
     )
     .filter((account): account is AccountDto => account !== undefined);
 
-  const mappedSelectedCategories = selectedCategories
+  const mappedSelectedCategories = (selectedCategories ?? categories)
     .map((category) =>
       typeof category === "string"
         ? categories.find((c) => c.id === category)
@@ -35,21 +35,22 @@ export function TransactionsFilterDataWrapper({
 
   return (
     <TransactionsFilter
-      accounts={accounts}
-      selectedAccounts={mappedSelectedAccounts}
-      categories={categories}
-      selectedCategories={mappedSelectedCategories}
-      onFiltersUpdate={(newFilters) => {
-        console.log("New filters from TransactionsFilterDataWrapper: ");
+      filters={{
+        selectedAccounts: mappedSelectedAccounts,
+        selectedCategories: mappedSelectedCategories,
+      }}
+      onFiltersUpdate={(newFilters: FilterData) => {
+        const finalFilters = { ...newFilters };
+
+        // Because all the accounts are selected, just return null or undefined
         if (newFilters.selectedAccounts?.length === accounts.length) {
-          // Because all the accounts are selected, just return null or undefined
-          onFiltersUpdate({
-            ...newFilters,
-            selectedAccounts: undefined,
-          });
-        } else {
-          onFiltersUpdate(newFilters);
+          finalFilters.selectedAccounts = undefined;
         }
+        // Because all the categories are selected, just return null or undefined
+        if (newFilters.selectedCategories?.length === categories.length) {
+          finalFilters.selectedCategories = undefined;
+        }
+        onFiltersUpdate(finalFilters);
       }}
     />
   );

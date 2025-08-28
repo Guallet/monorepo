@@ -12,6 +12,7 @@ interface TransactionListScreenProps {
   page: number;
   pageSize: number;
   accounts: string[] | null;
+  categories: string[] | null;
   onPageChange: (page: number) => void;
   onAddTransaction: () => void;
   onFiltersUpdated: (filters: FilterData) => void;
@@ -21,16 +22,11 @@ export function TransactionListScreen({
   page,
   pageSize,
   accounts: selectedAccounts,
+  categories: selectedCategories,
   onPageChange,
   onAddTransaction,
   onFiltersUpdated,
 }: Readonly<TransactionListScreenProps>) {
-  console.log("Rendered TransactionListScreen with params: ", {
-    page,
-    pageSize,
-    selectedAccounts,
-  });
-
   const { transactions, metadata, isLoading } = useTransactionsWithFilter({
     page: page,
     pageSize: pageSize,
@@ -46,7 +42,7 @@ export function TransactionListScreen({
         <TransactionScreenHeader onAddTransaction={onAddTransaction} />
         <TransactionsFilterDataWrapper
           selectedAccounts={selectedAccounts}
-          selectedCategories={[]}
+          selectedCategories={selectedCategories}
           onFiltersUpdate={(filters: FilterData) => {
             onFiltersUpdated(filters);
           }}
