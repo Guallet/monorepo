@@ -17,8 +17,10 @@ export class Money {
     return new Money(amount, Currency.fromISOCode(currencyCode));
   }
 
-  format(): string {
-    const locale = navigator.language ?? undefined;
+  format(locale: string | undefined): string {
+    // TODO: This only works on web. Check equivalent for React Native too
+    locale ??= navigator.language;
+
     const currencyFormatter = Intl.NumberFormat(locale, {
       style: "currency",
       currency: this.currency.code,

@@ -1,22 +1,6 @@
 import { CURRENCIES } from "./iso_4217";
 
 function getCurrencySymbol(code: string, locale: string | undefined): string {
-  // TODO: Restore this code when it's possible to get the locale from the device
-  // This code below doesn't work on React Native (at least on Android). Investigate how to fix it
-  // const locale = navigator.language ?? undefined;
-  // return (0)
-  //   .toLocaleString([locale], {
-  //     style: "currency",
-  //     currency: code,
-  //     minimumFractionDigits: 0,
-  //     maximumFractionDigits: 0,
-  //     currencySign: "standard",
-  //     currencyDisplay: "narrowSymbol",
-  //     useGrouping: true,
-  //   })
-  //   .replace(/\d/g, "")
-  //   .trim();
-
   // RN Android compatible code
   try {
     return (0)

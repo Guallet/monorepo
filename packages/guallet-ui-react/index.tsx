@@ -1,6 +1,6 @@
 // component exports
-export * from "./ListView/ListView";
-export * from "./ListView/SearchableListView";
-export * from "./ListView/SearchableSectionListView";
-export * from "./SearchBoxInput/SearchBoxInput";
+export * from "./src/ListView/ListView";
+export * from "./src/ListView/SearchableListView";
+export * from "./src/ListView/SearchableSectionListView";
+export * from "./src/SearchBoxInput/SearchBoxInput";
 export * from "./src/DebugJson";
