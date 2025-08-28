@@ -6,12 +6,14 @@ import { useAccounts, useCategories } from "@guallet/api-react";
 interface TransactionsFilterDataWrapperProps {
   selectedAccounts: AccountDto[] | string[] | null;
   selectedCategories: CategoryDto[] | string[] | null;
+  dateRange: { startDate: Date; endDate: Date } | null;
   onFiltersUpdate: (filters: FilterData) => void;
 }
 
 export function TransactionsFilterDataWrapper({
   selectedAccounts,
   selectedCategories,
+  dateRange,
   onFiltersUpdate,
 }: Readonly<TransactionsFilterDataWrapperProps>) {
   const { accounts } = useAccounts();
@@ -38,6 +40,7 @@ export function TransactionsFilterDataWrapper({
       filters={{
         selectedAccounts: mappedSelectedAccounts,
         selectedCategories: mappedSelectedCategories,
+        dateRange: dateRange,
       }}
       onFiltersUpdate={(newFilters: FilterData) => {
         const finalFilters = { ...newFilters };

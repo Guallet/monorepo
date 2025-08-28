@@ -92,8 +92,8 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
                   !range
                     ? "Select range"
                     : listItemSelected
-                    ? listItemSelected.label
-                    : "Custom range"
+                      ? listItemSelected.label
+                      : "Custom range"
                 );
 
                 setOpened(false);

@@ -1,7 +1,6 @@
 import { AccountsPicker } from "@/features/accounts/components/AccountPicker/AccountsPicker";
 import { DateRangeButton } from "@/components/DateRangeButton/DateRangeButton";
 import { Card, Group } from "@mantine/core";
-import { useState } from "react";
 import { FilterData } from "./FilterData";
 import { AccountDto, CategoryDto } from "@guallet/api-client";
 import { CategoryMultiSelect } from "@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect";
@@ -17,10 +16,6 @@ export function TransactionsFilter({
   onFiltersUpdate,
 }: Readonly<TransactionsFilterProps>) {
   const { t } = useTranslation();
-  const [dateRange, setDateRange] = useState<{
-    startDate: Date;
-    endDate: Date;
-  } | null>(null);
 
   return (
     <Card withBorder radius="md">
@@ -48,26 +43,19 @@ export function TransactionsFilter({
           }}
         />
         <DateRangeButton
-          selectedRange={dateRange}
+          selectedRange={filters.dateRange ?? null}
           onRangeSelected={(selectedRange) => {
-            let filterDateRange: {
-              startDate: Date;
-              endDate: Date;
-            } | null = null;
             if (selectedRange) {
-              filterDateRange = {
-                startDate: selectedRange.startDate,
-                endDate: selectedRange.endDate,
-              };
-              setDateRange(filterDateRange);
+              onFiltersUpdate({
+                ...filters,
+                dateRange: selectedRange,
+              });
             } else {
-              setDateRange(null);
+              onFiltersUpdate({
+                ...filters,
+                dateRange: null,
+              });
             }
-
-            onFiltersUpdate({
-              ...filters,
-              dateRange: filterDateRange,
-            });
           }}
         />
       </Group>

@@ -13,6 +13,7 @@ interface TransactionListScreenProps {
   pageSize: number;
   accounts: string[] | null;
   categories: string[] | null;
+  dateRange: { startDate: Date; endDate: Date } | null;
   onPageChange: (page: number) => void;
   onAddTransaction: () => void;
   onFiltersUpdated: (filters: FilterData) => void;
@@ -23,6 +24,7 @@ export function TransactionListScreen({
   pageSize,
   accounts: selectedAccounts,
   categories: selectedCategories,
+  dateRange,
   onPageChange,
   onAddTransaction,
   onFiltersUpdated,
@@ -43,6 +45,7 @@ export function TransactionListScreen({
         <TransactionsFilterDataWrapper
           selectedAccounts={selectedAccounts}
           selectedCategories={selectedCategories}
+          dateRange={dateRange}
           onFiltersUpdate={(filters: FilterData) => {
             onFiltersUpdated(filters);
           }}
