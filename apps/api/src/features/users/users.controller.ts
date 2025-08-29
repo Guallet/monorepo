@@ -16,6 +16,7 @@ import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { UserDto } from './dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -65,5 +66,29 @@ export class UsersController {
       deleteFromAuthService: true,
     });
     return { message: 'User deleted successfully' };
+  }
+
+  @Get('settings')
+  async getUserSettings(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<UserSettingsDto> {
+    const userEntity = await this.usersService.findUserData(user.id);
+    if (!userEntity) {
+      throw new NotFoundException('User not found');
+    }
+    return UserSettingsDto.fromDomain(userEntity);
+  }
+
+  @Patch('settings')
+  async updateUserSettings(
+    @RequestUser() user: UserPrincipal,
+    @Body() requestDto: UserSettingsRequest,
+  ): Promise<UserSettingsDto> {
+    const userEntity = await this.usersService.updateUserSettings({
+      userId: user.id,
+      dto: requestDto,
+    });
+
+    return UserSettingsDto.fromDomain(userEntity);
   }
 }

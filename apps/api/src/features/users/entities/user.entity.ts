@@ -25,5 +25,16 @@ export class User extends BaseDbEntity {
   })
   roles: UserRole[];
 
+  // user settings
+  @Column({ nullable: true })
+  default_currency: string;
+
+  @Column({
+    type: 'simple-array',
+    default: '',
+    nullable: true,
+  })
+  preferred_currencies: string[];
+
   // relations
 }

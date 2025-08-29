@@ -16,11 +16,11 @@ import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { z } from "zod";
 import { getAccountTypeTitleSingular } from "../models/Account";
 import { notifications } from "@mantine/notifications";
 import { Currency } from "@guallet/money";
+import { useDefaultCurrency } from "@/utils/useDefaultCurrency";
 
 const accountFormDataSchema = z.object({
   name: z.string().min(1, { message: "Account name is required" }),
@@ -35,17 +35,14 @@ type AddAccountFormData = z.infer<typeof accountFormDataSchema>;
 export function AddAccountScreen() {
   const navigate = useNavigate();
   const { createAccountMutation } = useAccountMutations();
-
-  const [accountType, setAccountType] = useState<AccountTypeDto>(
-    AccountTypeDto.CURRENT_ACCOUNT
-  );
+  const defaultCurrency = useDefaultCurrency();
 
   const form = useForm<AddAccountFormData>({
     validate: zodResolver(accountFormDataSchema),
     initialValues: {
       name: "",
       account_type: AccountTypeDto.CURRENT_ACCOUNT,
-      currency: null,
+      currency: defaultCurrency,
       balance: 0,
       credit_limit: null,
       interest_rate: null,
@@ -126,7 +123,6 @@ export function AddAccountScreen() {
                 {...form.getInputProps("account_type")}
                 onChange={(event) => {
                   const type = event.currentTarget.value as AccountTypeDto;
-                  setAccountType(type);
                   form.setFieldValue("account_type", type);
                 }}
               />

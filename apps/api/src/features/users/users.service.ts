@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRole } from 'src/auth/user-principal';
+import { UserSettingsRequest } from './dto/user-settings.dto';
 
 @Injectable()
 export class UsersService {
@@ -82,16 +83,12 @@ export class UsersService {
     });
   }
 
-  findUserData(user_id: string) {
+  async findUserData(user_id: string): Promise<User | null> {
     return this.repository.findOne({
       where: {
         id: user_id,
       },
     });
-  }
-
-  findOne(id: string) {
-    return `This action returns a #${id} user`;
   }
 
   async updateUser({
@@ -144,5 +141,25 @@ export class UsersService {
     }
     this.logger.warn(`User not found: ${userId}`);
     throw new NotFoundException('User not found');
+  }
+
+  async updateUserSettings({
+    userId,
+    dto,
+  }: {
+    userId: string;
+    dto: UserSettingsRequest;
+  }): Promise<User> {
+    const user = await this.repository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.default_currency =
+      dto.currencies?.default_currency ?? user.default_currency;
+    user.preferred_currencies =
+      dto.currencies?.preferred_currencies ?? user.preferred_currencies;
+
+    return await this.repository.save(user);
   }
 }
