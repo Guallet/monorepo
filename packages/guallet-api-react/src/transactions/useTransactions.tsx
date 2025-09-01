@@ -23,9 +23,12 @@ export function useTransactions() {
 
   return {
     transactions:
-      query.data?.transactions.filter(
-        (dto): dto is TransactionDto => dto !== undefined
-      ) ?? [],
+      query.data?.transactions
+        .filter((dto): dto is TransactionDto => dto !== undefined)
+        .map((dto) => ({
+          ...dto,
+          date: new Date(dto.date),
+        })) ?? [],
     metadata: query.data?.meta ?? null,
     ...query,
   };
@@ -62,7 +65,11 @@ export function useInfiniteTransactions() {
     transactions:
       query.data?.pages
         .flatMap((x) => x.transactions)
-        .filter((dto): dto is TransactionDto => dto !== undefined) ?? [],
+        .filter((dto): dto is TransactionDto => dto !== undefined)
+        .map((dto) => ({
+          ...dto,
+          date: new Date(dto.date),
+        })) ?? [],
     // metadata: data?.pages.pop()?.meta ?? null,
     ...query,
   };
@@ -75,11 +82,17 @@ export function useTransaction(id: string) {
     queryFn: async () => {
       return await gualletClient.transactions.get(id);
     },
-    gcTime: 1000 * 60 * 60, // 1 Hour
-    staleTime: 1000 * 60 * 60, // 1 Hour
   });
 
-  return { transaction: query.data ?? null, ...query };
+  return {
+    transaction: query.data
+      ? {
+          ...query.data,
+          date: new Date(query.data?.date),
+        }
+      : null,
+    ...query,
+  };
 }
 
 export function useTransactionInbox() {
@@ -93,9 +106,12 @@ export function useTransactionInbox() {
 
   return {
     transactions:
-      query.data?.filter(
-        (dto): dto is InboxTransactionDto => dto !== undefined
-      ) ?? [],
+      query.data
+        ?.filter((dto): dto is InboxTransactionDto => dto !== undefined)
+        .map((dto) => ({
+          ...dto,
+          date: new Date(dto.date),
+        })) ?? [],
     ...query,
   };
 }
@@ -132,10 +148,15 @@ export function useTransactionsWithFilter(filters: {
 
   return {
     transactions:
-      query.data?.transactions?.filter(
-        (dto: TransactionDto | undefined): dto is TransactionDto =>
-          dto !== undefined
-      ) ?? [],
+      query.data?.transactions
+        ?.filter(
+          (dto: TransactionDto | undefined): dto is TransactionDto =>
+            dto !== undefined
+        )
+        .map((dto) => ({
+          ...dto,
+          date: new Date(dto.date),
+        })) ?? [],
     metadata: query.data?.meta ?? null,
     ...query,
   };

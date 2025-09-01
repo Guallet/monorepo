@@ -39,6 +39,6 @@ export type UpdateTransactionRequest = {
 };
 
 export type InboxTransactionDto = TransactionDto & {
-  processedCategoryId?: string; // Processed category id based by rules
-  ruleId?: string; // Rule that processed this transaction
+  processedCategoryId?: string | null; // Processed category id based by rules
+  ruleId?: string | null; // Rule that processed this transaction
 };
