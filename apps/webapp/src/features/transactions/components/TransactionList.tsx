@@ -18,7 +18,7 @@ export function TransactionList({
   // Group the transactions by date
   const groupedTransactions = transactions.reduce(
     (acc, transaction) => {
-      const date = new Date(transaction.date).toISOString().split("T")[0];
+      const date = transaction.date.toISOString().split("T")[0];
       if (!acc[date]) {
         acc[date] = [];
       }

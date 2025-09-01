@@ -37,7 +37,7 @@ export function InboxTransactionCard({
     day: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(new Date(transaction.date));
+  }).format(transaction.date);
 
   return (
     <Card shadow="sm" radius="md" withBorder>
