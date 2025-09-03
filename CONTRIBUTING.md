@@ -17,12 +17,12 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 - [Code of Conduct](#code-of-conduct)
 - [I Have a Question](#i-have-a-question)
 - [I Want To Contribute](#i-want-to-contribute)
-- [Reporting Bugs](#reporting-bugs)
-- [Suggesting Enhancements](#suggesting-enhancements)
-- [Your First Code Contribution](#your-first-code-contribution)
-- [Improving The Documentation](#improving-the-documentation)
+  - [Reporting Bugs](#reporting-bugs)
+  - [Suggesting Enhancements](#suggesting-enhancements)
+  - [Your First Code Contribution](#your-first-code-contribution)
+  - [Improving The Documentation](#improving-the-documentation)
 - [Styleguides](#styleguides)
-- [Commit Messages](#commit-messages)
+  - [Commit Messages](#commit-messages)
 - [Join The Project Team](#join-the-project-team)
 
 
@@ -42,7 +42,7 @@ Before you ask a question, it is best to search for existing [Issues](https://gi
 
 If you then still feel the need to ask a question and need clarification, we recommend the following:
 
-- Open an [Issue](https://github.com/guallet/monorepo/issues/new).
+- Open an [Issue](https://github.com/guallet/monorepo/issues/new/choose).
 - Provide as much context as you can about what you're running into.
 - Provide project and platform versions (nodejs, npm, etc), depending on what seems relevant.
 
@@ -133,25 +133,70 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/gualle
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
 
 ### Your First Code Contribution
-<!-- TODO
-include Setup of env, IDE and typical getting started instructions?
 
--->
+If you are new to open source or this project, here are some steps to help you get started:
+
+1. **Fork the repository** on GitHub and clone it to your local machine.
+2. **Set up your development environment**  Read the docs to help you set up the environment
+3. **Install dependencies** by running `pnpm install` in the project root.
+4. **Pick an issue** labeled `good first issue` or `help wanted` from the [issue tracker](https://github.com/guallet/monorepo/issues).
+5. **Create a new branch** for your work: `git checkout -b my-feature`.
+6. **Make your changes** and ensure all tests pass by running `pnpm test` or the relevant test command.
+7. **Commit your changes** following our [commit message guidelines](#commit-messages).
+8. **Push your branch** to your fork and open a [pull request](https://github.com/guallet/monorepo/compare).
+9.  **Participate in the code review** process by responding to feedback and making necessary updates.
+
+Don't hesitate to ask questions or request guidance in your pull request if you're unsure about anything.
 
 ### Improving The Documentation
-<!-- TODO
-Updating, improving and correcting the documentation
 
--->
+We welcome improvements to our documentation! To contribute:
+
+1. **Identify areas for improvement**—this could be fixing typos, clarifying instructions, or adding missing information.
+2. **Edit the relevant Markdown files** in the `apps/docs/` directory or elsewhere as appropriate.
+3. **Preview your changes** to ensure formatting and content are correct.
+4. **Submit a pull request** describing the documentation changes you made.
+
+If you are unsure where to start, look for issues labeled `documentation` or suggest improvements by opening an issue.
 
 ## Styleguides
-### Commit Messages
-<!-- TODO
 
--->
+To keep the codebase consistent and readable, please follow these guidelines:
+
+- **Code formatting:** Use [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/) (if applicable) to format and lint your code. Run `pnpm run lint` and `pnpm run format` before submitting.
+- **Naming conventions:** Use descriptive variable and function names. Follow the project's established naming patterns.
+- **Type annotations:** Use TypeScript types where applicable.
+- **Comments:** Write clear comments where necessary, but avoid obvious or redundant comments.
+
+### Commit Messages
+
+Please use [Conventional Commits](https://www.conventionalcommits.org/) for your commit messages. This helps automate releases and makes the history easier to understand.
+
+Format:
+
+```
+type(scope): short description
+
+longer description (optional)
+```
+
+Examples:
+
+- `fix(api): handle null user in login endpoint`
+- `feat(webapp): add dark mode toggle`
+- `docs(readme): update installation instructions`
+
+Types include: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`.
 
 ## Join The Project Team
-<!-- TODO -->
+
+We are always looking for active contributors to join the project team! If you:
+
+- Have made several high-quality contributions,
+- Participate in code reviews and discussions,
+- Demonstrate a good understanding of the project and its goals,
+
+You may be invited to join as a maintainer. If you are interested, let us know by opening an issue or reaching out to an existing maintainer. We value diversity and welcome contributors from all backgrounds.
 
 <!-- omit in toc -->
 ## Attribution

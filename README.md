@@ -1,13 +1,13 @@
 # Guallet: Personal Finances Manager
 
-Guallet is a open-source personal finances manager. Inspired in Firefly III and other commercial apps like MoneyDashboard or Mint.
+Guallet is an open-source personal finances manager. Inspired by Firefly III and other commercial apps like MoneyDashboard, MoneyHub or Mint.
 
 ## (Almost) 100% Typescript
 
-In order to simplify the tech-stack, Typescript was selected for it's ability to deliver server, web apps and mobiles apps in the same language and tools.
-Also, the available tools around the TS ecosystems makes it perfect for self-hosting.
+In order to simplify the tech-stack, Typescript was selected for its ability to deliver server, web apps and mobile apps in the same language and tools.
+Also, the available tools around the TS ecosystem make it perfect for self-hosting.
 
-Yes, other languages would have been better options, but as at this stage of the project the benefits of having a single language outweigh those inconveniences.
+Yes, other languages might have been better options, but at this stage of the project, the benefits of having a single language outweigh those inconveniences.
 
 ## What's inside?
 
@@ -15,16 +15,17 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `api`: a [NestJS](https://nestjs.com/) app, providing a REST and GraphQL apis
+- `api`: a [NestJS](https://nestjs.com/) app, providing a REST API (GraphQL API might be available in the future)
 - `webapp`: a Vite+React app
-- `mobile`: a Expo app for iOS and Android
+- `mobile`: an Expo app for iOS and Android
+- `docs`: a Docusaurus project containing the documentation
 
 Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Requirements
-In order to compile/run the project locally, you will need
+In order to compile/run the project locally, you will need:
 - Node >=v22.x 
-- PNPM
+- PNPM >= 10.0.0
 - Postgres database
 - Supabase project (could be used to host your DB too)
 
@@ -65,7 +66,7 @@ npx turbo link
 ### Dependencies
 
 - [PostgreSQL](https://www.postgresql.org/): The API requires a PostgreSQL database to read/write data.
-- [Supabase](https://supabase.com/): Used for AUTH only. I didn't want to implement my own auth mechanism, so better idea to rely on a third party.
+- [Supabase](https://supabase.com/): Used for auth only. I didn't want to implement my own auth mechanism, so it's a better idea to rely on a third party.
 
 ### Support
 
