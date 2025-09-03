@@ -1,0 +1,27 @@
+{
+  "id": "mobile/translate-your-site",
+  "title": "Translate your site",
+  "description": "Let's translate docs/intro.md to French.",
+  "source": "@site/docs/mobile/translate-your-site.md",
+  "sourceDirName": "mobile",
+  "slug": "/mobile/translate-your-site",
+  "permalink": "/docs/mobile/translate-your-site",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mobile/translate-your-site.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Manage Docs Versions",
+    "permalink": "/docs/mobile/manage-docs-versions"
+  },
+  "next": {
+    "title": "Data Importer",
+    "permalink": "/docs/category/data-importer"
+  }
+}

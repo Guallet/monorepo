@@ -1,0 +1,27 @@
+{
+  "id": "webapp/deployment",
+  "title": "Requirements",
+  "description": "The WebApp depends on Supabase for the authentication features. You can host Supabase in your server or just use a free account.",
+  "source": "@site/docs/webapp/deployment.md",
+  "sourceDirName": "webapp",
+  "slug": "/webapp/deployment",
+  "permalink": "/docs/webapp/deployment",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/webapp/deployment.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Translate your site",
+    "permalink": "/docs/webapp/introduction"
+  },
+  "next": {
+    "title": "Manage Docs Versions",
+    "permalink": "/docs/webapp/manage-docs-versions"
+  }
+}

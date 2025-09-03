@@ -1,0 +1,27 @@
+{
+  "id": "mobile/manage-docs-versions",
+  "title": "Manage Docs Versions",
+  "description": "Docusaurus can manage multiple versions of your docs.",
+  "source": "@site/docs/mobile/manage-docs-versions.md",
+  "sourceDirName": "mobile",
+  "slug": "/mobile/manage-docs-versions",
+  "permalink": "/docs/mobile/manage-docs-versions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mobile/manage-docs-versions.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Mobile",
+    "permalink": "/docs/category/mobile"
+  },
+  "next": {
+    "title": "Translate your site",
+    "permalink": "/docs/mobile/translate-your-site"
+  }
+}
