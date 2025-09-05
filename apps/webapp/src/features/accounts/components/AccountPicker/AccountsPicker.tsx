@@ -1,7 +1,7 @@
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AccountDto } from "@guallet/api-client";
-import { useIsMobile } from "@/utils/useIsMobile";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useAccounts } from "@guallet/api-react";
 import { AccountPickerModal } from "./AccountPickerModal";
 

@@ -36,5 +36,9 @@ export class User extends BaseDbEntity {
   })
   preferred_currencies: string[];
 
+  @Column({ nullable: true })
+  // preferred date format for the user, one of: MM/DD/YYYY, DD/MM/YYYY, YYYY/MM/DD
+  date_format: string;
+
   // relations
 }

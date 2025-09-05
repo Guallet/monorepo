@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,6 +16,13 @@ import { UserSettingsRequest } from './dto/user-settings.dto';
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
+
+  // Allowed date formats for user preference
+  private static readonly ALLOWED_DATE_FORMATS = [
+    'MM/DD/YYYY',
+    'DD/MM/YYYY',
+    'YYYY/MM/DD',
+  ];
 
   constructor(
     @InjectRepository(User)
@@ -159,6 +167,16 @@ export class UsersService {
       dto.currencies?.default_currency ?? user.default_currency;
     user.preferred_currencies =
       dto.currencies?.preferred_currencies ?? user.preferred_currencies;
+
+    if (dto.date_format !== undefined && dto.date_format !== null) {
+      const value = dto.date_format;
+      if (!UsersService.ALLOWED_DATE_FORMATS.includes(value)) {
+        throw new BadRequestException(
+          `Invalid date_format. Allowed values: ${UsersService.ALLOWED_DATE_FORMATS.join(', ')}`,
+        );
+      }
+      user.date_format = value;
+    }
 
     return await this.repository.save(user);
   }

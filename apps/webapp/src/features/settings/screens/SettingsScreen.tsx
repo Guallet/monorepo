@@ -5,6 +5,7 @@ import { AppSection } from "@/components/Cards/AppSection";
 import { LanguageRow } from "../components/LanguageRow";
 import { DefaultCurrencyRow } from "../components/DefaultCurrencyRow";
 import { PreferredCurrenciesRow } from "../components/PreferredCurrenciesRow";
+import { DateFormatRow } from "../components/DateFormatRow";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 
 export function SettingsScreen() {
@@ -28,6 +29,7 @@ export function SettingsScreen() {
             <LanguageRow />
             <DefaultCurrencyRow />
             <PreferredCurrenciesRow />
+            <DateFormatRow />
           </AppSection>
         </Stack>
 

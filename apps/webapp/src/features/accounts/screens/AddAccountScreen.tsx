@@ -20,7 +20,7 @@ import { z } from "zod";
 import { getAccountTypeTitleSingular } from "../models/Account";
 import { notifications } from "@mantine/notifications";
 import { Currency } from "@guallet/money";
-import { useDefaultCurrency } from "@/utils/useDefaultCurrency";
+import { useDefaultCurrency } from "@/hooks/useDefaultCurrency";
 
 const accountFormDataSchema = z.object({
   name: z.string().min(1, { message: "Account name is required" }),

@@ -1,4 +1,4 @@
-import { useIsMobile } from "@/utils/useIsMobile";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { CategoryDto } from "@guallet/api-client";
 import { Input, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
