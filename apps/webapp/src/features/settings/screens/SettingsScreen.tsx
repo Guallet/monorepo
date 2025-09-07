@@ -7,6 +7,7 @@ import { DefaultCurrencyRow } from "../components/DefaultCurrencyRow";
 import { PreferredCurrenciesRow } from "../components/PreferredCurrenciesRow";
 import { DateFormatRow } from "../components/DateFormatRow";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { TextRow } from "@guallet/ui-react";
 
 export function SettingsScreen() {
   const navigate = useNavigate();
@@ -17,14 +18,13 @@ export function SettingsScreen() {
         <Title>Settings</Title>
         <UserSettingsCard />
 
-        <AppSection title="Institutions">
-          <Button
+        <AppSection title="Institutions" p={0}>
+          <TextRow
+            label="Manage institutions"
             onClick={() => {
               navigate({ to: "/settings/institutions" });
             }}
-          >
-            Manage institutions
-          </Button>
+          />
         </AppSection>
 
         <Stack>

@@ -1,5 +1,5 @@
 import { useUserSettings } from "@guallet/api-react";
-import { BaseRow } from "./BaseRow/BaseRow";
+import { BaseRow } from "@guallet/ui-react";
 
 export function PreferredCurrenciesRow() {
   const { settings } = useUserSettings();

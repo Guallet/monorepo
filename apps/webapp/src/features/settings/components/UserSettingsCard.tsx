@@ -1,6 +1,6 @@
 import { AppSection } from "@/components/Cards/AppSection";
 import { useUser } from "@guallet/api-react";
-import { Avatar, Button, Group, Stack, Text } from "@mantine/core";
+import { Avatar, Button, Stack, Text } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 
 export function UserSettingsCard() {

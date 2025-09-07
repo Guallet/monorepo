@@ -1,6 +1,6 @@
 import { Group, Text } from "@mantine/core";
-import classes from "./BaseRow.module.css";
 import { IconChevronRight } from "@tabler/icons-react";
+import classes from "./BaseRow.module.css";
 
 interface BaseRowProps
   extends Omit<React.ComponentProps<typeof Group>, "onClick"> {

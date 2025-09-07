@@ -1,11 +1,11 @@
 import { useUserSettings, useUserSettingsMutations } from "@guallet/api-react";
-import { BaseRow } from "./BaseRow/BaseRow";
 import { IconChevronRight } from "@tabler/icons-react";
 import { Modal, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { CurrencyPickerModal } from "@/components/CurrencyPicker/CurrencyPickerModal";
 import { Currency } from "@guallet/money";
 import { notifications } from "@mantine/notifications";
+import { BaseRow } from "@guallet/ui-react/";
 
 export function DefaultCurrencyRow() {
   const { settings } = useUserSettings();

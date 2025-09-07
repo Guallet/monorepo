@@ -1,5 +1,5 @@
 import { useLocale } from "@/i18n/useLocale";
-import { BaseRow } from "./BaseRow/BaseRow";
+import { BaseRow } from "@guallet/ui-react";
 import { IconEdit } from "@tabler/icons-react";
 
 export function LanguageRow() {
