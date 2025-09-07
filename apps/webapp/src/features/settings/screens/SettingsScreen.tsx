@@ -16,13 +16,16 @@ export function SettingsScreen() {
       <Stack>
         <Title>Settings</Title>
         <UserSettingsCard />
-        <Button
-          onClick={() => {
-            navigate({ to: "/settings/institutions" });
-          }}
-        >
-          Manage institutions
-        </Button>
+
+        <AppSection title="Institutions">
+          <Button
+            onClick={() => {
+              navigate({ to: "/settings/institutions" });
+            }}
+          >
+            Manage institutions
+          </Button>
+        </AppSection>
 
         <Stack>
           <AppSection title="User Preferences" p={0}>

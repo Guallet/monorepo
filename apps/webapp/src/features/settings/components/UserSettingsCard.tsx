@@ -10,28 +10,15 @@ export function UserSettingsCard() {
 
   return (
     <AppSection title="User Information">
-      <Stack>
+      <Stack align="center">
         <Avatar
           src={user?.profile_src}
           alt={user?.name}
           style={{ alignSelf: "center" }}
+          size={120}
         />
-        <Group>
-          <Text>Name</Text>
-          <Text>{user?.name}</Text>
-        </Group>
-
-        <Group>
-          <Text>Email</Text>
-          <Text>{user?.email}</Text>
-        </Group>
-        <Button
-          onClick={() => {
-            console.log("Edit user");
-          }}
-        >
-          Edit
-        </Button>
+        <Text>{user?.name}</Text>
+        <Text>{user?.email}</Text>
         <Button
           variant="outline"
           color="red"
