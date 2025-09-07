@@ -1,5 +1,5 @@
-import { Text } from "@mantine/core";
+import { Code } from "@mantine/core";
 
 export function DebugJson({ data }: Readonly<{ data: any }>) {
-  return <Text>{JSON.stringify(data, null, 2)}</Text>;
+  return <Code block>{JSON.stringify(data, null, 2)}</Code>;
 }

@@ -1,9 +1,4 @@
-import {
-  AccountDto,
-  GualletInstitutionDto,
-  InstitutionDto,
-  ObConnection,
-} from "@guallet/api-client";
+import { ObConnection } from "@guallet/api-client";
 import { useQuery } from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
 

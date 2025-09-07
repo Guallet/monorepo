@@ -20,6 +20,7 @@ import { Route as OnboardingRegisterRouteImport } from './routes/onboarding/regi
 import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
 import { Route as LoginCallbackRouteImport } from './routes/login/callback'
+import { Route as AppConnectionsOldindexRouteImport } from './routes/_app/connections/oldindex'
 import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transactions/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
@@ -111,6 +112,11 @@ const LoginCallbackRoute = LoginCallbackRouteImport.update({
   id: '/login/callback',
   path: '/login/callback',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppConnectionsOldindexRoute = AppConnectionsOldindexRouteImport.update({
+  id: '/connections/oldindex',
+  path: '/connections/oldindex',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppUserIndexRoute = AppUserIndexRouteImport.update({
   id: '/user/',
@@ -299,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/categories/new': typeof AppCategoriesNewRoute
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
+  '/connections/oldindex': typeof AppConnectionsOldindexRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
@@ -343,6 +350,7 @@ export interface FileRoutesByTo {
   '/categories/new': typeof AppCategoriesNewRoute
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
+  '/connections/oldindex': typeof AppConnectionsOldindexRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
@@ -389,6 +397,7 @@ export interface FileRoutesById {
   '/_app/categories/new': typeof AppCategoriesNewRoute
   '/_app/categories/old': typeof AppCategoriesOldRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
+  '/_app/connections/oldindex': typeof AppConnectionsOldindexRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/transactions/create': typeof AppTransactionsCreateRoute
   '/_app/transactions/inbox': typeof AppTransactionsInboxRoute
@@ -435,6 +444,7 @@ export interface FileRouteTypes {
     | '/categories/new'
     | '/categories/old'
     | '/connections/$id'
+    | '/connections/oldindex'
     | '/reports/cashflow'
     | '/transactions/create'
     | '/transactions/inbox'
@@ -479,6 +489,7 @@ export interface FileRouteTypes {
     | '/categories/new'
     | '/categories/old'
     | '/connections/$id'
+    | '/connections/oldindex'
     | '/reports/cashflow'
     | '/transactions/create'
     | '/transactions/inbox'
@@ -524,6 +535,7 @@ export interface FileRouteTypes {
     | '/_app/categories/new'
     | '/_app/categories/old'
     | '/_app/connections/$id'
+    | '/_app/connections/oldindex'
     | '/_app/reports/cashflow'
     | '/_app/transactions/create'
     | '/_app/transactions/inbox'
@@ -642,6 +654,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login/callback'
       preLoaderRoute: typeof LoginCallbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/connections/oldindex': {
+      id: '/_app/connections/oldindex'
+      path: '/connections/oldindex'
+      fullPath: '/connections/oldindex'
+      preLoaderRoute: typeof AppConnectionsOldindexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/user/': {
       id: '/_app/user/'
@@ -879,6 +898,7 @@ interface AppRouteChildren {
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
   AppCategoriesOldRoute: typeof AppCategoriesOldRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
+  AppConnectionsOldindexRoute: typeof AppConnectionsOldindexRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppTransactionsCreateRoute: typeof AppTransactionsCreateRoute
   AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
@@ -914,6 +934,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesNewRoute: AppCategoriesNewRoute,
   AppCategoriesOldRoute: AppCategoriesOldRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
+  AppConnectionsOldindexRoute: AppConnectionsOldindexRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppTransactionsCreateRoute: AppTransactionsCreateRoute,
   AppTransactionsInboxRoute: AppTransactionsInboxRoute,
