@@ -12,12 +12,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { AccountCheckbox } from "./AccountCheckbox";
-import {
-  IconClearAll,
-  IconDeselect,
-  IconSelect,
-  IconSelectAll,
-} from "@tabler/icons-react";
+import { IconDeselect, IconSelectAll } from "@tabler/icons-react";
 import { getAccountTypeTitle } from "../../models/Account";
 
 interface AccountsPickerModalProps {
@@ -53,7 +48,6 @@ export function AccountPickerModal({
   }, [query, accounts]);
 
   const groupedAccounts = useMemo(() => {
-    // const groups: Record<AccountTypeDto, AccountDto[]> = {};
     const groups: { type: AccountTypeDto; items: AccountDto[] }[] = [];
     filteredAccounts.forEach((account) => {
       const type = account.type;

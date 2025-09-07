@@ -10,7 +10,7 @@ export function AmountLabel({
   amount,
   currencyCode,
   ...props
-}: AmountLabelProps) {
+}: Readonly<AmountLabelProps>) {
   const money = Money.fromCurrencyCode({
     amount,
     currencyCode,

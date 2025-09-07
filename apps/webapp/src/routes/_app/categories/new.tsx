@@ -28,8 +28,6 @@ function AddCategoryPage() {
   const [icon, setIcon] = useState<string>("question");
   const [color, setColor] = useState<string>("#25262b");
 
-  const [isBusy, setIsBusy] = useState<boolean>(false);
-
   if (isLoading === false && category === null) {
     // Parent category not found
     notFound();
@@ -38,7 +36,6 @@ function AddCategoryPage() {
   const handleSave = async () => {
     try {
       // Save category
-      setIsBusy(true);
 
       await gualletClient.categories.create({
         name: name,
@@ -54,8 +51,6 @@ function AddCategoryPage() {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsBusy(false);
     }
   };
 

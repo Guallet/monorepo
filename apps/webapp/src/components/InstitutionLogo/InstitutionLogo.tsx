@@ -8,7 +8,7 @@ interface InstitutionLogoProps extends AvatarProps {
 export function InstitutionLogo({
   institutionId,
   ...props
-}: InstitutionLogoProps) {
+}: Readonly<InstitutionLogoProps>) {
   const { institution } = useInstitution(institutionId);
 
   return (

@@ -117,7 +117,7 @@ export function TransactionCard({
   transaction,
   categories,
   onSaved,
-}: TransactionCardProps) {
+}: Readonly<TransactionCardProps>) {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
