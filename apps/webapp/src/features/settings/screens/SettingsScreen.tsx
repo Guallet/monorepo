@@ -18,23 +18,21 @@ export function SettingsScreen() {
         <Title>Settings</Title>
         <UserSettingsCard />
 
+        <AppSection title="User Preferences" p={0}>
+          <LanguageRow />
+          <DefaultCurrencyRow />
+          <PreferredCurrenciesRow />
+          <DateFormatRow />
+        </AppSection>
+
         <AppSection title="Institutions" p={0}>
           <TextRow
             label="Manage institutions"
             onClick={() => {
-              navigate({ to: "/settings/institutions" });
+              navigate({ to: "/institutions" });
             }}
           />
         </AppSection>
-
-        <Stack>
-          <AppSection title="User Preferences" p={0}>
-            <LanguageRow />
-            <DefaultCurrencyRow />
-            <PreferredCurrenciesRow />
-            <DateFormatRow />
-          </AppSection>
-        </Stack>
 
         <Button>Export data</Button>
         <Button color="red">Close account</Button>

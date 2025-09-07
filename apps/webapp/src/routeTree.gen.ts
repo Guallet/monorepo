@@ -24,6 +24,7 @@ import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transactions/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index'
+import { Route as AppInstitutionsIndexRouteImport } from './routes/_app/institutions/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
 import { Route as AppConnectionsIndexRouteImport } from './routes/_app/connections/index'
 import { Route as AppCategoriesIndexRouteImport } from './routes/_app/categories/index'
@@ -43,7 +44,6 @@ import { Route as AppBudgetsCreateRouteImport } from './routes/_app/budgets/crea
 import { Route as AppBudgetsIdRouteImport } from './routes/_app/budgets/$id'
 import { Route as AppAccountsNewRouteImport } from './routes/_app/accounts/new'
 import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
-import { Route as AppSettingsInstitutionsIndexRouteImport } from './routes/_app/settings/institutions/index'
 import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
 import { Route as AppConnectionsConnectCallbackRouteImport } from './routes/_app/connections/connect/callback'
@@ -130,6 +130,11 @@ const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
 const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInstitutionsIndexRoute = AppInstitutionsIndexRouteImport.update({
+  id: '/institutions/',
+  path: '/institutions/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
@@ -241,12 +246,6 @@ const AppAccountsIdRoute = AppAccountsIdRouteImport.update({
   path: '/accounts/$id',
   getParentRoute: () => AppRoute,
 } as any)
-const AppSettingsInstitutionsIndexRoute =
-  AppSettingsInstitutionsIndexRouteImport.update({
-    id: '/settings/institutions/',
-    path: '/settings/institutions/',
-    getParentRoute: () => AppRoute,
-  } as any)
 const AppConnectionsConnectIndexRoute =
   AppConnectionsConnectIndexRouteImport.update({
     id: '/connections/connect/',
@@ -313,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/categories': typeof AppCategoriesIndexRoute
   '/connections': typeof AppConnectionsIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
+  '/institutions': typeof AppInstitutionsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/transactions': typeof AppTransactionsIndexRoute
@@ -323,7 +323,6 @@ export interface FileRoutesByFullPath {
   '/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
-  '/settings/institutions': typeof AppSettingsInstitutionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
@@ -357,6 +356,7 @@ export interface FileRoutesByTo {
   '/categories': typeof AppCategoriesIndexRoute
   '/connections': typeof AppConnectionsIndexRoute
   '/dashboard': typeof AppDashboardIndexRoute
+  '/institutions': typeof AppInstitutionsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/transactions': typeof AppTransactionsIndexRoute
@@ -367,7 +367,6 @@ export interface FileRoutesByTo {
   '/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
-  '/settings/institutions': typeof AppSettingsInstitutionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -403,6 +402,7 @@ export interface FileRoutesById {
   '/_app/categories/': typeof AppCategoriesIndexRoute
   '/_app/connections/': typeof AppConnectionsIndexRoute
   '/_app/dashboard/': typeof AppDashboardIndexRoute
+  '/_app/institutions/': typeof AppInstitutionsIndexRoute
   '/_app/reports/': typeof AppReportsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/transactions/': typeof AppTransactionsIndexRoute
@@ -413,7 +413,6 @@ export interface FileRoutesById {
   '/_app/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
-  '/_app/settings/institutions/': typeof AppSettingsInstitutionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -449,6 +448,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/connections'
     | '/dashboard'
+    | '/institutions'
     | '/reports'
     | '/settings'
     | '/transactions'
@@ -459,7 +459,6 @@ export interface FileRouteTypes {
     | '/connections/connect/callback'
     | '/categories/rules'
     | '/connections/connect'
-    | '/settings/institutions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -493,6 +492,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/connections'
     | '/dashboard'
+    | '/institutions'
     | '/reports'
     | '/settings'
     | '/transactions'
@@ -503,7 +503,6 @@ export interface FileRouteTypes {
     | '/connections/connect/callback'
     | '/categories/rules'
     | '/connections/connect'
-    | '/settings/institutions'
   id:
     | '__root__'
     | '/'
@@ -538,6 +537,7 @@ export interface FileRouteTypes {
     | '/_app/categories/'
     | '/_app/connections/'
     | '/_app/dashboard/'
+    | '/_app/institutions/'
     | '/_app/reports/'
     | '/_app/settings/'
     | '/_app/transactions/'
@@ -548,7 +548,6 @@ export interface FileRouteTypes {
     | '/_app/connections/connect/callback'
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
-    | '/_app/settings/institutions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -670,6 +669,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof AppReportsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/institutions/': {
+      id: '/_app/institutions/'
+      path: '/institutions'
+      fullPath: '/institutions'
+      preLoaderRoute: typeof AppInstitutionsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/dashboard/': {
@@ -819,13 +825,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIdRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/settings/institutions/': {
-      id: '/_app/settings/institutions/'
-      path: '/settings/institutions'
-      fullPath: '/settings/institutions'
-      preLoaderRoute: typeof AppSettingsInstitutionsIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/connections/connect/': {
       id: '/_app/connections/connect/'
       path: '/connections/connect'
@@ -893,6 +892,7 @@ interface AppRouteChildren {
   AppCategoriesIndexRoute: typeof AppCategoriesIndexRoute
   AppConnectionsIndexRoute: typeof AppConnectionsIndexRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
+  AppInstitutionsIndexRoute: typeof AppInstitutionsIndexRoute
   AppReportsIndexRoute: typeof AppReportsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppTransactionsIndexRoute: typeof AppTransactionsIndexRoute
@@ -903,7 +903,6 @@ interface AppRouteChildren {
   AppConnectionsConnectCallbackRoute: typeof AppConnectionsConnectCallbackRoute
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
-  AppSettingsInstitutionsIndexRoute: typeof AppSettingsInstitutionsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -928,6 +927,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesIndexRoute: AppCategoriesIndexRoute,
   AppConnectionsIndexRoute: AppConnectionsIndexRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
+  AppInstitutionsIndexRoute: AppInstitutionsIndexRoute,
   AppReportsIndexRoute: AppReportsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppTransactionsIndexRoute: AppTransactionsIndexRoute,
@@ -938,7 +938,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppConnectionsConnectCallbackRoute: AppConnectionsConnectCallbackRoute,
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
-  AppSettingsInstitutionsIndexRoute: AppSettingsInstitutionsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

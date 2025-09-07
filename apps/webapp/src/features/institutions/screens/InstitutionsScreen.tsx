@@ -4,7 +4,7 @@ import { Stack, Button } from "@mantine/core";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 
-export function InstitutionsSettingsScreen() {
+export function InstitutionsScreen() {
   const [isSyncingBanks, setIsSyncingBanks] = useState<boolean>(false);
   const client = useGualletClient();
   const { institutions } = useInstitutions();
@@ -14,11 +14,9 @@ export function InstitutionsSettingsScreen() {
       setIsSyncingBanks(true);
       const response = await client.admin.syncOpenBankingInstitutions();
       console.log("Sync institutions response", response);
-      if (response.status === 401) {
-        // Handle unauthorized error
-        console.error(
-          "Unauthorized: You do not have permission to sync banks."
-        );
+      if (response.status === 403) {
+        // Handle forbidden error
+        console.error("Forbidden: You do not have permission to sync banks.");
         notifications.show({
           title: "Error",
           message: "You need to be an admin to sync institutions",
