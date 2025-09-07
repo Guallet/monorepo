@@ -25,8 +25,8 @@ import { useNavigate, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { CreditCardDetails } from "../AccountDetails/CreditCardDetails";
 import { CurrentAccountDetails } from "../AccountDetails/CurrentAccountDetails";
-import { getAccountTypeTitleSingular } from "../models/Account";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { AccountDetailsHeader } from "../components/AccountDetailsHeader";
 
 interface AccountDetailsScreenProps {
   accountId: string;
@@ -81,28 +81,7 @@ export function AccountDetailsScreen({
       </Modal>
 
       <Stack>
-        <Group justify="space-between">
-          <AccountAvatar accountId={account.id} />
-
-          <Stack
-            gap={0}
-            style={{
-              flexGrow: 1,
-            }}
-          >
-            <Text size="lg" fw={700}>
-              {account.name}
-            </Text>
-            <Text size="sm" c="dimmed">
-              {getAccountTypeTitleSingular(account.type)}
-            </Text>
-          </Stack>
-
-          <AmountLabel
-            amount={account.balance.amount}
-            currencyCode={account.currency}
-          />
-        </Group>
+        <AccountDetailsHeader accountId={accountId} />
 
         {/* Show info dependent on account type */}
         {AccountDetailsSelector(account)}

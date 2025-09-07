@@ -123,6 +123,9 @@ export class TransactionsController {
       userId: user.id,
       dto: createTransactionDto,
     });
+
+    // TODO: Do we want to to update the balance of the account for each transaction?
+    // or just based on the user settings?
     return TransactionDto.fromDomain(transaction);
   }
 

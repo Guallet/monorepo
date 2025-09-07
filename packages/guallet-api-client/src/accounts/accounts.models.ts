@@ -5,7 +5,7 @@ export type AccountDto = {
   currency: string;
   type: AccountTypeDto;
   institutionId: string;
-  source?: string;
+  source?: "manual" | "imported" | "synced" | "unknown";
   sourceName?: string;
   properties?:
     | CurrentAccountProperties
