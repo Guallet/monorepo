@@ -76,6 +76,17 @@
         }
       }
     },
+    "connectionCard": {
+      "status": {
+        "unknown": "desconocido"
+      },
+      "created": "Created:",
+      "updated": "Updated:",
+      "accountsLinked_one": "{{count}} cuenta vinculada",
+      "accountsLinked_many": "",
+      "accountsLinked_other": "{{count}} cuentas vinculadas",
+      "noAccountsLinked": "Sin cuentas vinculadas"
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categories"
@@ -213,6 +224,13 @@
             "label": "Crear presupuesto"
           }
         }
+      }
+    },
+    "connections": {
+      "list": {
+        "emptyState": "No se encontraron conexiones. Crea una nueva conexión para comenzar.",
+        "title": "Conexiones",
+        "addButton": "Agregar nueva conexión"
       }
     },
     "transactions": {

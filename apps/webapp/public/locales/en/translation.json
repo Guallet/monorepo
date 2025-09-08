@@ -75,6 +75,16 @@
         }
       }
     },
+    "connectionCard": {
+      "status": {
+        "unknown": "unknown"
+      },
+      "created": "Created:",
+      "updated": "Updated:",
+      "accountsLinked_one": "{{count}} account linked",
+      "accountsLinked_other": "{{count}} accounts linked",
+      "noAccountsLinked": "No accounts linked"
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categories"
@@ -212,6 +222,13 @@
             "label": "Create Budget"
           }
         }
+      }
+    },
+    "connections": {
+      "list": {
+        "emptyState": "No Connections Found. Create a new connection to get started.",
+        "title": "Connections",
+        "addButton": "Add a new connection"
       }
     },
     "transactions": {

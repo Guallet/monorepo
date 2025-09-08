@@ -1,16 +1,27 @@
 import { ObConnection } from "@guallet/api-client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
 
 const CONNECTIONS_QUERY_KEY = "connections";
 
 export function useOpenBankingConnections() {
   const gualletClient = useGualletClient();
+  const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: [CONNECTIONS_QUERY_KEY],
     queryFn: async () => {
-      return await gualletClient.connections.getAll();
+      const connections = await gualletClient.connections.getAll();
+
+      // Add the individual connections to the connections cache
+      connections.forEach((connection) => {
+        queryClient.setQueryData(
+          [CONNECTIONS_QUERY_KEY, connection.id],
+          connection
+        );
+      });
+
+      return connections;
     },
   });
 

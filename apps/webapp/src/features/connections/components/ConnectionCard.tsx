@@ -1,7 +1,9 @@
 import { useInstitutions, useOpenBankingConnection } from "@guallet/api-react";
-import { Button, Card, Group, Stack, Text } from "@mantine/core";
+import { Card, Group, Stack, Text } from "@mantine/core";
 import { InstitutionAvatar } from "./InstitutionAvatar";
 import { ConnectionStatusBadge } from "./ConnectionStatusBadge";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/i18n/useLocale";
 
 interface ConnectionCardProps extends React.ComponentProps<typeof Card> {
   connectionId: string;
@@ -13,15 +15,17 @@ export function ConnectionCard({
   onClick,
   ...props
 }: Readonly<ConnectionCardProps>) {
+  const { t } = useTranslation();
   const { connection } = useOpenBankingConnection(connectionId);
   const { institutions } = useInstitutions();
+  const { locale } = useLocale();
 
   const institution = institutions.find(
     (inst) => inst.nordigen_id === connection?.institution_id
   );
 
   const formattedDate = new Date(connection?.created ?? "").toLocaleDateString(
-    "en-GB",
+    locale,
     {
       year: "numeric",
       month: "long",
@@ -38,7 +42,7 @@ export function ConnectionCard({
       onClick={onClick}
       style={{ cursor: onClick ? "pointer" : "default" }}
     >
-      <Stack>
+      <Stack gap="xs">
         {connection && institution && (
           <>
             <Group justify="space-between">
@@ -47,16 +51,31 @@ export function ConnectionCard({
                 <Text fw={700}>{institution.name}</Text>
               </Group>
 
-              <ConnectionStatusBadge status={connection.status || "unknown"} />
+              <ConnectionStatusBadge
+                status={
+                  connection.status ||
+                  t("components.connectionCard.status.unknown", "unknown")
+                }
+              />
             </Group>
 
             <Text size="sm" c="dimmed">
-              Created: {formattedDate}
+              {t("components.connectionCard.created", "Created:")}{" "}
+              {formattedDate}
+            </Text>
+            <Text size="sm" c="dimmed">
+              {t("components.connectionCard.updated", "Updated:")}{" "}
+              {connection.updated_at}
             </Text>
             <Text size="sm">
               {connection.accounts.length > 0
-                ? `${connection.accounts.length} account${connection.accounts.length > 1 ? "s" : ""} linked`
-                : "No accounts linked"}
+                ? t("components.connectionCard.accountsLinked", {
+                    count: connection.accounts.length,
+                  })
+                : t(
+                    "components.connectionCard.noAccountsLinked",
+                    "No accounts linked"
+                  )}
             </Text>
           </>
         )}
