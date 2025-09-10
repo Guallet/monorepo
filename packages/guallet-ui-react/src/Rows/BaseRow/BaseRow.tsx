@@ -7,6 +7,7 @@ interface BaseRowProps
   label: string;
   value?: React.ReactNode;
   onClick?: () => void;
+  leftSection?: React.ReactNode;
   rightSection?: React.ReactNode;
 }
 
@@ -14,6 +15,7 @@ export function BaseRow({
   label,
   value,
   onClick,
+  leftSection,
   rightSection,
 }: Readonly<BaseRowProps>) {
   const rightSectionContent =
@@ -29,7 +31,10 @@ export function BaseRow({
         className: classes.baseRow,
       })}
     >
-      <Text>{label}</Text>
+      <Group>
+        {leftSection}
+        <Text>{label}</Text>
+      </Group>
 
       <Group justify="end" wrap="nowrap">
         {value}

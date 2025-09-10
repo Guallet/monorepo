@@ -23,6 +23,7 @@ import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
 } from 'src/features/nordigen/dto/nordigen-account.dto';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Open Banking')
 @Controller('openbanking')
@@ -30,6 +31,7 @@ export class ObConnectionsController {
   private readonly logger = new Logger(ObConnectionsController.name);
 
   constructor(
+    private readonly configService: ConfigService,
     private readonly openbankingService: OpenbankingService,
     private readonly nordigenService: NordigenService,
     private readonly institutionService: InstitutionsService,
@@ -75,22 +77,28 @@ export class ObConnectionsController {
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const deleteResult = await this.openbankingService.deleteConnection({
-      connection_id: id,
-      user_id: user.id,
-    });
-
     try {
-      await this.nordigenService.deleteRequisition(deleteResult.connection.id);
+      const remoteResponse = await this.nordigenService.deleteRequisition(id);
+      const deleteResult = await this.openbankingService.deleteConnection({
+        connection_id: id,
+        user_id: user.id,
+      });
+      return deleteResult;
     } catch (error) {
       // Log the error but don't throw it
       this.logger.error(
         `Couldn't delete requisition ${id} from Nordigen`,
         error,
       );
+      if (this.configService.get('environment') === 'development') {
+        throw new InternalServerErrorException({
+          error: error,
+          connection_id: id,
+        });
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
-
-    return deleteResult;
   }
 
   @Get('connections/:id/accounts')

@@ -1,6 +1,8 @@
 import { GualletClientImpl } from "./../GualletClient";
 import {
+  ConnectObAccountsRequest,
   GualletInstitutionDto,
+  ObAccountDto,
   ObConnection,
   ObConnectionRequest,
   ObInstitutionDto,
@@ -51,20 +53,44 @@ export class ConnectionsApi {
     });
   }
 
-  async createOpenBankingConnection(args: {
-    institutionId: string;
-    redirectTo: string;
-  }): Promise<ObRConnectionPermissionDto> {
+  async createOpenBankingConnection({
+    institution_id,
+    redirect_to,
+  }: ObConnectionRequest): Promise<ObRConnectionPermissionDto> {
     return await this.client.post<
       ObRConnectionPermissionDto,
       ObConnectionRequest
     >({
       path: `${OPEN_BANKING_PATH}/connections`,
       payload: {
-        institution_id: args.institutionId,
-        // redirect_to: `${window.location.origin}/connections/connect/callback`,
-        redirect_to: args.redirectTo,
+        institution_id: institution_id,
+        redirect_to: redirect_to,
       },
+    });
+  }
+
+  async linkObAccounts(accountIds: string[]): Promise<ObAccountDto[]> {
+    return await this.client.post<ObAccountDto[], ConnectObAccountsRequest>({
+      path: `${OPEN_BANKING_PATH}/connections/connect`,
+      payload: {
+        account_ids: accountIds,
+      },
+    });
+  }
+
+  async getConnectionAccounts({
+    connectionId,
+  }: {
+    connectionId: string;
+  }): Promise<ObAccountDto[]> {
+    return await this.client.get<ObAccountDto[]>({
+      path: `${OPEN_BANKING_PATH}/connections/${connectionId}/accounts`,
+    });
+  }
+
+  async deleteConnection(connectionId: string): Promise<void> {
+    return await this.client.fetch_delete<void>({
+      path: `${OPEN_BANKING_PATH}/connections/${connectionId}`,
     });
   }
 }

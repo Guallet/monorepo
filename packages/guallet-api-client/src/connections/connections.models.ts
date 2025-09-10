@@ -7,9 +7,11 @@ export type ObInstitutionDto = {
   id: string;
   name: string;
   bic: string;
-  transaction_total_days: string;
   countries: string[];
   logo: string;
+  transaction_total_days: string;
+  max_access_valid_for_days: string;
+  max_access_valid_for_days_reconfirmation: string;
 };
 
 export type ObConnectionRequest = {
@@ -50,4 +52,43 @@ export type GualletInstitutionDto = {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+};
+
+export type ObAccountDto = {
+  id: string;
+  metadata: ObAccountMetadataDto;
+  details: ObAccountDetailsDto;
+};
+
+export type ObAccountDetailsDto = {
+  id: string | null;
+  resourceId: string | null;
+  iban: string | null;
+  bban: string | null;
+  currency: string | null;
+  ownerName: string | null;
+  name: string | null;
+  bic: string | null;
+  status: string | null;
+  // cashAccountType?: ExternalCashAccountType1Code;
+  cashAccountType: string | null;
+  maskedPan: string | null;
+  details: string | null;
+};
+
+export type ObAccountMetadataDto = {
+  id: string;
+  created: Date;
+  last_accessed: Date;
+  iban: string;
+  institution_id: string;
+  status: "DISCOVERED" | "PROCESSING" | "READY" | "ERROR" | "SUSPENDED";
+  owner_name: string;
+};
+
+export type ConnectObAccountsRequest = {
+  /**
+   * The IDs of the open banking accounts to be connected to
+   */
+  account_ids: string[];
 };

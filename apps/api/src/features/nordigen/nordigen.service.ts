@@ -374,9 +374,8 @@ export class NordigenService {
     this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
     const path = `/api/v2/requisitions/${requisition_id}`;
 
-    const response = await this.makeDeleteRequest<DeleteRequisitionResponse>(
-      path,
-    );
+    const response =
+      await this.makeDeleteRequest<DeleteRequisitionResponse>(path);
     return response;
   }
 

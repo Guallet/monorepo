@@ -225,6 +225,19 @@
       }
     },
     "connections": {
+      "details": {
+        "refreshButton": {
+          "label": "Refresh Connection"
+        },
+        "updateButton": {
+          "label": "Update Connected accounts"
+        },
+        "deleteButton": {
+          "modalTitle": "Delete connection",
+          "modalMessage": "Are you sure you want to delete this connection?",
+          "label": "Delete"
+        }
+      },
       "list": {
         "emptyState": "No Connections Found. Create a new connection to get started.",
         "title": "Connections",

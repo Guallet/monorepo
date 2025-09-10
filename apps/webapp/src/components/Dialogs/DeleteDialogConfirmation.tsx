@@ -1,4 +1,4 @@
-import { Modal, Group, Button, Text } from "@mantine/core";
+import { Modal, Group, Button, Text, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 
 interface DeleteDialogConfirmationProps {
@@ -32,21 +32,23 @@ export function DeleteDialogConfirmation({
 
   return (
     <Modal opened={isOpen} onClose={onClose} title={title} centered>
-      <Text>{message}</Text>
-      <Text size="sm">
-        {t(
-          "components.dialogs.delete.subWarning.text",
-          "This action cannot be undone."
-        )}
-      </Text>
-      <Group>
-        <Button variant="outline" onClick={onClose}>
-          {cancelButtonLabel}
-        </Button>
-        <Button variant="filled" color="red" onClick={onConfirm}>
-          {deleteButtonLabel}
-        </Button>
-      </Group>
+      <Stack>
+        <Text>{message}</Text>
+        <Text size="sm">
+          {t(
+            "components.dialogs.delete.subWarning.text",
+            "This action cannot be undone."
+          )}
+        </Text>
+        <Group>
+          <Button variant="outline" onClick={onClose}>
+            {cancelButtonLabel}
+          </Button>
+          <Button variant="filled" color="red" onClick={onConfirm}>
+            {deleteButtonLabel}
+          </Button>
+        </Group>
+      </Stack>
     </Modal>
   );
 }

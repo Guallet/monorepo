@@ -227,6 +227,19 @@
       }
     },
     "connections": {
+      "details": {
+        "refreshButton": {
+          "label": "Actualizar conexión"
+        },
+        "updateButton": {
+          "label": "Actualizar cuentas conectadas"
+        },
+        "deleteButton": {
+          "modalTitle": "Eliminar conexión",
+          "modalMessage": "¿Estás seguro de que deseas eliminar esta conexión?",
+          "label": "Eliminar"
+        }
+      },
       "list": {
         "emptyState": "No se encontraron conexiones. Crea una nueva conexión para comenzar.",
         "title": "Conexiones",

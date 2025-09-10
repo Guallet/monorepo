@@ -46,7 +46,7 @@ import * as Joi from 'joi';
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
+      useFactory: (config: ConfigService) => {
         return {
           exclude: [{ method: RequestMethod.POST, path: '/graphql' }],
           pinoHttp: {
