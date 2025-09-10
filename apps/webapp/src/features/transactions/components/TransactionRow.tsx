@@ -37,7 +37,6 @@ export function TransactionRow({
       justify="space-between"
       align="center"
       wrap="nowrap"
-      p="md"
       {...(onClick && {
         onClick: () => onClick(transaction),
         style: { cursor: "pointer" },
