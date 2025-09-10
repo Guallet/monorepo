@@ -18,14 +18,14 @@ export function SettingsScreen() {
         <Title>Settings</Title>
         <UserSettingsCard />
 
-        <AppSection title="User Preferences" p={0}>
+        <AppSection title="User Preferences" gap={0}>
           <LanguageRow />
           <DefaultCurrencyRow />
           <PreferredCurrenciesRow />
           <DateFormatRow />
         </AppSection>
 
-        <AppSection title="Institutions" p={0}>
+        <AppSection title="Institutions" gap={0}>
           <TextRow
             label="Manage institutions"
             onClick={() => {

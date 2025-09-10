@@ -44,19 +44,20 @@ export function TransactionList({
                 month: "long",
                 year: "numeric",
               })}
-              itemPadding={0}
-              gap={0}
+              itemPadding="0"
             >
-              {transactions.map((transaction) => (
-                <TransactionRow
-                  key={transaction.id}
-                  transaction={transaction}
-                  avatarType={"account"}
-                  onClick={(transaction: TransactionDto) => {
-                    onTransactionClicked?.(transaction);
-                  }}
-                />
-              ))}
+              <Stack gap={0}>
+                {transactions.map((transaction) => (
+                  <TransactionRow
+                    key={transaction.id}
+                    transaction={transaction}
+                    avatarType={"account"}
+                    onClick={(transaction: TransactionDto) => {
+                      onTransactionClicked?.(transaction);
+                    }}
+                  />
+                ))}
+              </Stack>
             </AppSection>
           );
         })}
