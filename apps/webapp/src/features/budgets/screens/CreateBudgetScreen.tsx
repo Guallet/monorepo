@@ -1,4 +1,8 @@
-import { useAccounts, useBudgetMutations } from "@guallet/api-react";
+import {
+  useAccounts,
+  useBudgetMutations,
+  useUserSettings,
+} from "@guallet/api-react";
 import { useForm } from "@mantine/form";
 import {
   TextInput,
@@ -19,6 +23,7 @@ import { CategoryDto } from "@guallet/api-client";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { IconPicker } from "@/components/IconPicker/IconPicker";
 
 export function CreateBudgetScreen() {
   const { createBudgetMutation } = useBudgetMutations();
@@ -26,14 +31,16 @@ export function CreateBudgetScreen() {
   const { accounts } = useAccounts();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { settings } = useUserSettings();
 
   const form = useForm({
+    mode: "uncontrolled",
     initialValues: {
       name: "",
       amount: 0,
-      currency: "GBP", // TODO: Use the default one from the user settings
+      currency: settings?.currencies.default_currency,
       colour: "",
-      icon: "IconCalendarDollar",
+      icon: "",
       categories: [] as CategoryDto[],
     },
     // TODO: Validate using Zod
@@ -170,10 +177,19 @@ export function CreateBudgetScreen() {
                 form.setFieldValue("colour", colour);
               }}
             />
-            <TextInput
-              label={t("screens.budgets.create.form.icon.label", "Icon")}
-              // placeholder={ Default icon name}
+            <IconPicker
               {...form.getInputProps("icon")}
+              name="icon"
+              label={t("screens.budgets.create.form.icon.label", "Icon")}
+              description={t(
+                "screens.budgets.create.form.icon.description",
+                "Select an icon for the budget"
+              )}
+              required
+              value={form.values.icon}
+              onValueChanged={(iconName) =>
+                form.setFieldValue("icon", iconName ?? "")
+              }
             />
             <CategoryMultiSelect
               required

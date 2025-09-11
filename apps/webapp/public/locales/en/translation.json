@@ -213,7 +213,8 @@
             "placeholder": "Select the category colour"
           },
           "icon": {
-            "label": "Icon"
+            "label": "Icon",
+            "description": "Select an icon for the budget"
           },
           "categories": {
             "label": "Categories"

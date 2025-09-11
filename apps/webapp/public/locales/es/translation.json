@@ -215,7 +215,8 @@
             "placeholder": "Selecciona el color de la categoría"
           },
           "icon": {
-            "label": "Ícono"
+            "label": "Ícono",
+            "description": "Selecciona un ícono para el presupuesto"
           },
           "categories": {
             "label": "Categorías"
