@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { useState, useEffect } from "react";
 import classes from "./CurrencyPicker.module.css";
-import { useMediaQuery } from "@mantine/hooks";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const currencyCodes = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -28,7 +28,7 @@ export function CurrencyPickerModal({
   onCurrencySelected,
   onCancel,
 }: Readonly<CurrencyPickerModalProps>) {
-  const isMobile = useMediaQuery("(max-width: 50em)");
+  const isMobile = useIsMobile();
   const [query, setQuery] = useState("");
   const [filteredCurrencies, setFilteredCurrencies] =
     useState<Currency[]>(currencyCodes);
