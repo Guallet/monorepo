@@ -143,7 +143,7 @@ export class OpenbankingService {
     const existingNordigenAccount =
       await this.nordigenAccountsRepository.findOne({
         where: {
-          id: nordigen_accountId,
+          resource_id: nordigen_accountId,
         },
       });
 

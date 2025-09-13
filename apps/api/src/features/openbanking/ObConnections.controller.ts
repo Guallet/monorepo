@@ -196,7 +196,7 @@ export class ObConnectionsController {
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectAccountsRequestDto,
   ) {
-    this.logger.debug(`Connecting to accounts: ${dto.account_ids}`);
+    this.logger.debug(`Connecting to accounts: ${dto.account_ids.join(', ')}`);
     // Get Nordigen Account Metadata
     // Get Nordigen Account Details
     // Save the Nordigen account in the DB
