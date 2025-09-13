@@ -69,49 +69,51 @@ export function ConnectionCreateScreen({
             }
           }}
         />
-        <SearchableListView
-          gap={0}
-          items={institutions}
-          emptyView={
-            <Stack>
-              <Text>No banks found</Text>
-              <Text>
-                Some bank names are different than their commercial names.
-                Please try another name for the bank
-              </Text>
-            </Stack>
-          }
-          itemTemplate={(institution: ObInstitutionDto) => (
-            <ObInstitutionRow
-              institution={institution}
-              onClick={() => {
-                createConnectionMutation.mutate(
-                  {
-                    request: {
-                      institution_id: institution.id,
-                      redirect_to: `${window.location.origin}/connections/connect/callback`,
+        {institutions?.length > 0 && (
+          <SearchableListView
+            gap={0}
+            items={institutions}
+            emptyView={
+              <Stack p="md">
+                <Text>No banks found</Text>
+                <Text>
+                  Some bank names are different than their commercial names.
+                  Please try another name for the bank
+                </Text>
+              </Stack>
+            }
+            itemTemplate={(institution: ObInstitutionDto) => (
+              <ObInstitutionRow
+                institution={institution}
+                onClick={() => {
+                  createConnectionMutation.mutate(
+                    {
+                      request: {
+                        institution_id: institution.id,
+                        redirect_to: `${window.location.origin}/connections/connect/callback`,
+                      },
                     },
-                  },
-                  {
-                    onSuccess: (data) => {
-                      // Open the website to complete the connection
-                      window.open(data.link, "_self");
-                    },
-                    onError: (error) => {
-                      console.error("Error creating connection:", error);
-                      notifications.show({
-                        title: "Error",
-                        message:
-                          "There was an error creating the connection. Please try again.",
-                        color: "red",
-                      });
-                    },
-                  }
-                );
-              }}
-            />
-          )}
-        />
+                    {
+                      onSuccess: (data) => {
+                        // Open the website to complete the connection
+                        window.open(data.link, "_self");
+                      },
+                      onError: (error) => {
+                        console.error("Error creating connection:", error);
+                        notifications.show({
+                          title: "Error",
+                          message:
+                            "There was an error creating the connection. Please try again.",
+                          color: "red",
+                        });
+                      },
+                    }
+                  );
+                }}
+              />
+            )}
+          />
+        )}
       </Stack>
     </BaseScreen>
   );
