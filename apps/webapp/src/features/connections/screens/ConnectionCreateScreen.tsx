@@ -19,7 +19,7 @@ import { notifications } from "@mantine/notifications";
 
 interface ConnectionCreateScreenProps {
   selectedCountryCode?: string;
-  onCountryChange?: (country: OpenBankingCountryDto) => void;
+  onCountryChange?: (country?: OpenBankingCountryDto) => void;
 }
 
 const renderAutocompleteOption: AutocompleteProps["renderOption"] = ({
@@ -61,6 +61,7 @@ export function ConnectionCreateScreen({
           }))}
           renderOption={renderAutocompleteOption}
           clearable
+          onClear={() => onCountryChange?.(undefined)}
           value={countrySelected?.name}
           onChange={(value) => {
             const country = countries.find((c) => c.name === value);

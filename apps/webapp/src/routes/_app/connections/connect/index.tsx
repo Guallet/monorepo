@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { ConnectionCreateScreen } from "@/features/connections/screens/ConnectionCreateScreen";
 const pageSearchSchema = z.object({
-  country: z.string().optional(), //.catch("GB"),
+  country: z.string().optional(),
 });
 
 export const Route = createFileRoute("/_app/connections/connect/")({
@@ -20,7 +20,7 @@ function AddConnectionPage() {
       selectedCountryCode={country}
       onCountryChange={(country) => {
         navigate({
-          search: (prev) => ({ country: country.code, ...prev }),
+          search: (prev) => ({ ...prev, country: country?.code || undefined }),
         });
       }}
     />
