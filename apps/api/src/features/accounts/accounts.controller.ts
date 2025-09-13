@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Logger,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -20,6 +22,8 @@ import { TransactionsService } from 'src/features/transactions/transactions.serv
 import { AccountChartsDto, ChartData } from './dto/account-charts.dto';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
+import { OpenbankingService } from '../openbanking/openbanking.service';
+import { AccountSource, toAccountSource } from './entities/accountSource.model';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -29,6 +33,7 @@ export class AccountsController {
   constructor(
     private readonly accountsService: AccountsService,
     private readonly transactionsService: TransactionsService,
+    private readonly openBankingService: OpenbankingService,
   ) {}
 
   @Get()
@@ -155,6 +160,42 @@ export class AccountsController {
           ),
       ),
     );
+  }
+
+  /**
+   * Retrieves the connected Open Banking account details for a specified Guallet account.
+   * This endpoint is used to get the linked bank account information for accounts that are
+   * synchronized with external banking institutions through Open Banking.
+   *
+   * @param {UserPrincipal} user - The authenticated user making the request
+   * @param {string} accountId - UUID of the Guallet account
+   * @throws {BadRequestException} When the account is not connected to Open Banking
+   * @throws {NotFoundException} When the connected Open Banking account cannot be found
+   * @returns {Promise<{connectedAccount: OpenBankingAccount}>} Object containing the connected Open Banking account details
+   */
+  @Get(':id/connection')
+  async getConnectedAccountDetails(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) accountId: string,
+  ) {
+    const account = await this.accountsService.getUserAccount(
+      user.id,
+      accountId,
+    );
+
+    if (toAccountSource(account.source) !== AccountSource.SYNCED) {
+      throw new BadRequestException('Account is not connected');
+    }
+
+    const obAccount = await this.openBankingService.getLinkedAccount({
+      accountId: account.id,
+    });
+
+    if (!obAccount) {
+      throw new NotFoundException('Connected account not found');
+    }
+
+    return { connectedAccount: obAccount };
   }
 
   @Patch(':id')

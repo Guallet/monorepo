@@ -24,20 +24,20 @@ export class OpenbankingService {
 
   constructor(
     @InjectRepository(ObConnection)
-    private repository: Repository<ObConnection>,
+    private readonly repository: Repository<ObConnection>,
     @InjectRepository(NordigenAccount)
-    private nordigenAccountsRepository: Repository<NordigenAccount>,
-    private nordigenService: NordigenService,
+    private readonly nordigenAccountsRepository: Repository<NordigenAccount>,
+    private readonly nordigenService: NordigenService,
     // private nordigenAccountsRepository: NordigenAccountRepository,
     @InjectRepository(Account)
-    private accountRepository: Repository<Account>,
+    private readonly accountRepository: Repository<Account>,
     @InjectRepository(Institution)
-    private institutionRepository: Repository<Institution>,
+    private readonly institutionRepository: Repository<Institution>,
     @InjectRepository(Transaction)
-    private transactionsRepository: Repository<Transaction>,
+    private readonly transactionsRepository: Repository<Transaction>,
   ) {}
 
-  async getAvailableCountries(locale: string) {
+  getAvailableCountries(locale: string) {
     return supportedCountries.map((code) => {
       const regionNames = new Intl.DisplayNames([locale], {
         type: 'region',
@@ -318,5 +318,23 @@ export class OpenbankingService {
       this.logger.error(`Error syncing account`, error);
       throw error;
     }
+  }
+
+  async getLinkedAccount({
+    accountId,
+  }: {
+    accountId: string;
+  }): Promise<NordigenAccount> {
+    const nordigenAccount = await this.nordigenAccountsRepository.findOne({
+      where: {
+        linked_account_id: accountId,
+      },
+    });
+
+    if (nordigenAccount === null) {
+      throw new NotFoundException(`No linked open banking account found`);
+    }
+
+    return nordigenAccount;
   }
 }

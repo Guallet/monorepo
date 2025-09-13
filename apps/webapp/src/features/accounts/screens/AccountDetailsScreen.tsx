@@ -1,6 +1,4 @@
 import { fetch_delete } from "@/api/fetchHelper";
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
-import { AmountLabel } from "@/components/Amount/AmountLabel";
 import { AppSection } from "@/components/Cards/AppSection";
 import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
 import {
@@ -84,7 +82,9 @@ export function AccountDetailsScreen({
         <AccountDetailsHeader accountId={accountId} />
 
         {/* Show info dependent on account type */}
-        {AccountDetailsSelector(account)}
+        <AppSection itemPadding="xl">
+          {AccountDetailsSelector(account)}
+        </AppSection>
         <Space />
         <TransactionsSection accountId={account.id} />
 

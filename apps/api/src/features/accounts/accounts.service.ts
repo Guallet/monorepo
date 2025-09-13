@@ -13,7 +13,7 @@ export class AccountsService {
 
   constructor(
     @InjectRepository(Account)
-    private repository: Repository<Account>,
+    private readonly repository: Repository<Account>,
   ) {}
 
   async findAllUserAccounts(userId: string): Promise<Account[]> {

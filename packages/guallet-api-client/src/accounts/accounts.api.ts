@@ -6,6 +6,7 @@ import {
 } from "./accounts.models";
 import { GualletClientImpl } from "./../GualletClient";
 import { TransactionDto } from "./../transactions/transactions.models";
+import { ObAccountDto } from "connections";
 
 const ACCOUNTS_PATH = "accounts";
 
@@ -51,6 +52,12 @@ export class AccountsApi {
   async getAccountTransactions(accountId: string): Promise<TransactionDto[]> {
     return await this.client.get<TransactionDto[]>({
       path: `${ACCOUNTS_PATH}/${accountId}/transactions`,
+    });
+  }
+
+  async getConnectedAccount(accountId: string): Promise<ObAccountDto> {
+    return await this.client.get<ObAccountDto>({
+      path: `${ACCOUNTS_PATH}/${accountId}/connection`,
     });
   }
 }

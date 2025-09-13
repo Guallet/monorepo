@@ -1,8 +1,9 @@
 import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
 import { AmountLabel } from "@/components/Amount/AmountLabel";
-import { Badge, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { Group, Stack, Text } from "@mantine/core";
 import { getAccountTypeTitleSingular } from "../models/Account";
 import { useAccount } from "@guallet/api-react";
+import { ConnectedAccountStatus } from "./ConnectedAccountStatus";
 
 interface AccountDetailsHeaderProps {
   accountId: string;
@@ -32,20 +33,7 @@ export function AccountDetailsHeader({
           {getAccountTypeTitleSingular(account.type)}
         </Text>
         {account.source === "synced" && (
-          <Tooltip
-            label={`Last synced at ${new Date().toLocaleDateString()}`}
-            position="top-start"
-          >
-            <Group>
-              <Badge size="xs" color="green">
-                Synced
-              </Badge>
-
-              <Text size="sm" c="dimmed">
-                {new Date().toLocaleDateString()}
-              </Text>
-            </Group>
-          </Tooltip>
+          <ConnectedAccountStatus accountId={account.id} />
         )}
       </Stack>
 
