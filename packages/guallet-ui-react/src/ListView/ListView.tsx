@@ -7,7 +7,11 @@ interface IProps<T> {
   emptyView?: React.ReactNode;
 }
 
-export function ListView<T>({ items, itemTemplate, emptyView }: IProps<T>) {
+export function ListView<T>({
+  items,
+  itemTemplate,
+  emptyView,
+}: Readonly<IProps<T>>) {
   if (items.length === 0) {
     return <Stack>{emptyView || <DefaultEmptyView />}</Stack>;
   }

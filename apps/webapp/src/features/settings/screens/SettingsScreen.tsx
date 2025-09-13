@@ -18,14 +18,14 @@ export function SettingsScreen() {
         <Title>Settings</Title>
         <UserSettingsCard />
 
-        <AppSection title="User Preferences" gap={0}>
+        <AppSection title="User Preferences" itemPadding={0}>
           <LanguageRow />
           <DefaultCurrencyRow />
           <PreferredCurrenciesRow />
           <DateFormatRow />
         </AppSection>
 
-        <AppSection title="Institutions" gap={0}>
+        <AppSection title="Institutions" itemPadding={0}>
           <TextRow
             label="Manage institutions"
             onClick={() => {
@@ -34,8 +34,26 @@ export function SettingsScreen() {
           />
         </AppSection>
 
-        <Button>Export data</Button>
-        <Button color="red">Close account</Button>
+        <AppSection title="Import/Export data" itemPadding={0}>
+          <TextRow
+            label="Export data"
+            onClick={() => {
+              navigate({ to: "/importer/export" });
+            }}
+          />
+          <TextRow
+            label="Import data"
+            onClick={() => {
+              navigate({ to: "/importer" });
+            }}
+          />
+        </AppSection>
+
+        <AppSection title="Danger zone">
+          <Button variant="outline" color="red">
+            Close account
+          </Button>
+        </AppSection>
       </Stack>
     </BaseScreen>
   );
