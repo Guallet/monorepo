@@ -5,7 +5,7 @@ import {
 import { Button, Card, Flex, Loader, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ConnectionCallbackScreenProps {
   connectionId?: string | null;
@@ -22,31 +22,38 @@ export function ConnectionCallbackScreen({
     useOpenBankingAccountsForConnection(connectionId);
   const { linkObAccountsMutation } = useConnectionMutations();
   const navigate = useNavigate();
+  const [alreadyLinked, setAlreadyLinked] = useState(false);
 
   function linkAccounts() {
-    if (accounts.length === 0) {
-      console.log("No accounts to link");
-      return;
-    }
-
-    linkObAccountsMutation.mutate(
-      {
-        accountIds: accounts.map((account) => account.id),
-      },
-      {
-        onSuccess: () => {
-          console.log("Accounts linked successfully");
-          notifications.show({
-            title: "Accounts linked successfully",
-            message: `${accounts.length} accounts linked`,
-            color: "green",
-          });
-        },
-        onError: (error) => {
-          console.error("Error linking accounts:", error);
-        },
+    if (alreadyLinked) {
+      if (accounts.length === 0) {
+        console.log("No accounts to link");
+        return;
       }
-    );
+
+      linkObAccountsMutation.mutate(
+        {
+          accountIds: accounts.map((account) => account.id),
+        },
+        {
+          onSuccess: () => {
+            console.log("Accounts linked successfully");
+            notifications.show({
+              title: "Accounts linked successfully",
+              message: `${accounts.length} accounts linked`,
+              color: "green",
+            });
+          },
+          onError: (error) => {
+            console.error("Error linking accounts:", error);
+          },
+        }
+      );
+
+      setAlreadyLinked(true);
+    } else {
+      console.log("Already linked accounts, skipping linking");
+    }
   }
 
   useEffect(() => {
