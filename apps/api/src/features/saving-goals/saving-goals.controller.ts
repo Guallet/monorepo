@@ -8,11 +8,18 @@ import {
   Delete,
   Logger,
   ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { SavingGoalsService } from './saving-goals.service';
 import { CreateSavingGoalDto } from './dto/create-saving-goal.dto';
 import { UpdateSavingGoalDto } from './dto/update-saving-goal.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SavingGoalDto } from './dto/saving-goal.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
@@ -24,6 +31,12 @@ export class SavingGoalsController {
 
   constructor(private readonly savingGoalsService: SavingGoalsService) {}
 
+  @ApiBody({ type: SavingGoalDto })
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: SavingGoalDto,
+  })
+  @HttpCode(202)
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
@@ -36,6 +49,10 @@ export class SavingGoalsController {
     return SavingGoalDto.fromDomain(savingGoal);
   }
 
+  @ApiResponse({
+    description: 'A list of saving goals for the user',
+    type: [SavingGoalDto],
+  })
   @Get()
   async findAll(@RequestUser() user: UserPrincipal): Promise<SavingGoalDto[]> {
     const goals = await this.savingGoalsService.findAllUserSavingGoals({
@@ -44,6 +61,14 @@ export class SavingGoalsController {
     return goals.map((x) => SavingGoalDto.fromDomain(x));
   }
 
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the saving goal to retrieve',
+  })
+  @ApiResponse({
+    description: 'The requested saving goal',
+    type: SavingGoalDto,
+  })
   @Get(':id')
   async findOne(
     @RequestUser() user: UserPrincipal,
@@ -56,6 +81,12 @@ export class SavingGoalsController {
     return SavingGoalDto.fromDomain(goal);
   }
 
+  @ApiParam({ name: 'id', description: 'The ID of the saving goal to update' })
+  @ApiResponse({
+    description: 'The Updated saving goal',
+    type: SavingGoalDto,
+  })
+  @ApiBody({ type: UpdateSavingGoalDto })
   @Patch(':id')
   async update(
     @RequestUser() user: UserPrincipal,
@@ -70,6 +101,11 @@ export class SavingGoalsController {
     return SavingGoalDto.fromDomain(goal);
   }
 
+  @ApiParam({ name: 'id', description: 'The ID of the saving goal to delete' })
+  @ApiResponse({
+    description: 'The deleted saving goal',
+    type: SavingGoalDto,
+  })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,
