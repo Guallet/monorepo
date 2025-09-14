@@ -6,3 +6,4 @@ export * from "./connections";
 export * from "./institutions";
 export * from "./transactions";
 export * from "./user";
+export * from "./savingGoals";
