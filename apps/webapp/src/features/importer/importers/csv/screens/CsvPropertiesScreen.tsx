@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from "../state/csvState";
 import { IconExclamationCircle } from "@tabler/icons-react";
-import { isDate } from "@/utils/DateUtils";
+import { isDate } from "@/utils/dateUtils";
 
 const SAMPLE_ARRAY_SIZE = 10;
 const EMPTY_MAP_FIELD_VALUE = "Don't map";
