@@ -13,8 +13,11 @@ export class CreateSavingGoalDto {
   @ApiProperty({ description: 'The target amount to be saved' })
   targetAmount: number;
 
-  @ApiProperty({ description: 'The target date for the saving goal' })
-  targetDate: Date;
+  @ApiProperty({
+    description: 'The target date for the saving goal',
+    nullable: true,
+  })
+  targetDate?: Date;
 
   @ApiProperty({
     description:

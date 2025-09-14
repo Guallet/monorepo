@@ -8,6 +8,7 @@ import {
   IconTools,
   IconCategory2,
   IconChartFunnel,
+  IconPigMoney,
 } from "@tabler/icons-react";
 import { AppShell, Button, Divider, ScrollArea } from "@mantine/core";
 import { LinksGroup } from "./NavbarLinksGroup";
@@ -58,6 +59,11 @@ const menuData: MenuData[] = [
     link: "/budgets",
   },
   {
+    label: "Saving Goals",
+    icon: IconPigMoney,
+    link: "/saving-goals",
+  },
+  {
     label: "Reports",
     icon: IconPresentationAnalytics,
     link: "/reports",
@@ -84,7 +90,7 @@ interface Props {
   onItemSelected: () => void;
 }
 
-export function AppNavBar({ onItemSelected }: Props) {
+export function AppNavBar({ onItemSelected }: Readonly<Props>) {
   // TODO: Instead of this hook, the navbar should use the <Link> component
   const navigate = useNavigate();
 

@@ -41,8 +41,23 @@ export function useSavingGoalMutations() {
     },
   });
 
+  const deleteSavingGoalMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return await gualletClient.savingGoals.delete(id);
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [SAVING_GOALS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
   return {
     createSavingGoalMutation,
     updateSavingGoalMutation,
+    deleteSavingGoalMutation,
   };
 }

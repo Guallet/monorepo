@@ -23,8 +23,9 @@ export class SavingGoalDto {
     description: 'The target date for the saving goal',
     type: String,
     format: 'date-time',
+    nullable: true,
   })
-  targetDate: Date;
+  targetDate?: Date;
 
   @ApiProperty({
     description: 'The account ids used as source for the saving goal',

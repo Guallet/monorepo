@@ -23,6 +23,7 @@ import { Route as LoginCallbackRouteImport } from './routes/login/callback'
 import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transactions/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
+import { Route as AppSavingGoalsIndexRouteImport } from './routes/_app/saving-goals/index'
 import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index'
 import { Route as AppInstitutionsIndexRouteImport } from './routes/_app/institutions/index'
 import { Route as AppImporterIndexRouteImport } from './routes/_app/importer/index'
@@ -36,6 +37,8 @@ import { Route as AppTransactionsOldinboxRouteImport } from './routes/_app/trans
 import { Route as AppTransactionsOldIndexRouteImport } from './routes/_app/transactions/oldIndex'
 import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
 import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transactions/create'
+import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
+import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
 import { Route as AppImporterExportRouteImport } from './routes/_app/importer/export'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
@@ -49,6 +52,7 @@ import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
 import { Route as AppImporterCsvIndexRouteImport } from './routes/_app/importer/csv/index'
 import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
+import { Route as AppSavingGoalsIdEditRouteImport } from './routes/_app/saving-goals/$id_.edit'
 import { Route as AppImporterCsvSummaryRouteImport } from './routes/_app/importer/csv/summary'
 import { Route as AppImporterCsvPropertiesRouteImport } from './routes/_app/importer/csv/properties'
 import { Route as AppImporterCsvCategoriesRouteImport } from './routes/_app/importer/csv/categories'
@@ -134,6 +138,11 @@ const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
   path: '/settings/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSavingGoalsIndexRoute = AppSavingGoalsIndexRouteImport.update({
+  id: '/saving-goals/',
+  path: '/saving-goals/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
@@ -213,6 +222,16 @@ const AppTransactionsCreateRoute = AppTransactionsCreateRouteImport.update({
   path: '/transactions/create',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSavingGoalsNewRoute = AppSavingGoalsNewRouteImport.update({
+  id: '/saving-goals/new',
+  path: '/saving-goals/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSavingGoalsIdRoute = AppSavingGoalsIdRouteImport.update({
+  id: '/saving-goals/$id',
+  path: '/saving-goals/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   id: '/reports/cashflow',
   path: '/reports/cashflow',
@@ -277,6 +296,11 @@ const AppConnectionsConnectIndexRoute =
 const AppCategoriesRulesIndexRoute = AppCategoriesRulesIndexRouteImport.update({
   id: '/categories/rules/',
   path: '/categories/rules/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSavingGoalsIdEditRoute = AppSavingGoalsIdEditRouteImport.update({
+  id: '/saving-goals/$id_/edit',
+  path: '/saving-goals/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
 const AppImporterCsvSummaryRoute = AppImporterCsvSummaryRouteImport.update({
@@ -345,6 +369,8 @@ export interface FileRoutesByFullPath {
   '/connections/$id': typeof AppConnectionsIdRoute
   '/importer/export': typeof AppImporterExportRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
+  '/saving-goals/$id': typeof AppSavingGoalsIdRoute
+  '/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
   '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
@@ -360,6 +386,7 @@ export interface FileRoutesByFullPath {
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
   '/reports': typeof AppReportsIndexRoute
+  '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/transactions': typeof AppTransactionsIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -371,6 +398,7 @@ export interface FileRoutesByFullPath {
   '/importer/csv/categories': typeof AppImporterCsvCategoriesRoute
   '/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
+  '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
@@ -396,6 +424,8 @@ export interface FileRoutesByTo {
   '/connections/$id': typeof AppConnectionsIdRoute
   '/importer/export': typeof AppImporterExportRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
+  '/saving-goals/$id': typeof AppSavingGoalsIdRoute
+  '/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
   '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
@@ -411,6 +441,7 @@ export interface FileRoutesByTo {
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
   '/reports': typeof AppReportsIndexRoute
+  '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/transactions': typeof AppTransactionsIndexRoute
   '/user': typeof AppUserIndexRoute
@@ -422,6 +453,7 @@ export interface FileRoutesByTo {
   '/importer/csv/categories': typeof AppImporterCsvCategoriesRoute
   '/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
+  '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
@@ -449,6 +481,8 @@ export interface FileRoutesById {
   '/_app/connections/$id': typeof AppConnectionsIdRoute
   '/_app/importer/export': typeof AppImporterExportRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
+  '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
+  '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/_app/transactions/create': typeof AppTransactionsCreateRoute
   '/_app/transactions/inbox': typeof AppTransactionsInboxRoute
   '/_app/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
@@ -464,6 +498,7 @@ export interface FileRoutesById {
   '/_app/importer/': typeof AppImporterIndexRoute
   '/_app/institutions/': typeof AppInstitutionsIndexRoute
   '/_app/reports/': typeof AppReportsIndexRoute
+  '/_app/saving-goals/': typeof AppSavingGoalsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/transactions/': typeof AppTransactionsIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
@@ -475,6 +510,7 @@ export interface FileRoutesById {
   '/_app/importer/csv/categories': typeof AppImporterCsvCategoriesRoute
   '/_app/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/_app/importer/csv/summary': typeof AppImporterCsvSummaryRoute
+  '/_app/saving-goals/$id_/edit': typeof AppSavingGoalsIdEditRoute
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
@@ -502,6 +538,8 @@ export interface FileRouteTypes {
     | '/connections/$id'
     | '/importer/export'
     | '/reports/cashflow'
+    | '/saving-goals/$id'
+    | '/saving-goals/new'
     | '/transactions/create'
     | '/transactions/inbox'
     | '/transactions/oldIndex'
@@ -517,6 +555,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/institutions'
     | '/reports'
+    | '/saving-goals'
     | '/settings'
     | '/transactions'
     | '/user'
@@ -528,6 +567,7 @@ export interface FileRouteTypes {
     | '/importer/csv/categories'
     | '/importer/csv/properties'
     | '/importer/csv/summary'
+    | '/saving-goals/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
@@ -553,6 +593,8 @@ export interface FileRouteTypes {
     | '/connections/$id'
     | '/importer/export'
     | '/reports/cashflow'
+    | '/saving-goals/$id'
+    | '/saving-goals/new'
     | '/transactions/create'
     | '/transactions/inbox'
     | '/transactions/oldIndex'
@@ -568,6 +610,7 @@ export interface FileRouteTypes {
     | '/importer'
     | '/institutions'
     | '/reports'
+    | '/saving-goals'
     | '/settings'
     | '/transactions'
     | '/user'
@@ -579,6 +622,7 @@ export interface FileRouteTypes {
     | '/importer/csv/categories'
     | '/importer/csv/properties'
     | '/importer/csv/summary'
+    | '/saving-goals/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
@@ -605,6 +649,8 @@ export interface FileRouteTypes {
     | '/_app/connections/$id'
     | '/_app/importer/export'
     | '/_app/reports/cashflow'
+    | '/_app/saving-goals/$id'
+    | '/_app/saving-goals/new'
     | '/_app/transactions/create'
     | '/_app/transactions/inbox'
     | '/_app/transactions/oldIndex'
@@ -620,6 +666,7 @@ export interface FileRouteTypes {
     | '/_app/importer/'
     | '/_app/institutions/'
     | '/_app/reports/'
+    | '/_app/saving-goals/'
     | '/_app/settings/'
     | '/_app/transactions/'
     | '/_app/user/'
@@ -631,6 +678,7 @@ export interface FileRouteTypes {
     | '/_app/importer/csv/categories'
     | '/_app/importer/csv/properties'
     | '/_app/importer/csv/summary'
+    | '/_app/saving-goals/$id_/edit'
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
@@ -750,6 +798,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/saving-goals/': {
+      id: '/_app/saving-goals/'
+      path: '/saving-goals'
+      fullPath: '/saving-goals'
+      preLoaderRoute: typeof AppSavingGoalsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/reports/': {
       id: '/_app/reports/'
       path: '/reports'
@@ -855,6 +910,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTransactionsCreateRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/saving-goals/new': {
+      id: '/_app/saving-goals/new'
+      path: '/saving-goals/new'
+      fullPath: '/saving-goals/new'
+      preLoaderRoute: typeof AppSavingGoalsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/saving-goals/$id': {
+      id: '/_app/saving-goals/$id'
+      path: '/saving-goals/$id'
+      fullPath: '/saving-goals/$id'
+      preLoaderRoute: typeof AppSavingGoalsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/reports/cashflow': {
       id: '/_app/reports/cashflow'
       path: '/reports/cashflow'
@@ -946,6 +1015,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriesRulesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/saving-goals/$id_/edit': {
+      id: '/_app/saving-goals/$id_/edit'
+      path: '/saving-goals/$id/edit'
+      fullPath: '/saving-goals/$id/edit'
+      preLoaderRoute: typeof AppSavingGoalsIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/importer/csv/summary': {
       id: '/_app/importer/csv/summary'
       path: '/importer/csv/summary'
@@ -1016,6 +1092,8 @@ interface AppRouteChildren {
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
   AppImporterExportRoute: typeof AppImporterExportRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
+  AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
+  AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
   AppTransactionsCreateRoute: typeof AppTransactionsCreateRoute
   AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
   AppTransactionsOldIndexRoute: typeof AppTransactionsOldIndexRoute
@@ -1031,6 +1109,7 @@ interface AppRouteChildren {
   AppImporterIndexRoute: typeof AppImporterIndexRoute
   AppInstitutionsIndexRoute: typeof AppInstitutionsIndexRoute
   AppReportsIndexRoute: typeof AppReportsIndexRoute
+  AppSavingGoalsIndexRoute: typeof AppSavingGoalsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppTransactionsIndexRoute: typeof AppTransactionsIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
@@ -1042,6 +1121,7 @@ interface AppRouteChildren {
   AppImporterCsvCategoriesRoute: typeof AppImporterCsvCategoriesRoute
   AppImporterCsvPropertiesRoute: typeof AppImporterCsvPropertiesRoute
   AppImporterCsvSummaryRoute: typeof AppImporterCsvSummaryRoute
+  AppSavingGoalsIdEditRoute: typeof AppSavingGoalsIdEditRoute
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
@@ -1058,6 +1138,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppConnectionsIdRoute: AppConnectionsIdRoute,
   AppImporterExportRoute: AppImporterExportRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
+  AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
+  AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
   AppTransactionsCreateRoute: AppTransactionsCreateRoute,
   AppTransactionsInboxRoute: AppTransactionsInboxRoute,
   AppTransactionsOldIndexRoute: AppTransactionsOldIndexRoute,
@@ -1073,6 +1155,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppImporterIndexRoute: AppImporterIndexRoute,
   AppInstitutionsIndexRoute: AppInstitutionsIndexRoute,
   AppReportsIndexRoute: AppReportsIndexRoute,
+  AppSavingGoalsIndexRoute: AppSavingGoalsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppTransactionsIndexRoute: AppTransactionsIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
@@ -1084,6 +1167,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppImporterCsvCategoriesRoute: AppImporterCsvCategoriesRoute,
   AppImporterCsvPropertiesRoute: AppImporterCsvPropertiesRoute,
   AppImporterCsvSummaryRoute: AppImporterCsvSummaryRoute,
+  AppSavingGoalsIdEditRoute: AppSavingGoalsIdEditRoute,
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
