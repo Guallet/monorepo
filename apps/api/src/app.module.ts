@@ -23,6 +23,7 @@ import { User } from './features/users/entities/user.entity';
 import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
 import { WaitingListModule } from './features/waitinglist/waitinglist.module';
+import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -69,7 +70,8 @@ import * as Joi from 'joi';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities: [],
-      synchronize: process.env.ENVIRONMENT == 'development',
+      // synchronize: process.env.ENVIRONMENT === 'development',
+      synchronize: true,
       autoLoadEntities: true,
       ssl: { rejectUnauthorized: false },
     }),
@@ -87,10 +89,11 @@ import * as Joi from 'joi';
     NordigenModule,
     AdminModule,
     BudgetsModule,
-    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
-    TypeOrmModule.forFeature([User]),
     WebhooksModule,
     WaitingListModule,
+    SavingGoalsModule,
+    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [],
   providers: [

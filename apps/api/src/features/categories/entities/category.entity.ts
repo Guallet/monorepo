@@ -45,6 +45,7 @@ export class Category extends BaseDbEntity {
     onDelete: 'SET NULL',
   })
   transactions: Transaction[];
+
   @ManyToMany(() => Budget, (budget) => budget.categories)
   budgets: Budget[];
 }
