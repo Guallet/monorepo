@@ -1,4 +1,4 @@
-import { formatDate } from "@/utils/DateUtils";
+import { formatDate } from "@/utils/dateUtils";
 import { useConnectedAccount } from "@guallet/api-react";
 import { Group, Tooltip, Text, Badge } from "@mantine/core";
 

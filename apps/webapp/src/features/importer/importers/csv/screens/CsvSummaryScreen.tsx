@@ -1,7 +1,7 @@
 import { AccountDto, CategoryDto } from "@guallet/api-client";
 import { FieldMappings } from "../models";
 import { DEFAULT_ACCOUNT_NAME } from "./CsvAccountsScreen";
-import { formatDate } from "@/utils/DateUtils";
+import { formatDate } from "@/utils/dateUtils";
 import { delay } from "@/utils/delay";
 import {
   Modal,
