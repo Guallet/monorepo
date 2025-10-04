@@ -1,50 +1,53 @@
-# Welcome to your Expo app 👋
+## Guallet Mobile app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## How to build and run the app
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+From the `apps/mobile` directory, run
 
 ```bash
-npm run reset-project
+pnpm install
+pnpm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+to install the dependencies and run the Metro server. You will need to configure some prerequisites to run the app as expected:
 
-## Learn more
+### Create .env file
 
-To learn more about developing your project with Expo, look at the following resources:
+Create a `.env` file in the mobile root folder
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+cd apps/mobile
+touch .env
+```
 
-## Join the community
+Use the `.env.sample` file to see the required variables the app requires.
 
-Join our community of developers creating universal apps.
+### Configure Supabase
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The app uses [Supabase](https://supabase.com/) for user authentication. You can host Supabase in your own server, but also can use the free tier to create an account and setup `Email` and `Google` as login providers.
+
+Remember to configure the `Url Configuration` redirection in Supabase correctly according to your domain/server for the Guallet WebApp. For the mobile App, this is not required as it uses native Google Signin.
+
+### Configure Firebase files
+
+The app uses [React Native Google Sign In](https://react-native-google-signin.github.io/) to use native Login Signin functionality. Please read their documentation to configure the login using Firebase.
+
+Once this is ready, you will have two Firebase config files:
+
+- google-services.json (for Android)
+- GoogleService-Info.plist (for iOS)
+
+Download the files and place them in the following directory
+
+> app/mobile/auth/firebase
+
+## Github Actions and CI/EAS
+
+There are some Github Actions files inside the `.github/workflows` folder that help with some internal EAS preview/deployment. You can have a look at them and adjust them to replicate them to work with your own EAS account.
+
+## Built with
+
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![React Native](https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white)
+![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white)
