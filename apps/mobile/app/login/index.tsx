@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Button } from "@luna-ui/react-native";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
@@ -22,6 +23,13 @@ export default function LoginScreen() {
           <Text>Welcome to Guallet</Text>
           <Text>Sign in to manage your finances securely</Text>
         </View>
+
+        <Button>Default</Button>
+        <Button variant="filled">Filled</Button>
+        <Button variant="light">Light</Button>
+        <Button variant="outline">Outline</Button>
+        <Button variant="subtle">Subtle</Button>
+        <Button variant="transparent">Transparent</Button>
 
         <View>
           {/* Email Input */}
