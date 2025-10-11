@@ -16,6 +16,8 @@ export const AppFontSizes = {
 export type AppFontFamily = "Lato" | "Comic Sans";
 export type AppFontStyle = "Title" | "Subtitle" | "Caption" | "Body";
 
+export type LunaSize = "xs" | "sm" | "md" | "lg" | "xl" | number;
+
 // const AppFontWeight = {
 //   thin: FontWeight.w100,
 //   extraLight: FontWeight.w200,

@@ -1,3 +1,4 @@
+import { LunaSize } from "@/theme/typography";
 import React from "react";
 import { Text } from "react-native";
 
@@ -7,7 +8,7 @@ interface LabelProps extends React.ComponentProps<typeof Text> {
   inherit?: boolean;
   inline?: boolean;
   lineClamp?: number;
-  size?: "xs" | "sm" | "md" | "lg" | "xl" | number;
+  size?: LunaSize;
   span?: boolean;
   truncate?: "start" | "end" | "both";
   children: React.ReactNode;
@@ -25,30 +26,5 @@ export function Label({
   children,
   ...props
 }: Readonly<LabelProps>) {
-  const textProps = {
-    color,
-    gradient,
-    inherit,
-    inline,
-    size,
-    style: lineClamp
-      ? {
-          overflow: "hidden",
-          display: "-webkit-box",
-          WebkitBoxOrient: "vertical",
-          WebkitLineClamp: lineClamp,
-        }
-      : {},
-    ...props,
-  };
-
-  return (
-    <Text
-      // component={Component}
-      //   truncate={truncate}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
+  return <Text {...props}>{children}</Text>;
 }

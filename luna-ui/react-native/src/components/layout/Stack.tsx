@@ -1,3 +1,4 @@
+import { LunaSpacing, LunaSpacingMap } from "@/theme/spacing";
 import React from "react";
 import { View, StyleSheet, ViewStyle } from "react-native";
 
@@ -9,33 +10,23 @@ type JustifyContent =
   | "space-between"
   | "space-around"
   | "space-evenly";
-type MantineSpacing = "xs" | "sm" | "md" | "lg" | "xl" | number;
 
 interface StackProps {
   children: React.ReactNode;
   align?: AlignItems;
-  gap?: MantineSpacing;
+  gap?: LunaSpacing;
   justify?: JustifyContent;
   style?: ViewStyle;
 }
 
-//TODO: Use the theme spacing values
-const spacingMap = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-};
-
-export const Stack: React.FC<StackProps> = ({
+export function Stack({
   children,
   align = "stretch",
   gap = "md",
   justify = "flex-start",
   style,
-}) => {
-  const gapValue = typeof gap === "string" ? spacingMap[gap] : gap;
+}: Readonly<StackProps>) {
+  const gapValue = typeof gap === "string" ? LunaSpacingMap[gap] : gap;
 
   const stackStyle = StyleSheet.create({
     container: {
@@ -48,4 +39,4 @@ export const Stack: React.FC<StackProps> = ({
   });
 
   return <View style={stackStyle.container}>{children}</View>;
-};
+}
