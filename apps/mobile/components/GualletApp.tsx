@@ -16,6 +16,8 @@ import { AppStateStatus, Platform, useColorScheme } from "react-native";
 import { GualletClientProvider } from "@guallet/api-react";
 import { gualletClient } from "@/api/gualletClient";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { LunaUiThemeProvider } from "@luna-ui/react-native";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -33,21 +35,32 @@ export function GualletApp() {
   useAppState(onAppStateChange);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <GualletClientProvider client={gualletClient}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="modal"
-                options={{ presentation: "modal", title: "Modal" }}
-              />
-            </Stack>
-            <StatusBar style="auto" />
-          </GualletClientProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <LunaUiThemeProvider>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <SafeAreaProvider>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <GualletClientProvider client={gualletClient}>
+                <Stack
+                  screenOptions={{
+                    contentStyle: { backgroundColor: "white" },
+                  }}
+                >
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="modal"
+                    options={{ presentation: "modal", title: "Modal" }}
+                  />
+                </Stack>
+                <StatusBar style="auto" />
+              </GualletClientProvider>
+            </AuthProvider>
+          </QueryClientProvider>
+        </SafeAreaProvider>
+      </ThemeProvider>
+    </LunaUiThemeProvider>
   );
 }

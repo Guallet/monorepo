@@ -1,6 +1,6 @@
-import { LunaSpacing, LunaSpacingMap } from "@/theme/spacing";
 import React from "react";
 import { View, StyleSheet, ViewStyle } from "react-native";
+import { LunaSpacing, LunaSpacingMap } from "./../../../src/theme/spacing";
 
 type AlignItems = "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
 type JustifyContent =

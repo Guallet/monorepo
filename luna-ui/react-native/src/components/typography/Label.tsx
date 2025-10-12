@@ -1,6 +1,6 @@
-import { LunaSize } from "@/theme/typography";
 import React from "react";
 import { Text } from "react-native";
+import { LunaSize } from "src/theme/typography";
 
 interface LabelProps extends React.ComponentProps<typeof Text> {
   color?: string;
@@ -26,5 +26,13 @@ export function Label({
   children,
   ...props
 }: Readonly<LabelProps>) {
+  if (color) {
+    const baseStyles = Array.isArray(props.style) ? props.style : [props.style];
+    (props as unknown as React.ComponentProps<typeof Text>).style = [
+      { color },
+      ...baseStyles,
+    ];
+  }
+
   return <Text {...props}>{children}</Text>;
 }
