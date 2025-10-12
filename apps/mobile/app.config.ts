@@ -52,6 +52,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    "react-native-email-link",
   ],
   experiments: {
     typedRoutes: true,

@@ -25,6 +25,23 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
 }) => {
   const getVariantStyles = (): ViewStyle => {
+    if (disabled) {
+      switch (variant) {
+        case "filled":
+          return styles.filledDisabled;
+        case "light":
+          return styles.lightDisabled;
+        case "outline":
+          return styles.outlineDisabled;
+        case "subtle":
+          return styles.subtleDisabled;
+        case "transparent":
+          return styles.transparentDisabled;
+        default:
+          return styles.filledDisabled;
+      }
+    }
+
     switch (variant) {
       case "filled":
         return styles.filled;
@@ -42,6 +59,10 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const getTextStyles = (): TextStyle => {
+    if (disabled) {
+      return styles.disabledText;
+    }
+
     switch (variant) {
       case "filled":
         return styles.filledText;
@@ -60,7 +81,7 @@ export const Button: React.FC<ButtonProps> = ({
       style={[styles.button, getVariantStyles(), style]}
       onPress={onClick}
       disabled={disabled}
-      activeOpacity={0.7}
+      activeOpacity={disabled ? 1 : 0.7}
     >
       {typeof children === "string" ? (
         <Text style={[styles.text, getTextStyles()]}>{children}</Text>
@@ -85,22 +106,42 @@ const styles = StyleSheet.create({
   filled: {
     backgroundColor: "#007AFF",
   },
+  filledDisabled: {
+    backgroundColor: "#D1D5DB",
+  },
   filledText: {
     color: "#FFFFFF",
   },
   light: {
     backgroundColor: "#E1F0FF",
   },
+  lightDisabled: {
+    backgroundColor: "#F3F4F6",
+  },
   outline: {
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "#007AFF",
   },
+  outlineDisabled: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+  },
   subtle: {
     backgroundColor: "#F5F5F5",
   },
+  subtleDisabled: {
+    backgroundColor: "#F9FAFB",
+  },
   transparent: {
     backgroundColor: "transparent",
+  },
+  transparentDisabled: {
+    backgroundColor: "transparent",
+  },
+  disabledText: {
+    color: "#9CA3AF",
   },
   variantText: {
     color: "#007AFF",

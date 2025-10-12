@@ -16,6 +16,7 @@ import {
   OtpInput,
   Title,
 } from "@luna-ui/react-native";
+import { openInbox } from "react-native-email-link";
 
 export function OtpScreen() {
   const router = useRouter();
@@ -26,9 +27,10 @@ export function OtpScreen() {
     console.log("Resending code...");
   };
 
-  const handleOpenEmailApp = () => {
+  const handleOpenEmailApp = async () => {
     // Open default email app
-    Linking.openURL("mailto:");
+    // Linking.openURL("mailto:");
+    const result = await openInbox();
   };
 
   return (

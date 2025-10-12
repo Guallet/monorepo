@@ -10,6 +10,7 @@ export interface TitleProps extends TextProps {
   size?: TitleSize;
   textWrap?: "wrap" | "nowrap" | "balance" | "pretty" | "stable";
   children: React.ReactNode;
+  center?: boolean;
 }
 
 const orderToFontSize: Record<TitleOrder, number> = {
@@ -37,6 +38,7 @@ export function Title({
   textWrap = "wrap",
   style,
   children,
+  center = false,
   ...rest
 }: Readonly<TitleProps>) {
   const fontSize = size ? sizeToFontSize[size] : orderToFontSize[order];
@@ -63,7 +65,8 @@ export function Title({
 
   return (
     <Text
-    //    {...textProps}
+      //   {...textProps}
+      style={[center && { textAlign: "center" }]}
     >
       {children}
     </Text>

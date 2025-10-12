@@ -24,6 +24,7 @@ export function AppScreen({
     headerTitleAlign: "center",
     ...(headerTitle && headerTitle !== "" && { title: headerTitle }),
     headerShown: isHeaderVisible,
+    headerShadowVisible: false,
     ...headerOptions,
   };
 

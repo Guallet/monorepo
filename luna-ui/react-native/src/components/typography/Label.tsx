@@ -10,6 +10,7 @@ interface LabelProps extends React.ComponentProps<typeof Text> {
   lineClamp?: number;
   size?: LunaSize;
   span?: boolean;
+  center?: boolean;
   truncate?: "start" | "end" | "both";
   children: React.ReactNode;
 }
@@ -21,6 +22,7 @@ export function Label({
   inline = false,
   lineClamp,
   size = "md",
+  center = false,
   span = false,
   truncate,
   children,
@@ -30,6 +32,14 @@ export function Label({
     const baseStyles = Array.isArray(props.style) ? props.style : [props.style];
     (props as unknown as React.ComponentProps<typeof Text>).style = [
       { color },
+      ...baseStyles,
+    ];
+  }
+
+  if (center) {
+    const baseStyles = Array.isArray(props.style) ? props.style : [props.style];
+    (props as unknown as React.ComponentProps<typeof Text>).style = [
+      { textAlign: "center" },
       ...baseStyles,
     ];
   }
