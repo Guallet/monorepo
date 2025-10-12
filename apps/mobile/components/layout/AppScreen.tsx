@@ -28,7 +28,6 @@ export function AppScreen({
   };
 
   return (
-    // TODO: Move the colour to a theme
     <View
       style={[
         {
