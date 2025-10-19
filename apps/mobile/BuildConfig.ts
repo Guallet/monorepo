@@ -1,4 +1,6 @@
 export const BuildConfig = {
+  IS_DEV: process.env.NODE_ENV !== "production",
+  APP_VARIANT: process.env.EXPO_PUBLIC_APP_VARIANT ?? "production",
   BASE_API_URL: process.env.EXPO_PUBLIC_API_URL ?? "",
   Auth: {
     GOOGLE_WEB_CLIENT_ID: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "",

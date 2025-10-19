@@ -13,10 +13,9 @@ import {
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/auth/useAuth";
+import { BuildConfig } from "@/BuildConfig";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// const IS_DEV = process.env.APP_VARIANT === "development";
-const IS_DEV = true;
 
 export function LoginScreen() {
   const { spacing } = useTheme();
@@ -30,7 +29,7 @@ export function LoginScreen() {
   const isValidEmail = emailRegex.test(email);
 
   const onLoginWithEmail = async () => {
-    if (IS_DEV) {
+    if (BuildConfig.IS_DEV) {
       router.navigate("/login/otp");
     }
 
