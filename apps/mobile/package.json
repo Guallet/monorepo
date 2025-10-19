@@ -23,7 +23,9 @@
     "build:android:local:development": "eas build --platform android --profile development --local",
     "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android",
     "eas:android:development": "eas build --profile development --platform android",
-    "eas:update-branch": "eas update --auto"
+    "eas:update-branch": "eas update --auto",
+    "eas:env:push": "eas secret:push --scope project --env-file .env",
+    "eas:env:pull": "eas env:pull --environment development"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
