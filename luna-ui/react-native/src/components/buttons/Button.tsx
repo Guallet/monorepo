@@ -94,10 +94,10 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    padding: 12,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+    height: 50,
   },
   text: {
     fontSize: 16,

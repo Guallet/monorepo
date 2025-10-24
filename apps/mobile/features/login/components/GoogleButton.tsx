@@ -1,12 +1,8 @@
-import {
-  Button,
-  LunaLightThemeColors,
-  LunaSpacingMap,
-} from "@luna-ui/react-native";
+import { Button, useTheme } from "@luna-ui/react-native";
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Label } from "@luna-ui/react-native/src/components/typography";
+import Group from "@luna-ui/react-native/src/components/layout/Group";
 
 interface GoogleButtonProps {
   onPress: () => void;
@@ -17,27 +13,14 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
   onPress,
   disabled = false,
 }) => {
+  const { colors } = useTheme();
+
   return (
-    <Button
-      variant="outline"
-      //   style={[styles.button, disabled && styles.disabled]}
-      onClick={onPress}
-      disabled={disabled}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: LunaSpacingMap.md,
-        }}
-      >
-        <Ionicons
-          name="logo-google"
-          size={32}
-          color={LunaLightThemeColors.primary}
-        />
-        <Label color={LunaLightThemeColors.primary}>Continue with Google</Label>
-      </View>
+    <Button variant="outline" onClick={onPress} disabled={disabled}>
+      <Group align="center" gap="sm">
+        <Ionicons name="logo-google" size={32} color={colors.primary} />
+        <Label color={colors.primary}>Continue with Google</Label>
+      </Group>
     </Button>
   );
 };
