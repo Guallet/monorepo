@@ -17,7 +17,7 @@ import { GualletClientProvider } from "@guallet/api-react";
 import { gualletClient } from "@/api/gualletClient";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { LunaUiThemeProvider } from "@luna-ui/react-native";
+import { LunaProvider } from "@luna-ui/react-native";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -35,7 +35,7 @@ export function GualletApp() {
   useAppState(onAppStateChange);
 
   return (
-    <LunaUiThemeProvider>
+    <LunaProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
           <QueryClientProvider client={queryClient}>
@@ -61,6 +61,6 @@ export function GualletApp() {
           </QueryClientProvider>
         </SafeAreaProvider>
       </ThemeProvider>
-    </LunaUiThemeProvider>
+    </LunaProvider>
   );
 }
