@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { LunaSpacing, LunaSpacingMap } from "./../../../src/theme";
+import { getSpacingValue, LunaSpacing } from "./../../../src/theme";
 
 type AlignItems = "flex-start" | "center" | "flex-end" | "stretch";
 type JustifyContent =
@@ -31,11 +31,6 @@ const Group: React.FC<GroupProps> = ({
   children,
   ...props
 }) => {
-  const getSpacingValue = (spacingKey: LunaSpacing): number => {
-    const key = spacingKey as keyof typeof LunaSpacingMap;
-    return LunaSpacingMap[key] ?? LunaSpacingMap.md;
-  };
-
   const styles = StyleSheet.create({
     container: {
       display: "flex",

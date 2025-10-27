@@ -1,6 +1,11 @@
 import { Provider, Session } from "@supabase/supabase-js";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { supabase } from "./supabase";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { BuildConfig } from "@/BuildConfig";
 
 interface AuthContextType {
   signIn: () => Promise<void>;
@@ -19,6 +24,15 @@ const AuthContext = React.createContext<AuthContextType>({
   isLoading: false,
   getOtpCode: (_email: string) => Promise.resolve(false),
   loginWithProvider: (_provider: Provider) => Promise.resolve(false),
+});
+
+console.log(
+  "Configuring Google Signin with webClientId:",
+  BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID
+);
+GoogleSignin.configure({
+  scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+  webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
 });
 
 // This hook can be used to access the user info.
@@ -77,18 +91,39 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
 
   const loginWithProviderFunction = useMemo(
     () => async (provider: Provider) => {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: "guallet://login/callback",
-        },
-      });
-      if (error) {
-        console.error("Error logging in with provider", error);
+      if (provider !== "google") {
+        console.warn("Only Google provider is supported currently.");
         return false;
       }
 
-      return true;
+      try {
+        console.log("Starting Google sign-in process...");
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        if (userInfo?.data?.idToken) {
+          const { data, error } = await supabase.auth.signInWithIdToken({
+            provider: "google",
+            token: userInfo.data.idToken,
+          });
+          console.log(error, data);
+          return error == null;
+        } else {
+          throw new Error("no ID token present!");
+        }
+      } catch (error: any) {
+        console.error("Error during Google sign-in", error);
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (e.g. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        } else {
+          // some other error happened
+        }
+
+        throw error;
+      }
     },
     []
   );

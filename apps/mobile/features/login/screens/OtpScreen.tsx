@@ -1,22 +1,10 @@
-import React, { useState, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Linking,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { AppScreen } from "@/components/layout/AppScreen";
 import { useRouter } from "expo-router";
-import {
-  Button,
-  Label,
-  LunaLightThemeColors,
-  OtpInput,
-  Title,
-} from "@luna-ui/react-native";
+import { Button, Label, OtpInput, Title } from "@luna-ui/react-native";
 import { openInbox } from "react-native-email-link";
+import { defaultTheme } from "@luna-ui/react-native/src/theme/DefaultTheme";
 
 export function OtpScreen() {
   const router = useRouter();
@@ -127,7 +115,7 @@ const styles = StyleSheet.create({
   },
   resendButton: {
     fontSize: 16,
-    color: LunaLightThemeColors.primary,
+    color: defaultTheme.colors.primary,
     fontWeight: "500",
     textDecorationLine: "underline",
   },

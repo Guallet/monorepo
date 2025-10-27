@@ -87,7 +87,11 @@ export function LoginScreen() {
             Login with email
           </Button>
           <Divider label="or continue with" />
-          <GoogleButton onPress={() => {}} />
+          <GoogleButton
+            onPress={() => {
+              loginWithGoogle();
+            }}
+          />
         </Stack>
 
         <Stack
