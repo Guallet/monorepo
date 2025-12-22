@@ -1,10 +1,9 @@
-import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function DashboardScreen() {
+export default function BudgetsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
+      <Text style={styles.title}>Budgets</Text>
     </View>
   );
 }
