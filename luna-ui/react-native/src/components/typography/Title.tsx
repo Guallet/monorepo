@@ -58,16 +58,13 @@ export function Title({
 
   const textProps: TextProps = {
     ...rest,
-    style: titleStyle,
+    style: [titleStyle, center && { textAlign: "center" }],
     numberOfLines: lineClamp,
     ellipsizeMode: lineClamp ? "tail" : undefined,
   };
 
   return (
-    <Text
-      //   {...textProps}
-      style={[center && { textAlign: "center" }]}
-    >
+    <Text {...textProps}>
       {children}
     </Text>
   );
