@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { getSpacingValue, LunaSpacing } from "./../../../src/theme";
+import { getSpacingValue, LunaSpacing } from "@/theme";
 
 type AlignItems = "flex-start" | "center" | "flex-end" | "stretch";
 type JustifyContent =
