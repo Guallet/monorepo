@@ -1,5 +1,5 @@
 import { ActivityIndicator, Modal, View } from "react-native";
-import { Label } from "./../../src/components/typography";
+import { Label } from "@/components/typography";
 
 interface OverlayLoaderProps extends React.ComponentProps<typeof Modal> {
   isVisible: boolean;

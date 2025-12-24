@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Label } from "../typography";
 import Group from "./Group";
-import { useTheme } from "./../../../src/theme";
+import { useTheme } from "@/theme";
 
 interface DividerProps extends React.ComponentProps<typeof View> {
   color?: string;
