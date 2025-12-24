@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - luna-ui/*
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
