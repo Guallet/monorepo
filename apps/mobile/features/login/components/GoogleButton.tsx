@@ -2,7 +2,7 @@ import { Button, useTheme } from "@luna-ui/react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Label } from "@luna-ui/react-native/src/components/typography";
-import Group from "@luna-ui/react-native/src/components/layout/Group";
+import { Group } from "@luna-ui/react-native/src/components/layout/Group";
 
 interface GoogleButtonProps {
   onPress: () => void;

@@ -21,7 +21,7 @@ interface GroupProps extends React.ComponentProps<typeof View> {
   wrap?: FlexWrap;
 }
 
-const Group: React.FC<GroupProps> = ({
+export const Group: React.FC<GroupProps> = ({
   align = "center",
   gap = "md",
   grow = false,
@@ -46,5 +46,3 @@ const Group: React.FC<GroupProps> = ({
 
   return <View style={[styles.container, props.style]}>{children}</View>;
 };
-
-export default Group;
