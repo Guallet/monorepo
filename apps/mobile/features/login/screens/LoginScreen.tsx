@@ -57,6 +57,10 @@ export function LoginScreen() {
     if (!canLogin) {
       alert("Failed to login with Google. Please try again.");
     }
+    else {
+      // Redirect to /dashboard
+      router.navigate("/(tabs)");
+    }
   };
 
   return (
