@@ -78,5 +78,6 @@ jobs:
         continue-on-error: true
 
       - name: Build on EAS
-        run: eas build --platform all --non-interactive --no-wait
+        run: eas build --platform android --non-interactive --no-wait
+        # run: eas build --platform all --non-interactive --no-wait
         working-directory: apps/mobile
