@@ -6,6 +6,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import { BuildConfig } from '@/BuildConfig';
+import { setAnalyticsDeviceId } from '@/utils/analytics';
 
 interface AuthContextType {
   signIn: () => Promise<void>;
@@ -51,6 +52,14 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    const initAnalyticsId = async () => {
+      await setAnalyticsDeviceId(session?.user?.id ?? null);
+    }
+    initAnalyticsId();
+  }, [session]);
 
   useEffect(() => {
     setIsLoading(true);

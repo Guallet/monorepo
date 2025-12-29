@@ -3,12 +3,16 @@ import 'react-native-reanimated';
 import * as Sentry from '@sentry/react-native';
 
 import { GualletApp } from '@/components/GualletApp';
+import { initAnalytics } from '@/utils/analytics';
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-  debug: false,
+  debug: __DEV__,
   sendDefaultPii: true,
+  enabled: !__DEV__,
 });
+
+initAnalytics();
 
 export const unstable_settings = {
   anchor: '(tabs)',
