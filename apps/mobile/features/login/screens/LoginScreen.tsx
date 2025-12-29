@@ -14,6 +14,8 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/auth/useAuth";
 import { BuildConfig } from "@/BuildConfig";
+import { Image } from 'expo-image';
+import { View } from "react-native";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -71,8 +73,20 @@ export function LoginScreen() {
         isLoading={isLoading}
       >
         <Stack style={{ flex: 1, padding: spacing.md }} gap={spacing.lg}>
-          <Title center>Welcome back</Title>
-          <Label>Sign in to your account</Label>
+          <View style={{
+            flex: 1,
+            maxHeight: 200,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Image
+              style={{ flex: 1, width: '100%', }}
+              source={require("@/assets/images/icon.png")}
+              contentFit="scale-down"
+            />
+          </View>
+
+          <Title center>Login or sign up</Title>
           <TextInput
             label="Email"
             onChangeText={(input) => {
@@ -86,7 +100,7 @@ export function LoginScreen() {
           />
           <Button
             onClick={onLoginWithEmail}
-            //  disabled={!isValidEmail}
+            disabled={!isValidEmail}
           >
             Login with email
           </Button>
