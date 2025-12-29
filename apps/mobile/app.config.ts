@@ -54,6 +54,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     'react-native-email-link',
     '@react-native-google-signin/google-signin',
+    [
+      '@sentry/react-native/expo',
+      {
+        url: 'https://sentry.io/',
+        // 'Use SENTRY_AUTH_TOKEN env to authenticate with Sentry.',
+        project: 'react-native',
+        organization: 'guallet',
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,

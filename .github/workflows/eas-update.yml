@@ -67,3 +67,7 @@ jobs:
       - name: Publish update
         working-directory: apps/mobile
         run: eas update --auto
+
+      - name: Upload Sentry Sourcemaps
+        working-directory: apps/mobile
+        run: npx sentry-expo-upload-sourcemaps dist

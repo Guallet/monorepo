@@ -13,6 +13,7 @@ export default function SettingsScreen() {
           signOut();
         }}
       />
+      <Button title="Test sentry" onPress={() => { throw new Error('Hello, again, Sentry!'); }} />
     </View>
   );
 }
