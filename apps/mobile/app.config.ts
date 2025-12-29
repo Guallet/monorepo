@@ -1,22 +1,22 @@
-import { ExpoConfig, ConfigContext } from "expo/config";
+import { ExpoConfig, ConfigContext } from 'expo/config';
 
-const IS_DEV = process.env.APP_VARIANT === "development";
+const IS_DEV = process.env.APP_VARIANT === 'development';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: IS_DEV ? "Guallet (Dev)" : "Guallet",
-  owner: "guallet",
-  slug: "guallet",
-  version: "0.1.0",
-  orientation: "portrait",
-  icon: "./assets/images/icon.png",
-  scheme: "guallet",
-  userInterfaceStyle: "automatic",
+  name: IS_DEV ? 'Guallet (Dev)' : 'Guallet',
+  owner: 'guallet',
+  slug: 'guallet',
+  version: '0.1.0',
+  orientation: 'portrait',
+  icon: './assets/images/icon.png',
+  scheme: 'guallet',
+  userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
-    bundleIdentifier: IS_DEV ? "io.guallet.mobile.dev" : "io.guallet.mobile",
-    googleServicesFile: "./auth/firebase/GoogleService-Info.plist",
+    bundleIdentifier: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
+    googleServicesFile: './auth/firebase/GoogleService-Info.plist',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
@@ -31,29 +31,29 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
-    package: IS_DEV ? "io.guallet.mobile.dev" : "io.guallet.mobile",
-    googleServicesFile: "./auth/firebase/google-services.json",
+    package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
+    googleServicesFile: './auth/firebase/google-services.json',
   },
   web: {
-    output: "static",
-    favicon: "./assets/images/favicon.png",
+    output: 'static',
+    favicon: './assets/images/favicon.png',
   },
   plugins: [
-    "expo-router",
+    'expo-router',
     [
-      "expo-splash-screen",
+      'expo-splash-screen',
       {
-        image: "./assets/images/splash-icon.png",
+        image: './assets/images/splash-icon.png',
         imageWidth: 200,
-        resizeMode: "contain",
-        backgroundColor: "#ffffff",
+        resizeMode: 'contain',
+        backgroundColor: '#ffffff',
         dark: {
-          backgroundColor: "#000000",
+          backgroundColor: '#000000',
         },
       },
     ],
-    "react-native-email-link",
-    "@react-native-google-signin/google-signin",
+    'react-native-email-link',
+    '@react-native-google-signin/google-signin',
   ],
   experiments: {
     typedRoutes: true,
@@ -62,7 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   extra: {
     router: {},
     eas: {
-      projectId: "4933c830-42b4-4f94-b2f7-a4ee70331431",
+      projectId: '4933c830-42b4-4f94-b2f7-a4ee70331431',
     },
   },
 });

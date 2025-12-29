@@ -2,15 +2,17 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '@/auth/useAuth';
 
 export default function SettingsScreen() {
-  
-  const{ signOut } = useAuth();
-  
+  const { signOut } = useAuth();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
-      <Button title="Sign out" onPress={() => {
-        signOut();  
-      }} />
+      <Button
+        title="Sign out"
+        onPress={() => {
+          signOut();
+        }}
+      />
     </View>
   );
 }

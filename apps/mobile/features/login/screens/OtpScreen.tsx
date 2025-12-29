@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { AppScreen } from "@/components/layout/AppScreen";
-import { useRouter } from "expo-router";
-import { Button, Label, OtpInput, Title } from "@luna-ui/react-native";
-import { openInbox } from "react-native-email-link";
-import { defaultTheme } from "@luna-ui/react-native/src/theme/DefaultTheme";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { AppScreen } from '@/components/layout/AppScreen';
+import { useRouter } from 'expo-router';
+import { Button, Label, OtpInput, Title } from '@luna-ui/react-native';
+import { openInbox } from 'react-native-email-link';
+import { defaultTheme } from '@luna-ui/react-native/src/theme/DefaultTheme';
 
 export function OtpScreen() {
   const router = useRouter();
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('');
 
   const handleResendCode = () => {
     // Implement resend code logic here
-    console.log("Resending code...");
+    console.log('Resending code...');
   };
 
   const handleOpenEmailApp = async () => {
@@ -63,19 +63,19 @@ export function OtpScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   backButton: {
     marginRight: 16,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
+    fontWeight: '600',
+    color: '#000',
   },
   content: {
     flex: 1,
@@ -86,37 +86,37 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#666",
+    color: '#666',
     lineHeight: 22,
     marginBottom: 40,
   },
   codeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 32,
   },
   codeInput: {
     width: 48,
     height: 56,
     borderRadius: 12,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
     fontSize: 24,
-    fontWeight: "600",
-    color: "#000",
+    fontWeight: '600',
+    color: '#000',
   },
   resendContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     flex: 1,
   },
   resendText: {
     fontSize: 16,
-    color: "#666",
+    color: '#666',
     marginBottom: 8,
   },
   resendButton: {
     fontSize: 16,
     color: defaultTheme.colors.primary,
-    fontWeight: "500",
-    textDecorationLine: "underline",
+    fontWeight: '500',
+    textDecorationLine: 'underline',
   },
 });

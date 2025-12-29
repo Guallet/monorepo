@@ -1,11 +1,11 @@
-import { Provider, Session } from "@supabase/supabase-js";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { supabase } from "./supabase";
+import { Provider, Session } from '@supabase/supabase-js';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { supabase } from './supabase';
 import {
   GoogleSignin,
   statusCodes,
-} from "@react-native-google-signin/google-signin";
-import { BuildConfig } from "@/BuildConfig";
+} from '@react-native-google-signin/google-signin';
+import { BuildConfig } from '@/BuildConfig';
 
 interface AuthContextType {
   signIn: () => Promise<void>;
@@ -27,20 +27,20 @@ const AuthContext = React.createContext<AuthContextType>({
 });
 
 console.log(
-  "Configuring Google Signin with webClientId:",
-  BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID
+  'Configuring Google Signin with webClientId:',
+  BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
 );
 GoogleSignin.configure({
-  scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
   webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
 });
 
 // This hook can be used to access the user info.
 export function useAuth() {
   const value = useContext(AuthContext);
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     if (!value) {
-      throw new Error("useAuth must be wrapped in a <AuthProvider />");
+      throw new Error('useAuth must be wrapped in a <AuthProvider />');
     }
   }
 
@@ -61,7 +61,7 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
       })
       .catch((error) => {
         setSession(null);
-        console.error("Error loading the session", error);
+        console.error('Error loading the session', error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -77,41 +77,41 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: "guallet://login/callback",
+          emailRedirectTo: 'guallet://login/callback',
         },
       });
       if (error) {
-        console.error("Error sending OTP", error);
+        console.error('Error sending OTP', error);
         return false;
       }
       return true;
     },
-    []
+    [],
   );
 
   const loginWithProviderFunction = useMemo(
     () => async (provider: Provider) => {
-      if (provider !== "google") {
-        console.warn("Only Google provider is supported currently.");
+      if (provider !== 'google') {
+        console.warn('Only Google provider is supported currently.');
         return false;
       }
 
       try {
-        console.log("Starting Google sign-in process...");
+        console.log('Starting Google sign-in process...');
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
         if (userInfo?.data?.idToken) {
           const { data, error } = await supabase.auth.signInWithIdToken({
-            provider: "google",
+            provider: 'google',
             token: userInfo.data.idToken,
           });
           console.log(error, data);
           return error == null;
         } else {
-          throw new Error("no ID token present!");
+          throw new Error('no ID token present!');
         }
       } catch (error: any) {
-        console.error("Error during Google sign-in", error);
+        console.error('Error during Google sign-in', error);
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           // user cancelled the login flow
         } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -125,7 +125,7 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
         throw error;
       }
     },
-    []
+    [],
   );
 
   return (

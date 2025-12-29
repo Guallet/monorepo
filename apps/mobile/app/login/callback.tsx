@@ -1,7 +1,7 @@
-import { useAuth } from "@/auth/useAuth";
-import { Button } from "@luna-ui/react-native";
-import { Redirect, useRouter } from "expo-router";
-import { View, Text, ActivityIndicator } from "react-native";
+import { useAuth } from '@/auth/useAuth';
+import { Button } from '@luna-ui/react-native';
+import { Redirect, useRouter } from 'expo-router';
+import { View, Text, ActivityIndicator } from 'react-native';
 
 export default function Screen() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function Screen() {
   } else {
     return (
       <View>
-        <Button onClick={() => router.replace("/login")}>
+        <Button onClick={() => router.replace('/login')}>
           Go back to login screen
         </Button>
       </View>

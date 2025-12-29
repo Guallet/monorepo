@@ -1,6 +1,6 @@
-import { AppScreen } from "@/components/layout/AppScreen";
-import { GoogleButton } from "../components/GoogleButton";
-import { useState } from "react";
+import { AppScreen } from '@/components/layout/AppScreen';
+import { GoogleButton } from '../components/GoogleButton';
+import { useState } from 'react';
 import {
   Label,
   Button,
@@ -9,13 +9,13 @@ import {
   useTheme,
   TextInput,
   Title,
-} from "@luna-ui/react-native";
-import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "@/auth/useAuth";
-import { BuildConfig } from "@/BuildConfig";
+} from '@luna-ui/react-native';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '@/auth/useAuth';
+import { BuildConfig } from '@/BuildConfig';
 import { Image } from 'expo-image';
-import { View } from "react-native";
+import { View } from 'react-native';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,7 +24,7 @@ export function LoginScreen() {
   const { getOtpCode, loginWithProvider } = useAuth();
 
   const router = useRouter();
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,7 +32,7 @@ export function LoginScreen() {
 
   const onLoginWithEmail = async () => {
     if (BuildConfig.IS_DEV) {
-      router.navigate("/login/otp");
+      router.navigate('/login/otp');
     }
 
     if (!isValidEmail) {
@@ -47,21 +47,20 @@ export function LoginScreen() {
     setIsLoading(false);
 
     if (isCodeSent) {
-      router.navigate("/login/otp");
+      router.navigate('/login/otp');
     } else {
       // TODO: Show some error to the user
-      alert("Failed to send OTP code. Please try again.");
+      alert('Failed to send OTP code. Please try again.');
     }
   };
 
   const loginWithGoogle = async () => {
-    const canLogin = await loginWithProvider("google");
+    const canLogin = await loginWithProvider('google');
     if (!canLogin) {
-      alert("Failed to login with Google. Please try again.");
-    }
-    else {
+      alert('Failed to login with Google. Please try again.');
+    } else {
       // Redirect to /dashboard
-      router.navigate("/(tabs)");
+      router.navigate('/(tabs)');
     }
   };
 
@@ -73,15 +72,17 @@ export function LoginScreen() {
         isLoading={isLoading}
       >
         <Stack style={{ flex: 1, padding: spacing.md }} gap={spacing.lg}>
-          <View style={{
-            flex: 1,
-            maxHeight: 200,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          <View
+            style={{
+              flex: 1,
+              maxHeight: 200,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Image
-              style={{ flex: 1, width: '100%', }}
-              source={require("@/assets/images/icon.png")}
+              style={{ flex: 1, width: '100%' }}
+              source={require('@/assets/images/icon.png')}
               contentFit="scale-down"
             />
           </View>
@@ -96,12 +97,9 @@ export function LoginScreen() {
             value={email}
             placeholder="Email"
             keyboardType="email-address"
-            error={emailError ? "Please enter a valid email" : null}
+            error={emailError ? 'Please enter a valid email' : null}
           />
-          <Button
-            onClick={onLoginWithEmail}
-            disabled={!isValidEmail}
-          >
+          <Button onClick={onLoginWithEmail} disabled={!isValidEmail}>
             Login with email
           </Button>
           <Divider label="or continue with" />

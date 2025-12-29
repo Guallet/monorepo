@@ -1,6 +1,6 @@
-import React from "react";
-import { Text } from "react-native";
-import { LunaSize } from "src/theme/typography";
+import React from 'react';
+import { Text } from 'react-native';
+import { LunaFontSize } from './../../theme/typography';
 
 interface LabelProps extends React.ComponentProps<typeof Text> {
   color?: string;
@@ -8,10 +8,10 @@ interface LabelProps extends React.ComponentProps<typeof Text> {
   inherit?: boolean;
   inline?: boolean;
   lineClamp?: number;
-  size?: LunaSize;
+  size?: LunaFontSize;
   span?: boolean;
   center?: boolean;
-  truncate?: "start" | "end" | "both";
+  truncate?: 'start' | 'end' | 'both';
   children: React.ReactNode;
 }
 
@@ -21,7 +21,7 @@ export function Label({
   inherit = false,
   inline = false,
   lineClamp,
-  size = "md",
+  size = 'md',
   center = false,
   span = false,
   truncate,
@@ -39,7 +39,7 @@ export function Label({
   if (center) {
     const baseStyles = Array.isArray(props.style) ? props.style : [props.style];
     (props as unknown as React.ComponentProps<typeof Text>).style = [
-      { textAlign: "center" },
+      { textAlign: 'center' },
       ...baseStyles,
     ];
   }

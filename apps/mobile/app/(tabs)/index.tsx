@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function DashboardScreen() {

@@ -3,12 +3,12 @@ import {
   AccountDto,
   CreateAccountRequest,
   UpdateAccountRequest,
-} from "./accounts.models";
-import { GualletClientImpl } from "./../GualletClient";
-import { TransactionDto } from "./../transactions/transactions.models";
-import { ObAccountDto } from "connections";
+} from './accounts.models';
+import { GualletClientImpl } from './../GualletClient';
+import { TransactionDto } from './../transactions/transactions.models';
+import { ObAccountDto } from './../connections';
 
-const ACCOUNTS_PATH = "accounts";
+const ACCOUNTS_PATH = 'accounts';
 
 export class AccountsApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -34,7 +34,7 @@ export class AccountsApi {
 
   async update(
     accountId: string,
-    account: UpdateAccountRequest
+    account: UpdateAccountRequest,
   ): Promise<AccountDto> {
     return await this.client.patch<AccountDto, UpdateAccountRequest>({
       path: `${ACCOUNTS_PATH}/${accountId}`,

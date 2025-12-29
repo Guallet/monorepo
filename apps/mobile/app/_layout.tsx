@@ -1,9 +1,9 @@
-import "react-native-reanimated";
+import 'react-native-reanimated';
 
-import { GualletApp } from "@/components/GualletApp";
+import { GualletApp } from '@/components/GualletApp';
 
 export const unstable_settings = {
-  anchor: "(tabs)",
+  anchor: '(tabs)',
 };
 
 export default function RootLayout() {

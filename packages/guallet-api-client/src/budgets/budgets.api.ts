@@ -1,12 +1,12 @@
-import { TransactionDto } from "transactions";
-import { GualletClientImpl } from "./../GualletClient";
+import { TransactionDto } from './../transactions';
+import { GualletClientImpl } from './../GualletClient';
 import {
   BudgetDto,
   CreateBudgetRequest,
   UpdateBudgetRequest,
-} from "./budgets.models";
+} from './budgets.models';
 
-const BUDGETS_PATH = "budgets";
+const BUDGETS_PATH = 'budgets';
 
 export class BudgetsApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -24,10 +24,10 @@ export class BudgetsApi {
   }): Promise<BudgetDto> {
     const queryParams = new URLSearchParams();
     if (params?.month !== undefined) {
-      queryParams.append("month", params.month.toString());
+      queryParams.append('month', params.month.toString());
     }
     if (params?.year !== undefined) {
-      queryParams.append("year", params.year.toString());
+      queryParams.append('year', params.year.toString());
     }
 
     return await this.client.get<BudgetDto>({
@@ -77,10 +77,10 @@ export class BudgetsApi {
   }): Promise<TransactionDto[]> {
     const queryParams = new URLSearchParams();
     if (params?.month !== undefined) {
-      queryParams.append("month", params.month.toString());
+      queryParams.append('month', params.month.toString());
     }
     if (params?.year !== undefined) {
-      queryParams.append("year", params.year.toString());
+      queryParams.append('year', params.year.toString());
     }
 
     return await this.client.get<TransactionDto[]>({

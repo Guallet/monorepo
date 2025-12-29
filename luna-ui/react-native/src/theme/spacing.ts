@@ -1,4 +1,4 @@
-export type LunaSpacing = "xs" | "sm" | "md" | "lg" | "xl" | number;
+export type LunaSpacing = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
 export type Spacing = {
   none: number;
   xs: number;

@@ -1,7 +1,7 @@
-import { View } from "react-native";
-import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
-import { Stack } from "expo-router";
-import { ModalLoaderOverlay } from "@luna-ui/react-native";
+import { View } from 'react-native';
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { Stack } from 'expo-router';
+import { ModalLoaderOverlay } from '@luna-ui/react-native';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {
   isLoading?: boolean;
@@ -21,8 +21,8 @@ export function AppScreen({
   ...props
 }: Readonly<AppScreenProps>) {
   const combinedHeaderOptions: NativeStackNavigationOptions = {
-    headerTitleAlign: "center",
-    ...(headerTitle && headerTitle !== "" && { title: headerTitle }),
+    headerTitleAlign: 'center',
+    ...(headerTitle && headerTitle !== '' && { title: headerTitle }),
     headerShown: isHeaderVisible,
     headerShadowVisible: false,
     ...headerOptions,
