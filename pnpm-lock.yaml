@@ -329,7 +329,7 @@ importers:
         specifier: ~10.0.0
         version: 10.0.0(eslint@9.31.0)(typescript@5.9.3)
       eslint-config-prettier:
-        specifier: ^10.1.5
+        specifier: ^10.1.1
         version: 10.1.5(eslint@9.31.0)
       eslint-plugin-prettier:
         specifier: ^5.5.1
