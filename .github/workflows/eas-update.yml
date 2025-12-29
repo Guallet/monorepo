@@ -43,8 +43,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: pnpm install
         working-directory: apps/mobile
+        run: pnpm install
 
       - name: Create DEV .env file
         working-directory: apps/mobile
@@ -65,5 +65,5 @@ jobs:
           echo {{ secrets.FIREBASE_IOS_FILE_DEV }} >> GoogleService-Info.plist
 
       - name: Publish update
-        run: eas update --auto
         working-directory: apps/mobile
+        run: eas update --auto

@@ -42,8 +42,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: pnpm install
         working-directory: apps/mobile
+        run: pnpm install
 
       - name: Create PROD .env file
         working-directory: apps/mobile
@@ -62,6 +62,20 @@ jobs:
         run: |
           touch GoogleService-Info.plist
           echo {{ secrets.FIREBASE_IOS_FILE_PROD }} >> GoogleService-Info.plist
+
+      - name: 🧪 Run TypeScript check
+        working-directory: apps/mobile
+        run: pnpm tsc
+
+      - name: 🧹 Run ESLint
+        working-directory: apps/mobile
+        run: pnpm lint
+        continue-on-error: true
+
+      - name: 🎨 Run Prettier check
+        working-directory: apps/mobile
+        run: pnpm format:check
+        continue-on-error: true
 
       - name: Build on EAS
         run: eas build --platform all --non-interactive --no-wait
