@@ -22,4 +22,9 @@ export type Colors = {
   error: string;
   success: string;
   warning: string;
+
+  button: {
+    background: string;
+    pressedBackground: string;
+  };
 };

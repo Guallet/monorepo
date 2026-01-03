@@ -1,31 +1,18 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import { useAuth } from '@/auth/useAuth';
+import { AppSection } from '@luna-ui/react-native';
 
 export default function SettingsScreen() {
   const { signOut } = useAuth();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
-      <Button
-        title="Sign out"
-        onPress={() => {
-          signOut();
-        }}
-      />
-      <Button title="Test sentry" onPress={() => { throw new Error('Hello, again, Sentry!'); }} />
+    // <SafeAreaView>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <AppSection title="App Settings">
+        <Text>Settings content goes here.</Text>
+      </AppSection>
+      <Button title="Sign Out" onPress={signOut} />
     </View>
+    // </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});

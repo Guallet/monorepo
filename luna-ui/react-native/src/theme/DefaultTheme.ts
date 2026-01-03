@@ -1,23 +1,27 @@
-import { LunaTheme } from "./Theme";
+import { LunaTheme } from './Theme';
 
 export const defaultTheme: LunaTheme = {
   colors: {
-    primary: "#005EB8",
-    secondary: "#41B6E6",
-    text: "#000000",
-    background: "#FFFFFF",
-    surface: "#F5F5F5",
-    darkAccent: "#003087",
-    brightAccent: "#0072CE",
-    lightAccent: "#41B6E6",
-    aquaAccent: "#00A9CE",
-    darkSupport: "#006747",
-    support: "#009639",
-    lightSupport: "#78BE20",
-    aquaSupport: "#00A499",
-    error: "#DA291C",
-    success: "#78BE20",
-    warning: "#FAE100",
+    primary: '#005EB8',
+    secondary: '#41B6E6',
+    text: '#000000',
+    background: '#F5F5F5',
+    surface: '#FFFFFF',
+    darkAccent: '#003087',
+    brightAccent: '#0072CE',
+    lightAccent: '#41B6E6',
+    aquaAccent: '#00A9CE',
+    darkSupport: '#006747',
+    support: '#009639',
+    lightSupport: '#78BE20',
+    aquaSupport: '#00A499',
+    error: '#DA291C',
+    success: '#78BE20',
+    warning: '#FAE100',
+    button: {
+      background: '#005EB8',
+      pressedBackground: '#003087',
+    },
   },
   spacing: {
     none: 0,
@@ -29,8 +33,8 @@ export const defaultTheme: LunaTheme = {
     xxl: 40,
   },
   typography: {
-    fontFamily: "System",
-    fontFamilyMono: "Courier New",
+    fontFamily: 'System',
+    fontFamilyMono: 'Courier New',
     sizes: {
       xs: 12,
       sm: 14,
@@ -45,10 +49,10 @@ export const defaultTheme: LunaTheme = {
       relaxed: 1.8,
     },
     weights: {
-      regular: "400",
-      medium: "500",
-      semibold: "600",
-      bold: "700",
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
     },
   },
 };
