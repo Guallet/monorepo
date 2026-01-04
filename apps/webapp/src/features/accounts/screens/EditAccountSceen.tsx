@@ -17,15 +17,9 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown } from '@tabler/icons-react';
-import {
-  Route,
-  useCanGoBack,
-  useNavigate,
-  useRouter,
-} from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { useState, useEffect } from 'react';
-import { id } from 'zod/v4/locales';
+import { useEffect } from 'react';
 import { z } from 'zod';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
@@ -36,7 +30,7 @@ interface EditAccountScreenProps {
 const editAccountFormDataSchema = z.object({
   name: z.string().min(1, { message: 'Account name is required' }),
   currency: z.string().default('GBP'),
-  account_type: z.enum(AccountTypeDto).catch(AccountTypeDto.UNKNOWN),
+  account_type: z.enum(AccountTypeDto).default(AccountTypeDto.UNKNOWN),
   balance: z.number().default(0),
   balanceTransactionCheck: z.boolean().default(true),
 });
@@ -71,14 +65,8 @@ export function EditAccountScreen({
   const { account, isLoading } = useAccount(accountId);
   const defaultCurrency = useDefaultCurrency();
   const navigate = useNavigate();
-  const router = useRouter();
-  const canGoBack = useCanGoBack();
 
   const { updateAccountMutation } = useAccountMutations();
-
-  const [accountType, setAccountType] = useState<AccountTypeDto>(
-    account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
-  );
 
   const form = useForm<EditAccountFormData>({
     initialValues: {
@@ -95,7 +83,6 @@ export function EditAccountScreen({
 
   useEffect(() => {
     if (account) {
-      setAccountType(account.type);
       form.setValues({
         name: account.name,
         account_type: account.type,
@@ -183,7 +170,7 @@ export function EditAccountScreen({
                 key={form.key('balance')}
                 {...form.getInputProps('balance', {
                   parser: (value: string) => {
-                    return value ? parseFloat(value) : 0;
+                    return value ? Number.parseFloat(value) : 0;
                   },
                   formatter: (value) => {
                     return value?.toString() || '';
