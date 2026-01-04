@@ -50,6 +50,7 @@ import { Route as AppBudgetsIdRouteImport } from './routes/_app/budgets/$id'
 import { Route as AppAccountsNewRouteImport } from './routes/_app/accounts/new'
 import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
 import { Route as AppImporterCsvIndexRouteImport } from './routes/_app/importer/csv/index'
+import { Route as AppConnectionsTrading212IndexRouteImport } from './routes/_app/connections/trading212/index'
 import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
 import { Route as AppSavingGoalsIdEditRouteImport } from './routes/_app/saving-goals/$id_.edit'
@@ -287,6 +288,12 @@ const AppImporterCsvIndexRoute = AppImporterCsvIndexRouteImport.update({
   path: '/importer/csv/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppConnectionsTrading212IndexRoute =
+  AppConnectionsTrading212IndexRouteImport.update({
+    id: '/connections/trading212/',
+    path: '/connections/trading212/',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppConnectionsConnectIndexRoute =
   AppConnectionsConnectIndexRouteImport.update({
     id: '/connections/connect/',
@@ -401,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
+  '/connections/trading212': typeof AppConnectionsTrading212IndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
 }
 export interface FileRoutesByTo {
@@ -456,6 +464,7 @@ export interface FileRoutesByTo {
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
+  '/connections/trading212': typeof AppConnectionsTrading212IndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
 }
 export interface FileRoutesById {
@@ -513,6 +522,7 @@ export interface FileRoutesById {
   '/_app/saving-goals/$id_/edit': typeof AppSavingGoalsIdEditRoute
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
+  '/_app/connections/trading212/': typeof AppConnectionsTrading212IndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
 }
 export interface FileRouteTypes {
@@ -570,6 +580,7 @@ export interface FileRouteTypes {
     | '/saving-goals/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
+    | '/connections/trading212'
     | '/importer/csv'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -625,6 +636,7 @@ export interface FileRouteTypes {
     | '/saving-goals/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
+    | '/connections/trading212'
     | '/importer/csv'
   id:
     | '__root__'
@@ -681,6 +693,7 @@ export interface FileRouteTypes {
     | '/_app/saving-goals/$id_/edit'
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
+    | '/_app/connections/trading212/'
     | '/_app/importer/csv/'
   fileRoutesById: FileRoutesById
 }
@@ -1001,6 +1014,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppImporterCsvIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/connections/trading212/': {
+      id: '/_app/connections/trading212/'
+      path: '/connections/trading212'
+      fullPath: '/connections/trading212'
+      preLoaderRoute: typeof AppConnectionsTrading212IndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/connections/connect/': {
       id: '/_app/connections/connect/'
       path: '/connections/connect'
@@ -1124,6 +1144,7 @@ interface AppRouteChildren {
   AppSavingGoalsIdEditRoute: typeof AppSavingGoalsIdEditRoute
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
+  AppConnectionsTrading212IndexRoute: typeof AppConnectionsTrading212IndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
 }
 
@@ -1170,6 +1191,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSavingGoalsIdEditRoute: AppSavingGoalsIdEditRoute,
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
+  AppConnectionsTrading212IndexRoute: AppConnectionsTrading212IndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
 }
 
