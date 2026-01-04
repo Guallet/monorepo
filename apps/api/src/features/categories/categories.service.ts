@@ -51,9 +51,8 @@ export class CategoriesService {
           colour: subcategory.color,
           parentId: dbEntity.id,
         };
-        const subcategoriesDbEntity = await this.categoryRepository.save(
-          subCategoryEntity,
-        );
+        const subcategoriesDbEntity =
+          await this.categoryRepository.save(subCategoryEntity);
         newCategories.push(subcategoriesDbEntity);
       }
     }

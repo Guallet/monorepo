@@ -8,4 +8,3 @@ export enum AccountType {
   PENSION = 'pension',
   UNKNOWN = 'unknown',
 }
-
