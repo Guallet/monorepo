@@ -5,7 +5,7 @@ export type AccountDto = {
   currency: string;
   type: AccountTypeDto;
   institutionId: string;
-  source?: "manual" | "imported" | "synced" | "unknown";
+  source?: 'manual' | 'imported' | 'synced' | 'unknown';
   sourceName?: string;
   properties?:
     | CurrentAccountProperties
@@ -20,14 +20,14 @@ export type AccountConnectionDto = {
 };
 
 export enum AccountTypeDto {
-  CURRENT_ACCOUNT = "current-account",
-  CREDIT_CARD = "credit-card",
-  SAVINGS = "savings-account",
-  INVESTMENT = "investment",
-  MORTGAGE = "mortgage",
-  LOAN = "loan",
-  PENSION = "pension",
-  UNKNOWN = "unknown",
+  CURRENT_ACCOUNT = 'current-account',
+  CREDIT_CARD = 'credit-card',
+  SAVINGS = 'savings-account',
+  INVESTMENT = 'investment',
+  MORTGAGE = 'mortgage',
+  LOAN = 'loan',
+  PENSION = 'pension',
+  UNKNOWN = 'unknown',
 }
 
 // export const AccountType = {
@@ -43,10 +43,10 @@ export enum AccountTypeDto {
 // export type AccountType = (typeof AccountType)[keyof typeof AccountType];
 
 export enum AccountSourceDto {
-  MANUAL = "manual",
-  IMPORTED = "imported",
-  SYNCED = "synced",
-  UNKNOWN = "unknown",
+  MANUAL = 'manual',
+  IMPORTED = 'imported',
+  SYNCED = 'synced',
+  UNKNOWN = 'unknown',
 }
 
 export type CreateAccountRequest = {
@@ -64,6 +64,7 @@ export type UpdateAccountRequest = {
   type?: string;
   currency?: string;
   balance?: number;
+  create_balance_transaction?: boolean;
   institution_id?: string;
 };
 
@@ -79,7 +80,7 @@ export interface CreditCardProperties {
   accountNumber: string;
   interestRate: number;
   creditLimit: number;
-  cycleDay: "number" | "string";
+  cycleDay: 'number' | 'string';
 }
 
 export interface SavingAccountProperties {

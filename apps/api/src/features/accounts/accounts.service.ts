@@ -6,6 +6,7 @@ import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { AccountType } from './entities/accountType.model';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { AccountSource } from './entities/accountSource.model';
+import { Transaction } from '../transactions/entities/transaction.entity';
 
 @Injectable()
 export class AccountsService {
@@ -14,6 +15,8 @@ export class AccountsService {
   constructor(
     @InjectRepository(Account)
     private readonly repository: Repository<Account>,
+    @InjectRepository(Transaction)
+    private readonly transactionRepository: Repository<Transaction>,
   ) {}
 
   async findAllUserAccounts(userId: string): Promise<Account[]> {
@@ -96,7 +99,33 @@ export class AccountsService {
       throw new NotFoundException();
     }
 
-    return await this.repository.save({
+    if (dto.balance && dto.create_balance_transaction) {
+      // Create a new transaction if the balance is being updated
+      this.logger.debug(
+        `Creating balance transaction for account ${accountId} due to balance update`,
+      );
+
+      const balanceDifference = dbEntity.balance - dto.balance;
+      if (balanceDifference !== 0) {
+        this.logger.verbose(
+          `Balance difference is ${balanceDifference}, creating transaction`,
+        );
+
+        const diffTransactions = await this.transactionRepository.save({
+          accountId: accountId,
+          amount: balanceDifference,
+          currency: dbEntity.currency,
+          date: new Date(),
+          description: 'Manual balance adjustment',
+          notes: 'Created due to manual account balance update',
+        });
+        this.logger.debug(
+          `Created balance adjustment transaction ${diffTransactions.id} for account ${accountId}`,
+        );
+      }
+    }
+
+    const updatedAccount = await this.repository.save({
       balance: dto.balance ?? dbEntity.balance,
       id: accountId,
       user_id: userId,
@@ -104,6 +133,7 @@ export class AccountsService {
       currency: dto.currency ?? dbEntity.currency,
       type: (dto.type as AccountType) ?? dbEntity.type,
     });
+    return updatedAccount;
   }
 
   async findOneById(id: string): Promise<Account> {

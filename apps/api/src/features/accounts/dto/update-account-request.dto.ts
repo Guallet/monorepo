@@ -11,4 +11,11 @@ export class UpdateAccountRequest extends OmitType(CreateAccountRequest, [
     nullable: true,
   })
   balance?: number;
+
+  @ApiProperty({
+    description:
+      'If true, creates a new transaction to reflect the balance change',
+    default: false,
+  })
+  create_balance_transaction?: boolean;
 }
