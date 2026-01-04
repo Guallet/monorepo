@@ -94,7 +94,7 @@ export function EditAccountScreen({
   }, [account]);
 
   const accountTypes = Object.entries(AccountTypeDto).map(
-    ({ '0': name, '1': accountType }) => {
+    ({ '0': _name, '1': accountType }) => {
       return {
         label: getLocalizedType(accountType),
         value: accountType,
@@ -163,7 +163,7 @@ export function EditAccountScreen({
                 required
                 value={form.values.currency}
                 onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue);
+                  form.setFieldValue('currency', newValue ?? defaultCurrency);
                 }}
               />
               <NumberInput
@@ -172,8 +172,8 @@ export function EditAccountScreen({
                   parser: (value: string) => {
                     return value ? Number.parseFloat(value) : 0;
                   },
-                  formatter: (value) => {
-                    return value?.toString() || '';
+                  formatter: (value: unknown) => {
+                    return value?.toString() ?? '';
                   },
                 })}
                 label="Balance"

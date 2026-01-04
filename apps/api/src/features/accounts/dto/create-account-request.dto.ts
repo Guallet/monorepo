@@ -10,6 +10,14 @@ export class CreateAccountRequest {
   })
   initial_balance?: number;
 
+  @ApiProperty({
+    description:
+      'If true, creates an initial transaction to reflect the starting balance when non-zero',
+    nullable: true,
+    default: false,
+  })
+  create_balance_transaction?: boolean;
+
   @ApiProperty({ description: 'The account type', nullable: false })
   type: string;
 

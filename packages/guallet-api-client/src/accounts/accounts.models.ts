@@ -30,18 +30,6 @@ export enum AccountTypeDto {
   UNKNOWN = 'unknown',
 }
 
-// export const AccountType = {
-//   CURRENT_ACCOUNT: "current-account",
-//   CREDIT_CARD: "credit-card",
-//   SAVINGS: "savings-account",
-//   INVESTMENT: "investment",
-//   MORTGAGE: "mortgage",
-//   LOAN: "loan",
-//   PENSION: "pension",
-//   UNKNOWN: "unknown",
-// } as const;
-// export type AccountType = (typeof AccountType)[keyof typeof AccountType];
-
 export enum AccountSourceDto {
   MANUAL = 'manual',
   IMPORTED = 'imported',
@@ -54,6 +42,7 @@ export type CreateAccountRequest = {
   type: string;
   currency: string;
   initial_balance?: number;
+  create_balance_transaction?: boolean;
   institution_id?: string;
   source?: AccountSourceDto;
   source_name?: string;

@@ -53,6 +53,8 @@ export class AccountsService {
   }): Promise<Account> {
     const { user_id, dto } = args;
 
+    let normalizedInitialBalance = dto.initial_balance ?? 0;
+
     // Depending on the account type, the balance would be negative or positive
     if (dto.initial_balance) {
       switch (dto.type as AccountType) {
@@ -62,7 +64,7 @@ export class AccountsService {
           // If balance is positive, flip the sign
           // because credit cards and loans are negative balances
           // (you owe money)
-          dto.initial_balance = -Math.abs(dto.initial_balance);
+          normalizedInitialBalance = -Math.abs(dto.initial_balance);
           break;
         default:
           // NO-OP
@@ -70,15 +72,34 @@ export class AccountsService {
       }
     }
 
-    return await this.repository.save({
+    const savedAccount = await this.repository.save({
       user_id: user_id,
       name: dto.name,
-      balance: dto.initial_balance ?? 0,
+      balance: normalizedInitialBalance,
       currency: dto.currency ?? 'GBP',
       type: (dto.type as AccountType) ?? AccountType.UNKNOWN,
       source: (dto.source as AccountSource) ?? AccountSource.UNKNOWN,
       source_name: dto.source_name,
     });
+
+    const shouldCreateInitialBalanceTransaction =
+      !!dto.create_balance_transaction && normalizedInitialBalance !== 0;
+    if (shouldCreateInitialBalanceTransaction) {
+      this.logger.debug(
+        `Creating initial balance transaction for account ${savedAccount.id}`,
+      );
+
+      await this.transactionRepository.save({
+        accountId: savedAccount.id,
+        amount: normalizedInitialBalance,
+        currency: savedAccount.currency,
+        date: new Date(),
+        description: 'Initial balance',
+        notes: 'Created during account creation',
+      });
+    }
+
+    return savedAccount;
   }
 
   async update(args: {
