@@ -41,11 +41,11 @@ export class NordigenAccountBalancesDto {
 }
 
 export class NordigenAccountBalanceDto {
-  balanceAmount: BalanceDto;
+  balanceAmount: NordigenBalanceDto;
   balanceType?: BalanceTypeDto;
   referenceDate?: Date;
 }
-export class BalanceDto {
+export class NordigenBalanceDto {
   amount: string;
   currency: string;
 }

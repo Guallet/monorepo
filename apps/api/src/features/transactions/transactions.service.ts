@@ -209,4 +209,23 @@ export class TransactionsService {
 
     return transactions;
   }
+
+  async deleteUserTransaction(args: {
+    user_id: string;
+    transaction_id: string;
+  }): Promise<Transaction> {
+    const { user_id, transaction_id } = args;
+    const dbEntity = await this.repository.findOne({
+      where: {
+        id: transaction_id,
+        account: { user_id: user_id },
+      },
+    });
+
+    if (!dbEntity) {
+      throw new NotFoundException();
+    }
+
+    return await this.repository.remove(dbEntity);
+  }
 }

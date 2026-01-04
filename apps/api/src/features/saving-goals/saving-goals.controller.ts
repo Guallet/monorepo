@@ -73,7 +73,7 @@ export class SavingGoalsController {
   async findOne(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  ): Promise<SavingGoalDto> {
     const goal = await this.savingGoalsService.findByIdForUser({
       id: id,
       userId: user.id,

@@ -24,6 +24,7 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
 import { OpenbankingService } from '../openbanking/openbanking.service';
 import { AccountSource, toAccountSource } from './entities/accountSource.model';
+import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -37,7 +38,9 @@ export class AccountsController {
   ) {}
 
   @Get()
-  async getUserAccounts(@RequestUser() user: UserPrincipal) {
+  async getUserAccounts(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<AccountDto[]> {
     const accounts = await this.accountsService.findAllUserAccounts(user.id);
     return accounts.map((a) => AccountDto.fromDomain(a));
   }
@@ -46,19 +49,19 @@ export class AccountsController {
   async create(
     @Body() createAccountDto: CreateAccountRequest,
     @RequestUser() user: UserPrincipal,
-  ) {
+  ): Promise<AccountDto> {
     const entity = await this.accountsService.create({
       user_id: user.id,
       dto: createAccountDto,
     });
-    return entity;
+    return AccountDto.fromDomain(entity);
   }
 
   @Get(':id')
   async getAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ) {
+  ): Promise<AccountDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
@@ -177,7 +180,7 @@ export class AccountsController {
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ) {
+  ): Promise<{ connectedAccount: NordigenAccount }> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
@@ -199,28 +202,29 @@ export class AccountsController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
     @Body() dto: UpdateAccountRequest,
-  ) {
-    return this.accountsService.update({
+  ): Promise<AccountDto> {
+    const updatedAccount = await this.accountsService.update({
       accountId: id,
       dto: dto,
       userId: user.id,
     });
+    return AccountDto.fromDomain(updatedAccount);
   }
 
   @Delete(':id')
-  remove(
+  async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.accountsService.removeUserAccount({
+  ): Promise<AccountDto> {
+    const removedAccount = await this.accountsService.removeUserAccount({
       account_id: id,
       user_id: user.id,
     });
-
+    return AccountDto.fromDomain(removedAccount);
     /*
     TODO: Delete user:
     - Transactions

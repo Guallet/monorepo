@@ -130,7 +130,10 @@ export class TransactionsController {
   }
 
   @Get(':id')
-  async findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
+  async findOne(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<TransactionDto> {
     const transaction = await this.transactionsService.findOne(id);
     if (transaction.account.user_id !== user.id) {
       throw new NotFoundException('Transaction not found');
@@ -139,20 +142,28 @@ export class TransactionsController {
   }
 
   @Patch(':id')
-  update(
+  async async(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
-  ) {
-    return this.transactionsService.updateUserTransaction({
+  ): Promise<TransactionDto> {
+    const transaction = await this.transactionsService.updateUserTransaction({
       dto: updateTransactionDto,
       user_id: user.id,
       transaction_id: id,
     });
+    return TransactionDto.fromDomain(transaction);
   }
 
   @Delete(':id')
-  remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
-    throw new Error('Method not implemented.');
+  async remove(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<TransactionDto> {
+    const transaction = await this.transactionsService.deleteUserTransaction({
+      user_id: user.id,
+      transaction_id: id,
+    });
+    return TransactionDto.fromDomain(transaction);
   }
 }

@@ -26,7 +26,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findUserDetails(@RequestUser() user: UserPrincipal) {
+  async findUserDetails(@RequestUser() user: UserPrincipal): Promise<UserDto> {
     const userProfile = await this.usersService.findUserData(user.id);
     if (userProfile) {
       return UserDto.fromDomain(userProfile);
@@ -61,7 +61,9 @@ export class UsersController {
 
   @Delete()
   @HttpCode(202)
-  async deleteUser(@RequestUser() user: UserPrincipal) {
+  async deleteUser(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<{ message: string }> {
     await this.usersService.removeUser(user.id, {
       deleteFromAuthService: true,
     });

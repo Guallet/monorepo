@@ -17,7 +17,7 @@ import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { ApiTags } from '@nestjs/swagger';
 import { BudgetDto } from './dto/budget.dto';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { TransactionDto } from '../transactions/dto/transaction.dto';
 
 @Controller('budgets')
 @ApiTags('Budgets')
@@ -88,8 +88,8 @@ export class BudgetsController {
     @Param('id') id: string,
     @Query('month') month?: number,
     @Query('year') year?: number,
-  ): Promise<Transaction[]> {
-    return await this.budgetsService.getBudgetTransactions({
+  ): Promise<TransactionDto[]> {
+    const transactions = await this.budgetsService.getBudgetTransactions({
       userId: user.id,
       budgetId: id,
       dateRange: {
@@ -97,6 +97,8 @@ export class BudgetsController {
         year: year ?? this.defaultYear,
       },
     });
+
+    return transactions.map((x) => TransactionDto.fromDomain(x));
   }
 
   @Post()

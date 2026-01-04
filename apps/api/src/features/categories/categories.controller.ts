@@ -26,7 +26,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  async findAll(@RequestUser() user: UserPrincipal) {
+  async findAll(@RequestUser() user: UserPrincipal): Promise<CategoryDto[]> {
     const categories = await this.categoriesService.findAllUserCategories(
       user.id,
     );
@@ -35,7 +35,10 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  async findOne(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
+  async findOne(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<CategoryDto> {
     const category = await this.categoriesService.findUserCategory({
       id: id,
       user_id: user.id,
@@ -51,7 +54,7 @@ export class CategoriesController {
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() createCategoryDto: CreateCategoryDto,
-  ) {
+  ): Promise<CategoryDto> {
     const category = await this.categoriesService.create({
       user_id: user.id,
       dto: createCategoryDto,
@@ -61,25 +64,35 @@ export class CategoriesController {
 
   @Post('seed')
   @HttpCode(201)
-  async createDefaultCategoriesForUser(@RequestUser() user: UserPrincipal) {
-    return await this.categoriesService.createDefaultCategoriesForUser(user.id);
+  async createDefaultCategoriesForUser(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<CategoryDto[]> {
+    const defaultCategories =
+      await this.categoriesService.createDefaultCategoriesForUser(user.id);
+    return defaultCategories.map((category) =>
+      CategoryDto.fromDomain(category),
+    );
   }
 
   @Patch(':id')
-  update(
+  async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
-    return this.categoriesService.update({
+  ): Promise<CategoryDto> {
+    const updatedCategory = await this.categoriesService.update({
       user_id: user.id,
       category_id: id,
       dto: updateCategoryDto,
     });
+    return CategoryDto.fromDomain(updatedCategory);
   }
 
   @Delete(':id')
-  async remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
+  async remove(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<CategoryDto> {
     const deletedCategory = await this.categoriesService.removeUserCategory({
       user_id: user.id,
       category_id: id,

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Logger,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -14,6 +15,7 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { InstitutionDto } from './dto/institution.dto';
 
 @ApiTags('Bank institutions')
 @Controller('institutions')
@@ -23,50 +25,66 @@ export class InstitutionsController {
   constructor(private readonly institutionsService: InstitutionsService) {}
 
   @Get()
-  async getUserInstitutions(@RequestUser() user: UserPrincipal) {
+  async getUserInstitutions(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<InstitutionDto[]> {
     const institutions = await this.institutionsService.findAll({
       user_id: user.id,
     });
-    return institutions;
+    return institutions.map((inst) => InstitutionDto.fromDomain(inst));
   }
 
   @Get(':id')
   async getInstitution(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
-  ) {
-    return this.institutionsService.findOne({ id: id, user_id: user.id });
+  ): Promise<InstitutionDto> {
+    const institution = await this.institutionsService.findOne({
+      id: id,
+      user_id: user.id,
+    });
+
+    if (!institution) {
+      throw new NotFoundException(`Institution with id ${id} not found`);
+    }
+    return InstitutionDto.fromDomain(institution);
   }
 
   @Post()
-  create(
+  async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: CreateInstitutionRequest,
-  ) {
-    return this.institutionsService.create({
+  ): Promise<InstitutionDto> {
+    const institution = await this.institutionsService.create({
       dto: dto,
       user_id: user.id,
     });
+    return InstitutionDto.fromDomain(institution);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
     @Body() dto: UpdateInstitutionRequest,
-  ) {
-    return this.institutionsService.update({
+  ): Promise<InstitutionDto> {
+    const institution = await this.institutionsService.update({
       id: id,
       dto: dto,
       user_id: user.id,
     });
+    return InstitutionDto.fromDomain(institution);
   }
 
   @Delete(':id')
-  remove(@RequestUser() user: UserPrincipal, @Param('id') id: string) {
-    return this.institutionsService.remove({
+  async remove(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<InstitutionDto> {
+    const deletedEntity = await this.institutionsService.remove({
       id: id,
       user_id: user.id,
     });
+    return InstitutionDto.fromDomain(deletedEntity);
   }
 }

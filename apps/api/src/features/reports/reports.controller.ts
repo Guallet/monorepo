@@ -4,6 +4,7 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { ReportQueryFilter } from './dto/report-query-filter';
 import { ApiTags } from '@nestjs/swagger';
+import { CashflowDataDto } from './cashflow/cashflowData.dto';
 
 @ApiTags('Reports')
 @Controller('reports')
@@ -13,17 +14,14 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Get('cashflow')
-  getCashflowReport(
+  async getCashflowReport(
     @RequestUser() user: UserPrincipal,
     @Query() query: ReportQueryFilter,
     @Query('year', new ParseIntPipe({ optional: true })) year: number,
-  ) {
-    if (year === undefined || year === null) {
-      year = new Date().getFullYear();
-    }
+  ): Promise<CashflowDataDto> {
     return this.reportsService.getCashFlowReport({
       user_id: user.id,
-      year: year,
+      year: year ?? new Date().getFullYear(),
     });
   }
 }

@@ -7,25 +7,33 @@ import {
 import { Account } from '../entities/account.entity';
 import { AccountType } from '../entities/accountType.model';
 import { AccountSource } from '../entities/accountSource.model';
+export class BalanceDto {
+  amount: number;
+  currency: string;
+}
 
 export class AccountDto {
-  @ApiProperty({ description: 'The id of the account' })
+  /**
+   * The id of the account
+   */
   id: string;
 
-  @ApiProperty({ description: 'The name of the account' })
+  /**
+   * The name of the account
+   */
   name: string;
 
   @ApiProperty({
     description: 'The balance of the account',
     nullable: true,
   })
-  balance: { amount: number; currency: string };
+  balance: BalanceDto;
 
   @ApiProperty({ description: 'The currency of the account' })
   currency: string;
 
-  @ApiProperty({ description: 'The type of the account' })
-  type: AccountType;
+  @ApiProperty({ description: 'The type of the account', enum: AccountType })
+  type: string;
 
   @ApiProperty({
     description:
