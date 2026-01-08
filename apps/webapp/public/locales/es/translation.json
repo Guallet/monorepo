@@ -288,6 +288,60 @@
           }
         }
       }
+    },
+    "register": {
+      "form": {
+        "name": {
+          "validation": "El nombre debe tener al menos 2 caracteres",
+          "label": "Nombre",
+          "placeholder": "Ingresa tu nombre"
+        },
+        "email": {
+          "validation": "Correo electrónico inválido",
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
+        },
+        "password": {
+          "validation": "La contraseña debe tener al menos 6 caracteres",
+          "label": "Contraseña",
+          "placeholder": "Contraseña"
+        },
+        "confirmPassword": {
+          "validation": "Las contraseñas no coinciden",
+          "label": "Confirmar contraseña",
+          "placeholder": "Confirma tu contraseña"
+        },
+        "termsAgreement": "Acepto los {{link}}.",
+        "termsLink": "términos y política",
+        "submitButton": "Crear nueva cuenta"
+      },
+      "errors": {
+        "userAlreadyExists": "Ya existe una cuenta con este correo electrónico.",
+        "weakPassword": "La contraseña es demasiado débil. Por favor, usa una contraseña más segura.",
+        "invalidEmail": "Por favor, ingresa una dirección de correo electrónico válida.",
+        "emailConfirmationRequired": "Por favor, revisa tu correo electrónico para confirmar tu cuenta.",
+        "signupDisabled": "El registro está actualmente deshabilitado.",
+        "loginError": "No se pudo iniciar sesión. Por favor, inténtalo de nuevo."
+      },
+      "notifications": {
+        "checkEmail": {
+          "title": "Revisa tu correo electrónico"
+        },
+        "accountCreationFailed": {
+          "title": "Error al crear la cuenta"
+        },
+        "loginFailed": {
+          "title": "Error al iniciar sesión",
+          "message": "Cuenta creada exitosamente, pero el inicio de sesión falló: {{error}}"
+        },
+        "success": {
+          "title": "¡Bienvenido!",
+          "message": "Tu cuenta ha sido creada exitosamente."
+        }
+      },
+      "title": "Crear nueva cuenta",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Iniciar sesión"
     }
   }
 }

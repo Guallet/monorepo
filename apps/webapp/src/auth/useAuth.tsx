@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from 'react';
 
-import { AuthChangeEvent, Provider, Session } from "@supabase/supabase-js";
-import { supabase } from "./supabase";
-import { AuthContext, AuthContextType } from "@/auth/AuthContext";
+import { AuthChangeEvent, Provider, Session } from '@supabase/supabase-js';
+import { supabase } from './supabase';
+import { AuthContext, AuthContextType } from '@/auth/AuthContext';
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -18,14 +18,14 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
 
   async function onSessionChanged(
     _event: AuthChangeEvent,
-    session: Session | null
+    session: Session | null,
   ) {
     setSession(session);
     setIsAuthenticated(session !== null);
   }
 
   useEffect(() => {
-    console.log("Initializing auth");
+    console.log('Initializing auth');
     setIsLoading(true);
     supabase.auth
       .getSession()
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
       })
       .catch((error) => {
         setSession(null);
-        console.error("Error loading the session", error);
+        console.error('Error loading the session', error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         onSessionChanged(event, session);
-      }
+      },
     );
 
     return () => {
@@ -57,10 +57,17 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
       password,
     });
     if (error) {
-      console.error("Error logging in", error);
-      throw error;
+      console.error('Error logging in', error);
+      return {
+        success: false as const,
+        error: {
+          code: error.code ?? 'login_error',
+          message: error.message,
+        },
+      };
     }
     setIsAuthenticated(true);
+    return { success: true as const };
   };
 
   const logout = async () => {
@@ -76,7 +83,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     password: string;
     name: string;
   }) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -84,26 +91,55 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
       },
     });
     if (error) {
-      console.error("Error creating account", error);
-      throw error;
+      console.error('Error creating account', error);
+      return {
+        success: false as const,
+        error: {
+          code: error.code ?? 'signup_error',
+          message: error.message,
+        },
+      };
     }
+
+    // Check if email confirmation is required
+    if (data.user && !data.session) {
+      return {
+        success: false as const,
+        error: {
+          code: 'email_confirmation_required',
+          message:
+            'Please check your email to confirm your account before logging in.',
+        },
+      };
+    }
+
+    return {
+      success: true as const,
+      data: { userId: data.user?.id ?? '' },
+    };
   };
 
   const loginWithProvider = async (provider: string) => {
     let supabaseProvider: Provider | null = null;
     switch (provider) {
-      case "google":
-        supabaseProvider = "google";
+      case 'google':
+        supabaseProvider = 'google';
         break;
-      case "github":
-        supabaseProvider = "github";
+      case 'github':
+        supabaseProvider = 'github';
         break;
-      case "microsoft":
-        supabaseProvider = "azure";
+      case 'microsoft':
+        supabaseProvider = 'azure';
         break;
       default:
-        console.error("Unsupported provider");
-        throw new Error("Unsupported provider");
+        console.error('Unsupported provider');
+        return {
+          success: false as const,
+          error: {
+            code: 'unsupported_provider',
+            message: `Provider '${provider}' is not supported`,
+          },
+        };
     }
 
     const { error } = await supabase.auth.signInWithOAuth({
@@ -113,9 +149,16 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
       },
     });
     if (error) {
-      console.error("Error logging in with provider", error);
-      throw error;
+      console.error('Error logging in with provider', error);
+      return {
+        success: false as const,
+        error: {
+          code: error.code ?? 'oauth_error',
+          message: error.message,
+        },
+      };
     }
+    return { success: true as const };
   };
 
   const state: AuthContextType = {
@@ -138,7 +181,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
       logout,
       createAccount,
       loginWithProvider,
-    ]
+    ],
   );
 
   return (
