@@ -12,6 +12,7 @@ import {
   Anchor,
   Text,
   Button,
+  Modal,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -35,6 +36,7 @@ function RouteComponent() {
   const { createAccount, login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -136,17 +138,9 @@ function RouteComponent() {
 
         // Special case: email confirmation required
         if (createResult.error.code === 'email_confirmation_required') {
-          notifications.show({
-            title: t(
-              'screens.register.notifications.checkEmail.title',
-              'CNF: Check your email',
-            ),
-            message: errorMessage,
-            color: 'blue',
-            icon: <IconCheck />,
-            withBorder: true,
-            autoClose: 10000,
-          });
+          // reset the form to avoid resubmission issues
+          setShowEmailConfirmModal(true);
+          form.reset();
           return;
         }
 
@@ -213,109 +207,140 @@ function RouteComponent() {
     }
   };
 
+  const handleEmailConfirmModalClose = () => {
+    setShowEmailConfirmModal(false);
+    navigate({ to: '/login', search: { redirect: '/dashboard' } });
+  };
+
   return (
-    <BaseScreen fullScreen>
-      <Container size={450}>
-        {/* <LoginScreenHeader /> */}
-        <Paper withBorder shadow="md" p={30} radius="md">
-          <Title order={2} ta="center" mb="md">
-            {t('screens.register.title', 'CNF: Create new account')}
-          </Title>
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack>
-              <TextInput
-                {...form.getInputProps('name')}
-                key={form.key('name')}
-                label={t('screens.register.form.name.label', 'CNF: Name')}
-                placeholder={t(
-                  'screens.register.form.name.placeholder',
-                  'CNF: Enter your name',
-                )}
-                required
-              />
-              <TextInput
-                {...form.getInputProps('email')}
-                key={form.key('email')}
-                label={t(
-                  'screens.register.form.email.label',
-                  'CNF: Email address',
-                )}
-                placeholder={t(
-                  'screens.register.form.email.placeholder',
-                  'CNF: Enter your email',
-                )}
-                required
-              />
-              <PasswordInput
-                {...form.getInputProps('password')}
-                key={form.key('password')}
-                label={t(
-                  'screens.register.form.password.label',
-                  'CNF: Password',
-                )}
-                placeholder={t(
-                  'screens.register.form.password.placeholder',
-                  'CNF: Password',
-                )}
-                required
-              />
-              <PasswordInput
-                {...form.getInputProps('confirmPassword')}
-                key={form.key('confirmPassword')}
-                label={t(
-                  'screens.register.form.confirmPassword.label',
-                  'CNF: Confirm Password',
-                )}
-                placeholder={t(
-                  'screens.register.form.confirmPassword.placeholder',
-                  'CNF: Confirm your password',
-                )}
-                required
-              />
-              <Group>
-                <Checkbox />
-                <Text size="sm">
-                  {t(
-                    'screens.register.form.termsAgreement',
-                    'CNF: Agree the {{link}}.',
-                    {
-                      link: '',
-                    },
-                  ).replace('', '')}
-                  <Anchor href="#">
+    <>
+      <Modal
+        opened={showEmailConfirmModal}
+        onClose={handleEmailConfirmModalClose}
+        title={t(
+          'screens.register.emailConfirmModal.title',
+          'CNF: Check your email',
+        )}
+        centered
+      >
+        <Stack>
+          <Text>
+            {t(
+              'screens.register.emailConfirmModal.message',
+              'CNF: Please check your email to confirm your account. You will need to verify your email address before you can log in.',
+            )}
+          </Text>
+          <Button fullWidth onClick={handleEmailConfirmModalClose}>
+            {t(
+              'screens.register.emailConfirmModal.button',
+              'CNF: Go to login page',
+            )}
+          </Button>
+        </Stack>
+      </Modal>
+      <BaseScreen fullScreen>
+        <Container size={450}>
+          {/* <LoginScreenHeader /> */}
+          <Paper withBorder shadow="md" p={30} radius="md">
+            <Title order={2} ta="center" mb="md">
+              {t('screens.register.title', 'CNF: Create new account')}
+            </Title>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+              <Stack>
+                <TextInput
+                  {...form.getInputProps('name')}
+                  key={form.key('name')}
+                  label={t('screens.register.form.name.label', 'CNF: Name')}
+                  placeholder={t(
+                    'screens.register.form.name.placeholder',
+                    'CNF: Enter your name',
+                  )}
+                  required
+                />
+                <TextInput
+                  {...form.getInputProps('email')}
+                  key={form.key('email')}
+                  label={t(
+                    'screens.register.form.email.label',
+                    'CNF: Email address',
+                  )}
+                  placeholder={t(
+                    'screens.register.form.email.placeholder',
+                    'CNF: Enter your email',
+                  )}
+                  required
+                />
+                <PasswordInput
+                  {...form.getInputProps('password')}
+                  key={form.key('password')}
+                  label={t(
+                    'screens.register.form.password.label',
+                    'CNF: Password',
+                  )}
+                  placeholder={t(
+                    'screens.register.form.password.placeholder',
+                    'CNF: Password',
+                  )}
+                  required
+                />
+                <PasswordInput
+                  {...form.getInputProps('confirmPassword')}
+                  key={form.key('confirmPassword')}
+                  label={t(
+                    'screens.register.form.confirmPassword.label',
+                    'CNF: Confirm Password',
+                  )}
+                  placeholder={t(
+                    'screens.register.form.confirmPassword.placeholder',
+                    'CNF: Confirm your password',
+                  )}
+                  required
+                />
+                <Group>
+                  <Checkbox />
+                  <Text size="sm">
                     {t(
-                      'screens.register.form.termsLink',
-                      'CNF: terms and policy',
-                    )}
-                  </Anchor>
-                  .
-                </Text>
-              </Group>
-              <Button
-                fullWidth
-                mt="md"
-                type="submit"
-                loading={isSubmitting}
-                disabled={isSubmitting}
-              >
-                {t(
-                  'screens.register.form.submitButton',
-                  'CNF: Create new account',
-                )}
-              </Button>
-            </Stack>
-          </form>
-        </Paper>
-        <Text ta="center" size="sm" mt="md">
-          {t(
-            'screens.register.alreadyHaveAccount',
-            'CNF: Already have an account?',
-          )}{' '}
-          <Link to="/login" search={{ redirect: '/dashboard' }}>
-            {t('screens.register.signInLink', 'CNF: Sign in')}
-          </Link>
-        </Text>
-      </Container>
-    </BaseScreen>
+                      'screens.register.form.termsAgreement',
+                      'CNF: Agree the {{link}}.',
+                      {
+                        link: '',
+                      },
+                    ).replace('', '')}
+                    <Anchor href="https://guallet.io">
+                      {t(
+                        'screens.register.form.termsLink',
+                        'CNF: terms and policy',
+                      )}
+                    </Anchor>
+                    .
+                  </Text>
+                </Group>
+                <Button
+                  fullWidth
+                  mt="md"
+                  type="submit"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                >
+                  {t(
+                    'screens.register.form.submitButton',
+                    'CNF: Create new account',
+                  )}
+                </Button>
+              </Stack>
+            </form>
+          </Paper>
+          <Text ta="center" size="sm" mt="md">
+            {t(
+              'screens.register.alreadyHaveAccount',
+              'CNF: Already have an account?',
+            )}{' '}
+            <Link to="/login" search={{ redirect: '/dashboard' }}>
+              {t('screens.register.signInLink', 'CNF: Sign in')}
+            </Link>
+          </Text>
+        </Container>
+      </BaseScreen>
+    </>
   );
 }

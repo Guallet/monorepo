@@ -311,8 +311,8 @@
           "label": "Confirmar contraseña",
           "placeholder": "Confirma tu contraseña"
         },
-        "termsAgreement": "Acepto los {{link}}.",
-        "termsLink": "términos y política",
+        "termsAgreement": "Acepto los {{link}}",
+        "termsLink": "términos de uso",
         "submitButton": "Crear nueva cuenta"
       },
       "errors": {
@@ -324,9 +324,6 @@
         "loginError": "No se pudo iniciar sesión. Por favor, inténtalo de nuevo."
       },
       "notifications": {
-        "checkEmail": {
-          "title": "Revisa tu correo electrónico"
-        },
         "accountCreationFailed": {
           "title": "Error al crear la cuenta"
         },
@@ -338,6 +335,11 @@
           "title": "¡Bienvenido!",
           "message": "Tu cuenta ha sido creada exitosamente."
         }
+      },
+      "emailConfirmModal": {
+        "title": "Revisa tu correo electrónico",
+        "message": "Por favor, revisa tu correo electrónico para confirmar tu cuenta. Necesitarás verificar tu dirección de correo electrónico antes de poder iniciar sesión.",
+        "button": "Ir a la página de inicio de sesión"
       },
       "title": "Crear nueva cuenta",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",

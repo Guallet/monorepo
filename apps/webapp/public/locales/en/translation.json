@@ -309,8 +309,8 @@
           "label": "Confirm Password",
           "placeholder": "Confirm your password"
         },
-        "termsAgreement": "Agree the {{link}}.",
-        "termsLink": "terms and policy",
+        "termsAgreement": "Agree with the {{link}}",
+        "termsLink": "terms and conditions",
         "submitButton": "Create new account"
       },
       "errors": {
@@ -322,9 +322,6 @@
         "loginError": "Unable to log in. Please try again."
       },
       "notifications": {
-        "checkEmail": {
-          "title": "Check your email"
-        },
         "accountCreationFailed": {
           "title": "Account creation failed"
         },
@@ -336,6 +333,11 @@
           "title": "Welcome!",
           "message": "Your account has been created successfully."
         }
+      },
+      "emailConfirmModal": {
+        "title": "Check your email",
+        "message": "Please check your email to confirm your account. You will need to verify your email address before you can log in.",
+        "button": "Go back to login page"
       },
       "title": "Create new account",
       "alreadyHaveAccount": "Already have an account?",
