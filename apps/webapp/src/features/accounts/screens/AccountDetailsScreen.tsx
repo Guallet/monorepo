@@ -1,13 +1,7 @@
-import { fetch_delete } from "@/api/fetchHelper";
-import { AppSection } from "@/components/Cards/AppSection";
-import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
-import {
-  AccountDto,
-  AccountTypeDto,
-  TransactionDto,
-} from "@guallet/api-client";
-import { useAccount, useAccountTransactions } from "@guallet/api-react";
-import { Money } from "@guallet/money";
+import { fetch_delete } from '@/api/fetchHelper';
+import { AppSection } from '@/components/Cards/AppSection';
+import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { useAccount } from '@guallet/api-react';
 import {
   Loader,
   Modal,
@@ -15,20 +9,21 @@ import {
   Group,
   Space,
   Button,
-  Center,
   Text,
-} from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useNavigate, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { CreditCardDetails } from "../AccountDetails/CreditCardDetails";
-import { CurrentAccountDetails } from "../AccountDetails/CurrentAccountDetails";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { AccountDetailsHeader } from "../components/AccountDetailsHeader";
+} from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { useNavigate, notFound } from '@tanstack/react-router';
+import { useState } from 'react';
+import { CreditCardDetails } from '../AccountDetails/CreditCardDetails';
+import { CurrentAccountDetails } from '../AccountDetails/CurrentAccountDetails';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { AccountDetailsHeader } from '../components/AccountDetailsHeader';
+import { TransactionsSection } from '../components/AccountDetails/TransactionsSection';
 
 interface AccountDetailsScreenProps {
   accountId: string;
 }
+
 export function AccountDetailsScreen({
   accountId,
 }: Readonly<AccountDetailsScreenProps>) {
@@ -69,11 +64,11 @@ export function AccountDetailsScreen({
           onCancel={hideModal}
           onAccountDeleted={() => {
             notifications.show({
-              title: "Account deleted",
-              message: "The account has been deleted",
-              color: "green",
+              title: 'Account deleted',
+              message: 'The account has been deleted',
+              color: 'green',
             });
-            navigation({ to: "/accounts" });
+            navigation({ to: '/accounts' });
           }}
         />
       </Modal>
@@ -153,72 +148,4 @@ function AccountDetailsSelector(account: Readonly<AccountDto>) {
     default:
       return null;
   }
-}
-
-interface TransactionsSectionProps {
-  accountId: string;
-}
-function TransactionsSection({
-  accountId,
-}: Readonly<TransactionsSectionProps>) {
-  const navigation = useNavigate();
-  const { transactions, isLoading } = useAccountTransactions(accountId);
-
-  return (
-    <AppSection title="Latest transactions">
-      {isLoading ? (
-        <Center>
-          <Loader />
-        </Center>
-      ) : transactions.length === 0 ? (
-        <Center>
-          <Text>No transactions found for this month</Text>
-        </Center>
-      ) : (
-        <Stack>
-          {transactions.map((transaction) => (
-            <TransactionRow key={transaction.id} transaction={transaction} />
-          ))}
-        </Stack>
-      )}
-      <Button
-        variant="outline"
-        onClick={() => {
-          navigation({
-            to: "/transactions",
-            search: {
-              accounts: [accountId],
-              page: 1,
-              pageSize: 50,
-            },
-          });
-        }}
-      >
-        View all account transactions
-      </Button>
-    </AppSection>
-  );
-}
-
-function TransactionRow({
-  transaction,
-}: Readonly<{ transaction: TransactionDto }>) {
-  const amount = Money.fromCurrencyCode({
-    amount: transaction.amount,
-    currencyCode: transaction.currency,
-  });
-
-  return (
-    <Group>
-      <CategoryAvatar categoryId={transaction.categoryId} size={40} />
-      <Text
-        style={{
-          flexGrow: 1,
-        }}
-      >
-        {transaction.description}
-      </Text>
-      <Text>{amount.format()}</Text>
-    </Group>
-  );
 }
