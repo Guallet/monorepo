@@ -207,6 +207,9 @@ importers:
       '@guallet/api-react':
         specifier: workspace:*
         version: link:../../packages/guallet-api-react
+      '@guallet/auth':
+        specifier: workspace:*
+        version: link:../../packages/guallet-auth
       '@luna-ui/react-native':
         specifier: workspace:*
         version: link:../../luna-ui/react-native
@@ -355,6 +358,9 @@ importers:
       '@guallet/api-react':
         specifier: workspace:*
         version: link:../../packages/guallet-api-react
+      '@guallet/auth':
+        specifier: workspace:*
+        version: link:../../packages/guallet-auth
       '@guallet/money':
         specifier: workspace:*
         version: link:../../packages/guallet-money
@@ -564,6 +570,28 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.83.1
         version: 5.90.2(react@19.1.0)
+    devDependencies:
+      eslint:
+        specifier: ^9.23.0
+        version: 9.31.0
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../eslint-config-custom
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
+  packages/guallet-auth:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.51.0
+        version: 2.51.0
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
     devDependencies:
       eslint:
         specifier: ^9.23.0
@@ -8681,6 +8709,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-fetch@3.6.20:
     resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
@@ -9025,7 +9054,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.27.1':
     dependencies:
       '@babel/traverse': 7.28.0
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.4
     transitivePeerDependencies:
       - supports-color
 
@@ -9047,7 +9076,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.4
 
   '@babel/helper-plugin-utils@7.27.1': {}
 
@@ -11730,16 +11759,16 @@ snapshots:
 
   '@types/babel__generator@7.27.0':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.4
 
   '@types/babel__template@7.4.4':
     dependencies:
-      '@babel/parser': 7.28.0
-      '@babel/types': 7.28.1
+      '@babel/parser': 7.28.4
+      '@babel/types': 7.28.4
 
   '@types/babel__traverse@7.20.7':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.4
 
   '@types/body-parser@1.19.6':
     dependencies:
@@ -12526,14 +12555,14 @@ snapshots:
   babel-plugin-jest-hoist@29.6.3:
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.4
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.20.7
 
   babel-plugin-jest-hoist@30.0.1:
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.4
       '@types/babel__core': 7.20.5
 
   babel-plugin-polyfill-corejs2@0.4.14(@babel/core@7.28.0):
@@ -14897,7 +14926,7 @@ snapshots:
   istanbul-lib-instrument@5.2.1:
     dependencies:
       '@babel/core': 7.28.0
-      '@babel/parser': 7.28.0
+      '@babel/parser': 7.28.4
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
       semver: 6.3.1

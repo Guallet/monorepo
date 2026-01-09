@@ -1,5 +1,5 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from "@/auth/WebAppAuthProvider";
 import {
   Container,
   Paper,

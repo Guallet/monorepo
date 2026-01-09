@@ -1,4 +1,4 @@
-import { useAuth } from "@/auth/useAuth";
+import { useAuth } from "@/auth/WebAppAuthProvider";
 import { notifications } from "@mantine/notifications";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";

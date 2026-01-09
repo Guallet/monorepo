@@ -1,4 +1,4 @@
-import { useAuth } from "@/auth/useAuth";
+import { useAuth } from "@/auth/WebAppAuthProvider";
 import { BuildConfig } from "@/build.config";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import {
