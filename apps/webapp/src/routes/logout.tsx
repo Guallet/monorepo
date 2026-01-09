@@ -1,9 +1,9 @@
-import { useAuth } from "@/auth/useAuth";
-import { notifications } from "@mantine/notifications";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useAuth } from '@guallet/auth';
+import { notifications } from '@mantine/notifications';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
-export const Route = createFileRoute("/logout")({
+export const Route = createFileRoute('/logout')({
   component: LogoutPage,
 });
 
@@ -15,15 +15,15 @@ function LogoutPage() {
     logout()
       .then(() => {
         navigate({
-          to: "/",
+          to: '/',
         });
       })
       .catch((err) => {
-        console.error("Error logging out the user", err);
+        console.error('Error logging out the user', err);
         notifications.show({
-          title: "Error",
-          message: "Error logging out the user",
-          color: "red",
+          title: 'Error',
+          message: 'Error logging out the user',
+          color: 'red',
         });
       });
   }, []);
