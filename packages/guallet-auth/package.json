@@ -7,7 +7,7 @@
   "types": "./src/index.ts",
   "dependencies": {
     "@supabase/supabase-js": "^2.51.0",
-    "react": "workspace:*"
+    "react": "^19.1.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",

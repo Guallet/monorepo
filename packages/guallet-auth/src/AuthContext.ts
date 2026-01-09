@@ -33,7 +33,6 @@ export interface AuthContextWithMethods extends AuthContextType {
   signOut?: () => Promise<void>;
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export const AuthContext = createContext<AuthContextWithMethods>({
   isLoading: false,
   isAuthenticated: false,

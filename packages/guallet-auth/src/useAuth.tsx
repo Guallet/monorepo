@@ -65,16 +65,14 @@ export function AuthProvider({
     await supabaseClient.auth.signOut();
   };
 
-  const state: AuthContextWithMethods = {
-    isLoading: isLoading,
-    isAuthenticated: isAuthenticated,
-    userId: session?.user?.id ?? null,
-    session: session,
-    logout: logout,
-  };
-
   const memoizedState = useMemo(
-    () => state,
+    () => ({
+      isLoading: isLoading,
+      isAuthenticated: isAuthenticated,
+      userId: session?.user?.id ?? null,
+      session: session,
+      logout: logout,
+    }),
     [isLoading, isAuthenticated, session?.user?.id, session, logout],
   );
 
