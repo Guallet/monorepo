@@ -1,4 +1,4 @@
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/auth/MobileAuthProvider';
 import { Button } from '@luna-ui/react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { View, Text, ActivityIndicator } from 'react-native';

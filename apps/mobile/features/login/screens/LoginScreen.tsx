@@ -12,7 +12,7 @@ import {
 } from '@luna-ui/react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/auth/MobileAuthProvider';
 import { BuildConfig } from '@/BuildConfig';
 import { Image } from 'expo-image';
 import { View } from 'react-native';

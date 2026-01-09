@@ -1,5 +1,5 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/auth/MobileAuthProvider';
 
 export default function SettingsScreen() {
   const { signOut } = useAuth();
