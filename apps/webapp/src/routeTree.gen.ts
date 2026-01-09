@@ -25,6 +25,7 @@ import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transact
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppSavingGoalsIndexRouteImport } from './routes/_app/saving-goals/index'
 import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index'
+import { Route as AppRecurringPaymentsIndexRouteImport } from './routes/_app/recurring-payments/index'
 import { Route as AppInstitutionsIndexRouteImport } from './routes/_app/institutions/index'
 import { Route as AppImporterIndexRouteImport } from './routes/_app/importer/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
@@ -40,6 +41,7 @@ import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transac
 import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
+import { Route as AppRecurringPaymentsNewRouteImport } from './routes/_app/recurring-payments/new'
 import { Route as AppImporterExportRouteImport } from './routes/_app/importer/export'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
 import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
@@ -148,6 +150,12 @@ const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
   path: '/reports/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRecurringPaymentsIndexRoute =
+  AppRecurringPaymentsIndexRouteImport.update({
+    id: '/recurring-payments/',
+    path: '/recurring-payments/',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppInstitutionsIndexRoute = AppInstitutionsIndexRouteImport.update({
   id: '/institutions/',
   path: '/institutions/',
@@ -235,6 +243,11 @@ const AppSavingGoalsIdRoute = AppSavingGoalsIdRouteImport.update({
 const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   id: '/reports/cashflow',
   path: '/reports/cashflow',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRecurringPaymentsNewRoute = AppRecurringPaymentsNewRouteImport.update({
+  id: '/recurring-payments/new',
+  path: '/recurring-payments/new',
   getParentRoute: () => AppRoute,
 } as any)
 const AppImporterExportRoute = AppImporterExportRouteImport.update({
@@ -368,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/importer/export': typeof AppImporterExportRoute
+  '/recurring-payments/new': typeof AppRecurringPaymentsNewRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
@@ -385,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardIndexRoute
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
+  '/recurring-payments': typeof AppRecurringPaymentsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -423,6 +438,7 @@ export interface FileRoutesByTo {
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/importer/export': typeof AppImporterExportRoute
+  '/recurring-payments/new': typeof AppRecurringPaymentsNewRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
@@ -440,6 +456,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardIndexRoute
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
+  '/recurring-payments': typeof AppRecurringPaymentsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -480,6 +497,7 @@ export interface FileRoutesById {
   '/_app/categories/old': typeof AppCategoriesOldRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
   '/_app/importer/export': typeof AppImporterExportRoute
+  '/_app/recurring-payments/new': typeof AppRecurringPaymentsNewRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
@@ -497,6 +515,7 @@ export interface FileRoutesById {
   '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/importer/': typeof AppImporterIndexRoute
   '/_app/institutions/': typeof AppInstitutionsIndexRoute
+  '/_app/recurring-payments/': typeof AppRecurringPaymentsIndexRoute
   '/_app/reports/': typeof AppReportsIndexRoute
   '/_app/saving-goals/': typeof AppSavingGoalsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
@@ -537,6 +556,7 @@ export interface FileRouteTypes {
     | '/categories/old'
     | '/connections/$id'
     | '/importer/export'
+    | '/recurring-payments/new'
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
@@ -554,6 +574,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/importer'
     | '/institutions'
+    | '/recurring-payments'
     | '/reports'
     | '/saving-goals'
     | '/settings'
@@ -592,6 +613,7 @@ export interface FileRouteTypes {
     | '/categories/old'
     | '/connections/$id'
     | '/importer/export'
+    | '/recurring-payments/new'
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
@@ -609,6 +631,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/importer'
     | '/institutions'
+    | '/recurring-payments'
     | '/reports'
     | '/saving-goals'
     | '/settings'
@@ -648,6 +671,7 @@ export interface FileRouteTypes {
     | '/_app/categories/old'
     | '/_app/connections/$id'
     | '/_app/importer/export'
+    | '/_app/recurring-payments/new'
     | '/_app/reports/cashflow'
     | '/_app/saving-goals/$id'
     | '/_app/saving-goals/new'
@@ -665,6 +689,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard/'
     | '/_app/importer/'
     | '/_app/institutions/'
+    | '/_app/recurring-payments/'
     | '/_app/reports/'
     | '/_app/saving-goals/'
     | '/_app/settings/'
@@ -812,6 +837,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/recurring-payments/': {
+      id: '/_app/recurring-payments/'
+      path: '/recurring-payments'
+      fullPath: '/recurring-payments'
+      preLoaderRoute: typeof AppRecurringPaymentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/institutions/': {
       id: '/_app/institutions/'
       path: '/institutions'
@@ -929,6 +961,13 @@ declare module '@tanstack/react-router' {
       path: '/reports/cashflow'
       fullPath: '/reports/cashflow'
       preLoaderRoute: typeof AppReportsCashflowRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/recurring-payments/new': {
+      id: '/_app/recurring-payments/new'
+      path: '/recurring-payments/new'
+      fullPath: '/recurring-payments/new'
+      preLoaderRoute: typeof AppRecurringPaymentsNewRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/importer/export': {
@@ -1091,6 +1130,7 @@ interface AppRouteChildren {
   AppCategoriesOldRoute: typeof AppCategoriesOldRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
   AppImporterExportRoute: typeof AppImporterExportRoute
+  AppRecurringPaymentsNewRoute: typeof AppRecurringPaymentsNewRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
   AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
@@ -1108,6 +1148,7 @@ interface AppRouteChildren {
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppImporterIndexRoute: typeof AppImporterIndexRoute
   AppInstitutionsIndexRoute: typeof AppInstitutionsIndexRoute
+  AppRecurringPaymentsIndexRoute: typeof AppRecurringPaymentsIndexRoute
   AppReportsIndexRoute: typeof AppReportsIndexRoute
   AppSavingGoalsIndexRoute: typeof AppSavingGoalsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -1137,6 +1178,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesOldRoute: AppCategoriesOldRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
   AppImporterExportRoute: AppImporterExportRoute,
+  AppRecurringPaymentsNewRoute: AppRecurringPaymentsNewRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
   AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
@@ -1154,6 +1196,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppImporterIndexRoute: AppImporterIndexRoute,
   AppInstitutionsIndexRoute: AppInstitutionsIndexRoute,
+  AppRecurringPaymentsIndexRoute: AppRecurringPaymentsIndexRoute,
   AppReportsIndexRoute: AppReportsIndexRoute,
   AppSavingGoalsIndexRoute: AppSavingGoalsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,

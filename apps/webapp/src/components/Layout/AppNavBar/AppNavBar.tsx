@@ -64,6 +64,11 @@ const menuData: MenuData[] = [
     link: "/saving-goals",
   },
   {
+    label: "Recurring Payments",
+    icon: IconRepeat,
+    link: "/recurring-payments",
+  },
+  {
     label: "Reports",
     icon: IconPresentationAnalytics,
     link: "/reports",
