@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import type { SupabaseClient, AuthChangeEvent, Session } from '@supabase/supabase-js';
-import { AuthContext, AuthContextWithMethods } from './AuthContext';
+import { AuthContext } from './AuthContext';
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -33,7 +33,6 @@ export function AuthProvider({
   }
 
   useEffect(() => {
-    console.log('Initializing auth');
     setIsLoading(true);
     supabaseClient.auth
       .getSession()
