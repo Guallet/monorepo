@@ -1,11 +1,11 @@
-import { useAuth } from '@/auth/MobileAuthProvider';
+import { useAuth } from '@guallet/auth';
 import { Button } from '@luna-ui/react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { View, Text, ActivityIndicator } from 'react-native';
 
 export default function Screen() {
   const router = useRouter();
-  const { session, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -17,7 +17,7 @@ export default function Screen() {
     );
   }
 
-  if (session) {
+  if (isAuthenticated === false) {
     return <Redirect href="/login" />;
   } else {
     return (

@@ -1,4 +1,3 @@
-import { Session } from '@supabase/supabase-js';
 import React, { useCallback, useMemo } from 'react';
 import { supabase } from './supabase';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -20,15 +19,12 @@ interface MobileAuthProviderProps {
 }
 
 export function AuthProvider({ children }: Readonly<MobileAuthProviderProps>) {
-  const handleSessionChange = useCallback(async (session: Session | null) => {
-    await setAnalyticsDeviceId(session?.user?.id ?? null);
+  const handleUserChange = useCallback(async (userId: string | null) => {
+    await setAnalyticsDeviceId(userId);
   }, []);
 
   return (
-    <BaseAuthProvider
-      supabaseClient={supabase}
-      onSessionChange={handleSessionChange}
-    >
+    <BaseAuthProvider supabaseClient={supabase} onUserChange={handleUserChange}>
       {children}
     </BaseAuthProvider>
   );

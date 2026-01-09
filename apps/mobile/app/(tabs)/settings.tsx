@@ -1,19 +1,24 @@
+import { useAuth } from '@guallet/auth';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from '@/auth/MobileAuthProvider';
 
 export default function SettingsScreen() {
-  const { signOut } = useAuth();
+  const { logout } = useAuth();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
       <Button
         title="Sign out"
-        onPress={() => {
-          signOut();
+        onPress={async () => {
+          await logout();
         }}
       />
-      <Button title="Test sentry" onPress={() => { throw new Error('Hello, again, Sentry!'); }} />
+      <Button
+        title="Test sentry"
+        onPress={() => {
+          throw new Error('Hello, again, Sentry!');
+        }}
+      />
     </View>
   );
 }
