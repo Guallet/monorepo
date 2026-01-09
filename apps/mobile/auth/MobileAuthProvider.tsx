@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { supabase } from './supabase';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { BuildConfig } from '@/BuildConfig';

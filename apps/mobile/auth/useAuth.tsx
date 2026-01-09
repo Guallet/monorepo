@@ -1,16 +1,11 @@
-import { Provider, Session } from '@supabase/supabase-js';
-import React, { useCallback, useMemo } from 'react';
+import { Provider } from '@supabase/supabase-js';
+import { useCallback, useMemo } from 'react';
 import { supabase } from './supabase';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { BuildConfig } from '@/BuildConfig';
-import { setAnalyticsDeviceId } from '@/utils/analytics';
-import {
-  AuthProvider as BaseAuthProvider,
-  useAuth as useBaseAuth,
-} from '@guallet/auth';
+import { useAuth as useBaseAuth } from '@guallet/auth';
 
 export function useAuth() {
   const baseAuth = useBaseAuth();
