@@ -25,10 +25,7 @@ export function useRecurringPayments() {
   });
 
   return {
-    recurringPayments:
-      query.data?.filter(
-        (dto): dto is RecurringPaymentDto => dto !== undefined
-      ) ?? [],
+    recurringPayments: query.data ?? [],
     ...query,
   };
 }

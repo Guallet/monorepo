@@ -100,9 +100,11 @@ export class RecurrenceDetectorService {
     transactions: Transaction[],
   ): TransactionGroup[] {
     const groups = new Map<string, TransactionGroup>();
+    let skippedCount = 0;
 
     for (const transaction of transactions) {
       if (!transaction.description) {
+        skippedCount++;
         continue;
       }
 
@@ -118,6 +120,12 @@ export class RecurrenceDetectorService {
       }
 
       groups.get(normalizedDesc)!.transactions.push(transaction);
+    }
+
+    if (skippedCount > 0) {
+      this.logger.debug(
+        `Skipped ${skippedCount} transactions without descriptions during recurrence detection`,
+      );
     }
 
     return Array.from(groups.values());

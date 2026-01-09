@@ -77,13 +77,13 @@ export function RecurringPaymentsListScreen() {
   };
 
   const handleEdit = (payment: RecurringPaymentDto) => {
-    // TODO: Implement edit functionality
-    console.log("Edit payment:", payment);
+    // Navigate to edit page (to be implemented)
+    navigate({ to: `/recurring-payments/${payment.id}/edit` });
   };
 
   const handlePaymentClick = (payment: RecurringPaymentDto) => {
-    // TODO: Implement detail view
-    console.log("View payment:", payment);
+    // Navigate to detail view (to be implemented)
+    navigate({ to: `/recurring-payments/${payment.id}` });
   };
 
   // Group payments by type

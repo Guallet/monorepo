@@ -200,7 +200,7 @@ export function RecurringPaymentForm({
                     </Text>
                   </Stack>
                   <Text size="sm" fw={600}>
-                    ${suggestion.averageAmount.toFixed(2)}
+                    {suggestion.averageAmount.toFixed(2)} {suggestion.currency}
                   </Text>
                 </Group>
               </Card>
