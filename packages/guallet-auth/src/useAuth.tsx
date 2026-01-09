@@ -1,0 +1,86 @@
+import React, { useState, useContext, useEffect, useMemo } from 'react';
+import type { SupabaseClient, AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { AuthContext, AuthContextWithMethods } from './AuthContext';
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+interface AuthProviderProps {
+  children: React.ReactNode;
+  supabaseClient: SupabaseClient;
+  onSessionChange?: (session: Session | null) => void;
+}
+
+export function AuthProvider({
+  children,
+  supabaseClient,
+  onSessionChange,
+}: Readonly<AuthProviderProps>) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  async function onSessionChanged(
+    _event: AuthChangeEvent,
+    session: Session | null,
+  ) {
+    setSession(session);
+    setIsAuthenticated(session !== null);
+    if (onSessionChange) {
+      onSessionChange(session);
+    }
+  }
+
+  useEffect(() => {
+    console.log('Initializing auth');
+    setIsLoading(true);
+    supabaseClient.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setIsAuthenticated(session !== null);
+      })
+      .catch((error) => {
+        setSession(null);
+        setIsAuthenticated(false);
+        console.error('Error loading the session', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange(
+      async (event, session) => {
+        onSessionChanged(event, session);
+      },
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabaseClient, onSessionChange]);
+
+  const logout = async () => {
+    await supabaseClient.auth.signOut();
+  };
+
+  const state: AuthContextWithMethods = {
+    isLoading: isLoading,
+    isAuthenticated: isAuthenticated,
+    userId: session?.user?.id ?? null,
+    session: session,
+    logout: logout,
+  };
+
+  const memoizedState = useMemo(
+    () => state,
+    [isLoading, isAuthenticated, session?.user?.id, session, logout],
+  );
+
+  return (
+    <AuthContext.Provider value={memoizedState}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
