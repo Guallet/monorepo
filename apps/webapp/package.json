@@ -25,7 +25,7 @@
     "@mantine/hooks": "workspace:*",
     "@mantine/modals": "workspace:*",
     "@mantine/notifications": "workspace:*",
-    "@supabase/supabase-js": "^2.51.0",
+    "@supabase/supabase-js": "workspace:*",
     "@tabler/icons-react": "workspace:*",
     "@tanstack/react-query": "workspace:*",
     "@tanstack/react-query-devtools": "^5.83.0",

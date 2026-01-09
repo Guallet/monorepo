@@ -1,9 +1,9 @@
-import { useAuth } from "@/auth/WebAppAuthProvider";
-import { Loader, Stack, Text } from "@mantine/core";
-import { Link, createLazyFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useAuth } from '@guallet/auth';
+import { Loader, Stack, Text } from '@mantine/core';
+import { Link, createLazyFileRoute } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
-export const Route = createLazyFileRoute("/userdeleted")({
+export const Route = createLazyFileRoute('/userdeleted')({
   component: () => DeleteAccountConfirmationPage(),
 });
 

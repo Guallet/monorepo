@@ -1,6 +1,6 @@
-import { useAuth } from "@/auth/WebAppAuthProvider";
-import { BuildConfig } from "@/build.config";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { BuildConfig } from '@/build.config';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useAuth } from '@guallet/auth';
 import {
   Center,
   Loader,
@@ -10,10 +10,10 @@ import {
   Title,
   Button,
   TextInput,
-} from "@mantine/core";
-import { Link, Navigate, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { z } from "zod";
+} from '@mantine/core';
+import { Link, Navigate, createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { z } from 'zod';
 
 const callbackSearchSchema = z.object({
   error: z.string().optional(),
@@ -21,7 +21,7 @@ const callbackSearchSchema = z.object({
   error_description: z.string().optional(),
 });
 
-export const Route = createFileRoute("/login/callback")({
+export const Route = createFileRoute('/login/callback')({
   component: LoginCallbackPage,
   validateSearch: callbackSearchSchema,
 });
@@ -29,11 +29,11 @@ export const Route = createFileRoute("/login/callback")({
 function LoginCallbackPage() {
   const { isLoading: isAuthLoading, isAuthenticated } = useAuth();
   const { error, error_code, error_description } = Route.useSearch();
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Read the destination redirection from the localstorage
-  const redirectTo = localStorage.getItem("redirectDestination") ?? "dashboard";
+  const redirectTo = localStorage.getItem('redirectDestination') ?? 'dashboard';
 
   const onJoinWaitingList = async () => {
     try {
@@ -41,26 +41,26 @@ function LoginCallbackPage() {
 
       // TODO: Do a proper email validation using zod
       if (!email) {
-        alert("Please enter a valid email");
+        alert('Please enter a valid email');
         return;
       }
 
       const response = await fetch(`${BuildConfig.BASE_API_URL}/waitinglist`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
       });
 
-      if (!response.ok) {
-        alert("An error occurred");
-        return;
+      if (response.ok) {
+        alert('You have been added to the waiting list');
       } else {
-        alert("You have been added to the waiting list");
+        alert('An error occurred');
+        return;
       }
     } catch {
-      alert("An error occurred");
+      alert('An error occurred');
       return;
     } finally {
       setIsLoading(false);
@@ -83,7 +83,7 @@ function LoginCallbackPage() {
           <Paper withBorder shadow="md" p={30} mt={20} radius="md">
             <Stack>
               <Title>Authentication error</Title>
-              {error_code === "signup_disabled" ? (
+              {error_code === 'signup_disabled' ? (
                 <>
                   <Text>
                     This is a invitation only app. Please join the waiting list
@@ -110,8 +110,8 @@ function LoginCallbackPage() {
                 </>
               ) : (
                 <Text>
-                  {error_description?.replace(/\+/g, " ") ??
-                    "An unknown error occurred."}
+                  {error_description?.replaceAll('+', ' ') ??
+                    'An unknown error occurred.'}
                 </Text>
               )}
               <Button component={Link} to="/login">

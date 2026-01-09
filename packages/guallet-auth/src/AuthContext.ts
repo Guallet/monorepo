@@ -1,11 +1,13 @@
 import { createContext } from 'react';
 
-// Result types for better error handling
-export type AuthResult<T = void> =
-  | { success: true; data?: T }
-  | { success: false; error: AuthError };
+export type ExternalAuthProvider = 'google' | 'github' | 'microsoft';
 
-export interface AuthError {
+export type AuthResult = {
+  success: boolean;
+  error: AuthError | null;
+};
+
+export interface AuthError extends Omit<Error, 'name'> {
   code: string;
   message: string;
 }
@@ -15,28 +17,70 @@ export interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   userId: string | null;
-  session: any | null; // Session type from Supabase
 }
 
 // Extended auth context type with methods
 export interface AuthContextWithMethods extends AuthContextType {
-  login?: (email: string, password: string) => Promise<AuthResult>;
-  logout: () => Promise<void>;
-  createAccount?: (args: {
+  login: (email: string, password: string) => Promise<AuthResult>;
+  logout: () => Promise<AuthResult>;
+  createAccount: (args: {
     name: string;
     email: string;
     password: string;
-  }) => Promise<AuthResult<{ userId: string }>>;
-  loginWithProvider?: (provider: string) => Promise<AuthResult>;
-  getOtpCode?: (email: string) => Promise<boolean>;
-  signIn?: () => Promise<void>;
-  signOut?: () => Promise<void>;
+  }) => Promise<AuthResult>;
+  loginWithProvider: (
+    provider: ExternalAuthProvider,
+    redirectUrl: string,
+  ) => Promise<AuthResult>;
+  getOtpCode: (email: string) => Promise<AuthResult>;
+  verifyOtpCode: (email: string, code: string) => Promise<AuthResult>;
 }
 
 export const AuthContext = createContext<AuthContextWithMethods>({
-  isLoading: false,
+  isLoading: true,
   isAuthenticated: false,
   userId: null,
-  session: null,
-  logout: async () => {},
+  login: async (email: string, password: string): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  logout: async (): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  createAccount: async (args: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  loginWithProvider: async (
+    provider: ExternalAuthProvider,
+    redirectUrl: string,
+  ): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  getOtpCode: async (email: string): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  verifyOtpCode: async (email: string, code: string): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
 });

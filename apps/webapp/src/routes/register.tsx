@@ -1,5 +1,5 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { useAuth } from "@/auth/WebAppAuthProvider";
+import { useAuth } from '@guallet/auth';
 import {
   Container,
   Paper,
@@ -130,7 +130,7 @@ function RouteComponent() {
         password: values.password,
       });
 
-      if (!createResult.success) {
+      if (createResult.error) {
         const errorMessage = getErrorMessage(
           createResult.error.code,
           createResult.error.message,
@@ -160,7 +160,7 @@ function RouteComponent() {
       // Step 2: Log in the user
       const loginResult = await login(values.email, values.password);
 
-      if (!loginResult.success) {
+      if (loginResult.error) {
         const errorMessage = getErrorMessage(
           loginResult.error.code,
           loginResult.error.message,

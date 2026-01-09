@@ -1,9 +1,9 @@
-import GualletAppShell from "@/components/Layout/GualletAppShell";
-import { useAuth } from "@/auth/WebAppAuthProvider";
-import { Center, Loader } from "@mantine/core";
-import { Navigate, createFileRoute, useRouter } from "@tanstack/react-router";
+import GualletAppShell from '@/components/Layout/GualletAppShell';
+import { useAuth } from '@guallet/auth';
+import { Center, Loader } from '@mantine/core';
+import { Navigate, createFileRoute, useRouter } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app")({
+export const Route = createFileRoute('/_app')({
   component: ProtectedRoute,
 });
 
