@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import type { SupabaseClient, AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { AuthContext, AuthContextWithMethods } from './AuthContext';
 
@@ -61,9 +61,9 @@ export function AuthProvider({
     };
   }, [supabaseClient, onSessionChange]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await supabaseClient.auth.signOut();
-  };
+  }, [supabaseClient]);
 
   const memoizedState = useMemo(
     () => ({
