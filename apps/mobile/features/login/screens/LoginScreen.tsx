@@ -65,6 +65,8 @@ export function LoginScreen() {
 
   const onLoginWithMagicLink = async () => {
     if (BuildConfig.IS_DEV) {
+      // If we are in dev mode, skip email validation and go to OTP screen directly
+      // to facilitate testing.
       router.navigate({
         pathname: '/login/otp',
         params: { email },

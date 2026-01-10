@@ -148,7 +148,7 @@
       "form": {
         "magicLink": {
           "error": {
-            "title": "CNF: Error sending magic link"
+            "title": "Error sending magic link"
           }
         },
         "email": {
