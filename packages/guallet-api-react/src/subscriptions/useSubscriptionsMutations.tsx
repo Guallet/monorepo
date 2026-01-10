@@ -7,7 +7,7 @@ import {
 
 const SUBSCRIPTIONS_QUERY_KEY = 'subscriptions';
 
-export function useSubscriptionMutations() {
+export function useSubscriptionsMutations() {
   const queryClient = useQueryClient();
   const gualletClient = useGualletClient();
 

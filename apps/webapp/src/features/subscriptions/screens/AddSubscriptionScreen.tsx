@@ -6,7 +6,7 @@ import {
   RecurringPaymentType,
   RecurrenceCadence,
 } from '@guallet/api-client';
-import { useSubscriptionMutations } from '@guallet/api-react';
+import { useSubscriptionsMutations } from '@guallet/api-react';
 import {
   Stack,
   TextInput,
@@ -51,7 +51,7 @@ const cadenceOptions = [
 
 export function AddSubscriptionScreen() {
   const navigate = useNavigate();
-  const { createSubscriptionMutation } = useSubscriptionMutations();
+  const { createSubscriptionMutation } = useSubscriptionsMutations();
   const defaultCurrency = useDefaultCurrency();
 
   const form = useForm<AddSubscriptionFormData>({

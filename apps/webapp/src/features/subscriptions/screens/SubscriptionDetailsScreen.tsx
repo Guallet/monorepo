@@ -1,7 +1,7 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
-import { useSubscription, useSubscriptionMutations } from '@guallet/api-react';
+import { useSubscription, useSubscriptionsMutations } from '@guallet/api-react';
 import {
   Stack,
   Group,
@@ -75,7 +75,7 @@ export function SubscriptionDetailsScreen({
 }: Readonly<SubscriptionDetailsScreenProps>) {
   const navigation = useNavigate();
   const { subscription, isLoading } = useSubscription(subscriptionId);
-  const { deleteSubscriptionMutation } = useSubscriptionMutations();
+  const { deleteSubscriptionMutation } = useSubscriptionsMutations();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

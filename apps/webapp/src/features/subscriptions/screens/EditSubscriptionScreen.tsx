@@ -6,7 +6,7 @@ import {
   RecurringPaymentType,
   RecurrenceCadence,
 } from '@guallet/api-client';
-import { useSubscription, useSubscriptionMutations } from '@guallet/api-react';
+import { useSubscription, useSubscriptionsMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
 import {
   Stack,
@@ -61,7 +61,7 @@ export function EditSubscriptionScreen({
   const defaultCurrency = useDefaultCurrency();
   const navigate = useNavigate();
 
-  const { updateSubscriptionMutation } = useSubscriptionMutations();
+  const { updateSubscriptionMutation } = useSubscriptionsMutations();
 
   const form = useForm<EditSubscriptionFormData>({
     initialValues: {
