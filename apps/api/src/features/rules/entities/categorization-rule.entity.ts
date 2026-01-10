@@ -10,9 +10,7 @@ import {
 
 @Entity('categorization_rules')
 export class CategorizationRuleEntity extends BaseDbEntity {
-  @PrimaryGeneratedColumn('uuid', {
-    primaryKeyConstraintName: 'PK_categorization_rules_id',
-  })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'user_id' })
@@ -21,8 +19,8 @@ export class CategorizationRuleEntity extends BaseDbEntity {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
-  description: string | null;
+  @Column({ default: '' })
+  description: string;
 
   @Column({ name: 'result_category_id' })
   resultCategoryId: string;
@@ -42,9 +40,7 @@ export class CategorizationRuleEntity extends BaseDbEntity {
 
 @Entity('rule_conditions')
 export class RuleConditionEntity extends BaseDbEntity {
-  @PrimaryGeneratedColumn('uuid', {
-    primaryKeyConstraintName: 'PK_rule_conditions_id',
-  })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'rule_id' })

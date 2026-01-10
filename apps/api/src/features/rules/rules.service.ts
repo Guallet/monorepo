@@ -90,7 +90,7 @@ export class RulesService {
     const rule = this.rulesRepository.create({
       userId,
       name: dto.name,
-      description: dto.description ?? null,
+      description: dto.description,
       resultCategoryId: dto.resultCategoryId,
       order: nextOrder,
       isActive: dto.isActive ?? true,

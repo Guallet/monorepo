@@ -22,7 +22,7 @@ export enum RecurrenceCadence {
   YEARLY = 'yearly',
 }
 
-@Entity('regularPayment')
+@Entity('regular_payments')
 export class RegularPayment extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
