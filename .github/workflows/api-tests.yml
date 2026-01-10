@@ -1,4 +1,4 @@
-name: API Unit Tests
+name: API CI
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - "apps/api/**"
 
 jobs:
-  test:
-    name: Run API Unit Tests
+  ci:
+    name: Lint, Build, and Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,16 +33,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run unit tests
+      - name: 🔍 Lint code
         working-directory: apps/api
-        run: npm run test
+        run: pnpm lint
 
-      - name: Generate coverage report
+      - name: 🏗️ Build application
         working-directory: apps/api
-        run: npm run test:cov
+        run: pnpm build
+
+      - name: 🧪 Run unit tests
+        working-directory: apps/api
+        run: pnpm test
+
+      - name: 📊 Generate coverage report
+        working-directory: apps/api
+        run: pnpm test:cov
         continue-on-error: true
 
-      - name: Upload coverage to artifacts
+      - name: 📤 Upload coverage to artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
