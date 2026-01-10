@@ -79,6 +79,11 @@ export class ObConnectionsController {
   ) {
     try {
       const remoteResponse = await this.nordigenService.deleteRequisition(id);
+      this.logger.debug(
+        `Deleted requisition ${id} from Nordigen: ${JSON.stringify(
+          remoteResponse,
+        )}`,
+      );
       const deleteResult = await this.openbankingService.deleteConnection({
         connection_id: id,
         user_id: user.id,
@@ -142,6 +147,7 @@ export class ObConnectionsController {
             } catch (error) {
               this.logger.error(
                 `Couldn't get details metadata for account ${accountId}`,
+                error,
               );
             }
           } else {
@@ -154,6 +160,7 @@ export class ObConnectionsController {
         } catch (error) {
           this.logger.error(
             `Couldn't get account metadata for account ${accountId}`,
+            error,
           );
         }
       }

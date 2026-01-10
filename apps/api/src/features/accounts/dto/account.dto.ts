@@ -40,7 +40,7 @@ export class AccountDto {
       'The institution id of the account, if it belongs to an institution',
     nullable: true,
   })
-  institutionId?: string;
+  institutionId?: string | null;
 
   @ApiProperty({
     name: 'source',

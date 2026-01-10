@@ -1,4 +1,4 @@
-export class NordigenRequisitionDto {
+export interface NordigenRequisitionDto {
   id: string;
   created: Date;
   redirect: string;

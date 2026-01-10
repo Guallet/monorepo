@@ -9,7 +9,7 @@ export class TransactionDto {
   amount: number;
   currency: string;
   date: Date;
-  categoryId?: string;
+  categoryId?: string | null;
 
   static fromDomain(domain: Transaction): TransactionDto {
     return {

@@ -1,4 +1,4 @@
-import { AuthProvider } from '@/auth/useAuth';
+import { AuthProvider } from '@/auth/MobileAuthProvider';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {

@@ -42,6 +42,8 @@ export class AuthGuard implements CanActivate {
 
     // Check if the token is valid
     const request = context.switchToHttp().getRequest();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.validateRequest(request)
       .then((user) => {
         if (user == null) {

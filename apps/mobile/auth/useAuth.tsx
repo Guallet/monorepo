@@ -1,105 +1,31 @@
-import { Provider, Session } from '@supabase/supabase-js';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Provider } from '@supabase/supabase-js';
+import { useCallback, useMemo } from 'react';
 import { supabase } from './supabase';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { BuildConfig } from '@/BuildConfig';
-import { setAnalyticsDeviceId } from '@/utils/analytics';
+import { useAuth as useBaseAuth } from '@guallet/auth';
 
-interface AuthContextType {
-  signIn: () => Promise<void>;
-  signOut: () => Promise<void>;
-  session?: Session | null;
-  isLoading: boolean;
-
-  getOtpCode: (email: string) => Promise<boolean>;
-  loginWithProvider: (provider: Provider) => Promise<boolean>;
-}
-
-const AuthContext = React.createContext<AuthContextType>({
-  signIn: () => Promise.resolve(),
-  signOut: () => Promise.resolve(),
-  session: null,
-  isLoading: false,
-  getOtpCode: (_email: string) => Promise.resolve(false),
-  loginWithProvider: (_provider: Provider) => Promise.resolve(false),
-});
-
-console.log(
-  'Configuring Google Signin with webClientId:',
-  BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
-);
-GoogleSignin.configure({
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
-});
-
-// This hook can be used to access the user info.
 export function useAuth() {
-  const value = useContext(AuthContext);
-  if (process.env.NODE_ENV !== 'production') {
-    if (!value) {
-      throw new Error('useAuth must be wrapped in a <AuthProvider />');
-    }
-  }
+  const baseAuth = useBaseAuth();
 
-  return value;
-}
-
-export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<string | null>(null);
-
-
-  useEffect(() => {
-    const initAnalyticsId = async () => {
-      await setAnalyticsDeviceId(session?.user?.id ?? null);
-    }
-    initAnalyticsId();
-  }, [session]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    supabase.auth
-      .getSession()
-      .then(({ data: { session } }) => {
-        setSession(session);
-      })
-      .catch((error) => {
-        setSession(null);
-        console.error('Error loading the session', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+  const getOtpCode = useCallback(async (email: string): Promise<boolean> => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: 'guallet://login/callback',
+      },
     });
+    if (error) {
+      console.error('Error sending OTP', error);
+      return false;
+    }
+    return true;
   }, []);
 
-  const getOtpCodeFunction = useMemo(
-    () => async (email: string) => {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: 'guallet://login/callback',
-        },
-      });
-      if (error) {
-        console.error('Error sending OTP', error);
-        return false;
-      }
-      return true;
-    },
-    [],
-  );
-
-  const loginWithProviderFunction = useMemo(
-    () => async (provider: Provider) => {
+  const loginWithProvider = useCallback(
+    async (provider: Provider): Promise<boolean> => {
       if (provider !== 'google') {
         console.warn('Only Google provider is supported currently.');
         return false;
@@ -121,14 +47,22 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
         }
       } catch (error: any) {
         console.error('Error during Google sign-in', error);
-        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-          // user cancelled the login flow
-        } else if (error.code === statusCodes.IN_PROGRESS) {
-          // operation (e.g. sign in) is in progress already
-        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-          // play services not available or outdated
-        } else {
-          // some other error happened
+        switch (error.code) {
+          case statusCodes.SIGN_IN_CANCELLED:
+            // user cancelled the login flow
+            console.log('User cancelled the login flow');
+            break;
+          case statusCodes.IN_PROGRESS:
+            // operation (e.g. sign in) is in progress already
+            console.log('Sign-in is in progress already');
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // play services not available or outdated
+            console.log('Play services not available or outdated');
+            break;
+          default:
+            // some other error happened
+            console.log('Some other error happened:', error);
         }
 
         throw error;
@@ -137,23 +71,23 @@ export function AuthProvider(props: Readonly<React.PropsWithChildren>) {
     [],
   );
 
-  return (
-    <AuthContext.Provider
-      value={{
-        signIn: async () => {
-          // Perform sign-in logic here
-          //   setSession("xxx");
-        },
-        signOut: async () => {
-          await supabase.auth.signOut();
-        },
-        session,
-        isLoading,
-        getOtpCode: getOtpCodeFunction,
-        loginWithProvider: loginWithProviderFunction,
-      }}
-    >
-      {props.children}
-    </AuthContext.Provider>
+  const signIn = useCallback(async () => {
+    // Perform sign-in logic here if needed
+    //   setSession("xxx");
+  }, []);
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+  }, []);
+
+  return useMemo(
+    () => ({
+      ...baseAuth,
+      signIn,
+      signOut,
+      getOtpCode,
+      loginWithProvider,
+    }),
+    [baseAuth, signIn, signOut, getOtpCode, loginWithProvider],
   );
 }
