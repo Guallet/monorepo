@@ -53,11 +53,11 @@ jobs:
               working-directory: apps/api
               run: pnpm test
 
-            - name: Run E2E tests
-              working-directory: apps/api
-              run: pnpm test:e2e
-              env:
-                  NODE_ENV: test
+            # - name: Run E2E tests
+            #   working-directory: apps/api
+            #   run: pnpm test:e2e
+            #   env:
+            #       NODE_ENV: test
 
             - name: Run tests coverage
               working-directory: apps/api

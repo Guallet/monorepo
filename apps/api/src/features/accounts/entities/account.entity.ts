@@ -59,6 +59,7 @@ export class Account extends BaseDbEntity {
     nullable: true,
   })
   public properties:
+    | null
     | CurrentAccountProperties
     | CreditCardProperties
     | SavingAccountProperties;
@@ -73,5 +74,5 @@ export class Account extends BaseDbEntity {
   institution: Institution;
 
   @Column({ nullable: true })
-  institutionId: string;
+  institutionId: string | null;
 }

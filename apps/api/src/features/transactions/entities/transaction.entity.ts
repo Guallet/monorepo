@@ -39,7 +39,7 @@ export class Transaction extends BaseDbEntity {
   externalId: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  metadata: TransactionMetadata;
+  metadata: TransactionMetadata | null;
 
   // relations
   @ManyToOne(() => Account, (account) => account.transactions)
@@ -54,7 +54,7 @@ export class Transaction extends BaseDbEntity {
   category: Category;
 
   @Column({ nullable: true })
-  categoryId: string;
+  categoryId: string | null;
 
   // Mappers
   static fromNordigenDto(
