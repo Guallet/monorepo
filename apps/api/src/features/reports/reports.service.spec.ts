@@ -72,7 +72,7 @@ describe('ReportsService', () => {
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'trans-1',
-          amount: 50.0,
+          amount: 50,
           categoryId: 'cat-1',
           date: new Date(year, 0, 15),
           category: mockCategories[0] as Category,
@@ -80,7 +80,7 @@ describe('ReportsService', () => {
         },
         {
           id: 'trans-2',
-          amount: 30.0,
+          amount: 30,
           categoryId: 'cat-2',
           date: new Date(year, 1, 20),
           category: mockCategories[1] as Category,
@@ -137,7 +137,7 @@ describe('ReportsService', () => {
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'trans-1',
-          amount: 50.0,
+          amount: 50,
           categoryId: undefined,
           date: new Date(year, 0, 15),
           category: undefined,
@@ -224,7 +224,7 @@ describe('ReportsService', () => {
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'trans-1',
-          amount: 30.0,
+          amount: 30,
           categoryId: 'cat-2',
           date: new Date(year, 0, 15),
           category: { ...mockCategories[1], parentId: 'cat-1' } as Category,

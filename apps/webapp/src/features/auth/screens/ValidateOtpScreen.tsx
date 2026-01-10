@@ -1,5 +1,5 @@
-import { Center, Paper, Stack, Text, TextInput, Button } from "@mantine/core";
-import { useState } from "react";
+import { Center, Paper, Stack, Text, TextInput, Button } from '@mantine/core';
+import { useState } from 'react';
 
 interface ValidateOtpScreenProps {
   email: string;
@@ -9,8 +9,8 @@ interface ValidateOtpScreenProps {
 export function ValidateOtpScreen({
   email,
   onValidateOtp,
-}: ValidateOtpScreenProps) {
-  const [code, setCode] = useState<string>("");
+}: Readonly<ValidateOtpScreenProps>) {
+  const [code, setCode] = useState<string>('');
 
   return (
     <Center>
@@ -19,7 +19,7 @@ export function ValidateOtpScreen({
         p="xl"
         withBorder
         style={{
-          margin: "1.5rem",
+          margin: '1.5rem',
         }}
       >
         <Stack>

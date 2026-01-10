@@ -100,7 +100,7 @@ describe('ObConnectionsController', () => {
     it('should use default language if not provided', () => {
       mockOpenbankingService.getAvailableCountries.mockReturnValue([]);
 
-      controller.getCountries(undefined);
+      controller.getCountries();
 
       expect(mockOpenbankingService.getAvailableCountries).toHaveBeenCalledWith(
         'en',
