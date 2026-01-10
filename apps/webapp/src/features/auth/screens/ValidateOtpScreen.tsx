@@ -10,6 +10,7 @@ import {
   Alert,
 } from '@mantine/core';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconMail, IconAlertCircle } from '@tabler/icons-react';
 
 interface ValidateOtpScreenProps {
@@ -26,7 +27,8 @@ export function ValidateOtpScreen({
   onResendCode,
   error,
   isLoading,
-}: ValidateOtpScreenProps) {
+}: Readonly<ValidateOtpScreenProps>) {
+  const { t } = useTranslation();
   const [code, setCode] = useState<string>('');
 
   const isCodeValid = code.length === 6;
@@ -47,26 +49,35 @@ export function ValidateOtpScreen({
           <IconMail size={48} color="var(--mantine-color-blue-6)" />
 
           <Title order={2} ta="center">
-            Check your email
+            {t('screens.validateOtp.title', 'Check your email')}
           </Title>
 
           <Text ta="center" c="dimmed">
-            We&apos;ve sent a 6-digit code to{' '}
+            {t(
+              'screens.validateOtp.description',
+              "We've sent a 6-digit code to",
+            )}{' '}
             <Text span fw={600}>
               {email}
             </Text>
-            . Enter the code below to sign in.
+            .{' '}
+            {t(
+              'screens.validateOtp.instructionText',
+              'Enter the code below to sign in.',
+            )}
           </Text>
 
           <Text ta="center" c="dimmed" size="sm">
-            The email also contains a magic link you can click to sign in
-            automatically.
+            {t(
+              'screens.validateOtp.instructionNote',
+              'The email also contains a magic link you can click to sign in automatically.',
+            )}
           </Text>
 
           {error && (
             <Alert
               icon={<IconAlertCircle size={16} />}
-              title="Error"
+              title={t('screens.validateOtp.error.title', 'Error')}
               color="red"
               w="100%"
             >
@@ -75,7 +86,10 @@ export function ValidateOtpScreen({
           )}
 
           <TextInput
-            placeholder="Enter the 6 digit code"
+            placeholder={t(
+              'screens.validateOtp.form.codeInput.placeholder',
+              'Enter the 6 digit code',
+            )}
             value={code}
             onChange={(event) => {
               setCode(event.currentTarget.value);
@@ -100,14 +114,20 @@ export function ValidateOtpScreen({
             disabled={!isCodeValid}
             loading={isLoading}
           >
-            Verify code
+            {t('screens.validateOtp.form.verifyButton.label', 'Verify code')}
           </Button>
 
           {onResendCode && (
             <Text size="sm" ta="center">
-              Didn&apos;t receive the code?{' '}
+              {t(
+                'screens.validateOtp.resendCode.question',
+                "Didn't receive the code?",
+              )}{' '}
               <Anchor component="button" type="button" onClick={onResendCode}>
-                Resend code
+                {t(
+                  'screens.validateOtp.resendCode.resendButton',
+                  'Resend code',
+                )}
               </Anchor>
             </Text>
           )}

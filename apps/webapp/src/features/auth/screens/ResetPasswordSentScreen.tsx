@@ -1,5 +1,6 @@
 import { Center, Paper, Stack, Text, Button, Title } from '@mantine/core';
 import { IconMailCheck } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { useRouter, useCanGoBack, useNavigate } from '@tanstack/react-router';
 
@@ -10,6 +11,7 @@ interface ResetPasswordSentScreenProps {
 export function ResetPasswordSentScreen({
   email,
 }: Readonly<ResetPasswordSentScreenProps>) {
+  const { t } = useTranslation();
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const navigate = useNavigate();
@@ -33,11 +35,14 @@ export function ResetPasswordSentScreen({
             <IconMailCheck size={48} color="var(--mantine-color-green-6)" />
 
             <Title order={2} ta="center">
-              Check your email
+              {t('screens.resetPasswordSent.title', 'Check your email')}
             </Title>
 
             <Text ta="center" c="dimmed">
-              We&apos;ve sent a password reset link to{' '}
+              {t(
+                'screens.resetPasswordSent.description',
+                "We've sent a password reset link to",
+              )}{' '}
               <Text span fw={600}>
                 {email}
               </Text>
@@ -45,8 +50,10 @@ export function ResetPasswordSentScreen({
             </Text>
 
             <Text ta="center" c="dimmed" size="sm">
-              Click the link in the email to reset your password. If you
-              don&apos;t see it, check your spam folder.
+              {t(
+                'screens.resetPasswordSent.instructions',
+                "Click the link in the email to reset your password. If you don't see it, check your spam folder.",
+              )}
             </Text>
 
             <Button
@@ -63,7 +70,7 @@ export function ResetPasswordSentScreen({
                 }
               }}
             >
-              Back to login
+              {t('screens.resetPasswordSent.backButton', 'Back to login')}
             </Button>
           </Stack>
         </Paper>
