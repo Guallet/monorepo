@@ -245,6 +245,41 @@
         "addButton": "Add a new connection"
       }
     },
+    "subscriptions": {
+      "list": {
+        "types": {
+          "subscription": "Subscription",
+          "regularPayment": "Regular Payment",
+          "regularIncome": "Regular Income",
+          "unknown": "Unknown"
+        },
+        "cadence": {
+          "weekly": "Weekly",
+          "biweekly": "Bi-weekly",
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "yearly": "Yearly",
+          "unknown": "Unknown"
+        },
+        "title": "Subscriptions & Regular Payments",
+        "estimatedMonthly": "Estimated monthly:",
+        "addButton": {
+          "label": "Add New"
+        },
+        "emptyState": {
+          "title": "No subscriptions yet",
+          "description": "Start tracking your recurring payments and subscriptions",
+          "button": {
+            "label": "Add your first subscription"
+          }
+        },
+        "sections": {
+          "subscriptions": "Subscriptions",
+          "regularPayments": "Regular Payments",
+          "regularIncome": "Regular Income"
+        }
+      }
+    },
     "transactions": {
       "list": {
         "header": {
