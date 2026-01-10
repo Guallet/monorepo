@@ -165,7 +165,7 @@ describe('OpenbankingService', () => {
         reference: 'ref-1',
         accounts: ['account-1'],
         user_language: 'en',
-        link: 'http://nordigen.com/auth',
+        link: 'https://nordigen.com/auth',
         ssn: null,
         account_selection: false,
         redirect_immediate: false,

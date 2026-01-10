@@ -111,9 +111,7 @@ describe('ObConnectionsController', () => {
   describe('getInstitutions', () => {
     it('should return institutions for a country', async () => {
       const country = 'GB';
-      const mockInstitutions = [
-        { id: 'inst-1', name: 'Test Bank' },
-      ];
+      const mockInstitutions = [{ id: 'inst-1', name: 'Test Bank' }];
 
       mockNordigenService.getInstitutions.mockResolvedValue(mockInstitutions);
 
@@ -241,13 +239,11 @@ describe('ObConnectionsController', () => {
 
       const mockRequisition = {
         id: 'req-1',
-        link: 'http://nordigen.com/auth',
+        link: 'https://nordigen.com/auth',
         institution_id: createDto.institution_id,
       };
 
-      mockNordigenService.createRequisition.mockResolvedValue(
-        mockRequisition,
-      );
+      mockNordigenService.createRequisition.mockResolvedValue(mockRequisition);
       mockOpenbankingService.saveRequisition.mockResolvedValue(undefined);
 
       const result = await controller.create(mockUser, createDto);
