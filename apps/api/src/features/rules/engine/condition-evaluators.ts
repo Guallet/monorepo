@@ -61,6 +61,14 @@ export function evaluateStringCondition(
       return normalizedFieldValue !== normalizedValue;
     case StringOperator.CONTAINS:
       return normalizedFieldValue.includes(normalizedValue);
+    case StringOperator.MATCHES:
+      try {
+        const regex = new RegExp(value, 'i');
+        return regex.test(fieldValue);
+      } catch {
+        // Invalid regex pattern
+        return false;
+      }
     default:
       return false;
   }

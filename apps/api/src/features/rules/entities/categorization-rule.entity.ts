@@ -31,6 +31,9 @@ export class CategorizationRuleEntity extends BaseDbEntity {
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
+  @Column({ name: 'condition_logic', default: 'and' })
+  conditionLogic: string;
+
   @OneToMany(() => RuleConditionEntity, (condition) => condition.rule, {
     cascade: true,
     onDelete: 'CASCADE',

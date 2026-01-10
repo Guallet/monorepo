@@ -27,6 +27,7 @@ export interface RuleFormData {
   description: string;
   resultCategoryId: string;
   isActive: boolean;
+  conditionLogic: "and" | "or";
   conditions: ConditionFormData[];
 }
 
@@ -67,6 +68,9 @@ export function RuleForm({
     initialData?.resultCategoryId ?? ""
   );
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true);
+  const [conditionLogic, setConditionLogic] = useState<"and" | "or">(
+    initialData?.conditionLogic ?? "and"
+  );
   const [conditions, setConditions] = useState<ConditionFormData[]>(
     initialData?.conditions ?? [
       { id: generateConditionId(), field: "", operator: "", value: "" },
@@ -153,6 +157,7 @@ export function RuleForm({
       description,
       resultCategoryId,
       isActive,
+      conditionLogic,
       conditions,
     });
   };
@@ -205,16 +210,25 @@ export function RuleForm({
           <Stack gap="md">
             <Group justify="space-between">
               <Text fw={500}>Conditions</Text>
-              <Text size="sm" c="dimmed">
-                All conditions must match (AND logic)
-              </Text>
+              <Select
+                size="xs"
+                w={120}
+                value={conditionLogic}
+                onChange={(value) =>
+                  setConditionLogic((value as "and" | "or") ?? "and")
+                }
+                data={[
+                  { value: "and", label: "Match ALL" },
+                  { value: "or", label: "Match ANY" },
+                ]}
+              />
             </Group>
 
             {conditions.map((condition, index) => (
               <div key={condition.id}>
                 {index > 0 && (
                   <Divider
-                    label="AND"
+                    label={conditionLogic.toUpperCase()}
                     labelPosition="center"
                     my="xs"
                   />

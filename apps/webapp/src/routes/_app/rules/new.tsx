@@ -35,6 +35,7 @@ function NewRulePage() {
         description: data.description || undefined,
         resultCategoryId: data.resultCategoryId,
         isActive: data.isActive,
+        conditionLogic: data.conditionLogic,
         conditions: data.conditions.map((c, index) => ({
           field: c.field,
           operator: c.operator,

@@ -202,7 +202,7 @@ function RulesPage() {
                     <Group gap="xs">
                       <Text size="xs" c="dimmed">
                         {rule.conditions.length} condition
-                        {rule.conditions.length !== 1 ? "s" : ""}
+                        {rule.conditions.length !== 1 ? "s" : ""} ({rule.conditionLogic === "or" ? "ANY" : "ALL"})
                       </Text>
                       <Text size="xs" c="dimmed">
                         →

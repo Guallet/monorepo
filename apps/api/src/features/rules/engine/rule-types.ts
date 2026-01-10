@@ -1,6 +1,17 @@
 import { TransactionFieldType, OperatorType } from './field-types';
 
 /**
+ * Logic type for combining conditions within a rule
+ */
+export const ConditionLogic = {
+  AND: 'and',
+  OR: 'or',
+} as const;
+
+export type ConditionLogicType =
+  (typeof ConditionLogic)[keyof typeof ConditionLogic];
+
+/**
  * Represents a single condition within a rule
  */
 export interface RuleCondition {
@@ -20,6 +31,7 @@ export interface CategorizationRule {
   name: string;
   description: string | null;
   conditions: RuleCondition[];
+  conditionLogic: ConditionLogicType;
   resultCategoryId: string;
   order: number;
   isActive: boolean;

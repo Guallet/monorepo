@@ -16,6 +16,7 @@ export interface RuleDto {
   resultCategoryId: string;
   order: number;
   isActive: boolean;
+  conditionLogic: "and" | "or";
   conditions: RuleConditionDto[];
 }
 
@@ -31,6 +32,7 @@ export interface CreateRuleRequest {
   description?: string;
   resultCategoryId: string;
   conditions: CreateConditionRequest[];
+  conditionLogic?: "and" | "or";
   order?: number;
   isActive?: boolean;
 }
@@ -40,6 +42,7 @@ export interface UpdateRuleRequest {
   description?: string;
   resultCategoryId?: string;
   conditions?: CreateConditionRequest[];
+  conditionLogic?: "and" | "or";
   order?: number;
   isActive?: boolean;
 }

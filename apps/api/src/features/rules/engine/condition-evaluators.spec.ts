@@ -205,6 +205,58 @@ describe('Condition Evaluators', () => {
       });
     });
 
+    describe('matches operator (regex)', () => {
+      it('should return true when regex pattern matches', () => {
+        expect(
+          evaluateStringCondition(
+            description,
+            StringOperator.MATCHES,
+            "Sainsbury's.*Store",
+          ),
+        ).toBe(true);
+      });
+
+      it('should return true for case insensitive regex match', () => {
+        expect(
+          evaluateStringCondition(
+            description,
+            StringOperator.MATCHES,
+            'sainsbury',
+          ),
+        ).toBe(true);
+      });
+
+      it('should return false when regex does not match', () => {
+        expect(
+          evaluateStringCondition(
+            description,
+            StringOperator.MATCHES,
+            '^Tesco',
+          ),
+        ).toBe(false);
+      });
+
+      it('should return false for invalid regex pattern', () => {
+        expect(
+          evaluateStringCondition(
+            description,
+            StringOperator.MATCHES,
+            '[invalid(regex',
+          ),
+        ).toBe(false);
+      });
+
+      it('should match using regex special characters', () => {
+        expect(
+          evaluateStringCondition(
+            'Order #12345',
+            StringOperator.MATCHES,
+            '#\\d+',
+          ),
+        ).toBe(true);
+      });
+    });
+
     it('should return false for null fieldValue', () => {
       expect(
         evaluateStringCondition(null, StringOperator.CONTAINS, 'test'),

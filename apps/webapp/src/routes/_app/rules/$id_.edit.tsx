@@ -39,6 +39,7 @@ function EditRulePage() {
     description: rule.description ?? "",
     resultCategoryId: rule.resultCategoryId,
     isActive: rule.isActive,
+    conditionLogic: rule.conditionLogic ?? "and",
     conditions: rule.conditions.map((c) => ({
       id: c.id,
       field: c.field,
@@ -55,6 +56,7 @@ function EditRulePage() {
         description: data.description || undefined,
         resultCategoryId: data.resultCategoryId,
         isActive: data.isActive,
+        conditionLogic: data.conditionLogic,
         conditions: data.conditions.map((c, index) => ({
           field: c.field,
           operator: c.operator,

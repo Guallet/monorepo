@@ -79,6 +79,17 @@ export class CreateRuleDto {
   conditions: CreateConditionDto[];
 
   @ApiPropertyOptional({
+    description:
+      'Logic for combining conditions: "and" (all must match) or "or" (at least one must match)',
+    example: 'and',
+    default: 'and',
+    enum: ['and', 'or'],
+  })
+  @IsString()
+  @IsOptional()
+  conditionLogic?: 'and' | 'or';
+
+  @ApiPropertyOptional({
     description: 'The order of the rule (lower numbers are evaluated first)',
     example: 0,
   })

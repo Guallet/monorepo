@@ -14,6 +14,7 @@ import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
 import {
   CategorizationRule,
+  ConditionLogicType,
   evaluateRules,
   isValidOperatorForField,
   TransactionFieldType,
@@ -94,6 +95,7 @@ export class RulesService {
       resultCategoryId: dto.resultCategoryId,
       order: nextOrder,
       isActive: dto.isActive ?? true,
+      conditionLogic: dto.conditionLogic ?? 'and',
     });
 
     const savedRule = await this.rulesRepository.save(rule);
@@ -166,6 +168,8 @@ export class RulesService {
       existingRule.resultCategoryId = dto.resultCategoryId;
     if (dto.order !== undefined) existingRule.order = dto.order;
     if (dto.isActive !== undefined) existingRule.isActive = dto.isActive;
+    if (dto.conditionLogic !== undefined)
+      existingRule.conditionLogic = dto.conditionLogic;
 
     // Update conditions if provided
     if (dto.conditions) {
@@ -283,6 +287,7 @@ export class RulesService {
         value: c.value,
         order: c.order,
       })),
+      conditionLogic: (r.conditionLogic ?? 'and') as ConditionLogicType,
       resultCategoryId: r.resultCategoryId,
       order: r.order,
       isActive: r.isActive,
@@ -316,6 +321,7 @@ export class RulesService {
             { value: 'equals', label: 'Equals' },
             { value: 'not_equals', label: 'Does not equal' },
             { value: 'contains', label: 'Contains' },
+            { value: 'matches', label: 'Matches regex' },
           ],
         },
         {

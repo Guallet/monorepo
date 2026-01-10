@@ -51,6 +51,12 @@ export class RuleDto {
   isActive: boolean;
 
   @ApiProperty({
+    description: 'Logic for combining conditions',
+    enum: ['and', 'or'],
+  })
+  conditionLogic: string;
+
+  @ApiProperty({
     description: 'Conditions that must all match',
     type: [RuleConditionDto],
   })
@@ -64,6 +70,7 @@ export class RuleDto {
       resultCategoryId: entity.resultCategoryId,
       order: entity.order,
       isActive: entity.isActive,
+      conditionLogic: entity.conditionLogic ?? 'and',
       conditions: (entity.conditions || [])
         .map((c) => RuleConditionDto.fromEntity(c))
         .sort((a, b) => a.order - b.order),

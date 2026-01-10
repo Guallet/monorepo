@@ -55,6 +55,7 @@ export const StringOperator = {
   EQUALS: 'equals',
   NOT_EQUALS: 'not_equals',
   CONTAINS: 'contains',
+  MATCHES: 'matches',
 } as const;
 
 export type StringOperatorType =

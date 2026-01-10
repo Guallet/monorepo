@@ -17,6 +17,7 @@ import {
 } from './field-types';
 import {
   CategorizationRule,
+  ConditionLogic,
   RuleCondition,
   RuleEvaluationResult,
   TransactionInput,
@@ -86,7 +87,7 @@ export function evaluateCondition(
 
 /**
  * Evaluate a single rule against a transaction
- * All conditions must match for the rule to match
+ * Conditions are evaluated based on the rule's conditionLogic (AND or OR)
  */
 export function evaluateRule(
   transaction: TransactionInput,
@@ -105,7 +106,15 @@ export function evaluateRule(
     (a, b) => a.order - b.order,
   );
 
-  // All conditions must match (AND logic)
+  // Evaluate based on condition logic
+  if (rule.conditionLogic === ConditionLogic.OR) {
+    // OR logic: at least one condition must match
+    return sortedConditions.some((condition) =>
+      evaluateCondition(transaction, condition),
+    );
+  }
+
+  // AND logic (default): all conditions must match
   return sortedConditions.every((condition) =>
     evaluateCondition(transaction, condition),
   );

@@ -10,7 +10,11 @@ import {
   NumberOperator,
   AccountOperator,
 } from './field-types';
-import { CategorizationRule, TransactionInput } from './rule-types';
+import {
+  CategorizationRule,
+  ConditionLogic,
+  TransactionInput,
+} from './rule-types';
 
 describe('Rules Engine', () => {
   const createTransaction = (
@@ -40,6 +44,7 @@ describe('Rules Engine', () => {
         order: 0,
       },
     ],
+    conditionLogic: ConditionLogic.AND,
     resultCategoryId: 'cat-groceries',
     order: 0,
     isActive: true,
@@ -154,6 +159,83 @@ describe('Rules Engine', () => {
       const rule = createRule({ conditions: [] });
 
       expect(evaluateRule(transaction, rule)).toBe(false);
+    });
+
+    describe('OR condition logic', () => {
+      it('should return true when at least one condition matches with OR logic', () => {
+        const transaction = createTransaction();
+        const rule = createRule({
+          conditionLogic: ConditionLogic.OR,
+          conditions: [
+            {
+              id: 'cond-1',
+              field: TransactionField.DESCRIPTION,
+              operator: StringOperator.CONTAINS,
+              value: 'Tesco',
+              order: 0,
+            },
+            {
+              id: 'cond-2',
+              field: TransactionField.DESCRIPTION,
+              operator: StringOperator.CONTAINS,
+              value: 'Sainsbury',
+              order: 1,
+            },
+          ],
+        });
+
+        expect(evaluateRule(transaction, rule)).toBe(true);
+      });
+
+      it('should return false when no conditions match with OR logic', () => {
+        const transaction = createTransaction();
+        const rule = createRule({
+          conditionLogic: ConditionLogic.OR,
+          conditions: [
+            {
+              id: 'cond-1',
+              field: TransactionField.DESCRIPTION,
+              operator: StringOperator.CONTAINS,
+              value: 'Tesco',
+              order: 0,
+            },
+            {
+              id: 'cond-2',
+              field: TransactionField.DESCRIPTION,
+              operator: StringOperator.CONTAINS,
+              value: 'Asda',
+              order: 1,
+            },
+          ],
+        });
+
+        expect(evaluateRule(transaction, rule)).toBe(false);
+      });
+
+      it('should return true when first condition matches with OR logic', () => {
+        const transaction = createTransaction();
+        const rule = createRule({
+          conditionLogic: ConditionLogic.OR,
+          conditions: [
+            {
+              id: 'cond-1',
+              field: TransactionField.DESCRIPTION,
+              operator: StringOperator.CONTAINS,
+              value: 'Sainsbury',
+              order: 0,
+            },
+            {
+              id: 'cond-2',
+              field: TransactionField.DESCRIPTION,
+              operator: StringOperator.CONTAINS,
+              value: 'Tesco',
+              order: 1,
+            },
+          ],
+        });
+
+        expect(evaluateRule(transaction, rule)).toBe(true);
+      });
     });
   });
 
