@@ -57,7 +57,9 @@ export function LoginScreen() {
     if (result.success) {
       router.replace('/(tabs)');
     } else {
-      setPasswordError(result.error?.message ?? 'Login failed. Please try again.');
+      setPasswordError(
+        result.error?.message ?? 'Login failed. Please try again.',
+      );
     }
   };
 
@@ -174,7 +176,9 @@ export function LoginScreen() {
               />
 
               <TouchableOpacity onPress={handleForgotPassword}>
-                <Text style={[styles.forgotPasswordLink, { color: colors.primary }]}>
+                <Text
+                  style={[styles.forgotPasswordLink, { color: colors.primary }]}
+                >
                   Forgot password?
                 </Text>
               </TouchableOpacity>

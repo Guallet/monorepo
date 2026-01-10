@@ -140,19 +140,24 @@
           "label": "Iniciar sesión"
         },
         "sendMagicLink": {
-          "label": "CNF: Send magic link"
+          "label": "Enviar enlace mágico"
         },
         "useMagicLink": {
-          "label": "CNF: Use magic link instead"
+          "label": "Usar enlace mágico en su lugar"
         },
         "usePassword": {
-          "label": "CNF: Use password instead"
+          "label": "Usar contraseña en su lugar"
         },
         "divider": {
           "label": "O continúa con"
         },
         "googleLoginButton": {
           "label": "Continuar con Google"
+        },
+        "magicLink": {
+          "error": {
+            "title": "Error al enviar el enlace mágico"
+          }
         }
       },
       "createAccount": {

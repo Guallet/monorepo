@@ -9,6 +9,7 @@ import {
   PasswordInput,
   Container,
   Anchor,
+  Alert,
 } from '@mantine/core';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -19,6 +20,7 @@ import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { GoogleButton } from '../components/GoogleButton';
 import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 // Define schemas for form validation using Zod
 const passwordFormSchema = z.object({
@@ -40,6 +42,7 @@ interface LoginScreenProps {
   onGoogleLogin: () => void;
   onMagicLink: (email: string) => void;
   onPassword: (email: string, password: string) => void;
+  magicLinkError?: string;
 }
 
 export function LoginScreen({
@@ -47,10 +50,14 @@ export function LoginScreen({
   onGoogleLogin,
   onMagicLink,
   onPassword,
+  magicLinkError,
 }: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
   const [loginType, setLoginType] = useState<'magic-link' | 'password'>(
     'password',
+  );
+  const [localMagicLinkError, setLocalMagicLinkError] = useState<string | null>(
+    null,
   );
 
   const passwordForm = useForm<PasswordFormData>({
@@ -73,12 +80,21 @@ export function LoginScreen({
   };
 
   const handleMagicLinkSubmit = (data: MagicLinkFormData) => {
-    onMagicLink(data.email);
+    setLocalMagicLinkError(null);
+    try {
+      onMagicLink(data.email);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to send magic link';
+      setLocalMagicLinkError(errorMessage);
+    }
   };
 
   const toggleLoginType = () => {
     setLoginType(loginType === 'password' ? 'magic-link' : 'password');
   };
+
+  const displayError = magicLinkError || localMagicLinkError;
 
   return (
     <BaseScreen isLoading={isLoading}>
@@ -99,6 +115,20 @@ export function LoginScreen({
         </Stack>
 
         <Paper withBorder shadow="md" p={30} mt={20} radius="md">
+          {displayError && loginType === 'magic-link' && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title={t(
+                'screens.login.form.magicLink.error.title',
+                'CNF: Error sending magic link',
+              )}
+              color="red"
+              mb="md"
+            >
+              {displayError}
+            </Alert>
+          )}
+
           {loginType === 'password' ? (
             <form onSubmit={passwordForm.onSubmit(handlePasswordSubmit)}>
               <TextInput

@@ -138,13 +138,13 @@
           "label": "Sign in"
         },
         "sendMagicLink": {
-          "label": "CNF: Send magic link"
+          "label": "Send magic link"
         },
         "useMagicLink": {
-          "label": "CNF: Use magic link instead"
+          "label": "Use magic link instead"
         },
         "usePassword": {
-          "label": "CNF: Use password instead"
+          "label": "Use password instead"
         },
         "divider": {
           "label": "Or continue with"

@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconAlertCircle, IconLock } from '@tabler/icons-react';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
-import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
+import { useCanGoBack, useNavigate, useRouter } from '@tanstack/react-router';
 
 const formSchema = z.object({
   email: z.email({ message: 'Invalid email address' }),
@@ -31,7 +31,11 @@ export function ForgotPasswordScreen({
   onSubmit,
   isLoading,
   error,
-}: ForgotPasswordScreenProps) {
+}: Readonly<ForgotPasswordScreenProps>) {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  const navigate = useNavigate();
+
   const form = useForm<FormData>({
     initialValues: {
       email: '',
@@ -45,63 +49,80 @@ export function ForgotPasswordScreen({
 
   return (
     <Center style={{ minHeight: '100vh' }}>
-      <Paper
-        radius="md"
-        p="xl"
-        withBorder
-        style={{
-          margin: '1.5rem',
-          maxWidth: 420,
-          width: '100%',
-        }}
-      >
-        <Stack align="center" gap="md">
-          <GualletLogo size={50} />
+      <Stack align="center">
+        <GualletLogo size={50} />
 
-          <IconLock size={48} color="var(--mantine-color-blue-6)" />
+        <Paper
+          radius="md"
+          p="xl"
+          withBorder
+          style={{
+            margin: '1.5rem',
+            maxWidth: 420,
+            width: '100%',
+          }}
+        >
+          <Stack align="center" gap="md">
+            <IconLock size={48} color="var(--mantine-color-blue-6)" />
 
-          <Title order={2} ta="center">
-            Forgot your password?
-          </Title>
+            <Title order={2} ta="center">
+              Forgot your password?
+            </Title>
 
-          <Text ta="center" c="dimmed">
-            Enter your email address and we&apos;ll send you a link to reset
-            your password.
-          </Text>
+            <Text ta="center" c="dimmed">
+              Enter your email address and we&apos;ll send you a link to reset
+              your password.
+            </Text>
 
-          {error && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title="Error"
-              color="red"
-              w="100%"
+            {error && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                title="Error"
+                color="red"
+                w="100%"
+              >
+                {error}
+              </Alert>
+            )}
+
+            <form
+              onSubmit={form.onSubmit(handleSubmit)}
+              style={{ width: '100%' }}
             >
-              {error}
-            </Alert>
-          )}
+              <Stack gap="md">
+                <TextInput
+                  {...form.getInputProps('email')}
+                  label="Email"
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                />
 
-          <form
-            onSubmit={form.onSubmit(handleSubmit)}
-            style={{ width: '100%' }}
-          >
-            <Stack gap="md">
-              <TextInput
-                {...form.getInputProps('email')}
-                label="Email"
-                type="email"
-                placeholder="Enter your email"
-                required
-              />
+                <Button fullWidth type="submit" loading={isLoading}>
+                  Send reset link
+                </Button>
+              </Stack>
+            </form>
 
-              <Button fullWidth type="submit" loading={isLoading}>
-                Send reset link
-              </Button>
-            </Stack>
-          </form>
-
-          <NavLinkButton to="/login">Back to login</NavLinkButton>
-        </Stack>
-      </Paper>
+            <Button
+              variant="outline"
+              fullWidth
+              onClick={() => {
+                if (canGoBack) {
+                  router.history.back();
+                } else {
+                  navigate({
+                    to: '/login',
+                    search: { redirect: '/dashboard' },
+                  });
+                }
+              }}
+            >
+              Back to login
+            </Button>
+          </Stack>
+        </Paper>
+      </Stack>
     </Center>
   );
 }
