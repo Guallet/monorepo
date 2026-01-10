@@ -1,1 +1,97 @@
-export class CreateRuleDto {}
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+
+export class CreateConditionDto {
+  @ApiProperty({
+    description: 'The transaction field to evaluate',
+    example: 'description',
+  })
+  @IsString()
+  @IsNotEmpty()
+  field: string;
+
+  @ApiProperty({
+    description: 'The operator to use for evaluation',
+    example: 'contains',
+  })
+  @IsString()
+  @IsNotEmpty()
+  operator: string;
+
+  @ApiProperty({
+    description: 'The value to compare against',
+    example: 'Sainsbury',
+  })
+  @IsString()
+  @IsNotEmpty()
+  value: string;
+
+  @ApiPropertyOptional({
+    description: 'The order of the condition within the rule',
+    example: 0,
+  })
+  @IsNumber()
+  @IsOptional()
+  order?: number;
+}
+
+export class CreateRuleDto {
+  @ApiProperty({
+    description: 'The name of the rule',
+    example: 'Grocery stores',
+  })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiPropertyOptional({
+    description: 'A description of what the rule does',
+    example: 'Categorize grocery store transactions',
+  })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty({
+    description: 'The category ID to assign when the rule matches',
+    example: 'uuid-category-id',
+  })
+  @IsString()
+  @IsNotEmpty()
+  resultCategoryId: string;
+
+  @ApiProperty({
+    description: 'The conditions that must all match for the rule to apply',
+    type: [CreateConditionDto],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateConditionDto)
+  conditions: CreateConditionDto[];
+
+  @ApiPropertyOptional({
+    description: 'The order of the rule (lower numbers are evaluated first)',
+    example: 0,
+  })
+  @IsNumber()
+  @IsOptional()
+  order?: number;
+
+  @ApiPropertyOptional({
+    description: 'Whether the rule is active',
+    example: true,
+    default: true,
+  })
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
+}

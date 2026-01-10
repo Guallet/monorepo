@@ -17,7 +17,6 @@ import { useMediaQuery } from "@mantine/hooks";
 import { loadAccounts } from "@/features/accounts/api/accounts.api";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { Category } from "@/features/categories/models/Category";
-import { RulesEngine } from "@/features/categories/rules/RulesEngine";
 import { SelectCategoryModal } from "@/features/transactions/TransactionsPage/SelectCategoryModal";
 import {
   getTransactionsInbox,
@@ -58,8 +57,6 @@ function TransactionsInboxPage() {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
 
-  const rulesEngine = new RulesEngine(categories);
-
   return (
     <Stack>
       <Group>
@@ -68,12 +65,6 @@ function TransactionsInboxPage() {
       </Group>
       <Stack>
         {transactions
-          .map((transaction) => {
-            return {
-              ...transaction,
-              category: rulesEngine.getCategoryForTransaction(transaction),
-            };
-          })
           .sort((a, b) => {
             if (a.category && b.category) {
               return a.category.name.localeCompare(b.category.name);
