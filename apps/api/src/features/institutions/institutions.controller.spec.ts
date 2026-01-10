@@ -183,7 +183,11 @@ describe('InstitutionsController', () => {
 
       mockInstitutionsService.update.mockResolvedValue(mockInstitution);
 
-      const result = await controller.update(mockUser, institutionId, updateDto);
+      const result = await controller.update(
+        mockUser,
+        institutionId,
+        updateDto,
+      );
 
       expect(result).toBeDefined();
       expect(mockInstitutionsService.update).toHaveBeenCalledWith({

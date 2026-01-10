@@ -50,12 +50,8 @@ describe('WaitingListController', () => {
       }
 
       expect(mockWaitingListService.addEmail).toHaveBeenCalledTimes(2);
-      expect(mockWaitingListService.addEmail).toHaveBeenCalledWith(
-        emails[0],
-      );
-      expect(mockWaitingListService.addEmail).toHaveBeenCalledWith(
-        emails[1],
-      );
+      expect(mockWaitingListService.addEmail).toHaveBeenCalledWith(emails[0]);
+      expect(mockWaitingListService.addEmail).toHaveBeenCalledWith(emails[1]);
     });
   });
 });

@@ -177,10 +177,7 @@ describe('BudgetsController', () => {
         mockTransactions,
       );
 
-      const result = await controller.getBudgetTransactions(
-        mockUser,
-        budgetId,
-      );
+      const result = await controller.getBudgetTransactions(mockUser, budgetId);
 
       expect(result).toBeDefined();
       expect(result.length).toBe(2);

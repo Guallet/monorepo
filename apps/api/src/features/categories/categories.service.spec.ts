@@ -383,7 +383,10 @@ describe('CategoriesService', () => {
       mockCategoryRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        service.removeUserCategory({ user_id: userId, category_id: categoryId }),
+        service.removeUserCategory({
+          user_id: userId,
+          category_id: categoryId,
+        }),
       ).rejects.toThrow(NotFoundException);
     });
   });

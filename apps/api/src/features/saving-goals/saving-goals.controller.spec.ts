@@ -99,11 +99,11 @@ describe('SavingGoalsController', () => {
 
       expect(result).toBeDefined();
       expect(result.length).toBe(2);
-      expect(mockSavingGoalsService.findAllUserSavingGoals).toHaveBeenCalledWith(
-        {
-          userId: mockUser.id,
-        },
-      );
+      expect(
+        mockSavingGoalsService.findAllUserSavingGoals,
+      ).toHaveBeenCalledWith({
+        userId: mockUser.id,
+      });
     });
 
     it('should return empty array when no goals exist', async () => {

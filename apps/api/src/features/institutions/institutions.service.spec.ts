@@ -2,10 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InstitutionsService } from './institutions.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Institution } from './entities/institution.entity';
-import {
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 
@@ -94,7 +91,10 @@ describe('InstitutionsService', () => {
 
       mockInstitutionRepository.findOne.mockResolvedValue(mockInstitution);
 
-      const result = await service.findOne({ id: institutionId, user_id: userId });
+      const result = await service.findOne({
+        id: institutionId,
+        user_id: userId,
+      });
 
       expect(result).toEqual(mockInstitution);
       expect(mockInstitutionRepository.findOne).toHaveBeenCalledWith({
@@ -115,7 +115,10 @@ describe('InstitutionsService', () => {
 
       mockInstitutionRepository.findOne.mockResolvedValue(mockInstitution);
 
-      const result = await service.findOne({ id: institutionId, user_id: userId });
+      const result = await service.findOne({
+        id: institutionId,
+        user_id: userId,
+      });
 
       expect(result).toEqual(mockInstitution);
     });
@@ -235,7 +238,9 @@ describe('InstitutionsService', () => {
         countries: [dto.country],
         user_id: userId,
       });
-      expect(mockInstitutionRepository.save).toHaveBeenCalledWith(mockInstitution);
+      expect(mockInstitutionRepository.save).toHaveBeenCalledWith(
+        mockInstitution,
+      );
     });
 
     it('should create institution without country', async () => {
@@ -294,7 +299,11 @@ describe('InstitutionsService', () => {
       mockInstitutionRepository.findOne.mockResolvedValue(existingInstitution);
       mockInstitutionRepository.save.mockResolvedValue(updatedInstitution);
 
-      const result = await service.update({ id: institutionId, dto, user_id: userId });
+      const result = await service.update({
+        id: institutionId,
+        dto,
+        user_id: userId,
+      });
 
       expect(result).toEqual(updatedInstitution);
       expect(mockInstitutionRepository.save).toHaveBeenCalled();
@@ -321,7 +330,11 @@ describe('InstitutionsService', () => {
         countries: ['GB', 'US'],
       });
 
-      const result = await service.update({ id: institutionId, dto, user_id: userId });
+      const result = await service.update({
+        id: institutionId,
+        dto,
+        user_id: userId,
+      });
 
       expect(result.countries).toContain('US');
       expect(result.countries).toContain('GB');
@@ -378,13 +391,21 @@ describe('InstitutionsService', () => {
       };
 
       mockInstitutionRepository.findOne.mockResolvedValue(mockInstitution);
-      mockInstitutionRepository.remove.mockResolvedValue({ ...mockInstitution, id: undefined });
+      mockInstitutionRepository.remove.mockResolvedValue({
+        ...mockInstitution,
+        id: undefined,
+      });
 
-      const result = await service.remove({ id: institutionId, user_id: userId });
+      const result = await service.remove({
+        id: institutionId,
+        user_id: userId,
+      });
 
       expect(result).toBeDefined();
       expect(result.id).toBe(institutionId);
-      expect(mockInstitutionRepository.remove).toHaveBeenCalledWith(mockInstitution);
+      expect(mockInstitutionRepository.remove).toHaveBeenCalledWith(
+        mockInstitution,
+      );
     });
 
     it('should throw ForbiddenException when deleting system institution', async () => {

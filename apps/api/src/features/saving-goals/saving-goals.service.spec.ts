@@ -165,9 +165,7 @@ describe('SavingGoalsService', () => {
 
       mockSavingGoalRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findById(goalId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.findById(goalId)).rejects.toThrow(NotFoundException);
     });
   });
 

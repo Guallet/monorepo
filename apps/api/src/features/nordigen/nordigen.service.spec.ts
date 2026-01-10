@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { NordigenService } from './nordigen.service';
 import { HttpService } from '@nestjs/axios';
@@ -261,9 +262,13 @@ describe('NordigenService', () => {
       const mockSavedToken = {
         id: 1,
         access: mockTokenDto.access,
-        access_expires_on: new Date(Date.now() + mockTokenDto.access_expires * 1000),
+        access_expires_on: new Date(
+          Date.now() + mockTokenDto.access_expires * 1000,
+        ),
         refresh: mockTokenDto.refresh,
-        refresh_expires_on: new Date(Date.now() + mockTokenDto.refresh_expires * 1000),
+        refresh_expires_on: new Date(
+          Date.now() + mockTokenDto.refresh_expires * 1000,
+        ),
       };
 
       mockNordigenRepository.getToken.mockResolvedValue(null);

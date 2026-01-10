@@ -113,9 +113,9 @@ describe('CategoriesController', () => {
       const categoryId = 'non-existent';
       mockCategoriesService.findUserCategory.mockResolvedValue(null);
 
-      await expect(
-        controller.findOne(mockUser, categoryId),
-      ).rejects.toThrow(NotFoundException);
+      await expect(controller.findOne(mockUser, categoryId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

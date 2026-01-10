@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
@@ -73,7 +75,9 @@ describe('TransactionsController', () => {
       expect(result).toBeDefined();
       expect(result.transactions).toBeDefined();
       expect(mockTransactionsService.getUserTransactions).toHaveBeenCalled();
-      expect(mockTransactionsService.getUserTransactionsCount).toHaveBeenCalled();
+      expect(
+        mockTransactionsService.getUserTransactionsCount,
+      ).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException for invalid query', async () => {
@@ -129,11 +133,11 @@ describe('TransactionsController', () => {
 
       expect(result).toBeDefined();
       expect(result.length).toBe(1);
-      expect(mockTransactionsService.getUserTransactionsInbox).toHaveBeenCalledWith(
-        {
-          userId: mockUser.id,
-        },
-      );
+      expect(
+        mockTransactionsService.getUserTransactionsInbox,
+      ).toHaveBeenCalledWith({
+        userId: mockUser.id,
+      });
     });
   });
 
@@ -195,9 +199,9 @@ describe('TransactionsController', () => {
 
       mockTransactionsService.findOne.mockResolvedValue(mockTransaction);
 
-      await expect(
-        controller.findOne(mockUser, transactionId),
-      ).rejects.toThrow(NotFoundException);
+      await expect(controller.findOne(mockUser, transactionId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -221,13 +225,13 @@ describe('TransactionsController', () => {
       const result = await controller.async(mockUser, transactionId, updateDto);
 
       expect(result).toBeDefined();
-      expect(mockTransactionsService.updateUserTransaction).toHaveBeenCalledWith(
-        {
-          dto: updateDto,
-          user_id: mockUser.id,
-          transaction_id: transactionId,
-        },
-      );
+      expect(
+        mockTransactionsService.updateUserTransaction,
+      ).toHaveBeenCalledWith({
+        dto: updateDto,
+        user_id: mockUser.id,
+        transaction_id: transactionId,
+      });
     });
   });
 
@@ -246,12 +250,12 @@ describe('TransactionsController', () => {
       const result = await controller.remove(mockUser, transactionId);
 
       expect(result).toBeDefined();
-      expect(mockTransactionsService.deleteUserTransaction).toHaveBeenCalledWith(
-        {
-          user_id: mockUser.id,
-          transaction_id: transactionId,
-        },
-      );
+      expect(
+        mockTransactionsService.deleteUserTransaction,
+      ).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        transaction_id: transactionId,
+      });
     });
   });
 });

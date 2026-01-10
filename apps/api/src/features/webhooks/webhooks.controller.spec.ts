@@ -143,8 +143,8 @@ describe('WebhooksController', () => {
             name: 'Test User',
             email: 'test@example.com',
             picture: 'http://example.com/picture.jpg',
-            full_name: '' as any, // Empty, should fall back to name
-            avatar_url: '' as any,  // Empty, should fall back to picture
+            full_name: '', // Empty, should fall back to name
+            avatar_url: '', // Empty, should fall back to picture
             provider_id: '',
             email_verified: true,
             phone_verified: false,
@@ -216,7 +216,9 @@ describe('WebhooksController', () => {
         old_record: null,
       };
 
-      mockUsersService.upsertUser.mockRejectedValue(new Error('Database error'));
+      mockUsersService.upsertUser.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(controller.create(payload)).resolves.not.toThrow();
     });
@@ -254,7 +256,9 @@ describe('WebhooksController', () => {
         schema: 'auth',
       };
 
-      mockUsersService.removeUser.mockRejectedValue(new Error('Database error'));
+      mockUsersService.removeUser.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(controller.create(payload)).resolves.not.toThrow();
     });
@@ -315,7 +319,9 @@ describe('WebhooksController', () => {
         old_record: null,
       };
 
-      mockUsersService.upsertUser.mockRejectedValue(new Error('Database error'));
+      mockUsersService.upsertUser.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(controller.create(payload)).resolves.not.toThrow();
     });
@@ -323,7 +329,7 @@ describe('WebhooksController', () => {
 
   describe('create - unknown event type', () => {
     it('should log warning for unhandled event type', async () => {
-      const payload: any = {
+      const payload = {
         type: 'UNKNOWN',
         table: 'users',
         record: null,
@@ -331,7 +337,7 @@ describe('WebhooksController', () => {
         old_record: null,
       };
 
-      await controller.create(payload);
+      await controller.create(payload as SupabaseWebhookUserPayload);
 
       // Should complete without errors
       expect(mockUsersService.upsertUser).not.toHaveBeenCalled();

@@ -8,6 +8,7 @@ import { Institution } from 'src/features/institutions/entities/institution.enti
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { NotFoundException } from '@nestjs/common';
+import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto';
 
 describe('OpenbankingService', () => {
   let service: OpenbankingService;
@@ -169,11 +170,11 @@ describe('OpenbankingService', () => {
         ssn: null,
         account_selection: false,
         redirect_immediate: false,
-      };
+      } as unknown as NordigenRequisitionDto;
 
       mockObConnectionRepository.save.mockResolvedValue({});
 
-      await service.saveRequisition(userId, requisitionDto as any);
+      await service.saveRequisition(userId, requisitionDto);
 
       expect(mockObConnectionRepository.save).toHaveBeenCalled();
     });

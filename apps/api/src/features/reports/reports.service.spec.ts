@@ -172,7 +172,7 @@ describe('ReportsService', () => {
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'trans-1',
-          amount: 50.0,
+          amount: 50,
           categoryId: 'cat-1',
           date: new Date(year, 0, 15), // January
           category: mockCategories[0] as Category,
@@ -180,7 +180,7 @@ describe('ReportsService', () => {
         },
         {
           id: 'trans-2',
-          amount: 30.0,
+          amount: 30,
           categoryId: 'cat-1',
           date: new Date(year, 5, 20), // June
           category: mockCategories[0] as Category,
@@ -195,7 +195,7 @@ describe('ReportsService', () => {
 
       expect(result).toBeDefined();
       // Find the Food category in the results (it should be first since only parent categories are returned first)
-      const foodCategory = result.data.find((d) => d.categoryName === 'Food');
+      // const foodCategory = result.data.find((d) => d.categoryName === 'Food');
       // Food category might not appear if there are no transactions directly assigned to it
       // Just verify the structure is correct
       expect(result.data[0].values).toHaveLength(12); // 12 months
