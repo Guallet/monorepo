@@ -31,7 +31,10 @@ export function useSubscriptionMutations() {
       id: string;
       request: UpdateSubscriptionRequest;
     }) => {
-      return await gualletClient.subscriptions.update(id, request);
+      return await gualletClient.subscriptions.update({
+        subscriptionId: id,
+        dto: request,
+      });
     },
     onSuccess: async (data, variables) => {
       queryClient.setQueryData([SUBSCRIPTIONS_QUERY_KEY, data.id], data);

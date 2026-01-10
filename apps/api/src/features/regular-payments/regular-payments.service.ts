@@ -105,6 +105,8 @@ export class RegularPaymentsService {
     userId: string;
     dto: UpdateRegularPaymentDto;
   }): Promise<RegularPayment> {
+    this.logger.debug(`Updating regular payment ${id} for user ${userId}`, dto);
+
     const entity = await this.repository.findOne({
       where: { user_id: userId, id: id.toString() },
     });
@@ -118,6 +120,9 @@ export class RegularPaymentsService {
 
     if (dto.categoryId && dto.categoryId !== entity.categoryId) {
       // Verify the category is valid
+      this.logger.debug(
+        `Verifying category ${dto.categoryId} for user ${userId} to update regular payment ${id}`,
+      );
       const category = await this.categoryRepository.findOne({
         where: {
           user_id: userId,
@@ -133,8 +138,9 @@ export class RegularPaymentsService {
     }
 
     const updatedEntity = await this.repository.save({
+      ...entity,
       name: dto.name ?? entity.name,
-      amount: dto.amount ?? entity.amount,
+      amount: Number(dto.amount ?? entity.amount),
       currency: dto.currency ?? entity.currency,
       cadence: dto.cadence ?? entity.cadence,
       type: dto.type ?? entity.type,

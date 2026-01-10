@@ -1,9 +1,9 @@
-import { Currency } from "@guallet/money";
-import { Input, InputWrapperProps, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconSelector } from "@tabler/icons-react";
-import { CurrencyPickerModal } from "./CurrencyPickerModal";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { Currency } from '@guallet/money';
+import { Input, InputWrapperProps, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconSelector } from '@tabler/icons-react';
+import { CurrencyPickerModal } from './CurrencyPickerModal';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface CurrencyPickerProps extends InputWrapperProps {
   value: string | null;
@@ -32,7 +32,7 @@ export function CurrencyPicker({
         centered
         size="lg"
         {...(isMobile && {
-          transitionProps: { transition: "fade", duration: 200 },
+          transitionProps: { transition: 'fade', duration: 200 },
         })}
       >
         <CurrencyPickerModal
@@ -52,14 +52,15 @@ export function CurrencyPicker({
         <Input
           name={name}
           component="button"
+          type="button"
           pointer
           onClick={open}
           rightSection={<IconSelector />}
         >
-          {currency !== null ? (
-            `${currency.symbol} - ${currency.name} - ${currency.code}`
-          ) : (
+          {currency === null ? (
             <Input.Placeholder>Select currency</Input.Placeholder>
+          ) : (
+            `${currency.symbol} - ${currency.name} - ${currency.code}`
           )}
         </Input>
       </Input.Wrapper>

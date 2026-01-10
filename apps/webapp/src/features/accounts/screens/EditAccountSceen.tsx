@@ -18,7 +18,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
-import { zodResolver } from 'mantine-form-zod-resolver';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
 import { z } from 'zod';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
@@ -76,7 +76,7 @@ export function EditAccountScreen({
       balance: account?.balance.amount ?? 0,
       balanceTransactionCheck: true,
     },
-    validate: zodResolver(editAccountFormDataSchema),
+    validate: zod4Resolver(editAccountFormDataSchema),
   });
   const { values } = form;
   const currency = Currency.fromISOCode(values.currency);

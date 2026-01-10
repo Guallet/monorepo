@@ -14,7 +14,7 @@ import {
   Checkbox,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { zodResolver } from 'mantine-form-zod-resolver';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
@@ -40,7 +40,7 @@ export function AddAccountScreen() {
   const defaultCurrency = useDefaultCurrency();
 
   const form = useForm<AddAccountFormData>({
-    validate: zodResolver(accountFormDataSchema),
+    validate: zod4Resolver(accountFormDataSchema),
     initialValues: {
       name: '',
       account_type: AccountTypeDto.CURRENT_ACCOUNT,

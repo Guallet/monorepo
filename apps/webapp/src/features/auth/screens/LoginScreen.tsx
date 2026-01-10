@@ -8,22 +8,23 @@ import {
   Text,
   PasswordInput,
   Container,
-} from "@mantine/core";
-import { useState } from "react";
-import { z } from "zod";
-import { useTranslation } from "react-i18next";
-import { useForm, zodResolver } from "@mantine/form";
-import { GualletLogo } from "@/components/GualletLogo/GualletLogo";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { GoogleButton } from "../components/GoogleButton";
-import { NavLinkButton } from "@/components/Buttons/NavLinkButton";
+} from '@mantine/core';
+import { useState } from 'react';
+import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
+import { useForm } from '@mantine/form';
+import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { GoogleButton } from '../components/GoogleButton';
+import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 
 // Define a schema for form validation using Zod
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.email({ message: 'Invalid email address' }),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
+    .min(6, { message: 'Password must be at least 6 characters' }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -42,16 +43,16 @@ export function LoginScreen({
   onPassword,
 }: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
-  const [loginType, setLoginType] = useState<"magic-link" | "password">(
-    "magic-link"
+  const [loginType, setLoginType] = useState<'magic-link' | 'password'>(
+    'magic-link',
   );
 
   const form = useForm<FormData>({
     initialValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-    validate: zodResolver(formSchema),
+    validate: zod4Resolver(formSchema),
   });
 
   const onSubmitMagicLink = (data: FormData) => {
@@ -67,38 +68,38 @@ export function LoginScreen({
       <Container
         size={420}
         style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
         }}
       >
         <Stack justify="center" align="center">
           <GualletLogo size={50} />
           <Text ta="center" size="lg" w={500}>
-            {t("screens.login.title.label", "CNF: Sign in to your account")}
+            {t('screens.login.title.label', 'CNF: Sign in to your account')}
           </Text>
         </Stack>
 
         <Paper withBorder shadow="md" p={30} mt={20} radius="md">
           <form onSubmit={form.onSubmit(() => {})}>
             <TextInput
-              {...form.getInputProps("email")}
-              label={t("screens.login.form.email.label", "CNF: Email")}
+              {...form.getInputProps('email')}
+              label={t('screens.login.form.email.label', 'CNF: Email')}
               type="email"
               placeholder={t(
-                "screens.login.form.email.placeholder",
-                "CNF: Enter your email"
+                'screens.login.form.email.placeholder',
+                'CNF: Enter your email',
               )}
               required
             />
 
             <PasswordInput
-              {...form.getInputProps("password")}
-              label={t("screens.login.form.password.label", "CNF: Password")}
+              {...form.getInputProps('password')}
+              label={t('screens.login.form.password.label', 'CNF: Password')}
               placeholder={t(
-                "screens.login.form.password.placeholder",
-                "CNF: Enter your password"
+                'screens.login.form.password.placeholder',
+                'CNF: Enter your password',
               )}
               required
               mt="md"
@@ -107,21 +108,21 @@ export function LoginScreen({
             <Group justify="flex-end" mt="md">
               <NavLinkButton to="/login/forgot-password" size="sm">
                 {t(
-                  "screens.login.form.forgotPassword.label",
-                  "CNF: Forgot password?"
+                  'screens.login.form.forgotPassword.label',
+                  'CNF: Forgot password?',
                 )}
               </NavLinkButton>
             </Group>
 
             <Button fullWidth mt="md" type="submit" color="blue">
-              {t("screens.login.form.submitButton.label", "CNF: Sign in")}
+              {t('screens.login.form.submitButton.label', 'CNF: Sign in')}
             </Button>
           </form>
 
           <Divider
             label={t(
-              "screens.login.form.divider.label",
-              "CNF: Or continue with"
+              'screens.login.form.divider.label',
+              'CNF: Or continue with',
             )}
             labelPosition="center"
             my="lg"
@@ -130,8 +131,8 @@ export function LoginScreen({
           <Group grow>
             <GoogleButton onClick={onGoogleLogin}>
               {t(
-                "screens.login.form.googleLoginButton.label",
-                "CNF: Continue with Google"
+                'screens.login.form.googleLoginButton.label',
+                'CNF: Continue with Google',
               )}
             </GoogleButton>
           </Group>
@@ -139,11 +140,11 @@ export function LoginScreen({
 
         <Text ta="center" size="sm" mt="md">
           {t(
-            "screens.login.createAccount.label",
-            "CNF: Don't have an account?"
-          )}{" "}
+            'screens.login.createAccount.label',
+            "CNF: Don't have an account?",
+          )}{' '}
           <NavLinkButton to="/register">
-            {t("screens.login.createAccount.cta", "CNF: Sign up!")}
+            {t('screens.login.createAccount.cta', 'CNF: Sign up!')}
           </NavLinkButton>
         </Text>
       </Container>
