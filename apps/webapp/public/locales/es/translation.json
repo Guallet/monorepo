@@ -60,36 +60,36 @@
     },
     "categoryPicker": {
       "input": {
-        "placeholder": "Select category"
+        "placeholder": "Selecciona una categoría"
       },
       "modal": {
-        "title": "Select Category",
+        "title": "Seleccionar categoría",
         "searchBox": {
-          "placeholder": "Search categories",
-          "emptyResults": "No categories found"
+          "placeholder": "Buscar categorías",
+          "emptyResults": "No se encontraron categorías"
         },
         "expandAllButton": {
-          "label": "Expand all"
+          "label": "Expandir todo"
         },
         "collapseAllButton": {
-          "label": "Collapse all"
+          "label": "Colapsar todo"
         }
       }
     },
     "connectionCard": {
       "status": {
-        "unknown": "desconocido"
+        "unknown": "unknown"
       },
-      "created": "Created:",
-      "updated": "Updated:",
-      "accountsLinked_one": "{{count}} cuenta vinculada",
-      "accountsLinked_many": "",
-      "accountsLinked_other": "{{count}} cuentas vinculadas",
+      "created": "Creado:",
+      "updated": "Actualizado:",
+      "accountsLinked_one": "",
+      "accountsLinked_many": "{{count}} cuentas vinculadas",
+      "accountsLinked_other": "",
       "noAccountsLinked": "Sin cuentas vinculadas"
     },
     "transactionsFilter": {
       "categories": {
-        "label": "Categories"
+        "label": "Categorías"
       }
     }
   },
@@ -247,6 +247,41 @@
         "addButton": "Agregar nueva conexión"
       }
     },
+    "subscriptions": {
+      "list": {
+        "types": {
+          "subscription": "Suscripción",
+          "regularPayment": "Pago recurrente",
+          "regularIncome": "Ingresos recurrentes",
+          "unknown": "Desconocido"
+        },
+        "cadence": {
+          "weekly": "Semanal",
+          "biweekly": "Quincenal",
+          "monthly": "Mensual",
+          "quarterly": "Trimestral",
+          "yearly": "Anual",
+          "unknown": "Desconocido"
+        },
+        "title": "Suscripciones y pagos recurrentes",
+        "estimatedMonthly": "Estimación mensual:",
+        "addButton": {
+          "label": "Agregar nuevo"
+        },
+        "emptyState": {
+          "title": "Aún no hay suscripciones",
+          "description": "Comienza a registrar tus pagos y suscripciones recurrentes",
+          "button": {
+            "label": "Agrega tu primera suscripción"
+          }
+        },
+        "sections": {
+          "subscriptions": "Suscripciones",
+          "regularPayments": "Pagos recurrentes",
+          "regularIncome": "Ingresos recurrentes"
+        }
+      }
+    },
     "transactions": {
       "list": {
         "header": {
@@ -280,8 +315,8 @@
             "placeholder": "Selecciona la fecha de la transacción"
           },
           "category": {
-            "label": "Category",
-            "placeholder": "Select a category"
+            "label": "Categoría",
+            "placeholder": "Selecciona una categoría"
           },
           "submitButton": {
             "label": "Agregar transacción"
