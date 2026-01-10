@@ -19,7 +19,6 @@ import {
 import { useState } from "react";
 import {
   FieldDefinition,
-  CreateConditionRequest,
 } from "@/features/rules/api/rules.api";
 import { Category } from "@/features/categories/models/Category";
 

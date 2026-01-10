@@ -93,7 +93,10 @@ export class RulesController {
     @RequestUser() user: UserPrincipal,
     @Body() reorderDto: ReorderRulesDto,
   ): Promise<RuleDto[]> {
-    const rules = await this.rulesService.reorderRules(user.id, reorderDto.ruleIds);
+    const rules = await this.rulesService.reorderRules(
+      user.id,
+      reorderDto.ruleIds,
+    );
     return rules.map((rule) => RuleDto.fromEntity(rule));
   }
 

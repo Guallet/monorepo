@@ -22,78 +22,144 @@ describe('Field Types', () => {
 
   describe('FieldToDataType', () => {
     it('should map account field to account type', () => {
-      expect(FieldToDataType[TransactionField.ACCOUNT]).toBe(FieldDataType.ACCOUNT);
+      expect(FieldToDataType[TransactionField.ACCOUNT]).toBe(
+        FieldDataType.ACCOUNT,
+      );
     });
 
     it('should map description field to string type', () => {
-      expect(FieldToDataType[TransactionField.DESCRIPTION]).toBe(FieldDataType.STRING);
+      expect(FieldToDataType[TransactionField.DESCRIPTION]).toBe(
+        FieldDataType.STRING,
+      );
     });
 
     it('should map amount field to number type', () => {
-      expect(FieldToDataType[TransactionField.AMOUNT]).toBe(FieldDataType.NUMBER);
+      expect(FieldToDataType[TransactionField.AMOUNT]).toBe(
+        FieldDataType.NUMBER,
+      );
     });
 
     it('should map date field to datetime type', () => {
-      expect(FieldToDataType[TransactionField.DATE]).toBe(FieldDataType.DATETIME);
+      expect(FieldToDataType[TransactionField.DATE]).toBe(
+        FieldDataType.DATETIME,
+      );
     });
   });
 
   describe('isValidOperatorForField', () => {
     describe('account field', () => {
       it('should accept valid account operators', () => {
-        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'is')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'is_not')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'is_in_list')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'is_not_in_list')).toBe(true);
+        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'is')).toBe(
+          true,
+        );
+        expect(
+          isValidOperatorForField(TransactionField.ACCOUNT, 'is_not'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.ACCOUNT, 'is_in_list'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.ACCOUNT, 'is_not_in_list'),
+        ).toBe(true);
       });
 
       it('should reject invalid operators for account field', () => {
-        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'contains')).toBe(false);
-        expect(isValidOperatorForField(TransactionField.ACCOUNT, 'greater_than')).toBe(false);
+        expect(
+          isValidOperatorForField(TransactionField.ACCOUNT, 'contains'),
+        ).toBe(false);
+        expect(
+          isValidOperatorForField(TransactionField.ACCOUNT, 'greater_than'),
+        ).toBe(false);
       });
     });
 
     describe('description field', () => {
       it('should accept valid string operators', () => {
-        expect(isValidOperatorForField(TransactionField.DESCRIPTION, 'equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.DESCRIPTION, 'not_equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.DESCRIPTION, 'contains')).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.DESCRIPTION, 'equals'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.DESCRIPTION, 'not_equals'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.DESCRIPTION, 'contains'),
+        ).toBe(true);
       });
 
       it('should reject invalid operators for description field', () => {
-        expect(isValidOperatorForField(TransactionField.DESCRIPTION, 'is')).toBe(false);
-        expect(isValidOperatorForField(TransactionField.DESCRIPTION, 'greater_than')).toBe(false);
+        expect(
+          isValidOperatorForField(TransactionField.DESCRIPTION, 'is'),
+        ).toBe(false);
+        expect(
+          isValidOperatorForField(TransactionField.DESCRIPTION, 'greater_than'),
+        ).toBe(false);
       });
     });
 
     describe('amount field', () => {
       it('should accept valid number operators', () => {
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'not_equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'greater_than')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'less_than')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'greater_than_or_equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'less_than_or_equals')).toBe(true);
+        expect(isValidOperatorForField(TransactionField.AMOUNT, 'equals')).toBe(
+          true,
+        );
+        expect(
+          isValidOperatorForField(TransactionField.AMOUNT, 'not_equals'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.AMOUNT, 'greater_than'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(TransactionField.AMOUNT, 'less_than'),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(
+            TransactionField.AMOUNT,
+            'greater_than_or_equals',
+          ),
+        ).toBe(true);
+        expect(
+          isValidOperatorForField(
+            TransactionField.AMOUNT,
+            'less_than_or_equals',
+          ),
+        ).toBe(true);
       });
 
       it('should reject invalid operators for amount field', () => {
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'contains')).toBe(false);
-        expect(isValidOperatorForField(TransactionField.AMOUNT, 'is')).toBe(false);
+        expect(
+          isValidOperatorForField(TransactionField.AMOUNT, 'contains'),
+        ).toBe(false);
+        expect(isValidOperatorForField(TransactionField.AMOUNT, 'is')).toBe(
+          false,
+        );
       });
     });
 
     describe('date field', () => {
       it('should accept valid datetime operators', () => {
-        expect(isValidOperatorForField(TransactionField.DATE, 'equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.DATE, 'not_equals')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.DATE, 'before')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.DATE, 'after')).toBe(true);
-        expect(isValidOperatorForField(TransactionField.DATE, 'between')).toBe(true);
+        expect(isValidOperatorForField(TransactionField.DATE, 'equals')).toBe(
+          true,
+        );
+        expect(
+          isValidOperatorForField(TransactionField.DATE, 'not_equals'),
+        ).toBe(true);
+        expect(isValidOperatorForField(TransactionField.DATE, 'before')).toBe(
+          true,
+        );
+        expect(isValidOperatorForField(TransactionField.DATE, 'after')).toBe(
+          true,
+        );
+        expect(isValidOperatorForField(TransactionField.DATE, 'between')).toBe(
+          true,
+        );
       });
 
       it('should reject invalid operators for date field', () => {
-        expect(isValidOperatorForField(TransactionField.DATE, 'contains')).toBe(false);
-        expect(isValidOperatorForField(TransactionField.DATE, 'greater_than')).toBe(false);
+        expect(isValidOperatorForField(TransactionField.DATE, 'contains')).toBe(
+          false,
+        );
+        expect(
+          isValidOperatorForField(TransactionField.DATE, 'greater_than'),
+        ).toBe(false);
       });
     });
 

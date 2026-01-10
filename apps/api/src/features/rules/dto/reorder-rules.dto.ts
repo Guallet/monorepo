@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber } from 'class-validator';
+import { IsArray } from 'class-validator';
 
 export class ReorderRulesDto {
   @ApiProperty({

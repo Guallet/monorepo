@@ -13,7 +13,9 @@ import {
 import { CategorizationRule, TransactionInput } from './rule-types';
 
 describe('Rules Engine', () => {
-  const createTransaction = (overrides: Partial<TransactionInput> = {}): TransactionInput => ({
+  const createTransaction = (
+    overrides: Partial<TransactionInput> = {},
+  ): TransactionInput => ({
     id: 'tx-1',
     accountId: 'account-1',
     description: "Sainsbury's London",
@@ -22,7 +24,9 @@ describe('Rules Engine', () => {
     ...overrides,
   });
 
-  const createRule = (overrides: Partial<CategorizationRule> = {}): CategorizationRule => ({
+  const createRule = (
+    overrides: Partial<CategorizationRule> = {},
+  ): CategorizationRule => ({
     id: 'rule-1',
     userId: 'user-1',
     name: 'Grocery Rule',
@@ -32,7 +36,7 @@ describe('Rules Engine', () => {
         id: 'cond-1',
         field: TransactionField.DESCRIPTION,
         operator: StringOperator.CONTAINS,
-        value: "Sainsbury",
+        value: 'Sainsbury',
         order: 0,
       },
     ],

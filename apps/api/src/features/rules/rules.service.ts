@@ -16,7 +16,6 @@ import {
   CategorizationRule,
   evaluateRules,
   isValidOperatorForField,
-  RuleCondition,
   TransactionFieldType,
   TransactionInput,
   RuleEvaluationResult,
@@ -42,14 +41,23 @@ export class RulesService {
   private validateConditions(conditions: CreateRuleDto['conditions']): void {
     for (const condition of conditions) {
       // Check if field is valid
-      if (!Object.values(TransactionField).includes(condition.field as TransactionFieldType)) {
+      if (
+        !Object.values(TransactionField).includes(
+          condition.field as TransactionFieldType,
+        )
+      ) {
         throw new BadRequestException(
           `Invalid field "${condition.field}". Valid fields are: ${Object.values(TransactionField).join(', ')}`,
         );
       }
 
       // Check if operator is valid for the field
-      if (!isValidOperatorForField(condition.field as TransactionFieldType, condition.operator)) {
+      if (
+        !isValidOperatorForField(
+          condition.field as TransactionFieldType,
+          condition.operator,
+        )
+      ) {
         throw new BadRequestException(
           `Invalid operator "${condition.operator}" for field "${condition.field}"`,
         );
@@ -60,7 +68,10 @@ export class RulesService {
   /**
    * Create a new categorization rule
    */
-  async create(userId: string, dto: CreateRuleDto): Promise<CategorizationRuleEntity> {
+  async create(
+    userId: string,
+    dto: CreateRuleDto,
+  ): Promise<CategorizationRuleEntity> {
     this.logger.debug(`Creating a new rule for user ${userId}`, dto);
 
     // Validate conditions
@@ -72,8 +83,8 @@ export class RulesService {
       .select('MAX(rule.order)', 'maxOrder')
       .where('rule.userId = :userId', { userId })
       .getRawOne();
-    
-    const nextOrder = dto.order ?? ((maxOrderResult?.maxOrder ?? -1) + 1);
+
+    const nextOrder = dto.order ?? (maxOrderResult?.maxOrder ?? -1) + 1;
 
     // Create rule entity
     const rule = this.rulesRepository.create({
@@ -149,8 +160,10 @@ export class RulesService {
 
     // Update rule properties
     if (dto.name !== undefined) existingRule.name = dto.name;
-    if (dto.description !== undefined) existingRule.description = dto.description;
-    if (dto.resultCategoryId !== undefined) existingRule.resultCategoryId = dto.resultCategoryId;
+    if (dto.description !== undefined)
+      existingRule.description = dto.description;
+    if (dto.resultCategoryId !== undefined)
+      existingRule.resultCategoryId = dto.resultCategoryId;
     if (dto.order !== undefined) existingRule.order = dto.order;
     if (dto.isActive !== undefined) existingRule.isActive = dto.isActive;
 
@@ -170,7 +183,8 @@ export class RulesService {
         }),
       );
 
-      existingRule.conditions = await this.conditionsRepository.save(conditions);
+      existingRule.conditions =
+        await this.conditionsRepository.save(conditions);
     }
 
     return this.rulesRepository.save(existingRule);
@@ -187,7 +201,10 @@ export class RulesService {
   /**
    * Reorder rules
    */
-  async reorderRules(userId: string, ruleIds: string[]): Promise<CategorizationRuleEntity[]> {
+  async reorderRules(
+    userId: string,
+    ruleIds: string[],
+  ): Promise<CategorizationRuleEntity[]> {
     this.logger.debug(`Reordering rules for user ${userId}`, ruleIds);
 
     // Verify all rules belong to user
@@ -196,7 +213,9 @@ export class RulesService {
     });
 
     if (rules.length !== ruleIds.length) {
-      throw new BadRequestException('Some rule IDs are invalid or do not belong to you');
+      throw new BadRequestException(
+        'Some rule IDs are invalid or do not belong to you',
+      );
     }
 
     // Update orders
@@ -219,7 +238,7 @@ export class RulesService {
     conditionIds: string[],
   ): Promise<CategorizationRuleEntity> {
     // Verify rule belongs to user
-    const rule = await this.findOne(userId, ruleId);
+    await this.findOne(userId, ruleId);
 
     // Verify all conditions belong to the rule
     const conditions = await this.conditionsRepository.find({
@@ -227,7 +246,9 @@ export class RulesService {
     });
 
     if (conditions.length !== conditionIds.length) {
-      throw new BadRequestException('Some condition IDs are invalid or do not belong to this rule');
+      throw new BadRequestException(
+        'Some condition IDs are invalid or do not belong to this rule',
+      );
     }
 
     // Update orders
@@ -306,7 +327,10 @@ export class RulesService {
             { value: 'not_equals', label: 'Does not equal' },
             { value: 'greater_than', label: 'Greater than' },
             { value: 'less_than', label: 'Less than' },
-            { value: 'greater_than_or_equals', label: 'Greater than or equals' },
+            {
+              value: 'greater_than_or_equals',
+              label: 'Greater than or equals',
+            },
             { value: 'less_than_or_equals', label: 'Less than or equals' },
           ],
         },
