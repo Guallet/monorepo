@@ -1,10 +1,10 @@
-import { Stack, Table, Select, Button } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
-import { useAtomValue, useAtom } from "jotai";
-import { csvAccountsAtom, accountMappingsAtom } from "../state/csvState";
-import { useAccounts } from "@guallet/api-react";
+import { Stack, Table, Select, Button } from '@mantine/core';
+import { useNavigate } from '@tanstack/react-router';
+import { useAtomValue, useAtom } from 'jotai';
+import { csvAccountsAtom, accountMappingsAtom } from '../state/csvState';
+import { useAccounts } from '@guallet/api-react';
 
-export const DEFAULT_ACCOUNT_NAME = "account";
+export const DEFAULT_ACCOUNT_NAME = 'account';
 
 export function CsvAccountsScreen() {
   const navigate = useNavigate();
@@ -31,14 +31,16 @@ export function CsvAccountsScreen() {
               <Table.Td>
                 {
                   <Select
+                    searchable
                     placeholder="Select the destination account"
-                    data={availableAccounts.map(
-                      (x) => x?.name ?? "Map to a new account"
-                    )}
+                    data={availableAccounts.map((x) => ({
+                      value: x?.id ?? '',
+                      label: x?.name ?? 'Map to a new account',
+                    }))}
                     onChange={(value) => {
                       // Map account X to value
                       mappings[DEFAULT_ACCOUNT_NAME] = remoteAccounts.find(
-                        (x) => x.name === value
+                        (x) => x.id === value,
                       );
                       setMappings(mappings);
                     }}
@@ -49,19 +51,21 @@ export function CsvAccountsScreen() {
           ) : (
             csvAccounts.map((x) => {
               return (
-                <Table.Tr key={x ?? "source"}>
-                  <Table.Td>{x ?? "Source Account"}</Table.Td>
+                <Table.Tr key={x ?? 'source'}>
+                  <Table.Td>{x ?? 'Source Account'}</Table.Td>
                   <Table.Td>
                     {
                       <Select
+                        searchable
                         placeholder="Select the destination account"
-                        data={availableAccounts.map(
-                          (x) => x?.name ?? "Map to a new account"
-                        )}
+                        data={availableAccounts.map((x) => ({
+                          value: x?.id ?? '',
+                          label: x?.name ?? 'Map to a new account',
+                        }))}
                         onChange={(value) => {
                           // Map account X to value
                           mappings[x] = remoteAccounts.find(
-                            (x) => x.name === value
+                            (x) => x.id === value,
                           );
                           setMappings(mappings);
                         }}
@@ -77,7 +81,7 @@ export function CsvAccountsScreen() {
       <Button
         onClick={() => {
           navigate({
-            to: "/importer/csv/categories",
+            to: '/importer/csv/categories',
           });
         }}
       >

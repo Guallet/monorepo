@@ -1,8 +1,8 @@
-import { Stack, Table, Select, Button } from "@mantine/core";
-import { useNavigate, Navigate } from "@tanstack/react-router";
-import { useAtomValue, useAtom } from "jotai";
-import { csvCategoriesAtom, categoriesMappingsAtom } from "../state/csvState";
-import { useCategories } from "@guallet/api-react";
+import { Stack, Table, Select, Button } from '@mantine/core';
+import { useNavigate, Navigate } from '@tanstack/react-router';
+import { useAtomValue, useAtom } from 'jotai';
+import { csvCategoriesAtom, categoriesMappingsAtom } from '../state/csvState';
+import { useCategories } from '@guallet/api-react';
 
 export function CsvCategoriesScreen() {
   const navigate = useNavigate();
@@ -35,6 +35,8 @@ export function CsvCategoriesScreen() {
                 <Table.Td>
                   {
                     <Select
+                      searchable
+                      clearable
                       placeholder="Untagged"
                       // data={remoteCategories.map((x) => x.name)}
                       data={remoteCategories.map((x) => {
@@ -43,7 +45,7 @@ export function CsvCategoriesScreen() {
                       onChange={(value) => {
                         // Map account X to value
                         mappings[categoryName] = remoteCategories.find(
-                          (x) => x.id === value
+                          (x) => x.id === value,
                         );
                         setMappings(mappings);
                       }}
@@ -58,7 +60,7 @@ export function CsvCategoriesScreen() {
       <Button
         onClick={() => {
           navigate({
-            to: "/importer/csv/summary",
+            to: '/importer/csv/summary',
           });
         }}
       >
