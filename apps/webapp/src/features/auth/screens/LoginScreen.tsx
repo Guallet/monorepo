@@ -8,6 +8,7 @@ import {
   Text,
   PasswordInput,
   Container,
+  Anchor,
 } from '@mantine/core';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -19,15 +20,20 @@ import { GoogleButton } from '../components/GoogleButton';
 import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
-// Define a schema for form validation using Zod
-const formSchema = z.object({
+// Define schemas for form validation using Zod
+const passwordFormSchema = z.object({
   email: z.email({ message: 'Invalid email address' }),
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
 });
 
-type FormData = z.infer<typeof formSchema>;
+const magicLinkFormSchema = z.object({
+  email: z.email({ message: 'Invalid email address' }),
+});
+
+type PasswordFormData = z.infer<typeof passwordFormSchema>;
+type MagicLinkFormData = z.infer<typeof magicLinkFormSchema>;
 
 interface LoginScreenProps {
   isLoading?: boolean;
@@ -44,23 +50,34 @@ export function LoginScreen({
 }: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
   const [loginType, setLoginType] = useState<'magic-link' | 'password'>(
-    'magic-link',
+    'password',
   );
 
-  const form = useForm<FormData>({
+  const passwordForm = useForm<PasswordFormData>({
     initialValues: {
       email: '',
       password: '',
     },
-    validate: zod4Resolver(formSchema),
+    validate: zod4Resolver(passwordFormSchema),
   });
 
-  const onSubmitMagicLink = (data: FormData) => {
+  const magicLinkForm = useForm<MagicLinkFormData>({
+    initialValues: {
+      email: '',
+    },
+    validate: zod4Resolver(magicLinkFormSchema),
+  });
+
+  const handlePasswordSubmit = (data: PasswordFormData) => {
+    onPassword(data.email, data.password);
+  };
+
+  const handleMagicLinkSubmit = (data: MagicLinkFormData) => {
     onMagicLink(data.email);
   };
 
-  const onSubmitPassword = (data: FormData) => {
-    onPassword(data.email, data.password);
+  const toggleLoginType = () => {
+    setLoginType(loginType === 'password' ? 'magic-link' : 'password');
   };
 
   return (
@@ -82,42 +99,78 @@ export function LoginScreen({
         </Stack>
 
         <Paper withBorder shadow="md" p={30} mt={20} radius="md">
-          <form onSubmit={form.onSubmit(() => {})}>
-            <TextInput
-              {...form.getInputProps('email')}
-              label={t('screens.login.form.email.label', 'CNF: Email')}
-              type="email"
-              placeholder={t(
-                'screens.login.form.email.placeholder',
-                'CNF: Enter your email',
-              )}
-              required
-            />
-
-            <PasswordInput
-              {...form.getInputProps('password')}
-              label={t('screens.login.form.password.label', 'CNF: Password')}
-              placeholder={t(
-                'screens.login.form.password.placeholder',
-                'CNF: Enter your password',
-              )}
-              required
-              mt="md"
-            />
-
-            <Group justify="flex-end" mt="md">
-              <NavLinkButton to="/login/forgot-password" size="sm">
-                {t(
-                  'screens.login.form.forgotPassword.label',
-                  'CNF: Forgot password?',
+          {loginType === 'password' ? (
+            <form onSubmit={passwordForm.onSubmit(handlePasswordSubmit)}>
+              <TextInput
+                {...passwordForm.getInputProps('email')}
+                label={t('screens.login.form.email.label', 'CNF: Email')}
+                type="email"
+                placeholder={t(
+                  'screens.login.form.email.placeholder',
+                  'CNF: Enter your email',
                 )}
-              </NavLinkButton>
-            </Group>
+                required
+              />
 
-            <Button fullWidth mt="md" type="submit" color="blue">
-              {t('screens.login.form.submitButton.label', 'CNF: Sign in')}
-            </Button>
-          </form>
+              <PasswordInput
+                {...passwordForm.getInputProps('password')}
+                label={t('screens.login.form.password.label', 'CNF: Password')}
+                placeholder={t(
+                  'screens.login.form.password.placeholder',
+                  'CNF: Enter your password',
+                )}
+                required
+                mt="md"
+              />
+
+              <Group justify="flex-end" mt="md">
+                <NavLinkButton to="/login/forgot-password" size="sm">
+                  {t(
+                    'screens.login.form.forgotPassword.label',
+                    'CNF: Forgot password?',
+                  )}
+                </NavLinkButton>
+              </Group>
+
+              <Button fullWidth mt="md" type="submit" color="blue">
+                {t('screens.login.form.submitButton.label', 'CNF: Sign in')}
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={magicLinkForm.onSubmit(handleMagicLinkSubmit)}>
+              <TextInput
+                {...magicLinkForm.getInputProps('email')}
+                label={t('screens.login.form.email.label', 'CNF: Email')}
+                type="email"
+                placeholder={t(
+                  'screens.login.form.email.placeholder',
+                  'CNF: Enter your email',
+                )}
+                required
+              />
+
+              <Button fullWidth mt="md" type="submit" color="blue">
+                {t(
+                  'screens.login.form.sendMagicLink.label',
+                  'CNF: Send magic link',
+                )}
+              </Button>
+            </form>
+          )}
+
+          <Text ta="center" size="sm" mt="md">
+            <Anchor component="button" type="button" onClick={toggleLoginType}>
+              {loginType === 'password'
+                ? t(
+                    'screens.login.form.useMagicLink.label',
+                    'CNF: Use magic link instead',
+                  )
+                : t(
+                    'screens.login.form.usePassword.label',
+                    'CNF: Use password instead',
+                  )}
+            </Anchor>
+          </Text>
 
           <Divider
             label={t(

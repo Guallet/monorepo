@@ -139,6 +139,15 @@
         "submitButton": {
           "label": "Iniciar sesión"
         },
+        "sendMagicLink": {
+          "label": "CNF: Send magic link"
+        },
+        "useMagicLink": {
+          "label": "CNF: Use magic link instead"
+        },
+        "usePassword": {
+          "label": "CNF: Use password instead"
+        },
         "divider": {
           "label": "O continúa con"
         },
