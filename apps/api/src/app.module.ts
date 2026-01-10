@@ -24,6 +24,7 @@ import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
 import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
+import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -102,6 +103,7 @@ import * as Joi from 'joi';
     SavingGoalsModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
+    RegularPaymentsModule,
   ],
   controllers: [],
   providers: [
