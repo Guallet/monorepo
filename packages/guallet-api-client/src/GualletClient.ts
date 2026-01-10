@@ -9,6 +9,7 @@ import { UserApi } from './user';
 import { SavingGoalsApi } from './savingGoals';
 import { SubscriptionsApi } from './subscriptions';
 import { DataImporterApi } from './data-importer';
+import { RulesApi } from './rules';
 
 export interface GualletClient {
   admin: AdminApi;
@@ -22,6 +23,7 @@ export interface GualletClient {
   savingGoals: SavingGoalsApi;
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
+  rules: RulesApi;
 }
 
 export interface TokenHelper {
@@ -71,6 +73,7 @@ export class GualletClientImpl implements GualletClient {
   savingGoals: SavingGoalsApi;
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
+  rules: RulesApi;
 
   constructor({
     baseUrl,
@@ -93,6 +96,7 @@ export class GualletClientImpl implements GualletClient {
     this.savingGoals = new SavingGoalsApi(this);
     this.subscriptions = new SubscriptionsApi(this);
     this.dataImporter = new DataImporterApi(this);
+    this.rules = new RulesApi(this);
   }
 
   async get<TDto>({

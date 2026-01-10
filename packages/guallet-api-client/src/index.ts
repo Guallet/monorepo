@@ -9,6 +9,7 @@ export * from './transactions';
 export * from './user';
 export * from './savingGoals';
 export * from './subscriptions';
+export * from './rules';
 
 export { ApiError, createClient } from './GualletClient';
 export type { GualletClient, TokenHelper } from './GualletClient';

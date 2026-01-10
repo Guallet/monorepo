@@ -20,13 +20,8 @@ import {
 } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import {
-  loadRules,
-  deleteRule,
-  reorderRules,
-  updateRule,
-  RuleDto,
-} from "@/features/rules/api/rules.api";
+import { RuleDto } from "@guallet/api-client";
+import { gualletClient } from "@/api/gualletClient";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { Category } from "@/features/categories/models/Category";
 
@@ -37,7 +32,7 @@ export const Route = createFileRoute("/_app/rules/")({
 
 async function loader() {
   const [rules, categories] = await Promise.all([
-    loadRules(),
+    gualletClient.rules.getAll(),
     loadCategories(),
   ]);
   return { rules, categories };
@@ -83,7 +78,7 @@ function RulesPage() {
 
     try {
       const ruleIds = newRules.map((r) => r.id);
-      await reorderRules(ruleIds);
+      await gualletClient.rules.reorder(ruleIds);
       notifications.show({
         title: "Success",
         message: "Rules reordered successfully",
@@ -101,7 +96,7 @@ function RulesPage() {
 
   const handleDelete = async (ruleId: string) => {
     try {
-      await deleteRule(ruleId);
+      await gualletClient.rules.delete(ruleId);
       setRules(rules.filter((r) => r.id !== ruleId));
       notifications.show({
         title: "Success",
@@ -119,7 +114,7 @@ function RulesPage() {
 
   const handleToggleActive = async (rule: RuleDto) => {
     try {
-      const updated = await updateRule(rule.id, { isActive: !rule.isActive });
+      const updated = await gualletClient.rules.update({ id: rule.id, dto: { isActive: !rule.isActive } });
       setRules(rules.map((r) => (r.id === rule.id ? updated : r)));
     } catch {
       notifications.show({

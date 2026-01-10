@@ -17,9 +17,7 @@ import {
   IconGripVertical,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import {
-  FieldDefinition,
-} from "@/features/rules/api/rules.api";
+import { FieldDefinition } from "@guallet/api-client";
 import { Category } from "@/features/categories/models/Category";
 
 export interface RuleFormData {

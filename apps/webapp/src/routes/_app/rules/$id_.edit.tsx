@@ -2,11 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Stack, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import {
-  loadRule,
-  loadFieldDefinitions,
-  updateRule,
-} from "@/features/rules/api/rules.api";
+import { gualletClient } from "@/api/gualletClient";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { RuleForm, RuleFormData } from "@/features/rules/components/RuleForm";
 
@@ -17,8 +13,8 @@ export const Route = createFileRoute("/_app/rules/$id_/edit")({
 
 async function loader({ params }: { params: { id: string } }) {
   const [rule, fieldDefinitions, categories] = await Promise.all([
-    loadRule(params.id),
-    loadFieldDefinitions(),
+    gualletClient.rules.get(params.id),
+    gualletClient.rules.getFieldDefinitions(),
     loadCategories(),
   ]);
   return {
@@ -51,18 +47,21 @@ function EditRulePage() {
   const handleSubmit = async (data: RuleFormData) => {
     setIsSubmitting(true);
     try {
-      await updateRule(id, {
-        name: data.name,
-        description: data.description || undefined,
-        resultCategoryId: data.resultCategoryId,
-        isActive: data.isActive,
-        conditionLogic: data.conditionLogic,
-        conditions: data.conditions.map((c, index) => ({
-          field: c.field,
-          operator: c.operator,
-          value: c.value,
-          order: index,
-        })),
+      await gualletClient.rules.update({
+        id,
+        dto: {
+          name: data.name,
+          description: data.description || undefined,
+          resultCategoryId: data.resultCategoryId,
+          isActive: data.isActive,
+          conditionLogic: data.conditionLogic,
+          conditions: data.conditions.map((c, index) => ({
+            field: c.field,
+            operator: c.operator,
+            value: c.value,
+            order: index,
+          })),
+        },
       });
       notifications.show({
         title: "Success",

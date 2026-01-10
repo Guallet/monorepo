@@ -2,10 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Stack, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import {
-  createRule,
-  loadFieldDefinitions,
-} from "@/features/rules/api/rules.api";
+import { gualletClient } from "@/api/gualletClient";
 import { loadCategories } from "@/features/categories/api/categories.api";
 import { RuleForm, RuleFormData } from "@/features/rules/components/RuleForm";
 
@@ -16,7 +13,7 @@ export const Route = createFileRoute("/_app/rules/new")({
 
 async function loader() {
   const [fieldDefinitions, categories] = await Promise.all([
-    loadFieldDefinitions(),
+    gualletClient.rules.getFieldDefinitions(),
     loadCategories(),
   ]);
   return { fieldDefinitions: fieldDefinitions.fields, categories };
@@ -30,7 +27,7 @@ function NewRulePage() {
   const handleSubmit = async (data: RuleFormData) => {
     setIsSubmitting(true);
     try {
-      await createRule({
+      await gualletClient.rules.create({
         name: data.name,
         description: data.description || undefined,
         resultCategoryId: data.resultCategoryId,
