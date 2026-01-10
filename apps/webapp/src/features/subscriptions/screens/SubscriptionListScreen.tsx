@@ -19,6 +19,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { IconPlus, IconChevronRight } from '@tabler/icons-react';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import { useTranslation } from 'react-i18next';
 
 function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
   switch (type) {
@@ -33,33 +34,39 @@ function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
   }
 }
 
-function getPaymentTypeLabel(type: RecurringPaymentType): string {
+function getPaymentTypeLabel(
+  type: RecurringPaymentType,
+  t: (key: string) => string,
+): string {
   switch (type) {
     case RecurringPaymentType.SUBSCRIPTION:
-      return 'Subscription';
+      return t('screens.subscriptions.list.types.subscription');
     case RecurringPaymentType.REGULAR_PAYMENT:
-      return 'Regular Payment';
+      return t('screens.subscriptions.list.types.regularPayment');
     case RecurringPaymentType.REGULAR_INCOME:
-      return 'Regular Income';
+      return t('screens.subscriptions.list.types.regularIncome');
     default:
-      return 'Unknown';
+      return t('screens.subscriptions.list.types.unknown');
   }
 }
 
-function getCadenceLabel(cadence: RecurrenceCadence): string {
+function getCadenceLabel(
+  cadence: RecurrenceCadence,
+  t: (key: string) => string,
+): string {
   switch (cadence) {
     case RecurrenceCadence.WEEKLY:
-      return 'Weekly';
+      return t('screens.subscriptions.list.cadence.weekly') ?? '';
     case RecurrenceCadence.BIWEEKLY:
-      return 'Bi-weekly';
+      return t('screens.subscriptions.list.cadence.biweekly');
     case RecurrenceCadence.MONTHLY:
-      return 'Monthly';
+      return t('screens.subscriptions.list.cadence.monthly');
     case RecurrenceCadence.QUARTERLY:
-      return 'Quarterly';
+      return t('screens.subscriptions.list.cadence.quarterly');
     case RecurrenceCadence.YEARLY:
-      return 'Yearly';
+      return t('screens.subscriptions.list.cadence.yearly');
     default:
-      return 'Unknown';
+      return t('screens.subscriptions.list.cadence.unknown');
   }
 }
 
@@ -79,6 +86,7 @@ function SubscriptionRow({
   subscription,
   onClick,
 }: Readonly<SubscriptionRowProps>) {
+  const { t } = useTranslation();
   return (
     <Card
       withBorder
@@ -100,10 +108,10 @@ function SubscriptionRow({
                 size="sm"
                 color={getPaymentTypeBadgeColor(subscription.type)}
               >
-                {getPaymentTypeLabel(subscription.type)}
+                {getPaymentTypeLabel(subscription.type, t)}
               </Badge>
               <Text size="xs" c="dimmed">
-                {getCadenceLabel(subscription.cadence)}
+                {getCadenceLabel(subscription.cadence, t)}
               </Text>
             </Group>
           </Stack>
@@ -122,6 +130,7 @@ function SubscriptionRow({
 }
 
 export function SubscriptionListScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { subscriptions, isLoading } = useSubscriptions();
   const defaultCurrency = useDefaultCurrency();
@@ -173,10 +182,10 @@ export function SubscriptionListScreen() {
         <Group justify="space-between">
           <Stack gap={0}>
             <Text size="xl" fw={700}>
-              Subscriptions & Regular Payments
+              {t('screens.subscriptions.list.title')}
             </Text>
             <Text c="dimmed" size="sm">
-              Estimated monthly:{' '}
+              {t('screens.subscriptions.list.estimatedMonthly')}{' '}
               {formatCurrency(totalMonthlyAmount, defaultCurrency)}
             </Text>
           </Stack>
@@ -186,7 +195,7 @@ export function SubscriptionListScreen() {
               navigation({ to: '/subscriptions/new' });
             }}
           >
-            Add New
+            {t('screens.subscriptions.list.addButton.label')}
           </Button>
         </Group>
 
@@ -194,17 +203,17 @@ export function SubscriptionListScreen() {
           <Card withBorder shadow="sm" radius="md" padding="xl">
             <Stack align="center" gap="md">
               <Text size="lg" c="dimmed">
-                No subscriptions yet
+                {t('screens.subscriptions.list.emptyState.title')}
               </Text>
               <Text size="sm" c="dimmed">
-                Start tracking your recurring payments and subscriptions
+                {t('screens.subscriptions.list.emptyState.description')}
               </Text>
               <Button
                 onClick={() => {
                   navigation({ to: '/subscriptions/new' });
                 }}
               >
-                Add your first subscription
+                {t('screens.subscriptions.list.emptyState.button.label')}
               </Button>
             </Stack>
           </Card>
@@ -213,7 +222,8 @@ export function SubscriptionListScreen() {
         {groupedSubscriptions.subscriptions.length > 0 && (
           <Stack gap="xs">
             <Text fw={600} size="md">
-              Subscriptions ({groupedSubscriptions.subscriptions.length})
+              {t('screens.subscriptions.list.sections.subscriptions')} (
+              {groupedSubscriptions.subscriptions.length})
             </Text>
             {groupedSubscriptions.subscriptions.map((subscription) => (
               <SubscriptionRow
@@ -233,7 +243,8 @@ export function SubscriptionListScreen() {
         {groupedSubscriptions.regularPayments.length > 0 && (
           <Stack gap="xs">
             <Text fw={600} size="md">
-              Regular Payments ({groupedSubscriptions.regularPayments.length})
+              {t('screens.subscriptions.list.sections.regularPayments')} (
+              {groupedSubscriptions.regularPayments.length})
             </Text>
             {groupedSubscriptions.regularPayments.map((subscription) => (
               <SubscriptionRow
@@ -253,7 +264,8 @@ export function SubscriptionListScreen() {
         {groupedSubscriptions.regularIncome.length > 0 && (
           <Stack gap="xs">
             <Text fw={600} size="md">
-              Regular Income ({groupedSubscriptions.regularIncome.length})
+              {t('screens.subscriptions.list.sections.regularIncome')} (
+              {groupedSubscriptions.regularIncome.length})
             </Text>
             {groupedSubscriptions.regularIncome.map((subscription) => (
               <SubscriptionRow
