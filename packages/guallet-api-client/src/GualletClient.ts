@@ -1,12 +1,13 @@
-import { AdminApi } from "./admin";
-import { AccountsApi } from "./accounts";
-import { BudgetsApi } from "./budgets";
-import { CategoriesApi } from "./categories";
-import { ConnectionsApi } from "./connections";
-import { InstitutionsApi } from "./institutions";
-import { TransactionsApi } from "./transactions";
-import { UserApi } from "./user";
-import { SavingGoalsApi } from "./savingGoals";
+import { AdminApi } from './admin';
+import { AccountsApi } from './accounts';
+import { BudgetsApi } from './budgets';
+import { CategoriesApi } from './categories';
+import { ConnectionsApi } from './connections';
+import { InstitutionsApi } from './institutions';
+import { TransactionsApi } from './transactions';
+import { UserApi } from './user';
+import { SavingGoalsApi } from './savingGoals';
+import { SubscriptionsApi } from './subscriptions';
 
 export interface GualletClient {
   admin: AdminApi;
@@ -18,6 +19,7 @@ export interface GualletClient {
   budgets: BudgetsApi;
   user: UserApi;
   savingGoals: SavingGoalsApi;
+  subscriptions: SubscriptionsApi;
 }
 
 export interface TokenHelper {
@@ -65,6 +67,7 @@ export class GualletClientImpl implements GualletClient {
   budgets: BudgetsApi;
   user: UserApi;
   savingGoals: SavingGoalsApi;
+  subscriptions: SubscriptionsApi;
 
   constructor({
     baseUrl,
@@ -85,6 +88,7 @@ export class GualletClientImpl implements GualletClient {
     this.budgets = new BudgetsApi(this);
     this.user = new UserApi(this);
     this.savingGoals = new SavingGoalsApi(this);
+    this.subscriptions = new SubscriptionsApi(this);
   }
 
   async get<TDto>({
@@ -95,7 +99,7 @@ export class GualletClientImpl implements GualletClient {
     options?: RequestInit;
   }): Promise<TDto> {
     return await this.executeRequest<TDto>({
-      method: "GET",
+      method: 'GET',
       path,
       options,
     });
@@ -111,7 +115,7 @@ export class GualletClientImpl implements GualletClient {
     options?: RequestInit;
   }): Promise<TDto> {
     return await this.executeRequest<TDto, TPayload>({
-      method: "POST",
+      method: 'POST',
       path,
       payload,
       options,
@@ -128,7 +132,7 @@ export class GualletClientImpl implements GualletClient {
     options?: RequestInit;
   }): Promise<TDto> {
     return await this.executeRequest<TDto, TPayload>({
-      method: "PUT",
+      method: 'PUT',
       path,
       payload,
       options,
@@ -145,7 +149,7 @@ export class GualletClientImpl implements GualletClient {
     options?: RequestInit;
   }): Promise<TDto> {
     return await this.executeRequest<TDto, TPartialPayload>({
-      method: "PATCH",
+      method: 'PATCH',
       path,
       payload,
       options,
@@ -160,7 +164,7 @@ export class GualletClientImpl implements GualletClient {
     options?: RequestInit;
   }): Promise<TDto> {
     return await this.executeRequest<TDto>({
-      method: "DELETE",
+      method: 'DELETE',
       path,
       options,
     });
@@ -169,14 +173,14 @@ export class GualletClientImpl implements GualletClient {
   async getRawResponse({ path }: { path: string }): Promise<Response> {
     const access_token = await this.tokenHelper.getAccessToken();
     return await fetch(`${this.baseUrl}/${path}`, {
-      method: "GET",
-      mode: "cors",
+      method: 'GET',
+      mode: 'cors',
       headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
         ...(access_token && { Authorization: `Bearer ${access_token}` }),
       },
-      ...(access_token && { credentials: "include" }),
+      ...(access_token && { credentials: 'include' }),
     });
   }
 
@@ -186,7 +190,7 @@ export class GualletClientImpl implements GualletClient {
     payload,
     options,
   }: {
-    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     path: string;
     payload?: TRequest;
     options?: RequestInit;
@@ -196,12 +200,12 @@ export class GualletClientImpl implements GualletClient {
     const requestOptions: RequestInit = {
       ...options,
       method: method,
-      mode: "cors",
+      mode: 'cors',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...(access_token && { Authorization: `Bearer ${access_token}` }),
       },
-      ...(access_token && { credentials: "include" }),
+      ...(access_token && { credentials: 'include' }),
     };
 
     if (payload) {
@@ -224,7 +228,7 @@ export class GualletClientImpl implements GualletClient {
 export class ApiError extends Error {
   constructor(
     message: string,
-    public status: number
+    public status: number,
   ) {
     super(message);
   }
