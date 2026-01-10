@@ -38,7 +38,11 @@ import * as Joi from 'joi';
         ENVIRONMENT: Joi.string()
           .valid('development', 'production')
           .default('development'),
-        DATABASE_URL: Joi.string().required(),
+        DATABASE_HOST: Joi.string().required(),
+        DATABASE_PORT: Joi.number().required(),
+        DATABASE_USERNAME: Joi.string().required(),
+        DATABASE_PASSWORD: Joi.string().required(),
+        DATABASE_NAME: Joi.string().required(),
         NORDIGEN_SECRET_ID: Joi.string().required(),
         NORDIGEN_SECRET_KEY: Joi.string().required(),
       }),
@@ -68,7 +72,11 @@ import * as Joi from 'joi';
     // DATABASE
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL,
+      host: process.env.DATABASE_HOST,
+      port: Number(process.env.DATABASE_PORT),
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
       entities: [],
       // synchronize: process.env.ENVIRONMENT === 'development',
       synchronize: true,
