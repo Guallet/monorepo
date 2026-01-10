@@ -118,11 +118,39 @@
         "emptyQuery": "CFN: No bank accounts found"
       }
     },
+    "forgotPassword": {
+      "title": {
+        "label": "Forgot your password?"
+      },
+      "description": {
+        "label": "Enter your email address and we'll send you a link to reset your password."
+      },
+      "error": {
+        "title": "Error"
+      },
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter your email"
+        },
+        "submitButton": {
+          "label": "Send reset link"
+        }
+      },
+      "backButton": {
+        "label": "Back to login"
+      }
+    },
     "login": {
       "title": {
         "label": "Sign in to your account"
       },
       "form": {
+        "magicLink": {
+          "error": {
+            "title": "Error sending magic link"
+          }
+        },
         "email": {
           "label": "Email",
           "placeholder": "Enter your email"
@@ -137,6 +165,15 @@
         "submitButton": {
           "label": "Sign in"
         },
+        "sendMagicLink": {
+          "label": "Send magic link"
+        },
+        "useMagicLink": {
+          "label": "Use magic link instead"
+        },
+        "usePassword": {
+          "label": "Use password instead"
+        },
         "divider": {
           "label": "Or continue with"
         },
@@ -147,6 +184,33 @@
       "createAccount": {
         "label": "Don't have an account?",
         "cta": "Sign up!"
+      }
+    },
+    "resetPasswordSent": {
+      "title": "Check your email",
+      "description": "We've sent a password reset link to",
+      "instructions": "Click the link in the email to reset your password. If you don't see it, check your spam folder.",
+      "backButton": "Back to login"
+    },
+    "validateOtp": {
+      "title": "Check your email",
+      "description": "We've sent a 6-digit code to",
+      "instructionText": "Enter the code below to sign in.",
+      "instructionNote": "The email also contains a magic link you can click to sign in automatically.",
+      "error": {
+        "title": "Error"
+      },
+      "form": {
+        "codeInput": {
+          "placeholder": "Enter the 6 digit code"
+        },
+        "verifyButton": {
+          "label": "Verify code"
+        }
+      },
+      "resendCode": {
+        "question": "Didn't receive the code?",
+        "resendButton": "Resend code"
       }
     },
     "budgets": {

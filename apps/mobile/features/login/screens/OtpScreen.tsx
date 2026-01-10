@@ -1,50 +1,113 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { useRouter } from 'expo-router';
-import { Button, Label, OtpInput, Title } from '@luna-ui/react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import {
+  Button,
+  Label,
+  OtpInput,
+  Title,
+  useTheme,
+} from '@luna-ui/react-native';
 import { openInbox } from 'react-native-email-link';
-import { defaultTheme } from '@luna-ui/react-native/src/theme/DefaultTheme';
+import { useAuth } from '@/auth/useAuth';
 
 export function OtpScreen() {
   const router = useRouter();
-  const [code, setCode] = useState('');
+  const { colors } = useTheme();
+  const { verifyOtpCode, getOtpCode } = useAuth();
+  const params = useLocalSearchParams<{ email?: string }>();
+  const email = params.email ?? '';
 
-  const handleResendCode = () => {
-    // Implement resend code logic here
-    console.log('Resending code...');
+  const [code, setCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const isCodeComplete = code.length === 6;
+
+  const handleVerifyCode = async () => {
+    if (!isCodeComplete || !email) {
+      return;
+    }
+
+    setError(null);
+    setIsLoading(true);
+
+    const result = await verifyOtpCode(email, code);
+    setIsLoading(false);
+
+    if (result.success) {
+      router.replace('/(tabs)');
+    } else {
+      setError(result.error?.message ?? 'Invalid code. Please try again.');
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (!email) {
+      return;
+    }
+
+    setIsLoading(true);
+    const success = await getOtpCode(email);
+    setIsLoading(false);
+
+    if (success) {
+      setError(null);
+      alert('A new code has been sent to your email.');
+    } else {
+      setError('Failed to resend code. Please try again.');
+    }
   };
 
   const handleOpenEmailApp = async () => {
-    // Open default email app
-    // Linking.openURL("mailto:");
-    const result = await openInbox();
+    await openInbox();
   };
 
   return (
-    <AppScreen headerTitle="Enter code">
+    <AppScreen headerTitle="Enter code" isLoading={isLoading}>
       {/* Content */}
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, padding: 16 }}>
         <Title>Check your email</Title>
         <Label>
-          We&apos;ve sent a 6-digit code to your email. Please enter it below to
-          continue.
+          We&apos;ve sent a 6-digit code to{' '}
+          {email ? (
+            <Label style={{ fontWeight: 'bold' }}>{email}</Label>
+          ) : (
+            'your email'
+          )}
+          . Enter the code below to sign in.
+        </Label>
+        <Label style={{ marginTop: 8 }}>
+          The email also contains a magic link you can click to sign in
+          automatically.
         </Label>
 
         {/* Code Input */}
         <OtpInput
           length={6}
           style={{
-            marginHorizontal: 12,
+            marginVertical: 24,
           }}
-          onCodeChanged={setCode}
+          onCodeChanged={(newCode) => {
+            setCode(newCode);
+            setError(null);
+          }}
         />
+
+        {error && <Text style={styles.errorText}>{error}</Text>}
+
+        <Button onClick={handleVerifyCode} disabled={!isCodeComplete}>
+          Verify code
+        </Button>
 
         {/* Resend Code */}
         <View style={styles.resendContainer}>
           <Text style={styles.resendText}>Didn&apos;t receive the code?</Text>
           <TouchableOpacity onPress={handleResendCode}>
-            <Text style={styles.resendButton}>Resend code</Text>
+            <Text style={[styles.resendButton, { color: colors.primary }]}>
+              Resend code
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -55,58 +118,18 @@ export function OtpScreen() {
           padding: 24,
         }}
       >
-        <Button onClick={handleOpenEmailApp}>Open email app</Button>
+        <Button variant="outline" onClick={handleOpenEmailApp}>
+          Open email app
+        </Button>
       </View>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-  },
-  backButton: {
-    marginRight: 16,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-  },
-  content: {
-    flex: 1,
-    // paddingHorizontal: 24,
-  },
-  title: {
-    marginBottom: 12,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    lineHeight: 22,
-    marginBottom: 40,
-  },
-  codeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 32,
-  },
-  codeInput: {
-    width: 48,
-    height: 56,
-    borderRadius: 12,
-    backgroundColor: '#f0f0f0',
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#000',
-  },
   resendContainer: {
     alignItems: 'center',
-    flex: 1,
+    marginTop: 24,
   },
   resendText: {
     fontSize: 16,
@@ -115,8 +138,13 @@ const styles = StyleSheet.create({
   },
   resendButton: {
     fontSize: 16,
-    color: defaultTheme.colors.primary,
     fontWeight: '500',
     textDecorationLine: 'underline',
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#EF4444',
+    textAlign: 'center',
+    marginBottom: 16,
   },
 });

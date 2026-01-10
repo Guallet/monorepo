@@ -120,11 +120,39 @@
         "emptyQuery": "CFN: No se encontraron cuentas bancarias"
       }
     },
+    "forgotPassword": {
+      "title": {
+        "label": "¿Olvidaste tu contraseña?"
+      },
+      "description": {
+        "label": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña."
+      },
+      "error": {
+        "title": "Error"
+      },
+      "form": {
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
+        },
+        "submitButton": {
+          "label": "Enviar enlace de restablecimiento"
+        }
+      },
+      "backButton": {
+        "label": "Volver a iniciar sesión"
+      }
+    },
     "login": {
       "title": {
         "label": "Inicia sesión en tu cuenta"
       },
       "form": {
+        "magicLink": {
+          "error": {
+            "title": "Error al enviar el enlace mágico"
+          }
+        },
         "email": {
           "label": "Correo electrónico",
           "placeholder": "Ingresa tu correo electrónico"
@@ -139,6 +167,15 @@
         "submitButton": {
           "label": "Iniciar sesión"
         },
+        "sendMagicLink": {
+          "label": "Enviar enlace mágico"
+        },
+        "useMagicLink": {
+          "label": "Usar enlace mágico en su lugar"
+        },
+        "usePassword": {
+          "label": "Usar contraseña en su lugar"
+        },
         "divider": {
           "label": "O continúa con"
         },
@@ -149,6 +186,33 @@
       "createAccount": {
         "label": "¿No tienes una cuenta?",
         "cta": "¡Regístrate!"
+      }
+    },
+    "resetPasswordSent": {
+      "title": "Revisa tu correo electrónico",
+      "description": "Hemos enviado un enlace de restablecimiento de contraseña a",
+      "instructions": "Haz clic en el enlace en el correo electrónico para restablecer tu contraseña. Si no lo ves, revisa tu carpeta de spam.",
+      "backButton": "Volver a iniciar sesión"
+    },
+    "validateOtp": {
+      "title": "Revisa tu correo electrónico",
+      "description": "Hemos enviado un código de 6 dígitos a",
+      "instructionText": "Ingresa el código a continuación para iniciar sesión.",
+      "instructionNote": "El correo electrónico también contiene un enlace mágico que puedes hacer clic para iniciar sesión automáticamente.",
+      "error": {
+        "title": "Error"
+      },
+      "form": {
+        "codeInput": {
+          "placeholder": "Ingresa el código de 6 dígitos"
+        },
+        "verifyButton": {
+          "label": "Verificar código"
+        }
+      },
+      "resendCode": {
+        "question": "¿No recibiste el código?",
+        "resendButton": "Reenviar código"
       }
     },
     "budgets": {

@@ -238,6 +238,27 @@ export function AuthProvider({
     [supabaseClient],
   );
 
+  const resetPassword = useCallback(
+    async (email: string, redirectUrl: string): Promise<AuthResult> => {
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      });
+      if (error) {
+        console.error('Error sending password reset email', error);
+        return {
+          success: false,
+          error: {
+            code: error.code ?? 'password_reset_error',
+            message: error.message,
+          },
+        };
+      }
+
+      return { success: true, error: null };
+    },
+    [supabaseClient],
+  );
+
   const logout = useCallback(async (): Promise<AuthResult> => {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
@@ -265,6 +286,7 @@ export function AuthProvider({
       logout: logout,
       getOtpCode: getOtpCode,
       verifyOtpCode: verifyOtpCode,
+      resetPassword: resetPassword,
     }),
     [
       isLoading,
@@ -276,6 +298,7 @@ export function AuthProvider({
       logout,
       getOtpCode,
       verifyOtpCode,
+      resetPassword,
     ],
   );
 

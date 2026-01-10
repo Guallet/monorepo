@@ -24,6 +24,17 @@ export function useAuth() {
     return true;
   }, []);
 
+  const resetPassword = useCallback(async (email: string): Promise<boolean> => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'guallet://login/reset-password',
+    });
+    if (error) {
+      console.error('Error sending password reset email', error);
+      return false;
+    }
+    return true;
+  }, []);
+
   const loginWithProvider = useCallback(
     async (provider: Provider): Promise<boolean> => {
       if (provider !== 'google') {
@@ -86,8 +97,9 @@ export function useAuth() {
       signIn,
       signOut,
       getOtpCode,
+      resetPassword,
       loginWithProvider,
     }),
-    [baseAuth, signIn, signOut, getOtpCode, loginWithProvider],
+    [baseAuth, signIn, signOut, getOtpCode, resetPassword, loginWithProvider],
   );
 }

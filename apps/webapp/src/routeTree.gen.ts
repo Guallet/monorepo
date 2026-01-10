@@ -18,6 +18,7 @@ import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as OnboardingWaiting_listRouteImport } from './routes/onboarding/waiting_list'
 import { Route as OnboardingRegisterRouteImport } from './routes/onboarding/register'
 import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp'
+import { Route as LoginResetPasswordSentRouteImport } from './routes/login/reset-password-sent'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
 import { Route as LoginCallbackRouteImport } from './routes/login/callback'
 import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
@@ -115,6 +116,11 @@ const OnboardingRegisterRoute = OnboardingRegisterRouteImport.update({
 const LoginValidateotpRoute = LoginValidateotpRouteImport.update({
   id: '/login/validateotp',
   path: '/login/validateotp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginResetPasswordSentRoute = LoginResetPasswordSentRouteImport.update({
+  id: '/login/reset-password-sent',
+  path: '/login/reset-password-sent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginForgotPasswordRoute = LoginForgotPasswordRouteImport.update({
@@ -379,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
+  '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
   '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
@@ -438,6 +445,7 @@ export interface FileRoutesByTo {
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
+  '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
   '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
@@ -499,6 +507,7 @@ export interface FileRoutesById {
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
+  '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
   '/onboarding/register': typeof OnboardingRegisterRoute
   '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
@@ -560,6 +569,7 @@ export interface FileRouteTypes {
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
+    | '/login/reset-password-sent'
     | '/login/validateotp'
     | '/onboarding/register'
     | '/onboarding/waiting_list'
@@ -619,6 +629,7 @@ export interface FileRouteTypes {
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
+    | '/login/reset-password-sent'
     | '/login/validateotp'
     | '/onboarding/register'
     | '/onboarding/waiting_list'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
+    | '/login/reset-password-sent'
     | '/login/validateotp'
     | '/onboarding/register'
     | '/onboarding/waiting_list'
@@ -740,6 +752,7 @@ export interface RootRouteChildren {
   UserdeletedLazyRoute: typeof UserdeletedLazyRoute
   LoginCallbackRoute: typeof LoginCallbackRoute
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
+  LoginResetPasswordSentRoute: typeof LoginResetPasswordSentRoute
   LoginValidateotpRoute: typeof LoginValidateotpRoute
   OnboardingRegisterRoute: typeof OnboardingRegisterRoute
   OnboardingWaiting_listRoute: typeof OnboardingWaiting_listRoute
@@ -809,6 +822,13 @@ declare module '@tanstack/react-router' {
       path: '/login/validateotp'
       fullPath: '/login/validateotp'
       preLoaderRoute: typeof LoginValidateotpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/reset-password-sent': {
+      id: '/login/reset-password-sent'
+      path: '/login/reset-password-sent'
+      fullPath: '/login/reset-password-sent'
+      preLoaderRoute: typeof LoginResetPasswordSentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/forgot-password': {
@@ -1267,6 +1287,7 @@ const rootRouteChildren: RootRouteChildren = {
   UserdeletedLazyRoute: UserdeletedLazyRoute,
   LoginCallbackRoute: LoginCallbackRoute,
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,
+  LoginResetPasswordSentRoute: LoginResetPasswordSentRoute,
   LoginValidateotpRoute: LoginValidateotpRoute,
   OnboardingRegisterRoute: OnboardingRegisterRoute,
   OnboardingWaiting_listRoute: OnboardingWaiting_listRoute,

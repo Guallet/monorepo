@@ -34,6 +34,7 @@ export interface AuthContextWithMethods extends AuthContextType {
   ) => Promise<AuthResult>;
   getOtpCode: (email: string) => Promise<AuthResult>;
   verifyOtpCode: (email: string, code: string) => Promise<AuthResult>;
+  resetPassword: (email: string, redirectUrl: string) => Promise<AuthResult>;
 }
 
 export const AuthContext = createContext<AuthContextWithMethods>({
@@ -78,6 +79,12 @@ export const AuthContext = createContext<AuthContextWithMethods>({
     };
   },
   verifyOtpCode: async (email: string, code: string): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  resetPassword: async (email: string, redirectUrl: string): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
