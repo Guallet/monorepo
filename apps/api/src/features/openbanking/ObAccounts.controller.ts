@@ -17,6 +17,7 @@ export class ObAccountsController {
 
   @Get()
   getObAccounts(@RequestUser() user: UserPrincipal) {
+    this.logger.debug(`Getting Open Banking accounts for user ${user.id}`);
     return { accounts: ['123456789', '987654321'] };
   }
 

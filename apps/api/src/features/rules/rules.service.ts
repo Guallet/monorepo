@@ -11,13 +11,14 @@ export class RulesService {
 
   constructor(
     @InjectRepository(Rule)
-    private rulesRepository: Repository<Rule>,
+    private readonly rulesRepository: Repository<Rule>,
 
     @InjectRepository(RuleCondition)
-    private conditionsRepository: Repository<RuleCondition>,
+    private readonly conditionsRepository: Repository<RuleCondition>,
   ) {}
 
   create(createRuleDto: CreateRuleDto) {
+    this.logger.debug(`Creating a new rule`, createRuleDto);
     return 'This action adds a new rule';
   }
 
@@ -33,6 +34,7 @@ export class RulesService {
   }
 
   update(id: number, updateRuleDto: UpdateRuleDto) {
+    this.logger.debug(`Updating rule ${id}`, updateRuleDto);
     return `This action updates a #${id} rule`;
   }
 

@@ -232,12 +232,14 @@ export class NordigenService {
       this.handleHttpStatusCodes(response);
 
       // If no exception thrown in the step before, then return the data
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return response.data;
-    } catch (response) {
+    } catch (error_) {
       this.logger.error(
-        `Error making Nordigen GET request to ${path}. Error: ${typeof response}}`,
+        `Error making Nordigen GET request to ${path}. Error: ${typeof error_}}`,
       );
-      this.handleHttpStatusCodes(response, true);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      this.handleHttpStatusCodes(error_, true);
       throw new InternalServerErrorException();
     }
   }
@@ -264,7 +266,7 @@ export class NordigenService {
     }
   }
 
-  async makePostRequest<T>(path: string, payload: any): Promise<T> {
+  async makePostRequest<T>(path: string, payload: unknown): Promise<T> {
     const url = `${this.BASE_URL}${path}`;
     const token = await this.getAccessToken();
 
@@ -287,8 +289,9 @@ export class NordigenService {
       // Search for common HTTP status codes
       this.handleHttpStatusCodes(response);
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return response.data;
-    } catch (response) {
+    } catch (error_) {
       this.logger.error(
         `Error making POST request to ${path}. Payload ${JSON.stringify(
           payload,
@@ -296,7 +299,8 @@ export class NordigenService {
           4,
         )}`,
       );
-      this.handleHttpStatusCodes(response, true);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      this.handleHttpStatusCodes(error_, true);
       throw new InternalServerErrorException();
     }
   }
@@ -324,11 +328,13 @@ export class NordigenService {
       this.handleHttpStatusCodes(response);
 
       // If no exception thrown in the step before, then return the data
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return response.data;
-    } catch (response) {
+    } catch (error_) {
       this.logger.error(`Error making Nordigen GET request to ${path}`);
-      this.handleHttpStatusCodes(response, true);
-      throw response;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      this.handleHttpStatusCodes(error_, true);
+      throw error_;
     }
   }
   //#endregion
@@ -337,9 +343,10 @@ export class NordigenService {
   async createRequisition(
     institution_id: string,
     redirect_url: string,
-  ): Promise<any> {
+  ): Promise<NordigenRequisitionDto> {
     const path = `/api/v2/requisitions/`;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await this.makePostRequest<any>(path, {
       redirect: redirect_url,
       institution_id: institution_id,
@@ -354,7 +361,7 @@ export class NordigenService {
     } else {
       this.logger.debug(`Response: ${JSON.stringify(response, null, 4)}`);
 
-      return response;
+      return response as NordigenRequisitionDto;
     }
   }
 

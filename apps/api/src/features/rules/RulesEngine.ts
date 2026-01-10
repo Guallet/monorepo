@@ -154,6 +154,7 @@ export class RulesEngine {
   getCategoryForTransaction(transaction: Transaction): string | null {
     let categoryId: string | null = null;
 
+    // TODO: Use .toSorted(), but we need to update to es2023 or later
     this.rules
       .sort((a, b) => a.order - b.order)
       .forEach((rule) => {
@@ -162,10 +163,11 @@ export class RulesEngine {
 
           const isValidFieldType = this.getIsValidFieldType(
             condition.field as TransactionField,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             value,
           );
           if (isValidFieldType === false) {
-            throw Error('Invalid field type for the condition');
+            throw new Error('Invalid field type for the condition');
           }
 
           const conditionValue = condition.value;

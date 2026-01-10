@@ -6,11 +6,7 @@ export class HttpLoggerMiddleware implements NestMiddleware {
   private readonly logger = new Logger();
 
   use(request: Request, response: Response, next: () => void) {
-    const { ip } = request;
-    const userAgent = request.get('user-agent') || '';
-
     response.on('finish', () => {
-      // const log_message = `${request.method} ${request.originalUrl} - ${userAgent} ${ip} => ${response.statusCode}`;
       const log_message = `${request.method} ${request.originalUrl} => ${response.statusCode}`;
       if (response.statusCode >= 500) {
         this.logger.error(log_message);

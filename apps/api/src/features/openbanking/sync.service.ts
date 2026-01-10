@@ -111,7 +111,7 @@ export class SyncService {
   })
   syncAccountsCronJob() {
     this.logger.log('Syncing accounts via cron job');
-    this.syncConnectedAccounts();
+    void this.syncConnectedAccounts(); //Fire and forget
   }
 
   async syncConnectedAccounts(): Promise<SyncAccountsResult> {
@@ -296,7 +296,7 @@ export class SyncService {
       } else {
         // Update the account balance
         guallet_account.balance = balance.amount;
-        this.accountsRepository.save(guallet_account);
+        await this.accountsRepository.save(guallet_account);
       }
 
       if (balance === null) {
@@ -305,7 +305,7 @@ export class SyncService {
         );
       } else {
         guallet_account.balance = balance.amount;
-        this.accountsRepository.save(guallet_account);
+        await this.accountsRepository.save(guallet_account);
       }
     } catch (error) {
       console.error(
