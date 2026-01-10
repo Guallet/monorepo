@@ -12,7 +12,7 @@ import {
 } from '@luna-ui/react-native';
 import { useAuth } from '@/auth/useAuth';
 
-const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
