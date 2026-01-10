@@ -17,6 +17,9 @@ export function useSubscriptionsMutations() {
     },
     onSuccess: async (data, variables) => {
       queryClient.setQueryData([SUBSCRIPTIONS_QUERY_KEY, data.id], data);
+      queryClient.invalidateQueries({
+        queryKey: [SUBSCRIPTIONS_QUERY_KEY],
+      });
     },
     onError: async (error, variables, context) => {
       console.error(error);
@@ -38,6 +41,9 @@ export function useSubscriptionsMutations() {
     },
     onSuccess: async (data, variables) => {
       queryClient.setQueryData([SUBSCRIPTIONS_QUERY_KEY, data.id], data);
+      queryClient.invalidateQueries({
+        queryKey: [SUBSCRIPTIONS_QUERY_KEY],
+      });
     },
     onError: async (error, variables, context) => {
       console.error(error);
