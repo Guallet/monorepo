@@ -14,54 +14,108 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BuildConfig } from '@/BuildConfig';
 import { Image } from 'expo-image';
-import { View } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useAuth } from '@/auth/useAuth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type LoginMethod = 'password' | 'magic-link';
+
 export function LoginScreen() {
-  const { spacing } = useTheme();
-  const { getOtpCode, loginWithProvider } = useAuth();
+  const { spacing, colors } = useTheme();
+  const { getOtpCode, loginWithProvider, login } = useAuth();
 
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
-  const [emailError, setEmailError] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>('');
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginMethod, setLoginMethod] = useState<LoginMethod>('password');
 
   const isValidEmail = emailRegex.test(email);
+  const isValidPassword = password.length >= 6;
 
-  const onLoginWithEmail = async () => {
-    if (BuildConfig.IS_DEV) {
-      router.navigate('/login/otp');
-    }
-
+  const onLoginWithPassword = async () => {
     if (!isValidEmail) {
-      setEmailError(true);
+      setEmailError('Please enter a valid email');
       return;
     }
 
-    setEmailError(false);
+    if (!isValidPassword) {
+      setPasswordError('Password must be at least 6 characters');
+      return;
+    }
 
+    setEmailError(null);
+    setPasswordError(null);
+    setIsLoading(true);
+
+    const result = await login(email, password);
+    setIsLoading(false);
+
+    if (result.success) {
+      router.replace('/(tabs)');
+    } else {
+      setPasswordError(result.error?.message ?? 'Login failed. Please try again.');
+    }
+  };
+
+  const onLoginWithMagicLink = async () => {
+    if (BuildConfig.IS_DEV) {
+      router.navigate({
+        pathname: '/login/otp',
+        params: { email },
+      });
+      return;
+    }
+
+    if (!isValidEmail) {
+      setEmailError('Please enter a valid email');
+      return;
+    }
+
+    setEmailError(null);
     setIsLoading(true);
     const isCodeSent = await getOtpCode(email);
     setIsLoading(false);
 
     if (isCodeSent) {
-      router.navigate('/login/otp');
+      router.navigate({
+        pathname: '/login/otp',
+        params: { email },
+      });
     } else {
-      // TODO: Show some error to the user
-      alert('Failed to send OTP code. Please try again.');
+      alert('Failed to send magic link. Please try again.');
     }
   };
 
   const loginWithGoogle = async () => {
-    const canLogin = await loginWithProvider('google');
-    if (!canLogin) {
+    try {
+      setIsLoading(true);
+      const canLogin = await loginWithProvider('google');
+      setIsLoading(false);
+      if (!canLogin) {
+        alert('Failed to login with Google. Please try again.');
+      } else {
+        router.replace('/(tabs)');
+      }
+    } catch {
+      setIsLoading(false);
       alert('Failed to login with Google. Please try again.');
-    } else {
-      // Redirect to /dashboard
-      router.replace('/(tabs)');
     }
+  };
+
+  const handleForgotPassword = () => {
+    router.navigate({
+      pathname: '/login/forgot-password',
+      params: { email },
+    });
+  };
+
+  const toggleLoginMethod = () => {
+    setLoginMethod(loginMethod === 'password' ? 'magic-link' : 'password');
+    setPasswordError(null);
   };
 
   return (
@@ -88,21 +142,68 @@ export function LoginScreen() {
           </View>
 
           <Title center>Login or sign up</Title>
+
           <TextInput
             label="Email"
             onChangeText={(input) => {
               setEmail(input);
-              setEmailError(false);
+              setEmailError(null);
             }}
             value={email}
-            placeholder="Email"
+            placeholder="Enter your email"
             keyboardType="email-address"
-            error={emailError ? 'Please enter a valid email' : null}
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={emailError}
           />
-          <Button onClick={onLoginWithEmail} disabled={!isValidEmail}>
-            Login with email
-          </Button>
+
+          {loginMethod === 'password' && (
+            <>
+              <TextInput
+                label="Password"
+                onChangeText={(input) => {
+                  setPassword(input);
+                  setPasswordError(null);
+                }}
+                value={password}
+                placeholder="Enter your password"
+                secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                error={passwordError}
+              />
+
+              <TouchableOpacity onPress={handleForgotPassword}>
+                <Text style={[styles.forgotPasswordLink, { color: colors.primary }]}>
+                  Forgot password?
+                </Text>
+              </TouchableOpacity>
+
+              <Button
+                onClick={onLoginWithPassword}
+                disabled={!isValidEmail || !isValidPassword}
+              >
+                Sign in
+              </Button>
+            </>
+          )}
+
+          {loginMethod === 'magic-link' && (
+            <Button onClick={onLoginWithMagicLink} disabled={!isValidEmail}>
+              Send magic link
+            </Button>
+          )}
+
+          <TouchableOpacity onPress={toggleLoginMethod}>
+            <Text style={[styles.toggleLink, { color: colors.primary }]}>
+              {loginMethod === 'password'
+                ? 'Use magic link instead'
+                : 'Use password instead'}
+            </Text>
+          </TouchableOpacity>
+
           <Divider label="or continue with" />
+
           <GoogleButton
             onPress={() => {
               loginWithGoogle();
@@ -125,3 +226,16 @@ export function LoginScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  forgotPasswordLink: {
+    fontSize: 14,
+    textAlign: 'right',
+    marginTop: -8,
+  },
+  toggleLink: {
+    fontSize: 14,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
+});
