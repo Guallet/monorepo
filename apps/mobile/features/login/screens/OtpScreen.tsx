@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, OtpInput, Title, useTheme } from '@luna-ui/react-native';
+import {
+  Button,
+  Label,
+  OtpInput,
+  Title,
+  useTheme,
+} from '@luna-ui/react-native';
 import { openInbox } from 'react-native-email-link';
 import { useAuth } from '@/auth/useAuth';
 
@@ -64,11 +70,17 @@ export function OtpScreen() {
       <View style={{ flex: 1, padding: 16 }}>
         <Title>Check your email</Title>
         <Label>
-          We&apos;ve sent a 6-digit code to {email ? <Label style={{ fontWeight: 'bold' }}>{email}</Label> : 'your email'}.
-          Enter the code below to sign in.
+          We&apos;ve sent a 6-digit code to{' '}
+          {email ? (
+            <Label style={{ fontWeight: 'bold' }}>{email}</Label>
+          ) : (
+            'your email'
+          )}
+          . Enter the code below to sign in.
         </Label>
         <Label style={{ marginTop: 8 }}>
-          The email also contains a magic link you can click to sign in automatically.
+          The email also contains a magic link you can click to sign in
+          automatically.
         </Label>
 
         {/* Code Input */}
@@ -83,9 +95,7 @@ export function OtpScreen() {
           }}
         />
 
-        {error && (
-          <Text style={styles.errorText}>{error}</Text>
-        )}
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
         <Button onClick={handleVerifyCode} disabled={!isCodeComplete}>
           Verify code
@@ -95,7 +105,9 @@ export function OtpScreen() {
         <View style={styles.resendContainer}>
           <Text style={styles.resendText}>Didn&apos;t receive the code?</Text>
           <TouchableOpacity onPress={handleResendCode}>
-            <Text style={[styles.resendButton, { color: colors.primary }]}>Resend code</Text>
+            <Text style={[styles.resendButton, { color: colors.primary }]}>
+              Resend code
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -106,7 +118,9 @@ export function OtpScreen() {
           padding: 24,
         }}
       >
-        <Button variant="outline" onClick={handleOpenEmailApp}>Open email app</Button>
+        <Button variant="outline" onClick={handleOpenEmailApp}>
+          Open email app
+        </Button>
       </View>
     </AppScreen>
   );

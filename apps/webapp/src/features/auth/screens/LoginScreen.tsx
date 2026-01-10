@@ -40,8 +40,8 @@ type MagicLinkFormData = z.infer<typeof magicLinkFormSchema>;
 interface LoginScreenProps {
   isLoading?: boolean;
   onGoogleLogin: () => void;
-  onMagicLink: (email: string) => void;
-  onPassword: (email: string, password: string) => void;
+  onMagicLink: (email: string) => Promise<void>;
+  onPassword: (email: string, password: string) => Promise<void>;
   magicLinkError?: string;
 }
 
@@ -75,14 +75,14 @@ export function LoginScreen({
     validate: zod4Resolver(magicLinkFormSchema),
   });
 
-  const handlePasswordSubmit = (data: PasswordFormData) => {
-    onPassword(data.email, data.password);
+  const handlePasswordSubmit = async (data: PasswordFormData) => {
+    await onPassword(data.email, data.password);
   };
 
-  const handleMagicLinkSubmit = (data: MagicLinkFormData) => {
-    setLocalMagicLinkError(null);
+  const handleMagicLinkSubmit = async (data: MagicLinkFormData) => {
     try {
-      onMagicLink(data.email);
+      setLocalMagicLinkError(null);
+      await onMagicLink(data.email);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to send magic link';
