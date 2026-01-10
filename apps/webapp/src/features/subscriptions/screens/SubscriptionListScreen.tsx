@@ -18,6 +18,7 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { IconPlus, IconChevronRight } from '@tabler/icons-react';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
   switch (type) {
@@ -123,6 +124,7 @@ function SubscriptionRow({
 export function SubscriptionListScreen() {
   const navigation = useNavigate();
   const { subscriptions, isLoading } = useSubscriptions();
+  const defaultCurrency = useDefaultCurrency();
 
   const groupedSubscriptions = useMemo(() => {
     if (isLoading || !subscriptions) {
@@ -149,10 +151,10 @@ export function SubscriptionListScreen() {
       let monthlyAmount = sub.amount;
       switch (sub.cadence) {
         case RecurrenceCadence.WEEKLY:
-          monthlyAmount = sub.amount * 4;
+          monthlyAmount = (sub.amount * 52) / 12;
           break;
         case RecurrenceCadence.BIWEEKLY:
-          monthlyAmount = sub.amount * 2;
+          monthlyAmount = (sub.amount * 26) / 12;
           break;
         case RecurrenceCadence.QUARTERLY:
           monthlyAmount = sub.amount / 3;
@@ -174,7 +176,8 @@ export function SubscriptionListScreen() {
               Subscriptions & Regular Payments
             </Text>
             <Text c="dimmed" size="sm">
-              Estimated monthly: {formatCurrency(totalMonthlyAmount, 'GBP')}
+              Estimated monthly:{' '}
+              {formatCurrency(totalMonthlyAmount, defaultCurrency)}
             </Text>
           </Stack>
           <Button
