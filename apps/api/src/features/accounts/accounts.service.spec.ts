@@ -3,7 +3,6 @@ import { AccountsService } from './accounts.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { Transaction } from '../transactions/entities/transaction.entity';
-import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { AccountType } from './entities/accountType.model';
 import { AccountSource } from './entities/accountSource.model';
@@ -12,8 +11,6 @@ import { UpdateAccountRequest } from './dto/update-account-request.dto';
 
 describe('AccountsService', () => {
   let service: AccountsService;
-  let accountRepository: Repository<Account>;
-  let transactionRepository: Repository<Transaction>;
 
   const mockAccountRepository = {
     find: jest.fn(),
@@ -42,12 +39,6 @@ describe('AccountsService', () => {
     }).compile();
 
     service = module.get<AccountsService>(AccountsService);
-    accountRepository = module.get<Repository<Account>>(
-      getRepositoryToken(Account),
-    );
-    transactionRepository = module.get<Repository<Transaction>>(
-      getRepositoryToken(Transaction),
-    );
 
     // Clear all mocks before each test
     jest.clearAllMocks();
@@ -399,9 +390,9 @@ describe('AccountsService', () => {
 
       mockAccountRepository.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.update({ accountId, dto, userId }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.update({ accountId, dto, userId })).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should update balance and create adjustment transaction when requested', async () => {

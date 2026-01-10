@@ -14,9 +14,6 @@ import { Transaction } from '../transactions/entities/transaction.entity';
 
 describe('AccountsController', () => {
   let controller: AccountsController;
-  let accountsService: AccountsService;
-  let transactionsService: TransactionsService;
-  let openBankingService: OpenbankingService;
 
   const mockAccountsService = {
     findAllUserAccounts: jest.fn(),
@@ -60,9 +57,6 @@ describe('AccountsController', () => {
     }).compile();
 
     controller = module.get<AccountsController>(AccountsController);
-    accountsService = module.get<AccountsService>(AccountsService);
-    transactionsService = module.get<TransactionsService>(TransactionsService);
-    openBankingService = module.get<OpenbankingService>(OpenbankingService);
 
     // Clear all mocks before each test
     jest.clearAllMocks();
