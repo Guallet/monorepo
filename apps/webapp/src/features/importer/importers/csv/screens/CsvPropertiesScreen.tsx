@@ -198,7 +198,7 @@ export function CsvPropertiesScreen() {
                         );
                         const isValid =
                           fieldValue === '' ||
-                          testAmounts.every((input) => !isNaN(+input));
+                          testAmounts.every((input) => !Number.isNaN(+input));
                         setIsValidAmountField(isValid);
                       }}
                       searchable
