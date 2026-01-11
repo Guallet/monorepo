@@ -1,10 +1,19 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useInfiniteTransactionInbox } from "@guallet/api-react";
-import { Badge, Button, Center, Group, Loader, Stack, Text, Title } from "@mantine/core";
-import { InboxTransactionCard } from "../components/InboxTransactionCard";
-import { useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { useIntersection } from "@mantine/hooks";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useInfiniteTransactionInbox } from '@guallet/api-react';
+import {
+  Badge,
+  Button,
+  Center,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { InboxTransactionCard } from '../components/InboxTransactionCard';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { useIntersection } from '@mantine/hooks';
 
 export function TransactionInboxScreen() {
   const navigate = useNavigate();
@@ -30,12 +39,6 @@ export function TransactionInboxScreen() {
     <BaseScreen isLoading={isLoading}>
       <Stack>
         <Group>
-          <Text>Debug only. Remove before release:</Text>
-          <Button onClick={() => navigate({ to: "/transactions/oldinbox" })}>
-            Navigate to old inbox
-          </Button>
-        </Group>
-        <Group>
           <Title>Transactions Inbox</Title>
           <Badge>{transactions.length}</Badge>
         </Group>
@@ -45,10 +48,10 @@ export function TransactionInboxScreen() {
               key={transaction.id}
               transaction={transaction}
               onEdit={() => {
-                console.log("Edit transaction:", transaction);
+                console.log('Edit transaction:', transaction);
               }}
               onSaveChanges={() => {
-                console.log("Save changes for transaction:", transaction);
+                console.log('Save changes for transaction:', transaction);
               }}
             />
           ))}
