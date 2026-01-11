@@ -23,23 +23,15 @@ export class DataImporterService {
     private readonly usersService: UsersService,
   ) {}
 
-  async importCsvData(
+  importCsvData(
     userId: string,
     dto: CsvImportRequestDto,
-  ): Promise<CsvImportResponseDto> {
+  ): CsvImportResponseDto {
     this.logger.log(`Starting CSV import for user ${userId}`);
-
-    let processedCount = 0;
-    let failedCount = 0;
 
     try {
       // Process asynchronously - don't await
-      this.processImportAsync(userId, dto).then(
-        ({ processed, failed }) => {
-          processedCount = processed;
-          failedCount = failed;
-        },
-      );
+      void this.processImportAsync(userId, dto);
 
       // Return immediately to indicate the import has started
       return {
@@ -76,8 +68,9 @@ export class DataImporterService {
       // Step 3: Create transactions
       for (const row of csvData) {
         try {
-          const accountKey = row[fieldMappings.account] || 'default';
-          const categoryKey = row[fieldMappings.category];
+          const accountKey =
+            (row[fieldMappings.account] as string) || 'default';
+          const categoryKey = row[fieldMappings.category] as string | undefined;
 
           const accountId = accountIdMap.get(accountKey);
           const categoryId = categoryKey
@@ -96,10 +89,10 @@ export class DataImporterService {
             userId,
             dto: {
               accountId,
-              date: new Date(row[fieldMappings.date]),
-              amount: parseFloat(row[fieldMappings.amount]),
-              description: row[fieldMappings.description] || '',
-              notes: row[fieldMappings.notes] || undefined,
+              date: new Date(row[fieldMappings.date] as string),
+              amount: parseFloat(row[fieldMappings.amount] as string),
+              description: (row[fieldMappings.description] as string) || '',
+              notes: (row[fieldMappings.notes] as string) || undefined,
               categoryId: categoryId || undefined,
             },
           });
@@ -188,9 +181,7 @@ export class DataImporterService {
             },
           });
           categoryIdMap.set(key, category.id);
-          this.logger.log(
-            `Created category: ${mapping.name} (${category.id})`,
-          );
+          this.logger.log(`Created category: ${mapping.name} (${category.id})`);
         } catch (error) {
           this.logger.error(`Error creating category ${mapping.name}`, error);
         }

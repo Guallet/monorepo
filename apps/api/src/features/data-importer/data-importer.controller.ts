@@ -14,10 +14,10 @@ export class DataImporterController {
   constructor(private readonly dataImporterService: DataImporterService) {}
 
   @Post('csv')
-  async importCsv(
+  importCsv(
     @RequestUser() user: UserPrincipal,
     @Body() dto: CsvImportRequestDto,
-  ): Promise<CsvImportResponseDto> {
+  ): CsvImportResponseDto {
     this.logger.log(`CSV import request from user ${user.id}`);
     return this.dataImporterService.importCsvData(user.id, dto);
   }

@@ -10,7 +10,9 @@ export class EmailService {
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
     if (!apiKey) {
-      this.logger.warn('RESEND_API_KEY not configured. Email functionality will be disabled.');
+      this.logger.warn(
+        'RESEND_API_KEY not configured. Email functionality will be disabled.',
+      );
     }
     this.resend = new Resend(apiKey);
   }
@@ -34,7 +36,10 @@ export class EmailService {
       });
 
       await this.resend.emails.send({
-        from: this.configService.get<string>('EMAIL_FROM', 'noreply@guallet.app'),
+        from: this.configService.get<string>(
+          'EMAIL_FROM',
+          'noreply@guallet.app',
+        ),
         to,
         subject,
         html,
@@ -42,7 +47,10 @@ export class EmailService {
 
       this.logger.log(`Import completion email sent to ${to}`);
     } catch (error) {
-      this.logger.error(`Failed to send import completion email to ${to}`, error);
+      this.logger.error(
+        `Failed to send import completion email to ${to}`,
+        error,
+      );
       // Don't throw - email failure shouldn't fail the entire import
     }
   }
@@ -54,7 +62,10 @@ export class EmailService {
     totalCount: number;
   }): string {
     const { userName, processedCount, failedCount, totalCount } = args;
-    const status = failedCount === 0 ? 'successfully completed' : 'completed with some errors';
+    const status =
+      failedCount === 0
+        ? 'successfully completed'
+        : 'completed with some errors';
 
     return `
       <!DOCTYPE html>
@@ -92,12 +103,16 @@ export class EmailService {
                   <span>Successfully imported:</span>
                   <span class="success">${processedCount}</span>
                 </div>
-                ${failedCount > 0 ? `
+                ${
+                  failedCount > 0
+                    ? `
                 <div class="stat-row">
                   <span>Failed:</span>
                   <span class="error">${failedCount}</span>
                 </div>
-                ` : ''}
+                `
+                    : ''
+                }
               </div>
               
               <p>You can now view your imported transactions in your Guallet account.</p>
