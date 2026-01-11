@@ -18,7 +18,10 @@ export class RegularPaymentDto {
 
   @ApiProperty({ enum: RecurrenceCadence })
   cadence: RecurrenceCadence;
+  
+  @ApiProperty()
   startDate: Date;
+  
   imageUrl?: string;
   categoryId?: string;
 

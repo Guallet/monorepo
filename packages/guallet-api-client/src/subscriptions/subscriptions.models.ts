@@ -20,7 +20,7 @@ export type SubscriptionDto = {
   amount: number;
   currency: string;
   cadence: RecurrenceCadence;
-  startDate: Date;
+  startDate: string;
   imageUrl?: string;
   categoryId?: string;
 };
