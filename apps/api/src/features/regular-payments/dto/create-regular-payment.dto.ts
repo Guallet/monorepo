@@ -7,6 +7,7 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  IsDateString,
 } from 'class-validator';
 import {
   RecurrenceCadence,
@@ -36,6 +37,10 @@ export class CreateRegularPaymentDto {
   @IsEnum(RecurrenceCadence)
   @IsNotEmpty()
   cadence: RecurrenceCadence;
+
+  @IsDateString()
+  @IsNotEmpty()
+  startDate: string;
 
   @ApiProperty({ enum: RecurringPaymentType })
   @IsEnum(RecurringPaymentType)

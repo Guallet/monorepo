@@ -52,6 +52,7 @@ export class RegularPaymentsService {
       currency: createRegularPaymentDto.currency,
       name: createRegularPaymentDto.name,
       type: createRegularPaymentDto.type,
+      startDate: new Date(createRegularPaymentDto.startDate),
       imageUrl: createRegularPaymentDto.imageUrl,
       category: createRegularPaymentDto.categoryId
         ? { id: createRegularPaymentDto.categoryId }
@@ -144,6 +145,7 @@ export class RegularPaymentsService {
       currency: dto.currency ?? entity.currency,
       cadence: dto.cadence ?? entity.cadence,
       type: dto.type ?? entity.type,
+      startDate: dto.startDate ? new Date(dto.startDate) : entity.startDate,
       imageUrl: dto.imageUrl ?? entity.imageUrl,
       categoryId: dto.categoryId ?? entity.categoryId,
     });

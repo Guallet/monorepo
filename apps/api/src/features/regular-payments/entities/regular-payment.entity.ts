@@ -51,6 +51,9 @@ export class RegularPayment extends BaseDbEntity {
   })
   cadence: RecurrenceCadence;
 
+  @Column({ type: 'date' })
+  startDate: Date;
+
   @Column({ nullable: true })
   imageUrl?: string;
 

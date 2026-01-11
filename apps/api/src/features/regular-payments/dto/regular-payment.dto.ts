@@ -18,6 +18,7 @@ export class RegularPaymentDto {
 
   @ApiProperty({ enum: RecurrenceCadence })
   cadence: RecurrenceCadence;
+  startDate: Date;
   imageUrl?: string;
   categoryId?: string;
 
@@ -30,6 +31,7 @@ export class RegularPaymentDto {
     dto.amount = entity.amount;
     dto.currency = entity.currency;
     dto.cadence = entity.cadence;
+    dto.startDate = entity.startDate;
     dto.imageUrl = entity.imageUrl;
     dto.categoryId = entity.category ? entity.category.id : undefined;
     return dto;

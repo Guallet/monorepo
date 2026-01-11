@@ -20,6 +20,7 @@ export type SubscriptionDto = {
   amount: number;
   currency: string;
   cadence: RecurrenceCadence;
+  startDate: Date;
   imageUrl?: string;
   categoryId?: string;
 };
@@ -29,6 +30,7 @@ export type CreateSubscriptionRequest = {
   amount: number;
   currency: string;
   cadence: RecurrenceCadence;
+  startDate: string;
   type: RecurringPaymentType;
   imageUrl?: string;
   categoryId?: string;
@@ -39,6 +41,7 @@ export type UpdateSubscriptionRequest = {
   amount?: number;
   currency?: string;
   cadence?: RecurrenceCadence;
+  startDate?: string;
   type?: RecurringPaymentType;
   imageUrl?: string;
   categoryId?: string;
