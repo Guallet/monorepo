@@ -10,22 +10,20 @@ import {
   Textarea,
   Switch,
   Divider,
-} from "@mantine/core";
-import {
-  IconPlus,
-  IconTrash,
-  IconGripVertical,
-} from "@tabler/icons-react";
-import { useState } from "react";
-import { FieldDefinition } from "@guallet/api-client";
-import { Category } from "@/features/categories/models/Category";
+} from '@mantine/core';
+import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
+import { useState } from 'react';
+import { CategoryDto, FieldDefinition } from '@guallet/api-client';
+import { Category } from '@/features/categories/models/Category';
+import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
+import { useCategory } from '@guallet/api-react';
 
 export interface RuleFormData {
   name: string;
   description: string;
   resultCategoryId: string;
   isActive: boolean;
-  conditionLogic: "and" | "or";
+  conditionLogic: 'and' | 'or';
   conditions: ConditionFormData[];
 }
 
@@ -56,23 +54,26 @@ export function RuleForm({
   onSubmit,
   onCancel,
   isSubmitting = false,
-  submitLabel = "Save",
-}: RuleFormProps) {
-  const [name, setName] = useState(initialData?.name ?? "");
+  submitLabel = 'Save',
+}: Readonly<RuleFormProps>) {
+  const [name, setName] = useState(initialData?.name ?? '');
   const [description, setDescription] = useState(
-    initialData?.description ?? ""
+    initialData?.description ?? '',
   );
   const [resultCategoryId, setResultCategoryId] = useState(
-    initialData?.resultCategoryId ?? ""
+    initialData?.resultCategoryId ?? '',
   );
+
+  const { category } = useCategory(resultCategoryId);
+
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true);
-  const [conditionLogic, setConditionLogic] = useState<"and" | "or">(
-    initialData?.conditionLogic ?? "and"
+  const [conditionLogic, setConditionLogic] = useState<'and' | 'or'>(
+    initialData?.conditionLogic ?? 'and',
   );
   const [conditions, setConditions] = useState<ConditionFormData[]>(
     initialData?.conditions ?? [
-      { id: generateConditionId(), field: "", operator: "", value: "" },
-    ]
+      { id: generateConditionId(), field: '', operator: '', value: '' },
+    ],
   );
 
   const [draggedCondition, setDraggedCondition] =
@@ -81,7 +82,7 @@ export function RuleForm({
   const handleAddCondition = () => {
     setConditions([
       ...conditions,
-      { id: generateConditionId(), field: "", operator: "", value: "" },
+      { id: generateConditionId(), field: '', operator: '', value: '' },
     ]);
   };
 
@@ -94,20 +95,20 @@ export function RuleForm({
   const handleConditionChange = (
     id: string,
     field: keyof ConditionFormData,
-    value: string
+    value: string,
   ) => {
     setConditions(
       conditions.map((c) => {
         if (c.id === id) {
           const updated = { ...c, [field]: value };
           // Reset operator when field changes
-          if (field === "field") {
-            updated.operator = "";
+          if (field === 'field') {
+            updated.operator = '';
           }
           return updated;
         }
         return c;
-      })
+      }),
     );
   };
 
@@ -116,17 +117,23 @@ export function RuleForm({
     return fieldDef?.operators ?? [];
   };
 
-  const handleDragStart = (e: React.DragEvent, condition: ConditionFormData) => {
+  const handleDragStart = (
+    e: React.DragEvent,
+    condition: ConditionFormData,
+  ) => {
     setDraggedCondition(condition);
-    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, targetCondition: ConditionFormData) => {
+  const handleDrop = (
+    e: React.DragEvent,
+    targetCondition: ConditionFormData,
+  ) => {
     e.preventDefault();
     if (!draggedCondition || draggedCondition.id === targetCondition.id) {
       setDraggedCondition(null);
@@ -135,10 +142,10 @@ export function RuleForm({
 
     const newConditions = [...conditions];
     const draggedIndex = newConditions.findIndex(
-      (c) => c.id === draggedCondition.id
+      (c) => c.id === draggedCondition.id,
     );
     const targetIndex = newConditions.findIndex(
-      (c) => c.id === targetCondition.id
+      (c) => c.id === targetCondition.id,
     );
 
     newConditions.splice(draggedIndex, 1);
@@ -161,9 +168,11 @@ export function RuleForm({
   };
 
   const isFormValid =
-    name.trim() !== "" &&
-    resultCategoryId !== "" &&
-    conditions.every((c) => c.field !== "" && c.operator !== "" && c.value !== "");
+    name.trim() !== '' &&
+    resultCategoryId !== '' &&
+    conditions.every(
+      (c) => c.field !== '' && c.operator !== '' && c.value !== '',
+    );
 
   const categoryOptions = categories.map((c) => ({
     value: c.id,
@@ -213,11 +222,11 @@ export function RuleForm({
                 w={120}
                 value={conditionLogic}
                 onChange={(value) =>
-                  setConditionLogic((value as "and" | "or") ?? "and")
+                  setConditionLogic((value as 'and' | 'or') ?? 'and')
                 }
                 data={[
-                  { value: "and", label: "Match ALL" },
-                  { value: "or", label: "Match ANY" },
+                  { value: 'and', label: 'Match ALL' },
+                  { value: 'or', label: 'Match ANY' },
                 ]}
               />
             </Group>
@@ -239,14 +248,14 @@ export function RuleForm({
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, condition)}
                   style={{
-                    cursor: "grab",
+                    cursor: 'grab',
                     opacity: draggedCondition?.id === condition.id ? 0.5 : 1,
                   }}
                 >
                   <Group gap="xs" wrap="nowrap" align="flex-end">
                     <ActionIcon
                       variant="subtle"
-                      style={{ cursor: "grab" }}
+                      style={{ cursor: 'grab' }}
                       mb={4}
                     >
                       <IconGripVertical size={16} />
@@ -259,8 +268,8 @@ export function RuleForm({
                       onChange={(value) =>
                         handleConditionChange(
                           condition.id,
-                          "field",
-                          value ?? ""
+                          'field',
+                          value ?? '',
                         )
                       }
                       style={{ flex: 1 }}
@@ -273,8 +282,8 @@ export function RuleForm({
                       onChange={(value) =>
                         handleConditionChange(
                           condition.id,
-                          "operator",
-                          value ?? ""
+                          'operator',
+                          value ?? '',
                         )
                       }
                       disabled={!condition.field}
@@ -287,8 +296,8 @@ export function RuleForm({
                       onChange={(e) =>
                         handleConditionChange(
                           condition.id,
-                          "value",
-                          e.target.value
+                          'value',
+                          e.target.value,
                         )
                       }
                       style={{ flex: 1 }}
@@ -320,14 +329,23 @@ export function RuleForm({
         <Card withBorder p="md">
           <Stack gap="md">
             <Text fw={500}>Then assign category</Text>
-            <Select
+            {/* <Select
               label="Category"
               placeholder="Select category to assign"
               data={categoryOptions}
               value={resultCategoryId}
-              onChange={(value) => setResultCategoryId(value ?? "")}
+              onChange={(value) => setResultCategoryId(value ?? '')}
               searchable
               required
+            /> */}
+            <CategoryPicker
+              required
+              label="Category"
+              placeholder="Select category to assign"
+              selectedCategory={category}
+              onCategorySelected={(selectedCategory: CategoryDto) => {
+                setResultCategoryId(selectedCategory.id ?? '');
+              }}
             />
           </Stack>
         </Card>

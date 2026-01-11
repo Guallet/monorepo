@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import {
   ActionIcon,
   Badge,
@@ -10,53 +10,47 @@ import {
   Title,
   Switch,
   Menu,
-} from "@mantine/core";
+} from '@mantine/core';
 import {
   IconPlus,
   IconEdit,
   IconTrash,
   IconGripVertical,
   IconDotsVertical,
-} from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
-import { useState } from "react";
-import { RuleDto } from "@guallet/api-client";
-import { gualletClient } from "@/api/gualletClient";
-import { loadCategories } from "@/features/categories/api/categories.api";
-import { Category } from "@/features/categories/models/Category";
+} from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import { useState } from 'react';
+import { RuleDto } from '@guallet/api-client';
+import { Category } from '@/features/categories/models/Category';
+import { useCategories, useRuleMutations, useRules } from '@guallet/api-react';
 
-export const Route = createFileRoute("/_app/rules/")({
+export const Route = createFileRoute('/_app/categories/rules/')({
   component: RulesPage,
-  loader: loader,
 });
 
-async function loader() {
-  const [rules, categories] = await Promise.all([
-    gualletClient.rules.getAll(),
-    loadCategories(),
-  ]);
-  return { rules, categories };
-}
-
 function RulesPage() {
-  const { rules: initialRules, categories } = Route.useLoaderData();
+  const { rules } = useRules();
+  const { categories } = useCategories();
+
+  const { reorderRulesMutation, deleteRuleMutation, updateRuleMutation } =
+    useRuleMutations();
+
   const navigate = useNavigate();
-  const [rules, setRules] = useState<RuleDto[]>(initialRules);
   const [draggedItem, setDraggedItem] = useState<RuleDto | null>(null);
 
   const getCategoryName = (categoryId: string): string => {
     const category = categories.find((c: Category) => c.id === categoryId);
-    return category?.name ?? "Unknown Category";
+    return category?.name ?? 'Unknown Category';
   };
 
   const handleDragStart = (e: React.DragEvent, rule: RuleDto) => {
     setDraggedItem(rule);
-    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = 'move';
   };
 
   const handleDrop = async (e: React.DragEvent, targetRule: RuleDto) => {
@@ -73,54 +67,63 @@ function RulesPage() {
     newRules.splice(draggedIndex, 1);
     newRules.splice(targetIndex, 0, draggedItem);
 
-    setRules(newRules);
     setDraggedItem(null);
 
     try {
       const ruleIds = newRules.map((r) => r.id);
-      await gualletClient.rules.reorder(ruleIds);
+
+      await reorderRulesMutation.mutateAsync({
+        ruleIds: ruleIds,
+      });
+
       notifications.show({
-        title: "Success",
-        message: "Rules reordered successfully",
-        color: "green",
+        title: 'Success',
+        message: 'Rules reordered successfully',
+        color: 'green',
       });
     } catch {
       notifications.show({
-        title: "Error",
-        message: "Failed to reorder rules",
-        color: "red",
+        title: 'Error',
+        message: 'Failed to reorder rules',
+        color: 'red',
       });
-      setRules(initialRules);
     }
   };
 
   const handleDelete = async (ruleId: string) => {
     try {
-      await gualletClient.rules.delete(ruleId);
-      setRules(rules.filter((r) => r.id !== ruleId));
+      await deleteRuleMutation.mutateAsync({ id: ruleId });
+
       notifications.show({
-        title: "Success",
-        message: "Rule deleted successfully",
-        color: "green",
+        title: 'Success',
+        message: 'Rule deleted successfully',
+        color: 'green',
       });
     } catch {
       notifications.show({
-        title: "Error",
-        message: "Failed to delete rule",
-        color: "red",
+        title: 'Error',
+        message: 'Failed to delete rule',
+        color: 'red',
       });
     }
   };
 
   const handleToggleActive = async (rule: RuleDto) => {
     try {
-      const updated = await gualletClient.rules.update({ id: rule.id, dto: { isActive: !rule.isActive } });
-      setRules(rules.map((r) => (r.id === rule.id ? updated : r)));
+      await updateRuleMutation.mutateAsync({
+        id: rule.id,
+        request: { isActive: !rule.isActive },
+      });
+      notifications.show({
+        title: 'Success',
+        message: `Rule ${rule.isActive ? 'disabled' : 'enabled'} successfully`,
+        color: 'green',
+      });
     } catch {
       notifications.show({
-        title: "Error",
-        message: "Failed to update rule",
-        color: "red",
+        title: 'Error',
+        message: 'Failed to update rule',
+        color: 'red',
       });
     }
   };
@@ -131,7 +134,7 @@ function RulesPage() {
         <Title order={2}>Categorization Rules</Title>
         <Button
           leftSection={<IconPlus size={16} />}
-          onClick={() => navigate({ to: "/rules/new" })}
+          onClick={() => navigate({ to: '/categories/rules/new' })}
         >
           Create Rule
         </Button>
@@ -150,7 +153,7 @@ function RulesPage() {
             mt="md"
             variant="light"
             leftSection={<IconPlus size={16} />}
-            onClick={() => navigate({ to: "/rules/new" })}
+            onClick={() => navigate({ to: '/categories/rules/new' })}
           >
             Create your first rule
           </Button>
@@ -168,13 +171,13 @@ function RulesPage() {
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, rule)}
               style={{
-                cursor: "grab",
+                cursor: 'grab',
                 opacity: draggedItem?.id === rule.id ? 0.5 : 1,
               }}
             >
               <Group justify="space-between" wrap="nowrap">
                 <Group gap="sm" wrap="nowrap" style={{ flex: 1 }}>
-                  <ActionIcon variant="subtle" style={{ cursor: "grab" }}>
+                  <ActionIcon variant="subtle" style={{ cursor: 'grab' }}>
                     <IconGripVertical size={16} />
                   </ActionIcon>
                   <Badge size="sm" variant="light" color="gray">
@@ -196,8 +199,10 @@ function RulesPage() {
                     )}
                     <Group gap="xs">
                       <Text size="xs" c="dimmed">
+                        {/* // TODO: This should be pluralized properly via i18n */}
                         {rule.conditions.length} condition
-                        {rule.conditions.length !== 1 ? "s" : ""} ({rule.conditionLogic === "or" ? "ANY" : "ALL"})
+                        {rule.conditions.length === 1 ? '' : 's'} (
+                        {rule.conditionLogic === 'or' ? 'ANY' : 'ALL'})
                       </Text>
                       <Text size="xs" c="dimmed">
                         →
@@ -225,7 +230,10 @@ function RulesPage() {
                       <Menu.Item
                         leftSection={<IconEdit size={14} />}
                         onClick={() =>
-                          navigate({ to: "/rules/$id/edit", params: { id: rule.id } })
+                          navigate({
+                            to: '/categories/rules/$id/edit',
+                            params: { id: rule.id },
+                          })
                         }
                       >
                         Edit

@@ -51,7 +51,7 @@ const menuData: MenuData[] = [
     icon: IconCategory2,
     subLinks: [
       { label: 'Manage Categories', link: '/categories' },
-      { label: 'Rules', link: '/rules' },
+      { label: 'Rules', link: '/categories/rules' },
     ],
   },
   {

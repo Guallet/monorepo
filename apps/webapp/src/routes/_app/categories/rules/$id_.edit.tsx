@@ -1,12 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Stack, Title } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useState } from "react";
-import { gualletClient } from "@/api/gualletClient";
-import { loadCategories } from "@/features/categories/api/categories.api";
-import { RuleForm, RuleFormData } from "@/features/rules/components/RuleForm";
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Stack, Title } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { useState } from 'react';
+import { gualletClient } from '@/api/gualletClient';
+import { loadCategories } from '@/features/categories/api/categories.api';
+import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
+import { useRuleMutations } from '@guallet/api-react';
 
-export const Route = createFileRoute("/_app/rules/$id_/edit")({
+export const Route = createFileRoute('/_app/categories/rules/$id_/edit')({
   component: EditRulePage,
   loader: loader,
 });
@@ -30,12 +31,14 @@ function EditRulePage() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { updateRuleMutation } = useRuleMutations();
+
   const initialData: RuleFormData = {
     name: rule.name,
-    description: rule.description ?? "",
+    description: rule.description ?? '',
     resultCategoryId: rule.resultCategoryId,
     isActive: rule.isActive,
-    conditionLogic: rule.conditionLogic ?? "and",
+    conditionLogic: rule.conditionLogic ?? 'and',
     conditions: rule.conditions.map((c) => ({
       id: c.id,
       field: c.field,
@@ -45,11 +48,12 @@ function EditRulePage() {
   };
 
   const handleSubmit = async (data: RuleFormData) => {
-    setIsSubmitting(true);
     try {
-      await gualletClient.rules.update({
+      setIsSubmitting(true);
+
+      await updateRuleMutation.mutateAsync({
         id,
-        dto: {
+        request: {
           name: data.name,
           description: data.description || undefined,
           resultCategoryId: data.resultCategoryId,
@@ -63,17 +67,18 @@ function EditRulePage() {
           })),
         },
       });
+
       notifications.show({
-        title: "Success",
-        message: "Rule updated successfully",
-        color: "green",
+        title: 'Success',
+        message: 'Rule updated successfully',
+        color: 'green',
       });
-      navigate({ to: "/rules" });
+      navigate({ to: '/categories/rules' });
     } catch {
       notifications.show({
-        title: "Error",
-        message: "Failed to update rule",
-        color: "red",
+        title: 'Error',
+        message: 'Failed to update rule',
+        color: 'red',
       });
     } finally {
       setIsSubmitting(false);
@@ -81,7 +86,7 @@ function EditRulePage() {
   };
 
   const handleCancel = () => {
-    navigate({ to: "/rules" });
+    navigate({ to: '/categories/rules' });
   };
 
   return (
