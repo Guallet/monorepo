@@ -10,6 +10,13 @@ import { CategoriesService } from '../categories/categories.service';
 import { TransactionsService } from '../transactions/transactions.service';
 import { EmailService } from '../email/email.service';
 import { UsersService } from '../users/users.service';
+import {
+  DEFAULT_CURRENCY,
+  DEFAULT_ACCOUNT_TYPE,
+  DEFAULT_ACCOUNT_SOURCE,
+  DEFAULT_CATEGORY_ICON,
+  DEFAULT_CATEGORY_COLOR,
+} from './constants/import-defaults';
 
 @Injectable()
 export class DataImporterService {
@@ -30,8 +37,13 @@ export class DataImporterService {
     this.logger.log(`Starting CSV import for user ${userId}`);
 
     try {
-      // Process asynchronously - don't await
-      void this.processImportAsync(userId, dto);
+      // Process asynchronously - don't await, but handle errors
+      void this.processImportAsync(userId, dto).catch((error) => {
+        this.logger.error(
+          `Unhandled error in async CSV import for user ${userId}`,
+          error,
+        );
+      });
 
       // Return immediately to indicate the import has started
       return {
@@ -142,9 +154,9 @@ export class DataImporterService {
             user_id: userId,
             dto: {
               name: mapping.name,
-              currency: 'GBP',
-              type: 'CURRENT',
-              source: 'CSV_IMPORT',
+              currency: DEFAULT_CURRENCY,
+              type: DEFAULT_ACCOUNT_TYPE,
+              source: DEFAULT_ACCOUNT_SOURCE,
             },
           });
           accountIdMap.set(key, account.id);
@@ -175,8 +187,8 @@ export class DataImporterService {
             user_id: userId,
             dto: {
               name: mapping.name,
-              icon: 'tag',
-              colour: '#999999',
+              icon: DEFAULT_CATEGORY_ICON,
+              colour: DEFAULT_CATEGORY_COLOR,
               parentId: null,
             },
           });
