@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Job } from 'bullmq';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
@@ -116,11 +119,6 @@ describe('CsvImportProcessor', () => {
         name: 'Test Account',
         currency: 'USD',
       } as Account;
-
-      const mockCategory = {
-        id: 'category-123',
-        name: 'Food',
-      } as Category;
 
       const dto: CsvImportRequestDto = {
         csvData: [
