@@ -1,29 +1,30 @@
-import { useNavigate } from "@tanstack/react-router";
-import { useAtom } from "jotai";
-import { useState } from "react";
-import { csvInfoAtom } from "../state/csvState";
-import { Dropzone, FileWithPath } from "@mantine/dropzone";
-import { CSV_MIME_TYPE } from "../models";
-import { 
-  Container, 
-  Group, 
-  rem, 
-  Text, 
-  Title, 
+import { useNavigate } from '@tanstack/react-router';
+import { useAtom } from 'jotai';
+import { useState } from 'react';
+import { csvInfoAtom } from '../state/csvState';
+import { Dropzone, FileWithPath } from '@mantine/dropzone';
+import { CSV_MIME_TYPE } from '../models';
+import {
+  Container,
+  Group,
+  rem,
+  Text,
+  Title,
   Stack,
   Paper,
   List,
   ThemeIcon,
-  Alert
-} from "@mantine/core";
-import { 
-  IconFileTypeCsv, 
-  IconUpload, 
-  IconX, 
+  Alert,
+} from '@mantine/core';
+import {
+  IconFileTypeCsv,
+  IconUpload,
+  IconX,
   IconCheck,
-  IconInfoCircle
-} from "@tabler/icons-react";
-import Papa from "papaparse";
+  IconInfoCircle,
+} from '@tabler/icons-react';
+import Papa from 'papaparse';
+import { CsvStepper } from '../components/CsvStepper';
 
 export function CsvImporterScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +41,14 @@ export function CsvImporterScreen() {
         header: true,
         skipEmptyLines: true,
       });
-      
+
       if (errors.length > 0) {
         setError(`CSV parsing errors: ${errors[0].message}`);
         return;
       }
-      
+
       if (!meta.fields || meta.fields.length === 0) {
-        setError("CSV file appears to be empty or has no headers");
+        setError('CSV file appears to be empty or has no headers');
         return;
       }
 
@@ -57,11 +58,13 @@ export function CsvImporterScreen() {
       });
 
       navigate({
-        to: "/importer/csv/properties",
+        to: '/importer/csv/properties',
       });
     } catch (e) {
       console.error("It's not possible to read the file", e);
-      setError("Failed to read the CSV file. Please ensure it's a valid CSV format.");
+      setError(
+        "Failed to read the CSV file. Please ensure it's a valid CSV format.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -73,16 +76,17 @@ export function CsvImporterScreen() {
         <Stack gap="xs">
           <Title order={2}>Import CSV File</Title>
           <Text c="dimmed" size="sm">
-            Upload your transaction data in CSV format. We'll help you map the fields
-            and import everything automatically.
+            Upload your transaction data in CSV format. We'll help you map the
+            fields and import everything automatically.
           </Text>
+          <CsvStepper activeStep={0} />
         </Stack>
 
         {error && (
-          <Alert 
-            icon={<IconInfoCircle size={16} />} 
-            title="Error" 
-            color="red" 
+          <Alert
+            icon={<IconInfoCircle size={16} />}
+            title="Error"
+            color="red"
             withCloseButton
             onClose={() => setError(null)}
           >
@@ -113,14 +117,14 @@ export function CsvImporterScreen() {
               justify="center"
               gap="xl"
               mih={220}
-              style={{ pointerEvents: "none" }}
+              style={{ pointerEvents: 'none' }}
             >
               <Dropzone.Accept>
                 <IconUpload
                   style={{
                     width: rem(52),
                     height: rem(52),
-                    color: "var(--mantine-color-blue-6)",
+                    color: 'var(--mantine-color-blue-6)',
                   }}
                   stroke={1.5}
                 />
@@ -130,7 +134,7 @@ export function CsvImporterScreen() {
                   style={{
                     width: rem(52),
                     height: rem(52),
-                    color: "var(--mantine-color-red-6)",
+                    color: 'var(--mantine-color-red-6)',
                   }}
                   stroke={1.5}
                 />
@@ -140,7 +144,7 @@ export function CsvImporterScreen() {
                   style={{
                     width: rem(52),
                     height: rem(52),
-                    color: "var(--mantine-color-dimmed)",
+                    color: 'var(--mantine-color-dimmed)',
                   }}
                   stroke={1.5}
                 />
@@ -160,7 +164,9 @@ export function CsvImporterScreen() {
 
         <Paper p="md" withBorder>
           <Stack gap="sm">
-            <Text fw={500} size="sm">CSV Requirements:</Text>
+            <Text fw={500} size="sm">
+              CSV Requirements:
+            </Text>
             <List
               spacing="xs"
               size="sm"

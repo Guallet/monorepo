@@ -11,17 +11,17 @@ import {
   Title,
   Paper,
   Group,
-  Stepper,
   Alert,
   Badge,
-} from "@mantine/core";
-import { FieldMappings } from "../models";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
-import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from "../state/csvState";
-import { IconExclamationCircle, IconAlertCircle } from "@tabler/icons-react";
-import { isDate } from "@/utils/dateUtils";
+} from '@mantine/core';
+import { FieldMappings } from '../models';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
+import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from '../state/csvState';
+import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
+import { isDate } from '@/utils/dateUtils';
+import { CsvStepper } from '../components/CsvStepper';
 
 const SAMPLE_ARRAY_SIZE = 10;
 const EMPTY_MAP_FIELD_VALUE = "Don't map";
@@ -41,12 +41,12 @@ export function CsvPropertiesScreen() {
     .slice(0, SAMPLE_ARRAY_SIZE);
 
   const [mappings, setMappings] = useAtom(csvMappingsAtom);
-  
-  const canContinue = 
-    mappings.date !== "" && 
-    mappings.amount !== "" && 
-    mappings.description !== "" &&
-    isValidDateField && 
+
+  const canContinue =
+    mappings.date !== '' &&
+    mappings.amount !== '' &&
+    mappings.description !== '' &&
+    isValidDateField &&
     isValidAmountField;
 
   return (
@@ -55,17 +55,21 @@ export function CsvPropertiesScreen() {
         <Stack gap="xs">
           <Title order={2}>Map CSV Fields</Title>
           <Text c="dimmed" size="sm">
-            Match your CSV columns to transaction fields. Required fields are marked with *.
+            Match your CSV columns to transaction fields. Required fields are
+            marked with *.
           </Text>
         </Stack>
 
-        <Stepper active={0} size="sm">
-          <Stepper.Step label="Upload" description="CSV file" />
-          <Stepper.Step label="Map fields" description="Column mapping" />
-          <Stepper.Step label="Accounts" description="Account mapping" />
-          <Stepper.Step label="Categories" description="Category mapping" />
-          <Stepper.Step label="Review" description="Final review" />
-        </Stepper>
+        <CsvStepper
+          activeStep={1}
+          onStepClick={(stepIndex) => {
+            if (stepIndex === 0) {
+              navigate({
+                to: '/importer/csv',
+              });
+            }
+          }}
+        />
 
         {(!isValidDateField || !isValidAmountField) && (
           <Alert
@@ -100,19 +104,33 @@ export function CsvPropertiesScreen() {
               <Text fw={500}>Field Mappings</Text>
               <Badge color="blue">{csvData.data.length} transactions</Badge>
             </Group>
-            
+
             <Table striped highlightOnHover withTableBorder>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Account</Table.Th>
                   <Table.Th>
-                    Date <Text component="span" c="red">*</Text>
+                    Account{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
                   </Table.Th>
                   <Table.Th>
-                    Amount <Text component="span" c="red">*</Text>
+                    Date{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
                   </Table.Th>
                   <Table.Th>
-                    Description <Text component="span" c="red">*</Text>
+                    Amount{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    Description{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
                   </Table.Th>
                   <Table.Th>Notes</Table.Th>
                   <Table.Th>Category</Table.Th>
@@ -126,10 +144,11 @@ export function CsvPropertiesScreen() {
                       data={availableFields}
                       value={mappings.account || EMPTY_MAP_FIELD_VALUE}
                       onChange={(value) => {
-                        let fieldValue = value === EMPTY_MAP_FIELD_VALUE ? "" : value;
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
                         setMappings({
                           ...mappings,
-                          account: fieldValue ?? "",
+                          account: fieldValue ?? '',
                         });
                       }}
                       searchable
@@ -142,15 +161,19 @@ export function CsvPropertiesScreen() {
                       data={availableFields}
                       value={mappings.date || EMPTY_MAP_FIELD_VALUE}
                       onChange={(value) => {
-                        let fieldValue = value === EMPTY_MAP_FIELD_VALUE ? "" : value;
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
                         setMappings({
                           ...mappings,
-                          date: fieldValue ?? "",
+                          date: fieldValue ?? '',
                         });
 
-                        const testDates = sampleData.map((x: any) => x[fieldValue || ""]);
+                        const testDates = sampleData.map(
+                          (x: any) => x[fieldValue || ''],
+                        );
                         const isValid =
-                          fieldValue === "" || testDates.every((input) => isDate(input));
+                          fieldValue === '' ||
+                          testDates.every((input) => isDate(input));
                         setIsValidDateField(isValid);
                       }}
                       searchable
@@ -163,15 +186,18 @@ export function CsvPropertiesScreen() {
                       data={availableFields}
                       value={mappings.amount || EMPTY_MAP_FIELD_VALUE}
                       onChange={(value) => {
-                        let fieldValue = value === EMPTY_MAP_FIELD_VALUE ? "" : value;
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
                         setMappings({
                           ...mappings,
-                          amount: fieldValue ?? "",
+                          amount: fieldValue ?? '',
                         });
 
-                        const testAmounts = sampleData.map((x: any) => x[fieldValue || ""]);
+                        const testAmounts = sampleData.map(
+                          (x: any) => x[fieldValue || ''],
+                        );
                         const isValid =
-                          fieldValue === "" ||
+                          fieldValue === '' ||
                           testAmounts.every((input) => !isNaN(+input));
                         setIsValidAmountField(isValid);
                       }}
@@ -185,10 +211,11 @@ export function CsvPropertiesScreen() {
                       data={availableFields}
                       value={mappings.description || EMPTY_MAP_FIELD_VALUE}
                       onChange={(value) => {
-                        let fieldValue = value === EMPTY_MAP_FIELD_VALUE ? "" : value;
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
                         setMappings({
                           ...mappings,
-                          description: fieldValue ?? "",
+                          description: fieldValue ?? '',
                         });
                       }}
                       searchable
@@ -201,10 +228,11 @@ export function CsvPropertiesScreen() {
                       data={availableFields}
                       value={mappings.notes || EMPTY_MAP_FIELD_VALUE}
                       onChange={(value) => {
-                        let fieldValue = value === EMPTY_MAP_FIELD_VALUE ? "" : value;
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
                         setMappings({
                           ...mappings,
-                          notes: fieldValue ?? "",
+                          notes: fieldValue ?? '',
                         });
                       }}
                       searchable
@@ -217,10 +245,11 @@ export function CsvPropertiesScreen() {
                       data={availableFields}
                       value={mappings.category || EMPTY_MAP_FIELD_VALUE}
                       onChange={(value) => {
-                        let fieldValue = value === EMPTY_MAP_FIELD_VALUE ? "" : value;
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
                         setMappings({
                           ...mappings,
-                          category: fieldValue ?? "",
+                          category: fieldValue ?? '',
                         });
                       }}
                       searchable
@@ -233,9 +262,10 @@ export function CsvPropertiesScreen() {
                 ))}
               </Table.Tbody>
             </Table>
-            
+
             <Text size="xs" c="dimmed">
-              Preview showing {Math.min(SAMPLE_ARRAY_SIZE, csvData.data.length)} of {csvData.data.length} transactions
+              Preview showing {Math.min(SAMPLE_ARRAY_SIZE, csvData.data.length)}{' '}
+              of {csvData.data.length} transactions
             </Text>
           </Stack>
         </Paper>
@@ -244,7 +274,7 @@ export function CsvPropertiesScreen() {
           <Button
             onClick={() => {
               navigate({
-                to: "/importer/csv/accounts",
+                to: '/importer/csv/accounts',
               });
             }}
             disabled={!canContinue}
@@ -264,12 +294,12 @@ interface RowElementProps {
 function RowElement({ mappings, element }: Readonly<RowElementProps>) {
   return (
     <Table.Tr>
-      <Table.Td>{element[mappings.account] || "-"}</Table.Td>
-      <Table.Td>{element[mappings.date] || "-"}</Table.Td>
-      <Table.Td>{element[mappings.amount] || "-"}</Table.Td>
-      <Table.Td>{element[mappings.description] || "-"}</Table.Td>
-      <Table.Td>{element[mappings.notes] || "-"}</Table.Td>
-      <Table.Td>{element[mappings.category] || "-"}</Table.Td>
+      <Table.Td>{element[mappings.account] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.date] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.amount] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.description] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.notes] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.category] || '-'}</Table.Td>
     </Table.Tr>
   );
 }

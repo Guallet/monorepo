@@ -1,14 +1,19 @@
-import { AccountDto, CategoryDto } from "@guallet/api-client";
-import { FieldMappings } from "../models";
-import { DEFAULT_ACCOUNT_NAME } from "./CsvAccountsScreen";
-import { formatDate } from "@/utils/dateUtils";
+import {
+  AccountDto,
+  CategoryDto,
+  CsvRowData,
+  AccountMapping,
+  CategoryMapping,
+} from '@guallet/api-client';
+import { FieldMappings } from '../models';
+import { DEFAULT_ACCOUNT_NAME } from './CsvAccountsScreen';
+import { formatDate } from '@/utils/dateUtils';
 import {
   Modal,
   Stack,
   Title,
   Button,
   LoadingOverlay,
-  Divider,
   Accordion,
   Badge,
   Table,
@@ -16,13 +21,12 @@ import {
   Container,
   Paper,
   Group,
-  Stepper,
   Alert,
   List,
-} from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
-import { useAtomValue } from "jotai";
-import { useState } from "react";
+} from '@mantine/core';
+import { useNavigate } from '@tanstack/react-router';
+import { useAtomValue } from 'jotai';
+import { useState } from 'react';
 import {
   csvAccountsAtom,
   csvCategoriesAtom,
@@ -30,10 +34,14 @@ import {
   csvMappingsAtom,
   accountMappingsAtom,
   categoriesMappingsAtom,
-} from "../state/csvState";
-import { useAccounts, useCategories } from "@guallet/api-react";
-import { useGualletClient } from "@guallet/api-react";
-import { IconCheck, IconMail } from "@tabler/icons-react";
+} from '../state/csvState';
+import {
+  useAccounts,
+  useCategories,
+  useGualletClient,
+} from '@guallet/api-react';
+import { IconCheck, IconMail } from '@tabler/icons-react';
+import { CsvStepper } from '../components/CsvStepper';
 
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
@@ -49,18 +57,7 @@ export function CsvSummaryScreen() {
   const accountMappings = useAtomValue(accountMappingsAtom);
   const categoriesMappings = useAtomValue(categoriesMappingsAtom);
 
-  // MAP DATA
-  const mappedTransactions = transactions.map((row) => {
-    const entry = mapTransaction(
-      row,
-      fieldMappings,
-      accountMappings,
-      categoriesMappings
-    );
-
-    return entry;
-  });
-  // END MAP DATA
+  // Note: mapping is performed on demand in preview rendering
 
   const [error, setError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
@@ -72,7 +69,7 @@ export function CsvSummaryScreen() {
       setIsBusy(true);
 
       // Prepare account mappings for API
-      const apiAccountMappings: Record<string, any> = {};
+      const apiAccountMappings: Record<string, AccountMapping> = {};
       for (const [key, account] of Object.entries(accountMappings)) {
         if (account) {
           apiAccountMappings[key] = {
@@ -89,7 +86,7 @@ export function CsvSummaryScreen() {
       }
 
       // Prepare category mappings for API
-      const apiCategoryMappings: Record<string, any> = {};
+      const apiCategoryMappings: Record<string, CategoryMapping> = {};
       for (const [key, category] of Object.entries(categoriesMappings)) {
         if (category) {
           apiCategoryMappings[key] = {
@@ -107,7 +104,7 @@ export function CsvSummaryScreen() {
 
       // Call the new bulk import API
       await gualletClient.dataImporter.importCsv({
-        csvData: csvData.data,
+        csvData: csvData.data as CsvRowData[],
         fieldMappings,
         accountMappings: apiAccountMappings,
         categoryMappings: apiCategoryMappings,
@@ -131,7 +128,7 @@ export function CsvSummaryScreen() {
         onClose={() => {
           setIsModalOpened(false);
           navigate({
-            to: "/dashboard",
+            to: '/dashboard',
           });
         }}
         closeOnClickOutside
@@ -141,18 +138,20 @@ export function CsvSummaryScreen() {
         size="md"
       >
         <Stack align="center" gap="lg" py="md">
-          <div style={{ 
-            width: 80, 
-            height: 80, 
-            borderRadius: '50%', 
-            backgroundColor: 'var(--mantine-color-green-1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          <div
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: '50%',
+              backgroundColor: 'var(--mantine-color-green-1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <IconCheck size={48} color="var(--mantine-color-green-6)" />
           </div>
-          
+
           <Stack align="center" gap="xs">
             <Title order={2}>Import Started Successfully!</Title>
             <Text c="dimmed" ta="center">
@@ -162,10 +161,12 @@ export function CsvSummaryScreen() {
 
           <Alert icon={<IconMail size={16} />} color="blue" w="100%">
             <Stack gap="xs">
-              <Text fw={500} size="sm">You'll receive an email notification</Text>
+              <Text fw={500} size="sm">
+                You'll receive an email notification
+              </Text>
               <Text size="sm">
-                We'll send you an email with the import results, including the number
-                of transactions successfully processed.
+                We'll send you an email with the import results, including the
+                number of transactions successfully processed.
               </Text>
             </Stack>
           </Alert>
@@ -175,7 +176,7 @@ export function CsvSummaryScreen() {
             size="md"
             onClick={() => {
               navigate({
-                to: "/",
+                to: '/',
               });
             }}
           >
@@ -187,7 +188,7 @@ export function CsvSummaryScreen() {
       <LoadingOverlay
         visible={isBusy}
         zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
+        overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{
           children: `Submitting your import request...`,
         }}
@@ -198,21 +199,48 @@ export function CsvSummaryScreen() {
           <Stack gap="xs">
             <Title order={2}>Review & Import</Title>
             <Text c="dimmed" size="sm">
-              Review your data before importing. All {transactions.length} transactions
-              will be processed on the server.
+              Review your data before importing. All {transactions.length}{' '}
+              transactions will be processed on the server.
             </Text>
           </Stack>
 
-          <Stepper active={4} size="sm">
-            <Stepper.Step label="Upload" description="CSV file" />
-            <Stepper.Step label="Map fields" description="Column mapping" />
-            <Stepper.Step label="Accounts" description="Account mapping" />
-            <Stepper.Step label="Categories" description="Category mapping" />
-            <Stepper.Step label="Review" description="Final review" />
-          </Stepper>
+          <CsvStepper
+            activeStep={4}
+            onStepClick={(stepIndex) => {
+              switch (stepIndex) {
+                case 0:
+                  navigate({
+                    to: '/importer/csv',
+                  });
+                  break;
+                case 1:
+                  navigate({
+                    to: '/importer/csv/properties',
+                  });
+                  break;
+                case 2:
+                  navigate({
+                    to: '/importer/csv/accounts',
+                  });
+                  break;
+                case 3:
+                  navigate({
+                    to: '/importer/csv/categories',
+                  });
+                  break;
+                default:
+                  break;
+              }
+            }}
+          />
 
           {error && (
-            <Alert color="red" title="Import Error" withCloseButton onClose={() => setError(null)}>
+            <Alert
+              color="red"
+              title="Import Error"
+              withCloseButton
+              onClose={() => setError(null)}
+            >
               {error}
             </Alert>
           )}
@@ -276,12 +304,22 @@ export function CsvSummaryScreen() {
 
           <Paper p="md" withBorder>
             <Stack gap="sm">
-              <Text fw={500} size="sm">What happens next?</Text>
+              <Text fw={500} size="sm">
+                What happens next?
+              </Text>
               <List size="sm" spacing="xs">
-                <List.Item>Your data will be processed asynchronously on the server</List.Item>
-                <List.Item>Accounts and categories will be created as needed</List.Item>
-                <List.Item>You'll receive an email when the import is complete</List.Item>
-                <List.Item>You can continue using the app while processing happens</List.Item>
+                <List.Item>
+                  Your data will be processed asynchronously on the server
+                </List.Item>
+                <List.Item>
+                  Accounts and categories will be created as needed
+                </List.Item>
+                <List.Item>
+                  You'll receive an email when the import is complete
+                </List.Item>
+                <List.Item>
+                  You can continue using the app while processing happens
+                </List.Item>
               </List>
             </Stack>
           </Paper>
@@ -291,7 +329,7 @@ export function CsvSummaryScreen() {
               variant="subtle"
               onClick={() => {
                 navigate({
-                  to: "/importer/csv/categories",
+                  to: '/importer/csv/categories',
                 });
               }}
             >
@@ -311,41 +349,6 @@ export function CsvSummaryScreen() {
     </>
   );
 }
-            </Accordion.Panel>
-          </Accordion.Item>
-
-          <Accordion.Item value="Accounts">
-            <Accordion.Control>
-              Accounts <Badge>{accounts.length}</Badge>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <AccountsImportedContent />
-            </Accordion.Panel>
-          </Accordion.Item>
-
-          <Accordion.Item value="Categories">
-            <Accordion.Control>
-              Categories <Badge>{categories.length}</Badge>
-            </Accordion.Control>
-            <Accordion.Panel>
-              {categories.length > 0
-                ? "Imported categories"
-                : "No categories to be imported"}
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-
-        <Button
-          onClick={async () => {
-            await importData();
-          }}
-        >
-          Finish importing
-        </Button>
-      </Stack>
-    </>
-  );
-}
 
 function AccountsImportedContent() {
   const accounts = useAtomValue(csvAccountsAtom);
@@ -354,7 +357,7 @@ function AccountsImportedContent() {
 
   if (accounts.length === 0) {
     const destinationAccount = remoteAccounts.find(
-      (x) => x.id == accountMappings[DEFAULT_ACCOUNT_NAME]?.id
+      (x) => x.id == accountMappings[DEFAULT_ACCOUNT_NAME]?.id,
     );
 
     return (
@@ -370,7 +373,7 @@ function AccountsImportedContent() {
             <Table.Td>Default Account</Table.Td>
             <Table.Td>
               <Badge color="teal" variant="light">
-                {destinationAccount?.name ?? "New account"}
+                {destinationAccount?.name ?? 'New account'}
               </Badge>
             </Table.Td>
           </Table.Tr>
@@ -388,16 +391,16 @@ function AccountsImportedContent() {
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {accounts.map((account, index) => {
+        {accounts.map((account) => {
           const destinationAccount = remoteAccounts.find(
-            (x) => x.id == accountMappings[account]?.id
+            (x) => x.id == accountMappings[account]?.id,
           );
           return (
-            <Table.Tr key={index}>
+            <Table.Tr key={account}>
               <Table.Td>{account}</Table.Td>
               <Table.Td>
                 <Badge color="teal" variant="light">
-                  {destinationAccount?.name ?? "New account"}
+                  {destinationAccount?.name ?? 'New account'}
                 </Badge>
               </Table.Td>
             </Table.Tr>
@@ -412,7 +415,7 @@ function TransactionsContent() {
   const csvData = useAtomValue(csvInfoAtom);
   const fieldMappings = useAtomValue(csvMappingsAtom);
 
-  const transactions = csvData.data;
+  const transactions = csvData.data as CsvRowData[];
   const SAMPLE_ARRAY_SIZE = 10;
 
   // Account data
@@ -434,7 +437,7 @@ function TransactionsContent() {
           Sample Preview
         </Text>
         <Text size="xs" c="dimmed">
-          Showing {Math.min(SAMPLE_ARRAY_SIZE, transactions.length)} of{" "}
+          Showing {Math.min(SAMPLE_ARRAY_SIZE, transactions.length)} of{' '}
           {transactions.length} transactions
         </Text>
       </Group>
@@ -451,24 +454,26 @@ function TransactionsContent() {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {sampleTransactions.map((transaction: any, index) => {
+          {sampleTransactions.map((transaction: CsvRowData, index) => {
             const entry = mapTransaction(
               transaction,
               fieldMappings,
               accountMappings,
-              categoriesMappings
+              categoriesMappings,
             );
 
             const destinationServerAccountName =
               remoteAccounts.find((x) => x.id == entry.destinationAccountId)
-                ?.name ?? "New account";
+                ?.name ?? 'New account';
 
             const destinationServerCategoryName =
               remoteCategories.find((x) => x.id == entry.destinationCategoryId)
-                ?.name ?? "Untagged";
+                ?.name ?? 'Untagged';
 
             return (
-              <Table.Tr key={index}>
+              <Table.Tr
+                key={`${entry.sourceAccount}-${entry.date}-${entry.amount}-${index}`}
+              >
                 <Table.Td>
                   <Badge size="sm" variant="light">
                     {destinationServerAccountName}
@@ -487,7 +492,7 @@ function TransactionsContent() {
                 </Table.Td>
                 <Table.Td>
                   <Text size="sm" c="dimmed">
-                    {entry.notes || "-"}
+                    {entry.notes || '-'}
                   </Text>
                 </Table.Td>
                 <Table.Td>
@@ -517,10 +522,10 @@ export interface CSVTransaction {
 }
 
 function mapTransaction(
-  row: any,
+  row: CsvRowData,
   mappings: FieldMappings,
   accountMappings: Record<string, AccountDto | null | undefined>,
-  categoryMappings: Record<string, CategoryDto | null | undefined>
+  categoryMappings: Record<string, CategoryDto | null | undefined>,
 ): CSVTransaction {
   const accountValue = row[mappings.account];
   const dateValue = row[mappings.date];
@@ -529,15 +534,19 @@ function mapTransaction(
   const notesValue = row[mappings.notes];
   const categoryValue = row[mappings.category];
 
+  const accountKey =
+    accountValue == null ? DEFAULT_ACCOUNT_NAME : String(accountValue);
+  const categoryKey = categoryValue == null ? '' : String(categoryValue);
+
   const destinationAccount =
-    accountMappings[accountValue] ?? accountMappings[DEFAULT_ACCOUNT_NAME];
-  const destinationCategory = categoryMappings[categoryValue];
+    accountMappings[accountKey] ?? accountMappings[DEFAULT_ACCOUNT_NAME];
+  const destinationCategory = categoryMappings[categoryKey];
 
   return {
-    date: dateValue,
-    amount: amountValue,
-    description: descriptionValue,
-    notes: notesValue,
+    date: String(dateValue ?? ''),
+    amount: Number(amountValue ?? 0),
+    description: String(descriptionValue ?? ''),
+    notes: notesValue == null ? null : String(notesValue),
 
     sourceAccount: accountValue,
     destinationAccountId: destinationAccount?.id,

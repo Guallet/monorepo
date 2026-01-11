@@ -1,22 +1,22 @@
-import { 
-  Stack, 
-  Table, 
-  Select, 
-  Button, 
-  Container, 
-  Title, 
-  Text, 
+import {
+  Stack,
+  Table,
+  Select,
+  Button,
+  Container,
+  Title,
+  Text,
   Paper,
   Group,
-  Stepper,
   Badge,
-  Alert
+  Alert,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useAtomValue, useAtom } from 'jotai';
 import { csvAccountsAtom, accountMappingsAtom } from '../state/csvState';
 import { useAccounts } from '@guallet/api-react';
 import { IconInfoCircle } from '@tabler/icons-react';
+import { CsvStepper } from '../components/CsvStepper';
 
 export const DEFAULT_ACCOUNT_NAME = 'account';
 
@@ -38,18 +38,33 @@ export function CsvAccountsScreen() {
           </Text>
         </Stack>
 
-        <Stepper active={2} size="sm">
-          <Stepper.Step label="Upload" description="CSV file" />
-          <Stepper.Step label="Map fields" description="Column mapping" />
-          <Stepper.Step label="Accounts" description="Account mapping" />
-          <Stepper.Step label="Categories" description="Category mapping" />
-          <Stepper.Step label="Review" description="Final review" />
-        </Stepper>
+        <CsvStepper
+          activeStep={2}
+          onStepClick={(stepIndex) => {
+            switch (stepIndex) {
+              case 0:
+                navigate({
+                  to: '/importer/csv',
+                });
+                break;
+              case 1:
+                navigate({
+                  to: '/importer/csv/properties',
+                });
+                break;
+            }
+          }}
+        />
 
-        <Alert icon={<IconInfoCircle size={16} />} title="Account Mapping" color="blue">
+        <Alert
+          icon={<IconInfoCircle size={16} />}
+          title="Account Mapping"
+          color="blue"
+        >
           <Text size="sm">
-            Select an existing account or choose "Map to a new account" to create a new one.
-            All transactions will be imported to the mapped accounts.
+            Select an existing account or choose "Map to a new account" to
+            create a new one. All transactions will be imported to the mapped
+            accounts.
           </Text>
         </Alert>
 
@@ -58,7 +73,8 @@ export function CsvAccountsScreen() {
             <Group justify="space-between">
               <Text fw={500}>Account Mappings</Text>
               <Badge color="blue">
-                {csvAccounts.length === 0 ? '1' : csvAccounts.length} {csvAccounts.length === 1 ? 'account' : 'accounts'}
+                {csvAccounts.length === 0 ? '1' : csvAccounts.length}{' '}
+                {csvAccounts.length === 1 ? 'account' : 'accounts'}
               </Badge>
             </Group>
 
@@ -74,7 +90,9 @@ export function CsvAccountsScreen() {
                   <Table.Tr>
                     <Table.Td>
                       <Text fw={500}>Default Account</Text>
-                      <Text size="xs" c="dimmed">All transactions</Text>
+                      <Text size="xs" c="dimmed">
+                        All transactions
+                      </Text>
                     </Table.Td>
                     <Table.Td>
                       <Select
@@ -88,7 +106,7 @@ export function CsvAccountsScreen() {
                           mappings[DEFAULT_ACCOUNT_NAME] = remoteAccounts.find(
                             (x) => x.id === value,
                           );
-                          setMappings({...mappings});
+                          setMappings({ ...mappings });
                         }}
                       />
                     </Table.Td>
@@ -112,7 +130,7 @@ export function CsvAccountsScreen() {
                               mappings[x] = remoteAccounts.find(
                                 (acc) => acc.id === value,
                               );
-                              setMappings({...mappings});
+                              setMappings({ ...mappings });
                             }}
                           />
                         </Table.Td>

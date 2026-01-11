@@ -1,20 +1,20 @@
-import { 
-  Stack, 
-  Table, 
-  Select, 
-  Button, 
-  Container, 
-  Title, 
-  Text, 
+import {
+  Stack,
+  Table,
+  Select,
+  Button,
+  Container,
+  Title,
+  Text,
   Paper,
   Group,
-  Stepper,
-  Badge
+  Badge,
 } from '@mantine/core';
 import { useNavigate, Navigate } from '@tanstack/react-router';
 import { useAtomValue, useAtom } from 'jotai';
 import { csvCategoriesAtom, categoriesMappingsAtom } from '../state/csvState';
 import { useCategories } from '@guallet/api-react';
+import { CsvStepper } from '../components/CsvStepper';
 
 export function CsvCategoriesScreen() {
   const navigate = useNavigate();
@@ -39,20 +39,39 @@ export function CsvCategoriesScreen() {
           </Text>
         </Stack>
 
-        <Stepper active={3} size="sm">
-          <Stepper.Step label="Upload" description="CSV file" />
-          <Stepper.Step label="Map fields" description="Column mapping" />
-          <Stepper.Step label="Accounts" description="Account mapping" />
-          <Stepper.Step label="Categories" description="Category mapping" />
-          <Stepper.Step label="Review" description="Final review" />
-        </Stepper>
+        <CsvStepper
+          size="sm"
+          activeStep={3}
+          onStepClick={(stepIndex) => {
+            switch (stepIndex) {
+              case 0:
+                navigate({
+                  to: '/importer/csv',
+                });
+                break;
+              case 1:
+                navigate({
+                  to: '/importer/csv/properties',
+                });
+                break;
+              case 2:
+                navigate({
+                  to: '/importer/csv/accounts',
+                });
+                break;
+              default:
+                break;
+            }
+          }}
+        />
 
         <Paper shadow="sm" p="md" withBorder>
           <Stack gap="md">
             <Group justify="space-between">
               <Text fw={500}>Category Mappings</Text>
               <Badge color="blue">
-                {csvCategories.length} {csvCategories.length === 1 ? 'category' : 'categories'}
+                {csvCategories.length}{' '}
+                {csvCategories.length === 1 ? 'category' : 'categories'}
               </Badge>
             </Group>
 
@@ -82,7 +101,7 @@ export function CsvCategoriesScreen() {
                             mappings[categoryName] = remoteCategories.find(
                               (x) => x.id === value,
                             );
-                            setMappings({...mappings});
+                            setMappings({ ...mappings });
                           }}
                         />
                       </Table.Td>
@@ -93,7 +112,8 @@ export function CsvCategoriesScreen() {
             </Table>
 
             <Text size="xs" c="dimmed">
-              Tip: Leave categories untagged if you want to categorize them later
+              Tip: Leave categories untagged if you want to categorize them
+              later
             </Text>
           </Stack>
         </Paper>
