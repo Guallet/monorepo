@@ -173,6 +173,30 @@ describe('TransactionsController', () => {
         controller.getUserTransactionInbox(mockUser, 1.5 as any, 50),
       ).rejects.toThrow(BadRequestException);
     });
+
+    it('should throw BadRequestException for zero page', async () => {
+      await expect(
+        controller.getUserTransactionInbox(mockUser, 0, 50),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for negative page', async () => {
+      await expect(
+        controller.getUserTransactionInbox(mockUser, -1, 50),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for zero pageSize', async () => {
+      await expect(
+        controller.getUserTransactionInbox(mockUser, 1, 0),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException for negative pageSize', async () => {
+      await expect(
+        controller.getUserTransactionInbox(mockUser, 1, -10),
+      ).rejects.toThrow(BadRequestException);
+    });
   });
 
   describe('create', () => {

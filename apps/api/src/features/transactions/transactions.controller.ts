@@ -123,12 +123,18 @@ export class TransactionsController {
     @Query('page') page?: number,
     @Query('pageSize') pageSize?: number,
   ): Promise<InboxTransactionsResultDto> {
-    const pageNum = page ? +page : 1;
-    const pageSizeNum = pageSize ? +pageSize : 50;
+    const pageNum = page !== undefined ? +page : 1;
+    const pageSizeNum = pageSize !== undefined ? +pageSize : 50;
 
     if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
       throw new BadRequestException(
-        'Query Params `page` and `pageSize` must be integers greater than 0',
+        'Query Params `page` and `pageSize` must be integers',
+      );
+    }
+
+    if (pageNum <= 0 || pageSizeNum <= 0) {
+      throw new BadRequestException(
+        'Query Params `page` and `pageSize` must be greater than 0',
       );
     }
 
