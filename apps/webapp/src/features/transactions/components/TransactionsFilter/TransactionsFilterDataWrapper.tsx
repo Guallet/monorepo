@@ -1,11 +1,11 @@
-import { AccountDto, CategoryDto } from "@guallet/api-client";
-import { TransactionsFilter } from "./TransactionsFilter";
-import { FilterData } from "./FilterData";
-import { useAccounts, useCategories } from "@guallet/api-react";
-import { ActionIcon, Card, Group, Indicator, Modal, Text } from "@mantine/core";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { useDisclosure } from "@mantine/hooks";
-import { IconFilter } from "@tabler/icons-react";
+import { AccountDto, CategoryDto } from '@guallet/api-client';
+import { TransactionsFilter } from './TransactionsFilter';
+import { FilterData } from './FilterData';
+import { useAccounts, useCategories } from '@guallet/api-react';
+import { ActionIcon, Card, Group, Indicator, Modal, Text } from '@mantine/core';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useDisclosure } from '@mantine/hooks';
+import { IconFilter } from '@tabler/icons-react';
 
 interface TransactionsFilterDataWrapperProps {
   selectedAccounts: AccountDto[] | string[] | null;
@@ -27,17 +27,17 @@ export function TransactionsFilterDataWrapper({
 
   const mappedSelectedAccounts = (selectedAccounts ?? accounts)
     .map((account) =>
-      typeof account === "string"
+      typeof account === 'string'
         ? accounts.find((a) => a.id === account)
-        : account
+        : account,
     )
     .filter((account): account is AccountDto => account !== undefined);
 
   const mappedSelectedCategories = (selectedCategories ?? categories)
     .map((category) =>
-      typeof category === "string"
+      typeof category === 'string'
         ? categories.find((c) => c.id === category)
-        : category
+        : category,
     )
     .filter((category): category is CategoryDto => category !== undefined);
 
@@ -63,8 +63,10 @@ export function TransactionsFilterDataWrapper({
 
   // Count active filters
   const activeFiltersCount = [
-    mappedSelectedAccounts.length > 0 && mappedSelectedAccounts.length < accounts.length,
-    mappedSelectedCategories.length > 0 && mappedSelectedCategories.length < categories.length,
+    mappedSelectedAccounts.length > 0 &&
+      mappedSelectedAccounts.length < accounts.length,
+    mappedSelectedCategories.length > 0 &&
+      mappedSelectedCategories.length < categories.length,
     dateRange !== null,
   ].filter(Boolean).length;
 
@@ -101,11 +103,14 @@ export function TransactionsFilterDataWrapper({
           fullScreen={isMobile}
           centered
           size="lg"
-          transitionProps={{ transition: "slide-up", duration: 200 }}
+          transitionProps={{ transition: 'slide-up', duration: 200 }}
         >
           <TransactionsFilter
             filters={filters}
             onFiltersUpdate={handleFiltersUpdate}
+            onCloseMobileModal={() => {
+              close();
+            }}
           />
         </Modal>
       </>
@@ -117,6 +122,9 @@ export function TransactionsFilterDataWrapper({
     <TransactionsFilter
       filters={filters}
       onFiltersUpdate={handleFiltersUpdate}
+      onCloseMobileModal={() => {
+        close();
+      }}
     />
   );
 }
