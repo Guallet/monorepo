@@ -3,7 +3,6 @@ import { Stack, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { gualletClient } from '@/api/gualletClient';
-import { loadCategories } from '@/features/categories/api/categories.api';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
 import { useRuleMutations } from '@guallet/api-react';
 
@@ -13,15 +12,14 @@ export const Route = createFileRoute('/_app/categories/rules/new')({
 });
 
 async function loader() {
-  const [fieldDefinitions, categories] = await Promise.all([
+  const [fieldDefinitions] = await Promise.all([
     gualletClient.rules.getFieldDefinitions(),
-    loadCategories(),
   ]);
-  return { fieldDefinitions: fieldDefinitions.fields, categories };
+  return { fieldDefinitions: fieldDefinitions.fields };
 }
 
 function NewRulePage() {
-  const { fieldDefinitions, categories } = Route.useLoaderData();
+  const { fieldDefinitions } = Route.useLoaderData();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createRuleMutation } = useRuleMutations();
@@ -73,7 +71,6 @@ function NewRulePage() {
       <Title order={2}>Create New Rule</Title>
       <RuleForm
         fieldDefinitions={fieldDefinitions}
-        categories={categories}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         isSubmitting={isSubmitting}

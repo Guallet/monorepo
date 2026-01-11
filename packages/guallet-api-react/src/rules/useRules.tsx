@@ -1,8 +1,4 @@
-import {
-  RuleDto,
-  FieldDefinitionsDto,
-  FieldDefinitionDto,
-} from '@guallet/api-client';
+import { RuleDto, FieldDefinitionDto } from '@guallet/api-client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
 
@@ -40,11 +36,7 @@ export function useRule(id: string | null) {
     enabled: !!id,
     queryKey: [RULES_QUERY_KEY, id],
     queryFn: async () => {
-      if (id) {
-        return await gualletClient.rules.get(id);
-      } else {
-        throw Error('Rule ID is null');
-      }
+      return await gualletClient.rules.get(id!);
     },
     gcTime: 1000 * 60 * 60, // 1 Hour
     staleTime: 1000 * 60 * 60, // 1 Hour

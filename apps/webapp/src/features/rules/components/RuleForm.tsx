@@ -14,7 +14,6 @@ import {
 import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
 import { useState } from 'react';
 import { CategoryDto, FieldDefinitionDto } from '@guallet/api-client';
-import { Category } from '@/features/categories/models/Category';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useCategory } from '@guallet/api-react';
 
@@ -37,7 +36,6 @@ export interface ConditionFormData {
 interface RuleFormProps {
   initialData?: RuleFormData;
   fieldDefinitions: FieldDefinitionDto[];
-  categories: Category[];
   onSubmit: (data: RuleFormData) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
@@ -50,7 +48,6 @@ const generateConditionId = () => `temp-${++conditionIdCounter}`;
 export function RuleForm({
   initialData,
   fieldDefinitions,
-  categories,
   onSubmit,
   onCancel,
   isSubmitting = false,
@@ -173,11 +170,6 @@ export function RuleForm({
     conditions.every(
       (c) => c.field !== '' && c.operator !== '' && c.value !== '',
     );
-
-  const categoryOptions = categories.map((c) => ({
-    value: c.id,
-    label: c.name,
-  }));
 
   const fieldOptions = fieldDefinitions.map((f) => ({
     value: f.name,

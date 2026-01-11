@@ -4,7 +4,6 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
 import {
-  useCategories,
   useFieldDefinitions,
   useRule,
   useRuleMutations,
@@ -17,7 +16,6 @@ export const Route = createFileRoute('/_app/categories/rules/$id_/edit')({
 function EditRulePage() {
   const { id } = Route.useParams();
   const { rule } = useRule(id);
-  const { categories } = useCategories();
   const { fieldDefinitions } = useFieldDefinitions();
   const { updateRuleMutation } = useRuleMutations();
 
@@ -87,7 +85,6 @@ function EditRulePage() {
       <RuleForm
         initialData={initialData}
         fieldDefinitions={fieldDefinitions ?? []}
-        categories={categories}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         isSubmitting={isSubmitting}
