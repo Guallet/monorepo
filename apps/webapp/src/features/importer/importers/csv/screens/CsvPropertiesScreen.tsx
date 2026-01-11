@@ -1,20 +1,27 @@
 import {
   Button,
   List,
-  NativeSelect,
+  Select,
   rem,
   Stack,
   Table,
   Text,
   ThemeIcon,
-} from "@mantine/core";
-import { FieldMappings } from "../models";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
-import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from "../state/csvState";
-import { IconExclamationCircle } from "@tabler/icons-react";
-import { isDate } from "@/utils/dateUtils";
+  Container,
+  Title,
+  Paper,
+  Group,
+  Alert,
+  Badge,
+} from '@mantine/core';
+import { FieldMappings } from '../models';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
+import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from '../state/csvState';
+import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
+import { isDate } from '@/utils/dateUtils';
+import { CsvStepper } from '../components/CsvStepper';
 
 const SAMPLE_ARRAY_SIZE = 10;
 const EMPTY_MAP_FIELD_VALUE = "Don't map";
@@ -30,213 +37,253 @@ export function CsvPropertiesScreen() {
   const [isValidAmountField, setIsValidAmountField] = useState(true);
 
   const sampleData = csvData.data
-    // const shuffle the array to get random items, not necessary the first N items
     .toSorted(() => 0.5 - Math.random())
-    // Get just a few elements to show as "example" to the user
     .slice(0, SAMPLE_ARRAY_SIZE);
-  // We don't know the Type in advance, so we need to regenerate it dynamically
-  // .map((row: any) => {
-  //   let rowData: any = {};
-  //   csvFields.map((field) => (rowData[field] = row[field]));
-  //   console.log("ROW", { original: row, mapped: rowData });
-  //   return rowData;
-  // });
 
   const [mappings, setMappings] = useAtom(csvMappingsAtom);
+
+  const canContinue =
+    mappings.date !== '' &&
+    mappings.amount !== '' &&
+    mappings.description !== '' &&
+    isValidDateField &&
+    isValidAmountField;
+
   return (
-    <Stack align="center">
-      <Text>Map the fields</Text>
+    <Container size="xl" py="xl">
+      <Stack gap="xl">
+        <Stack gap="xs">
+          <Title order={2}>Map CSV Fields</Title>
+          <Text c="dimmed" size="sm">
+            Match your CSV columns to transaction fields. Required fields are
+            marked with *.
+          </Text>
+        </Stack>
 
-      <List
-        icon={
-          <ThemeIcon color="red" size={24} radius="xl">
-            <IconExclamationCircle
-              style={{ width: rem(16), height: rem(16) }}
-            />
-          </ThemeIcon>
-        }
-      >
-        {isValidDateField === false && (
-          <List.Item>
-            The selected DATE field does't follow a valid date pattern
-          </List.Item>
+        <CsvStepper
+          activeStep={1}
+          onStepClick={(stepIndex) => {
+            if (stepIndex === 0) {
+              navigate({
+                to: '/importer/csv',
+              });
+            }
+          }}
+        />
+
+        {(!isValidDateField || !isValidAmountField) && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            title="Validation Issues"
+            color="red"
+          >
+            <List
+              icon={
+                <ThemeIcon color="red" size={20} radius="xl">
+                  <IconExclamationCircle
+                    style={{ width: rem(12), height: rem(12) }}
+                  />
+                </ThemeIcon>
+              }
+            >
+              {!isValidDateField && (
+                <List.Item>
+                  The selected DATE field doesn't follow a valid date pattern
+                </List.Item>
+              )}
+              {!isValidAmountField && (
+                <List.Item>The selected AMOUNT field is not a number</List.Item>
+              )}
+            </List>
+          </Alert>
         )}
-        {isValidAmountField === false && (
-          <List.Item>The selected AMOUNT field is not a number</List.Item>
-        )}
-      </List>
 
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Account</Table.Th>
-            <Table.Th>Date</Table.Th>
-            <Table.Th>Amount</Table.Th>
-            <Table.Th>Description</Table.Th>
-            <Table.Th>Notes</Table.Th>
-            <Table.Th>Category</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Td>
-              <NativeSelect
-                data={availableFields}
-                onChange={(event) => {
-                  let value = event.currentTarget.value;
-                  if (value === EMPTY_MAP_FIELD_VALUE) {
-                    // Ignore this mapping
-                    value = "";
-                  }
+        <Paper shadow="sm" p="md" withBorder>
+          <Stack gap="md">
+            <Group justify="space-between">
+              <Text fw={500}>Field Mappings</Text>
+              <Badge color="blue">{csvData.data.length} transactions</Badge>
+            </Group>
 
-                  setMappings({
-                    account: value ?? "",
-                    date: mappings.date ?? "",
-                    amount: mappings.amount ?? "",
-                    description: mappings.description ?? "",
-                    notes: mappings.notes ?? "",
-                    category: mappings.category ?? "",
-                  });
-                }}
-              />
-            </Table.Td>
-            <Table.Td>
-              <NativeSelect
-                data={availableFields}
-                onChange={(event) => {
-                  let value = event.currentTarget.value;
-                  if (value === EMPTY_MAP_FIELD_VALUE) {
-                    // Ignore this mapping
-                    value = "";
-                  }
+            <Table striped highlightOnHover withTableBorder>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>
+                    Account{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    Date{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    Amount{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    Description{' '}
+                    <Text component="span" c="red">
+                      *
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>Notes</Table.Th>
+                  <Table.Th>Category</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                <Table.Tr>
+                  <Table.Td>
+                    <Select
+                      placeholder="Select column"
+                      data={availableFields}
+                      value={mappings.account || EMPTY_MAP_FIELD_VALUE}
+                      onChange={(value) => {
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                        setMappings({
+                          ...mappings,
+                          account: fieldValue ?? '',
+                        });
+                      }}
+                      searchable
+                      clearable
+                    />
+                  </Table.Td>
+                  <Table.Td>
+                    <Select
+                      placeholder="Select column"
+                      data={availableFields}
+                      value={mappings.date || EMPTY_MAP_FIELD_VALUE}
+                      onChange={(value) => {
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                        setMappings({
+                          ...mappings,
+                          date: fieldValue ?? '',
+                        });
 
-                  setMappings({
-                    account: mappings.account ?? "",
-                    date: value ?? "",
-                    amount: mappings.amount ?? "",
-                    description: mappings.description ?? "",
-                    notes: mappings.notes ?? "",
-                    category: mappings.category ?? "",
-                  });
+                        const testDates = sampleData.map(
+                          (x: any) => x[fieldValue || ''],
+                        );
+                        const isValid =
+                          fieldValue === '' ||
+                          testDates.every((input) => isDate(input));
+                        setIsValidDateField(isValid);
+                      }}
+                      searchable
+                      error={!isValidDateField}
+                    />
+                  </Table.Td>
+                  <Table.Td>
+                    <Select
+                      placeholder="Select column"
+                      data={availableFields}
+                      value={mappings.amount || EMPTY_MAP_FIELD_VALUE}
+                      onChange={(value) => {
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                        setMappings({
+                          ...mappings,
+                          amount: fieldValue ?? '',
+                        });
 
-                  // Check if the selected field is a valid date
-                  const testDates = sampleData.map((x: any) => x[value]);
-                  // Try to parse the dates
-                  const isValidDateField =
-                    value === "" || testDates.every((input) => isDate(input));
-                  setIsValidDateField(isValidDateField);
-                }}
-              />
-            </Table.Td>
-            <Table.Td>
-              <NativeSelect
-                data={availableFields}
-                onChange={(event) => {
-                  let value = event.currentTarget.value;
-                  if (value === EMPTY_MAP_FIELD_VALUE) {
-                    // Ignore this mapping
-                    value = "";
-                  }
+                        const testAmounts = sampleData.map(
+                          (x: any) => x[fieldValue || ''],
+                        );
+                        const isValid =
+                          fieldValue === '' ||
+                          testAmounts.every((input) => !Number.isNaN(+input));
+                        setIsValidAmountField(isValid);
+                      }}
+                      searchable
+                      error={!isValidAmountField}
+                    />
+                  </Table.Td>
+                  <Table.Td>
+                    <Select
+                      placeholder="Select column"
+                      data={availableFields}
+                      value={mappings.description || EMPTY_MAP_FIELD_VALUE}
+                      onChange={(value) => {
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                        setMappings({
+                          ...mappings,
+                          description: fieldValue ?? '',
+                        });
+                      }}
+                      searchable
+                      clearable
+                    />
+                  </Table.Td>
+                  <Table.Td>
+                    <Select
+                      placeholder="Select column"
+                      data={availableFields}
+                      value={mappings.notes || EMPTY_MAP_FIELD_VALUE}
+                      onChange={(value) => {
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                        setMappings({
+                          ...mappings,
+                          notes: fieldValue ?? '',
+                        });
+                      }}
+                      searchable
+                      clearable
+                    />
+                  </Table.Td>
+                  <Table.Td>
+                    <Select
+                      placeholder="Select column"
+                      data={availableFields}
+                      value={mappings.category || EMPTY_MAP_FIELD_VALUE}
+                      onChange={(value) => {
+                        const fieldValue =
+                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                        setMappings({
+                          ...mappings,
+                          category: fieldValue ?? '',
+                        });
+                      }}
+                      searchable
+                      clearable
+                    />
+                  </Table.Td>
+                </Table.Tr>
+                {sampleData.map((x, index) => (
+                  <RowElement key={index} mappings={mappings} element={x} />
+                ))}
+              </Table.Tbody>
+            </Table>
 
-                  setMappings({
-                    account: mappings.account ?? "",
-                    date: mappings.date ?? "",
-                    amount: value ?? "",
-                    description: mappings.description ?? "",
-                    notes: mappings.notes ?? "",
-                    category: mappings.category ?? "",
-                  });
+            <Text size="xs" c="dimmed">
+              Preview showing {Math.min(SAMPLE_ARRAY_SIZE, csvData.data.length)}{' '}
+              of {csvData.data.length} transactions
+            </Text>
+          </Stack>
+        </Paper>
 
-                  // Check if the selected field is a valid date
-                  const testAmounts = sampleData.map((x: any) => x[value]);
-                  // Try to parse the dates
-                  const isValidField =
-                    value === "" ||
-                    testAmounts.every((input) => isNaN(+input) === false);
-                  setIsValidAmountField(isValidField);
-                }}
-              />
-            </Table.Td>
-            <Table.Td>
-              <NativeSelect
-                data={availableFields}
-                onChange={(event) => {
-                  let value = event.currentTarget.value;
-                  if (value === EMPTY_MAP_FIELD_VALUE) {
-                    // Ignore this mapping
-                    value = "";
-                  }
-
-                  setMappings({
-                    account: mappings.account ?? "",
-                    date: mappings.date ?? "",
-                    amount: mappings.amount ?? "",
-                    description: value ?? "",
-                    notes: mappings.notes ?? "",
-                    category: mappings.category ?? "",
-                  });
-                }}
-              />
-            </Table.Td>
-            <Table.Td>
-              <NativeSelect
-                data={availableFields}
-                onChange={(event) => {
-                  let value = event.currentTarget.value;
-                  if (value === EMPTY_MAP_FIELD_VALUE) {
-                    // Ignore this mapping
-                    value = "";
-                  }
-
-                  setMappings({
-                    account: mappings.account ?? "",
-                    date: mappings.date ?? "",
-                    amount: mappings.amount ?? "",
-                    description: mappings.description ?? "",
-                    notes: value ?? "",
-                    category: mappings.category ?? "",
-                  });
-                }}
-              />
-            </Table.Td>
-            <Table.Td>
-              <NativeSelect
-                data={availableFields}
-                onChange={(event) => {
-                  let value = event.currentTarget.value;
-                  if (value === EMPTY_MAP_FIELD_VALUE) {
-                    // Ignore this mapping
-                    value = "";
-                  }
-
-                  setMappings({
-                    account: mappings.account ?? "",
-                    date: mappings.date ?? "",
-                    amount: mappings.amount ?? "",
-                    description: mappings.description ?? "",
-                    notes: mappings.notes ?? "",
-                    category: value ?? "",
-                  });
-                }}
-              />
-            </Table.Td>
-          </Table.Tr>
-          {sampleData.map((x, index) => {
-            return <RowElement key={index} mappings={mappings} element={x} />;
-          })}
-        </Table.Tbody>
-      </Table>
-
-      <Button
-        onClick={() => {
-          navigate({
-            to: "/importer/csv/accounts",
-          });
-        }}
-      >
-        Continue
-      </Button>
-    </Stack>
+        <Group justify="flex-end">
+          <Button
+            onClick={() => {
+              navigate({
+                to: '/importer/csv/accounts',
+              });
+            }}
+            disabled={!canContinue}
+          >
+            Continue to Accounts
+          </Button>
+        </Group>
+      </Stack>
+    </Container>
   );
 }
 
@@ -246,13 +293,13 @@ interface RowElementProps {
 }
 function RowElement({ mappings, element }: Readonly<RowElementProps>) {
   return (
-    <Table.Tr key={element.name}>
-      <Table.Td>{element[mappings.account]}</Table.Td>
-      <Table.Td>{element[mappings.date]}</Table.Td>
-      <Table.Td>{element[mappings.amount]}</Table.Td>
-      <Table.Td>{element[mappings.description] ?? ""}</Table.Td>
-      <Table.Td>{element[mappings.notes] ?? ""}</Table.Td>
-      <Table.Td>{element[mappings.category] ?? ""}</Table.Td>
+    <Table.Tr>
+      <Table.Td>{element[mappings.account] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.date] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.amount] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.description] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.notes] || '-'}</Table.Td>
+      <Table.Td>{element[mappings.category] || '-'}</Table.Td>
     </Table.Tr>
   );
 }

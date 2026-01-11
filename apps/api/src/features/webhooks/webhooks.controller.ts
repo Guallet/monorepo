@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Logger, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Logger,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { WebhooksService } from './webhooks.service';
 import { Public } from 'src/auth/is-public.decorator';
 import { SupabaseWebhookUserPayload } from './dto/userWebhookPayload.supabase.dto';
@@ -14,7 +21,7 @@ export class WebhooksController {
 
   @Post('user')
   @Public()
-  @HttpCode(202)
+  @HttpCode(HttpStatus.ACCEPTED)
   async create(@Body() payload: SupabaseWebhookUserPayload): Promise<void> {
     this.logger.log('Received supabase user webhook', payload);
 

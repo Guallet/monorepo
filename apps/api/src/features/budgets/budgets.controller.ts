@@ -9,6 +9,7 @@ import {
   Patch,
   HttpCode,
   Delete,
+  HttpStatus,
 } from '@nestjs/common';
 import { BudgetsService } from './budgets.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
@@ -102,7 +103,7 @@ export class BudgetsController {
   }
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createBudgetDto: CreateBudgetDto,
     @RequestUser() user: UserPrincipal,

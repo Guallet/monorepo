@@ -25,7 +25,10 @@ import { WebhooksModule } from './features/webhooks/webhooks.module';
 import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
+import { DataImporterModule } from './features/data-importer/data-importer.module';
+import { EmailModule } from './features/email/email.module';
 import * as Joi from 'joi';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -86,6 +89,14 @@ import * as Joi from 'joi';
     }),
     // CRON
     ScheduleModule.forRoot(),
+    // REDIS / BULL
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
+        password: process.env.REDIS_PASSWORD || undefined,
+      },
+    }),
     // APP MODULES
     UsersModule,
     InstitutionsModule,
@@ -101,6 +112,8 @@ import * as Joi from 'joi';
     WebhooksModule,
     WaitingListModule,
     SavingGoalsModule,
+    DataImporterModule,
+    EmailModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,

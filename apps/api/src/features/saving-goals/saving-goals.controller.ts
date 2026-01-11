@@ -9,6 +9,7 @@ import {
   Logger,
   ParseUUIDPipe,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { SavingGoalsService } from './saving-goals.service';
 import { CreateSavingGoalDto } from './dto/create-saving-goal.dto';
@@ -36,7 +37,7 @@ export class SavingGoalsController {
     description: 'The record has been successfully created.',
     type: SavingGoalDto,
   })
-  @HttpCode(202)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,

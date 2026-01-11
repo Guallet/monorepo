@@ -9,6 +9,7 @@ import {
   Logger,
   HttpCode,
   NotFoundException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -63,7 +64,7 @@ export class CategoriesController {
   }
 
   @Post('seed')
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   async createDefaultCategoriesForUser(
     @RequestUser() user: UserPrincipal,
   ): Promise<CategoryDto[]> {
