@@ -25,3 +25,37 @@ export class InboxTransactionDto {
     };
   }
 }
+
+export type InboxTransactionsResultMetadataDto = {
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+};
+
+export class InboxTransactionsResultDto {
+  meta: InboxTransactionsResultMetadataDto;
+  transactions: InboxTransactionDto[];
+
+  static fromDomain({
+    transactions,
+    total,
+    page,
+    pageSize,
+  }: {
+    transactions: InboxTransaction[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }): InboxTransactionsResultDto {
+    return {
+      meta: {
+        total: total,
+        page: page,
+        pageSize: pageSize,
+        hasMore: total > page * pageSize,
+      },
+      transactions: transactions.map((x) => InboxTransactionDto.fromDomain(x)),
+    };
+  }
+}

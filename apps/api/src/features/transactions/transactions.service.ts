@@ -51,11 +51,20 @@ export class TransactionsService {
 
   async getUserTransactionsInbox(args: {
     userId: string;
+    page?: number;
+    pageSize?: number;
   }): Promise<InboxTransaction[]> {
+    const { userId, page = 1, pageSize = 50 } = args;
+
+    const offset = (page - 1) * pageSize;
+    if (offset < 0) {
+      throw new BadRequestException('Offset cannot be negative');
+    }
+
     const transactions = await this.repository.find({
       relations: { account: true, category: true },
       where: {
-        account: { user_id: args.userId },
+        account: { user_id: userId },
         category: {
           id: IsNull(),
         },
@@ -63,6 +72,8 @@ export class TransactionsService {
       order: {
         date: 'DESC',
       },
+      take: pageSize,
+      skip: offset,
     });
 
     // TODO: Apply the rules to the transactions and get the processed category
@@ -72,6 +83,19 @@ export class TransactionsService {
         rule_id: undefined,
         processed_category_id: undefined,
       };
+    });
+  }
+
+  async getUserTransactionsInboxCount(args: {
+    userId: string;
+  }): Promise<number> {
+    return this.repository.count({
+      where: {
+        account: { user_id: args.userId },
+        category: {
+          id: IsNull(),
+        },
+      },
     });
   }
 

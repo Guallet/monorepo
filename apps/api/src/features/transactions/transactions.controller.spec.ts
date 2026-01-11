@@ -14,6 +14,7 @@ describe('TransactionsController', () => {
     getUserTransactions: jest.fn(),
     getUserTransactionsCount: jest.fn(),
     getUserTransactionsInbox: jest.fn(),
+    getUserTransactionsInboxCount: jest.fn(),
     create: jest.fn(),
     findOne: jest.fn(),
     updateUserTransaction: jest.fn(),
@@ -116,7 +117,7 @@ describe('TransactionsController', () => {
   });
 
   describe('getUserTransactionInbox', () => {
-    it('should return inbox transactions', async () => {
+    it('should return paginated inbox transactions', async () => {
       const mockInboxTransactions = [
         {
           id: 'trans-1',
@@ -128,16 +129,49 @@ describe('TransactionsController', () => {
       mockTransactionsService.getUserTransactionsInbox.mockResolvedValue(
         mockInboxTransactions,
       );
+      mockTransactionsService.getUserTransactionsInboxCount.mockResolvedValue(
+        10,
+      );
 
-      const result = await controller.getUserTransactionInbox(mockUser);
+      const result = await controller.getUserTransactionInbox(mockUser, 1, 50);
 
       expect(result).toBeDefined();
-      expect(result.length).toBe(1);
+      expect(result.meta).toBeDefined();
+      expect(result.meta.total).toBe(10);
+      expect(result.meta.page).toBe(1);
+      expect(result.meta.pageSize).toBe(50);
+      expect(result.transactions.length).toBe(1);
       expect(
         mockTransactionsService.getUserTransactionsInbox,
       ).toHaveBeenCalledWith({
         userId: mockUser.id,
+        page: 1,
+        pageSize: 50,
       });
+      expect(
+        mockTransactionsService.getUserTransactionsInboxCount,
+      ).toHaveBeenCalledWith({
+        userId: mockUser.id,
+      });
+    });
+
+    it('should use default pagination values when not provided', async () => {
+      mockTransactionsService.getUserTransactionsInbox.mockResolvedValue([]);
+      mockTransactionsService.getUserTransactionsInboxCount.mockResolvedValue(
+        0,
+      );
+
+      const result = await controller.getUserTransactionInbox(mockUser);
+
+      expect(result).toBeDefined();
+      expect(result.meta.page).toBe(1);
+      expect(result.meta.pageSize).toBe(50);
+    });
+
+    it('should throw BadRequestException for non-integer page', async () => {
+      await expect(
+        controller.getUserTransactionInbox(mockUser, 1.5 as any, 50),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
