@@ -2,25 +2,17 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Stack, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
-import { gualletClient } from '@/api/gualletClient';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
-import { useRuleMutations } from '@guallet/api-react';
+import { useFieldDefinitions, useRuleMutations } from '@guallet/api-react';
 
 export const Route = createFileRoute('/_app/categories/rules/new')({
   component: NewRulePage,
-  loader: loader,
 });
 
-async function loader() {
-  const [fieldDefinitions] = await Promise.all([
-    gualletClient.rules.getFieldDefinitions(),
-  ]);
-  return { fieldDefinitions: fieldDefinitions.fields };
-}
-
 function NewRulePage() {
-  const { fieldDefinitions } = Route.useLoaderData();
   const navigate = useNavigate();
+
+  const { fieldDefinitions } = useFieldDefinitions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createRuleMutation } = useRuleMutations();
 

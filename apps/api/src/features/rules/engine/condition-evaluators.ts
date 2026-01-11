@@ -86,8 +86,8 @@ export function evaluateNumberCondition(
     return false;
   }
 
-  const numericValue = parseFloat(value);
-  if (isNaN(numericValue)) {
+  const numericValue = Number.parseFloat(value);
+  if (Number.isNaN(numericValue)) {
     return false;
   }
 
@@ -114,7 +114,7 @@ export function evaluateNumberCondition(
  */
 function parseDate(dateStr: string): Date | null {
   const parsed = new Date(dateStr);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
 /**

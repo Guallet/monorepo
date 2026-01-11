@@ -36,7 +36,10 @@ export function useRule(id: string | null) {
     enabled: !!id,
     queryKey: [RULES_QUERY_KEY, id],
     queryFn: async () => {
-      return await gualletClient.rules.get(id!);
+      if (!id) {
+        throw new Error('Rule ID is required');
+      }
+      return await gualletClient.rules.get(id);
     },
     gcTime: 1000 * 60 * 60, // 1 Hour
     staleTime: 1000 * 60 * 60, // 1 Hour
