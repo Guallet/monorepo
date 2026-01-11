@@ -97,12 +97,34 @@ export class DataImporterService {
             continue;
           }
 
+          // Validate and parse date
+          const dateValue = row[fieldMappings.date] as string;
+          const parsedDate = new Date(dateValue);
+          if (isNaN(parsedDate.getTime())) {
+            this.logger.warn(
+              `Skipping transaction - invalid date: ${dateValue}`,
+            );
+            failedCount++;
+            continue;
+          }
+
+          // Validate and parse amount
+          const amountValue = row[fieldMappings.amount] as string;
+          const parsedAmount = parseFloat(amountValue);
+          if (isNaN(parsedAmount)) {
+            this.logger.warn(
+              `Skipping transaction - invalid amount: ${amountValue}`,
+            );
+            failedCount++;
+            continue;
+          }
+
           await this.transactionsService.create({
             userId,
             dto: {
               accountId,
-              date: new Date(row[fieldMappings.date] as string),
-              amount: parseFloat(row[fieldMappings.amount] as string),
+              date: parsedDate,
+              amount: parsedAmount,
               description: (row[fieldMappings.description] as string) || '',
               notes: (row[fieldMappings.notes] as string) || undefined,
               categoryId: categoryId || undefined,
