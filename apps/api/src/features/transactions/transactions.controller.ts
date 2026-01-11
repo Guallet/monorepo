@@ -23,10 +23,7 @@ import {
   transactionsQueryFilterSchema,
 } from './dto/transaction.query';
 import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
-import {
-  InboxTransactionDto,
-  InboxTransactionsResultDto,
-} from './dto/inbox-transaction.dto';
+import { InboxTransactionsResultDto } from './dto/inbox-transaction.dto';
 
 @ApiTags('Transactions')
 @Controller('transactions')
