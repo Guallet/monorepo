@@ -61,14 +61,7 @@ export class CsvImportProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<CsvImportJobData>): Promise<void> {
-    this.logger.log(`Starting CSV import job ${job.id}`, { payload: job.data });
-    // Send email to use
-    const { userId } = job.data;
-    await this.sendNotificationEmail(userId, 0, 0, null);
-  }
-
-  async old_process(
+  async process(
     job: Job<CsvImportJobData>,
   ): Promise<{ processed: number; failed: number }> {
     const { userId, dto } = job.data;
