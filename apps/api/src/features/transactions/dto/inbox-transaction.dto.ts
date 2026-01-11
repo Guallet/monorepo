@@ -8,8 +8,8 @@ export class InboxTransactionDto {
   amount: number;
   currency: string;
   date: Date;
-  processedCategoryId?: string; // Processed category id based by rules
-  ruleId?: string; // Rule that processed this transaction
+  processedCategoryId?: string; // TODO: Processed category id based by rules
+  ruleId?: string; // TODO: Rule that processed this transaction
 
   static fromDomain(domain: InboxTransaction): InboxTransactionDto {
     return {
