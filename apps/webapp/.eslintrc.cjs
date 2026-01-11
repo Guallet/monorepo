@@ -12,7 +12,7 @@ module.exports = {
   parserOptions: {
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react-refresh", "@tanstack/query", "@tanstack/query"],
+  plugins: ["react-refresh", "@tanstack/query"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
