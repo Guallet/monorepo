@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Delete,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -60,7 +61,7 @@ export class UsersController {
   }
 
   @Delete()
-  @HttpCode(202)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
     @RequestUser() user: UserPrincipal,
   ): Promise<{ message: string }> {

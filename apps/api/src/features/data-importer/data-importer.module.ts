@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { DataImporterController } from './data-importer.controller';
-import { DataImporterService } from './data-importer.service';
+import {
+  CsvImportProcessor,
+  CSV_IMPORT_QUEUE,
+} from './processors/csv-import.processor';
 import { AccountsModule } from '../accounts/accounts.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { TransactionsModule } from '../transactions/transactions.module';
@@ -9,6 +13,9 @@ import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
+    BullModule.registerQueue({
+      name: CSV_IMPORT_QUEUE,
+    }),
     AccountsModule,
     CategoriesModule,
     TransactionsModule,
@@ -16,6 +23,6 @@ import { UsersModule } from '../users/users.module';
     UsersModule,
   ],
   controllers: [DataImporterController],
-  providers: [DataImporterService],
+  providers: [CsvImportProcessor],
 })
 export class DataImporterModule {}

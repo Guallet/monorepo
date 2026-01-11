@@ -5,9 +5,9 @@ import { Resend } from 'resend';
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private resend: Resend;
+  private readonly resend: Resend;
 
-  constructor(private configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
     if (!apiKey) {
       this.logger.warn(
@@ -17,14 +17,17 @@ export class EmailService {
     this.resend = new Resend(apiKey);
   }
 
-  async sendImportCompletionEmail(args: {
+  async sendImportCompletionEmail({
+    to,
+    userName,
+    processedCount,
+    failedCount,
+  }: {
     to: string;
     userName: string;
     processedCount: number;
     failedCount: number;
   }): Promise<void> {
-    const { to, userName, processedCount, failedCount } = args;
-
     try {
       const totalCount = processedCount + failedCount;
       const subject = 'CSV Import Complete';
@@ -116,6 +119,81 @@ export class EmailService {
               </div>
               
               <p>You can now view your imported transactions in your Guallet account.</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Guallet. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  }
+
+  async sendImportErrorEmail(args: {
+    to: string;
+    userName: string;
+    errorMessage: string;
+  }): Promise<void> {
+    const { to, userName, errorMessage } = args;
+
+    try {
+      const subject = 'CSV Import Failed';
+      const html = this.generateImportErrorEmailHtml({
+        userName,
+        errorMessage,
+      });
+
+      await this.resend.emails.send({
+        from: this.configService.get<string>(
+          'EMAIL_FROM',
+          'noreply@guallet.app',
+        ),
+        to,
+        subject,
+        html,
+      });
+
+      this.logger.log(`Import error email sent to ${to}`);
+    } catch (error) {
+      this.logger.error(`Failed to send import error email to ${to}`, error);
+    }
+  }
+
+  private generateImportErrorEmailHtml(args: {
+    userName: string;
+    errorMessage: string;
+  }): string {
+    const { userName, errorMessage } = args;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #f44336; color: white; padding: 20px; text-align: center; }
+            .content { background-color: #f9f9f9; padding: 20px; }
+            .error-box { background-color: #ffebee; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #f44336; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>CSV Import Failed</h1>
+            </div>
+            <div class="content">
+              <p>Hello ${userName},</p>
+              <p>Unfortunately, your CSV import could not be completed due to an error.</p>
+              
+              <div class="error-box">
+                <strong>Error Details:</strong>
+                <p>${errorMessage}</p>
+              </div>
+              
+              <p>Please check your CSV file and try again. If the problem persists, please contact support.</p>
             </div>
             <div class="footer">
               <p>© ${new Date().getFullYear()} Guallet. All rights reserved.</p>

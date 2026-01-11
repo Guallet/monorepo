@@ -29,6 +29,7 @@ import { DataImporterModule } from './features/data-importer/data-importer.modul
 import { EmailModule } from './features/email/email.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
+import { CSV_IMPORT_QUEUE } from './features/data-importer/processors/csv-import.processor';
 
 @Module({
   imports: [
@@ -94,6 +95,9 @@ import { BullModule } from '@nestjs/bullmq';
       connection: {
         url: process.env.REDIS_HOST,
       },
+    }),
+    BullModule.registerQueue({
+      name: CSV_IMPORT_QUEUE,
     }),
     // APP MODULES
     UsersModule,

@@ -1,4 +1,10 @@
-import { Controller, ForbiddenException, Get, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
@@ -9,7 +15,7 @@ import { SyncService } from 'src/features/openbanking/sync.service';
 export class AdminController {
   constructor(private readonly syncService: SyncService) {}
 
-  @HttpCode(202)
+  @HttpCode(HttpStatus.ACCEPTED)
   @Get('sync/institutions')
   async syncBanks(@RequestUser() user: UserPrincipal): Promise<void> {
     if (user.isAdmin()) {
