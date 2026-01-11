@@ -29,7 +29,6 @@ import { DataImporterModule } from './features/data-importer/data-importer.modul
 import { EmailModule } from './features/email/email.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
-import { CSV_IMPORT_QUEUE } from './features/data-importer/processors/csv-import.processor';
 
 @Module({
   imports: [
@@ -93,11 +92,10 @@ import { CSV_IMPORT_QUEUE } from './features/data-importer/processors/csv-import
     // REDIS / BULL
     BullModule.forRoot({
       connection: {
-        url: process.env.REDIS_HOST,
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
+        password: process.env.REDIS_PASSWORD || undefined,
       },
-    }),
-    BullModule.registerQueue({
-      name: CSV_IMPORT_QUEUE,
     }),
     // APP MODULES
     UsersModule,

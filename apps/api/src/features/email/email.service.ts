@@ -38,17 +38,22 @@ export class EmailService {
         totalCount,
       });
 
-      await this.resend.emails.send({
+      const { error } = await this.resend.emails.send({
         from: this.configService.get<string>(
           'EMAIL_FROM',
-          'noreply@guallet.app',
+          'Guallet <noreply@guallet.io>',
         ),
         to,
         subject,
         html,
       });
 
-      this.logger.log(`Import completion email sent to ${to}`);
+      if (error === null) {
+        this.logger.log(`Import completion email sent to ${to}`);
+      } else {
+        this.logger.error('Resend API error:', error);
+        // TODO: Notify the admin or take other actions as needed
+      }
     } catch (error) {
       this.logger.error(
         `Failed to send import completion email to ${to}`,
@@ -143,17 +148,22 @@ export class EmailService {
         errorMessage,
       });
 
-      await this.resend.emails.send({
+      const { error } = await this.resend.emails.send({
         from: this.configService.get<string>(
           'EMAIL_FROM',
-          'noreply@guallet.app',
+          'Guallet <noreply@guallet.io>',
         ),
         to,
         subject,
         html,
       });
 
-      this.logger.log(`Import error email sent to ${to}`);
+      if (error === null) {
+        this.logger.log(`Import error email sent to ${to}`);
+      } else {
+        this.logger.error('Resend API error:', error);
+        // TODO: Notify the admin or take other actions as needed
+      }
     } catch (error) {
       this.logger.error(`Failed to send import error email to ${to}`, error);
     }
