@@ -2,7 +2,7 @@ import { AccountDto, CategoryDto } from "@guallet/api-client";
 import { TransactionsFilter } from "./TransactionsFilter";
 import { FilterData } from "./FilterData";
 import { useAccounts, useCategories } from "@guallet/api-react";
-import { ActionIcon, Badge, Card, Group, Modal, Stack, Text } from "@mantine/core";
+import { ActionIcon, Card, Group, Indicator, Modal, Stack, Text } from "@mantine/core";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useDisclosure } from "@mantine/hooks";
 import { IconFilter } from "@tabler/icons-react";
@@ -77,31 +77,21 @@ export function TransactionsFilterDataWrapper({
             <Text size="sm" fw={500}>
               Filters
             </Text>
-            <ActionIcon
-              variant="light"
-              size="lg"
-              onClick={open}
-              aria-label="Open filters"
+            <Indicator
+              label={activeFiltersCount > 0 ? activeFiltersCount : undefined}
+              disabled={activeFiltersCount === 0}
+              inline
+              size={18}
             >
-              <IconFilter size={20} />
-              {activeFiltersCount > 0 && (
-                <Badge
-                  size="xs"
-                  variant="filled"
-                  color="blue"
-                  style={{
-                    position: "absolute",
-                    top: -4,
-                    right: -4,
-                    minWidth: 18,
-                    height: 18,
-                    padding: "0 4px",
-                  }}
-                >
-                  {activeFiltersCount}
-                </Badge>
-              )}
-            </ActionIcon>
+              <ActionIcon
+                variant="light"
+                size="lg"
+                onClick={open}
+                aria-label="Open filters"
+              >
+                <IconFilter size={20} />
+              </ActionIcon>
+            </Indicator>
           </Group>
         </Card>
         <Modal

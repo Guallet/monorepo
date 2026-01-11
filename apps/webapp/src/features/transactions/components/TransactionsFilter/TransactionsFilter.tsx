@@ -74,9 +74,9 @@ export function TransactionsFilter({
   // Desktop view: Show filters in a Card with horizontal layout
   return (
     <Card withBorder radius="md" p="md">
-      <Stack gap="md">
+      <Group gap="md" wrap="wrap">
         {filterContent}
-      </Stack>
+      </Group>
     </Card>
   );
 }
