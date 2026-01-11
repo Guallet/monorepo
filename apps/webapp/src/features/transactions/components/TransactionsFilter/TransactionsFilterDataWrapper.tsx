@@ -78,7 +78,7 @@ export function TransactionsFilterDataWrapper({
               Filters
             </Text>
             <Indicator
-              label={activeFiltersCount || undefined}
+              label={activeFiltersCount > 0 ? activeFiltersCount : undefined}
               disabled={activeFiltersCount === 0}
               inline
               size={18}
@@ -104,9 +104,7 @@ export function TransactionsFilterDataWrapper({
           <Stack gap="md">
             <TransactionsFilter
               filters={filters}
-              onFiltersUpdate={(newFilters: FilterData) => {
-                handleFiltersUpdate(newFilters);
-              }}
+              onFiltersUpdate={handleFiltersUpdate}
             />
           </Stack>
         </Modal>
