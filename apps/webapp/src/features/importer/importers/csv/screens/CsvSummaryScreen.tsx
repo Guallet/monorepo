@@ -2,7 +2,6 @@ import { AccountDto, CategoryDto } from "@guallet/api-client";
 import { FieldMappings } from "../models";
 import { DEFAULT_ACCOUNT_NAME } from "./CsvAccountsScreen";
 import { formatDate } from "@/utils/dateUtils";
-import { delay } from "@/utils/delay";
 import {
   Modal,
   Stack,
@@ -27,9 +26,11 @@ import {
   categoriesMappingsAtom,
 } from "../state/csvState";
 import { useAccounts, useCategories } from "@guallet/api-react";
+import { useGualletClient } from "@guallet/api-react";
 
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
+  const gualletClient = useGualletClient();
 
   const accounts = useAtomValue(csvAccountsAtom);
   const categories = useAtomValue(csvCategoriesAtom);
@@ -56,25 +57,56 @@ export function CsvSummaryScreen() {
 
   const [error, setError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
-  const [importingProgress, setImportingProgress] = useState(0);
-  const [importedTransactions, setImportedTransactions] = useState(0);
   const [isModalOpened, setIsModalOpened] = useState(false);
 
   const importData = async () => {
     try {
       setError(null);
       setIsBusy(true);
-      let counter = 0;
-      for (const item of mappedTransactions) {
-        console.log("Making a request to the API with data", { item });
 
-        await delay(1);
-        setImportedTransactions(counter++);
-        setImportingProgress((counter / mappedTransactions.length) * 100);
+      // Prepare account mappings for API
+      const apiAccountMappings: Record<string, any> = {};
+      for (const [key, account] of Object.entries(accountMappings)) {
+        if (account) {
+          apiAccountMappings[key] = {
+            id: account.id,
+            name: account.name || key,
+            shouldCreate: !account.id, // If no ID, we need to create it
+          };
+        } else {
+          apiAccountMappings[key] = {
+            name: key,
+            shouldCreate: true,
+          };
+        }
       }
 
+      // Prepare category mappings for API
+      const apiCategoryMappings: Record<string, any> = {};
+      for (const [key, category] of Object.entries(categoriesMappings)) {
+        if (category) {
+          apiCategoryMappings[key] = {
+            id: category.id,
+            name: category.name || key,
+            shouldCreate: !category.id,
+          };
+        } else if (key) {
+          apiCategoryMappings[key] = {
+            name: key,
+            shouldCreate: true,
+          };
+        }
+      }
+
+      // Call the new bulk import API
+      await gualletClient.dataImporter.importCsv({
+        csvData: csvData.data,
+        fieldMappings,
+        accountMappings: apiAccountMappings,
+        categoryMappings: apiCategoryMappings,
+      });
+
       setIsBusy(false);
-      await delay(200);
       setIsModalOpened(true);
     } catch (e) {
       console.error(e);
@@ -102,8 +134,12 @@ export function CsvSummaryScreen() {
         centered
       >
         <Stack>
-          <Title>Data imported successfully</Title>
-          <Text>Imported {importedTransactions} transactions successfully</Text>
+          <Title>Import Started</Title>
+          <Text>
+            Your CSV import has been started. You will receive an email when the
+            import is complete with details about the number of transactions
+            processed.
+          </Text>
           <Button
             onClick={() => {
               // After all is imported, navigate to success page
@@ -121,7 +157,7 @@ export function CsvSummaryScreen() {
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
         loaderProps={{
-          children: `Progress ${Math.trunc(importingProgress)}%: Importing ${importedTransactions} of ${mappedTransactions.length} transactions`,
+          children: `Submitting your import request...`,
         }}
       />
       <Stack>
