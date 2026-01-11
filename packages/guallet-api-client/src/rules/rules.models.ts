@@ -60,8 +60,7 @@ export interface FieldDefinitionsDto {
   fields: FieldDefinitionDto[];
 }
 
-export interface EvaluationResultDto {
-  matched: boolean;
+export interface RuleEvaluationResultDto {
   categoryId: string | null;
   matchedRuleId: string | null;
 }

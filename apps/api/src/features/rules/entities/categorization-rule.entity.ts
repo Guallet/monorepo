@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity('categorization_rules')
-export class CategorizationRuleEntity extends BaseDbEntity {
+export class CategorizationRule extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -34,15 +34,15 @@ export class CategorizationRuleEntity extends BaseDbEntity {
   @Column({ name: 'condition_logic', default: 'and' })
   conditionLogic: string;
 
-  @OneToMany(() => RuleConditionEntity, (condition) => condition.rule, {
+  @OneToMany(() => RuleCondition, (condition) => condition.rule, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  conditions: Relation<RuleConditionEntity[]>;
+  conditions: Relation<RuleCondition[]>;
 }
 
 @Entity('rule_conditions')
-export class RuleConditionEntity extends BaseDbEntity {
+export class RuleCondition extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -59,10 +59,10 @@ export class RuleConditionEntity extends BaseDbEntity {
   order: number;
 
   // Relations
-  @ManyToOne(() => CategorizationRuleEntity, (rule) => rule.conditions, {
+  @ManyToOne(() => CategorizationRule, (rule) => rule.conditions, {
     onDelete: 'CASCADE',
   })
-  rule: Relation<CategorizationRuleEntity>;
+  rule: Relation<CategorizationRule>;
 
   @Column()
   ruleId: string;

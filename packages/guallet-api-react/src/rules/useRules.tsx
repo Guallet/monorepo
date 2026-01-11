@@ -68,3 +68,26 @@ export function useFieldDefinitions() {
     ...query,
   };
 }
+
+export function useEvaluateRulesForTransaction(transactionId: string | null) {
+  const gualletClient = useGualletClient();
+
+  const query = useQuery({
+    enabled: !!transactionId,
+    queryKey: [RULES_QUERY_KEY, 'evaluate', transactionId],
+    queryFn: async () => {
+      if (!transactionId) {
+        throw new Error('Transaction ID is required');
+      }
+      return await gualletClient.rules.evaluateRulesForTransaction(
+        transactionId,
+      );
+    },
+    staleTime: 0,
+  });
+
+  return {
+    result: query.data ?? null,
+    ...query,
+  };
+}

@@ -5,6 +5,7 @@ import {
   ReorderConditionsRequest,
   ReorderRulesRequest,
   RuleDto,
+  RuleEvaluationResultDto,
   UpdateRuleRequest,
 } from './rules.models';
 
@@ -72,6 +73,14 @@ export class RulesApi {
     return await this.client.post<RuleDto, ReorderConditionsRequest>({
       path: `${RULES_PATH}/${ruleId}/conditions/reorder`,
       payload: { conditionIds },
+    });
+  }
+
+  async evaluateRulesForTransaction(
+    transactionId: string,
+  ): Promise<RuleEvaluationResultDto> {
+    return await this.client.get<RuleEvaluationResultDto>({
+      path: `${RULES_PATH}/evaluate/${transactionId}`,
     });
   }
 }

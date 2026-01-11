@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  CategorizationRuleEntity,
-  RuleConditionEntity,
+  CategorizationRule,
+  RuleCondition,
 } from '../entities/categorization-rule.entity';
 
 export class RuleConditionDto {
@@ -20,7 +20,7 @@ export class RuleConditionDto {
   @ApiProperty({ description: 'Order of the condition' })
   order: number;
 
-  static fromEntity(entity: RuleConditionEntity): RuleConditionDto {
+  static fromEntity(entity: RuleCondition): RuleConditionDto {
     return {
       id: entity.id,
       field: entity.field,
@@ -62,7 +62,7 @@ export class RuleDto {
   })
   conditions: RuleConditionDto[];
 
-  static fromEntity(entity: CategorizationRuleEntity): RuleDto {
+  static fromEntity(entity: CategorizationRule): RuleDto {
     return {
       id: entity.id,
       name: entity.name,

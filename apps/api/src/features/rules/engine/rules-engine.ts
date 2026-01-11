@@ -1,3 +1,4 @@
+import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import {
   evaluateAccountCondition,
   evaluateDateTimeCondition,
@@ -20,14 +21,13 @@ import {
   ConditionLogic,
   RuleCondition,
   RuleEvaluationResult,
-  TransactionInput,
 } from './rule-types';
 
 /**
  * Evaluate a single condition against a transaction
  */
 export function evaluateCondition(
-  transaction: TransactionInput,
+  transaction: Transaction,
   condition: RuleCondition,
 ): boolean {
   const { field, operator, value } = condition;
@@ -90,7 +90,7 @@ export function evaluateCondition(
  * Conditions are evaluated based on the rule's conditionLogic (AND or OR)
  */
 export function evaluateRule(
-  transaction: TransactionInput,
+  transaction: Transaction,
   rule: CategorizationRule,
 ): boolean {
   if (!rule.isActive) {
@@ -125,7 +125,7 @@ export function evaluateRule(
  * Returns the first matching rule's category, or null if no match
  */
 export function evaluateRules(
-  transaction: TransactionInput,
+  transaction: Transaction,
   rules: CategorizationRule[],
 ): RuleEvaluationResult {
   // Sort rules by order
@@ -134,7 +134,6 @@ export function evaluateRules(
   for (const rule of sortedRules) {
     if (evaluateRule(transaction, rule)) {
       return {
-        matched: true,
         categoryId: rule.resultCategoryId,
         matchedRuleId: rule.id,
       };
@@ -142,7 +141,6 @@ export function evaluateRules(
   }
 
   return {
-    matched: false,
     categoryId: null,
     matchedRuleId: null,
   };
@@ -190,7 +188,7 @@ export function validateRule(rule: CategorizationRule): string[] {
  * Get the field value from a transaction
  */
 export function getTransactionFieldValue(
-  transaction: TransactionInput,
+  transaction: Transaction,
   field: TransactionFieldType,
 ): string | number | Date | null {
   switch (field) {

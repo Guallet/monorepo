@@ -22,6 +22,27 @@ export class TransactionsService {
     private readonly accountService: AccountsService,
   ) {}
 
+  async findUserTransaction({
+    userId,
+    transactionId,
+  }: {
+    userId: string;
+    transactionId: string;
+  }): Promise<Transaction> {
+    const entity = await this.repository.findOne({
+      relations: { account: true, category: true },
+      where: {
+        id: transactionId,
+        account: { user_id: userId },
+      },
+    });
+
+    if (!entity) {
+      throw new NotFoundException('Transaction not found');
+    }
+    return entity;
+  }
+
   // get total transactions count for a user, with query filters
   async getUserTransactionsCount(args: {
     userId: string;

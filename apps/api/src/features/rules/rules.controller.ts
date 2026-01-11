@@ -14,20 +14,21 @@ import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
 import { RuleDto } from './dto/rule.dto';
 import { ReorderRulesDto, ReorderConditionsDto } from './dto/reorder-rules.dto';
-import {
-  EvaluateTransactionDto,
-  EvaluationResultDto,
-} from './dto/evaluate-transaction.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto';
+import { TransactionsService } from '../transactions/transactions.service';
 
 @ApiTags('Categorization Rules')
 @Controller('rules')
 export class RulesController {
   private readonly logger = new Logger(RulesController.name);
 
-  constructor(private readonly rulesService: RulesService) {}
+  constructor(
+    private readonly rulesService: RulesService,
+    private readonly transactionsService: TransactionsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new categorization rule' })
@@ -137,19 +138,30 @@ export class RulesController {
     return RuleDto.fromEntity(rule);
   }
 
-  @Post('evaluate')
-  @ApiOperation({ summary: 'Evaluate a transaction against all rules' })
-  @ApiResponse({ status: 200, type: EvaluationResultDto })
-  async evaluateTransaction(
+  @Get('evaluate/:id')
+  @ApiOperation({ summary: 'Evaluate a transaction by ID against all rules' })
+  @ApiResponse({ status: 200, type: RuleEvaluationResultDto })
+  async evaluateTransactionById(
     @RequestUser() user: UserPrincipal,
-    @Body() transactionDto: EvaluateTransactionDto,
-  ): Promise<EvaluationResultDto> {
-    return this.rulesService.evaluateTransaction(user.id, {
-      id: transactionDto.id,
-      accountId: transactionDto.accountId ?? null,
-      description: transactionDto.description ?? null,
-      amount: transactionDto.amount,
-      date: transactionDto.date,
+    @Param('id') transactionId: string,
+  ): Promise<RuleEvaluationResultDto> {
+    const transaction = await this.transactionsService.findUserTransaction({
+      userId: user.id,
+      transactionId,
     });
+    if (!transaction) {
+      throw new NotFoundException(
+        `Transaction with ID "${transactionId}" not found`,
+      );
+    }
+    const result = await this.rulesService.evaluateTransaction({
+      userId: user.id,
+      transaction,
+    });
+
+    return {
+      categoryId: result.categoryId,
+      matchedRuleId: result.matchedRuleId,
+    };
   }
 }

@@ -7,8 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import {
-  CategorizationRuleEntity,
-  RuleConditionEntity,
+  CategorizationRule as CategorizationRuleEntity,
+  RuleCondition,
 } from './entities/categorization-rule.entity';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
@@ -18,11 +18,11 @@ import {
   evaluateRules,
   isValidOperatorForField,
   TransactionFieldType,
-  TransactionInput,
   RuleEvaluationResult,
   OperatorType,
   TransactionField,
 } from './engine';
+import { Transaction } from '../transactions/entities/transaction.entity';
 
 @Injectable()
 export class RulesService {
@@ -32,8 +32,11 @@ export class RulesService {
     @InjectRepository(CategorizationRuleEntity)
     private readonly rulesRepository: Repository<CategorizationRuleEntity>,
 
-    @InjectRepository(RuleConditionEntity)
-    private readonly conditionsRepository: Repository<RuleConditionEntity>,
+    @InjectRepository(RuleCondition)
+    private readonly conditionsRepository: Repository<RuleCondition>,
+
+    @InjectRepository(Transaction)
+    private readonly transactionsRepository: Repository<Transaction>,
   ) {}
 
   /**
@@ -283,10 +286,13 @@ export class RulesService {
   /**
    * Evaluate a transaction against all user rules
    */
-  async evaluateTransaction(
-    userId: string,
-    transaction: TransactionInput,
-  ): Promise<RuleEvaluationResult> {
+  async evaluateTransaction({
+    userId,
+    transaction,
+  }: {
+    userId: string;
+    transaction: Transaction;
+  }): Promise<RuleEvaluationResult> {
     const rules = await this.findAll(userId);
 
     const domainRules: CategorizationRule[] = rules.map((r) => ({

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   evaluateCondition,
   evaluateRule,
@@ -10,21 +11,28 @@ import {
   NumberOperator,
   AccountOperator,
 } from './field-types';
-import {
-  CategorizationRule,
-  ConditionLogic,
-  TransactionInput,
-} from './rule-types';
+import { CategorizationRule, ConditionLogic } from './rule-types';
+import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 
 describe('Rules Engine', () => {
   const createTransaction = (
-    overrides: Partial<TransactionInput> = {},
-  ): TransactionInput => ({
+    overrides: Partial<Transaction> = {},
+  ): Transaction => ({
     id: 'tx-1',
     accountId: 'account-1',
     description: "Sainsbury's London",
+    notes: '',
     amount: -50.25,
     date: new Date('2024-06-15'),
+    currency: 'GBP',
+    externalId: 'ext-1',
+    metadata: null,
+    account: {} as any,
+    category: null as any,
+    categoryId: null,
+    created_at: new Date('2024-06-15'),
+    updated_at: new Date('2024-06-15'),
+    deleted_at: null as any,
     ...overrides,
   });
 
@@ -275,7 +283,6 @@ describe('Rules Engine', () => {
 
       const result = evaluateRules(transaction, rules);
 
-      expect(result.matched).toBe(true);
       expect(result.categoryId).toBe('cat-sainsbury');
       expect(result.matchedRuleId).toBe('rule-2');
     });
@@ -338,7 +345,6 @@ describe('Rules Engine', () => {
 
       const result = evaluateRules(transaction, rules);
 
-      expect(result.matched).toBe(false);
       expect(result.categoryId).toBeNull();
       expect(result.matchedRuleId).toBeNull();
     });
@@ -347,8 +353,8 @@ describe('Rules Engine', () => {
       const transaction = createTransaction();
       const result = evaluateRules(transaction, []);
 
-      expect(result.matched).toBe(false);
       expect(result.categoryId).toBeNull();
+      expect(result.matchedRuleId).toBeNull();
     });
   });
 

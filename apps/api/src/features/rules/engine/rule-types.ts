@@ -38,21 +38,9 @@ export interface CategorizationRule {
 }
 
 /**
- * Represents a transaction for rule evaluation
- */
-export interface TransactionInput {
-  id: string;
-  accountId: string | null;
-  description: string | null;
-  amount: number;
-  date: Date | string;
-}
-
-/**
  * Result of rule evaluation
  */
 export interface RuleEvaluationResult {
-  matched: boolean;
   categoryId: string | null;
   matchedRuleId: string | null;
 }
