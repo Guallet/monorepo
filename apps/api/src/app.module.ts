@@ -28,6 +28,7 @@ import { RegularPaymentsModule } from './features/regular-payments/regular-payme
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { EmailModule } from './features/email/email.module';
 import * as Joi from 'joi';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -88,6 +89,12 @@ import * as Joi from 'joi';
     }),
     // CRON
     ScheduleModule.forRoot(),
+    // REDIS / BULL
+    BullModule.forRoot({
+      connection: {
+        url: process.env.REDIS_HOST,
+      },
+    }),
     // APP MODULES
     UsersModule,
     InstitutionsModule,
