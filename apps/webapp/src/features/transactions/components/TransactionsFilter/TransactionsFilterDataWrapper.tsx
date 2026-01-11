@@ -98,8 +98,12 @@ export function TransactionsFilterDataWrapper({
           opened={opened}
           onClose={close}
           title={<Text fw={600}>Filter Transactions</Text>}
-          fullScreen={true}
-          transitionProps={{ transition: "slide-up", duration: 200 }}
+          fullScreen={isMobile}
+          centered
+          size="lg"
+          {...(isMobile && {
+            transitionProps: { transition: "slide-up", duration: 200 },
+          })}
         >
           <Stack gap="md">
             <TransactionsFilter
