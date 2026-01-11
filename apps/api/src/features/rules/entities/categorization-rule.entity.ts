@@ -46,9 +46,6 @@ export class RuleConditionEntity extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'rule_id' })
-  ruleId: string;
-
   @Column()
   field: string;
 
@@ -61,8 +58,12 @@ export class RuleConditionEntity extends BaseDbEntity {
   @Column({ name: 'order', type: 'int' })
   order: number;
 
+  // Relations
   @ManyToOne(() => CategorizationRuleEntity, (rule) => rule.conditions, {
     onDelete: 'CASCADE',
   })
   rule: Relation<CategorizationRuleEntity>;
+
+  @Column()
+  ruleId: string;
 }

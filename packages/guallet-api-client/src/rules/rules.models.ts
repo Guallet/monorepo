@@ -13,7 +13,7 @@ export interface RuleDto {
   resultCategoryId: string;
   order: number;
   isActive: boolean;
-  conditionLogic: "and" | "or";
+  conditionLogic: 'and' | 'or';
   conditions: RuleConditionDto[];
 }
 
@@ -29,7 +29,7 @@ export interface CreateRuleRequest {
   description?: string;
   resultCategoryId: string;
   conditions: CreateConditionRequest[];
-  conditionLogic?: "and" | "or";
+  conditionLogic?: 'and' | 'or';
   order?: number;
   isActive?: boolean;
 }
@@ -39,28 +39,28 @@ export interface UpdateRuleRequest {
   description?: string;
   resultCategoryId?: string;
   conditions?: CreateConditionRequest[];
-  conditionLogic?: "and" | "or";
+  conditionLogic?: 'and' | 'or';
   order?: number;
   isActive?: boolean;
 }
 
-export interface FieldOperator {
+export interface FieldOperatorDto {
   value: string;
   label: string;
 }
 
-export interface FieldDefinition {
+export interface FieldDefinitionDto {
   name: string;
   label: string;
   type: string;
-  operators: FieldOperator[];
+  operators: FieldOperatorDto[];
 }
 
-export interface FieldDefinitionsResponse {
-  fields: FieldDefinition[];
+export interface FieldDefinitionsDto {
+  fields: FieldDefinitionDto[];
 }
 
-export interface EvaluationResult {
+export interface EvaluationResultDto {
   matched: boolean;
   categoryId: string | null;
   matchedRuleId: string | null;

@@ -1,14 +1,14 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   CreateRuleRequest,
-  FieldDefinitionsResponse,
+  FieldDefinitionsDto,
   ReorderConditionsRequest,
   ReorderRulesRequest,
   RuleDto,
   UpdateRuleRequest,
-} from "./rules.models";
+} from './rules.models';
 
-const RULES_PATH = "rules";
+const RULES_PATH = 'rules';
 
 export class RulesApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -23,8 +23,8 @@ export class RulesApi {
     });
   }
 
-  async getFieldDefinitions(): Promise<FieldDefinitionsResponse> {
-    return await this.client.get<FieldDefinitionsResponse>({
+  async getFieldDefinitions(): Promise<FieldDefinitionsDto> {
+    return await this.client.get<FieldDefinitionsDto>({
       path: `${RULES_PATH}/fields`,
     });
   }

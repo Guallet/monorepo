@@ -2,49 +2,41 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Stack, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
-import { gualletClient } from '@/api/gualletClient';
-import { loadCategories } from '@/features/categories/api/categories.api';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
-import { useRuleMutations } from '@guallet/api-react';
+import {
+  useCategories,
+  useFieldDefinitions,
+  useRule,
+  useRuleMutations,
+} from '@guallet/api-react';
 
 export const Route = createFileRoute('/_app/categories/rules/$id_/edit')({
   component: EditRulePage,
-  loader: loader,
 });
 
-async function loader({ params }: { params: { id: string } }) {
-  const [rule, fieldDefinitions, categories] = await Promise.all([
-    gualletClient.rules.get(params.id),
-    gualletClient.rules.getFieldDefinitions(),
-    loadCategories(),
-  ]);
-  return {
-    rule,
-    fieldDefinitions: fieldDefinitions.fields,
-    categories,
-  };
-}
-
 function EditRulePage() {
-  const { rule, fieldDefinitions, categories } = Route.useLoaderData();
   const { id } = Route.useParams();
+  const { rule } = useRule(id);
+  const { categories } = useCategories();
+  const { fieldDefinitions } = useFieldDefinitions();
+  const { updateRuleMutation } = useRuleMutations();
+
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { updateRuleMutation } = useRuleMutations();
-
   const initialData: RuleFormData = {
-    name: rule.name,
-    description: rule.description ?? '',
-    resultCategoryId: rule.resultCategoryId,
-    isActive: rule.isActive,
-    conditionLogic: rule.conditionLogic ?? 'and',
-    conditions: rule.conditions.map((c) => ({
-      id: c.id,
-      field: c.field,
-      operator: c.operator,
-      value: c.value,
-    })),
+    name: rule?.name ?? '',
+    description: rule?.description ?? '',
+    resultCategoryId: rule?.resultCategoryId ?? '',
+    isActive: rule?.isActive ?? false,
+    conditionLogic: rule?.conditionLogic ?? 'and',
+    conditions:
+      rule?.conditions.map((c) => ({
+        id: c.id,
+        field: c.field,
+        operator: c.operator,
+        value: c.value,
+      })) ?? [],
   };
 
   const handleSubmit = async (data: RuleFormData) => {
@@ -94,7 +86,7 @@ function EditRulePage() {
       <Title order={2}>Edit Rule</Title>
       <RuleForm
         initialData={initialData}
-        fieldDefinitions={fieldDefinitions}
+        fieldDefinitions={fieldDefinitions ?? []}
         categories={categories}
         onSubmit={handleSubmit}
         onCancel={handleCancel}

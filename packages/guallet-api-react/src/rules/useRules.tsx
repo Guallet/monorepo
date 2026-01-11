@@ -1,9 +1,13 @@
-import { RuleDto, FieldDefinitionsResponse } from "@guallet/api-client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import {
+  RuleDto,
+  FieldDefinitionsDto,
+  FieldDefinitionDto,
+} from '@guallet/api-client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-export const RULES_QUERY_KEY = "rules";
-export const RULES_FIELD_DEFINITIONS_QUERY_KEY = "rules-field-definitions";
+export const RULES_QUERY_KEY = 'rules';
+export const RULES_FIELD_DEFINITIONS_QUERY_KEY = 'rules-field-definitions';
 
 export function useRules() {
   const gualletClient = useGualletClient();
@@ -24,8 +28,7 @@ export function useRules() {
   });
 
   return {
-    rules:
-      query.data?.filter((dto): dto is RuleDto => dto !== undefined) ?? [],
+    rules: query.data?.filter((dto): dto is RuleDto => dto !== undefined) ?? [],
     ...query,
   };
 }
@@ -40,7 +43,7 @@ export function useRule(id: string | null) {
       if (id) {
         return await gualletClient.rules.get(id);
       } else {
-        throw Error("Rule ID is null");
+        throw Error('Rule ID is null');
       }
     },
     gcTime: 1000 * 60 * 60, // 1 Hour
@@ -63,8 +66,10 @@ export function useFieldDefinitions() {
   });
 
   return {
-    fieldDefinitions: query.data ?? null,
-    fields: query.data?.fields ?? [],
+    fieldDefinitions:
+      query.data?.fields?.filter(
+        (dto): dto is FieldDefinitionDto => dto !== undefined,
+      ) ?? [],
     ...query,
   };
 }

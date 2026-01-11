@@ -69,10 +69,13 @@ export class RulesService {
   /**
    * Create a new categorization rule
    */
-  async create(
-    userId: string,
-    dto: CreateRuleDto,
-  ): Promise<CategorizationRuleEntity> {
+  async create({
+    userId,
+    dto,
+  }: {
+    userId: string;
+    dto: CreateRuleDto;
+  }): Promise<CategorizationRuleEntity> {
     this.logger.debug(`Creating a new rule for user ${userId}`, dto);
 
     // Validate conditions
@@ -99,8 +102,7 @@ export class RulesService {
     });
 
     const savedRule = await this.rulesRepository.save(rule);
-
-    // Create conditions
+    // Create conditions for rule
     const conditions = dto.conditions.map((c, index) =>
       this.conditionsRepository.create({
         ruleId: savedRule.id,
@@ -110,19 +112,21 @@ export class RulesService {
         order: c.order ?? index,
       }),
     );
+    const savedConditions = await this.conditionsRepository.save(conditions);
 
-    savedRule.conditions = await this.conditionsRepository.save(conditions);
-
-    return savedRule;
+    return {
+      ...savedRule,
+      conditions: savedConditions,
+    } as CategorizationRuleEntity;
   }
 
   /**
    * Get all rules for a user
    */
   async findAll(userId: string): Promise<CategorizationRuleEntity[]> {
-    return this.rulesRepository.find({
+    return await this.rulesRepository.find({
       where: { userId },
-      relations: ['conditions'],
+      relations: { conditions: true },
       order: { order: 'ASC' },
     });
   }
@@ -130,10 +134,16 @@ export class RulesService {
   /**
    * Get a single rule by ID
    */
-  async findOne(userId: string, id: string): Promise<CategorizationRuleEntity> {
+  async findOne({
+    userId,
+    id,
+  }: {
+    userId: string;
+    id: string;
+  }): Promise<CategorizationRuleEntity> {
     const rule = await this.rulesRepository.findOne({
       where: { id, userId },
-      relations: ['conditions'],
+      relations: { conditions: true },
     });
 
     if (!rule) {
@@ -153,7 +163,7 @@ export class RulesService {
   ): Promise<CategorizationRuleEntity> {
     this.logger.debug(`Updating rule ${id} for user ${userId}`, dto);
 
-    const existingRule = await this.findOne(userId, id);
+    const existingRule = await this.findOne({ userId, id });
 
     // Validate conditions if provided
     if (dto.conditions) {
@@ -197,9 +207,13 @@ export class RulesService {
   /**
    * Delete a rule
    */
-  async remove(userId: string, id: string): Promise<void> {
-    const rule = await this.findOne(userId, id);
+  async remove(userId: string, id: string): Promise<CategorizationRuleEntity> {
+    const rule = await this.findOne({ userId, id });
+    if (!rule) {
+      throw new NotFoundException(`Rule with ID "${id}" not found`);
+    }
     await this.rulesRepository.remove(rule);
+    return rule;
   }
 
   /**
@@ -242,7 +256,7 @@ export class RulesService {
     conditionIds: string[],
   ): Promise<CategorizationRuleEntity> {
     // Verify rule belongs to user
-    await this.findOne(userId, ruleId);
+    await this.findOne({ userId, id: ruleId });
 
     // Verify all conditions belong to the rule
     const conditions = await this.conditionsRepository.find({
@@ -263,7 +277,7 @@ export class RulesService {
       );
     }
 
-    return this.findOne(userId, ruleId);
+    return this.findOne({ userId, id: ruleId });
   }
 
   /**

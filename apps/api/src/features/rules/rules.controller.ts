@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { RulesService } from './rules.service';
 import { CreateRuleDto } from './dto/create-rule.dto';
@@ -35,7 +36,15 @@ export class RulesController {
     @RequestUser() user: UserPrincipal,
     @Body() createRuleDto: CreateRuleDto,
   ): Promise<RuleDto> {
-    const rule = await this.rulesService.create(user.id, createRuleDto);
+    const rule = await this.rulesService.create({
+      userId: user.id,
+      dto: createRuleDto,
+    });
+
+    this.logger.log(
+      `Created new rule with ID ${rule.id} for user ${user.id}`,
+      rule,
+    );
     return RuleDto.fromEntity(rule);
   }
 
@@ -44,6 +53,10 @@ export class RulesController {
   @ApiResponse({ status: 200, type: [RuleDto] })
   async findAll(@RequestUser() user: UserPrincipal): Promise<RuleDto[]> {
     const rules = await this.rulesService.findAll(user.id);
+    this.logger.log(
+      `Retrieved ${rules.length} rules for user ${user.id}`,
+      rules,
+    );
     return rules.map((rule) => RuleDto.fromEntity(rule));
   }
 
@@ -60,7 +73,11 @@ export class RulesController {
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
   ): Promise<RuleDto> {
-    const rule = await this.rulesService.findOne(user.id, id);
+    const rule = await this.rulesService.findOne({ userId: user.id, id });
+    if (!rule) {
+      throw new Error(`Rule with ID "${id}" not found`);
+    }
+
     return RuleDto.fromEntity(rule);
   }
 
@@ -82,8 +99,12 @@ export class RulesController {
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
-  ): Promise<void> {
-    await this.rulesService.remove(user.id, id);
+  ): Promise<RuleDto> {
+    const deleted = await this.rulesService.remove(user.id, id);
+    if (!deleted) {
+      throw new NotFoundException(`Rule with ID "${id}" not found`);
+    }
+    return RuleDto.fromEntity(deleted);
   }
 
   @Post('reorder')

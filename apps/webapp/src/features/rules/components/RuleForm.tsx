@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
 import { useState } from 'react';
-import { CategoryDto, FieldDefinition } from '@guallet/api-client';
+import { CategoryDto, FieldDefinitionDto } from '@guallet/api-client';
 import { Category } from '@/features/categories/models/Category';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useCategory } from '@guallet/api-react';
@@ -36,7 +36,7 @@ export interface ConditionFormData {
 
 interface RuleFormProps {
   initialData?: RuleFormData;
-  fieldDefinitions: FieldDefinition[];
+  fieldDefinitions: FieldDefinitionDto[];
   categories: Category[];
   onSubmit: (data: RuleFormData) => void;
   onCancel: () => void;
