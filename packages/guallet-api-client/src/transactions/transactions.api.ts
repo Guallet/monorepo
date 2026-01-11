@@ -69,11 +69,11 @@ export class TransactionsApi {
   } = {}): Promise<InboxTransactionQueryResultDto> {
     const params = new URLSearchParams();
 
-    if (page) {
+    if (page != null) {
       params.append("page", page.toString());
     }
 
-    if (pageSize) {
+    if (pageSize != null) {
       params.append("pageSize", pageSize.toString());
     }
 
