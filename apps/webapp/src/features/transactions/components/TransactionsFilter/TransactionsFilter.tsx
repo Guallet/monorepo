@@ -1,6 +1,6 @@
 import { AccountsPicker } from "@/features/accounts/components/AccountPicker/AccountsPicker";
 import { DateRangeButton } from "@/components/DateRangeButton/DateRangeButton";
-import { Card, Stack } from "@mantine/core";
+import { Card, Group, Stack } from "@mantine/core";
 import { FilterData } from "./FilterData";
 import { AccountDto, CategoryDto } from "@guallet/api-client";
 import { CategoryMultiSelect } from "@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect";
@@ -74,7 +74,7 @@ export function TransactionsFilter({
   // Desktop view: Show filters in a Card with horizontal layout
   return (
     <Card withBorder radius="md" p="md">
-      <Group gap="md" wrap="wrap">
+      <Group gap="md">
         {filterContent}
       </Group>
     </Card>

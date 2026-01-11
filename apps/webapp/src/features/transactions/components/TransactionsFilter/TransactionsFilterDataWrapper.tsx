@@ -78,7 +78,7 @@ export function TransactionsFilterDataWrapper({
               Filters
             </Text>
             <Indicator
-              label={activeFiltersCount > 0 ? activeFiltersCount : undefined}
+              label={activeFiltersCount || undefined}
               disabled={activeFiltersCount === 0}
               inline
               size={18}
