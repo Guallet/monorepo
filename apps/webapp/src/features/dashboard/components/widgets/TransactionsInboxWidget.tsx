@@ -27,7 +27,7 @@ function TransactionRow({
 }
 
 export function TransactionsInboxWidget({ onClick }: { onClick?: () => void }) {
-  const { transactions, isLoading } = useTransactionInbox();
+  const { transactions, metadata, isLoading } = useTransactionInbox({ pageSize: 10 });
 
   return (
     <WidgetCard title="Transaction Inbox" onClick={onClick}>
@@ -38,7 +38,7 @@ export function TransactionsInboxWidget({ onClick }: { onClick?: () => void }) {
           <Text size="sm" mb="xs">
             You have{" "}
             <Text span c="blue" fw={700}>
-              {transactions.length}
+              {metadata?.total ?? 0}
             </Text>{" "}
             transactions to categorize
           </Text>

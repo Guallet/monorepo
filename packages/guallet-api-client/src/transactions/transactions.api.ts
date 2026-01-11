@@ -2,6 +2,7 @@ import { GualletClientImpl } from "./../GualletClient";
 import {
   CreateTransactionRequest,
   InboxTransactionDto,
+  InboxTransactionQueryResultDto,
   TransactionDto,
   TransactionQueryResultDto,
 } from "./transactions.models";
@@ -59,9 +60,30 @@ export class TransactionsApi {
     });
   }
 
-  async getInbox(): Promise<InboxTransactionDto[]> {
-    return await this.client.get<InboxTransactionDto[]>({
-      path: `${TRANSACTIONS_PATH}/inbox`,
+  async getInbox({
+    page,
+    pageSize,
+  }: {
+    page?: number | null;
+    pageSize?: number | null;
+  } = {}): Promise<InboxTransactionQueryResultDto> {
+    const params = new URLSearchParams();
+
+    if (page) {
+      params.append("page", page.toString());
+    }
+
+    if (pageSize) {
+      params.append("pageSize", pageSize.toString());
+    }
+
+    const queryPath =
+      params.toString() !== ""
+        ? `${TRANSACTIONS_PATH}/inbox?${params.toString()}`
+        : `${TRANSACTIONS_PATH}/inbox`;
+
+    return await this.client.get<InboxTransactionQueryResultDto>({
+      path: queryPath,
     });
   }
 

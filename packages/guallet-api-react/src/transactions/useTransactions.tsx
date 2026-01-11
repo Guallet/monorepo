@@ -95,19 +95,63 @@ export function useTransaction(id: string) {
   };
 }
 
-export function useTransactionInbox() {
+export function useTransactionInbox({
+  page = 1,
+  pageSize = 50,
+}: {
+  page?: number;
+  pageSize?: number;
+} = {}) {
   const gualletClient = useGualletClient();
   const query = useQuery({
-    queryKey: [TRANSACTIONS_QUERY_KEY, "inbox"],
+    queryKey: [TRANSACTIONS_QUERY_KEY, "inbox", page, pageSize],
     queryFn: async () => {
-      return await gualletClient.transactions.getInbox();
+      return await gualletClient.transactions.getInbox({ page, pageSize });
     },
   });
 
   return {
     transactions:
-      query.data
+      query.data?.transactions
         ?.filter((dto): dto is InboxTransactionDto => dto !== undefined)
+        .map((dto) => ({
+          ...dto,
+          date: new Date(dto.date),
+        })) ?? [],
+    metadata: query.data?.meta ?? null,
+    ...query,
+  };
+}
+
+export function useInfiniteTransactionInbox() {
+  const gualletClient = useGualletClient();
+
+  const query = useInfiniteQuery({
+    queryKey: [TRANSACTIONS_QUERY_KEY + "-inbox-infinite"],
+    queryFn: async ({ pageParam }) => {
+      return await gualletClient.transactions.getInbox({
+        page: pageParam,
+        pageSize: TRANSACTIONS_DEFAULT_PAGE_SIZE,
+      });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage === undefined) return undefined;
+      const { meta } = lastPage;
+      if (meta.hasMore) {
+        return meta.page + 1;
+      } else {
+        // No more pages
+        return undefined;
+      }
+    },
+  });
+
+  return {
+    transactions:
+      query.data?.pages
+        .flatMap((x) => x.transactions)
+        .filter((dto): dto is InboxTransactionDto => dto !== undefined)
         .map((dto) => ({
           ...dto,
           date: new Date(dto.date),

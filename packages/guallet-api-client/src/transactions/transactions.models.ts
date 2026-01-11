@@ -42,3 +42,13 @@ export type InboxTransactionDto = TransactionDto & {
   processedCategoryId?: string | null; // Processed category id based by rules
   ruleId?: string | null; // Rule that processed this transaction
 };
+
+export type InboxTransactionQueryResultDto = {
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    hasMore: boolean;
+  };
+  transactions: InboxTransactionDto[];
+};
