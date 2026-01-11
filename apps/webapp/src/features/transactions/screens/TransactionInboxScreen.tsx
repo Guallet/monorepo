@@ -1,22 +1,11 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useInfiniteTransactionInbox } from '@guallet/api-react';
-import {
-  Badge,
-  Button,
-  Center,
-  Group,
-  Loader,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Badge, Center, Group, Loader, Stack, Title } from '@mantine/core';
 import { InboxTransactionCard } from '../components/InboxTransactionCard';
-import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useIntersection } from '@mantine/hooks';
 
 export function TransactionInboxScreen() {
-  const navigate = useNavigate();
   const {
     transactions,
     isLoading,
