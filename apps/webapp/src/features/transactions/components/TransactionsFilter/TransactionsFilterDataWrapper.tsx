@@ -2,7 +2,7 @@ import { AccountDto, CategoryDto } from "@guallet/api-client";
 import { TransactionsFilter } from "./TransactionsFilter";
 import { FilterData } from "./FilterData";
 import { useAccounts, useCategories } from "@guallet/api-react";
-import { ActionIcon, Card, Group, Indicator, Modal, Stack, Text } from "@mantine/core";
+import { ActionIcon, Card, Group, Indicator, Modal, Text } from "@mantine/core";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useDisclosure } from "@mantine/hooks";
 import { IconFilter } from "@tabler/icons-react";
@@ -101,16 +101,12 @@ export function TransactionsFilterDataWrapper({
           fullScreen={isMobile}
           centered
           size="lg"
-          {...(isMobile && {
-            transitionProps: { transition: "slide-up", duration: 200 },
-          })}
+          transitionProps={{ transition: "slide-up", duration: 200 }}
         >
-          <Stack gap="md">
-            <TransactionsFilter
-              filters={filters}
-              onFiltersUpdate={handleFiltersUpdate}
-            />
-          </Stack>
+          <TransactionsFilter
+            filters={filters}
+            onFiltersUpdate={handleFiltersUpdate}
+          />
         </Modal>
       </>
     );
