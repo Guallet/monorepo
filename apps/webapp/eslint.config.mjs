@@ -18,6 +18,10 @@ export default tseslint.config(
       sourceType: 'module',
       globals: globals.browser,
       parser: tseslint.parser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
