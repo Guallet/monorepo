@@ -42,10 +42,10 @@ export class User extends BaseDbEntity {
 
   // Nordigen credentials for Open Banking sync
   @Column({ nullable: true })
-  nordigen_secret_id: string;
+  nordigen_secret_id: string | null;
 
   @Column({ nullable: true })
-  nordigen_secret_key: string;
+  nordigen_secret_key: string | null;
 
   // relations
 }

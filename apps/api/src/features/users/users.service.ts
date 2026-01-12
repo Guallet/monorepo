@@ -207,8 +207,8 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    user.nordigen_secret_id = null as unknown as string;
-    user.nordigen_secret_key = null as unknown as string;
+    user.nordigen_secret_id = null;
+    user.nordigen_secret_key = null;
 
     return await this.repository.save(user);
   }

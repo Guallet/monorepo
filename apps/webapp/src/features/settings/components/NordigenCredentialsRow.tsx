@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { BaseRow } from "@guallet/ui-react/";
+import { BaseRow } from "@guallet/ui-react";
 import { useState } from "react";
 
 export function NordigenCredentialsRow() {

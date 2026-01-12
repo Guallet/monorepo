@@ -21,9 +21,10 @@ export class NordigenCredentialsDto {
     );
     return {
       has_credentials: hasCredentials,
-      secret_id_masked: hasCredentials
-        ? maskSecretId(user.nordigen_secret_id)
-        : null,
+      secret_id_masked:
+        hasCredentials && user.nordigen_secret_id
+          ? maskSecretId(user.nordigen_secret_id)
+          : null,
     };
   }
 }

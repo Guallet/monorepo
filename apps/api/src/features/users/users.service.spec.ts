@@ -430,8 +430,8 @@ describe('UsersService', () => {
 
       const updatedUser: Partial<User> = {
         ...mockUser,
-        nordigen_secret_id: null as unknown as string,
-        nordigen_secret_key: null as unknown as string,
+        nordigen_secret_id: null,
+        nordigen_secret_key: null,
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);

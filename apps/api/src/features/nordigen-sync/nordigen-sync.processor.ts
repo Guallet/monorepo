@@ -85,10 +85,16 @@ export class NordigenSyncProcessor extends WorkerHost {
 
       const userAccountIds = userAccounts.map(acc => acc.id);
       
+      // If user has no accounts, return early
+      if (userAccountIds.length === 0) {
+        this.logger.log(`User ${userId} has no accounts to sync`);
+        return { accountsSynced: 0, errors: [] };
+      }
+
       // Get Nordigen accounts linked to user's accounts
       const nordigenAccounts = await this.nordigenAccountsRepository
         .createQueryBuilder('na')
-        .where('na.linked_account_id IN (:...accountIds)', { accountIds: userAccountIds.length > 0 ? userAccountIds : [''] })
+        .where('na.linked_account_id IN (:...accountIds)', { accountIds: userAccountIds })
         .andWhere('na.metadata_status = :status', { status: 'READY' })
         .getMany();
 
@@ -99,7 +105,7 @@ export class NordigenSyncProcessor extends WorkerHost {
           await this.syncNordigenAccount(credentials, nordigenAccount);
           accountsSynced++;
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
+          const errorMessage = error instanceof Error && error.message ? error.message : 'Unknown error occurred';
           errors.push(`Error syncing account ${nordigenAccount.id}: ${errorMessage}`);
           this.logger.error(`Error syncing Nordigen account ${nordigenAccount.id}`, error);
         }
