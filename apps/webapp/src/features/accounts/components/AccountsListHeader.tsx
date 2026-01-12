@@ -57,8 +57,7 @@ export function AccountsListHeader({
     } else if (currencies.length == 2) {
       // Display 2 Balances
       const balances = currencies.map((entry) => {
-        const currency = entry[0];
-        const accounts = entry[1] as AccountDto[];
+        const [currency, accounts] = entry;
 
         const total = accounts.map((e) => +e.balance.amount);
         const sum = sumArray(total);
