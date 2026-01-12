@@ -52,7 +52,9 @@ export class RegularPaymentsService {
       currency: createRegularPaymentDto.currency,
       name: createRegularPaymentDto.name,
       type: createRegularPaymentDto.type,
-      startDate: new Date(createRegularPaymentDto.startDate),
+      startDate: createRegularPaymentDto.startDate
+        ? new Date(createRegularPaymentDto.startDate)
+        : new Date(),
       imageUrl: createRegularPaymentDto.imageUrl,
       category: createRegularPaymentDto.categoryId
         ? { id: createRegularPaymentDto.categoryId }
