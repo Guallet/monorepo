@@ -1,12 +1,10 @@
 //Source: https://tanstack.com/router/latest/docs/framework/react/guide/custom-link#link
 
-import * as React from "react";
-import { createLink, LinkComponent } from "@tanstack/react-router";
-import { Anchor, AnchorProps } from "@mantine/core";
+import * as React from 'react';
+import { createLink, LinkComponent } from '@tanstack/react-router';
+import { Anchor, AnchorProps } from '@mantine/core';
 
-interface MantineAnchorProps extends Omit<AnchorProps, "href"> {
-  // Add any additional props you want to pass to the anchor
-}
+type MantineAnchorProps = Omit<AnchorProps, 'href'>;
 
 const MantineLinkComponent = React.forwardRef<
   HTMLAnchorElement,
@@ -18,7 +16,7 @@ const MantineLinkComponent = React.forwardRef<
 const CreatedLinkComponent = createLink(MantineLinkComponent);
 
 export const NavLinkButton: LinkComponent<typeof MantineLinkComponent> = (
-  props
+  props,
 ) => {
   return <CreatedLinkComponent {...props} />;
 };
