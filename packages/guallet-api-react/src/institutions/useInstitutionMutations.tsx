@@ -33,7 +33,7 @@ export function useInstitutionMutations() {
       id: string;
       request: UpdateInstitutionRequest;
     }) => {
-      return await gualletClient.institutions.edit(id, request as any);
+      return await gualletClient.institutions.edit(id, request);
     },
     onSuccess: async (data, variables) => {
       queryClient.invalidateQueries({
