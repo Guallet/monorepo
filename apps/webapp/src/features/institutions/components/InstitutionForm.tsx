@@ -35,7 +35,8 @@ const InstitutionForm: React.FC<InstitutionFormProps> = ({
       name: (value) => (value.trim().length < 1 ? "Name is required" : null),
       country: (value) => {
         if (value.trim().length < 1) return "Country is required";
-        // Basic validation for 2-letter country code format
+        // Basic validation for 2-letter country code format (ISO 3166-1 alpha-2)
+        // The backend will validate if the country code is actually valid
         if (!/^[A-Z]{2}$/i.test(value.trim())) {
           return "Country must be a 2-letter code (e.g., US, GB, ES)";
         }
