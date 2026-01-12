@@ -7,23 +7,17 @@ import {
   Avatar,
   Text,
   Modal,
-} from "@mantine/core";
+} from '@mantine/core';
 
-import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { supabase } from "@/auth/supabase";
-import { User } from "@guallet/api-client";
-import { gualletClient } from "@/api/gualletClient";
+import { useMemo } from 'react';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { supabase } from '@/auth/supabase';
+import { gualletClient } from '@/api/gualletClient';
 
-export const Route = createFileRoute("/onboarding/register")({
+export const Route = createFileRoute('/onboarding/register')({
   component: RegisterUserPage,
   loader: loader,
 });
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUserDto(object: any): object is User {
-  return "name" in object && "email" in object && "profile_src" in object;
-}
 
 type ActionData = {
   rawError: unknown;
@@ -37,9 +31,9 @@ async function loader() {
   const { data } = await supabase.auth.getSession();
   if (data && data.session?.user.id === null) {
     return {
-      name: "",
-      email: "",
-      profile_src: "",
+      name: '',
+      email: '',
+      profile_src: '',
     };
   }
 
@@ -50,12 +44,6 @@ async function loader() {
     profile_src: user.profile_src,
   };
 }
-
-type FormData = {
-  name: string;
-  email: string;
-  profile_image: string;
-};
 
 // const action = async ({ request, params }) => {
 //   const formData = await request.formData();
@@ -98,29 +86,26 @@ function RegisterUserPage() {
   const { name, email, profile_src } = Route.useLoaderData();
   const registrationError = useMemo(() => {
     return {
-      rawError: "",
+      rawError: '',
       statusCode: 404,
-      error: "",
-      message: "",
+      error: '',
+      message: '',
     } as ActionData;
   }, []);
 
   const navigate = useNavigate();
 
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-
-  useEffect(() => {
-    setIsModalErrorOpen(
-      registrationError !== null && registrationError !== undefined
-    );
-  }, [registrationError]);
+  const isModalErrorOpen = useMemo(
+    () => registrationError !== null && registrationError !== undefined,
+    [registrationError],
+  );
 
   return (
     <>
       <Modal
         opened={isModalErrorOpen}
         onClose={() => {
-          setIsModalErrorOpen(false);
+          // Close modal - error state will reset on retry
         }}
       >
         <Stack>
@@ -132,14 +117,14 @@ function RegisterUserPage() {
             */}
           <Button
             onClick={() => {
-              navigate({ to: "/dashboard", replace: true });
+              navigate({ to: '/dashboard', replace: true });
             }}
           >
             Continue to dashboard (not recommended)
           </Button>
           <Button
             onClick={() => {
-              navigate({ to: "/logout", replace: true });
+              navigate({ to: '/logout', replace: true });
             }}
           >
             Try again later
@@ -177,7 +162,7 @@ function RegisterUserPage() {
               variant="outline"
               onClick={() => {
                 // Go back
-                navigate({ to: "/dashboard" });
+                navigate({ to: '/dashboard' });
               }}
             >
               Cancel

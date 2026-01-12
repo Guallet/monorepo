@@ -1,11 +1,11 @@
 import {
   useConnectionMutations,
   useOpenBankingAccountsForConnection,
-} from "@guallet/api-react";
-import { Button, Card, Flex, Loader, Stack, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+} from '@guallet/api-react';
+import { Button, Card, Flex, Loader, Stack, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 interface ConnectionCallbackScreenProps {
   connectionId?: string | null;
@@ -24,10 +24,10 @@ export function ConnectionCallbackScreen({
   const navigate = useNavigate();
   const [alreadyLinked, setAlreadyLinked] = useState(false);
 
-  function linkAccounts() {
+  const linkAccounts = () => {
     if (alreadyLinked) {
       if (accounts.length === 0) {
-        console.log("No accounts to link");
+        console.log('No accounts to link');
         return;
       }
 
@@ -37,29 +37,30 @@ export function ConnectionCallbackScreen({
         },
         {
           onSuccess: () => {
-            console.log("Accounts linked successfully");
+            console.log('Accounts linked successfully');
             notifications.show({
-              title: "Accounts linked successfully",
+              title: 'Accounts linked successfully',
               message: `${accounts.length} accounts linked`,
-              color: "green",
+              color: 'green',
             });
           },
           onError: (error) => {
-            console.error("Error linking accounts:", error);
+            console.error('Error linking accounts:', error);
           },
-        }
+        },
       );
 
       setAlreadyLinked(true);
     } else {
-      console.log("Already linked accounts, skipping linking");
+      console.log('Already linked accounts, skipping linking');
     }
-  }
+  };
 
   useEffect(() => {
     if (connectionId && accounts.length > 0) {
       linkAccounts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectionId, accounts]);
 
   if (error) {
@@ -68,7 +69,7 @@ export function ConnectionCallbackScreen({
         error={error}
         details={details}
         onActionPressed={() => {
-          navigate({ to: "/connections", replace: true });
+          navigate({ to: '/connections', replace: true });
         }}
       />
     );
@@ -80,7 +81,7 @@ export function ConnectionCallbackScreen({
         error={linkObAccountsMutation.error?.message}
         details={linkObAccountsMutation.error?.cause?.toString()}
         onActionPressed={() => {
-          navigate({ to: "/connections", replace: true });
+          navigate({ to: '/connections', replace: true });
         }}
       />
     );
@@ -106,7 +107,7 @@ export function ConnectionCallbackScreen({
     return (
       <EmptyAccountsView
         onActionPressed={() => {
-          navigate({ to: "/connections", replace: true });
+          navigate({ to: '/connections', replace: true });
         }}
       />
     );
@@ -131,7 +132,7 @@ export function ConnectionCallbackScreen({
       })}
       <Button
         onClick={() => {
-          navigate({ to: "/accounts", replace: true });
+          navigate({ to: '/accounts', replace: true });
         }}
       >
         Go back to accounts

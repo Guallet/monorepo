@@ -1,6 +1,6 @@
-import { AccountDto, CategoryDto } from "@guallet/api-client";
-import { CsvInfoType, FieldMappings } from "../models";
-import { atom } from "jotai";
+import { AccountDto, CategoryDto } from '@guallet/api-client';
+import { CsvInfoType, FieldMappings } from '../models';
+import { atom } from 'jotai';
 
 // TODO: Maybe migrate the state to Zustand?
 export const csvInfoAtom = atom<CsvInfoType>({
@@ -15,12 +15,12 @@ export const csvFieldsAtom = atom((get) => {
 });
 
 export const csvMappingsAtom = atom<FieldMappings>({
-  account: "",
-  date: "",
-  amount: "",
-  description: "",
-  notes: "",
-  category: "",
+  account: '',
+  date: '',
+  amount: '',
+  description: '',
+  notes: '',
+  category: '',
 });
 
 export const csvAccountsAtom = atom((get) => {

@@ -1,4 +1,4 @@
-import { useMantineTheme } from "@mantine/core";
+import { useMantineTheme } from '@mantine/core';
 import {
   IconCategory,
   IconMoneybag,
@@ -6,13 +6,15 @@ import {
   IconPigMoney,
   IconStatusChange,
   IconCashBanknote,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
+// Enum must be in separate file or exported separately for React Fast Refresh
+// eslint-disable-next-line react-refresh/only-export-components
 export enum GualletCategoryIcon {
-  Money = "money",
-  Salary = "salary",
-  Transfer = "transfer",
-  Savings = "savings",
+  Money = 'money',
+  Salary = 'salary',
+  Transfer = 'transfer',
+  Savings = 'savings',
 }
 
 interface CategoryIconProps {

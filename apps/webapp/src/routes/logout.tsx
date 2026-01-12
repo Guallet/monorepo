@@ -26,6 +26,7 @@ function LogoutPage() {
           color: 'red',
         });
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <Link to="/">Navigate to main page</Link>;

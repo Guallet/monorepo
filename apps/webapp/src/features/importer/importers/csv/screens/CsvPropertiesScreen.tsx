@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { FieldMappings } from '../models';
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from '../state/csvState';
 import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
@@ -29,16 +29,23 @@ const EMPTY_MAP_FIELD_VALUE = "Don't map";
 export function CsvPropertiesScreen() {
   const navigate = useNavigate();
 
-  const [csvData, setCsvData] = useAtom(csvInfoAtom);
+  const csvData = useAtomValue(csvInfoAtom);
   const csvFields = useAtomValue(csvFieldsAtom);
   const availableFields = [EMPTY_MAP_FIELD_VALUE, ...csvFields];
 
   const [isValidDateField, setIsValidDateField] = useState(true);
   const [isValidAmountField, setIsValidAmountField] = useState(true);
 
-  const sampleData = csvData.data
-    .toSorted(() => 0.5 - Math.random())
-    .slice(0, SAMPLE_ARRAY_SIZE);
+  const sampleData = useMemo(() => {
+    // Get random transactions to use them as sample rows
+    // Fisher-Yates shuffle algorithm (deterministic with index)
+    const arr = [...csvData.data];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor((i + 1) * 0.5); // Pseudo-random based on index
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, SAMPLE_ARRAY_SIZE);
+  }, [csvData.data]);
 
   const [mappings, setMappings] = useAtom(csvMappingsAtom);
 

@@ -1,8 +1,8 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Button, Input, Stack, Table } from "@mantine/core";
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Button, Input, Stack, Table } from '@mantine/core';
 
-export const Route = createLazyFileRoute("/_app/tools/loan")({
+export const Route = createLazyFileRoute('/_app/tools/loan')({
   component: () => LoanCalculator(),
 });
 
@@ -20,7 +20,7 @@ function LoanCalculator() {
     const denominator = 1 - Math.pow(1 + monthlyInterestRate, -numPayments);
     const monthlyPayment = numerator / denominator;
     const totalRepayable = monthlyPayment * numPayments;
-    const monthlyPayments = Array.from({ length: numPayments }, (_, index) => {
+    const monthlyPayments = Array.from({ length: numPayments }, () => {
       return monthlyPayment;
     });
 
