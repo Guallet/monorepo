@@ -17,9 +17,13 @@
     "react-native": "0.81.4"
   },
   "devDependencies": {
+    "@eslint/js": "workspace:*",
     "@types/react": "workspace:*",
-    "eslint-config-custom": "workspace:*",
+    "eslint": "workspace:*",
+    "eslint-plugin-react-hooks": "workspace:*",
+    "globals": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*"
+    "typescript": "workspace:*",
+    "typescript-eslint": "workspace:*"
   }
 }
