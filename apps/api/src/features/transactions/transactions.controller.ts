@@ -123,8 +123,8 @@ export class TransactionsController {
     @Query('page') page?: number,
     @Query('pageSize') pageSize?: number,
   ): Promise<InboxTransactionsResultDto> {
-    const pageNum = page ? Number(page) : 1;
-    const pageSizeNum = pageSize ? Number(pageSize) : 50;
+    const pageNum = page !== undefined ? +page : 1;
+    const pageSizeNum = pageSize !== undefined ? +pageSize : 50;
 
     if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
       throw new BadRequestException(
