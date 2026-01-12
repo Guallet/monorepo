@@ -22,6 +22,7 @@ import {
   IconTrash,
   IconPlus,
 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 interface InstitutionsTableProps {
   institutions: InstitutionDto[];
@@ -36,6 +37,7 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
   onEditClick,
   onDeleteClick,
 }) => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [countryFilter, setCountryFilter] = useState("");
   const [userInstitutionFilter, setUserInstitutionFilter] = useState<
@@ -97,7 +99,7 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
           <Text fw={500}>{institution.name}</Text>
           {institution.user_id && (
             <Badge size="xs" color="blue">
-              Custom
+              {t("feature.institutions.table.badges.custom")}
             </Badge>
           )}
         </Group>
@@ -114,7 +116,7 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
       <Table.Td>
         {institution.user_id && (
           <Group gap="xs">
-            <Tooltip label="Edit institution">
+            <Tooltip label={t("feature.institutions.table.tooltips.edit")}>
               <ActionIcon
                 variant="light"
                 color="blue"
@@ -123,7 +125,7 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
                 <IconEdit style={{ width: rem(16), height: rem(16) }} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip label="Delete institution">
+            <Tooltip label={t("feature.institutions.table.tooltips.delete")}>
               <ActionIcon
                 variant="light"
                 color="red"
@@ -148,7 +150,7 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
         <Stack gap="md">
           <Group justify="space-between" wrap="wrap">
             <TextInput
-              placeholder="Search by name..."
+              placeholder={t("feature.institutions.table.searchPlaceholder")}
               value={searchTerm}
               onChange={handleSearch}
               leftSection={<IconSearch size={16} />}
@@ -158,9 +160,9 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
               value={userInstitutionFilter}
               onChange={handleUserInstitutionFilter}
               data={[
-                { value: "all", label: "All Institutions" },
-                { value: "user", label: "Custom Only" },
-                { value: "system", label: "System Only" },
+                { value: "all", label: t("feature.institutions.table.filter.all") },
+                { value: "user", label: t("feature.institutions.table.filter.custom") },
+                { value: "system", label: t("feature.institutions.table.filter.system") },
               ]}
               style={{ minWidth: rem(180) }}
             />
@@ -168,14 +170,13 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
               leftSection={<IconPlus size={16} />}
               onClick={onCreateClick}
             >
-              Create Institution
+              {t("feature.institutions.createButton")}
             </Button>
           </Group>
           
           <Box>
             <Text size="sm" c="dimmed">
-              Showing {filteredInstitutions.length} of {institutions.length}{" "}
-              institutions
+              {t("feature.institutions.table.showing", { count: filteredInstitutions.length, total: institutions.length })}
             </Text>
           </Box>
         </Stack>
@@ -185,10 +186,10 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Logo</Table.Th>
-              <Table.Th>Name</Table.Th>
-              <Table.Th>Countries</Table.Th>
-              <Table.Th>Actions</Table.Th>
+              <Table.Th>{t("feature.institutions.table.columns.logo")}</Table.Th>
+              <Table.Th>{t("feature.institutions.table.columns.name")}</Table.Th>
+              <Table.Th>{t("feature.institutions.table.columns.countries")}</Table.Th>
+              <Table.Th>{t("feature.institutions.table.columns.actions")}</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -198,7 +199,7 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
               <Table.Tr>
                 <Table.Td colSpan={4}>
                   <Text ta="center" c="dimmed" py="xl">
-                    No institutions found
+                    {t("feature.institutions.table.emptyState")}
                   </Text>
                 </Table.Td>
               </Table.Tr>

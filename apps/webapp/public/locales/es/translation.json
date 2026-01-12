@@ -112,6 +112,113 @@
         "pension": "Pensión",
         "savingsAccount": "Cuenta de ahorro"
       }
+    },
+    "institutions": {
+      "form": {
+        "fields": {
+          "name": {
+            "required": "El nombre es obligatorio",
+            "label": "Nombre de la institución",
+            "placeholder": "Introduce el nombre de la institución"
+          },
+          "country": {
+            "required": "El país es obligatorio",
+            "invalid": "El país debe ser un código de 2 letras (ej., US, GB, ES)",
+            "label": "País",
+            "placeholder": "Introduce el código del país (ej., US, GB, ES)",
+            "description": "Código de país de dos letras"
+          },
+          "imageUrl": {
+            "label": "URL de la imagen",
+            "placeholder": "https://ejemplo.com/logo.png",
+            "description": "Proporciona una URL al logo de la institución"
+          }
+        },
+        "buttons": {
+          "cancel": "Cancelar",
+          "update": "Actualizar institución",
+          "create": "Crear institución"
+        },
+        "titleEdit": "Editar institución",
+        "titleCreate": "Crear institución"
+      },
+      "table": {
+        "badges": {
+          "custom": "Personalizada"
+        },
+        "tooltips": {
+          "edit": "Editar institución",
+          "delete": "Eliminar institución"
+        },
+        "searchPlaceholder": "Buscar por nombre...",
+        "filter": {
+          "all": "Todas las instituciones",
+          "custom": "Solo personalizadas",
+          "system": "Solo del sistema"
+        },
+        "showing_one": "",
+        "showing_many": "",
+        "showing_other": "",
+        "columns": {
+          "logo": "Logo",
+          "name": "Nombre",
+          "countries": "Países",
+          "actions": "Acciones"
+        },
+        "emptyState": "No se encontraron instituciones"
+      },
+      "createButton": "Crear institución",
+      "notifications": {
+        "sync": {
+          "error": {
+            "title": "Error",
+            "forbidden": "Necesitas ser administrador para sincronizar instituciones",
+            "failed": "Error al sincronizar bancos"
+          },
+          "success": {
+            "title": "Éxito",
+            "message": "Bancos sincronizados correctamente"
+          }
+        },
+        "delete": {
+          "success": {
+            "title": "Éxito",
+            "message": "Institución eliminada correctamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Error al eliminar la institución"
+          }
+        },
+        "update": {
+          "success": {
+            "title": "Éxito",
+            "message": "Institución actualizada correctamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Error al actualizar la institución"
+          }
+        },
+        "create": {
+          "success": {
+            "title": "Éxito",
+            "message": "Institución creada correctamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Error al crear la institución"
+          }
+        }
+      },
+      "deleteConfirm": {
+        "title": "Eliminar institución",
+        "message": "¿Estás seguro de que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer.",
+        "confirmButton": "Eliminar",
+        "cancelButton": "Cancelar"
+      },
+      "title": "Instituciones",
+      "syncButton": "Sincronizar bancos con Nordigen"
     }
   },
   "screens": {

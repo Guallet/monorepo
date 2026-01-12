@@ -12,8 +12,10 @@ import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { AppSection } from "@/components/Cards/AppSection";
 import { InstitutionDto } from "@guallet/api-client";
 import { modals } from "@mantine/modals";
+import { useTranslation } from "react-i18next";
 
 export function InstitutionsScreen() {
+  const { t } = useTranslation();
   const [isSyncingBanks, setIsSyncingBanks] = useState<boolean>(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState<boolean>(false);
   const [editingInstitution, setEditingInstitution] =
@@ -35,23 +37,23 @@ export function InstitutionsScreen() {
       if (response.status === 403) {
         console.error("Forbidden: You do not have permission to sync banks.");
         notifications.show({
-          title: "Error",
-          message: "You need to be an admin to sync institutions",
+          title: t("feature.institutions.notifications.sync.error.title"),
+          message: t("feature.institutions.notifications.sync.error.forbidden"),
           color: "red",
         });
         throw new Error("You need to be an admin to sync institutions");
       }
       if (!response.ok) {
         notifications.show({
-          title: "Error",
-          message: "Failed to sync banks",
+          title: t("feature.institutions.notifications.sync.error.title"),
+          message: t("feature.institutions.notifications.sync.error.failed"),
           color: "red",
         });
         throw new Error("Failed to sync banks");
       } else {
         notifications.show({
-          title: "Success",
-          message: "Banks synced successfully",
+          title: t("feature.institutions.notifications.sync.success.title"),
+          message: t("feature.institutions.notifications.sync.success.message"),
           color: "green",
         });
       }
@@ -74,9 +76,12 @@ export function InstitutionsScreen() {
 
   function handleDeleteClick(institution: InstitutionDto) {
     modals.openConfirmModal({
-      title: "Delete Institution",
-      children: `Are you sure you want to delete "${institution.name}"? This action cannot be undone.`,
-      labels: { confirm: "Delete", cancel: "Cancel" },
+      title: t("feature.institutions.deleteConfirm.title"),
+      children: t("feature.institutions.deleteConfirm.message", { name: institution.name }),
+      labels: { 
+        confirm: t("feature.institutions.deleteConfirm.confirmButton"), 
+        cancel: t("feature.institutions.deleteConfirm.cancelButton") 
+      },
       confirmProps: { color: "red" },
       onConfirm: () => {
         deleteInstitutionMutation.mutate(
@@ -84,16 +89,16 @@ export function InstitutionsScreen() {
           {
             onSuccess: () => {
               notifications.show({
-                title: "Success",
-                message: "Institution deleted successfully",
+                title: t("feature.institutions.notifications.delete.success.title"),
+                message: t("feature.institutions.notifications.delete.success.message"),
                 color: "green",
               });
             },
             onError: (error) => {
               console.error("Error deleting institution:", error);
               notifications.show({
-                title: "Error",
-                message: "Failed to delete institution",
+                title: t("feature.institutions.notifications.delete.error.title"),
+                message: t("feature.institutions.notifications.delete.error.message"),
                 color: "red",
               });
             },
@@ -124,8 +129,8 @@ export function InstitutionsScreen() {
         {
           onSuccess: () => {
             notifications.show({
-              title: "Success",
-              message: "Institution updated successfully",
+              title: t("feature.institutions.notifications.update.success.title"),
+              message: t("feature.institutions.notifications.update.success.message"),
               color: "green",
             });
             setIsFormModalOpen(false);
@@ -134,8 +139,8 @@ export function InstitutionsScreen() {
           onError: (error) => {
             console.error("Error updating institution:", error);
             notifications.show({
-              title: "Error",
-              message: "Failed to update institution",
+              title: t("feature.institutions.notifications.update.error.title"),
+              message: t("feature.institutions.notifications.update.error.message"),
               color: "red",
             });
           },
@@ -153,8 +158,8 @@ export function InstitutionsScreen() {
         {
           onSuccess: () => {
             notifications.show({
-              title: "Success",
-              message: "Institution created successfully",
+              title: t("feature.institutions.notifications.create.success.title"),
+              message: t("feature.institutions.notifications.create.success.message"),
               color: "green",
             });
             setIsFormModalOpen(false);
@@ -162,8 +167,8 @@ export function InstitutionsScreen() {
           onError: (error) => {
             console.error("Error creating institution:", error);
             notifications.show({
-              title: "Error",
-              message: "Failed to create institution",
+              title: t("feature.institutions.notifications.create.error.title"),
+              message: t("feature.institutions.notifications.create.error.message"),
               color: "red",
             });
           },
@@ -186,9 +191,9 @@ export function InstitutionsScreen() {
     <BaseScreen isLoading={isLoading || isMutating}>
       <Stack gap="md">
         <Group justify="space-between" align="center">
-          <Title order={2}>Institutions</Title>
+          <Title order={2}>{t("feature.institutions.title")}</Title>
           <Button loading={isSyncingBanks} onClick={onSyncBanks} variant="light">
-            Sync Banks with Nordigen
+            {t("feature.institutions.syncButton")}
           </Button>
         </Group>
 
@@ -205,7 +210,7 @@ export function InstitutionsScreen() {
       <Modal
         opened={isFormModalOpen}
         onClose={handleFormCancel}
-        title={editingInstitution ? "Edit Institution" : "Create Institution"}
+        title={editingInstitution ? t("feature.institutions.form.titleEdit") : t("feature.institutions.form.titleCreate")}
         size="lg"
       >
         <InstitutionForm
