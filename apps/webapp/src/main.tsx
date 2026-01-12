@@ -14,7 +14,7 @@ Sentry.init({
     Sentry.replayIntegration(),
   ],
   // Performance Monitoring
-  tracesSampleRate: 1.0, // Capture 100% of transactions
+  tracesSampleRate: 0.1, // Capture 10% of transactions
   // Session Replay
   replaysSessionSampleRate: 0.1, // Sample 10% of sessions
   replaysOnErrorSampleRate: 1.0, // Always record sessions with errors
