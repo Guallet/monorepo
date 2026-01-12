@@ -38,6 +38,7 @@ export class CreateRegularPaymentDto {
   @IsNotEmpty()
   cadence: RecurrenceCadence;
 
+  @ApiProperty()
   @IsDateString()
   @IsNotEmpty()
   startDate: string;
