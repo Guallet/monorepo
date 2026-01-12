@@ -35,4 +35,10 @@ export class InstitutionsApi {
       payload: request,
     });
   }
+
+  async delete(institutionId: string): Promise<void> {
+    await this.client.fetch_delete<void>({
+      path: `${INSTITUTIONS_PATH}/${institutionId}`,
+    });
+  }
 }

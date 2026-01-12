@@ -33,11 +33,25 @@ export function useInstitutionMutations() {
       id: string;
       request: UpdateInstitutionRequest;
     }) => {
-      return await gualletClient.accounts.update(id, request);
+      return await gualletClient.institutions.edit(id, request as any);
     },
     onSuccess: async (data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: [INSTITUTIONS_QUERY_KEY, data.id],
+        queryKey: [INSTITUTIONS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
+  const deleteInstitutionMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return await gualletClient.institutions.delete(id);
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [INSTITUTIONS_QUERY_KEY],
       });
     },
     onError: async (error, variables, context) => {
@@ -48,5 +62,6 @@ export function useInstitutionMutations() {
   return {
     createInstitutionMutation,
     updateInstitutionMutation,
+    deleteInstitutionMutation,
   };
 }
