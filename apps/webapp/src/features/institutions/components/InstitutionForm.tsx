@@ -27,12 +27,20 @@ const InstitutionForm: React.FC<InstitutionFormProps> = ({
     initialValues: {
       name: initialValues?.name || "",
       image_src: initialValues?.image_src || "",
+      // Note: Custom institutions only support a single country, while system institutions can have multiple
+      // For editing, we use the first country in the array
       country: initialValues?.countries?.[0] || "",
     },
     validate: {
       name: (value) => (value.trim().length < 1 ? "Name is required" : null),
-      country: (value) =>
-        value.trim().length < 1 ? "Country is required" : null,
+      country: (value) => {
+        if (value.trim().length < 1) return "Country is required";
+        // Basic validation for 2-letter country code format
+        if (!/^[A-Z]{2}$/i.test(value.trim())) {
+          return "Country must be a 2-letter code (e.g., US, GB, ES)";
+        }
+        return null;
+      },
     },
   });
 

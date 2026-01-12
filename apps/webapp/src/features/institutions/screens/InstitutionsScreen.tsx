@@ -109,6 +109,9 @@ export function InstitutionsScreen() {
     country: string;
   }) {
     if (editingInstitution) {
+      // Note: The API expects a single 'country' string for updates
+      // The InstitutionDto has 'countries' array because system institutions can support multiple,
+      // but custom institutions (user-created) only support one country
       updateInstitutionMutation.mutate(
         {
           id: editingInstitution.id,
