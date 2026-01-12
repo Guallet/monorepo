@@ -6,6 +6,7 @@ import { LanguageRow } from "../components/LanguageRow";
 import { DefaultCurrencyRow } from "../components/DefaultCurrencyRow";
 import { PreferredCurrenciesRow } from "../components/PreferredCurrenciesRow";
 import { DateFormatRow } from "../components/DateFormatRow";
+import { NordigenCredentialsRow } from "../components/NordigenCredentialsRow";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 import { TextRow } from "@guallet/ui-react";
 
@@ -23,6 +24,10 @@ export function SettingsScreen() {
           <DefaultCurrencyRow />
           <PreferredCurrenciesRow />
           <DateFormatRow />
+        </AppSection>
+
+        <AppSection title="Open Banking" itemPadding={0}>
+          <NordigenCredentialsRow />
         </AppSection>
 
         <AppSection title="Institutions" itemPadding={0}>

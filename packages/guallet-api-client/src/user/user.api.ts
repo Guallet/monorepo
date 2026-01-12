@@ -1,6 +1,8 @@
 import { GualletClientImpl } from "./../GualletClient";
 import {
   CreateUserRequest,
+  NordigenCredentials,
+  UpdateNordigenCredentialsRequest,
   UpdateUserSettingsRequest,
   User,
   UserSettings,
@@ -38,6 +40,30 @@ export class UserApi {
     return await this.client.post<User, CreateUserRequest>({
       path: USERS_PATH,
       payload: dto,
+    });
+  }
+
+  async getNordigenCredentials(): Promise<NordigenCredentials> {
+    return await this.client.get<NordigenCredentials>({
+      path: `${USERS_PATH}/nordigen-credentials`,
+    });
+  }
+
+  async updateNordigenCredentials(
+    request: UpdateNordigenCredentialsRequest
+  ): Promise<NordigenCredentials> {
+    return await this.client.put<
+      NordigenCredentials,
+      UpdateNordigenCredentialsRequest
+    >({
+      path: `${USERS_PATH}/nordigen-credentials`,
+      payload: request,
+    });
+  }
+
+  async deleteNordigenCredentials(): Promise<void> {
+    await this.client.fetch_delete<void>({
+      path: `${USERS_PATH}/nordigen-credentials`,
     });
   }
 }

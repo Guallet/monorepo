@@ -213,4 +213,85 @@ export class EmailService {
       </html>
     `;
   }
+
+  async sendNordigenCredentialsErrorEmail(args: {
+    to: string;
+    userName: string;
+  }): Promise<void> {
+    const { to, userName } = args;
+
+    try {
+      const subject = 'Nordigen Credentials Error';
+      const html = this.generateNordigenCredentialsErrorEmailHtml({ userName });
+
+      const { error } = await this.resend.emails.send({
+        from: this.configService.get<string>(
+          'EMAIL_FROM',
+          'Guallet <noreply@guallet.io>',
+        ),
+        to,
+        subject,
+        html,
+      });
+
+      if (error === null) {
+        this.logger.log(`Nordigen credentials error email sent to ${to}`);
+      } else {
+        this.logger.error('Resend API error:', error);
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to send Nordigen credentials error email to ${to}`,
+        error,
+      );
+    }
+  }
+
+  private generateNordigenCredentialsErrorEmailHtml(args: {
+    userName: string;
+  }): string {
+    const { userName } = args;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #ff9800; color: white; padding: 20px; text-align: center; }
+            .content { background-color: #f9f9f9; padding: 20px; }
+            .warning-box { background-color: #fff3e0; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #ff9800; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Nordigen Credentials Error</h1>
+            </div>
+            <div class="content">
+              <p>Hello ${userName},</p>
+              <p>We were unable to sync your bank accounts because there was an issue with your Nordigen credentials.</p>
+              
+              <div class="warning-box">
+                <strong>What you can do:</strong>
+                <ul>
+                  <li>Check that your Nordigen Secret ID and Secret Key are correct</li>
+                  <li>Make sure your Nordigen API access is still active</li>
+                  <li>Update your credentials in the Settings page</li>
+                </ul>
+              </div>
+              
+              <p>Once you've updated your credentials, your accounts will be synced automatically during the next scheduled sync.</p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} Guallet. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  }
 }

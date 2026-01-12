@@ -180,4 +180,44 @@ export class UsersService {
 
     return await this.repository.save(user);
   }
+
+  async updateNordigenCredentials({
+    userId,
+    secretId,
+    secretKey,
+  }: {
+    userId: string;
+    secretId: string;
+    secretKey: string;
+  }): Promise<User> {
+    const user = await this.repository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.nordigen_secret_id = secretId;
+    user.nordigen_secret_key = secretKey;
+
+    return await this.repository.save(user);
+  }
+
+  async deleteNordigenCredentials(userId: string): Promise<User> {
+    const user = await this.repository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.nordigen_secret_id = null as unknown as string;
+    user.nordigen_secret_key = null as unknown as string;
+
+    return await this.repository.save(user);
+  }
+
+  async getUsersWithNordigenCredentials(): Promise<User[]> {
+    return this.repository
+      .createQueryBuilder('user')
+      .where('user.nordigen_secret_id IS NOT NULL')
+      .andWhere('user.nordigen_secret_key IS NOT NULL')
+      .getMany();
+  }
 }

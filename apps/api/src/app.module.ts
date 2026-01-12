@@ -27,6 +27,7 @@ import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { EmailModule } from './features/email/email.module';
+import { NordigenSyncModule } from './features/nordigen-sync/nordigen-sync.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 
@@ -47,8 +48,6 @@ import { BullModule } from '@nestjs/bullmq';
         DATABASE_USERNAME: Joi.string().required(),
         DATABASE_PASSWORD: Joi.string().required(),
         DATABASE_NAME: Joi.string().required(),
-        NORDIGEN_SECRET_ID: Joi.string().required(),
-        NORDIGEN_SECRET_KEY: Joi.string().required(),
       }),
     }),
     // LOGGING
@@ -114,6 +113,7 @@ import { BullModule } from '@nestjs/bullmq';
     SavingGoalsModule,
     DataImporterModule,
     EmailModule,
+    NordigenSyncModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,

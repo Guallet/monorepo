@@ -40,5 +40,12 @@ export class User extends BaseDbEntity {
   // preferred date format for the user, one of: MM/DD/YYYY, DD/MM/YYYY, YYYY/MM/DD
   date_format: string;
 
+  // Nordigen credentials for Open Banking sync
+  @Column({ nullable: true })
+  nordigen_secret_id: string;
+
+  @Column({ nullable: true })
+  nordigen_secret_key: string;
+
   // relations
 }
