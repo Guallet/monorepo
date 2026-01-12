@@ -2,6 +2,7 @@ import { GualletClientImpl } from "./../GualletClient";
 import {
   CreateInstitutionRequest,
   InstitutionDto,
+  UpdateInstitutionRequest,
 } from "./institutions.models";
 
 const INSTITUTIONS_PATH = "institutions";
@@ -28,9 +29,9 @@ export class InstitutionsApi {
 
   async edit(
     institutionId: string,
-    request: InstitutionDto
+    request: UpdateInstitutionRequest
   ): Promise<InstitutionDto> {
-    return await this.client.put<InstitutionDto, CreateInstitutionRequest>({
+    return await this.client.patch<InstitutionDto, UpdateInstitutionRequest>({
       path: `${INSTITUTIONS_PATH}/${institutionId}`,
       payload: request,
     });
