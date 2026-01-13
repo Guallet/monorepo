@@ -22,6 +22,9 @@ import { AuthProvider } from '@guallet/auth';
 // Init i18n
 import i18next from './i18n/i18n';
 
+// Theme
+import { theme } from './theme';
+
 // Vercel Analytics
 import { Analytics } from '@vercel/analytics/react';
 
@@ -30,7 +33,7 @@ const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <DatesProvider
         settings={{
           locale: i18next.language,
