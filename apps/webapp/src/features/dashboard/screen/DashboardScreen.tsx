@@ -1,5 +1,5 @@
 import { TotalWealthWidget } from "@/features/dashboard/components/widgets/TotalWealthWidget";
-import { Grid, Container, Popover, Button } from "@mantine/core";
+import { Grid, Container, Popover, Button, Title, Group, Box } from "@mantine/core";
 import { useState } from "react";
 import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
@@ -7,6 +7,14 @@ import quarterOfYear from "dayjs/plugin/quarterOfYear";
 import { MonthlyInAndOutWidget } from "../components/widgets/MonthlyInAndOutWidget";
 import { TransactionsInboxWidget } from "../components/widgets/TransactionsInboxWidget";
 import { BudgetsWidget } from "../components/widgets/BudgetsWidget";
+import { TotalIncomeExpenditureWidget } from "../components/widgets/TotalIncomeExpenditureWidget";
+import { CurrentAccountsWidget } from "../components/widgets/CurrentAccountsWidget";
+import { SavingGoalsWidget } from "../components/widgets/SavingGoalsWidget";
+import { ExpenditureByCategoryWidget } from "../components/widgets/ExpenditureByCategoryWidget";
+import { LastTransactionsWidget } from "../components/widgets/LastTransactionsWidget";
+import { BalanceTrendWidget } from "../components/widgets/BalanceTrendWidget";
+import { IconCalendar } from "@tabler/icons-react";
+
 dayjs.extend(quarterOfYear);
 
 export function DashboardScreen() {
@@ -20,62 +28,104 @@ export function DashboardScreen() {
   const [filterOpened, setFilterOpened] = useState(false);
 
   return (
-    <Container>
-      {/* Filter popup for date range */}
-      <Popover
-        position="bottom-start"
-        withArrow
-        shadow="md"
-        trapFocus
-        opened={filterOpened}
-        onChange={setFilterOpened}
-      >
-        <Popover.Target>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setFilterOpened((o) => !o)}
+    <Container size="xl" py="xl">
+      <Box mb="xl">
+        <Group justify="space-between" align="center">
+          <Title order={2}>Dashboard</Title>
+          {/* Filter popup for date range */}
+          <Popover
+            position="bottom-end"
+            withArrow
+            shadow="md"
+            trapFocus
+            opened={filterOpened}
+            onChange={setFilterOpened}
           >
-            {(() => {
-              if (dateRange[0] && dateRange[1]) {
-                const start = dayjs(dateRange[0]);
-                const end = dayjs(dateRange[1]);
-                const now = dayjs();
-                const firstOfMonth = now.startOf("month");
-                const lastOfMonth = now.endOf("month");
-                if (
-                  start.isSame(firstOfMonth, "day") &&
-                  end.isSame(lastOfMonth, "day")
-                ) {
-                  return now.format("MMMM YYYY");
-                }
-                return `from ${start.format("DD-MM-YYYY")} to ${end.format("DD-MM-YYYY")}`;
-              }
-              return "Filter by Date";
-            })()}
-          </Button>
-        </Popover.Target>
-        <Popover.Dropdown>
-          <DateFilter
-            onChange={(value) => {
-              setDateRange(value);
-              //   setFilterOpened(false);
-            }}
-          />
-        </Popover.Dropdown>
-      </Popover>
-      <Grid mt="md">
-        <Grid.Col span={{ base: 12, md: 3 }}>
+            <Popover.Target>
+              <Button
+                variant="light"
+                leftSection={<IconCalendar size={18} />}
+                onClick={() => setFilterOpened((o) => !o)}
+              >
+                {(() => {
+                  if (dateRange[0] && dateRange[1]) {
+                    const start = dayjs(dateRange[0]);
+                    const end = dayjs(dateRange[1]);
+                    const now = dayjs();
+                    const firstOfMonth = now.startOf("month");
+                    const lastOfMonth = now.endOf("month");
+                    if (
+                      start.isSame(firstOfMonth, "day") &&
+                      end.isSame(lastOfMonth, "day")
+                    ) {
+                      return now.format("MMMM YYYY");
+                    }
+                    return `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`;
+                  }
+                  return "Select Date Range";
+                })()}
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <DateFilter
+                onChange={(value) => {
+                  setDateRange(value);
+                }}
+              />
+            </Popover.Dropdown>
+          </Popover>
+        </Group>
+      </Box>
+
+      <Grid gutter="lg">
+        {/* Row 1: Key metrics */}
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
           <TotalWealthWidget />
         </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+          <TotalIncomeExpenditureWidget 
+            startDate={dateRange[0]} 
+            endDate={dateRange[1]} 
+          />
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+          <CurrentAccountsWidget />
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
+          <SavingGoalsWidget />
+        </Grid.Col>
+
+        {/* Row 2: Charts */}
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <MonthlyInAndOutWidget 
+            startDate={dateRange[0]} 
+            endDate={dateRange[1]} 
+          />
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <BalanceTrendWidget 
+            startDate={dateRange[0]} 
+            endDate={dateRange[1]} 
+          />
+        </Grid.Col>
+
+        {/* Row 3: Categories and Budgets */}
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <MonthlyInAndOutWidget />
+          <ExpenditureByCategoryWidget 
+            startDate={dateRange[0]} 
+            endDate={dateRange[1]} 
+          />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <TransactionsInboxWidget />
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 3 }}>
           <BudgetsWidget />
+        </Grid.Col>
+
+        {/* Row 4: Transactions */}
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <LastTransactionsWidget />
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, lg: 6 }}>
+          <TransactionsInboxWidget />
         </Grid.Col>
       </Grid>
     </Container>
