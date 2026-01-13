@@ -22,11 +22,11 @@ const secondaryColor: MantineColorsTuple = [
   '#97d7ff',
   '#61c2ff',
   '#36b1ff',
-  '#29addd',
-  Colors.secondary, // #41B6E6
-  '#0099db',
-  '#007baf',
-  '#005f85',
+  '#29adff',
+  Colors.secondary, // #41B6E6 - using as base at index 6
+  '#1fa0d0',
+  '#0088b8',
+  '#00709a',
 ];
 
 const successColor: MantineColorsTuple = [
@@ -61,11 +61,11 @@ const warningColor: MantineColorsTuple = [
   '#ffef99',
   '#ffe666',
   '#ffde33',
-  '#fae61a',
-  Colors.warning, // #FAE100
-  '#e6cd00',
-  '#d4bc00',
-  '#b8a300',
+  '#fceb1a',
+  Colors.warning, // #FAE100 - using as base at index 6
+  '#e0cc00',
+  '#c5b200',
+  '#a89600',
 ];
 
 export const theme = createTheme({
