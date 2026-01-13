@@ -22,11 +22,11 @@ const secondaryColor: MantineColorsTuple = [
   '#97d7ff',
   '#61c2ff',
   '#36b1ff',
+  '#29addd',
   Colors.secondary, // #41B6E6
   '#0099db',
   '#007baf',
   '#005f85',
-  '#00445c',
 ];
 
 const successColor: MantineColorsTuple = [
@@ -34,12 +34,12 @@ const successColor: MantineColorsTuple = [
   '#e8f5d7',
   '#cde9ab',
   '#b0dd7a',
+  '#92d04d',
+  '#84c336',
   Colors.success, // #78BE20
   '#6aaf1a',
   '#5a9914',
   '#4a800e',
-  '#3d6908',
-  '#2e5200',
 ];
 
 const errorColor: MantineColorsTuple = [
@@ -48,24 +48,24 @@ const errorColor: MantineColorsTuple = [
   '#ff9999',
   '#ff6666',
   '#ff3838',
+  '#e62f23',
   Colors.error, // #DA291C
   '#c01f15',
   '#a51a11',
   '#8a140d',
-  '#6f0f08',
 ];
 
 const warningColor: MantineColorsTuple = [
   '#fffbe5',
   '#fff8cc',
   '#ffef99',
+  '#ffe666',
+  '#ffde33',
+  '#fae61a',
   Colors.warning, // #FAE100
-  '#f5db00',
   '#e6cd00',
   '#d4bc00',
   '#b8a300',
-  '#9b8800',
-  '#7d6d00',
 ];
 
 export const theme = createTheme({
@@ -77,7 +77,7 @@ export const theme = createTheme({
     warning: warningColor,
   },
   primaryColor: 'primary',
-  primaryShade: 7,
+  primaryShade: 6,
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   fontFamilyMonospace: 'Monaco, Courier, monospace',
   headings: {
