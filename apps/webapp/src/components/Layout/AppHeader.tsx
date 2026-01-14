@@ -10,6 +10,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconBell, IconUser } from "@tabler/icons-react";
+import { useNavigate } from "@tanstack/react-router";
 import { GualletLogo } from "../GualletLogo/GualletLogo";
 
 interface Props {
@@ -18,6 +19,8 @@ interface Props {
 }
 
 export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
+  const navigate = useNavigate();
+
   return (
     <Group h="100%" px="md" justify="space-between">
       <Group>
@@ -30,8 +33,11 @@ export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
         <UnstyledButton
           component="a"
           variant="transparent"
-          href={"/"}
-          onClick={(event) => event.preventDefault()}
+          href="/dashboard"
+          onClick={(event) => {
+            event.preventDefault();
+            navigate({ to: "/dashboard" });
+          }}
         >
           <Group>
             <GualletLogo size={40} />
