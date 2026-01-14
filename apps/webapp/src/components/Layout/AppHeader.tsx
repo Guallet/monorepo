@@ -31,11 +31,8 @@ export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
           size="sm"
         />
         <UnstyledButton
-          component="a"
           variant="transparent"
-          href="/dashboard"
-          onClick={(event) => {
-            event.preventDefault();
+          onClick={() => {
             navigate({ to: "/dashboard" });
           }}
         >
