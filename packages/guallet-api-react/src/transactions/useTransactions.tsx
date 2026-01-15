@@ -1,12 +1,12 @@
-import { InboxTransactionDto, TransactionDto } from "@guallet/api-client";
+import { InboxTransactionDto, TransactionDto } from '@guallet/api-client';
 import {
   useInfiniteQuery,
   useQuery,
   useQueryClient,
-} from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+} from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const TRANSACTIONS_QUERY_KEY = "transactions";
+const TRANSACTIONS_QUERY_KEY = 'transactions';
 const TRANSACTIONS_DEFAULT_PAGE_SIZE = 50;
 
 export function useTransactions() {
@@ -38,9 +38,9 @@ export function useInfiniteTransactions() {
   const gualletClient = useGualletClient();
 
   const query = useInfiniteQuery({
-    queryKey: [TRANSACTIONS_QUERY_KEY + "-infinite"],
+    queryKey: [TRANSACTIONS_QUERY_KEY, '-infinite'],
     queryFn: async ({ pageParam }) => {
-      console.log("queryFn", pageParam);
+      console.log('queryFn', pageParam);
       return await gualletClient.transactions.loadTransactions({
         page: pageParam,
         pageSize: TRANSACTIONS_DEFAULT_PAGE_SIZE,
@@ -48,8 +48,8 @@ export function useInfiniteTransactions() {
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
-      console.log("getNextPageParam", lastPage);
-      console.log("getNextPageParam: pages", pages);
+      console.log('getNextPageParam', lastPage);
+      console.log('getNextPageParam: pages', pages);
       if (lastPage === undefined) return undefined;
       const { meta } = lastPage;
       if (meta.hasMore) {
@@ -70,7 +70,7 @@ export function useInfiniteTransactions() {
           ...dto,
           date: new Date(dto.date),
         })) ?? [],
-    // metadata: data?.pages.pop()?.meta ?? null,
+    metadata: query.data?.pages.at(-1)?.meta ?? null,
     ...query,
   };
 }
@@ -95,23 +95,69 @@ export function useTransaction(id: string) {
   };
 }
 
-export function useTransactionInbox() {
+export function useTransactionInbox({
+  page = 1,
+  pageSize = 50,
+}: {
+  page?: number;
+  pageSize?: number;
+} = {}) {
   const gualletClient = useGualletClient();
   const query = useQuery({
-    queryKey: [TRANSACTIONS_QUERY_KEY, "inbox"],
+    queryKey: [TRANSACTIONS_QUERY_KEY, 'inbox', page, pageSize],
     queryFn: async () => {
-      return await gualletClient.transactions.getInbox();
+      return await gualletClient.transactions.getInbox({ page, pageSize });
     },
   });
 
   return {
     transactions:
-      query.data
+      query.data?.transactions
         ?.filter((dto): dto is InboxTransactionDto => dto !== undefined)
         .map((dto) => ({
           ...dto,
           date: new Date(dto.date),
         })) ?? [],
+    metadata: query.data?.meta ?? null,
+    ...query,
+  };
+}
+
+export function useInfiniteTransactionInbox() {
+  const gualletClient = useGualletClient();
+
+  const query = useInfiniteQuery({
+    queryKey: [TRANSACTIONS_QUERY_KEY, '-inbox-infinite'],
+    queryFn: async ({ pageParam }) => {
+      return await gualletClient.transactions.getInbox({
+        page: pageParam,
+        pageSize: TRANSACTIONS_DEFAULT_PAGE_SIZE,
+      });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage === undefined) return undefined;
+      const { meta } = lastPage;
+      if (meta.hasMore) {
+        return meta.page + 1;
+      } else {
+        // No more pages
+        return undefined;
+      }
+    },
+  });
+
+  return {
+    transactions:
+      query.data?.pages
+        .flatMap((x) => x.transactions)
+        .filter((dto): dto is InboxTransactionDto => dto !== undefined)
+        .map((dto) => ({
+          ...dto,
+          date: new Date(dto.date),
+        })) ?? [],
+    // .at(-1) returns the last element of the array. Only compatible with ES2022+
+    metadata: query.data?.pages.at(-1)?.meta ?? null,
     ...query,
   };
 }
@@ -128,7 +174,7 @@ export function useTransactionsWithFilter(filters: {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: [TRANSACTIONS_QUERY_KEY, "filter", filters],
+    queryKey: [TRANSACTIONS_QUERY_KEY, 'filter', filters],
     queryFn: async ({ queryKey }) => {
       const transactions = await gualletClient.transactions.loadTransactions({
         ...filters,
@@ -138,7 +184,7 @@ export function useTransactionsWithFilter(filters: {
       transactions.transactions.forEach((transaction: TransactionDto) => {
         queryClient.setQueryData(
           [TRANSACTIONS_QUERY_KEY, transaction.id],
-          transaction
+          transaction,
         );
       });
 
@@ -151,7 +197,7 @@ export function useTransactionsWithFilter(filters: {
       query.data?.transactions
         ?.filter(
           (dto: TransactionDto | undefined): dto is TransactionDto =>
-            dto !== undefined
+            dto !== undefined,
         )
         .map((dto) => ({
           ...dto,
