@@ -1,64 +1,76 @@
-import { useGualletClient, useInstitutions } from "@guallet/api-react";
-import InstitutionsTable from "../components/InstitutionsTable";
-import { Stack, Button } from "@mantine/core";
-import { useState } from "react";
-import { notifications } from "@mantine/notifications";
+import { useInstitutions, useInstitutionMutations } from '@guallet/api-react';
+import InstitutionsTable from '../components/InstitutionsTable';
+import { Stack, Group, Title } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { AppSection } from '@/components/Cards/AppSection';
+import { InstitutionDto } from '@guallet/api-client';
+import { modals } from '@mantine/modals';
+import { useTranslation } from 'react-i18next';
 
 export function InstitutionsScreen() {
-  const [isSyncingBanks, setIsSyncingBanks] = useState<boolean>(false);
-  const client = useGualletClient();
-  const { institutions } = useInstitutions();
+  const { t } = useTranslation();
+  const { institutions, isLoading } = useInstitutions();
+  const { deleteInstitutionMutation } = useInstitutionMutations();
 
-  async function onSyncBanks() {
-    try {
-      setIsSyncingBanks(true);
-      const response = await client.admin.syncOpenBankingInstitutions();
-      console.log("Sync institutions response", response);
-      if (response.status === 403) {
-        // Handle forbidden error
-        console.error("Forbidden: You do not have permission to sync banks.");
-        notifications.show({
-          title: "Error",
-          message: "You need to be an admin to sync institutions",
-          color: "red",
-        });
-        throw new Error("You need to be an admin to sync institutions");
-      }
-      if (!response.ok) {
-        notifications.show({
-          title: "Error",
-          message: "Failed to sync banks",
-          color: "red",
-        });
-        throw new Error("Failed to sync banks");
-      } else {
-        notifications.show({
-          title: "Success",
-          message: "Banks synced successfully",
-          color: "green",
-        });
-      }
-
-      // Handle success
-    } catch (error) {
-      console.error("Error syncing banks:", error);
-      // Handle error
-    } finally {
-      setIsSyncingBanks(false);
-    }
+  function handleDeleteClick(institution: InstitutionDto) {
+    modals.openConfirmModal({
+      title: t('feature.institutions.deleteConfirm.title'),
+      children: t('feature.institutions.deleteConfirm.message', {
+        name: institution.name,
+      }),
+      labels: {
+        confirm: t('feature.institutions.deleteConfirm.confirmButton'),
+        cancel: t('feature.institutions.deleteConfirm.cancelButton'),
+      },
+      confirmProps: { color: 'red' },
+      onConfirm: () => {
+        deleteInstitutionMutation.mutate(
+          { id: institution.id },
+          {
+            onSuccess: () => {
+              notifications.show({
+                title: t(
+                  'feature.institutions.notifications.delete.success.title',
+                ),
+                message: t(
+                  'feature.institutions.notifications.delete.success.message',
+                ),
+                color: 'green',
+              });
+            },
+            onError: (error) => {
+              console.error('Error deleting institution:', error);
+              notifications.show({
+                title: t(
+                  'feature.institutions.notifications.delete.error.title',
+                ),
+                message: t(
+                  'feature.institutions.notifications.delete.error.message',
+                ),
+                color: 'red',
+              });
+            },
+          },
+        );
+      },
+    });
   }
 
   return (
-    <Stack>
-      <Button
-        loading={isSyncingBanks}
-        onClick={() => {
-          onSyncBanks();
-        }}
-      >
-        Sync Banks with Nordigen
-      </Button>
-      <InstitutionsTable institutions={institutions} />
-    </Stack>
+    <BaseScreen isLoading={isLoading || deleteInstitutionMutation.isPending}>
+      <Stack gap="md">
+        <Group justify="space-between" align="center">
+          <Title order={2}>{t('feature.institutions.title')}</Title>
+        </Group>
+
+        <AppSection>
+          <InstitutionsTable
+            institutions={institutions}
+            onDeleteClick={handleDeleteClick}
+          />
+        </AppSection>
+      </Stack>
+    </BaseScreen>
   );
 }

@@ -110,6 +110,112 @@
         "pension": "Pension",
         "savingsAccount": "Savings Account"
       }
+    },
+    "institutions": {
+      "form": {
+        "fields": {
+          "name": {
+            "required": "Name is required",
+            "label": "Institution Name",
+            "placeholder": "Enter institution name"
+          },
+          "country": {
+            "required": "Country is required",
+            "invalid": "Country must be a 2-letter code (e.g., US, GB, ES)",
+            "label": "Country",
+            "placeholder": "Enter country code (e.g., US, GB, ES)",
+            "description": "Two-letter country code"
+          },
+          "imageUrl": {
+            "label": "Image URL",
+            "placeholder": "https://example.com/logo.png",
+            "description": "Provide a URL to the institution's logo"
+          }
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "update": "Update Institution",
+          "create": "Create Institution"
+        }
+      },
+      "table": {
+        "badges": {
+          "custom": "Custom"
+        },
+        "tooltips": {
+          "edit": "Edit institution",
+          "delete": "Delete institution"
+        },
+        "filter": {
+          "allCountries": "All Countries",
+          "countryPlaceholder": "Select country",
+          "all": "All Institutions",
+          "custom": "Custom Only",
+          "system": "System Only"
+        },
+        "searchPlaceholder": "Search by name...",
+        "showing_one": "Showing {{count}} of {{total}} institution",
+        "showing_other": "Showing {{count}} of {{total}} institutions",
+        "columns": {
+          "logo": "Logo",
+          "name": "Name",
+          "countries": "Countries",
+          "actions": "Actions"
+        },
+        "emptyState": "No institutions found"
+      },
+      "createButton": "Create Institution",
+      "notifications": {
+        "create": {
+          "success": {
+            "title": "Success",
+            "message": "Institution created successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to create institution"
+          }
+        },
+        "update": {
+          "success": {
+            "title": "Success",
+            "message": "Institution updated successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to update institution"
+          }
+        },
+        "delete": {
+          "success": {
+            "title": "Success",
+            "message": "Institution deleted successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to delete institution"
+          }
+        }
+      },
+      "add": {
+        "title": "Add Institution",
+        "description": "Create a new custom institution for your accounts"
+      },
+      "edit": {
+        "title": "Edit Institution",
+        "systemInstitution": {
+          "title": "Cannot Edit System Institution",
+          "message": "System institutions cannot be modified from the website. Please contact support if you need changes."
+        },
+        "description": "Edit the details of this custom institution"
+      },
+      "deleteConfirm": {
+        "title": "Delete Institution",
+        "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+        "confirmButton": "Delete",
+        "cancelButton": "Cancel"
+      },
+      "title": "Institutions"
     }
   },
   "screens": {
@@ -442,5 +548,8 @@
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
     }
+  },
+  "common": {
+    "cancel": "Cancel"
   }
 }
