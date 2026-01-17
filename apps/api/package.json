@@ -47,7 +47,7 @@
     "reflect-metadata": "^0.2.2",
     "resend": "^6.7.0",
     "rxjs": "^7.8.2",
-    "typeorm": "^0.3.25",
+    "typeorm": "^0.3.26",
     "zod": "^4.0.5"
   },
   "devDependencies": {
