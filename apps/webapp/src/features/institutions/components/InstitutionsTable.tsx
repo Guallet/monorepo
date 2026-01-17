@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { InstitutionDto } from "@guallet/api-client";
+import React, { useMemo, useState } from 'react';
+import { InstitutionDto } from '@guallet/api-client';
 import {
   TextInput,
   Select,
@@ -8,7 +8,7 @@ import {
   Image,
   Group,
   Space,
-} from "@mantine/core";
+} from '@mantine/core';
 
 interface InstitutionsTableProps {
   institutions: InstitutionDto[];
@@ -17,36 +17,33 @@ interface InstitutionsTableProps {
 const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
   institutions,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [countryFilter, setCountryFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [countryFilter, setCountryFilter] = useState('');
   const [userInstitutionFilter, setUserInstitutionFilter] = useState<
-    "user" | "system" | "all"
-  >("all");
-  const [filteredInstitutions, setFilteredInstitutions] =
-    useState<InstitutionDto[]>(institutions);
-
-  useEffect(() => {
+    'user' | 'system' | 'all'
+  >('all');
+  const filteredInstitutions = useMemo(() => {
     let results = institutions;
 
     if (searchTerm) {
       results = results.filter((institution) =>
-        institution.name.toLowerCase().includes(searchTerm.toLowerCase())
+        institution.name.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     if (countryFilter) {
       results = results.filter((institution) =>
-        institution.countries.includes(countryFilter)
+        institution.countries.includes(countryFilter),
       );
     }
 
-    if (userInstitutionFilter === "user") {
+    if (userInstitutionFilter === 'user') {
       results = results.filter((institution) => institution.user_id !== null);
-    } else if (userInstitutionFilter === "system") {
+    } else if (userInstitutionFilter === 'system') {
       results = results.filter((institution) => institution.user_id === null);
     }
 
-    setFilteredInstitutions(results);
+    return results;
   }, [institutions, searchTerm, countryFilter, userInstitutionFilter]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,11 +51,11 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
   };
 
   const handleCountryFilter = (value: string | null) => {
-    setCountryFilter(value ?? "");
+    setCountryFilter(value ?? '');
   };
 
   const handleUserInstitutionFilter = (value: string | null) => {
-    setUserInstitutionFilter((value ?? "all") as "user" | "system" | "all");
+    setUserInstitutionFilter((value ?? 'all') as 'user' | 'system' | 'all');
   };
 
   const rows = filteredInstitutions.map((institution) => (
@@ -81,9 +78,13 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
     </tr>
   ));
 
-  const countries = Array.from(
-    new Set(institutions.map((institution) => institution.countries).flat())
-  ).sort();
+  const countries = useMemo(
+    () =>
+      Array.from(
+        new Set(institutions.flatMap((institution) => institution.countries)),
+      ).sort((a, b) => a.localeCompare(b)),
+    [institutions],
+  );
 
   return (
     <div>
@@ -93,20 +94,20 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
           value={searchTerm}
           onChange={handleSearch}
         />
-        {/* <Select
+        <Select
           value={countryFilter}
           onChange={handleCountryFilter}
-          data={[{ value: "", label: "All Countries" }].concat(
-            countries.map((country) => ({ value: country, label: country }))
+          data={[{ value: '', label: 'All Countries' }].concat(
+            countries.map((country) => ({ value: country, label: country })),
           )}
-        /> */}
+        />
         <Select
           value={userInstitutionFilter}
           onChange={handleUserInstitutionFilter}
           data={[
-            { value: "all", label: "All Institutions" },
-            { value: "user", label: "User Institutions" },
-            { value: "system", label: "System Institutions" },
+            { value: 'all', label: 'All Institutions' },
+            { value: 'user', label: 'User Institutions' },
+            { value: 'system', label: 'System Institutions' },
           ]}
         />
         <Button>Create New Institution</Button>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Group,
   Box,
@@ -7,13 +7,13 @@ import {
   Text,
   UnstyledButton,
   rem,
-} from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
-import classes from "./NavbarLinksGroup.module.css";
-import { useNavigate } from "@tanstack/react-router";
+} from '@mantine/core';
+import { Icon, IconChevronRight } from '@tabler/icons-react';
+import classes from './NavbarLinksGroup.module.css';
+import { useNavigate } from '@tanstack/react-router';
 
 interface LinksGroupProps {
-  icon: React.FC<any>;
+  icon: Icon;
   label: string;
   initiallyOpened?: boolean;
   link?: string;
@@ -28,7 +28,7 @@ export function LinksGroup({
   link,
   subLinks,
   onItemSelected,
-}: LinksGroupProps) {
+}: Readonly<LinksGroupProps>) {
   const hasLinks = Array.isArray(subLinks);
   const [opened, setOpened] = useState(initiallyOpened || false);
 
@@ -36,7 +36,7 @@ export function LinksGroup({
   const navigation = useNavigate();
 
   const items = (hasLinks ? subLinks : []).map((link) => (
-    <Text<"a">
+    <Text<'a'>
       component="a"
       className={classes.link}
       href={link.link}
@@ -68,7 +68,7 @@ export function LinksGroup({
         className={classes.control}
       >
         <Group justify="space-between" gap={0}>
-          <Box style={{ display: "flex", alignItems: "center" }}>
+          <Box style={{ display: 'flex', alignItems: 'center' }}>
             <ThemeIcon variant="light" size={30}>
               <Icon style={{ width: rem(18), height: rem(18) }} />
             </ThemeIcon>
@@ -81,7 +81,7 @@ export function LinksGroup({
               style={{
                 width: rem(16),
                 height: rem(16),
-                transform: opened ? "rotate(-90deg)" : "none",
+                transform: opened ? 'rotate(-90deg)' : 'none',
               }}
             />
           )}

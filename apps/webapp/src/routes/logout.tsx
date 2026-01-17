@@ -26,7 +26,7 @@ function LogoutPage() {
           color: 'red',
         });
       });
-  }, []);
+  }, [logout, navigate]);
 
   return <Link to="/">Navigate to main page</Link>;
 }

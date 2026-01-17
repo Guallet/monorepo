@@ -1,12 +1,30 @@
-import "core-js";
-import { AccountRow } from "./AccountRow";
-import { AccountsListHeader } from "./AccountsListHeader";
-import { Box, Card, Divider, Space } from "@mantine/core";
-import { AccountDto, AccountTypeDto } from "@guallet/api-client";
+import 'core-js';
+import { AccountRow } from './AccountRow';
+import { AccountsListHeader } from './AccountsListHeader';
+import { Box, Card, Divider, Space } from '@mantine/core';
+import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 
 interface Props {
   accounts: AccountDto[];
   onAccountSelected: (account: AccountDto) => void;
+}
+
+// TODO: Replace this with Object.groupBy when we can drop support for Node 16
+function groupBy<T, K extends string | number | symbol>(
+  array: T[],
+  keySelector: (item: T) => K,
+): Record<K, T[]> {
+  return array.reduce(
+    (acc, item) => {
+      const key = keySelector(item);
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {} as Record<K, T[]>,
+  );
 }
 
 function compareAccountTypes(a: string, b: string) {
@@ -34,8 +52,7 @@ function compareAccountTypes(a: string, b: string) {
 }
 
 export function AccountsList({ accounts, onAccountSelected }: Readonly<Props>) {
-  // @ts-expect-error
-  const data = accounts.groupBy((account: Account) => {
+  const data = groupBy(accounts, (account: AccountDto) => {
     return account.type;
   });
 
@@ -50,11 +67,11 @@ export function AccountsList({ accounts, onAccountSelected }: Readonly<Props>) {
             <>
               <AccountsListHeader
                 accountType={key as AccountTypeDto}
-                accounts={value as AccountDto[]}
+                accounts={value}
               />
               <Space h="xs" />
               <Card withBorder shadow="sm" radius="lg">
-                {(value as AccountDto[]).map(
+                {value.map(
                   (account: AccountDto, index: number, array: AccountDto[]) => {
                     return (
                       <>
@@ -68,7 +85,7 @@ export function AccountsList({ accounts, onAccountSelected }: Readonly<Props>) {
                         {index < array.length - 1 && <Divider />}
                       </>
                     );
-                  }
+                  },
                 )}
               </Card>
             </>

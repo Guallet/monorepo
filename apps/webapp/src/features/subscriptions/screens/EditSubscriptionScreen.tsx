@@ -88,7 +88,7 @@ export function EditSubscriptionScreen({
         imageUrl: subscription.imageUrl ?? '',
       });
     }
-  }, [subscription]);
+  }, [form, subscription]);
 
   async function onFormSubmit(data: EditSubscriptionFormData) {
     console.log('Submitting form data', data);

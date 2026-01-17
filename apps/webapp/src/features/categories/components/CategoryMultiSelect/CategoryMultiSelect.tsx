@@ -1,11 +1,11 @@
-import { CategoryDto } from "@guallet/api-client";
-import { Input, Modal, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { CategoryMultiSelectModal } from "./CategoryMultiSelectModal";
-import { useCategories } from "@guallet/api-react";
+import { CategoryDto } from '@guallet/api-client';
+import { Input, Modal, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CategoryMultiSelectModal } from './CategoryMultiSelectModal';
+import { useCategories } from '@guallet/api-react';
 
 interface CategoryMultiSelectProps
   extends React.ComponentProps<typeof Input.Wrapper> {
@@ -27,21 +27,21 @@ export function CategoryMultiSelect({
   const inputValue = useMemo(() => {
     if (selectedCategories.length === 0) {
       // We don't want to return anything, so it falls back to the placeholder
-      return "";
+      return '';
     }
 
     if (selectedCategories.length === categories.length) {
       return t(
-        "components.categoryMultiSelect.input.valueAll",
-        "All categories selected"
+        'components.categoryMultiSelect.input.valueAll',
+        'All categories selected',
       );
     } else {
-      const label = t("components.categoryMultiSelect.input.value", {
+      const label = t('components.categoryMultiSelect.input.value', {
         count: selectedCategories.length,
       });
       return label;
     }
-  }, [selectedCategories, t]);
+  }, [selectedCategories, categories.length, t]);
 
   return (
     <>
@@ -51,8 +51,8 @@ export function CategoryMultiSelect({
           value={inputValue}
           onClick={open}
           placeholder={t(
-            "components.categoryMultiSelect.input.placeholder",
-            "Select categories"
+            'components.categoryMultiSelect.input.placeholder',
+            'Select categories',
           )}
           pointer={true}
         />
@@ -63,8 +63,8 @@ export function CategoryMultiSelect({
         title={
           <Text>
             {t(
-              "components.categoryMultiSelect.modal.title",
-              "Select Categories"
+              'components.categoryMultiSelect.modal.title',
+              'Select Categories',
             )}
           </Text>
         }

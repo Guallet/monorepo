@@ -1,12 +1,12 @@
-import { Group, MultiSelect } from "@mantine/core";
-import { Category } from "../../categories/models/Category";
-import { Account } from "../../accounts/models/Account";
-import { useState } from "react";
-import { DateRangeButton } from "../../../components/DateRangeButton/DateRangeButton";
-import { MultiSelectCheckbox } from "../../../components/MultiSelectCheckbox/MultiComboBox";
+import { Group } from '@mantine/core';
+import { Category } from '../../categories/models/Category';
+import { useState } from 'react';
+import { DateRangeButton } from '../../../components/DateRangeButton/DateRangeButton';
+import { MultiSelectCheckbox } from '../../../components/MultiSelectCheckbox/MultiComboBox';
+import { AccountDto } from '@guallet/api-client';
 
 export type FilterData = {
-  selectedAccounts: Account[];
+  selectedAccounts: AccountDto[];
   selectedCategories: Category[];
   dateRange: {
     startDate: Date;
@@ -15,22 +15,12 @@ export type FilterData = {
 };
 
 interface IProps {
-  accounts: Account[];
-  selectedAccounts: Account[];
-
+  accounts: AccountDto[];
   categories: Category[];
-  selectedCategories: Category[];
-
   onFiltersUpdate: (filters: FilterData) => void;
 }
 
-export function ReportFilters({
-  accounts,
-  selectedAccounts,
-  categories,
-  selectedCategories,
-  onFiltersUpdate,
-}: IProps) {
+export function ReportFilters({ accounts, categories }: Readonly<IProps>) {
   const [dateRange, setDateRange] = useState<{
     startDate: Date;
     endDate: Date;
@@ -68,7 +58,7 @@ export function ReportFilters({
         <DateRangeButton
           selectedRange={dateRange}
           onRangeSelected={(selectedRange) => {
-            console.log("Selected Range: ", selectedRange);
+            console.log('Selected Range: ', selectedRange);
             if (selectedRange) {
               setDateRange({
                 startDate: selectedRange.startDate,

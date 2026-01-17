@@ -1,15 +1,5 @@
-import React, { useState } from "react";
-import { AppCategory, Category } from "../../categories/models/Category";
-import {
-  Button,
-  Flex,
-  List,
-  TextInput,
-  Text,
-  Group,
-  Stack,
-} from "@mantine/core";
-import { IconPackage, IconSearch } from "@tabler/icons-react";
+import React, { useState } from 'react';
+import { Button, TextInput, Group, Stack } from '@mantine/core';
 
 interface IProps {
   notes: string;
@@ -17,7 +7,7 @@ interface IProps {
   onCancel: () => void;
 }
 
-export function EditNotesModal({ notes, onSave, onCancel }: IProps) {
+export function EditNotesModal({ notes, onSave, onCancel }: Readonly<IProps>) {
   const [inputText, setInputText] = useState(notes);
 
   return (

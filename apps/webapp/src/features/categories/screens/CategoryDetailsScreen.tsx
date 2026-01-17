@@ -1,12 +1,12 @@
-import { DeleteButton } from "@/components/Buttons/DeleteButton";
-import { AppSection } from "@/components/Cards/AppSection";
-import { GualletIcon } from "@/components/GualletIcon/GualletIcon";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useGroupedCategory, useCategoryMutations } from "@guallet/api-react";
-import { Stack, Button, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useNavigate } from "@tanstack/react-router";
-import { CategoryRow } from "../components/CategoryRow/CategoryRow";
+import { DeleteButton } from '@/components/Buttons/DeleteButton';
+import { AppSection } from '@/components/Cards/AppSection';
+import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useGroupedCategory, useCategoryMutations } from '@guallet/api-react';
+import { Stack, Button, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { useNavigate } from '@tanstack/react-router';
+import { CategoryRow } from '../components/CategoryRow/CategoryRow';
 
 interface AppCategoryRowProps {
   categoryId: string;
@@ -29,30 +29,30 @@ export function CategoriesScreen({
           id: category.id,
         },
         {
-          onSuccess: async (data, variables) => {
+          onSuccess: () => {
             notifications.show({
-              title: "Category deleted",
+              title: 'Category deleted',
               message: `Category has been deleted`,
-              color: "green",
+              color: 'green',
             });
             if (isParent) {
-              navigation({ to: "/categories" });
+              navigation({ to: '/categories' });
             } else {
               navigation({
-                to: "/categories/$id",
+                to: '/categories/$id',
                 params: { id: category.parentId! },
               });
             }
           },
-          onError: async (error, variables, context) => {
+          onError: (error) => {
             console.error(error);
             notifications.show({
-              title: "Error Category update",
+              title: 'Error Category update',
               message: `Changes not saved: ${error.message}`,
-              color: "red",
+              color: 'red',
             });
           },
-        }
+        },
       );
     }
   };
@@ -63,8 +63,8 @@ export function CategoriesScreen({
         <AppSection>
           <Stack align="center">
             <GualletIcon
-              iconName={category?.icon ?? "question"}
-              iconColor={category?.colour ?? "black"}
+              iconName={category?.icon ?? 'question'}
+              iconColor={category?.colour ?? 'black'}
             />
             <Text>{category?.name}</Text>
           </Stack>
@@ -79,7 +79,7 @@ export function CategoriesScreen({
                   category={subCategory}
                   onClick={() => {
                     navigation({
-                      to: "/categories/$id",
+                      to: '/categories/$id',
                       params: { id: subCategory.id },
                     });
                   }}
@@ -90,7 +90,7 @@ export function CategoriesScreen({
                 variant="outline"
                 onClick={() =>
                   navigation({
-                    to: "/categories/new",
+                    to: '/categories/new',
                     search: { parent: categoryId },
                   })
                 }
@@ -106,7 +106,7 @@ export function CategoriesScreen({
             <Button
               onClick={() =>
                 navigation({
-                  to: "/categories/$id/edit",
+                  to: '/categories/$id/edit',
                   params: { id: categoryId },
                 })
               }
