@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import dns from "dns";
 
@@ -22,7 +22,11 @@ export default defineConfig({
     tanstackRouter({
       autoCodeSplitting: true,
     }),
-    react(),
+    react({
+      babel: {
+        plugins: [["babel-plugin-react-compiler", {}]],
+      },
+    }),
   ],
 
   resolve: {
