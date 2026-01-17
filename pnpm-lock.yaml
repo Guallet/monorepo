@@ -9363,7 +9363,7 @@ snapshots:
   '@babel/generator@7.28.0':
     dependencies:
       '@babel/parser': 7.28.6
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
       '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.29
       jsesc: 3.1.0
@@ -9570,7 +9570,7 @@ snapshots:
   '@babel/helpers@7.27.6':
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
 
   '@babel/helpers@7.28.6':
     dependencies:
@@ -9579,14 +9579,14 @@ snapshots:
 
   '@babel/highlight@7.25.9':
     dependencies:
-      '@babel/helper-validator-identifier': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
   '@babel/parser@7.28.0':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
 
   '@babel/parser@7.28.4':
     dependencies:
@@ -12335,16 +12335,16 @@ snapshots:
 
   '@types/babel__generator@7.27.0':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
 
   '@types/babel__template@7.4.4':
     dependencies:
       '@babel/parser': 7.28.6
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
 
   '@types/babel__traverse@7.20.7':
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
 
   '@types/body-parser@1.19.6':
     dependencies:
@@ -13262,7 +13262,7 @@ snapshots:
 
   babel-plugin-react-compiler@1.0.0:
     dependencies:
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
 
   babel-plugin-react-compiler@19.1.0-rc.3:
     dependencies:
@@ -14451,8 +14451,8 @@ snapshots:
 
   eslint-plugin-react-hooks@7.0.1(eslint@9.39.2):
     dependencies:
-      '@babel/core': 7.28.0
-      '@babel/parser': 7.28.4
+      '@babel/core': 7.28.6
+      '@babel/parser': 7.28.6
       eslint: 9.39.2
       hermes-parser: 0.25.1
       zod: 4.0.5
@@ -16612,7 +16612,7 @@ snapshots:
     dependencies:
       '@babel/traverse': 7.28.0
       '@babel/traverse--for-generate-function-map': '@babel/traverse@7.28.6'
-      '@babel/types': 7.28.4
+      '@babel/types': 7.28.6
       flow-enums-runtime: 0.0.6
       invariant: 2.2.4
       metro-symbolicate: 0.83.3
@@ -19122,7 +19122,7 @@ snapshots:
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.15.0
-      browserslist: 4.26.3
+      browserslist: 4.25.1
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.2
       es-module-lexer: 1.7.0
