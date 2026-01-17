@@ -138,9 +138,7 @@
           "cancel": "Cancelar",
           "update": "Actualizar institución",
           "create": "Crear institución"
-        },
-        "titleEdit": "Editar institución",
-        "titleCreate": "Crear institución"
+        }
       },
       "table": {
         "badges": {
@@ -150,12 +148,14 @@
           "edit": "Editar institución",
           "delete": "Eliminar institución"
         },
-        "searchPlaceholder": "Buscar por nombre...",
         "filter": {
+          "allCountries": "",
+          "countryPlaceholder": "",
           "all": "Todas las instituciones",
           "custom": "Solo personalizadas",
           "system": "Solo del sistema"
         },
+        "searchPlaceholder": "Buscar por nombre...",
         "showing_one": "",
         "showing_many": "",
         "showing_other": "",
@@ -169,25 +169,14 @@
       },
       "createButton": "Crear institución",
       "notifications": {
-        "sync": {
-          "error": {
-            "title": "Error",
-            "forbidden": "Necesitas ser administrador para sincronizar instituciones",
-            "failed": "Error al sincronizar bancos"
-          },
+        "create": {
           "success": {
             "title": "Éxito",
-            "message": "Bancos sincronizados correctamente"
-          }
-        },
-        "delete": {
-          "success": {
-            "title": "Éxito",
-            "message": "Institución eliminada correctamente"
+            "message": "Institución creada correctamente"
           },
           "error": {
             "title": "Error",
-            "message": "Error al eliminar la institución"
+            "message": "Error al crear la institución"
           }
         },
         "update": {
@@ -200,16 +189,28 @@
             "message": "Error al actualizar la institución"
           }
         },
-        "create": {
+        "delete": {
           "success": {
             "title": "Éxito",
-            "message": "Institución creada correctamente"
+            "message": "Institución eliminada correctamente"
           },
           "error": {
             "title": "Error",
-            "message": "Error al crear la institución"
+            "message": "Error al eliminar la institución"
           }
         }
+      },
+      "add": {
+        "title": "",
+        "description": ""
+      },
+      "edit": {
+        "title": "",
+        "systemInstitution": {
+          "title": "",
+          "message": ""
+        },
+        "description": ""
       },
       "deleteConfirm": {
         "title": "Eliminar institución",
@@ -217,8 +218,7 @@
         "confirmButton": "Eliminar",
         "cancelButton": "Cancelar"
       },
-      "title": "Instituciones",
-      "syncButton": "Sincronizar bancos con Nordigen"
+      "title": "Instituciones"
     }
   },
   "screens": {
@@ -551,5 +551,8 @@
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
     }
+  },
+  "common": {
+    "cancel": ""
   }
 }

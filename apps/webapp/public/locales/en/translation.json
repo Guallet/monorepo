@@ -136,9 +136,7 @@
           "cancel": "Cancel",
           "update": "Update Institution",
           "create": "Create Institution"
-        },
-        "titleEdit": "Edit Institution",
-        "titleCreate": "Create Institution"
+        }
       },
       "table": {
         "badges": {
@@ -148,14 +146,16 @@
           "edit": "Edit institution",
           "delete": "Delete institution"
         },
-        "searchPlaceholder": "Search by name...",
         "filter": {
+          "allCountries": "All Countries",
+          "countryPlaceholder": "Select country",
           "all": "All Institutions",
           "custom": "Custom Only",
           "system": "System Only"
         },
-        "showing_one": "",
-        "showing_other": "",
+        "searchPlaceholder": "Search by name...",
+        "showing_one": "Showing {{count}} of {{total}} institution",
+        "showing_other": "Showing {{count}} of {{total}} institutions",
         "columns": {
           "logo": "Logo",
           "name": "Name",
@@ -166,25 +166,14 @@
       },
       "createButton": "Create Institution",
       "notifications": {
-        "sync": {
-          "error": {
-            "title": "Error",
-            "forbidden": "You need to be an admin to sync institutions",
-            "failed": "Failed to sync banks"
-          },
+        "create": {
           "success": {
             "title": "Success",
-            "message": "Banks synced successfully"
-          }
-        },
-        "delete": {
-          "success": {
-            "title": "Success",
-            "message": "Institution deleted successfully"
+            "message": "Institution created successfully"
           },
           "error": {
             "title": "Error",
-            "message": "Failed to delete institution"
+            "message": "Failed to create institution"
           }
         },
         "update": {
@@ -197,16 +186,28 @@
             "message": "Failed to update institution"
           }
         },
-        "create": {
+        "delete": {
           "success": {
             "title": "Success",
-            "message": "Institution created successfully"
+            "message": "Institution deleted successfully"
           },
           "error": {
             "title": "Error",
-            "message": "Failed to create institution"
+            "message": "Failed to delete institution"
           }
         }
+      },
+      "add": {
+        "title": "Add Institution",
+        "description": "Create a new custom institution for your accounts"
+      },
+      "edit": {
+        "title": "Edit Institution",
+        "systemInstitution": {
+          "title": "Cannot Edit System Institution",
+          "message": "System institutions cannot be modified from the website. Please contact support if you need changes."
+        },
+        "description": "Edit the details of this custom institution"
       },
       "deleteConfirm": {
         "title": "Delete Institution",
@@ -214,8 +215,7 @@
         "confirmButton": "Delete",
         "cancelButton": "Cancel"
       },
-      "title": "Institutions",
-      "syncButton": "Sync Banks with Nordigen"
+      "title": "Institutions"
     }
   },
   "screens": {
@@ -548,5 +548,8 @@
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
     }
+  },
+  "common": {
+    "cancel": "Cancel"
   }
 }
