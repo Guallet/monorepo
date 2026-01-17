@@ -1,14 +1,14 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import dns from "dns";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import dns from 'node:dns';
 
 // To enable path alias
-import { fileURLToPath, URL } from "node:url";
+import { fileURLToPath, URL } from 'node:url';
 
 // Don't use 127.0.0.1, but "localhost".
 // This is required for the supabase auth redirect allowed domains
-dns.setDefaultResultOrder("verbatim");
+dns.setDefaultResultOrder('verbatim');
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -28,7 +28,7 @@ export default defineConfig({
       babel: {
         plugins: [
           [
-            "babel-plugin-react-compiler",
+            'babel-plugin-react-compiler',
             {
               // Uncomment to see compilation logs
               // compilationMode: "annotation", // Only compile components with "use memo" pragma
@@ -41,7 +41,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 });
