@@ -55,6 +55,7 @@ describe('NordigenSyncProcessor', () => {
 
   const mockNordigenKeysService = {
     findAllKeysWithAccounts: jest.fn(),
+    findKeyWithAccountsById: jest.fn(),
     updateSyncStatus: jest.fn(),
   };
 
@@ -125,9 +126,7 @@ describe('NordigenSyncProcessor', () => {
         linkedAccounts: [],
       };
 
-      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([
-        mockKey,
-      ]);
+      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(mockKey);
 
       const result = await processor.process(mockJob);
 
@@ -155,9 +154,7 @@ describe('NordigenSyncProcessor', () => {
         name: 'Test User',
       };
 
-      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([
-        mockKey,
-      ]);
+      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(mockKey);
       mockNordigenUserService.getAccessToken.mockRejectedValue(
         new Error('Invalid credentials'),
       );
@@ -206,9 +203,7 @@ describe('NordigenSyncProcessor', () => {
         balance: 100,
       };
 
-      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([
-        mockKey,
-      ]);
+      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(mockKey);
       mockNordigenUserService.getAccessToken.mockResolvedValue('test-token');
 
       const mockQueryBuilder = {

@@ -37,7 +37,7 @@ export class UpdateNordigenKeyRequest {
 export class LinkAccountsRequest {
   @IsArray()
   @IsString({ each: true })
-  @IsNotEmpty()
+  @IsNotEmpty({ each: true })
   account_ids: string[];
 }
 

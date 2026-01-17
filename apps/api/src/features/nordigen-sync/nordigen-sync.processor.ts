@@ -49,8 +49,7 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     try {
       // Get the key with linked accounts
-      const keys = await this.nordigenKeysService.findAllKeysWithAccounts();
-      const key = keys.find((k) => k.id === keyId);
+      const key = await this.nordigenKeysService.findKeyWithAccountsById(keyId);
       
       if (!key) {
         throw new Error(`Nordigen key ${keyId} not found`);

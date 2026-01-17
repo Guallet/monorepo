@@ -157,6 +157,13 @@ export class NordigenKeysService {
       .getMany();
   }
 
+  async findKeyWithAccountsById(keyId: string): Promise<NordigenKey | null> {
+    return this.keyRepository.findOne({
+      where: { id: keyId },
+      relations: ['linkedAccounts'],
+    });
+  }
+
   async updateSyncStatus(
     keyId: string,
     success: boolean,
