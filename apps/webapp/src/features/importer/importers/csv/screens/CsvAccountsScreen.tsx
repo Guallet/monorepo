@@ -127,10 +127,11 @@ export function CsvAccountsScreen() {
                               label: acc?.name ?? 'Create new account',
                             }))}
                             onChange={(value) => {
-                              mappings[x] = remoteAccounts.find(
+                              const updatedMappings = { ...mappings };
+                              updatedMappings[x] = remoteAccounts.find(
                                 (acc) => acc.id === value,
                               );
-                              setMappings({ ...mappings });
+                              setMappings(updatedMappings);
                             }}
                           />
                         </Table.Td>

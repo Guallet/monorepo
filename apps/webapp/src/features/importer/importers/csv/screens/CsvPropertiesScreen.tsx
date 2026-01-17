@@ -176,6 +176,7 @@ export function CsvPropertiesScreen() {
                         });
 
                         const testDates = sampleData.map(
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           (x: any) => x[fieldValue || ''],
                         );
                         const isValid =
@@ -201,6 +202,7 @@ export function CsvPropertiesScreen() {
                         });
 
                         const testAmounts = sampleData.map(
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           (x: any) => x[fieldValue || ''],
                         );
                         const isValid =
@@ -296,6 +298,7 @@ export function CsvPropertiesScreen() {
 
 interface RowElementProps {
   mappings: FieldMappings;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   element: any;
 }
 function RowElement({ mappings, element }: Readonly<RowElementProps>) {

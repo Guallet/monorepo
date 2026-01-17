@@ -2,22 +2,14 @@ import { useMantineTheme } from '@mantine/core';
 import {
   IconCategory,
   IconMoneybag,
-  TablerIconsProps,
   IconPigMoney,
   IconStatusChange,
   IconCashBanknote,
+  Icon,
 } from '@tabler/icons-react';
+import { GualletCategoryIcon } from './GualletCategoryIcon';
 
-// Enum must be in separate file or exported separately for React Fast Refresh
-// eslint-disable-next-line react-refresh/only-export-components
-export enum GualletCategoryIcon {
-  Money = 'money',
-  Salary = 'salary',
-  Transfer = 'transfer',
-  Savings = 'savings',
-}
-
-interface CategoryIconProps {
+interface CategoryIconProps extends React.ComponentProps<Icon> {
   icon: string | GualletCategoryIcon;
   colour: string;
 }
@@ -25,11 +17,7 @@ interface CategoryIconProps {
 /**
  * @deprecated This component is deprecated and should not be used.
  */
-export function CategoryIcon({
-  icon,
-  colour,
-  ...rest
-}: CategoryIconProps & TablerIconsProps) {
+export function CategoryIcon({ icon, colour, ...rest }: CategoryIconProps) {
   const { primaryColor: defaultColor } = useMantineTheme();
 
   let IconToBeUsed = IconCategory;

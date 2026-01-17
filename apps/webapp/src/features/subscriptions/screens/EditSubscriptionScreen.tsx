@@ -88,8 +88,7 @@ export function EditSubscriptionScreen({
         imageUrl: subscription.imageUrl ?? '',
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscription]);
+  }, [form, subscription]);
 
   async function onFormSubmit(data: EditSubscriptionFormData) {
     console.log('Submitting form data', data);
