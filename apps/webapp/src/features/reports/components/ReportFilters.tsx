@@ -1,12 +1,12 @@
 import { Group } from '@mantine/core';
 import { Category } from '../../categories/models/Category';
-import { Account } from '../../accounts/models/Account';
 import { useState } from 'react';
 import { DateRangeButton } from '../../../components/DateRangeButton/DateRangeButton';
 import { MultiSelectCheckbox } from '../../../components/MultiSelectCheckbox/MultiComboBox';
+import { AccountDto } from '@guallet/api-client';
 
 export type FilterData = {
-  selectedAccounts: Account[];
+  selectedAccounts: AccountDto[];
   selectedCategories: Category[];
   dateRange: {
     startDate: Date;
@@ -15,8 +15,9 @@ export type FilterData = {
 };
 
 interface IProps {
-  accounts: Account[];
+  accounts: AccountDto[];
   categories: Category[];
+  onFiltersUpdate: (filters: FilterData) => void;
 }
 
 export function ReportFilters({ accounts, categories }: Readonly<IProps>) {

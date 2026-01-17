@@ -52,7 +52,7 @@ export function SavingGoalForm({
       accounts: savingGoal?.accounts || [],
     },
     validate: {
-      name: (value) => (value.trim() ? null : 'Name is required'),
+      name: (value) => (value.trim() === '' ? 'Name is required' : null),
       target_amount: (value) =>
         value <= 0 ? 'Target amount must be greater than 0' : null,
       target_date: (value) => {

@@ -1,10 +1,19 @@
 import { AccountDto } from '@guallet/api-client';
 import { LineChart } from '@mantine/charts';
+import { Text } from '@mantine/core';
 
 interface Props {
   account: AccountDto;
 }
-const data = [
+
+interface ChardData {
+  name: string;
+  total: number;
+  in: number;
+  out: number;
+}
+
+const sampleData: ChardData[] = [
   {
     name: 'January',
     total: 4000,
@@ -49,59 +58,30 @@ const data = [
   },
 ];
 
-export function CreditCardDetails({ account }: Props) {
-  return (
-    <LineChart
-      // w={500}
-      h={300}
-      data={data}
-      tooltipAnimationDuration={100}
-      unit={account.currency}
-      // unit="£"
-      withTooltip
-      // tooltipProps={{
-      //   labelFormatter: (label) => <Text>this is the label node</Text>,
-      //   content: ({ label, payload }) => {
-      //     return <ChartTooltip label={label} payload={payload} />;
-      //     // return <CustomChartTooltip label={label} payload={payload} />;
-      //   },
-      // }}
-      // tooltipProps={{
-      //   // formatter: ({ label }) => {
-      //   //   console.log("formatter", label);
-      //   //   return "Formatter: " + label;
-      //   // },
-      //   // labelFormatter: ({ label }) => {
-      //   //   console.log("labelFormatter", label);
-      //   //   return "labelFormatter: " + label;
-      //   // },
-      //   // label: ({ label }) => {
-      //   //   console.log("label", label);
-      //   //   return "label: " + label;
-      //   // },
-      //   content: ({ label, payload }) => (
-      //     // <ChartTooltip label={label} payload={payload} />
-      //     <Paper>
-      //       <Stack>
-      //         <Text>{label}</Text>
-      //         {/* <Text>{payload}</Text> */}
-      //         {payload.map((item: any) => (
-      //           <Text key={item.name} c={item.color} fz="sm">
-      //             {item.name}: {item.value}
-      //           </Text>
-      //         ))}
-      //       </Stack>
-      //     </Paper>
-      //   ),
-      // }}
+export function CreditCardDetails({ account }: Readonly<Props>) {
+  const data: ChardData[] = sampleData;
 
-      withLegend
-      dataKey="name"
-      series={[
-        { name: 'total', color: 'indigo.6' },
-        { name: 'in', color: 'blue.6' },
-        { name: 'out', color: 'teal.6' },
-      ]}
-    ></LineChart>
+  return (
+    <>
+      <Text size="lg" fw={500} mb="md">
+        TODO: Sample chart data. Get real data from API
+      </Text>
+      <LineChart
+        // w={500}
+        h={300}
+        data={data}
+        tooltipAnimationDuration={100}
+        unit={account.currency}
+        // unit="£"
+        withTooltip
+        withLegend
+        dataKey="name"
+        series={[
+          { name: 'total', color: 'indigo.6' },
+          { name: 'in', color: 'blue.6' },
+          { name: 'out', color: 'teal.6' },
+        ]}
+      />
+    </>
   );
 }

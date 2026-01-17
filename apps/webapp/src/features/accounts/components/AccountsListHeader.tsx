@@ -11,7 +11,7 @@ interface HeaderProps {
 
 function sumArray(array: number[]): number {
   const sum = array.reduce(function (a, b) {
-    return a + b;
+    return Number(a) + Number(b);
   }, 0);
 
   return sum;

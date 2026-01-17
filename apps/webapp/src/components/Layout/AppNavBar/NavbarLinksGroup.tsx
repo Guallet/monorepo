@@ -8,12 +8,12 @@ import {
   UnstyledButton,
   rem,
 } from '@mantine/core';
-import { IconChevronRight } from '@tabler/icons-react';
+import { Icon, IconChevronRight } from '@tabler/icons-react';
 import classes from './NavbarLinksGroup.module.css';
 import { useNavigate } from '@tanstack/react-router';
 
 interface LinksGroupProps {
-  icon: React.FC<React.ComponentProps<'svg'>>;
+  icon: Icon;
   label: string;
   initiallyOpened?: boolean;
   link?: string;
