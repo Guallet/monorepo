@@ -54,7 +54,6 @@
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
     "@vitejs/plugin-react": "^5.1.2",
-    "@vitejs/plugin-react-swc": "^3.10.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "workspace:*",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",

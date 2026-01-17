@@ -484,9 +484,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^5.1.2
         version: 5.1.2(vite@7.0.4(@types/node@24.0.14)(lightningcss@1.30.2)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1))
-      '@vitejs/plugin-react-swc':
-        specifier: ^3.10.2
-        version: 3.10.2(vite@7.0.4(@types/node@24.0.14)(lightningcss@1.30.2)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1))
       babel-plugin-react-compiler:
         specifier: ^1.0.0
         version: 1.0.0
@@ -2784,9 +2781,6 @@ packages:
       react-redux:
         optional: true
 
-  '@rolldown/pluginutils@1.0.0-beta.11':
-    resolution: {integrity: sha512-L/gAA/hyCSuzTF1ftlzUSI/IKr2POHsv1Dd78GfqkR83KMNuswWD61JxGV2L7nRwBBBSDr6R1gCkdTmoN7W4ag==}
-
   '@rolldown/pluginutils@1.0.0-beta.53':
     resolution: {integrity: sha512-vENRlFU4YbrwVqNDZ7fLvy+JR1CRkyr01jhSiDpE1u6py3OMzQfztQU2jxykW3ALNxO4kSlqIDeYyD0Y9RcQeQ==}
 
@@ -3705,11 +3699,6 @@ packages:
         optional: true
       vue-router:
         optional: true
-
-  '@vitejs/plugin-react-swc@3.10.2':
-    resolution: {integrity: sha512-xD3Rdvrt5LgANug7WekBn1KhcvLn1H3jNBfJRL3reeOIua/WnZOEV5qi5qIBq5T8R0jUDmRtxuvk4bPhzGHDWw==}
-    peerDependencies:
-      vite: ^7.0.4
 
   '@vitejs/plugin-react@5.1.2':
     resolution: {integrity: sha512-EcA07pHJouywpzsoTUqNh5NwGayl2PPVEJKUSinGGSxFGYn+shYbqMGBg6FXDqgXum9Ou/ecb+411ssw8HImJQ==}
@@ -11849,8 +11838,6 @@ snapshots:
       react: 19.1.0
       react-redux: 9.2.0(@types/react@19.1.8)(react@19.1.0)(redux@5.0.1)
 
-  '@rolldown/pluginutils@1.0.0-beta.11': {}
-
   '@rolldown/pluginutils@1.0.0-beta.53': {}
 
   '@rollup/rollup-android-arm-eabi@4.45.1':
@@ -12783,14 +12770,6 @@ snapshots:
   '@vercel/analytics@1.5.0(react@19.1.0)':
     optionalDependencies:
       react: 19.1.0
-
-  '@vitejs/plugin-react-swc@3.10.2(vite@7.0.4(@types/node@24.0.14)(lightningcss@1.30.2)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1))':
-    dependencies:
-      '@rolldown/pluginutils': 1.0.0-beta.11
-      '@swc/core': 1.12.14
-      vite: 7.0.4(@types/node@24.0.14)(lightningcss@1.30.2)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1)
-    transitivePeerDependencies:
-      - '@swc/helpers'
 
   '@vitejs/plugin-react@5.1.2(vite@7.0.4(@types/node@24.0.14)(lightningcss@1.30.2)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1))':
     dependencies:
@@ -19143,7 +19122,7 @@ snapshots:
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
       acorn: 8.15.0
-      browserslist: 4.25.1
+      browserslist: 4.26.3
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.2
       es-module-lexer: 1.7.0

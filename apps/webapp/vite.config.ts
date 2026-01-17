@@ -22,9 +22,19 @@ export default defineConfig({
     tanstackRouter({
       autoCodeSplitting: true,
     }),
+    // React Compiler is enabled to automatically optimize React components
+    // Docs: https://react.dev/learn/react-compiler
     react({
       babel: {
-        plugins: [["babel-plugin-react-compiler", {}]],
+        plugins: [
+          [
+            "babel-plugin-react-compiler",
+            {
+              // Uncomment to see compilation logs
+              // compilationMode: "annotation", // Only compile components with "use memo" pragma
+            },
+          ],
+        ],
       },
     }),
   ],
