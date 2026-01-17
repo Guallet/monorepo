@@ -28,6 +28,7 @@ import { RegularPaymentsModule } from './features/regular-payments/regular-payme
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { EmailModule } from './features/email/email.module';
 import { NordigenSyncModule } from './features/nordigen-sync/nordigen-sync.module';
+import { NordigenKeysModule } from './features/nordigen-keys/nordigen-keys.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 
@@ -114,6 +115,7 @@ import { BullModule } from '@nestjs/bullmq';
     DataImporterModule,
     EmailModule,
     NordigenSyncModule,
+    NordigenKeysModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,

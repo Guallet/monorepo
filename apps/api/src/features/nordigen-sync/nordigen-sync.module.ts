@@ -12,6 +12,7 @@ import { Account } from '../accounts/entities/account.entity';
 import { Transaction } from '../transactions/entities/transaction.entity';
 import { EmailModule } from '../email/email.module';
 import { UsersModule } from '../users/users.module';
+import { NordigenKeysModule } from '../nordigen-keys/nordigen-keys.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from '../users/users.module';
     NordigenModule,
     EmailModule,
     UsersModule,
+    NordigenKeysModule,
   ],
   providers: [NordigenSyncProcessor, NordigenSyncScheduler],
   exports: [NordigenSyncScheduler],

@@ -9,6 +9,7 @@ export * from './transactions';
 export * from './user';
 export * from './savingGoals';
 export * from './subscriptions';
+export * from './nordigen-keys';
 
 export { ApiError, createClient } from './GualletClient';
 export type { GualletClient, TokenHelper } from './GualletClient';

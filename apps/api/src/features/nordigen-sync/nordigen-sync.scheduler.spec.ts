@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bullmq';
 import { NordigenSyncScheduler } from './nordigen-sync.scheduler';
-import { UsersService } from '../users/users.service';
+import { NordigenKeysService } from '../nordigen-keys/nordigen-keys.service';
 import { NORDIGEN_SYNC_QUEUE, NORDIGEN_SYNC_JOB } from './nordigen-sync.processor';
 
 describe('NordigenSyncScheduler', () => {
   let scheduler: NordigenSyncScheduler;
-  let usersService: jest.Mocked<UsersService>;
+  let nordigenKeysService: jest.Mocked<NordigenKeysService>;
   let syncQueue: jest.Mocked<any>;
 
   const mockSyncQueue = {
     add: jest.fn(),
   };
 
-  const mockUsersService = {
-    getUsersWithNordigenCredentials: jest.fn(),
+  const mockNordigenKeysService = {
+    findAllKeysWithAccounts: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -26,14 +26,14 @@ describe('NordigenSyncScheduler', () => {
           useValue: mockSyncQueue,
         },
         {
-          provide: UsersService,
-          useValue: mockUsersService,
+          provide: NordigenKeysService,
+          useValue: mockNordigenKeysService,
         },
       ],
     }).compile();
 
     scheduler = module.get<NordigenSyncScheduler>(NordigenSyncScheduler);
-    usersService = module.get(UsersService);
+    nordigenKeysService = module.get(NordigenKeysService);
     syncQueue = module.get(getQueueToken(NORDIGEN_SYNC_QUEUE));
 
     jest.clearAllMocks();
@@ -44,25 +44,25 @@ describe('NordigenSyncScheduler', () => {
   });
 
   describe('scheduleDailySync', () => {
-    it('should enqueue sync jobs for all users with Nordigen credentials', async () => {
-      const mockUsers = [
-        { id: 'user-1', nordigen_secret_id: 'id-1', nordigen_secret_key: 'key-1' },
-        { id: 'user-2', nordigen_secret_id: 'id-2', nordigen_secret_key: 'key-2' },
-        { id: 'user-3', nordigen_secret_id: 'id-3', nordigen_secret_key: 'key-3' },
+    it('should enqueue sync jobs for all keys with linked accounts', async () => {
+      const mockKeys = [
+        { id: 'key-1', linkedAccounts: [{ account_id: 'acc-1' }] },
+        { id: 'key-2', linkedAccounts: [{ account_id: 'acc-2' }] },
+        { id: 'key-3', linkedAccounts: [{ account_id: 'acc-3' }] },
       ];
 
-      mockUsersService.getUsersWithNordigenCredentials.mockResolvedValue(mockUsers);
+      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue(mockKeys);
       mockSyncQueue.add.mockResolvedValue({});
 
       await scheduler.scheduleDailySync();
 
-      expect(mockUsersService.getUsersWithNordigenCredentials).toHaveBeenCalled();
+      expect(mockNordigenKeysService.findAllKeysWithAccounts).toHaveBeenCalled();
       expect(mockSyncQueue.add).toHaveBeenCalledTimes(3);
 
-      // Verify each user gets a job
+      // Verify each key gets a job
       expect(mockSyncQueue.add).toHaveBeenCalledWith(
         NORDIGEN_SYNC_JOB,
-        { userId: 'user-1' },
+        { keyId: 'key-1' },
         expect.objectContaining({
           attempts: 3,
           removeOnComplete: 100,
@@ -71,27 +71,27 @@ describe('NordigenSyncScheduler', () => {
       );
       expect(mockSyncQueue.add).toHaveBeenCalledWith(
         NORDIGEN_SYNC_JOB,
-        { userId: 'user-2' },
+        { keyId: 'key-2' },
         expect.any(Object),
       );
       expect(mockSyncQueue.add).toHaveBeenCalledWith(
         NORDIGEN_SYNC_JOB,
-        { userId: 'user-3' },
+        { keyId: 'key-3' },
         expect.any(Object),
       );
     });
 
-    it('should handle empty user list gracefully', async () => {
-      mockUsersService.getUsersWithNordigenCredentials.mockResolvedValue([]);
+    it('should handle empty keys list gracefully', async () => {
+      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([]);
 
       await scheduler.scheduleDailySync();
 
-      expect(mockUsersService.getUsersWithNordigenCredentials).toHaveBeenCalled();
+      expect(mockNordigenKeysService.findAllKeysWithAccounts).toHaveBeenCalled();
       expect(mockSyncQueue.add).not.toHaveBeenCalled();
     });
 
     it('should handle errors gracefully', async () => {
-      mockUsersService.getUsersWithNordigenCredentials.mockRejectedValue(
+      mockNordigenKeysService.findAllKeysWithAccounts.mockRejectedValue(
         new Error('Database error'),
       );
 

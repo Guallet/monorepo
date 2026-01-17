@@ -9,7 +9,6 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,10 +18,6 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import { UserDto } from './dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto';
-import {
-  NordigenCredentialsDto,
-  NordigenCredentialsRequest,
-} from './dto/nordigen-credentials.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -98,38 +93,5 @@ export class UsersController {
     });
 
     return UserSettingsDto.fromDomain(userEntity);
-  }
-
-  @Get('nordigen-credentials')
-  async getNordigenCredentials(
-    @RequestUser() user: UserPrincipal,
-  ): Promise<NordigenCredentialsDto> {
-    const userEntity = await this.usersService.findUserData(user.id);
-    if (!userEntity) {
-      throw new NotFoundException('User not found');
-    }
-    return NordigenCredentialsDto.fromDomain(userEntity);
-  }
-
-  @Put('nordigen-credentials')
-  async updateNordigenCredentials(
-    @RequestUser() user: UserPrincipal,
-    @Body() requestDto: NordigenCredentialsRequest,
-  ): Promise<NordigenCredentialsDto> {
-    const userEntity = await this.usersService.updateNordigenCredentials({
-      userId: user.id,
-      secretId: requestDto.secret_id,
-      secretKey: requestDto.secret_key,
-    });
-
-    return NordigenCredentialsDto.fromDomain(userEntity);
-  }
-
-  @Delete('nordigen-credentials')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteNordigenCredentials(
-    @RequestUser() user: UserPrincipal,
-  ): Promise<void> {
-    await this.usersService.deleteNordigenCredentials(user.id);
   }
 }

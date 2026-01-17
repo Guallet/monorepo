@@ -7,6 +7,7 @@ import { Transaction } from '../transactions/entities/transaction.entity';
 import { NordigenUserService } from '../nordigen/nordigen-user.service';
 import { EmailService } from '../email/email.service';
 import { UsersService } from '../users/users.service';
+import { NordigenKeysService } from '../nordigen-keys/nordigen-keys.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { Job } from 'bullmq';
 
@@ -15,6 +16,7 @@ describe('NordigenSyncProcessor', () => {
   let nordigenUserService: jest.Mocked<NordigenUserService>;
   let emailService: jest.Mocked<EmailService>;
   let usersService: jest.Mocked<UsersService>;
+  let nordigenKeysService: jest.Mocked<NordigenKeysService>;
   let nordigenAccountsRepository: jest.Mocked<any>;
   let accountsRepository: jest.Mocked<any>;
 
@@ -51,6 +53,11 @@ describe('NordigenSyncProcessor', () => {
     findUserData: jest.fn(),
   };
 
+  const mockNordigenKeysService = {
+    findAllKeysWithAccounts: jest.fn(),
+    updateSyncStatus: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -79,6 +86,10 @@ describe('NordigenSyncProcessor', () => {
           provide: UsersService,
           useValue: mockUsersService,
         },
+        {
+          provide: NordigenKeysService,
+          useValue: mockNordigenKeysService,
+        },
       ],
     }).compile();
 
@@ -86,6 +97,7 @@ describe('NordigenSyncProcessor', () => {
     nordigenUserService = module.get(NordigenUserService);
     emailService = module.get(EmailService);
     usersService = module.get(UsersService);
+    nordigenKeysService = module.get(NordigenKeysService);
     nordigenAccountsRepository = module.get(
       getRepositoryToken(NordigenAccount),
     );
@@ -99,49 +111,61 @@ describe('NordigenSyncProcessor', () => {
   });
 
   describe('process', () => {
-    it('should return early if user has no Nordigen credentials', async () => {
+    it('should return early if key has no linked accounts', async () => {
       const mockJob = {
         id: 'job-1',
-        data: { userId: 'user-123' },
-      } as Job<{ userId: string }>;
+        data: { keyId: 'key-123' },
+      } as Job<{ keyId: string }>;
 
-      const mockUser = {
-        id: 'user-123',
-        email: 'test@example.com',
-        name: 'Test User',
-        nordigen_secret_id: null,
-        nordigen_secret_key: null,
+      const mockKey = {
+        id: 'key-123',
+        user_id: 'user-123',
+        secret_id: 'secret-id',
+        secret_key: 'secret-key',
+        linkedAccounts: [],
       };
 
-      mockUsersService.findUserData.mockResolvedValue(mockUser);
+      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([
+        mockKey,
+      ]);
 
       const result = await processor.process(mockJob);
 
       expect(result.accountsSynced).toBe(0);
-      expect(result.errors).toContain('No Nordigen credentials found');
+      expect(result.errors).toHaveLength(0);
     });
 
     it('should throw error and send email if credentials are invalid', async () => {
       const mockJob = {
         id: 'job-1',
-        data: { userId: 'user-123' },
-      } as Job<{ userId: string }>;
+        data: { keyId: 'key-123' },
+      } as Job<{ keyId: string }>;
+
+      const mockKey = {
+        id: 'key-123',
+        user_id: 'user-123',
+        secret_id: 'invalid-id',
+        secret_key: 'invalid-key',
+        linkedAccounts: [{ account_id: 'account-1' }],
+      };
 
       const mockUser = {
         id: 'user-123',
         email: 'test@example.com',
         name: 'Test User',
-        nordigen_secret_id: 'invalid-id',
-        nordigen_secret_key: 'invalid-key',
       };
 
-      mockUsersService.findUserData.mockResolvedValue(mockUser);
+      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([
+        mockKey,
+      ]);
       mockNordigenUserService.getAccessToken.mockRejectedValue(
-        new UnauthorizedException('Invalid credentials'),
+        new Error('Invalid credentials'),
       );
+      mockUsersService.findUserData.mockResolvedValue(mockUser);
       mockEmailService.sendNordigenCredentialsErrorEmail.mockResolvedValue(
         undefined,
       );
+      mockNordigenKeysService.updateSyncStatus.mockResolvedValue(undefined);
 
       await expect(processor.process(mockJob)).rejects.toThrow(
         UnauthorizedException,
@@ -158,21 +182,16 @@ describe('NordigenSyncProcessor', () => {
     it('should successfully sync accounts', async () => {
       const mockJob = {
         id: 'job-1',
-        data: { userId: 'user-123' },
-      } as Job<{ userId: string }>;
+        data: { keyId: 'key-123' },
+      } as Job<{ keyId: string }>;
 
-      const mockUser = {
-        id: 'user-123',
-        email: 'test@example.com',
-        name: 'Test User',
-        nordigen_secret_id: 'valid-id',
-        nordigen_secret_key: 'valid-key',
+      const mockKey = {
+        id: 'key-123',
+        user_id: 'user-123',
+        secret_id: 'valid-id',
+        secret_key: 'valid-key',
+        linkedAccounts: [{ account_id: 'account-1' }],
       };
-
-      const mockAccounts = [
-        { id: 'account-1', user_id: 'user-123' },
-        { id: 'account-2', user_id: 'user-123' },
-      ];
 
       const mockNordigenAccounts = [
         {
@@ -187,9 +206,10 @@ describe('NordigenSyncProcessor', () => {
         balance: 100,
       };
 
-      mockUsersService.findUserData.mockResolvedValue(mockUser);
+      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue([
+        mockKey,
+      ]);
       mockNordigenUserService.getAccessToken.mockResolvedValue('test-token');
-      mockAccountsRepository.find.mockResolvedValue(mockAccounts);
 
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
@@ -218,6 +238,7 @@ describe('NordigenSyncProcessor', () => {
       mockNordigenAccountsRepository.save.mockResolvedValue({});
       mockAccountsRepository.save.mockResolvedValue({});
       mockTransactionsRepository.upsert.mockResolvedValue({});
+      mockNordigenKeysService.updateSyncStatus.mockResolvedValue(undefined);
 
       const result = await processor.process(mockJob);
 

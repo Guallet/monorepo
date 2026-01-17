@@ -16,7 +16,6 @@ describe('UsersService', () => {
     save: jest.fn(),
     remove: jest.fn(),
     upsert: jest.fn(),
-    createQueryBuilder: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -371,127 +370,6 @@ describe('UsersService', () => {
 
         expect(result.date_format).toBe(format);
       }
-    });
-  });
-
-  describe('updateNordigenCredentials', () => {
-    it('should update Nordigen credentials', async () => {
-      const credentialsData = {
-        userId: 'user-123',
-        secretId: 'secret-id-123',
-        secretKey: 'secret-key-456',
-      };
-
-      const mockUser: Partial<User> = {
-        id: credentialsData.userId,
-        nordigen_secret_id: null as unknown as string,
-        nordigen_secret_key: null as unknown as string,
-      };
-
-      const updatedUser: Partial<User> = {
-        ...mockUser,
-        nordigen_secret_id: credentialsData.secretId,
-        nordigen_secret_key: credentialsData.secretKey,
-      };
-
-      mockUserRepository.findOne.mockResolvedValue(mockUser);
-      mockUserRepository.save.mockResolvedValue(updatedUser);
-
-      const result = await service.updateNordigenCredentials(credentialsData);
-
-      expect(result.nordigen_secret_id).toBe(credentialsData.secretId);
-      expect(result.nordigen_secret_key).toBe(credentialsData.secretKey);
-      expect(mockUserRepository.save).toHaveBeenCalled();
-    });
-
-    it('should throw NotFoundException when user not found', async () => {
-      const credentialsData = {
-        userId: 'non-existent',
-        secretId: 'secret-id-123',
-        secretKey: 'secret-key-456',
-      };
-
-      mockUserRepository.findOne.mockResolvedValue(null);
-
-      await expect(
-        service.updateNordigenCredentials(credentialsData),
-      ).rejects.toThrow(NotFoundException);
-    });
-  });
-
-  describe('deleteNordigenCredentials', () => {
-    it('should delete Nordigen credentials', async () => {
-      const userId = 'user-123';
-      const mockUser: Partial<User> = {
-        id: userId,
-        nordigen_secret_id: 'secret-id-123',
-        nordigen_secret_key: 'secret-key-456',
-      };
-
-      const updatedUser: Partial<User> = {
-        ...mockUser,
-        nordigen_secret_id: null,
-        nordigen_secret_key: null,
-      };
-
-      mockUserRepository.findOne.mockResolvedValue(mockUser);
-      mockUserRepository.save.mockResolvedValue(updatedUser);
-
-      const result = await service.deleteNordigenCredentials(userId);
-
-      expect(result.nordigen_secret_id).toBeNull();
-      expect(result.nordigen_secret_key).toBeNull();
-      expect(mockUserRepository.save).toHaveBeenCalled();
-    });
-
-    it('should throw NotFoundException when user not found', async () => {
-      const userId = 'non-existent';
-
-      mockUserRepository.findOne.mockResolvedValue(null);
-
-      await expect(service.deleteNordigenCredentials(userId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-  });
-
-  describe('getUsersWithNordigenCredentials', () => {
-    it('should return users with Nordigen credentials', async () => {
-      const mockUsers: Partial<User>[] = [
-        {
-          id: 'user-1',
-          nordigen_secret_id: 'secret-1',
-          nordigen_secret_key: 'key-1',
-        },
-        {
-          id: 'user-2',
-          nordigen_secret_id: 'secret-2',
-          nordigen_secret_key: 'key-2',
-        },
-      ];
-
-      const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getMany: jest.fn().mockResolvedValue(mockUsers),
-      };
-
-      mockUserRepository.createQueryBuilder = jest
-        .fn()
-        .mockReturnValue(mockQueryBuilder);
-
-      const result = await service.getUsersWithNordigenCredentials();
-
-      expect(result).toEqual(mockUsers);
-      expect(mockUserRepository.createQueryBuilder).toHaveBeenCalledWith(
-        'user',
-      );
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        'user.nordigen_secret_id IS NOT NULL',
-      );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        'user.nordigen_secret_key IS NOT NULL',
-      );
     });
   });
 });

@@ -34,13 +34,3 @@ export const ALLOWED_DATE_FORMATS = [
 ] as const;
 
 export type DateFormat = (typeof ALLOWED_DATE_FORMATS)[number];
-
-export interface NordigenCredentials {
-  has_credentials: boolean;
-  secret_id_masked: string | null;
-}
-
-export type UpdateNordigenCredentialsRequest = {
-  secret_id: string;
-  secret_key: string;
-};
