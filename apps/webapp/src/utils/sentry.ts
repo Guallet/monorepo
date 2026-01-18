@@ -1,3 +1,4 @@
+import { router } from '@/router';
 import * as Sentry from '@sentry/react';
 
 // Initialize Sentry
@@ -8,9 +9,14 @@ Sentry.init({
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration(),
+    Sentry.tanstackRouterBrowserTracingIntegration(router),
   ],
   // Performance Monitoring
-  tracesSampleRate: 1.0, // Capture 10% of transactions
+  // For finer control of sent transactions you can adjust this value, or use tracesSampler
+  tracesSampleRate: 1.0,
+  // Set `tracePropagationTargets` to control for which URLs trace propagation should be enabled
+  tracePropagationTargets: ['localhost', /^https:\/\/app\.guallet\.io/],
+
   // Session Replay
   replaysSessionSampleRate: 0.1, // Sample 10% of sessions
   replaysOnErrorSampleRate: 1.0, // Always record sessions with errors
