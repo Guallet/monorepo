@@ -17,6 +17,7 @@ import {
   Group,
   Button,
 } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown } from '@tabler/icons-react';
@@ -36,6 +37,7 @@ const editSubscriptionFormDataSchema = z.object({
   currency: z.string().default('GBP'),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
+  startDate: z.date({ required_error: 'Start date is required' }),
   imageUrl: z.string().optional(),
 });
 type EditSubscriptionFormData = z.infer<typeof editSubscriptionFormDataSchema>;
@@ -70,6 +72,7 @@ export function EditSubscriptionScreen({
       currency: subscription?.currency ?? defaultCurrency,
       cadence: subscription?.cadence ?? RecurrenceCadence.MONTHLY,
       type: subscription?.type ?? RecurringPaymentType.SUBSCRIPTION,
+      startDate: subscription?.startDate ? new Date(subscription.startDate) : new Date(),
       imageUrl: subscription?.imageUrl ?? '',
     },
     validate: zod4Resolver(editSubscriptionFormDataSchema),
@@ -85,6 +88,7 @@ export function EditSubscriptionScreen({
         currency: subscription.currency,
         cadence: subscription.cadence,
         type: subscription.type,
+        startDate: new Date(subscription.startDate),
         imageUrl: subscription.imageUrl ?? '',
       });
     }
@@ -98,6 +102,7 @@ export function EditSubscriptionScreen({
       currency: data.currency,
       cadence: data.cadence,
       type: data.type,
+      startDate: data.startDate.toISOString().split('T')[0],
       imageUrl: data.imageUrl || undefined,
     };
 
@@ -182,6 +187,14 @@ export function EditSubscriptionScreen({
                 leftSection={currency.symbol}
                 decimalScale={currency.decimalPlaces}
                 min={0}
+              />
+              <DateInput
+                key={form.key('startDate')}
+                {...form.getInputProps('startDate')}
+                label="Start Date"
+                required
+                description="The date when this payment starts or first occurs"
+                placeholder="Select a date"
               />
               <TextInput
                 key={form.key('imageUrl')}

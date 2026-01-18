@@ -176,6 +176,12 @@ export function SubscriptionDetailsScreen({
               <Text fw={500}>{getCadenceLabel(subscription.cadence)}</Text>
             </Group>
             <Group justify="space-between">
+              <Text c="dimmed">Start Date</Text>
+              <Text fw={500}>
+                {new Date(subscription.startDate).toLocaleDateString()}
+              </Text>
+            </Group>
+            <Group justify="space-between">
               <Text c="dimmed">Currency</Text>
               <Text fw={500}>{subscription.currency}</Text>
             </Group>

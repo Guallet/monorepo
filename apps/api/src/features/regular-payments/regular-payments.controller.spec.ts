@@ -61,6 +61,7 @@ describe('RegularPaymentsController', () => {
           currency: 'GBP',
           type: RecurringPaymentType.SUBSCRIPTION,
           cadence: RecurrenceCadence.MONTHLY,
+          startDate: new Date('2024-01-15'),
           imageUrl: 'https://example.com/netflix.png',
         },
         {
@@ -71,6 +72,7 @@ describe('RegularPaymentsController', () => {
           currency: 'GBP',
           type: RecurringPaymentType.SUBSCRIPTION,
           cadence: RecurrenceCadence.MONTHLY,
+          startDate: new Date('2024-01-10'),
         },
       ];
 
@@ -112,6 +114,7 @@ describe('RegularPaymentsController', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentsService.findUserRegularPayment.mockResolvedValue(
@@ -140,13 +143,20 @@ describe('RegularPaymentsController', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: '2024-01-15',
         imageUrl: 'https://example.com/netflix.png',
       };
 
       const mockPayment: Partial<RegularPayment> = {
         id: 'payment-1',
         user_id: mockUser.id,
-        ...createDto,
+        name: createDto.name,
+        amount: createDto.amount,
+        currency: createDto.currency,
+        type: createDto.type,
+        cadence: createDto.cadence,
+        startDate: createDto.startDate ? new Date(createDto.startDate) : new Date(),
+        imageUrl: createDto.imageUrl,
       };
 
       mockRegularPaymentsService.create.mockResolvedValue(mockPayment);
@@ -169,13 +179,20 @@ describe('RegularPaymentsController', () => {
         currency: 'GBP',
         type: RecurringPaymentType.REGULAR_PAYMENT,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: '2024-01-01',
         categoryId: 'category-1',
       };
 
       const mockPayment: Partial<RegularPayment> = {
         id: 'payment-1',
         user_id: mockUser.id,
-        ...createDto,
+        name: createDto.name,
+        amount: createDto.amount,
+        currency: createDto.currency,
+        type: createDto.type,
+        cadence: createDto.cadence,
+        startDate: createDto.startDate ? new Date(createDto.startDate) : new Date(),
+        categoryId: createDto.categoryId,
       };
 
       mockRegularPaymentsService.create.mockResolvedValue(mockPayment);
@@ -207,6 +224,7 @@ describe('RegularPaymentsController', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentsService.update.mockResolvedValue(mockUpdatedPayment);
@@ -237,6 +255,7 @@ describe('RegularPaymentsController', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentsService.update.mockResolvedValue(mockUpdatedPayment);
@@ -264,6 +283,7 @@ describe('RegularPaymentsController', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentsService.remove.mockResolvedValue(mockDeletedPayment);
