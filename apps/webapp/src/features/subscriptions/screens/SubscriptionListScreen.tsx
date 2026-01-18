@@ -20,6 +20,7 @@ import { useMemo } from 'react';
 import { IconPlus, IconChevronRight } from '@tabler/icons-react';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
 function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
   switch (type) {
@@ -77,6 +78,75 @@ function formatCurrency(amount: number, currency: string): string {
   }).format(amount);
 }
 
+function calculateNextPaymentDate(
+  startDate: string | undefined,
+  cadence: RecurrenceCadence,
+): Date | null {
+  if (!startDate) return null;
+
+  const start = dayjs(startDate);
+  const today = dayjs().startOf('day');
+
+  if (start.isAfter(today)) {
+    return start.toDate();
+  }
+
+  let next = start;
+  while (next.isBefore(today) || next.isSame(today, 'day')) {
+    switch (cadence) {
+      case RecurrenceCadence.WEEKLY:
+        next = next.add(1, 'week');
+        break;
+      case RecurrenceCadence.BIWEEKLY:
+        next = next.add(2, 'weeks');
+        break;
+      case RecurrenceCadence.MONTHLY:
+        next = next.add(1, 'month');
+        break;
+      case RecurrenceCadence.QUARTERLY:
+        next = next.add(3, 'months');
+        break;
+      case RecurrenceCadence.YEARLY:
+        next = next.add(1, 'year');
+        break;
+    }
+  }
+
+  return next.toDate();
+}
+
+function formatNextPaymentDate(
+  nextDate: Date | null,
+  t: (key: string, options?: { count?: number }) => string,
+): {
+  formatted: string;
+  message: string | null;
+} {
+  if (!nextDate) {
+    return { formatted: '', message: null };
+  }
+
+  const today = dayjs().startOf('day');
+  const next = dayjs(nextDate).startOf('day');
+  const daysUntil = next.diff(today, 'days');
+
+  let message: string | null = null;
+
+  if (daysUntil === 0) {
+    message = t('screens.subscriptions.list.nextPayment.today');
+  } else if (daysUntil === 1) {
+    message = t('screens.subscriptions.list.nextPayment.tomorrow');
+  } else if (daysUntil > 1 && daysUntil <= 7) {
+    message = t('screens.subscriptions.list.nextPayment.inDays', {
+      count: daysUntil,
+    });
+  }
+
+  const formatted = next.format('DD-MM-YYYY');
+
+  return { formatted, message };
+}
+
 interface SubscriptionRowProps {
   subscription: SubscriptionDto;
   onClick: () => void;
@@ -87,6 +157,18 @@ function SubscriptionRow({
   onClick,
 }: Readonly<SubscriptionRowProps>) {
   const { t } = useTranslation();
+
+  const nextPaymentDate = useMemo(
+    () =>
+      calculateNextPaymentDate(subscription.startDate, subscription.cadence),
+    [subscription.startDate, subscription.cadence],
+  );
+
+  const { formatted, message } = useMemo(
+    () => formatNextPaymentDate(nextPaymentDate, t),
+    [nextPaymentDate, t],
+  );
+
   return (
     <Card
       withBorder
@@ -114,6 +196,21 @@ function SubscriptionRow({
                 {getCadenceLabel(subscription.cadence, t)}
               </Text>
             </Group>
+            {nextPaymentDate && (
+              <Group gap="xs">
+                <Text size="xs">
+                  {t('screens.subscriptions.list.nextPayment.label')}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {formatted}
+                </Text>
+                {message && (
+                  <Badge size="sm" variant="light" color="blue">
+                    {message}
+                  </Badge>
+                )}
+              </Group>
+            )}
           </Stack>
         </Group>
         <Group>
