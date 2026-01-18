@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
@@ -21,8 +22,7 @@ export default defineConfig({
   plugins: [
     tanstackRouter({
       autoCodeSplitting: true,
-    }),
-    // React Compiler is enabled to automatically optimize React components
+    }), // React Compiler is enabled to automatically optimize React components
     // Docs: https://react.dev/learn/react-compiler
     react({
       babel: {
@@ -37,11 +37,19 @@ export default defineConfig({
         ],
       },
     }),
+    sentryVitePlugin({
+      org: 'guallet',
+      project: 'webapp',
+    }),
   ],
 
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+
+  build: {
+    sourcemap: true,
   },
 });
