@@ -1,27 +1,31 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import * as Sentry from "@sentry/react";
-import App from "./App";
-import "./index.css";
+import './utils/sentry';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import * as Sentry from '@sentry/react';
+import './index.css';
 
-// Initialize Sentry
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  enabled: !import.meta.env.DEV, // Disabled in dev mode
-  debug: import.meta.env.DEV,
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-  // Performance Monitoring
-  tracesSampleRate: 0.1, // Capture 10% of transactions
-  // Session Replay
-  replaysSessionSampleRate: 0.1, // Sample 10% of sessions
-  replaysOnErrorSampleRate: 1.0, // Always record sessions with errors
+// Original implementation
+// ReactDOM.createRoot(document.getElementById("root")!).render(
+//   <React.StrictMode>
+//     <App />
+//   </React.StrictMode>
+// );
+// End Original implementation
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container!, {
+  // Callback called when an error is thrown and not caught by an ErrorBoundary.
+  onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
+    console.warn('Uncaught error', error, errorInfo.componentStack);
+  }),
+  // Callback called when React catches an error in an ErrorBoundary.
+  onCaughtError: Sentry.reactErrorHandler(),
+  // Callback called when React automatically recovers from errors.
+  onRecoverableError: Sentry.reactErrorHandler(),
 });
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
