@@ -1,4 +1,4 @@
-import { SearchBoxInput } from "@guallet/ui-react";
+import { SearchBoxInput } from '@guallet/ui-react';
 import {
   Text,
   Stack,
@@ -9,17 +9,17 @@ import {
   TreeNodeData,
   ActionIcon,
   Tooltip,
-} from "@mantine/core";
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useCategories } from "@guallet/api-react";
-import { CategoryDto } from "@guallet/api-client";
+} from '@mantine/core';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCategories } from '@guallet/api-react';
+import { CategoryDto } from '@guallet/api-client';
 import {
   IconChevronDown,
   IconChevronsDown,
   IconChevronsUp,
-} from "@tabler/icons-react";
-import { CategoryIcon } from "@/components/Categories/CategoryIcon";
+} from '@tabler/icons-react';
+import { CategoryIcon } from '@/components/Categories/CategoryIcon';
 
 interface CategoryPickerModalProps {
   selectedCategory: CategoryDto | null;
@@ -32,7 +32,7 @@ function mapCategoriesToTreeData(categories: CategoryDto[]): TreeNodeData[] {
 
   const data: TreeNodeData[] = rootCategories.map((category) => {
     const subcategories = categories.filter(
-      (cat) => cat.parentId === category.id
+      (cat) => cat.parentId === category.id,
     );
 
     return {
@@ -50,13 +50,12 @@ function mapCategoriesToTreeData(categories: CategoryDto[]): TreeNodeData[] {
 }
 
 export function CategoryPickerModal({
-  selectedCategory,
   onSelectionChanged,
   close,
 }: Readonly<CategoryPickerModalProps>) {
   const { t } = useTranslation();
   const { categories } = useCategories();
-  const [filterQuery, setFilterQuery] = useState("");
+  const [filterQuery, setFilterQuery] = useState('');
 
   const onCategorySelected = (category: CategoryDto) => {
     onSelectionChanged(category);
@@ -64,7 +63,7 @@ export function CategoryPickerModal({
   };
 
   const filteredData = useMemo(() => {
-    if (filterQuery.trim() === "") {
+    if (filterQuery.trim() === '') {
       return mapCategoriesToTreeData(categories);
     } else {
       const filteredCategories = categories.filter((item: CategoryDto) => {
@@ -82,8 +81,9 @@ export function CategoryPickerModal({
               return null;
             })
             .filter(
-              (item): item is CategoryDto => item !== null && item !== undefined
-            )
+              (item): item is CategoryDto =>
+                item !== null && item !== undefined,
+            ),
         ),
       ];
 
@@ -98,7 +98,7 @@ export function CategoryPickerModal({
   const tree = useTree({
     initialExpandedState: getTreeExpandedState(
       mapCategoriesToTreeData(categories),
-      "*"
+      '*',
     ),
   });
 
@@ -108,8 +108,8 @@ export function CategoryPickerModal({
         <SearchBoxInput
           style={{ flexGrow: 1 }}
           placeholder={t(
-            "components.categoryPicker.modal.searchBox.placeholder",
-            "Search categories"
+            'components.categoryPicker.modal.searchBox.placeholder',
+            'Search categories',
           )}
           query={filterQuery}
           debounceWait={350}
@@ -117,8 +117,8 @@ export function CategoryPickerModal({
         />
         <Tooltip
           label={t(
-            "components.categoryPicker.modal.expandAllButton.label",
-            "Expand all"
+            'components.categoryPicker.modal.expandAllButton.label',
+            'Expand all',
           )}
         >
           <ActionIcon
@@ -133,8 +133,8 @@ export function CategoryPickerModal({
 
         <Tooltip
           label={t(
-            "components.categoryPicker.modal.collapseAllButton.label",
-            "Collapse all"
+            'components.categoryPicker.modal.collapseAllButton.label',
+            'Collapse all',
           )}
         >
           <ActionIcon
@@ -151,8 +151,8 @@ export function CategoryPickerModal({
       {filteredData.length === 0 && (
         <Text c="dimmed" size="sm">
           {t(
-            "components.categoryPicker.modal.searchBox.emptyResults",
-            "No categories found"
+            'components.categoryPicker.modal.searchBox.emptyResults',
+            'No categories found',
           )}
         </Text>
       )}
@@ -172,7 +172,7 @@ export function CategoryPickerModal({
                 tree.toggleExpanded(node.value);
 
                 const selectedCategory = categories.find(
-                  (cat) => cat.id === node.value
+                  (cat) => cat.id === node.value,
                 );
 
                 if (selectedCategory) {
@@ -193,7 +193,7 @@ export function CategoryPickerModal({
                 <IconChevronDown
                   size={14}
                   style={{
-                    transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                    transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
                   }}
                 />
               )}

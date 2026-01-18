@@ -12,14 +12,13 @@ function DeleteAccountConfirmationPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true);
     logout()
       .then(() => {})
       .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [logout]);
 
   if (isLoading) {
     return (

@@ -1,11 +1,11 @@
-import { useUserSettings, useUserSettingsMutations } from "@guallet/api-react";
-import { IconChevronRight } from "@tabler/icons-react";
-import { Modal, Stack } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { CurrencyPickerModal } from "@/components/CurrencyPicker/CurrencyPickerModal";
-import { Currency } from "@guallet/money";
-import { notifications } from "@mantine/notifications";
-import { BaseRow } from "@guallet/ui-react/";
+import { useUserSettings, useUserSettingsMutations } from '@guallet/api-react';
+import { IconChevronRight } from '@tabler/icons-react';
+import { Modal, Stack } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { CurrencyPickerModal } from '@/components/CurrencyPicker/CurrencyPickerModal';
+import { Currency } from '@guallet/money';
+import { notifications } from '@mantine/notifications';
+import { BaseRow } from '@guallet/ui-react/';
 
 export function DefaultCurrencyRow() {
   const { settings } = useUserSettings();
@@ -21,19 +21,19 @@ export function DefaultCurrencyRow() {
       {
         onSuccess: () => {
           notifications.show({
-            title: "Success",
-            message: "Default currency updated successfully",
-            color: "green",
+            title: 'Success',
+            message: 'Default currency updated successfully',
+            color: 'green',
           });
         },
-        onError: (error) => {
+        onError: () => {
           notifications.show({
-            title: "Error",
-            message: "Failed to update default currency",
-            color: "red",
+            title: 'Error',
+            message: 'Failed to update default currency',
+            color: 'red',
           });
         },
-      }
+      },
     );
   };
 
@@ -63,7 +63,7 @@ export function DefaultCurrencyRow() {
       </Modal>
       <BaseRow
         label="Default Currency"
-        value={settings?.currencies.default_currency ?? ""}
+        value={settings?.currencies.default_currency ?? ''}
         rightSection={<IconChevronRight />}
         onClick={() => {
           openModal();

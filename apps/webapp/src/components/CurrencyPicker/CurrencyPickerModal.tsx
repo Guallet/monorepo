@@ -1,5 +1,5 @@
-import { Currency, ISO4217Currencies } from "@guallet/money";
-import { SearchBoxInput } from "@guallet/ui-react";
+import { Currency, ISO4217Currencies } from '@guallet/money';
+import { SearchBoxInput } from '@guallet/ui-react';
 import {
   ScrollArea,
   Group,
@@ -8,10 +8,10 @@ import {
   Button,
   Text,
   Flex,
-} from "@mantine/core";
-import { useState, useEffect } from "react";
-import classes from "./CurrencyPicker.module.css";
-import { useIsMobile } from "@/hooks/useIsMobile";
+} from '@mantine/core';
+import { useMemo, useState } from 'react';
+import classes from './CurrencyPicker.module.css';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const currencyCodes = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -29,19 +29,15 @@ export function CurrencyPickerModal({
   onCancel,
 }: Readonly<CurrencyPickerModalProps>) {
   const isMobile = useIsMobile();
-  const [query, setQuery] = useState("");
-  const [filteredCurrencies, setFilteredCurrencies] =
-    useState<Currency[]>(currencyCodes);
+  const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    if (query === "" || query === null || query === undefined) {
-      setFilteredCurrencies(currencyCodes);
-    } else {
-      const filtered = currencyCodes.filter((currency) =>
-        JSON.stringify(currency).toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredCurrencies(filtered);
+  const filteredCurrencies = useMemo(() => {
+    if (query === '' || query === null || query === undefined) {
+      return currencyCodes;
     }
+    return currencyCodes.filter((currency) =>
+      JSON.stringify(currency).toLowerCase().includes(query.toLowerCase()),
+    );
   }, [query]);
 
   return (
@@ -51,7 +47,7 @@ export function CurrencyPickerModal({
       direction="column"
       gap="sm"
       style={{
-        height: isMobile ? "calc(100dvh - 80px)" : "400px",
+        height: isMobile ? 'calc(100dvh - 80px)' : '400px',
       }}
     >
       <SearchBoxInput

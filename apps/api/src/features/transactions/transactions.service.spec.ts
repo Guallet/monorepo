@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { AccountsService } from '../accounts/accounts.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { IsNull } from 'typeorm';
 
 describe('TransactionsService', () => {
   let service: TransactionsService;
@@ -79,7 +80,7 @@ describe('TransactionsService', () => {
   });
 
   describe('getUserTransactionsInbox', () => {
-    it('should return uncategorized transactions', async () => {
+    it('should return uncategorized transactions with pagination', async () => {
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'trans-1',
@@ -92,11 +93,80 @@ describe('TransactionsService', () => {
 
       const result = await service.getUserTransactionsInbox({
         userId: 'user-123',
+        page: 1,
+        pageSize: 50,
       });
 
       expect(result).toBeDefined();
       expect(result.length).toBe(1);
-      expect(mockTransactionRepository.find).toHaveBeenCalled();
+      expect(mockTransactionRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          take: 50,
+          skip: 0,
+        }),
+      );
+    });
+
+    it('should calculate correct offset for pagination', async () => {
+      mockTransactionRepository.find.mockResolvedValue([]);
+
+      await service.getUserTransactionsInbox({
+        userId: 'user-123',
+        page: 2,
+        pageSize: 20,
+      });
+
+      expect(mockTransactionRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 20, // (2-1) * 20
+          take: 20,
+        }),
+      );
+    });
+
+    it('should use default pagination values when not provided', async () => {
+      mockTransactionRepository.find.mockResolvedValue([]);
+
+      await service.getUserTransactionsInbox({
+        userId: 'user-123',
+      });
+
+      expect(mockTransactionRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 0,
+          take: 50,
+        }),
+      );
+    });
+
+    it('should throw BadRequestException for negative offset', async () => {
+      await expect(
+        service.getUserTransactionsInbox({
+          userId: 'user-123',
+          page: 0,
+          pageSize: 50,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('getUserTransactionsInboxCount', () => {
+    it('should return count of inbox transactions', async () => {
+      mockTransactionRepository.count.mockResolvedValue(5);
+
+      const result = await service.getUserTransactionsInboxCount({
+        userId: 'user-123',
+      });
+
+      expect(result).toBe(5);
+      expect(mockTransactionRepository.count).toHaveBeenCalledWith({
+        where: {
+          account: { user_id: 'user-123' },
+          category: {
+            id: IsNull(),
+          },
+        },
+      });
     });
   });
 
