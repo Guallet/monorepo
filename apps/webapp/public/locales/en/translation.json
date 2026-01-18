@@ -328,8 +328,8 @@
         "nextPayment": {
           "today": "Today",
           "tomorrow": "Tomorrow",
-          "inDays_one": "",
-          "inDays_other": "",
+          "inDays_one": "In {{count}} day",
+          "inDays_other": "In {{count}} days",
           "label": "Next payment:"
         },
         "title": "Subscriptions & Regular Payments",
