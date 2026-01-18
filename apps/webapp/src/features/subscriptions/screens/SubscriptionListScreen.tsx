@@ -160,7 +160,9 @@ function SubscriptionRow({
 
   const nextPaymentDate = useMemo(
     () =>
-      calculateNextPaymentDate(subscription.startDate, subscription.cadence),
+      subscription.startDate
+        ? calculateNextPaymentDate(subscription.startDate, subscription.cadence)
+        : null,
     [subscription.startDate, subscription.cadence],
   );
 
