@@ -325,6 +325,13 @@
           "yearly": "Yearly",
           "unknown": "Unknown"
         },
+        "nextPayment": {
+          "today": "Today",
+          "tomorrow": "Tomorrow",
+          "inDays_one": "In {{count}} day",
+          "inDays_other": "In {{count}} days",
+          "label": "Next payment:"
+        },
         "title": "Subscriptions & Regular Payments",
         "estimatedMonthly": "Estimated monthly:",
         "addButton": {

@@ -1,29 +1,17 @@
-import { TextInput, Button, Group, Stack, Title, Text } from "@mantine/core";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { TextInput, Button, Group, Stack, Title, Text } from '@mantine/core';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/onboarding/waiting_list")({
+export const Route = createFileRoute('/onboarding/waiting_list')({
   component: SubscribeWaitingListPage,
   loader: loader,
 });
 
-type ActionData = {
-  rawError: unknown;
-  statusCode: number;
-  error: string;
-  message: string;
-};
-
 function loader() {
   return {
-    name: "",
-    email: "",
+    name: '',
+    email: '',
   };
 }
-
-type FormData = {
-  name: string;
-  email: string;
-};
 
 // export const action: ActionFunction = async ({ request, params }) => {
 //   const formData = await request.formData();
@@ -73,7 +61,7 @@ function SubscribeWaitingListPage() {
           <Button
             variant="outline"
             onClick={() => {
-              navigate({ to: "/logout", replace: true });
+              navigate({ to: '/logout', replace: true });
             }}
           >
             Cancel

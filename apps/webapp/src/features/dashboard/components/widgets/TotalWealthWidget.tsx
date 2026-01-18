@@ -1,7 +1,8 @@
 import { useAccounts } from "@guallet/api-react";
 import { WidgetCard } from "./WidgetCard";
 import { Money } from "@guallet/money";
-import { Loader, Stack, Text } from "@mantine/core";
+import { Loader, Stack, Text, Group, Box, useMantineTheme, Center } from "@mantine/core";
+import { IconWallet, IconTrendingUp } from "@tabler/icons-react";
 
 function getArraySum(array: number[]): number {
   let sum = 0;
@@ -13,6 +14,7 @@ function getArraySum(array: number[]): number {
 
 export function TotalWealthWidget() {
   const { accounts, isLoading } = useAccounts();
+  const theme = useMantineTheme();
 
   const currencies = new Set(
     accounts.map((account) => account.balance.currency)
@@ -32,24 +34,40 @@ export function TotalWealthWidget() {
   });
 
   return (
-    <WidgetCard title="Total Wealth">
+    <WidgetCard 
+      title="Total Wealth" 
+      icon={<IconWallet size={20} />}
+    >
       {isLoading ? (
-        <Loader />
+        <Center h={100}>
+          <Loader size="md" />
+        </Center>
       ) : (
-        <Stack>
+        <Stack gap="md" align="center" justify="center" h="100%">
           {balances.map((balance) => {
+            const isPositive = balance.amount >= 0;
             return (
-              <Text
-                key={balance.currency.code}
-                style={{
-                  fontWeight: "500",
-                  fontSize: 20,
-                  alignSelf: "center",
-                  marginBottom: 10,
-                }}
-              >
-                {balance.format()}
-              </Text>
+              <Box key={balance.currency.code} style={{ textAlign: 'center', width: '100%' }}>
+                <Group gap="xs" justify="center" mb="xs">
+                  <IconTrendingUp 
+                    size={24} 
+                    style={{ 
+                      color: isPositive ? theme.colors.teal[6] : theme.colors.red[6]
+                    }} 
+                  />
+                </Group>
+                <Text
+                  size="xl"
+                  fw={700}
+                  c={isPositive ? "teal" : "red"}
+                  style={{ fontSize: '2rem' }}
+                >
+                  {balance.format()}
+                </Text>
+                <Text size="xs" c="dimmed" mt="xs">
+                  Across {accounts.filter(a => a.currency === balance.currency.code).length} accounts
+                </Text>
+              </Box>
             );
           })}
         </Stack>

@@ -22,7 +22,7 @@ export enum RecurrenceCadence {
   YEARLY = 'yearly',
 }
 
-@Entity('regularPayment')
+@Entity('regular-payments')
 export class RegularPayment extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -50,6 +50,9 @@ export class RegularPayment extends BaseDbEntity {
     enum: RecurrenceCadence,
   })
   cadence: RecurrenceCadence;
+
+  @Column({ type: 'date', nullable: true })
+  startDate?: Date;
 
   @Column({ nullable: true })
   imageUrl?: string;

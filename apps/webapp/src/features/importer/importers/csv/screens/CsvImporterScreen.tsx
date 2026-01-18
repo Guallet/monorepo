@@ -1,7 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
 import { useState } from 'react';
-import { csvInfoAtom } from '../state/csvState';
 import { Dropzone, FileWithPath } from '@mantine/dropzone';
 import { CSV_MIME_TYPE } from '../models';
 import {
@@ -25,11 +23,13 @@ import {
 } from '@tabler/icons-react';
 import Papa from 'papaparse';
 import { CsvStepper } from '../components/CsvStepper';
+import { useSetAtom } from 'jotai';
+import { csvInfoAtom } from '../state/csvState';
 
 export function CsvImporterScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [csvData, setCsvData] = useAtom(csvInfoAtom);
+  const setCsvData = useSetAtom(csvInfoAtom);
   const navigate = useNavigate();
 
   async function readFile(file: FileWithPath) {

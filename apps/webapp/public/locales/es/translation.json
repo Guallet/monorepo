@@ -327,6 +327,14 @@
           "yearly": "Anual",
           "unknown": "Desconocido"
         },
+        "nextPayment": {
+          "today": "Hoy",
+          "tomorrow": "Mañana",
+          "inDays_one": "En {{count}} día",
+          "inDays_many": "En {{count}} días",
+          "inDays_other": "En {{count}} días",
+          "label": "Próximo pago:"
+        },
         "title": "Suscripciones y pagos recurrentes",
         "estimatedMonthly": "Estimación mensual:",
         "addButton": {

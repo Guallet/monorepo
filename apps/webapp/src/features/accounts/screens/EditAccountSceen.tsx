@@ -91,10 +91,10 @@ export function EditAccountScreen({
         balanceTransactionCheck: true,
       });
     }
-  }, [account]);
+  }, [account, form]);
 
   const accountTypes = Object.entries(AccountTypeDto).map(
-    ({ '0': _name, '1': accountType }) => {
+    ({ '1': accountType }) => {
       return {
         label: getLocalizedType(accountType),
         value: accountType,
