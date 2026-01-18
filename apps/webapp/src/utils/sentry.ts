@@ -15,7 +15,7 @@ Sentry.init({
   // For finer control of sent transactions you can adjust this value, or use tracesSampler
   tracesSampleRate: 1.0,
   // Set `tracePropagationTargets` to control for which URLs trace propagation should be enabled
-  tracePropagationTargets: ['localhost', /^https:\/\/app\.guallet\.io/],
+  tracePropagationTargets: [/^https:\/\/app\.guallet\.io/],
 
   // Session Replay
   replaysSessionSampleRate: 0.1, // Sample 10% of sessions
