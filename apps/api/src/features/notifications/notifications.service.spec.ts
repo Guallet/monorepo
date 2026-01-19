@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationsService } from './notifications.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import {
-  Notification,
-  NotificationType,
-} from './entities/notification.entity';
+import { Notification, NotificationType } from './entities/notification.entity';
 import { NotFoundException } from '@nestjs/common';
 
 describe('NotificationsService', () => {

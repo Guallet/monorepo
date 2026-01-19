@@ -3,10 +3,7 @@ import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
 import { NotFoundException } from '@nestjs/common';
 import { UserPrincipal } from 'src/auth/user-principal';
-import {
-  Notification,
-  NotificationType,
-} from './entities/notification.entity';
+import { Notification, NotificationType } from './entities/notification.entity';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 
 describe('NotificationsController', () => {
@@ -142,12 +139,12 @@ describe('NotificationsController', () => {
       const result = await controller.findOne(mockUser, notificationId);
 
       expect(result).toBeDefined();
-      expect(mockNotificationsService.findUserNotification).toHaveBeenCalledWith(
-        {
-          userId: mockUser.id,
-          notificationId: notificationId,
-        },
-      );
+      expect(
+        mockNotificationsService.findUserNotification,
+      ).toHaveBeenCalledWith({
+        userId: mockUser.id,
+        notificationId: notificationId,
+      });
     });
 
     it('should throw NotFoundException when notification not found', async () => {
@@ -177,9 +174,15 @@ describe('NotificationsController', () => {
         created_at: new Date(),
       };
 
-      mockNotificationsService.update.mockResolvedValue(mockUpdatedNotification);
+      mockNotificationsService.update.mockResolvedValue(
+        mockUpdatedNotification,
+      );
 
-      const result = await controller.update(mockUser, notificationId, updateDto);
+      const result = await controller.update(
+        mockUser,
+        notificationId,
+        updateDto,
+      );
 
       expect(result).toBeDefined();
       expect(result.isRead).toBe(true);

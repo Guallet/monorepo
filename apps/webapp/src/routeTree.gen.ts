@@ -27,6 +27,7 @@ import { Route as AppSubscriptionsIndexRouteImport } from './routes/_app/subscri
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppSavingGoalsIndexRouteImport } from './routes/_app/saving-goals/index'
 import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index'
+import { Route as AppNotificationsIndexRouteImport } from './routes/_app/notifications/index'
 import { Route as AppInstitutionsIndexRouteImport } from './routes/_app/institutions/index'
 import { Route as AppImporterIndexRouteImport } from './routes/_app/importer/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
@@ -160,6 +161,11 @@ const AppSavingGoalsIndexRoute = AppSavingGoalsIndexRouteImport.update({
 const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsIndexRoute = AppNotificationsIndexRouteImport.update({
+  id: '/notifications/',
+  path: '/notifications/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInstitutionsIndexRoute = AppInstitutionsIndexRouteImport.update({
@@ -411,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardIndexRoute
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -470,6 +477,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardIndexRoute
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -531,6 +539,7 @@ export interface FileRoutesById {
   '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/importer/': typeof AppImporterIndexRoute
   '/_app/institutions/': typeof AppInstitutionsIndexRoute
+  '/_app/notifications/': typeof AppNotificationsIndexRoute
   '/_app/reports/': typeof AppReportsIndexRoute
   '/_app/saving-goals/': typeof AppSavingGoalsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
@@ -592,6 +601,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/importer'
     | '/institutions'
+    | '/notifications'
     | '/reports'
     | '/saving-goals'
     | '/settings'
@@ -651,6 +661,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/importer'
     | '/institutions'
+    | '/notifications'
     | '/reports'
     | '/saving-goals'
     | '/settings'
@@ -711,6 +722,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard/'
     | '/_app/importer/'
     | '/_app/institutions/'
+    | '/_app/notifications/'
     | '/_app/reports/'
     | '/_app/saving-goals/'
     | '/_app/settings/'
@@ -873,6 +885,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof AppReportsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications/': {
+      id: '/_app/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/institutions/': {
@@ -1186,6 +1205,7 @@ interface AppRouteChildren {
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppImporterIndexRoute: typeof AppImporterIndexRoute
   AppInstitutionsIndexRoute: typeof AppInstitutionsIndexRoute
+  AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppReportsIndexRoute: typeof AppReportsIndexRoute
   AppSavingGoalsIndexRoute: typeof AppSavingGoalsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -1235,6 +1255,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppImporterIndexRoute: AppImporterIndexRoute,
   AppInstitutionsIndexRoute: AppInstitutionsIndexRoute,
+  AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppReportsIndexRoute: AppReportsIndexRoute,
   AppSavingGoalsIndexRoute: AppSavingGoalsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
