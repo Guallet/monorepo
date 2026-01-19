@@ -155,7 +155,9 @@ describe('RegularPaymentsController', () => {
         currency: createDto.currency,
         type: createDto.type,
         cadence: createDto.cadence,
-        startDate: createDto.startDate ? new Date(createDto.startDate) : new Date(),
+        startDate: createDto.startDate
+          ? new Date(createDto.startDate)
+          : new Date(),
         imageUrl: createDto.imageUrl,
       };
 
@@ -191,7 +193,9 @@ describe('RegularPaymentsController', () => {
         currency: createDto.currency,
         type: createDto.type,
         cadence: createDto.cadence,
-        startDate: createDto.startDate ? new Date(createDto.startDate) : new Date(),
+        startDate: createDto.startDate
+          ? new Date(createDto.startDate)
+          : new Date(),
         categoryId: createDto.categoryId,
       };
 

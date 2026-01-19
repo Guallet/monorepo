@@ -9,3 +9,4 @@ export * from './user';
 export * from './savingGoals';
 export * from './subscriptions';
 export * from './nordigenKeys';
+export * from './notifications';

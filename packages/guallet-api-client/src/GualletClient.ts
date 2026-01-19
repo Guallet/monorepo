@@ -10,6 +10,7 @@ import { SavingGoalsApi } from './savingGoals';
 import { SubscriptionsApi } from './subscriptions';
 import { DataImporterApi } from './data-importer';
 import { NordigenKeysApi } from './nordigen-keys';
+import { NotificationsApi } from './notifications';
 
 export interface GualletClient {
   admin: AdminApi;
@@ -24,6 +25,7 @@ export interface GualletClient {
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
   nordigenKeys: NordigenKeysApi;
+  notifications: NotificationsApi;
 }
 
 export interface TokenHelper {
@@ -74,6 +76,7 @@ export class GualletClientImpl implements GualletClient {
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
   nordigenKeys: NordigenKeysApi;
+  notifications: NotificationsApi;
 
   constructor({
     baseUrl,
@@ -97,6 +100,7 @@ export class GualletClientImpl implements GualletClient {
     this.subscriptions = new SubscriptionsApi(this);
     this.dataImporter = new DataImporterApi(this);
     this.nordigenKeys = new NordigenKeysApi(this);
+    this.notifications = new NotificationsApi(this);
   }
 
   async get<TDto>({

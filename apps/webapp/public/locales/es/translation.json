@@ -396,6 +396,35 @@
         }
       }
     },
+    "notifications": {
+      "screen": {
+        "title": "Notificaciones",
+        "loading": "Cargando notificaciones...",
+        "emptyState": "No tienes notificaciones",
+        "unreadCount_one": "{{count}} sin leer",
+        "unreadCount_other": "{{count}} sin leer",
+        "markAllAsRead": "Marcar todas como leídas",
+        "types": {
+          "warning": "Advertencia",
+          "important": "Importante",
+          "actionRequired": "Acción requerida",
+          "info": "Información"
+        },
+        "badges": {
+          "new": "Nueva"
+        },
+        "actions": {
+          "markAsRead": "Marcar como leída",
+          "markAsUnread": "Marcar como no leída",
+          "delete": "Eliminar notificación"
+        }
+      },
+      "icon": {
+        "loading": "Cargando...",
+        "noNotifications": "No hay notificaciones nuevas",
+        "viewAll": "Ver todas las notificaciones"
+      }
+    },
     "register": {
       "form": {
         "name": {
