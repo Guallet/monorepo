@@ -1,6 +1,7 @@
 import { NotificationDto, NotificationType } from '@guallet/api-client';
 import { ActionIcon, Box, Group, Stack, Tooltip, Text } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 
 interface NotificationItemProps {
@@ -16,6 +17,8 @@ export function NotificationItem({
   onClick,
   onMarkAsRead,
 }: Readonly<NotificationItemProps>) {
+  const { t } = useTranslation();
+
   return (
     <Group
       gap="xs"
@@ -36,7 +39,12 @@ export function NotificationItem({
         </Text>
       </Stack>
       {!notification.isRead && (
-        <Tooltip label="Mark as read">
+        <Tooltip
+          label={t(
+            'screens.notifications.screen.actions.markAsRead',
+            'Mark as read',
+          )}
+        >
           <ActionIcon
             variant="subtle"
             size="sm"

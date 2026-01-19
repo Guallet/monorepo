@@ -23,9 +23,11 @@ import {
 } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NotificationItem } from './NotificationItem';
 
 export function NotificationIcon() {
+  const { t } = useTranslation();
   const [opened, setOpened] = useState(false);
   const navigate = useNavigate();
   const { notifications, unreadCount, isLoading } = useUnreadNotifications();
@@ -57,6 +59,41 @@ export function NotificationIcon() {
     }
   };
 
+  const renderNotificationContent = () => {
+    if (isLoading) {
+      return (
+        <Text size="sm" c="dimmed" ta="center" py="md">
+          {t('screens.notifications.icon.loading', 'Loading...')}
+        </Text>
+      );
+    }
+
+    if (displayNotifications.length === 0) {
+      return (
+        <Text size="sm" c="dimmed" ta="center" py="md">
+          {t(
+            'screens.notifications.icon.noNotifications',
+            'No new notifications',
+          )}
+        </Text>
+      );
+    }
+
+    return (
+      <Stack gap="xs">
+        {displayNotifications.map((notification) => (
+          <NotificationItem
+            key={notification.id}
+            notification={notification}
+            getIcon={getNotificationIcon}
+            onClick={() => handleNotificationClick(notification)}
+            onMarkAsRead={() => markAsRead(notification.id)}
+          />
+        ))}
+      </Stack>
+    );
+  };
+
   return (
     <Popover
       width={320}
@@ -84,36 +121,20 @@ export function NotificationIcon() {
         <Stack gap="xs">
           <Group justify="space-between">
             <Text fw={600} size="sm">
-              Notifications
+              {t('screens.notifications.screen.title', 'Notifications')}
             </Text>
             {hasUnread && (
               <Text size="xs" c="dimmed">
-                {unreadCount} unread
+                {t(
+                  'screens.notifications.screen.unreadCount',
+                  '{{count}} unread',
+                  { count: unreadCount },
+                )}
               </Text>
             )}
           </Group>
           <Divider />
-          {isLoading ? (
-            <Text size="sm" c="dimmed" ta="center" py="md">
-              Loading...
-            </Text>
-          ) : displayNotifications.length === 0 ? (
-            <Text size="sm" c="dimmed" ta="center" py="md">
-              No new notifications
-            </Text>
-          ) : (
-            <Stack gap="xs">
-              {displayNotifications.map((notification) => (
-                <NotificationItem
-                  key={notification.id}
-                  notification={notification}
-                  getIcon={getNotificationIcon}
-                  onClick={() => handleNotificationClick(notification)}
-                  onMarkAsRead={() => markAsRead(notification.id)}
-                />
-              ))}
-            </Stack>
-          )}
+          {renderNotificationContent()}
           <Divider />
           <Button
             variant="subtle"
@@ -124,7 +145,7 @@ export function NotificationIcon() {
               navigate({ to: '/notifications' });
             }}
           >
-            View all notifications
+            {t('screens.notifications.icon.viewAll', 'View all notifications')}
           </Button>
         </Stack>
       </Popover.Dropdown>

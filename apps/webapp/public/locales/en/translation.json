@@ -393,6 +393,35 @@
         }
       }
     },
+    "notifications": {
+      "screen": {
+        "title": "Notifications",
+        "loading": "Loading notifications...",
+        "emptyState": "You have no notifications",
+        "unreadCount_one": "{{count}} unread",
+        "unreadCount_other": "{{count}} unread",
+        "markAllAsRead": "Mark all as read",
+        "types": {
+          "warning": "Warning",
+          "important": "Important",
+          "actionRequired": "Action Required",
+          "info": "Info"
+        },
+        "badges": {
+          "new": "New"
+        },
+        "actions": {
+          "markAsRead": "Mark as read",
+          "markAsUnread": "Mark as unread",
+          "delete": "Delete notification"
+        }
+      },
+      "icon": {
+        "loading": "Loading...",
+        "noNotifications": "No new notifications",
+        "viewAll": "View all notifications"
+      }
+    },
     "register": {
       "form": {
         "name": {

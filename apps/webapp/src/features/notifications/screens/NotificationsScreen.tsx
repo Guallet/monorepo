@@ -9,7 +9,7 @@ import {
   ActionIcon,
   Divider,
   Box,
-} from "@mantine/core";
+} from '@mantine/core';
 import {
   IconTrash,
   IconCheck,
@@ -18,24 +18,29 @@ import {
   IconAlertCircle,
   IconHandClick,
   IconChecks,
-} from "@tabler/icons-react";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import {
-  useNotifications,
-  useNotificationMutations,
-} from "@guallet/api-react";
-import { NotificationDto, NotificationType } from "@guallet/api-client";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { useNavigate } from "@tanstack/react-router";
+} from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useNotifications, useNotificationMutations } from '@guallet/api-react';
+import { NotificationDto, NotificationType } from '@guallet/api-client';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { useNavigate } from '@tanstack/react-router';
 
 dayjs.extend(relativeTime);
 
 export function NotificationsScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { notifications, isLoading } = useNotifications();
-  const { markAsRead, markAsUnread, markAllAsRead, deleteNotification, isUpdating, isDeleting } =
-    useNotificationMutations();
+  const {
+    markAsRead,
+    markAsUnread,
+    markAllAsRead,
+    deleteNotification,
+    isUpdating,
+    isDeleting,
+  } = useNotificationMutations();
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -56,14 +61,33 @@ export function NotificationsScreen() {
   const getTypeBadge = (type: NotificationType) => {
     switch (type) {
       case NotificationType.WARNING:
-        return <Badge color="orange" size="xs">Warning</Badge>;
+        return (
+          <Badge color="orange" size="xs">
+            {t('screens.notifications.screen.types.warning', 'Warning')}
+          </Badge>
+        );
       case NotificationType.IMPORTANT:
-        return <Badge color="red" size="xs">Important</Badge>;
+        return (
+          <Badge color="red" size="xs">
+            {t('screens.notifications.screen.types.important', 'Important')}
+          </Badge>
+        );
       case NotificationType.ACTION_REQUIRED:
-        return <Badge color="blue" size="xs">Action Required</Badge>;
+        return (
+          <Badge color="blue" size="xs">
+            {t(
+              'screens.notifications.screen.types.actionRequired',
+              'Action Required',
+            )}
+          </Badge>
+        );
       case NotificationType.INFO:
       default:
-        return <Badge color="gray" size="xs">Info</Badge>;
+        return (
+          <Badge color="gray" size="xs">
+            {t('screens.notifications.screen.types.info', 'Info')}
+          </Badge>
+        );
     }
   };
 
@@ -80,8 +104,15 @@ export function NotificationsScreen() {
     return (
       <BaseScreen>
         <Stack>
-          <Title>Notifications</Title>
-          <Text c="dimmed">Loading notifications...</Text>
+          <Title>
+            {t('screens.notifications.screen.title', 'Notifications')}
+          </Title>
+          <Text c="dimmed">
+            {t(
+              'screens.notifications.screen.loading',
+              'Loading notifications...',
+            )}
+          </Text>
         </Stack>
       </BaseScreen>
     );
@@ -92,10 +123,16 @@ export function NotificationsScreen() {
       <Stack>
         <Group justify="space-between" align="center">
           <Group>
-            <Title>Notifications</Title>
+            <Title>
+              {t('screens.notifications.screen.title', 'Notifications')}
+            </Title>
             {unreadCount > 0 && (
               <Badge color="red" size="lg">
-                {unreadCount} unread
+                {t(
+                  'screens.notifications.screen.unreadCount',
+                  '{{count}} unread',
+                  { count: unreadCount },
+                )}
               </Badge>
             )}
           </Group>
@@ -106,7 +143,10 @@ export function NotificationsScreen() {
               onClick={() => markAllAsRead()}
               loading={isUpdating}
             >
-              Mark all as read
+              {t(
+                'screens.notifications.screen.markAllAsRead',
+                'Mark all as read',
+              )}
             </Button>
           )}
         </Group>
@@ -116,7 +156,10 @@ export function NotificationsScreen() {
         {notifications.length === 0 ? (
           <Paper p="xl" withBorder>
             <Text c="dimmed" ta="center">
-              You have no notifications
+              {t(
+                'screens.notifications.screen.emptyState',
+                'You have no notifications',
+              )}
             </Text>
           </Paper>
         ) : (
@@ -128,7 +171,7 @@ export function NotificationsScreen() {
                 withBorder
                 style={{
                   opacity: notification.isRead ? 0.7 : 1,
-                  cursor: notification.action ? "pointer" : "default",
+                  cursor: notification.action ? 'pointer' : 'default',
                 }}
                 onClick={() => handleNotificationClick(notification)}
               >
@@ -140,7 +183,10 @@ export function NotificationsScreen() {
                         {getTypeBadge(notification.type)}
                         {!notification.isRead && (
                           <Badge color="blue" size="xs" variant="dot">
-                            New
+                            {t(
+                              'screens.notifications.screen.badges.new',
+                              'New',
+                            )}
                           </Badge>
                         )}
                       </Group>
@@ -159,7 +205,10 @@ export function NotificationsScreen() {
                           e.stopPropagation();
                           markAsUnread(notification.id);
                         }}
-                        title="Mark as unread"
+                        title={t(
+                          'screens.notifications.screen.actions.markAsUnread',
+                          'Mark as unread',
+                        )}
                         loading={isUpdating}
                       >
                         <IconCheck size={16} />
@@ -172,7 +221,10 @@ export function NotificationsScreen() {
                           e.stopPropagation();
                           markAsRead(notification.id);
                         }}
-                        title="Mark as read"
+                        title={t(
+                          'screens.notifications.screen.actions.markAsRead',
+                          'Mark as read',
+                        )}
                         loading={isUpdating}
                       >
                         <IconCheck size={16} />
@@ -185,7 +237,10 @@ export function NotificationsScreen() {
                         e.stopPropagation();
                         deleteNotification(notification.id);
                       }}
-                      title="Delete notification"
+                      title={t(
+                        'screens.notifications.screen.actions.delete',
+                        'Delete notification',
+                      )}
                       loading={isDeleting}
                     >
                       <IconTrash size={16} />
