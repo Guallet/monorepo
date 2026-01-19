@@ -309,6 +309,37 @@
         "addButton": "Add a new connection"
       }
     },
+    "notifications": {
+      "icon": {
+        "navigationErrorTitle": "Navigation Error",
+        "navigationErrorMessage": "Unable to navigate to the requested page.",
+        "loading": "Loading...",
+        "noNotifications": "No new notifications",
+        "viewAll": "View all notifications"
+      },
+      "screen": {
+        "title": "Notifications",
+        "unreadCount_one": "{{count}} unread",
+        "unreadCount_other": "{{count}} unread",
+        "actions": {
+          "markAsRead": "Mark as read",
+          "markAsUnread": "Mark as unread",
+          "delete": "Delete notification"
+        },
+        "types": {
+          "warning": "Warning",
+          "important": "Important",
+          "actionRequired": "Action Required",
+          "info": "Info"
+        },
+        "badges": {
+          "new": "New"
+        },
+        "loading": "Loading notifications...",
+        "markAllAsRead": "Mark all as read",
+        "emptyState": "You have no notifications"
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {
@@ -393,61 +424,7 @@
         }
       }
     },
-    "notifications": {
-      "screen": {
-        "title": "Notifications",
-        "loading": "Loading notifications...",
-        "emptyState": "You have no notifications",
-        "unreadCount_one": "{{count}} unread",
-        "unreadCount_other": "{{count}} unread",
-        "markAllAsRead": "Mark all as read",
-        "types": {
-          "warning": "Warning",
-          "important": "Important",
-          "actionRequired": "Action Required",
-          "info": "Info"
-        },
-        "badges": {
-          "new": "New"
-        },
-        "actions": {
-          "markAsRead": "Mark as read",
-          "markAsUnread": "Mark as unread",
-          "delete": "Delete notification"
-        }
-      },
-      "icon": {
-        "loading": "Loading...",
-        "noNotifications": "No new notifications",
-        "viewAll": "View all notifications"
-      }
-    },
     "register": {
-      "form": {
-        "name": {
-          "validation": "Name must have at least 2 characters",
-          "label": "Name",
-          "placeholder": "Enter your name"
-        },
-        "email": {
-          "validation": "Invalid email",
-          "label": "Email address",
-          "placeholder": "Enter your email"
-        },
-        "password": {
-          "validation": "Password must have at least 6 characters",
-          "label": "Password",
-          "placeholder": "Password"
-        },
-        "confirmPassword": {
-          "validation": "Passwords do not match",
-          "label": "Confirm Password",
-          "placeholder": "Confirm your password"
-        },
-        "termsAgreement": "Agree with the {{link}}",
-        "termsLink": "terms and conditions",
-        "submitButton": "Create new account"
-      },
       "errors": {
         "userAlreadyExists": "An account with this email already exists.",
         "weakPassword": "Password is too weak. Please use a stronger password.",
@@ -475,6 +452,27 @@
         "button": "Go back to login page"
       },
       "title": "Create new account",
+      "form": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter your name"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Password"
+        },
+        "confirmPassword": {
+          "label": "Confirm Password",
+          "placeholder": "Confirm your password"
+        },
+        "termsAgreement": "Agree with the {{link}}",
+        "termsLink": "terms and conditions",
+        "submitButton": "Create new account"
+      },
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
     }

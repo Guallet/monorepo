@@ -311,6 +311,38 @@
         "addButton": "Agregar nueva conexión"
       }
     },
+    "notifications": {
+      "icon": {
+        "navigationErrorTitle": "Navigation Error",
+        "navigationErrorMessage": "Unable to navigate to the requested page.",
+        "loading": "Cargando...",
+        "noNotifications": "No hay notificaciones nuevas",
+        "viewAll": "Ver todas las notificaciones"
+      },
+      "screen": {
+        "title": "Notificaciones",
+        "unreadCount_one": "{{count}} sin leer",
+        "unreadCount_many": "{{count}} unread",
+        "unreadCount_other": "{{count}} sin leer",
+        "actions": {
+          "markAsRead": "Marcar como leída",
+          "markAsUnread": "Marcar como no leída",
+          "delete": "Eliminar notificación"
+        },
+        "types": {
+          "warning": "Advertencia",
+          "important": "Importante",
+          "actionRequired": "Acción requerida",
+          "info": "Información"
+        },
+        "badges": {
+          "new": "Nueva"
+        },
+        "loading": "Cargando notificaciones...",
+        "markAllAsRead": "Marcar todas como leídas",
+        "emptyState": "No tienes notificaciones"
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {
@@ -396,61 +428,7 @@
         }
       }
     },
-    "notifications": {
-      "screen": {
-        "title": "Notificaciones",
-        "loading": "Cargando notificaciones...",
-        "emptyState": "No tienes notificaciones",
-        "unreadCount_one": "{{count}} sin leer",
-        "unreadCount_other": "{{count}} sin leer",
-        "markAllAsRead": "Marcar todas como leídas",
-        "types": {
-          "warning": "Advertencia",
-          "important": "Importante",
-          "actionRequired": "Acción requerida",
-          "info": "Información"
-        },
-        "badges": {
-          "new": "Nueva"
-        },
-        "actions": {
-          "markAsRead": "Marcar como leída",
-          "markAsUnread": "Marcar como no leída",
-          "delete": "Eliminar notificación"
-        }
-      },
-      "icon": {
-        "loading": "Cargando...",
-        "noNotifications": "No hay notificaciones nuevas",
-        "viewAll": "Ver todas las notificaciones"
-      }
-    },
     "register": {
-      "form": {
-        "name": {
-          "validation": "El nombre debe tener al menos 2 caracteres",
-          "label": "Nombre",
-          "placeholder": "Ingresa tu nombre"
-        },
-        "email": {
-          "validation": "Correo electrónico inválido",
-          "label": "Correo electrónico",
-          "placeholder": "Ingresa tu correo electrónico"
-        },
-        "password": {
-          "validation": "La contraseña debe tener al menos 6 caracteres",
-          "label": "Contraseña",
-          "placeholder": "Contraseña"
-        },
-        "confirmPassword": {
-          "validation": "Las contraseñas no coinciden",
-          "label": "Confirmar contraseña",
-          "placeholder": "Confirma tu contraseña"
-        },
-        "termsAgreement": "Acepto los {{link}}",
-        "termsLink": "términos de uso",
-        "submitButton": "Crear nueva cuenta"
-      },
       "errors": {
         "userAlreadyExists": "Ya existe una cuenta con este correo electrónico.",
         "weakPassword": "La contraseña es demasiado débil. Por favor, usa una contraseña más segura.",
@@ -478,6 +456,27 @@
         "button": "Ir a la página de inicio de sesión"
       },
       "title": "Crear nueva cuenta",
+      "form": {
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Ingresa tu nombre"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Contraseña"
+        },
+        "confirmPassword": {
+          "label": "Confirmar contraseña",
+          "placeholder": "Confirma tu contraseña"
+        },
+        "termsAgreement": "Acepto los {{link}}",
+        "termsLink": "términos de uso",
+        "submitButton": "Crear nueva cuenta"
+      },
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
     }
