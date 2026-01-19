@@ -425,6 +425,31 @@
       }
     },
     "register": {
+      "form": {
+        "name": {
+          "validation": "CNF: Name must have at least 2 characters",
+          "label": "Name",
+          "placeholder": "Enter your name"
+        },
+        "email": {
+          "validation": "CNF: Invalid email",
+          "label": "Email address",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "validation": "CNF: Password must have at least 6 characters",
+          "label": "Password",
+          "placeholder": "Password"
+        },
+        "confirmPassword": {
+          "validation": "CNF: Passwords do not match",
+          "label": "Confirm Password",
+          "placeholder": "Confirm your password"
+        },
+        "termsAgreement": "Agree with the {{link}}",
+        "termsLink": "terms and conditions",
+        "submitButton": "Create new account"
+      },
       "errors": {
         "userAlreadyExists": "An account with this email already exists.",
         "weakPassword": "Password is too weak. Please use a stronger password.",
@@ -452,27 +477,6 @@
         "button": "Go back to login page"
       },
       "title": "Create new account",
-      "form": {
-        "name": {
-          "label": "Name",
-          "placeholder": "Enter your name"
-        },
-        "email": {
-          "label": "Email address",
-          "placeholder": "Enter your email"
-        },
-        "password": {
-          "label": "Password",
-          "placeholder": "Password"
-        },
-        "confirmPassword": {
-          "label": "Confirm Password",
-          "placeholder": "Confirm your password"
-        },
-        "termsAgreement": "Agree with the {{link}}",
-        "termsLink": "terms and conditions",
-        "submitButton": "Create new account"
-      },
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
     }

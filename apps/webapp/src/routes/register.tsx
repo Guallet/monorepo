@@ -27,24 +27,39 @@ export const Route = createFileRoute('/register')({
   component: RouteComponent,
 });
 
-const registerFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name must have at least 2 characters' }),
-  email: z.string().email({ message: 'Invalid email' }),
-  password: z.string().min(6, { message: 'Password must have at least 6 characters' }),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
-
-type FormValues = z.infer<typeof registerFormSchema>;
-
 function RouteComponent() {
   const { createAccount, login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
   const { t } = useTranslation();
+
+  const registerFormSchema = z.object({
+    name: z.string().min(2, { 
+      message: t(
+        'screens.register.form.name.validation',
+        'CNF: Name must have at least 2 characters',
+      ),
+    }),
+    email: z.string().email({ 
+      message: t('screens.register.form.email.validation', 'CNF: Invalid email'),
+    }),
+    password: z.string().min(6, { 
+      message: t(
+        'screens.register.form.password.validation',
+        'CNF: Password must have at least 6 characters',
+      ),
+    }),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t(
+      'screens.register.form.confirmPassword.validation',
+      'CNF: Passwords do not match',
+    ),
+    path: ['confirmPassword'],
+  });
+
+  type FormValues = z.infer<typeof registerFormSchema>;
 
   useEffect(() => {
     // If there is already a logged in user, just navigate away from here. Force the user to logout before create a new account
