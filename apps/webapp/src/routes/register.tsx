@@ -305,7 +305,7 @@ function RouteComponent() {
                       {
                         link: '',
                       },
-                    ).replace('', '')}
+                    )}
                     <Anchor href="https://guallet.io">
                       {t(
                         'screens.register.form.termsLink',
