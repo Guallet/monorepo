@@ -14,6 +14,7 @@ import {
   Button,
   Text,
 } from '@mantine/core';
+import { notifications as MantineNotifications } from '@mantine/notifications';
 import {
   IconAlertTriangle,
   IconAlertCircle,
@@ -24,6 +25,7 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isValidRoute } from '@/utils/routeValidation';
 import { NotificationItem } from './NotificationItem';
 
 export function NotificationIcon() {
@@ -55,17 +57,37 @@ export function NotificationIcon() {
       markAsRead(notification.id);
     }
     if (notification.action) {
-      try {
-        const { action } = notification;
-        // Validate the input before navigating
-        if (typeof action === 'string' && action.trim() !== '') {
-          await navigate({ to: action });
-        }
-      } catch (error) {
+      const { action } = notification;
+
+      // Validate the action is a valid route using router.buildLocation
+      const isDestinationValid = isValidRoute({ to: action });
+      console.log('Notification action validation', {
+        notificationId: notification.id,
+        action,
+        isDestinationValid,
+      });
+      if (isDestinationValid) {
+        console.log('Navigating from notification action', {
+          notificationId: notification.id,
+          action,
+        });
+        navigate({ to: action });
+      } else {
         console.error('Failed to navigate from notification action', {
           notificationId: notification.id,
           action: notification.action,
-          error,
+        });
+
+        MantineNotifications.show({
+          title: t(
+            'screens.notifications.icon.navigationErrorTitle',
+            'Navigation Error',
+          ),
+          message: t(
+            'screens.notifications.icon.navigationErrorMessage',
+            'Unable to navigate to the requested page.',
+          ),
+          color: 'red',
         });
       }
     }

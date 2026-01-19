@@ -8,6 +8,7 @@ import {
   Badge,
   Divider,
 } from '@mantine/core';
+import { notifications as MantineNotifications } from '@mantine/notifications';
 import { IconChecks } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
@@ -15,6 +16,7 @@ import { useNotifications, useNotificationMutations } from '@guallet/api-react';
 import { NotificationDto } from '@guallet/api-client';
 import { useNavigate } from '@tanstack/react-router';
 import { NotificationRow } from '../components/NotificationRow';
+import { isValidRoute, validateRoute } from '@/utils/routeValidation';
 
 export function NotificationsScreen() {
   const { t } = useTranslation();
@@ -31,12 +33,41 @@ export function NotificationsScreen() {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  const handleNotificationClick = (notification: NotificationDto) => {
+  const handleNotificationClick = async (notification: NotificationDto) => {
     if (!notification.isRead) {
       markAsRead(notification.id);
     }
     if (notification.action) {
-      navigate({ to: notification.action });
+      try {
+        const { action } = notification;
+
+        // Validate the action is a valid route using router.buildLocation
+        const location = validateRoute({ to: action });
+        console.log('Navigating from notification action', {
+          notificationId: notification.id,
+          action,
+          location,
+        });
+        await navigate({ to: location });
+      } catch (error) {
+        console.error('Failed to navigate from notification action', {
+          notificationId: notification.id,
+          action: notification.action,
+          error,
+        });
+
+        MantineNotifications.show({
+          title: t(
+            'screens.notifications.icon.navigationErrorTitle',
+            'Navigation Error',
+          ),
+          message: t(
+            'screens.notifications.icon.navigationErrorMessage',
+            'Unable to navigate to the requested page.',
+          ),
+          color: 'red',
+        });
+      }
     }
   };
 
