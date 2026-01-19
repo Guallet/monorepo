@@ -43,11 +43,6 @@ export function NotificationsScreen() {
 
         // Validate the action is a valid route using router.buildLocation
         const location = validateRoute({ to: action });
-        console.log('Navigating from notification action', {
-          notificationId: notification.id,
-          action,
-          location,
-        });
         await navigate({ to: location });
       } catch (error) {
         console.error('Failed to navigate from notification action', {

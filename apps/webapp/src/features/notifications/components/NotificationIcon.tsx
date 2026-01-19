@@ -61,16 +61,7 @@ export function NotificationIcon() {
 
       // Validate the action is a valid route using router.buildLocation
       const isDestinationValid = isValidRoute({ to: action });
-      console.log('Notification action validation', {
-        notificationId: notification.id,
-        action,
-        isDestinationValid,
-      });
       if (isDestinationValid) {
-        console.log('Navigating from notification action', {
-          notificationId: notification.id,
-          action,
-        });
         navigate({ to: action });
       } else {
         console.error('Failed to navigate from notification action', {
