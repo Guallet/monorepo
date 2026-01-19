@@ -16,7 +16,7 @@ import { useNotifications, useNotificationMutations } from '@guallet/api-react';
 import { NotificationDto } from '@guallet/api-client';
 import { useNavigate } from '@tanstack/react-router';
 import { NotificationRow } from '../components/NotificationRow';
-import { isValidRoute, validateRoute } from '@/utils/routeValidation';
+import { validateRoute } from '@/utils/routeValidation';
 
 export function NotificationsScreen() {
   const { t } = useTranslation();
