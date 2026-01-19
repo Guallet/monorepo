@@ -1,4 +1,3 @@
-import { NotificationDto } from '@guallet/api-client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
 
@@ -27,10 +26,7 @@ export function useNotifications() {
   });
 
   return {
-    notifications:
-      query.data?.filter(
-        (dto): dto is NotificationDto => dto !== undefined,
-      ) ?? [],
+    notifications: query.data ?? [],
     ...query,
   };
 }
@@ -48,10 +44,7 @@ export function useUnreadNotifications() {
   });
 
   return {
-    notifications:
-      query.data?.filter(
-        (dto): dto is NotificationDto => dto !== undefined,
-      ) ?? [],
+    notifications: query.data ?? [],
     unreadCount: query.data?.length ?? 0,
     ...query,
   };
@@ -64,11 +57,8 @@ export function useNotification(id: string | null) {
     enabled: !!id,
     queryKey: [NOTIFICATIONS_QUERY_KEY, id],
     queryFn: async () => {
-      if (id) {
-        return await gualletClient.notifications.get(id);
-      } else {
-        throw Error('Notification ID is null');
-      }
+      // id is guaranteed to be non-null when enabled is true
+      return await gualletClient.notifications.get(id!);
     },
   });
 

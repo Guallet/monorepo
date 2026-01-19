@@ -84,7 +84,12 @@ export class NotificationsService {
     );
   }
 
-  // This method is for system use only - notifications are system-driven
+  /**
+   * Creates a system notification for a user.
+   * This method should be called by other services to generate notifications
+   * (e.g., when a new connection is established, when a sync fails, etc.)
+   * Users cannot create notifications directly through the API.
+   */
   async createSystemNotification(args: {
     userId: string;
     message: string;
