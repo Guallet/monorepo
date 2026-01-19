@@ -27,6 +27,7 @@ import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { EmailModule } from './features/email/email.module';
+import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 
@@ -114,6 +115,7 @@ import { BullModule } from '@nestjs/bullmq';
     SavingGoalsModule,
     DataImporterModule,
     EmailModule,
+    NotificationsModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
