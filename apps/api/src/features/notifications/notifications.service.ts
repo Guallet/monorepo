@@ -27,23 +27,27 @@ export class NotificationsService {
     });
   }
 
-  async findUserNotification(args: {
+  async findUserNotification({
+    userId,
+    notificationId,
+  }: {
     userId: string;
     notificationId: string;
   }): Promise<Notification | null> {
-    const { userId, notificationId } = args;
     return await this.notificationRepository.findOne({
       where: { id: notificationId, user_id: userId },
     });
   }
 
-  async update(args: {
+  async update({
+    userId,
+    notificationId,
+    dto,
+  }: {
     userId: string;
     notificationId: string;
     dto: UpdateNotificationDto;
   }): Promise<Notification> {
-    const { userId, notificationId, dto } = args;
-
     const notification = await this.notificationRepository.findOne({
       where: { id: notificationId, user_id: userId },
     });
@@ -58,12 +62,13 @@ export class NotificationsService {
     return await this.notificationRepository.save(notification);
   }
 
-  async remove(args: {
+  async remove({
+    userId,
+    notificationId,
+  }: {
     userId: string;
     notificationId: string;
   }): Promise<Notification> {
-    const { userId, notificationId } = args;
-
     const notification = await this.notificationRepository.findOne({
       where: { id: notificationId, user_id: userId },
     });
@@ -90,15 +95,19 @@ export class NotificationsService {
    * (e.g., when a new connection is established, when a sync fails, etc.)
    * Users cannot create notifications directly through the API.
    */
-  async createSystemNotification(args: {
+  async createSystemNotification({
+    userId,
+    message,
+    icon,
+    type,
+    action,
+  }: {
     userId: string;
     message: string;
     icon?: string;
     type?: NotificationType;
     action?: string;
   }): Promise<Notification> {
-    const { userId, message, icon, type, action } = args;
-
     const notification = this.notificationRepository.create({
       user_id: userId,
       message,
