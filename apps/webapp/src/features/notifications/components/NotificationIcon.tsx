@@ -50,12 +50,24 @@ export function NotificationIcon() {
     }
   };
 
-  const handleNotificationClick = (notification: NotificationDto) => {
+  const handleNotificationClick = async (notification: NotificationDto) => {
     if (!notification.isRead) {
       markAsRead(notification.id);
     }
     if (notification.action) {
-      navigate({ to: notification.action });
+      try {
+        const { action } = notification;
+        // Validate the input before navigating
+        if (typeof action === 'string' && action.trim() !== '') {
+          await navigate({ to: action });
+        }
+      } catch (error) {
+        console.error('Failed to navigate from notification action', {
+          notificationId: notification.id,
+          action: notification.action,
+          error,
+        });
+      }
     }
   };
 

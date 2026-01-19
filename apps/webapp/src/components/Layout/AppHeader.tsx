@@ -2,12 +2,7 @@ import { Burger, Group, Title, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconUser } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { GualletLogo } from '../GualletLogo/GualletLogo';
-
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { NotificationIcon } from '@/features/notifications/components/NotificationIcon';
-
-dayjs.extend(relativeTime);
 
 interface Props {
   isOpened: boolean;

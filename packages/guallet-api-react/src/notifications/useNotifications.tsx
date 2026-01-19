@@ -43,7 +43,8 @@ export function useUnreadNotifications() {
       return await gualletClient.notifications.getUnread();
     },
     // Refetch more frequently for notifications
-    refetchInterval: 60000, // Refetch every minute
+    refetchInterval: 300000, // Refetch every 5 minutes
+    refetchIntervalInBackground: false, // Do not refetch in background
   });
 
   return {

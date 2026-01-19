@@ -18,7 +18,10 @@ import {
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { NotificationDto, NotificationType } from '@guallet/api-client';
+
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 interface NotificationRowProps {
   notification: NotificationDto;
