@@ -65,7 +65,7 @@ export class TransactionsController {
     }
     const { page = 1, pageSize = 50, startDate, endDate, accounts } = query;
 
-    console.log(`Transaction Query: ${JSON.stringify(query)}`);
+    this.logger.log(`Transaction Query: ${JSON.stringify(query)}`);
 
     if (!Number.isInteger(+page) || !Number.isInteger(+pageSize)) {
       throw new BadRequestException(
@@ -123,10 +123,21 @@ export class TransactionsController {
     @Query('page') page: number = 1,
     @Query('pageSize') pageSize: number = 50,
   ): Promise<InboxTransactionsResultDto> {
-    const pageNum = page;
-    const pageSizeNum = pageSize;
+    //In NestJS, query parameters are typically received as strings, so when you check if they
+    // are integers we need to convert them into numbers using the + operator
+    const pageNum = +page;
+    const pageSizeNum = +pageSize;
 
     if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
+      this.logger.error(
+        `Invalid query params for inbox transactions: page=${page}, pageSize=${pageSize}`,
+        {
+          page,
+          pageSize,
+          isPageNum: Number.isInteger(pageNum),
+          isPageSizeNum: Number.isInteger(pageSizeNum),
+        },
+      );
       throw new BadRequestException(
         'Query Params `page` and `pageSize` must be integers',
       );
