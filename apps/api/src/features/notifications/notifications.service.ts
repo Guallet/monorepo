@@ -10,7 +10,7 @@ export class NotificationsService {
 
   constructor(
     @InjectRepository(Notification)
-    private notificationRepository: Repository<Notification>,
+    private readonly notificationRepository: Repository<Notification>,
   ) {}
 
   async findAllUserNotifications(userId: string): Promise<Notification[]> {
