@@ -17,6 +17,21 @@ export class EmailService {
     this.resend = new Resend(apiKey);
   }
 
+  /**
+   * Escapes HTML special characters to prevent HTML injection
+   */
+  private escapeHtml(text: string): string {
+    const htmlEscapeMap: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;',
+    };
+    return text.replaceAll(/[&<>"'/]/g, (char) => htmlEscapeMap[char] || char);
+  }
+
   async sendImportCompletionEmail({
     to,
     userName,
@@ -70,6 +85,7 @@ export class EmailService {
     totalCount: number;
   }): string {
     const { userName, processedCount, failedCount, totalCount } = args;
+    const escapedUserName = this.escapeHtml(userName);
     const status =
       failedCount === 0
         ? 'successfully completed'
@@ -98,7 +114,7 @@ export class EmailService {
               <h1>CSV Import Complete</h1>
             </div>
             <div class="content">
-              <p>Hello ${userName},</p>
+              <p>Hello ${escapedUserName},</p>
               <p>Your CSV import has ${status}.</p>
               
               <div class="stats">
@@ -174,6 +190,8 @@ export class EmailService {
     errorMessage: string;
   }): string {
     const { userName, errorMessage } = args;
+    const escapedUserName = this.escapeHtml(userName);
+    const escapedErrorMessage = this.escapeHtml(errorMessage);
 
     return `
       <!DOCTYPE html>
@@ -195,12 +213,12 @@ export class EmailService {
               <h1>CSV Import Failed</h1>
             </div>
             <div class="content">
-              <p>Hello ${userName},</p>
+              <p>Hello ${escapedUserName},</p>
               <p>Unfortunately, your CSV import could not be completed due to an error.</p>
               
               <div class="error-box">
                 <strong>Error Details:</strong>
-                <p>${errorMessage}</p>
+                <p>${escapedErrorMessage}</p>
               </div>
               
               <p>Please check your CSV file and try again. If the problem persists, please contact support.</p>
@@ -266,6 +284,7 @@ export class EmailService {
     transactionCount: number;
   }): string {
     const { userName, transactionCount } = args;
+    const escapedUserName = this.escapeHtml(userName);
 
     return `
       <!DOCTYPE html>
@@ -289,7 +308,7 @@ export class EmailService {
               <h1>Your Data Export is Ready</h1>
             </div>
             <div class="content">
-              <p>Hello ${userName},</p>
+              <p>Hello ${escapedUserName},</p>
               <p>Your data export has been completed successfully.</p>
               
               <div class="stats">
@@ -350,6 +369,8 @@ export class EmailService {
     errorMessage: string;
   }): string {
     const { userName, errorMessage } = args;
+    const escapedUserName = this.escapeHtml(userName);
+    const escapedErrorMessage = this.escapeHtml(errorMessage);
 
     return `
       <!DOCTYPE html>
@@ -371,12 +392,12 @@ export class EmailService {
               <h1>Data Export Failed</h1>
             </div>
             <div class="content">
-              <p>Hello ${userName},</p>
+              <p>Hello ${escapedUserName},</p>
               <p>Unfortunately, your data export could not be completed due to an error.</p>
               
               <div class="error-box">
                 <strong>Error Details:</strong>
-                <p>${errorMessage}</p>
+                <p>${escapedErrorMessage}</p>
               </div>
               
               <p>Please try again later. If the problem persists, please contact support.</p>
