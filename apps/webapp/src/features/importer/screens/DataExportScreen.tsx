@@ -15,8 +15,10 @@ import { DatePickerInput } from '@mantine/dates';
 import { useState } from 'react';
 import { useAccounts, useGualletClient } from '@guallet/api-react';
 import { IconCheck, IconMail } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 export function DataExportScreen() {
+  const { t } = useTranslation();
   const gualletClient = useGualletClient();
   const { accounts } = useAccounts();
 
@@ -82,26 +84,25 @@ export function DataExportScreen() {
           </div>
 
           <Stack align="center" gap="xs">
-            <Title order={2}>Export Started Successfully!</Title>
+            <Title order={2}>{t('screens.dataExport.modal.title')}</Title>
             <Text c="dimmed" ta="center">
-              Your data export is now being processed in the background.
+              {t('screens.dataExport.modal.description')}
             </Text>
           </Stack>
 
           <Alert icon={<IconMail size={16} />} color="blue" w="100%">
             <Stack gap="xs">
               <Text fw={500} size="sm">
-                You'll receive an email with the CSV file
+                {t('screens.dataExport.modal.emailTitle')}
               </Text>
               <Text size="sm">
-                We'll send you an email with the exported data attached as a CSV
-                file. You can open it with any spreadsheet application.
+                {t('screens.dataExport.modal.emailDescription')}
               </Text>
             </Stack>
           </Alert>
 
           <Button fullWidth size="md" onClick={() => setIsModalOpened(false)}>
-            Got it
+            {t('screens.dataExport.modal.button')}
           </Button>
         </Stack>
       </Modal>
@@ -109,17 +110,14 @@ export function DataExportScreen() {
       <BaseScreen>
         <Stack gap="xl">
           <Stack gap="xs">
-            <Title order={2}>Export Transactions</Title>
-            <Text c="dimmed">
-              Export your transactions to a CSV file. The file will be sent to
-              your email.
-            </Text>
+            <Title order={2}>{t('screens.dataExport.title')}</Title>
+            <Text c="dimmed">{t('screens.dataExport.description')}</Text>
           </Stack>
 
           {error && (
             <Alert
               color="red"
-              title="Export Error"
+              title={t('screens.dataExport.error.title')}
               withCloseButton
               onClose={() => setError(null)}
             >
@@ -129,16 +127,17 @@ export function DataExportScreen() {
 
           <Paper shadow="sm" p="lg" withBorder>
             <Stack gap="md">
-              <Title order={4}>Filters (Optional)</Title>
+              <Title order={4}>{t('screens.dataExport.filters.title')}</Title>
               <Text size="sm" c="dimmed">
-                By default, all your transactions will be exported. Use the
-                filters below to export a specific subset.
+                {t('screens.dataExport.filters.description')}
               </Text>
 
               <DatePickerInput
                 type="range"
-                label="Date Range"
-                placeholder="Pick date range (leave empty for all)"
+                label={t('screens.dataExport.filters.dateRange.label')}
+                placeholder={t(
+                  'screens.dataExport.filters.dateRange.placeholder',
+                )}
                 value={dateRange}
                 onChange={(range) => {
                   const startDate = range ? range[0] : null;
@@ -157,8 +156,10 @@ export function DataExportScreen() {
               />
 
               <MultiSelect
-                label="Accounts"
-                placeholder="Select accounts (leave empty for all)"
+                label={t('screens.dataExport.filters.accounts.label')}
+                placeholder={t(
+                  'screens.dataExport.filters.accounts.placeholder',
+                )}
                 data={accountOptions}
                 value={selectedAccountIds}
                 onChange={setSelectedAccountIds}
@@ -171,29 +172,20 @@ export function DataExportScreen() {
           <Paper p="md" withBorder>
             <Stack gap="sm">
               <Text fw={500} size="sm">
-                What happens next?
+                {t('screens.dataExport.info.title')}
               </Text>
               <List size="sm" spacing="xs">
-                <List.Item>
-                  Your export request will be processed in the background
-                </List.Item>
-                <List.Item>
-                  The CSV file will include: Date, Description, Amount,
-                  Currency, Account, Category, and Notes
-                </List.Item>
-                <List.Item>
-                  You'll receive an email with the CSV file attached
-                </List.Item>
-                <List.Item>
-                  You can continue using the app while the export is processed
-                </List.Item>
+                <List.Item>{t('screens.dataExport.info.step1')}</List.Item>
+                <List.Item>{t('screens.dataExport.info.step2')}</List.Item>
+                <List.Item>{t('screens.dataExport.info.step3')}</List.Item>
+                <List.Item>{t('screens.dataExport.info.step4')}</List.Item>
               </List>
             </Stack>
           </Paper>
 
           <Group justify="flex-end">
             <Button size="md" onClick={handleExport} loading={isLoading}>
-              Export Transactions
+              {t('screens.dataExport.exportButton')}
             </Button>
           </Group>
         </Stack>
