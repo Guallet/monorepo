@@ -22,10 +22,11 @@ export function DataExportScreen() {
   const gualletClient = useGualletClient();
   const { accounts } = useAccounts();
 
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+  const [dateRange, setDateRange] = useState<[string | null, string | null]>([
     null,
     null,
   ]);
+
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpened, setIsModalOpened] = useState(false);
@@ -42,8 +43,12 @@ export function DataExportScreen() {
       setIsLoading(true);
 
       await gualletClient.dataExporter.exportCsv({
-        startDate: dateRange[0]?.toISOString(),
-        endDate: dateRange[1]?.toISOString(),
+        startDate: dateRange[0]
+          ? new Date(dateRange[0]).toISOString()
+          : undefined,
+        endDate: dateRange[1]
+          ? new Date(dateRange[1]).toISOString()
+          : undefined,
         accounts:
           selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
       });
@@ -139,18 +144,9 @@ export function DataExportScreen() {
                   'screens.dataExport.filters.dateRange.placeholder',
                 )}
                 value={dateRange}
-                onChange={(range) => {
-                  if (range?.[0] === null || range[1] === null) {
-                    // Handle clearing the date range or incomplete selection
-                    setDateRange([null, null]);
-                  } else {
-                    // Both dates are selected, parse them
-                    const startDateValue = new Date(range[0]);
-                    const endDateValue = new Date(range[1]);
-                    setDateRange([startDateValue, endDateValue]);
-                  }
-                }}
+                onChange={setDateRange}
                 clearable
+                maxDate={new Date()}
               />
 
               <MultiSelect
