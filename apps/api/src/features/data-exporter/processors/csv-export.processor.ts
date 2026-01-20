@@ -144,7 +144,14 @@ export class CsvExportProcessor extends WorkerHost {
 
   private escapeCsvField(field: string): string {
     // Escape quotes by doubling them and wrap in quotes if contains special chars
-    if (field.includes(',') || field.includes('"') || field.includes('\n')) {
+    // Check for: comma, double quote, newline, carriage return, or leading/trailing whitespace
+    if (
+      field.includes(',') ||
+      field.includes('"') ||
+      field.includes('\n') ||
+      field.includes('\r') ||
+      field.trim() !== field
+    ) {
       return `"${field.replace(/"/g, '""')}"`;
     }
     return field;
