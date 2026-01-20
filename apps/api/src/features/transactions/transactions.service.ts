@@ -276,4 +276,42 @@ export class TransactionsService {
 
     return await this.repository.remove(dbEntity);
   }
+
+  /**
+   * Get all user transactions for export without pagination.
+   * Used for CSV export functionality.
+   */
+  async getAllUserTransactionsForExport({
+    userId,
+    accounts,
+    startDate,
+    endDate,
+  }: {
+    userId: string;
+    accounts?: string[];
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<Transaction[]> {
+    this.logger.debug('Fetching all user transactions for export', {
+      userId,
+      accounts,
+      startDate,
+      endDate,
+    });
+
+    return this.repository.find({
+      relations: {
+        account: true,
+        category: true,
+      },
+      where: {
+        account: { user_id: userId },
+        ...(accounts && accounts.length > 0 && { accountId: In(accounts) }),
+        ...(startDate && endDate && { date: Between(startDate, endDate) }),
+      },
+      order: {
+        date: 'DESC',
+      },
+    });
+  }
 }

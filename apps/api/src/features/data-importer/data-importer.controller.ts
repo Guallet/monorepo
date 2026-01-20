@@ -19,7 +19,7 @@ import {
   CsvImportJobData,
 } from './processors/csv-import.processor';
 
-@ApiTags('Data Importer')
+@ApiTags('Data Import / Export')
 @Controller('data-importer')
 export class DataImporterController {
   private readonly logger = new Logger(DataImporterController.name);

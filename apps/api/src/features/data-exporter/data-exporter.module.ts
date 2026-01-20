@@ -1,0 +1,28 @@
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import { DataExporterController } from './data-exporter.controller';
+import {
+  CsvExportProcessor,
+  CSV_EXPORT_QUEUE,
+} from './processors/csv-export.processor';
+import { AccountsModule } from '../accounts/accounts.module';
+import { CategoriesModule } from '../categories/categories.module';
+import { TransactionsModule } from '../transactions/transactions.module';
+import { EmailModule } from '../email/email.module';
+import { UsersModule } from '../users/users.module';
+
+@Module({
+  imports: [
+    BullModule.registerQueue({
+      name: CSV_EXPORT_QUEUE,
+    }),
+    AccountsModule,
+    CategoriesModule,
+    TransactionsModule,
+    EmailModule,
+    UsersModule,
+  ],
+  controllers: [DataExporterController],
+  providers: [CsvExportProcessor],
+})
+export class DataExporterModule {}

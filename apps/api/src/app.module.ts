@@ -26,6 +26,7 @@ import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import { DataImporterModule } from './features/data-importer/data-importer.module';
+import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
 import { NordigenSyncModule } from './features/nordigen-sync/nordigen-sync.module';
 import { NordigenKeysModule } from './features/nordigen-keys/nordigen-keys.module';
@@ -114,6 +115,7 @@ import { BullModule } from '@nestjs/bullmq';
     WaitingListModule,
     SavingGoalsModule,
     DataImporterModule,
+    DataExporterModule,
     EmailModule,
     NordigenSyncModule,
     NordigenKeysModule,

@@ -34,7 +34,7 @@ export function SettingsScreen() {
           <TextRow
             label="Manage institutions"
             onClick={() => {
-              navigate({ to: "/institutions" });
+              navigate({ to: '/institutions' });
             }}
           />
         </AppSection>
@@ -43,13 +43,13 @@ export function SettingsScreen() {
           <TextRow
             label="Export data"
             onClick={() => {
-              navigate({ to: "/importer/export" });
+              navigate({ to: '/settings/export' });
             }}
           />
           <TextRow
             label="Import data"
             onClick={() => {
-              navigate({ to: "/importer" });
+              navigate({ to: '/importer' });
             }}
           />
         </AppSection>

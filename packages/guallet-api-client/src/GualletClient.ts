@@ -10,6 +10,7 @@ import { SavingGoalsApi } from './savingGoals';
 import { SubscriptionsApi } from './subscriptions';
 import { DataImporterApi } from './data-importer';
 import { NordigenKeysApi } from './nordigen-keys';
+import { DataExporterApi } from './data-exporter';
 import { NotificationsApi } from './notifications';
 
 export interface GualletClient {
@@ -25,6 +26,7 @@ export interface GualletClient {
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
   nordigenKeys: NordigenKeysApi;
+  dataExporter: DataExporterApi;
   notifications: NotificationsApi;
 }
 
@@ -76,6 +78,7 @@ export class GualletClientImpl implements GualletClient {
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
   nordigenKeys: NordigenKeysApi;
+  dataExporter: DataExporterApi;
   notifications: NotificationsApi;
 
   constructor({
@@ -100,6 +103,7 @@ export class GualletClientImpl implements GualletClient {
     this.subscriptions = new SubscriptionsApi(this);
     this.dataImporter = new DataImporterApi(this);
     this.nordigenKeys = new NordigenKeysApi(this);
+    this.dataExporter = new DataExporterApi(this);
     this.notifications = new NotificationsApi(this);
   }
 
