@@ -70,7 +70,7 @@ export class CsvExportProcessor extends WorkerHost {
       });
 
       // Send email with CSV attachment
-      await this.sendExportEmail(userId, csvContent, +transactions.length);
+      await this.sendExportEmail(userId, csvContent, transactions.length);
 
       this.logger.log(
         `CSV export job ${job.id} completed. Exported ${transactions.length} transactions.`,
