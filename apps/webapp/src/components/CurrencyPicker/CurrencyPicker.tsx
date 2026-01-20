@@ -1,9 +1,9 @@
 import { Currency } from '@guallet/money';
+import { useIsMobile } from '@guallet/ui-react';
 import { Input, InputWrapperProps, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSelector } from '@tabler/icons-react';
 import { CurrencyPickerModal } from './CurrencyPickerModal';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface CurrencyPickerProps extends InputWrapperProps {
   value: string | null;

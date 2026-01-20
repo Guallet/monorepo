@@ -1,5 +1,5 @@
 import { Currency, ISO4217Currencies } from '@guallet/money';
-import { SearchBoxInput } from '@guallet/ui-react';
+import { SearchBoxInput, useIsMobile } from '@guallet/ui-react';
 import {
   ScrollArea,
   Group,
@@ -11,7 +11,6 @@ import {
 } from '@mantine/core';
 import { useMemo, useState } from 'react';
 import classes from './CurrencyPicker.module.css';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 const currencyCodes = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))

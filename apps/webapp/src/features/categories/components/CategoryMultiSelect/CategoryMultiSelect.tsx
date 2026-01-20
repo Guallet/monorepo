@@ -1,7 +1,7 @@
 import { CategoryDto } from '@guallet/api-client';
+import { useIsMobile } from '@guallet/ui-react';
 import { Input, Modal, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useIsMobile } from '@/hooks/useIsMobile';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CategoryMultiSelectModal } from './CategoryMultiSelectModal';
