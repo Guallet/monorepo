@@ -45,12 +45,12 @@ export class CsvExportProcessor extends WorkerHost {
       if (endDate) endDate.setHours(23, 59, 59, 999);
 
       // Get all user accounts for mapping
-      const accounts = await this.accountsService.getAllUserAccounts(userId);
+      const accounts = await this.accountsService.findAllUserAccounts(userId);
       const accountsMap = new Map(accounts.map((a) => [a.id, a.name]));
 
       // Get all user categories for mapping
       const categories =
-        await this.categoriesService.getAllUserCategories(userId);
+        await this.categoriesService.findAllUserCategories(userId);
       const categoriesMap = new Map(categories.map((c) => [c.id, c.name]));
 
       // Fetch all transactions matching the filters (without pagination)
@@ -63,14 +63,14 @@ export class CsvExportProcessor extends WorkerHost {
         });
 
       // Generate CSV content
-      const csvContent = this.generateCsvContent(
+      const csvContent = this.generateCsvContent({
         transactions,
         accountsMap,
         categoriesMap,
-      );
+      });
 
       // Send email with CSV attachment
-      await this.sendExportEmail(userId, csvContent, transactions.length);
+      await this.sendExportEmail(userId, csvContent, +transactions.length);
 
       this.logger.log(
         `CSV export job ${job.id} completed. Exported ${transactions.length} transactions.`,
@@ -93,7 +93,11 @@ export class CsvExportProcessor extends WorkerHost {
     }
   }
 
-  private generateCsvContent(
+  private generateCsvContent({
+    transactions,
+    accountsMap,
+    categoriesMap,
+  }: {
     transactions: Array<{
       id: string;
       accountId: string;
@@ -103,18 +107,18 @@ export class CsvExportProcessor extends WorkerHost {
       currency: string;
       date: Date;
       categoryId?: string | null;
-    }>,
-    accountsMap: Map<string, string>,
-    categoriesMap: Map<string, string>,
-  ): string {
+    }>;
+    accountsMap: Map<string, string>;
+    categoriesMap: Map<string, string>;
+  }): string {
     const headers = [
       'Date',
+      'Account',
       'Description',
       'Amount',
       'Currency',
-      'Account',
-      'Category',
       'Notes',
+      'Category',
     ];
 
     const rows = transactions.map((tx) => {
@@ -125,12 +129,12 @@ export class CsvExportProcessor extends WorkerHost {
 
       return [
         this.formatDate(tx.date),
+        this.escapeCsvField(accountName),
         this.escapeCsvField(tx.description || ''),
         tx.amount.toString(),
         tx.currency,
-        this.escapeCsvField(accountName),
-        this.escapeCsvField(categoryName),
         this.escapeCsvField(tx.notes || ''),
+        this.escapeCsvField(categoryName),
       ].join(',');
     });
 
@@ -152,7 +156,7 @@ export class CsvExportProcessor extends WorkerHost {
       field.includes('\r') ||
       field.trim() !== field
     ) {
-      return `"${field.replace(/"/g, '""')}"`;
+      return `"${field.replaceAll('"', '""')}"`;
     }
     return field;
   }

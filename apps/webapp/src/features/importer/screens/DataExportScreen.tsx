@@ -1,4 +1,4 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 import {
   Stack,
   Title,
@@ -10,11 +10,11 @@ import {
   Modal,
   Alert,
   List,
-} from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
-import { useState } from "react";
-import { useAccounts, useGualletClient } from "@guallet/api-react";
-import { IconCheck, IconMail } from "@tabler/icons-react";
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { useState } from 'react';
+import { useAccounts, useGualletClient } from '@guallet/api-react';
+import { IconCheck, IconMail } from '@tabler/icons-react';
 
 export function DataExportScreen() {
   const gualletClient = useGualletClient();
@@ -42,7 +42,8 @@ export function DataExportScreen() {
       await gualletClient.dataExporter.exportCsv({
         startDate: dateRange[0]?.toISOString(),
         endDate: dateRange[1]?.toISOString(),
-        accounts: selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
+        accounts:
+          selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
       });
 
       setIsModalOpened(true);
@@ -70,11 +71,11 @@ export function DataExportScreen() {
             style={{
               width: 80,
               height: 80,
-              borderRadius: "50%",
-              backgroundColor: "var(--mantine-color-green-1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              borderRadius: '50%',
+              backgroundColor: 'var(--mantine-color-green-1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <IconCheck size={48} color="var(--mantine-color-green-6)" />
@@ -137,9 +138,21 @@ export function DataExportScreen() {
               <DatePickerInput
                 type="range"
                 label="Date Range"
-                placeholder="Pick date range"
+                placeholder="Pick date range (leave empty for all)"
                 value={dateRange}
-                onChange={setDateRange}
+                onChange={(range) => {
+                  const startDate = range ? range[0] : null;
+                  const endDate = range ? range[1] : null;
+
+                  if (startDate && endDate) {
+                    // parse the strings into dates
+                    const startDateValue = new Date(startDate);
+                    const endDateValue = new Date(endDate);
+
+                    // create the date range
+                    setDateRange([startDateValue, endDateValue]);
+                  }
+                }}
                 clearable
               />
 
@@ -188,4 +201,3 @@ export function DataExportScreen() {
     </>
   );
 }
-
