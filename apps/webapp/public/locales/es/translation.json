@@ -322,7 +322,7 @@
       "screen": {
         "title": "Notificaciones",
         "unreadCount_one": "{{count}} sin leer",
-        "unreadCount_many": "{{count}} unread",
+        "unreadCount_many": "{{count}} sin leer",
         "unreadCount_other": "{{count}} sin leer",
         "actions": {
           "markAsRead": "Marcar como leída",
