@@ -26,7 +26,7 @@ import {
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   csvAccountsAtom,
   csvCategoriesAtom,
@@ -426,9 +426,15 @@ function TransactionsContent() {
   const { categories: remoteCategories } = useCategories();
   const categoriesMappings = useAtomValue(categoriesMappingsAtom);
 
-  const sampleTransactions = transactions
-    .toSorted(() => 0.5 - Math.random())
-    .slice(0, SAMPLE_ARRAY_SIZE);
+  const sampleTransactions = useMemo(() => {
+    // Fisher-Yates shuffle algorithm (deterministic with index)
+    const arr = [...transactions];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor((i + 1) * 0.5); // Pseudo-random based on index
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, SAMPLE_ARRAY_SIZE);
+  }, [transactions]);
 
   return (
     <Stack gap="md">

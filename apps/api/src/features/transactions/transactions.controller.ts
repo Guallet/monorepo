@@ -23,7 +23,7 @@ import {
   transactionsQueryFilterSchema,
 } from './dto/transaction.query';
 import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
-import { InboxTransactionDto } from './dto/inbox-transaction.dto';
+import { InboxTransactionsResultDto } from './dto/inbox-transaction.dto';
 
 @ApiTags('Transactions')
 @Controller('transactions')
@@ -65,7 +65,7 @@ export class TransactionsController {
     }
     const { page = 1, pageSize = 50, startDate, endDate, accounts } = query;
 
-    console.log(`Transaction Query: ${JSON.stringify(query)}`);
+    this.logger.log(`Transaction Query: ${JSON.stringify(query)}`);
 
     if (!Number.isInteger(+page) || !Number.isInteger(+pageSize)) {
       throw new BadRequestException(
@@ -103,15 +103,69 @@ export class TransactionsController {
     });
   }
 
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    example: '1',
+    description: 'The page to return. Default is 1',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    example: '50',
+    description: 'The number of items to return. Default is 50',
+    required: false,
+  })
   @Get('/inbox')
   async getUserTransactionInbox(
     @RequestUser() user: UserPrincipal,
-  ): Promise<InboxTransactionDto[]> {
-    const transactions =
-      await this.transactionsService.getUserTransactionsInbox({
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 50,
+  ): Promise<InboxTransactionsResultDto> {
+    //In NestJS, query parameters are typically received as strings, so when you check if they
+    // are integers we need to convert them into numbers using the + operator
+    const pageNum = +page;
+    const pageSizeNum = +pageSize;
+
+    if (!Number.isInteger(pageNum) || !Number.isInteger(pageSizeNum)) {
+      this.logger.error(
+        `Invalid query params for inbox transactions: page=${page}, pageSize=${pageSize}`,
+        {
+          page,
+          pageSize,
+          isPageNum: Number.isInteger(pageNum),
+          isPageSizeNum: Number.isInteger(pageSizeNum),
+        },
+      );
+      throw new BadRequestException(
+        'Query Params `page` and `pageSize` must be integers',
+      );
+    }
+
+    if (pageNum <= 0 || pageSizeNum <= 0) {
+      throw new BadRequestException(
+        'Query Params `page` and `pageSize` must be greater than 0',
+      );
+    }
+
+    const [transactions, total] = await Promise.all([
+      this.transactionsService.getUserTransactionsInbox({
         userId: user.id,
-      });
-    return transactions.map((x) => InboxTransactionDto.fromDomain(x));
+        page: pageNum,
+        pageSize: pageSizeNum,
+      }),
+      this.transactionsService.getUserTransactionsInboxCount({
+        userId: user.id,
+      }),
+    ]);
+
+    return InboxTransactionsResultDto.fromDomain({
+      transactions: transactions,
+      total: total,
+      page: pageNum,
+      pageSize: pageSizeNum,
+    });
   }
 
   @Post()

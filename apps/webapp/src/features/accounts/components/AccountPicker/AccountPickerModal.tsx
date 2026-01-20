@@ -1,5 +1,5 @@
-import { AccountDto, AccountTypeDto } from "@guallet/api-client";
-import { SearchBoxInput } from "@guallet/ui-react";
+import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { SearchBoxInput } from '@guallet/ui-react';
 import {
   ActionIcon,
   Button,
@@ -9,11 +9,11 @@ import {
   Stack,
   Text,
   Tooltip,
-} from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
-import { AccountCheckbox } from "./AccountCheckbox";
-import { IconDeselect, IconSelectAll } from "@tabler/icons-react";
-import { getAccountTypeTitle } from "../../models/Account";
+} from '@mantine/core';
+import { useMemo, useState } from 'react';
+import { AccountCheckbox } from './AccountCheckbox';
+import { IconDeselect, IconSelectAll } from '@tabler/icons-react';
+import { getAccountTypeTitle } from '../../models/Account';
 
 interface AccountsPickerModalProps {
   accounts: AccountDto[];
@@ -28,24 +28,20 @@ export function AccountPickerModal({
   onSelectAccounts,
   onCancel,
 }: Readonly<AccountsPickerModalProps>) {
-  const [query, setQuery] = useState("");
-  const [filteredAccounts, setFilteredAccounts] =
-    useState<AccountDto[]>(accounts);
+  const [query, setQuery] = useState('');
+
+  const filteredAccounts = useMemo(() => {
+    if (query === '' || query === null || query === undefined) {
+      return accounts;
+    }
+    return accounts.filter((account) => {
+      return account.name.toLowerCase().includes(query.toLowerCase());
+    });
+  }, [query, accounts]);
 
   const [selectedIds, setSelectedIds] = useState(
-    selectedAccounts.map((x) => x.id)
+    selectedAccounts.map((x) => x.id),
   );
-
-  useEffect(() => {
-    if (query === "" || query === null || query === undefined) {
-      setFilteredAccounts(accounts);
-    } else {
-      const filtered = accounts.filter((account) => {
-        return account.name.toLowerCase().includes(query.toLowerCase());
-      });
-      setFilteredAccounts(filtered);
-    }
-  }, [query, accounts]);
 
   const groupedAccounts = useMemo(() => {
     const groups: { type: AccountTypeDto; items: AccountDto[] }[] = [];
@@ -71,7 +67,7 @@ export function AccountPickerModal({
   }
 
   return (
-    <Stack w={"30em"}>
+    <Stack w={'30em'}>
       <Group>
         <SearchBoxInput
           style={{ flexGrow: 1 }}
@@ -113,13 +109,13 @@ export function AccountPickerModal({
                       key={item.id}
                       account={item}
                       style={{
-                        marginBottom: "5px",
+                        marginBottom: '5px',
                       }}
                     />
                   ))}
                 </Checkbox.Group>
               </Stack>
-            )
+            ),
           )}
         </Checkbox.Group>
       </ScrollArea.Autosize>
@@ -128,7 +124,7 @@ export function AccountPickerModal({
           disabled={selectedIds.length === 0}
           onClick={() => {
             onSelectAccounts(
-              accounts.filter((x) => selectedIds.includes(x.id))
+              accounts.filter((x) => selectedIds.includes(x.id)),
             );
           }}
         >

@@ -4,7 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { defaultCategories } from './defaulCategories';
+import { defaultCategories } from './defaultCategories';
 
 @Injectable()
 export class CategoriesService {
@@ -12,7 +12,7 @@ export class CategoriesService {
 
   constructor(
     @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   async create({

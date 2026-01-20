@@ -16,12 +16,15 @@
     "react-dom": "workspace:*"
   },
   "devDependencies": {
+    "@eslint/js": "workspace:*",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
     "eslint": "workspace:*",
-    "eslint-config-custom": "workspace:*",
+    "eslint-plugin-react-hooks": "workspace:*",
+    "globals": "workspace:*",
     "react": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*"
+    "typescript": "workspace:*",
+    "typescript-eslint": "workspace:*"
   }
 }

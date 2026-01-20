@@ -6,17 +6,11 @@
 //     action: editUserAction,
 //   },
 
-import { gualletClient } from "@/api/gualletClient";
-import { TextInput, Button, Group } from "@mantine/core";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { gualletClient } from '@/api/gualletClient';
+import { TextInput, Button, Group } from '@mantine/core';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
-type FormData = {
-  name: string;
-  email: string;
-  profile_image: string;
-};
-
-export const Route = createFileRoute("/_app/user/edit")({
+export const Route = createFileRoute('/_app/user/edit')({
   loader: loader,
   component: EditUserPage,
 });
@@ -79,7 +73,7 @@ function EditUserPage() {
           variant="outline"
           onClick={() => {
             navigate({
-              to: "/user",
+              to: '/user',
             });
           }}
         >

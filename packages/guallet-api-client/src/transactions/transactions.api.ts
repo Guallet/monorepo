@@ -1,12 +1,12 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   CreateTransactionRequest,
-  InboxTransactionDto,
+  InboxTransactionQueryResultDto,
   TransactionDto,
   TransactionQueryResultDto,
-} from "./transactions.models";
+} from './transactions.models';
 
-const TRANSACTIONS_PATH = "transactions";
+const TRANSACTIONS_PATH = 'transactions';
 
 export class TransactionsApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -37,20 +37,20 @@ export class TransactionsApi {
     });
 
     if (pageSize) {
-      params.append("pageSize", pageSize.toString());
+      params.append('pageSize', pageSize.toString());
     }
 
     if (accounts?.length) {
-      params.append("accounts", accounts.join(","));
+      params.append('accounts', accounts.join(','));
     }
     if (categories?.length) {
-      params.append("categories", categories.join(","));
+      params.append('categories', categories.join(','));
     }
     if (startDate) {
-      params.append("startDate", startDate.toISOString());
+      params.append('startDate', startDate.toISOString());
     }
     if (endDate) {
-      params.append("endDate", endDate.toISOString());
+      params.append('endDate', endDate.toISOString());
     }
 
     const queryPath = `${TRANSACTIONS_PATH}?${params.toString()}`;
@@ -59,9 +59,30 @@ export class TransactionsApi {
     });
   }
 
-  async getInbox(): Promise<InboxTransactionDto[]> {
-    return await this.client.get<InboxTransactionDto[]>({
-      path: `${TRANSACTIONS_PATH}/inbox`,
+  async getInbox({
+    page,
+    pageSize,
+  }: {
+    page?: number | null;
+    pageSize?: number | null;
+  } = {}): Promise<InboxTransactionQueryResultDto> {
+    const params = new URLSearchParams();
+
+    if (page != null) {
+      params.append('page', page.toString());
+    }
+
+    if (pageSize != null) {
+      params.append('pageSize', pageSize.toString());
+    }
+
+    const queryPath =
+      params.toString() === ''
+        ? `${TRANSACTIONS_PATH}/inbox`
+        : `${TRANSACTIONS_PATH}/inbox?${params.toString()}`;
+
+    return await this.client.get<InboxTransactionQueryResultDto>({
+      path: queryPath,
     });
   }
 

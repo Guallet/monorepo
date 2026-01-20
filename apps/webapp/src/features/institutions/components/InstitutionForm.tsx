@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
+interface InstitutionData {
+  name: string;
+  image_src: string;
+  countries: string[];
+}
 
 interface InstitutionFormProps {
-  onSubmit: (data: any) => void;
-  initialValues?: any;
+  onSubmit: (data: InstitutionData) => void;
+  initialValues?: Partial<InstitutionData>;
 }
 
 const InstitutionForm: React.FC<InstitutionFormProps> = ({
   onSubmit,
   initialValues,
 }) => {
-  const [name, setName] = useState(initialValues?.name || "");
-  const [imageSrc, setImageSrc] = useState(initialValues?.image_src || "");
+  const [name, setName] = useState(initialValues?.name || '');
+  const [imageSrc, setImageSrc] = useState(initialValues?.image_src || '');
   const [countries, setCountries] = useState(
-    initialValues?.countries?.join(",") || ""
+    initialValues?.countries?.join(',') || '',
   );
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -20,7 +26,7 @@ const InstitutionForm: React.FC<InstitutionFormProps> = ({
     onSubmit({
       name,
       image_src: imageSrc,
-      countries: countries.split(",").map((country: string) => country.trim()),
+      countries: countries.split(',').map((country: string) => country.trim()),
     });
   };
 

@@ -59,6 +59,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: '2024-01-15',
         imageUrl: 'https://example.com/netflix.png',
       };
 
@@ -66,6 +67,7 @@ describe('RegularPaymentsService', () => {
         id: 'payment-1',
         user_id: userId,
         ...createDto,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentRepository.save.mockResolvedValue(savedPayment);
@@ -83,6 +85,7 @@ describe('RegularPaymentsService', () => {
         currency: createDto.currency,
         name: createDto.name,
         type: createDto.type,
+        startDate: new Date('2024-01-15'),
         imageUrl: createDto.imageUrl,
         category: undefined,
       });
@@ -96,6 +99,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.REGULAR_PAYMENT,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: '2024-01-01',
         categoryId: 'category-1',
       };
 
@@ -109,6 +113,7 @@ describe('RegularPaymentsService', () => {
         id: 'payment-1',
         user_id: userId,
         ...createDto,
+        startDate: new Date('2024-01-01'),
       };
 
       mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
@@ -133,6 +138,7 @@ describe('RegularPaymentsService', () => {
         currency: createDto.currency,
         name: createDto.name,
         type: createDto.type,
+        startDate: new Date('2024-01-01'),
         imageUrl: createDto.imageUrl,
         category: { id: 'category-1' },
       });
@@ -146,6 +152,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.REGULAR_PAYMENT,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: '2024-01-01',
         categoryId: 'invalid-category',
       };
 
@@ -182,12 +189,14 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.REGULAR_INCOME,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: '2024-01-01',
       };
 
       const savedPayment: Partial<RegularPayment> = {
         id: 'payment-1',
         user_id: userId,
         ...createDto,
+        startDate: new Date('2024-01-01'),
       };
 
       mockRegularPaymentRepository.save.mockResolvedValue(savedPayment);
@@ -214,6 +223,7 @@ describe('RegularPaymentsService', () => {
           currency: 'GBP',
           type: RecurringPaymentType.SUBSCRIPTION,
           cadence: RecurrenceCadence.MONTHLY,
+          startDate: new Date('2024-01-15'),
         },
         {
           id: 'payment-2',
@@ -223,6 +233,7 @@ describe('RegularPaymentsService', () => {
           currency: 'GBP',
           type: RecurringPaymentType.SUBSCRIPTION,
           cadence: RecurrenceCadence.MONTHLY,
+          startDate: new Date('2024-01-10'),
         },
       ];
 
@@ -261,6 +272,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentRepository.findOne.mockResolvedValue(mockPayment);
@@ -312,6 +324,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       const updatedPayment: Partial<RegularPayment> = {
@@ -368,6 +381,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
         categoryId: 'category-1',
       };
 
@@ -416,6 +430,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
         categoryId: 'category-1',
       };
 
@@ -447,6 +462,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
         categoryId: 'category-1',
       };
 
@@ -486,6 +502,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       const updatedPayment: Partial<RegularPayment> = {
@@ -496,6 +513,7 @@ describe('RegularPaymentsService', () => {
         currency: 'USD',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.YEARLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentRepository.findOne.mockResolvedValue(existingPayment);
@@ -526,6 +544,7 @@ describe('RegularPaymentsService', () => {
         currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.MONTHLY,
+        startDate: new Date('2024-01-15'),
       };
 
       mockRegularPaymentRepository.findOne.mockResolvedValue(mockPayment);

@@ -309,6 +309,37 @@
         "addButton": "Add a new connection"
       }
     },
+    "notifications": {
+      "icon": {
+        "navigationErrorTitle": "Navigation Error",
+        "navigationErrorMessage": "Unable to navigate to the requested page.",
+        "loading": "Loading...",
+        "noNotifications": "No new notifications",
+        "viewAll": "View all notifications"
+      },
+      "screen": {
+        "title": "Notifications",
+        "unreadCount_one": "{{count}} unread",
+        "unreadCount_other": "{{count}} unread",
+        "actions": {
+          "markAsRead": "Mark as read",
+          "markAsUnread": "Mark as unread",
+          "delete": "Delete notification"
+        },
+        "types": {
+          "warning": "Warning",
+          "important": "Important",
+          "actionRequired": "Action Required",
+          "info": "Info"
+        },
+        "badges": {
+          "new": "New"
+        },
+        "loading": "Loading notifications...",
+        "markAllAsRead": "Mark all as read",
+        "emptyState": "You have no notifications"
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {
@@ -324,6 +355,13 @@
           "quarterly": "Quarterly",
           "yearly": "Yearly",
           "unknown": "Unknown"
+        },
+        "nextPayment": {
+          "today": "Today",
+          "tomorrow": "Tomorrow",
+          "inDays_one": "In {{count}} day",
+          "inDays_other": "In {{count}} days",
+          "label": "Next payment:"
         },
         "title": "Subscriptions & Regular Payments",
         "estimatedMonthly": "Estimated monthly:",
@@ -389,22 +427,22 @@
     "register": {
       "form": {
         "name": {
-          "validation": "Name must have at least 2 characters",
+          "validation": "CNF: Name must have at least 2 characters",
           "label": "Name",
           "placeholder": "Enter your name"
         },
         "email": {
-          "validation": "Invalid email",
+          "validation": "CNF: Invalid email",
           "label": "Email address",
           "placeholder": "Enter your email"
         },
         "password": {
-          "validation": "Password must have at least 6 characters",
+          "validation": "CNF: Password must have at least 6 characters",
           "label": "Password",
           "placeholder": "Password"
         },
         "confirmPassword": {
-          "validation": "Passwords do not match",
+          "validation": "CNF: Passwords do not match",
           "label": "Confirm Password",
           "placeholder": "Confirm your password"
         },
@@ -441,6 +479,40 @@
       "title": "Create new account",
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
+    },
+    "dataExport": {
+      "title": "Export Transactions",
+      "description": "Export your transactions to a CSV file. The file will be sent to your email.",
+      "error": {
+        "title": "Export Error"
+      },
+      "filters": {
+        "title": "Filters (Optional)",
+        "description": "By default, all your transactions will be exported. Use the filters below to export a specific subset.",
+        "dateRange": {
+          "label": "Date Range",
+          "placeholder": "Pick date range (leave empty for all)"
+        },
+        "accounts": {
+          "label": "Accounts",
+          "placeholder": "Select accounts (leave empty for all)"
+        }
+      },
+      "info": {
+        "title": "What happens next?",
+        "step1": "Your export request will be processed in the background",
+        "step2": "The CSV file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
+        "step3": "You'll receive an email with the CSV file attached",
+        "step4": "You can continue using the app while the export is processed"
+      },
+      "exportButton": "Export Transactions",
+      "modal": {
+        "title": "Export Started Successfully!",
+        "description": "Your data export is now being processed in the background.",
+        "emailTitle": "You'll receive an email with the CSV file",
+        "emailDescription": "We'll send you an email with the exported data attached as a CSV file. You can open it with any spreadsheet application.",
+        "button": "Got it"
+      }
     }
   }
 }

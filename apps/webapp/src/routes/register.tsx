@@ -15,22 +15,17 @@ import {
   Modal,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 export const Route = createFileRoute('/register')({
   component: RouteComponent,
 });
-
-interface FormValues {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
 
 function RouteComponent() {
   const { createAccount, login, isAuthenticated, isLoading } = useAuth();
@@ -38,6 +33,33 @@ function RouteComponent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
   const { t } = useTranslation();
+
+  const registerFormSchema = z.object({
+    name: z.string().min(2, { 
+      message: t(
+        'screens.register.form.name.validation',
+        'CNF: Name must have at least 2 characters',
+      ),
+    }),
+    email: z.string().email({ 
+      message: t('screens.register.form.email.validation', 'CNF: Invalid email'),
+    }),
+    password: z.string().min(6, { 
+      message: t(
+        'screens.register.form.password.validation',
+        'CNF: Password must have at least 6 characters',
+      ),
+    }),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t(
+      'screens.register.form.confirmPassword.validation',
+      'CNF: Passwords do not match',
+    ),
+    path: ['confirmPassword'],
+  });
+
+  type FormValues = z.infer<typeof registerFormSchema>;
 
   useEffect(() => {
     // If there is already a logged in user, just navigate away from here. Force the user to logout before create a new account
@@ -50,42 +72,12 @@ function RouteComponent() {
 
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
+    validate: zod4Resolver(registerFormSchema),
     initialValues: {
       name: '',
       email: '',
       password: '',
       confirmPassword: '',
-    },
-
-    validate: {
-      name: (value) =>
-        value.length < 2
-          ? t(
-              'screens.register.form.name.validation',
-              'CNF: Name must have at least 2 characters',
-            )
-          : null,
-
-      email: (value) =>
-        /^\S+@\S+$/.test(value)
-          ? null
-          : t('screens.register.form.email.validation', 'CNF: Invalid email'),
-
-      password: (value) =>
-        value.length < 6
-          ? t(
-              'screens.register.form.password.validation',
-              'CNF: Password must have at least 6 characters',
-            )
-          : null,
-
-      confirmPassword: (value, values) =>
-        value === values.password
-          ? null
-          : t(
-              'screens.register.form.confirmPassword.validation',
-              'CNF: Passwords do not match',
-            ),
     },
   });
 
@@ -305,7 +297,7 @@ function RouteComponent() {
                       {
                         link: '',
                       },
-                    ).replace('', '')}
+                    )}
                     <Anchor href="https://guallet.io">
                       {t(
                         'screens.register.form.termsLink',

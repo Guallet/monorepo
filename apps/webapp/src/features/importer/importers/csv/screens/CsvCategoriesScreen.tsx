@@ -85,7 +85,7 @@ export function CsvCategoriesScreen() {
               <Table.Tbody>
                 {csvCategories.map((categoryName: string, index: number) => {
                   return (
-                    <Table.Tr key={index}>
+                    <Table.Tr key={categoryName + index}>
                       <Table.Td>
                         <Text fw={500}>{categoryName}</Text>
                       </Table.Td>
@@ -98,10 +98,12 @@ export function CsvCategoriesScreen() {
                             return { value: x.id, label: x.name };
                           })}
                           onChange={(value) => {
-                            mappings[categoryName] = remoteCategories.find(
-                              (x) => x.id === value,
-                            );
-                            setMappings({ ...mappings });
+                            setMappings({
+                              ...mappings,
+                              [categoryName]: remoteCategories.find(
+                                (x) => x.id === value,
+                              ),
+                            });
                           }}
                         />
                       </Table.Td>
