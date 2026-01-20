@@ -441,7 +441,7 @@
           "placeholder": "Ingresa tu correo electrónico"
         },
         "password": {
-          "validation": "CNF: Password must have at least 6 characters",
+          "validation": "La contraseña debe tener al menos 6 caracteres",
           "label": "Contraseña",
           "placeholder": "Contraseña"
         },
