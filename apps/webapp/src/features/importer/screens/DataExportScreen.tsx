@@ -140,15 +140,13 @@ export function DataExportScreen() {
                 )}
                 value={dateRange}
                 onChange={(range) => {
-                  const startDate = range ? range[0] : null;
-                  const endDate = range ? range[1] : null;
-
-                  if (startDate && endDate) {
-                    // parse the strings into dates
-                    const startDateValue = new Date(startDate);
-                    const endDateValue = new Date(endDate);
-
-                    // create the date range
+                  if (range?.[0] === null || range[1] === null) {
+                    // Handle clearing the date range or incomplete selection
+                    setDateRange([null, null]);
+                  } else {
+                    // Both dates are selected, parse them
+                    const startDateValue = new Date(range[0]);
+                    const endDateValue = new Date(range[1]);
                     setDateRange([startDateValue, endDateValue]);
                   }
                 }}
