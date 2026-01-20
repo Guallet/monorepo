@@ -450,4 +450,182 @@ describe('TransactionsService', () => {
       );
     });
   });
+
+  describe('getAllUserTransactionsForExport', () => {
+    const mockUserId = 'user-123';
+    const mockTransactions: Partial<Transaction>[] = [
+      {
+        id: 'trans-1',
+        accountId: 'account-1',
+        amount: 100,
+        date: new Date('2024-01-15'),
+      },
+      {
+        id: 'trans-2',
+        accountId: 'account-2',
+        amount: 200,
+        date: new Date('2024-02-15'),
+      },
+    ];
+
+    it('should fetch all transactions without filters', async () => {
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      const result = await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+      });
+
+      expect(result).toEqual(mockTransactions);
+      expect(mockTransactionRepository.find).toHaveBeenCalledWith({
+        relations: {
+          account: true,
+          category: true,
+        },
+        where: {
+          account: { user_id: mockUserId },
+        },
+        order: {
+          date: 'DESC',
+        },
+      });
+    });
+
+    it('should filter by accounts when provided', async () => {
+      const accounts = ['account-1', 'account-2'];
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      const result = await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+        accounts,
+      });
+
+      expect(result).toEqual(mockTransactions);
+      const callArg = mockTransactionRepository.find.mock.calls[0][0];
+      expect(callArg.where.accountId).toBeDefined();
+      expect(callArg.where.accountId._type).toBe('in');
+      expect(callArg.where.accountId._value).toEqual(accounts);
+    });
+
+    it('should ignore empty accounts array', async () => {
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+        accounts: [],
+      });
+
+      const callArg = mockTransactionRepository.find.mock.calls[0][0];
+      expect(callArg.where).not.toHaveProperty('accountId');
+    });
+
+    it('should filter by date range when both dates provided', async () => {
+      const startDate = new Date('2024-01-01');
+      const endDate = new Date('2024-12-31');
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      const result = await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+        startDate,
+        endDate,
+      });
+
+      expect(result).toEqual(mockTransactions);
+      const callArg = mockTransactionRepository.find.mock.calls[0][0];
+      expect(callArg.where.date).toBeDefined();
+      expect(callArg.where.date._type).toBe('between');
+      expect(callArg.where.date._value).toEqual([startDate, endDate]);
+    });
+
+    it('should NOT filter by date when only startDate provided', async () => {
+      const startDate = new Date('2024-01-01');
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+        startDate,
+      });
+
+      const callArg = mockTransactionRepository.find.mock.calls[0][0];
+      expect(callArg.where).not.toHaveProperty('date');
+    });
+
+    it('should NOT filter by date when only endDate provided', async () => {
+      const endDate = new Date('2024-12-31');
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+        endDate,
+      });
+
+      const callArg = mockTransactionRepository.find.mock.calls[0][0];
+      expect(callArg.where).not.toHaveProperty('date');
+    });
+
+    it('should combine multiple filters correctly', async () => {
+      const accounts = ['account-1'];
+      const startDate = new Date('2024-01-01');
+      const endDate = new Date('2024-12-31');
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      const result = await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+        accounts,
+        startDate,
+        endDate,
+      });
+
+      expect(result).toEqual(mockTransactions);
+      const callArg = mockTransactionRepository.find.mock.calls[0][0];
+      expect(callArg.where.account).toEqual({ user_id: mockUserId });
+      expect(callArg.where.accountId).toBeDefined();
+      expect(callArg.where.accountId._type).toBe('in');
+      expect(callArg.where.accountId._value).toEqual(accounts);
+      expect(callArg.where.date).toBeDefined();
+      expect(callArg.where.date._type).toBe('between');
+    });
+
+    it('should order results by date DESC', async () => {
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+      });
+
+      expect(mockTransactionRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          order: {
+            date: 'DESC',
+          },
+        }),
+      );
+    });
+
+    it('should include account and category relations', async () => {
+      mockTransactionRepository.find.mockResolvedValue(mockTransactions);
+
+      await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+      });
+
+      expect(mockTransactionRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          relations: {
+            account: true,
+            category: true,
+          },
+        }),
+      );
+    });
+
+    it('should return empty array when no transactions found', async () => {
+      mockTransactionRepository.find.mockResolvedValue([]);
+
+      const result = await service.getAllUserTransactionsForExport({
+        userId: mockUserId,
+      });
+
+      expect(result).toEqual([]);
+    });
+  });
 });

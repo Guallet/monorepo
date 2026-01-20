@@ -41,10 +41,10 @@ import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transact
 import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transactions/create'
 import { Route as AppSubscriptionsNewRouteImport } from './routes/_app/subscriptions/new'
 import { Route as AppSubscriptionsIdRouteImport } from './routes/_app/subscriptions/$id'
+import { Route as AppSettingsExportRouteImport } from './routes/_app/settings/export'
 import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
-import { Route as AppImporterExportRouteImport } from './routes/_app/importer/export'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
 import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
 import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/new'
@@ -247,6 +247,11 @@ const AppSubscriptionsIdRoute = AppSubscriptionsIdRouteImport.update({
   path: '/subscriptions/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsExportRoute = AppSettingsExportRouteImport.update({
+  id: '/settings/export',
+  path: '/settings/export',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSavingGoalsNewRoute = AppSavingGoalsNewRouteImport.update({
   id: '/saving-goals/new',
   path: '/saving-goals/new',
@@ -260,11 +265,6 @@ const AppSavingGoalsIdRoute = AppSavingGoalsIdRouteImport.update({
 const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   id: '/reports/cashflow',
   path: '/reports/cashflow',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppImporterExportRoute = AppImporterExportRouteImport.update({
-  id: '/importer/export',
-  path: '/importer/export',
   getParentRoute: () => AppRoute,
 } as any)
 const AppConnectionsIdRoute = AppConnectionsIdRouteImport.update({
@@ -398,10 +398,10 @@ export interface FileRoutesByFullPath {
   '/categories/new': typeof AppCategoriesNewRoute
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
-  '/importer/export': typeof AppImporterExportRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
@@ -458,10 +458,10 @@ export interface FileRoutesByTo {
   '/categories/new': typeof AppCategoriesNewRoute
   '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
-  '/importer/export': typeof AppImporterExportRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
@@ -520,10 +520,10 @@ export interface FileRoutesById {
   '/_app/categories/new': typeof AppCategoriesNewRoute
   '/_app/categories/old': typeof AppCategoriesOldRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
-  '/_app/importer/export': typeof AppImporterExportRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/_app/settings/export': typeof AppSettingsExportRoute
   '/_app/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/_app/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/_app/transactions/create': typeof AppTransactionsCreateRoute
@@ -582,10 +582,10 @@ export interface FileRouteTypes {
     | '/categories/new'
     | '/categories/old'
     | '/connections/$id'
-    | '/importer/export'
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
+    | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
     | '/transactions/create'
@@ -642,10 +642,10 @@ export interface FileRouteTypes {
     | '/categories/new'
     | '/categories/old'
     | '/connections/$id'
-    | '/importer/export'
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
+    | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
     | '/transactions/create'
@@ -703,10 +703,10 @@ export interface FileRouteTypes {
     | '/_app/categories/new'
     | '/_app/categories/old'
     | '/_app/connections/$id'
-    | '/_app/importer/export'
     | '/_app/reports/cashflow'
     | '/_app/saving-goals/$id'
     | '/_app/saving-goals/new'
+    | '/_app/settings/export'
     | '/_app/subscriptions/$id'
     | '/_app/subscriptions/new'
     | '/_app/transactions/create'
@@ -999,6 +999,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubscriptionsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/export': {
+      id: '/_app/settings/export'
+      path: '/settings/export'
+      fullPath: '/settings/export'
+      preLoaderRoute: typeof AppSettingsExportRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/saving-goals/new': {
       id: '/_app/saving-goals/new'
       path: '/saving-goals/new'
@@ -1018,13 +1025,6 @@ declare module '@tanstack/react-router' {
       path: '/reports/cashflow'
       fullPath: '/reports/cashflow'
       preLoaderRoute: typeof AppReportsCashflowRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/importer/export': {
-      id: '/_app/importer/export'
-      path: '/importer/export'
-      fullPath: '/importer/export'
-      preLoaderRoute: typeof AppImporterExportRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/connections/$id': {
@@ -1186,10 +1186,10 @@ interface AppRouteChildren {
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
   AppCategoriesOldRoute: typeof AppCategoriesOldRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
-  AppImporterExportRoute: typeof AppImporterExportRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
   AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
+  AppSettingsExportRoute: typeof AppSettingsExportRoute
   AppSubscriptionsIdRoute: typeof AppSubscriptionsIdRoute
   AppSubscriptionsNewRoute: typeof AppSubscriptionsNewRoute
   AppTransactionsCreateRoute: typeof AppTransactionsCreateRoute
@@ -1236,10 +1236,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesNewRoute: AppCategoriesNewRoute,
   AppCategoriesOldRoute: AppCategoriesOldRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
-  AppImporterExportRoute: AppImporterExportRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
   AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
+  AppSettingsExportRoute: AppSettingsExportRoute,
   AppSubscriptionsIdRoute: AppSubscriptionsIdRoute,
   AppSubscriptionsNewRoute: AppSubscriptionsNewRoute,
   AppTransactionsCreateRoute: AppTransactionsCreateRoute,

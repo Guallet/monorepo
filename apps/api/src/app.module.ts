@@ -26,6 +26,7 @@ import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import { DataImporterModule } from './features/data-importer/data-importer.module';
+import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
@@ -114,6 +115,7 @@ import { BullModule } from '@nestjs/bullmq';
     WaitingListModule,
     SavingGoalsModule,
     DataImporterModule,
+    DataExporterModule,
     EmailModule,
     NotificationsModule,
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD

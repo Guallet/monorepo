@@ -78,7 +78,7 @@
     },
     "connectionCard": {
       "status": {
-        "unknown": "unknown"
+        "unknown": "desconocido"
       },
       "created": "Creado:",
       "updated": "Actualizado:",
@@ -311,36 +311,38 @@
         "addButton": "Agregar nueva conexión"
       }
     },
-            "notifications": {
-              "icon": {
-                "loading": "Cargando...",
-                "noNotifications": "No hay notificaciones nuevas",
-                "viewAll": "Ver todas las notificaciones"
-              },
-              "screen": {
-                "title": "Notificaciones",
-                "unreadCount_one": "{{count}} sin leer",
-                "unreadCount_many": "{{count}} unread",
-                "unreadCount_other": "{{count}} sin leer",
-                "actions": {
-                  "markAsRead": "Marcar como leída",
-                  "markAsUnread": "Marcar como no leída",
-                  "delete": "Eliminar notificación"
-                },
-                "types": {
-                  "warning": "Advertencia",
-                  "important": "Importante",
-                  "actionRequired": "Acción requerida",
-                  "info": "Información"
-                },
-                "badges": {
-                  "new": "Nueva"
-                },
-                "loading": "Cargando notificaciones...",
-                "markAllAsRead": "Marcar todas como leídas",
-                "emptyState": "No tienes notificaciones"
-              }
-            },
+    "notifications": {
+      "icon": {
+        "navigationErrorTitle": "Error de navegación",
+        "navigationErrorMessage": "No se puede navegar a la página solicitada.",
+        "loading": "Cargando...",
+        "noNotifications": "No hay notificaciones nuevas",
+        "viewAll": "Ver todas las notificaciones"
+      },
+      "screen": {
+        "title": "Notificaciones",
+        "unreadCount_one": "{{count}} sin leer",
+        "unreadCount_many": "{{count}} sin leer",
+        "unreadCount_other": "{{count}} sin leer",
+        "actions": {
+          "markAsRead": "Marcar como leída",
+          "markAsUnread": "Marcar como no leída",
+          "delete": "Eliminar notificación"
+        },
+        "types": {
+          "warning": "Advertencia",
+          "important": "Importante",
+          "actionRequired": "Acción requerida",
+          "info": "Información"
+        },
+        "badges": {
+          "new": "Nueva"
+        },
+        "loading": "Cargando notificaciones...",
+        "markAllAsRead": "Marcar todas como leídas",
+        "emptyState": "No tienes notificaciones"
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {
@@ -481,6 +483,40 @@
       "title": "Crear nueva cuenta",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
+    },
+    "dataExport": {
+      "title": "Exportar Transacciones",
+      "description": "Exporta tus transacciones a un archivo CSV. El archivo se enviará a tu correo electrónico.",
+      "error": {
+        "title": "Error de Exportación"
+      },
+      "filters": {
+        "title": "Filtros (Opcional)",
+        "description": "Por defecto, se exportarán todas tus transacciones. Utiliza los filtros a continuación para exportar un subconjunto específico.",
+        "dateRange": {
+          "label": "Rango de Fechas",
+          "placeholder": "Selecciona un rango de fechas (deja vacío para todas)"
+        },
+        "accounts": {
+          "label": "Cuentas",
+          "placeholder": "Selecciona cuentas (deja vacío para todas)"
+        }
+      },
+      "info": {
+        "title": "¿Qué ocurre después?",
+        "step1": "Tu solicitud de exportación se procesará en segundo plano",
+        "step2": "El archivo CSV incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
+        "step3": "Recibirás un correo electrónico con el archivo CSV adjunto",
+        "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
+      },
+      "exportButton": "Exportar Transacciones",
+      "modal": {
+        "title": "¡Exportación Iniciada Exitosamente!",
+        "description": "Tu exportación de datos se está procesando en segundo plano.",
+        "emailTitle": "Recibirás un correo electrónico con el archivo CSV",
+        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos como un archivo CSV. Puedes abrirlo con cualquier aplicación de hojas de cálculo.",
+        "button": "Entendido"
+      }
     }
   }
 }
