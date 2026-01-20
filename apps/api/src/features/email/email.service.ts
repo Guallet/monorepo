@@ -48,11 +48,11 @@ export class EmailService {
         html,
       });
 
-      if (error === null) {
-        this.logger.log(`Import completion email sent to ${to}`);
-      } else {
+      if (error) {
         this.logger.error('Resend API error:', error);
         // TODO: Notify the admin or take other actions as needed
+      } else {
+        this.logger.log(`Import completion email sent to ${to}`);
       }
     } catch (error) {
       this.logger.error(
@@ -158,11 +158,11 @@ export class EmailService {
         html,
       });
 
-      if (error === null) {
-        this.logger.log(`Import error email sent to ${to}`);
-      } else {
+      if (error) {
         this.logger.error('Resend API error:', error);
         // TODO: Notify the admin or take other actions as needed
+      } else {
+        this.logger.log(`Import error email sent to ${to}`);
       }
     } catch (error) {
       this.logger.error(`Failed to send import error email to ${to}`, error);
@@ -248,10 +248,10 @@ export class EmailService {
         ],
       });
 
-      if (error === null) {
-        this.logger.log(`Export completion email sent to ${to}`);
-      } else {
+      if (error) {
         this.logger.error('Resend API error:', error);
+      } else {
+        this.logger.log(`Export completion email sent to ${to}`);
       }
     } catch (error) {
       this.logger.error(
@@ -335,10 +335,10 @@ export class EmailService {
         html,
       });
 
-      if (error === null) {
-        this.logger.log(`Export error email sent to ${to}`);
-      } else {
+      if (error) {
         this.logger.error('Resend API error:', error);
+      } else {
+        this.logger.log(`Export error email sent to ${to}`);
       }
     } catch (error) {
       this.logger.error(`Failed to send export error email to ${to}`, error);
