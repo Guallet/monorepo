@@ -1,4 +1,4 @@
-import { Modal, ModalProps } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useIsMobile } from "../hooks/useIsMobile";
 import React from "react";
 
@@ -65,28 +65,17 @@ export function ResponsiveModal({
 }: ResponsiveModalProps) {
   const isMobile = useIsMobile();
 
-  // Configure modal props based on device type
-  const modalProps: Partial<ModalProps> = isMobile
-    ? {
-        // Mobile configuration
-        fullScreen: true,
-        radius: 0,
-        padding: "md",
-      }
-    : {
-        // Desktop/tablet configuration
-        fullScreen: false,
-        size: size,
-        centered: true,
-      };
-
   return (
     <Modal
       opened={opened}
       onClose={onClose}
       title={title}
       withCloseButton={withCloseButton}
-      {...modalProps}
+      fullScreen={isMobile}
+      radius={isMobile ? 0 : undefined}
+      padding={isMobile ? "md" : undefined}
+      size={isMobile ? undefined : size}
+      centered={!isMobile}
     >
       {children}
     </Modal>

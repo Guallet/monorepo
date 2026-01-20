@@ -7,7 +7,7 @@
 
 import { ResponsiveModal } from './ResponsiveModal';
 import { useDisclosure } from '@mantine/hooks';
-import { Button, Stack, Text, Group } from '@mantine/core';
+import { Button, Stack, Text, Group, TextInput } from '@mantine/core';
 
 /**
  * Example 1: Basic Usage
@@ -60,11 +60,8 @@ export function FormModalExample() {
         size="lg"
       >
         <Stack>
-          <Text>Name:</Text>
-          <input type="text" placeholder="Enter your name" />
-          
-          <Text>Email:</Text>
-          <input type="email" placeholder="Enter your email" />
+          <TextInput label="Name" placeholder="Enter your name" />
+          <TextInput label="Email" placeholder="Enter your email" type="email" />
           
           <Group justify="flex-end">
             <Button variant="outline" onClick={close}>
