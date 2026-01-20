@@ -311,36 +311,38 @@
         "addButton": "Agregar nueva conexión"
       }
     },
-            "notifications": {
-              "icon": {
-                "loading": "Cargando...",
-                "noNotifications": "No hay notificaciones nuevas",
-                "viewAll": "Ver todas las notificaciones"
-              },
-              "screen": {
-                "title": "Notificaciones",
-                "unreadCount_one": "{{count}} sin leer",
-                "unreadCount_many": "{{count}} unread",
-                "unreadCount_other": "{{count}} sin leer",
-                "actions": {
-                  "markAsRead": "Marcar como leída",
-                  "markAsUnread": "Marcar como no leída",
-                  "delete": "Eliminar notificación"
-                },
-                "types": {
-                  "warning": "Advertencia",
-                  "important": "Importante",
-                  "actionRequired": "Acción requerida",
-                  "info": "Información"
-                },
-                "badges": {
-                  "new": "Nueva"
-                },
-                "loading": "Cargando notificaciones...",
-                "markAllAsRead": "Marcar todas como leídas",
-                "emptyState": "No tienes notificaciones"
-              }
-            },
+    "notifications": {
+      "icon": {
+        "navigationErrorTitle": "Navigation Error",
+        "navigationErrorMessage": "Unable to navigate to the requested page.",
+        "loading": "Cargando...",
+        "noNotifications": "No hay notificaciones nuevas",
+        "viewAll": "Ver todas las notificaciones"
+      },
+      "screen": {
+        "title": "Notificaciones",
+        "unreadCount_one": "{{count}} sin leer",
+        "unreadCount_many": "{{count}} unread",
+        "unreadCount_other": "{{count}} sin leer",
+        "actions": {
+          "markAsRead": "Marcar como leída",
+          "markAsUnread": "Marcar como no leída",
+          "delete": "Eliminar notificación"
+        },
+        "types": {
+          "warning": "Advertencia",
+          "important": "Importante",
+          "actionRequired": "Acción requerida",
+          "info": "Información"
+        },
+        "badges": {
+          "new": "Nueva"
+        },
+        "loading": "Cargando notificaciones...",
+        "markAllAsRead": "Marcar todas como leídas",
+        "emptyState": "No tienes notificaciones"
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {

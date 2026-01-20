@@ -5,6 +5,7 @@ export * from './institutions';
 export * from './budgets';
 export * from './categories';
 export * from './data-importer';
+export * from './data-exporter';
 export * from './transactions';
 export * from './user';
 export * from './savingGoals';

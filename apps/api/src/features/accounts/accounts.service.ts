@@ -29,6 +29,14 @@ export class AccountsService {
     });
   }
 
+  /**
+   * Get all user accounts for export functionality.
+   * Alias for findAllUserAccounts.
+   */
+  async getAllUserAccounts(userId: string): Promise<Account[]> {
+    return this.findAllUserAccounts(userId);
+  }
+
   async getUserAccount(userId: string, accountId: string): Promise<Account> {
     const account = await this.repository.findOne({
       where: {

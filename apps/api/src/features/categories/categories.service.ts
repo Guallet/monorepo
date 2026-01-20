@@ -73,6 +73,14 @@ export class CategoriesService {
     });
   }
 
+  /**
+   * Get all user categories for export functionality.
+   * Alias for findAllUserCategories.
+   */
+  async getAllUserCategories(user_id: string): Promise<Category[]> {
+    return this.findAllUserCategories(user_id);
+  }
+
   async findOne(id: string) {
     return await this.categoryRepository.findOneBy({ id: id });
   }
