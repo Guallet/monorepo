@@ -36,7 +36,7 @@ function generateSecret(length = 32): string {
 function processLine(line: string): string {
   if (!line || line.startsWith('#')) return line;
 
-  const [key, ...valueParts] = line.split('=');
+  const [key] = line.split('=');
   const trimmedKey = key.trim();
 
   if (fieldsToGenerate.includes(trimmedKey)) {
