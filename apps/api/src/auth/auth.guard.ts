@@ -76,15 +76,18 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(jwt, {
         secret: this.jwtSecret,
       });
+      
+      // Support both Better Auth and legacy Supabase token formats
+      // Better Auth uses 'sub' for user ID, Supabase also uses 'sub'
       const email = payload.email as string;
       const uid = payload.sub as string;
 
       if (!email) {
-        throw new Error('Invalid token');
+        throw new Error('Invalid token: missing email');
       }
 
       if (!uid) {
-        throw new Error('Invalid token');
+        throw new Error('Invalid token: missing user ID');
       }
 
       const expireEpochInSeconds = payload.exp ?? 0;

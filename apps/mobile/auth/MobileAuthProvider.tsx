@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
-import { supabase } from './supabase';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { BuildConfig } from '@/BuildConfig';
 import { setAnalyticsDeviceId } from '@/utils/analytics';
 import { AuthProvider as BaseAuthProvider } from '@guallet/auth';
+import { authClient } from './authClient';
 
 console.log(
   'Configuring Google Signin with webClientId:',
@@ -24,7 +24,7 @@ export function AuthProvider({ children }: Readonly<MobileAuthProviderProps>) {
   }, []);
 
   return (
-    <BaseAuthProvider supabaseClient={supabase} onUserChange={handleUserChange}>
+    <BaseAuthProvider authClient={authClient} onUserChange={handleUserChange}>
       {children}
     </BaseAuthProvider>
   );

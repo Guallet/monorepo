@@ -1,42 +1,37 @@
-import { Provider } from '@supabase/supabase-js';
 import { useCallback, useMemo } from 'react';
-import { supabase } from './supabase';
+import { authClient } from './authClient';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { useAuth as useBaseAuth } from '@guallet/auth';
+import { useAuth as useBaseAuth, type ExternalAuthProvider } from '@guallet/auth';
 
 export function useAuth() {
   const baseAuth = useBaseAuth();
 
   const getOtpCode = useCallback(async (email: string): Promise<boolean> => {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: 'guallet://login/callback',
-      },
-    });
-    if (error) {
-      console.error('Error sending OTP', error);
+    const result = await baseAuth.sendOtpEmail(email);
+    if (result.error) {
+      console.error('Error sending OTP', result.error);
       return false;
     }
     return true;
-  }, []);
+  }, [baseAuth]);
 
   const resetPassword = useCallback(async (email: string): Promise<boolean> => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'guallet://login/reset-password',
-    });
-    if (error) {
-      console.error('Error sending password reset email', error);
+    const result = await baseAuth.forgotPassword(
+      email,
+      'guallet://login/reset-password',
+    );
+    if (result.error) {
+      console.error('Error sending password reset email', result.error);
       return false;
     }
     return true;
-  }, []);
+  }, [baseAuth]);
 
   const loginWithProvider = useCallback(
-    async (provider: Provider): Promise<boolean> => {
+    async (provider: ExternalAuthProvider): Promise<boolean> => {
       if (provider !== 'google') {
         console.warn('Only Google provider is supported currently.');
         return false;
@@ -47,12 +42,15 @@ export function useAuth() {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
         if (userInfo?.data?.idToken) {
-          const { data, error } = await supabase.auth.signInWithIdToken({
+          // Use Better Auth to sign in with the Google ID token
+          const result = await authClient.signIn.social({
             provider: 'google',
-            token: userInfo.data.idToken,
+            idToken: {
+              token: userInfo.data.idToken,
+            },
           });
-          console.log(error, data);
-          return error == null;
+          console.log(result.error, result.data);
+          return result.error == null;
         } else {
           throw new Error('no ID token present!');
         }
@@ -88,8 +86,8 @@ export function useAuth() {
   }, []);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
-  }, []);
+    await baseAuth.logout();
+  }, [baseAuth]);
 
   return useMemo(
     () => ({

@@ -30,6 +30,7 @@
     "eas:env:pull": "eas env:pull --environment development"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.4.17",
     "@expo/vector-icons": "^15.0.2",
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
@@ -42,9 +43,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "@sentry/react-native": "^7.8.0",
-    "@supabase/supabase-js": "^2.51.0",
     "@tanstack/react-query": "^5.90.2",
-    "aes-js": "^3.1.2",
     "expo": "~54.0.12",
     "expo-constants": "~18.0.9",
     "expo-dev-client": "~6.0.13",
@@ -74,7 +73,6 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.81.2",
-    "@types/aes-js": "^3.1.4",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",

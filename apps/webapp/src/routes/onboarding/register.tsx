@@ -11,12 +11,11 @@ import {
 
 import { useMemo } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { supabase } from '@/auth/supabase';
 import { gualletClient } from '@/api/gualletClient';
+import { useAuth } from '@guallet/auth';
 
 export const Route = createFileRoute('/onboarding/register')({
   component: RegisterUserPage,
-  loader: loader,
 });
 
 type ActionData = {
@@ -26,64 +25,8 @@ type ActionData = {
   message: string;
 };
 
-async function loader() {
-  // TODO: Do we need to check if the user is logged in? Or just returns whatever the API returns?
-  const { data } = await supabase.auth.getSession();
-  if (data && data.session?.user.id === null) {
-    return {
-      name: '',
-      email: '',
-      profile_src: '',
-    };
-  }
-
-  const user = await gualletClient.user.getUserDetails();
-  return {
-    name: user.name,
-    email: user.email,
-    profile_src: user.profile_src,
-  };
-}
-
-// const action = async ({ request, params }) => {
-//   const formData = await request.formData();
-//   const values = Object.fromEntries(formData);
-//   // TODO: Ugly as hell, I need to find a better way to do this
-//   const inputValues = JSON.parse(JSON.stringify(values)) as FormData;
-
-//   try {
-//     const result = await registerUser({
-//       name: inputValues.name,
-//       email: inputValues.email,
-//       profile_src: inputValues.profile_image,
-//     });
-
-//     console.log("Registration result", { result });
-//     if (isUserDto(result)) {
-//       throw redirect({
-//         to: "/dashboard",
-//       });
-//     } else {
-//       const errorData = result as unknown as {
-//         statusCode: number;
-//         message: string;
-//         error: string;
-//       };
-
-//       return {
-//         rawError: result,
-//         message: errorData.message,
-//         statusCode: errorData.statusCode,
-//         error: errorData.error,
-//       } as ActionData;
-//     }
-//   } catch (error) {
-//     return { rawError: error } as ActionData;
-//   }
-// };
-
 function RegisterUserPage() {
-  const { name, email, profile_src } = Route.useLoaderData();
+  const { user } = useAuth();
   const registrationError = useMemo(() => {
     return {
       rawError: '',
@@ -99,6 +42,10 @@ function RegisterUserPage() {
     () => registrationError !== null && registrationError !== undefined,
     [registrationError],
   );
+
+  const name = user?.name ?? '';
+  const email = user?.email ?? '';
+  const profile_src = user?.image ?? '';
 
   return (
     <>

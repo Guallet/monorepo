@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseDbEntity {
-  // This is the same ID as the one returned by the Auth Provider (Supabase at this time)
+  // This is the same ID as the one returned by the Auth Provider (Better Auth)
   @PrimaryColumn('uuid')
   id: string;
 
