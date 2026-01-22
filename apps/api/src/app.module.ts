@@ -88,7 +88,10 @@ import { HealthModule } from './features/health/health.module';
       // synchronize: process.env.ENVIRONMENT === 'development',
       synchronize: true,
       autoLoadEntities: true,
-      ssl: { rejectUnauthorized: false },
+      ssl:
+        process.env.DATABASE_SSL_ENABLED === 'true'
+          ? { rejectUnauthorized: false }
+          : false,
     }),
     // CRON
     ScheduleModule.forRoot(),
