@@ -1,6 +1,6 @@
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { ResponsiveModal } from "@guallet/ui-react";
 import { CategoryDto } from "@guallet/api-client";
-import { Input, Modal, Text } from "@mantine/core";
+import { Input, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,7 +21,6 @@ export function CategoryPicker({
   ...props
 }: Readonly<CategoryPickerProps>) {
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
   const [opened, { open, close }] = useDisclosure(false);
 
   const inputValue = useMemo(() => {
@@ -53,7 +52,7 @@ export function CategoryPicker({
           }
         />
       </Input.Wrapper>
-      <Modal
+      <ResponsiveModal
         opened={opened}
         onClose={close}
         title={
@@ -62,14 +61,13 @@ export function CategoryPicker({
           </Text>
         }
         size="lg"
-        fullScreen={isMobile}
       >
         <CategoryPickerModal
           selectedCategory={selectedCategory}
           onSelectionChanged={onCategorySelected}
           close={close}
         />
-      </Modal>
+      </ResponsiveModal>
     </>
   );
 }

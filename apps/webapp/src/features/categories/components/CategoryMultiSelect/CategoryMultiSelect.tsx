@@ -1,6 +1,6 @@
 import { CategoryDto } from '@guallet/api-client';
-import { useIsMobile } from '@guallet/ui-react';
-import { Input, Modal, Text } from '@mantine/core';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Input, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +19,6 @@ export function CategoryMultiSelect({
   ...props
 }: Readonly<CategoryMultiSelectProps>) {
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
 
   const [opened, { open, close }] = useDisclosure(false);
   const { categories } = useCategories();
@@ -57,7 +56,7 @@ export function CategoryMultiSelect({
           pointer={true}
         />
       </Input.Wrapper>
-      <Modal
+      <ResponsiveModal
         opened={opened}
         onClose={close}
         title={
@@ -69,14 +68,13 @@ export function CategoryMultiSelect({
           </Text>
         }
         size="lg"
-        fullScreen={isMobile}
       >
         <CategoryMultiSelectModal
           selectedCategories={selectedCategories}
           onSelectionChanged={onSelectionChanged}
           close={close}
         />
-      </Modal>
+      </ResponsiveModal>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { Currency } from '@guallet/money';
-import { useIsMobile } from '@guallet/ui-react';
-import { Input, InputWrapperProps, Modal } from '@mantine/core';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Input, InputWrapperProps } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSelector } from '@tabler/icons-react';
 import { CurrencyPickerModal } from './CurrencyPickerModal';
@@ -17,23 +17,17 @@ export function CurrencyPicker({
   name,
   ...props
 }: Readonly<CurrencyPickerProps>) {
-  const isMobile = useIsMobile();
   const [opened, { open, close }] = useDisclosure(false);
 
   const currency = value ? Currency.fromISOCode(value) : null;
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={opened}
-        fullScreen={isMobile}
         onClose={close}
         title="Select currency"
-        centered
         size="lg"
-        {...(isMobile && {
-          transitionProps: { transition: 'fade', duration: 200 },
-        })}
       >
         <CurrencyPickerModal
           onCurrencySelected={(currency) => {
@@ -42,7 +36,7 @@ export function CurrencyPicker({
           }}
           onCancel={() => close()}
         />
-      </Modal>
+      </ResponsiveModal>
 
       <Input.Wrapper
         label="Account currency"

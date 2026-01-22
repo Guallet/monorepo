@@ -1,4 +1,5 @@
-import { Modal, Group, Button, Text, Stack } from "@mantine/core";
+import { ResponsiveModal } from "@guallet/ui-react";
+import { Group, Button, Text, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 
 interface DeleteDialogConfirmationProps {
@@ -31,7 +32,7 @@ export function DeleteDialogConfirmation({
     : t("components.dialogs.delete.deleteButton.label", "Delete");
 
   return (
-    <Modal opened={isOpen} onClose={onClose} title={title} centered>
+    <ResponsiveModal opened={isOpen} onClose={onClose} title={title} size="sm">
       <Stack>
         <Text>{message}</Text>
         <Text size="sm">
@@ -49,6 +50,6 @@ export function DeleteDialogConfirmation({
           </Button>
         </Group>
       </Stack>
-    </Modal>
+    </ResponsiveModal>
   );
 }
