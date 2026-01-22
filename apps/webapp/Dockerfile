@@ -2,7 +2,7 @@
 FROM node:22-alpine AS base
 
 # Install pnpm globally
-RUN npm install -g pnpm@10.14.0
+RUN npm install -g pnpm@10.14.0 --ignore-scripts
 
 # Set working directory
 WORKDIR /app
@@ -22,7 +22,7 @@ COPY packages/guallet-api-client/package.json ./packages/guallet-api-client/
 COPY apps/webapp/package.json ./apps/webapp/
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy source code for all required packages
 COPY packages ./packages
@@ -47,7 +47,20 @@ WORKDIR /app/apps/webapp
 RUN pnpm run build
 
 # Production stage with Nginx
-FROM nginx:alpine AS production
+FROM nginx:1.25-alpine AS production
+
+# Create non-root user
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+
+# Change ownership of nginx directories and create necessary pid/cache dirs
+# Nginx typically uses /var/run/nginx.pid, we need to allow writing to it.
+RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown -R nonroot:nonroot /var/cache/nginx /var/run /var/log/nginx /var/run/nginx.pid /usr/share/nginx/html /etc/nginx/conf.d && \
+    chmod -R 755 /usr/share/nginx/html
+
+# Use non-root user
+USER nonroot
 
 # Copy built files from base stage
 COPY --from=base /app/apps/webapp/dist /usr/share/nginx/html
@@ -55,8 +68,8 @@ COPY --from=base /app/apps/webapp/dist /usr/share/nginx/html
 # Copy custom nginx configuration
 COPY apps/webapp/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
-EXPOSE 80
+# Expose non-privileged port
+EXPOSE 8080
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
