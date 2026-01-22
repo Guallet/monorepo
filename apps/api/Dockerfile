@@ -27,12 +27,19 @@ FROM node:22-alpine AS production
 RUN npm install -g pnpm@10.14.0
 RUN apk add --no-cache curl
 
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
 WORKDIR /app/apps/api
 
 # Copy built app and dependencies
-COPY --from=base /app/apps/api/node_modules ./node_modules
-COPY --from=base /app/apps/api/dist ./dist
-COPY --from=base /app/apps/api/package.json ./
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./dist
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./
+
+# Switch to non-root user
+USER nodejs
 
 EXPOSE 5000
 

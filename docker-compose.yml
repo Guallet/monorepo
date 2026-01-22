@@ -4,10 +4,8 @@ services:
     image: postgres:18-alpine
     container_name: guallet-postgres
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -24,8 +22,8 @@ services:
     container_name: guallet-redis
     restart: unless-stopped
     command: redis-server --requirepass ${REDIS_PASSWORD}
-    environment:
-      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - redis_data:/data
     networks:
@@ -41,9 +39,9 @@ services:
     image: dpage/pgadmin4:9.11
     container_name: guallet-pgadmin
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
     ports:
@@ -62,39 +60,22 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: guallet-api
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       # Application
       ENVIRONMENT: production
       PORT: 5000
       NODE_ENV: production
-
-      # CORS
-      ALLOWED_CORS_ORIGINS: "http://localhost:3000,http://localhost:5000"
-
-      # Authentication
-      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
-
+      
       # Database - Using internal Docker network
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
-      DATABASE_USERNAME: ${POSTGRES_USER}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
-      DATABASE_NAME: ${POSTGRES_DB}
       DATABASE_SSL_ENABLED: false
-
+      
       # Redis - Using internal Docker network
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-
-      # These need to be configured by the user
-      NORDIGEN_SECRET_ID: ${NORDIGEN_SECRET_ID}
-      NORDIGEN_SECRET_KEY: ${NORDIGEN_SECRET_KEY}
-      RESEND_API_KEY: ${RESEND_API_KEY}
-      EMAIL_FROM: ${EMAIL_FROM}
-      APITALLY_ENABLED: ${APITALLY_ENABLED}
-      APITALLY_CLIENT_ID: ${APITALLY_CLIENT_ID}
-      APITALLY_ENV: ${APITALLY_ENV}
     ports:
       - "5000:5000"
     networks:
@@ -105,8 +86,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test:
-        ["CMD", "curl", "-f", "http://localhost:5000/health", "||", "exit", "1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -124,6 +104,8 @@ services:
         VITE_SENTRY_DSN: ${VITE_SENTRY_DSN}
     container_name: guallet-webapp
     restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - "3000:8080"
     networks:
