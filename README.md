@@ -29,6 +29,24 @@ In order to compile/run the project locally, you will need:
 - Postgres database
 - Supabase project (could be used to host your DB too)
 
+### Docker Deployment (Recommended)
+
+The easiest way to run the entire project is using Docker. See [DOCKER.md](./DOCKER.md) for detailed instructions.
+
+Quick start with Docker:
+```bash
+cp .env.docker.example .env
+# Edit .env with your configuration
+docker-compose up -d
+```
+
+This will start:
+- PostgreSQL database (internal network only)
+- Redis for background jobs (internal network only)
+- API server on http://localhost:5000
+- Web app on http://localhost:3000
+- pgAdmin for database management on http://localhost:5050
+
 ### Build
 
 To build all apps and packages, run the following command:

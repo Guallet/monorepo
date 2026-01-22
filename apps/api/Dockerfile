@@ -1,20 +1,56 @@
 # Base image
-FROM node:20-alpine
+FROM node:22-alpine AS base
 
-# Create app directory
-WORKDIR /usr/src/app
+# Install pnpm globally
+RUN npm install -g pnpm@10.14.0
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+# Set working directory
+WORKDIR /app
 
-# Install app dependencies
-RUN npm install
+# Copy workspace configuration files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY .npmrc* ./
 
-# Bundle app source
-COPY . .
+# Copy all package.json files for dependency installation
+COPY packages/*/package.json ./packages/
+COPY apps/api/package.json ./apps/api/
 
-# Creates a "dist" folder with the production build
-RUN npm run build
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-# Start the server using the production build
-CMD [ "node", "dist/src/main.js" ]
+# Copy source code for all required packages
+COPY packages ./packages
+COPY apps/api ./apps/api
+
+# Build the API
+WORKDIR /app/apps/api
+RUN pnpm run build
+
+# Production stage
+FROM node:22-alpine AS production
+
+# Install pnpm
+RUN npm install -g pnpm@10.14.0
+
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
+WORKDIR /app
+
+# Copy dependencies from base stage
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=base /app/packages ./packages
+
+# Copy built application
+COPY --from=base /app/apps/api/dist ./apps/api/dist
+COPY --from=base /app/apps/api/package.json ./apps/api/
+
+# Set working directory to API
+WORKDIR /app/apps/api
+
+# Expose port
+EXPOSE 5000
+
+# Start the server
+CMD ["node", "dist/main.js"]

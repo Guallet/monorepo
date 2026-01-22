@@ -31,6 +31,7 @@ import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -122,7 +123,7 @@ import { BullModule } from '@nestjs/bullmq';
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [
     JwtService,
     // This will protect all the routes using the AuthGuard
