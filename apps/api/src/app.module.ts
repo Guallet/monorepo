@@ -31,7 +31,7 @@ import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
-import { HealthController } from './health/health.controller';
+import { HealthModule } from './features/health/health.module';
 
 @Module({
   imports: [
@@ -122,8 +122,9 @@ import { HealthController } from './health/health.controller';
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
+    HealthModule,
   ],
-  controllers: [HealthController],
+  controllers: [],
   providers: [
     JwtService,
     // This will protect all the routes using the AuthGuard
