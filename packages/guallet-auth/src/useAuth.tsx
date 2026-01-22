@@ -40,8 +40,24 @@ function handleAuthError(error: unknown): AuthResult {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BetterAuthSessionData = any;
+/**
+ * Better Auth session data type.
+ * Using a flexible type because Better Auth's response structure depends on
+ * server-side plugin configuration (e.g., emailOtp, magicLink plugins).
+ */
+interface BetterAuthSessionData {
+  user?: {
+    id: string;
+    email: string;
+    name?: string;
+    image?: string | null;
+    emailVerified?: boolean;
+  };
+  session?: {
+    token: string;
+    expiresAt: Date | string;
+  };
+}
 
 export function AuthProvider({
   children,
@@ -54,17 +70,20 @@ export function AuthProvider({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const previousUserIdRef = useRef<string | null>(null);
 
-  // Cast authClient to any to access methods that may be dynamically added
-  // based on server configuration (plugins, etc.)
+  /**
+   * Cast authClient to access methods dynamically.
+   * Better Auth's client API varies based on server-side plugin configuration,
+   * so we use a flexible type here. Methods like forgetPassword, resetPassword,
+   * signIn.social etc. are available based on the server configuration.
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const client = authClient as any;
 
   // Convert Better Auth session to our format
-  const convertSession = useCallback((betterAuthSession: BetterAuthSessionData): AuthSession | null => {
+  const convertSession = useCallback((betterAuthSession: BetterAuthSessionData | null): AuthSession | null => {
     if (!betterAuthSession?.user) {
       return null;
     }
-    // Better Auth uses 'token' at the session level
     const token = betterAuthSession.session?.token ?? '';
     const expiresAt = betterAuthSession.session?.expiresAt;
     
@@ -103,8 +122,13 @@ export function AuthProvider({
 
     initAuth();
 
-    // Better Auth uses $store for session state management
-    // Using a polling approach as a fallback since the store API might vary
+    /**
+     * Session state polling as a fallback mechanism.
+     * Better Auth's reactive session management varies by client type.
+     * This polling ensures session state stays in sync, especially for
+     * token refresh scenarios. Interval is set to 5 minutes to minimize
+     * unnecessary API calls while still catching expired sessions.
+     */
     const pollInterval = setInterval(async () => {
       try {
         const sessionData = await client.getSession();
@@ -115,7 +139,7 @@ export function AuthProvider({
       } catch (error) {
         console.error('Error polling session', error);
       }
-    }, 30000); // Poll every 30 seconds
+    }, 300000); // Poll every 5 minutes
 
     return () => {
       clearInterval(pollInterval);
@@ -227,10 +251,20 @@ export function AuthProvider({
     [client],
   );
 
-  // Magic link - uses forgetPassword flow for passwordless authentication
+  /**
+   * Send a magic link for passwordless authentication.
+   * 
+   * NOTE: Better Auth requires the 'magicLink' plugin on the server for
+   * proper magic link functionality. This implementation uses the password
+   * reset flow as a temporary fallback, which sends an email link to the user.
+   * To enable true magic links, configure the magicLink plugin in the API's
+   * Better Auth configuration.
+   */
   const sendMagicLink = useCallback(
     async (email: string, redirectUrl: string): Promise<AuthResult> => {
       try {
+        // Using forgetPassword as fallback - sends a link to the user's email
+        // For proper magic link, configure magicLink plugin on the server
         const result = await client.forgetPassword({
           email,
           redirectTo: redirectUrl,
@@ -247,10 +281,19 @@ export function AuthProvider({
     [client],
   );
 
-  // OTP email - uses forgetPassword as fallback
+  /**
+   * Send an OTP code via email for passwordless authentication.
+   * 
+   * NOTE: Better Auth requires the 'emailOtp' plugin on the server for
+   * OTP functionality. This implementation uses the password reset flow
+   * as a temporary fallback. To enable true email OTP, configure the
+   * emailOtp plugin in the API's Better Auth configuration.
+   */
   const sendOtpEmail = useCallback(
     async (email: string): Promise<AuthResult> => {
       try {
+        // Using forgetPassword as fallback - sends a link to the user's email
+        // For proper OTP, configure emailOtp plugin on the server
         const result = await client.forgetPassword({
           email,
           redirectTo: `${typeof globalThis !== 'undefined' && globalThis.location ? globalThis.location.origin : ''}/login/otp`,
