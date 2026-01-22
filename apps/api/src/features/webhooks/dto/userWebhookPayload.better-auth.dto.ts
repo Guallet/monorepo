@@ -1,7 +1,10 @@
 // Better Auth webhook payload types
 // These are generic types that Better Auth uses for user events
 
-export type BetterAuthWebhookUserPayloadType = 'user.created' | 'user.updated' | 'user.deleted';
+export type BetterAuthWebhookUserPayloadType =
+  | 'user.created'
+  | 'user.updated'
+  | 'user.deleted';
 
 export type BetterAuthWebhookUserPayload = {
   type: BetterAuthWebhookUserPayloadType;

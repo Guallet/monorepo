@@ -5,11 +5,19 @@ import { ConfigService } from '@nestjs/config';
 // Factory function to create Better Auth instance
 export function createBetterAuth(configService: ConfigService) {
   const pool = new Pool({
-    host: configService.get<string>('database.host') || process.env.DATABASE_HOST,
-    port: configService.get<number>('database.port') || Number(process.env.DATABASE_PORT),
-    user: configService.get<string>('database.username') || process.env.DATABASE_USERNAME,
-    password: configService.get<string>('database.password') || process.env.DATABASE_PASSWORD,
-    database: configService.get<string>('database.name') || process.env.DATABASE_NAME,
+    host:
+      configService.get<string>('database.host') || process.env.DATABASE_HOST,
+    port:
+      configService.get<number>('database.port') ||
+      Number(process.env.DATABASE_PORT),
+    user:
+      configService.get<string>('database.username') ||
+      process.env.DATABASE_USERNAME,
+    password:
+      configService.get<string>('database.password') ||
+      process.env.DATABASE_PASSWORD,
+    database:
+      configService.get<string>('database.name') || process.env.DATABASE_NAME,
     ssl: { rejectUnauthorized: false },
   });
 
@@ -29,10 +37,6 @@ export function createBetterAuth(configService: ConfigService) {
     session: {
       expiresIn: 60 * 60 * 24 * 7, // 7 days
       updateAge: 60 * 60 * 24, // 1 day
-    },
-    // Advanced configuration
-    advanced: {
-      generateId: false, // Use default ID generation
     },
   });
 }

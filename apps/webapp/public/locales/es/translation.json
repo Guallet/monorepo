@@ -311,6 +311,40 @@
         "addButton": "Agregar nueva conexión"
       }
     },
+    "dataExport": {
+      "modal": {
+        "title": "¡Exportación Iniciada Exitosamente!",
+        "description": "Tu exportación de datos se está procesando en segundo plano.",
+        "emailTitle": "Recibirás un correo electrónico con el archivo CSV",
+        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos como un archivo CSV. Puedes abrirlo con cualquier aplicación de hojas de cálculo.",
+        "button": "Entendido"
+      },
+      "title": "Exportar Transacciones",
+      "description": "Exporta tus transacciones a un archivo CSV. El archivo se enviará a tu correo electrónico.",
+      "error": {
+        "title": "Error de Exportación"
+      },
+      "filters": {
+        "title": "Filtros (Opcional)",
+        "description": "Por defecto, se exportarán todas tus transacciones. Utiliza los filtros a continuación para exportar un subconjunto específico.",
+        "dateRange": {
+          "label": "Rango de Fechas",
+          "placeholder": "Selecciona un rango de fechas (deja vacío para todas)"
+        },
+        "accounts": {
+          "label": "Cuentas",
+          "placeholder": "Selecciona cuentas (deja vacío para todas)"
+        }
+      },
+      "info": {
+        "title": "¿Qué ocurre después?",
+        "step1": "Tu solicitud de exportación se procesará en segundo plano",
+        "step2": "El archivo CSV incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
+        "step3": "Recibirás un correo electrónico con el archivo CSV adjunto",
+        "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
+      },
+      "exportButton": "Exportar Transacciones"
+    },
     "notifications": {
       "icon": {
         "navigationErrorTitle": "Error de navegación",
@@ -483,40 +517,6 @@
       "title": "Crear nueva cuenta",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
-    },
-    "dataExport": {
-      "title": "Exportar Transacciones",
-      "description": "Exporta tus transacciones a un archivo CSV. El archivo se enviará a tu correo electrónico.",
-      "error": {
-        "title": "Error de Exportación"
-      },
-      "filters": {
-        "title": "Filtros (Opcional)",
-        "description": "Por defecto, se exportarán todas tus transacciones. Utiliza los filtros a continuación para exportar un subconjunto específico.",
-        "dateRange": {
-          "label": "Rango de Fechas",
-          "placeholder": "Selecciona un rango de fechas (deja vacío para todas)"
-        },
-        "accounts": {
-          "label": "Cuentas",
-          "placeholder": "Selecciona cuentas (deja vacío para todas)"
-        }
-      },
-      "info": {
-        "title": "¿Qué ocurre después?",
-        "step1": "Tu solicitud de exportación se procesará en segundo plano",
-        "step2": "El archivo CSV incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
-        "step3": "Recibirás un correo electrónico con el archivo CSV adjunto",
-        "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
-      },
-      "exportButton": "Exportar Transacciones",
-      "modal": {
-        "title": "¡Exportación Iniciada Exitosamente!",
-        "description": "Tu exportación de datos se está procesando en segundo plano.",
-        "emailTitle": "Recibirás un correo electrónico con el archivo CSV",
-        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos como un archivo CSV. Puedes abrirlo con cualquier aplicación de hojas de cálculo.",
-        "button": "Entendido"
-      }
     }
   }
 }

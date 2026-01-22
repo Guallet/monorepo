@@ -11,7 +11,6 @@ import {
 
 import { useMemo } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { gualletClient } from '@/api/gualletClient';
 import { useAuth } from '@guallet/auth';
 
 export const Route = createFileRoute('/onboarding/register')({
