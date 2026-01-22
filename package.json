@@ -9,10 +9,12 @@
     "check-types": "turbo run check-types",
     "docker:compose:up": "docker-compose up -d",
     "docker:compose:up:build": "docker-compose up -d --build",
-    "docker:compose:down": "docker-compose down"
+    "docker:compose:down": "docker-compose down",
+    "repo:init": "tsx scripts/init-env.ts"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
+    "tsx": "^4.21.0",
     "turbo": "^2.5.4",
     "typescript": "5.9.3"
   },
