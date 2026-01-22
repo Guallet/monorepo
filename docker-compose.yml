@@ -7,15 +7,15 @@ services:
     container_name: guallet-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: guallet
-      POSTGRES_PASSWORD: guallet_password
-      POSTGRES_DB: guallet
+      POSTGRES_USER: ${POSTGRES_USER:-guallet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-guallet_password}
+      POSTGRES_DB: ${POSTGRES_DB:-guallet}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - guallet-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U guallet"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-guallet}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,25 +25,25 @@ services:
     image: redis:7-alpine
     container_name: guallet-redis
     restart: unless-stopped
-    command: redis-server --requirepass guallet_redis_password
+    command: redis-server --requirepass ${REDIS_PASSWORD:-guallet_redis_password}
     volumes:
       - redis_data:/data
     networks:
       - guallet-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "--raw", "--pass", "${REDIS_PASSWORD:-guallet_redis_password}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   # pgAdmin for Database Management
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:8.14
     container_name: guallet-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@guallet.local
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@guallet.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     ports:
@@ -74,14 +74,14 @@ services:
       # Database - Using internal Docker network
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
-      DATABASE_USERNAME: guallet
-      DATABASE_PASSWORD: guallet_password
-      DATABASE_NAME: guallet
+      DATABASE_USERNAME: ${POSTGRES_USER:-guallet}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-guallet_password}
+      DATABASE_NAME: ${POSTGRES_DB:-guallet}
       
       # Redis - Using internal Docker network
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: guallet_redis_password
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-guallet_redis_password}
       
       # These need to be configured by the user
       NORDIGEN_SECRET_ID: ${NORDIGEN_SECRET_ID:-}
@@ -101,7 +101,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health", "||", "exit", "1"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -55,15 +55,17 @@ The Docker setup includes the following services:
 
 ### Database Configuration
 
-The PostgreSQL database is configured with the following default credentials:
+The PostgreSQL database is configured with environment variables that can be customized:
 
 - **Host**: `postgres` (internal Docker network)
 - **Port**: `5432` (not exposed externally)
-- **Database**: `guallet`
-- **Username**: `guallet`
-- **Password**: `guallet_password`
+- **Database**: `${POSTGRES_DB:-guallet}`
+- **Username**: `${POSTGRES_USER:-guallet}`
+- **Password**: `${POSTGRES_PASSWORD:-guallet_password}`
 
 **⚠️ Security Note**: The database is NOT exposed to the host machine. It's only accessible from other containers within the Docker network. This is by design for security purposes.
+
+**⚠️ Production Security**: The default passwords shown above are for development only. For production deployments, you MUST change these passwords in your `.env` file.
 
 ### Redis Configuration
 
@@ -71,25 +73,25 @@ Redis is used for background job processing with BullMQ:
 
 - **Host**: `redis` (internal Docker network)
 - **Port**: `6379` (not exposed externally)
-- **Password**: `guallet_redis_password`
+- **Password**: `${REDIS_PASSWORD:-guallet_redis_password}`
+
+**⚠️ Production Security**: Change the Redis password in your `.env` file for production deployments.
 
 ### pgAdmin - Database Management
 
 To connect to the database from pgAdmin:
 
 1. Open http://localhost:5050
-2. Login with:
-   - Email: `admin@guallet.local`
-   - Password: `admin`
+2. Login with the credentials from your `.env` file (default: `admin@guallet.local` / `admin`)
 3. Add a new server:
    - **General** tab:
      - Name: `Guallet Database`
    - **Connection** tab:
      - Host: `postgres`
      - Port: `5432`
-     - Username: `guallet`
-     - Password: `guallet_password`
-     - Database: `guallet`
+     - Username: Value from `POSTGRES_USER` (default: `guallet`)
+     - Password: Value from `POSTGRES_PASSWORD` (default: `guallet_password`)
+     - Database: Value from `POSTGRES_DB` (default: `guallet`)
 
 ### Environment Variables
 
@@ -97,6 +99,12 @@ All environment variables can be configured in the `.env` file:
 
 #### Required Variables
 
+- `POSTGRES_USER`: PostgreSQL username (default: `guallet`)
+- `POSTGRES_PASSWORD`: PostgreSQL password (default: `guallet_password`)
+- `POSTGRES_DB`: PostgreSQL database name (default: `guallet`)
+- `REDIS_PASSWORD`: Redis password (default: `guallet_redis_password`)
+- `PGADMIN_EMAIL`: pgAdmin login email (default: `admin@guallet.local`)
+- `PGADMIN_PASSWORD`: pgAdmin login password (default: `admin`)
 - `VITE_SUPABASE_URL`: Supabase project URL for authentication
 - `VITE_SUPABASE_KEY`: Supabase public/anon key
 - `NORDIGEN_SECRET_ID`: API credentials for bank integrations

@@ -38,8 +38,8 @@ FROM node:22-alpine AS production
 # Install pnpm
 RUN npm install -g pnpm@10.14.0
 
-# Install wget for healthcheck
-RUN apk add --no-cache wget
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
 WORKDIR /app
 
