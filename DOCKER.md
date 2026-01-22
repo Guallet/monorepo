@@ -46,6 +46,12 @@ The Docker setup includes the following services:
    docker-compose up -d
    ```
 
+   or the shortcut
+   
+   ```bash
+   pnpm docker:compose:up
+   ```
+
 5. **Access the application**
    - **Webapp**: http://localhost:3000
    - **API**: http://localhost:5000
@@ -122,13 +128,26 @@ All environment variables can be configured in the `.env` file:
 
 ## Docker Commands
 
+You can also use the npm scripts defined in `package.json`:
+
 ### Start all services
 ```bash
+pnpm docker:compose:up
+# Or standard docker-compose
 docker-compose up -d
+```
+
+### Start and rebuild all services
+```bash
+pnpm docker:compose:up:build
+# Or standard docker-compose
+docker-compose up -d --build
 ```
 
 ### Stop all services
 ```bash
+pnpm docker:compose:down
+# Or standard docker-compose
 docker-compose down
 ```
 

@@ -33,11 +33,19 @@ In order to compile/run the project locally, you will need:
 
 The easiest way to run the entire project is using Docker. See [DOCKER.md](./DOCKER.md) for detailed instructions.
 
-Quick start with Docker:
+Quick start with Docker (using npm scripts):
 ```bash
 cp .env.docker.example .env
 # Edit .env with your configuration
-docker-compose up -d
+
+# Start all services
+pnpm docker:compose:up
+
+# Or start with rebuilding images
+pnpm docker:compose:up:build
+
+# Stop all services
+pnpm docker:compose:down
 ```
 
 This will start:
