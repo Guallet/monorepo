@@ -62,11 +62,11 @@ RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx && \
 # Use non-root user
 USER nonroot
 
-# Copy built files from base stage
-COPY --from=base /app/apps/webapp/dist /usr/share/nginx/html
+# Copy built files from base stage ensuring nonroot ownership
+COPY --chown=nonroot:nonroot --from=base /app/apps/webapp/dist /usr/share/nginx/html
 
-# Copy custom nginx configuration
-COPY apps/webapp/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy custom nginx configuration ensuring nonroot ownership
+COPY --chown=nonroot:nonroot apps/webapp/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose non-privileged port
 EXPOSE 8080
