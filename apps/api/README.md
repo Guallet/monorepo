@@ -45,6 +45,10 @@ $ pnpm run start:dev
 $ pnpm run start:prod
 ```
 
+## Configuration
+
+Create a `api.env` file (or `.env` for local dev) with the values you can find in the `api.env.sample` file.
+
 ## Test
 
 ```bash

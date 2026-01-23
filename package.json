@@ -9,7 +9,8 @@
     "check-types": "turbo run check-types",
     "docker:compose:up": "docker-compose up -d",
     "docker:compose:up:build": "docker-compose up -d --build",
-    "docker:compose:down": "docker-compose down"
+    "docker:compose:down": "docker-compose down",
+    "docker:compose:reset": "docker-compose down && docker-compose up -d"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -27,19 +27,27 @@ The Docker setup includes the following services:
    cd monorepo
    ```
 
-2. **Create environment file**
+2. **Create environment files**
    ```bash
-   cp .env.docker.example .env
+   cp database.env.sample database.env
+   cp api.env.sample api.env
+   cp webapp.env.sample webapp.env
    ```
 
 3. **Configure environment variables**
    
-   Edit the `.env` file and fill in the required values:
+   Edit the `.env` files and fill in the required values:
    
+   **`webapp.env`**:
    - `VITE_SUPABASE_URL`: Your Supabase project URL
    - `VITE_SUPABASE_KEY`: Your Supabase anon/public key
+
+   **`api.env`**:
    - `NORDIGEN_SECRET_ID`: Nordigen API credentials for bank integrations
    - `NORDIGEN_SECRET_KEY`: Nordigen API secret key
+
+   **`database.env`**:
+   - Database and Redis credentials (change defaults for production)
 
 4. **Start the application**
    ```bash
@@ -55,13 +63,13 @@ The Docker setup includes the following services:
 5. **Access the application**
    - **Webapp**: http://localhost:3000
    - **API**: http://localhost:5000
-   - **pgAdmin**: http://localhost:5050 (Email: admin@guallet.local, Password: admin)
+   - **pgAdmin**: http://localhost:5050 (Email: admin@guallet.io, Password: admin)
 
 ## Configuration
 
 ### Database Configuration
 
-The PostgreSQL database is configured with environment variables that can be customized:
+The PostgreSQL database is configured with environment variables in `database.env` that can be customized:
 
 - **Host**: `postgres` (internal Docker network)
 - **Port**: `5432` (not exposed externally)
@@ -71,24 +79,24 @@ The PostgreSQL database is configured with environment variables that can be cus
 
 **⚠️ Security Note**: The database is NOT exposed to the host machine. It's only accessible from other containers within the Docker network. This is by design for security purposes.
 
-**⚠️ Production Security**: The default passwords shown above are for development only. For production deployments, you MUST change these passwords in your `.env` file.
+**⚠️ Production Security**: The default passwords shown above are for development only. For production deployments, you MUST change these passwords in your `database.env` file.
 
 ### Redis Configuration
 
-Redis is used for background job processing with BullMQ:
+Redis is used for background job processing with BullMQ. Configuration is in `database.env`:
 
 - **Host**: `redis` (internal Docker network)
 - **Port**: `6379` (not exposed externally)
 - **Password**: `${REDIS_PASSWORD:-guallet_redis_password}`
 
-**⚠️ Production Security**: Change the Redis password in your `.env` file for production deployments.
+**⚠️ Production Security**: Change the Redis password in your `database.env` file for production deployments.
 
 ### pgAdmin - Database Management
 
 To connect to the database from pgAdmin:
 
 1. Open http://localhost:5050
-2. Login with the credentials from your `.env` file (default: `admin@guallet.local` / `admin`)
+2. Login with the credentials from your `database.env` file (default: `admin@guallet.io` / `admin`)
 3. Add a new server:
    - **General** tab:
      - Name: `Guallet Database`
@@ -109,7 +117,7 @@ All environment variables can be configured in the `.env` file:
 - `POSTGRES_PASSWORD`: PostgreSQL password (default: `guallet_password`)
 - `POSTGRES_DB`: PostgreSQL database name (default: `guallet`)
 - `REDIS_PASSWORD`: Redis password (default: `guallet_redis_password`)
-- `PGADMIN_EMAIL`: pgAdmin login email (default: `admin@guallet.local`)
+- `PGADMIN_EMAIL`: pgAdmin login email (default: `admin@guallet.io`)
 - `PGADMIN_PASSWORD`: pgAdmin login password (default: `admin`)
 - `VITE_SUPABASE_URL`: Supabase project URL for authentication
 - `VITE_SUPABASE_KEY`: Supabase public/anon key

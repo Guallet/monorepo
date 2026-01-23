@@ -11,14 +11,15 @@ This is a quick reference guide for deploying Guallet with Docker. For detailed 
 ## Quick Deploy
 
 ```bash
-# 1. Copy environment file
-cp .env.docker.example .env
+# 1. Copy environment files
+cp database.env.sample database.env
+cp api.env.sample api.env
+cp webapp.env.sample webapp.env
 
-# 2. Edit .env and configure:
-#    - VITE_SUPABASE_URL
-#    - VITE_SUPABASE_KEY
-#    - NORDIGEN_SECRET_ID and NORDIGEN_SECRET_KEY
-#    - (Optional) Change default passwords
+# 2. Edit .env files and configure:
+#    - webapp.env: VITE_SUPABASE_URL, VITE_SUPABASE_KEY
+#    - api.env: NORDIGEN_SECRET_ID, NORDIGEN_SECRET_KEY
+#    - database.env: Change default passwords (optional for dev)
 
 # 3. Start all services
 docker-compose up -d
@@ -41,7 +42,7 @@ docker-compose up -d
 
 ### pgAdmin (GUI)
 - URL: http://localhost:5050
-- Email: `admin@guallet.local`
+- Email: `admin@guallet.io`
 - Password: `admin`
 
 **⚠️ IMPORTANT**: Change all default passwords in production!

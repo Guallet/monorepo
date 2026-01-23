@@ -9037,11 +9037,6 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsx@4.20.3:
-    resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
-
   tsx@4.21.0:
     resolution: {integrity: sha512-5C1sg4USs1lfG0GFb2RLXsdpXqBSEhAaA/0kPL01wxzpMqLILNxIxIOKiILz+cdg/pLnOUxFYOR5yhHU666wbw==}
     engines: {node: '>=18.0.0'}
@@ -13012,7 +13007,7 @@ snapshots:
       prettier: 3.8.0
       recast: 0.23.11
       source-map: 0.7.4
-      tsx: 4.20.3
+      tsx: 4.21.0
       zod: 3.25.76
     transitivePeerDependencies:
       - supports-color
@@ -19611,20 +19606,12 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsx@4.20.3:
-    dependencies:
-      esbuild: 0.25.6
-      get-tsconfig: 4.10.1
-    optionalDependencies:
-      fsevents: 2.3.3
-
   tsx@4.21.0:
     dependencies:
       esbuild: 0.27.2
       get-tsconfig: 4.10.1
     optionalDependencies:
       fsevents: 2.3.3
-    optional: true
 
   turbo-darwin-64@2.5.4:
     optional: true
