@@ -36,7 +36,7 @@ The easiest way to run the entire project is using Docker. See [DOCKER.md](./DOC
 Quick start with Docker (using npm scripts):
 ```bash
 # Initialize the repository and generate .env file with secure secrets
-pnpm repo:init
+cp .env.sample .env
 
 # Edit .env with your remaining configuration (API keys, etc.)
 

@@ -47,7 +47,7 @@ The Docker setup includes the following services:
    ```
 
    or the shortcut
-   
+
    ```bash
    pnpm docker:compose:up
    ```
