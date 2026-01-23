@@ -29,6 +29,11 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# Docker compose env files
+api.env
+database.env
+webapp.env
+
 # turbo
 .turbo
 

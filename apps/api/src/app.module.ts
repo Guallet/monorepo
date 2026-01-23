@@ -31,6 +31,7 @@ import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
+import { HealthModule } from './features/health/health.module';
 
 @Module({
   imports: [
@@ -49,6 +50,11 @@ import { BullModule } from '@nestjs/bullmq';
         DATABASE_USERNAME: Joi.string().required(),
         DATABASE_PASSWORD: Joi.string().required(),
         DATABASE_NAME: Joi.string().required(),
+        DATABASE_SSL_ENABLED: Joi.boolean().default(false),
+        AUTH_JWT_SECRET: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().default(6379),
+        REDIS_PASSWORD: Joi.string().allow('').optional(),
         NORDIGEN_SECRET_ID: Joi.string().required(),
         NORDIGEN_SECRET_KEY: Joi.string().required(),
       }),
@@ -87,7 +93,10 @@ import { BullModule } from '@nestjs/bullmq';
       // synchronize: process.env.ENVIRONMENT === 'development',
       synchronize: true,
       autoLoadEntities: true,
-      ssl: { rejectUnauthorized: false },
+      ssl:
+        process.env.DATABASE_SSL_ENABLED === 'true'
+          ? { rejectUnauthorized: false }
+          : false,
     }),
     // CRON
     ScheduleModule.forRoot(),
@@ -121,6 +130,7 @@ import { BullModule } from '@nestjs/bullmq';
     // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
     TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [
