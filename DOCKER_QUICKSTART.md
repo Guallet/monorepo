@@ -6,7 +6,6 @@ This is a quick reference guide for deploying Guallet with Docker. For detailed 
 
 - Docker Engine 20.10+
 - Docker Compose V2.0+
-- Supabase account (for authentication)
 
 ## Quick Deploy
 
@@ -17,8 +16,8 @@ cp api.env.sample api.env
 cp webapp.env.sample webapp.env
 
 # 2. Edit .env files and configure:
-#    - webapp.env: VITE_SUPABASE_URL, VITE_SUPABASE_KEY
-#    - api.env: NORDIGEN_SECRET_ID, NORDIGEN_SECRET_KEY
+#    - webapp.env
+#    - api.env
 #    - database.env: Change default passwords (optional for dev)
 
 # 3. Start all services
@@ -125,7 +124,6 @@ Internet
 
 ## Next Steps
 
-- Configure your Supabase authentication
 - Set up Nordigen for bank integrations
 - Configure email notifications (optional)
 - Review security settings in DOCKER.md

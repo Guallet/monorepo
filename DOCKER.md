@@ -17,7 +17,6 @@ The Docker setup includes the following services:
 - Docker Engine 20.10 or higher
 - Docker Compose V2.0 or higher
 - At least 2GB of free disk space
-- Supabase project (for authentication)
 
 ## Quick Start
 
@@ -39,10 +38,11 @@ The Docker setup includes the following services:
    Edit the `.env` files and fill in the required values:
    
    **`webapp.env`**:
-   - `VITE_SUPABASE_URL`: Your Supabase project URL
-   - `VITE_SUPABASE_KEY`: Your Supabase anon/public key
+   - `VITE_API_URL`: The URL of the API server (default: http://localhost:5000)
 
    **`api.env`**:
+   - `BETTER_AUTH_SECRET`: Secret key for authentication (generate with `openssl rand -base64 32`)
+   - `BETTER_AUTH_URL`: The base URL of your API (e.g., http://localhost:5000)
    - `NORDIGEN_SECRET_ID`: Nordigen API credentials for bank integrations
    - `NORDIGEN_SECRET_KEY`: Nordigen API secret key
 
@@ -119,8 +119,8 @@ All environment variables can be configured in the `.env` file:
 - `REDIS_PASSWORD`: Redis password (default: `guallet_redis_password`)
 - `PGADMIN_EMAIL`: pgAdmin login email (default: `admin@guallet.io`)
 - `PGADMIN_PASSWORD`: pgAdmin login password (default: `admin`)
-- `VITE_SUPABASE_URL`: Supabase project URL for authentication
-- `VITE_SUPABASE_KEY`: Supabase public/anon key
+- `BETTER_AUTH_SECRET`: Secret key for authentication (generate with `openssl rand -base64 32`)
+- `BETTER_AUTH_URL`: Base URL of the API for authentication
 - `NORDIGEN_SECRET_ID`: API credentials for bank integrations
 - `NORDIGEN_SECRET_KEY`: API secret for bank integrations
 

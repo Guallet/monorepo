@@ -26,8 +26,8 @@ Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 In order to compile/run the project locally, you will need:
 - Node >=v22.x 
 - PNPM >= 10.0.0
-- Postgres database
-- Supabase project (could be used to host your DB too)
+- PostgreSQL database
+- Redis
 
 ### Docker Deployment (Recommended)
 
@@ -96,7 +96,7 @@ npx turbo link
 ### Dependencies
 
 - [PostgreSQL](https://www.postgresql.org/): The API requires a PostgreSQL database to read/write data.
-- [Supabase](https://supabase.com/): Used for auth only. I didn't want to implement my own auth mechanism, so it's a better idea to rely on a third party.
+- [Better Auth](https://www.better-auth.com/): Used for authentication. It's a comprehensive auth solution for TypeScript applications.
 
 ### Support
 
