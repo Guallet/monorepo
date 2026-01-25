@@ -2,8 +2,10 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
 
+export const auth = createBetterAuth(new ConfigService());
+
 // Factory function to create Better Auth instance
-export function createBetterAuth(configService: ConfigService) {
+function createBetterAuth(configService: ConfigService) {
   const pool = new Pool({
     host:
       configService.get<string>('database.host') || process.env.DATABASE_HOST,

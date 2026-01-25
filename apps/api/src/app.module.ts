@@ -32,6 +32,8 @@ import { NotificationsModule } from './features/notifications/notifications.modu
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { auth } from './auth/better-auth';
 
 @Module({
   imports: [
@@ -108,6 +110,8 @@ import { HealthModule } from './features/health/health.module';
         password: process.env.REDIS_PASSWORD || undefined,
       },
     }),
+    // BETTER AUTH
+    AuthModule.forRoot({ auth }),
     // APP MODULES
     UsersModule,
     InstitutionsModule,
@@ -137,10 +141,10 @@ import { HealthModule } from './features/health/health.module';
     JwtService,
     // This will protect all the routes using the AuthGuard
     // If you want to allow a specific route, sue the @Public decorator
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
     UsersService,
   ],
 })

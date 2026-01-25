@@ -14,6 +14,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    // Needed for Better Auth. Don't worry, the library will automatically re-add the default body parsers.
+    bodyParser: false,
   });
   if (isProduction) {
     app.useLogger(app.get(Logger));
