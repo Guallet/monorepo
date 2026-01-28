@@ -287,7 +287,7 @@ describe('EmailService', () => {
           EmailService,
           {
             provide: ConfigService,
-            useValue: createMockConfigService(undefined),
+            useValue: createMockConfigService(),
           },
         ],
       }).compile();
