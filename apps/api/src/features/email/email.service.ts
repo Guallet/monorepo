@@ -71,9 +71,9 @@ export class EmailService implements OnModuleInit {
       return;
     }
 
-    const files = fs.readdirSync(this.templatesDir).filter((file) =>
-      file.endsWith('.hbs'),
-    );
+    const files = fs
+      .readdirSync(this.templatesDir)
+      .filter((file) => file.endsWith('.hbs'));
 
     for (const templateFile of files) {
       try {

@@ -35,10 +35,13 @@ describe('EmailService', () => {
       ],
     }).compile();
 
+    await module.init();
     service = module.get<EmailService>(EmailService);
 
-    // Mock the transporter.sendMail method
-    service['transporter']!.sendMail = mockSendMail;
+    // Mock the transporter.sendMail method if transporter exists
+    if (service['transporter']) {
+      service['transporter'].sendMail = mockSendMail;
+    }
   });
 
   describe('HTML escaping', () => {
@@ -289,6 +292,7 @@ describe('EmailService', () => {
         ],
       }).compile();
 
+      await module.init();
       serviceWithoutSmtp = module.get<EmailService>(EmailService);
     });
 
