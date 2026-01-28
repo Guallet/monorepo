@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs = require('dayjs');
+import localizedFormat = require('dayjs/plugin/localizedFormat');
+import customParseFormat = require('dayjs/plugin/customParseFormat');
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
