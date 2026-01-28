@@ -1,84 +1,50 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from './email.service';
 
 describe('EmailService', () => {
   let service: EmailService;
+  let mockSendMail: jest.Mock;
+
+  const createMockConfigService = (smtpHost?: string) => ({
+    get: jest.fn(<T>(key: string, defaultValue?: T): T | undefined => {
+      const config: Record<string, unknown> = {
+        SMTP_HOST: smtpHost,
+        SMTP_PORT: 587,
+        SMTP_USER: smtpHost ? 'test-user' : undefined,
+        SMTP_PASS: smtpHost ? 'test-pass' : undefined,
+        SMTP_SECURE: false,
+        EMAIL_FROM: 'Guallet <noreply@guallet.io>',
+      };
+      return (config[key] as T) ?? defaultValue;
+    }),
+  });
 
   beforeEach(async () => {
-    const mockConfigService = {
-      get: jest.fn((key: string, defaultValue?: string) => {
-        if (key === 'RESEND_API_KEY') return 'test-api-key';
-        if (key === 'EMAIL_FROM') return 'Guallet <noreply@guallet.io>';
-        return defaultValue;
-      }),
-    };
+    mockSendMail = jest
+      .fn()
+      .mockResolvedValue({ messageId: 'test-message-id' });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EmailService,
         {
           provide: ConfigService,
-          useValue: mockConfigService,
+          useValue: createMockConfigService('smtp.test.com'),
         },
       ],
     }).compile();
 
+    await module.init();
     service = module.get<EmailService>(EmailService);
 
-    // Mock the resend.emails.send method
-    service['resend'].emails.send = jest.fn().mockResolvedValue({ data: {} });
+    // Mock the transporter.sendMail method if transporter exists
+    if (service['transporter']) {
+      service['transporter'].sendMail = mockSendMail;
+    }
   });
 
   describe('HTML escaping', () => {
-    describe('escapeHtml', () => {
-      it('should escape HTML special characters', () => {
-        const result = service['escapeHtml']('<script>alert("XSS")</script>');
-        expect(result).toBe(
-          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
-        );
-      });
-
-      it('should escape ampersands', () => {
-        const result = service['escapeHtml']('Tom & Jerry');
-        expect(result).toBe('Tom &amp; Jerry');
-      });
-
-      it('should escape less than and greater than signs', () => {
-        const result = service['escapeHtml']('5 < 10 > 3');
-        expect(result).toBe('5 &lt; 10 &gt; 3');
-      });
-
-      it('should escape quotes', () => {
-        const result = service['escapeHtml']('He said "Hello"');
-        expect(result).toBe('He said &quot;Hello&quot;');
-      });
-
-      it('should escape single quotes', () => {
-        const result = service['escapeHtml']("It's working");
-        expect(result).toBe('It&#x27;s working');
-      });
-
-      it('should escape forward slashes', () => {
-        const result = service['escapeHtml']('</script>');
-        expect(result).toBe('&lt;&#x2F;script&gt;');
-      });
-
-      it('should not modify safe strings', () => {
-        const result = service['escapeHtml']('Normal User Name');
-        expect(result).toBe('Normal User Name');
-      });
-
-      it('should handle multiple special characters', () => {
-        const result = service['escapeHtml']('<div class="test">A & B</div>');
-        expect(result).toBe(
-          '&lt;div class=&quot;test&quot;&gt;A &amp; B&lt;&#x2F;div&gt;',
-        );
-      });
-    });
-
     describe('sendImportCompletionEmail', () => {
       it('should escape userName in HTML content', async () => {
         const maliciousUserName = '<script>alert("XSS")</script>';
@@ -90,10 +56,9 @@ describe('EmailService', () => {
           failedCount: 0,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
+          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
         );
         expect(sendCall.html).not.toContain('<script>alert("XSS")</script>');
       });
@@ -106,8 +71,7 @@ describe('EmailService', () => {
           failedCount: 0,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('Tom &amp; Jerry');
       });
 
@@ -119,8 +83,7 @@ describe('EmailService', () => {
           failedCount: 0,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('User &quot;Nickname&quot;');
       });
     });
@@ -136,13 +99,12 @@ describe('EmailService', () => {
           errorMessage: maliciousError,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
+          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
         );
         expect(sendCall.html).toContain(
-          '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;',
+          '&lt;img src&#x3D;x onerror&#x3D;&quot;alert(1)&quot;&gt;',
         );
         expect(sendCall.html).not.toContain('<script>');
         expect(sendCall.html).not.toContain('<img');
@@ -155,8 +117,7 @@ describe('EmailService', () => {
           errorMessage: 'Error: 5 < 10 & "parsing failed"',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           'Error: 5 &lt; 10 &amp; &quot;parsing failed&quot;',
         );
@@ -169,10 +130,9 @@ describe('EmailService', () => {
           errorMessage: '</div><script>malicious()</script><div>',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;&#x2F;div&gt;&lt;script&gt;malicious()&lt;&#x2F;script&gt;&lt;div&gt;',
+          '&lt;/div&gt;&lt;script&gt;malicious()&lt;/script&gt;&lt;div&gt;',
         );
       });
     });
@@ -188,9 +148,8 @@ describe('EmailService', () => {
           csvContent: 'date,amount\n2024-01-01,100',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
-        expect(sendCall.html).toContain('&lt;b&gt;Bold Name&lt;&#x2F;b&gt;');
+        const sendCall = mockSendMail.mock.calls[0][0];
+        expect(sendCall.html).toContain('&lt;b&gt;Bold Name&lt;/b&gt;');
         expect(sendCall.html).not.toContain('<b>Bold Name</b>');
       });
 
@@ -202,8 +161,7 @@ describe('EmailService', () => {
           csvContent: 'date,amount\n2024-01-01,100',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('O&#x27;Brien &amp; Associates');
       });
     });
@@ -219,13 +177,12 @@ describe('EmailService', () => {
           errorMessage: maliciousError,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;iframe src=&quot;evil.com&quot;&gt;&lt;&#x2F;iframe&gt;',
+          '&lt;iframe src&#x3D;&quot;evil.com&quot;&gt;&lt;/iframe&gt;',
         );
         expect(sendCall.html).toContain(
-          '&lt;style&gt;body{display:none}&lt;&#x2F;style&gt;',
+          '&lt;style&gt;body{display:none}&lt;/style&gt;',
         );
         // Verify the malicious content is escaped, not rendered as HTML
         expect(sendCall.html).toContain('Hello &lt;iframe');
@@ -240,8 +197,7 @@ describe('EmailService', () => {
             'Database error: "Connection timeout" & query failed: SELECT * FROM users WHERE id < 100',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           'Database error: &quot;Connection timeout&quot; &amp; query failed: SELECT * FROM users WHERE id &lt; 100',
         );
@@ -258,7 +214,7 @@ describe('EmailService', () => {
         failedCount: 2,
       });
 
-      expect(service['resend'].emails.send).toHaveBeenCalledWith(
+      expect(mockSendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           from: 'Guallet <noreply@guallet.io>',
           to: 'test@example.com',
@@ -278,7 +234,7 @@ describe('EmailService', () => {
         csvContent,
       });
 
-      expect(service['resend'].emails.send).toHaveBeenCalledWith(
+      expect(mockSendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           from: 'Guallet <noreply@guallet.io>',
           to: 'test@example.com',
@@ -294,10 +250,8 @@ describe('EmailService', () => {
       );
     });
 
-    it('should handle Resend API errors gracefully', async () => {
-      (service['resend'].emails.send as jest.Mock).mockResolvedValueOnce({
-        error: { message: 'API Error' },
-      });
+    it('should handle SMTP errors gracefully', async () => {
+      mockSendMail.mockRejectedValueOnce(new Error('SMTP Error'));
 
       // Should not throw
       await expect(
@@ -311,9 +265,7 @@ describe('EmailService', () => {
     });
 
     it('should handle email send failures gracefully', async () => {
-      (service['resend'].emails.send as jest.Mock).mockRejectedValueOnce(
-        new Error('Network error'),
-      );
+      mockSendMail.mockRejectedValueOnce(new Error('Network error'));
 
       // Should not throw
       await expect(
@@ -321,6 +273,48 @@ describe('EmailService', () => {
           to: 'test@example.com',
           userName: 'Test User',
           errorMessage: 'Some error',
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+
+  describe('SMTP not configured', () => {
+    let serviceWithoutSmtp: EmailService;
+
+    beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          EmailService,
+          {
+            provide: ConfigService,
+            useValue: createMockConfigService(),
+          },
+        ],
+      }).compile();
+
+      await module.init();
+      serviceWithoutSmtp = module.get<EmailService>(EmailService);
+    });
+
+    it('should not attempt to send email when SMTP is not configured', async () => {
+      await serviceWithoutSmtp.sendImportCompletionEmail({
+        to: 'test@example.com',
+        userName: 'Test User',
+        processedCount: 10,
+        failedCount: 0,
+      });
+
+      // transporter should be null, so no sendMail call should happen
+      expect(serviceWithoutSmtp['transporter']).toBeNull();
+    });
+
+    it('should gracefully handle sendExportCompletionEmail when SMTP is not configured', async () => {
+      await expect(
+        serviceWithoutSmtp.sendExportCompletionEmail({
+          to: 'test@example.com',
+          userName: 'Test User',
+          transactionCount: 100,
+          csvContent: 'date,amount\n2024-01-01,100',
         }),
       ).resolves.not.toThrow();
     });
