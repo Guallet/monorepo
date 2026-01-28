@@ -1,6 +1,8 @@
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+// It looks NestJS and TypeScript don't like ES6 imports for dayjs
+/* eslint-disable @typescript-eslint/no-require-imports */
+import dayjs = require('dayjs');
+import localizedFormat = require('dayjs/plugin/localizedFormat');
+import customParseFormat = require('dayjs/plugin/customParseFormat');
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
@@ -18,11 +20,13 @@ const SUPPORTED_DATE_FORMATS = [
 
 export function isDate(value: string): boolean {
   const customFormat = dayjs(value, SUPPORTED_DATE_FORMATS, true);
-  if (customFormat.isValid()) return true;
+  if (customFormat.isValid()) {
+    return true;
+  }
   return dayjs(value).isValid();
 }
 
-export function formatDate(date: Date | string, format: string = "LL"): string {
+export function formatDate(date: Date | string, format: string = 'LL'): string {
   const day = dayjs(date);
   return day.format(format);
 }
@@ -30,7 +34,7 @@ export function formatDate(date: Date | string, format: string = "LL"): string {
 export function parseDate(value: string, format?: string): Date | null {
   if (!value) return null;
 
-  let day;
+  let day: dayjs.Dayjs;
   if (format) {
     day = dayjs(value, format, true); // true = strict mode
   } else {

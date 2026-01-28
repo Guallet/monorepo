@@ -21,6 +21,8 @@ import {
   DEFAULT_CATEGORY_ICON,
   DEFAULT_CATEGORY_COLOR,
 } from '../constants/import-defaults';
+import { parseNumber } from '../utils/number.utils';
+import { parseDate } from '../utils/date.utils';
 
 export const CSV_IMPORT_QUEUE = 'csv-import';
 export const CSV_IMPORT_JOB = 'process-csv-import';
@@ -178,17 +180,17 @@ export class CsvImportProcessor extends WorkerHost {
 
     // Validate and parse date
     const dateValue = row[fieldMappings.date] as string;
-    const parsedDate = new Date(dateValue);
-    if (Number.isNaN(parsedDate.getTime())) {
-      this.logger.warn(`Invalid date: ${dateValue}`);
+    const parsedDate = parseDate(dateValue);
+    if (!parsedDate) {
+      this.logger.error(`Invalid date: ${dateValue}`);
       return null;
     }
 
     // Validate and parse amount
     const amountValue = row[fieldMappings.amount] as string;
-    const parsedAmount = Number.parseFloat(amountValue);
+    const parsedAmount = parseNumber(amountValue);
     if (Number.isNaN(parsedAmount)) {
-      this.logger.warn(`Invalid amount: ${amountValue}`);
+      this.logger.error(`Invalid amount: ${amountValue}`);
       return null;
     }
 

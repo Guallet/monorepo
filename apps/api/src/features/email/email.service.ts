@@ -10,6 +10,7 @@ interface SendEmailOptions {
   to: string;
   subject: string;
   template: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: Record<string, any>;
   attachments?: nodemailer.SendMailOptions['attachments'];
 }
@@ -96,6 +97,7 @@ export class EmailService implements OnModuleInit {
    */
   private renderTemplate(
     templateName: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: Record<string, any>,
   ): string {
     const template = this.compiledTemplates.get(templateName);

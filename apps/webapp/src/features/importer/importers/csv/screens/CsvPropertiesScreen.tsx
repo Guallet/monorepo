@@ -21,6 +21,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from '../state/csvState';
 import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
 import { isDate } from '@/utils/dateUtils';
+import { isValidNumber } from '@/utils/numberUtils';
 import { CsvStepper } from '../components/CsvStepper';
 
 const SAMPLE_ARRAY_SIZE = 10;
@@ -207,7 +208,7 @@ export function CsvPropertiesScreen() {
                         );
                         const isValid =
                           fieldValue === '' ||
-                          testAmounts.every((input) => !Number.isNaN(+input));
+                          testAmounts.every((input) => isValidNumber(input));
                         setIsValidAmountField(isValid);
                       }}
                       searchable

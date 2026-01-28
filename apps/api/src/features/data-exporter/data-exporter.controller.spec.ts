@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataExporterController } from './data-exporter.controller';
 import { getQueueToken } from '@nestjs/bullmq';
