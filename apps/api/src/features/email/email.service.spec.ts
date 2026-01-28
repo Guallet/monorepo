@@ -42,52 +42,6 @@ describe('EmailService', () => {
   });
 
   describe('HTML escaping', () => {
-    describe('escapeHtml', () => {
-      it('should escape HTML special characters', () => {
-        const result = service['escapeHtml']('<script>alert("XSS")</script>');
-        expect(result).toBe(
-          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
-        );
-      });
-
-      it('should escape ampersands', () => {
-        const result = service['escapeHtml']('Tom & Jerry');
-        expect(result).toBe('Tom &amp; Jerry');
-      });
-
-      it('should escape less than and greater than signs', () => {
-        const result = service['escapeHtml']('5 < 10 > 3');
-        expect(result).toBe('5 &lt; 10 &gt; 3');
-      });
-
-      it('should escape quotes', () => {
-        const result = service['escapeHtml']('He said "Hello"');
-        expect(result).toBe('He said &quot;Hello&quot;');
-      });
-
-      it('should escape single quotes', () => {
-        const result = service['escapeHtml']("It's working");
-        expect(result).toBe('It&#x27;s working');
-      });
-
-      it('should escape forward slashes', () => {
-        const result = service['escapeHtml']('</script>');
-        expect(result).toBe('&lt;&#x2F;script&gt;');
-      });
-
-      it('should not modify safe strings', () => {
-        const result = service['escapeHtml']('Normal User Name');
-        expect(result).toBe('Normal User Name');
-      });
-
-      it('should handle multiple special characters', () => {
-        const result = service['escapeHtml']('<div class="test">A & B</div>');
-        expect(result).toBe(
-          '&lt;div class=&quot;test&quot;&gt;A &amp; B&lt;&#x2F;div&gt;',
-        );
-      });
-    });
-
     describe('sendImportCompletionEmail', () => {
       it('should escape userName in HTML content', async () => {
         const maliciousUserName = '<script>alert("XSS")</script>';
@@ -101,7 +55,7 @@ describe('EmailService', () => {
 
         const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
+          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
         );
         expect(sendCall.html).not.toContain('<script>alert("XSS")</script>');
       });
@@ -144,10 +98,10 @@ describe('EmailService', () => {
 
         const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
+          '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
         );
         expect(sendCall.html).toContain(
-          '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;',
+          '&lt;img src&#x3D;x onerror&#x3D;&quot;alert(1)&quot;&gt;',
         );
         expect(sendCall.html).not.toContain('<script>');
         expect(sendCall.html).not.toContain('<img');
@@ -175,7 +129,7 @@ describe('EmailService', () => {
 
         const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;&#x2F;div&gt;&lt;script&gt;malicious()&lt;&#x2F;script&gt;&lt;div&gt;',
+          '&lt;/div&gt;&lt;script&gt;malicious()&lt;/script&gt;&lt;div&gt;',
         );
       });
     });
@@ -192,7 +146,7 @@ describe('EmailService', () => {
         });
 
         const sendCall = mockSendMail.mock.calls[0][0];
-        expect(sendCall.html).toContain('&lt;b&gt;Bold Name&lt;&#x2F;b&gt;');
+        expect(sendCall.html).toContain('&lt;b&gt;Bold Name&lt;/b&gt;');
         expect(sendCall.html).not.toContain('<b>Bold Name</b>');
       });
 
@@ -222,10 +176,10 @@ describe('EmailService', () => {
 
         const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
-          '&lt;iframe src=&quot;evil.com&quot;&gt;&lt;&#x2F;iframe&gt;',
+          '&lt;iframe src&#x3D;&quot;evil.com&quot;&gt;&lt;/iframe&gt;',
         );
         expect(sendCall.html).toContain(
-          '&lt;style&gt;body{display:none}&lt;&#x2F;style&gt;',
+          '&lt;style&gt;body{display:none}&lt;/style&gt;',
         );
         // Verify the malicious content is escaped, not rendered as HTML
         expect(sendCall.html).toContain('Hello &lt;iframe');
