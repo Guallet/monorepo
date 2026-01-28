@@ -1,6 +1,6 @@
-import { Modal } from "@mantine/core";
-import { useIsMobile } from "../hooks/useIsMobile";
-import React from "react";
+import { Modal } from '@mantine/core';
+import { useIsMobile } from '../hooks/useIsMobile';
+import React from 'react';
 
 /**
  * Props for the ResponsiveModal component
@@ -22,20 +22,20 @@ export interface ResponsiveModalProps {
 
 /**
  * ResponsiveModal - A reusable modal component that adapts to screen size
- * 
+ *
  * This component wraps Mantine's Modal and provides responsive behavior:
  * - On mobile devices (viewport <= 50em): Displays as a full-screen modal
  * - On desktop/tablet: Displays as a standard centered modal
- * 
+ *
  * @example
  * ```tsx
  * import { ResponsiveModal } from '@guallet/ui-react';
  * import { useDisclosure } from '@mantine/hooks';
  * import { Button } from '@mantine/core';
- * 
+ *
  * function MyComponent() {
  *   const [opened, { open, close }] = useDisclosure(false);
- * 
+ *
  *   return (
  *     <>
  *       <Button onClick={open}>Open Modal</Button>
@@ -51,7 +51,7 @@ export interface ResponsiveModalProps {
  *   );
  * }
  * ```
- * 
+ *
  * @param props - Component props
  * @returns React component
  */
@@ -60,9 +60,9 @@ export function ResponsiveModal({
   onClose,
   title,
   children,
-  size = "md",
+  size = 'md',
   withCloseButton = true,
-}: ResponsiveModalProps) {
+}: Readonly<ResponsiveModalProps>) {
   const isMobile = useIsMobile();
 
   return (
@@ -73,7 +73,7 @@ export function ResponsiveModal({
       withCloseButton={withCloseButton}
       fullScreen={isMobile}
       radius={isMobile ? 0 : undefined}
-      padding={isMobile ? "md" : undefined}
+      padding={isMobile ? 'md' : undefined}
       size={isMobile ? undefined : size}
       centered={!isMobile}
     >
