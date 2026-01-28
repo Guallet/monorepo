@@ -7,7 +7,8 @@ import {
 } from '@guallet/api-client';
 import { FieldMappings } from '../models';
 import { DEFAULT_ACCOUNT_NAME } from './CsvAccountsScreen';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate, parseDate } from '@/utils/dateUtils';
+import { parseNumber } from '@/utils/numberUtils';
 import {
   Modal,
   Stack,
@@ -516,7 +517,7 @@ function TransactionsContent() {
 }
 
 export interface CSVTransaction {
-  date: string;
+  date: Date;
   amount: number;
   description: string;
   notes: string | null;
@@ -549,8 +550,8 @@ function mapTransaction(
   const destinationCategory = categoryMappings[categoryKey];
 
   return {
-    date: String(dateValue ?? ''),
-    amount: Number(amountValue ?? 0),
+    date: parseDate(String(dateValue ?? new Date().toISOString())) ?? new Date(),
+    amount: parseNumber(amountValue) || 0,
     description: String(descriptionValue ?? ''),
     notes: notesValue == null ? null : String(notesValue),
 
