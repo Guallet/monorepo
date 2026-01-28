@@ -1,19 +1,28 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from './email.service';
 
 describe('EmailService', () => {
   let service: EmailService;
+  let mockSendMail: jest.Mock;
 
   beforeEach(async () => {
+    mockSendMail = jest
+      .fn()
+      .mockResolvedValue({ messageId: 'test-message-id' });
+
     const mockConfigService = {
-      get: jest.fn((key: string, defaultValue?: string) => {
-        if (key === 'RESEND_API_KEY') return 'test-api-key';
-        if (key === 'EMAIL_FROM') return 'Guallet <noreply@guallet.io>';
-        return defaultValue;
-      }),
+      get: jest.fn(
+        <T>(key: string, defaultValue?: T): T | string | number | boolean => {
+          if (key === 'SMTP_HOST') return 'smtp.test.com';
+          if (key === 'SMTP_PORT') return 587;
+          if (key === 'SMTP_USER') return 'test-user';
+          if (key === 'SMTP_PASS') return 'test-pass';
+          if (key === 'SMTP_SECURE') return false;
+          if (key === 'EMAIL_FROM') return 'Guallet <noreply@guallet.io>';
+          return defaultValue as T;
+        },
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -28,8 +37,8 @@ describe('EmailService', () => {
 
     service = module.get<EmailService>(EmailService);
 
-    // Mock the resend.emails.send method
-    service['resend'].emails.send = jest.fn().mockResolvedValue({ data: {} });
+    // Mock the transporter.sendMail method
+    service['transporter'].sendMail = mockSendMail;
   });
 
   describe('HTML escaping', () => {
@@ -90,8 +99,7 @@ describe('EmailService', () => {
           failedCount: 0,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
         );
@@ -106,8 +114,7 @@ describe('EmailService', () => {
           failedCount: 0,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('Tom &amp; Jerry');
       });
 
@@ -119,8 +126,7 @@ describe('EmailService', () => {
           failedCount: 0,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('User &quot;Nickname&quot;');
       });
     });
@@ -136,8 +142,7 @@ describe('EmailService', () => {
           errorMessage: maliciousError,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           '&lt;script&gt;alert(&quot;XSS&quot;)&lt;&#x2F;script&gt;',
         );
@@ -155,8 +160,7 @@ describe('EmailService', () => {
           errorMessage: 'Error: 5 < 10 & "parsing failed"',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           'Error: 5 &lt; 10 &amp; &quot;parsing failed&quot;',
         );
@@ -169,8 +173,7 @@ describe('EmailService', () => {
           errorMessage: '</div><script>malicious()</script><div>',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           '&lt;&#x2F;div&gt;&lt;script&gt;malicious()&lt;&#x2F;script&gt;&lt;div&gt;',
         );
@@ -188,8 +191,7 @@ describe('EmailService', () => {
           csvContent: 'date,amount\n2024-01-01,100',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('&lt;b&gt;Bold Name&lt;&#x2F;b&gt;');
         expect(sendCall.html).not.toContain('<b>Bold Name</b>');
       });
@@ -202,8 +204,7 @@ describe('EmailService', () => {
           csvContent: 'date,amount\n2024-01-01,100',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain('O&#x27;Brien &amp; Associates');
       });
     });
@@ -219,8 +220,7 @@ describe('EmailService', () => {
           errorMessage: maliciousError,
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           '&lt;iframe src=&quot;evil.com&quot;&gt;&lt;&#x2F;iframe&gt;',
         );
@@ -240,8 +240,7 @@ describe('EmailService', () => {
             'Database error: "Connection timeout" & query failed: SELECT * FROM users WHERE id < 100',
         });
 
-        const sendCall = (service['resend'].emails.send as jest.Mock).mock
-          .calls[0][0];
+        const sendCall = mockSendMail.mock.calls[0][0];
         expect(sendCall.html).toContain(
           'Database error: &quot;Connection timeout&quot; &amp; query failed: SELECT * FROM users WHERE id &lt; 100',
         );
@@ -258,7 +257,7 @@ describe('EmailService', () => {
         failedCount: 2,
       });
 
-      expect(service['resend'].emails.send).toHaveBeenCalledWith(
+      expect(mockSendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           from: 'Guallet <noreply@guallet.io>',
           to: 'test@example.com',
@@ -278,7 +277,7 @@ describe('EmailService', () => {
         csvContent,
       });
 
-      expect(service['resend'].emails.send).toHaveBeenCalledWith(
+      expect(mockSendMail).toHaveBeenCalledWith(
         expect.objectContaining({
           from: 'Guallet <noreply@guallet.io>',
           to: 'test@example.com',
@@ -294,10 +293,8 @@ describe('EmailService', () => {
       );
     });
 
-    it('should handle Resend API errors gracefully', async () => {
-      (service['resend'].emails.send as jest.Mock).mockResolvedValueOnce({
-        error: { message: 'API Error' },
-      });
+    it('should handle SMTP errors gracefully', async () => {
+      mockSendMail.mockRejectedValueOnce(new Error('SMTP Error'));
 
       // Should not throw
       await expect(
@@ -311,9 +308,7 @@ describe('EmailService', () => {
     });
 
     it('should handle email send failures gracefully', async () => {
-      (service['resend'].emails.send as jest.Mock).mockRejectedValueOnce(
-        new Error('Network error'),
-      );
+      mockSendMail.mockRejectedValueOnce(new Error('Network error'));
 
       // Should not throw
       await expect(

@@ -1,20 +1,38 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private readonly resend: Resend;
+  private readonly transporter: Transporter;
 
   constructor(private readonly configService: ConfigService) {
-    const apiKey = this.configService.get<string>('RESEND_API_KEY');
-    if (!apiKey) {
+    const smtpHost = this.configService.get<string>('SMTP_HOST');
+    const smtpPort = this.configService.get<number>('SMTP_PORT', 587);
+    const smtpUser = this.configService.get<string>('SMTP_USER');
+    const smtpPass = this.configService.get<string>('SMTP_PASS');
+    const smtpSecure = this.configService.get<boolean>('SMTP_SECURE', false);
+
+    if (!smtpHost) {
       this.logger.warn(
-        'RESEND_API_KEY not configured. Email functionality will be disabled.',
+        'SMTP_HOST not configured. Email functionality will be disabled.',
       );
     }
-    this.resend = new Resend(apiKey);
+
+    this.transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      auth:
+        smtpUser && smtpPass
+          ? {
+              user: smtpUser,
+              pass: smtpPass,
+            }
+          : undefined,
+    });
   }
 
   /**
@@ -53,7 +71,7 @@ export class EmailService {
         totalCount,
       });
 
-      const { error } = await this.resend.emails.send({
+      await this.transporter.sendMail({
         from: this.configService.get<string>(
           'EMAIL_FROM',
           'Guallet <noreply@guallet.io>',
@@ -63,12 +81,7 @@ export class EmailService {
         html,
       });
 
-      if (error) {
-        this.logger.error('Resend API error:', error);
-        // TODO: Notify the admin or take other actions as needed
-      } else {
-        this.logger.log(`Import completion email sent to ${to}`);
-      }
+      this.logger.log(`Import completion email sent to ${to}`);
     } catch (error) {
       this.logger.error(
         `Failed to send import completion email to ${to}`,
@@ -164,7 +177,7 @@ export class EmailService {
         errorMessage,
       });
 
-      const { error } = await this.resend.emails.send({
+      await this.transporter.sendMail({
         from: this.configService.get<string>(
           'EMAIL_FROM',
           'Guallet <noreply@guallet.io>',
@@ -174,12 +187,7 @@ export class EmailService {
         html,
       });
 
-      if (error) {
-        this.logger.error('Resend API error:', error);
-        // TODO: Notify the admin or take other actions as needed
-      } else {
-        this.logger.log(`Import error email sent to ${to}`);
-      }
+      this.logger.log(`Import error email sent to ${to}`);
     } catch (error) {
       this.logger.error(`Failed to send import error email to ${to}`, error);
     }
@@ -250,7 +258,7 @@ export class EmailService {
         transactionCount,
       });
 
-      const { error } = await this.resend.emails.send({
+      await this.transporter.sendMail({
         from: this.configService.get<string>(
           'EMAIL_FROM',
           'Guallet <noreply@guallet.io>',
@@ -261,16 +269,12 @@ export class EmailService {
         attachments: [
           {
             filename: `guallet-export-${new Date().toISOString().split('T')[0]}.csv`,
-            content: Buffer.from(csvContent).toString('base64'),
+            content: csvContent,
           },
         ],
       });
 
-      if (error) {
-        this.logger.error('Resend API error:', error);
-      } else {
-        this.logger.log(`Export completion email sent to ${to}`);
-      }
+      this.logger.log(`Export completion email sent to ${to}`);
     } catch (error) {
       this.logger.error(
         `Failed to send export completion email to ${to}`,
@@ -344,7 +348,7 @@ export class EmailService {
         errorMessage,
       });
 
-      const { error } = await this.resend.emails.send({
+      await this.transporter.sendMail({
         from: this.configService.get<string>(
           'EMAIL_FROM',
           'Guallet <noreply@guallet.io>',
@@ -354,11 +358,7 @@ export class EmailService {
         html,
       });
 
-      if (error) {
-        this.logger.error('Resend API error:', error);
-      } else {
-        this.logger.log(`Export error email sent to ${to}`);
-      }
+      this.logger.log(`Export error email sent to ${to}`);
     } catch (error) {
       this.logger.error(`Failed to send export error email to ${to}`, error);
     }
