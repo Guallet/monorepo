@@ -23,14 +23,8 @@ export function isDate(value: string): boolean {
 }
 
 export function formatDate(date: Date | string, format: string = "LL"): string {
-  if (typeof date === 'string') {
-    const day = dayjs(date);
-    return day.format(format);
-  }
-  else {
-    const day = dayjs(date);
-    return day.format(format);
-  }
+  const day = dayjs(date);
+  return day.format(format);
 }
 
 export function parseDate(value: string, format?: string): Date | null {
