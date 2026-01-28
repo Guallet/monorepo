@@ -6,31 +6,31 @@ describe('EmailService', () => {
   let service: EmailService;
   let mockSendMail: jest.Mock;
 
+  const createMockConfigService = (smtpHost?: string) => ({
+    get: jest.fn(<T>(key: string, defaultValue?: T): T | undefined => {
+      const config: Record<string, unknown> = {
+        SMTP_HOST: smtpHost,
+        SMTP_PORT: 587,
+        SMTP_USER: smtpHost ? 'test-user' : undefined,
+        SMTP_PASS: smtpHost ? 'test-pass' : undefined,
+        SMTP_SECURE: false,
+        EMAIL_FROM: 'Guallet <noreply@guallet.io>',
+      };
+      return (config[key] as T) ?? defaultValue;
+    }),
+  });
+
   beforeEach(async () => {
     mockSendMail = jest
       .fn()
       .mockResolvedValue({ messageId: 'test-message-id' });
-
-    const mockConfigService = {
-      get: jest.fn(
-        <T>(key: string, defaultValue?: T): T | string | number | boolean => {
-          if (key === 'SMTP_HOST') return 'smtp.test.com';
-          if (key === 'SMTP_PORT') return 587;
-          if (key === 'SMTP_USER') return 'test-user';
-          if (key === 'SMTP_PASS') return 'test-pass';
-          if (key === 'SMTP_SECURE') return false;
-          if (key === 'EMAIL_FROM') return 'Guallet <noreply@guallet.io>';
-          return defaultValue as T;
-        },
-      ),
-    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EmailService,
         {
           provide: ConfigService,
-          useValue: mockConfigService,
+          useValue: createMockConfigService('smtp.test.com'),
         },
       ],
     }).compile();
@@ -38,7 +38,7 @@ describe('EmailService', () => {
     service = module.get<EmailService>(EmailService);
 
     // Mock the transporter.sendMail method
-    service['transporter'].sendMail = mockSendMail;
+    service['transporter']!.sendMail = mockSendMail;
   });
 
   describe('HTML escaping', () => {
@@ -316,6 +316,47 @@ describe('EmailService', () => {
           to: 'test@example.com',
           userName: 'Test User',
           errorMessage: 'Some error',
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+
+  describe('SMTP not configured', () => {
+    let serviceWithoutSmtp: EmailService;
+
+    beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          EmailService,
+          {
+            provide: ConfigService,
+            useValue: createMockConfigService(undefined),
+          },
+        ],
+      }).compile();
+
+      serviceWithoutSmtp = module.get<EmailService>(EmailService);
+    });
+
+    it('should not attempt to send email when SMTP is not configured', async () => {
+      await serviceWithoutSmtp.sendImportCompletionEmail({
+        to: 'test@example.com',
+        userName: 'Test User',
+        processedCount: 10,
+        failedCount: 0,
+      });
+
+      // transporter should be null, so no sendMail call should happen
+      expect(serviceWithoutSmtp['transporter']).toBeNull();
+    });
+
+    it('should gracefully handle sendExportCompletionEmail when SMTP is not configured', async () => {
+      await expect(
+        serviceWithoutSmtp.sendExportCompletionEmail({
+          to: 'test@example.com',
+          userName: 'Test User',
+          transactionCount: 100,
+          csvContent: 'date,amount\n2024-01-01,100',
         }),
       ).resolves.not.toThrow();
     });

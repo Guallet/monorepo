@@ -6,7 +6,7 @@ import type { Transporter } from 'nodemailer';
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private readonly transporter: Transporter;
+  private readonly transporter: Transporter | null;
 
   constructor(private readonly configService: ConfigService) {
     const smtpHost = this.configService.get<string>('SMTP_HOST');
@@ -19,6 +19,8 @@ export class EmailService {
       this.logger.warn(
         'SMTP_HOST not configured. Email functionality will be disabled.',
       );
+      this.transporter = null;
+      return;
     }
 
     this.transporter = nodemailer.createTransport({
@@ -61,6 +63,11 @@ export class EmailService {
     processedCount: number;
     failedCount: number;
   }): Promise<void> {
+    if (!this.transporter) {
+      this.logger.warn('Email not sent - SMTP not configured');
+      return;
+    }
+
     try {
       const totalCount = processedCount + failedCount;
       const subject = 'CSV Import Complete';
@@ -168,6 +175,11 @@ export class EmailService {
     userName: string;
     errorMessage: string;
   }): Promise<void> {
+    if (!this.transporter) {
+      this.logger.warn('Email not sent - SMTP not configured');
+      return;
+    }
+
     const { to, userName, errorMessage } = args;
 
     try {
@@ -251,6 +263,11 @@ export class EmailService {
     transactionCount: number;
     csvContent: string;
   }): Promise<void> {
+    if (!this.transporter) {
+      this.logger.warn('Email not sent - SMTP not configured');
+      return;
+    }
+
     try {
       const subject = 'Your Data Export is Ready';
       const html = this.generateExportCompletionEmailHtml({
@@ -339,6 +356,11 @@ export class EmailService {
     userName: string;
     errorMessage: string;
   }): Promise<void> {
+    if (!this.transporter) {
+      this.logger.warn('Email not sent - SMTP not configured');
+      return;
+    }
+
     const { to, userName, errorMessage } = args;
 
     try {
