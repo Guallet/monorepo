@@ -1,12 +1,12 @@
-import { useTransactionsWithFilter } from "@guallet/api-react";
-import { Pagination, Stack } from "@mantine/core";
-import { TransactionList } from "../components/TransactionList";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { TransactionScreenHeader } from "../components/TransactionScreenHeader";
+import { useTransactionsWithFilter } from '@guallet/api-react';
+import { Pagination, Stack } from '@mantine/core';
+import { TransactionList } from '../components/TransactionList';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { TransactionScreenHeader } from '../components/TransactionScreenHeader';
 import {
   FilterData,
   TransactionsFilterDataWrapper,
-} from "../components/TransactionsFilter";
+} from '../components/TransactionsFilter';
 
 interface TransactionListScreenProps {
   page: number;
@@ -53,11 +53,11 @@ export function TransactionListScreen({
         <TransactionList
           transactions={transactions}
           onTransactionClicked={(transaction) =>
-            console.log("Transaction clicked:", transaction.id)
+            console.log('Transaction clicked:', transaction.id)
           }
         />
         <Pagination
-          style={{ alignSelf: "center" }}
+          style={{ alignSelf: 'center' }}
           withEdges
           total={metadata?.total ?? 0}
           siblings={1}
