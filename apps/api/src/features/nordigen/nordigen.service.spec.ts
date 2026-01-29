@@ -2,7 +2,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NordigenService } from './nordigen.service';
 import { HttpService } from '@nestjs/axios';
-import { NordigenRepository } from './nordigen.repository';
 import { of } from 'rxjs';
 import { AxiosResponse } from 'axios';
 
@@ -14,13 +13,6 @@ describe('NordigenService', () => {
     post: jest.fn(),
   };
 
-  const mockNordigenRepository = {
-    getToken: jest.fn(),
-    createToken: jest.fn(),
-    updateToken: jest.fn(),
-    deleteToken: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -28,10 +20,6 @@ describe('NordigenService', () => {
         {
           provide: HttpService,
           useValue: mockHttpService,
-        },
-        {
-          provide: NordigenRepository,
-          useValue: mockNordigenRepository,
         },
       ],
     }).compile();
@@ -72,16 +60,22 @@ describe('NordigenService', () => {
         config: {} as any,
       };
 
-      // Mock the token retrieval
-      const mockToken = {
-        id: 1,
+      const mockTokenDto = {
         access: 'test-access-token',
-        access_expires_on: new Date(Date.now() + 3600000), // 1 hour from now
+        access_expires: 3600,
         refresh: 'test-refresh-token',
-        refresh_expires_on: new Date(Date.now() + 86400000), // 1 day from now
+        refresh_expires: 86400,
       };
 
-      mockNordigenRepository.getToken.mockResolvedValue(mockToken);
+      const mockTokenResponse: AxiosResponse = {
+        data: mockTokenDto,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+
+      mockHttpService.post.mockReturnValue(of(mockTokenResponse));
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
       const result = await service.getInstitutions(countryCode);
@@ -110,15 +104,22 @@ describe('NordigenService', () => {
         config: {} as any,
       };
 
-      const mockToken = {
-        id: 1,
+      const mockTokenDto = {
         access: 'test-access-token',
-        access_expires_on: new Date(Date.now() + 3600000),
+        access_expires: 3600,
         refresh: 'test-refresh-token',
-        refresh_expires_on: new Date(Date.now() + 86400000),
+        refresh_expires: 86400,
       };
 
-      mockNordigenRepository.getToken.mockResolvedValue(mockToken);
+      const mockTokenResponse: AxiosResponse = {
+        data: mockTokenDto,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+
+      mockHttpService.post.mockReturnValue(of(mockTokenResponse));
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
       const result = await service.getInstitution(institutionId);
@@ -148,15 +149,22 @@ describe('NordigenService', () => {
         config: {} as any,
       };
 
-      const mockToken = {
-        id: 1,
+      const mockTokenDto = {
         access: 'test-access-token',
-        access_expires_on: new Date(Date.now() + 3600000),
+        access_expires: 3600,
         refresh: 'test-refresh-token',
-        refresh_expires_on: new Date(Date.now() + 86400000),
+        refresh_expires: 86400,
       };
 
-      mockNordigenRepository.getToken.mockResolvedValue(mockToken);
+      const mockTokenResponse: AxiosResponse = {
+        data: mockTokenDto,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+
+      mockHttpService.post.mockReturnValue(of(mockTokenResponse));
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
       const result = await service.getAccountMetadata(accountId);
@@ -185,15 +193,22 @@ describe('NordigenService', () => {
         config: {} as any,
       };
 
-      const mockToken = {
-        id: 1,
+      const mockTokenDto = {
         access: 'test-access-token',
-        access_expires_on: new Date(Date.now() + 3600000),
+        access_expires: 3600,
         refresh: 'test-refresh-token',
-        refresh_expires_on: new Date(Date.now() + 86400000),
+        refresh_expires: 86400,
       };
 
-      mockNordigenRepository.getToken.mockResolvedValue(mockToken);
+      const mockTokenResponse: AxiosResponse = {
+        data: mockTokenDto,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+
+      mockHttpService.post.mockReturnValue(of(mockTokenResponse));
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
       const result = await service.getAccountDetails(accountId);
@@ -225,15 +240,22 @@ describe('NordigenService', () => {
         config: {} as any,
       };
 
-      const mockToken = {
-        id: 1,
+      const mockTokenDto = {
         access: 'test-access-token',
-        access_expires_on: new Date(Date.now() + 3600000),
+        access_expires: 3600,
         refresh: 'test-refresh-token',
-        refresh_expires_on: new Date(Date.now() + 86400000),
+        refresh_expires: 86400,
       };
 
-      mockNordigenRepository.getToken.mockResolvedValue(mockToken);
+      const mockTokenResponse: AxiosResponse = {
+        data: mockTokenDto,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+
+      mockHttpService.post.mockReturnValue(of(mockTokenResponse));
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
       const result = await service.getAccountBalance(accountId);
@@ -243,7 +265,7 @@ describe('NordigenService', () => {
   });
 
   describe('token management', () => {
-    it('should get a new token when none exists', async () => {
+    it('should get a new token and store it in memory', async () => {
       const mockTokenDto = {
         access: 'new-access-token',
         access_expires: 3600,
@@ -259,23 +281,8 @@ describe('NordigenService', () => {
         config: {} as any,
       };
 
-      const mockSavedToken = {
-        id: 1,
-        access: mockTokenDto.access,
-        access_expires_on: new Date(
-          Date.now() + mockTokenDto.access_expires * 1000,
-        ),
-        refresh: mockTokenDto.refresh,
-        refresh_expires_on: new Date(
-          Date.now() + mockTokenDto.refresh_expires * 1000,
-        ),
-      };
-
-      mockNordigenRepository.getToken.mockResolvedValue(null);
       mockHttpService.post.mockReturnValue(of(mockResponse));
-      mockNordigenRepository.createToken.mockResolvedValue(mockSavedToken);
 
-      // This will trigger token creation when making a request
       const mockInstitutionsResponse: AxiosResponse = {
         data: [],
         status: 200,
@@ -288,7 +295,11 @@ describe('NordigenService', () => {
 
       await service.getInstitutions('GB');
 
-      expect(mockNordigenRepository.createToken).toHaveBeenCalled();
+      expect(mockHttpService.post).toHaveBeenCalledWith(
+        expect.stringContaining('/api/v2/token/new/'),
+        expect.any(Object),
+        expect.any(Object),
+      );
     });
   });
 });

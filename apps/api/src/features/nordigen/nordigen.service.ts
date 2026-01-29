@@ -22,10 +22,18 @@ import {
   NordigenTransactionDto,
   NordigenTransactionsDto,
 } from './dto/nordigen-transaction.dto';
-import { NordigenToken } from './entities/nordigen-token.entity';
 import { NordigenTokenDto } from './dto/nordigen-token.dto';
-import { NordigenRepository } from './nordigen.repository';
 import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
+
+interface NordigenToken {
+  id: number;
+  access: string;
+  refresh: string;
+  access_expires_on: Date;
+  refresh_expires_on: Date;
+  created_at: Date;
+  updated_at: Date;
+}
 
 @Injectable()
 export class NordigenService {
@@ -33,11 +41,9 @@ export class NordigenService {
   private readonly BASE_URL = 'https://bankaccountdata.gocardless.com';
 
   private readonly logger = new Logger(NordigenService.name);
+  private inMemoryToken: NordigenToken | null = null;
 
-  constructor(
-    private readonly httpService: HttpService,
-    private repository: NordigenRepository,
-  ) {}
+  constructor(private readonly httpService: HttpService) { }
 
   //#region token
   private async getAccessToken(): Promise<string> {
@@ -46,27 +52,22 @@ export class NordigenService {
   }
 
   private async getToken(): Promise<NordigenToken> {
-    const existingToken = await this.repository.getToken();
-
-    if (existingToken) {
-      if (this.isTokenExpired(existingToken)) {
-        if (existingToken.refresh_expires_on <= new Date()) {
+    if (this.inMemoryToken) {
+      if (this.isTokenExpired(this.inMemoryToken)) {
+        if (this.inMemoryToken.refresh_expires_on <= new Date()) {
           // Expired too long ago. Get a new one
           this.logger.log(
-            'Refresh token expired. Deleting token and getting a new one',
+            'Refresh token expired. Clearing in-memory token and getting a new one',
           );
-          await this.repository.deleteToken(existingToken);
+          this.inMemoryToken = null;
           return await this.getNewToken();
         } else {
           // Refresh token
           this.logger.log('Nordigen token is expired. Refresh token');
-          return await this.refreshToken(
-            existingToken.id,
-            existingToken.refresh,
-          );
+          return await this.refreshToken(this.inMemoryToken.refresh);
         }
       } else {
-        return existingToken;
+        return this.inMemoryToken;
       }
     } else {
       // Get a new one
@@ -110,19 +111,21 @@ export class NordigenService {
       refresh_expiration_date.getSeconds() + dto.refresh_expires,
     );
 
-    this.logger.debug('Saving new token');
-    return await this.repository.createToken(
-      dto.access,
-      access_expiration_date,
-      dto.refresh,
-      refresh_expiration_date,
-    );
+    this.logger.debug('Saving token in memory');
+    this.inMemoryToken = {
+      id: 0, // In-memory token doesn't need a DB id
+      access: dto.access,
+      access_expires_on: access_expiration_date,
+      refresh: dto.refresh,
+      refresh_expires_on: refresh_expiration_date,
+      created_at: new Date(),
+      updated_at: new Date(),
+    } as NordigenToken;
+
+    return this.inMemoryToken;
   }
 
-  private async refreshToken(
-    tokenId: number,
-    refresh_token: string,
-  ): Promise<NordigenToken> {
+  private async refreshToken(refresh_token: string): Promise<NordigenToken> {
     const url = `${this.BASE_URL}/api/v2/token/refresh/`;
 
     const response = await firstValueFrom(
@@ -133,12 +136,22 @@ export class NordigenService {
 
     // Save new token
     const dto = response.data;
-    this.logger.debug('Updating token');
-    return await this.repository.updateToken(
-      tokenId,
-      dto.access,
-      dto.access_expires,
-    );
+    this.logger.debug('Updating token in memory');
+
+    if (this.inMemoryToken) {
+      const expiration_date = new Date();
+      expiration_date.setSeconds(
+        expiration_date.getSeconds() + dto.access_expires,
+      );
+
+      this.inMemoryToken.access = dto.access;
+      this.inMemoryToken.access_expires_on = expiration_date;
+      this.inMemoryToken.updated_at = new Date();
+
+      return this.inMemoryToken;
+    }
+
+    throw new InternalServerErrorException('Token vanished during refresh');
   }
 
   private isTokenExpired(token: NordigenToken): boolean {
