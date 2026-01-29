@@ -47,6 +47,8 @@ import * as Joi from 'joi';
         ENVIRONMENT: Joi.string()
           .valid('development', 'production')
           .default('development'),
+        PORT: Joi.number().default(5000),
+        ALLOWED_CORS_ORIGINS: Joi.string().optional(),
         DATABASE_HOST: Joi.string().required(),
         DATABASE_PORT: Joi.number().required(),
         DATABASE_USERNAME: Joi.string().required(),
@@ -57,6 +59,15 @@ import * as Joi from 'joi';
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_PASSWORD: Joi.string().allow('').optional(),
+        SMTP_HOST: Joi.string().optional(),
+        SMTP_PORT: Joi.number().default(465),
+        SMTP_USER: Joi.string().optional(),
+        SMTP_PASS: Joi.string().optional(),
+        SMTP_SECURE: Joi.boolean().default(true),
+        EMAIL_FROM: Joi.string().optional(),
+        APITALLY_ENABLED: Joi.boolean().default(false),
+        APITALLY_CLIENT_ID: Joi.string().optional(),
+        APITALLY_ENV: Joi.string().valid('dev', 'prod').default('dev').optional(),
       }),
     }),
     // LOGGING
