@@ -12,7 +12,7 @@ The main libraries used to build this app are:
 
 ## Build and run the project
 
-Create a '.env' file with the values you can find in the `.env.sample` file
+Create a `webapp.env` file (or `.env` for local dev) with the values you can find in the `webapp.env.sample` file.
 
 And then, install the packages
 

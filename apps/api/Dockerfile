@@ -1,20 +1,46 @@
+
 # Base image
-FROM node:20-alpine
+FROM node:22-alpine AS base
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN npm install -g pnpm@10.14.0
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+WORKDIR /app
 
-# Install app dependencies
-RUN npm install
+# Copy only API workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY .npmrc* ./
 
-# Bundle app source
-COPY . .
+# Copy API source and package.json
+COPY apps/api/package.json ./apps/api/
+COPY apps/api ./apps/api
 
-# Creates a "dist" folder with the production build
-RUN npm run build
+# Install dependencies (only for API)
+RUN pnpm install --filter ./apps/api... --frozen-lockfile
 
-# Start the server using the production build
-CMD [ "node", "dist/src/main.js" ]
+# Build the API
+WORKDIR /app/apps/api
+RUN pnpm run build
+
+# Production stage
+FROM node:22-alpine AS production
+
+RUN npm install -g pnpm@10.14.0
+RUN apk add --no-cache curl
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+WORKDIR /app/apps/api
+
+# Copy built app and dependencies
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./dist
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./
+
+# Switch to non-root user
+USER nodejs
+
+EXPOSE 5000
+
+CMD ["node", "dist/main.js"]
