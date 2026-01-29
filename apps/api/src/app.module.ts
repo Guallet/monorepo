@@ -31,7 +31,6 @@ import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import { NordigenSyncModule } from './features/nordigen-sync/nordigen-sync.module';
 import { NordigenKeysModule } from './features/nordigen-keys/nordigen-keys.module';
-import { NotificationsModule } from './features/notifications/notifications.module';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
 import * as Joi from 'joi';
@@ -130,11 +129,10 @@ import * as Joi from 'joi';
     NotificationsModule,
     NordigenSyncModule,
     NordigenKeysModule,
-    NotificationsModule,
     RegularPaymentsModule,
     HealthModule,
-        // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
-        TypeOrmModule.forFeature([User]),
+    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [],
   providers: [

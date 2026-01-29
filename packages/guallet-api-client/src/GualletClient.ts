@@ -12,7 +12,6 @@ import { DataImporterApi } from './data-importer';
 import { DataExporterApi } from './data-exporter';
 import { NotificationsApi } from './notifications';
 import { NordigenKeysApi } from './nordigen-keys';
-import { NotificationsApi } from './notifications';
 
 export interface GualletClient {
   admin: AdminApi;
