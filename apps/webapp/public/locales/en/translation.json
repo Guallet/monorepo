@@ -88,7 +88,9 @@
     "transactionsFilter": {
       "categories": {
         "label": "Categories"
-      }
+      },
+      "reset": "Reset filters",
+      "apply": "Apply filters"
     }
   },
   "feature": {
@@ -309,6 +311,40 @@
         "addButton": "Add a new connection"
       }
     },
+    "dataExport": {
+      "modal": {
+        "title": "Export Started Successfully!",
+        "description": "Your data export is now being processed in the background.",
+        "emailTitle": "You'll receive an email with the CSV file",
+        "emailDescription": "We'll send you an email with the exported data attached as a CSV file. You can open it with any spreadsheet application.",
+        "button": "Got it"
+      },
+      "title": "Export Transactions",
+      "description": "Export your transactions to a CSV file. The file will be sent to your email.",
+      "error": {
+        "title": "Export Error"
+      },
+      "filters": {
+        "title": "Filters (Optional)",
+        "description": "By default, all your transactions will be exported. Use the filters below to export a specific subset.",
+        "dateRange": {
+          "label": "Date Range",
+          "placeholder": "Pick date range (leave empty for all)"
+        },
+        "accounts": {
+          "label": "Accounts",
+          "placeholder": "Select accounts (leave empty for all)"
+        }
+      },
+      "info": {
+        "title": "What happens next?",
+        "step1": "Your export request will be processed in the background",
+        "step2": "The CSV file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
+        "step3": "You'll receive an email with the CSV file attached",
+        "step4": "You can continue using the app while the export is processed"
+      },
+      "exportButton": "Export Transactions"
+    },
     "notifications": {
       "icon": {
         "navigationErrorTitle": "Navigation Error",
@@ -338,6 +374,62 @@
         "loading": "Loading notifications...",
         "markAllAsRead": "Mark all as read",
         "emptyState": "You have no notifications"
+      }
+    },
+    "nordigenKeys": {
+      "notifications": {
+        "validationError": {
+          "title": "Validation Error",
+          "message": "Please fill in all required fields"
+        },
+        "createSuccess": {
+          "title": "Success",
+          "message": "Nordigen key created successfully"
+        },
+        "createError": {
+          "defaultMessage": "Failed to create Nordigen key. Please check your credentials.",
+          "title": "Invalid Credentials"
+        },
+        "deleteSuccess": {
+          "title": "Success",
+          "message": "Nordigen key removed"
+        },
+        "deleteError": {
+          "title": "Error",
+          "message": "Failed to remove Nordigen key"
+        }
+      },
+      "row": {
+        "loading": "Loading...",
+        "configured_one": "{{count}} key configured",
+        "configured_other": "{{count}} keys configured",
+        "notConfigured": "Not configured",
+        "label": "Nordigen API Keys"
+      },
+      "modal": {
+        "title": "Nordigen API Keys",
+        "description": "Enter your Nordigen (GoCardless) API credentials to enable automatic bank account synchronization. You can add multiple keys and link specific accounts to each key.",
+        "existingKeys": "Existing Keys",
+        "accountsLinked_one": "{{count}} account linked",
+        "accountsLinked_other": "{{count}} accounts linked",
+        "addNewKey": "Add New Key",
+        "closeButton": "Close"
+      },
+      "errorBadge": "Error: {{message}}",
+      "form": {
+        "name": {
+          "label": "Name",
+          "placeholder": "e.g., My Bank API Key"
+        },
+        "secretId": {
+          "label": "Secret ID",
+          "placeholder": "Enter your Nordigen Secret ID"
+        },
+        "secretKey": {
+          "label": "Secret Key",
+          "placeholder": "Enter your Nordigen Secret Key"
+        },
+        "addButton": "Add Key"
       }
     },
     "subscriptions": {
@@ -479,40 +571,6 @@
       "title": "Create new account",
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
-    },
-    "dataExport": {
-      "title": "Export Transactions",
-      "description": "Export your transactions to a CSV file. The file will be sent to your email.",
-      "error": {
-        "title": "Export Error"
-      },
-      "filters": {
-        "title": "Filters (Optional)",
-        "description": "By default, all your transactions will be exported. Use the filters below to export a specific subset.",
-        "dateRange": {
-          "label": "Date Range",
-          "placeholder": "Pick date range (leave empty for all)"
-        },
-        "accounts": {
-          "label": "Accounts",
-          "placeholder": "Select accounts (leave empty for all)"
-        }
-      },
-      "info": {
-        "title": "What happens next?",
-        "step1": "Your export request will be processed in the background",
-        "step2": "The CSV file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
-        "step3": "You'll receive an email with the CSV file attached",
-        "step4": "You can continue using the app while the export is processed"
-      },
-      "exportButton": "Export Transactions",
-      "modal": {
-        "title": "Export Started Successfully!",
-        "description": "Your data export is now being processed in the background.",
-        "emailTitle": "You'll receive an email with the CSV file",
-        "emailDescription": "We'll send you an email with the exported data attached as a CSV file. You can open it with any spreadsheet application.",
-        "button": "Got it"
-      }
     }
   }
 }

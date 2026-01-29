@@ -19,8 +19,10 @@ import { notifications } from "@mantine/notifications";
 import { BaseRow } from "@guallet/ui-react";
 import { useState } from "react";
 import { IconTrash, IconPlus } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 export function NordigenCredentialsRow() {
+  const { t } = useTranslation();
   const { keys, isLoading } = useNordigenKeys();
   const { createMutation, deleteMutation } = useNordigenKeysMutations();
   const [isModalOpen, { open: openModal, close: closeModal }] =
@@ -43,8 +45,8 @@ export function NordigenCredentialsRow() {
   const handleSave = () => {
     if (!name.trim() || !secretId.trim() || !secretKey.trim()) {
       notifications.show({
-        title: "Validation Error",
-        message: "Please fill in all required fields",
+        title: t("screens.nordigenKeys.notifications.validationError.title"),
+        message: t("screens.nordigenKeys.notifications.validationError.message"),
         color: "red",
       });
       return;
@@ -59,8 +61,8 @@ export function NordigenCredentialsRow() {
       {
         onSuccess: () => {
           notifications.show({
-            title: "Success",
-            message: "Nordigen key created successfully",
+            title: t("screens.nordigenKeys.notifications.createSuccess.title"),
+            message: t("screens.nordigenKeys.notifications.createSuccess.message"),
             color: "green",
           });
           closeModal();
@@ -74,10 +76,10 @@ export function NordigenCredentialsRow() {
                 error !== null &&
                 "message" in error
                 ? String((error as { message: unknown }).message)
-                : "Failed to create Nordigen key. Please check your credentials.";
+                : t("screens.nordigenKeys.notifications.createError.defaultMessage");
 
           notifications.show({
-            title: "Invalid Credentials",
+            title: t("screens.nordigenKeys.notifications.createError.title"),
             message: errorMessage,
             color: "red",
             autoClose: 10000,
@@ -91,15 +93,15 @@ export function NordigenCredentialsRow() {
     deleteMutation.mutate(id, {
       onSuccess: () => {
         notifications.show({
-          title: "Success",
-          message: "Nordigen key removed",
+          title: t("screens.nordigenKeys.notifications.deleteSuccess.title"),
+          message: t("screens.nordigenKeys.notifications.deleteSuccess.message"),
           color: "green",
         });
       },
       onError: () => {
         notifications.show({
-          title: "Error",
-          message: "Failed to remove Nordigen key",
+          title: t("screens.nordigenKeys.notifications.deleteError.title"),
+          message: t("screens.nordigenKeys.notifications.deleteError.message"),
           color: "red",
         });
       },
@@ -107,11 +109,11 @@ export function NordigenCredentialsRow() {
   };
 
   const getDisplayValue = () => {
-    if (isLoading) return "Loading...";
+    if (isLoading) return t("screens.nordigenKeys.row.loading");
     if (keys.length > 0) {
-      return `${keys.length} key${keys.length > 1 ? "s" : ""} configured`;
+      return t("screens.nordigenKeys.row.configured", { count: keys.length });
     }
-    return "Not configured";
+    return t("screens.nordigenKeys.row.notConfigured");
   };
 
   return (
@@ -119,7 +121,7 @@ export function NordigenCredentialsRow() {
       <Modal
         opened={isModalOpen}
         onClose={closeModal}
-        title="Nordigen API Keys"
+        title={t("screens.nordigenKeys.modal.title")}
         centered
         size="lg"
         overlayProps={{
@@ -129,14 +131,12 @@ export function NordigenCredentialsRow() {
       >
         <Stack>
           <Text size="sm" c="dimmed">
-            Enter your Nordigen (GoCardless) API credentials to enable automatic
-            bank account synchronization. You can add multiple keys and link
-            specific accounts to each key.
+            {t("screens.nordigenKeys.modal.description")}
           </Text>
 
           {keys.length > 0 && (
             <Stack gap="xs">
-              <Text fw={500}>Existing Keys</Text>
+              <Text fw={500}>{t("screens.nordigenKeys.modal.existingKeys")}</Text>
               {keys.map((key) => (
                 <Card key={key.id} withBorder padding="sm">
                   <Group justify="space-between">
@@ -146,8 +146,9 @@ export function NordigenCredentialsRow() {
                         {key.secret_id_masked}
                       </Text>
                       <Text size="xs" c="dimmed">
-                        {key.account_ids.length} account
-                        {key.account_ids.length !== 1 ? "s" : ""} linked
+                        {t("screens.nordigenKeys.modal.accountsLinked", {
+                          count: key.account_ids.length,
+                        })}
                       </Text>
                     </Stack>
                     <ActionIcon
@@ -161,7 +162,9 @@ export function NordigenCredentialsRow() {
                   </Group>
                   {key.last_error_message && (
                     <Badge color="red" variant="light" mt="xs">
-                      Error: {key.last_error_message}
+                      {t("screens.nordigenKeys.errorBadge", {
+                        message: key.last_error_message,
+                      })}
                     </Badge>
                   )}
                 </Card>
@@ -171,26 +174,26 @@ export function NordigenCredentialsRow() {
 
           <Card withBorder padding="md">
             <Stack>
-              <Text fw={500}>Add New Key</Text>
+              <Text fw={500}>{t("screens.nordigenKeys.modal.addNewKey")}</Text>
               <TextInput
-                label="Name"
-                placeholder="e.g., My Bank API Key"
+                label={t("screens.nordigenKeys.form.name.label")}
+                placeholder={t("screens.nordigenKeys.form.name.placeholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
 
               <TextInput
-                label="Secret ID"
-                placeholder="Enter your Nordigen Secret ID"
+                label={t("screens.nordigenKeys.form.secretId.label")}
+                placeholder={t("screens.nordigenKeys.form.secretId.placeholder")}
                 value={secretId}
                 onChange={(e) => setSecretId(e.target.value)}
                 required
               />
 
               <TextInput
-                label="Secret Key"
-                placeholder="Enter your Nordigen Secret Key"
+                label={t("screens.nordigenKeys.form.secretKey.label")}
+                placeholder={t("screens.nordigenKeys.form.secretKey.placeholder")}
                 type="password"
                 value={secretKey}
                 onChange={(e) => setSecretKey(e.target.value)}
@@ -203,7 +206,7 @@ export function NordigenCredentialsRow() {
                   onClick={handleSave}
                   loading={createMutation.isPending}
                 >
-                  Add Key
+                  {t("screens.nordigenKeys.form.addButton")}
                 </Button>
               </Group>
             </Stack>
@@ -211,13 +214,13 @@ export function NordigenCredentialsRow() {
 
           <Group justify="flex-end" mt="md">
             <Button variant="outline" onClick={closeModal}>
-              Close
+              {t("screens.nordigenKeys.modal.closeButton")}
             </Button>
           </Group>
         </Stack>
       </Modal>
       <BaseRow
-        label="Nordigen API Keys"
+        label={t("screens.nordigenKeys.row.label")}
         value={getDisplayValue()}
         rightSection={<IconChevronRight />}
         onClick={handleOpenModal}
