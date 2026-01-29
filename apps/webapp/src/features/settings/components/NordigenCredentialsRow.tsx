@@ -66,11 +66,21 @@ export function NordigenCredentialsRow() {
           closeModal();
           resetForm();
         },
-        onError: () => {
+        onError: (error: unknown) => {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : typeof error === "object" &&
+                error !== null &&
+                "message" in error
+                ? String((error as { message: unknown }).message)
+                : "Failed to create Nordigen key. Please check your credentials.";
+
           notifications.show({
-            title: "Error",
-            message: "Failed to create Nordigen key",
+            title: "Invalid Credentials",
+            message: errorMessage,
             color: "red",
+            autoClose: 10000,
           });
         },
       }

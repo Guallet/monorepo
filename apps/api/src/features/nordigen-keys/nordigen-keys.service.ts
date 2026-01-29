@@ -3,6 +3,7 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -13,6 +14,7 @@ import {
   UpdateNordigenKeyRequest,
 } from './dto/nordigen-key.dto';
 import { Account } from '../accounts/entities/account.entity';
+import { NordigenUserService } from '../nordigen/nordigen-user.service';
 
 @Injectable()
 export class NordigenKeysService {
@@ -25,7 +27,8 @@ export class NordigenKeysService {
     private readonly keyAccountRepository: Repository<NordigenKeyAccount>,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
-  ) {}
+    private readonly nordigenUserService: NordigenUserService,
+  ) { }
 
   async findAllByUser(userId: string): Promise<NordigenKey[]> {
     return this.keyRepository.find({
@@ -45,10 +48,35 @@ export class NordigenKeysService {
     return key;
   }
 
+  /**
+   * Validates Nordigen credentials by attempting to get an access token.
+   * @throws UnauthorizedException if credentials are invalid
+   */
+  private async validateCredentials(
+    secretId: string,
+    secretKey: string,
+  ): Promise<void> {
+    try {
+      await this.nordigenUserService.getAccessToken({
+        secretId,
+        secretKey,
+      });
+      this.logger.log('Nordigen credentials validated successfully');
+    } catch (error) {
+      this.logger.error('Failed to validate Nordigen credentials', error);
+      throw new UnauthorizedException(
+        'Invalid Nordigen credentials. Please check your Secret ID and Secret Key.',
+      );
+    }
+  }
+
   async create(
     userId: string,
     dto: CreateNordigenKeyRequest,
   ): Promise<NordigenKey> {
+    // Validate credentials before saving
+    await this.validateCredentials(dto.secret_id, dto.secret_key);
+
     const key = this.keyRepository.create({
       user_id: userId,
       name: dto.name,
@@ -72,6 +100,13 @@ export class NordigenKeysService {
     dto: UpdateNordigenKeyRequest,
   ): Promise<NordigenKey> {
     const key = await this.findById(userId, keyId);
+
+    // If credentials are being updated, validate them first
+    if (dto.secret_id !== undefined || dto.secret_key !== undefined) {
+      const newSecretId = dto.secret_id ?? key.secret_id;
+      const newSecretKey = dto.secret_key ?? key.secret_key;
+      await this.validateCredentials(newSecretId, newSecretKey);
+    }
 
     if (dto.name !== undefined) {
       key.name = dto.name;
