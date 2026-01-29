@@ -1,14 +1,14 @@
-import { Button, Stack, Title } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
-import { UserSettingsCard } from "../components/UserSettingsCard";
-import { AppSection } from "@/components/Cards/AppSection";
-import { LanguageRow } from "../components/LanguageRow";
-import { DefaultCurrencyRow } from "../components/DefaultCurrencyRow";
-import { PreferredCurrenciesRow } from "../components/PreferredCurrenciesRow";
-import { DateFormatRow } from "../components/DateFormatRow";
+import { Button, Stack, Title } from '@mantine/core';
+import { useNavigate } from '@tanstack/react-router';
+import { UserSettingsCard } from '../components/UserSettingsCard';
+import { AppSection } from '@/components/Cards/AppSection';
+import { LanguageRow } from '../components/LanguageRow';
+import { DefaultCurrencyRow } from '../components/DefaultCurrencyRow';
+import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
+import { DateFormatRow } from '../components/DateFormatRow';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { TextRow } from '@guallet/ui-react';
 import { NordigenCredentialsRow } from "../components/NordigenCredentialsRow";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { TextRow } from "@guallet/ui-react";
 
 export function SettingsScreen() {
   const navigate = useNavigate();

@@ -10,6 +10,7 @@ export * from './transactions';
 export * from './user';
 export * from './savingGoals';
 export * from './subscriptions';
+export * from './notifications';
 export * from './nordigen-keys';
 export * from './notifications';
 

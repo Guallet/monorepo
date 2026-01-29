@@ -28,12 +28,13 @@ import { RegularPaymentsModule } from './features/regular-payments/regular-payme
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
+import { NotificationsModule } from './features/notifications/notifications.module';
 import { NordigenSyncModule } from './features/nordigen-sync/nordigen-sync.module';
 import { NordigenKeysModule } from './features/nordigen-keys/nordigen-keys.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
-import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
@@ -57,8 +58,6 @@ import { HealthModule } from './features/health/health.module';
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_PASSWORD: Joi.string().allow('').optional(),
-        NORDIGEN_SECRET_ID: Joi.string().required(),
-        NORDIGEN_SECRET_KEY: Joi.string().required(),
       }),
     }),
     // LOGGING
@@ -128,13 +127,14 @@ import { HealthModule } from './features/health/health.module';
     DataImporterModule,
     DataExporterModule,
     EmailModule,
+    NotificationsModule,
     NordigenSyncModule,
     NordigenKeysModule,
     NotificationsModule,
-    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
-    TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
     HealthModule,
+        // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
+        TypeOrmModule.forFeature([User]),
   ],
   controllers: [],
   providers: [
