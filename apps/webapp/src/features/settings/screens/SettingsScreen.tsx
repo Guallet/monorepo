@@ -27,7 +27,7 @@ export function SettingsScreen() {
         </AppSection>
 
         <AppSection title="Open Banking" itemPadding={0}>
-          <NordigenCredentialsRow />
+          <NordigenCredentialsRow onClick={() => navigate({ to: '/settings/openbanking' })} />
         </AppSection>
 
         <AppSection title="Institutions" itemPadding={0}>

@@ -64,7 +64,7 @@ export class NordigenKeysService {
       this.logger.log('Nordigen credentials validated successfully');
     } catch (error) {
       this.logger.error('Failed to validate Nordigen credentials', error);
-      throw new UnauthorizedException(
+      throw new BadRequestException(
         'Invalid Nordigen credentials. Please check your Secret ID and Secret Key.',
       );
     }
@@ -122,9 +122,10 @@ export class NordigenKeysService {
     return this.findById(userId, keyId);
   }
 
-  async delete(userId: string, keyId: string): Promise<void> {
+  async delete(userId: string, keyId: string): Promise<NordigenKey> {
     const key = await this.findById(userId, keyId);
     await this.keyRepository.remove(key);
+    return key;
   }
 
   async linkAccounts(

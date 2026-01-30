@@ -26,7 +26,7 @@ import { NordigenTokenDto } from './dto/nordigen-token.dto';
 import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
 
 interface NordigenToken {
-  id: number;
+  id: string;
   access: string;
   refresh: string;
   access_expires_on: Date;
@@ -113,7 +113,7 @@ export class NordigenService {
 
     this.logger.debug('Saving token in memory');
     this.inMemoryToken = {
-      id: 0, // In-memory token doesn't need a DB id
+      id: "", // In-memory token doesn't need a DB id
       access: dto.access,
       access_expires_on: access_expiration_date,
       refresh: dto.refresh,

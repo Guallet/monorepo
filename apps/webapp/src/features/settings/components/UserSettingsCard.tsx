@@ -9,7 +9,7 @@ export function UserSettingsCard() {
   const { user } = useUser();
 
   return (
-    <AppSection title="User Information" gap={0}>
+    <AppSection title="User Information">
       <Stack align="center">
         <Avatar
           src={user?.profile_src}

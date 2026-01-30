@@ -26,7 +26,7 @@ import {
 export class NordigenKeysController {
   private readonly logger = new Logger(NordigenKeysController.name);
 
-  constructor(private readonly nordigenKeysService: NordigenKeysService) {}
+  constructor(private readonly nordigenKeysService: NordigenKeysService) { }
 
   @Get()
   async getAll(
@@ -65,12 +65,12 @@ export class NordigenKeysController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
-  ): Promise<void> {
-    await this.nordigenKeysService.delete(user.id, id);
+  ): Promise<NordigenKeyDto> {
+    const deleted = await this.nordigenKeysService.delete(user.id, id);
+    return NordigenKeyDto.fromEntity(deleted);
   }
 
   @Post(':id/accounts')
