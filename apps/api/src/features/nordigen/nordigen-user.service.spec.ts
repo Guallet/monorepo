@@ -1,27 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpService } from '@nestjs/axios';
 import { NordigenUserService } from './nordigen-user.service';
-import { of, throwError } from 'rxjs';
 import { UnauthorizedException } from '@nestjs/common';
-import { AxiosResponse, AxiosHeaders } from 'axios';
+import NordigenClient from 'nordigen-node';
+
+jest.mock('nordigen-node', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(),
+  };
+});
+
+const MockNordigenClient = NordigenClient as jest.MockedClass<typeof NordigenClient>;
 
 describe('NordigenUserService', () => {
   let service: NordigenUserService;
-
-  const mockHttpService = {
-    post: jest.fn(),
-    get: jest.fn(),
-  };
+  let mockClientInstance: any;
 
   beforeEach(async () => {
+    mockClientInstance = {
+      generateToken: jest.fn(),
+      account: jest.fn().mockReturnValue({
+        getMetadata: jest.fn(),
+        getDetails: jest.fn(),
+        getBalances: jest.fn(),
+        getTransactions: jest.fn(),
+      }),
+    };
+
+    MockNordigenClient.mockImplementation(() => mockClientInstance);
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        NordigenUserService,
-        {
-          provide: HttpService,
-          useValue: mockHttpService,
-        },
-      ],
+      providers: [NordigenUserService],
     }).compile();
 
     service = module.get<NordigenUserService>(NordigenUserService);
@@ -40,50 +50,26 @@ describe('NordigenUserService', () => {
         secretKey: 'test-secret-key',
       };
 
-      const mockResponse: AxiosResponse = {
-        data: {
-          access: 'test-access-token',
-          access_expires: 86400,
-          refresh: 'test-refresh-token',
-          refresh_expires: 2592000,
-        },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {
-          headers: new AxiosHeaders(),
-        },
-      };
-
-      mockHttpService.post.mockReturnValue(of(mockResponse));
+      mockClientInstance.generateToken.mockResolvedValue({
+        access: 'test-access-token',
+      });
 
       const result = await service.getAccessToken(credentials);
 
       expect(result).toBe('test-access-token');
-      expect(mockHttpService.post).toHaveBeenCalledWith(
-        'https://bankaccountdata.gocardless.com/api/v2/token/new/',
-        {
-          secret_id: credentials.secretId,
-          secret_key: credentials.secretKey,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-        },
-      );
+      expect(MockNordigenClient).toHaveBeenCalledWith(expect.objectContaining({
+        secretId: credentials.secretId,
+        secretKey: credentials.secretKey,
+      }));
     });
 
     it('should throw UnauthorizedException on invalid credentials', async () => {
       const credentials = {
-        secretId: 'invalid-secret-id',
-        secretKey: 'invalid-secret-key',
+        secretId: 'invalid-id',
+        secretKey: 'invalid-key',
       };
 
-      mockHttpService.post.mockReturnValue(
-        throwError(() => new Error('Invalid credentials')),
-      );
+      mockClientInstance.generateToken.mockRejectedValue(new Error('Invalid'));
 
       await expect(service.getAccessToken(credentials)).rejects.toThrow(
         UnauthorizedException,
@@ -93,90 +79,36 @@ describe('NordigenUserService', () => {
 
   describe('getAccountMetadata', () => {
     it('should return account metadata', async () => {
-      const credentials = {
-        secretId: 'test-secret-id',
-        secretKey: 'test-secret-key',
-      };
+      const credentials = { secretId: 'sid', secretKey: 'sk' };
       const accountId = 'test-account-id';
+      const mockMetadata = { id: accountId, status: 'READY' };
 
-      const tokenResponse: AxiosResponse = {
-        data: { access: 'test-token' },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: { headers: new AxiosHeaders() },
-      };
-
-      const metadataResponse: AxiosResponse = {
-        data: {
-          id: accountId,
-          status: 'READY',
-          institution_id: 'inst-1',
-        },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: { headers: new AxiosHeaders() },
-      };
-
-      mockHttpService.post.mockReturnValue(of(tokenResponse));
-      mockHttpService.get.mockReturnValue(of(metadataResponse));
+      mockClientInstance.generateToken.mockResolvedValue({ access: 'token' });
+      mockClientInstance.account(accountId).getMetadata.mockResolvedValue(mockMetadata);
 
       const result = await service.getAccountMetadata(credentials, accountId);
 
-      expect(result.id).toBe(accountId);
-      expect(result.status).toBe('READY');
+      expect(result).toEqual(mockMetadata);
+      expect(mockClientInstance.account).toHaveBeenCalledWith(accountId);
     });
   });
 
   describe('getAccountTransactions', () => {
     it('should return booked transactions', async () => {
-      const credentials = {
-        secretId: 'test-secret-id',
-        secretKey: 'test-secret-key',
-      };
+      const credentials = { secretId: 'sid', secretKey: 'sk' };
       const accountId = 'test-account-id';
+      const mockTransactions = [
+        { transactionId: 'tx-1' }
+      ];
 
-      const tokenResponse: AxiosResponse = {
-        data: { access: 'test-token' },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: { headers: new AxiosHeaders() },
-      };
+      mockClientInstance.generateToken.mockResolvedValue({ access: 'token' });
+      mockClientInstance.account(accountId).getTransactions.mockResolvedValue({
+        transactions: { booked: mockTransactions, pending: [] }
+      });
 
-      const transactionsResponse: AxiosResponse = {
-        data: {
-          transactions: {
-            booked: [
-              {
-                transactionId: 'tx-1',
-                transactionAmount: { amount: '100.00', currency: 'GBP' },
-              },
-              {
-                transactionId: 'tx-2',
-                transactionAmount: { amount: '-50.00', currency: 'GBP' },
-              },
-            ],
-            pending: [],
-          },
-        },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: { headers: new AxiosHeaders() },
-      };
+      const result = await service.getAccountTransactions(credentials, accountId);
 
-      mockHttpService.post.mockReturnValue(of(tokenResponse));
-      mockHttpService.get.mockReturnValue(of(transactionsResponse));
-
-      const result = await service.getAccountTransactions(
-        credentials,
-        accountId,
-      );
-
-      expect(result).toHaveLength(2);
-      expect(result[0].transactionId).toBe('tx-1');
+      expect(result).toEqual(mockTransactions);
     });
   });
 });
