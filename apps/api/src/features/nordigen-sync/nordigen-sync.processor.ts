@@ -1,8 +1,8 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
 import { Account } from '../accounts/entities/account.entity';
 import { Transaction } from '../transactions/entities/transaction.entity';
@@ -11,6 +11,7 @@ import { EmailService } from '../email/email.service';
 import { UsersService } from '../users/users.service';
 import { NordigenKeysService } from '../nordigen-keys/nordigen-keys.service';
 import { getMoneyBalanceFrom } from '../nordigen/dto/nordigen-balances.helper';
+import NordigenClient from 'nordigen-node';
 
 export const NORDIGEN_SYNC_QUEUE = 'nordigen-sync';
 export const NORDIGEN_SYNC_JOB = 'process-nordigen-sync';
@@ -49,28 +50,29 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     try {
       // Get the key with linked accounts
-      const key = await this.nordigenKeysService.findKeyWithAccountsById(keyId);
+      const nordigenKey = await this.nordigenKeysService.findKeyWithAccountsById(keyId);
 
-      if (!key) {
+      if (!nordigenKey) {
         throw new Error(`Nordigen key ${keyId} not found`);
       }
 
-      if (!key.linkedAccounts || key.linkedAccounts.length === 0) {
+      if (!nordigenKey.linkedAccounts || nordigenKey.linkedAccounts.length === 0) {
         this.logger.log(`Nordigen key ${keyId} has no linked accounts`);
         return { accountsSynced: 0, errors: [] };
       }
 
       const credentials = {
-        secretId: key.secret_id,
-        secretKey: key.secret_key,
+        secretId: nordigenKey.secret_id,
+        secretKey: nordigenKey.secret_key,
       };
 
-      // Validate credentials by getting an access token
+      // Create an authenticated client to reuse across all accounts
+      let client: NordigenClient;
       try {
-        await this.nordigenUserService.getAccessToken(credentials);
+        client = await this.nordigenUserService.createAuthenticatedClient(credentials);
       } catch (error) {
         this.logger.error(
-          `Failed to get Nordigen access token for key ${keyId}`,
+          `Failed to create Nordigen client for key ${keyId}`,
           error,
         );
 
@@ -82,7 +84,7 @@ export class NordigenSyncProcessor extends WorkerHost {
         );
 
         // Send email to user about credential issues
-        const user = await this.usersService.findUserData(key.user_id);
+        const user = await this.usersService.findUserData(nordigenKey.user_id);
         if (user) {
           await this.emailService.sendNordigenCredentialsErrorEmail({
             to: user.email,
@@ -90,18 +92,19 @@ export class NordigenSyncProcessor extends WorkerHost {
           });
         }
 
-        throw new UnauthorizedException('Invalid Nordigen credentials');
+        throw new InternalServerErrorException('Invalid Nordigen credentials');
       }
 
       // Get account IDs linked to this key
-      const accountIds = key.linkedAccounts.map((la) => la.account_id);
+      const accountIds = nordigenKey.linkedAccounts.map((la) => la.account_id);
 
       // Get Nordigen accounts linked to these accounts
-      const nordigenAccounts = await this.nordigenAccountsRepository
-        .createQueryBuilder('na')
-        .where('na.linked_account_id IN (:...accountIds)', { accountIds })
-        .andWhere('na.metadata_status = :status', { status: 'READY' })
-        .getMany();
+      const nordigenAccounts = await this.nordigenAccountsRepository.find({
+        where: {
+          linked_account_id: In(accountIds),
+          metadata_status: 'READY',
+        },
+      });
 
       this.logger.log(
         `Found ${nordigenAccounts.length} Nordigen accounts to sync for key ${keyId}`,
@@ -110,7 +113,7 @@ export class NordigenSyncProcessor extends WorkerHost {
       // Process accounts in parallel for better performance
       const syncResults = await Promise.allSettled(
         nordigenAccounts.map((nordigenAccount) =>
-          this.syncNordigenAccount(credentials, nordigenAccount),
+          this.syncNordigenAccount(client, nordigenAccount),
         ),
       );
 
@@ -158,7 +161,7 @@ export class NordigenSyncProcessor extends WorkerHost {
   }
 
   private async syncNordigenAccount(
-    credentials: { secretId: string; secretKey: string },
+    client: NordigenClient,
     nordigenAccount: NordigenAccount,
   ): Promise<void> {
     this.logger.log(`Syncing Nordigen account: ${nordigenAccount.id}`);
@@ -181,7 +184,7 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     // Update account metadata
     const metadata = await this.nordigenUserService.getAccountMetadata(
-      credentials,
+      client,
       nordigenAccount.id,
     );
     nordigenAccount.metadata_raw = metadata;
@@ -189,7 +192,7 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     // Update account details
     const details = await this.nordigenUserService.getAccountDetails(
-      credentials,
+      client,
       nordigenAccount.id,
     );
     nordigenAccount.details_raw = details;
@@ -197,7 +200,7 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     // Sync balances
     const balances = await this.nordigenUserService.getAccountBalance(
-      credentials,
+      client,
       nordigenAccount.id,
     );
     const balance = getMoneyBalanceFrom(balances);
@@ -208,7 +211,7 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     // Sync transactions
     const transactions = await this.nordigenUserService.getAccountTransactions(
-      credentials,
+      client,
       nordigenAccount.id,
     );
     const transactionEntities = transactions.map((t) =>

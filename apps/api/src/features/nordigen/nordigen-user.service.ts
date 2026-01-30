@@ -29,12 +29,35 @@ export interface NordigenCredentials {
 export class NordigenUserService {
   private readonly logger = new Logger(NordigenUserService.name);
 
-  private getClient(credentials: NordigenCredentials): NordigenClient {
+  /**
+   * Creates a Nordigen client with the provided credentials.
+   */
+  createClient(credentials: NordigenCredentials): NordigenClient {
     return new NordigenClient({
       secretId: credentials.secretId,
       secretKey: credentials.secretKey,
       baseUrl: 'https://bankaccountdata.gocardless.com',
     });
+  }
+
+  /**
+   * Creates an authenticated Nordigen client.
+   * This client is ready to make API calls in the context of the user.
+   */
+  async createAuthenticatedClient(
+    credentials: NordigenCredentials,
+  ): Promise<NordigenClient> {
+    const client = this.createClient(credentials);
+    try {
+      const response = await client.generateToken();
+      client.token = response.access;
+      return client;
+    } catch (error) {
+      this.logger.error('Failed to get Nordigen access token', error);
+      throw new UnauthorizedException(
+        'Invalid Nordigen credentials. Please check your secret ID and secret key.',
+      );
+    }
   }
 
   /**
@@ -45,7 +68,7 @@ export class NordigenUserService {
     this.logger.debug(
       'Getting new Nordigen access token with user credentials',
     );
-    const client = this.getClient(credentials);
+    const client = this.createClient(credentials);
 
     try {
       const response = await client.generateToken();
@@ -58,25 +81,11 @@ export class NordigenUserService {
     }
   }
 
-  private async getActiveClient(credentials: NordigenCredentials): Promise<NordigenClient> {
-    const client = this.getClient(credentials);
-    try {
-      await client.generateToken();
-      return client;
-    } catch (error) {
-      this.logger.error('Failed to get Nordigen access token', error);
-      throw new UnauthorizedException(
-        'Invalid Nordigen credentials. Please check your secret ID and secret key.',
-      );
-    }
-  }
-
   //#region accounts
   async getAccountMetadata(
-    credentials: NordigenCredentials,
+    client: NordigenClient,
     account_id: string,
   ): Promise<NordigenAccountMetadataDto> {
-    const client = await this.getActiveClient(credentials);
     try {
       return await client.account(account_id).getMetadata();
     } catch (error) {
@@ -85,10 +94,9 @@ export class NordigenUserService {
   }
 
   async getAccountDetails(
-    credentials: NordigenCredentials,
+    client: NordigenClient,
     account_id: string,
   ): Promise<NordigenAccountDto> {
-    const client = await this.getActiveClient(credentials);
     try {
       const response = await client.account(account_id).getDetails();
       return response.account;
@@ -98,10 +106,9 @@ export class NordigenUserService {
   }
 
   async getAccountBalance(
-    credentials: NordigenCredentials,
+    client: NordigenClient,
     account_id: string,
   ): Promise<NordigenAccountBalanceDto[]> {
-    const client = await this.getActiveClient(credentials);
     try {
       const response = await client.account(account_id).getBalances();
       return response.balances;
@@ -111,12 +118,13 @@ export class NordigenUserService {
   }
 
   async getAccountTransactions(
-    credentials: NordigenCredentials,
+    client: NordigenClient,
     account_id: string,
   ): Promise<NordigenTransactionDto[]> {
-    const client = await this.getActiveClient(credentials);
     try {
-      this.logger.debug(`Getting Nordigen transactions for account ${account_id}`);
+      this.logger.debug(
+        `Getting Nordigen transactions for account ${account_id}`,
+      );
       const response = await client.account(account_id).getTransactions();
       return response.transactions.booked;
     } catch (error) {
@@ -131,10 +139,14 @@ export class NordigenUserService {
     if (error.response) {
       const status = error.response.status;
       switch (status) {
-        case 400: throw new BadRequestException();
-        case 401: throw new UnauthorizedException();
-        case 403: throw new ForbiddenException();
-        case 404: throw new NotFoundException();
+        case 400:
+          throw new BadRequestException();
+        case 401:
+          throw new UnauthorizedException();
+        case 403:
+          throw new ForbiddenException();
+        case 404:
+          throw new NotFoundException();
       }
     }
 
