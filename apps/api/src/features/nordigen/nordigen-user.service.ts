@@ -10,10 +10,16 @@ import {
 import NordigenClient from 'nordigen-node';
 import {
   NordigenAccountBalanceDto,
+  NordigenAccountBalancesDto,
+  NordigenAccountDetailsDto,
   NordigenAccountDto,
   NordigenAccountMetadataDto,
 } from './dto/nordigen-account.dto';
-import { NordigenTransactionDto } from './dto/nordigen-transaction.dto';
+import {
+  NordigenTransactionDto,
+  NordigenTransactionsDto,
+} from './dto/nordigen-transaction.dto';
+import { NordigenTokenDto } from './dto/nordigen-token.dto';
 
 export interface NordigenCredentials {
   secretId: string;
@@ -71,7 +77,7 @@ export class NordigenUserService {
     const client = this.createClient(credentials);
 
     try {
-      const response = await client.generateToken();
+      const response = (await client.generateToken()) as NordigenTokenDto;
       return response.access;
     } catch (error) {
       this.logger.error('Failed to get Nordigen access token', error);
@@ -87,7 +93,9 @@ export class NordigenUserService {
     account_id: string,
   ): Promise<NordigenAccountMetadataDto> {
     try {
-      return await client.account(account_id).getMetadata();
+      return (await client
+        .account(account_id)
+        .getMetadata()) as NordigenAccountMetadataDto;
     } catch (error) {
       this.handleError(error, `getting metadata for account ${account_id}`);
     }
@@ -98,7 +106,9 @@ export class NordigenUserService {
     account_id: string,
   ): Promise<NordigenAccountDto> {
     try {
-      const response = await client.account(account_id).getDetails();
+      const response = (await client
+        .account(account_id)
+        .getDetails()) as NordigenAccountDetailsDto;
       return response.account;
     } catch (error) {
       this.handleError(error, `getting details for account ${account_id}`);
@@ -110,7 +120,9 @@ export class NordigenUserService {
     account_id: string,
   ): Promise<NordigenAccountBalanceDto[]> {
     try {
-      const response = await client.account(account_id).getBalances();
+      const response = (await client
+        .account(account_id)
+        .getBalances()) as NordigenAccountBalancesDto;
       return response.balances;
     } catch (error) {
       this.handleError(error, `getting balances for account ${account_id}`);
@@ -125,7 +137,9 @@ export class NordigenUserService {
       this.logger.debug(
         `Getting Nordigen transactions for account ${account_id}`,
       );
-      const response = await client.account(account_id).getTransactions();
+      const response = (await client
+        .account(account_id)
+        .getTransactions()) as NordigenTransactionsDto;
       return response.transactions.booked;
     } catch (error) {
       this.handleError(error, `getting transactions for account ${account_id}`);

@@ -8,7 +8,7 @@ import { NordigenUserService } from '../nordigen/nordigen-user.service';
 import { EmailService } from '../email/email.service';
 import { UsersService } from '../users/users.service';
 import { NordigenKeysService } from '../nordigen-keys/nordigen-keys.service';
-import { UnauthorizedException } from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { Job } from 'bullmq';
 
 describe('NordigenSyncProcessor', () => {
@@ -156,7 +156,7 @@ describe('NordigenSyncProcessor', () => {
       mockNordigenKeysService.updateSyncStatus.mockResolvedValue(undefined);
 
       await expect(processor.process(mockJob)).rejects.toThrow(
-        UnauthorizedException,
+        InternalServerErrorException,
       );
 
       expect(
@@ -201,13 +201,8 @@ describe('NordigenSyncProcessor', () => {
         account: jest.fn().mockReturnThis(),
       });
 
-      const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getMany: jest.fn().mockResolvedValue(mockNordigenAccounts),
-      };
-      mockNordigenAccountsRepository.createQueryBuilder.mockReturnValue(
-        mockQueryBuilder,
+      mockNordigenAccountsRepository.find.mockResolvedValue(
+        mockNordigenAccounts,
       );
 
       mockAccountsRepository.findOne.mockResolvedValue(mockGualletAccount);

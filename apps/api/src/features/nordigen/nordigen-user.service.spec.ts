@@ -30,7 +30,9 @@ describe('NordigenUserService', () => {
       }),
     };
 
-    MockNordigenClient.mockImplementation(() => mockClientInstance);
+    MockNordigenClient.mockImplementation(
+      () => mockClientInstance as unknown as NordigenClient,
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [NordigenUserService],
@@ -120,7 +122,7 @@ describe('NordigenUserService', () => {
         .getMetadata.mockResolvedValue(mockMetadata);
 
       const result = await service.getAccountMetadata(
-        mockClientInstance,
+        mockClientInstance as unknown as NordigenClient,
         accountId,
       );
 
@@ -139,7 +141,7 @@ describe('NordigenUserService', () => {
       });
 
       const result = await service.getAccountTransactions(
-        mockClientInstance,
+        mockClientInstance as unknown as NordigenClient,
         accountId,
       );
 

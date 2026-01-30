@@ -1,11 +1,11 @@
-export class NordigenTransactionsDto {
+export interface NordigenTransactionsDto {
   transactions: {
     booked: NordigenTransactionDto[];
     pending: NordigenTransactionDto[];
   };
 }
 
-export class NordigenTransactionDto {
+export interface NordigenTransactionDto {
   transactionId: string;
   bookingDate: Date;
   bookingDateTime: Date;

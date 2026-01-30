@@ -40,7 +40,9 @@ describe('NordigenService', () => {
       token: '',
     };
 
-    MockNordigenClient.mockImplementation(() => mockClientInstance);
+    MockNordigenClient.mockImplementation(
+      () => mockClientInstance as unknown as NordigenClient,
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [NordigenService],
