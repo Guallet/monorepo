@@ -16,4 +16,4 @@ import { NordigenModule } from '../nordigen/nordigen.module';
   providers: [NordigenKeysService],
   exports: [NordigenKeysService],
 })
-export class NordigenKeysModule { }
+export class NordigenKeysModule {}

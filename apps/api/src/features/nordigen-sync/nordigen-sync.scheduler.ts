@@ -32,7 +32,9 @@ export class NordigenSyncScheduler {
     try {
       // Get all keys with linked accounts
       const keys = await this.nordigenKeysService.findAllKeysWithAccounts();
-      this.logger.log(`Found ${keys.length} Nordigen keys with linked accounts`);
+      this.logger.log(
+        `Found ${keys.length} Nordigen keys with linked accounts`,
+      );
 
       // Enqueue a sync job for each key
       for (const key of keys) {

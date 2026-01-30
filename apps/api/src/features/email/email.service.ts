@@ -24,7 +24,7 @@ export class EmailService implements OnModuleInit {
     new Map();
   private defaultFrom: string;
 
-  constructor(private readonly configService: ConfigService) { }
+  constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
     this.initializeTransport();
@@ -56,9 +56,9 @@ export class EmailService implements OnModuleInit {
       auth:
         smtpUser && smtpPass
           ? {
-            user: smtpUser,
-            pass: smtpPass,
-          }
+              user: smtpUser,
+              pass: smtpPass,
+            }
           : undefined,
     });
   }

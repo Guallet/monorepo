@@ -3,7 +3,6 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -28,7 +27,7 @@ export class NordigenKeysService {
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     private readonly nordigenUserService: NordigenUserService,
-  ) { }
+  ) {}
 
   async findAllByUser(userId: string): Promise<NordigenKey[]> {
     return this.keyRepository.find({

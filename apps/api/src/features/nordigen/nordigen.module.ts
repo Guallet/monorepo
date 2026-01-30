@@ -8,4 +8,4 @@ import { NordigenUserService } from './nordigen-user.service';
   providers: [NordigenService, NordigenUserService],
   exports: [NordigenService, NordigenUserService],
 })
-export class NordigenModule { }
+export class NordigenModule {}

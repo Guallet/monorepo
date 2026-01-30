@@ -2,12 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getQueueToken } from '@nestjs/bullmq';
 import { NordigenSyncScheduler } from './nordigen-sync.scheduler';
 import { NordigenKeysService } from '../nordigen-keys/nordigen-keys.service';
-import { NORDIGEN_SYNC_QUEUE, NORDIGEN_SYNC_JOB } from './nordigen-sync.processor';
+import {
+  NORDIGEN_SYNC_QUEUE,
+  NORDIGEN_SYNC_JOB,
+} from './nordigen-sync.processor';
 
 describe('NordigenSyncScheduler', () => {
   let scheduler: NordigenSyncScheduler;
-  let nordigenKeysService: jest.Mocked<NordigenKeysService>;
-  let syncQueue: jest.Mocked<any>;
 
   const mockSyncQueue = {
     add: jest.fn(),
@@ -33,8 +34,6 @@ describe('NordigenSyncScheduler', () => {
     }).compile();
 
     scheduler = module.get<NordigenSyncScheduler>(NordigenSyncScheduler);
-    nordigenKeysService = module.get(NordigenKeysService);
-    syncQueue = module.get(getQueueToken(NORDIGEN_SYNC_QUEUE));
 
     jest.clearAllMocks();
   });
@@ -51,12 +50,16 @@ describe('NordigenSyncScheduler', () => {
         { id: 'key-3', linkedAccounts: [{ account_id: 'acc-3' }] },
       ];
 
-      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue(mockKeys);
+      mockNordigenKeysService.findAllKeysWithAccounts.mockResolvedValue(
+        mockKeys,
+      );
       mockSyncQueue.add.mockResolvedValue({});
 
       await scheduler.scheduleDailySync();
 
-      expect(mockNordigenKeysService.findAllKeysWithAccounts).toHaveBeenCalled();
+      expect(
+        mockNordigenKeysService.findAllKeysWithAccounts,
+      ).toHaveBeenCalled();
       expect(mockSyncQueue.add).toHaveBeenCalledTimes(3);
 
       // Verify each key gets a job
@@ -86,7 +89,9 @@ describe('NordigenSyncScheduler', () => {
 
       await scheduler.scheduleDailySync();
 
-      expect(mockNordigenKeysService.findAllKeysWithAccounts).toHaveBeenCalled();
+      expect(
+        mockNordigenKeysService.findAllKeysWithAccounts,
+      ).toHaveBeenCalled();
       expect(mockSyncQueue.add).not.toHaveBeenCalled();
     });
 

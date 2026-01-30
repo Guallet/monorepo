@@ -7,7 +7,6 @@ import { AxiosResponse, AxiosHeaders } from 'axios';
 
 describe('NordigenUserService', () => {
   let service: NordigenUserService;
-  let httpService: HttpService;
 
   const mockHttpService = {
     post: jest.fn(),
@@ -26,7 +25,6 @@ describe('NordigenUserService', () => {
     }).compile();
 
     service = module.get<NordigenUserService>(NordigenUserService);
-    httpService = module.get<HttpService>(HttpService);
 
     jest.clearAllMocks();
   });

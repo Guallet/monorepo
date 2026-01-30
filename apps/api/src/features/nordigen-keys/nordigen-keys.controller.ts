@@ -6,8 +6,6 @@ import {
   Delete,
   Body,
   Param,
-  HttpCode,
-  HttpStatus,
   Logger,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -26,12 +24,10 @@ import {
 export class NordigenKeysController {
   private readonly logger = new Logger(NordigenKeysController.name);
 
-  constructor(private readonly nordigenKeysService: NordigenKeysService) { }
+  constructor(private readonly nordigenKeysService: NordigenKeysService) {}
 
   @Get()
-  async getAll(
-    @RequestUser() user: UserPrincipal,
-  ): Promise<NordigenKeyDto[]> {
+  async getAll(@RequestUser() user: UserPrincipal): Promise<NordigenKeyDto[]> {
     const keys = await this.nordigenKeysService.findAllByUser(user.id);
     return keys.map((key) => NordigenKeyDto.fromEntity(key));
   }

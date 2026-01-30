@@ -50,7 +50,7 @@ export class NordigenSyncProcessor extends WorkerHost {
     try {
       // Get the key with linked accounts
       const key = await this.nordigenKeysService.findKeyWithAccountsById(keyId);
-      
+
       if (!key) {
         throw new Error(`Nordigen key ${keyId} not found`);
       }
@@ -69,8 +69,11 @@ export class NordigenSyncProcessor extends WorkerHost {
       try {
         await this.nordigenUserService.getAccessToken(credentials);
       } catch (error) {
-        this.logger.error(`Failed to get Nordigen access token for key ${keyId}`);
-        
+        this.logger.error(
+          `Failed to get Nordigen access token for key ${keyId}`,
+          error,
+        );
+
         // Update key with error status
         await this.nordigenKeysService.updateSyncStatus(
           keyId,
@@ -86,7 +89,7 @@ export class NordigenSyncProcessor extends WorkerHost {
             userName: user.name || 'User',
           });
         }
-        
+
         throw new UnauthorizedException('Invalid Nordigen credentials');
       }
 
@@ -100,7 +103,9 @@ export class NordigenSyncProcessor extends WorkerHost {
         .andWhere('na.metadata_status = :status', { status: 'READY' })
         .getMany();
 
-      this.logger.log(`Found ${nordigenAccounts.length} Nordigen accounts to sync for key ${keyId}`);
+      this.logger.log(
+        `Found ${nordigenAccounts.length} Nordigen accounts to sync for key ${keyId}`,
+      );
 
       // Process accounts in parallel for better performance
       const syncResults = await Promise.allSettled(
@@ -122,7 +127,9 @@ export class NordigenSyncProcessor extends WorkerHost {
           error instanceof Error && error.message
             ? error.message
             : 'Unknown error occurred';
-        errors.push(`Error syncing account ${nordigenAccount.id}: ${errorMessage}`);
+        errors.push(
+          `Error syncing account ${nordigenAccount.id}: ${errorMessage}`,
+        );
         this.logger.error(
           `Error syncing Nordigen account ${nordigenAccount.id}`,
           error,
@@ -136,9 +143,14 @@ export class NordigenSyncProcessor extends WorkerHost {
         errors.length > 0 ? errors.join('; ') : undefined,
       );
 
-      this.logger.log(`Nordigen sync completed for key ${keyId}. Synced: ${accountsSynced}, Errors: ${errors.length}`);
+      this.logger.log(
+        `Nordigen sync completed for key ${keyId}. Synced: ${accountsSynced}, Errors: ${errors.length}`,
+      );
     } catch (error) {
-      this.logger.error(`Error in Nordigen sync job ${job.id} for key ${keyId}`, error);
+      this.logger.error(
+        `Error in Nordigen sync job ${job.id} for key ${keyId}`,
+        error,
+      );
       throw error;
     }
 
@@ -152,7 +164,9 @@ export class NordigenSyncProcessor extends WorkerHost {
     this.logger.log(`Syncing Nordigen account: ${nordigenAccount.id}`);
 
     if (!nordigenAccount.linked_account_id) {
-      throw new Error(`Nordigen account ${nordigenAccount.id} has no linked account`);
+      throw new Error(
+        `Nordigen account ${nordigenAccount.id} has no linked account`,
+      );
     }
 
     const gualletAccount = await this.accountsRepository.findOne({
@@ -160,7 +174,9 @@ export class NordigenSyncProcessor extends WorkerHost {
     });
 
     if (!gualletAccount) {
-      throw new Error(`Linked account ${nordigenAccount.linked_account_id} not found`);
+      throw new Error(
+        `Linked account ${nordigenAccount.linked_account_id} not found`,
+      );
     }
 
     // Update account metadata
@@ -196,7 +212,10 @@ export class NordigenSyncProcessor extends WorkerHost {
       nordigenAccount.id,
     );
     const transactionEntities = transactions.map((t) =>
-      Transaction.fromNordigenDto(nordigenAccount.linked_account_id as string, t),
+      Transaction.fromNordigenDto(
+        nordigenAccount.linked_account_id as string,
+        t,
+      ),
     );
     await this.transactionsRepository.upsert(transactionEntities, {
       conflictPaths: ['externalId'],

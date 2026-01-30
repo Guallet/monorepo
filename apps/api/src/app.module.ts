@@ -67,7 +67,10 @@ import * as Joi from 'joi';
         EMAIL_FROM: Joi.string().optional(),
         APITALLY_ENABLED: Joi.boolean().default(false),
         APITALLY_CLIENT_ID: Joi.string().optional(),
-        APITALLY_ENV: Joi.string().valid('dev', 'prod').default('dev').optional(),
+        APITALLY_ENV: Joi.string()
+          .valid('dev', 'prod')
+          .default('dev')
+          .optional(),
       }),
     }),
     // LOGGING

@@ -43,7 +43,7 @@ export class NordigenService {
   private readonly logger = new Logger(NordigenService.name);
   private inMemoryToken: NordigenToken | null = null;
 
-  constructor(private readonly httpService: HttpService) { }
+  constructor(private readonly httpService: HttpService) {}
 
   //#region token
   private async getAccessToken(): Promise<string> {
@@ -113,7 +113,7 @@ export class NordigenService {
 
     this.logger.debug('Saving token in memory');
     this.inMemoryToken = {
-      id: "", // In-memory token doesn't need a DB id
+      id: '', // In-memory token doesn't need a DB id
       access: dto.access,
       access_expires_on: access_expiration_date,
       refresh: dto.refresh,

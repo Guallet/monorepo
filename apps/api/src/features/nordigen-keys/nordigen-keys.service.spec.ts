@@ -5,6 +5,7 @@ import { NordigenKey } from './entities/nordigen-key.entity';
 import { NordigenKeyAccount } from './entities/nordigen-key-account.entity';
 import { Account } from '../accounts/entities/account.entity';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { NordigenUserService } from '../nordigen/nordigen-user.service';
 
 describe('NordigenKeysService', () => {
   let service: NordigenKeysService;
@@ -31,6 +32,10 @@ describe('NordigenKeysService', () => {
     find: jest.fn(),
   };
 
+  const mockNordigenUserService = {
+    getAccessToken: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -46,6 +51,10 @@ describe('NordigenKeysService', () => {
         {
           provide: getRepositoryToken(Account),
           useValue: mockAccountRepository,
+        },
+        {
+          provide: NordigenUserService,
+          useValue: mockNordigenUserService,
         },
       ],
     }).compile();
@@ -124,16 +133,109 @@ describe('NordigenKeysService', () => {
       mockKeyRepository.create.mockReturnValue(createdKey);
       mockKeyRepository.save.mockResolvedValue(createdKey);
       mockKeyRepository.findOne.mockResolvedValue(createdKey);
+      mockNordigenUserService.getAccessToken.mockResolvedValue('access-token');
 
       const result = await service.create(userId, dto);
 
       expect(result).toEqual(createdKey);
+      expect(mockNordigenUserService.getAccessToken).toHaveBeenCalledWith({
+        secretId: dto.secret_id,
+        secretKey: dto.secret_key,
+      });
       expect(mockKeyRepository.create).toHaveBeenCalledWith({
         user_id: userId,
         name: dto.name,
         secret_id: dto.secret_id,
         secret_key: dto.secret_key,
       });
+    });
+
+    it('should throw BadRequestException if credentials are invalid', async () => {
+      const userId = 'user-123';
+      const dto = {
+        name: 'My Key',
+        secret_id: 'invalid-id',
+        secret_key: 'invalid-key',
+      };
+
+      mockNordigenUserService.getAccessToken.mockRejectedValue(
+        new Error('Invalid credentials'),
+      );
+
+      await expect(service.create(userId, dto)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(mockKeyRepository.save).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('update', () => {
+    it('should update a key', async () => {
+      const userId = 'user-123';
+      const keyId = 'key-123';
+      const dto = { name: 'Updated Name' };
+      const existingKey = {
+        id: keyId,
+        user_id: userId,
+        name: 'Old Name',
+        secret_id: 'sid',
+        secret_key: 'sk',
+      };
+      const updatedKey = { ...existingKey, name: 'Updated Name' };
+
+      mockKeyRepository.findOne.mockResolvedValue(existingKey);
+      mockKeyRepository.save.mockResolvedValue(updatedKey);
+
+      const result = await service.update(userId, keyId, dto);
+
+      expect(result).toEqual(updatedKey);
+      expect(mockKeyRepository.save).toHaveBeenCalled();
+    });
+
+    it('should validate credentials if updating secrets', async () => {
+      const userId = 'user-123';
+      const keyId = 'key-123';
+      const dto = { secret_id: 'new-sid', secret_key: 'new-sk' };
+      const existingKey = {
+        id: keyId,
+        user_id: userId,
+        name: 'Name',
+        secret_id: 'old-sid',
+        secret_key: 'old-sk',
+      };
+
+      mockKeyRepository.findOne.mockResolvedValue(existingKey);
+      mockNordigenUserService.getAccessToken.mockResolvedValue('token');
+      mockKeyRepository.save.mockResolvedValue({ ...existingKey, ...dto });
+
+      await service.update(userId, keyId, dto);
+
+      expect(mockNordigenUserService.getAccessToken).toHaveBeenCalledWith({
+        secretId: 'new-sid',
+        secretKey: 'new-sk',
+      });
+    });
+
+    it('should throw BadRequestException if new credentials are invalid', async () => {
+      const userId = 'user-123';
+      const keyId = 'key-123';
+      const dto = { secret_id: 'invalid-sid' };
+      const existingKey = {
+        id: keyId,
+        user_id: userId,
+        name: 'Name',
+        secret_id: 'old-sid',
+        secret_key: 'old-sk',
+      };
+
+      mockKeyRepository.findOne.mockResolvedValue(existingKey);
+      mockNordigenUserService.getAccessToken.mockRejectedValue(
+        new Error('Invalid'),
+      );
+
+      await expect(service.update(userId, keyId, dto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -166,7 +268,9 @@ describe('NordigenKeysService', () => {
       mockKeyRepository.findOne.mockResolvedValue(mockKey);
       mockAccountRepository.find.mockResolvedValue(mockAccounts);
       mockKeyAccountRepository.delete.mockResolvedValue({});
-      mockKeyAccountRepository.create.mockImplementation((data) => data);
+      mockKeyAccountRepository.create.mockImplementation(
+        (data: unknown) => data,
+      );
       mockKeyAccountRepository.save.mockResolvedValue([]);
 
       const result = await service.linkAccounts(userId, keyId, accountIds);

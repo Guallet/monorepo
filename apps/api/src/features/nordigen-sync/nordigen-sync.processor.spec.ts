@@ -13,12 +13,6 @@ import { Job } from 'bullmq';
 
 describe('NordigenSyncProcessor', () => {
   let processor: NordigenSyncProcessor;
-  let nordigenUserService: jest.Mocked<NordigenUserService>;
-  let emailService: jest.Mocked<EmailService>;
-  let usersService: jest.Mocked<UsersService>;
-  let nordigenKeysService: jest.Mocked<NordigenKeysService>;
-  let nordigenAccountsRepository: jest.Mocked<any>;
-  let accountsRepository: jest.Mocked<any>;
 
   const mockNordigenAccountsRepository = {
     find: jest.fn(),
@@ -95,14 +89,6 @@ describe('NordigenSyncProcessor', () => {
     }).compile();
 
     processor = module.get<NordigenSyncProcessor>(NordigenSyncProcessor);
-    nordigenUserService = module.get(NordigenUserService);
-    emailService = module.get(EmailService);
-    usersService = module.get(UsersService);
-    nordigenKeysService = module.get(NordigenKeysService);
-    nordigenAccountsRepository = module.get(
-      getRepositoryToken(NordigenAccount),
-    );
-    accountsRepository = module.get(getRepositoryToken(Account));
 
     jest.clearAllMocks();
   });
@@ -126,7 +112,9 @@ describe('NordigenSyncProcessor', () => {
         linkedAccounts: [],
       };
 
-      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(mockKey);
+      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(
+        mockKey,
+      );
 
       const result = await processor.process(mockJob);
 
@@ -154,7 +142,9 @@ describe('NordigenSyncProcessor', () => {
         name: 'Test User',
       };
 
-      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(mockKey);
+      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(
+        mockKey,
+      );
       mockNordigenUserService.getAccessToken.mockRejectedValue(
         new Error('Invalid credentials'),
       );
@@ -203,7 +193,9 @@ describe('NordigenSyncProcessor', () => {
         balance: 100,
       };
 
-      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(mockKey);
+      mockNordigenKeysService.findKeyWithAccountsById.mockResolvedValue(
+        mockKey,
+      );
       mockNordigenUserService.getAccessToken.mockResolvedValue('test-token');
 
       const mockQueryBuilder = {

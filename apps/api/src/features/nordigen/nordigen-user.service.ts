@@ -45,7 +45,9 @@ export class NordigenUserService {
    * This token is NOT stored in the database - it's only used for the current operation.
    */
   async getAccessToken(credentials: NordigenCredentials): Promise<string> {
-    this.logger.debug('Getting new Nordigen access token with user credentials');
+    this.logger.debug(
+      'Getting new Nordigen access token with user credentials',
+    );
     const url = `${this.BASE_URL}/api/v2/token/new/`;
 
     try {
