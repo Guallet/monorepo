@@ -1,5 +1,5 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
-import { InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
@@ -50,13 +50,17 @@ export class NordigenSyncProcessor extends WorkerHost {
 
     try {
       // Get the key with linked accounts
-      const nordigenKey = await this.nordigenKeysService.findKeyWithAccountsById(keyId);
+      const nordigenKey =
+        await this.nordigenKeysService.findKeyWithAccountsById(keyId);
 
       if (!nordigenKey) {
         throw new Error(`Nordigen key ${keyId} not found`);
       }
 
-      if (!nordigenKey.linkedAccounts || nordigenKey.linkedAccounts.length === 0) {
+      if (
+        !nordigenKey.linkedAccounts ||
+        nordigenKey.linkedAccounts.length === 0
+      ) {
         this.logger.log(`Nordigen key ${keyId} has no linked accounts`);
         return { accountsSynced: 0, errors: [] };
       }
@@ -69,7 +73,8 @@ export class NordigenSyncProcessor extends WorkerHost {
       // Create an authenticated client to reuse across all accounts
       let client: NordigenClient;
       try {
-        client = await this.nordigenUserService.createAuthenticatedClient(credentials);
+        client =
+          await this.nordigenUserService.createAuthenticatedClient(credentials);
       } catch (error) {
         this.logger.error(
           `Failed to create Nordigen client for key ${keyId}`,

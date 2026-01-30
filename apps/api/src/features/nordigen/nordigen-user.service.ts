@@ -133,6 +133,7 @@ export class NordigenUserService {
   }
   //#endregion
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleError(error: any, context: string): never {
     this.logger.error(`Error ${context}:`, error);
 

@@ -16,6 +16,7 @@ import {
 } from './dto/nordigen-account.dto';
 import { NordigenTransactionDto } from './dto/nordigen-transaction.dto';
 import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
+import { randomUUID } from 'src/utils/crypto.utils';
 
 interface NordigenToken {
   access: string;
@@ -71,8 +72,12 @@ export class NordigenService {
       this.inMemoryToken = {
         access: tokenData.access,
         refresh: tokenData.refresh,
-        access_expires_on: new Date(now.getTime() + tokenData.access_expires * 1000),
-        refresh_expires_on: new Date(now.getTime() + tokenData.refresh_expires * 1000),
+        access_expires_on: new Date(
+          now.getTime() + tokenData.access_expires * 1000,
+        ),
+        refresh_expires_on: new Date(
+          now.getTime() + tokenData.refresh_expires * 1000,
+        ),
       };
 
       this.client.token = tokenData.access;
@@ -83,18 +88,21 @@ export class NordigenService {
   }
 
   private async refreshToken(): Promise<void> {
-    if (!this.inMemoryToken) throw new InternalServerErrorException('No token to refresh');
+    if (!this.inMemoryToken)
+      throw new InternalServerErrorException('No token to refresh');
 
     try {
       const tokenData = await this.client.exchangeToken({
-        refreshToken: this.inMemoryToken.refresh
+        refreshToken: this.inMemoryToken.refresh,
       });
 
       const now = new Date();
       this.inMemoryToken = {
         ...this.inMemoryToken,
         access: tokenData.access,
-        access_expires_on: new Date(now.getTime() + tokenData.access_expires * 1000),
+        access_expires_on: new Date(
+          now.getTime() + tokenData.access_expires * 1000,
+        ),
       };
 
       this.client.token = tokenData.access;
@@ -107,10 +115,14 @@ export class NordigenService {
   //#endregion
 
   //#region institutions
-  async getInstitutions(countryCode: string): Promise<NordigenInstitutionDto[]> {
+  async getInstitutions(
+    countryCode: string,
+  ): Promise<NordigenInstitutionDto[]> {
     await this.ensureToken();
     try {
-      return await this.client.institution.getInstitutions({ country: countryCode });
+      return await this.client.institution.getInstitutions({
+        country: countryCode,
+      });
     } catch (error) {
       this.handleError(error, `getting institutions for ${countryCode}`);
     }
@@ -127,7 +139,9 @@ export class NordigenService {
   //#endregion
 
   //#region accounts
-  async getAccountMetadata(account_id: string): Promise<NordigenAccountMetadataDto> {
+  async getAccountMetadata(
+    account_id: string,
+  ): Promise<NordigenAccountMetadataDto> {
     await this.ensureToken();
     try {
       return await this.client.account(account_id).getMetadata();
@@ -146,20 +160,26 @@ export class NordigenService {
     }
   }
 
-  async getAccountBalance(account_id: string): Promise<NordigenAccountBalanceDto[]> {
+  async getAccountBalance(
+    account_id: string,
+  ): Promise<NordigenAccountBalanceDto[]> {
     await this.ensureToken();
     try {
       const response = await this.client.account(account_id).getBalances();
-      return response.balances;
+      return response.balances as NordigenAccountBalanceDto[];
     } catch (error) {
       this.handleError(error, `getting balances for account ${account_id}`);
     }
   }
 
-  async getAccountTransactions(account_id: string): Promise<NordigenTransactionDto[]> {
+  async getAccountTransactions(
+    account_id: string,
+  ): Promise<NordigenTransactionDto[]> {
     await this.ensureToken();
     try {
-      this.logger.debug(`Getting Nordigen transactions for account ${account_id}`);
+      this.logger.debug(
+        `Getting Nordigen transactions for account ${account_id}`,
+      );
       const response = await this.client.account(account_id).getTransactions();
       return response.transactions.booked;
     } catch (error) {
@@ -169,13 +189,16 @@ export class NordigenService {
   //#endregion
 
   //#region requisitions
-  async createRequisition(institution_id: string, redirect_url: string): Promise<NordigenRequisitionDto> {
+  async createRequisition(
+    institution_id: string,
+    redirect_url: string,
+  ): Promise<NordigenRequisitionDto> {
     await this.ensureToken();
     try {
       return await this.client.requisition.createRequisition({
         redirectUrl: redirect_url,
         institutionId: institution_id,
-        reference: Math.random().toString(36).substring(7),
+        reference: randomUUID(),
         ssn: '', // Required by library but optional in API
         redirectImmediate: false,
         accountSelection: false,
@@ -185,7 +208,9 @@ export class NordigenService {
     }
   }
 
-  async getRequisition(requisition_id: string): Promise<NordigenRequisitionDto> {
+  async getRequisition(
+    requisition_id: string,
+  ): Promise<NordigenRequisitionDto> {
     await this.ensureToken();
     try {
       return await this.client.requisition.getRequisitionById(requisition_id);
@@ -194,7 +219,9 @@ export class NordigenService {
     }
   }
 
-  async deleteRequisition(requisition_id: string): Promise<DeleteRequisitionResponse> {
+  async deleteRequisition(
+    requisition_id: string,
+  ): Promise<DeleteRequisitionResponse> {
     await this.ensureToken();
     try {
       return await this.client.requisition.deleteRequisition(requisition_id);
@@ -210,10 +237,14 @@ export class NordigenService {
     if (error.response) {
       const status = error.response.status;
       switch (status) {
-        case 400: throw new BadRequestException();
-        case 401: throw new UnauthorizedException();
-        case 403: throw new ForbiddenException();
-        case 404: throw new NotFoundException();
+        case 400:
+          throw new BadRequestException();
+        case 401:
+          throw new UnauthorizedException();
+        case 403:
+          throw new ForbiddenException();
+        case 404:
+          throw new NotFoundException();
       }
     }
 

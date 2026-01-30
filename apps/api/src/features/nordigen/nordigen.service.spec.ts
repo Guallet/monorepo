@@ -10,7 +10,9 @@ jest.mock('nordigen-node', () => {
   };
 });
 
-const MockNordigenClient = NordigenClient as jest.MockedClass<typeof NordigenClient>;
+const MockNordigenClient = NordigenClient as jest.MockedClass<
+  typeof NordigenClient
+>;
 
 describe('NordigenService', () => {
   let service: NordigenService;
@@ -62,14 +64,21 @@ describe('NordigenService', () => {
       const mockInstitutions = [{ id: 'inst-1', name: 'Test Bank' }];
 
       mockClientInstance.generateToken.mockResolvedValue({
-        access: 'token', access_expires: 3600, refresh: 'ref', refresh_expires: 86400
+        access: 'token',
+        access_expires: 3600,
+        refresh: 'ref',
+        refresh_expires: 86400,
       });
-      mockClientInstance.institution.getInstitutions.mockResolvedValue(mockInstitutions);
+      mockClientInstance.institution.getInstitutions.mockResolvedValue(
+        mockInstitutions,
+      );
 
       const result = await service.getInstitutions(countryCode);
 
       expect(result).toEqual(mockInstitutions);
-      expect(mockClientInstance.institution.getInstitutions).toHaveBeenCalledWith({ country: countryCode });
+      expect(
+        mockClientInstance.institution.getInstitutions,
+      ).toHaveBeenCalledWith({ country: countryCode });
     });
   });
 
@@ -79,9 +88,14 @@ describe('NordigenService', () => {
       const mockAccount = { iban: 'GB123' };
 
       mockClientInstance.generateToken.mockResolvedValue({
-        access: 'token', access_expires: 3600, refresh: 'ref', refresh_expires: 86400
+        access: 'token',
+        access_expires: 3600,
+        refresh: 'ref',
+        refresh_expires: 86400,
       });
-      mockClientInstance.account(accountId).getDetails.mockResolvedValue({ account: mockAccount });
+      mockClientInstance
+        .account(accountId)
+        .getDetails.mockResolvedValue({ account: mockAccount });
 
       const result = await service.getAccountDetails(accountId);
 
@@ -92,7 +106,10 @@ describe('NordigenService', () => {
   describe('token management', () => {
     it('should get a new token when none exists', async () => {
       mockClientInstance.generateToken.mockResolvedValue({
-        access: 'new-token', access_expires: 3600, refresh: 'ref', refresh_expires: 86400
+        access: 'new-token',
+        access_expires: 3600,
+        refresh: 'ref',
+        refresh_expires: 86400,
       });
       mockClientInstance.institution.getInstitutions.mockResolvedValue([]);
 
@@ -104,7 +121,10 @@ describe('NordigenService', () => {
 
     it('should reuse valid token', async () => {
       mockClientInstance.generateToken.mockResolvedValue({
-        access: 'token', access_expires: 3600, refresh: 'ref', refresh_expires: 86400
+        access: 'token',
+        access_expires: 3600,
+        refresh: 'ref',
+        refresh_expires: 86400,
       });
       mockClientInstance.institution.getInstitutions.mockResolvedValue([]);
 

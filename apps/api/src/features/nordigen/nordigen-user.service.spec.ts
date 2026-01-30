@@ -11,7 +11,9 @@ jest.mock('nordigen-node', () => {
   };
 });
 
-const MockNordigenClient = NordigenClient as jest.MockedClass<typeof NordigenClient>;
+const MockNordigenClient = NordigenClient as jest.MockedClass<
+  typeof NordigenClient
+>;
 
 describe('NordigenUserService', () => {
   let service: NordigenUserService;
@@ -65,9 +67,9 @@ describe('NordigenUserService', () => {
       const credentials = { secretId: 'invalid-id', secretKey: 'invalid-key' };
       mockClientInstance.generateToken.mockRejectedValue(new Error('Invalid'));
 
-      await expect(service.createAuthenticatedClient(credentials)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        service.createAuthenticatedClient(credentials),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -85,10 +87,12 @@ describe('NordigenUserService', () => {
       const result = await service.getAccessToken(credentials);
 
       expect(result).toBe('test-access-token');
-      expect(MockNordigenClient).toHaveBeenCalledWith(expect.objectContaining({
-        secretId: credentials.secretId,
-        secretKey: credentials.secretKey,
-      }));
+      expect(MockNordigenClient).toHaveBeenCalledWith(
+        expect.objectContaining({
+          secretId: credentials.secretId,
+          secretKey: credentials.secretKey,
+        }),
+      );
     });
 
     it('should throw InternalServerErrorException on invalid credentials', async () => {
@@ -111,9 +115,14 @@ describe('NordigenUserService', () => {
       const accountId = 'test-account-id';
       const mockMetadata = { id: accountId, status: 'READY' };
 
-      mockClientInstance.account(accountId).getMetadata.mockResolvedValue(mockMetadata);
+      mockClientInstance
+        .account(accountId)
+        .getMetadata.mockResolvedValue(mockMetadata);
 
-      const result = await service.getAccountMetadata(mockClientInstance, accountId);
+      const result = await service.getAccountMetadata(
+        mockClientInstance,
+        accountId,
+      );
 
       expect(result).toEqual(mockMetadata);
       expect(mockClientInstance.account).toHaveBeenCalledWith(accountId);
@@ -123,15 +132,16 @@ describe('NordigenUserService', () => {
   describe('getAccountTransactions', () => {
     it('should return booked transactions', async () => {
       const accountId = 'test-account-id';
-      const mockTransactions = [
-        { transactionId: 'tx-1' }
-      ];
+      const mockTransactions = [{ transactionId: 'tx-1' }];
 
       mockClientInstance.account(accountId).getTransactions.mockResolvedValue({
-        transactions: { booked: mockTransactions, pending: [] }
+        transactions: { booked: mockTransactions, pending: [] },
       });
 
-      const result = await service.getAccountTransactions(mockClientInstance, accountId);
+      const result = await service.getAccountTransactions(
+        mockClientInstance,
+        accountId,
+      );
 
       expect(result).toEqual(mockTransactions);
     });
