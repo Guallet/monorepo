@@ -1,11 +1,11 @@
-export interface NordigenTransactionsDto {
+export class NordigenTransactionsDto {
   transactions: {
     booked: NordigenTransactionDto[];
     pending: NordigenTransactionDto[];
   };
 }
 
-export interface NordigenTransactionDto {
+export class NordigenTransactionDto {
   transactionId: string;
   bookingDate: Date;
   bookingDateTime: Date;
@@ -24,11 +24,11 @@ export interface NordigenTransactionDto {
   additionalInformation: string | null;
 }
 
-export interface ExternalAccountDto {
+export class ExternalAccountDto {
   iban: string;
 }
 
-export interface CurrencyExchangeDto {
+export class CurrencyExchangeDto {
   exchangeRate: string;
   instructedAmount: TransactionAmountDto;
   sourceCurrency: string;
@@ -36,7 +36,7 @@ export interface CurrencyExchangeDto {
   unitCurrency: string;
 }
 
-export interface TransactionAmountDto {
+export class TransactionAmountDto {
   amount: string;
   currency: string;
 }

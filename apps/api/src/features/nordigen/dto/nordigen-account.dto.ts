@@ -1,6 +1,6 @@
 import { ExternalCashAccountType1Code } from './ExternalCashAccountType1Code.helper';
 
-export interface NordigenAccountMetadataDto {
+export class NordigenAccountMetadataDto {
   id: string;
   created: Date;
   last_accessed: Date;
@@ -36,16 +36,16 @@ export type NordigenAccountStatus =
 // LN	LINKED	Account has been successfully linked to requisition	7
 // EX	EXPIRED Access to accounts has expired as set in End User Agreement 8
 
-export interface NordigenAccountBalancesDto {
+export class NordigenAccountBalancesDto {
   balances: NordigenAccountBalanceDto[];
 }
 
-export interface NordigenAccountBalanceDto {
+export class NordigenAccountBalanceDto {
   balanceAmount: NordigenBalanceDto;
   balanceType?: BalanceTypeDto;
   referenceDate?: Date;
 }
-export interface NordigenBalanceDto {
+export class NordigenBalanceDto {
   amount: string;
   currency: string;
 }
@@ -113,11 +113,11 @@ export enum BalanceTypeDto {
   OPENING_BOOKED = 'openingBooked',
 }
 
-export interface NordigenAccountDetailsDto {
+export class NordigenAccountDetailsDto {
   account: NordigenAccountDto;
 }
 
-export interface NordigenAccountDto {
+export class NordigenAccountDto {
   id?: string;
 
   /**

@@ -17,19 +17,12 @@ import {
 import { NordigenTransactionDto } from './dto/nordigen-transaction.dto';
 import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
 import { randomUUID } from 'src/utils/crypto.utils';
-
-interface NordigenToken {
-  access: string;
-  refresh: string;
-  access_expires_on: Date;
-  refresh_expires_on: Date;
-}
+import { NordigenTokenDto } from './dto/nordigen-token.dto';
 
 @Injectable()
 export class NordigenService {
   private readonly logger = new Logger(NordigenService.name);
   private readonly client: NordigenClient;
-  private inMemoryToken: NordigenToken | null = null;
 
   constructor() {
     this.client = new NordigenClient({
@@ -40,50 +33,10 @@ export class NordigenService {
   }
 
   //#region token
-  private async ensureToken(): Promise<void> {
-    if (this.inMemoryToken) {
-      const now = new Date();
-      if (this.inMemoryToken.access_expires_on < now) {
-        if (this.inMemoryToken.refresh_expires_on <= now) {
-          // Both expired, get new token
-          this.logger.log('Refresh token expired. Getting new token pair');
-          await this.getNewToken();
-        } else {
-          // Access expired, refresh it
-          this.logger.log('Access token expired. Refreshing');
-          await this.refreshToken();
-        }
-      } else {
-        // Token still valid, just set it on the client
-        this.client.token = this.inMemoryToken.access;
-      }
-    } else {
-      // No token at all
-      this.logger.warn('No in-memory token. Getting a new one');
-      await this.getNewToken();
-    }
-  }
 
   private async getNewToken(): Promise<void> {
     try {
-      const tokenData = (await this.client.generateToken()) as {
-        access: string;
-        refresh: string;
-        access_expires: number;
-        refresh_expires: number;
-      };
-
-      const now = new Date();
-      this.inMemoryToken = {
-        access: tokenData.access,
-        refresh: tokenData.refresh,
-        access_expires_on: new Date(
-          now.getTime() + tokenData.access_expires * 1000,
-        ),
-        refresh_expires_on: new Date(
-          now.getTime() + tokenData.refresh_expires * 1000,
-        ),
-      };
+      const tokenData = (await this.client.generateToken()) as NordigenTokenDto;
 
       this.client.token = tokenData.access;
     } catch (error) {
@@ -92,38 +45,12 @@ export class NordigenService {
     }
   }
 
-  private async refreshToken(): Promise<void> {
-    if (!this.inMemoryToken)
-      throw new InternalServerErrorException('No token to refresh');
-
-    try {
-      const tokenData = (await this.client.exchangeToken({
-        refreshToken: this.inMemoryToken.refresh,
-      })) as { access: string; access_expires: number };
-
-      const now = new Date();
-      this.inMemoryToken = {
-        ...this.inMemoryToken,
-        access: tokenData.access,
-        access_expires_on: new Date(
-          now.getTime() + tokenData.access_expires * 1000,
-        ),
-      };
-
-      this.client.token = tokenData.access;
-    } catch (error) {
-      this.logger.error('Failed to refresh Nordigen token', error);
-      // If refresh fails, try getting a new one entirely
-      await this.getNewToken();
-    }
-  }
   //#endregion
 
   //#region institutions
   async getInstitutions(
     countryCode: string,
   ): Promise<NordigenInstitutionDto[]> {
-    await this.ensureToken();
     try {
       return (await this.client.institution.getInstitutions({
         country: countryCode,
@@ -134,7 +61,6 @@ export class NordigenService {
   }
 
   async getInstitution(institutionId: string): Promise<NordigenInstitutionDto> {
-    await this.ensureToken();
     try {
       return (await this.client.institution.getInstitutionById(
         institutionId,
@@ -149,7 +75,6 @@ export class NordigenService {
   async getAccountMetadata(
     account_id: string,
   ): Promise<NordigenAccountMetadataDto> {
-    await this.ensureToken();
     try {
       return (await this.client
         .account(account_id)
@@ -160,7 +85,6 @@ export class NordigenService {
   }
 
   async getAccountDetails(account_id: string): Promise<NordigenAccountDto> {
-    await this.ensureToken();
     try {
       const response = (await this.client.account(account_id).getDetails()) as {
         account: NordigenAccountDto;
@@ -174,7 +98,6 @@ export class NordigenService {
   async getAccountBalance(
     account_id: string,
   ): Promise<NordigenAccountBalanceDto[]> {
-    await this.ensureToken();
     try {
       const response = (await this.client
         .account(account_id)
@@ -188,7 +111,6 @@ export class NordigenService {
   async getAccountTransactions(
     account_id: string,
   ): Promise<NordigenTransactionDto[]> {
-    await this.ensureToken();
     try {
       this.logger.debug(
         `Getting Nordigen transactions for account ${account_id}`,
@@ -210,7 +132,6 @@ export class NordigenService {
     institution_id: string,
     redirect_url: string,
   ): Promise<NordigenRequisitionDto> {
-    await this.ensureToken();
     try {
       return (await this.client.requisition.createRequisition({
         redirectUrl: redirect_url,
@@ -228,7 +149,6 @@ export class NordigenService {
   async getRequisition(
     requisition_id: string,
   ): Promise<NordigenRequisitionDto> {
-    await this.ensureToken();
     try {
       return (await this.client.requisition.getRequisitionById(
         requisition_id,
@@ -241,7 +161,6 @@ export class NordigenService {
   async deleteRequisition(
     requisition_id: string,
   ): Promise<DeleteRequisitionResponse> {
-    await this.ensureToken();
     try {
       return (await this.client.requisition.deleteRequisition(
         requisition_id,
