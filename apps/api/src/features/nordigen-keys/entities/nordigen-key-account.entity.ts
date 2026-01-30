@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   JoinColumn,
+  Relation,
 } from 'typeorm';
 import { NordigenKey } from './nordigen-key.entity';
 
@@ -23,5 +24,5 @@ export class NordigenKeyAccount extends BaseDbEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'nordigen_key_id' })
-  nordigenKey: NordigenKey;
+  nordigenKey: Relation<NordigenKey>;
 }

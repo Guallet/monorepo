@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   OneToMany,
+  Relation,
 } from 'typeorm';
 import { NordigenKeyAccount } from './nordigen-key-account.entity';
 
@@ -25,14 +26,14 @@ export class NordigenKey extends BaseDbEntity {
   secret_key: string;
 
   @Column({ nullable: true })
-  last_sync_at: Date | null;
+  last_sync_at: Date;
 
   @Column({ nullable: true })
-  last_error_at: Date | null;
+  last_error_at: Date;
 
   @Column({ nullable: true })
-  last_error_message: string | null;
+  last_error_message: string;
 
   @OneToMany(() => NordigenKeyAccount, (keyAccount) => keyAccount.nordigenKey)
-  linkedAccounts: NordigenKeyAccount[];
+  linkedAccounts: Relation<NordigenKeyAccount[]>;
 }
