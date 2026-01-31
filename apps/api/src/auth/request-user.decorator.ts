@@ -7,15 +7,18 @@ export const RequestUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
-    const session = request.session;
-    const user = session.user;
+    const user = request.session?.user;
 
     // TODO: Map the roles properly when User entity is fixed
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const principal = new UserPrincipal(user.id, user.email);
+    if (user) {
+      const principal = new UserPrincipal(user.id, user.email);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return data ? principal?.[data] : principal;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return data ? principal?.[data] : principal;
+    } else {
+      return null;
+    }
   },
 );
 

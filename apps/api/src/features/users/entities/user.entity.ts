@@ -3,9 +3,13 @@ import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 // We need to ensure the database fields name match the ones in the better auth user configuration
-@Entity('app_users')
+@Entity('users')
 export class User extends BaseDbEntity {
-  @PrimaryColumn('uuid', {
+  // @PrimaryColumn('uuid', {
+  //   name: 'id',
+  // })
+  // Needs to be typed as text to match better auth user id type
+  @PrimaryColumn('text', {
     name: 'id',
   })
   id: string;
