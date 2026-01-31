@@ -15,12 +15,33 @@ const database = new Pool({
 });
 
 export const auth = betterAuth({
+  // DATABASE CONFIG
   database: database,
+  user: {
+    modelName: 'users',
+    fields: {
+      id: 'id',
+      email: 'email',
+      emailVerified: 'email_verified',
+      name: 'name',
+      image: 'profile_image_url',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+  },
+  sessions: {
+    modelName: 'auth_sessions',
+  },
+  account: {
+    modelName: 'auth_accounts',
+  },
+  // AUTH CONFIG
   secret: process.env.BETTER_AUTH_SECRET,
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day
   },
+  // AUTH METHODS
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,

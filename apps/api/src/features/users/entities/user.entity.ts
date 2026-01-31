@@ -2,19 +2,38 @@ import { UserRole } from 'src/auth/user-principal';
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('users')
+// We need to ensure the database fields name match the ones in the better auth user configuration
+@Entity('app_users')
 export class User extends BaseDbEntity {
   // This is the same ID as the one returned by the Auth Provider (Supabase at this time)
-  @PrimaryColumn('uuid')
+  @PrimaryColumn('uuid', {
+    name: 'id',
+  })
   id: string;
 
-  @Column()
+  @Column({
+    name: 'name',
+    nullable: false,
+  })
   name: string;
 
-  @Column()
+  @Column({
+    name: 'email',
+    nullable: false,
+  })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({
+    name: 'email_verified',
+    default: false,
+    nullable: false,
+  })
+  email_verified: boolean;
+
+  @Column({
+    name: 'profile_image_url',
+    nullable: true,
+  })
   profile_image_url: string;
 
   @Column({
@@ -26,7 +45,9 @@ export class User extends BaseDbEntity {
   roles: UserRole[];
 
   // user settings
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   default_currency: string;
 
   @Column({
@@ -36,7 +57,9 @@ export class User extends BaseDbEntity {
   })
   preferred_currencies: string[];
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   // preferred date format for the user, one of: MM/DD/YYYY, DD/MM/YYYY, YYYY/MM/DD
   date_format: string;
 
