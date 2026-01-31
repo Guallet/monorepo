@@ -33,7 +33,6 @@ export function AuthProvider({
     }
   }, [session, onUserChange]);
 
-
   const initAuth = useCallback(async () => {
     try {
       console.log('Initializing auth...');
@@ -53,7 +52,7 @@ export function AuthProvider({
   const login = useCallback(
     async (email: string, password: string): Promise<AuthResult> => {
       try {
-        const { data, error } = await authClient.signIn.email({
+        const { error } = await authClient.signIn.email({
           email,
           password,
         });
@@ -93,7 +92,7 @@ export function AuthProvider({
       name: string;
     }): Promise<AuthResult> => {
       try {
-        const { data, error } = await authClient.signUp.email({
+        const { error } = await authClient.signUp.email({
           email,
           password,
           name,
@@ -152,7 +151,7 @@ export function AuthProvider({
       try {
         const { error } = await authClient.emailOtp.sendVerificationOtp({
           email,
-          type: "sign-in"
+          type: 'sign-in',
         });
         if (error) {
           return {
@@ -180,7 +179,7 @@ export function AuthProvider({
   const verifyOtpCode = useCallback(
     async (email: string, code: string): Promise<AuthResult> => {
       try {
-        const { data, error } = await authClient.signIn.emailOtp({
+        const { error } = await authClient.signIn.emailOtp({
           email,
           otp: code,
         });
@@ -287,4 +286,3 @@ export function AuthProvider({
     </AuthContext.Provider>
   );
 }
-
