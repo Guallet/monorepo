@@ -6,7 +6,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "better-auth": "^1.1.18",
+    "better-auth": "workspace:*",
     "react": "workspace:*"
   },
   "devDependencies": {

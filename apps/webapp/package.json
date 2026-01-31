@@ -27,7 +27,7 @@
     "@mantine/notifications": "workspace:*",
     "@sentry/react": "^10.32.1",
     "@sentry/vite-plugin": "^4.6.2",
-    "better-auth": "^1.1.18",
+    "better-auth": "workspace:*",
     "@tabler/icons-react": "workspace:*",
     "@tanstack/react-query": "workspace:*",
     "@tanstack/react-query-devtools": "^5.83.0",
