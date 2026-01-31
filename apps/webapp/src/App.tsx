@@ -22,9 +22,6 @@ import { AuthProvider } from '@guallet/auth';
 // Init i18n
 import i18next from './i18n/i18n';
 
-// Vercel Analytics
-import { Analytics } from '@vercel/analytics/react';
-
 // Create a Query client
 const queryClient = new QueryClient();
 
@@ -45,7 +42,6 @@ export default function App() {
               <TanStackRouterDevtools router={router} />
               <ReactQueryDevtools initialIsOpen={false} />
               {/* END Tanstack Dev Tools */}
-              <Analytics />
             </GualletClientProvider>
           </QueryClientProvider>
         </AuthProvider>
