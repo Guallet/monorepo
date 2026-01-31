@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Job } from 'bullmq';
 import { CsvExportProcessor, CsvExportJobData } from './csv-export.processor';
@@ -115,7 +116,7 @@ describe('CsvExportProcessor', () => {
           accountId: 'account-1',
           description: 'Grocery Store',
           notes: 'Weekly shopping',
-          amount: -50.0,
+          amount: -50,
           currency: 'USD',
           date: new Date('2024-01-15'),
           categoryId: 'category-1',
@@ -125,7 +126,7 @@ describe('CsvExportProcessor', () => {
           accountId: 'account-1',
           description: 'Salary',
           notes: null,
-          amount: 2000.0,
+          amount: 2000,
           currency: 'USD',
           date: new Date('2024-01-01'),
           categoryId: null,
@@ -288,7 +289,7 @@ describe('CsvExportProcessor', () => {
           accountId: 'account-1',
           description: 'Transaction without category',
           notes: '',
-          amount: 100.0,
+          amount: 100,
           currency: 'USD',
           date: new Date('2024-01-15'),
           categoryId: null,

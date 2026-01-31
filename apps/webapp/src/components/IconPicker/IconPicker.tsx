@@ -1,9 +1,8 @@
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { ResponsiveModal } from "@guallet/ui-react";
 import {
   Group,
   Input,
   InputWrapperProps,
-  Modal,
   Text,
   ThemeIcon,
 } from "@mantine/core";
@@ -24,21 +23,15 @@ export function IconPicker({
   name,
   ...props
 }: Readonly<IconPickerProps>) {
-  const isMobile = useIsMobile();
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={opened}
-        fullScreen={isMobile}
         onClose={close}
         title="Select Icon"
-        centered
         size="lg"
-        {...(isMobile && {
-          transitionProps: { transition: "fade", duration: 200 },
-        })}
       >
         <IconPickerModal
           onIconSelected={(icon) => {
@@ -47,7 +40,7 @@ export function IconPicker({
           }}
           onCancel={() => close()}
         />
-      </Modal>
+      </ResponsiveModal>
       <Input.Wrapper {...props}>
         <Input
           name={name}
