@@ -25,7 +25,7 @@ export class EmailService implements OnModuleInit {
     new Map();
   private defaultFrom: string;
 
-  constructor(private readonly configService: ConfigService<AppConfig>) { }
+  constructor(private readonly configService: ConfigService<AppConfig>) {}
 
   onModuleInit() {
     this.initializeTransport();
@@ -35,18 +35,18 @@ export class EmailService implements OnModuleInit {
 
   private initializeTransport() {
     const emailConfig = this.configService.get('email', { infer: true })!;
+    if (!emailConfig.smtp?.host) {
+      this.logger.warn(
+        'SMTP not configured correctly. Email functionality will be disabled.',
+      );
+      this.transporter = null;
+      return;
+    }
     const smtpHost = emailConfig.smtp.host;
     const smtpPort = emailConfig.smtp.port;
     const smtpUser = emailConfig.smtp.user;
     const smtpPass = emailConfig.smtp.pass;
     const smtpSecure = emailConfig.smtp.secure;
-
-    if (!smtpHost) {
-      this.logger.warn(
-        'SMTP_HOST not configured. Email functionality will be disabled.',
-      );
-      return;
-    }
 
     this.transporter = nodemailer.createTransport({
       host: smtpHost,
@@ -55,9 +55,9 @@ export class EmailService implements OnModuleInit {
       auth:
         smtpUser && smtpPass
           ? {
-            user: smtpUser,
-            pass: smtpPass,
-          }
+              user: smtpUser,
+              pass: smtpPass,
+            }
           : undefined,
     });
   }

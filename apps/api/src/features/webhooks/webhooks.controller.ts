@@ -8,8 +8,7 @@ export class WebhooksController {
   constructor(
     private readonly webhooksService: WebhooksService,
     private readonly userService: UsersService,
-  ) { }
-
+  ) {}
 
   // Ideas for new webhooks?
 }

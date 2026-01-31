@@ -40,7 +40,7 @@ export class NordigenService {
     private readonly configService: ConfigService<AppConfig>,
     private readonly httpService: HttpService,
     private repository: NordigenRepository,
-  ) { }
+  ) {}
 
   //#region token
   private async getAccessToken(): Promise<string> {

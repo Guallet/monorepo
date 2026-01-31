@@ -36,7 +36,7 @@ export class ObConnectionsController {
     private readonly openbankingService: OpenbankingService,
     private readonly nordigenService: NordigenService,
     private readonly institutionService: InstitutionsService,
-  ) { }
+  ) {}
 
   @Get('countries')
   getCountries(@Query('language') language?: string) {
@@ -96,7 +96,9 @@ export class ObConnectionsController {
         `Couldn't delete requisition ${id} from Nordigen`,
         error,
       );
-      if (this.configService.get('environment', { infer: true }) === 'development') {
+      if (
+        this.configService.get('environment', { infer: true }) === 'development'
+      ) {
         throw new InternalServerErrorException({
           error: error,
           connection_id: id,
