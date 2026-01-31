@@ -7,9 +7,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { WebhooksService } from './webhooks.service';
-import { Public } from 'src/auth/is-public.decorator';
 import { SupabaseWebhookUserPayload } from './dto/userWebhookPayload.supabase.dto';
 import { UsersService } from 'src/features/users/users.service';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @Controller('webhooks')
 export class WebhooksController {
@@ -20,7 +20,7 @@ export class WebhooksController {
   ) {}
 
   @Post('user')
-  @Public()
+  @AllowAnonymous()
   @HttpCode(HttpStatus.ACCEPTED)
   async create(@Body() payload: SupabaseWebhookUserPayload): Promise<void> {
     this.logger.log('Received supabase user webhook', payload);

@@ -12,19 +12,25 @@ import express from 'express';
 const isProduction = process.env.NODE_ENV === 'production';
 
 async function bootstrap() {
+  console.log('Bootstrapping Guallet API...');
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    // Disable bodyParser because Better-Auth.
+    // Don't worry, the library will automatically re-add the default body parsers.
+    // bodyParser: false,
   });
   if (isProduction) {
     app.useLogger(app.get(Logger));
   }
 
+  console.log(`Starting Guallet API - Environment: ${process.env.NODE_ENV}`);
   // Configure EXPRESS server
   // Increase payload size limit for CSV imports
   app.use(express.json({ limit: '15mb' }));
   app.use(express.urlencoded({ limit: '15mb', extended: true }));
 
   // CORS
+  console.log('Configuring CORS settings');
   const allowedOriginsRawValue = process.env.ALLOWED_CORS_ORIGINS ?? '';
   const allowedOrigins = allowedOriginsRawValue.split(',');
 
@@ -37,10 +43,12 @@ async function bootstrap() {
   app.use(compression());
 
   // Configure Swagger
+  console.log('Configuring Swagger documentation');
   const docsPath = 'docs';
   await configureSwagger(app, docsPath);
 
   // Start server
+  console.log('Starting server...');
   const port = process.env.PORT ?? 5000;
   await app.listen(port);
   console.log(`Guallet is running on PORT: ${port}`);

@@ -1,7 +1,5 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
@@ -16,9 +14,7 @@ import { OpenbankingModule } from './features/openbanking/openbanking.module';
 import { NordigenModule } from './features/nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './features/users/users.module';
-import { AuthGuard } from './auth/auth.guard';
 import configuration from './configuration';
-import { UsersService } from './features/users/users.service';
 import { User } from './features/users/entities/user.entity';
 import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
@@ -32,6 +28,9 @@ import { NotificationsModule } from './features/notifications/notifications.modu
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
+import { UsersService } from './features/users/users.service';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { auth } from './auth/better-auth';
 
 @Module({
   imports: [
@@ -51,10 +50,11 @@ import { HealthModule } from './features/health/health.module';
         DATABASE_PASSWORD: Joi.string().required(),
         DATABASE_NAME: Joi.string().required(),
         DATABASE_SSL_ENABLED: Joi.boolean().default(false),
-        AUTH_JWT_SECRET: Joi.string().required(),
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_PASSWORD: Joi.string().allow('').optional(),
+        BETTER_AUTH_SECRET: Joi.string().required(),
+        BETTER_AUTH_BASE_URL: Joi.string().required(),
         NORDIGEN_SECRET_ID: Joi.string().required(),
         NORDIGEN_SECRET_KEY: Joi.string().required(),
       }),
@@ -98,6 +98,8 @@ import { HealthModule } from './features/health/health.module';
           ? { rejectUnauthorized: false }
           : false,
     }),
+    // AUTHENTICATION VIA BETTER-AUTH
+    AuthModule.forRoot({ auth: auth }),
     // CRON
     ScheduleModule.forRoot(),
     // REDIS / BULL
@@ -133,16 +135,7 @@ import { HealthModule } from './features/health/health.module';
     HealthModule,
   ],
   controllers: [],
-  providers: [
-    JwtService,
-    // This will protect all the routes using the AuthGuard
-    // If you want to allow a specific route, sue the @Public decorator
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    UsersService,
-  ],
+  providers: [UsersService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

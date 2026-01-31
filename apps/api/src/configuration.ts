@@ -5,7 +5,8 @@ export default () => ({
     level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
   },
   auth: {
-    jwtSecret: process.env.AUTH_JWT_SECRET,
+    secret: process.env.BETTER_AUTH_SECRET,
+    baseUrl: process.env.BETTER_AUTH_BASE_URL,
   },
   nordigen: {
     clientId: process.env.NORDIGEN_CLIENT_ID,

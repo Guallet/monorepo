@@ -1,12 +1,12 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { WaitingListService } from './waitinglist.service';
-import { Public } from 'src/auth/is-public.decorator';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @Controller('waitinglist')
 export class WaitingListController {
   constructor(private readonly waitingListService: WaitingListService) {}
 
-  @Public()
+  @AllowAnonymous()
   @Post()
   async addEmail(@Body('email') email: string) {
     return this.waitingListService.addEmail(email);
