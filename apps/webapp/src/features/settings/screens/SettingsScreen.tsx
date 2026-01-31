@@ -8,6 +8,7 @@ import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
 import { DateFormatRow } from '../components/DateFormatRow';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow } from '@guallet/ui-react';
+import { NordigenCredentialsRow } from "../components/NordigenCredentialsRow";
 
 export function SettingsScreen() {
   const navigate = useNavigate();
@@ -23,6 +24,10 @@ export function SettingsScreen() {
           <DefaultCurrencyRow />
           <PreferredCurrenciesRow />
           <DateFormatRow />
+        </AppSection>
+
+        <AppSection title="Open Banking" itemPadding={0}>
+          <NordigenCredentialsRow onClick={() => navigate({ to: '/settings/openbanking' })} />
         </AppSection>
 
         <AppSection title="Institutions" itemPadding={0}>

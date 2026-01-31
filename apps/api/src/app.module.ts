@@ -29,9 +29,11 @@ import { DataImporterModule } from './features/data-importer/data-importer.modul
 import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
-import * as Joi from 'joi';
+import { NordigenSyncModule } from './features/nordigen-sync/nordigen-sync.module';
+import { NordigenKeysModule } from './features/nordigen-keys/nordigen-keys.module';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
@@ -45,6 +47,8 @@ import { HealthModule } from './features/health/health.module';
         ENVIRONMENT: Joi.string()
           .valid('development', 'production')
           .default('development'),
+        PORT: Joi.number().default(5000),
+        ALLOWED_CORS_ORIGINS: Joi.string().optional(),
         DATABASE_HOST: Joi.string().required(),
         DATABASE_PORT: Joi.number().required(),
         DATABASE_USERNAME: Joi.string().required(),
@@ -55,8 +59,18 @@ import { HealthModule } from './features/health/health.module';
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().default(6379),
         REDIS_PASSWORD: Joi.string().allow('').optional(),
-        NORDIGEN_SECRET_ID: Joi.string().required(),
-        NORDIGEN_SECRET_KEY: Joi.string().required(),
+        SMTP_HOST: Joi.string().optional(),
+        SMTP_PORT: Joi.number().default(465),
+        SMTP_USER: Joi.string().optional(),
+        SMTP_PASS: Joi.string().optional(),
+        SMTP_SECURE: Joi.boolean().default(true),
+        EMAIL_FROM: Joi.string().optional(),
+        APITALLY_ENABLED: Joi.boolean().default(false),
+        APITALLY_CLIENT_ID: Joi.string().optional(),
+        APITALLY_ENV: Joi.string()
+          .valid('dev', 'prod')
+          .default('dev')
+          .optional(),
       }),
     }),
     // LOGGING
@@ -127,10 +141,12 @@ import { HealthModule } from './features/health/health.module';
     DataExporterModule,
     EmailModule,
     NotificationsModule,
-    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
-    TypeOrmModule.forFeature([User]),
+    NordigenSyncModule,
+    NordigenKeysModule,
     RegularPaymentsModule,
     HealthModule,
+    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [],
   providers: [

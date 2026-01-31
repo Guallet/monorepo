@@ -82,15 +82,17 @@
       },
       "created": "Creado:",
       "updated": "Actualizado:",
-      "accountsLinked_one": "",
+      "accountsLinked_one": "{{count}} cuenta vinculada",
       "accountsLinked_many": "{{count}} cuentas vinculadas",
-      "accountsLinked_other": "",
+      "accountsLinked_other": "{{count}} cuentas vinculadas",
       "noAccountsLinked": "Sin cuentas vinculadas"
     },
     "transactionsFilter": {
       "categories": {
         "label": "Categorías"
-      }
+      },
+      "reset": "Reiniciar filtros",
+      "apply": "Aplicar filtros"
     }
   },
   "feature": {
@@ -117,7 +119,7 @@
   "screens": {
     "accounts": {
       "list": {
-        "emptyQuery": "CFN: No se encontraron cuentas bancarias"
+        "emptyQuery": "No se encontraron cuentas bancarias"
       }
     },
     "forgotPassword": {
@@ -311,6 +313,40 @@
         "addButton": "Agregar nueva conexión"
       }
     },
+    "dataExport": {
+      "modal": {
+        "title": "¡Exportación Iniciada Exitosamente!",
+        "description": "Tu exportación de datos se está procesando en segundo plano.",
+        "emailTitle": "Recibirás un correo electrónico con el archivo CSV",
+        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos como un archivo CSV. Puedes abrirlo con cualquier aplicación de hojas de cálculo.",
+        "button": "Entendido"
+      },
+      "title": "Exportar Transacciones",
+      "description": "Exporta tus transacciones a un archivo CSV. El archivo se enviará a tu correo electrónico.",
+      "error": {
+        "title": "Error de Exportación"
+      },
+      "filters": {
+        "title": "Filtros (Opcional)",
+        "description": "Por defecto, se exportarán todas tus transacciones. Utiliza los filtros a continuación para exportar un subconjunto específico.",
+        "dateRange": {
+          "label": "Rango de Fechas",
+          "placeholder": "Selecciona un rango de fechas (deja vacío para todas)"
+        },
+        "accounts": {
+          "label": "Cuentas",
+          "placeholder": "Selecciona cuentas (deja vacío para todas)"
+        }
+      },
+      "info": {
+        "title": "¿Qué ocurre después?",
+        "step1": "Tu solicitud de exportación se procesará en segundo plano",
+        "step2": "El archivo CSV incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
+        "step3": "Recibirás un correo electrónico con el archivo CSV adjunto",
+        "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
+      },
+      "exportButton": "Exportar Transacciones"
+    },
     "notifications": {
       "icon": {
         "navigationErrorTitle": "Error de navegación",
@@ -341,6 +377,64 @@
         "loading": "Cargando notificaciones...",
         "markAllAsRead": "Marcar todas como leídas",
         "emptyState": "No tienes notificaciones"
+      }
+    },
+    "nordigenKeys": {
+      "notifications": {
+        "validationError": {
+          "title": "Error de Validación",
+          "message": "Por favor, completa todos los campos requeridos"
+        },
+        "createSuccess": {
+          "title": "Éxito",
+          "message": "Clave de Nordigen creada exitosamente"
+        },
+        "createError": {
+          "defaultMessage": "Error al crear la clave de Nordigen. Por favor, verifica tus credenciales.",
+          "title": "Credenciales Inválidas"
+        },
+        "deleteSuccess": {
+          "title": "Éxito",
+          "message": "Clave de Nordigen eliminada"
+        },
+        "deleteError": {
+          "title": "Error",
+          "message": "Error al eliminar la clave de Nordigen"
+        }
+      },
+      "row": {
+        "loading": "Cargando...",
+        "configured_one": "{{count}} clave configurada",
+        "configured_many": "{{count}} claves configuradas",
+        "configured_other": "{{count}} claves configuradas",
+        "notConfigured": "No configurado",
+        "label": "Claves API de Nordigen"
+      },
+      "modal": {
+        "title": "Claves API de Nordigen",
+        "description": "Ingresa tus credenciales de API de Nordigen (GoCardless) para habilitar la sincronización automática de cuentas bancarias. Puedes agregar múltiples claves y vincular cuentas específicas a cada una.",
+        "existingKeys": "Claves Existentes",
+        "accountsLinked_one": "{{count}} cuenta vinculada",
+        "accountsLinked_many": "{{count}} cuentas vinculadas",
+        "accountsLinked_other": "{{count}} cuentas vinculadas",
+        "addNewKey": "Agregar Nueva Clave",
+        "closeButton": "Cerrar"
+      },
+      "errorBadge": "Error: {{message}}",
+      "form": {
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Ej: Mi clave API del banco"
+        },
+        "secretId": {
+          "label": "ID Secreto",
+          "placeholder": "Ingresa tu ID Secreto de Nordigen"
+        },
+        "secretKey": {
+          "label": "Clave Secreta",
+          "placeholder": "Ingresa tu Clave Secreta de Nordigen"
+        },
+        "addButton": "Agregar Clave"
       }
     },
     "subscriptions": {
@@ -483,40 +577,6 @@
       "title": "Crear nueva cuenta",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
-    },
-    "dataExport": {
-      "title": "Exportar Transacciones",
-      "description": "Exporta tus transacciones a un archivo CSV. El archivo se enviará a tu correo electrónico.",
-      "error": {
-        "title": "Error de Exportación"
-      },
-      "filters": {
-        "title": "Filtros (Opcional)",
-        "description": "Por defecto, se exportarán todas tus transacciones. Utiliza los filtros a continuación para exportar un subconjunto específico.",
-        "dateRange": {
-          "label": "Rango de Fechas",
-          "placeholder": "Selecciona un rango de fechas (deja vacío para todas)"
-        },
-        "accounts": {
-          "label": "Cuentas",
-          "placeholder": "Selecciona cuentas (deja vacío para todas)"
-        }
-      },
-      "info": {
-        "title": "¿Qué ocurre después?",
-        "step1": "Tu solicitud de exportación se procesará en segundo plano",
-        "step2": "El archivo CSV incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
-        "step3": "Recibirás un correo electrónico con el archivo CSV adjunto",
-        "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
-      },
-      "exportButton": "Exportar Transacciones",
-      "modal": {
-        "title": "¡Exportación Iniciada Exitosamente!",
-        "description": "Tu exportación de datos se está procesando en segundo plano.",
-        "emailTitle": "Recibirás un correo electrónico con el archivo CSV",
-        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos como un archivo CSV. Puedes abrirlo con cualquier aplicación de hojas de cálculo.",
-        "button": "Entendido"
-      }
     }
   }
 }

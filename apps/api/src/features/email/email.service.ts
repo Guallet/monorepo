@@ -234,4 +234,20 @@ export class EmailService implements OnModuleInit {
       },
     });
   }
+
+  async sendNordigenCredentialsErrorEmail(args: {
+    to: string;
+    userName: string;
+  }): Promise<void> {
+    const { to, userName } = args;
+    await this.sendEmail({
+      to,
+      subject: 'Nordigen Credentials Error',
+      template: 'nordigen-credentials-error',
+      context: {
+        userName,
+        year: new Date().getFullYear(),
+      },
+    });
+  }
 }

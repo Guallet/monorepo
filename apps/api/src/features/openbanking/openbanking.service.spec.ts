@@ -8,7 +8,7 @@ import { Institution } from 'src/features/institutions/entities/institution.enti
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { NotFoundException } from '@nestjs/common';
-import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto';
+import { NordigenRequisitionDto } from '../nordigen/models/NordigenRequisitionDto';
 
 describe('OpenbankingService', () => {
   let service: OpenbankingService;

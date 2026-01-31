@@ -53,6 +53,7 @@ import { Route as AppBudgetsCreateRouteImport } from './routes/_app/budgets/crea
 import { Route as AppBudgetsIdRouteImport } from './routes/_app/budgets/$id'
 import { Route as AppAccountsNewRouteImport } from './routes/_app/accounts/new'
 import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
+import { Route as AppSettingsOpenbankingIndexRouteImport } from './routes/_app/settings/openbanking/index'
 import { Route as AppImporterCsvIndexRouteImport } from './routes/_app/importer/csv/index'
 import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
@@ -307,6 +308,12 @@ const AppAccountsIdRoute = AppAccountsIdRouteImport.update({
   path: '/accounts/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsOpenbankingIndexRoute =
+  AppSettingsOpenbankingIndexRouteImport.update({
+    id: '/settings/openbanking/',
+    path: '/settings/openbanking/',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppImporterCsvIndexRoute = AppImporterCsvIndexRouteImport.update({
   id: '/importer/csv/',
   path: '/importer/csv/',
@@ -437,6 +444,7 @@ export interface FileRoutesByFullPath {
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
+  '/settings/openbanking': typeof AppSettingsOpenbankingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
@@ -497,6 +505,7 @@ export interface FileRoutesByTo {
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
+  '/settings/openbanking': typeof AppSettingsOpenbankingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -559,6 +568,7 @@ export interface FileRoutesById {
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
+  '/_app/settings/openbanking/': typeof AppSettingsOpenbankingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -621,6 +631,7 @@ export interface FileRouteTypes {
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
+    | '/settings/openbanking'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -681,6 +692,7 @@ export interface FileRouteTypes {
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
+    | '/settings/openbanking'
   id:
     | '__root__'
     | '/'
@@ -742,6 +754,7 @@ export interface FileRouteTypes {
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
+    | '/_app/settings/openbanking/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1083,6 +1096,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/openbanking/': {
+      id: '/_app/settings/openbanking/'
+      path: '/settings/openbanking'
+      fullPath: '/settings/openbanking'
+      preLoaderRoute: typeof AppSettingsOpenbankingIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/importer/csv/': {
       id: '/_app/importer/csv/'
       path: '/importer/csv'
@@ -1225,6 +1245,7 @@ interface AppRouteChildren {
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
+  AppSettingsOpenbankingIndexRoute: typeof AppSettingsOpenbankingIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -1275,6 +1296,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
+  AppSettingsOpenbankingIndexRoute: AppSettingsOpenbankingIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

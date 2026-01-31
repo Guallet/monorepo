@@ -7,8 +7,4 @@ export default () => ({
   auth: {
     jwtSecret: process.env.AUTH_JWT_SECRET,
   },
-  nordigen: {
-    clientId: process.env.NORDIGEN_CLIENT_ID,
-    clientSecret: process.env.NORDIGEN_CLIENT_SECRET,
-  },
 });

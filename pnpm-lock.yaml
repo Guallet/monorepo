@@ -118,6 +118,9 @@ importers:
       nodemailer:
         specifier: ^7.0.13
         version: 7.0.13
+      nordigen-node:
+        specifier: ^1.4.1
+        version: 1.4.1
       pg:
         specifier: ^8.17.1
         version: 8.17.1
@@ -5216,6 +5219,10 @@ packages:
     resolution: {integrity: sha512-LaKRbou8gt0RNID/9RoI+J2rvXsBRPMV7p+ElHlPhcSARbCPDYcYG2s1TIzAfWv4YSgyY5taidWzzs31lNV3yQ==}
     engines: {node: '>=12'}
 
+  dotenv@10.0.0:
+    resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
+    engines: {node: '>=10'}
+
   dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
@@ -7450,6 +7457,9 @@ packages:
   nodemailer@7.0.13:
     resolution: {integrity: sha512-PNDFSJdP+KFgdsG3ZzMXCgquO7I6McjY2vlqILjtJd0hy8wEvtugS9xKRF2NWlPNGxvLCXlTNIae4serI7dinw==}
     engines: {node: '>=6.0.0'}
+
+  nordigen-node@1.4.1:
+    resolution: {integrity: sha512-m7U9scf9GEkLEwy03l+cxcfcDGAiRMtD1sWrEH/mpYrZEC1hDZ2wRg+eMndzDOnADZaUoPvcimushUUA4+csvg==}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -14810,7 +14820,9 @@ snapshots:
 
   dotenv-expand@12.0.1:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
+
+  dotenv@10.0.0: {}
 
   dotenv@16.0.3: {}
 
@@ -17819,6 +17831,13 @@ snapshots:
   node-releases@2.0.27: {}
 
   nodemailer@7.0.13: {}
+
+  nordigen-node@1.4.1:
+    dependencies:
+      axios: 1.13.2
+      dotenv: 10.0.0
+    transitivePeerDependencies:
+      - debug
 
   normalize-path@3.0.0: {}
 

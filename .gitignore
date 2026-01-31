@@ -45,3 +45,7 @@ apps/api/database/seed.js
 package-lock.json
 apps/*/package-lock.json
 packages/*/package-lock.json
+
+# IntelliJ IDEA
+.idea/workspace.xml
+.idea/vcs.xml

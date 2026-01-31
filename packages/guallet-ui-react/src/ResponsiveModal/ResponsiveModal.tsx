@@ -1,11 +1,11 @@
-import { Modal } from '@mantine/core';
+import { Modal, ModalProps } from '@mantine/core';
 import { useIsMobile } from '../hooks/useIsMobile';
 import React from 'react';
 
 /**
  * Props for the ResponsiveModal component
  */
-export interface ResponsiveModalProps {
+export interface ResponsiveModalProps extends ModalProps {
   /** Whether the modal is currently open */
   opened: boolean;
   /** Callback function when the modal is closed */
@@ -14,10 +14,6 @@ export interface ResponsiveModalProps {
   title?: React.ReactNode;
   /** Content to be displayed in the modal */
   children: React.ReactNode;
-  /** Size of the modal (only applies on desktop) */
-  size?: string | number;
-  /** Whether to show the close button (default: true) */
-  withCloseButton?: boolean;
 }
 
 /**
@@ -43,7 +39,6 @@ export interface ResponsiveModalProps {
  *         opened={opened}
  *         onClose={close}
  *         title="My Modal Title"
- *         size="md"
  *       >
  *         <p>Modal content goes here</p>
  *       </ResponsiveModal>
@@ -60,8 +55,7 @@ export function ResponsiveModal({
   onClose,
   title,
   children,
-  size = 'md',
-  withCloseButton = true,
+  ...props
 }: Readonly<ResponsiveModalProps>) {
   const isMobile = useIsMobile();
 
@@ -70,12 +64,11 @@ export function ResponsiveModal({
       opened={opened}
       onClose={onClose}
       title={title}
-      withCloseButton={withCloseButton}
       fullScreen={isMobile}
       radius={isMobile ? 0 : undefined}
       padding={isMobile ? 'md' : undefined}
-      size={isMobile ? undefined : size}
-      centered={!isMobile}
+      centered
+      {...props}
     >
       {children}
     </Modal>

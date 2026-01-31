@@ -1,9 +1,9 @@
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { ExternalCashAccountType1Code } from 'src/features/nordigen/dto/ExternalCashAccountType1Code.helper';
+import { ExternalCashAccountType1Code } from 'src/features/nordigen/models/ExternalCashAccountType1Code.helper';
 import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from 'src/features/nordigen/dto/nordigen-account.dto';
+} from 'src/features/nordigen/models/NordigenAccountDto';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('nordigen_accounts')

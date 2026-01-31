@@ -1,7 +1,7 @@
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { NordigenTransactionDto } from 'src/features/nordigen/dto/nordigen-transaction.dto';
+import { NordigenTransactionDto } from 'src/features/nordigen/models/NordigenTransactionDto';
 import {
   Column,
   Entity,
