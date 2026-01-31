@@ -18,11 +18,6 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import { UserDto } from './dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto';
-import {
-  OptionalAuth,
-  Session,
-  UserSession,
-} from '@thallesp/nestjs-better-auth';
 
 @ApiTags('Users')
 @Controller('users')
@@ -30,14 +25,6 @@ export class UsersController {
   private readonly logger = new Logger(UsersController.name);
 
   constructor(private readonly usersService: UsersService) {}
-
-  @Get('me')
-  @OptionalAuth()
-  getProfile(@Session() session: UserSession) {
-    return {
-      session: session,
-    };
-  }
 
   @Get()
   async findUserDetails(@RequestUser() user: UserPrincipal): Promise<UserDto> {

@@ -31,6 +31,7 @@ import { HealthModule } from './features/health/health.module';
 import { UsersService } from './features/users/users.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { auth } from './auth/better-auth';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -134,7 +135,7 @@ import { auth } from './auth/better-auth';
     RegularPaymentsModule,
     HealthModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [UsersService],
 })
 export class AppModule {
