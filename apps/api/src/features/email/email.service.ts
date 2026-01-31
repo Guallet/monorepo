@@ -5,6 +5,7 @@ import type { Transporter } from 'nodemailer';
 import * as Handlebars from 'handlebars';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { AppConfig } from '../../configuration';
 
 interface SendEmailOptions {
   to: string;
@@ -24,30 +25,28 @@ export class EmailService implements OnModuleInit {
     new Map();
   private defaultFrom: string;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService<AppConfig>) {}
 
   onModuleInit() {
     this.initializeTransport();
     this.loadTemplates();
-    this.defaultFrom = this.configService.get<string>(
-      'EMAIL_FROM',
-      'Guallet <noreply@guallet.io>',
-    );
+    this.defaultFrom = this.configService.get('email', { infer: true })!.from;
   }
 
   private initializeTransport() {
-    const smtpHost = this.configService.get<string>('SMTP_HOST');
-    const smtpPort = this.configService.get<number>('SMTP_PORT', 465);
-    const smtpUser = this.configService.get<string>('SMTP_USER');
-    const smtpPass = this.configService.get<string>('SMTP_PASS');
-    const smtpSecure = this.configService.get<boolean>('SMTP_SECURE', true);
-
-    if (!smtpHost) {
+    const emailConfig = this.configService.get('email', { infer: true })!;
+    if (!emailConfig.smtp?.host) {
       this.logger.warn(
-        'SMTP_HOST not configured. Email functionality will be disabled.',
+        'SMTP not configured correctly. Email functionality will be disabled.',
       );
+      this.transporter = null;
       return;
     }
+    const smtpHost = emailConfig.smtp.host;
+    const smtpPort = emailConfig.smtp.port;
+    const smtpUser = emailConfig.smtp.user;
+    const smtpPass = emailConfig.smtp.pass;
+    const smtpSecure = emailConfig.smtp.secure;
 
     this.transporter = nodemailer.createTransport({
       host: smtpHost,

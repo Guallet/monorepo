@@ -304,7 +304,7 @@ throw new NotFoundException('Resource not found');
 
 - **ORM**: TypeORM
 - **Validation**: class-validator, class-transformer
-- **Authentication**: passport, @nestjs/jwt
+- **Authentication**: better-auth
 - **Documentation**: @nestjs/swagger
 - **Testing**: @nestjs/testing, jest
 - **Logging**: Pino

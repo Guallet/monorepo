@@ -44,8 +44,6 @@ export interface TokenHelper {
  *
  * @returns A new instance of GualletClient.
  *
- * @note This function is necessary due to the current use of Supabase.
- *       It should be removed when Supabase is replaced.
  */
 export function createClient({
   baseUrl,

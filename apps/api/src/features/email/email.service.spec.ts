@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from './email.service';
+import { EmailConfig } from 'src/configuration';
 
 describe('EmailService', () => {
   let service: EmailService;
@@ -8,15 +9,21 @@ describe('EmailService', () => {
 
   const createMockConfigService = (smtpHost?: string) => ({
     get: jest.fn(<T>(key: string, defaultValue?: T): T | undefined => {
-      const config: Record<string, unknown> = {
-        SMTP_HOST: smtpHost,
-        SMTP_PORT: 587,
-        SMTP_USER: smtpHost ? 'test-user' : undefined,
-        SMTP_PASS: smtpHost ? 'test-pass' : undefined,
-        SMTP_SECURE: false,
-        EMAIL_FROM: 'Guallet <noreply@guallet.io>',
-      };
-      return (config[key] as T) ?? defaultValue;
+      if (key === 'email') {
+        const emailConfig: EmailConfig = {
+          from: 'Guallet <noreply@guallet.io>',
+          smtp: {
+            host: smtpHost || '',
+            port: 587,
+            user: 'test-user',
+            pass: 'test-pass',
+            secure: true,
+          },
+        };
+
+        return emailConfig as T;
+      }
+      return defaultValue;
     }),
   });
 

@@ -1,6 +1,5 @@
 import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
-import { supabase } from '@/auth/supabase';
 import { LoginScreen } from '@/features/auth/screens/LoginScreen';
 import { useAuth } from '@guallet/auth';
 
@@ -14,7 +13,13 @@ export const Route = createFileRoute('/login/')({
 });
 
 function LoginPage() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading,
+    login,
+    loginWithProvider,
+    getOtpCode
+  } = useAuth();
   const { redirect } = Route.useSearch();
   const navigation = useNavigate();
   const redirectTo = `${globalThis.location.origin}/login/callback`;
@@ -30,27 +35,15 @@ function LoginPage() {
         console.log('Logging in with Google');
         // Save the redirect url in the local storage to be able to restore it later
         localStorage.setItem('redirectDestination', redirect);
-        await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectTo,
-          },
-        });
+        await loginWithProvider('google', redirectTo);
       }}
       onMagicLink={async (email: string) => {
         console.log('Sending magic link to', email);
 
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            // set this to false if you do not want the user to be automatically signed up
-            shouldCreateUser: false,
-            emailRedirectTo: redirectTo,
-          },
-        });
+        const { success, error } = await getOtpCode(email);
         if (error) {
           console.error('Error sending the OTP', error);
-        } else {
+        } else if (success) {
           navigation({
             from: Route.fullPath,
             to: '/login/validateotp',
@@ -62,15 +55,12 @@ function LoginPage() {
         }
       }}
       onPassword={async (email: string, password: string) => {
-        console.log('Logging in with', email, password);
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
+        console.log('Logging in with email and password');
+        const { success, error } = await login(email, password);
         if (error) {
-          console.error('Error sending the OTP', error);
-        } else {
-          console.log('Success', data);
+          console.error('Error logging in', error);
+        } else if (success) {
+          console.log('Success login');
         }
       }}
     />

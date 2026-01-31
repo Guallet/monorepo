@@ -24,6 +24,7 @@ import {
   NordigenAccountMetadataDto,
 } from 'src/features/nordigen/dto/nordigen-account.dto';
 import { ConfigService } from '@nestjs/config';
+import { AppConfig } from 'src/configuration';
 
 @ApiTags('Open Banking')
 @Controller('openbanking')
@@ -31,7 +32,7 @@ export class ObConnectionsController {
   private readonly logger = new Logger(ObConnectionsController.name);
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AppConfig>,
     private readonly openbankingService: OpenbankingService,
     private readonly nordigenService: NordigenService,
     private readonly institutionService: InstitutionsService,
@@ -95,7 +96,9 @@ export class ObConnectionsController {
         `Couldn't delete requisition ${id} from Nordigen`,
         error,
       );
-      if (this.configService.get('environment') === 'development') {
+      if (
+        this.configService.get('environment', { infer: true }) === 'development'
+      ) {
         throw new InternalServerErrorException({
           error: error,
           connection_id: id,

@@ -88,7 +88,9 @@
     "transactionsFilter": {
       "categories": {
         "label": "Categories"
-      }
+      },
+      "reset": "Reset filters",
+      "apply": "Apply filters"
     }
   },
   "feature": {
@@ -309,6 +311,40 @@
         "addButton": "Add a new connection"
       }
     },
+    "dataExport": {
+      "modal": {
+        "title": "Export Started Successfully!",
+        "description": "Your data export is now being processed in the background.",
+        "emailTitle": "You'll receive an email with the CSV file",
+        "emailDescription": "We'll send you an email with the exported data attached as a CSV file. You can open it with any spreadsheet application.",
+        "button": "Got it"
+      },
+      "title": "Export Transactions",
+      "description": "Export your transactions to a CSV file. The file will be sent to your email.",
+      "error": {
+        "title": "Export Error"
+      },
+      "filters": {
+        "title": "Filters (Optional)",
+        "description": "By default, all your transactions will be exported. Use the filters below to export a specific subset.",
+        "dateRange": {
+          "label": "Date Range",
+          "placeholder": "Pick date range (leave empty for all)"
+        },
+        "accounts": {
+          "label": "Accounts",
+          "placeholder": "Select accounts (leave empty for all)"
+        }
+      },
+      "info": {
+        "title": "What happens next?",
+        "step1": "Your export request will be processed in the background",
+        "step2": "The CSV file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
+        "step3": "You'll receive an email with the CSV file attached",
+        "step4": "You can continue using the app while the export is processed"
+      },
+      "exportButton": "Export Transactions"
+    },
     "notifications": {
       "icon": {
         "navigationErrorTitle": "Navigation Error",
@@ -479,40 +515,6 @@
       "title": "Create new account",
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
-    },
-    "dataExport": {
-      "title": "Export Transactions",
-      "description": "Export your transactions to a CSV file. The file will be sent to your email.",
-      "error": {
-        "title": "Export Error"
-      },
-      "filters": {
-        "title": "Filters (Optional)",
-        "description": "By default, all your transactions will be exported. Use the filters below to export a specific subset.",
-        "dateRange": {
-          "label": "Date Range",
-          "placeholder": "Pick date range (leave empty for all)"
-        },
-        "accounts": {
-          "label": "Accounts",
-          "placeholder": "Select accounts (leave empty for all)"
-        }
-      },
-      "info": {
-        "title": "What happens next?",
-        "step1": "Your export request will be processed in the background",
-        "step2": "The CSV file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
-        "step3": "You'll receive an email with the CSV file attached",
-        "step4": "You can continue using the app while the export is processed"
-      },
-      "exportButton": "Export Transactions",
-      "modal": {
-        "title": "Export Started Successfully!",
-        "description": "Your data export is now being processed in the background.",
-        "emailTitle": "You'll receive an email with the CSV file",
-        "emailDescription": "We'll send you an email with the exported data attached as a CSV file. You can open it with any spreadsheet application.",
-        "button": "Got it"
-      }
     }
   }
 }

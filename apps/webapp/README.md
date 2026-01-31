@@ -7,8 +7,8 @@ The main libraries used to build this app are:
 - [Vite](https://vitejs.dev/): Local development tooling
 - [Tanstack Router](https://tanstack.com/router): Router
 - [Mantine UI](https://mantine.dev/): React components library
-- [Supabase](https:/supabase.com/): Used for auth. In Sync with the backend
 - [Zod](https://zod.dev/): Validation
+- [Better Auth](https://www.better-auth.com/): Authentication
 
 ## Build and run the project
 
