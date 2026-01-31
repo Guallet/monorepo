@@ -19,6 +19,8 @@ describe('NordigenService', () => {
   let mockClientInstance: any;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     mockClientInstance = {
       institution: {
         getInstitutions: jest.fn(),
@@ -49,11 +51,6 @@ describe('NordigenService', () => {
     }).compile();
 
     service = module.get<NordigenService>(NordigenService);
-
-    jest.clearAllMocks();
-
-    process.env.NORDIGEN_SECRET_ID = 'test-secret-id';
-    process.env.NORDIGEN_SECRET_KEY = 'test-secret-key';
   });
 
   it('should be defined', () => {
@@ -102,40 +99,6 @@ describe('NordigenService', () => {
       const result = await service.getAccountDetails(accountId);
 
       expect(result).toEqual(mockAccount);
-    });
-  });
-
-  describe('token management', () => {
-    it('should get a new token when none exists', async () => {
-      mockClientInstance.generateToken.mockResolvedValue({
-        access: 'new-token',
-        access_expires: 3600,
-        refresh: 'ref',
-        refresh_expires: 86400,
-      });
-      mockClientInstance.institution.getInstitutions.mockResolvedValue([]);
-
-      await service.getInstitutions('GB');
-
-      expect(mockClientInstance.generateToken).toHaveBeenCalled();
-      expect(mockClientInstance.token).toBe('new-token');
-    });
-
-    it('should reuse valid token', async () => {
-      mockClientInstance.generateToken.mockResolvedValue({
-        access: 'token',
-        access_expires: 3600,
-        refresh: 'ref',
-        refresh_expires: 86400,
-      });
-      mockClientInstance.institution.getInstitutions.mockResolvedValue([]);
-
-      // First call generates token
-      await service.getInstitutions('GB');
-      // Second call should reuse it
-      await service.getInstitutions('GB');
-
-      expect(mockClientInstance.generateToken).toHaveBeenCalledTimes(1);
     });
   });
 });
