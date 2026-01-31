@@ -1,6 +1,6 @@
 {
   "name": "@guallet/ui-react",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Common React Components fow Web using Mantine",
   "main": "./index.tsx",
   "types": "./index.tsx",
