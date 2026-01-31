@@ -2,7 +2,10 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 
-export const createAuth = ({ databaseConfig, authConfig }: {
+export const createAuth = ({
+  databaseConfig,
+  authConfig,
+}: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
 }) => {
@@ -59,7 +62,7 @@ export const createAuth = ({ databaseConfig, authConfig }: {
 export const auth = createAuth({
   databaseConfig: {
     host: process.env.DATABASE_HOST || 'localhost',
-    port: parseInt(process.env.DATABASE_PORT || '5432', 10),
+    port: Number.parseInt(process.env.DATABASE_PORT || '5432'),
     username: process.env.DATABASE_USERNAME || 'postgres',
     password: process.env.DATABASE_PASSWORD || 'postgres',
     database: process.env.DATABASE_NAME || 'guallet',
@@ -69,5 +72,5 @@ export const auth = createAuth({
     secret: process.env.BETTER_AUTH_SECRET || '',
     baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
     allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
-  }
+  },
 });
