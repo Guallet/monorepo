@@ -40,6 +40,8 @@ export function CsvPropertiesScreen() {
   const mappings = useCsvMappings();
   const { setCsvMappings } = useCsvActions();
 
+  const sampleData = csvData.data.slice(0, SAMPLE_ARRAY_SIZE);
+
   const [isValidDateField, setIsValidDateField] = useState(true);
   const [isValidAmountField, setIsValidAmountField] = useState(true);
 
