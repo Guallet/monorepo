@@ -14,7 +14,7 @@ import { OpenbankingModule } from './features/openbanking/openbanking.module';
 import { NordigenModule } from './features/nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './features/users/users.module';
-import configuration from './configuration';
+import configuration, { AppConfig } from './configuration';
 import { User } from './features/users/entities/user.entity';
 import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
@@ -30,7 +30,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
 import { UsersService } from './features/users/users.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
-import { auth } from './auth/better-auth';
+import { createAuth } from './auth/better-auth';
 import { AppController } from './app.controller';
 
 @Module({
@@ -64,12 +64,12 @@ import { AppController } from './app.controller';
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
+      useFactory: (config: ConfigService<AppConfig>) => {
         return {
           exclude: [{ method: RequestMethod.POST, path: '/graphql' }],
           pinoHttp: {
             autoLogging: false,
-            level: config.get<string>('logging.level'),
+            level: config.get('logging', { infer: true })?.level,
             redact: ['req.headers.authorization', 'req.headers.cookie'],
             transport: {
               targets: [
@@ -83,41 +83,56 @@ import { AppController } from './app.controller';
       },
     }),
     // DATABASE
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      entities: [],
-      // synchronize: process.env.ENVIRONMENT === 'development',
-      synchronize: true,
-      autoLoadEntities: true,
-      ssl:
-        process.env.DATABASE_SSL_ENABLED === 'true'
-          ? { rejectUnauthorized: false }
-          : false,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<AppConfig>) => {
+        const dbConfig = configService.get('database', { infer: true })!;
+        return {
+          type: 'postgres',
+          host: dbConfig.host,
+          port: dbConfig.port,
+          username: dbConfig.username,
+          password: dbConfig.password,
+          database: dbConfig.database,
+          entities: [],
+          synchronize: true,
+          autoLoadEntities: true,
+          ssl: dbConfig.ssl ? { rejectUnauthorized: false } : false,
+        };
+      },
     }),
     // AUTHENTICATION VIA BETTER-AUTH
-    // AuthModule.forRoot({ auth: auth }),
     AuthModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
+      useFactory: (configService: ConfigService<AppConfig>) => {
+        const database = configService.get('database', { infer: true })!;
+        const authConfig = configService.get('auth', { infer: true })!;
+
         return {
-          auth: auth,
+          auth: createAuth({
+            databaseConfig: database,
+            authConfig: authConfig,
+          }),
         };
       },
     }),
     // CRON
     ScheduleModule.forRoot(),
     // REDIS / BULL
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: Number(process.env.REDIS_PORT) || 6379,
-        password: process.env.REDIS_PASSWORD || undefined,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<AppConfig>) => {
+        const redisConfig = configService.get('redis', { infer: true })!;
+        return {
+          connection: {
+            host: redisConfig.host,
+            port: redisConfig.port,
+            password: redisConfig.password,
+          },
+        };
       },
     }),
     // APP MODULES

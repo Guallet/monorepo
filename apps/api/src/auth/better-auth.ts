@@ -1,63 +1,73 @@
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
+import { AuthConfig, DatabaseConfig } from 'src/configuration';
 
-// TODO: Ensure this is the same configuration as in the Database module
-const database = new Pool({
-  host: process.env.DATABASE_HOST,
-  port: Number(process.env.DATABASE_PORT),
-  user: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-  ssl:
-    process.env.DATABASE_SSL_ENABLED === 'true'
-      ? { rejectUnauthorized: false }
-      : false,
-});
+export const createAuth = ({ databaseConfig, authConfig }: {
+  databaseConfig: DatabaseConfig;
+  authConfig: AuthConfig;
+}) => {
+  const database = new Pool({
+    host: databaseConfig.host,
+    port: databaseConfig.port,
+    user: databaseConfig.username,
+    password: databaseConfig.password,
+    database: databaseConfig.database,
+    ssl: databaseConfig.ssl ? { rejectUnauthorized: false } : false,
+  });
 
-
-const allowedOriginsRawValue = process.env.ALLOWED_CORS_ORIGINS ?? '';
-const allowedOrigins = allowedOriginsRawValue.split(',');
-
-export const auth = betterAuth({
-  appName: 'Guallet',
-  trustedOrigins: [...allowedOrigins],
-  basePath: '/auth',
-  baseURL: process.env.BETTER_AUTH_BASE_URL,
-  // DATABASE CONFIG
-  database: database,
-  user: {
-    modelName: 'users',
-    fields: {
-      id: 'id',
-      email: 'email',
-      emailVerified: 'email_verified',
-      name: 'name',
-      image: 'profile_image_url',
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
+  return betterAuth({
+    appName: 'Guallet',
+    trustedOrigins: [...authConfig.allowedOrigins],
+    basePath: '/auth',
+    baseURL: authConfig.baseUrl,
+    // DATABASE CONFIG
+    database: database,
+    user: {
+      modelName: 'users',
+      fields: {
+        id: 'id',
+        email: 'email',
+        emailVerified: 'email_verified',
+        name: 'name',
+        image: 'profile_image_url',
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+      },
     },
+    sessions: {
+      modelName: 'auth_sessions',
+    },
+    account: {
+      modelName: 'auth_accounts',
+    },
+    // AUTH CONFIG
+    secret: authConfig.secret,
+    session: {
+      expiresIn: 60 * 60 * 24 * 7, // 7 days
+      updateAge: 60 * 60 * 24, // 1 day
+    },
+    // AUTH METHODS
+    emailAndPassword: {
+      enabled: true,
+      autoSignIn: true,
+    },
+  });
+};
+
+// This export is specifically for the Better Auth CLI to handle migrations
+// It uses process.env because the CLI runs outside the NestJS context
+export const auth = createAuth({
+  databaseConfig: {
+    host: process.env.DATABASE_HOST || 'localhost',
+    port: parseInt(process.env.DATABASE_PORT || '5432', 10),
+    username: process.env.DATABASE_USERNAME || 'postgres',
+    password: process.env.DATABASE_PASSWORD || 'postgres',
+    database: process.env.DATABASE_NAME || 'guallet',
+    ssl: process.env.DATABASE_SSL_ENABLED === 'true',
   },
-  sessions: {
-    modelName: 'auth_sessions',
-  },
-  account: {
-    modelName: 'auth_accounts',
-  },
-  // AUTH CONFIG
-  secret: process.env.BETTER_AUTH_SECRET,
-  session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // 1 day
-  },
-  // AUTH METHODS
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: true,
-  },
-  //   socialProviders: {
-  //     google: {
-  //       clientId: process.env.GOOGLE_CLIENT_ID || '',
-  //       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-  //     },
-  //   },
+  authConfig: {
+    secret: process.env.BETTER_AUTH_SECRET || '',
+    baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
+    allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
+  }
 });

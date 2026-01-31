@@ -9,6 +9,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from 'src/configuration';
 import { catchError, firstValueFrom } from 'rxjs';
 import { NordigenInstitutionDto } from './dto/nordigen-institution.dto';
 import {
@@ -35,9 +37,10 @@ export class NordigenService {
   private readonly logger = new Logger(NordigenService.name);
 
   constructor(
+    private readonly configService: ConfigService<AppConfig>,
     private readonly httpService: HttpService,
     private repository: NordigenRepository,
-  ) {}
+  ) { }
 
   //#region token
   private async getAccessToken(): Promise<string> {
@@ -79,12 +82,13 @@ export class NordigenService {
     this.logger.debug('Getting new Nordigen token');
     const url = `${this.BASE_URL}/api/v2/token/new/`;
 
+    const nordigenConfig = this.configService.get('nordigen', { infer: true })!;
     const response = await firstValueFrom(
       this.httpService.post<NordigenTokenDto>(
         url,
         {
-          secret_id: process.env.NORDIGEN_SECRET_ID,
-          secret_key: process.env.NORDIGEN_SECRET_KEY,
+          secret_id: nordigenConfig.secretId,
+          secret_key: nordigenConfig.secretKey,
         },
         {
           headers: {

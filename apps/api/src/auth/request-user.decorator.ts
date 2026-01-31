@@ -7,7 +7,6 @@ export const RequestUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
-    console.log('RequestUser decorator - request.session:', request.session);
     const session = request.session;
     const user = session.user;
 
