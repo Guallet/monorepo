@@ -49,3 +49,4 @@ packages/*/package-lock.json
 # IntelliJ IDEA
 .idea/workspace.xml
 .idea/vcs.xml
+apps/api/src/metadata.ts
