@@ -8,7 +8,7 @@ import dns from 'node:dns';
 import { fileURLToPath, URL } from 'node:url';
 
 // Don't use 127.0.0.1, but "localhost".
-// This is required for the supabase auth redirect allowed domains
+// This is required for the better-auth redirect allowed domains
 dns.setDefaultResultOrder('verbatim');
 
 // https://vitejs.dev/config/

@@ -5,7 +5,6 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 // We need to ensure the database fields name match the ones in the better auth user configuration
 @Entity('app_users')
 export class User extends BaseDbEntity {
-  // This is the same ID as the one returned by the Auth Provider (Supabase at this time)
   @PrimaryColumn('uuid', {
     name: 'id',
   })

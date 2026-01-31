@@ -1,12 +1,12 @@
 {
   "name": "@guallet/auth",
   "version": "0.1.0",
-  "description": "Guallet Auth package for managing authentication with Supabase",
+  "description": "Guallet Auth package for managing authentication with Better Auth",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "@supabase/supabase-js": "workspace:*",
+    "better-auth": "^1.1.18",
     "react": "workspace:*"
   },
   "devDependencies": {

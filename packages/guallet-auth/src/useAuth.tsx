@@ -5,12 +5,6 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import type {
-  SupabaseClient,
-  AuthChangeEvent,
-  Session,
-  Provider,
-} from '@supabase/supabase-js';
 import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
 
 export const useAuth = () => {
@@ -19,53 +13,28 @@ export const useAuth = () => {
 
 interface AuthProviderProps {
   children: React.ReactNode;
-  supabaseClient: SupabaseClient;
+  authClient: any; // Type this properly if possible, or use 'any' for now as better-auth client type is complex
   onUserChange?: (userId: string | null) => void;
 }
 
 export function AuthProvider({
   children,
-  supabaseClient,
+  authClient,
   onUserChange,
 }: Readonly<AuthProviderProps>) {
   const [isLoading, setIsLoading] = useState(true);
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    initAuth();
-
-    const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
-        onSessionChanged(event, session);
-      },
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabaseClient, onUserChange]);
-
-  const onSessionChanged = useCallback(
-    async (_event: AuthChangeEvent, session: Session | null) => {
-      setSession(session);
-      setIsAuthenticated(session !== null);
-      if (onUserChange) {
-        onUserChange(session?.user?.id ?? null);
-      }
-    },
-    [onUserChange],
-  );
 
   const initAuth = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabaseClient.auth.getSession();
-      if (error) {
-        throw error;
+      const { data } = await authClient.getSession();
+      setSession(data?.session ?? null);
+      setIsAuthenticated(!!data?.session);
+      if (onUserChange) {
+        onUserChange(data?.user?.id ?? null);
       }
-      setSession(data.session);
-      setIsAuthenticated(data.session !== null);
     } catch (error) {
       setSession(null);
       setIsAuthenticated(false);
@@ -73,28 +42,47 @@ export function AuthProvider({
     } finally {
       setIsLoading(false);
     }
-  }, [supabaseClient]);
+  }, [authClient, onUserChange]);
+
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
 
   const login = useCallback(
     async (email: string, password: string): Promise<AuthResult> => {
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) {
-        console.error('Error logging in', error);
+      try {
+        const { data, error } = await authClient.signIn.email({
+          email,
+          password,
+        });
+
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'login_error',
+              message: error.message || 'Login failed',
+            },
+          };
+        }
+
+        setSession(data.session);
+        setIsAuthenticated(true);
+        if (onUserChange) {
+          onUserChange(data.user.id);
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
         return {
           success: false,
           error: {
-            code: error.code ?? 'login_error',
-            message: error.message,
+            code: 'unexpected_error',
+            message: error.message || 'An unexpected error occurred',
           },
         };
       }
-
-      return { success: true, error: null };
     },
-    [supabaseClient],
+    [authClient, onUserChange],
   );
 
   const createAccount = useCallback(
@@ -107,42 +95,40 @@ export function AuthProvider({
       password: string;
       name: string;
     }): Promise<AuthResult> => {
-      const { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { name },
-        },
-      });
-      if (error) {
-        console.error('Error creating account', error);
+      try {
+        const { data, error } = await authClient.signUp.email({
+          email,
+          password,
+          name,
+        });
+
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'signup_error',
+              message: error.message || 'Signup failed',
+            },
+          };
+        }
+
+        setSession(data.session);
+        setIsAuthenticated(true);
+        if (onUserChange) {
+          onUserChange(data.user.id);
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
         return {
           success: false,
           error: {
-            code: error.code ?? 'signup_error',
-            message: error.message,
+            code: 'unexpected_error',
+            message: error.message || 'An unexpected error occurred',
           },
         };
       }
-
-      // Check if email confirmation is required
-      if (data.user && !data.session) {
-        return {
-          success: false,
-          error: {
-            code: 'email_confirmation_required',
-            message:
-              'Please check your email to confirm your account before logging in.',
-          },
-        };
-      }
-
-      return {
-        success: true,
-        error: null,
-      };
     },
-    [supabaseClient],
+    [authClient, onUserChange],
   );
 
   const loginWithProvider = useCallback(
@@ -150,129 +136,139 @@ export function AuthProvider({
       provider: ExternalAuthProvider,
       redirectUrl: string,
     ): Promise<AuthResult> => {
-      let supabaseProvider: Provider | null = null;
-      switch (provider) {
-        case 'google':
-          supabaseProvider = 'google';
-          break;
-        case 'github':
-          supabaseProvider = 'github';
-          break;
-        case 'microsoft':
-          supabaseProvider = 'azure';
-          break;
-        default:
-          console.error('Unsupported provider');
-          return {
-            success: false,
-            error: {
-              code: 'unsupported_provider',
-              message: `Provider '${provider}' is not supported`,
-            },
-          };
-      }
-
-      const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: supabaseProvider,
-        options: {
-          // redirectTo: `${globalThis.location.origin}/login/callback`,
-          redirectTo: redirectUrl,
-        },
-      });
-      if (error) {
-        console.error('Error logging in with provider', error);
+      try {
+        await authClient.signIn.social({
+          provider,
+          callbackURL: redirectUrl,
+        });
+        return { success: true, error: null };
+      } catch (error: any) {
         return {
           success: false,
           error: {
-            code: error.code ?? 'oauth_error',
-            message: error.message,
+            code: 'oauth_error',
+            message: error.message || 'OAuth login failed',
           },
         };
       }
-      return { success: true, error: null };
     },
-    [supabaseClient],
+    [authClient],
   );
 
   const getOtpCode = useCallback(
     async (email: string): Promise<AuthResult> => {
-      const { error } = await supabaseClient.auth.signInWithOtp({
-        email,
-      });
-      if (error) {
-        console.error('Error sending OTP code', error);
+      try {
+        const { error } = await authClient.emailOtp.sendVerificationOtp({
+          email,
+          type: "sign-in"
+        });
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'otp_error',
+              message: error.message || 'Failed to send OTP',
+            },
+          };
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
         return {
           success: false,
           error: {
-            code: error.code ?? 'otp_error',
-            message: error.message,
+            code: 'otp_error',
+            message: error.message || 'Failed to send OTP',
           },
         };
       }
-
-      return { success: true, error: null };
     },
-    [supabaseClient],
+    [authClient],
   );
 
   const verifyOtpCode = useCallback(
     async (email: string, code: string): Promise<AuthResult> => {
-      const { error } = await supabaseClient.auth.verifyOtp({
-        email,
-        token: code,
-        type: 'email',
-      });
-      if (error) {
-        console.error('Error verifying OTP code', error);
+      try {
+        const { data, error } = await authClient.signIn.emailOtp({
+          email,
+          otp: code,
+        });
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'otp_verification_error',
+              message: error.message || 'Failed to verify OTP',
+            },
+          };
+        }
+        setSession(data.session);
+        setIsAuthenticated(true);
+        if (onUserChange) {
+          onUserChange(data.user.id);
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
         return {
           success: false,
           error: {
-            code: error.code ?? 'otp_verification_error',
-            message: error.message,
+            code: 'otp_verification_error',
+            message: error.message || 'Failed to verify OTP',
           },
         };
       }
-
-      return { success: true, error: null };
     },
-    [supabaseClient],
+    [authClient, onUserChange],
   );
 
   const resetPassword = useCallback(
     async (email: string, redirectUrl: string): Promise<AuthResult> => {
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUrl,
-      });
-      if (error) {
-        console.error('Error sending password reset email', error);
+      try {
+        const { error } = await authClient.forgetPassword({
+          email,
+          redirectTo: redirectUrl,
+        });
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'password_reset_error',
+              message: error.message || 'Failed to send reset email',
+            },
+          };
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
         return {
           success: false,
           error: {
-            code: error.code ?? 'password_reset_error',
-            message: error.message,
+            code: 'password_reset_error',
+            message: error.message || 'Failed to send reset email',
           },
         };
       }
-
-      return { success: true, error: null };
     },
-    [supabaseClient],
+    [authClient],
   );
 
   const logout = useCallback(async (): Promise<AuthResult> => {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) {
-      console.error('Error during sign out', error);
+    try {
+      await authClient.signOut();
+      setSession(null);
+      setIsAuthenticated(false);
+      if (onUserChange) {
+        onUserChange(null);
+      }
+      return { success: true, error: null };
+    } catch (error: any) {
       return {
         success: false,
         error: {
-          code: error.code ?? 'logout_error',
-          message: error.message,
+          code: 'logout_error',
+          message: error.message || 'Logout failed',
         },
       };
     }
-    return { success: true, error: null };
-  }, [supabaseClient]);
+  }, [authClient, onUserChange]);
 
   const memoizedState = useMemo(
     () => ({
@@ -280,13 +276,13 @@ export function AuthProvider({
       isAuthenticated,
       userId: session?.user?.id ?? null,
 
-      login: login,
-      createAccount: createAccount,
-      loginWithProvider: loginWithProvider,
-      logout: logout,
-      getOtpCode: getOtpCode,
-      verifyOtpCode: verifyOtpCode,
-      resetPassword: resetPassword,
+      login,
+      createAccount,
+      loginWithProvider,
+      logout,
+      getOtpCode,
+      verifyOtpCode,
+      resetPassword,
     }),
     [
       isLoading,
@@ -308,3 +304,4 @@ export function AuthProvider({
     </AuthContext.Provider>
   );
 }
+

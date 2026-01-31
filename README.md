@@ -27,7 +27,6 @@ In order to compile/run the project locally, you will need:
 - Node >=v22.x 
 - PNPM >= 10.0.0
 - Postgres database
-- Supabase project (could be used to host your DB too)
 
 ### Docker Deployment (Recommended)
 
@@ -96,7 +95,6 @@ npx turbo link
 ### Dependencies
 
 - [PostgreSQL](https://www.postgresql.org/): The API requires a PostgreSQL database to read/write data.
-- [Supabase](https://supabase.com/): Used for auth only. I didn't want to implement my own auth mechanism, so it's a better idea to rely on a third party.
 
 ### Support
 

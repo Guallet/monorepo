@@ -1,4 +1,4 @@
-import { supabase } from "@/auth/supabase";
+import { authClient } from "@/auth/better-auth";
 
 // TODO: Remove this file and use the gualletClient/hooks instead
 export async function getRawResponse(path: string): Promise<Response> {
@@ -113,6 +113,6 @@ export class ApiError extends Error {
 }
 
 async function getCurrentUserToken(): Promise<string> {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? "";
+  const { data } = await authClient.getSession();
+  return data?.session?.id ?? "";
 }

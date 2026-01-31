@@ -17,7 +17,6 @@ The Docker setup includes the following services:
 - Docker Engine 20.10 or higher
 - Docker Compose V2.0 or higher
 - At least 2GB of free disk space
-- Supabase project (for authentication)
 
 ## Quick Start
 
@@ -39,9 +38,8 @@ The Docker setup includes the following services:
    Edit the `.env` files and fill in the required values:
    
    **`webapp.env`**:
-   - `VITE_SUPABASE_URL`: Your Supabase project URL
-   - `VITE_SUPABASE_KEY`: Your Supabase anon/public key
-
+   - `BETTER_AUTH_BASE_URL`: Better Auth base URL
+   
    **`api.env`**:
    - `NORDIGEN_SECRET_ID`: Nordigen API credentials for bank integrations
    - `NORDIGEN_SECRET_KEY`: Nordigen API secret key
@@ -119,8 +117,6 @@ All environment variables can be configured in the `.env` file:
 - `REDIS_PASSWORD`: Redis password (default: `guallet_redis_password`)
 - `PGADMIN_EMAIL`: pgAdmin login email (default: `admin@guallet.io`)
 - `PGADMIN_PASSWORD`: pgAdmin login password (default: `admin`)
-- `VITE_SUPABASE_URL`: Supabase project URL for authentication
-- `VITE_SUPABASE_KEY`: Supabase public/anon key
 - `NORDIGEN_SECRET_ID`: API credentials for bank integrations
 - `NORDIGEN_SECRET_KEY`: API secret for bank integrations
 

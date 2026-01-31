@@ -14,7 +14,15 @@ const database = new Pool({
       : false,
 });
 
+
+const allowedOriginsRawValue = process.env.ALLOWED_CORS_ORIGINS ?? '';
+const allowedOrigins = allowedOriginsRawValue.split(',');
+
 export const auth = betterAuth({
+  appName: 'Guallet',
+  trustedOrigins: [...allowedOrigins],
+  basePath: '/auth',
+  baseURL: process.env.BETTER_AUTH_BASE_URL,
   // DATABASE CONFIG
   database: database,
   user: {

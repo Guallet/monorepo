@@ -100,7 +100,16 @@ import { AppController } from './app.controller';
           : false,
     }),
     // AUTHENTICATION VIA BETTER-AUTH
-    AuthModule.forRoot({ auth: auth }),
+    // AuthModule.forRoot({ auth: auth }),
+    AuthModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          auth: auth,
+        };
+      },
+    }),
     // CRON
     ScheduleModule.forRoot(),
     // REDIS / BULL

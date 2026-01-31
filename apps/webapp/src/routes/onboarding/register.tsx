@@ -11,7 +11,7 @@ import {
 
 import { useMemo } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { supabase } from '@/auth/supabase';
+import { authClient } from '@/auth/better-auth';
 import { gualletClient } from '@/api/gualletClient';
 
 export const Route = createFileRoute('/onboarding/register')({
@@ -28,8 +28,8 @@ type ActionData = {
 
 async function loader() {
   // TODO: Do we need to check if the user is logged in? Or just returns whatever the API returns?
-  const { data } = await supabase.auth.getSession();
-  if (data && data.session?.user.id === null) {
+  const { data } = await authClient.getSession();
+  if (!data || !data.user) {
     return {
       name: '',
       email: '',
