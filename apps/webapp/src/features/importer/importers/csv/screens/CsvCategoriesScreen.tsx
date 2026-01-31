@@ -11,8 +11,7 @@ import {
   Badge,
 } from '@mantine/core';
 import { useNavigate, Navigate } from '@tanstack/react-router';
-import { useAtomValue, useAtom } from 'jotai';
-import { csvCategoriesAtom, categoriesMappingsAtom } from '../state/csvState';
+import { useCsvStore, useCsvCategories } from '../state/csvState';
 import { useCategories } from '@guallet/api-react';
 import { CsvStepper } from '../components/CsvStepper';
 
@@ -20,8 +19,11 @@ export function CsvCategoriesScreen() {
   const navigate = useNavigate();
 
   const { categories: remoteCategories } = useCategories();
-  const csvCategories = useAtomValue(csvCategoriesAtom);
-  const [mappings, setMappings] = useAtom(categoriesMappingsAtom);
+  const csvCategories = useCsvCategories();
+  const mappings = useCsvStore((state) => state.categoriesMappings);
+  const setCategoriesMappings = useCsvStore(
+    (state) => state.setCategoriesMappings,
+  );
 
   // If there are no categories values, just skip this step as we don't need to map anything
   // They will be left as "untagged"
@@ -98,7 +100,7 @@ export function CsvCategoriesScreen() {
                             return { value: x.id, label: x.name };
                           })}
                           onChange={(value) => {
-                            setMappings({
+                            setCategoriesMappings({
                               ...mappings,
                               [categoryName]: remoteCategories.find(
                                 (x) => x.id === value,

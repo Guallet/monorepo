@@ -17,8 +17,7 @@ import {
 import { FieldMappings } from '../models';
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
-import { csvFieldsAtom, csvInfoAtom, csvMappingsAtom } from '../state/csvState';
+import { useCsvStore, useCsvFields } from '../state/csvState';
 import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
 import { isDate } from '@/utils/dateUtils';
 import { isValidNumber } from '@/utils/numberUtils';
@@ -30,25 +29,14 @@ const EMPTY_MAP_FIELD_VALUE = "Don't map";
 export function CsvPropertiesScreen() {
   const navigate = useNavigate();
 
-  const csvData = useAtomValue(csvInfoAtom);
-  const csvFields = useAtomValue(csvFieldsAtom);
+  const csvData = useCsvStore((state) => state.csvInfo);
+  const csvFields = useCsvFields();
   const availableFields = [EMPTY_MAP_FIELD_VALUE, ...csvFields];
+  const mappings = useCsvStore((state) => state.csvMappings);
+  const setCsvMappings = useCsvStore((state) => state.setCsvMappings);
 
   const [isValidDateField, setIsValidDateField] = useState(true);
   const [isValidAmountField, setIsValidAmountField] = useState(true);
-
-  const sampleData = useMemo(() => {
-    // Get random transactions to use them as sample rows
-    // Fisher-Yates shuffle algorithm (deterministic with index)
-    const arr = [...csvData.data];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor((i + 1) * 0.5); // Pseudo-random based on index
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr.slice(0, SAMPLE_ARRAY_SIZE);
-  }, [csvData.data]);
-
-  const [mappings, setMappings] = useAtom(csvMappingsAtom);
 
   const canContinue =
     mappings.date !== '' &&
@@ -154,7 +142,7 @@ export function CsvPropertiesScreen() {
                       onChange={(value) => {
                         const fieldValue =
                           value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setMappings({
+                        setCsvMappings({
                           ...mappings,
                           account: fieldValue ?? '',
                         });
@@ -171,7 +159,7 @@ export function CsvPropertiesScreen() {
                       onChange={(value) => {
                         const fieldValue =
                           value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setMappings({
+                        setCsvMappings({
                           ...mappings,
                           date: fieldValue ?? '',
                         });
@@ -197,7 +185,7 @@ export function CsvPropertiesScreen() {
                       onChange={(value) => {
                         const fieldValue =
                           value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setMappings({
+                        setCsvMappings({
                           ...mappings,
                           amount: fieldValue ?? '',
                         });
@@ -223,7 +211,7 @@ export function CsvPropertiesScreen() {
                       onChange={(value) => {
                         const fieldValue =
                           value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setMappings({
+                        setCsvMappings({
                           ...mappings,
                           description: fieldValue ?? '',
                         });
@@ -240,7 +228,7 @@ export function CsvPropertiesScreen() {
                       onChange={(value) => {
                         const fieldValue =
                           value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setMappings({
+                        setCsvMappings({
                           ...mappings,
                           notes: fieldValue ?? '',
                         });
@@ -257,7 +245,7 @@ export function CsvPropertiesScreen() {
                       onChange={(value) => {
                         const fieldValue =
                           value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setMappings({
+                        setCsvMappings({
                           ...mappings,
                           category: fieldValue ?? '',
                         });

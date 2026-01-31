@@ -26,15 +26,11 @@ import {
   List,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
-import { useAtomValue } from 'jotai';
 import { useMemo, useState } from 'react';
 import {
-  csvAccountsAtom,
-  csvCategoriesAtom,
-  csvInfoAtom,
-  csvMappingsAtom,
-  accountMappingsAtom,
-  categoriesMappingsAtom,
+  useCsvStore,
+  useCsvAccounts,
+  useCsvCategories,
 } from '../state/csvState';
 import {
   useAccounts,
@@ -48,15 +44,15 @@ export function CsvSummaryScreen() {
   const navigate = useNavigate();
   const gualletClient = useGualletClient();
 
-  const accounts = useAtomValue(csvAccountsAtom);
-  const categories = useAtomValue(csvCategoriesAtom);
-  const csvData = useAtomValue(csvInfoAtom);
+  const accounts = useCsvAccounts();
+  const categories = useCsvCategories();
+  const csvData = useCsvStore((state) => state.csvInfo);
   const transactions = csvData.data;
-  const fieldMappings = useAtomValue(csvMappingsAtom);
+  const fieldMappings = useCsvStore((state) => state.csvMappings);
 
   // Data
-  const accountMappings = useAtomValue(accountMappingsAtom);
-  const categoriesMappings = useAtomValue(categoriesMappingsAtom);
+  const accountMappings = useCsvStore((state) => state.accountMappings);
+  const categoriesMappings = useCsvStore((state) => state.categoriesMappings);
 
   // Note: mapping is performed on demand in preview rendering
 
@@ -550,7 +546,8 @@ function mapTransaction(
   const destinationCategory = categoryMappings[categoryKey];
 
   return {
-    date: parseDate(String(dateValue ?? new Date().toISOString())) ?? new Date(),
+    date:
+      parseDate(String(dateValue ?? new Date().toISOString())) ?? new Date(),
     amount: parseNumber(amountValue) || 0,
     description: String(descriptionValue ?? ''),
     notes: notesValue == null ? null : String(notesValue),

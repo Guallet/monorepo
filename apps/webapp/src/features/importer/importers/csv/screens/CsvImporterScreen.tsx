@@ -23,13 +23,12 @@ import {
 } from '@tabler/icons-react';
 import Papa from 'papaparse';
 import { CsvStepper } from '../components/CsvStepper';
-import { useSetAtom } from 'jotai';
-import { csvInfoAtom } from '../state/csvState';
+import { useCsvStore } from '../state/csvState';
 
 export function CsvImporterScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const setCsvData = useSetAtom(csvInfoAtom);
+  const setCsvInfo = useCsvStore((state) => state.setCsvInfo);
   const navigate = useNavigate();
 
   async function readFile(file: FileWithPath) {
@@ -52,7 +51,7 @@ export function CsvImporterScreen() {
         return;
       }
 
-      setCsvData({
+      setCsvInfo({
         data: data,
         properties: meta.fields ?? [],
       });

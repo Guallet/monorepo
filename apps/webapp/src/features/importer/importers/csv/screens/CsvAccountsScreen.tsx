@@ -12,8 +12,7 @@ import {
   Alert,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
-import { useAtomValue, useAtom } from 'jotai';
-import { csvAccountsAtom, accountMappingsAtom } from '../state/csvState';
+import { useCsvStore, useCsvAccounts } from '../state/csvState';
 import { useAccounts } from '@guallet/api-react';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { CsvStepper } from '../components/CsvStepper';
@@ -25,8 +24,9 @@ export function CsvAccountsScreen() {
 
   const { accounts: remoteAccounts } = useAccounts();
   const availableAccounts = [null, ...remoteAccounts];
-  const csvAccounts = useAtomValue(csvAccountsAtom);
-  const [mappings, setMappings] = useAtom(accountMappingsAtom);
+  const csvAccounts = useCsvAccounts();
+  const mappings = useCsvStore((state) => state.accountMappings);
+  const setAccountMappings = useCsvStore((state) => state.setAccountMappings);
 
   return (
     <Container size="xl" py="xl">
@@ -106,7 +106,7 @@ export function CsvAccountsScreen() {
                           const updatedMappings = { ...mappings };
                           updatedMappings[DEFAULT_ACCOUNT_NAME] =
                             remoteAccounts.find((x) => x.id === value);
-                          setMappings(updatedMappings);
+                          setAccountMappings(updatedMappings);
                         }}
                       />
                     </Table.Td>
@@ -131,7 +131,7 @@ export function CsvAccountsScreen() {
                               updatedMappings[x] = remoteAccounts.find(
                                 (acc) => acc.id === value,
                               );
-                              setMappings(updatedMappings);
+                              setAccountMappings(updatedMappings);
                             }}
                           />
                         </Table.Td>
