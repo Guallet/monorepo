@@ -10,7 +10,7 @@
     "react": "workspace:*"
   },
   "devDependencies": {
-    "eslint": "^9.23.0",
+    "eslint": "workspace:*",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*"
