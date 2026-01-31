@@ -23,12 +23,12 @@ import {
 } from '@tabler/icons-react';
 import Papa from 'papaparse';
 import { CsvStepper } from '../components/CsvStepper';
-import { useCsvStore } from '../state/csvState';
+import { useCsvActions } from '../state/csvState';
 
 export function CsvImporterScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const setCsvInfo = useCsvStore((state) => state.setCsvInfo);
+  const { setCsvInfo } = useCsvActions();
   const navigate = useNavigate();
 
   async function readFile(file: FileWithPath) {

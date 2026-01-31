@@ -28,7 +28,10 @@ import {
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import {
-  useCsvStore,
+  useCsvInfo,
+  useCsvMappings,
+  useAccountMappings,
+  useCategoriesMappings,
   useCsvAccounts,
   useCsvCategories,
 } from '../state/csvState';
@@ -46,13 +49,13 @@ export function CsvSummaryScreen() {
 
   const accounts = useCsvAccounts();
   const categories = useCsvCategories();
-  const csvData = useCsvStore((state) => state.csvInfo);
+  const csvData = useCsvInfo();
   const transactions = csvData.data;
-  const fieldMappings = useCsvStore((state) => state.csvMappings);
+  const fieldMappings = useCsvMappings();
 
   // Data
-  const accountMappings = useCsvStore((state) => state.accountMappings);
-  const categoriesMappings = useCsvStore((state) => state.categoriesMappings);
+  const accountMappings = useAccountMappings();
+  const categoriesMappings = useCategoriesMappings();
 
   // Note: mapping is performed on demand in preview rendering
 

@@ -12,7 +12,11 @@ import {
   Alert,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
-import { useCsvStore, useCsvAccounts } from '../state/csvState';
+import {
+  useAccountMappings,
+  useCsvAccounts,
+  useCsvActions,
+} from '../state/csvState';
 import { useAccounts } from '@guallet/api-react';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { CsvStepper } from '../components/CsvStepper';
@@ -25,8 +29,8 @@ export function CsvAccountsScreen() {
   const { accounts: remoteAccounts } = useAccounts();
   const availableAccounts = [null, ...remoteAccounts];
   const csvAccounts = useCsvAccounts();
-  const mappings = useCsvStore((state) => state.accountMappings);
-  const setAccountMappings = useCsvStore((state) => state.setAccountMappings);
+  const mappings = useAccountMappings();
+  const { setAccountMappings } = useCsvActions();
 
   return (
     <Container size="xl" py="xl">

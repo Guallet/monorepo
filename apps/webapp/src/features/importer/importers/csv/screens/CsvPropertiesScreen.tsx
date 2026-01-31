@@ -16,8 +16,13 @@ import {
 } from '@mantine/core';
 import { FieldMappings } from '../models';
 import { useNavigate } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
-import { useCsvStore, useCsvFields } from '../state/csvState';
+import { useState } from 'react';
+import {
+  useCsvInfo,
+  useCsvFields,
+  useCsvMappings,
+  useCsvActions,
+} from '../state/csvState';
 import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
 import { isDate } from '@/utils/dateUtils';
 import { isValidNumber } from '@/utils/numberUtils';
@@ -29,11 +34,11 @@ const EMPTY_MAP_FIELD_VALUE = "Don't map";
 export function CsvPropertiesScreen() {
   const navigate = useNavigate();
 
-  const csvData = useCsvStore((state) => state.csvInfo);
+  const csvData = useCsvInfo();
   const csvFields = useCsvFields();
   const availableFields = [EMPTY_MAP_FIELD_VALUE, ...csvFields];
-  const mappings = useCsvStore((state) => state.csvMappings);
-  const setCsvMappings = useCsvStore((state) => state.setCsvMappings);
+  const mappings = useCsvMappings();
+  const { setCsvMappings } = useCsvActions();
 
   const [isValidDateField, setIsValidDateField] = useState(true);
   const [isValidAmountField, setIsValidAmountField] = useState(true);
