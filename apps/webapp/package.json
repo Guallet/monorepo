@@ -33,7 +33,6 @@
     "@tanstack/react-query-devtools": "^5.83.0",
     "@tanstack/react-router": "^1.151.3",
     "@tanstack/react-router-devtools": "^1.151.3",
-    "@vercel/analytics": "^1.5.0",
     "core-js": "^3.44.0",
     "dayjs": "^1.11.13",
     "i18next": "^25.3.2",
