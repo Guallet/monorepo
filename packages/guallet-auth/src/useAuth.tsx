@@ -23,28 +23,28 @@ export function AuthProvider({
   onUserChange,
 }: Readonly<AuthProviderProps>) {
   const [isLoading, setIsLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: session } = authClient.useSession();
+  const isAuthenticated = session?.session?.id;
+
+  useEffect(() => {
+    console.log('Session updated', session);
+    if (onUserChange) {
+      onUserChange(session?.user?.id ?? null);
+    }
+  }, [session, onUserChange]);
+
 
   const initAuth = useCallback(async () => {
-    console.log('Initializing auth...');
-    setIsLoading(true);
     try {
-      const { data } = await authClient.getSession();
-      setSession(data?.session ?? null);
-      setIsAuthenticated(!!data?.session);
-      if (onUserChange) {
-        onUserChange(data?.user?.id ?? null);
-      }
+      console.log('Initializing auth...');
+      setIsLoading(true);
     } catch (error) {
-      setSession(null);
-      setIsAuthenticated(false);
       console.error('Error initializing auth', error);
     } finally {
       setIsLoading(false);
-      console.log('Finished init auth. User is authenticated:', session !== null);
+      console.log('Finished init auth. Authenticated user?', session !== null);
     }
-  }, [authClient, onUserChange]);
+  }, [authClient]);
 
   useEffect(() => {
     initAuth();
@@ -68,11 +68,6 @@ export function AuthProvider({
           };
         }
 
-        setSession(data.session);
-        setIsAuthenticated(true);
-        if (onUserChange) {
-          onUserChange(data.user.id);
-        }
         return { success: true, error: null };
       } catch (error: any) {
         return {
@@ -84,7 +79,7 @@ export function AuthProvider({
         };
       }
     },
-    [authClient, onUserChange],
+    [authClient],
   );
 
   const createAccount = useCallback(
@@ -114,11 +109,6 @@ export function AuthProvider({
           };
         }
 
-        setSession(data.session);
-        setIsAuthenticated(true);
-        if (onUserChange) {
-          onUserChange(data.user.id);
-        }
         return { success: true, error: null };
       } catch (error: any) {
         return {
@@ -130,7 +120,7 @@ export function AuthProvider({
         };
       }
     },
-    [authClient, onUserChange],
+    [authClient],
   );
 
   const loginWithProvider = useCallback(
@@ -203,11 +193,7 @@ export function AuthProvider({
             },
           };
         }
-        setSession(data.session);
-        setIsAuthenticated(true);
-        if (onUserChange) {
-          onUserChange(data.user.id);
-        }
+
         return { success: true, error: null };
       } catch (error: any) {
         return {
@@ -219,7 +205,7 @@ export function AuthProvider({
         };
       }
     },
-    [authClient, onUserChange],
+    [authClient],
   );
 
   const resetPassword = useCallback(
@@ -255,11 +241,6 @@ export function AuthProvider({
   const logout = useCallback(async (): Promise<AuthResult> => {
     try {
       await authClient.signOut();
-      setSession(null);
-      setIsAuthenticated(false);
-      if (onUserChange) {
-        onUserChange(null);
-      }
       return { success: true, error: null };
     } catch (error: any) {
       return {
@@ -270,7 +251,7 @@ export function AuthProvider({
         },
       };
     }
-  }, [authClient, onUserChange]);
+  }, [authClient]);
 
   const memoizedState = useMemo(
     () => ({
