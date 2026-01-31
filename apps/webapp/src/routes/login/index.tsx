@@ -55,7 +55,7 @@ function LoginPage() {
         }
       }}
       onPassword={async (email: string, password: string) => {
-        console.log('Logging in with', email, password);
+        console.log('Logging in with email and password');
         const { success, error } = await login(email, password);
         if (error) {
           console.error('Error logging in', error);

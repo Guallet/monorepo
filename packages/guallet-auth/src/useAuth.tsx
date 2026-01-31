@@ -27,6 +27,7 @@ export function AuthProvider({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const initAuth = useCallback(async () => {
+    console.log('Initializing auth...');
     setIsLoading(true);
     try {
       const { data } = await authClient.getSession();
@@ -41,6 +42,7 @@ export function AuthProvider({
       console.error('Error initializing auth', error);
     } finally {
       setIsLoading(false);
+      console.log('Finished init auth. User is authenticated:', session !== null);
     }
   }, [authClient, onUserChange]);
 
