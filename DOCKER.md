@@ -38,12 +38,7 @@ The Docker setup includes the following services:
    Edit the `.env` files and fill in the required values:
    
    **`webapp.env`**:
-   - `BETTER_AUTH_BASE_URL`: Better Auth base URL
-   
    **`api.env`**:
-   - `NORDIGEN_SECRET_ID`: Nordigen API credentials for bank integrations
-   - `NORDIGEN_SECRET_KEY`: Nordigen API secret key
-
    **`database.env`**:
    - Database and Redis credentials (change defaults for production)
 

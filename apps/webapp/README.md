@@ -8,6 +8,7 @@ The main libraries used to build this app are:
 - [Tanstack Router](https://tanstack.com/router): Router
 - [Mantine UI](https://mantine.dev/): React components library
 - [Zod](https://zod.dev/): Validation
+- [Better Auth](https://www.better-auth.com/): Authentication
 
 ## Build and run the project
 

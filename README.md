@@ -27,6 +27,7 @@ In order to compile/run the project locally, you will need:
 - Node >=v22.x 
 - PNPM >= 10.0.0
 - Postgres database
+- Redis
 
 ### Docker Deployment (Recommended)
 
@@ -95,6 +96,7 @@ npx turbo link
 ### Dependencies
 
 - [PostgreSQL](https://www.postgresql.org/): The API requires a PostgreSQL database to read/write data.
+- [Redis](https://redis.io/): Used for backend queues processing
 
 ### Support
 
