@@ -9,17 +9,19 @@ import {
 } from '@nestjs/common';
 import NordigenClient from 'nordigen-node';
 import {
-  NordigenAccountBalanceDto,
-  NordigenAccountBalancesDto,
   NordigenAccountDetailsDto,
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from './dto/nordigen-account.dto';
+} from './models/NordigenAccountDto';
 import {
   NordigenTransactionDto,
   NordigenTransactionsDto,
-} from './dto/nordigen-transaction.dto';
-import { NordigenTokenDto } from './dto/nordigen-token.dto';
+} from './models/NordigenTransactionDto';
+import { NordigenTokenDto } from './models/NordigenTokenDto';
+import {
+  NordigenAccountBalanceDto,
+  NordigenAccountBalancesDto,
+} from './models/NordigenBalanceDto';
 
 export interface NordigenCredentials {
   secretId: string;

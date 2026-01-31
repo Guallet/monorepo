@@ -22,7 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from 'src/features/nordigen/dto/nordigen-account.dto';
+} from 'src/features/nordigen/models/NordigenAccountDto';
 import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Open Banking')

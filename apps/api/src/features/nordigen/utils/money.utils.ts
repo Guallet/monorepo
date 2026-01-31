@@ -1,7 +1,7 @@
 import {
-  BalanceTypeDto,
   NordigenAccountBalanceDto,
-} from 'src/features/nordigen/dto/nordigen-account.dto';
+  BalanceTypeDto,
+} from '../models/NordigenBalanceDto';
 
 // TODO: Use "@guallet/money" instead of this
 export class Money {

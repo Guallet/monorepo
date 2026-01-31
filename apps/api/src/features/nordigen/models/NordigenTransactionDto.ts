@@ -1,10 +1,3 @@
-export class NordigenTransactionsDto {
-  transactions: {
-    booked: NordigenTransactionDto[];
-    pending: NordigenTransactionDto[];
-  };
-}
-
 export class NordigenTransactionDto {
   transactionId: string;
   bookingDate: Date;
@@ -22,6 +15,13 @@ export class NordigenTransactionDto {
   valueDate?: string;
 
   additionalInformation: string | null;
+}
+
+export class NordigenTransactionsDto {
+  transactions: {
+    booked: NordigenTransactionDto[];
+    pending: NordigenTransactionDto[];
+  };
 }
 
 export class ExternalAccountDto {

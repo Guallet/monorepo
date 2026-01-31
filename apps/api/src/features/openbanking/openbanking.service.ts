@@ -5,18 +5,18 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { NordigenRequisitionDto } from 'src/features/nordigen/dto/nordigen-requisition.dto';
+import { NordigenRequisitionDto } from '../nordigen/models/NordigenRequisitionDto';
 import { ObConnection } from './entities/connection.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { NordigenAccount } from './entities/nordigen-account.entity';
 import { Account } from 'src/features/accounts/entities/account.entity';
-import { getBalanceAmountFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
-import { getAccountTypeFrom } from 'src/features/nordigen/dto/ExternalCashAccountType1Code.helper';
+import { getAccountTypeFrom } from 'src/features/nordigen/models/ExternalCashAccountType1Code.helper';
 import { Institution } from 'src/features/institutions/entities/institution.entity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { supportedCountries } from './sync.service';
+import { getBalanceAmountFrom } from '../nordigen/utils/money.utils';
 
 @Injectable()
 export class OpenbankingService {

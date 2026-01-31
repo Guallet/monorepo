@@ -10,8 +10,8 @@ import { NordigenUserService } from '../nordigen/nordigen-user.service';
 import { EmailService } from '../email/email.service';
 import { UsersService } from '../users/users.service';
 import { NordigenKeysService } from '../nordigen-keys/nordigen-keys.service';
-import { getMoneyBalanceFrom } from '../nordigen/dto/nordigen-balances.helper';
 import NordigenClient from 'nordigen-node';
+import { getMoneyBalanceFrom } from '../nordigen/utils/money.utils';
 
 export const NORDIGEN_SYNC_QUEUE = 'nordigen-sync';
 export const NORDIGEN_SYNC_JOB = 'process-nordigen-sync';

@@ -8,16 +8,16 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import NordigenClient from 'nordigen-node';
-import { NordigenInstitutionDto } from './dto/nordigen-institution.dto';
+import { NordigenInstitutionDto } from './models/NordigenInstitutionDto';
 import {
-  NordigenAccountBalanceDto,
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from './dto/nordigen-account.dto';
-import { NordigenTransactionDto } from './dto/nordigen-transaction.dto';
-import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
+} from './models/NordigenAccountDto';
+import { NordigenTransactionDto } from './models/NordigenTransactionDto';
+import { NordigenRequisitionDto } from './models/NordigenRequisitionDto';
 import { randomUUID } from 'src/utils/crypto.utils';
-import { NordigenTokenDto } from './dto/nordigen-token.dto';
+import { NordigenTokenDto } from './models/NordigenTokenDto';
+import { NordigenAccountBalanceDto } from './models/NordigenBalanceDto';
 
 @Injectable()
 export class NordigenService {

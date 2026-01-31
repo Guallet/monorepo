@@ -11,11 +11,11 @@ import { Repository } from 'typeorm';
 import { NordigenAccount } from './entities/nordigen-account.entity';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { Account } from 'src/features/accounts/entities/account.entity';
-import { getMoneyBalanceFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { NordigenInstitutionDto } from 'src/features/nordigen/dto/nordigen-institution.dto';
+import { NordigenInstitutionDto } from '../nordigen/models/NordigenInstitutionDto';
 import { Institution } from 'src/features/institutions/entities/institution.entity';
+import { getMoneyBalanceFrom } from '../nordigen/utils/money.utils';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';

@@ -4,6 +4,7 @@ import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { OpenbankingService } from './openbanking.service';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
+import { NordigenAccountMetadataDto } from '../nordigen/models/NordigenAccountDto';
 
 @ApiTags('Open Banking')
 @Controller('openbanking/accounts')
@@ -25,7 +26,14 @@ export class ObAccountsController {
   async getObAccount(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return await this.nordigenService.getAccountMetadata(id);
+  ): Promise<NordigenAccountMetadataDto> {
+    const result = await this.nordigenService.getAccountMetadata(id);
+    if (result instanceof Error) {
+      this.logger.error(
+        `Failed to get account metadata for id ${id}: ${result.message}`,
+      );
+      throw result;
+    }
+    return result;
   }
 }
