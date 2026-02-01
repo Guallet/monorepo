@@ -28,6 +28,9 @@ import { Transaction } from '../transactions/entities/transaction.entity';
 export class RulesService {
   private readonly logger = new Logger(RulesService.name);
 
+  private readonly MAX_CONDITIONS_PER_RULE = 50;
+  private readonly MAX_RULES_PER_USER = 1000;
+
   constructor(
     @InjectRepository(CategorizationRuleEntity)
     private readonly rulesRepository: Repository<CategorizationRuleEntity>,
@@ -43,6 +46,16 @@ export class RulesService {
    * Validate that all conditions have valid field-operator combinations
    */
   private validateConditions(conditions: CreateRuleDto['conditions']): void {
+    // Validate input bounds to prevent DoS attacks
+    if (
+      !Array.isArray(conditions) ||
+      conditions.length > this.MAX_CONDITIONS_PER_RULE
+    ) {
+      throw new BadRequestException(
+        `Too many conditions. Maximum allowed: ${this.MAX_CONDITIONS_PER_RULE}`,
+      );
+    }
+
     for (const condition of conditions) {
       // Check if field is valid
       if (
@@ -226,6 +239,13 @@ export class RulesService {
     userId: string,
     ruleIds: string[],
   ): Promise<CategorizationRuleEntity[]> {
+    // Validate input bounds to prevent DoS attacks
+    if (!Array.isArray(ruleIds) || ruleIds.length > this.MAX_RULES_PER_USER) {
+      throw new BadRequestException(
+        `Too many rules. Maximum allowed: ${this.MAX_RULES_PER_USER}`,
+      );
+    }
+
     this.logger.debug(`Reordering rules for user ${userId}`, ruleIds);
 
     // Verify all rules belong to user
@@ -258,6 +278,16 @@ export class RulesService {
     ruleId: string,
     conditionIds: string[],
   ): Promise<CategorizationRuleEntity> {
+    // Validate input bounds to prevent DoS attacks
+    if (
+      !Array.isArray(conditionIds) ||
+      conditionIds.length > this.MAX_CONDITIONS_PER_RULE
+    ) {
+      throw new BadRequestException(
+        `Too many conditions. Maximum allowed: ${this.MAX_CONDITIONS_PER_RULE}`,
+      );
+    }
+
     // Verify rule belongs to user
     await this.findOne({ userId, id: ruleId });
 

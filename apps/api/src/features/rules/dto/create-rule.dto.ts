@@ -8,7 +8,10 @@ import {
   IsOptional,
   IsString,
   ValidateNested,
+  ArrayMaxSize,
 } from 'class-validator';
+
+const MAX_CONDITIONS_PER_RULE = 50;
 
 export class CreateConditionDto {
   @ApiProperty({
@@ -74,6 +77,9 @@ export class CreateRuleDto {
     type: [CreateConditionDto],
   })
   @IsArray()
+  @ArrayMaxSize(MAX_CONDITIONS_PER_RULE, {
+    message: `Too many conditions. Maximum allowed: ${MAX_CONDITIONS_PER_RULE}`,
+  })
   @ValidateNested({ each: true })
   @Type(() => CreateConditionDto)
   conditions: CreateConditionDto[];

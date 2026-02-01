@@ -23,6 +23,8 @@ import {
   RuleEvaluationResult,
 } from './rule-types';
 
+const MAX_CONDITIONS_PER_RULE = 50;
+
 /**
  * Evaluate a single condition against a transaction
  */
@@ -159,6 +161,16 @@ export function validateRule(rule: CategorizationRule): string[] {
 
   if (!rule.resultCategoryId) {
     errors.push('Result category is required');
+  }
+
+  // Validate input bounds to prevent DoS attacks
+  if (
+    !Array.isArray(rule.conditions) ||
+    rule.conditions.length > MAX_CONDITIONS_PER_RULE
+  ) {
+    errors.push(
+      `Too many conditions. Maximum allowed: ${MAX_CONDITIONS_PER_RULE}`,
+    );
   }
 
   if (rule.conditions.length === 0) {

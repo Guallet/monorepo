@@ -413,5 +413,22 @@ describe('Rules Engine', () => {
       const errors = validateRule(rule);
       expect(errors.some((e) => e.includes('not valid for field'))).toBe(true);
     });
+
+    it('should return error for too many conditions', () => {
+      const tooManyConditions = Array.from({ length: 51 }, (_, i) => ({
+        id: `cond-${i}`,
+        field: TransactionField.DESCRIPTION,
+        operator: StringOperator.CONTAINS,
+        value: 'test',
+        order: i,
+      }));
+
+      const rule = createRule({
+        conditions: tooManyConditions,
+      });
+
+      const errors = validateRule(rule);
+      expect(errors).toContain('Too many conditions. Maximum allowed: 50');
+    });
   });
 });
