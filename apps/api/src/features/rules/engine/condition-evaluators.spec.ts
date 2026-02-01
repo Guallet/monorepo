@@ -251,7 +251,7 @@ describe('Condition Evaluators', () => {
           evaluateStringCondition(
             'Order #12345',
             StringOperator.MATCHES,
-            '#\\d+',
+            String.raw`#\d+`,
           ),
         ).toBe(true);
       });
