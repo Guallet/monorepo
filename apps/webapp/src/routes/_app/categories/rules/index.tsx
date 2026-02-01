@@ -124,7 +124,9 @@ function RulesPage() {
       notifications.show({
         title: t('screens.rules.list.notifications.toggle.success.title'),
         message: t('screens.rules.list.notifications.toggle.success.message', {
-          action: rule.isActive ? t('common.disabled', 'disabled') : t('common.enabled', 'enabled')
+          action: rule.isActive
+            ? t('common.disabled', 'disabled')
+            : t('common.enabled', 'enabled'),
         }),
         color: 'green',
       });
@@ -139,7 +141,10 @@ function RulesPage() {
 
   const getPluralizedConditions = (count: number, logic: string) => {
     const conditionText = t('screens.rules.list.rule.conditions', { count });
-    const logicText = logic === 'or' ? t('screens.rules.list.rule.conditions.logic.any') : t('screens.rules.list.rule.conditions.logic.all');
+    const logicText =
+      logic === 'or'
+        ? t('screens.rules.list.rule.conditions.logic.any')
+        : t('screens.rules.list.rule.conditions.logic.all');
     return `${conditionText} (${logicText})`;
   };
 
