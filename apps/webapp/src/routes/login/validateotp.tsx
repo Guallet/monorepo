@@ -1,8 +1,8 @@
-import { supabase } from '@/auth/supabase';
 import { ValidateOtpScreen } from '@/features/auth/screens/ValidateOtpScreen';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
 import { useState } from 'react';
+import { useAuth } from '@guallet/auth';
 
 export const Route = createFileRoute('/login/validateotp')({
   validateSearch: z.object({
@@ -15,6 +15,7 @@ export const Route = createFileRoute('/login/validateotp')({
 function ValidateOtpPage() {
   const { email, redirectTo } = Route.useSearch();
   const navigate = useNavigate();
+  const { verifyOtpCode, getOtpCode } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,11 +23,7 @@ function ValidateOtpPage() {
     setError(null);
     setIsLoading(true);
 
-    const { error: verifyError, data } = await supabase.auth.verifyOtp({
-      email: email,
-      token: code,
-      type: 'email',
-    });
+    const { success, error: verifyError } = await verifyOtpCode(email, code);
 
     setIsLoading(false);
 
@@ -36,7 +33,7 @@ function ValidateOtpPage() {
       return;
     }
 
-    if (data) {
+    if (success) {
       navigate({
         to: redirectTo ?? '/dashboard',
       });
@@ -47,13 +44,7 @@ function ValidateOtpPage() {
     setError(null);
     setIsLoading(true);
 
-    const { error: resendError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-        emailRedirectTo: `${globalThis.location.origin}/login/callback`,
-      },
-    });
+    const { error: resendError } = await getOtpCode(email);
 
     setIsLoading(false);
 

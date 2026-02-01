@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { NordigenService } from './nordigen.service';
 import { HttpService } from '@nestjs/axios';
 import { NordigenRepository } from './nordigen.repository';
@@ -25,6 +26,20 @@ describe('NordigenService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NordigenService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'nordigen') {
+                return {
+                  secretId: process.env.NORDIGEN_SECRET_ID,
+                  secretKey: process.env.NORDIGEN_SECRET_KEY,
+                };
+              }
+              return undefined;
+            }),
+          },
+        },
         {
           provide: HttpService,
           useValue: mockHttpService,

@@ -15,8 +15,6 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
-import { Route as OnboardingWaiting_listRouteImport } from './routes/onboarding/waiting_list'
-import { Route as OnboardingRegisterRouteImport } from './routes/onboarding/register'
 import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp'
 import { Route as LoginResetPasswordSentRouteImport } from './routes/login/reset-password-sent'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
@@ -27,6 +25,7 @@ import { Route as AppSubscriptionsIndexRouteImport } from './routes/_app/subscri
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppSavingGoalsIndexRouteImport } from './routes/_app/saving-goals/index'
 import { Route as AppReportsIndexRouteImport } from './routes/_app/reports/index'
+import { Route as AppNotificationsIndexRouteImport } from './routes/_app/notifications/index'
 import { Route as AppInstitutionsIndexRouteImport } from './routes/_app/institutions/index'
 import { Route as AppImporterIndexRouteImport } from './routes/_app/importer/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
@@ -35,18 +34,15 @@ import { Route as AppCategoriesIndexRouteImport } from './routes/_app/categories
 import { Route as AppBudgetsIndexRouteImport } from './routes/_app/budgets/index'
 import { Route as AppAccountsIndexRouteImport } from './routes/_app/accounts/index'
 import { Route as AppUserEditRouteImport } from './routes/_app/user/edit'
-import { Route as AppTransactionsOldinboxRouteImport } from './routes/_app/transactions/oldinbox'
-import { Route as AppTransactionsOldIndexRouteImport } from './routes/_app/transactions/oldIndex'
 import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
 import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transactions/create'
 import { Route as AppSubscriptionsNewRouteImport } from './routes/_app/subscriptions/new'
 import { Route as AppSubscriptionsIdRouteImport } from './routes/_app/subscriptions/$id'
+import { Route as AppSettingsExportRouteImport } from './routes/_app/settings/export'
 import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
-import { Route as AppImporterExportRouteImport } from './routes/_app/importer/export'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
-import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
 import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/new'
 import { Route as AppCategoriesIdRouteImport } from './routes/_app/categories/$id'
 import { Route as AppBudgetsCreateRouteImport } from './routes/_app/budgets/create'
@@ -104,16 +100,6 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingWaiting_listRoute = OnboardingWaiting_listRouteImport.update({
-  id: '/onboarding/waiting_list',
-  path: '/onboarding/waiting_list',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRegisterRoute = OnboardingRegisterRouteImport.update({
-  id: '/onboarding/register',
-  path: '/onboarding/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginValidateotpRoute = LoginValidateotpRouteImport.update({
   id: '/login/validateotp',
   path: '/login/validateotp',
@@ -162,6 +148,11 @@ const AppSavingGoalsIndexRoute = AppSavingGoalsIndexRouteImport.update({
 const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
   id: '/reports/',
   path: '/reports/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsIndexRoute = AppNotificationsIndexRouteImport.update({
+  id: '/notifications/',
+  path: '/notifications/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInstitutionsIndexRoute = AppInstitutionsIndexRouteImport.update({
@@ -218,16 +209,6 @@ const AppUserEditRoute = AppUserEditRouteImport.update({
   path: '/user/edit',
   getParentRoute: () => AppRoute,
 } as any)
-const AppTransactionsOldinboxRoute = AppTransactionsOldinboxRouteImport.update({
-  id: '/transactions/oldinbox',
-  path: '/transactions/oldinbox',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppTransactionsOldIndexRoute = AppTransactionsOldIndexRouteImport.update({
-  id: '/transactions/oldIndex',
-  path: '/transactions/oldIndex',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppTransactionsInboxRoute = AppTransactionsInboxRouteImport.update({
   id: '/transactions/inbox',
   path: '/transactions/inbox',
@@ -248,6 +229,11 @@ const AppSubscriptionsIdRoute = AppSubscriptionsIdRouteImport.update({
   path: '/subscriptions/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsExportRoute = AppSettingsExportRouteImport.update({
+  id: '/settings/export',
+  path: '/settings/export',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSavingGoalsNewRoute = AppSavingGoalsNewRouteImport.update({
   id: '/saving-goals/new',
   path: '/saving-goals/new',
@@ -263,19 +249,9 @@ const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   path: '/reports/cashflow',
   getParentRoute: () => AppRoute,
 } as any)
-const AppImporterExportRoute = AppImporterExportRouteImport.update({
-  id: '/importer/export',
-  path: '/importer/export',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppConnectionsIdRoute = AppConnectionsIdRouteImport.update({
   id: '/connections/$id',
   path: '/connections/$id',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCategoriesOldRoute = AppCategoriesOldRouteImport.update({
-  id: '/categories/old',
-  path: '/categories/old',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCategoriesNewRoute = AppCategoriesNewRouteImport.update({
@@ -393,8 +369,6 @@ export interface FileRoutesByFullPath {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -402,18 +376,15 @@ export interface FileRoutesByFullPath {
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
-  '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
-  '/importer/export': typeof AppImporterExportRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
-  '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
-  '/transactions/oldinbox': typeof AppTransactionsOldinboxRoute
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -424,6 +395,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardIndexRoute
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -454,8 +426,6 @@ export interface FileRoutesByTo {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -463,18 +433,15 @@ export interface FileRoutesByTo {
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
-  '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
-  '/importer/export': typeof AppImporterExportRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
-  '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
-  '/transactions/oldinbox': typeof AppTransactionsOldinboxRoute
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -485,6 +452,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardIndexRoute
   '/importer': typeof AppImporterIndexRoute
   '/institutions': typeof AppInstitutionsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/reports': typeof AppReportsIndexRoute
   '/saving-goals': typeof AppSavingGoalsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -517,8 +485,6 @@ export interface FileRoutesById {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
@@ -526,18 +492,15 @@ export interface FileRoutesById {
   '/_app/budgets/create': typeof AppBudgetsCreateRoute
   '/_app/categories/$id': typeof AppCategoriesIdRoute
   '/_app/categories/new': typeof AppCategoriesNewRoute
-  '/_app/categories/old': typeof AppCategoriesOldRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
-  '/_app/importer/export': typeof AppImporterExportRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/_app/settings/export': typeof AppSettingsExportRoute
   '/_app/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/_app/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/_app/transactions/create': typeof AppTransactionsCreateRoute
   '/_app/transactions/inbox': typeof AppTransactionsInboxRoute
-  '/_app/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
-  '/_app/transactions/oldinbox': typeof AppTransactionsOldinboxRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/tools/loan': typeof AppToolsLoanLazyRoute
   '/_app/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -548,6 +511,7 @@ export interface FileRoutesById {
   '/_app/dashboard/': typeof AppDashboardIndexRoute
   '/_app/importer/': typeof AppImporterIndexRoute
   '/_app/institutions/': typeof AppInstitutionsIndexRoute
+  '/_app/notifications/': typeof AppNotificationsIndexRoute
   '/_app/reports/': typeof AppReportsIndexRoute
   '/_app/saving-goals/': typeof AppSavingGoalsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
@@ -580,8 +544,6 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/onboarding/register'
-    | '/onboarding/waiting_list'
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
@@ -589,18 +551,15 @@ export interface FileRouteTypes {
     | '/budgets/create'
     | '/categories/$id'
     | '/categories/new'
-    | '/categories/old'
     | '/connections/$id'
-    | '/importer/export'
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
+    | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
     | '/transactions/create'
     | '/transactions/inbox'
-    | '/transactions/oldIndex'
-    | '/transactions/oldinbox'
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
@@ -611,6 +570,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/importer'
     | '/institutions'
+    | '/notifications'
     | '/reports'
     | '/saving-goals'
     | '/settings'
@@ -641,8 +601,6 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/onboarding/register'
-    | '/onboarding/waiting_list'
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
@@ -650,18 +608,15 @@ export interface FileRouteTypes {
     | '/budgets/create'
     | '/categories/$id'
     | '/categories/new'
-    | '/categories/old'
     | '/connections/$id'
-    | '/importer/export'
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
+    | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
     | '/transactions/create'
     | '/transactions/inbox'
-    | '/transactions/oldIndex'
-    | '/transactions/oldinbox'
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
@@ -672,6 +627,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/importer'
     | '/institutions'
+    | '/notifications'
     | '/reports'
     | '/saving-goals'
     | '/settings'
@@ -703,8 +659,6 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/onboarding/register'
-    | '/onboarding/waiting_list'
     | '/login/'
     | '/_app/accounts/$id'
     | '/_app/accounts/new'
@@ -712,18 +666,15 @@ export interface FileRouteTypes {
     | '/_app/budgets/create'
     | '/_app/categories/$id'
     | '/_app/categories/new'
-    | '/_app/categories/old'
     | '/_app/connections/$id'
-    | '/_app/importer/export'
     | '/_app/reports/cashflow'
     | '/_app/saving-goals/$id'
     | '/_app/saving-goals/new'
+    | '/_app/settings/export'
     | '/_app/subscriptions/$id'
     | '/_app/subscriptions/new'
     | '/_app/transactions/create'
     | '/_app/transactions/inbox'
-    | '/_app/transactions/oldIndex'
-    | '/_app/transactions/oldinbox'
     | '/_app/user/edit'
     | '/_app/tools/loan'
     | '/_app/tools/mortgage'
@@ -734,6 +685,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard/'
     | '/_app/importer/'
     | '/_app/institutions/'
+    | '/_app/notifications/'
     | '/_app/reports/'
     | '/_app/saving-goals/'
     | '/_app/settings/'
@@ -766,8 +718,6 @@ export interface RootRouteChildren {
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
   LoginResetPasswordSentRoute: typeof LoginResetPasswordSentRoute
   LoginValidateotpRoute: typeof LoginValidateotpRoute
-  OnboardingRegisterRoute: typeof OnboardingRegisterRoute
-  OnboardingWaiting_listRoute: typeof OnboardingWaiting_listRoute
   LoginIndexRoute: typeof LoginIndexRoute
 }
 
@@ -813,20 +763,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/waiting_list': {
-      id: '/onboarding/waiting_list'
-      path: '/onboarding/waiting_list'
-      fullPath: '/onboarding/waiting_list'
-      preLoaderRoute: typeof OnboardingWaiting_listRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/register': {
-      id: '/onboarding/register'
-      path: '/onboarding/register'
-      fullPath: '/onboarding/register'
-      preLoaderRoute: typeof OnboardingRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/validateotp': {
@@ -899,6 +835,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/notifications/': {
+      id: '/_app/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/institutions/': {
       id: '/_app/institutions/'
       path: '/institutions'
@@ -969,20 +912,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserEditRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/transactions/oldinbox': {
-      id: '/_app/transactions/oldinbox'
-      path: '/transactions/oldinbox'
-      fullPath: '/transactions/oldinbox'
-      preLoaderRoute: typeof AppTransactionsOldinboxRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/transactions/oldIndex': {
-      id: '/_app/transactions/oldIndex'
-      path: '/transactions/oldIndex'
-      fullPath: '/transactions/oldIndex'
-      preLoaderRoute: typeof AppTransactionsOldIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/transactions/inbox': {
       id: '/_app/transactions/inbox'
       path: '/transactions/inbox'
@@ -1011,6 +940,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubscriptionsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/export': {
+      id: '/_app/settings/export'
+      path: '/settings/export'
+      fullPath: '/settings/export'
+      preLoaderRoute: typeof AppSettingsExportRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/saving-goals/new': {
       id: '/_app/saving-goals/new'
       path: '/saving-goals/new'
@@ -1032,25 +968,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportsCashflowRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/importer/export': {
-      id: '/_app/importer/export'
-      path: '/importer/export'
-      fullPath: '/importer/export'
-      preLoaderRoute: typeof AppImporterExportRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/connections/$id': {
       id: '/_app/connections/$id'
       path: '/connections/$id'
       fullPath: '/connections/$id'
       preLoaderRoute: typeof AppConnectionsIdRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/categories/old': {
-      id: '/_app/categories/old'
-      path: '/categories/old'
-      fullPath: '/categories/old'
-      preLoaderRoute: typeof AppCategoriesOldRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/categories/new': {
@@ -1203,18 +1125,15 @@ interface AppRouteChildren {
   AppBudgetsCreateRoute: typeof AppBudgetsCreateRoute
   AppCategoriesIdRoute: typeof AppCategoriesIdRoute
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
-  AppCategoriesOldRoute: typeof AppCategoriesOldRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
-  AppImporterExportRoute: typeof AppImporterExportRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
   AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
+  AppSettingsExportRoute: typeof AppSettingsExportRoute
   AppSubscriptionsIdRoute: typeof AppSubscriptionsIdRoute
   AppSubscriptionsNewRoute: typeof AppSubscriptionsNewRoute
   AppTransactionsCreateRoute: typeof AppTransactionsCreateRoute
   AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
-  AppTransactionsOldIndexRoute: typeof AppTransactionsOldIndexRoute
-  AppTransactionsOldinboxRoute: typeof AppTransactionsOldinboxRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
   AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
@@ -1225,6 +1144,7 @@ interface AppRouteChildren {
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppImporterIndexRoute: typeof AppImporterIndexRoute
   AppInstitutionsIndexRoute: typeof AppInstitutionsIndexRoute
+  AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppReportsIndexRoute: typeof AppReportsIndexRoute
   AppSavingGoalsIndexRoute: typeof AppSavingGoalsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -1254,18 +1174,15 @@ const AppRouteChildren: AppRouteChildren = {
   AppBudgetsCreateRoute: AppBudgetsCreateRoute,
   AppCategoriesIdRoute: AppCategoriesIdRoute,
   AppCategoriesNewRoute: AppCategoriesNewRoute,
-  AppCategoriesOldRoute: AppCategoriesOldRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
-  AppImporterExportRoute: AppImporterExportRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
   AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
+  AppSettingsExportRoute: AppSettingsExportRoute,
   AppSubscriptionsIdRoute: AppSubscriptionsIdRoute,
   AppSubscriptionsNewRoute: AppSubscriptionsNewRoute,
   AppTransactionsCreateRoute: AppTransactionsCreateRoute,
   AppTransactionsInboxRoute: AppTransactionsInboxRoute,
-  AppTransactionsOldIndexRoute: AppTransactionsOldIndexRoute,
-  AppTransactionsOldinboxRoute: AppTransactionsOldinboxRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
   AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,
@@ -1276,6 +1193,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppImporterIndexRoute: AppImporterIndexRoute,
   AppInstitutionsIndexRoute: AppInstitutionsIndexRoute,
+  AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppReportsIndexRoute: AppReportsIndexRoute,
   AppSavingGoalsIndexRoute: AppSavingGoalsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
@@ -1310,8 +1228,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,
   LoginResetPasswordSentRoute: LoginResetPasswordSentRoute,
   LoginValidateotpRoute: LoginValidateotpRoute,
-  OnboardingRegisterRoute: OnboardingRegisterRoute,
-  OnboardingWaiting_listRoute: OnboardingWaiting_listRoute,
   LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport

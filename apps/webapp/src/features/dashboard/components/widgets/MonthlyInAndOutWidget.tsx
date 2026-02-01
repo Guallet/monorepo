@@ -1,76 +1,100 @@
 import { WidgetCard } from "./WidgetCard";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { Box, Text } from "@mantine/core";
+import { useTransactionsWithFilter } from "@guallet/api-react";
+import { Box, Text, Loader, Center, useMantineTheme } from "@mantine/core";
+import { IconChartBar } from "@tabler/icons-react";
+import { BarChart } from "@mantine/charts";
 
-const data = [
-  { month: "01 MAR", income: 7000, spending: 4000 },
-  { month: "01 APR", income: 8000, spending: 3000 },
-  { month: "01 MAY", income: 3000, spending: 6000 },
-  { month: "01 JUN", income: 2000, spending: 5000 },
-  { month: "01 JUL", income: 6000, spending: 4000 },
-  { month: "01 AUG", income: 0, spending: 2000 },
-];
+interface MonthlyInAndOutWidgetProps {
+  startDate: string | null;
+  endDate: string | null;
+}
 
-export function MonthlyInAndOutWidget() {
+export function MonthlyInAndOutWidget({ 
+  startDate, 
+  endDate 
+}: Readonly<MonthlyInAndOutWidgetProps>) {
+  const { transactions, isLoading } = useTransactionsWithFilter({
+    page: 1,
+    pageSize: 1000,
+    startDate: startDate ? new Date(startDate) : null,
+    endDate: endDate ? new Date(endDate) : null,
+  });
+
+  const theme = useMantineTheme();
+
+  // Group transactions by month
+  const monthlyData = transactions.reduce((acc, transaction) => {
+    const date = new Date(transaction.date);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const monthLabel = date.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+    
+    if (!acc[monthKey]) {
+      acc[monthKey] = { month: monthLabel, income: 0, spending: 0, date: date };
+    }
+    
+    if (transaction.amount > 0) {
+      acc[monthKey].income += transaction.amount;
+    } else {
+      acc[monthKey].spending += Math.abs(transaction.amount);
+    }
+    
+    return acc;
+  }, {} as Record<string, { month: string; income: number; spending: number; date: Date }>);
+
+  // Convert to array and sort by date
+  const data = Object.values(monthlyData)
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .slice(-6) // Last 6 months
+    .map(({ month, income, spending }) => ({
+      month,
+      income: Math.round(income),
+      spending: Math.round(spending),
+    }));
+
   return (
-    <WidgetCard title="Income vs. Spending">
-      <Box
-        style={{
-          background: "#f8f9fa",
-          borderRadius: 16,
-          padding: 16,
-          marginTop: 8,
-        }}
-      >
-        <ResponsiveContainer width="100%" height={260}>
-          <BarChart data={data} barGap={8}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="month" />
-            <YAxis
-              domain={[0, 8000]}
-              ticks={[0, 2000, 4000, 6000, 8000]}
-              tickFormatter={(v) => `£${v / 1000}K`}
-            />
-            <Tooltip
-              formatter={(value: number) => `£${value.toLocaleString()}`}
-            />
-            <Legend
-              verticalAlign="top"
-              align="center"
-              iconType="rect"
-              wrapperStyle={{ marginBottom: 12 }}
-              payload={[
-                { value: "Incoming", type: "rect", color: "#12b886" },
-                { value: "Outgoing", type: "rect", color: "#fd7e14" },
-              ]}
-            />
-            <Bar
-              dataKey="income"
-              name="Incoming"
-              fill="#12b886"
-              radius={[4, 4, 0, 0]}
-            />
-            <Bar
-              dataKey="spending"
-              name="Outgoing"
-              fill="#fd7e14"
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-        <Text size="xs" color="dimmed" mt={8}>
-          Income is teal, spending is orange.
-        </Text>
-      </Box>
+    <WidgetCard 
+      title="Income vs. Spending" 
+      icon={<IconChartBar size={20} />}
+    >
+      {isLoading ? (
+        <Center h={280}>
+          <Loader size="md" />
+        </Center>
+      ) : data.length > 0 ? (
+        <Box
+          style={{
+            backgroundColor: theme.colors.gray[0],
+            borderRadius: theme.radius.md,
+            padding: 16,
+            marginTop: 8,
+          }}
+        >
+          <BarChart
+            h={280}
+            data={data}
+            dataKey="month"
+            series={[
+              { name: 'income', label: 'Income', color: 'teal.6' },
+              { name: 'spending', label: 'Spending', color: 'red.6' },
+            ]}
+            tickLine="y"
+            gridAxis="xy"
+            withLegend
+            legendProps={{ 
+              verticalAlign: 'top',
+              height: 40,
+            }}
+            tooltipAnimationDuration={200}
+            barProps={{ radius: [4, 4, 0, 0] }}
+          />
+        </Box>
+      ) : (
+        <Center h={280}>
+          <Text size="sm" c="dimmed">
+            No transaction data available.
+          </Text>
+        </Center>
+      )}
     </WidgetCard>
   );
 }

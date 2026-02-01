@@ -1,9 +1,5 @@
-import {
-  CreateSavingGoalRequest,
-  UpdateSavingGoalRequest,
-  SavingGoalDto,
-} from "@guallet/api-client/src/savingGoals";
-import { useAccounts, useSavingGoalMutations } from "@guallet/api-react";
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
 import {
   Stack,
   TextInput,
@@ -14,11 +10,11 @@ import {
   MultiSelect,
   Card,
   Text,
-} from "@mantine/core";
-import { DateInput } from "@mantine/dates";
-import { useForm } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
-import { IconPigMoney, IconDeviceFloppy, IconX } from "@tabler/icons-react";
+} from '@mantine/core';
+import { DateInput } from '@mantine/dates';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { IconPigMoney, IconDeviceFloppy, IconX } from '@tabler/icons-react';
 
 interface SavingGoalFormProps {
   savingGoal?: SavingGoalDto;
@@ -47,8 +43,8 @@ export function SavingGoalForm({
 
   const form = useForm<FormValues>({
     initialValues: {
-      name: savingGoal?.name || "",
-      description: savingGoal?.description || "",
+      name: savingGoal?.name || '',
+      description: savingGoal?.description || '',
       target_amount: savingGoal?.target_amount || 0,
       target_date: savingGoal?.target_date
         ? new Date(savingGoal.target_date)
@@ -56,14 +52,14 @@ export function SavingGoalForm({
       accounts: savingGoal?.accounts || [],
     },
     validate: {
-      name: (value) => (!value.trim() ? "Name is required" : null),
+      name: (value) => (value.trim() === '' ? 'Name is required' : null),
       target_amount: (value) =>
-        value <= 0 ? "Target amount must be greater than 0" : null,
+        value <= 0 ? 'Target amount must be greater than 0' : null,
       target_date: (value) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         if (value < today) {
-          return "Target date cannot be in the past";
+          return 'Target date cannot be in the past';
         }
         return null;
       },
@@ -72,19 +68,11 @@ export function SavingGoalForm({
 
   const accountOptions = accounts.map((account) => ({
     value: account.id,
-    label: `${account.name} (${account.sourceName || account.source || "Manual"})`,
+    label: `${account.name} (${account.sourceName || account.source || 'Manual'})`,
   }));
 
   const handleSubmit = async (values: FormValues) => {
     try {
-      const requestData = {
-        name: values.name,
-        description: values.description || undefined,
-        target_amount: values.target_amount,
-        target_date: values.target_date,
-        accounts: values.accounts,
-      };
-
       let result: SavingGoalDto;
 
       if (isEditing && savingGoal) {
@@ -99,9 +87,9 @@ export function SavingGoalForm({
           },
         });
         notifications.show({
-          title: "Success",
-          message: "Saving goal updated successfully",
-          color: "green",
+          title: 'Success',
+          message: 'Saving goal updated successfully',
+          color: 'green',
         });
       } else {
         result = await createSavingGoalMutation.mutateAsync({
@@ -114,19 +102,19 @@ export function SavingGoalForm({
           },
         });
         notifications.show({
-          title: "Success",
-          message: "Saving goal created successfully",
-          color: "green",
+          title: 'Success',
+          message: 'Saving goal created successfully',
+          color: 'green',
         });
       }
 
       onSuccess?.(result);
     } catch (error) {
-      console.error("Failed to save saving goal:", error);
+      console.error('Failed to save saving goal:', error);
       notifications.show({
-        title: "Error",
-        message: `Failed to ${isEditing ? "update" : "create"} saving goal`,
-        color: "red",
+        title: 'Error',
+        message: `Failed to ${isEditing ? 'update' : 'create'} saving goal`,
+        color: 'red',
       });
     }
   };
@@ -140,7 +128,7 @@ export function SavingGoalForm({
         <Group>
           <IconPigMoney size={24} />
           <Text size="xl" fw={700}>
-            {isEditing ? "Edit Saving Goal" : "Create New Saving Goal"}
+            {isEditing ? 'Edit Saving Goal' : 'Create New Saving Goal'}
           </Text>
         </Group>
 
@@ -150,14 +138,14 @@ export function SavingGoalForm({
               label="Goal Name"
               placeholder="e.g., Emergency Fund, Vacation, New Car"
               required
-              {...form.getInputProps("name")}
+              {...form.getInputProps('name')}
             />
 
             <Textarea
               label="Description"
               placeholder="Optional description of your saving goal"
               rows={3}
-              {...form.getInputProps("description")}
+              {...form.getInputProps('description')}
             />
 
             <NumberInput
@@ -169,7 +157,7 @@ export function SavingGoalForm({
               //   prefix="$"
               thousandSeparator=","
               decimalScale={2}
-              {...form.getInputProps("target_amount")}
+              {...form.getInputProps('target_amount')}
             />
 
             <DateInput
@@ -177,7 +165,7 @@ export function SavingGoalForm({
               placeholder="When do you want to reach this goal?"
               required
               minDate={new Date()}
-              {...form.getInputProps("target_date")}
+              {...form.getInputProps('target_date')}
             />
 
             <MultiSelect
@@ -187,7 +175,7 @@ export function SavingGoalForm({
               searchable
               clearable
               description="Select accounts that contribute to this saving goal. Progress will be calculated based on the balance of these accounts."
-              {...form.getInputProps("accounts")}
+              {...form.getInputProps('accounts')}
             />
 
             <Group justify="flex-end" gap="sm">
@@ -206,7 +194,7 @@ export function SavingGoalForm({
                 leftSection={<IconDeviceFloppy size={16} />}
                 loading={isSubmitting}
               >
-                {isEditing ? "Update Goal" : "Create Goal"}
+                {isEditing ? 'Update Goal' : 'Create Goal'}
               </Button>
             </Group>
           </Stack>

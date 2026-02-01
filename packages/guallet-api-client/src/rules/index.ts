@@ -1,2 +1,2 @@
-export * from "./rules.models";
-export * from "./rules.api";
+export * from './rules.api';
+export * from './rules.models';

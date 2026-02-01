@@ -58,6 +58,9 @@ export function useRuleMutations() {
       queryClient.invalidateQueries({
         queryKey: [RULES_QUERY_KEY],
       });
+        queryClient.removeQueries({
+          queryKey: [RULES_QUERY_KEY, variables.id],
+        });
     },
     onError: async (error) => {
       console.error(error);

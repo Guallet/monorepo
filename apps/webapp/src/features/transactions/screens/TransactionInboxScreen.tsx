@@ -1,41 +1,56 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useTransactionInbox } from "@guallet/api-react";
-import { Badge, Button, Group, Stack, Text, Title } from "@mantine/core";
-import { InboxTransactionCard } from "../components/InboxTransactionCard";
-import { useNavigate } from "@tanstack/react-router";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useInfiniteTransactionInbox } from '@guallet/api-react';
+import { Badge, Center, Group, Loader, Stack, Title } from '@mantine/core';
+import { InboxTransactionCard } from '../components/InboxTransactionCard';
+import { useEffect } from 'react';
+import { useIntersection } from '@mantine/hooks';
 
 export function TransactionInboxScreen() {
-  const navigate = useNavigate();
-  const { transactions, isLoading } = useTransactionInbox();
+  const {
+    transactions,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteTransactionInbox();
+
+  const { ref, entry } = useIntersection({
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <BaseScreen isLoading={isLoading}>
       <Stack>
         <Group>
-          <Text>Debug only. Remove before release:</Text>
-          <Button onClick={() => navigate({ to: "/transactions/oldinbox" })}>
-            Navigate to old inbox
-          </Button>
-        </Group>
-        <Group>
           <Title>Transactions Inbox</Title>
           <Badge>{transactions.length}</Badge>
         </Group>
         <Stack gap="xs">
-          {transactions
-            .toSorted((a, b) => b.date.getTime() - a.date.getTime())
-            .map((transaction) => (
-              <InboxTransactionCard
-                key={transaction.id}
-                transaction={transaction}
-                onEdit={() => {
-                  console.log("Edit transaction:", transaction);
-                }}
-                onSaveChanges={() => {
-                  console.log("Save changes for transaction:", transaction);
-                }}
-              />
-            ))}
+          {transactions.map((transaction) => (
+            <InboxTransactionCard
+              key={transaction.id}
+              transaction={transaction}
+              onEdit={() => {
+                console.log('Edit transaction:', transaction);
+              }}
+              onSaveChanges={() => {
+                console.log('Save changes for transaction:', transaction);
+              }}
+            />
+          ))}
+          {hasNextPage && (
+            <div ref={ref}>
+              <Center p="md">
+                {isFetchingNextPage && <Loader size="sm" />}
+              </Center>
+            </div>
+          )}
         </Stack>
       </Stack>
     </BaseScreen>

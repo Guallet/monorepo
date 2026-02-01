@@ -16,14 +16,11 @@ import { router, TanStackRouterDevtools } from './router.tsx';
 import { gualletClient } from '@/api/gualletClient.ts';
 import { DatesProvider } from '@mantine/dates';
 
-import { supabase } from './auth/supabase.ts';
+import { authClient } from './auth/better-auth.ts';
 import { AuthProvider } from '@guallet/auth';
 
 // Init i18n
 import i18next from './i18n/i18n';
-
-// Vercel Analytics
-import { Analytics } from '@vercel/analytics/react';
 
 // Create a Query client
 const queryClient = new QueryClient();
@@ -37,7 +34,7 @@ export default function App() {
         }}
       >
         <Notifications />
-        <AuthProvider supabaseClient={supabase}>
+        <AuthProvider authClient={authClient}>
           <QueryClientProvider client={queryClient}>
             <GualletClientProvider client={gualletClient}>
               <RouterProvider router={router} />
@@ -45,7 +42,6 @@ export default function App() {
               <TanStackRouterDevtools router={router} />
               <ReactQueryDevtools initialIsOpen={false} />
               {/* END Tanstack Dev Tools */}
-              <Analytics />
             </GualletClientProvider>
           </QueryClientProvider>
         </AuthProvider>

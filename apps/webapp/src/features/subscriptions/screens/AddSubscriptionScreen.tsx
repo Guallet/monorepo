@@ -16,6 +16,7 @@ import {
   Group,
   Button,
 } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconChevronDown } from '@tabler/icons-react';
@@ -31,6 +32,7 @@ const subscriptionFormDataSchema = z.object({
   currency: z.string().nullable().default(null),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
+  startDate: z.date({ required_error: 'Start date is required' }),
   imageUrl: z.string().optional(),
 });
 type AddSubscriptionFormData = z.infer<typeof subscriptionFormDataSchema>;
@@ -62,6 +64,7 @@ export function AddSubscriptionScreen() {
       currency: defaultCurrency,
       cadence: RecurrenceCadence.MONTHLY,
       type: RecurringPaymentType.SUBSCRIPTION,
+      startDate: new Date(),
       imageUrl: '',
     },
   });
@@ -89,6 +92,7 @@ export function AddSubscriptionScreen() {
       currency: data.currency ?? defaultCurrency,
       cadence: data.cadence,
       type: data.type,
+      startDate: data.startDate.toISOString().split('T')[0],
       imageUrl: data.imageUrl || undefined,
     };
 
@@ -178,6 +182,13 @@ export function AddSubscriptionScreen() {
                 leftSection={currency.symbol}
                 decimalScale={currency.decimalPlaces ?? 2}
                 min={0}
+              />
+              <DateInput
+                label="Start Date"
+                required
+                description="The date when this payment starts or first occurs"
+                placeholder="Select a date"
+                {...form.getInputProps('startDate')}
               />
               <TextInput
                 label="Image URL (optional)"

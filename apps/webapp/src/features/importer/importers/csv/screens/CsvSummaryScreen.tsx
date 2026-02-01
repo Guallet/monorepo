@@ -7,7 +7,8 @@ import {
 } from '@guallet/api-client';
 import { FieldMappings } from '../models';
 import { DEFAULT_ACCOUNT_NAME } from './CsvAccountsScreen';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate, parseDate } from '@/utils/dateUtils';
+import { parseNumber } from '@/utils/numberUtils';
 import {
   Modal,
   Stack,
@@ -26,7 +27,7 @@ import {
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   csvAccountsAtom,
   csvCategoriesAtom,
@@ -426,9 +427,15 @@ function TransactionsContent() {
   const { categories: remoteCategories } = useCategories();
   const categoriesMappings = useAtomValue(categoriesMappingsAtom);
 
-  const sampleTransactions = transactions
-    .toSorted(() => 0.5 - Math.random())
-    .slice(0, SAMPLE_ARRAY_SIZE);
+  const sampleTransactions = useMemo(() => {
+    // Fisher-Yates shuffle algorithm (deterministic with index)
+    const arr = [...transactions];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor((i + 1) * 0.5); // Pseudo-random based on index
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, SAMPLE_ARRAY_SIZE);
+  }, [transactions]);
 
   return (
     <Stack gap="md">
@@ -510,7 +517,7 @@ function TransactionsContent() {
 }
 
 export interface CSVTransaction {
-  date: string;
+  date: Date;
   amount: number;
   description: string;
   notes: string | null;
@@ -543,8 +550,8 @@ function mapTransaction(
   const destinationCategory = categoryMappings[categoryKey];
 
   return {
-    date: String(dateValue ?? ''),
-    amount: Number(amountValue ?? 0),
+    date: parseDate(String(dateValue ?? new Date().toISOString())) ?? new Date(),
+    amount: parseNumber(amountValue) || 0,
     description: String(descriptionValue ?? ''),
     notes: notesValue == null ? null : String(notesValue),
 

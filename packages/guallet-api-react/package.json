@@ -1,6 +1,6 @@
 {
   "name": "@guallet/api-react",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Guallet API Client for React",
   "private": true,
   "main": "./src/index.ts",
@@ -10,7 +10,7 @@
     "@tanstack/react-query": "workspace:*"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
+    "eslint": "workspace:*",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*"

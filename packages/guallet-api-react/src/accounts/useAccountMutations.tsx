@@ -1,11 +1,11 @@
 import {
   CreateAccountRequest,
   UpdateAccountRequest,
-} from "@guallet/api-client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+} from '@guallet/api-client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const ACCOUNTS_QUERY_KEY = "accounts";
+const ACCOUNTS_QUERY_KEY = 'accounts';
 
 export function useAccountMutations() {
   const queryClient = useQueryClient();
@@ -45,8 +45,23 @@ export function useAccountMutations() {
     },
   });
 
+  const deleteAccountMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return await gualletClient.accounts.delete(id);
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [ACCOUNTS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
   return {
     createAccountMutation,
     updateAccountMutation,
+    deleteAccountMutation,
   };
 }

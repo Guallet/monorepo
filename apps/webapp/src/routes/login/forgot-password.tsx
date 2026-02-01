@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { supabase } from '@/auth/supabase';
+import { useAuth } from '@guallet/auth';
 import { ForgotPasswordScreen } from '@/features/auth/screens/ForgotPasswordScreen';
 
 export const Route = createFileRoute('/login/forgot-password')({
@@ -9,6 +9,7 @@ export const Route = createFileRoute('/login/forgot-password')({
 
 function ForgotPasswordPage() {
   const navigate = useNavigate();
+  const { resetPassword } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,11 +17,9 @@ function ForgotPasswordPage() {
     setError(null);
     setIsLoading(true);
 
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+    const { success, error: resetError } = await resetPassword(
       email,
-      {
-        redirectTo: `${globalThis.location.origin}/login/reset-password`,
-      },
+      `${globalThis.location.origin}/login/reset-password`,
     );
 
     setIsLoading(false);
@@ -33,10 +32,12 @@ function ForgotPasswordPage() {
       return;
     }
 
-    navigate({
-      to: '/login/reset-password-sent',
-      search: { email },
-    });
+    if (success) {
+      navigate({
+        to: '/login/reset-password-sent',
+        search: { email },
+      });
+    }
   };
 
   return (

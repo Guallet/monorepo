@@ -14,6 +14,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    // Disable bodyParser because Better-Auth.
+    // Don't worry, the library will automatically re-add the default body parsers.
+    // bodyParser: false,
   });
   if (isProduction) {
     app.useLogger(app.get(Logger));
@@ -41,6 +44,7 @@ async function bootstrap() {
   await configureSwagger(app, docsPath);
 
   // Start server
+  console.log('Starting server...');
   const port = process.env.PORT ?? 5000;
   await app.listen(port);
   console.log(`Guallet is running on PORT: ${port}`);

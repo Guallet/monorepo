@@ -1,30 +1,47 @@
-import GroupHeader from "@/components/GroupHeader/GroupHeader";
-import { getAccountTypeTitle } from "@/features/accounts/models/Account";
-import { AccountDto, AccountTypeDto } from "@guallet/api-client";
-import { Money } from "@guallet/money";
-import "core-js/actual/array/group-by";
+import GroupHeader from '@/components/GroupHeader/GroupHeader';
+import { getAccountTypeTitle } from '@/features/accounts/models/Account';
+import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { Money } from '@guallet/money';
+import 'core-js/actual/array/group-by';
 
 interface HeaderProps {
   accountType: AccountTypeDto;
   accounts: AccountDto[];
 }
 
+function sumArray(array: number[]): number {
+  const sum = array.reduce(function (a, b) {
+    return Number(a) + Number(b);
+  }, 0);
+
+  return sum;
+}
+
+// TODO: Replace this with Object.groupBy when we can drop support for Node 16
+function groupBy<T, K extends string | number | symbol>(
+  array: T[],
+  selector: (item: T) => K,
+): Record<K, T[]> {
+  return array.reduce(
+    (acc, item) => {
+      const key = selector(item);
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {} as Record<K, T[]>,
+  );
+}
+
 export function AccountsListHeader({
   accountType,
   accounts,
 }: Readonly<HeaderProps>) {
-  function sumArray(array: number[]): number {
-    const sum = array.reduce(function (a, b) {
-      return a + b;
-    }, 0);
-
-    return sum;
-  }
-
   function getTotalBalance(): string {
     const currencies = Object.entries(
-      // @ts-ignore
-      accounts.groupBy((x: AccountDto) => x.currency)
+      groupBy(accounts, (x: AccountDto) => x.currency),
     );
 
     if (currencies.length == 1) {
@@ -40,8 +57,7 @@ export function AccountsListHeader({
     } else if (currencies.length == 2) {
       // Display 2 Balances
       const balances = currencies.map((entry) => {
-        const currency = entry[0];
-        const accounts = entry[1] as AccountDto[];
+        const [currency, accounts] = entry;
 
         const total = accounts.map((e) => +e.balance.amount);
         const sum = sumArray(total);
@@ -52,10 +68,10 @@ export function AccountsListHeader({
         });
         return money.format();
       });
-      return balances.join(" + ");
+      return balances.join(' + ');
     } else {
       // Don't display anything. Too many balances
-      return "";
+      return '';
     }
   }
 

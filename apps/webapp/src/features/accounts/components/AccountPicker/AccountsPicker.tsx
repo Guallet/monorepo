@@ -1,7 +1,7 @@
-import { Button, Modal } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AccountDto } from "@guallet/api-client";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { ResponsiveModal } from "@guallet/ui-react";
 import { useAccounts } from "@guallet/api-react";
 import { AccountPickerModal } from "./AccountPickerModal";
 
@@ -14,7 +14,6 @@ export function AccountsPicker({
   selectedAccounts,
   onSelectedAccountsChange,
 }: Readonly<AccountsPickerProps>) {
-  const isMobile = useIsMobile();
   const { accounts } = useAccounts();
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -36,9 +35,8 @@ export function AccountsPicker({
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={opened}
-        fullScreen={isMobile}
         onClose={close}
         title="Select accounts"
         size="auto"
@@ -52,7 +50,7 @@ export function AccountsPicker({
           }}
           onCancel={close}
         />
-      </Modal>
+      </ResponsiveModal>
       <Button variant="outline" onClick={open}>
         {buttonCaption}
       </Button>

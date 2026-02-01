@@ -42,6 +42,12 @@ export class AccountsApi {
     });
   }
 
+  async delete(accountId: string): Promise<void> {
+    return await this.client.fetch_delete({
+      path: `${ACCOUNTS_PATH}/${accountId}`,
+    });
+  }
+
   async getAccountChartData(accountId: string): Promise<AccountChartsDto> {
     return await this.client.get<AccountChartsDto>({
       path: `${ACCOUNTS_PATH}/${accountId}/charts`,

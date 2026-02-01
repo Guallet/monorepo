@@ -94,7 +94,7 @@ export function AddAccountScreen() {
   }
 
   const accountTypes = Object.entries(AccountTypeDto).map(
-    ({ '0': _name, '1': accountType }) => {
+    ({ '1': accountType }) => {
       return {
         label: getAccountTypeTitleSingular(accountType),
         value: accountType,

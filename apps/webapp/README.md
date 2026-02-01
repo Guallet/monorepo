@@ -7,12 +7,12 @@ The main libraries used to build this app are:
 - [Vite](https://vitejs.dev/): Local development tooling
 - [Tanstack Router](https://tanstack.com/router): Router
 - [Mantine UI](https://mantine.dev/): React components library
-- [Supabase](https:/supabase.com/): Used for auth. In Sync with the backend
 - [Zod](https://zod.dev/): Validation
+- [Better Auth](https://www.better-auth.com/): Authentication
 
 ## Build and run the project
 
-Create a '.env' file with the values you can find in the `.env.sample` file
+Create a `webapp.env` file (or `.env` for local dev) with the values you can find in the `webapp.env.sample` file.
 
 And then, install the packages
 

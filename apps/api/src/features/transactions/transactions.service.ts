@@ -44,7 +44,10 @@ export class TransactionsService {
   }
 
   // get total transactions count for a user, with query filters
-  async getUserTransactionsCount(args: {
+  async getUserTransactionsCount({
+    userId,
+    filters: { accounts, categories, startDate, endDate },
+  }: {
     userId: string;
     filters: {
       accounts?: string[];
@@ -53,14 +56,11 @@ export class TransactionsService {
       endDate?: Date;
     };
   }): Promise<number> {
-    const { userId, filters } = args;
-    const { accounts, categories, startDate, endDate } = filters;
-
-    if (accounts && accounts.length === 0) {
+    if (accounts?.length === 0) {
       throw new BadRequestException('Accounts cannot be empty');
     }
 
-    return this.repository.count({
+    return await this.repository.count({
       where: {
         account: { user_id: userId },
         ...(accounts && { accountId: In(accounts) }),
@@ -70,13 +70,24 @@ export class TransactionsService {
     });
   }
 
-  async getUserTransactionsInbox(args: {
+  async getUserTransactionsInbox({
+    userId,
+    page = 1,
+    pageSize = 50,
+  }: {
     userId: string;
+    page?: number;
+    pageSize?: number;
   }): Promise<InboxTransaction[]> {
+    const offset = (page - 1) * pageSize;
+    if (offset < 0) {
+      throw new BadRequestException('Offset cannot be negative');
+    }
+
     const transactions = await this.repository.find({
       relations: { account: true, category: true },
       where: {
-        account: { user_id: args.userId },
+        account: { user_id: userId },
         category: {
           id: IsNull(),
         },
@@ -84,6 +95,8 @@ export class TransactionsService {
       order: {
         date: 'DESC',
       },
+      take: pageSize,
+      skip: offset,
     });
 
     // TODO: Apply the rules to the transactions and get the processed category
@@ -96,7 +109,30 @@ export class TransactionsService {
     });
   }
 
-  async getUserTransactions(args: {
+  async getUserTransactionsInboxCount({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<number> {
+    return await this.repository.count({
+      where: {
+        account: { user_id: userId },
+        category: {
+          id: IsNull(),
+        },
+      },
+    });
+  }
+
+  async getUserTransactions({
+    userId,
+    page,
+    pageSize,
+    accounts,
+    categories,
+    startDate,
+    endDate,
+  }: {
     userId: string;
     page: number;
     pageSize: number;
@@ -105,12 +141,17 @@ export class TransactionsService {
     startDate?: Date;
     endDate?: Date;
   }): Promise<Transaction[]> {
-    console.log(`Transaction Query: ${JSON.stringify(args)}`);
+    this.logger.debug('Fetching user transactions with filters', {
+      userId,
+      page,
+      pageSize,
+      accounts,
+      categories,
+      startDate,
+      endDate,
+    });
 
-    const { userId, page, pageSize, accounts, categories, startDate, endDate } =
-      args;
-
-    if (accounts && accounts.length === 0) {
+    if (accounts?.length === 0) {
       throw new BadRequestException('Accounts cannot be empty');
     }
 
@@ -182,12 +223,15 @@ export class TransactionsService {
     return entity;
   }
 
-  async updateUserTransaction(args: {
+  async updateUserTransaction({
+    user_id,
+    transaction_id,
+    dto,
+  }: {
     user_id: string;
     transaction_id: string;
     dto: UpdateTransactionDto;
   }): Promise<Transaction> {
-    const { user_id, transaction_id, dto } = args;
     const dbEntity = await this.repository.findOne({
       where: {
         id: transaction_id,
@@ -211,13 +255,15 @@ export class TransactionsService {
     return await this.repository.save(updatedEntity);
   }
 
-  async getAccountTransactions(args: {
+  async getAccountTransactions({
+    accountId,
+    startDate,
+    endDate,
+  }: {
     accountId: string;
     startDate: Date;
     endDate: Date;
   }): Promise<Transaction[]> {
-    const { accountId, startDate, endDate } = args;
-
     const transactions = await this.repository.find({
       where: {
         accountId: accountId,
@@ -231,11 +277,13 @@ export class TransactionsService {
     return transactions;
   }
 
-  async deleteUserTransaction(args: {
+  async deleteUserTransaction({
+    user_id,
+    transaction_id,
+  }: {
     user_id: string;
     transaction_id: string;
   }): Promise<Transaction> {
-    const { user_id, transaction_id } = args;
     const dbEntity = await this.repository.findOne({
       where: {
         id: transaction_id,
@@ -248,5 +296,43 @@ export class TransactionsService {
     }
 
     return await this.repository.remove(dbEntity);
+  }
+
+  /**
+   * Get all user transactions for export without pagination.
+   * Used for CSV export functionality.
+   */
+  async getAllUserTransactionsForExport({
+    userId,
+    accounts,
+    startDate,
+    endDate,
+  }: {
+    userId: string;
+    accounts?: string[];
+    startDate?: Date;
+    endDate?: Date;
+  }): Promise<Transaction[]> {
+    this.logger.debug('Fetching all user transactions for export', {
+      userId,
+      accounts,
+      startDate,
+      endDate,
+    });
+
+    return this.repository.find({
+      relations: {
+        account: true,
+        category: true,
+      },
+      where: {
+        account: { user_id: userId },
+        ...(accounts && accounts.length > 0 && { accountId: In(accounts) }),
+        ...(startDate && endDate && { date: Between(startDate, endDate) }),
+      },
+      order: {
+        date: 'DESC',
+      },
+    });
   }
 }

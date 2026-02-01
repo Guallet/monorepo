@@ -9,6 +9,9 @@ import { UserApi } from './user';
 import { SavingGoalsApi } from './savingGoals';
 import { SubscriptionsApi } from './subscriptions';
 import { DataImporterApi } from './data-importer';
+import { DataExporterApi } from './data-exporter';
+import { NotificationsApi } from './notifications';
+import { ReportsApi } from './reports';
 import { RulesApi } from './rules';
 
 export interface GualletClient {
@@ -23,6 +26,9 @@ export interface GualletClient {
   savingGoals: SavingGoalsApi;
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
+  dataExporter: DataExporterApi;
+  notifications: NotificationsApi;
+  reports: ReportsApi;
   rules: RulesApi;
 }
 
@@ -42,8 +48,6 @@ export interface TokenHelper {
  *
  * @returns A new instance of GualletClient.
  *
- * @note This function is necessary due to the current use of Supabase.
- *       It should be removed when Supabase is replaced.
  */
 export function createClient({
   baseUrl,
@@ -73,6 +77,9 @@ export class GualletClientImpl implements GualletClient {
   savingGoals: SavingGoalsApi;
   subscriptions: SubscriptionsApi;
   dataImporter: DataImporterApi;
+  dataExporter: DataExporterApi;
+  notifications: NotificationsApi;
+  reports: ReportsApi;
   rules: RulesApi;
 
   constructor({
@@ -96,6 +103,9 @@ export class GualletClientImpl implements GualletClient {
     this.savingGoals = new SavingGoalsApi(this);
     this.subscriptions = new SubscriptionsApi(this);
     this.dataImporter = new DataImporterApi(this);
+    this.dataExporter = new DataExporterApi(this);
+    this.notifications = new NotificationsApi(this);
+    this.reports = new ReportsApi(this);
     this.rules = new RulesApi(this);
   }
 

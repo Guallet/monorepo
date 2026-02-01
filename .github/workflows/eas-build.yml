@@ -6,6 +6,10 @@ on:
       - develop
     paths:
       - "apps/mobile/**"
+
+permissions:
+  contents: read
+
 jobs:
   build:
     name: EAS build

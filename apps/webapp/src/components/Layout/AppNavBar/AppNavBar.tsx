@@ -10,6 +10,7 @@ import {
   IconChartFunnel,
   IconPigMoney,
   IconRepeat,
+  Icon,
 } from '@tabler/icons-react';
 import { AppShell, Button, Divider, ScrollArea } from '@mantine/core';
 import { LinksGroup } from './NavbarLinksGroup';
@@ -17,7 +18,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 type MenuData = {
   label: string;
-  icon: React.FC<any>;
+  icon: Icon;
   initiallyOpened?: boolean;
   link?: string;
   subLinks?: { label: string; link: string }[];

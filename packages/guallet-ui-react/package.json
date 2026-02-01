@@ -1,6 +1,6 @@
 {
   "name": "@guallet/ui-react",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Common React Components fow Web using Mantine",
   "main": "./index.tsx",
   "types": "./index.tsx",
@@ -16,12 +16,15 @@
     "react-dom": "workspace:*"
   },
   "devDependencies": {
+    "@eslint/js": "workspace:*",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
     "eslint": "workspace:*",
-    "eslint-config-custom": "workspace:*",
+    "eslint-plugin-react-hooks": "workspace:*",
+    "globals": "workspace:*",
     "react": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*"
+    "typescript": "workspace:*",
+    "typescript-eslint": "workspace:*"
   }
 }
