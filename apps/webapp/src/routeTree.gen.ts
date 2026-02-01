@@ -36,7 +36,6 @@ import { Route as AppCategoriesIndexRouteImport } from './routes/_app/categories
 import { Route as AppBudgetsIndexRouteImport } from './routes/_app/budgets/index'
 import { Route as AppAccountsIndexRouteImport } from './routes/_app/accounts/index'
 import { Route as AppUserEditRouteImport } from './routes/_app/user/edit'
-import { Route as AppTransactionsOldIndexRouteImport } from './routes/_app/transactions/oldIndex'
 import { Route as AppTransactionsInboxRouteImport } from './routes/_app/transactions/inbox'
 import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transactions/create'
 import { Route as AppSubscriptionsNewRouteImport } from './routes/_app/subscriptions/new'
@@ -46,7 +45,6 @@ import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goal
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
-import { Route as AppCategoriesOldRouteImport } from './routes/_app/categories/old'
 import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/new'
 import { Route as AppCategoriesIdRouteImport } from './routes/_app/categories/$id'
 import { Route as AppBudgetsCreateRouteImport } from './routes/_app/budgets/create'
@@ -222,11 +220,6 @@ const AppUserEditRoute = AppUserEditRouteImport.update({
   path: '/user/edit',
   getParentRoute: () => AppRoute,
 } as any)
-const AppTransactionsOldIndexRoute = AppTransactionsOldIndexRouteImport.update({
-  id: '/transactions/oldIndex',
-  path: '/transactions/oldIndex',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppTransactionsInboxRoute = AppTransactionsInboxRouteImport.update({
   id: '/transactions/inbox',
   path: '/transactions/inbox',
@@ -270,11 +263,6 @@ const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
 const AppConnectionsIdRoute = AppConnectionsIdRouteImport.update({
   id: '/connections/$id',
   path: '/connections/$id',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCategoriesOldRoute = AppCategoriesOldRouteImport.update({
-  id: '/categories/old',
-  path: '/categories/old',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCategoriesNewRoute = AppCategoriesNewRouteImport.update({
@@ -396,7 +384,6 @@ export interface FileRoutesByFullPath {
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
-  '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
@@ -406,7 +393,6 @@ export interface FileRoutesByFullPath {
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
-  '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -456,7 +442,6 @@ export interface FileRoutesByTo {
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
-  '/categories/old': typeof AppCategoriesOldRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
@@ -466,7 +451,6 @@ export interface FileRoutesByTo {
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/transactions/create': typeof AppTransactionsCreateRoute
   '/transactions/inbox': typeof AppTransactionsInboxRoute
-  '/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -518,7 +502,6 @@ export interface FileRoutesById {
   '/_app/budgets/create': typeof AppBudgetsCreateRoute
   '/_app/categories/$id': typeof AppCategoriesIdRoute
   '/_app/categories/new': typeof AppCategoriesNewRoute
-  '/_app/categories/old': typeof AppCategoriesOldRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
@@ -528,7 +511,6 @@ export interface FileRoutesById {
   '/_app/subscriptions/new': typeof AppSubscriptionsNewRoute
   '/_app/transactions/create': typeof AppTransactionsCreateRoute
   '/_app/transactions/inbox': typeof AppTransactionsInboxRoute
-  '/_app/transactions/oldIndex': typeof AppTransactionsOldIndexRoute
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/tools/loan': typeof AppToolsLoanLazyRoute
   '/_app/tools/mortgage': typeof AppToolsMortgageLazyRoute
@@ -580,7 +562,6 @@ export interface FileRouteTypes {
     | '/budgets/create'
     | '/categories/$id'
     | '/categories/new'
-    | '/categories/old'
     | '/connections/$id'
     | '/reports/cashflow'
     | '/saving-goals/$id'
@@ -590,7 +571,6 @@ export interface FileRouteTypes {
     | '/subscriptions/new'
     | '/transactions/create'
     | '/transactions/inbox'
-    | '/transactions/oldIndex'
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
@@ -640,7 +620,6 @@ export interface FileRouteTypes {
     | '/budgets/create'
     | '/categories/$id'
     | '/categories/new'
-    | '/categories/old'
     | '/connections/$id'
     | '/reports/cashflow'
     | '/saving-goals/$id'
@@ -650,7 +629,6 @@ export interface FileRouteTypes {
     | '/subscriptions/new'
     | '/transactions/create'
     | '/transactions/inbox'
-    | '/transactions/oldIndex'
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
@@ -701,7 +679,6 @@ export interface FileRouteTypes {
     | '/_app/budgets/create'
     | '/_app/categories/$id'
     | '/_app/categories/new'
-    | '/_app/categories/old'
     | '/_app/connections/$id'
     | '/_app/reports/cashflow'
     | '/_app/saving-goals/$id'
@@ -711,7 +688,6 @@ export interface FileRouteTypes {
     | '/_app/subscriptions/new'
     | '/_app/transactions/create'
     | '/_app/transactions/inbox'
-    | '/_app/transactions/oldIndex'
     | '/_app/user/edit'
     | '/_app/tools/loan'
     | '/_app/tools/mortgage'
@@ -964,13 +940,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserEditRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/transactions/oldIndex': {
-      id: '/_app/transactions/oldIndex'
-      path: '/transactions/oldIndex'
-      fullPath: '/transactions/oldIndex'
-      preLoaderRoute: typeof AppTransactionsOldIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/transactions/inbox': {
       id: '/_app/transactions/inbox'
       path: '/transactions/inbox'
@@ -1032,13 +1001,6 @@ declare module '@tanstack/react-router' {
       path: '/connections/$id'
       fullPath: '/connections/$id'
       preLoaderRoute: typeof AppConnectionsIdRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/categories/old': {
-      id: '/_app/categories/old'
-      path: '/categories/old'
-      fullPath: '/categories/old'
-      preLoaderRoute: typeof AppCategoriesOldRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/categories/new': {
@@ -1184,7 +1146,6 @@ interface AppRouteChildren {
   AppBudgetsCreateRoute: typeof AppBudgetsCreateRoute
   AppCategoriesIdRoute: typeof AppCategoriesIdRoute
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
-  AppCategoriesOldRoute: typeof AppCategoriesOldRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
@@ -1194,7 +1155,6 @@ interface AppRouteChildren {
   AppSubscriptionsNewRoute: typeof AppSubscriptionsNewRoute
   AppTransactionsCreateRoute: typeof AppTransactionsCreateRoute
   AppTransactionsInboxRoute: typeof AppTransactionsInboxRoute
-  AppTransactionsOldIndexRoute: typeof AppTransactionsOldIndexRoute
   AppUserEditRoute: typeof AppUserEditRoute
   AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
   AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
@@ -1234,7 +1194,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppBudgetsCreateRoute: AppBudgetsCreateRoute,
   AppCategoriesIdRoute: AppCategoriesIdRoute,
   AppCategoriesNewRoute: AppCategoriesNewRoute,
-  AppCategoriesOldRoute: AppCategoriesOldRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
@@ -1244,7 +1203,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppSubscriptionsNewRoute: AppSubscriptionsNewRoute,
   AppTransactionsCreateRoute: AppTransactionsCreateRoute,
   AppTransactionsInboxRoute: AppTransactionsInboxRoute,
-  AppTransactionsOldIndexRoute: AppTransactionsOldIndexRoute,
   AppUserEditRoute: AppUserEditRoute,
   AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
   AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,

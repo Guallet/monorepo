@@ -3,32 +3,10 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/onboarding/waiting_list')({
   component: SubscribeWaitingListPage,
-  loader: loader,
 });
 
-function loader() {
-  return {
-    name: '',
-    email: '',
-  };
-}
-
-// export const action: ActionFunction = async ({ request, params }) => {
-//   const formData = await request.formData();
-//   const values = Object.fromEntries(formData);
-//   // TODO: Ugly as hell, I need to find a better way to do this
-//   const inputValues = JSON.parse(JSON.stringify(values)) as FormData;
-
-//   return {
-//     error: "",
-//     message: "",
-//     rawError: null,
-//     statusCode: 200,
-//   } as ActionData;
-// };
-
 function SubscribeWaitingListPage() {
-  const { name, email } = Route.useLoaderData();
+  const { name, email } = { name: '', email: '' }; // Placeholder for user data
   const navigate = useNavigate();
 
   return (

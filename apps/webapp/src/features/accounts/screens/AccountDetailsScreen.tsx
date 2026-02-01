@@ -1,7 +1,6 @@
-import { fetch_delete } from '@/api/fetchHelper';
 import { AppSection } from '@/components/Cards/AppSection';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
-import { useAccount } from '@guallet/api-react';
+import { useAccount, useAccountMutations } from '@guallet/api-react';
 import {
   Loader,
   Modal,
@@ -114,9 +113,20 @@ function DeleteAccountDialog({
   onCancel,
   onAccountDeleted,
 }: Readonly<DialogProps>) {
+  const { deleteAccountMutation } = useAccountMutations();
+
   async function deleteAccount() {
-    await fetch_delete(`accounts/${account.id}`);
-    onAccountDeleted();
+    try {
+      await deleteAccountMutation.mutateAsync({ id: account.id });
+      onAccountDeleted();
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      notifications.show({
+        title: 'Error deleting account',
+        message: 'There was an error deleting the account. Please try again.',
+        color: 'red',
+      });
+    }
   }
 
   return (
@@ -127,6 +137,7 @@ function DeleteAccountDialog({
         <Button onClick={onCancel}>Cancel</Button>
         <Button
           color="red"
+          loading={deleteAccountMutation.isPending}
           onClick={() => {
             deleteAccount();
           }}

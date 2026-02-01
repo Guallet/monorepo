@@ -7,35 +7,23 @@ import {
   Select,
   Stack,
   Text,
-} from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+} from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 
-import { useState } from "react";
-import { IconTrash } from "@tabler/icons-react";
-import { createFileRoute } from "@tanstack/react-router";
-import { loadCategories } from "@/features/categories/api/categories.api";
-import { Category } from "@/features/categories/models/Category";
+import { useState } from 'react';
+import { IconTrash } from '@tabler/icons-react';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   RuleConditionsOperator,
   RuleConditionsOperatorValues,
   TransactionField,
   TransactionFieldValues,
-} from "@/features/categories/rules/RulesEngine";
+} from '@/features/categories/rules/RulesEngine';
+import { useCategories } from '@guallet/api-react';
 
-export const Route = createFileRoute("/_app/categories/rules/create")({
+export const Route = createFileRoute('/_app/categories/rules/create')({
   component: CreateRulePage,
-  loader: loader,
 });
-
-interface CreateRuleData {
-  categories: Category[];
-}
-
-async function loader() {
-  const categories = await loadCategories();
-
-  return { categories } as CreateRuleData;
-}
 
 export type EditableRuleCondition = {
   id: number;
@@ -45,7 +33,7 @@ export type EditableRuleCondition = {
 };
 
 function CreateRulePage() {
-  const { categories } = Route.useLoaderData();
+  const { categories } = useCategories();
 
   const [counter, setCounter] = useState(1);
 
@@ -130,10 +118,10 @@ function CreateRulePage() {
       <Button
         onClick={() => {
           notifications.show({
-            title: "Not implemented yet",
+            title: 'Not implemented yet',
             message:
-              "This is not implemented yet... it should be behind a feature flag",
-            color: "red",
+              'This is not implemented yet... it should be behind a feature flag',
+            color: 'red',
           });
         }}
       >

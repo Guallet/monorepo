@@ -1,7 +1,7 @@
-import { Group, Table, Text } from "@mantine/core";
-import { CategoryDataRowDto } from "../api/cashflow.models";
-import { useState } from "react";
-import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
+import { Group, Table, Text } from '@mantine/core';
+import { CategoryDataRowDto } from './cashflow.models';
+import { useState } from 'react';
+import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 
 interface IProps {
   row: CategoryDataRowDto;
@@ -15,7 +15,7 @@ export function CashFlowRow({ row }: IProps) {
       <Table.Tr
         key={row.categoryId}
         style={{
-          fontWeight: "normal",
+          fontWeight: 'normal',
         }}
       >
         <Table.Td>{subCategory.categoryName}</Table.Td>
@@ -39,7 +39,7 @@ export function CashFlowRow({ row }: IProps) {
     <Table.Tr
       key={row.categoryId}
       style={{
-        fontWeight: row.isParent ? "bold" : "normal",
+        fontWeight: row.isParent ? 'bold' : 'normal',
       }}
       onClick={() => {
         setIsExpanded(!isExpanded);

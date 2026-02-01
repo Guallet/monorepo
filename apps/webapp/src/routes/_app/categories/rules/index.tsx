@@ -8,35 +8,38 @@ import {
   Stack,
   Text,
   Tooltip,
-} from "@mantine/core";
+} from '@mantine/core';
 
-import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { loadCategories } from "@/features/categories/api/categories.api";
-import { RuleDto, loadRules } from "@/features/categories/rules/api/rules.api";
+import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useCategories, useRules } from '@guallet/api-react';
+import { RuleDto } from '@guallet/api-client';
 
-export const Route = createFileRoute("/_app/categories/rules/")({
+export const Route = createFileRoute('/_app/categories/rules/')({
   component: RulesPage,
-  loader: loader,
 });
 
-async function loader() {
-  const rules = await loadRules();
-  const categories = await loadCategories();
-
-  return { rules, categories };
-}
-
 function RulesPage() {
-  const { rules } = Route.useLoaderData();
   const navigate = useNavigate();
+  const { rules, isLoading: rulesLoading } = useRules();
+  const { isLoading: categoriesLoading } = useCategories();
+
+  const isLoading = rulesLoading || categoriesLoading;
+
+  if (isLoading) {
+    return (
+      <Center>
+        <Text>Loading...</Text>
+      </Center>
+    );
+  }
 
   return (
     <Stack>
       <Text>Rules</Text>
       <Button
         onClick={() => {
-          navigate({ to: "/categories/rules/create" });
+          navigate({ to: '/categories/rules/create' });
         }}
       >
         Create new rule
@@ -64,8 +67,8 @@ export function RuleRow({ rule }: RuleRowProps) {
         <Group
           justify="flex-end"
           style={{
-            minWidth: "fit-content",
-            marginRight: "20px",
+            minWidth: 'fit-content',
+            marginRight: '20px',
           }}
         >
           <Tooltip label="Edit">
