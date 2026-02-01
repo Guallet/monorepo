@@ -19,7 +19,7 @@ describe('Rules DTO Validation', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some(e => e.constraints?.arrayMaxSize)).toBe(true);
+      expect(errors.some((e) => e.constraints?.arrayMaxSize)).toBe(true);
     });
 
     it('should accept rules with maximum allowed conditions', async () => {
@@ -37,21 +37,26 @@ describe('Rules DTO Validation', () => {
 
       const errors = await validate(dto);
       // Should not have arrayMaxSize error, but may have other validation errors
-      const arrayMaxSizeErrors = errors.filter(e => e.constraints?.arrayMaxSize);
+      const arrayMaxSizeErrors = errors.filter(
+        (e) => e.constraints?.arrayMaxSize,
+      );
       expect(arrayMaxSizeErrors.length).toBe(0);
     });
   });
 
   describe('ReorderRulesDto', () => {
     it('should reject too many rule IDs', async () => {
-      const tooManyRuleIds = Array.from({ length: 1001 }, (_, i) => `rule-${i}`);
+      const tooManyRuleIds = Array.from(
+        { length: 1001 },
+        (_, i) => `rule-${i}`,
+      );
 
       const dto = new ReorderRulesDto();
       dto.ruleIds = tooManyRuleIds;
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some(e => e.constraints?.arrayMaxSize)).toBe(true);
+      expect(errors.some((e) => e.constraints?.arrayMaxSize)).toBe(true);
     });
 
     it('should accept maximum allowed rule IDs', async () => {
@@ -62,21 +67,26 @@ describe('Rules DTO Validation', () => {
 
       const errors = await validate(dto);
       // Should not have arrayMaxSize error
-      const arrayMaxSizeErrors = errors.filter(e => e.constraints?.arrayMaxSize);
+      const arrayMaxSizeErrors = errors.filter(
+        (e) => e.constraints?.arrayMaxSize,
+      );
       expect(arrayMaxSizeErrors.length).toBe(0);
     });
   });
 
   describe('ReorderConditionsDto', () => {
     it('should reject too many condition IDs', async () => {
-      const tooManyConditionIds = Array.from({ length: 51 }, (_, i) => `cond-${i}`);
+      const tooManyConditionIds = Array.from(
+        { length: 51 },
+        (_, i) => `cond-${i}`,
+      );
 
       const dto = new ReorderConditionsDto();
       dto.conditionIds = tooManyConditionIds;
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some(e => e.constraints?.arrayMaxSize)).toBe(true);
+      expect(errors.some((e) => e.constraints?.arrayMaxSize)).toBe(true);
     });
 
     it('should accept maximum allowed condition IDs', async () => {
@@ -87,7 +97,9 @@ describe('Rules DTO Validation', () => {
 
       const errors = await validate(dto);
       // Should not have arrayMaxSize error
-      const arrayMaxSizeErrors = errors.filter(e => e.constraints?.arrayMaxSize);
+      const arrayMaxSizeErrors = errors.filter(
+        (e) => e.constraints?.arrayMaxSize,
+      );
       expect(arrayMaxSizeErrors.length).toBe(0);
     });
   });

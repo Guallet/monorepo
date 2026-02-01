@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RulesService } from './rules.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CategorizationRule, RuleCondition } from './entities/categorization-rule.entity';
+import {
+  CategorizationRule,
+  RuleCondition,
+} from './entities/categorization-rule.entity';
 import { Transaction } from '../transactions/entities/transaction.entity';
 import { BadRequestException } from '@nestjs/common';
 import { CreateRuleDto } from './dto/create-rule.dto';
@@ -80,13 +83,13 @@ describe('RulesService', () => {
         conditions: tooManyConditions,
       };
 
-      await expect(
-        service.create({ userId: 'user-1', dto })
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.create({ userId: 'user-1', dto })).rejects.toThrow(
+        BadRequestException,
+      );
 
-      await expect(
-        service.create({ userId: 'user-1', dto })
-      ).rejects.toThrow('Too many conditions. Maximum allowed: 50');
+      await expect(service.create({ userId: 'user-1', dto })).rejects.toThrow(
+        'Too many conditions. Maximum allowed: 50',
+      );
     });
   });
 
@@ -112,43 +115,49 @@ describe('RulesService', () => {
         conditions: [],
       });
 
-      await expect(
-        service.update('user-1', 'rule-1', dto)
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.update('user-1', 'rule-1', dto)).rejects.toThrow(
+        BadRequestException,
+      );
 
-      await expect(
-        service.update('user-1', 'rule-1', dto)
-      ).rejects.toThrow('Too many conditions. Maximum allowed: 50');
+      await expect(service.update('user-1', 'rule-1', dto)).rejects.toThrow(
+        'Too many conditions. Maximum allowed: 50',
+      );
     });
   });
 
   describe('reorderRules', () => {
     it('should throw BadRequestException for too many rule IDs', async () => {
-      const tooManyRuleIds = Array.from({ length: 1001 }, (_, i) => `rule-${i}`);
+      const tooManyRuleIds = Array.from(
+        { length: 1001 },
+        (_, i) => `rule-${i}`,
+      );
 
       await expect(
-        service.reorderRules('user-1', tooManyRuleIds)
+        service.reorderRules('user-1', tooManyRuleIds),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.reorderRules('user-1', tooManyRuleIds)
+        service.reorderRules('user-1', tooManyRuleIds),
       ).rejects.toThrow('Too many rules. Maximum allowed: 1000');
     });
 
     it('should throw BadRequestException for non-array input', async () => {
-      await expect(
-        service.reorderRules('user-1', null as any)
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.reorderRules('user-1', null as any)).rejects.toThrow(
+        BadRequestException,
+      );
 
       await expect(
-        service.reorderRules('user-1', 'not an array' as any)
+        service.reorderRules('user-1', 'not an array' as any),
       ).rejects.toThrow('Too many rules. Maximum allowed: 1000');
     });
   });
 
   describe('reorderConditions', () => {
     it('should throw BadRequestException for too many condition IDs', async () => {
-      const tooManyConditionIds = Array.from({ length: 51 }, (_, i) => `cond-${i}`);
+      const tooManyConditionIds = Array.from(
+        { length: 51 },
+        (_, i) => `cond-${i}`,
+      );
 
       // Mock findOne to avoid NotFoundException
       mockRulesRepository.findOne.mockResolvedValue({
@@ -157,11 +166,11 @@ describe('RulesService', () => {
       });
 
       await expect(
-        service.reorderConditions('user-1', 'rule-1', tooManyConditionIds)
+        service.reorderConditions('user-1', 'rule-1', tooManyConditionIds),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.reorderConditions('user-1', 'rule-1', tooManyConditionIds)
+        service.reorderConditions('user-1', 'rule-1', tooManyConditionIds),
       ).rejects.toThrow('Too many conditions. Maximum allowed: 50');
     });
 
@@ -173,11 +182,11 @@ describe('RulesService', () => {
       });
 
       await expect(
-        service.reorderConditions('user-1', 'rule-1', null as any)
+        service.reorderConditions('user-1', 'rule-1', null as any),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.reorderConditions('user-1', 'rule-1', 'not an array' as any)
+        service.reorderConditions('user-1', 'rule-1', 'not an array' as any),
       ).rejects.toThrow('Too many conditions. Maximum allowed: 50');
     });
   });
