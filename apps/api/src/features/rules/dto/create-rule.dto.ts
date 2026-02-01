@@ -72,7 +72,8 @@ export class CreateRuleDto {
   resultCategoryId: string;
 
   @ApiProperty({
-    description: 'The conditions that must all match for the rule to apply',
+    description:
+      'The conditions to evaluate; how many must match depends on conditionLogic ("and": all must match, "or": at least one must match)',
     type: [CreateConditionDto],
   })
   @IsArray()

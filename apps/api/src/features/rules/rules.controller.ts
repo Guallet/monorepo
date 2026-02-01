@@ -83,10 +83,6 @@ export class RulesController {
     @Param('id') id: string,
   ): Promise<RuleDto> {
     const rule = await this.rulesService.findOne({ userId: user.id, id });
-    if (!rule) {
-      throw new Error(`Rule with ID "${id}" not found`);
-    }
-
     return RuleDto.fromEntity(rule);
   }
 
@@ -104,7 +100,6 @@ export class RulesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a categorization rule' })
-  @ApiResponse({ status: 204 })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,

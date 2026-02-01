@@ -1,10 +1,7 @@
-import {
-  CreateRuleRequest,
-  UpdateRuleRequest,
-} from "@guallet/api-client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
-import { RULES_QUERY_KEY } from "./useRules";
+import { CreateRuleRequest, UpdateRuleRequest } from '@guallet/api-client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
+import { RULES_QUERY_KEY } from './useRules';
 
 export function useRuleMutations() {
   const queryClient = useQueryClient();
@@ -54,13 +51,13 @@ export function useRuleMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.rules.delete(id);
     },
-    onSuccess: async () => {
+    onSuccess: async (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [RULES_QUERY_KEY],
       });
-        queryClient.removeQueries({
-          queryKey: [RULES_QUERY_KEY, variables.id],
-        });
+      queryClient.removeQueries({
+        queryKey: [RULES_QUERY_KEY, variables.id],
+      });
     },
     onError: async (error) => {
       console.error(error);

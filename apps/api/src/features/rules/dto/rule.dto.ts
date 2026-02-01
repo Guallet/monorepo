@@ -57,7 +57,8 @@ export class RuleDto {
   conditionLogic: string;
 
   @ApiProperty({
-    description: 'Conditions that must all match',
+    description:
+      'Conditions evaluated according to conditionLogic: all must match for "and", at least one must match for "or".',
     type: [RuleConditionDto],
   })
   conditions: RuleConditionDto[];
