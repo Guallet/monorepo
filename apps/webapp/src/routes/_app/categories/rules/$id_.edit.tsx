@@ -15,8 +15,9 @@ export const Route = createFileRoute('/_app/categories/rules/$id_/edit')({
 
 function EditRulePage() {
   const { id } = Route.useParams();
-  const { rule } = useRule(id);
-  const { fieldDefinitions } = useFieldDefinitions();
+  const { rule, isLoading: isRuleLoading } = useRule(id);
+  const { fieldDefinitions, isLoading: isFieldsLoading } =
+    useFieldDefinitions();
   const { updateRuleMutation } = useRuleMutations();
 
   const navigate = useNavigate();
@@ -79,10 +80,29 @@ function EditRulePage() {
     navigate({ to: '/categories/rules' });
   };
 
+  if (isRuleLoading || isFieldsLoading) {
+    return (
+      <Stack gap="md">
+        <Title order={2}>Edit Rule</Title>
+        <div>Loading rule...</div>
+      </Stack>
+    );
+  }
+
+  if (!rule && !isRuleLoading) {
+    return (
+      <Stack gap="md">
+        <Title order={2}>Edit Rule</Title>
+        <div>Rule not found.</div>
+      </Stack>
+    );
+  }
+
   return (
     <Stack gap="md">
       <Title order={2}>Edit Rule</Title>
       <RuleForm
+        key={rule?.id}
         initialData={initialData}
         fieldDefinitions={fieldDefinitions ?? []}
         onSubmit={handleSubmit}

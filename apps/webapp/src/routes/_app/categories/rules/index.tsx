@@ -10,6 +10,7 @@ import {
   Title,
   Switch,
   Menu,
+  Loader,
 } from '@mantine/core';
 import {
   IconPlus,
@@ -29,7 +30,11 @@ export const Route = createFileRoute('/_app/categories/rules/')({
 });
 
 function RulesPage() {
-  const { rules } = useRules();
+  const {
+    rules,
+    isLoading: isRulesLoading,
+    isFetching: isRulesFetching,
+  } = useRules();
   const { categories } = useCategories();
 
   const { reorderRulesMutation, deleteRuleMutation, updateRuleMutation } =
@@ -128,6 +133,135 @@ function RulesPage() {
     }
   };
 
+  const getPluralizedConditions = (count: number, logic: string) => {
+    const conditionText = count === 1 ? 'condition' : 'conditions';
+    const logicText = logic === 'or' ? 'ANY' : 'ALL';
+    return `${count} ${conditionText} (${logicText})`;
+  };
+
+  const renderContent = () => {
+    if (isRulesLoading || isRulesFetching) {
+      return (
+        <Card withBorder p="xl" ta="center">
+          <Group justify="center">
+            <Loader />
+          </Group>
+        </Card>
+      );
+    }
+    if (rules.length === 0) {
+      return (
+        <Card withBorder p="xl" ta="center">
+          <Text c="dimmed">No rules created yet.</Text>
+          <Button
+            mt="md"
+            variant="light"
+            leftSection={<IconPlus size={16} />}
+            onClick={() => navigate({ to: '/categories/rules/new' })}
+          >
+            Create your first rule
+          </Button>
+        </Card>
+      );
+    }
+    return (
+      <Stack gap="xs">
+        {rules.map((rule, index) => (
+          <Card
+            key={rule.id}
+            withBorder
+            shadow="sm"
+            p="sm"
+            draggable
+            onDragStart={(e) => handleDragStart(e, rule)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, rule)}
+            style={{
+              cursor: 'grab',
+              opacity: draggedItem?.id === rule.id ? 0.5 : 1,
+            }}
+          >
+            <Group justify="space-between" wrap="nowrap">
+              <Group gap="sm" wrap="nowrap" style={{ flex: 1 }}>
+                <ActionIcon variant="subtle" style={{ cursor: 'grab' }}>
+                  <IconGripVertical size={16} />
+                </ActionIcon>
+                <Badge size="sm" variant="light" color="gray">
+                  #{index + 1}
+                </Badge>
+                <Stack gap={2} style={{ flex: 1 }}>
+                  <Group gap="xs">
+                    <Text fw={500}>{rule.name}</Text>
+                    {!rule.isActive && (
+                      <Badge size="xs" color="gray">
+                        Disabled
+                      </Badge>
+                    )}
+                  </Group>
+                  {rule.description && (
+                    <Text size="sm" c="dimmed" lineClamp={1}>
+                      {rule.description}
+                    </Text>
+                  )}
+                  <Group gap="xs">
+                    <Text size="xs" c="dimmed">
+                      {getPluralizedConditions(
+                        rule.conditions.length,
+                        rule.conditionLogic,
+                      )}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      →
+                    </Text>
+                    <Badge size="xs" variant="light">
+                      {getCategoryName(rule.resultCategoryId)}
+                    </Badge>
+                  </Group>
+                </Stack>
+              </Group>
+
+              <Group gap="xs" wrap="nowrap">
+                <Switch
+                  size="sm"
+                  checked={rule.isActive}
+                  onChange={() => handleToggleActive(rule)}
+                />
+                <Menu shadow="md" width={200}>
+                  <Menu.Target>
+                    <ActionIcon variant="subtle">
+                      <IconDotsVertical size={16} />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      leftSection={<IconEdit size={14} />}
+                      onClick={() =>
+                        navigate({
+                          to: '/categories/rules/$id/edit',
+                          params: { id: rule.id },
+                        })
+                      }
+                    >
+                      Edit
+                    </Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item
+                      color="red"
+                      leftSection={<IconTrash size={14} />}
+                      onClick={() => handleDelete(rule.id)}
+                    >
+                      Delete
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              </Group>
+            </Group>
+          </Card>
+        ))}
+      </Stack>
+    );
+  };
+
   return (
     <Stack gap="md">
       <Group justify="space-between" align="center">
@@ -146,114 +280,7 @@ function RulesPage() {
         transactions.
       </Text>
 
-      {rules.length === 0 ? (
-        <Card withBorder p="xl" ta="center">
-          <Text c="dimmed">No rules created yet.</Text>
-          <Button
-            mt="md"
-            variant="light"
-            leftSection={<IconPlus size={16} />}
-            onClick={() => navigate({ to: '/categories/rules/new' })}
-          >
-            Create your first rule
-          </Button>
-        </Card>
-      ) : (
-        <Stack gap="xs">
-          {rules.map((rule, index) => (
-            <Card
-              key={rule.id}
-              withBorder
-              shadow="sm"
-              p="sm"
-              draggable
-              onDragStart={(e) => handleDragStart(e, rule)}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, rule)}
-              style={{
-                cursor: 'grab',
-                opacity: draggedItem?.id === rule.id ? 0.5 : 1,
-              }}
-            >
-              <Group justify="space-between" wrap="nowrap">
-                <Group gap="sm" wrap="nowrap" style={{ flex: 1 }}>
-                  <ActionIcon variant="subtle" style={{ cursor: 'grab' }}>
-                    <IconGripVertical size={16} />
-                  </ActionIcon>
-                  <Badge size="sm" variant="light" color="gray">
-                    #{index + 1}
-                  </Badge>
-                  <Stack gap={2} style={{ flex: 1 }}>
-                    <Group gap="xs">
-                      <Text fw={500}>{rule.name}</Text>
-                      {!rule.isActive && (
-                        <Badge size="xs" color="gray">
-                          Disabled
-                        </Badge>
-                      )}
-                    </Group>
-                    {rule.description && (
-                      <Text size="sm" c="dimmed" lineClamp={1}>
-                        {rule.description}
-                      </Text>
-                    )}
-                    <Group gap="xs">
-                      <Text size="xs" c="dimmed">
-                        {/* // TODO: This should be pluralized properly via i18n */}
-                        {rule.conditions.length} condition
-                        {rule.conditions.length === 1 ? '' : 's'} (
-                        {rule.conditionLogic === 'or' ? 'ANY' : 'ALL'})
-                      </Text>
-                      <Text size="xs" c="dimmed">
-                        →
-                      </Text>
-                      <Badge size="xs" variant="light">
-                        {getCategoryName(rule.resultCategoryId)}
-                      </Badge>
-                    </Group>
-                  </Stack>
-                </Group>
-
-                <Group gap="xs" wrap="nowrap">
-                  <Switch
-                    size="sm"
-                    checked={rule.isActive}
-                    onChange={() => handleToggleActive(rule)}
-                  />
-                  <Menu shadow="md" width={200}>
-                    <Menu.Target>
-                      <ActionIcon variant="subtle">
-                        <IconDotsVertical size={16} />
-                      </ActionIcon>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      <Menu.Item
-                        leftSection={<IconEdit size={14} />}
-                        onClick={() =>
-                          navigate({
-                            to: '/categories/rules/$id/edit',
-                            params: { id: rule.id },
-                          })
-                        }
-                      >
-                        Edit
-                      </Menu.Item>
-                      <Menu.Divider />
-                      <Menu.Item
-                        color="red"
-                        leftSection={<IconTrash size={14} />}
-                        onClick={() => handleDelete(rule.id)}
-                      >
-                        Delete
-                      </Menu.Item>
-                    </Menu.Dropdown>
-                  </Menu>
-                </Group>
-              </Group>
-            </Card>
-          ))}
-        </Stack>
-      )}
+      {renderContent()}
     </Stack>
   );
 }
