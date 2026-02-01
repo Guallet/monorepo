@@ -22,14 +22,18 @@ import {
   OperatorType,
   TransactionField,
 } from './engine';
+
 import { Transaction } from '../transactions/entities/transaction.entity';
+import {
+  MAX_CONDITIONS_PER_RULE,
+  MAX_RULES_PER_USER,
+  TOO_MANY_CONDITIONS_MESSAGE,
+  TOO_MANY_RULES_MESSAGE,
+} from './constants';
 
 @Injectable()
 export class RulesService {
   private readonly logger = new Logger(RulesService.name);
-
-  private readonly MAX_CONDITIONS_PER_RULE = 50;
-  private readonly MAX_RULES_PER_USER = 1000;
 
   constructor(
     @InjectRepository(CategorizationRuleEntity)
@@ -49,11 +53,9 @@ export class RulesService {
     // Validate input bounds to prevent DoS attacks
     if (
       !Array.isArray(conditions) ||
-      conditions.length > this.MAX_CONDITIONS_PER_RULE
+      conditions.length > MAX_CONDITIONS_PER_RULE
     ) {
-      throw new BadRequestException(
-        `Too many conditions. Maximum allowed: ${this.MAX_CONDITIONS_PER_RULE}`,
-      );
+      throw new BadRequestException(TOO_MANY_CONDITIONS_MESSAGE);
     }
 
     for (const condition of conditions) {
@@ -83,6 +85,23 @@ export class RulesService {
   }
 
   /**
+   * Returns the configured limits and messages for rules
+   */
+  getLimits(): {
+    maxConditionsPerRule: number;
+    maxRulesPerUser: number;
+    tooManyConditionsMessage: string;
+    tooManyRulesMessage: string;
+  } {
+    return {
+      maxConditionsPerRule: MAX_CONDITIONS_PER_RULE,
+      maxRulesPerUser: MAX_RULES_PER_USER,
+      tooManyConditionsMessage: TOO_MANY_CONDITIONS_MESSAGE,
+      tooManyRulesMessage: TOO_MANY_RULES_MESSAGE,
+    };
+  }
+
+  /**
    * Create a new categorization rule
    */
   async create({
@@ -96,6 +115,14 @@ export class RulesService {
 
     // Validate conditions
     this.validateConditions(dto.conditions);
+
+    // Enforce per-user rule count limit to prevent abuse
+    const existingRuleCount = await this.rulesRepository.count({
+      where: { userId },
+    });
+    if (existingRuleCount >= MAX_RULES_PER_USER) {
+      throw new BadRequestException(TOO_MANY_RULES_MESSAGE);
+    }
 
     // Get the next order number
     const maxOrderResult = await this.rulesRepository
@@ -240,10 +267,8 @@ export class RulesService {
     ruleIds: string[],
   ): Promise<CategorizationRuleEntity[]> {
     // Validate input bounds to prevent DoS attacks
-    if (!Array.isArray(ruleIds) || ruleIds.length > this.MAX_RULES_PER_USER) {
-      throw new BadRequestException(
-        `Too many rules. Maximum allowed: ${this.MAX_RULES_PER_USER}`,
-      );
+    if (!Array.isArray(ruleIds) || ruleIds.length > MAX_RULES_PER_USER) {
+      throw new BadRequestException(TOO_MANY_RULES_MESSAGE);
     }
 
     this.logger.debug(`Reordering rules for user ${userId}`, ruleIds);
@@ -281,11 +306,9 @@ export class RulesService {
     // Validate input bounds to prevent DoS attacks
     if (
       !Array.isArray(conditionIds) ||
-      conditionIds.length > this.MAX_CONDITIONS_PER_RULE
+      conditionIds.length > MAX_CONDITIONS_PER_RULE
     ) {
-      throw new BadRequestException(
-        `Too many conditions. Maximum allowed: ${this.MAX_CONDITIONS_PER_RULE}`,
-      );
+      throw new BadRequestException(TOO_MANY_CONDITIONS_MESSAGE);
     }
 
     // Verify rule belongs to user

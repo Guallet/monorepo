@@ -23,7 +23,7 @@ import {
   RuleEvaluationResult,
 } from './rule-types';
 
-const MAX_CONDITIONS_PER_RULE = 50;
+import { MAX_CONDITIONS_PER_RULE } from '../constants';
 
 /**
  * Evaluate a single condition against a transaction

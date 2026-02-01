@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, ArrayMaxSize } from 'class-validator';
-
-const MAX_CONDITIONS_PER_RULE = 50;
-const MAX_RULES_PER_USER = 1000;
+import { MAX_RULES_PER_USER, MAX_CONDITIONS_PER_RULE } from '../constants';
 
 export class ReorderRulesDto {
   @ApiProperty({

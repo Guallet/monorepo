@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { RulesService } from './rules.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -19,6 +21,7 @@ describe('RulesService', () => {
     create: jest.fn(),
     save: jest.fn(),
     remove: jest.fn(),
+    count: jest.fn(),
     createQueryBuilder: jest.fn(() => ({
       select: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
@@ -89,6 +92,27 @@ describe('RulesService', () => {
 
       await expect(service.create({ userId: 'user-1', dto })).rejects.toThrow(
         'Too many conditions. Maximum allowed: 50',
+      );
+    });
+
+    it('should throw BadRequestException when user already has max rules', async () => {
+      // Mock the repository to return MAX_RULES_PER_USER existing rules
+      mockRulesRepository.count.mockResolvedValue(1000 as any);
+
+      const dto: CreateRuleDto = {
+        name: 'New Rule',
+        resultCategoryId: 'category-1',
+        conditions: [
+          { field: 'description', operator: 'contains', value: 'x', order: 0 },
+        ],
+      };
+
+      await expect(service.create({ userId: 'user-1', dto })).rejects.toThrow(
+        BadRequestException,
+      );
+
+      await expect(service.create({ userId: 'user-1', dto })).rejects.toThrow(
+        'Too many rules. Maximum allowed: 1000',
       );
     });
   });
@@ -174,6 +198,18 @@ describe('RulesService', () => {
       ).rejects.toThrow('Too many conditions. Maximum allowed: 50');
     });
 
+    it('getLimits should return constants and messages', () => {
+      const limits = service.getLimits();
+      expect(limits).toHaveProperty('maxConditionsPerRule');
+      expect(limits).toHaveProperty('maxRulesPerUser');
+      expect(limits).toHaveProperty('tooManyConditionsMessage');
+      expect(limits).toHaveProperty('tooManyRulesMessage');
+      expect(limits.maxConditionsPerRule).toBeGreaterThan(0);
+      expect(limits.maxRulesPerUser).toBeGreaterThan(0);
+      expect(typeof limits.tooManyConditionsMessage).toBe('string');
+      expect(typeof limits.tooManyRulesMessage).toBe('string');
+    });
+
     it('should throw BadRequestException for non-array input', async () => {
       // Mock findOne to avoid NotFoundException
       mockRulesRepository.findOne.mockResolvedValue({
@@ -186,7 +222,7 @@ describe('RulesService', () => {
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.reorderConditions('user-1', 'rule-1', 'not an array' as any),
+        service.reorderConditions('user-1', 'rule-1', 'not an array' as never),
       ).rejects.toThrow('Too many conditions. Maximum allowed: 50');
     });
   });

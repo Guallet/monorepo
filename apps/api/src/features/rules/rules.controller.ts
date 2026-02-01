@@ -19,6 +19,7 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto';
 import { TransactionsService } from '../transactions/transactions.service';
+import { LimitsDto } from './dto/limits.dto';
 
 @ApiTags('Categorization Rules')
 @Controller('rules')
@@ -65,6 +66,13 @@ export class RulesController {
   @ApiOperation({ summary: 'Get available fields and operators for rules' })
   getFieldDefinitions() {
     return this.rulesService.getFieldDefinitions();
+  }
+
+  @Get('limits')
+  @ApiOperation({ summary: 'Get rules limits and error messages' })
+  @ApiResponse({ status: 200, type: LimitsDto })
+  getLimits() {
+    return this.rulesService.getLimits();
   }
 
   @Get(':id')
