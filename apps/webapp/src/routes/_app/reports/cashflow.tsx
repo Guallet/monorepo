@@ -1,42 +1,41 @@
-import { Stack, Table, Text, useMantineTheme } from "@mantine/core";
-import { YearPickerInput } from "@mantine/dates";
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { loadCategories } from "@/features/categories/api/categories.api";
-import { getCashflowReportData } from "@/features/reports/api/reports.api";
-import { ReportFilters } from "@/features/reports/components/ReportFilters";
-import { CashflowDataDto } from "@/features/reports/api/cashflow.models";
-import { CashFlowRow } from "@/features/reports/CashFlow/CashFlowCategoryRow";
+import { Stack, Table, Text, useMantineTheme } from '@mantine/core';
+import { YearPickerInput } from '@mantine/dates';
+import { useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { ReportFilters } from '@/features/reports/components/ReportFilters';
+import { CashflowDataDto } from '@/features/reports/CashFlow/cashflow.models';
+import { CashFlowRow } from '@/features/reports/CashFlow/CashFlowCategoryRow';
 
-import { z } from "zod";
-import { useAccounts } from "@guallet/api-react";
+import { z } from 'zod';
+import {
+  useAccounts,
+  useCategories,
+  useCashflowReports,
+} from '@guallet/api-react';
 const pageSearchSchema = z.object({
   year: z.number().catch(new Date().getUTCFullYear()),
 });
 
-export const Route = createFileRoute("/_app/reports/cashflow")({
+export const Route = createFileRoute('/_app/reports/cashflow')({
   component: CashFlowPage,
   validateSearch: pageSearchSchema,
-  loaderDeps: ({ search: { year } }) => ({ year }),
-  loader: async ({ deps: { year } }) => loader({ year }),
 });
 
-async function loader(args: { year: number }) {
-  const { year } = args;
-  const categories = await loadCategories();
-  const reportData = await getCashflowReportData(year);
-
-  return {
-    categories: categories,
-    tableData: reportData,
-  };
-}
-
 export function CashFlowPage() {
-  const { categories, tableData } = Route.useLoaderData();
+  const { year } = Route.useSearch();
   const [selectedYear, setSelectedYear] = useState<Date | null>(null);
 
   const { accounts } = useAccounts();
+  const { categories, isLoading: categoriesLoading } = useCategories();
+  const { cashflowData, isLoading: reportLoading } = useCashflowReports({
+    year,
+  });
+
+  const isLoading = categoriesLoading || reportLoading;
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <Stack>
@@ -47,7 +46,7 @@ export function CashFlowPage() {
         categories={categories}
         selectedCategories={[]}
         onFiltersUpdate={(x) => {
-          console.log("Filters updated", x);
+          console.log('Filters updated', x);
         }}
       />
       <YearPickerInput
@@ -56,7 +55,7 @@ export function CashFlowPage() {
         value={selectedYear}
         onChange={setSelectedYear}
       />
-      <CashFlowTable reportData={tableData} />
+      {cashflowData && <CashFlowTable reportData={cashflowData} />}
     </Stack>
   );
 }
@@ -75,9 +74,9 @@ function CashFlowTable({ reportData }: CashFlowTableProps) {
     <Table.Tr
       key="totalRow"
       style={{
-        fontWeight: "bold",
+        fontWeight: 'bold',
         backgroundColor: theme.colors.gray[5],
-        color: "white",
+        color: 'white',
       }}
     >
       <Table.Td>Total</Table.Td>

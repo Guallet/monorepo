@@ -11,6 +11,8 @@ import { SubscriptionsApi } from './subscriptions';
 import { DataImporterApi } from './data-importer';
 import { DataExporterApi } from './data-exporter';
 import { NotificationsApi } from './notifications';
+import { ReportsApi } from './reports';
+import { RulesApi } from './rules';
 
 export interface GualletClient {
   admin: AdminApi;
@@ -26,6 +28,8 @@ export interface GualletClient {
   dataImporter: DataImporterApi;
   dataExporter: DataExporterApi;
   notifications: NotificationsApi;
+  reports: ReportsApi;
+  rules: RulesApi;
 }
 
 export interface TokenHelper {
@@ -75,6 +79,8 @@ export class GualletClientImpl implements GualletClient {
   dataImporter: DataImporterApi;
   dataExporter: DataExporterApi;
   notifications: NotificationsApi;
+  reports: ReportsApi;
+  rules: RulesApi;
 
   constructor({
     baseUrl,
@@ -99,6 +105,8 @@ export class GualletClientImpl implements GualletClient {
     this.dataImporter = new DataImporterApi(this);
     this.dataExporter = new DataExporterApi(this);
     this.notifications = new NotificationsApi(this);
+    this.reports = new ReportsApi(this);
+    this.rules = new RulesApi(this);
   }
 
   async get<TDto>({
