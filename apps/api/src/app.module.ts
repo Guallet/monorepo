@@ -26,7 +26,6 @@ import { NotificationsModule } from './features/notifications/notifications.modu
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
-import { UsersService } from './features/users/users.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth';
 import { AppController } from './app.controller';
@@ -155,7 +154,7 @@ import { AppController } from './app.controller';
     HealthModule,
   ],
   controllers: [AppController],
-  providers: [UsersService],
+  providers: [],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
