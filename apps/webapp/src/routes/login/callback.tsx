@@ -46,6 +46,7 @@ function LoginCallbackPage() {
           <Paper withBorder shadow="md" p={30} mt={20} radius="md">
             <Stack>
               <Title>Authentication error</Title>
+              <Text>{error_code}</Text>
               <Text>
                 {error_description?.replaceAll('+', ' ') ??
                   'An unknown error occurred.'}

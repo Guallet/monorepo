@@ -2,10 +2,18 @@ import { Module } from '@nestjs/common';
 import { RulesService } from './rules.service';
 import { RulesController } from './rules.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Rule, RuleCondition } from './entities/rule.entity';
+import {
+  CategorizationRule,
+  RuleCondition,
+} from './entities/categorization-rule.entity';
+import { Transaction } from '../transactions/entities/transaction.entity';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rule, RuleCondition])],
+  imports: [
+    TypeOrmModule.forFeature([CategorizationRule, RuleCondition, Transaction]),
+    TransactionsModule,
+  ],
   controllers: [RulesController],
   providers: [RulesService],
   exports: [RulesService],

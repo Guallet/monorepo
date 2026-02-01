@@ -1,5 +1,13 @@
-import { RuleDto, CreateRuleRequest, UpdateRuleRequest } from './rules.models';
 import { GualletClientImpl } from './../GualletClient';
+import {
+  CreateRuleRequest,
+  FieldDefinitionsDto,
+  ReorderConditionsRequest,
+  ReorderRulesRequest,
+  RuleDto,
+  RuleEvaluationResultDto,
+  UpdateRuleRequest,
+} from './rules.models';
 
 const RULES_PATH = 'rules';
 
@@ -7,9 +15,7 @@ export class RulesApi {
   constructor(private readonly client: GualletClientImpl) {}
 
   async getAll(): Promise<RuleDto[]> {
-    return await this.client.get<RuleDto[]>({
-      path: RULES_PATH,
-    });
+    return await this.client.get<RuleDto[]>({ path: RULES_PATH });
   }
 
   async get(id: string): Promise<RuleDto> {
@@ -18,23 +24,63 @@ export class RulesApi {
     });
   }
 
-  async create(rule: CreateRuleRequest): Promise<RuleDto> {
-    return await this.client.post<RuleDto, CreateRuleRequest>({
-      path: RULES_PATH,
-      payload: rule,
+  async getFieldDefinitions(): Promise<FieldDefinitionsDto> {
+    return await this.client.get<FieldDefinitionsDto>({
+      path: `${RULES_PATH}/fields`,
     });
   }
 
-  async update(id: string, rule: UpdateRuleRequest): Promise<RuleDto> {
+  async create(request: CreateRuleRequest): Promise<RuleDto> {
+    return await this.client.post<RuleDto, CreateRuleRequest>({
+      path: RULES_PATH,
+      payload: request,
+    });
+  }
+
+  async update({
+    id,
+    dto,
+  }: {
+    id: string;
+    dto: UpdateRuleRequest;
+  }): Promise<RuleDto> {
     return await this.client.patch<RuleDto, UpdateRuleRequest>({
       path: `${RULES_PATH}/${id}`,
-      payload: rule,
+      payload: dto,
     });
   }
 
   async delete(id: string): Promise<void> {
-    return await this.client.fetch_delete({
+    await this.client.fetch_delete<void>({
       path: `${RULES_PATH}/${id}`,
+    });
+  }
+
+  async reorder(ruleIds: string[]): Promise<RuleDto[]> {
+    return await this.client.post<RuleDto[], ReorderRulesRequest>({
+      path: `${RULES_PATH}/reorder`,
+      payload: { ruleIds },
+    });
+  }
+
+  async reorderConditions({
+    ruleId,
+    conditionIds,
+  }: {
+    ruleId: string;
+    conditionIds: string[];
+  }): Promise<RuleDto> {
+    return await this.client.post<RuleDto, ReorderConditionsRequest>({
+      path: `${RULES_PATH}/${ruleId}/conditions/reorder`,
+      payload: { conditionIds },
+    });
+  }
+
+  async evaluateRulesForTransaction(
+    transactionId: string,
+  ): Promise<RuleEvaluationResultDto> {
+    return await this.client.get<RuleEvaluationResultDto>({
+      path: `${RULES_PATH}/evaluate/${transactionId}`,
     });
   }
 }

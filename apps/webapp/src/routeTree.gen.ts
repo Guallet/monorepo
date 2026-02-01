@@ -59,9 +59,10 @@ import { Route as AppImporterCsvPropertiesRouteImport } from './routes/_app/impo
 import { Route as AppImporterCsvCategoriesRouteImport } from './routes/_app/importer/csv/categories'
 import { Route as AppImporterCsvAccountsRouteImport } from './routes/_app/importer/csv/accounts'
 import { Route as AppConnectionsConnectCallbackRouteImport } from './routes/_app/connections/connect/callback'
-import { Route as AppCategoriesRulesCreateRouteImport } from './routes/_app/categories/rules/create'
+import { Route as AppCategoriesRulesNewRouteImport } from './routes/_app/categories/rules/new'
 import { Route as AppCategoriesIdEditRouteImport } from './routes/_app/categories/$id_.edit'
 import { Route as AppAccountsIdEditRouteImport } from './routes/_app/accounts/$id_.edit'
+import { Route as AppCategoriesRulesIdEditRouteImport } from './routes/_app/categories/rules/$id_.edit'
 
 const UserdeletedLazyRouteImport = createFileRoute('/userdeleted')()
 const IndexLazyRouteImport = createFileRoute('/')()
@@ -337,12 +338,11 @@ const AppConnectionsConnectCallbackRoute =
     path: '/connections/connect/callback',
     getParentRoute: () => AppRoute,
   } as any)
-const AppCategoriesRulesCreateRoute =
-  AppCategoriesRulesCreateRouteImport.update({
-    id: '/categories/rules/create',
-    path: '/categories/rules/create',
-    getParentRoute: () => AppRoute,
-  } as any)
+const AppCategoriesRulesNewRoute = AppCategoriesRulesNewRouteImport.update({
+  id: '/categories/rules/new',
+  path: '/categories/rules/new',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCategoriesIdEditRoute = AppCategoriesIdEditRouteImport.update({
   id: '/categories/$id_/edit',
   path: '/categories/$id/edit',
@@ -353,6 +353,12 @@ const AppAccountsIdEditRoute = AppAccountsIdEditRouteImport.update({
   path: '/accounts/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCategoriesRulesIdEditRoute =
+  AppCategoriesRulesIdEditRouteImport.update({
+    id: '/categories/rules/$id_/edit',
+    path: '/categories/rules/$id/edit',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
@@ -398,7 +404,7 @@ export interface FileRoutesByFullPath {
   '/user': typeof AppUserIndexRoute
   '/accounts/$id/edit': typeof AppAccountsIdEditRoute
   '/categories/$id/edit': typeof AppCategoriesIdEditRoute
-  '/categories/rules/create': typeof AppCategoriesRulesCreateRoute
+  '/categories/rules/new': typeof AppCategoriesRulesNewRoute
   '/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
   '/importer/csv/accounts': typeof AppImporterCsvAccountsRoute
   '/importer/csv/categories': typeof AppImporterCsvCategoriesRoute
@@ -409,6 +415,7 @@ export interface FileRoutesByFullPath {
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
+  '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
@@ -454,7 +461,7 @@ export interface FileRoutesByTo {
   '/user': typeof AppUserIndexRoute
   '/accounts/$id/edit': typeof AppAccountsIdEditRoute
   '/categories/$id/edit': typeof AppCategoriesIdEditRoute
-  '/categories/rules/create': typeof AppCategoriesRulesCreateRoute
+  '/categories/rules/new': typeof AppCategoriesRulesNewRoute
   '/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
   '/importer/csv/accounts': typeof AppImporterCsvAccountsRoute
   '/importer/csv/categories': typeof AppImporterCsvCategoriesRoute
@@ -465,6 +472,7 @@ export interface FileRoutesByTo {
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
+  '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -512,7 +520,7 @@ export interface FileRoutesById {
   '/_app/user/': typeof AppUserIndexRoute
   '/_app/accounts/$id_/edit': typeof AppAccountsIdEditRoute
   '/_app/categories/$id_/edit': typeof AppCategoriesIdEditRoute
-  '/_app/categories/rules/create': typeof AppCategoriesRulesCreateRoute
+  '/_app/categories/rules/new': typeof AppCategoriesRulesNewRoute
   '/_app/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
   '/_app/importer/csv/accounts': typeof AppImporterCsvAccountsRoute
   '/_app/importer/csv/categories': typeof AppImporterCsvCategoriesRoute
@@ -523,6 +531,7 @@ export interface FileRoutesById {
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
+  '/_app/categories/rules/$id_/edit': typeof AppCategoriesRulesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -570,7 +579,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/accounts/$id/edit'
     | '/categories/$id/edit'
-    | '/categories/rules/create'
+    | '/categories/rules/new'
     | '/connections/connect/callback'
     | '/importer/csv/accounts'
     | '/importer/csv/categories'
@@ -581,6 +590,7 @@ export interface FileRouteTypes {
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
+    | '/categories/rules/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -626,7 +636,7 @@ export interface FileRouteTypes {
     | '/user'
     | '/accounts/$id/edit'
     | '/categories/$id/edit'
-    | '/categories/rules/create'
+    | '/categories/rules/new'
     | '/connections/connect/callback'
     | '/importer/csv/accounts'
     | '/importer/csv/categories'
@@ -637,6 +647,7 @@ export interface FileRouteTypes {
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
+    | '/categories/rules/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -683,7 +694,7 @@ export interface FileRouteTypes {
     | '/_app/user/'
     | '/_app/accounts/$id_/edit'
     | '/_app/categories/$id_/edit'
-    | '/_app/categories/rules/create'
+    | '/_app/categories/rules/new'
     | '/_app/connections/connect/callback'
     | '/_app/importer/csv/accounts'
     | '/_app/importer/csv/categories'
@@ -694,6 +705,7 @@ export interface FileRouteTypes {
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
+    | '/_app/categories/rules/$id_/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1075,11 +1087,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConnectionsConnectCallbackRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/categories/rules/create': {
-      id: '/_app/categories/rules/create'
-      path: '/categories/rules/create'
-      fullPath: '/categories/rules/create'
-      preLoaderRoute: typeof AppCategoriesRulesCreateRouteImport
+    '/_app/categories/rules/new': {
+      id: '/_app/categories/rules/new'
+      path: '/categories/rules/new'
+      fullPath: '/categories/rules/new'
+      preLoaderRoute: typeof AppCategoriesRulesNewRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/categories/$id_/edit': {
@@ -1094,6 +1106,13 @@ declare module '@tanstack/react-router' {
       path: '/accounts/$id/edit'
       fullPath: '/accounts/$id/edit'
       preLoaderRoute: typeof AppAccountsIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/categories/rules/$id_/edit': {
+      id: '/_app/categories/rules/$id_/edit'
+      path: '/categories/rules/$id/edit'
+      fullPath: '/categories/rules/$id/edit'
+      preLoaderRoute: typeof AppCategoriesRulesIdEditRouteImport
       parentRoute: typeof AppRoute
     }
   }
@@ -1134,7 +1153,7 @@ interface AppRouteChildren {
   AppUserIndexRoute: typeof AppUserIndexRoute
   AppAccountsIdEditRoute: typeof AppAccountsIdEditRoute
   AppCategoriesIdEditRoute: typeof AppCategoriesIdEditRoute
-  AppCategoriesRulesCreateRoute: typeof AppCategoriesRulesCreateRoute
+  AppCategoriesRulesNewRoute: typeof AppCategoriesRulesNewRoute
   AppConnectionsConnectCallbackRoute: typeof AppConnectionsConnectCallbackRoute
   AppImporterCsvAccountsRoute: typeof AppImporterCsvAccountsRoute
   AppImporterCsvCategoriesRoute: typeof AppImporterCsvCategoriesRoute
@@ -1145,6 +1164,7 @@ interface AppRouteChildren {
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
+  AppCategoriesRulesIdEditRoute: typeof AppCategoriesRulesIdEditRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -1182,7 +1202,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppUserIndexRoute: AppUserIndexRoute,
   AppAccountsIdEditRoute: AppAccountsIdEditRoute,
   AppCategoriesIdEditRoute: AppCategoriesIdEditRoute,
-  AppCategoriesRulesCreateRoute: AppCategoriesRulesCreateRoute,
+  AppCategoriesRulesNewRoute: AppCategoriesRulesNewRoute,
   AppConnectionsConnectCallbackRoute: AppConnectionsConnectCallbackRoute,
   AppImporterCsvAccountsRoute: AppImporterCsvAccountsRoute,
   AppImporterCsvCategoriesRoute: AppImporterCsvCategoriesRoute,
@@ -1193,6 +1213,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
+  AppCategoriesRulesIdEditRoute: AppCategoriesRulesIdEditRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

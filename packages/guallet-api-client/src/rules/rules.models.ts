@@ -1,29 +1,74 @@
-export interface RuleDto {
+export interface RuleConditionDto {
   id: string;
-  order: number;
-  name: string;
-  description: string;
-  conditions: RuleConditionsDto[];
-  resultCategoryId: string;
-}
-
-export interface RuleConditionsDto {
   field: string;
   operator: string;
   value: string;
+  order: number;
+}
+
+export interface RuleDto {
+  id: string;
+  name: string;
+  description: string | null;
+  resultCategoryId: string;
+  order: number;
+  isActive: boolean;
+  conditionLogic: 'and' | 'or';
+  conditions: RuleConditionDto[];
+}
+
+export interface CreateConditionRequest {
+  field: string;
+  operator: string;
+  value: string;
+  order?: number;
 }
 
 export interface CreateRuleRequest {
   name: string;
-  description: string;
-  conditions: RuleConditionsDto[];
+  description?: string;
   resultCategoryId: string;
+  conditions: CreateConditionRequest[];
+  conditionLogic?: 'and' | 'or';
+  order?: number;
+  isActive?: boolean;
 }
 
 export interface UpdateRuleRequest {
   name?: string;
   description?: string;
-  conditions?: RuleConditionsDto[];
   resultCategoryId?: string;
+  conditions?: CreateConditionRequest[];
+  conditionLogic?: 'and' | 'or';
   order?: number;
+  isActive?: boolean;
+}
+
+export interface FieldOperatorDto {
+  value: string;
+  label: string;
+}
+
+export interface FieldDefinitionDto {
+  name: string;
+  label: string;
+  type: string;
+  operators: FieldOperatorDto[];
+}
+
+export interface FieldDefinitionsDto {
+  fields: FieldDefinitionDto[];
+}
+
+export interface RuleEvaluationResultDto {
+  categoryId: string | null;
+  matchedRuleId: string | null;
+}
+
+export interface ReorderRulesRequest {
+  ruleIds: string[];
+}
+
+export interface ReorderConditionsRequest {
+  conditionIds: string[];
 }

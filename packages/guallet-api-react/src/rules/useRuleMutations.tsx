@@ -1,8 +1,7 @@
 import { CreateRuleRequest, UpdateRuleRequest } from '@guallet/api-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
-
-const RULES_QUERY_KEY = 'rules';
+import { RULES_QUERY_KEY } from './useRules';
 
 export function useRuleMutations() {
   const queryClient = useQueryClient();
@@ -12,12 +11,12 @@ export function useRuleMutations() {
     mutationFn: async ({ request }: { request: CreateRuleRequest }) => {
       return await gualletClient.rules.create(request);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [RULES_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -30,17 +29,20 @@ export function useRuleMutations() {
       id: string;
       request: UpdateRuleRequest;
     }) => {
-      return await gualletClient.rules.update(id, request);
+      return await gualletClient.rules.update({
+        id: id,
+        dto: request,
+      });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({
         queryKey: [RULES_QUERY_KEY],
       });
       queryClient.invalidateQueries({
-        queryKey: [RULES_QUERY_KEY, variables.id],
+        queryKey: [RULES_QUERY_KEY, data.id],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -49,7 +51,7 @@ export function useRuleMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.rules.delete(id);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [RULES_QUERY_KEY],
       });
@@ -57,7 +59,44 @@ export function useRuleMutations() {
         queryKey: [RULES_QUERY_KEY, variables.id],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
+      console.error(error);
+    },
+  });
+
+  const reorderRulesMutation = useMutation({
+    mutationFn: async ({ ruleIds }: { ruleIds: string[] }) => {
+      return await gualletClient.rules.reorder(ruleIds);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: [RULES_QUERY_KEY],
+      });
+    },
+    onError: async (error) => {
+      console.error(error);
+    },
+  });
+
+  const reorderConditionsMutation = useMutation({
+    mutationFn: async ({
+      ruleId,
+      conditionIds,
+    }: {
+      ruleId: string;
+      conditionIds: string[];
+    }) => {
+      return await gualletClient.rules.reorderConditions({
+        ruleId,
+        conditionIds,
+      });
+    },
+    onSuccess: async (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [RULES_QUERY_KEY, data.id],
+      });
+    },
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -66,5 +105,7 @@ export function useRuleMutations() {
     createRuleMutation,
     updateRuleMutation,
     deleteRuleMutation,
+    reorderRulesMutation,
+    reorderConditionsMutation,
   };
 }
