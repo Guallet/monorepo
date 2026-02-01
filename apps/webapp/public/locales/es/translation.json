@@ -379,6 +379,146 @@
         "emptyState": "No tienes notificaciones"
       }
     },
+    "rules": {
+      "form": {
+        "name": {
+          "label": "Nombre de la regla",
+          "placeholder": "ej. Tiendas de comestibles"
+        },
+        "description": {
+          "label": "Descripción",
+          "placeholder": "Descripción opcional de lo que hace esta regla"
+        },
+        "isActive": {
+          "label": "La regla está activa"
+        },
+        "conditions": {
+          "title": "Condiciones",
+          "logic": {
+            "all": "Coincidir con TODAS",
+            "any": "Coincidir con CUALQUIERA"
+          },
+          "field": {
+            "label": "Campo",
+            "placeholder": "Seleccionar campo"
+          },
+          "operator": {
+            "label": "Operador",
+            "placeholder": "Seleccionar operador"
+          },
+          "value": {
+            "label": "Valor",
+            "placeholder": "Ingresar valor"
+          },
+          "addButton": {
+            "label": "Agregar condición"
+          }
+        },
+        "category": {
+          "title": "Luego asignar categoría",
+          "label": "Categoría",
+          "placeholder": "Seleccionar categoría a asignar"
+        },
+        "buttons": {
+          "cancel": "Cancelar"
+        }
+      },
+      "edit": {
+        "notifications": {
+          "success": {
+            "title": "Éxito",
+            "message": "Regla actualizada exitosamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Error al actualizar regla"
+          }
+        },
+        "title": "Editar regla",
+        "loading": "Cargando regla...",
+        "notFound": "Regla no encontrada.",
+        "submitButton": {
+          "label": "Actualizar regla"
+        }
+      },
+      "list": {
+        "notifications": {
+          "reorder": {
+            "success": {
+              "title": "Éxito",
+              "message": "Reglas reordenadas exitosamente"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Error al reordenar reglas"
+            }
+          },
+          "delete": {
+            "success": {
+              "title": "Éxito",
+              "message": "Regla eliminada exitosamente"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Error al eliminar regla"
+            }
+          },
+          "toggle": {
+            "success": {
+              "title": "Éxito",
+              "message": "Regla {{action}} exitosamente"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Error al actualizar regla"
+            }
+          }
+        },
+        "rule": {
+          "conditions_one": "",
+          "conditions_many": "",
+          "conditions_other": "",
+          "conditions": {
+            "logic": {
+              "any": "CUALQUIERA",
+              "all": "TODAS"
+            }
+          },
+          "disabled": "Deshabilitada"
+        },
+        "emptyState": {
+          "title": "Aún no se han creado reglas.",
+          "createButton": {
+            "label": "Crear tu primera regla"
+          }
+        },
+        "actions": {
+          "edit": "Editar",
+          "delete": "Eliminar"
+        },
+        "title": "Reglas de categorización",
+        "createButton": {
+          "label": "Crear regla"
+        },
+        "description": "Las reglas se evalúan de arriba hacia abajo. Arrastra y suelta para reordenar. La primera regla que coincida se aplicará para categorizar las transacciones."
+      },
+      "create": {
+        "notifications": {
+          "success": {
+            "title": "Éxito",
+            "message": "Regla creada exitosamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Error al crear regla"
+          }
+        },
+        "title": "Crear nueva regla",
+        "submitButton": {
+          "label": "Crear regla"
+        }
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {

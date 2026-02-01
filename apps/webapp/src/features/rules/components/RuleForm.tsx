@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { CategoryDto, FieldDefinitionDto } from '@guallet/api-client';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useCategory } from '@guallet/api-react';
+import { useTranslation } from 'react-i18next';
 
 export interface RuleFormData {
   name: string;
@@ -53,6 +54,7 @@ export function RuleForm({
   isSubmitting = false,
   submitLabel = 'Save',
 }: Readonly<RuleFormProps>) {
+  const { t } = useTranslation();
   const [name, setName] = useState(initialData?.name ?? '');
   const [description, setDescription] = useState(
     initialData?.description ?? '',
@@ -182,23 +184,23 @@ export function RuleForm({
         <Card withBorder p="md">
           <Stack gap="md">
             <TextInput
-              label="Rule Name"
-              placeholder="e.g., Grocery stores"
+              label={t('screens.rules.form.name.label')}
+              placeholder={t('screens.rules.form.name.placeholder')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
 
             <Textarea
-              label="Description"
-              placeholder="Optional description of what this rule does"
+              label={t('screens.rules.form.description.label')}
+              placeholder={t('screens.rules.form.description.placeholder')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
             />
 
             <Switch
-              label="Rule is active"
+              label={t('screens.rules.form.isActive.label')}
               checked={isActive}
               onChange={(e) => setIsActive(e.currentTarget.checked)}
             />
@@ -208,7 +210,7 @@ export function RuleForm({
         <Card withBorder p="md">
           <Stack gap="md">
             <Group justify="space-between">
-              <Text fw={500}>Conditions</Text>
+              <Text fw={500}>{t('screens.rules.form.conditions.title')}</Text>
               <Select
                 size="xs"
                 w={120}
@@ -217,8 +219,14 @@ export function RuleForm({
                   setConditionLogic((value as 'and' | 'or') ?? 'and')
                 }
                 data={[
-                  { value: 'and', label: 'Match ALL' },
-                  { value: 'or', label: 'Match ANY' },
+                  {
+                    value: 'and',
+                    label: t('screens.rules.form.conditions.logic.all'),
+                  },
+                  {
+                    value: 'or',
+                    label: t('screens.rules.form.conditions.logic.any'),
+                  },
                 ]}
               />
             </Group>
@@ -253,8 +261,10 @@ export function RuleForm({
                       <IconGripVertical size={16} />
                     </ActionIcon>
                     <Select
-                      label="Field"
-                      placeholder="Select field"
+                      label={t('screens.rules.form.conditions.field.label')}
+                      placeholder={t(
+                        'screens.rules.form.conditions.field.placeholder',
+                      )}
                       data={fieldOptions}
                       value={condition.field}
                       onChange={(value) =>
@@ -267,8 +277,10 @@ export function RuleForm({
                       style={{ flex: 1 }}
                     />
                     <Select
-                      label="Operator"
-                      placeholder="Select operator"
+                      label={t('screens.rules.form.conditions.operator.label')}
+                      placeholder={t(
+                        'screens.rules.form.conditions.operator.placeholder',
+                      )}
                       data={getOperatorsForField(condition.field)}
                       value={condition.operator}
                       onChange={(value) =>
@@ -282,8 +294,10 @@ export function RuleForm({
                       style={{ flex: 1 }}
                     />
                     <TextInput
-                      label="Value"
-                      placeholder="Enter value"
+                      label={t('screens.rules.form.conditions.value.label')}
+                      placeholder={t(
+                        'screens.rules.form.conditions.value.placeholder',
+                      )}
                       value={condition.value}
                       onChange={(e) =>
                         handleConditionChange(
@@ -313,14 +327,14 @@ export function RuleForm({
               leftSection={<IconPlus size={16} />}
               onClick={handleAddCondition}
             >
-              Add Condition
+              {t('screens.rules.form.conditions.addButton.label')}
             </Button>
           </Stack>
         </Card>
 
         <Card withBorder p="md">
           <Stack gap="md">
-            <Text fw={500}>Then assign category</Text>
+            <Text fw={500}>{t('screens.rules.form.category.title')}</Text>
             {/* <Select
               label="Category"
               placeholder="Select category to assign"
@@ -332,8 +346,8 @@ export function RuleForm({
             /> */}
             <CategoryPicker
               required
-              label="Category"
-              placeholder="Select category to assign"
+              label={t('screens.rules.form.category.label')}
+              placeholder={t('screens.rules.form.category.placeholder')}
               selectedCategory={category}
               onCategorySelected={(selectedCategory: CategoryDto) => {
                 setResultCategoryId(selectedCategory.id ?? '');
@@ -344,7 +358,7 @@ export function RuleForm({
 
         <Group justify="flex-end" mt="md">
           <Button variant="subtle" onClick={onCancel} disabled={isSubmitting}>
-            Cancel
+            {t('screens.rules.form.buttons.cancel')}
           </Button>
           <Button type="submit" loading={isSubmitting} disabled={!isFormValid}>
             {submitLabel}

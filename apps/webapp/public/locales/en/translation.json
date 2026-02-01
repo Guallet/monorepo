@@ -376,6 +376,145 @@
         "emptyState": "You have no notifications"
       }
     },
+    "rules": {
+      "form": {
+        "name": {
+          "label": "Rule Name",
+          "placeholder": "e.g., Grocery stores"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Optional description of what this rule does"
+        },
+        "isActive": {
+          "label": "Rule is active"
+        },
+        "conditions": {
+          "title": "Conditions",
+          "logic": {
+            "all": "Match ALL",
+            "any": "Match ANY"
+          },
+          "field": {
+            "label": "Field",
+            "placeholder": "Select field"
+          },
+          "operator": {
+            "label": "Operator",
+            "placeholder": "Select operator"
+          },
+          "value": {
+            "label": "Value",
+            "placeholder": "Enter value"
+          },
+          "addButton": {
+            "label": "Add Condition"
+          }
+        },
+        "category": {
+          "title": "Then assign category",
+          "label": "Category",
+          "placeholder": "Select category to assign"
+        },
+        "buttons": {
+          "cancel": "Cancel"
+        }
+      },
+      "edit": {
+        "notifications": {
+          "success": {
+            "title": "Success",
+            "message": "Rule updated successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to update rule"
+          }
+        },
+        "title": "Edit Rule",
+        "loading": "Loading rule...",
+        "notFound": "Rule not found.",
+        "submitButton": {
+          "label": "Update Rule"
+        }
+      },
+      "list": {
+        "notifications": {
+          "reorder": {
+            "success": {
+              "title": "Success",
+              "message": "Rules reordered successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to reorder rules"
+            }
+          },
+          "delete": {
+            "success": {
+              "title": "Success",
+              "message": "Rule deleted successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to delete rule"
+            }
+          },
+          "toggle": {
+            "success": {
+              "title": "Success",
+              "message": "Rule {{action}} successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to update rule"
+            }
+          }
+        },
+        "rule": {
+          "conditions_one": "",
+          "conditions_other": "",
+          "conditions": {
+            "logic": {
+              "any": "ANY",
+              "all": "ALL"
+            }
+          },
+          "disabled": "Disabled"
+        },
+        "emptyState": {
+          "title": "No rules created yet.",
+          "createButton": {
+            "label": "Create your first rule"
+          }
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "title": "Categorization Rules",
+        "createButton": {
+          "label": "Create Rule"
+        },
+        "description": "Rules are evaluated in order from top to bottom. Drag and drop to reorder. The first matching rule will be applied to categorize transactions."
+      },
+      "create": {
+        "notifications": {
+          "success": {
+            "title": "Success",
+            "message": "Rule created successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to create rule"
+          }
+        },
+        "title": "Create New Rule",
+        "submitButton": {
+          "label": "Create Rule"
+        }
+      }
+    },
     "subscriptions": {
       "list": {
         "types": {

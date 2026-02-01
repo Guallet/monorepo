@@ -8,12 +8,14 @@ import {
   useRule,
   useRuleMutations,
 } from '@guallet/api-react';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_app/categories/rules/$id_/edit')({
   component: EditRulePage,
 });
 
 function EditRulePage() {
+  const { t } = useTranslation();
   const { id } = Route.useParams();
   const { rule, isLoading: isRuleLoading } = useRule(id);
   const { fieldDefinitions, isLoading: isFieldsLoading } =
@@ -60,15 +62,15 @@ function EditRulePage() {
       });
 
       notifications.show({
-        title: 'Success',
-        message: 'Rule updated successfully',
+        title: t('screens.rules.edit.notifications.success.title'),
+        message: t('screens.rules.edit.notifications.success.message'),
         color: 'green',
       });
       navigate({ to: '/categories/rules' });
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to update rule',
+        title: t('screens.rules.edit.notifications.error.title'),
+        message: t('screens.rules.edit.notifications.error.message'),
         color: 'red',
       });
     } finally {
@@ -83,8 +85,8 @@ function EditRulePage() {
   if (isRuleLoading || isFieldsLoading) {
     return (
       <Stack gap="md">
-        <Title order={2}>Edit Rule</Title>
-        <div>Loading rule...</div>
+        <Title order={2}>{t('screens.rules.edit.title')}</Title>
+        <div>{t('screens.rules.edit.loading')}</div>
       </Stack>
     );
   }
@@ -92,15 +94,15 @@ function EditRulePage() {
   if (!rule && !isRuleLoading) {
     return (
       <Stack gap="md">
-        <Title order={2}>Edit Rule</Title>
-        <div>Rule not found.</div>
+        <Title order={2}>{t('screens.rules.edit.title')}</Title>
+        <div>{t('screens.rules.edit.notFound')}</div>
       </Stack>
     );
   }
 
   return (
     <Stack gap="md">
-      <Title order={2}>Edit Rule</Title>
+      <Title order={2}>{t('screens.rules.edit.title')}</Title>
       <RuleForm
         key={rule?.id}
         initialData={initialData}
@@ -108,7 +110,7 @@ function EditRulePage() {
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         isSubmitting={isSubmitting}
-        submitLabel="Update Rule"
+        submitLabel={t('screens.rules.edit.submitButton.label')}
       />
     </Stack>
   );

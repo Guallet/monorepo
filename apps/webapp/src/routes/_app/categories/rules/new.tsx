@@ -4,12 +4,14 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
 import { useFieldDefinitions, useRuleMutations } from '@guallet/api-react';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_app/categories/rules/new')({
   component: NewRulePage,
 });
 
 function NewRulePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { fieldDefinitions } = useFieldDefinitions();
@@ -37,16 +39,16 @@ function NewRulePage() {
       });
 
       notifications.show({
-        title: 'Success',
-        message: 'Rule created successfully',
+        title: t('screens.rules.create.notifications.success.title'),
+        message: t('screens.rules.create.notifications.success.message'),
         color: 'green',
       });
       navigate({ to: '/categories/rules' });
     } catch (error) {
       console.error(error);
       notifications.show({
-        title: 'Error',
-        message: 'Failed to create rule',
+        title: t('screens.rules.create.notifications.error.title'),
+        message: t('screens.rules.create.notifications.error.message'),
         color: 'red',
       });
     } finally {
@@ -60,13 +62,13 @@ function NewRulePage() {
 
   return (
     <Stack gap="md">
-      <Title order={2}>Create New Rule</Title>
+      <Title order={2}>{t('screens.rules.create.title')}</Title>
       <RuleForm
         fieldDefinitions={fieldDefinitions}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
         isSubmitting={isSubmitting}
-        submitLabel="Create Rule"
+        submitLabel={t('screens.rules.create.submitButton.label')}
       />
     </Stack>
   );

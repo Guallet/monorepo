@@ -24,12 +24,14 @@ import { useState } from 'react';
 import { RuleDto } from '@guallet/api-client';
 import { Category } from '@/features/categories/models/Category';
 import { useCategories, useRuleMutations, useRules } from '@guallet/api-react';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_app/categories/rules/')({
   component: RulesPage,
 });
 
 function RulesPage() {
+  const { t } = useTranslation();
   const {
     rules,
     isLoading: isRulesLoading,
@@ -82,14 +84,14 @@ function RulesPage() {
       });
 
       notifications.show({
-        title: 'Success',
-        message: 'Rules reordered successfully',
+        title: t('screens.rules.list.notifications.reorder.success.title'),
+        message: t('screens.rules.list.notifications.reorder.success.message'),
         color: 'green',
       });
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to reorder rules',
+        title: t('screens.rules.list.notifications.reorder.error.title'),
+        message: t('screens.rules.list.notifications.reorder.error.message'),
         color: 'red',
       });
     }
@@ -100,14 +102,14 @@ function RulesPage() {
       await deleteRuleMutation.mutateAsync({ id: ruleId });
 
       notifications.show({
-        title: 'Success',
-        message: 'Rule deleted successfully',
+        title: t('screens.rules.list.notifications.delete.success.title'),
+        message: t('screens.rules.list.notifications.delete.success.message'),
         color: 'green',
       });
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to delete rule',
+        title: t('screens.rules.list.notifications.delete.error.title'),
+        message: t('screens.rules.list.notifications.delete.error.message'),
         color: 'red',
       });
     }
@@ -120,23 +122,25 @@ function RulesPage() {
         request: { isActive: !rule.isActive },
       });
       notifications.show({
-        title: 'Success',
-        message: `Rule ${rule.isActive ? 'disabled' : 'enabled'} successfully`,
+        title: t('screens.rules.list.notifications.toggle.success.title'),
+        message: t('screens.rules.list.notifications.toggle.success.message', {
+          action: rule.isActive ? t('common.disabled', 'disabled') : t('common.enabled', 'enabled')
+        }),
         color: 'green',
       });
     } catch {
       notifications.show({
-        title: 'Error',
-        message: 'Failed to update rule',
+        title: t('screens.rules.list.notifications.toggle.error.title'),
+        message: t('screens.rules.list.notifications.toggle.error.message'),
         color: 'red',
       });
     }
   };
 
   const getPluralizedConditions = (count: number, logic: string) => {
-    const conditionText = count === 1 ? 'condition' : 'conditions';
-    const logicText = logic === 'or' ? 'ANY' : 'ALL';
-    return `${count} ${conditionText} (${logicText})`;
+    const conditionText = t('screens.rules.list.rule.conditions', { count });
+    const logicText = logic === 'or' ? t('screens.rules.list.rule.conditions.logic.any') : t('screens.rules.list.rule.conditions.logic.all');
+    return `${conditionText} (${logicText})`;
   };
 
   const renderContent = () => {
@@ -152,14 +156,14 @@ function RulesPage() {
     if (rules.length === 0) {
       return (
         <Card withBorder p="xl" ta="center">
-          <Text c="dimmed">No rules created yet.</Text>
+          <Text c="dimmed">{t('screens.rules.list.emptyState.title')}</Text>
           <Button
             mt="md"
             variant="light"
             leftSection={<IconPlus size={16} />}
             onClick={() => navigate({ to: '/categories/rules/new' })}
           >
-            Create your first rule
+            {t('screens.rules.list.emptyState.createButton.label')}
           </Button>
         </Card>
       );
@@ -194,7 +198,7 @@ function RulesPage() {
                     <Text fw={500}>{rule.name}</Text>
                     {!rule.isActive && (
                       <Badge size="xs" color="gray">
-                        Disabled
+                        {t('screens.rules.list.rule.disabled')}
                       </Badge>
                     )}
                   </Group>
@@ -242,7 +246,7 @@ function RulesPage() {
                         })
                       }
                     >
-                      Edit
+                      {t('screens.rules.list.actions.edit')}
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item
@@ -250,7 +254,7 @@ function RulesPage() {
                       leftSection={<IconTrash size={14} />}
                       onClick={() => handleDelete(rule.id)}
                     >
-                      Delete
+                      {t('screens.rules.list.actions.delete')}
                     </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>
@@ -265,19 +269,17 @@ function RulesPage() {
   return (
     <Stack gap="md">
       <Group justify="space-between" align="center">
-        <Title order={2}>Categorization Rules</Title>
+        <Title order={2}>{t('screens.rules.list.title')}</Title>
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={() => navigate({ to: '/categories/rules/new' })}
         >
-          Create Rule
+          {t('screens.rules.list.createButton.label')}
         </Button>
       </Group>
 
       <Text c="dimmed" size="sm">
-        Rules are evaluated in order from top to bottom. Drag and drop to
-        reorder. The first matching rule will be applied to categorize
-        transactions.
+        {t('screens.rules.list.description')}
       </Text>
 
       {renderContent()}
