@@ -15,10 +15,8 @@ import { NordigenModule } from './features/nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './features/users/users.module';
 import configuration, { AppConfig } from './configuration';
-import { User } from './features/users/entities/user.entity';
 import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
-import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import { DataImporterModule } from './features/data-importer/data-importer.module';
@@ -148,14 +146,11 @@ import { AppController } from './app.controller';
     AdminModule,
     BudgetsModule,
     WebhooksModule,
-    WaitingListModule,
     SavingGoalsModule,
     DataImporterModule,
     DataExporterModule,
     EmailModule,
     NotificationsModule,
-    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
-    TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
     HealthModule,
   ],

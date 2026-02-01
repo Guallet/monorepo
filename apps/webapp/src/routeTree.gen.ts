@@ -15,8 +15,6 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
-import { Route as OnboardingWaiting_listRouteImport } from './routes/onboarding/waiting_list'
-import { Route as OnboardingRegisterRouteImport } from './routes/onboarding/register'
 import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp'
 import { Route as LoginResetPasswordSentRouteImport } from './routes/login/reset-password-sent'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
@@ -99,16 +97,6 @@ const IndexLazyRoute = IndexLazyRouteImport.update({
 const LoginIndexRoute = LoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingWaiting_listRoute = OnboardingWaiting_listRouteImport.update({
-  id: '/onboarding/waiting_list',
-  path: '/onboarding/waiting_list',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRegisterRoute = OnboardingRegisterRouteImport.update({
-  id: '/onboarding/register',
-  path: '/onboarding/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginValidateotpRoute = LoginValidateotpRouteImport.update({
@@ -375,8 +363,6 @@ export interface FileRoutesByFullPath {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -433,8 +419,6 @@ export interface FileRoutesByTo {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -493,8 +477,6 @@ export interface FileRoutesById {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/onboarding/register': typeof OnboardingRegisterRoute
-  '/onboarding/waiting_list': typeof OnboardingWaiting_listRoute
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
@@ -553,8 +535,6 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/onboarding/register'
-    | '/onboarding/waiting_list'
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
@@ -611,8 +591,6 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/onboarding/register'
-    | '/onboarding/waiting_list'
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
@@ -670,8 +648,6 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/onboarding/register'
-    | '/onboarding/waiting_list'
     | '/login/'
     | '/_app/accounts/$id'
     | '/_app/accounts/new'
@@ -730,8 +706,6 @@ export interface RootRouteChildren {
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
   LoginResetPasswordSentRoute: typeof LoginResetPasswordSentRoute
   LoginValidateotpRoute: typeof LoginValidateotpRoute
-  OnboardingRegisterRoute: typeof OnboardingRegisterRoute
-  OnboardingWaiting_listRoute: typeof OnboardingWaiting_listRoute
   LoginIndexRoute: typeof LoginIndexRoute
 }
 
@@ -777,20 +751,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/waiting_list': {
-      id: '/onboarding/waiting_list'
-      path: '/onboarding/waiting_list'
-      fullPath: '/onboarding/waiting_list'
-      preLoaderRoute: typeof OnboardingWaiting_listRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding/register': {
-      id: '/onboarding/register'
-      path: '/onboarding/register'
-      fullPath: '/onboarding/register'
-      preLoaderRoute: typeof OnboardingRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/validateotp': {
@@ -1247,8 +1207,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,
   LoginResetPasswordSentRoute: LoginResetPasswordSentRoute,
   LoginValidateotpRoute: LoginValidateotpRoute,
-  OnboardingRegisterRoute: OnboardingRegisterRoute,
-  OnboardingWaiting_listRoute: OnboardingWaiting_listRoute,
   LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport
