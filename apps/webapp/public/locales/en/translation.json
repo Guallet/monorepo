@@ -155,7 +155,7 @@
         },
         "password": {
           "error": {
-            "title": Invalid credentials"
+            "title": "Invalid credentials"
           },
           "label": "Password",
           "placeholder": "Enter your password"
