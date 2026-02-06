@@ -56,7 +56,9 @@ function LoginPage() {
           console.error('Error logging in', error);
         } else if (success) {
           console.log('Success login');
-          // Navigation to the redirect url or dashboard will be performed by the useAuth hook when the session is updated, so we don't need to do it here
+          navigation({
+            to: redirect || '/dashboard',
+          });
         }
       }}
     />
