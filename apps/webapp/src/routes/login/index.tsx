@@ -56,6 +56,7 @@ function LoginPage() {
           console.error('Error logging in', error);
         } else if (success) {
           console.log('Success login');
+          console.log('Redirecting to', redirect || '/dashboard');
           navigation({
             to: redirect || '/dashboard',
           });
