@@ -91,10 +91,10 @@ export function LoginScreen({
     } else if (success) {
       console.log('Success login');
       console.log('Redirecting to', redirect || '/dashboard');
-      navigation({
-        to: redirect || '/dashboard',
-        replace: true,
-      });
+      // navigation({
+      //   to: redirect || '/dashboard',
+      //   replace: true,
+      // });
     }
   };
 
