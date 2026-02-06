@@ -17,7 +17,10 @@ function LoginPage() {
     useAuth();
   const { redirect } = Route.useSearch();
   const navigation = useNavigate();
-  const redirectTo = `${globalThis.location.origin}/login/callback`;
+  const oAuthRedirectionTo = `${globalThis.location.origin}/login/callback`;
+
+  console.log('LoginPage rendered. isAuthenticated:', isAuthenticated);
+  console.log('Redirect destination after login:', redirect);
 
   if (isAuthenticated) {
     return <Navigate to={redirect || 'dashboard'} />;
@@ -30,7 +33,7 @@ function LoginPage() {
         console.log('Logging in with Google');
         // Save the redirect url in the local storage to be able to restore it later
         localStorage.setItem('redirectDestination', redirect);
-        await loginWithProvider('google', redirectTo);
+        await loginWithProvider('google', oAuthRedirectionTo);
       }}
       onMagicLink={async (email: string) => {
         console.log('Sending magic link to', email);
