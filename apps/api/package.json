@@ -25,6 +25,9 @@
     "db:seed": "ts-node -r tsconfig-paths/register database/seed.ts",
     "db:seed:trace": "ts-node --showConfig"
   },
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bullmq": "^11.0.4",
