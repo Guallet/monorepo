@@ -43,6 +43,7 @@ interface LoginScreenProps {
   onMagicLink: (email: string) => Promise<void>;
   onPassword: (email: string, password: string) => Promise<void>;
   magicLinkError?: string;
+  passwordError: string | null;
 }
 
 export function LoginScreen({
@@ -51,6 +52,7 @@ export function LoginScreen({
   onMagicLink,
   onPassword,
   magicLinkError,
+  passwordError = null,
 }: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
   const [loginType, setLoginType] = useState<'magic-link' | 'password'>(
@@ -126,6 +128,20 @@ export function LoginScreen({
               mb="md"
             >
               {displayError}
+            </Alert>
+          )}
+
+          {passwordError && loginType === 'password' && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title={t(
+                'screens.login.form.password.error.title',
+                'CNF: Login failed',
+              )}
+              color="red"
+              mb="md"
+            >
+              {passwordError}
             </Alert>
           )}
 

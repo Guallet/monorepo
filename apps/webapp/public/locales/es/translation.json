@@ -155,13 +155,16 @@
             "title": "Error al enviar el enlace mágico"
           }
         },
+        "password": {
+          "error": {
+            "title": "Datos incorrectos"
+          },
+          "label": "Contraseña",
+          "placeholder": "Ingresa tu contraseña"
+        },
         "email": {
           "label": "Correo electrónico",
           "placeholder": "Ingresa tu correo electrónico"
-        },
-        "password": {
-          "label": "Contraseña",
-          "placeholder": "Ingresa tu contraseña"
         },
         "forgotPassword": {
           "label": "¿Olvidaste tu contraseña?"

@@ -153,13 +153,16 @@
             "title": "Error sending magic link"
           }
         },
+        "password": {
+          "error": {
+            "title": Invalid credentials"
+          },
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
         "email": {
           "label": "Email",
           "placeholder": "Enter your email"
-        },
-        "password": {
-          "label": "Password",
-          "placeholder": "Enter your password"
         },
         "forgotPassword": {
           "label": "Forgot password?"
