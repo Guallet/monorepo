@@ -13,13 +13,8 @@ export const Route = createFileRoute('/login/')({
 });
 
 function LoginPage() {
-  const {
-    isAuthenticated,
-    isLoading,
-    login,
-    loginWithProvider,
-    getOtpCode
-  } = useAuth();
+  const { isAuthenticated, isLoading, login, loginWithProvider, getOtpCode } =
+    useAuth();
   const { redirect } = Route.useSearch();
   const navigation = useNavigate();
   const redirectTo = `${globalThis.location.origin}/login/callback`;
@@ -61,6 +56,7 @@ function LoginPage() {
           console.error('Error logging in', error);
         } else if (success) {
           console.log('Success login');
+          // Navigation to the redirect url or dashboard will be performed by the useAuth hook when the session is updated, so we don't need to do it here
         }
       }}
     />

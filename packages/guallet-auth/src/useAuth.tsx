@@ -24,7 +24,7 @@ export function AuthProvider({
 }: Readonly<AuthProviderProps>) {
   const [isLoading, setIsLoading] = useState(true);
   const { data: session } = authClient.useSession();
-  const isAuthenticated = session?.session?.id;
+  const isAuthenticated = session?.session?.id !== undefined;
 
   useEffect(() => {
     console.log('Session updated', session);
