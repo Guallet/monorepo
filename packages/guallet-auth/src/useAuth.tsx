@@ -22,40 +22,30 @@ export function AuthProvider({
   authClient,
   onUserChange,
 }: Readonly<AuthProviderProps>) {
-  const [isLoading, setIsLoading] = useState(true);
-  const { data: session } = authClient.useSession();
-  const isAuthenticated = session?.session?.id !== undefined;
+  const { data: session, isPending } = authClient.useSession();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    console.log('Session updated', session);
+    const authenticated = session?.session?.id !== undefined;
+    setIsAuthenticated(authenticated);
+    console.log('Session updated', session, 'isAuthenticated:', authenticated);
+
     if (onUserChange) {
       onUserChange(session?.user?.id ?? null);
     }
   }, [session, onUserChange]);
 
-  const initAuth = useCallback(async () => {
-    try {
-      console.log('Initializing auth...');
-      setIsLoading(true);
-    } catch (error) {
-      console.error('Error initializing auth', error);
-    } finally {
-      setIsLoading(false);
-      console.log('Finished init auth. Authenticated user?', session !== null);
-    }
-  }, [authClient]);
-
-  useEffect(() => {
-    initAuth();
-  }, [initAuth]);
-
   const login = useCallback(
     async (email: string, password: string): Promise<AuthResult> => {
       try {
-        const { error } = await authClient.signIn.email({
+        const { data, error } = await authClient.signIn.email({
           email,
           password,
         });
+
+        if (data) {
+          console.log('Login successful', { userId: data.user?.id });
+        }
 
         if (error) {
           return {
@@ -254,7 +244,7 @@ export function AuthProvider({
 
   const memoizedState = useMemo(
     () => ({
-      isLoading,
+      isLoading: isPending,
       isAuthenticated,
       userId: session?.user?.id ?? null,
 
@@ -267,7 +257,7 @@ export function AuthProvider({
       resetPassword,
     }),
     [
-      isLoading,
+      isPending,
       isAuthenticated,
       session,
       login,
