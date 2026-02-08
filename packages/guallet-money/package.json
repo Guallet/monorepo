@@ -1,10 +1,16 @@
 {
   "name": "@guallet/money",
-  "version": "0.1.0",
-  "description": "Common Money utils",
+  "version": "0.2.0",
+  "description": "A common money, type-safe library for handling money and currency operations",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "dependencies": {},
   "devDependencies": {
     "eslint": "workspace:*",

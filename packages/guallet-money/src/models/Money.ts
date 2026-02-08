@@ -1,34 +1,276 @@
-import { Currency } from "./Currency";
+import { Currency } from './Currency';
 
+/**
+ * Formatting options for money display
+ */
+export interface MoneyFormatOptions {
+  locale?: string;
+  useSymbol?: boolean;
+  useGrouping?: boolean;
+  showPositiveSign?: boolean;
+}
+
+/**
+ * Default locale getter with environment detection
+ */
+function getDefaultLocale(): string {
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    return navigator.language;
+  }
+  return 'en-GB';
+}
+
+/**
+ * Represents a monetary value with its currency
+ * Immutable class for safe currency calculations
+ */
 export class Money {
-  amount: number;
-  currency: Currency;
+  readonly amount: number;
+  readonly currency: Currency;
 
-  constructor(amount: number, currency: Currency) {
+  private constructor(amount: number, currency: Currency) {
+    if (typeof amount !== 'number' || Number.isNaN(amount)) {
+      throw new TypeError(
+        `Invalid amount: ${amount}. Amount must be a valid number.`,
+      );
+    }
     this.amount = amount;
     this.currency = currency;
   }
 
-  static fromCurrencyCode(args: {
+  /**
+   * Creates Money from amount and currency code
+   * @param amount - The monetary amount
+   * @param currencyCode - ISO 4217 currency code
+   */
+  static fromCurrencyCode({
+    amount,
+    currencyCode,
+  }: {
     amount: number;
     currencyCode: string;
   }): Money {
-    const { amount, currencyCode } = args;
-    return new Money(amount, Currency.fromISOCode(currencyCode));
+    const currency = Currency.fromISOCode(currencyCode);
+    return new Money(amount, currency);
   }
 
-  format(locale?: string): string {
-    // TODO: This only works on web. Check equivalent for React Native too
-    locale ??= navigator.language;
+  /**
+   * Creates Money from amount and Currency instance
+   * @param amount - The monetary amount
+   * @param currency - Currency instance
+   */
+  static from({
+    amount,
+    currency,
+  }: {
+    amount: number;
+    currency: Currency;
+  }): Money {
+    return new Money(amount, currency);
+  }
 
-    const currencyFormatter = Intl.NumberFormat(locale, {
-      style: "currency",
+  /**
+   * Creates zero money for a given currency
+   */
+  static zero(currency: Currency): Money {
+    return new Money(0, currency);
+  }
+
+  /**
+   * Formats the money value as a localized string
+   * @param options - Formatting options or locale string
+   */
+  format(options?: MoneyFormatOptions | string): string {
+    const locale =
+      typeof options === 'string'
+        ? options
+        : (options?.locale ?? getDefaultLocale());
+    const useGrouping =
+      typeof options === 'object' ? (options.useGrouping ?? true) : true;
+    const showPositiveSign =
+      typeof options === 'object' ? (options.showPositiveSign ?? false) : false;
+
+    const formatted = new Intl.NumberFormat(locale, {
+      style: 'currency',
       currency: this.currency.code,
-      currencySign: "standard",
-      currencyDisplay: "narrowSymbol",
-      useGrouping: true,
-    });
+      currencySign: 'standard',
+      currencyDisplay: 'narrowSymbol',
+      useGrouping,
+    }).format(this.amount);
 
-    return currencyFormatter.format(this.amount);
+    if (showPositiveSign && this.amount > 0) {
+      return '+' + formatted;
+    }
+
+    return formatted;
+  }
+
+  /**
+   * Adds another money value (must be same currency)
+   */
+  add(other: Money): Money {
+    this.assertSameCurrency(other);
+    return new Money(this.amount + other.amount, this.currency);
+  }
+
+  /**
+   * Subtracts another money value (must be same currency)
+   */
+  subtract(other: Money): Money {
+    this.assertSameCurrency(other);
+    return new Money(this.amount - other.amount, this.currency);
+  }
+
+  /**
+   * Multiplies money by a factor
+   */
+  multiply(factor: number): Money {
+    if (typeof factor !== 'number' || Number.isNaN(factor)) {
+      throw new TypeError(
+        `Invalid factor: ${factor}. Factor must be a valid number.`,
+      );
+    }
+    return new Money(this.amount * factor, this.currency);
+  }
+
+  /**
+   * Divides money by a divisor
+   */
+  divide(divisor: number): Money {
+    if (typeof divisor !== 'number' || Number.isNaN(divisor)) {
+      throw new TypeError(
+        `Invalid divisor: ${divisor}. Divisor must be a valid number.`,
+      );
+    }
+    if (divisor === 0) {
+      throw new Error('Cannot divide by zero');
+    }
+    return new Money(this.amount / divisor, this.currency);
+  }
+
+  /**
+   * Returns absolute value (positive)
+   */
+  abs(): Money {
+    return new Money(Math.abs(this.amount), this.currency);
+  }
+
+  /**
+   * Negates the money value
+   */
+  negate(): Money {
+    return new Money(-this.amount, this.currency);
+  }
+
+  /**
+   * Rounds to the nearest integer or specified decimal places
+   */
+  round(decimalPlaces?: number): Money {
+    const places = decimalPlaces ?? this.currency.decimalPlaces;
+    const factor = Math.pow(10, places);
+    return new Money(Math.round(this.amount * factor) / factor, this.currency);
+  }
+
+  /**
+   * Checks if equals another money value
+   */
+  equals(other: Money): boolean {
+    return this.currency.equals(other.currency) && this.amount === other.amount;
+  }
+
+  /**
+   * Checks if greater than another money value
+   */
+  greaterThan(other: Money): boolean {
+    this.assertSameCurrency(other);
+    return this.amount > other.amount;
+  }
+
+  /**
+   * Checks if greater than or equal to another money value
+   */
+  greaterThanOrEqual(other: Money): boolean {
+    this.assertSameCurrency(other);
+    return this.amount >= other.amount;
+  }
+
+  /**
+   * Checks if less than another money value
+   */
+  lessThan(other: Money): boolean {
+    this.assertSameCurrency(other);
+    return this.amount < other.amount;
+  }
+
+  /**
+   * Checks if less than or equal to another money value
+   */
+  lessThanOrEqual(other: Money): boolean {
+    this.assertSameCurrency(other);
+    return this.amount <= other.amount;
+  }
+
+  /**
+   * Checks if the amount is zero
+   */
+  isZero(): boolean {
+    return this.amount === 0;
+  }
+
+  /**
+   * Checks if the amount is positive
+   */
+  isPositive(): boolean {
+    return this.amount > 0;
+  }
+
+  /**
+   * Checks if the amount is negative
+   */
+  isNegative(): boolean {
+    return this.amount < 0;
+  }
+
+  /**
+   * Converts to a different currency (requires conversion rate)
+   */
+  convertTo(targetCurrency: Currency, rate: number): Money {
+    if (this.currency.equals(targetCurrency)) {
+      return this;
+    }
+    if (typeof rate !== 'number' || Number.isNaN(rate) || rate <= 0) {
+      throw new TypeError(
+        `Invalid conversion rate: ${rate}. Rate must be a positive number.`,
+      );
+    }
+    return new Money(this.amount * rate, targetCurrency);
+  }
+
+  /**
+   * Returns a plain object representation
+   */
+  toJSON() {
+    return {
+      amount: this.amount,
+      currency: this.currency.code,
+    };
+  }
+
+  /**
+   * Returns a string representation
+   */
+  toString(): string {
+    return this.format();
+  }
+
+  /**
+   * Asserts that two money values have the same currency
+   */
+  private assertSameCurrency(other: Money): void {
+    if (!this.currency.equals(other.currency)) {
+      throw new Error(
+        `Currency mismatch: Cannot operate on ${this.currency.code} and ${other.currency.code}`,
+      );
+    }
   }
 }
