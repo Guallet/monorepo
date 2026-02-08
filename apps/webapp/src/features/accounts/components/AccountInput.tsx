@@ -23,6 +23,7 @@ export function AccountInput({ ...props }: AccountInputProps) {
       [AccountTypeDto.MORTGAGE]: [],
       [AccountTypeDto.LOAN]: [],
       [AccountTypeDto.PENSION]: [],
+      [AccountTypeDto.PROPERTY]: [],
       [AccountTypeDto.UNKNOWN]: [],
     };
     accounts.forEach((account) => {

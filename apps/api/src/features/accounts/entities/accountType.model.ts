@@ -6,5 +6,6 @@ export enum AccountType {
   MORTGAGE = 'mortgage',
   LOAN = 'loan',
   PENSION = 'pension',
+  PROPERTY = 'property',
   UNKNOWN = 'unknown',
 }

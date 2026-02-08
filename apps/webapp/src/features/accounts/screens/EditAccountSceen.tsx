@@ -53,6 +53,8 @@ function getLocalizedType(name: AccountTypeDto): string {
       return 'Pension';
     case AccountTypeDto.SAVINGS:
       return 'Savings account';
+    case AccountTypeDto.PROPERTY:
+      return 'Property';
     case AccountTypeDto.UNKNOWN:
     default:
       return 'Other';

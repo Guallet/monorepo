@@ -15,6 +15,7 @@ import { useNavigate, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
 import { CreditCardDetails } from '../AccountDetails/CreditCardDetails';
 import { CurrentAccountDetails } from '../AccountDetails/CurrentAccountDetails';
+import { PropertyDetails } from '../AccountDetails/PropertyDetails';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { AccountDetailsHeader } from '../components/AccountDetailsHeader';
 import { TransactionsSection } from '../components/AccountDetails/TransactionsSection';
@@ -156,6 +157,8 @@ function AccountDetailsSelector(account: Readonly<AccountDto>) {
       return <CurrentAccountDetails account={account} />;
     case AccountTypeDto.CREDIT_CARD:
       return <CreditCardDetails account={account} />;
+    case AccountTypeDto.PROPERTY:
+      return <PropertyDetails account={account} />;
     default:
       return null;
   }

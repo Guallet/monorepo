@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   CreditCardProperties,
   CurrentAccountProperties,
+  PropertyAccountProperties,
   SavingAccountProperties,
 } from '../entities/account-properties.model';
 import { Account } from '../entities/account.entity';
@@ -64,6 +65,7 @@ export class AccountDto {
     | CurrentAccountProperties
     | CreditCardProperties
     | SavingAccountProperties
+    | PropertyAccountProperties
     | null;
 
   static fromDomain(domain: Account): AccountDto {

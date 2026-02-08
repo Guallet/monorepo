@@ -11,6 +11,7 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import {
   CreditCardProperties,
   CurrentAccountProperties,
+  PropertyAccountProperties,
   SavingAccountProperties,
 } from './account-properties.model';
 import { AccountSource } from './accountSource.model';
@@ -62,7 +63,8 @@ export class Account extends BaseDbEntity {
     | null
     | CurrentAccountProperties
     | CreditCardProperties
-    | SavingAccountProperties;
+    | SavingAccountProperties
+    | PropertyAccountProperties;
 
   // relations
   @OneToMany(() => Transaction, (transaction) => transaction.account, {

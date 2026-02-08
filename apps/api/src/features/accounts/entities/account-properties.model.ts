@@ -16,3 +16,13 @@ export interface CreditCardProperties {
 export interface SavingAccountProperties {
   interestRate: number;
 }
+
+export interface PropertyAccountProperties {
+  propertyType: 'residential' | 'buy-to-let';
+  purchasePrice: number;
+  purchaseDate: Date;
+  mostRecentValuation?: number | null;
+  notes?: string | null;
+  postcode?: string | null;
+  linkedMortgageAccountId?: string | null;
+}

@@ -11,6 +11,7 @@ export type AccountDto = {
     | CurrentAccountProperties
     | CreditCardProperties
     | SavingAccountProperties
+    | PropertyAccountProperties
     | null;
 };
 
@@ -27,6 +28,7 @@ export enum AccountTypeDto {
   MORTGAGE = 'mortgage',
   LOAN = 'loan',
   PENSION = 'pension',
+  PROPERTY = 'property',
   UNKNOWN = 'unknown',
 }
 
@@ -74,6 +76,16 @@ export interface CreditCardProperties {
 
 export interface SavingAccountProperties {
   interestRate: number;
+}
+
+export interface PropertyAccountProperties {
+  propertyType: 'residential' | 'buy-to-let';
+  purchasePrice: number;
+  purchaseDate: Date;
+  mostRecentValuation?: number | null;
+  notes?: string | null;
+  postcode?: string | null;
+  linkedMortgageAccountId?: string | null;
 }
 
 export interface AccountChartsDto {

@@ -1,9 +1,10 @@
-import { AccountTypeDto } from "@guallet/api-client";
-import { CreditCardForm } from "./CreditCardForm";
-import { CurrentAccountForm } from "./CurrentAccountForm";
-import { LoanForm } from "./LoanForm";
-import { MortgageForm } from "./MortgageForm";
-import { SavingsForm } from "./SavingsForm";
+import { AccountTypeDto } from '@guallet/api-client';
+import { CreditCardForm } from './CreditCardForm';
+import { CurrentAccountForm } from './CurrentAccountForm';
+import { LoanForm } from './LoanForm';
+import { MortgageForm } from './MortgageForm';
+import { PropertyForm } from './PropertyForm';
+import { SavingsForm } from './SavingsForm';
 
 export interface AccountMetadataFormProps {
   accountType: AccountTypeDto;
@@ -25,6 +26,9 @@ export function AccountMetadataForm({ accountType }: AccountMetadataFormProps) {
 
     case AccountTypeDto.SAVINGS:
       return <SavingsForm />;
+
+    case AccountTypeDto.PROPERTY:
+      return <PropertyForm />;
 
     case AccountTypeDto.PENSION:
     case AccountTypeDto.INVESTMENT:
