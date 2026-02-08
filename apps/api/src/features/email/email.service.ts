@@ -233,4 +233,44 @@ export class EmailService implements OnModuleInit {
       },
     });
   }
+
+  async sendAuthOtpEmail({
+    to,
+    otp,
+    type,
+  }: {
+    to: string;
+    otp: string;
+    type: string;
+  }): Promise<void> {
+    const action = type === 'sign-in' ? 'sign in to' : 'verify';
+    await this.sendEmail({
+      to,
+      subject: 'Your Verification Code',
+      template: 'auth-otp',
+      context: {
+        otp,
+        action,
+        year: new Date().getFullYear(),
+      },
+    });
+  }
+
+  async sendAuthMagicLinkEmail({
+    to,
+    url,
+  }: {
+    to: string;
+    url: string;
+  }): Promise<void> {
+    await this.sendEmail({
+      to,
+      subject: 'Sign in to Guallet',
+      template: 'auth-magic-link',
+      context: {
+        url,
+        year: new Date().getFullYear(),
+      },
+    });
+  }
 }

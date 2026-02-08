@@ -1,13 +1,17 @@
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
+import { emailOTP, magicLink } from 'better-auth/plugins';
+import { EmailService } from 'src/features/email/email.service';
 
 export const createAuth = ({
   databaseConfig,
   authConfig,
+  emailService,
 }: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
+  emailService: EmailService;
 }) => {
   const database = new Pool({
     host: databaseConfig.host,
@@ -54,6 +58,32 @@ export const createAuth = ({
       enabled: true,
       autoSignIn: true,
     },
+    // PLUGINS
+    plugins: [
+      emailOTP({
+        // OTP will expire after 5 minutes
+        expiresIn: 60 * 5,
+        // Send OTP via email using EmailService
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          await emailService.sendAuthOtpEmail({
+            to: email,
+            otp,
+            type,
+          });
+        },
+      }),
+      magicLink({
+        // Magic link will expire after 10 minutes
+        expiresIn: 60 * 10,
+        // Send magic link via email using EmailService
+        sendMagicLink: async ({ email, url }) => {
+          await emailService.sendAuthMagicLinkEmail({
+            to: email,
+            url,
+          });
+        },
+      }),
+    ],
   });
 };
 
@@ -73,4 +103,23 @@ export const auth = createAuth({
     baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
     allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
   },
+  // Note: Email service is mocked here since the CLI runs outside NestJS
+  emailService: {
+    sendAuthOtpEmail: ({
+      to,
+      otp,
+      type,
+    }: {
+      to: string;
+      otp: string;
+      type: string;
+    }) => {
+      console.log(`[CLI Mock] OTP for ${to}: ${otp} (type: ${type})`);
+      return Promise.resolve();
+    },
+    sendAuthMagicLinkEmail: ({ to, url }: { to: string; url: string }) => {
+      console.log(`[CLI Mock] Magic link for ${to}: ${url}`);
+      return Promise.resolve();
+    },
+  } as unknown as EmailService,
 });
