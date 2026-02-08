@@ -1,0 +1,349 @@
+import { Money } from './Money';
+import { Currency } from './Currency';
+
+describe('Money', () => {
+  let usd: Currency;
+  let eur: Currency;
+
+  beforeEach(() => {
+    usd = Currency.fromISOCode('USD');
+    eur = Currency.fromISOCode('EUR');
+  });
+
+  describe('Factory Methods', () => {
+    it('should create money from currency code', () => {
+      const money = Money.fromCurrencyCode({
+        amount: 100,
+        currencyCode: 'USD',
+      });
+      expect(money.amount).toBe(100);
+      expect(money.currency.code).toBe('USD');
+    });
+
+    it('should create money from currency instance', () => {
+      const money = Money.from({ amount: 250.5, currency: eur });
+      expect(money.amount).toBe(250.5);
+      expect(money.currency).toBe(eur);
+    });
+
+    it('should create zero money', () => {
+      const zero = Money.zero(usd);
+      expect(zero.amount).toBe(0);
+      expect(zero.isZero()).toBe(true);
+    });
+
+    it('should throw TypeError for NaN', () => {
+      expect(() =>
+        Money.fromCurrencyCode({ amount: Number.NaN, currencyCode: 'USD' })
+      ).toThrow(TypeError);
+    });
+
+    it('should throw Error for invalid currency code', () => {
+      expect(() =>
+        Money.fromCurrencyCode({ amount: 100, currencyCode: 'INVALID' })
+      ).toThrow(Error);
+    });
+  });
+
+  describe('Arithmetic Operations', () => {
+    it('should add money', () => {
+      const m1 = Money.from({ amount: 100, currency: usd });
+      const m2 = Money.from({ amount: 50, currency: usd });
+      const result = m1.add(m2);
+
+      expect(result.amount).toBe(150);
+      expect(m1.amount).toBe(100); // immutable
+    });
+
+    it('should subtract money', () => {
+      const m1 = Money.from({ amount: 100, currency: usd });
+      const m2 = Money.from({ amount: 30, currency: usd });
+      const result = m1.subtract(m2);
+
+      expect(result.amount).toBe(70);
+    });
+
+    it('should multiply by number', () => {
+      const money = Money.from({ amount: 25, currency: usd });
+      expect(money.multiply(4).amount).toBe(100);
+      expect(money.multiply(1.5).amount).toBe(37.5);
+      expect(money.multiply(-2).amount).toBe(-50);
+    });
+
+    it('should divide by number', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      expect(money.divide(4).amount).toBe(25);
+      expect(money.divide(2.5).amount).toBe(40);
+      expect(money.divide(-2).amount).toBe(-50);
+    });
+
+    it('should throw Error when operating on different currencies', () => {
+      const usdMoney = Money.from({ amount: 100, currency: usd });
+      const eurMoney = Money.from({ amount: 100, currency: eur });
+
+      expect(() => usdMoney.add(eurMoney)).toThrow(Error);
+      expect(() => usdMoney.subtract(eurMoney)).toThrow(Error);
+    });
+
+    it('should throw Error when dividing by zero', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      expect(() => money.divide(0)).toThrow(Error);
+      expect(() => money.divide(0)).toThrow('Cannot divide by zero');
+    });
+
+    it('should throw TypeError for invalid multiplier/divisor', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      expect(() => money.multiply(Number.NaN)).toThrow(TypeError);
+      expect(() => money.divide(Number.NaN)).toThrow(TypeError);
+    });
+  });
+
+  describe('Helper Methods', () => {
+    it('should return absolute value', () => {
+      const negative = Money.from({ amount: -50, currency: usd });
+      expect(negative.abs().amount).toBe(50);
+
+      const positive = Money.from({ amount: 50, currency: usd });
+      expect(positive.abs().amount).toBe(50);
+    });
+
+    it('should negate amount', () => {
+      const positive = Money.from({ amount: 50, currency: usd });
+      expect(positive.negate().amount).toBe(-50);
+
+      const negative = Money.from({ amount: -50, currency: usd });
+      expect(negative.negate().amount).toBe(50);
+    });
+
+    it('should round to decimal places', () => {
+      const money = Money.from({ amount: 10.556, currency: usd });
+      expect(money.round(2).amount).toBe(10.56);
+      expect(money.round(1).amount).toBe(10.6);
+      expect(money.round(0).amount).toBe(11);
+    });
+
+    it('should round to currency default decimal places', () => {
+      const money = Money.from({ amount: 10.556, currency: usd });
+      expect(money.round().amount).toBe(10.56);
+    });
+  });
+
+  describe('Comparison Methods', () => {
+    it('should check equality', () => {
+      const m1 = Money.from({ amount: 100, currency: usd });
+      const m2 = Money.from({ amount: 100, currency: usd });
+      const m3 = Money.from({ amount: 50, currency: usd });
+      const m4 = Money.from({ amount: 100, currency: eur });
+
+      expect(m1.equals(m2)).toBe(true);
+      expect(m1.equals(m3)).toBe(false);
+      expect(m1.equals(m4)).toBe(false);
+    });
+
+    it('should compare greater than', () => {
+      const m1 = Money.from({ amount: 100, currency: usd });
+      const m2 = Money.from({ amount: 50, currency: usd });
+      const m3 = Money.from({ amount: 100, currency: usd });
+
+      expect(m1.greaterThan(m2)).toBe(true);
+      expect(m2.greaterThan(m1)).toBe(false);
+      expect(m1.greaterThan(m3)).toBe(false);
+    });
+
+    it('should compare greater than or equal', () => {
+      const m1 = Money.from({ amount: 100, currency: usd });
+      const m2 = Money.from({ amount: 50, currency: usd });
+      const m3 = Money.from({ amount: 100, currency: usd });
+
+      expect(m1.greaterThanOrEqual(m2)).toBe(true);
+      expect(m1.greaterThanOrEqual(m3)).toBe(true);
+      expect(m2.greaterThanOrEqual(m1)).toBe(false);
+    });
+
+    it('should compare less than', () => {
+      const m1 = Money.from({ amount: 50, currency: usd });
+      const m2 = Money.from({ amount: 100, currency: usd });
+      const m3 = Money.from({ amount: 50, currency: usd });
+
+      expect(m1.lessThan(m2)).toBe(true);
+      expect(m2.lessThan(m1)).toBe(false);
+      expect(m1.lessThan(m3)).toBe(false);
+    });
+
+    it('should compare less than or equal', () => {
+      const m1 = Money.from({ amount: 50, currency: usd });
+      const m2 = Money.from({ amount: 100, currency: usd });
+      const m3 = Money.from({ amount: 50, currency: usd });
+
+      expect(m1.lessThanOrEqual(m2)).toBe(true);
+      expect(m1.lessThanOrEqual(m3)).toBe(true);
+      expect(m2.lessThanOrEqual(m1)).toBe(false);
+    });
+
+    it('should throw Error when comparing different currencies', () => {
+      const usdMoney = Money.from({ amount: 100, currency: usd });
+      const eurMoney = Money.from({ amount: 50, currency: eur });
+
+      expect(() => usdMoney.greaterThan(eurMoney)).toThrow(Error);
+    });
+  });
+
+  describe('State Check Methods', () => {
+    it('should check if zero', () => {
+      expect(Money.zero(usd).isZero()).toBe(true);
+      expect(Money.from({ amount: 10, currency: usd }).isZero()).toBe(false);
+      expect(Money.from({ amount: -10, currency: usd }).isZero()).toBe(false);
+    });
+
+    it('should check if positive', () => {
+      expect(Money.from({ amount: 10, currency: usd }).isPositive()).toBe(true);
+      expect(Money.zero(usd).isPositive()).toBe(false);
+      expect(Money.from({ amount: -10, currency: usd }).isPositive()).toBe(
+        false
+      );
+    });
+
+    it('should check if negative', () => {
+      expect(Money.from({ amount: -10, currency: usd }).isNegative()).toBe(true);
+      expect(Money.zero(usd).isNegative()).toBe(false);
+      expect(Money.from({ amount: 10, currency: usd }).isNegative()).toBe(false);
+    });
+  });
+
+  describe('Currency Conversion', () => {
+    it('should convert to another currency', () => {
+      const usdMoney = Money.from({ amount: 100, currency: usd });
+      const eurMoney = usdMoney.convertTo(eur, 0.85);
+
+      expect(eurMoney.amount).toBe(85);
+      expect(eurMoney.currency.code).toBe('EUR');
+      expect(usdMoney.amount).toBe(100); // immutable
+    });
+
+    it('should throw TypeError for invalid exchange rate', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      expect(() => money.convertTo(eur, 0)).toThrow(TypeError);
+      expect(() => money.convertTo(eur, -1)).toThrow(TypeError);
+      expect(() => money.convertTo(eur, Number.NaN)).toThrow(TypeError);
+    });
+  });
+
+  describe('Formatting', () => {
+    it('should format with default options', () => {
+      const money = Money.from({ amount: 1234.56, currency: usd });
+      const formatted = money.format();
+
+      expect(formatted).toContain('$');
+      expect(formatted).toContain('1,234.56');
+    });
+
+    it('should format in different locales', () => {
+      const money = Money.from({ amount: 1000, currency: usd });
+      const usFormat = money.format({ locale: 'en-US' });
+      const deFormat = money.format({ locale: 'de-DE' });
+
+      expect(usFormat).toContain('$');
+      expect(deFormat).toContain('$');
+    });
+
+    it('should respect currency decimal places', () => {
+      const jpy = Currency.fromISOCode('JPY');
+      const money = Money.from({ amount: 1234, currency: jpy });
+      const formatted = money.format();
+
+      expect(formatted).not.toContain('.');
+    });
+
+    it('should handle negative amounts', () => {
+      const money = Money.from({ amount: -100, currency: usd });
+      const formatted = money.format();
+
+      expect(formatted).toContain('-');
+    });
+
+    it('should convert to string', () => {
+      const money = Money.from({ amount: 100.5, currency: usd });
+      const str = money.toString();
+      expect(str).toContain('$');
+      expect(str).toContain('100.50');
+    });
+
+    it('should convert to JSON', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      expect(money.toJSON()).toEqual({
+        amount: 100,
+        currency: 'USD',
+      });
+      expect(JSON.stringify(money)).toBe('{"amount":100,"currency":"USD"}');
+    });
+  });
+
+  describe('Immutability', () => {
+    it('should not modify original on operations', () => {
+      const original = Money.from({ amount: 100, currency: usd });
+      const other = Money.from({ amount: 50, currency: usd });
+
+      original.add(other);
+      original.subtract(other);
+      original.multiply(2);
+      original.divide(2);
+      original.abs();
+      original.negate();
+      original.round(2);
+
+      expect(original.amount).toBe(100);
+    });
+  });
+
+  describe('Complex Scenarios', () => {
+    it('should calculate tax and total', () => {
+      const price = Money.from({ amount: 100, currency: usd });
+      const tax = price.multiply(0.2); // 20% tax
+      const total = price.add(tax);
+
+      expect(tax.amount).toBe(20);
+      expect(total.amount).toBe(120);
+    });
+
+    it('should split amount evenly', () => {
+      const total = Money.from({ amount: 100, currency: usd });
+      const perPerson = total.divide(3).round(2);
+
+      expect(perPerson.amount).toBe(33.33);
+    });
+
+    it('should chain multiple operations', () => {
+      const result = Money.from({ amount: 100, currency: usd })
+        .add(Money.from({ amount: 50, currency: usd }))
+        .subtract(Money.from({ amount: 25, currency: usd }))
+        .multiply(2)
+        .divide(5)
+        .round(2);
+
+      expect(result.amount).toBe(50);
+    });
+
+    it('should find max and min', () => {
+      const amounts = [
+        Money.from({ amount: 100, currency: usd }),
+        Money.from({ amount: 50, currency: usd }),
+        Money.from({ amount: 150, currency: usd }),
+        Money.from({ amount: 75, currency: usd }),
+      ];
+
+      const max = amounts.reduce((a, b) => (a.greaterThan(b) ? a : b), amounts[0]);
+      const min = amounts.reduce((a, b) => (a.lessThan(b) ? a : b), amounts[0]);
+
+      expect(max.amount).toBe(150);
+      expect(min.amount).toBe(50);
+    });
+
+    it('should handle floating point precision', () => {
+      const m1 = Money.from({ amount: 0.1, currency: usd });
+      const m2 = Money.from({ amount: 0.2, currency: usd });
+      const result = m1.add(m2).round(2);
+
+      expect(result.amount).toBe(0.3);
+    });
+  });
+});
