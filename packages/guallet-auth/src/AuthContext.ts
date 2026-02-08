@@ -84,7 +84,10 @@ export const AuthContext = createContext<AuthContextWithMethods>({
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
     };
   },
-  resetPassword: async (email: string, redirectUrl: string): Promise<AuthResult> => {
+  resetPassword: async (
+    email: string,
+    redirectUrl: string,
+  ): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },

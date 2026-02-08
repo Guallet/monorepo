@@ -58,6 +58,13 @@ export const createAuth = ({
       enabled: true,
       autoSignIn: true,
     },
+    socialProviders: {
+      google: {
+        enabled: authConfig.socialProviders?.google !== undefined,
+        clientId: authConfig.socialProviders?.google?.clientId || '',
+        clientSecret: authConfig.socialProviders?.google?.clientSecret || '',
+      },
+    },
     // PLUGINS
     plugins: [
       emailOTP({
@@ -102,6 +109,12 @@ export const auth = createAuth({
     secret: process.env.BETTER_AUTH_SECRET || '',
     baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
     allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || '',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      },
+    },
   },
   // Note: Email service is mocked here since the CLI runs outside NestJS
   emailService: {

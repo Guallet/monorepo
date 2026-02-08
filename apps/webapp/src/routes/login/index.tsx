@@ -19,7 +19,10 @@ function LoginPage() {
 
   // Don't allow redirecting to login page itself
   const redirect =
-    rawRedirect === 'login' || rawRedirect === '/login'
+    rawRedirect === 'login' ||
+    rawRedirect === '/login' ||
+    rawRedirect === '/logout' ||
+    rawRedirect === 'logout'
       ? '/dashboard'
       : rawRedirect;
 

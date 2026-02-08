@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  use,
 } from 'react';
 import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
 import { createGualletAuthClient } from 'auth';
@@ -138,11 +137,22 @@ export function AuthProvider({
       redirectUrl: string,
     ): Promise<AuthResult> => {
       try {
-        await authClient.signIn.social({
-          provider,
+        const { data, error } = await authClient.signIn.social({
+          provider: provider,
           callbackURL: redirectUrl,
         });
-        return { success: true, error: null };
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'oauth_error',
+              message: error.message || 'OAuth login failed',
+            },
+          };
+        } else {
+          console.log('OAuth login initiated', { provider, data });
+          return { success: true, error: null };
+        }
       } catch (error: any) {
         return {
           success: false,
