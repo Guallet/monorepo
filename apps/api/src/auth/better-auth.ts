@@ -57,6 +57,13 @@ export const createAuth = ({
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
+      sendResetPassword: async ({ user, url }) => {
+        await emailService.sendPasswordResetEmail({
+          to: user.email,
+          url,
+          userName: user.name,
+        });
+      },
     },
     socialProviders: {
       google: {

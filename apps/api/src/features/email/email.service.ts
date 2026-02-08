@@ -273,4 +273,25 @@ export class EmailService implements OnModuleInit {
       },
     });
   }
+
+  async sendPasswordResetEmail({
+    to,
+    url,
+    userName,
+  }: {
+    to: string;
+    url: string;
+    userName: string;
+  }): Promise<void> {
+    await this.sendEmail({
+      to,
+      subject: 'Reset Your Password',
+      template: 'password-reset',
+      context: {
+        url,
+        userName,
+        year: new Date().getFullYear(),
+      },
+    });
+  }
 }

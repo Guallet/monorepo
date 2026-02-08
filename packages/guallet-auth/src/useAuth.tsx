@@ -29,9 +29,23 @@ export function AuthProvider({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const initializeAuth = useCallback(async () => {
-    console.log('Initializing auth session...');
-    const session = await authClient.getSession();
-    const authenticated = session?.data?.user?.id !== undefined;
+    try {
+      console.log('Initializing auth session...');
+      const session = await authClient.getSession();
+      const authenticated = session?.data?.user.id !== undefined;
+      setIsAuthenticated(authenticated);
+      console.log('Initial session: isAuthenticated:', authenticated);
+    } catch (error) {
+      console.error('Error initializing auth session:', error);
+    }
+  }, [authClient]);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  useEffect(() => {
+    const authenticated = session?.user?.id !== undefined;
     setIsAuthenticated(authenticated);
     console.log('Initial session: isAuthenticated:', authenticated);
   }, [authClient]);
@@ -230,6 +244,39 @@ export function AuthProvider({
   );
 
   const resetPassword = useCallback(
+    async (email: string, redirectUrl: string): Promise<AuthResult> => {
+      try {
+        const { error } = await authClient.$fetch('/request-password-reset', {
+          method: 'POST',
+          body: {
+            email,
+            redirectTo: redirectUrl,
+          },
+        });
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: 'password_reset_request_error',
+              message: error.message || 'Failed to send password reset email',
+            },
+          };
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
+        return {
+          success: false,
+          error: {
+            code: 'password_reset_request_error',
+            message: error.message || 'Failed to send password reset email',
+          },
+        };
+      }
+    },
+    [authClient],
+  );
+
+  const confirmPasswordReset = useCallback(
     async (newPassword: string, token: string): Promise<AuthResult> => {
       try {
         const { error } = await authClient.resetPassword({
@@ -289,6 +336,7 @@ export function AuthProvider({
       getOtpCode,
       verifyOtpCode,
       resetPassword,
+      confirmPasswordReset,
     }),
     [
       isPending,
@@ -301,6 +349,7 @@ export function AuthProvider({
       getOtpCode,
       verifyOtpCode,
       resetPassword,
+      confirmPasswordReset,
     ],
   );
 
