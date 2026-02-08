@@ -126,7 +126,12 @@ export function LoginScreen({
     console.log('Logging in with Google');
     // Save the redirect url in the local storage to be able to restore it later
     localStorage.setItem('redirectDestination', redirect);
-    await loginWithProvider('google', oAuthRedirectionTo);
+    const result = await loginWithProvider('google', oAuthRedirectionTo);
+    if (!result.success) {
+      console.error('Error logging in with Google', result.error);
+    } else {
+      console.log('Success login with Google');
+    }
   };
 
   const toggleLoginType = () => {

@@ -34,7 +34,19 @@ export interface AuthContextWithMethods extends AuthContextType {
   ) => Promise<AuthResult>;
   getOtpCode: (email: string) => Promise<AuthResult>;
   verifyOtpCode: (email: string, code: string) => Promise<AuthResult>;
+  /**
+   * Request a password reset email to be sent to the user.
+   * This initiates the "forgot password" flow.
+   */
   resetPassword: (email: string, redirectUrl: string) => Promise<AuthResult>;
+  /**
+   * Submit a new password using the token from the reset email.
+   * This completes the "reset password" flow.
+   */
+  confirmPasswordReset: (
+    newPassword: string,
+    token: string,
+  ) => Promise<AuthResult>;
 }
 
 export const AuthContext = createContext<AuthContextWithMethods>({
@@ -84,7 +96,19 @@ export const AuthContext = createContext<AuthContextWithMethods>({
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
     };
   },
-  resetPassword: async (email: string, redirectUrl: string): Promise<AuthResult> => {
+  resetPassword: async (
+    email: string,
+    redirectUrl: string,
+  ): Promise<AuthResult> => {
+    return {
+      success: false,
+      error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
+    };
+  },
+  confirmPasswordReset: async (
+    newPassword: string,
+    token: string,
+  ): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },

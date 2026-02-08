@@ -11,10 +11,18 @@ export interface LoggingConfig {
   level: string;
 }
 
+export interface SocialProviderConfig {
+  clientId: string;
+  clientSecret: string;
+}
+
 export interface AuthConfig {
   secret: string;
   baseUrl: string;
   allowedOrigins: string[];
+  socialProviders?: {
+    google?: SocialProviderConfig;
+  };
 }
 
 export interface NordigenConfig {
@@ -66,6 +74,12 @@ const configuration = (): AppConfig => ({
     secret: process.env.BETTER_AUTH_SECRET || '',
     baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
     allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || '',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      },
+    },
   },
   nordigen: {
     secretId: process.env.NORDIGEN_SECRET_ID || '',

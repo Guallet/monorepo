@@ -6,6 +6,9 @@ import React, {
   useCallback,
 } from 'react';
 import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
+import type { createGualletAuthClient } from './auth';
+
+type BetterAuthClient = ReturnType<typeof createGualletAuthClient>;
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -13,7 +16,7 @@ export const useAuth = () => {
 
 interface AuthProviderProps {
   children: React.ReactNode;
-  authClient: any; // Type this properly if possible, or use 'any' for now as better-auth client type is complex
+  authClient: BetterAuthClient;
   onUserChange?: (userId: string | null) => void;
 }
 
@@ -22,13 +25,39 @@ export function AuthProvider({
   authClient,
   onUserChange,
 }: Readonly<AuthProviderProps>) {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending, refetch } = authClient.useSession();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const initializeAuth = useCallback(async () => {
+    try {
+      console.log('Initializing auth session...');
+      const session = await authClient.getSession();
+      const authenticated = session?.data?.user.id !== undefined;
+      setIsAuthenticated(authenticated);
+      console.log('Initial session: isAuthenticated:', authenticated);
+    } catch (error) {
+      console.error('Error initializing auth session:', error);
+    }
+  }, [authClient]);
+
   useEffect(() => {
-    const authenticated = session?.session?.id !== undefined;
+    initializeAuth();
+  }, [initializeAuth]);
+
+  useEffect(() => {
+    const authenticated = session?.user?.id !== undefined;
     setIsAuthenticated(authenticated);
-    console.log('Session updated', session, 'isAuthenticated:', authenticated);
+    console.log('Initial session: isAuthenticated:', authenticated);
+  }, [authClient]);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  useEffect(() => {
+    const authenticated = session?.user?.id !== undefined;
+    setIsAuthenticated(authenticated);
+    console.log('Session updated: isAuthenticated:', authenticated);
 
     if (onUserChange) {
       onUserChange(session?.user?.id ?? null);
@@ -45,6 +74,8 @@ export function AuthProvider({
 
         if (data) {
           console.log('Login successful', { userId: data.user?.id });
+          // Refresh session to update isAuthenticated state
+          await refetch();
         }
 
         if (error) {
@@ -68,7 +99,7 @@ export function AuthProvider({
         };
       }
     },
-    [authClient],
+    [authClient, refetch],
   );
 
   const createAccount = useCallback(
@@ -98,6 +129,8 @@ export function AuthProvider({
           };
         }
 
+        // Refresh session to update isAuthenticated state (in case of auto-signin)
+        await refetch();
         return { success: true, error: null };
       } catch (error: any) {
         return {
@@ -109,7 +142,7 @@ export function AuthProvider({
         };
       }
     },
-    [authClient],
+    [authClient, refetch],
   );
 
   const loginWithProvider = useCallback(
@@ -118,11 +151,22 @@ export function AuthProvider({
       redirectUrl: string,
     ): Promise<AuthResult> => {
       try {
-        await authClient.signIn.social({
-          provider,
+        const { data, error } = await authClient.signIn.social({
+          provider: provider,
           callbackURL: redirectUrl,
         });
-        return { success: true, error: null };
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: error.code ?? 'oauth_error',
+              message: error.message || 'OAuth login failed',
+            },
+          };
+        } else {
+          console.log('OAuth login initiated', { provider, data });
+          return { success: true, error: null };
+        }
       } catch (error: any) {
         return {
           success: false,
@@ -183,6 +227,8 @@ export function AuthProvider({
           };
         }
 
+        // Refresh session to update isAuthenticated state
+        await refetch();
         return { success: true, error: null };
       } catch (error: any) {
         return {
@@ -194,22 +240,55 @@ export function AuthProvider({
         };
       }
     },
-    [authClient],
+    [authClient, refetch],
   );
 
   const resetPassword = useCallback(
     async (email: string, redirectUrl: string): Promise<AuthResult> => {
       try {
-        const { error } = await authClient.forgetPassword({
-          email,
-          redirectTo: redirectUrl,
+        const { error } = await authClient.$fetch('/request-password-reset', {
+          method: 'POST',
+          body: {
+            email,
+            redirectTo: redirectUrl,
+          },
+        });
+        if (error) {
+          return {
+            success: false,
+            error: {
+              code: 'password_reset_request_error',
+              message: error.message || 'Failed to send password reset email',
+            },
+          };
+        }
+        return { success: true, error: null };
+      } catch (error: any) {
+        return {
+          success: false,
+          error: {
+            code: 'password_reset_request_error',
+            message: error.message || 'Failed to send password reset email',
+          },
+        };
+      }
+    },
+    [authClient],
+  );
+
+  const confirmPasswordReset = useCallback(
+    async (newPassword: string, token: string): Promise<AuthResult> => {
+      try {
+        const { error } = await authClient.resetPassword({
+          newPassword,
+          token,
         });
         if (error) {
           return {
             success: false,
             error: {
               code: error.code ?? 'password_reset_error',
-              message: error.message || 'Failed to send reset email',
+              message: error.message || 'Failed to reset password',
             },
           };
         }
@@ -219,7 +298,7 @@ export function AuthProvider({
           success: false,
           error: {
             code: 'password_reset_error',
-            message: error.message || 'Failed to send reset email',
+            message: error.message || 'Failed to reset password',
           },
         };
       }
@@ -230,6 +309,8 @@ export function AuthProvider({
   const logout = useCallback(async (): Promise<AuthResult> => {
     try {
       await authClient.signOut();
+      // Refresh session to update isAuthenticated state
+      await refetch();
       return { success: true, error: null };
     } catch (error: any) {
       return {
@@ -240,7 +321,7 @@ export function AuthProvider({
         },
       };
     }
-  }, [authClient]);
+  }, [authClient, refetch]);
 
   const memoizedState = useMemo(
     () => ({
@@ -255,6 +336,7 @@ export function AuthProvider({
       getOtpCode,
       verifyOtpCode,
       resetPassword,
+      confirmPasswordReset,
     }),
     [
       isPending,
@@ -267,6 +349,7 @@ export function AuthProvider({
       getOtpCode,
       verifyOtpCode,
       resetPassword,
+      confirmPasswordReset,
     ],
   );
 

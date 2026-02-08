@@ -16,7 +16,7 @@ import { router, TanStackRouterDevtools } from './router.tsx';
 import { gualletClient } from '@/api/gualletClient.ts';
 import { DatesProvider } from '@mantine/dates';
 
-import { authClient } from './auth/better-auth.ts';
+import { authClient } from './auth/auth.ts';
 import { AuthProvider } from '@guallet/auth';
 
 // Init i18n
