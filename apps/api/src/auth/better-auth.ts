@@ -118,20 +118,10 @@ export const auth = createAuth({
   },
   // Note: Email service is mocked here since the CLI runs outside NestJS
   emailService: {
-    sendAuthOtpEmail: ({
-      to,
-      otp,
-      type,
-    }: {
-      to: string;
-      otp: string;
-      type: string;
-    }) => {
-      console.log(`[CLI Mock] OTP for ${to}: ${otp} (type: ${type})`);
+    sendAuthOtpEmail: () => {
       return Promise.resolve();
     },
-    sendAuthMagicLinkEmail: ({ to, url }: { to: string; url: string }) => {
-      console.log(`[CLI Mock] Magic link for ${to}: ${url}`);
+    sendAuthMagicLinkEmail: () => {
       return Promise.resolve();
     },
   } as unknown as EmailService,

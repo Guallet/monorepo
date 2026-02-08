@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from 'react';
 import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
-import { createGualletAuthClient } from 'auth';
+import type { createGualletAuthClient } from './auth';
 
 type BetterAuthClient = ReturnType<typeof createGualletAuthClient>;
 
@@ -34,7 +34,7 @@ export function AuthProvider({
     const authenticated = session?.data?.user?.id !== undefined;
     setIsAuthenticated(authenticated);
     console.log('Initial session: isAuthenticated:', authenticated);
-  }, [refetch, onUserChange]);
+  }, [authClient]);
 
   useEffect(() => {
     initializeAuth();
