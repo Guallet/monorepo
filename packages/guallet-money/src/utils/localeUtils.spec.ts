@@ -1,6 +1,6 @@
 import { getDefaultLocale, getCurrencySymbol } from './localeUtils';
 
-describe('localUtils', () => {
+describe('localeUtils', () => {
   describe('getDefaultLocale', () => {
     const originalNavigator = (globalThis as any).navigator;
 

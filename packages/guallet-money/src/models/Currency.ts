@@ -4,8 +4,8 @@ import { getCurrencySymbol } from '../utils/localeUtils';
 import { InvalidCurrencyError } from '../errors';
 
 /**
- * (moved to localUtils)
- * See `src/utils/localUtils.ts` for locale helpers
+ * (moved to localeUtils)
+ * See `src/utils/localeUtils.ts` for locale helpers
  */
 
 /**
