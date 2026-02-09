@@ -57,8 +57,12 @@ describe('Currency', () => {
     });
 
     it('should throw Error for null or undefined', () => {
-      expect(() => Currency.fromISOCode(null as any)).toThrow(Error);
-      expect(() => Currency.fromISOCode(undefined as any)).toThrow(Error);
+      expect(() => Currency.fromISOCode(null as unknown as string)).toThrow(
+        Error,
+      );
+      expect(() =>
+        Currency.fromISOCode(undefined as unknown as string),
+      ).toThrow(Error);
     });
   });
 

@@ -2,19 +2,26 @@ import { getDefaultLocale, getCurrencySymbol } from './localeUtils';
 
 describe('localeUtils', () => {
   describe('getDefaultLocale', () => {
-    const originalNavigator = (globalThis as any).navigator;
+    const originalNavigator = (
+      globalThis as typeof globalThis & { navigator?: Navigator }
+    ).navigator;
 
     afterEach(() => {
-      (globalThis as any).navigator = originalNavigator;
+      (globalThis as typeof globalThis & { navigator?: Navigator }).navigator =
+        originalNavigator;
     });
 
     it('returns default when navigator is undefined', () => {
-      (globalThis as any).navigator = { language: undefined } as any;
+      (
+        globalThis as typeof globalThis & { navigator?: Partial<Navigator> }
+      ).navigator = { language: undefined };
       expect(getDefaultLocale()).toBe('en-US');
     });
 
     it('returns navigator.language when present', () => {
-      (globalThis as any).navigator = { language: 'fr-FR' };
+      (
+        globalThis as typeof globalThis & { navigator?: Partial<Navigator> }
+      ).navigator = { language: 'fr-FR' };
       expect(getDefaultLocale()).toBe('fr-FR');
     });
   });

@@ -8,8 +8,8 @@ const DEFAULT_LOCALE = 'en-US';
  * Gets the locale from the environment, with fallback to default
  */
 export function getDefaultLocale(): string {
-  if (typeof navigator !== 'undefined' && (navigator as any).language) {
-    return (navigator as any).language;
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    return navigator.language;
   }
   return DEFAULT_LOCALE;
 }
