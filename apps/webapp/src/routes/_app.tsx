@@ -24,6 +24,9 @@ function ProtectedRoute() {
       // trying to go to when they were redirected. This allows us to send them
       // along to that page after they login, which is a nicer user experience
       // than dropping them off on the home page.
+      console.log('User not authenticated. Redirecting to login page.', {
+        redirectDestination: resolvedLocation?.pathname,
+      });
       return (
         <Navigate
           to="/login"

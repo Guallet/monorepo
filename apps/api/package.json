@@ -25,6 +25,9 @@
     "db:seed": "ts-node -r tsconfig-paths/register database/seed.ts",
     "db:seed:trace": "ts-node --showConfig"
   },
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bullmq": "^11.0.4",
@@ -33,7 +36,7 @@
     "@nestjs/core": "^11.1.12",
     "@nestjs/platform-express": "^11.1.12",
     "@nestjs/schedule": "^6.1.0",
-    "@nestjs/swagger": "^11.2.5",
+    "@nestjs/swagger": "^11.2.6",
     "@nestjs/typeorm": "^11.0.0",
     "@thallesp/nestjs-better-auth": "^2.2.5",
     "axios": "^1.13.2",
@@ -65,7 +68,6 @@
     "@swc/cli": "^0.7.10",
     "@swc/core": "^1.15.10",
     "@types/express": "^5.0.6",
-    "@types/handlebars": "^4.1.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.9",
     "@types/nodemailer": "^7.0.9",

@@ -15,20 +15,18 @@ import { NordigenModule } from './features/nordigen/nordigen.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './features/users/users.module';
 import configuration, { AppConfig } from './configuration';
-import { User } from './features/users/entities/user.entity';
 import { BudgetsModule } from './features/budgets/budgets.module';
 import { WebhooksModule } from './features/webhooks/webhooks.module';
-import { WaitingListModule } from './features/waitinglist/waitinglist.module';
 import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
 import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
+import { EmailService } from './features/email/email.service';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
-import { UsersService } from './features/users/users.service';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth';
 import { AppController } from './app.controller';
@@ -104,9 +102,12 @@ import { AppController } from './app.controller';
     }),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService<AppConfig>) => {
+      imports: [ConfigModule, EmailModule],
+      inject: [ConfigService, EmailService],
+      useFactory: (
+        configService: ConfigService<AppConfig>,
+        emailService: EmailService,
+      ) => {
         const database = configService.get('database', { infer: true })!;
         const authConfig = configService.get('auth', { infer: true })!;
 
@@ -114,6 +115,7 @@ import { AppController } from './app.controller';
           auth: createAuth({
             databaseConfig: database,
             authConfig: authConfig,
+            emailService: emailService,
           }),
         };
       },
@@ -148,19 +150,16 @@ import { AppController } from './app.controller';
     AdminModule,
     BudgetsModule,
     WebhooksModule,
-    WaitingListModule,
     SavingGoalsModule,
     DataImporterModule,
     DataExporterModule,
     EmailModule,
     NotificationsModule,
-    // UGLY HACK TO GET THE USER REPOSITORY IN THE AUTH GUARD
-    TypeOrmModule.forFeature([User]),
     RegularPaymentsModule,
     HealthModule,
   ],
   controllers: [AppController],
-  providers: [UsersService],
+  providers: [],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

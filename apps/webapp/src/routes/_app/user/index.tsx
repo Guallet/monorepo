@@ -1,20 +1,15 @@
-import { Text, Button, Stack, Image, Modal, Group } from "@mantine/core";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useDisclosure } from "@mantine/hooks";
-import { gualletClient } from "@/api/gualletClient";
+import { Text, Button, Stack, Image, Modal, Group } from '@mantine/core';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useDisclosure } from '@mantine/hooks';
+import { gualletClient } from '@/api/gualletClient';
+import { useUser } from '@guallet/api-react';
 
-export const Route = createFileRoute("/_app/user/")({
-  loader: loader,
+export const Route = createFileRoute('/_app/user/')({
   component: UserDetailsPage,
 });
 
-async function loader() {
-  const user = await gualletClient.user.getUserDetails();
-  return { user };
-}
-
 function UserDetailsPage() {
-  const { user } = Route.useLoaderData();
+  const { user } = useUser();
   const navigate = useNavigate();
   const [
     isDeleteAccountModalOpened,
@@ -26,7 +21,7 @@ function UserDetailsPage() {
 
   const deleteAccount = async () => {
     await gualletClient.user.deleteUserAccount();
-    navigate({ to: "/userdeleted", replace: true });
+    navigate({ to: '/userdeleted', replace: true });
   };
 
   return (
@@ -65,23 +60,23 @@ function UserDetailsPage() {
       <Stack>
         <Stack align="center">
           <Image
-            src={user.profile_src}
-            alt={user.name}
+            src={user?.profile_src}
+            alt={user?.name}
             w={200}
             h="auto"
             fit="contain"
             // radius={100}
-            fallbackSrc={`https://dummyimage.com/200x200/8c8c8c/fff.png&text=${user.name}`}
+            fallbackSrc={`https://dummyimage.com/200x200/8c8c8c/fff.png&text=${user?.name}`}
             style={{
-              borderRadius: "50%",
+              borderRadius: '50%',
             }}
           />
-          <Text>{user.name}</Text>
-          <Text>{user.email}</Text>
+          <Text>{user?.name}</Text>
+          <Text>{user?.email}</Text>
         </Stack>
         <Button
           onClick={() => {
-            navigate({ to: "/user/edit" });
+            navigate({ to: '/user/edit' });
           }}
         >
           Edit Profile

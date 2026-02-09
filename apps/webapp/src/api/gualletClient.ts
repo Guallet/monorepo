@@ -1,6 +1,6 @@
-import { BuildConfig } from "@/build.config";
-import { createClient } from "@guallet/api-client";
-import { authClient } from "@/auth/better-auth";
+import { BuildConfig } from '@/build.config';
+import { createClient } from '@guallet/api-client';
+import { authClient } from '@/auth/auth';
 
 export const gualletClient = createClient({
   baseUrl: BuildConfig.BASE_API_URL,

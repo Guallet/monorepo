@@ -1,13 +1,17 @@
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
+import { emailOTP, magicLink } from 'better-auth/plugins';
+import { EmailService } from 'src/features/email/email.service';
 
 export const createAuth = ({
   databaseConfig,
   authConfig,
+  emailService,
 }: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
+  emailService: EmailService;
 }) => {
   const database = new Pool({
     host: databaseConfig.host,
@@ -53,7 +57,47 @@ export const createAuth = ({
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
+      sendResetPassword: async ({ user, url }) => {
+        await emailService.sendPasswordResetEmail({
+          to: user.email,
+          url,
+          userName: user.name,
+        });
+      },
     },
+    socialProviders: {
+      google: {
+        enabled: authConfig.socialProviders?.google !== undefined,
+        clientId: authConfig.socialProviders?.google?.clientId || '',
+        clientSecret: authConfig.socialProviders?.google?.clientSecret || '',
+      },
+    },
+    // PLUGINS
+    plugins: [
+      emailOTP({
+        // OTP will expire after 5 minutes
+        expiresIn: 60 * 5,
+        // Send OTP via email using EmailService
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          await emailService.sendAuthOtpEmail({
+            to: email,
+            otp,
+            type,
+          });
+        },
+      }),
+      magicLink({
+        // Magic link will expire after 10 minutes
+        expiresIn: 60 * 10,
+        // Send magic link via email using EmailService
+        sendMagicLink: async ({ email, url }) => {
+          await emailService.sendAuthMagicLinkEmail({
+            to: email,
+            url,
+          });
+        },
+      }),
+    ],
   });
 };
 
@@ -72,5 +116,20 @@ export const auth = createAuth({
     secret: process.env.BETTER_AUTH_SECRET || '',
     baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
     allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || '',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      },
+    },
   },
+  // Note: Email service is mocked here since the CLI runs outside NestJS
+  emailService: {
+    sendAuthOtpEmail: () => {
+      return Promise.resolve();
+    },
+    sendAuthMagicLinkEmail: () => {
+      return Promise.resolve();
+    },
+  } as unknown as EmailService,
 });

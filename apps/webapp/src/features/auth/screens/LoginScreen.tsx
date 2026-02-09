@@ -15,12 +15,14 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
+import { useNavigate } from '@tanstack/react-router';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { GoogleButton } from '../components/GoogleButton';
 import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconAlertCircle } from '@tabler/icons-react';
+import { useAuth } from '@guallet/auth';
 
 // Define schemas for form validation using Zod
 const passwordFormSchema = z.object({
@@ -38,27 +40,31 @@ type PasswordFormData = z.infer<typeof passwordFormSchema>;
 type MagicLinkFormData = z.infer<typeof magicLinkFormSchema>;
 
 interface LoginScreenProps {
-  isLoading?: boolean;
-  onGoogleLogin: () => void;
-  onMagicLink: (email: string) => Promise<void>;
-  onPassword: (email: string, password: string) => Promise<void>;
-  magicLinkError?: string;
+  oAuthRedirectionTo: string;
+  redirect: string;
 }
 
 export function LoginScreen({
-  isLoading,
-  onGoogleLogin,
-  onMagicLink,
-  onPassword,
-  magicLinkError,
+  oAuthRedirectionTo,
+  redirect: rawRedirect,
 }: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
+  const navigation = useNavigate();
+  const { isLoading, login, loginWithProvider, getOtpCode } = useAuth();
+
+  // Don't allow redirecting to login page itself
+  const redirect =
+    rawRedirect === 'login' || rawRedirect === '/login'
+      ? '/dashboard'
+      : rawRedirect;
+
   const [loginType, setLoginType] = useState<'magic-link' | 'password'>(
     'password',
   );
   const [localMagicLinkError, setLocalMagicLinkError] = useState<string | null>(
     null,
   );
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const passwordForm = useForm<PasswordFormData>({
     initialValues: {
@@ -76,13 +82,39 @@ export function LoginScreen({
   });
 
   const handlePasswordSubmit = async (data: PasswordFormData) => {
-    await onPassword(data.email, data.password);
+    console.log('Logging in with email and password');
+    setPasswordError(null); // Clear previous error
+    const { success, error } = await login(data.email, data.password);
+    if (error) {
+      console.error('Error logging in', error);
+      setPasswordError(error.message || 'Login failed');
+    } else if (success) {
+      console.log('Success login');
+      console.log('Redirecting to', redirect || '/dashboard');
+      // navigation({
+      //   to: redirect || '/dashboard',
+      //   replace: true,
+      // });
+    }
   };
 
   const handleMagicLinkSubmit = async (data: MagicLinkFormData) => {
+    console.log('Sending magic link to', data.email);
     try {
       setLocalMagicLinkError(null);
-      await onMagicLink(data.email);
+      const { success, error } = await getOtpCode(data.email);
+      if (error) {
+        console.error('Error sending the OTP', error);
+        setLocalMagicLinkError(error.message || 'Failed to send magic link');
+      } else if (success) {
+        navigation({
+          to: '/login/validateotp',
+          search: {
+            email: data.email,
+            redirectTo: redirect,
+          },
+        });
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to send magic link';
@@ -90,11 +122,23 @@ export function LoginScreen({
     }
   };
 
+  const handleGoogleLogin = async () => {
+    console.log('Logging in with Google');
+    // Save the redirect url in the local storage to be able to restore it later
+    localStorage.setItem('redirectDestination', redirect);
+    const result = await loginWithProvider('google', oAuthRedirectionTo);
+    if (!result.success) {
+      console.error('Error logging in with Google', result.error);
+    } else {
+      console.log('Success login with Google');
+    }
+  };
+
   const toggleLoginType = () => {
     setLoginType(loginType === 'password' ? 'magic-link' : 'password');
   };
 
-  const displayError = magicLinkError || localMagicLinkError;
+  const displayError = localMagicLinkError;
 
   return (
     <BaseScreen isLoading={isLoading}>
@@ -126,6 +170,20 @@ export function LoginScreen({
               mb="md"
             >
               {displayError}
+            </Alert>
+          )}
+
+          {passwordError && loginType === 'password' && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              title={t(
+                'screens.login.form.password.error.title',
+                'CNF: Login failed',
+              )}
+              color="red"
+              mb="md"
+            >
+              {passwordError}
             </Alert>
           )}
 
@@ -212,7 +270,7 @@ export function LoginScreen({
           />
 
           <Group grow>
-            <GoogleButton onClick={onGoogleLogin}>
+            <GoogleButton onClick={handleGoogleLogin}>
               {t(
                 'screens.login.form.googleLoginButton.label',
                 'CNF: Continue with Google',

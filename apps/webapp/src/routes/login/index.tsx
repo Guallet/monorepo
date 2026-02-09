@@ -1,4 +1,4 @@
-import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Navigate, createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 import { LoginScreen } from '@/features/auth/screens/LoginScreen';
 import { useAuth } from '@guallet/auth';
@@ -13,56 +13,38 @@ export const Route = createFileRoute('/login/')({
 });
 
 function LoginPage() {
-  const {
-    isAuthenticated,
-    isLoading,
-    login,
-    loginWithProvider,
-    getOtpCode
-  } = useAuth();
-  const { redirect } = Route.useSearch();
-  const navigation = useNavigate();
-  const redirectTo = `${globalThis.location.origin}/login/callback`;
+  const { isAuthenticated } = useAuth();
+  const { redirect: rawRedirect } = Route.useSearch();
+  const oAuthRedirectionTo = `${globalThis.location.origin}/login/callback`;
+
+  // Don't allow redirecting to login page itself
+  const redirect =
+    rawRedirect === 'login' ||
+    rawRedirect === '/login' ||
+    rawRedirect === '/logout' ||
+    rawRedirect === 'logout'
+      ? '/dashboard'
+      : rawRedirect;
+
+  // if redirect is login, navigate to dashboard instead. This is to prevent redirect loops in case of misconfiguration
+  if (redirect === '/login' || redirect === 'login') {
+    console.warn(
+      'Redirect destination is set to login page. Redirecting to dashboard instead to prevent redirect loop.',
+      {
+        originalRedirect: redirect,
+      },
+    );
+    return <Navigate to="/login" search={{ redirect: '/dashboard' }} replace />;
+  }
+
+  console.log('LoginPage rendered. isAuthenticated:', isAuthenticated);
+  console.log('Redirect destination after login:', redirect);
 
   if (isAuthenticated) {
-    return <Navigate to={redirect || 'dashboard'} />;
+    return <Navigate to={redirect || '/dashboard'} replace />;
   }
 
   return (
-    <LoginScreen
-      isLoading={isLoading}
-      onGoogleLogin={async () => {
-        console.log('Logging in with Google');
-        // Save the redirect url in the local storage to be able to restore it later
-        localStorage.setItem('redirectDestination', redirect);
-        await loginWithProvider('google', redirectTo);
-      }}
-      onMagicLink={async (email: string) => {
-        console.log('Sending magic link to', email);
-
-        const { success, error } = await getOtpCode(email);
-        if (error) {
-          console.error('Error sending the OTP', error);
-        } else if (success) {
-          navigation({
-            from: Route.fullPath,
-            to: '/login/validateotp',
-            search: {
-              email: email,
-              redirectTo: redirect,
-            },
-          });
-        }
-      }}
-      onPassword={async (email: string, password: string) => {
-        console.log('Logging in with email and password');
-        const { success, error } = await login(email, password);
-        if (error) {
-          console.error('Error logging in', error);
-        } else if (success) {
-          console.log('Success login');
-        }
-      }}
-    />
+    <LoginScreen oAuthRedirectionTo={oAuthRedirectionTo} redirect={redirect} />
   );
 }
