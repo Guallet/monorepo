@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "lint": "eslint . --ext .ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"

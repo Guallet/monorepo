@@ -1,5 +1,12 @@
 import { Money } from './Money';
 import { Currency } from './Currency';
+import {
+  InvalidAmountError,
+  InvalidCurrencyError,
+  CurrencyMismatchError,
+  DivideByZeroError,
+  InvalidExchangeRateError,
+} from '../errors';
 
 describe('Money', () => {
   let usd: Currency;
@@ -33,14 +40,12 @@ describe('Money', () => {
     });
 
     it('should throw InvalidAmountError for NaN', () => {
-      const { InvalidAmountError } = require('../errors');
       expect(() =>
         Money.fromCurrencyCode({ amount: Number.NaN, currencyCode: 'USD' }),
       ).toThrow(InvalidAmountError);
     });
 
     it('should throw InvalidCurrencyError for invalid currency code', () => {
-      const { InvalidCurrencyError } = require('../errors');
       expect(() =>
         Money.fromCurrencyCode({ amount: 100, currencyCode: 'INVALID' }),
       ).toThrow(InvalidCurrencyError);
@@ -80,7 +85,6 @@ describe('Money', () => {
     });
 
     it('should throw CurrencyMismatchError when operating on different currencies', () => {
-      const { CurrencyMismatchError } = require('../errors');
       const usdMoney = Money.from({ amount: 100, currency: usd });
       const eurMoney = Money.from({ amount: 100, currency: eur });
 
@@ -90,14 +94,12 @@ describe('Money', () => {
 
     it('should throw DivideByZeroError when dividing by zero', () => {
       const money = Money.from({ amount: 100, currency: usd });
-      const { DivideByZeroError } = require('../errors');
       expect(() => money.divide(0)).toThrow(DivideByZeroError);
       expect(() => money.divide(0)).toThrow('Cannot divide by zero');
     });
 
     it('should throw InvalidAmountError for invalid multiplier/divisor', () => {
       const money = Money.from({ amount: 100, currency: usd });
-      const { InvalidAmountError } = require('../errors');
       expect(() => money.multiply(Number.NaN)).toThrow(InvalidAmountError);
       expect(() => money.divide(Number.NaN)).toThrow(InvalidAmountError);
     });
@@ -257,7 +259,6 @@ describe('Money', () => {
 
     it('should throw InvalidExchangeRateError for invalid exchange rate', () => {
       const money = Money.from({ amount: 100, currency: usd });
-      const { InvalidExchangeRateError } = require('../errors');
       expect(() => money.convertTo(eur, 0)).toThrow(InvalidExchangeRateError);
       expect(() => money.convertTo(eur, -1)).toThrow(InvalidExchangeRateError);
       expect(() => money.convertTo(eur, Number.NaN)).toThrow(

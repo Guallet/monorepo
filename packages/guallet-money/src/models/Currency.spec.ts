@@ -1,4 +1,5 @@
 import { Currency } from './Currency';
+import { InvalidCurrencyError } from '../errors';
 
 describe('Currency', () => {
   describe('fromISOCode', () => {
@@ -43,7 +44,6 @@ describe('Currency', () => {
     });
 
     it('should throw InvalidCurrencyError for invalid currency code', () => {
-      const { InvalidCurrencyError } = require('../errors');
       expect(() => Currency.fromISOCode('INVALID')).toThrow(
         InvalidCurrencyError,
       );
