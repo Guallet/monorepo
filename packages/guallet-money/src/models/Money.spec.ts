@@ -45,6 +45,21 @@ describe('Money', () => {
       ).toThrow(InvalidAmountError);
     });
 
+    it('should throw InvalidAmountError for Infinity', () => {
+      expect(() =>
+        Money.fromCurrencyCode({
+          amount: Number.POSITIVE_INFINITY,
+          currencyCode: 'USD',
+        }),
+      ).toThrow(InvalidAmountError);
+      expect(() =>
+        Money.fromCurrencyCode({
+          amount: Number.NEGATIVE_INFINITY,
+          currencyCode: 'USD',
+        }),
+      ).toThrow(InvalidAmountError);
+    });
+
     it('should throw InvalidCurrencyError for invalid currency code', () => {
       expect(() =>
         Money.fromCurrencyCode({ amount: 100, currencyCode: 'INVALID' }),
@@ -102,6 +117,18 @@ describe('Money', () => {
       const money = Money.from({ amount: 100, currency: usd });
       expect(() => money.multiply(Number.NaN)).toThrow(InvalidAmountError);
       expect(() => money.divide(Number.NaN)).toThrow(InvalidAmountError);
+      expect(() => money.multiply(Number.POSITIVE_INFINITY)).toThrow(
+        InvalidAmountError,
+      );
+      expect(() => money.multiply(Number.NEGATIVE_INFINITY)).toThrow(
+        InvalidAmountError,
+      );
+      expect(() => money.divide(Number.POSITIVE_INFINITY)).toThrow(
+        InvalidAmountError,
+      );
+      expect(() => money.divide(Number.NEGATIVE_INFINITY)).toThrow(
+        InvalidAmountError,
+      );
     });
   });
 
@@ -158,6 +185,31 @@ describe('Money', () => {
         expect(m.round(3, 'UP').amount).toBe(1.235);
         expect(m.round(3, 'TOWARDS_ZERO').amount).toBe(1.234);
       });
+    });
+
+    it('should throw InvalidAmountError for negative decimalPlaces', () => {
+      const money = Money.from({ amount: 10.556, currency: usd });
+      expect(() => money.round(-1)).toThrow(InvalidAmountError);
+      expect(() => money.round(-1)).toThrow(
+        'Decimal places must be a non-negative integer',
+      );
+    });
+
+    it('should throw InvalidAmountError for non-integer decimalPlaces', () => {
+      const money = Money.from({ amount: 10.556, currency: usd });
+      expect(() => money.round(1.5)).toThrow(InvalidAmountError);
+      expect(() => money.round(2.7)).toThrow(InvalidAmountError);
+    });
+
+    it('should throw InvalidAmountError for invalid decimalPlaces values', () => {
+      const money = Money.from({ amount: 10.556, currency: usd });
+      expect(() => money.round(Number.NaN)).toThrow(InvalidAmountError);
+      expect(() => money.round(Number.POSITIVE_INFINITY)).toThrow(
+        InvalidAmountError,
+      );
+      expect(() => money.round(Number.NEGATIVE_INFINITY)).toThrow(
+        InvalidAmountError,
+      );
     });
   });
 
@@ -262,6 +314,12 @@ describe('Money', () => {
       expect(() => money.convertTo(eur, 0)).toThrow(InvalidExchangeRateError);
       expect(() => money.convertTo(eur, -1)).toThrow(InvalidExchangeRateError);
       expect(() => money.convertTo(eur, Number.NaN)).toThrow(
+        InvalidExchangeRateError,
+      );
+      expect(() => money.convertTo(eur, Number.POSITIVE_INFINITY)).toThrow(
+        InvalidExchangeRateError,
+      );
+      expect(() => money.convertTo(eur, Number.NEGATIVE_INFINITY)).toThrow(
         InvalidExchangeRateError,
       );
     });

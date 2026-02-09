@@ -90,7 +90,7 @@ export class Money {
   readonly currency: Currency;
 
   private constructor(amount: number, currency: Currency) {
-    if (typeof amount !== 'number' || Number.isNaN(amount)) {
+    if (!Number.isFinite(amount)) {
       throw new InvalidAmountError(
         `Invalid amount: ${amount}. Amount must be a valid number.`,
       );
@@ -186,9 +186,9 @@ export class Money {
    * Multiplies money by a factor
    */
   multiply(factor: number): Money {
-    if (typeof factor !== 'number' || Number.isNaN(factor)) {
+    if (!Number.isFinite(factor)) {
       throw new InvalidAmountError(
-        `Invalid factor: ${factor}. Factor must be a valid number.`,
+        `Invalid factor: ${factor}. Factor must be a finite number.`,
       );
     }
     return new Money(this.amount * factor, this.currency);
@@ -198,9 +198,9 @@ export class Money {
    * Divides money by a divisor
    */
   divide(divisor: number): Money {
-    if (typeof divisor !== 'number' || Number.isNaN(divisor)) {
+    if (!Number.isFinite(divisor)) {
       throw new InvalidAmountError(
-        `Invalid divisor: ${divisor}. Divisor must be a valid number.`,
+        `Invalid divisor: ${divisor}. Divisor must be a finite number.`,
       );
     }
     if (divisor === 0) {
@@ -227,6 +227,14 @@ export class Money {
    * Rounds to the nearest integer or specified decimal places with multiple modes
    */
   round(decimalPlaces?: number, mode: RoundingMode = 'HALF_UP'): Money {
+    if (
+      decimalPlaces !== undefined &&
+      (!Number.isInteger(decimalPlaces) || decimalPlaces < 0)
+    ) {
+      throw new InvalidAmountError(
+        `Invalid decimalPlaces: ${decimalPlaces}. Decimal places must be a non-negative integer.`,
+      );
+    }
     const places = decimalPlaces ?? this.currency.decimalPlaces;
     const rounded = roundNumber(this.amount, places, mode);
     return new Money(rounded, this.currency);
@@ -299,9 +307,9 @@ export class Money {
     if (this.currency.equals(targetCurrency)) {
       return this;
     }
-    if (typeof rate !== 'number' || Number.isNaN(rate) || rate <= 0) {
+    if (!Number.isFinite(rate) || rate <= 0) {
       throw new InvalidExchangeRateError(
-        `Invalid conversion rate: ${rate}. Rate must be a positive number.`,
+        `Invalid conversion rate: ${rate}. Rate must be a positive finite number.`,
       );
     }
     return new Money(this.amount * rate, targetCurrency);
