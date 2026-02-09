@@ -1,45 +1,55 @@
 name: CI - guallet-money
 
 on:
-    push:
-        branches:
-            - main
-            - develop
-        paths:
-            - "packages/guallet-money/**"
-    pull_request:
-        branches:
-            - main
-            - develop
-        paths:
-            - "packages/guallet-money/**"
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/guallet-money/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/guallet-money/**'
 
 jobs:
-    test-and-lint:
-        name: Test & Lint @guallet/money
-        runs-on: ubuntu-latest
-        env:
-            CI: true
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+  test-and-lint:
+    name: Test & Lint @guallet/money
+    runs-on: ubuntu-latest
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "22"
-                  cache: "pnpm"
+    strategy:
+      matrix:
+        node-version: [22.x]
 
-            - name: Enable pnpm via Corepack
-              run: |
-                  corepack enable
-                  corepack prepare pnpm@latest --activate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
 
-            - name: Lint @guallet/money
-              run: pnpm -w --filter @guallet/money exec eslint 'packages/guallet-money/src/**/*.{ts,tsx}' --max-warnings=0
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-            - name: Run unit tests (@guallet/money)
-              run: pnpm -w --filter @guallet/money test --silent
+      - name: Install dependencies
+        working-directory: packages/guallet-money
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint @guallet/money
+        working-directory: packages/guallet-money
+        run: pnpm lint
+
+      - name: Run type check
+        working-directory: packages/guallet-money
+        run: pnpm tsc --noEmit
+
+      - name: Run unit tests (@guallet/money)
+        working-directory: packages/guallet-money
+        run: pnpm test
