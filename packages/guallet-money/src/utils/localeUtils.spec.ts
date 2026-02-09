@@ -1,27 +1,31 @@
 import { getDefaultLocale, getCurrencySymbol } from './localeUtils';
 
+interface MockedGlobalThis {
+  navigator?: {
+    language?: string;
+  };
+}
+
 describe('localeUtils', () => {
   describe('getDefaultLocale', () => {
-    const originalNavigator = (
-      globalThis as typeof globalThis & { navigator?: Navigator }
-    ).navigator;
+    const originalNavigator = (globalThis as unknown as MockedGlobalThis)
+      .navigator;
 
     afterEach(() => {
-      (globalThis as typeof globalThis & { navigator?: Navigator }).navigator =
-        originalNavigator;
+      (globalThis as unknown as MockedGlobalThis).navigator = originalNavigator;
     });
 
     it('returns default when navigator is undefined', () => {
-      (
-        globalThis as typeof globalThis & { navigator?: Partial<Navigator> }
-      ).navigator = { language: undefined };
+      (globalThis as unknown as MockedGlobalThis).navigator = {
+        language: undefined,
+      };
       expect(getDefaultLocale()).toBe('en-US');
     });
 
     it('returns navigator.language when present', () => {
-      (
-        globalThis as typeof globalThis & { navigator?: Partial<Navigator> }
-      ).navigator = { language: 'fr-FR' };
+      (globalThis as unknown as MockedGlobalThis).navigator = {
+        language: 'fr-FR',
+      };
       expect(getDefaultLocale()).toBe('fr-FR');
     });
   });
