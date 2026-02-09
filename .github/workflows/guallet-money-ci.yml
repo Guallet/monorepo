@@ -2,9 +2,15 @@ name: CI - guallet-money
 
 on:
     push:
+        branches:
+            - main
+            - develop
         paths:
             - "packages/guallet-money/**"
     pull_request:
+        branches:
+            - main
+            - develop
         paths:
             - "packages/guallet-money/**"
 
@@ -18,7 +24,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Setup Node.js (22)
+            - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
                   node-version: "22"
@@ -33,7 +39,7 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Lint @guallet/money
-              run: pnpm -w --filter @guallet/money exec eslint "packages/guallet-money/src/**/*.{ts,tsx}" --max-warnings=0
+              run: pnpm -w --filter @guallet/money exec eslint 'packages/guallet-money/src/**/*.{ts,tsx}' --max-warnings=0
 
             - name: Run unit tests (@guallet/money)
               run: pnpm -w --filter @guallet/money test --silent
