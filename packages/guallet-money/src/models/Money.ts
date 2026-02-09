@@ -1,5 +1,63 @@
 import { Currency } from './Currency';
 
+export type RoundingMode =
+  | 'HALF_UP' // ties away from zero (Math.round behavior)
+  | 'HALF_EVEN' // bankers rounding (ties to even)
+  | 'DOWN' // towards -Infinity
+  | 'UP' // towards +Infinity
+  | 'TOWARDS_ZERO'; // truncation
+
+/**
+ * Rounds to the nearest integer or specified decimal places with multiple modes
+ * @param decimalPlaces - number of decimal places to round to (defaults to currency decimal places)
+ * @param mode - rounding mode (defaults to 'HALF_UP' for backward compatibility)
+ */
+function roundNumber(
+  amount: number,
+  places: number,
+  mode: RoundingMode,
+): number {
+  const factor = Math.pow(10, places);
+  const scaled = amount * factor;
+  const EPS = 1e-9;
+
+  switch (mode) {
+    case 'HALF_UP': {
+      const floorVal = Math.floor(scaled);
+      const frac = scaled - floorVal;
+      if (Math.abs(frac - 0.5) < EPS) {
+        // tie: move away from zero
+        return (scaled >= 0 ? floorVal + 1 : floorVal) / factor;
+      }
+      return Math.round(scaled) / factor;
+    }
+
+    case 'HALF_EVEN': {
+      const floorVal = Math.floor(scaled);
+      const frac = scaled - floorVal;
+      if (Math.abs(frac - 0.5) < EPS) {
+        // tie: choose the nearest even integer
+        const evenCandidate =
+          Math.abs(floorVal) % 2 === 0 ? floorVal : floorVal + 1;
+        return evenCandidate / factor;
+      }
+      return Math.round(scaled) / factor;
+    }
+
+    case 'DOWN':
+      return Math.floor(scaled) / factor;
+
+    case 'UP':
+      return Math.ceil(scaled) / factor;
+
+    case 'TOWARDS_ZERO':
+      return (scaled >= 0 ? Math.floor(scaled) : Math.ceil(scaled)) / factor;
+
+    default:
+      return Math.round(scaled) / factor;
+  }
+}
+
 /**
  * Formatting options for money display
  */
@@ -10,15 +68,18 @@ export interface MoneyFormatOptions {
   showPositiveSign?: boolean;
 }
 
+import { getDefaultLocale } from '../utils/localeUtils';
+import {
+  InvalidAmountError,
+  DivideByZeroError,
+  CurrencyMismatchError,
+  InvalidExchangeRateError,
+} from '../errors';
+
 /**
- * Default locale getter with environment detection
+ * (moved to localUtils)
+ * See `src/utils/localUtils.ts` for locale helpers
  */
-function getDefaultLocale(): string {
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    return navigator.language;
-  }
-  return 'en-GB';
-}
 
 /**
  * Represents a monetary value with its currency
@@ -30,7 +91,7 @@ export class Money {
 
   private constructor(amount: number, currency: Currency) {
     if (typeof amount !== 'number' || Number.isNaN(amount)) {
-      throw new TypeError(
+      throw new InvalidAmountError(
         `Invalid amount: ${amount}. Amount must be a valid number.`,
       );
     }
@@ -126,7 +187,7 @@ export class Money {
    */
   multiply(factor: number): Money {
     if (typeof factor !== 'number' || Number.isNaN(factor)) {
-      throw new TypeError(
+      throw new InvalidAmountError(
         `Invalid factor: ${factor}. Factor must be a valid number.`,
       );
     }
@@ -138,12 +199,12 @@ export class Money {
    */
   divide(divisor: number): Money {
     if (typeof divisor !== 'number' || Number.isNaN(divisor)) {
-      throw new TypeError(
+      throw new InvalidAmountError(
         `Invalid divisor: ${divisor}. Divisor must be a valid number.`,
       );
     }
     if (divisor === 0) {
-      throw new Error('Cannot divide by zero');
+      throw new DivideByZeroError('Cannot divide by zero');
     }
     return new Money(this.amount / divisor, this.currency);
   }
@@ -163,12 +224,12 @@ export class Money {
   }
 
   /**
-   * Rounds to the nearest integer or specified decimal places
+   * Rounds to the nearest integer or specified decimal places with multiple modes
    */
-  round(decimalPlaces?: number): Money {
+  round(decimalPlaces?: number, mode: RoundingMode = 'HALF_UP'): Money {
     const places = decimalPlaces ?? this.currency.decimalPlaces;
-    const factor = Math.pow(10, places);
-    return new Money(Math.round(this.amount * factor) / factor, this.currency);
+    const rounded = roundNumber(this.amount, places, mode);
+    return new Money(rounded, this.currency);
   }
 
   /**
@@ -239,7 +300,7 @@ export class Money {
       return this;
     }
     if (typeof rate !== 'number' || Number.isNaN(rate) || rate <= 0) {
-      throw new TypeError(
+      throw new InvalidExchangeRateError(
         `Invalid conversion rate: ${rate}. Rate must be a positive number.`,
       );
     }
@@ -268,7 +329,7 @@ export class Money {
    */
   private assertSameCurrency(other: Money): void {
     if (!this.currency.equals(other.currency)) {
-      throw new Error(
+      throw new CurrencyMismatchError(
         `Currency mismatch: Cannot operate on ${this.currency.code} and ${other.currency.code}`,
       );
     }

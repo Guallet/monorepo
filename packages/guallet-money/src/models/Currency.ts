@@ -1,47 +1,12 @@
 import { CURRENCIES } from './iso_4217';
 
-/**
- * Default locale to use when no locale is specified
- * Can be overridden by environment or user preference
- */
-const DEFAULT_LOCALE = 'en-US';
+import { getCurrencySymbol } from '../utils/localeUtils';
+import { InvalidCurrencyError } from '../errors';
 
 /**
- * Gets the locale from the environment, with fallback to default
+ * (moved to localUtils)
+ * See `src/utils/localUtils.ts` for locale helpers
  */
-function getDefaultLocale(): string {
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    return navigator.language;
-  }
-  return DEFAULT_LOCALE;
-}
-
-/**
- * Extracts the currency symbol from a formatted currency string
- */
-function getCurrencySymbol(code: string, locale?: string): string {
-  try {
-    const formatted = (0)
-      .toLocaleString(locale || getDefaultLocale(), {
-        style: 'currency',
-        currency: code,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-        currencySign: 'standard',
-        currencyDisplay: 'narrowSymbol',
-        useGrouping: true,
-      })
-      .replace(/\d/g, '')
-      .trim();
-    return formatted || code;
-  } catch (error) {
-    console.warn(
-      `Failed to get currency symbol for ${code}, using code as fallback`,
-      error,
-    );
-    return code;
-  }
-}
 
 /**
  * Represents a currency with its properties
@@ -74,14 +39,16 @@ export class Currency {
    */
   static fromISOCode(code: string, locale?: string): Currency {
     if (!code || typeof code !== 'string') {
-      throw new Error('Currency code is required and must be a string');
+      throw new InvalidCurrencyError(
+        'Currency code is required and must be a string',
+      );
     }
 
     const upperCode = code.toUpperCase().trim();
     const currencyData = CURRENCIES[upperCode];
 
     if (!currencyData) {
-      throw new Error(
+      throw new InvalidCurrencyError(
         `Invalid currency code: "${code}". Must be a valid ISO 4217 code. ` +
           `See https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml`,
       );
@@ -91,7 +58,7 @@ export class Currency {
     const decimalPlaces = Number(currencyData.decimalPlaces);
 
     if (Number.isNaN(decimalPlaces) || decimalPlaces < 0) {
-      throw new Error(
+      throw new InvalidCurrencyError(
         `Invalid decimal places for currency ${upperCode}: ${currencyData.decimalPlaces}`,
       );
     }

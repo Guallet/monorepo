@@ -98,13 +98,26 @@ const positive = negative.abs();
 const negated = base.negate();
 // Result: -$100.00
 
-// Rounding
+// Rounding (with modes)
+// The `round` method accepts an optional `decimalPlaces` and a `mode` (default `HALF_UP`).
+// Supported modes: `HALF_UP` (default), `HALF_EVEN` (bankers rounding), `DOWN`, `UP`, `TOWARDS_ZERO`.
 const precise = Money.fromCurrencyCode({ amount: 10.567, currencyCode: 'USD' });
-const rounded = precise.round(); // Uses currency's decimal places
+const rounded = precise.round(); // Uses currency's decimal places (HALF_UP)
 // Result: $10.57
 
+// Custom decimal places
 const roundedCustom = precise.round(0);
 // Result: $11.00
+
+// Rounding mode examples (ties):
+const m = Money.fromCurrencyCode({ amount: 1.005, currencyCode: 'USD' });
+// Default HALF_UP (ties away from zero)
+m.round(2, 'HALF_UP'); // 1.01
+// HALF_EVEN (bankers rounding) rounds ties to the nearest even
+m.round(2, 'HALF_EVEN'); // 1.00
+
+// Note: For strict financial correctness consider storing amounts in minor units (e.g., cents)
+// or using a Decimal library for high-precision accounting logic.
 ```
 
 #### Comparison Methods
@@ -201,32 +214,85 @@ usd.toString(); // "USD (US Dollar)"
 
 ## Error Handling
 
-The library throws descriptive errors for invalid operations:
+The library throws descriptive, domain-specific errors so you can handle cases precisely by type.
 
 ```typescript
+import { 
+  InvalidCurrencyError,
+  InvalidAmountError,
+  CurrencyMismatchError,
+  DivideByZeroError,
+  InvalidExchangeRateError,
+} from '@guallet/money';
+
+// Invalid currency code
 try {
-  // Invalid currency code
   Money.fromCurrencyCode({ amount: 100, currencyCode: 'INVALID' });
 } catch (error) {
-  // Error: Invalid currency code: "INVALID". Must be a valid ISO 4217 code.
+  if (error instanceof InvalidCurrencyError) {
+    // handle invalid currency
+  }
 }
 
+// Currency mismatch in operations
 try {
-  // Currency mismatch in operations
   const usd = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
   const eur = Money.fromCurrencyCode({ amount: 100, currencyCode: 'EUR' });
   usd.add(eur);
 } catch (error) {
-  // Error: Currency mismatch: Cannot operate on USD and EUR
+  if (error instanceof CurrencyMismatchError) {
+    // handle mismatched currencies
+  }
+}
+
+// Invalid amount / divide by zero / invalid exchange rate
+try {
+  Money.fromCurrencyCode({ amount: NaN, currencyCode: 'USD' });
+} catch (error) {
+  if (error instanceof InvalidAmountError) {
+    // handle invalid amount
+  }
 }
 
 try {
-  // Invalid amount
-  Money.fromCurrencyCode({ amount: NaN, currencyCode: 'USD' });
+  Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' }).divide(0);
 } catch (error) {
-  // TypeError: Invalid amount: NaN. Amount must be a valid number.
+  if (error instanceof DivideByZeroError) {
+    // handle division by zero
+  }
+}
+
+try {
+  Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' }).convertTo(eur, 0);
+} catch (error) {
+  if (error instanceof InvalidExchangeRateError) {
+    // handle invalid exchange rate
+  }
 }
 ```
+
+## Public API
+
+The package exposes explicit named exports (no barrel re-exports):
+
+```ts
+import {
+  Currency,
+  Money,
+  MoneyFormatOptions,
+  RoundingMode,
+  ISO4217Currencies,
+  ISO4217CurrenciesArray,
+  // Errors
+  InvalidCurrencyError,
+  InvalidAmountError,
+  CurrencyMismatchError,
+  DivideByZeroError,
+  InvalidExchangeRateError,
+} from '@guallet/money';
+```
+
+---
 
 ## Best Practices
 

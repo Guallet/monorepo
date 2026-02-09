@@ -42,8 +42,11 @@ describe('Currency', () => {
       expect(bhd.decimalPlaces).toBe(3);
     });
 
-    it('should throw Error for invalid currency code', () => {
-      expect(() => Currency.fromISOCode('INVALID')).toThrow(Error);
+    it('should throw InvalidCurrencyError for invalid currency code', () => {
+      const { InvalidCurrencyError } = require('../errors');
+      expect(() => Currency.fromISOCode('INVALID')).toThrow(
+        InvalidCurrencyError,
+      );
       expect(() => Currency.fromISOCode('INVALID')).toThrow(
         'Invalid currency code',
       );

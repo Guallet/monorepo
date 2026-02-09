@@ -32,16 +32,18 @@ describe('Money', () => {
       expect(zero.isZero()).toBe(true);
     });
 
-    it('should throw TypeError for NaN', () => {
+    it('should throw InvalidAmountError for NaN', () => {
+      const { InvalidAmountError } = require('../errors');
       expect(() =>
-        Money.fromCurrencyCode({ amount: Number.NaN, currencyCode: 'USD' })
-      ).toThrow(TypeError);
+        Money.fromCurrencyCode({ amount: Number.NaN, currencyCode: 'USD' }),
+      ).toThrow(InvalidAmountError);
     });
 
-    it('should throw Error for invalid currency code', () => {
+    it('should throw InvalidCurrencyError for invalid currency code', () => {
+      const { InvalidCurrencyError } = require('../errors');
       expect(() =>
-        Money.fromCurrencyCode({ amount: 100, currencyCode: 'INVALID' })
-      ).toThrow(Error);
+        Money.fromCurrencyCode({ amount: 100, currencyCode: 'INVALID' }),
+      ).toThrow(InvalidCurrencyError);
     });
   });
 
@@ -77,24 +79,27 @@ describe('Money', () => {
       expect(money.divide(-2).amount).toBe(-50);
     });
 
-    it('should throw Error when operating on different currencies', () => {
+    it('should throw CurrencyMismatchError when operating on different currencies', () => {
+      const { CurrencyMismatchError } = require('../errors');
       const usdMoney = Money.from({ amount: 100, currency: usd });
       const eurMoney = Money.from({ amount: 100, currency: eur });
 
-      expect(() => usdMoney.add(eurMoney)).toThrow(Error);
-      expect(() => usdMoney.subtract(eurMoney)).toThrow(Error);
+      expect(() => usdMoney.add(eurMoney)).toThrow(CurrencyMismatchError);
+      expect(() => usdMoney.subtract(eurMoney)).toThrow(CurrencyMismatchError);
     });
 
-    it('should throw Error when dividing by zero', () => {
+    it('should throw DivideByZeroError when dividing by zero', () => {
       const money = Money.from({ amount: 100, currency: usd });
-      expect(() => money.divide(0)).toThrow(Error);
+      const { DivideByZeroError } = require('../errors');
+      expect(() => money.divide(0)).toThrow(DivideByZeroError);
       expect(() => money.divide(0)).toThrow('Cannot divide by zero');
     });
 
-    it('should throw TypeError for invalid multiplier/divisor', () => {
+    it('should throw InvalidAmountError for invalid multiplier/divisor', () => {
       const money = Money.from({ amount: 100, currency: usd });
-      expect(() => money.multiply(Number.NaN)).toThrow(TypeError);
-      expect(() => money.divide(Number.NaN)).toThrow(TypeError);
+      const { InvalidAmountError } = require('../errors');
+      expect(() => money.multiply(Number.NaN)).toThrow(InvalidAmountError);
+      expect(() => money.divide(Number.NaN)).toThrow(InvalidAmountError);
     });
   });
 
@@ -125,6 +130,32 @@ describe('Money', () => {
     it('should round to currency default decimal places', () => {
       const money = Money.from({ amount: 10.556, currency: usd });
       expect(money.round().amount).toBe(10.56);
+    });
+
+    describe('rounding modes', () => {
+      it('HALF_UP should round 1.005 to 1.01', () => {
+        const m = Money.from({ amount: 1.005, currency: usd });
+        expect(m.round(2, 'HALF_UP').amount).toBe(1.01);
+        expect(m.round(2, 'HALF_UP').amount).not.toBe(1);
+      });
+
+      it('HALF_EVEN should round 1.005 to 1.00 (bankers rounding)', () => {
+        const m = Money.from({ amount: 1.005, currency: usd });
+        expect(m.round(2, 'HALF_EVEN').amount).toBe(1);
+      });
+
+      it('HALF_UP vs HALF_EVEN with negative ties', () => {
+        const m = Money.from({ amount: -1.005, currency: usd });
+        expect(m.round(2, 'HALF_UP').amount).toBe(-1.01);
+        expect(m.round(2, 'HALF_EVEN').amount).toBe(-1);
+      });
+
+      it('DOWN, UP, and TOWARDS_ZERO behave as expected', () => {
+        const m = Money.from({ amount: 1.2345, currency: usd });
+        expect(m.round(3, 'DOWN').amount).toBe(1.234);
+        expect(m.round(3, 'UP').amount).toBe(1.235);
+        expect(m.round(3, 'TOWARDS_ZERO').amount).toBe(1.234);
+      });
     });
   });
 
@@ -199,14 +230,18 @@ describe('Money', () => {
       expect(Money.from({ amount: 10, currency: usd }).isPositive()).toBe(true);
       expect(Money.zero(usd).isPositive()).toBe(false);
       expect(Money.from({ amount: -10, currency: usd }).isPositive()).toBe(
-        false
+        false,
       );
     });
 
     it('should check if negative', () => {
-      expect(Money.from({ amount: -10, currency: usd }).isNegative()).toBe(true);
+      expect(Money.from({ amount: -10, currency: usd }).isNegative()).toBe(
+        true,
+      );
       expect(Money.zero(usd).isNegative()).toBe(false);
-      expect(Money.from({ amount: 10, currency: usd }).isNegative()).toBe(false);
+      expect(Money.from({ amount: 10, currency: usd }).isNegative()).toBe(
+        false,
+      );
     });
   });
 
@@ -220,11 +255,14 @@ describe('Money', () => {
       expect(usdMoney.amount).toBe(100); // immutable
     });
 
-    it('should throw TypeError for invalid exchange rate', () => {
+    it('should throw InvalidExchangeRateError for invalid exchange rate', () => {
       const money = Money.from({ amount: 100, currency: usd });
-      expect(() => money.convertTo(eur, 0)).toThrow(TypeError);
-      expect(() => money.convertTo(eur, -1)).toThrow(TypeError);
-      expect(() => money.convertTo(eur, Number.NaN)).toThrow(TypeError);
+      const { InvalidExchangeRateError } = require('../errors');
+      expect(() => money.convertTo(eur, 0)).toThrow(InvalidExchangeRateError);
+      expect(() => money.convertTo(eur, -1)).toThrow(InvalidExchangeRateError);
+      expect(() => money.convertTo(eur, Number.NaN)).toThrow(
+        InvalidExchangeRateError,
+      );
     });
   });
 
@@ -331,7 +369,10 @@ describe('Money', () => {
         Money.from({ amount: 75, currency: usd }),
       ];
 
-      const max = amounts.reduce((a, b) => (a.greaterThan(b) ? a : b), amounts[0]);
+      const max = amounts.reduce(
+        (a, b) => (a.greaterThan(b) ? a : b),
+        amounts[0],
+      );
       const min = amounts.reduce((a, b) => (a.lessThan(b) ? a : b), amounts[0]);
 
       expect(max.amount).toBe(150);
