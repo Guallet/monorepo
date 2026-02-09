@@ -1,0 +1,39 @@
+name: CI - guallet-money
+
+on:
+    push:
+        paths:
+            - "packages/guallet-money/**"
+    pull_request:
+        paths:
+            - "packages/guallet-money/**"
+
+jobs:
+    test-and-lint:
+        name: Test & Lint @guallet/money
+        runs-on: ubuntu-latest
+        env:
+            CI: true
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js (22)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "22"
+                  cache: "pnpm"
+
+            - name: Enable pnpm via Corepack
+              run: |
+                  corepack enable
+                  corepack prepare pnpm@latest --activate
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Lint @guallet/money
+              run: pnpm -w --filter @guallet/money exec eslint "packages/guallet-money/src/**/*.{ts,tsx}" --max-warnings=0
+
+            - name: Run unit tests (@guallet/money)
+              run: pnpm -w --filter @guallet/money test --silent
