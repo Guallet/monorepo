@@ -18,11 +18,11 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^30.0.0",
+    "@types/jest": "workspace:*",
     "eslint": "workspace:*",
     "eslint-config-custom": "workspace:*",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.4.6",
+    "jest": "workspace:*",
+    "ts-jest": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*"
   },
