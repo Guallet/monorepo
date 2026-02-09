@@ -146,6 +146,8 @@ export class Money {
       typeof options === 'string'
         ? options
         : (options?.locale ?? getDefaultLocale());
+    const useSymbol =
+      typeof options === 'object' ? (options.useSymbol ?? true) : true;
     const useGrouping =
       typeof options === 'object' ? (options.useGrouping ?? true) : true;
     const showPositiveSign =
@@ -155,7 +157,7 @@ export class Money {
       style: 'currency',
       currency: this.currency.code,
       currencySign: 'standard',
-      currencyDisplay: 'narrowSymbol',
+      currencyDisplay: useSymbol ? 'narrowSymbol' : 'code',
       useGrouping,
     }).format(this.amount);
 

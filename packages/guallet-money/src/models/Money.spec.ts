@@ -373,6 +373,26 @@ describe('Money', () => {
       });
       expect(JSON.stringify(money)).toBe('{"amount":100,"currency":"USD"}');
     });
+
+    it('should format with currency symbol by default', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      const formatted = money.format();
+      expect(formatted).toContain('$');
+      expect(formatted).not.toContain('USD');
+    });
+
+    it('should format with currency code when useSymbol is false', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      const formatted = money.format({ useSymbol: false });
+      expect(formatted).toContain('USD');
+      expect(formatted).toContain('100');
+    });
+
+    it('should format with currency symbol when useSymbol is true', () => {
+      const money = Money.from({ amount: 100, currency: usd });
+      const formatted = money.format({ useSymbol: true });
+      expect(formatted).toContain('$');
+    });
   });
 
   describe('Immutability', () => {
