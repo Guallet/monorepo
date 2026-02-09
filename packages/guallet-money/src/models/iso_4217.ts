@@ -1,4 +1,4 @@
-import { json } from "./../data/data";
+import { json } from './../data/data';
 
 type IsoCurrency = {
   country: string;
@@ -12,14 +12,14 @@ type IsoCurrency = {
 const transformed = json.$data[0].$data.reduce(
   (acc: Record<string, IsoCurrency>, blob) => {
     const blobData = blob.$data;
-    const name = blobData.find((item) => item.$name === "CcyNm")?.$data ?? "";
-    const code = blobData.find((item) => item.$name === "Ccy")?.$data ?? "";
+    const name = blobData.find((item) => item.$name === 'CcyNm')?.$data ?? '';
+    const code = blobData.find((item) => item.$name === 'Ccy')?.$data ?? '';
     const country =
-      blobData.find((item) => item.$name === "CtryNm")?.$data ?? "";
+      blobData.find((item) => item.$name === 'CtryNm')?.$data ?? '';
     const decimalPlaces =
-      blobData.find((item) => item.$name === "CcyMnrUnts")?.$data ?? "";
+      blobData.find((item) => item.$name === 'CcyMnrUnts')?.$data ?? '';
 
-    if (typeof acc[code] === "undefined") {
+    if (typeof acc[code] === 'undefined') {
       // Pick the first one in the dataset, prevent duplicate ids
       acc[code] = {
         name: `${name}`,
@@ -30,7 +30,7 @@ const transformed = json.$data[0].$data.reduce(
     }
     return acc;
   },
-  {} as Record<string, IsoCurrency>
+  {} as Record<string, IsoCurrency>,
 );
 
 export const CURRENCIES = transformed;

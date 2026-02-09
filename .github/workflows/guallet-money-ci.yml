@@ -1,0 +1,55 @@
+name: CI - guallet-money
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/guallet-money/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/guallet-money/**'
+
+jobs:
+  test-and-lint:
+    name: Test & Lint @guallet/money
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: packages/guallet-money
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint @guallet/money
+        working-directory: packages/guallet-money
+        run: pnpm lint
+
+      - name: Run type check
+        working-directory: packages/guallet-money
+        run: pnpm tsc --noEmit
+
+      - name: Run unit tests (@guallet/money)
+        working-directory: packages/guallet-money
+        run: pnpm test

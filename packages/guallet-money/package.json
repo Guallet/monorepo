@@ -1,15 +1,54 @@
 {
   "name": "@guallet/money",
-  "version": "0.1.0",
-  "description": "Common Money utils",
+  "version": "0.2.0",
+  "description": "A common money, type-safe library for handling money and currency operations",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
+  },
   "dependencies": {},
   "devDependencies": {
+    "@types/jest": "workspace:*",
     "eslint": "workspace:*",
     "eslint-config-custom": "workspace:*",
+    "jest": "workspace:*",
+    "ts-jest": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "testMatch": [
+      "**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.spec.ts",
+      "!src/index.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
   }
 }
