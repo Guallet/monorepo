@@ -21,9 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:init": "pnpm db:generate && pnpm db:migrate",
     "db:generate": "npx @better-auth/cli generate --config src/auth/better-auth.ts",
-    "db:migrate": "npx @better-auth/cli migrate --config src/auth/better-auth.ts",
-    "db:seed": "ts-node -r tsconfig-paths/register database/seed.ts",
-    "db:seed:trace": "ts-node --showConfig"
+    "db:migrate": "npx @better-auth/cli migrate --config src/auth/better-auth.ts"
   },
   "engines": {
     "node": ">=22"

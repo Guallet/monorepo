@@ -1,81 +1,116 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScript).
 
-## Installation
-
-```bash
-$ pnpm install
-```
-
-## Running the app
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Configuration
-
-Create a `api.env` file (or `.env` for local dev) with the values you can find in the `api.env.sample` file.
-
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-This project is licensed under Apache-2.0 - see the [LICENSE](../../LICENSE) file for details.
+### Quick summary
+- Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and integrations (Nordigen, webhooks, CSV importer).
+- Authentication via Better-Auth (magic links / OTP / Social).
+- DB: PostgreSQL (TypeORM). Background jobs: BullMQ + Redis.
 
 ---
 
-*Note: This API is built with [NestJS](https://nestjs.com/), which is MIT licensed.*
+## Quick start — run locally 🚀
+Prerequisites: Node >= 22, pnpm; Docker is recommended for DB/Redis.
+
+From repository root (recommended):
+
+```bash
+pnpm install
+pnpm --filter api dev
+```
+
+Or from the API folder:
+
+```bash
+cd apps/api
+pnpm install
+pnpm start
+```
+
+Open the API docs: http://localhost:5000/docs
+
+---
+
+## Environment & configuration 🔧
+- Copy the sample env files and update values as needed:
+
+```bash
+cp api.env.sample apps/api/.env       # API runtime env (repo root -> apps/api)
+cp database.env.sample .env           # DB / docker-compose (repo root)
+```
+
+- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `SMTP_*`.
+- The app loads `.env.local` then `.env` (see `ConfigModule` in `src/app.module.ts`).
+
+---
+
+## Database & migrations 🗃️
+Bring up local services with Docker Compose (Postgres + Redis):
+
+```bash
+docker-compose up -d
+```
+
+Prepare DB & auth schema:
+
+```bash
+# from apps/api
+pnpm db:init
+```
+
+or
+
+```bash
+# from apps/api
+pnpm db:generate    # generate Better-Auth migrations
+pnpm db:migrate     # apply migrations
+```
+
+---
+
+## Useful commands
+- Start (dev/watch): `pnpm --filter api dev` or `cd apps/api && pnpm dev`
+- Build: `pnpm --filter api build`
+- Tests: `pnpm --filter api test` / `pnpm --filter api test:e2e`
+- DB tasks: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed`
+
+---
+
+## How it works — architecture overview 🧭
+- Entry point: `src/main.ts` — configures Express, CORS, middleware and Swagger (`/docs`).
+- Configuration: `src/configuration.ts` + `ConfigModule` with Joi validation.
+- Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows and CLI migrations.
+- Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
+- Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
+- Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
+- API docs: OpenAPI (Swagger) generated from decorators — visit `/docs`.
+
+---
+
+## Key files
+- `src/main.ts`, `src/app.module.ts`, `src/configuration.ts`
+- `src/auth/` — Better-Auth integration
+- `src/features/*` — domain modules (controllers/services)
+- `apps/api/Dockerfile`, `docker-compose.yml` — container/dev stack
+
+---
+
+## Troubleshooting / tips ⚠️
+- DB connection refused: ensure `docker-compose up -d` finished and env vars match.
+- Swagger not available: confirm server started on configured `PORT` (default `5000`).
+- Run only API in the monorepo: `pnpm --filter api dev`.
+
+---
+
+## Tests
+- Unit: `pnpm --filter api test`
+- E2E: `pnpm --filter api test:e2e`
+
+---
+
+## License
+This package is covered by the repository Apache-2.0 license — see the root `LICENSE`.
+
+---
+
+If you want, I can run the API tests now or add a short example showing DB + Docker setup.
