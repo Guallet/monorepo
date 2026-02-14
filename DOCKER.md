@@ -306,4 +306,4 @@ For issues and questions:
 
 ## License
 
-This project is licensed under AGPL-3.0 - see the LICENSE file for details.
+This project is licensed under Apache-2.0 - see the LICENSE file for details.
