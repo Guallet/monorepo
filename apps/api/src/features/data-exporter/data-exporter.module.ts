@@ -10,6 +10,7 @@ import { CategoriesModule } from '../categories/categories.module';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { EmailModule } from '../email/email.module';
 import { UsersModule } from '../users/users.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UsersModule } from '../users/users.module';
     TransactionsModule,
     EmailModule,
     UsersModule,
+    NotificationsModule,
   ],
   controllers: [DataExporterController],
   providers: [CsvExportProcessor],

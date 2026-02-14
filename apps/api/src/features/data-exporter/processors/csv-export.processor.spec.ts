@@ -9,6 +9,7 @@ import { AccountsService } from '../../accounts/accounts.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { EmailService } from '../../email/email.service';
 import { UsersService } from '../../users/users.service';
+import { NotificationsService } from '../../notifications/notifications.service';
 import { Account } from '../../accounts/entities/account.entity';
 import { Category } from '../../categories/entities/category.entity';
 
@@ -19,6 +20,7 @@ describe('CsvExportProcessor', () => {
   let categoriesService: jest.Mocked<CategoriesService>;
   let emailService: jest.Mocked<EmailService>;
   let usersService: jest.Mocked<UsersService>;
+  let notificationsService: jest.Mocked<NotificationsService>;
 
   const mockUserId = 'user-123';
   const mockUserEmail = 'test@example.com';
@@ -46,6 +48,10 @@ describe('CsvExportProcessor', () => {
       findUserData: jest.fn(),
     };
 
+    const mockNotificationsService = {
+      createSystemNotification: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CsvExportProcessor,
@@ -69,6 +75,10 @@ describe('CsvExportProcessor', () => {
           provide: UsersService,
           useValue: mockUsersService,
         },
+        {
+          provide: NotificationsService,
+          useValue: mockNotificationsService,
+        },
       ],
     }).compile();
 
@@ -78,6 +88,7 @@ describe('CsvExportProcessor', () => {
     categoriesService = module.get(CategoriesService);
     emailService = module.get(EmailService);
     usersService = module.get(UsersService);
+    notificationsService = module.get(NotificationsService);
 
     // Mock user lookup
     usersService.findUserData.mockResolvedValue({
@@ -87,6 +98,7 @@ describe('CsvExportProcessor', () => {
     } as any);
 
     jest.clearAllMocks();
+    notificationsService.createSystemNotification.mockResolvedValue({} as any);
   });
 
   afterEach(() => {
