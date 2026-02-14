@@ -74,4 +74,8 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under Apache-2.0 - see the [LICENSE](../../LICENSE) file for details.
+
+---
+
+*Note: This API is built with [NestJS](https://nestjs.com/), which is MIT licensed.*
