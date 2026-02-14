@@ -170,7 +170,7 @@ We welcome contributions! Please see our [Contributing Guide](../../CONTRIBUTING
 
 ## License
 
-MIT © [Guallet](https://github.com/guallet)
+Apache-2.0 © [Guallet](https://github.com/guallet)
 
 ## Support
 
