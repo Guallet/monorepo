@@ -212,7 +212,6 @@ export class CsvExportProcessor extends WorkerHost {
   private async sendUserNotification({
     userId,
     isError,
-    transactionCount,
   }: {
     userId: string;
     isError: boolean;
