@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { NordigenAccount } from './entities/nordigen-account.entity';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { Account } from 'src/features/accounts/entities/account.entity';
@@ -16,6 +16,8 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { InstitutionsService } from 'src/features/institutions/institutions.service';
 import { NordigenInstitutionDto } from 'src/features/nordigen/dto/nordigen-institution.dto';
 import { Institution } from 'src/features/institutions/entities/institution.entity';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
@@ -74,6 +76,7 @@ export class SyncService {
     private readonly transactionsRepository: Repository<Transaction>,
     private readonly nordigenService: NordigenService,
     private readonly institutionsService: InstitutionsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
@@ -123,10 +126,19 @@ export class SyncService {
     });
 
     const errors: string[] = [];
+    const pendingCategorizationByUser = new Map<string, number>();
 
     for (const account of accounts) {
       try {
-        await this.syncNordigenAccount(account.id);
+        const syncResult = await this.syncNordigenAccount(account.id);
+        if (syncResult.userId && syncResult.newUncategorizedCount > 0) {
+          const current =
+            pendingCategorizationByUser.get(syncResult.userId) ?? 0;
+          pendingCategorizationByUser.set(
+            syncResult.userId,
+            current + syncResult.newUncategorizedCount,
+          );
+        }
       } catch (error) {
         if (error instanceof UnauthorizedException) {
           errors.push(
@@ -140,6 +152,13 @@ export class SyncService {
           errors.push(`Error syncing Nordigen Account: ${account.id}`);
         }
       }
+    }
+
+    for (const [userId, newTransactionsCount] of pendingCategorizationByUser) {
+      await this.sendCategorizationNotification({
+        userId,
+        newTransactionsCount,
+      });
     }
 
     const result = {
@@ -202,7 +221,8 @@ export class SyncService {
       await this.syncAccountBalance(nordigenAccount, gualletAccount);
 
       // Sync the transactions
-      await this.syncAccountTransactions(nordigenAccount);
+      const newUncategorizedCount =
+        await this.syncAccountTransactions(nordigenAccount);
 
       // Update nordigen account
       nordigenAccount.last_refreshed = new Date();
@@ -211,6 +231,11 @@ export class SyncService {
       // Update the DB account
       nordigenAccount.last_refreshed = new Date();
       await this.nordigenAccountsRepository.save(nordigenAccount);
+
+      return {
+        userId: gualletAccount.user_id,
+        newUncategorizedCount,
+      };
     } catch (error) {
       console.error(`Error syncing Nordigen Account: ${account_id}`, error);
       throw error;
@@ -316,7 +341,9 @@ export class SyncService {
     }
   }
 
-  private async syncAccountTransactions(account: NordigenAccount) {
+  private async syncAccountTransactions(
+    account: NordigenAccount,
+  ): Promise<number> {
     try {
       this.logger.log(`Syncing Account Transactions:${account.id}`);
       const { linked_account_id } = account;
@@ -337,16 +364,70 @@ export class SyncService {
       const data = transactions.map((t) =>
         Transaction.fromNordigenDto(linked_account_id, t),
       );
+
+      const incomingExternalIds = data
+        .map((transaction) => transaction.externalId)
+        .filter((externalId): externalId is string => Boolean(externalId));
+
+      const existingExternalIdSet = new Set<string>();
+      if (incomingExternalIds.length > 0) {
+        const existingTransactions = await this.transactionsRepository.find({
+          select: { externalId: true },
+          where: {
+            accountId: linked_account_id,
+            externalId: In(incomingExternalIds),
+          },
+        });
+
+        existingTransactions.forEach((transaction) => {
+          if (transaction.externalId) {
+            existingExternalIdSet.add(transaction.externalId);
+          }
+        });
+      }
+
+      const newUncategorizedCount = data.filter(
+        (transaction) =>
+          transaction.externalId &&
+          !existingExternalIdSet.has(transaction.externalId) &&
+          transaction.categoryId == null,
+      ).length;
+
       await this.transactionsRepository.upsert(data, {
         conflictPaths: ['externalId'],
         skipUpdateIfNoValuesChanged: true,
       });
+
+      return newUncategorizedCount;
     } catch (error) {
       console.error(
         `Error refreshing Nordigen Account Transactions: ${account.id}`,
         error,
       );
       throw error;
+    }
+  }
+
+  private async sendCategorizationNotification({
+    userId,
+    newTransactionsCount,
+  }: {
+    userId: string;
+    newTransactionsCount: number;
+  }): Promise<void> {
+    try {
+      await this.notificationsService.createSystemNotification({
+        userId,
+        message: `You have ${newTransactionsCount} new transactions to categorize`,
+        icon: '👆',
+        type: NotificationType.ACTION_REQUIRED,
+        action: '/transactions/inbox',
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to create nightly sync categorization notification for user ${userId}`,
+        error,
+      );
     }
   }
 }

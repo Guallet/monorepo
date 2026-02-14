@@ -7,6 +7,8 @@ import { AccountsService } from '../../accounts/accounts.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { EmailService } from '../../email/email.service';
 import { UsersService } from '../../users/users.service';
+import { NotificationsService } from '../../notifications/notifications.service';
+import { NotificationType } from '../../notifications/entities/notification.entity';
 import {
   CsvImportRequestDto,
   AccountMapping,
@@ -59,6 +61,7 @@ export class CsvImportProcessor extends WorkerHost {
     private readonly categoriesService: CategoriesService,
     private readonly emailService: EmailService,
     private readonly usersService: UsersService,
+    private readonly notificationsService: NotificationsService,
   ) {
     super();
   }
@@ -118,6 +121,13 @@ export class CsvImportProcessor extends WorkerHost {
         failedCount,
         errorMessage,
       );
+
+      await this.sendNotificationToUser(
+        userId,
+        processedCount,
+        failedCount,
+        errorMessage,
+      );
     } catch (error) {
       this.logger.error(
         `Error in CSV import job ${job.id} for user ${userId}`,
@@ -127,6 +137,7 @@ export class CsvImportProcessor extends WorkerHost {
 
       // Send error notification
       await this.sendNotificationEmail(userId, 0, 0, errorMessage);
+      await this.sendNotificationToUser(userId, 0, 0, errorMessage);
 
       throw error; // Re-throw to mark job as failed
     }
@@ -371,6 +382,34 @@ export class CsvImportProcessor extends WorkerHost {
       }
     } catch (error) {
       this.logger.error(`Failed to send notification email`, error);
+    }
+  }
+
+  private async sendNotificationToUser(
+    userId: string,
+    processedCount: number,
+    failedCount: number,
+    errorMessage: string | null,
+  ): Promise<void> {
+    try {
+      if (errorMessage) {
+        await this.notificationsService.createSystemNotification({
+          userId,
+          message: 'Import data finished with error',
+          icon: '⚠️',
+          type: NotificationType.IMPORTANT,
+        });
+        return;
+      }
+
+      await this.notificationsService.createSystemNotification({
+        userId,
+        message: 'Import data finished successfully',
+        icon: '🔔',
+        type: NotificationType.INFO,
+      });
+    } catch (error) {
+      this.logger.error('Failed to create import notification', error);
     }
   }
 
