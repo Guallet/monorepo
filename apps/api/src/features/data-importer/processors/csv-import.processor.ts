@@ -18,14 +18,13 @@ import {
 } from '../dto/csv-import-request.dto';
 import {
   DEFAULT_CURRENCY,
-  DEFAULT_ACCOUNT_TYPE,
-  DEFAULT_ACCOUNT_SOURCE,
   DEFAULT_CATEGORY_ICON,
   DEFAULT_CATEGORY_COLOR,
 } from '../constants/import-defaults';
 import { parseNumber } from '../utils/number.utils';
 import { parseDate } from '../utils/date.utils';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
+import { AccountType } from 'src/features/accounts/entities/accountType.model';
 
 export const CSV_IMPORT_QUEUE = 'csv-import';
 export const CSV_IMPORT_JOB = 'process-csv-import';
@@ -355,7 +354,7 @@ export class CsvImportProcessor extends WorkerHost {
             dto: {
               name: mapping.name,
               currency: defaultCurrency,
-              type: DEFAULT_ACCOUNT_TYPE,
+              type: AccountType.CURRENT_ACCOUNT,
               source: AccountSource.IMPORTED,
               source_name: `CSV Import - Webapp`,
             },

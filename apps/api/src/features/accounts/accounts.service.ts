@@ -57,7 +57,7 @@ export class AccountsService {
 
     // Depending on the account type, the balance would be negative or positive
     if (dto.initial_balance) {
-      switch (dto.type as AccountType) {
+      switch (dto.type) {
         case AccountType.CREDIT_CARD:
         case AccountType.LOAN:
         case AccountType.MORTGAGE:
@@ -77,7 +77,7 @@ export class AccountsService {
       name: dto.name,
       balance: normalizedInitialBalance,
       currency: dto.currency ?? 'GBP',
-      type: (dto.type as AccountType) ?? AccountType.UNKNOWN,
+      type: dto.type ?? AccountType.UNKNOWN,
       source: (dto.source as AccountSource) ?? AccountSource.UNKNOWN,
       source_name: dto.source_name,
     });
@@ -152,7 +152,7 @@ export class AccountsService {
       user_id: userId,
       name: dto.name ?? dbEntity.name,
       currency: dto.currency ?? dbEntity.currency,
-      type: (dto.type as AccountType) ?? dbEntity.type,
+      type: dto.type ?? dbEntity.type,
     });
     return updatedAccount;
   }
