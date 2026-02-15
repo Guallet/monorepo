@@ -490,7 +490,7 @@ describe('RegularPaymentsService', () => {
       const updateDto: UpdateRegularPaymentDto = {
         name: 'Netflix Premium',
         amount: 19.99,
-        currency: 'USD',
+        currency: 'GBP',
         cadence: RecurrenceCadence.YEARLY,
       };
 
@@ -510,7 +510,7 @@ describe('RegularPaymentsService', () => {
         user_id: userId,
         name: 'Netflix Premium',
         amount: 19.99,
-        currency: 'USD',
+        currency: 'GBP',
         type: RecurringPaymentType.SUBSCRIPTION,
         cadence: RecurrenceCadence.YEARLY,
         startDate: new Date('2024-01-15'),
@@ -527,7 +527,7 @@ describe('RegularPaymentsService', () => {
 
       expect(result.name).toBe('Netflix Premium');
       expect(result.amount).toBe(19.99);
-      expect(result.currency).toBe('USD');
+      expect(result.currency).toBe('GBP');
       expect(result.cadence).toBe(RecurrenceCadence.YEARLY);
     });
   });

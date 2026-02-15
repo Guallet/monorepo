@@ -31,8 +31,8 @@ describe('localeUtils', () => {
   });
 
   describe('getCurrencySymbol', () => {
-    it('returns $ for USD in en-US', () => {
-      expect(getCurrencySymbol('USD', 'en-US')).toBe('$');
+    it('returns £ for GBP in en-US', () => {
+      expect(getCurrencySymbol('GBP', 'en-US')).toBe('£');
     });
 
     it('returns € for EUR in de-DE', () => {

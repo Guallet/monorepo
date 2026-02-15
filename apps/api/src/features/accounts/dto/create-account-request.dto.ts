@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { AccountSource } from '../entities/accountSource.model';
+import { AccountType } from '../entities/accountType.model';
 
 export class CreateAccountRequest {
   @ApiProperty({ description: 'The name of the account' })
@@ -18,11 +20,19 @@ export class CreateAccountRequest {
   })
   create_balance_transaction?: boolean;
 
-  @ApiProperty({ description: 'The account type', nullable: false })
-  type: string;
+  @ApiProperty({
+    description: 'The account type',
+    nullable: false,
+    enum: AccountType,
+  })
+  type: AccountType;
 
-  @ApiProperty({ description: 'The account origin source', nullable: true })
-  source?: string;
+  @ApiProperty({
+    description: 'The account origin source',
+    nullable: true,
+    enum: AccountSource,
+  })
+  source?: AccountSource;
 
   @ApiProperty({
     description: 'The account origin source name',

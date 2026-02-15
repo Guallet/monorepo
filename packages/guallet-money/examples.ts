@@ -9,7 +9,7 @@ console.log('=== @guallet/money Examples ===\n');
 
 // ===== Creating Money =====
 console.log('1. Creating Money:');
-const price = Money.fromCurrencyCode({ amount: 99.99, currencyCode: 'USD' });
+const price = Money.fromCurrencyCode({ amount: 99.99, currencyCode: 'GBP' });
 console.log('Price:', price.format());
 
 const zero = Money.zero(Currency.fromISOCode('EUR'));
@@ -36,12 +36,12 @@ console.log();
 
 // ===== Comparisons =====
 console.log('3. Comparisons:');
-const money1 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
-const money2 = Money.fromCurrencyCode({ amount: 50, currencyCode: 'USD' });
+const money1 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
+const money2 = Money.fromCurrencyCode({ amount: 50, currencyCode: 'GBP' });
 
-console.log(`$100 > $50:`, money1.greaterThan(money2));
-console.log(`$100 == $50:`, money1.equals(money2));
-console.log(`$50 < $100:`, money2.lessThan(money1));
+console.log(`£100 > £50:`, money1.greaterThan(money2));
+console.log(`£100 == £50:`, money1.equals(money2));
+console.log(`£50 < £100:`, money2.lessThan(money1));
 console.log();
 
 // ===== Helper Methods =====
@@ -55,7 +55,7 @@ console.log();
 
 // ===== Rounding =====
 console.log('5. Rounding:');
-const precise = Money.fromCurrencyCode({ amount: 10.567, currencyCode: 'USD' });
+const precise = Money.fromCurrencyCode({ amount: 10.567, currencyCode: 'GBP' });
 console.log('Original:', precise.format());
 console.log('Rounded (currency default):', precise.round().format());
 console.log('Rounded (0 decimals):', precise.round(0).format());
@@ -69,16 +69,16 @@ console.log('Default:', amount.format());
 console.log('German locale:', amount.format('de-DE'));
 console.log('No grouping:', amount.format({ useGrouping: false }));
 
-const positive = Money.fromCurrencyCode({ amount: 50, currencyCode: 'USD' });
+const positive = Money.fromCurrencyCode({ amount: 50, currencyCode: 'GBP' });
 console.log('With + sign:', positive.format({ showPositiveSign: true }));
 console.log();
 
 // ===== Currency Conversion =====
 console.log('7. Currency Conversion:');
-const usd = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const eur = Money.fromCurrencyCode({ amount: 100, currencyCode: 'EUR' });
 const gbp = Currency.fromISOCode('GBP');
-const converted = usd.convertTo(gbp, 0.79); // 1 USD = 0.79 GBP
-console.log('USD:', usd.format());
+const converted = eur.convertTo(gbp, 0.79); // 1 EUR = 0.79 GBP
+console.log('EUR:', eur.format());
 console.log('Converted to GBP:', converted.format());
 console.log();
 
@@ -103,22 +103,22 @@ interface CartItem {
 const cart: CartItem[] = [
   {
     name: 'Laptop',
-    price: Money.fromCurrencyCode({ amount: 999.99, currencyCode: 'USD' }),
+    price: Money.fromCurrencyCode({ amount: 999.99, currencyCode: 'GBP' }),
     quantity: 1,
   },
   {
     name: 'Mouse',
-    price: Money.fromCurrencyCode({ amount: 29.99, currencyCode: 'USD' }),
+    price: Money.fromCurrencyCode({ amount: 29.99, currencyCode: 'GBP' }),
     quantity: 2,
   },
   {
     name: 'Keyboard',
-    price: Money.fromCurrencyCode({ amount: 79.99, currencyCode: 'USD' }),
+    price: Money.fromCurrencyCode({ amount: 79.99, currencyCode: 'GBP' }),
     quantity: 1,
   },
 ];
 
-let subtotal = Money.zero(Currency.fromISOCode('USD'));
+let subtotal = Money.zero(Currency.fromISOCode('GBP'));
 cart.forEach((item) => {
   const itemTotal = item.price.multiply(item.quantity);
   console.log(`  ${item.name} x${item.quantity}: ${itemTotal.format()}`);
@@ -147,15 +147,15 @@ try {
 }
 
 try {
-  const usd2 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+  const gbp2 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
   const eur2 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'EUR' });
-  usd2.add(eur2);
+  gbp2.add(eur2);
 } catch (error) {
   console.log('Currency mismatch error:', (error as Error).message);
 }
 
 try {
-  Money.fromCurrencyCode({ amount: Number.NaN, currencyCode: 'USD' });
+  Money.fromCurrencyCode({ amount: Number.NaN, currencyCode: 'GBP' });
 } catch (error) {
   console.log('Invalid amount error:', (error as Error).message);
 }

@@ -32,7 +32,7 @@ export class Currency {
 
   /**
    * Creates a Currency instance from an ISO 4217 currency code
-   * @param code - ISO 4217 currency code (e.g., "USD", "EUR", "GBP")
+   * @param code - ISO 4217 currency code (e.g. "EUR", "GBP", "USD", etc.)
    * @param locale - Optional locale for symbol formatting
    * @returns Currency instance
    * @throws Error if currency code is invalid

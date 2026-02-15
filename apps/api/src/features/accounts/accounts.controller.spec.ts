@@ -411,7 +411,7 @@ describe('AccountsController', () => {
       const accountId = 'account-1';
       const updateDto: UpdateAccountRequest = {
         name: 'Updated Account',
-        currency: 'USD',
+        currency: 'GBP',
         type: AccountType.CURRENT_ACCOUNT,
       };
 

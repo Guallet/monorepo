@@ -59,14 +59,14 @@ All notable changes to the @guallet/money package will be documented in this fil
 
 #### Before (0.1.0)
 ```typescript
-const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 money.format(); // Basic formatting only
 // No arithmetic or comparison operations available
 ```
 
 #### After (0.2.0)
 ```typescript
-const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 
 // Enhanced formatting
 money.format({ locale: 'en-US', showPositiveSign: true });

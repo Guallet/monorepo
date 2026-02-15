@@ -27,17 +27,17 @@ import { Money, Currency } from '@guallet/money';
 // Create money from currency code
 const price = Money.fromCurrencyCode({
   amount: 99.99,
-  currencyCode: 'USD',
+  currencyCode: 'GBP',
 });
 
 // Format with locale
-console.log(price.format()); // "$99.99"
-console.log(price.format('de-DE')); // "99,99 $"
+console.log(price.format()); // "£99.99"
+console.log(price.format('de-DE')); // "99,99 £"
 
 // Arithmetic operations
 const tax = price.multiply(0.2);
 const total = price.add(tax);
-console.log(total.format()); // "$119.99"
+console.log(total.format()); // "£119.99"
 
 // Comparison
 if (total.greaterThan(price)) {
@@ -71,46 +71,46 @@ const zero = Money.zero(currency);
 All arithmetic operations return new Money instances and maintain immutability:
 
 ```typescript
-const base = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const base = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 
 // Addition (requires same currency)
-const sum = base.add(Money.fromCurrencyCode({ amount: 50, currencyCode: 'USD' }));
-// Result: $150.00
+const sum = base.add(Money.fromCurrencyCode({ amount: 50, currencyCode: 'GBP' }));
+// Result: £150.00
 
 // Subtraction (requires same currency)
-const diff = base.subtract(Money.fromCurrencyCode({ amount: 30, currencyCode: 'USD' }));
-// Result: $70.00
+const diff = base.subtract(Money.fromCurrencyCode({ amount: 30, currencyCode: 'GBP' }));
+// Result: £70.00
 
 // Multiplication
 const doubled = base.multiply(2);
-// Result: $200.00
+// Result: £200.00
 
 // Division
 const half = base.divide(2);
-// Result: $50.00
+// Result: £50.00
 
 // Absolute value
-const negative = Money.fromCurrencyCode({ amount: -25, currencyCode: 'USD' });
+const negative = Money.fromCurrencyCode({ amount: -25, currencyCode: 'GBP' });
 const positive = negative.abs();
-// Result: $25.00
+// Result: £25.00
 
 // Negation
 const negated = base.negate();
-// Result: -$100.00
+// Result: -£100.00
 
 // Rounding (with modes)
 // The `round` method accepts an optional `decimalPlaces` and a `mode` (default `HALF_UP`).
 // Supported modes: `HALF_UP` (default), `HALF_EVEN` (bankers rounding), `DOWN`, `UP`, `TOWARDS_ZERO`.
-const precise = Money.fromCurrencyCode({ amount: 10.567, currencyCode: 'USD' });
+const precise = Money.fromCurrencyCode({ amount: 10.567, currencyCode: 'GBP' });
 const rounded = precise.round(); // Uses currency's decimal places (HALF_UP)
-// Result: $10.57
+// Result: £10.57
 
 // Custom decimal places
 const roundedCustom = precise.round(0);
 // Result: $11.00
 
 // Rounding mode examples (ties):
-const m = Money.fromCurrencyCode({ amount: 1.005, currencyCode: 'USD' });
+const m = Money.fromCurrencyCode({ amount: 1.005, currencyCode: 'GBP' });
 // Default HALF_UP (ties away from zero)
 m.round(2, 'HALF_UP'); // 1.01
 // HALF_EVEN (bankers rounding) rounds ties to the nearest even
@@ -123,8 +123,8 @@ m.round(2, 'HALF_EVEN'); // 1.00
 #### Comparison Methods
 
 ```typescript
-const money1 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
-const money2 = Money.fromCurrencyCode({ amount: 50, currencyCode: 'USD' });
+const money1 = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
+const money2 = Money.fromCurrencyCode({ amount: 50, currencyCode: 'GBP' });
 
 money1.equals(money2); // false
 money1.greaterThan(money2); // true
@@ -151,7 +151,7 @@ money.format('de-DE'); // "1.234,56 €"
 
 // Format with options
 money.format({
-  locale: 'en-US',
+  locale: 'en-GB',
   useGrouping: false, // No thousand separators
   showPositiveSign: true, // Show + for positive
 });
@@ -161,11 +161,11 @@ money.format({
 #### Currency Conversion
 
 ```typescript
-const usd = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const gbp = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 const eur = Currency.fromISOCode('EUR');
 
-// Convert with exchange rate (1 USD = 0.85 EUR)
-const converted = usd.convertTo(eur, 0.85);
+// Convert with exchange rate (1 GBP = 0.85 EUR)
+const converted = gbp.convertTo(eur, 0.85);
 console.log(converted.format()); // "€85.00"
 ```
 
@@ -189,27 +189,27 @@ const str = money.toString();
 
 ```typescript
 // From ISO code
-const usd = Currency.fromISOCode('USD');
+const gbp = Currency.fromISOCode('GBP');
 const eur = Currency.fromISOCode('EUR', 'de-DE'); // With custom locale
 
 // Access properties
-console.log(usd.code); // "USD"
-console.log(usd.name); // "US Dollar"
-console.log(usd.symbol); // "$"
-console.log(usd.decimalPlaces); // 2
+console.log(gbp.code); // "GBP"
+console.log(gbp.name); // "British Pound Sterling"
+console.log(gbp.symbol); // "£"
+console.log(gbp.decimalPlaces); // 2
 ```
 
 #### Currency Methods
 
 ```typescript
-const usd = Currency.fromISOCode('USD');
+const gbp2 = Currency.fromISOCode('GBP');
 const eur = Currency.fromISOCode('EUR');
 
 // Compare currencies
-usd.equals(eur); // false
+gbp2.equals(eur); // false
 
 // String representation
-usd.toString(); // "USD (US Dollar)"
+gbp2.toString(); // "GBP (British Pound Sterling)"
 ```
 
 ## Error Handling
@@ -236,9 +236,9 @@ try {
 
 // Currency mismatch in operations
 try {
-  const usd = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+  const gbp = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
   const eur = Money.fromCurrencyCode({ amount: 100, currencyCode: 'EUR' });
-  usd.add(eur);
+  gbp.add(eur);
 } catch (error) {
   if (error instanceof CurrencyMismatchError) {
     // handle mismatched currencies
@@ -247,7 +247,7 @@ try {
 
 // Invalid amount / divide by zero / invalid exchange rate
 try {
-  Money.fromCurrencyCode({ amount: NaN, currencyCode: 'USD' });
+  Money.fromCurrencyCode({ amount: NaN, currencyCode: 'GBP' });
 } catch (error) {
   if (error instanceof InvalidAmountError) {
     // handle invalid amount
@@ -255,7 +255,7 @@ try {
 }
 
 try {
-  Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' }).divide(0);
+  Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' }).divide(0);
 } catch (error) {
   if (error instanceof DivideByZeroError) {
     // handle division by zero
@@ -263,7 +263,7 @@ try {
 }
 
 try {
-  Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' }).convertTo(eur, 0);
+  Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' }).convertTo(eur, 0);
 } catch (error) {
   if (error instanceof InvalidExchangeRateError) {
     // handle invalid exchange rate
@@ -300,7 +300,7 @@ import {
 
 ```typescript
 // Use fromCurrencyCode for most cases
-const price = Money.fromCurrencyCode({ amount: 99.99, currencyCode: 'USD' });
+const price = Money.fromCurrencyCode({ amount: 99.99, currencyCode: 'GBP' });
 
 // Store amounts as numbers, convert to Money when needed
 interface Product {
@@ -330,12 +330,12 @@ const price = 99.99;
 const tax = price * 0.2; // ❌ Floating point errors
 
 // Don't mix currencies without explicit conversion
-const usd = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const gbp = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 const eur = Money.fromCurrencyCode({ amount: 100, currencyCode: 'EUR' });
-usd.add(eur); // ❌ Throws error
+gbp.add(eur); // ❌ Throws error
 
 // Don't mutate Money instances (they're immutable anyway)
-const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'USD' });
+const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 money.amount = 200; // ❌ Won't work (readonly)
 ```
 

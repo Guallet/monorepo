@@ -117,7 +117,7 @@
   "screens": {
     "accounts": {
       "list": {
-        "emptyQuery": "CFN: No bank accounts found"
+        "emptyQuery": "No bank accounts found"
       }
     },
     "forgotPassword": {

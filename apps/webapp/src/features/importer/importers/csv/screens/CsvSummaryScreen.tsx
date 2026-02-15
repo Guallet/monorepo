@@ -26,15 +26,15 @@ import {
   List,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
-import { useAtomValue } from 'jotai';
 import { useMemo, useState } from 'react';
 import {
-  csvAccountsAtom,
-  csvCategoriesAtom,
-  csvInfoAtom,
-  csvMappingsAtom,
-  accountMappingsAtom,
-  categoriesMappingsAtom,
+  useCsvInfo,
+  useCsvMappings,
+  useCsvActions,
+  useAccountMappings,
+  useCategoriesMappings,
+  useCsvAccounts,
+  useCsvCategories,
 } from '../state/csvState';
 import {
   useAccounts,
@@ -47,16 +47,17 @@ import { CsvStepper } from '../components/CsvStepper';
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
   const gualletClient = useGualletClient();
+  const { reset } = useCsvActions();
 
-  const accounts = useAtomValue(csvAccountsAtom);
-  const categories = useAtomValue(csvCategoriesAtom);
-  const csvData = useAtomValue(csvInfoAtom);
+  const accounts = useCsvAccounts();
+  const categories = useCsvCategories();
+  const csvData = useCsvInfo();
   const transactions = csvData.data;
-  const fieldMappings = useAtomValue(csvMappingsAtom);
+  const fieldMappings = useCsvMappings();
 
   // Data
-  const accountMappings = useAtomValue(accountMappingsAtom);
-  const categoriesMappings = useAtomValue(categoriesMappingsAtom);
+  const accountMappings = useAccountMappings();
+  const categoriesMappings = useCategoriesMappings();
 
   // Note: mapping is performed on demand in preview rendering
 
@@ -111,6 +112,7 @@ export function CsvSummaryScreen() {
         categoryMappings: apiCategoryMappings,
       });
 
+      reset();
       setIsBusy(false);
       setIsModalOpened(true);
     } catch (e) {
@@ -352,9 +354,9 @@ export function CsvSummaryScreen() {
 }
 
 function AccountsImportedContent() {
-  const accounts = useAtomValue(csvAccountsAtom);
+  const accounts = useCsvAccounts();
   const { accounts: remoteAccounts } = useAccounts();
-  const accountMappings = useAtomValue(accountMappingsAtom);
+  const accountMappings = useAccountMappings();
 
   if (accounts.length === 0) {
     const destinationAccount = remoteAccounts.find(
@@ -413,19 +415,19 @@ function AccountsImportedContent() {
 }
 
 function TransactionsContent() {
-  const csvData = useAtomValue(csvInfoAtom);
-  const fieldMappings = useAtomValue(csvMappingsAtom);
+  const csvData = useCsvInfo();
+  const fieldMappings = useCsvMappings();
 
   const transactions = csvData.data as CsvRowData[];
   const SAMPLE_ARRAY_SIZE = 10;
 
   // Account data
   const { accounts: remoteAccounts } = useAccounts();
-  const accountMappings = useAtomValue(accountMappingsAtom);
+  const accountMappings = useAccountMappings();
 
   // Category data
   const { categories: remoteCategories } = useCategories();
-  const categoriesMappings = useAtomValue(categoriesMappingsAtom);
+  const categoriesMappings = useCategoriesMappings();
 
   const sampleTransactions = useMemo(() => {
     // Fisher-Yates shuffle algorithm (deterministic with index)
@@ -550,7 +552,8 @@ function mapTransaction(
   const destinationCategory = categoryMappings[categoryKey];
 
   return {
-    date: parseDate(String(dateValue ?? new Date().toISOString())) ?? new Date(),
+    date:
+      parseDate(String(dateValue ?? new Date().toISOString())) ?? new Date(),
     amount: parseNumber(amountValue) || 0,
     description: String(descriptionValue ?? ''),
     notes: notesValue == null ? null : String(notesValue),

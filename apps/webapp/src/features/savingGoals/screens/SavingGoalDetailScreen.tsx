@@ -1,6 +1,6 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
-import { useSavingGoal, useAccounts } from "@guallet/api-react";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { useSavingGoal, useAccounts } from '@guallet/api-react';
 import {
   Stack,
   Button,
@@ -13,7 +13,7 @@ import {
   ActionIcon,
   List,
   Alert,
-} from "@mantine/core";
+} from '@mantine/core';
 import {
   IconPigMoney,
   IconEdit,
@@ -22,12 +22,12 @@ import {
   IconCurrencyDollar,
   IconBuildingBank,
   IconInfoCircle,
-} from "@tabler/icons-react";
-import { Money } from "@guallet/money";
+} from '@tabler/icons-react';
+import { Money } from '@guallet/money';
 
 function getDaysRemainingText(
   daysRemaining: number,
-  isCompleted: boolean
+  isCompleted: boolean,
 ): string {
   if (daysRemaining > 0) {
     return `${daysRemaining} days remaining to reach your goal`;
@@ -83,12 +83,12 @@ export function SavingGoalDetailScreen({
   const today = new Date();
   const isOverdue = targetDate < today && !isCompleted;
   const daysRemaining = Math.ceil(
-    (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   // Get linked account details
   const linkedAccounts = accounts.filter((account) =>
-    savingGoal.accounts.includes(account.id)
+    savingGoal.accounts.includes(account.id),
   );
 
   // Calculate monthly savings needed (simplified calculation)
@@ -96,11 +96,11 @@ export function SavingGoalDetailScreen({
   const monthlySavingsNeeded = remainingAmount / monthsRemaining;
 
   const getProgressColor = () => {
-    if (isCompleted) return "green";
-    if (isOverdue) return "red";
-    if (progress > 75) return "blue";
-    if (progress > 50) return "yellow";
-    return "gray";
+    if (isCompleted) return 'green';
+    if (isOverdue) return 'red';
+    if (progress > 75) return 'blue';
+    if (progress > 50) return 'yellow';
+    return 'gray';
   };
 
   const getStatusBadge = () => {
@@ -191,7 +191,7 @@ export function SavingGoalDetailScreen({
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
                       amount: currentAmount,
-                      currencyCode: "USD",
+                      currencyCode: 'GBP',
                     }).format()}
                   </Text>
                 </Stack>
@@ -208,7 +208,7 @@ export function SavingGoalDetailScreen({
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
                       amount: savingGoal.target_amount,
-                      currencyCode: "USD",
+                      currencyCode: 'GBP',
                     }).format()}
                   </Text>
                 </Stack>
@@ -239,11 +239,11 @@ export function SavingGoalDetailScreen({
                   <Text
                     size="lg"
                     fw={600}
-                    c={isCompleted ? "green" : undefined}
+                    c={isCompleted ? 'green' : undefined}
                   >
                     {Money.fromCurrencyCode({
                       amount: remainingAmount,
-                      currencyCode: "USD",
+                      currencyCode: 'GBP',
                     }).format()}
                   </Text>
                 </Stack>
@@ -275,13 +275,13 @@ export function SavingGoalDetailScreen({
               <Group>
                 <IconInfoCircle size={16} />
                 <Text size="sm">
-                  You need to save approximately{" "}
+                  You need to save approximately{' '}
                   <Text span fw={600}>
                     {Money.fromCurrencyCode({
                       amount: monthlySavingsNeeded,
-                      currencyCode: "USD",
+                      currencyCode: 'GBP',
                     }).format()}
-                  </Text>{" "}
+                  </Text>{' '}
                   per month to reach your goal.
                 </Text>
               </Group>
