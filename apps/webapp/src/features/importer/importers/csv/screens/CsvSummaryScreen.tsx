@@ -30,6 +30,7 @@ import { useMemo, useState } from 'react';
 import {
   useCsvInfo,
   useCsvMappings,
+  useCsvActions,
   useAccountMappings,
   useCategoriesMappings,
   useCsvAccounts,
@@ -46,6 +47,7 @@ import { CsvStepper } from '../components/CsvStepper';
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
   const gualletClient = useGualletClient();
+  const { reset } = useCsvActions();
 
   const accounts = useCsvAccounts();
   const categories = useCsvCategories();
@@ -110,6 +112,7 @@ export function CsvSummaryScreen() {
         categoryMappings: apiCategoryMappings,
       });
 
+      reset();
       setIsBusy(false);
       setIsModalOpened(true);
     } catch (e) {

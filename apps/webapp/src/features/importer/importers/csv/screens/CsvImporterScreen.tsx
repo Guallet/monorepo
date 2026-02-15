@@ -28,13 +28,14 @@ import { useCsvActions } from '../state/csvState';
 export function CsvImporterScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { setCsvInfo } = useCsvActions();
+  const { reset, setCsvInfo } = useCsvActions();
   const navigate = useNavigate();
 
   async function readFile(file: FileWithPath) {
     try {
       setIsLoading(true);
       setError(null);
+      reset();
       const fileContent = await file.text();
       const { data, errors, meta } = Papa.parse(fileContent, {
         header: true,
