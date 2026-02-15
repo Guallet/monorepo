@@ -368,4 +368,4 @@ The library automatically detects the environment and uses appropriate locale de
 
 ## License
 
-MIT
+Apache-2.0

@@ -6,6 +6,7 @@ import { Account } from 'src/features/accounts/entities/account.entity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { InstitutionsService } from 'src/features/institutions/institutions.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('SyncService', () => {
   let service: SyncService;
@@ -37,6 +38,10 @@ describe('SyncService', () => {
     saveAll: jest.fn(),
   };
 
+  const mockNotificationsService = {
+    createSystemNotification: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -60,6 +65,10 @@ describe('SyncService', () => {
         {
           provide: InstitutionsService,
           useValue: mockInstitutionsService,
+        },
+        {
+          provide: NotificationsService,
+          useValue: mockNotificationsService,
         },
       ],
     }).compile();

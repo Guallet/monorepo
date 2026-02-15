@@ -2,7 +2,7 @@
   "name": "eslint-config-custom",
   "version": "0.1.0",
   "main": "index.js",
-  "license": "AGPL-3.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "eslint-config-next": "workspace:*",
     "eslint-config-prettier": "workspace:*",

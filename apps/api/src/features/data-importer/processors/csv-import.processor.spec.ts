@@ -9,6 +9,7 @@ import { AccountsService } from '../../accounts/accounts.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { EmailService } from '../../email/email.service';
 import { UsersService } from '../../users/users.service';
+import { NotificationsService } from '../../notifications/notifications.service';
 import { CsvImportRequestDto } from '../dto/csv-import-request.dto';
 import { Account } from '../../accounts/entities/account.entity';
 import { Category } from '../../categories/entities/category.entity';
@@ -20,6 +21,7 @@ describe('CsvImportProcessor', () => {
   let categoriesService: jest.Mocked<CategoriesService>;
   let emailService: jest.Mocked<EmailService>;
   let usersService: jest.Mocked<UsersService>;
+  let notificationsService: jest.Mocked<NotificationsService>;
   let queryRunner: jest.Mocked<QueryRunner>;
   let transactionRepository: jest.Mocked<Repository<Transaction>>;
 
@@ -66,6 +68,10 @@ describe('CsvImportProcessor', () => {
       findUserData: jest.fn(),
     };
 
+    const mockNotificationsService = {
+      createSystemNotification: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CsvImportProcessor,
@@ -89,6 +95,10 @@ describe('CsvImportProcessor', () => {
           provide: UsersService,
           useValue: mockUsersService,
         },
+        {
+          provide: NotificationsService,
+          useValue: mockNotificationsService,
+        },
       ],
     }).compile();
 
@@ -97,6 +107,7 @@ describe('CsvImportProcessor', () => {
     categoriesService = module.get(CategoriesService);
     emailService = module.get(EmailService);
     usersService = module.get(UsersService);
+    notificationsService = module.get(NotificationsService);
 
     // Mock user lookup
     usersService.findUserData.mockResolvedValue({
@@ -106,6 +117,7 @@ describe('CsvImportProcessor', () => {
     } as any);
 
     jest.clearAllMocks();
+    notificationsService.createSystemNotification.mockResolvedValue({} as any);
   });
 
   afterEach(() => {

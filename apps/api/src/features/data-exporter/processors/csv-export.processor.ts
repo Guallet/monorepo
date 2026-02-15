@@ -7,6 +7,8 @@ import { UsersService } from '../../users/users.service';
 import { CsvExportRequestDto } from '../dto/csv-export-request.dto';
 import { AccountsService } from '../../accounts/accounts.service';
 import { CategoriesService } from '../../categories/categories.service';
+import { NotificationsService } from '../../notifications/notifications.service';
+import { NotificationType } from '../../notifications/entities/notification.entity';
 
 export const CSV_EXPORT_QUEUE = 'csv-export';
 export const CSV_EXPORT_JOB = 'process-csv-export';
@@ -26,6 +28,7 @@ export class CsvExportProcessor extends WorkerHost {
     private readonly categoriesService: CategoriesService,
     private readonly emailService: EmailService,
     private readonly usersService: UsersService,
+    private readonly notificationsService: NotificationsService,
   ) {
     super();
   }
@@ -71,6 +74,11 @@ export class CsvExportProcessor extends WorkerHost {
 
       // Send email with CSV attachment
       await this.sendExportEmail(userId, csvContent, transactions.length);
+      await this.sendUserNotification({
+        userId,
+        isError: false,
+        transactionCount: transactions.length,
+      });
 
       this.logger.log(
         `CSV export job ${job.id} completed. Exported ${transactions.length} transactions.`,
@@ -88,6 +96,10 @@ export class CsvExportProcessor extends WorkerHost {
         userId,
         error instanceof Error ? error.message : String(error),
       );
+      await this.sendUserNotification({
+        userId,
+        isError: true,
+      });
 
       throw error;
     }
@@ -195,6 +207,36 @@ export class CsvExportProcessor extends WorkerHost {
       userName: user.name || 'User',
       errorMessage,
     });
+  }
+
+  private async sendUserNotification({
+    userId,
+    isError,
+  }: {
+    userId: string;
+    isError: boolean;
+    transactionCount?: number;
+  }): Promise<void> {
+    try {
+      if (isError) {
+        await this.notificationsService.createSystemNotification({
+          userId,
+          message: 'Export data finished with error',
+          icon: '⚠️',
+          type: NotificationType.IMPORTANT,
+        });
+        return;
+      }
+
+      await this.notificationsService.createSystemNotification({
+        userId,
+        message: 'Export data finished successfully',
+        icon: '🔔',
+        type: NotificationType.INFO,
+      });
+    } catch (error) {
+      this.logger.error('Failed to create export notification', error);
+    }
   }
 
   @OnWorkerEvent('completed')
