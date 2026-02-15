@@ -5,6 +5,8 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
@@ -12,6 +14,11 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRole } from 'src/auth/user-principal';
 import { UserSettingsRequest } from './dto/user-settings.dto';
+import {
+  USER_CREATED_EVENT,
+  USER_EVENTS_QUEUE,
+  UserCreatedEventPayload,
+} from './users-events.constants';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +34,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
+    @InjectQueue(USER_EVENTS_QUEUE)
+    private readonly userEventsQueue: Queue<UserCreatedEventPayload>,
   ) {}
 
   async upsertUser({
@@ -40,6 +49,12 @@ export class UsersService {
     name?: string;
     avatar_url?: string;
   }) {
+    const existingUser = await this.repository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
     await this.repository.upsert(
       {
         id: id,
@@ -60,6 +75,11 @@ export class UsersService {
     if (!entity) {
       throw new NotFoundException('User not found');
     }
+
+    if (!existingUser) {
+      await this.enqueueUserCreatedEvent(entity.id);
+    }
+
     return entity;
   }
 
@@ -83,12 +103,41 @@ export class UsersService {
       throw new ConflictException('User already registered');
     }
 
-    return await this.repository.save({
+    const createdUser = await this.repository.save({
       id: user_id,
       name: dto.name,
       email: dto.email,
       profile_src: dto.profile_src,
     });
+
+    await this.enqueueUserCreatedEvent(createdUser.id);
+
+    return createdUser;
+  }
+
+  async enqueueUserCreatedEvent(userId: string): Promise<void> {
+    try {
+      await this.userEventsQueue.add(
+        USER_CREATED_EVENT,
+        {
+          userId,
+        },
+        {
+          attempts: 3,
+          removeOnComplete: 100,
+          removeOnFail: 100,
+          backoff: {
+            type: 'exponential',
+            delay: 1000,
+          },
+        },
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to publish ${USER_CREATED_EVENT} for user ${userId}`,
+        error,
+      );
+    }
   }
 
   async findUserData(user_id: string): Promise<User | null> {

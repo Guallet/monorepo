@@ -283,6 +283,22 @@ describe('EmailService', () => {
         }),
       ).resolves.not.toThrow();
     });
+
+    it('should send welcome email with correct parameters', async () => {
+      await service.sendWelcomeEmail({
+        to: 'test@example.com',
+        userName: 'New User',
+      });
+
+      expect(mockSendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: 'Guallet <noreply@guallet.io>',
+          to: 'test@example.com',
+          subject: 'Welcome to Guallet',
+          html: expect.stringContaining('New User'),
+        }),
+      );
+    });
   });
 
   describe('SMTP not configured', () => {

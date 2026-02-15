@@ -30,6 +30,7 @@ import { HealthModule } from './features/health/health.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth';
 import { AppController } from './app.controller';
+import { UsersService } from './features/users/users.service';
 
 @Module({
   imports: [
@@ -102,11 +103,12 @@ import { AppController } from './app.controller';
     }),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
-      imports: [ConfigModule, EmailModule],
-      inject: [ConfigService, EmailService],
+      imports: [ConfigModule, EmailModule, UsersModule],
+      inject: [ConfigService, EmailService, UsersService],
       useFactory: (
         configService: ConfigService<AppConfig>,
         emailService: EmailService,
+        usersService: UsersService,
       ) => {
         const database = configService.get('database', { infer: true })!;
         const authConfig = configService.get('auth', { infer: true })!;
@@ -116,6 +118,7 @@ import { AppController } from './app.controller';
             databaseConfig: database,
             authConfig: authConfig,
             emailService: emailService,
+            usersService: usersService,
           }),
         };
       },

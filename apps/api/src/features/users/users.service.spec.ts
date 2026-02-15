@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getQueueToken } from '@nestjs/bullmq';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -7,6 +8,10 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import {
+  USER_CREATED_EVENT,
+  USER_EVENTS_QUEUE,
+} from './users-events.constants';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -18,6 +23,10 @@ describe('UsersService', () => {
     upsert: jest.fn(),
   };
 
+  const mockUserEventsQueue = {
+    add: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,6 +35,10 @@ describe('UsersService', () => {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,
         },
+        {
+          provide: getQueueToken(USER_EVENTS_QUEUE),
+          useValue: mockUserEventsQueue,
+        },
       ],
     }).compile();
 
@@ -33,6 +46,7 @@ describe('UsersService', () => {
 
     // Clear all mocks before each test
     jest.clearAllMocks();
+    mockUserEventsQueue.add.mockResolvedValue({});
   });
 
   it('should be defined', () => {
@@ -56,7 +70,9 @@ describe('UsersService', () => {
       };
 
       mockUserRepository.upsert.mockResolvedValue(undefined);
-      mockUserRepository.findOne.mockResolvedValue(mockUser);
+      mockUserRepository.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(mockUser);
 
       const result = await service.upsertUser(userData);
 
@@ -65,6 +81,27 @@ describe('UsersService', () => {
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { id: userData.id },
       });
+      expect(mockUserEventsQueue.add).toHaveBeenCalledWith(
+        USER_CREATED_EVENT,
+        { userId: userData.id },
+        expect.any(Object),
+      );
+    });
+
+    it('should not publish event when upserting an existing user', async () => {
+      const userData = {
+        id: 'user-123',
+        email: 'test@example.com',
+      };
+
+      mockUserRepository.findOne
+        .mockResolvedValueOnce({ id: userData.id })
+        .mockResolvedValueOnce({ id: userData.id, email: userData.email });
+      mockUserRepository.upsert.mockResolvedValue(undefined);
+
+      await service.upsertUser(userData);
+
+      expect(mockUserEventsQueue.add).not.toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if user not found after upsert', async () => {
@@ -109,6 +146,11 @@ describe('UsersService', () => {
         where: { id: userData.user_id },
       });
       expect(mockUserRepository.save).toHaveBeenCalled();
+      expect(mockUserEventsQueue.add).toHaveBeenCalledWith(
+        USER_CREATED_EVENT,
+        { userId: userData.user_id },
+        expect.any(Object),
+      );
     });
 
     it('should throw ConflictException if user already exists', async () => {

@@ -294,4 +294,22 @@ export class EmailService implements OnModuleInit {
       },
     });
   }
+
+  async sendWelcomeEmail({
+    to,
+    userName,
+  }: {
+    to: string;
+    userName: string;
+  }): Promise<void> {
+    await this.sendEmail({
+      to,
+      subject: 'Welcome to Guallet',
+      template: 'welcome',
+      context: {
+        userName,
+        year: new Date().getFullYear(),
+      },
+    });
+  }
 }

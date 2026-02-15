@@ -3,15 +3,18 @@ import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 import { emailOTP, magicLink } from 'better-auth/plugins';
 import { EmailService } from 'src/features/email/email.service';
+import { UsersService } from 'src/features/users/users.service';
 
 export const createAuth = ({
   databaseConfig,
   authConfig,
   emailService,
+  usersService,
 }: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
   emailService: EmailService;
+  usersService: UsersService;
 }) => {
   const database = new Pool({
     host: databaseConfig.host,
@@ -70,6 +73,18 @@ export const createAuth = ({
         enabled: authConfig.socialProviders?.google !== undefined,
         clientId: authConfig.socialProviders?.google?.clientId || '',
         clientSecret: authConfig.socialProviders?.google?.clientSecret || '',
+      },
+    },
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user) => {
+            if (!user.id) {
+              return;
+            }
+            await usersService.enqueueUserCreatedEvent(String(user.id));
+          },
+        },
       },
     },
     // PLUGINS
@@ -132,4 +147,9 @@ export const auth = createAuth({
       return Promise.resolve();
     },
   } as unknown as EmailService,
+  usersService: {
+    enqueueUserCreatedEvent: () => {
+      return Promise.resolve();
+    },
+  } as unknown as UsersService,
 });
