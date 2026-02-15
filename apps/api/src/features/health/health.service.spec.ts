@@ -24,7 +24,7 @@ describe('HealthService', () => {
     jest.clearAllMocks();
   });
 
-  it('should register database and redis checks with Terminus', async () => {
+  it('should execute database and redis health checks', async () => {
     mockHealthCheckService.check.mockResolvedValue({ status: 'ok' });
     const redisUpResult = { redis: { status: 'up' } };
     const redisSession = {
