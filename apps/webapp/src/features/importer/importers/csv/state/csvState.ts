@@ -45,7 +45,7 @@ const useCsvStore = create<CsvState & { actions: CsvActions }>((set) => ({
     setCsvMappings: (csvMappings) => set({ csvMappings }),
     setAccountMappings: (accountMappings) => set({ accountMappings }),
     setCategoriesMappings: (categoriesMappings) => set({ categoriesMappings }),
-    reset: () => set(initialState),
+    reset: () => set(() => ({ ...initialState })),
   },
 }));
 
