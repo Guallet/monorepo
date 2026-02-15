@@ -194,12 +194,7 @@ export class CsvImportProcessor extends WorkerHost {
     const categoryId = categoryKey ? categoryIdMap.get(categoryKey) : undefined;
 
     if (!accountId) {
-      this.logger.warn(
-        `No account found for key: ${accountKey}. Mappings: ${JSON.stringify({
-          accountIdMap: Object.fromEntries(accountIdMap),
-          accountKey,
-        })}`,
-      );
+      this.logger.error(`No account found for key: ${accountKey}`);
       return null;
     }
 
