@@ -1,15 +1,13 @@
-import { HealthCheckError } from '@nestjs/terminus';
 import { HealthService } from './health.service';
 
 describe('HealthService', () => {
   const mockHealthCheckService = { check: jest.fn() };
   const mockHealthIndicatorService = { check: jest.fn() };
+  const mockHttpIndicator = { pingCheck: jest.fn() };
   const mockTypeOrmHealthIndicator = { pingCheck: jest.fn() };
   const mockPing = jest.fn();
   const mockQueue = {
-    client: Promise.resolve({
-      ping: mockPing,
-    }),
+    client: Promise.resolve({ ping: mockPing }),
   };
 
   let service: HealthService;
@@ -18,23 +16,29 @@ describe('HealthService', () => {
     service = new HealthService(
       mockHealthCheckService as never,
       mockHealthIndicatorService as never,
+      mockHttpIndicator as never,
       mockTypeOrmHealthIndicator as never,
       mockQueue as never,
     );
+
     jest.clearAllMocks();
   });
 
-  it('should execute database and redis health checks', async () => {
+  it('should execute database, redis and http health checks', async () => {
     mockHealthCheckService.check.mockResolvedValue({ status: 'ok' });
+
+    const dbUpResult = { database: { status: 'up' } };
+    mockTypeOrmHealthIndicator.pingCheck.mockResolvedValueOnce(dbUpResult);
+
     const redisUpResult = { redis: { status: 'up' } };
     const redisSession = {
       up: jest.fn().mockReturnValue(redisUpResult),
       down: jest.fn(),
     };
     mockHealthIndicatorService.check.mockReturnValue(redisSession);
-    mockTypeOrmHealthIndicator.pingCheck.mockResolvedValue({
-      database: { status: 'up' },
-    });
+
+    const httpUpResult = { http: { status: 'up' } };
+    mockHttpIndicator.pingCheck.mockResolvedValueOnce(httpUpResult);
 
     await service.check();
 
@@ -42,23 +46,38 @@ describe('HealthService', () => {
     const indicators = mockHealthCheckService.check.mock.calls[0][0] as Array<
       () => Promise<unknown>
     >;
-    expect(indicators).toHaveLength(2);
+    expect(indicators).toHaveLength(3);
 
+    // database
     await indicators[0]();
     expect(mockTypeOrmHealthIndicator.pingCheck).toHaveBeenCalledWith(
       'database',
+      {
+        timeout: 3000,
+      },
     );
 
+    // redis
     const redisResult = await indicators[1]();
     expect(mockPing).toHaveBeenCalledTimes(1);
     expect(redisSession.up).toHaveBeenCalled();
     expect(redisResult).toEqual(redisUpResult);
+
+    // http
+    const httpResult = await indicators[2]();
+    expect(mockHttpIndicator.pingCheck).toHaveBeenCalledWith(
+      'http',
+      'https://www.google.com',
+      { timeout: 3000 },
+    );
+    expect(httpResult).toEqual(httpUpResult);
   });
 
-  it('should throw HealthCheckError when redis ping fails', async () => {
+  it('should return a down result when redis ping fails', async () => {
     mockHealthCheckService.check.mockResolvedValue({ status: 'ok' });
     const pingError = new Error('redis unavailable');
     mockPing.mockRejectedValueOnce(pingError);
+
     const redisDownResult = { redis: { status: 'down' } };
     const redisSession = {
       up: jest.fn(),
@@ -71,10 +90,12 @@ describe('HealthService', () => {
       () => Promise<unknown>
     >;
 
-    await expect(indicators[1]()).rejects.toBeInstanceOf(HealthCheckError);
+    const result = await indicators[1]();
+    expect(result).toEqual(redisDownResult);
     expect(redisSession.down).toHaveBeenCalledWith(
       expect.objectContaining({
         error: 'redis unavailable',
+        latencyMs: expect.any(Number),
       }),
     );
   });
