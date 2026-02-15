@@ -90,6 +90,15 @@ export class Money {
   readonly currency: Currency;
 
   private constructor(amount: number, currency: Currency) {
+    // Parse amount to ensure it's a number (handles string inputs)
+    const parsed = Number(amount);
+    amount = parsed;
+    if (Number.isNaN(amount)) {
+      throw new InvalidAmountError(
+        `Invalid amount: ${amount}. Amount cannot be NaN.`,
+      );
+    }
+
     if (!Number.isFinite(amount)) {
       throw new InvalidAmountError(
         `Invalid amount: ${amount}. Amount must be a valid number.`,

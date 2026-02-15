@@ -25,6 +25,7 @@ import {
 } from '../constants/import-defaults';
 import { parseNumber } from '../utils/number.utils';
 import { parseDate } from '../utils/date.utils';
+import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 
 export const CSV_IMPORT_QUEUE = 'csv-import';
 export const CSV_IMPORT_JOB = 'process-csv-import';
@@ -70,7 +71,7 @@ export class CsvImportProcessor extends WorkerHost {
     job: Job<CsvImportJobData>,
   ): Promise<{ processed: number; failed: number }> {
     const { userId, dto } = job.data;
-    this.logger.log(`Processing CSV import job ${job.id} for user ${userId}`);
+    void job.log(`Processing CSV import job ${job.id} for user ${userId}`);
 
     let processedCount = 0;
     let failedCount = 0;
@@ -78,22 +79,60 @@ export class CsvImportProcessor extends WorkerHost {
 
     try {
       const { csvData, fieldMappings, accountMappings, categoryMappings } = dto;
+      void job.log('CSV data rows:');
+      const defaultCurrency = await this.getUserDefaultCurrency(userId);
 
       // Step 1: Create accounts that need to be created (outside transaction)
-      const accountIdMap = await this.createAccounts(userId, accountMappings);
+      void job.log(
+        'Creating accounts with mappings:' +
+          JSON.stringify({
+            userId,
+            accountMappings,
+            defaultCurrency,
+          }),
+      );
+      const accountIdMap = await this.createAccounts(
+        userId,
+        accountMappings,
+        defaultCurrency,
+      );
+      void job.log(
+        'Account ID map:' +
+          JSON.stringify({
+            userId,
+            accountIdMap: Object.fromEntries(accountIdMap),
+          }),
+      );
 
       // Step 2: Create categories that need to be created (outside transaction)
+      void job.log(
+        'Creating categories with mappings:' +
+          JSON.stringify({
+            userId,
+            categoryMappings,
+          }),
+      );
       const categoryIdMap = await this.createCategories(
         userId,
         categoryMappings,
       );
+      void job.log(
+        'Category ID map:' +
+          JSON.stringify({
+            userId,
+            categoryIdMap: Object.fromEntries(categoryIdMap),
+          }),
+      );
 
       // Step 3: Prepare and validate all transactions
+      void job.log('Validating and preparing transactions:');
       const validationResult = await this.validateAndPrepareTransactions(
-        csvData,
+        // csvData,
+        csvData.slice(0, 5), // Log only first 5 rows for brevity
         fieldMappings,
         accountIdMap,
         categoryIdMap,
+        defaultCurrency,
       );
 
       failedCount = validationResult.failedCount;
@@ -150,6 +189,7 @@ export class CsvImportProcessor extends WorkerHost {
     fieldMappings: FieldMappings,
     accountIdMap: Map<string, string>,
     categoryIdMap: Map<string, string>,
+    defaultCurrency: string,
   ): Promise<ValidationResult> {
     const preparedTransactions: PreparedTransaction[] = [];
     let failedCount = 0;
@@ -160,6 +200,7 @@ export class CsvImportProcessor extends WorkerHost {
         fieldMappings,
         accountIdMap,
         categoryIdMap,
+        defaultCurrency,
       );
 
       if (result) {
@@ -177,6 +218,7 @@ export class CsvImportProcessor extends WorkerHost {
     fieldMappings: FieldMappings,
     accountIdMap: Map<string, string>,
     categoryIdMap: Map<string, string>,
+    defaultCurrency: string,
   ): Promise<PreparedTransaction | null> {
     const accountKey = (row[fieldMappings.account] as string) || 'default';
     const categoryKey = row[fieldMappings.category] as string | undefined;
@@ -185,7 +227,12 @@ export class CsvImportProcessor extends WorkerHost {
     const categoryId = categoryKey ? categoryIdMap.get(categoryKey) : undefined;
 
     if (!accountId) {
-      this.logger.warn(`No account found for key: ${accountKey}`);
+      this.logger.warn(
+        `No account found for key: ${accountKey}. Mappings: ${JSON.stringify({
+          accountIdMap: Object.fromEntries(accountIdMap),
+          accountKey,
+        })}`,
+      );
       return null;
     }
 
@@ -213,7 +260,7 @@ export class CsvImportProcessor extends WorkerHost {
       description: (row[fieldMappings.description] as string) || '',
       notes: (row[fieldMappings.notes] as string) || undefined,
       amount: parsedAmount,
-      currency: account?.currency || DEFAULT_CURRENCY,
+      currency: account?.currency || defaultCurrency,
       date: parsedDate,
       categoryId: categoryId || null,
     };
@@ -294,6 +341,7 @@ export class CsvImportProcessor extends WorkerHost {
   private async createAccounts(
     userId: string,
     accountMappings: Record<string, AccountMapping>,
+    defaultCurrency: string,
   ): Promise<Map<string, string>> {
     const accountIdMap = new Map<string, string>();
 
@@ -306,20 +354,43 @@ export class CsvImportProcessor extends WorkerHost {
             user_id: userId,
             dto: {
               name: mapping.name,
-              currency: DEFAULT_CURRENCY,
+              currency: defaultCurrency,
               type: DEFAULT_ACCOUNT_TYPE,
-              source: DEFAULT_ACCOUNT_SOURCE,
+              source: AccountSource.IMPORTED,
+              source_name: `CSV Import - Webapp`,
             },
           });
           accountIdMap.set(key, account.id);
           this.logger.log(`Created account: ${mapping.name} (${account.id})`);
         } catch (error) {
           this.logger.error(`Error creating account ${mapping.name}`, error);
+          // Stop the execution here since accounts are essential for processing transactions
+          throw error;
         }
+      } else {
+        throw new Error(
+          `Account mapping for key "${key}" is missing an ID and shouldCreate is false`,
+        );
       }
     }
 
     return accountIdMap;
+  }
+
+  private async getUserDefaultCurrency(userId: string): Promise<string> {
+    try {
+      const user = await this.usersService.findUserData(userId);
+      if (user?.default_currency) {
+        return user.default_currency;
+      }
+    } catch (error) {
+      this.logger.error(
+        `Could not resolve user default currency for ${userId}, using GBP as fallback`,
+        error,
+      );
+    }
+
+    return DEFAULT_CURRENCY;
   }
 
   private async createCategories(

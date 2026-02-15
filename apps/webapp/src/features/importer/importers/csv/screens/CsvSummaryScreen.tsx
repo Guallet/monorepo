@@ -351,9 +351,9 @@ export function CsvSummaryScreen() {
 }
 
 function AccountsImportedContent() {
-  const accounts = useAtomValue(csvAccountsAtom);
+  const accounts = useCsvAccounts();
   const { accounts: remoteAccounts } = useAccounts();
-  const accountMappings = useAtomValue(accountMappingsAtom);
+  const accountMappings = useAccountMappings();
 
   if (accounts.length === 0) {
     const destinationAccount = remoteAccounts.find(
@@ -412,19 +412,19 @@ function AccountsImportedContent() {
 }
 
 function TransactionsContent() {
-  const csvData = useAtomValue(csvInfoAtom);
-  const fieldMappings = useAtomValue(csvMappingsAtom);
+  const csvData = useCsvInfo();
+  const fieldMappings = useCsvMappings();
 
   const transactions = csvData.data as CsvRowData[];
   const SAMPLE_ARRAY_SIZE = 10;
 
   // Account data
   const { accounts: remoteAccounts } = useAccounts();
-  const accountMappings = useAtomValue(accountMappingsAtom);
+  const accountMappings = useAccountMappings();
 
   // Category data
   const { categories: remoteCategories } = useCategories();
-  const categoriesMappings = useAtomValue(categoriesMappingsAtom);
+  const categoriesMappings = useCategoriesMappings();
 
   const sampleTransactions = useMemo(() => {
     // Fisher-Yates shuffle algorithm (deterministic with index)

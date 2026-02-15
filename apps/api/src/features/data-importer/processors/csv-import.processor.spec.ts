@@ -114,6 +114,7 @@ describe('CsvImportProcessor', () => {
       id: mockUserId,
       email: mockUserEmail,
       name: 'Test User',
+      default_currency: 'USD',
     } as any);
 
     jest.clearAllMocks();
@@ -238,9 +239,9 @@ describe('CsvImportProcessor', () => {
         user_id: mockUserId,
         dto: {
           name: 'New Account',
-          type: 'CURRENT',
+          type: 'current-account',
           source: 'CSV_IMPORT',
-          currency: 'GBP',
+          currency: 'USD',
         },
       });
       expect(result.processed).toBe(1);
