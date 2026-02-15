@@ -1,8 +1,17 @@
-import { useSavingGoals, useAccounts } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Money } from "@guallet/money";
-import { Loader, Stack, Text, Progress, Group, Box, useMantineTheme, Center } from "@mantine/core";
-import { IconPigMoney, IconFlag } from "@tabler/icons-react";
+import { useSavingGoals, useAccounts } from '@guallet/api-react';
+import { WidgetCard } from './WidgetCard';
+import { Money } from '@guallet/money';
+import {
+  Loader,
+  Stack,
+  Text,
+  Progress,
+  Group,
+  Box,
+  useMantineTheme,
+  Center,
+} from '@mantine/core';
+import { IconPigMoney, IconFlag } from '@tabler/icons-react';
 
 export function SavingGoalsWidget() {
   const { savingGoals, isLoading: goalsLoading } = useSavingGoals();
@@ -12,20 +21,21 @@ export function SavingGoalsWidget() {
   const isLoading = goalsLoading || accountsLoading;
 
   // Calculate current amount for each saving goal
-  const goalsWithProgress = savingGoals.map(goal => {
-    const goalAccounts = accounts.filter(acc => 
-      goal.accounts.includes(acc.id)
+  const goalsWithProgress = savingGoals.map((goal) => {
+    const goalAccounts = accounts.filter((acc) =>
+      goal.accounts.includes(acc.id),
     );
-    
+
     const currentAmount = goalAccounts.reduce(
-      (sum, acc) => sum + Number(acc.balance.amount), 
-      0
+      (sum, acc) => sum + Number(acc.balance.amount),
+      0,
     );
-    
+
     const targetAmount = Number(goal.target_amount);
-    const progress = targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
-    const currency = goalAccounts[0]?.currency || 'USD';
-    
+    const progress =
+      targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
+    const currency = goalAccounts[0]?.currency || 'GBP';
+
     return {
       ...goal,
       currentAmount,
@@ -35,10 +45,7 @@ export function SavingGoalsWidget() {
   });
 
   return (
-    <WidgetCard 
-      title="Saving Goals" 
-      icon={<IconPigMoney size={20} />}
-    >
+    <WidgetCard title="Saving Goals" icon={<IconPigMoney size={20} />}>
       {isLoading ? (
         <Center h={150}>
           <Loader size="md" />
@@ -62,43 +69,49 @@ export function SavingGoalsWidget() {
                 p="sm"
                 style={{
                   borderRadius: theme.radius.md,
-                  backgroundColor: isComplete ? theme.colors.teal[0] : theme.colors.gray[0],
+                  backgroundColor: isComplete
+                    ? theme.colors.teal[0]
+                    : theme.colors.gray[0],
                   border: `1px solid ${isComplete ? theme.colors.teal[2] : theme.colors.gray[2]}`,
                 }}
               >
                 <Group justify="space-between" mb="xs">
                   <Group gap="xs">
-                    <IconFlag 
-                      size={16} 
-                      color={isComplete ? theme.colors.teal[6] : theme.colors.blue[6]} 
+                    <IconFlag
+                      size={16}
+                      color={
+                        isComplete ? theme.colors.teal[6] : theme.colors.blue[6]
+                      }
                     />
-                    <Text fw={600} size="sm">{goal.name}</Text>
+                    <Text fw={600} size="sm">
+                      {goal.name}
+                    </Text>
                   </Group>
-                  <Text size="xs" c={isComplete ? "teal" : "dimmed"} fw={500}>
+                  <Text size="xs" c={isComplete ? 'teal' : 'dimmed'} fw={500}>
                     {goal.progress.toFixed(0)}%
                   </Text>
                 </Group>
-                
+
                 {goal.description && (
                   <Text size="xs" c="dimmed" mb="xs">
                     {goal.description}
                   </Text>
                 )}
 
-                <Progress 
-                  value={goal.progress} 
-                  color={isComplete ? "teal" : "blue"}
+                <Progress
+                  value={goal.progress}
+                  color={isComplete ? 'teal' : 'blue'}
                   size="lg"
                   radius="xl"
                   striped={isComplete}
                   animated={isComplete}
                 />
-                
+
                 <Group justify="space-between" mt="xs">
                   <Text size="xs" c="dimmed">
                     {current.format()}
                   </Text>
-                  <Text size="xs" fw={600} c={isComplete ? "teal" : "blue"}>
+                  <Text size="xs" fw={600} c={isComplete ? 'teal' : 'blue'}>
                     {target.format()}
                   </Text>
                 </Group>

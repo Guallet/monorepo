@@ -114,7 +114,7 @@ describe('CsvImportProcessor', () => {
       id: mockUserId,
       email: mockUserEmail,
       name: 'Test User',
-      default_currency: 'USD',
+      default_currency: 'GBP',
     } as any);
 
     jest.clearAllMocks();
@@ -130,7 +130,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const dto: CsvImportRequestDto = {
@@ -192,7 +192,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'new-account-123',
         name: 'New Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const dto: CsvImportRequestDto = {
@@ -242,7 +242,7 @@ describe('CsvImportProcessor', () => {
           type: 'current-account',
           source: 'imported',
           source_name: 'CSV Import - Webapp',
-          currency: 'USD',
+          currency: 'GBP',
         },
       });
       expect(result.processed).toBe(1);
@@ -252,7 +252,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const mockCategory = {
@@ -322,7 +322,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const dto: CsvImportRequestDto = {
@@ -372,7 +372,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const dto: CsvImportRequestDto = {
@@ -422,7 +422,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       // Create 200 rows to test batching (batch size is 150)
@@ -526,7 +526,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const dto: CsvImportRequestDto = {
@@ -615,7 +615,7 @@ describe('CsvImportProcessor', () => {
       const mockAccount = {
         id: 'account-123',
         name: 'Test Account',
-        currency: 'USD',
+        currency: 'GBP',
       } as Account;
 
       const dto: CsvImportRequestDto = {

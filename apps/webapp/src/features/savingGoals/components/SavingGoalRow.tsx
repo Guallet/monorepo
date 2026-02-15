@@ -1,4 +1,4 @@
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
 import {
   Card,
   Group,
@@ -7,14 +7,14 @@ import {
   Progress,
   Badge,
   ActionIcon,
-} from "@mantine/core";
-import { IconPigMoney, IconEdit, IconTrash } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
+} from '@mantine/core';
+import { IconPigMoney, IconEdit, IconTrash } from '@tabler/icons-react';
+import { Money } from '@guallet/money';
 
 function getProgressColor(isCompleted: boolean, isOverdue: boolean): string {
-  if (isCompleted) return "green";
-  if (isOverdue) return "red";
-  return "blue";
+  if (isCompleted) return 'green';
+  if (isOverdue) return 'red';
+  return 'blue';
 }
 
 interface SavingGoalRowProps {
@@ -44,7 +44,7 @@ export function SavingGoalRow({
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't trigger card click when clicking action buttons
-    if ((e.target as HTMLElement).closest("[data-action-button]")) {
+    if ((e.target as HTMLElement).closest('[data-action-button]')) {
       return;
     }
     onClick();
@@ -56,7 +56,7 @@ export function SavingGoalRow({
       shadow="sm"
       radius="md"
       p="lg"
-      style={{ cursor: "pointer" }}
+      style={{ cursor: 'pointer' }}
       onClick={handleCardClick}
     >
       <Group justify="space-between" mb="xs">
@@ -122,12 +122,12 @@ export function SavingGoalRow({
           <Text size="sm" fw={500}>
             {Money.fromCurrencyCode({
               amount: currentAmount,
-              currencyCode: "USD",
-            }).format()}{" "}
-            /{" "}
+              currencyCode: 'GBP',
+            }).format()}{' '}
+            /{' '}
             {Money.fromCurrencyCode({
               amount: savingGoal.target_amount,
-              currencyCode: "USD",
+              currencyCode: 'GBP',
             }).format()}
           </Text>
         </Group>
@@ -152,7 +152,7 @@ export function SavingGoalRow({
         {savingGoal.accounts.length > 0 && (
           <Text size="xs" c="dimmed">
             {savingGoal.accounts.length} account
-            {savingGoal.accounts.length !== 1 ? "s" : ""} linked
+            {savingGoal.accounts.length !== 1 ? 's' : ''} linked
           </Text>
         )}
       </Stack>

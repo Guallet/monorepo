@@ -287,8 +287,8 @@ describe('UsersService', () => {
 
       const mockUser: Partial<User> = {
         id: settingsData.userId,
-        default_currency: 'USD',
-        preferred_currencies: ['USD'],
+        default_currency: 'GBP',
+        preferred_currencies: ['GBP'],
         date_format: 'MM/DD/YYYY',
       };
 

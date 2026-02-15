@@ -139,8 +139,8 @@ describe('UsersController', () => {
       const mockUserData: Partial<User> = {
         id: mockUser.id,
         email: mockUser.email,
-        default_currency: 'USD',
-        preferred_currencies: ['USD', 'EUR'],
+        default_currency: 'GBP',
+        preferred_currencies: ['GBP', 'EUR'],
         date_format: 'MM/DD/YYYY',
       };
 

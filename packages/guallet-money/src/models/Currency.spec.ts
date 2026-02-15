@@ -4,11 +4,11 @@ import { InvalidCurrencyError } from '../errors';
 describe('Currency', () => {
   describe('fromISOCode', () => {
     it('should create a currency from valid ISO code', () => {
-      const usd = Currency.fromISOCode('USD');
-      expect(usd.code).toBe('USD');
-      expect(usd.name).toBe('US Dollar');
-      expect(usd.symbol).toBe('$');
-      expect(usd.decimalPlaces).toBe(2);
+      const gbp = Currency.fromISOCode('GBP');
+      expect(gbp.code).toBe('GBP');
+      expect(gbp.name).toBe('British Pound Sterling');
+      expect(gbp.symbol).toBe('£');
+      expect(gbp.decimalPlaces).toBe(2);
     });
 
     it('should create a currency with case-insensitive code', () => {
@@ -68,36 +68,36 @@ describe('Currency', () => {
 
   describe('equals', () => {
     it('should return true for same currency codes', () => {
-      const usd1 = Currency.fromISOCode('USD');
-      const usd2 = Currency.fromISOCode('USD');
-      expect(usd1.equals(usd2)).toBe(true);
+      const gbp1 = Currency.fromISOCode('GBP');
+      const gbp2 = Currency.fromISOCode('GBP');
+      expect(gbp1.equals(gbp2)).toBe(true);
     });
 
     it('should return false for different currency codes', () => {
-      const usd = Currency.fromISOCode('USD');
+      const gbp = Currency.fromISOCode('GBP');
       const eur = Currency.fromISOCode('EUR');
-      expect(usd.equals(eur)).toBe(false);
+      expect(gbp.equals(eur)).toBe(false);
     });
 
     it('should handle comparison with same instance', () => {
-      const usd = Currency.fromISOCode('USD');
-      expect(usd.equals(usd)).toBe(true);
+      const gbp = Currency.fromISOCode('GBP');
+      expect(gbp.equals(gbp)).toBe(true);
     });
 
     it('should compare GBP currencies correctly', () => {
       const gbp1 = Currency.fromISOCode('GBP');
       const gbp2 = Currency.fromISOCode('gbp');
-      const usd = Currency.fromISOCode('USD');
+      const eur = Currency.fromISOCode('EUR');
 
       expect(gbp1.equals(gbp2)).toBe(true);
-      expect(gbp1.equals(usd)).toBe(false);
+      expect(gbp1.equals(eur)).toBe(false);
     });
   });
 
   describe('toString', () => {
     it('should return the currency code and name', () => {
-      const usd = Currency.fromISOCode('USD');
-      expect(usd.toString()).toBe('USD (US Dollar)');
+      const gbp = Currency.fromISOCode('GBP');
+      expect(gbp.toString()).toBe('GBP (British Pound Sterling)');
     });
 
     it('should return uppercased code even if created with lowercase', () => {
@@ -113,14 +113,11 @@ describe('Currency', () => {
 
   describe('getCurrencySymbol', () => {
     it('should expose currency symbol as property', () => {
-      const usd = Currency.fromISOCode('USD');
-      expect(usd.symbol).toBe('$');
+      const gbp = Currency.fromISOCode('GBP');
+      expect(gbp.symbol).toBe('£');
 
       const eur = Currency.fromISOCode('EUR');
       expect(eur.symbol).toBe('€');
-
-      const gbp = Currency.fromISOCode('GBP');
-      expect(gbp.symbol).toBe('£');
 
       const jpy = Currency.fromISOCode('JPY');
       expect(jpy.symbol).toBe('¥');
@@ -129,18 +126,18 @@ describe('Currency', () => {
 
   describe('immutability', () => {
     it('should have readonly properties', () => {
-      const usd = Currency.fromISOCode('USD');
-      expect(usd.code).toBe('USD');
-      expect(usd.name).toBe('US Dollar');
-      expect(usd.symbol).toBe('$');
-      expect(usd.decimalPlaces).toBe(2);
+      const gbp = Currency.fromISOCode('GBP');
+      expect(gbp.code).toBe('GBP');
+      expect(gbp.name).toBe('British Pound Sterling');
+      expect(gbp.symbol).toBe('£');
+      expect(gbp.decimalPlaces).toBe(2);
     });
   });
 
   describe('common currencies', () => {
     it('should support major world currencies', () => {
       const currencies = [
-        'USD',
+        'GBP',
         'EUR',
         'GBP',
         'JPY',
