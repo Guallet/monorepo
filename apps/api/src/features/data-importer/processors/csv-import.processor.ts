@@ -70,7 +70,6 @@ export class CsvImportProcessor extends WorkerHost {
     job: Job<CsvImportJobData>,
   ): Promise<{ processed: number; failed: number }> {
     const { userId, dto } = job.data;
-    void job.log(`Processing CSV import job ${job.id} for user ${userId}`);
 
     let processedCount = 0;
     let failedCount = 0;
@@ -78,56 +77,25 @@ export class CsvImportProcessor extends WorkerHost {
 
     try {
       const { csvData, fieldMappings, accountMappings, categoryMappings } = dto;
-      void job.log('CSV data rows:');
       const defaultCurrency = await this.getUserDefaultCurrency(userId);
 
       // Step 1: Create accounts that need to be created (outside transaction)
-      void job.log(
-        'Creating accounts with mappings:' +
-          JSON.stringify({
-            userId,
-            accountMappings,
-            defaultCurrency,
-          }),
-      );
+
       const accountIdMap = await this.createAccounts(
         userId,
         accountMappings,
         defaultCurrency,
       );
-      void job.log(
-        'Account ID map:' +
-          JSON.stringify({
-            userId,
-            accountIdMap: Object.fromEntries(accountIdMap),
-          }),
-      );
 
       // Step 2: Create categories that need to be created (outside transaction)
-      void job.log(
-        'Creating categories with mappings:' +
-          JSON.stringify({
-            userId,
-            categoryMappings,
-          }),
-      );
       const categoryIdMap = await this.createCategories(
         userId,
         categoryMappings,
       );
-      void job.log(
-        'Category ID map:' +
-          JSON.stringify({
-            userId,
-            categoryIdMap: Object.fromEntries(categoryIdMap),
-          }),
-      );
 
       // Step 3: Prepare and validate all transactions
-      void job.log('Validating and preparing transactions:');
       const validationResult = await this.validateAndPrepareTransactions(
-        // csvData,
-        csvData.slice(0, 5), // Log only first 5 rows for brevity
+        csvData,
         fieldMappings,
         accountIdMap,
         categoryIdMap,
@@ -360,7 +328,6 @@ export class CsvImportProcessor extends WorkerHost {
             },
           });
           accountIdMap.set(key, account.id);
-          this.logger.log(`Created account: ${mapping.name} (${account.id})`);
         } catch (error) {
           this.logger.error(`Error creating account ${mapping.name}`, error);
           // Stop the execution here since accounts are essential for processing transactions
@@ -413,7 +380,6 @@ export class CsvImportProcessor extends WorkerHost {
             },
           });
           categoryIdMap.set(key, category.id);
-          this.logger.log(`Created category: ${mapping.name} (${category.id})`);
         } catch (error) {
           this.logger.error(`Error creating category ${mapping.name}`, error);
         }

@@ -240,7 +240,8 @@ describe('CsvImportProcessor', () => {
         dto: {
           name: 'New Account',
           type: 'current-account',
-          source: 'CSV_IMPORT',
+          source: 'imported',
+          source_name: 'CSV Import - Webapp',
           currency: 'USD',
         },
       });
@@ -511,16 +512,13 @@ describe('CsvImportProcessor', () => {
       const error = new Error('Database connection failed');
       accountsService.create.mockRejectedValue(error);
 
-      // Account creation fails, but processor continues and counts transaction as failed
-      const result = await processor.process(mockJob);
-
-      expect(result.processed).toBe(0);
-      expect(result.failed).toBe(1);
-      expect(emailService.sendImportCompletionEmail).toHaveBeenCalledWith({
+      await expect(processor.process(mockJob)).rejects.toThrow(
+        'Database connection failed',
+      );
+      expect(emailService.sendImportErrorEmail).toHaveBeenCalledWith({
         to: mockUserEmail,
         userName: 'Test User',
-        processedCount: 0,
-        failedCount: 1,
+        errorMessage: 'Database connection failed',
       });
     });
 
