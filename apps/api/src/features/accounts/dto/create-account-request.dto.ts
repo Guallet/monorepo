@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountSource } from '../entities/accountSource.model';
+import {
+  CreditCardProperties,
+  CurrentAccountProperties,
+  LoanAccountProperties,
+  MortgageAccountProperties,
+  SavingAccountProperties,
+} from '../entities/account-properties.model';
 import { AccountType } from '../entities/accountType.model';
 
 export class CreateAccountRequest {
@@ -48,6 +55,19 @@ export class CreateAccountRequest {
     nullable: false,
   })
   currency: string;
+
+  @ApiProperty({
+    description:
+      'Optional account-type specific properties (e.g. account numbers, rates, limits, terms)',
+    nullable: true,
+  })
+  properties?:
+    | CurrentAccountProperties
+    | CreditCardProperties
+    | SavingAccountProperties
+    | MortgageAccountProperties
+    | LoanAccountProperties
+    | null;
 
   constructor(props: CreateAccountRequest) {
     Object.assign(this, props);
