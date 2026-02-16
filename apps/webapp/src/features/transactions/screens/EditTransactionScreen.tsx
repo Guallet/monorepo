@@ -23,7 +23,7 @@ const formSchema = z.object({
     .string()
     .min(2, { error: 'Description should have at least 2 letters' }),
   notes: z.string().optional().nullable(),
-  amount: z.number().gte(0, { error: 'Amount must be positive' }),
+  amount: z.number().gte(0, { error: 'Amount must be zero or greater' }),
   currency: z.string().nullable(),
   date: z.date(),
   categoryId: z.string().optional().nullable(),
@@ -173,7 +173,6 @@ export function EditTransactionScreen({
             <TransactionFormFields
               form={form}
               translationKeyPrefix="screens.transactions.edit"
-              accountReadOnly
             />
             <Group>
               <Button type="submit">

@@ -21,7 +21,7 @@ const formSchema = z.object({
     .string()
     .min(2, { error: 'Description should have at least 2 letters' }),
   notes: z.string().optional().nullable(),
-  amount: z.number().gte(0, { error: 'Amount must be positive' }),
+  amount: z.number().gte(0, { error: 'Amount must be zero or greater' }),
   currency: z.string().nullable(),
   date: z.date(),
   categoryId: z.string().optional().nullable(),
@@ -48,8 +48,6 @@ export function AddTransactionScreen() {
   });
 
   async function onFormSubmit(data: TransactionFormData): Promise<void> {
-    console.log('Form submitted:', data);
-
     const request = {
       accountId: data.accountId,
       description: data.description,
@@ -61,8 +59,7 @@ export function AddTransactionScreen() {
     } as CreateTransactionRequest;
 
     await createTransactionMutation.mutateAsync(request, {
-      onSuccess: (data) => {
-        console.log('Transaction created successfully:', data);
+      onSuccess: () => {
         notifications.show({
           title: t(
             'screens.transactions.create.notifications.success.title',
@@ -103,7 +100,6 @@ export function AddTransactionScreen() {
             <TransactionFormFields
               form={form}
               translationKeyPrefix="screens.transactions.create"
-              isCategoryRequired
             />
 
             <Button type="submit">

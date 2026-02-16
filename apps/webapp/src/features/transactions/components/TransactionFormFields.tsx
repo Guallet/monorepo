@@ -33,15 +33,11 @@ interface TransactionFormFieldsProps {
   translationKeyPrefix:
     | 'screens.transactions.create'
     | 'screens.transactions.edit';
-  accountReadOnly?: boolean;
-  isCategoryRequired?: boolean;
 }
 
 export function TransactionFormFields({
   form,
   translationKeyPrefix,
-  accountReadOnly = false,
-  isCategoryRequired = false,
 }: Readonly<TransactionFormFieldsProps>) {
   const { t } = useTranslation();
   const { accounts } = useAccounts();
@@ -63,19 +59,19 @@ export function TransactionFormFields({
   useEffect(() => {
     const accountId = form.values.accountId || null;
 
-    if (accountId === previousAccountIdRef.current) {
-      return;
-    }
+    const accountChanged = accountId !== previousAccountIdRef.current;
 
     previousAccountIdRef.current = accountId;
 
     const accountCurrency =
       accounts.find((account) => account.id === accountId)?.currency ?? null;
 
-    if (accountCurrency) {
+    const currencyMissing = !form.values.currency;
+
+    if (accountCurrency && (accountChanged || currencyMissing)) {
       form.setFieldValue('currency', accountCurrency);
     }
-  }, [accounts, form, form.values.accountId]);
+  }, [accounts, form, form.values.accountId, form.values.currency]);
 
   return (
     <Stack>
@@ -120,7 +116,6 @@ export function TransactionFormFields({
       />
       <AccountInput
         required
-        disabled={accountReadOnly}
         label={t(`${translationKeyPrefix}.form.account.label`, 'Account')}
         placeholder={t(
           `${translationKeyPrefix}.form.account.placeholder`,
@@ -165,7 +160,6 @@ export function TransactionFormFields({
         {...form.getInputProps('date')}
       />
       <CategoryPicker
-        required={isCategoryRequired}
         label={t(`${translationKeyPrefix}.form.category.label`, 'Category')}
         placeholder={t(
           `${translationKeyPrefix}.form.category.placeholder`,
