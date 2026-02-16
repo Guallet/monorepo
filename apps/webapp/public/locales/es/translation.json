@@ -608,7 +608,21 @@
       },
       "create": {
         "title": "Agregar transacción",
+        "notifications": {
+          "success": {
+            "title": "Éxito",
+            "message": "Transacción creada correctamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "No se pudo crear la transacción"
+          }
+        },
         "form": {
+          "type": {
+            "expense": "Gasto",
+            "income": "Ingreso"
+          },
           "description": {
             "label": "Descripción",
             "placeholder": "Ingresa la descripción de la transacción"
@@ -620,6 +634,10 @@
           "account": {
             "label": "Cuenta",
             "placeholder": "Selecciona una cuenta"
+          },
+          "currency": {
+            "label": "Moneda",
+            "description": "La moneda de la transacción"
           },
           "amount": {
             "label": "Monto",

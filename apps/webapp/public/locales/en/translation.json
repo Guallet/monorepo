@@ -603,7 +603,21 @@
       },
       "create": {
         "title": "Add Transaction",
+        "notifications": {
+          "success": {
+            "title": "Success",
+            "message": "Transaction created successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to create transaction"
+          }
+        },
         "form": {
+          "type": {
+            "expense": "Expense",
+            "income": "Income"
+          },
           "description": {
             "label": "Description",
             "placeholder": "Enter transaction description"
@@ -615,6 +629,10 @@
           "account": {
             "label": "Account",
             "placeholder": "Select an account"
+          },
+          "currency": {
+            "label": "Currency",
+            "description": "The currency of the transaction"
           },
           "amount": {
             "label": "Amount",
