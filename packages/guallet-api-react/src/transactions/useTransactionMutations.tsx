@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useGualletClient } from "./../GualletClientProvider";
-import { CreateTransactionRequest } from "@guallet/api-client";
+import {
+  CreateTransactionRequest,
+  UpdateTransactionRequest,
+} from "@guallet/api-client";
 
 const TRANSACTIONS_QUERY_KEY = "transactions";
 
@@ -30,9 +33,57 @@ export function useTransactionMutations() {
         notes,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: [TRANSACTIONS_QUERY_KEY, variables.id],
+        queryKey: [TRANSACTIONS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
+  const updateTransactionCategoryMutation = useMutation({
+    mutationFn: async ({ id, categoryId }: { id: string; categoryId: string }) => {
+      return await gualletClient.transactions.updateTransactionCategory({
+        transactionId: id,
+        categoryId,
+      });
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: [TRANSACTIONS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
+  const updateTransactionMutation = useMutation({
+    mutationFn: async ({ id, request }: { id: string; request: UpdateTransactionRequest }) => {
+      return await gualletClient.transactions.update({
+        transactionId: id,
+        request,
+      });
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: [TRANSACTIONS_QUERY_KEY],
+      });
+    },
+    onError: async (error, variables, context) => {
+      console.error(error);
+    },
+  });
+
+  const deleteTransactionMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return await gualletClient.transactions.delete(id);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
     onError: async (error, variables, context) => {
@@ -43,5 +94,8 @@ export function useTransactionMutations() {
   return {
     createTransactionMutation,
     updateTransactionNotesMutation,
+    updateTransactionCategoryMutation,
+    updateTransactionMutation,
+    deleteTransactionMutation,
   };
 }

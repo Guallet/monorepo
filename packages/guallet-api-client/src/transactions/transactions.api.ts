@@ -4,6 +4,7 @@ import {
   InboxTransactionQueryResultDto,
   TransactionDto,
   TransactionQueryResultDto,
+  UpdateTransactionRequest,
 } from './transactions.models';
 
 const TRANSACTIONS_PATH = 'transactions';
@@ -126,6 +127,23 @@ export class TransactionsApi {
       payload: {
         notes: args.notes,
       },
+    });
+  }
+
+  async update(args: {
+    transactionId: string;
+    request: UpdateTransactionRequest;
+  }): Promise<TransactionDto> {
+    const queryPath = `${TRANSACTIONS_PATH}/${args.transactionId}`;
+    return await this.client.patch<TransactionDto, UpdateTransactionRequest>({
+      path: queryPath,
+      payload: args.request,
+    });
+  }
+
+  async delete(transactionId: string): Promise<void> {
+    await this.client.fetch_delete<void>({
+      path: `${TRANSACTIONS_PATH}/${transactionId}`,
     });
   }
 }

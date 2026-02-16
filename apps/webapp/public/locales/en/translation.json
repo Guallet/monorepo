@@ -567,11 +567,57 @@
           "add": {
             "tooltip": "Add new transaction"
           }
+        },
+        "quickEdit": {
+          "title": "Quick edit transaction",
+          "form": {
+            "notes": {
+              "label": "Notes",
+              "placeholder": "Enter transaction notes"
+            },
+            "category": {
+              "label": "Category",
+              "placeholder": "Select a category"
+            },
+            "editFullButton": {
+              "label": "Edit full transaction"
+            },
+            "cancelButton": {
+              "label": "Cancel"
+            },
+            "saveButton": {
+              "label": "Save"
+            }
+          },
+          "notifications": {
+            "success": {
+              "title": "Success",
+              "message": "Transaction updated successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to update transaction"
+            }
+          }
         }
       },
       "create": {
         "title": "Add Transaction",
+        "notifications": {
+          "success": {
+            "title": "Success",
+            "message": "Transaction created successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to create transaction"
+          }
+        },
         "form": {
+          "type": {
+            "expense": "Expense",
+            "income": "Income"
+          },
           "description": {
             "label": "Description",
             "placeholder": "Enter transaction description"
@@ -583,6 +629,10 @@
           "account": {
             "label": "Account",
             "placeholder": "Select an account"
+          },
+          "currency": {
+            "label": "Currency",
+            "description": "The currency of the transaction"
           },
           "amount": {
             "label": "Amount",
@@ -598,6 +648,78 @@
           },
           "submitButton": {
             "label": "Add Transaction"
+          }
+        }
+      },
+      "edit": {
+        "notifications": {
+          "update": {
+            "success": {
+              "title": "Success",
+              "message": "Transaction updated successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to update transaction"
+            }
+          },
+          "delete": {
+            "success": {
+              "title": "Success",
+              "message": "Transaction deleted successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to delete transaction"
+            }
+          }
+        },
+        "deleteDialog": {
+          "title": "Delete transaction",
+          "message": "Are you sure you want to delete this transaction?"
+        },
+        "title": "Edit Transaction",
+        "form": {
+          "type": {
+            "expense": "Expense",
+            "income": "Income"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter transaction description"
+          },
+          "notes": {
+            "label": "Notes",
+            "placeholder": "Enter transaction notes"
+          },
+          "account": {
+            "label": "Account",
+            "placeholder": "Select an account"
+          },
+          "currency": {
+            "label": "Currency",
+            "description": "The currency of the transaction"
+          },
+          "amount": {
+            "label": "Amount",
+            "placeholder": "Enter transaction amount"
+          },
+          "date": {
+            "label": "Date",
+            "placeholder": "Select transaction date"
+          },
+          "category": {
+            "label": "Category",
+            "placeholder": "Select a category"
+          },
+          "submitButton": {
+            "label": "Update Transaction"
+          },
+          "cancelButton": {
+            "label": "Cancel"
+          },
+          "deleteButton": {
+            "label": "Delete"
           }
         }
       }

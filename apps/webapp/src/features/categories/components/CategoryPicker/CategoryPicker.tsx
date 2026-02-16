@@ -1,14 +1,15 @@
-import { ResponsiveModal } from "@guallet/ui-react";
-import { CategoryDto } from "@guallet/api-client";
-import { Input, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { CategoryPickerModal } from "./CategoryPickerModal";
-import { CategoryIcon } from "@/components/Categories/CategoryIcon";
+import { ResponsiveModal } from '@guallet/ui-react';
+import { CategoryDto } from '@guallet/api-client';
+import { Input, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CategoryPickerModal } from './CategoryPickerModal';
+import { CategoryIcon } from '@/components/Categories/CategoryIcon';
 
-interface CategoryPickerProps
-  extends React.ComponentProps<typeof Input.Wrapper> {
+interface CategoryPickerProps extends React.ComponentProps<
+  typeof Input.Wrapper
+> {
   selectedCategory: CategoryDto | null;
   onCategorySelected: (selectedCategory: CategoryDto) => void;
   placeholder?: string;
@@ -34,7 +35,7 @@ export function CategoryPicker({
 
   const inputPlaceholder =
     placeholder ||
-    t("components.categoryPicker.input.placeholder", "Select category");
+    t('components.categoryPicker.input.placeholder', 'Select category');
 
   return (
     <>
@@ -57,7 +58,7 @@ export function CategoryPicker({
         onClose={close}
         title={
           <Text>
-            {t("components.categoryPicker.modal.title", "Select Category")}
+            {t('components.categoryPicker.modal.title', 'Select Category')}
           </Text>
         }
         size="lg"

@@ -47,6 +47,14 @@ function TransactionPage() {
           to: "/transactions/create",
         });
       }}
+      onEditTransaction={(transactionId) => {
+        navigate({
+          to: "/transactions/$id/edit",
+          params: {
+            id: transactionId,
+          },
+        });
+      }}
       onFiltersUpdated={(filters) => {
         navigate({
           search: (prev) => ({

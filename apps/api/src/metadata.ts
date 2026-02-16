@@ -2,6 +2,8 @@
 export default async () => {
     const t = {
         ["./features/nordigen/dto/nordigen-transaction.dto"]: await import("./features/nordigen/dto/nordigen-transaction.dto"),
+        ["./features/accounts/entities/accountType.model"]: await import("./features/accounts/entities/accountType.model"),
+        ["./features/accounts/entities/accountSource.model"]: await import("./features/accounts/entities/accountSource.model"),
         ["./features/accounts/dto/account.dto"]: await import("./features/accounts/dto/account.dto"),
         ["./features/accounts/dto/account-charts.dto"]: await import("./features/accounts/dto/account-charts.dto"),
         ["./features/transactions/dto/transaction.dto"]: await import("./features/transactions/dto/transaction.dto"),
@@ -13,8 +15,6 @@ export default async () => {
         ["./features/rules/dto/rule.dto"]: await import("./features/rules/dto/rule.dto"),
         ["./features/reports/cashflow/cashflowData.dto"]: await import("./features/reports/cashflow/cashflowData.dto"),
         ["./features/regular-payments/entities/regular-payment.entity"]: await import("./features/regular-payments/entities/regular-payment.entity"),
-        ["./features/accounts/entities/accountSource.model"]: await import("./features/accounts/entities/accountSource.model"),
-        ["./features/accounts/entities/accountType.model"]: await import("./features/accounts/entities/accountType.model"),
         ["./features/institutions/dto/institution.dto"]: await import("./features/institutions/dto/institution.dto"),
         ["./features/nordigen/dto/nordigen-institution.dto"]: await import("./features/nordigen/dto/nordigen-institution.dto"),
         ["./features/institutions/entities/institution.entity"]: await import("./features/institutions/entities/institution.entity"),
