@@ -55,7 +55,6 @@ export function EditTransactionScreen({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { transaction, isLoading } = useTransaction(transactionId);
-  const { account } = useAccount(transaction?.accountId);
 
   const { category } = useCategory(transaction?.categoryId ?? null);
   const { updateTransactionMutation, deleteTransactionMutation } =
@@ -79,6 +78,9 @@ export function EditTransactionScreen({
     },
   });
 
+  const { account } = useAccount(
+    form.values.accountId || transaction?.accountId,
+  );
   const defaultCurrency = useDefaultCurrency();
   const selectedCurrency = form.values.currency
     ? Currency.fromISOCode(form.values.currency)
@@ -114,11 +116,7 @@ export function EditTransactionScreen({
       selectedAccountCurrency &&
       (form.values.currency === null || form.values.currency === undefined)
     ) {
-      console.log(
-        `Syncing currency to account's currency: ${selectedAccountCurrency}`,
-      );
       form.setFieldValue('currency', selectedAccountCurrency);
-      // setSelectedCurrency(Currency.fromISOCode(selectedAccountCurrency));
     }
   }, [account, form, form.values.accountId]);
 

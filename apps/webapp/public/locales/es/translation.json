@@ -684,8 +684,8 @@
             "placeholder": "Selecciona una cuenta"
           },
           "currency": {
-            "label": "Currency",
-            "description": "The currency of the transaction"
+            "label": "Moneda",
+            "description": "La moneda de la transacción"
           },
           "amount": {
             "label": "Monto",
