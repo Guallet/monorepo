@@ -27,11 +27,11 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import {
-  accountFormBaseSchema,
   accountFormDataSchema,
   AddAccountFormData,
   getAccountProperties,
   getCommonStepFields,
+  getCommonStepSchema,
   getSpecificStepFields,
   getSummaryEntries,
   hasSpecificStep,
@@ -78,8 +78,7 @@ export function AddAccountScreen() {
 
   const [currentStep, setCurrentStep] = useState(0);
 
-  const accountTypes = Object.entries(AccountTypeDto).map(
-    ({ '1': accountType }) => ({
+  const accountTypes = Object.values(AccountTypeDto).map((accountType) => ({
       label: getAccountTypeTitleSingular(accountType),
       value: accountType,
     }),
@@ -99,13 +98,7 @@ export function AddAccountScreen() {
   };
 
   const validateCommonStep = (): boolean => {
-    const result = accountFormBaseSchema.pick({
-      name: true,
-      currency: true,
-      balance: true,
-      createInitialTransaction: true,
-      account_type: true,
-    }).safeParse(form.values);
+    const result = getCommonStepSchema().safeParse(form.values);
 
     const fields = getCommonStepFields();
     if (result.success) {

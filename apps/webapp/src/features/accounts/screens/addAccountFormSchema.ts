@@ -13,7 +13,7 @@ export const accountFormBaseSchema = z.object({
   currency: z.string().nullable().default(null),
   balance: z.number().default(0),
   createInitialTransaction: z.boolean().default(true),
-  account_type: z.enum(AccountTypeDto).default(AccountTypeDto.UNKNOWN),
+  account_type: z.enum(AccountTypeDto),
   currentAccountNumber: z.string().trim().optional(),
   currentSortCode: z.string().trim().optional(),
   currentOverdraftLimit: z.number().nullable().optional(),
@@ -191,6 +191,16 @@ export function getCommonStepFields(): Array<keyof AddAccountFormData> {
   return STEP_ONE_FIELDS;
 }
 
+export function getCommonStepSchema() {
+  return accountFormBaseSchema.pick({
+    name: true,
+    currency: true,
+    balance: true,
+    createInitialTransaction: true,
+    account_type: true,
+  });
+}
+
 export function getSpecificStepFields(
   accountType: AccountTypeDto,
 ): Array<keyof AddAccountFormData> {
@@ -208,6 +218,20 @@ type AccountProperties =
   | MortgageAccountProperties
   | LoanAccountProperties;
 
+function requireString(value: string | undefined, field: string): string {
+  if (!value) {
+    throw new Error(`Missing required field: ${field}`);
+  }
+  return value;
+}
+
+function requireNumber(value: number | null | undefined, field: string): number {
+  if (value == null) {
+    throw new Error(`Missing required field: ${field}`);
+  }
+  return value;
+}
+
 export function getAccountProperties(
   values: AddAccountFormData,
 ): AccountProperties | null {
@@ -215,34 +239,55 @@ export function getAccountProperties(
     case AccountTypeDto.CURRENT_ACCOUNT:
       return {
         details: {
-          accountNumber: values.currentAccountNumber ?? '',
-          sortCode: values.currentSortCode ?? '',
+          accountNumber: requireString(
+            values.currentAccountNumber,
+            'currentAccountNumber',
+          ),
+          sortCode: requireString(values.currentSortCode, 'currentSortCode'),
         },
         overdraft: values.currentOverdraftLimit ?? null,
       };
     case AccountTypeDto.CREDIT_CARD:
       return {
-        accountNumber: values.creditCardAccountNumber ?? '',
-        interestRate: values.creditCardInterestRate ?? 0,
-        creditLimit: values.creditCardCreditLimit ?? 0,
-        cycleDay: values.creditCardCycleDay ?? 0,
+        accountNumber: requireString(
+          values.creditCardAccountNumber,
+          'creditCardAccountNumber',
+        ),
+        interestRate: requireNumber(
+          values.creditCardInterestRate,
+          'creditCardInterestRate',
+        ),
+        creditLimit: requireNumber(
+          values.creditCardCreditLimit,
+          'creditCardCreditLimit',
+        ),
+        cycleDay: requireNumber(values.creditCardCycleDay, 'creditCardCycleDay'),
       };
     case AccountTypeDto.SAVINGS:
       return {
-        interestRate: values.savingsInterestRate ?? 0,
+        interestRate: requireNumber(
+          values.savingsInterestRate,
+          'savingsInterestRate',
+        ),
       };
     case AccountTypeDto.MORTGAGE:
       return {
-        propertyValue: values.mortgagePropertyValue ?? 0,
-        mortgageAmount: values.mortgageAmount ?? 0,
-        interestRate: values.mortgageInterestRate ?? 0,
-        termLength: values.mortgageTermLength ?? 0,
+        propertyValue: requireNumber(
+          values.mortgagePropertyValue,
+          'mortgagePropertyValue',
+        ),
+        mortgageAmount: requireNumber(values.mortgageAmount, 'mortgageAmount'),
+        interestRate: requireNumber(
+          values.mortgageInterestRate,
+          'mortgageInterestRate',
+        ),
+        termLength: requireNumber(values.mortgageTermLength, 'mortgageTermLength'),
       };
     case AccountTypeDto.LOAN:
       return {
-        loanAmount: values.loanAmount ?? 0,
-        interestRate: values.loanInterestRate ?? 0,
-        termLength: values.loanTermLength ?? 0,
+        loanAmount: requireNumber(values.loanAmount, 'loanAmount'),
+        interestRate: requireNumber(values.loanInterestRate, 'loanInterestRate'),
+        termLength: requireNumber(values.loanTermLength, 'loanTermLength'),
       };
     default:
       return null;
