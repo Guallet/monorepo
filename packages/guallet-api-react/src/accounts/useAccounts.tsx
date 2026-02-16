@@ -1,9 +1,9 @@
-import { AccountDto, AccountTypeDto } from "@guallet/api-client";
-import { useQuery } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
-import { useMemo } from "react";
+import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { useQuery } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
+import { useMemo } from 'react';
 
-const ACCOUNTS_QUERY_KEY = "accounts";
+const ACCOUNTS_QUERY_KEY = 'accounts';
 
 export function useAccounts() {
   const gualletClient = useGualletClient();
@@ -41,12 +41,14 @@ export function useGroupedAccounts() {
   };
 }
 
-export function useAccount(id: string) {
+export function useAccount(id?: string) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
     queryKey: [ACCOUNTS_QUERY_KEY, id],
+    enabled: !!id,
     queryFn: async () => {
+      if (!id) return null;
       return await gualletClient.accounts.get(id);
     },
   });
@@ -61,8 +63,10 @@ export function useConnectedAccount(id: string) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [ACCOUNTS_QUERY_KEY, id, "connected"],
+    queryKey: [ACCOUNTS_QUERY_KEY, id, 'connected'],
+    enabled: !!id,
     queryFn: async () => {
+      if (!id) return null;
       return await gualletClient.accounts.getConnectedAccount(id);
     },
   });
@@ -75,7 +79,7 @@ export function useConnectedAccount(id: string) {
 
 const compareAccountTypes = (
   a: { type: string; accounts: AccountDto[] },
-  b: { type: string; accounts: AccountDto[] }
+  b: { type: string; accounts: AccountDto[] },
 ) => {
   const typeA = a.type;
   const typeB = b.type;
