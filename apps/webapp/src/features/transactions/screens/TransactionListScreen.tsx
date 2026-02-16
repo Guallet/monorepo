@@ -2,10 +2,10 @@ import {
   useCategory,
   useTransactionMutations,
   useTransactionsWithFilter,
-} from "@guallet/api-react";
-import { CategoryDto, TransactionDto } from "@guallet/api-client";
-import { ResponsiveModal } from "@guallet/ui-react";
-import { Button, Group, Pagination, Stack, Textarea } from "@mantine/core";
+} from '@guallet/api-react';
+import { CategoryDto, TransactionDto } from '@guallet/api-client';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Button, Group, Pagination, Stack, Textarea } from '@mantine/core';
 import { TransactionList } from '../components/TransactionList';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TransactionScreenHeader } from '../components/TransactionScreenHeader';
@@ -13,12 +13,13 @@ import {
   FilterData,
   TransactionsFilterDataWrapper,
 } from '../components/TransactionsFilter';
-import { useEffect, useState } from "react";
-import { CategoryPicker } from "@/features/categories/components/CategoryPicker/CategoryPicker";
-import { useForm } from "@mantine/form";
-import { zod4Resolver } from "mantine-form-zod-resolver";
-import { z } from "zod";
-import { notifications } from "@mantine/notifications";
+import { useEffect, useState } from 'react';
+import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
+import { useForm } from '@mantine/form';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { z } from 'zod';
+import { notifications } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 
 const quickEditTransactionSchema = z.object({
   notes: z.string().nullable().optional(),
@@ -49,10 +50,11 @@ export function TransactionListScreen({
   onEditTransaction,
   onFiltersUpdated,
 }: Readonly<TransactionListScreenProps>) {
+  const { t } = useTranslation();
   const [selectedTransaction, setSelectedTransaction] =
     useState<TransactionDto | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
-    null
+    null,
   );
   const { category } = useCategory(selectedTransaction?.categoryId ?? null);
   const { updateTransactionNotesMutation, updateTransactionCategoryMutation } =
@@ -67,7 +69,7 @@ export function TransactionListScreen({
   });
   const quickEditForm = useForm<QuickEditTransactionData>({
     initialValues: {
-      notes: "",
+      notes: '',
       categoryId: null,
     },
     validate: zod4Resolver(quickEditTransactionSchema),
@@ -85,7 +87,7 @@ export function TransactionListScreen({
     try {
       await updateTransactionNotesMutation.mutateAsync({
         id: selectedTransaction.id,
-        notes: data.notes ?? "",
+        notes: data.notes ?? '',
       });
 
       if (
@@ -99,16 +101,28 @@ export function TransactionListScreen({
       }
 
       notifications.show({
-        title: "Success",
-        message: "Transaction updated successfully",
-        color: "green",
+        title: t(
+          'screens.transactions.list.quickEdit.notifications.success.title',
+          'Success',
+        ),
+        message: t(
+          'screens.transactions.list.quickEdit.notifications.success.message',
+          'Transaction updated successfully',
+        ),
+        color: 'green',
       });
       setSelectedTransaction(null);
     } catch {
       notifications.show({
-        title: "Error",
-        message: "Failed to update transaction",
-        color: "red",
+        title: t(
+          'screens.transactions.list.quickEdit.notifications.error.title',
+          'Error',
+        ),
+        message: t(
+          'screens.transactions.list.quickEdit.notifications.error.message',
+          'Failed to update transaction',
+        ),
+        color: 'red',
       });
     }
   }
@@ -121,7 +135,10 @@ export function TransactionListScreen({
           onClose={() => {
             setSelectedTransaction(null);
           }}
-          title="Quick edit transaction"
+          title={t(
+            'screens.transactions.list.quickEdit.title',
+            'Quick edit transaction',
+          )}
           size="lg"
         >
           <form
@@ -132,17 +149,32 @@ export function TransactionListScreen({
             <Stack>
               <Textarea
                 resize="vertical"
-                label="Notes"
-                placeholder="Enter transaction notes"
-                {...quickEditForm.getInputProps("notes")}
+                label={t(
+                  'screens.transactions.list.quickEdit.form.notes.label',
+                  'Notes',
+                )}
+                placeholder={t(
+                  'screens.transactions.list.quickEdit.form.notes.placeholder',
+                  'Enter transaction notes',
+                )}
+                {...quickEditForm.getInputProps('notes')}
               />
               <CategoryPicker
-                label="Category"
-                placeholder="Select a category"
+                label={t(
+                  'screens.transactions.list.quickEdit.form.category.label',
+                  'Category',
+                )}
+                placeholder={t(
+                  'screens.transactions.list.quickEdit.form.category.placeholder',
+                  'Select a category',
+                )}
                 selectedCategory={selectedCategory}
                 onCategorySelected={(selectedCategory) => {
                   setSelectedCategory(selectedCategory);
-                  quickEditForm.setFieldValue("categoryId", selectedCategory.id);
+                  quickEditForm.setFieldValue(
+                    'categoryId',
+                    selectedCategory.id,
+                  );
                 }}
               />
               <Group justify="space-between">
@@ -156,7 +188,10 @@ export function TransactionListScreen({
                     }
                   }}
                 >
-                  Edit full transaction
+                  {t(
+                    'screens.transactions.list.quickEdit.form.editFullButton.label',
+                    'Edit full transaction',
+                  )}
                 </Button>
                 <Group>
                   <Button
@@ -166,9 +201,17 @@ export function TransactionListScreen({
                       setSelectedTransaction(null);
                     }}
                   >
-                    Cancel
+                    {t(
+                      'screens.transactions.list.quickEdit.form.cancelButton.label',
+                      'Cancel',
+                    )}
                   </Button>
-                  <Button type="submit">Save</Button>
+                  <Button type="submit">
+                    {t(
+                      'screens.transactions.list.quickEdit.form.saveButton.label',
+                      'Save',
+                    )}
+                  </Button>
                 </Group>
               </Group>
             </Stack>
@@ -188,7 +231,7 @@ export function TransactionListScreen({
           onTransactionClicked={(transaction) => {
             setSelectedTransaction(transaction);
             quickEditForm.setValues({
-              notes: transaction.notes ?? "",
+              notes: transaction.notes ?? '',
               categoryId: transaction.categoryId ?? null,
             });
           }}

@@ -567,6 +567,38 @@
           "add": {
             "tooltip": "Add new transaction"
           }
+        },
+        "quickEdit": {
+          "title": "Quick edit transaction",
+          "form": {
+            "notes": {
+              "label": "Notes",
+              "placeholder": "Enter transaction notes"
+            },
+            "category": {
+              "label": "Category",
+              "placeholder": "Select a category"
+            },
+            "editFullButton": {
+              "label": "Edit full transaction"
+            },
+            "cancelButton": {
+              "label": "Cancel"
+            },
+            "saveButton": {
+              "label": "Save"
+            }
+          },
+          "notifications": {
+            "success": {
+              "title": "Success",
+              "message": "Transaction updated successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to update transaction"
+            }
+          }
         }
       },
       "create": {

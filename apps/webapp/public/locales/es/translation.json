@@ -572,6 +572,38 @@
           "add": {
             "tooltip": "Agregar nueva transacción"
           }
+        },
+        "quickEdit": {
+          "title": "Edición rápida de transacción",
+          "form": {
+            "notes": {
+              "label": "Notas",
+              "placeholder": "Ingresa notas de la transacción"
+            },
+            "category": {
+              "label": "Categoría",
+              "placeholder": "Selecciona una categoría"
+            },
+            "editFullButton": {
+              "label": "Editar transacción completa"
+            },
+            "cancelButton": {
+              "label": "Cancelar"
+            },
+            "saveButton": {
+              "label": "Guardar"
+            }
+          },
+          "notifications": {
+            "success": {
+              "title": "Éxito",
+              "message": "Transacción actualizada correctamente"
+            },
+            "error": {
+              "title": "Error",
+              "message": "No se pudo actualizar la transacción"
+            }
+          }
         }
       },
       "create": {

@@ -1,15 +1,17 @@
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
-import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
-import { TransactionDto } from "@guallet/api-client";
-import { Money } from "@guallet/money";
-import { Group, Stack, Text } from "@mantine/core";
-import { useMemo } from "react";
-import classes from "./TransactionRow.module.css";
+import { AccountAvatar } from '@/components/AccountAvatar/AccountAvatar';
+import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
+import { TransactionDto } from '@guallet/api-client';
+import { Money } from '@guallet/money';
+import { Group, Stack, Text } from '@mantine/core';
+import { useMemo } from 'react';
+import classes from './TransactionRow.module.css';
 
-type AvatarType = "account" | "category";
+type AvatarType = 'account' | 'category';
 
-interface TransactionRowProps
-  extends Omit<React.ComponentProps<typeof Group>, "onClick"> {
+interface TransactionRowProps extends Omit<
+  React.ComponentProps<typeof Group>,
+  'onClick'
+> {
   transaction: TransactionDto;
   avatarType: AvatarType;
   showNotes?: boolean;
@@ -18,7 +20,7 @@ interface TransactionRowProps
 
 export function TransactionRow({
   transaction,
-  avatarType = "account",
+  avatarType = 'account',
   showNotes = false,
   onClick,
   ...props
@@ -29,7 +31,7 @@ export function TransactionRow({
         amount: transaction.amount,
         currencyCode: transaction.currency,
       }),
-    [transaction]
+    [transaction],
   );
 
   return (
@@ -40,32 +42,33 @@ export function TransactionRow({
       p="md"
       {...(onClick && {
         onClick: () => onClick(transaction),
-        style: { cursor: "pointer" },
+        style: { cursor: 'pointer' },
         className: classes.transactionRow,
       })}
       {...props}
     >
-      {avatarType === "category" ? (
+      {avatarType === 'category' ? (
         <CategoryAvatar categoryId={transaction.categoryId} />
       ) : (
         <AccountAvatar accountId={transaction.accountId} />
       )}
       <Stack
+        gap={2}
         style={{
           flexGrow: 1,
-          overflow: "hidden",
+          overflow: 'hidden',
         }}
       >
         <Text lineClamp={1} truncate="end">
           {transaction.description}
         </Text>
         {showNotes && transaction.notes && (
-          <Text lineClamp={1} style={{ fontWeight: "300" }}>
+          <Text size="xs" c="dimmed" lineClamp={1} truncate="end">
             {transaction.notes}
           </Text>
         )}
       </Stack>
-      <Text style={{ fontWeight: "bold" }}>{money?.format()}</Text>
+      <Text style={{ fontWeight: 'bold' }}>{money?.format()}</Text>
     </Group>
   );
 }

@@ -1,8 +1,8 @@
-import { TransactionDto } from "@guallet/api-client";
-import { Stack } from "@mantine/core";
-import { TransactionRow } from "./TransactionRow";
-import { AppSection } from "@/components/Cards/AppSection";
-import { useLocale } from "@/i18n/useLocale";
+import { TransactionDto } from '@guallet/api-client';
+import { Stack } from '@mantine/core';
+import { TransactionRow } from './TransactionRow';
+import { AppSection } from '@/components/Cards/AppSection';
+import { useLocale } from '@/i18n/useLocale';
 
 interface TransactionListProps {
   transactions: TransactionDto[];
@@ -18,14 +18,14 @@ export function TransactionList({
   // Group the transactions by date
   const groupedTransactions = transactions.reduce(
     (acc, transaction) => {
-      const date = transaction.date.toISOString().split("T")[0];
+      const date = transaction.date.toISOString().split('T')[0];
       if (!acc[date]) {
         acc[date] = [];
       }
       acc[date].push(transaction);
       return acc;
     },
-    {} as Record<string, TransactionDto[]>
+    {} as Record<string, TransactionDto[]>,
   );
 
   return (
@@ -33,16 +33,16 @@ export function TransactionList({
       {Object.entries(groupedTransactions)
         .sort(
           ([dateA], [dateB]) =>
-            new Date(dateB).getTime() - new Date(dateA).getTime()
+            new Date(dateB).getTime() - new Date(dateA).getTime(),
         )
         .map(([date, transactions]) => {
           return (
             <AppSection
               key={date}
               title={new Date(date).toLocaleDateString(locale, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
               })}
               itemPadding="0"
             >
@@ -51,7 +51,8 @@ export function TransactionList({
                   <TransactionRow
                     key={transaction.id}
                     transaction={transaction}
-                    avatarType={"account"}
+                    avatarType={'account'}
+                    showNotes
                     onClick={(transaction: TransactionDto) => {
                       onTransactionClicked?.(transaction);
                     }}
