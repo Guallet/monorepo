@@ -19,7 +19,7 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "@tanstack/react-router";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -52,6 +52,7 @@ export function EditTransactionScreen({
   const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
     null
   );
+  const syncedTransactionIdRef = useRef<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const form = useForm<EditTransactionFormData>({
     validate: zod4Resolver(formSchema),
@@ -67,7 +68,7 @@ export function EditTransactionScreen({
   });
 
   useEffect(() => {
-    if (transaction) {
+    if (transaction && syncedTransactionIdRef.current !== transaction.id) {
       form.setValues({
         type: transaction.amount >= 0 ? "income" : "expense",
         accountId: transaction.accountId,
@@ -77,6 +78,7 @@ export function EditTransactionScreen({
         date: new Date(transaction.date),
         categoryId: transaction.categoryId ?? null,
       });
+      syncedTransactionIdRef.current = transaction.id;
     }
   }, [form, transaction]);
 
@@ -93,7 +95,7 @@ export function EditTransactionScreen({
         amount: data.type === "income" ? data.amount : -data.amount,
         date: data.date,
         categoryId: data.categoryId ?? null,
-        currency: null,
+        currency: transaction?.currency ?? null,
       };
 
       await updateTransactionMutation.mutateAsync({
@@ -198,7 +200,7 @@ export function EditTransactionScreen({
               selectedCategory={selectedCategory}
               onCategorySelected={(category: CategoryDto) => {
                 setSelectedCategory(category);
-                form.setFieldValue("categoryId", category.id || null);
+                form.setFieldValue("categoryId", category.id);
               }}
             />
             <Group>

@@ -134,7 +134,7 @@ export class TransactionsApi {
     transactionId: string;
     request: UpdateTransactionRequest;
   }): Promise<TransactionDto> {
-    const queryPath = `transactions/${args.transactionId}`;
+    const queryPath = `${TRANSACTIONS_PATH}/${args.transactionId}`;
     return await this.client.patch<TransactionDto, UpdateTransactionRequest>({
       path: queryPath,
       payload: args.request,

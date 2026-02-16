@@ -74,15 +74,6 @@ export function TransactionListScreen({
   });
 
   useEffect(() => {
-    if (selectedTransaction) {
-      quickEditForm.setValues({
-        notes: selectedTransaction.notes ?? "",
-        categoryId: selectedTransaction.categoryId ?? null,
-      });
-    }
-  }, [quickEditForm, selectedTransaction]);
-
-  useEffect(() => {
     setSelectedCategory(category);
   }, [category]);
 
@@ -194,7 +185,13 @@ export function TransactionListScreen({
         />
         <TransactionList
           transactions={transactions}
-          onTransactionClicked={(transaction) => setSelectedTransaction(transaction)}
+          onTransactionClicked={(transaction) => {
+            setSelectedTransaction(transaction);
+            quickEditForm.setValues({
+              notes: transaction.notes ?? "",
+              categoryId: transaction.categoryId ?? null,
+            });
+          }}
         />
         <Pagination
           style={{ alignSelf: 'center' }}
