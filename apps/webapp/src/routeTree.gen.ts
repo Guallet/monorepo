@@ -52,6 +52,7 @@ import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
 import { Route as AppImporterCsvIndexRouteImport } from './routes/_app/importer/csv/index'
 import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/connections/connect/index'
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
+import { Route as AppTransactionsIdEditRouteImport } from './routes/_app/transactions/$id_.edit'
 import { Route as AppSubscriptionsIdEditRouteImport } from './routes/_app/subscriptions/$id_.edit'
 import { Route as AppSavingGoalsIdEditRouteImport } from './routes/_app/saving-goals/$id_.edit'
 import { Route as AppImporterCsvSummaryRouteImport } from './routes/_app/importer/csv/summary'
@@ -300,6 +301,11 @@ const AppCategoriesRulesIndexRoute = AppCategoriesRulesIndexRouteImport.update({
   path: '/categories/rules/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTransactionsIdEditRoute = AppTransactionsIdEditRouteImport.update({
+  id: '/transactions/$id_/edit',
+  path: '/transactions/$id/edit',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSubscriptionsIdEditRoute = AppSubscriptionsIdEditRouteImport.update({
   id: '/subscriptions/$id_/edit',
   path: '/subscriptions/$id/edit',
@@ -412,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
+  '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
@@ -469,6 +476,7 @@ export interface FileRoutesByTo {
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
+  '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
@@ -528,6 +536,7 @@ export interface FileRoutesById {
   '/_app/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/_app/saving-goals/$id_/edit': typeof AppSavingGoalsIdEditRoute
   '/_app/subscriptions/$id_/edit': typeof AppSubscriptionsIdEditRoute
+  '/_app/transactions/$id_/edit': typeof AppTransactionsIdEditRoute
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
@@ -587,6 +596,7 @@ export interface FileRouteTypes {
     | '/importer/csv/summary'
     | '/saving-goals/$id/edit'
     | '/subscriptions/$id/edit'
+    | '/transactions/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
@@ -644,6 +654,7 @@ export interface FileRouteTypes {
     | '/importer/csv/summary'
     | '/saving-goals/$id/edit'
     | '/subscriptions/$id/edit'
+    | '/transactions/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
@@ -702,6 +713,7 @@ export interface FileRouteTypes {
     | '/_app/importer/csv/summary'
     | '/_app/saving-goals/$id_/edit'
     | '/_app/subscriptions/$id_/edit'
+    | '/_app/transactions/$id_/edit'
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
@@ -1038,6 +1050,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriesRulesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/transactions/$id_/edit': {
+      id: '/_app/transactions/$id_/edit'
+      path: '/transactions/$id/edit'
+      fullPath: '/transactions/$id/edit'
+      preLoaderRoute: typeof AppTransactionsIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/subscriptions/$id_/edit': {
       id: '/_app/subscriptions/$id_/edit'
       path: '/subscriptions/$id/edit'
@@ -1161,6 +1180,7 @@ interface AppRouteChildren {
   AppImporterCsvSummaryRoute: typeof AppImporterCsvSummaryRoute
   AppSavingGoalsIdEditRoute: typeof AppSavingGoalsIdEditRoute
   AppSubscriptionsIdEditRoute: typeof AppSubscriptionsIdEditRoute
+  AppTransactionsIdEditRoute: typeof AppTransactionsIdEditRoute
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
@@ -1210,6 +1230,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppImporterCsvSummaryRoute: AppImporterCsvSummaryRoute,
   AppSavingGoalsIdEditRoute: AppSavingGoalsIdEditRoute,
   AppSubscriptionsIdEditRoute: AppSubscriptionsIdEditRoute,
+  AppTransactionsIdEditRoute: AppTransactionsIdEditRoute,
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
