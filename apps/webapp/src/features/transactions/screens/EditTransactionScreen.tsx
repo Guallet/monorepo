@@ -1,26 +1,9 @@
 import { AppSection } from '@/components/Cards/AppSection';
-import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
-import { AccountInput } from '@/features/accounts/components/AccountInput';
-import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
-import { CategoryDto, UpdateTransactionRequest } from '@guallet/api-client';
-import {
-  useCategory,
-  useTransaction,
-  useTransactionMutations,
-  useAccount,
-} from '@guallet/api-react';
-import {
-  Button,
-  Group,
-  NumberInput,
-  SegmentedControl,
-  Stack,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+import { UpdateTransactionRequest } from '@guallet/api-client';
+import { useTransaction, useTransactionMutations } from '@guallet/api-react';
+import { Button, Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
@@ -28,8 +11,10 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { Currency } from '@guallet/money';
-import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import {
+  TransactionFormData,
+  TransactionFormFields,
+} from '../components/TransactionFormFields';
 
 const formSchema = z.object({
   type: z.enum(['expense', 'income']),
@@ -38,12 +23,11 @@ const formSchema = z.object({
     .string()
     .min(2, { error: 'Description should have at least 2 letters' }),
   notes: z.string().optional().nullable(),
-  amount: z.number().gt(0, { error: 'Amount must be positive' }),
+  amount: z.number().gte(0, { error: 'Amount must be positive' }),
   currency: z.string().nullable(),
   date: z.date(),
   categoryId: z.string().optional().nullable(),
 });
-type EditTransactionFormData = z.infer<typeof formSchema>;
 
 interface EditTransactionScreenProps {
   transactionId: string;
@@ -55,16 +39,11 @@ export function EditTransactionScreen({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { transaction, isLoading } = useTransaction(transactionId);
-
-  const { category } = useCategory(transaction?.categoryId ?? null);
   const { updateTransactionMutation, deleteTransactionMutation } =
     useTransactionMutations();
-  const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
-    null,
-  );
   const syncedTransactionIdRef = useRef<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const form = useForm<EditTransactionFormData>({
+  const form = useForm<TransactionFormData>({
     validate: zod4Resolver(formSchema),
     initialValues: {
       type: 'expense',
@@ -78,49 +57,23 @@ export function EditTransactionScreen({
     },
   });
 
-  const { account } = useAccount(
-    form.values.accountId || transaction?.accountId,
-  );
-  const defaultCurrency = useDefaultCurrency();
-  const selectedCurrency = form.values.currency
-    ? Currency.fromISOCode(form.values.currency)
-    : Currency.fromISOCode(defaultCurrency);
-
   useEffect(() => {
     if (transaction && syncedTransactionIdRef.current !== transaction.id) {
-      const accountCurrency = account?.currency ?? null;
-
       form.setValues({
         type: transaction.amount >= 0 ? 'income' : 'expense',
         accountId: transaction.accountId,
         description: transaction.description,
         notes: transaction.notes ?? '',
         amount: Math.abs(transaction.amount),
-        currency: accountCurrency ?? transaction.currency ?? null,
+        currency: transaction.currency ?? null,
         date: new Date(transaction.date),
         categoryId: transaction.categoryId ?? null,
       });
       syncedTransactionIdRef.current = transaction.id;
     }
-  }, [account, form, transaction]);
+  }, [form, transaction]);
 
-  useEffect(() => {
-    setSelectedCategory(category);
-  }, [category]);
-
-  useEffect(() => {
-    console.log('Account changed, checking currency sync...');
-    const selectedAccountCurrency = account?.currency ?? null;
-
-    if (
-      selectedAccountCurrency &&
-      (form.values.currency === null || form.values.currency === undefined)
-    ) {
-      form.setFieldValue('currency', selectedAccountCurrency);
-    }
-  }, [account, form, form.values.accountId]);
-
-  async function onFormSubmit(data: EditTransactionFormData) {
+  async function onFormSubmit(data: TransactionFormData) {
     try {
       const request: UpdateTransactionRequest = {
         description: data.description,
@@ -217,116 +170,10 @@ export function EditTransactionScreen({
       >
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack>
-            <SegmentedControl
-              value={form.values.type}
-              onChange={(value) =>
-                form.setFieldValue('type', value as 'expense' | 'income')
-              }
-              data={[
-                {
-                  value: 'expense',
-                  label: t(
-                    'screens.transactions.edit.form.type.expense',
-                    'Expense',
-                  ),
-                },
-                {
-                  value: 'income',
-                  label: t(
-                    'screens.transactions.edit.form.type.income',
-                    'Income',
-                  ),
-                },
-              ]}
-              fullWidth
-              withItemsBorders
-            />
-            <TextInput
-              required
-              label={t(
-                'screens.transactions.edit.form.description.label',
-                'Description',
-              )}
-              placeholder={t(
-                'screens.transactions.edit.form.description.placeholder',
-                'Enter transaction description',
-              )}
-              {...form.getInputProps('description')}
-            />
-            <Textarea
-              resize="vertical"
-              label={t('screens.transactions.edit.form.notes.label', 'Notes')}
-              placeholder={t(
-                'screens.transactions.edit.form.notes.placeholder',
-                'Enter transaction notes',
-              )}
-              {...form.getInputProps('notes')}
-            />
-            <AccountInput
-              required
-              label={t(
-                'screens.transactions.edit.form.account.label',
-                'Account',
-              )}
-              placeholder={t(
-                'screens.transactions.edit.form.account.placeholder',
-                'Select an account',
-              )}
-              {...form.getInputProps('accountId')}
-            />
-            <CurrencyPicker
-              name="currency"
-              required
-              value={form.values.currency}
-              label={t(
-                'screens.transactions.edit.form.currency.label',
-                'Currency',
-              )}
-              description={t(
-                'screens.transactions.edit.form.currency.description',
-                'The currency of the transaction',
-              )}
-              onValueChanged={(newValue) => {
-                form.setFieldValue('currency', newValue);
-              }}
-            />
-            <NumberInput
-              required
-              label={t('screens.transactions.edit.form.amount.label', 'Amount')}
-              placeholder={t(
-                'screens.transactions.edit.form.amount.placeholder',
-                'Enter transaction amount',
-              )}
-              fixedDecimalScale
-              leftSection={selectedCurrency.symbol}
-              decimalScale={selectedCurrency.decimalPlaces}
-              {...form.getInputProps('amount')}
-            />
-
-            <DateInput
-              required
-              label={t('screens.transactions.edit.form.date.label', 'Date')}
-              placeholder={t(
-                'screens.transactions.edit.form.date.placeholder',
-                'Select transaction date',
-              )}
-              maxDate={new Date()}
-              {...form.getInputProps('date')}
-            />
-            <CategoryPicker
-              label={t(
-                'screens.transactions.edit.form.category.label',
-                'Category',
-              )}
-              placeholder={t(
-                'screens.transactions.edit.form.category.placeholder',
-                'Select a category',
-              )}
-              selectedCategory={selectedCategory}
-              onCategorySelected={(category: CategoryDto) => {
-                setSelectedCategory(category);
-                form.setFieldValue('categoryId', category.id);
-              }}
+            <TransactionFormFields
+              form={form}
+              translationKeyPrefix="screens.transactions.edit"
+              accountReadOnly
             />
             <Group>
               <Button type="submit">
