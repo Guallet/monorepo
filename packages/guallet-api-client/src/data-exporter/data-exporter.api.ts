@@ -19,9 +19,9 @@ export class DataExporterApi {
   }
 
   async exportOfe(request: OfeExportRequest): Promise<OfeExportResponse> {
-    return await this.client.post<OfeExportResponse, OfeExportRequest>({
-      path: `${DATA_EXPORTER_PATH}/ofe`,
-      payload: request,
+    return await this.client.post<OfeExportResponse, CsvExportRequest>({
+      path: `${DATA_EXPORTER_PATH}/csv`,
+      payload: { ...request, format: 'ofe' },
     });
   }
 }

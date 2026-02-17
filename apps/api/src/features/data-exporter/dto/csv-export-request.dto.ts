@@ -1,5 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
+export type ExportFormat = 'csv' | 'ofe';
+
 export class CsvExportRequestDto {
   @ApiPropertyOptional({
     description: 'Start date for filtering transactions (ISO 8601 format)',
@@ -20,4 +22,11 @@ export class CsvExportRequestDto {
     type: [String],
   })
   accounts?: string[];
+
+  @ApiPropertyOptional({
+    description: 'Export format. Defaults to csv',
+    enum: ['csv', 'ofe'],
+    example: 'csv',
+  })
+  format?: ExportFormat;
 }

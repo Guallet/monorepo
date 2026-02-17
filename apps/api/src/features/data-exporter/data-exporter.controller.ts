@@ -11,8 +11,6 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { CsvExportRequestDto } from './dto/csv-export-request.dto';
 import { CsvExportResponseDto } from './dto/csv-export-response.dto';
-import { OfeExportRequestDto } from './dto/ofe-export-request.dto';
-import { OfeExportResponseDto } from './dto/ofe-export-response.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
@@ -42,60 +40,39 @@ export class DataExporterController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
-    description: 'CSV export job has been queued for processing',
+    description: 'Export job has been queued for processing',
     type: CsvExportResponseDto,
   })
   async exportCsv(
     @RequestUser() user: UserPrincipal,
     @Body() dto: CsvExportRequestDto,
   ): Promise<CsvExportResponseDto> {
-    this.logger.log(`CSV export request from user ${user.id}, enqueueing job`);
+    const { format = 'csv', ...exportDto } = dto;
+    this.logger.log(
+      `${format.toUpperCase()} export request from user ${user.id}, enqueueing job`,
+    );
 
-    // Enqueue the export job for background processing
-    const job = await this.csvExportQueue.add(
-      CSV_EXPORT_JOB,
-      { userId: user.id, dto },
+    const queue = format === 'ofe' ? this.ofeExportQueue : this.csvExportQueue;
+    const jobName = format === 'ofe' ? OFE_EXPORT_JOB : CSV_EXPORT_JOB;
+
+    const job = await queue.add(
+      jobName,
+      { userId: user.id, dto: exportDto },
       {
         removeOnComplete: 100,
         removeOnFail: 50,
       },
     );
 
-    this.logger.log(`CSV export job ${job.id} queued for user ${user.id}`);
-
-    return {
-      message:
-        'CSV export started. You will receive an email with the file when the export is complete.',
-    };
-  }
-
-  @Post('ofe')
-  @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'OFE export job has been queued for processing',
-    type: OfeExportResponseDto,
-  })
-  async exportOfe(
-    @RequestUser() user: UserPrincipal,
-    @Body() dto: OfeExportRequestDto,
-  ): Promise<OfeExportResponseDto> {
-    this.logger.log(`OFE export request from user ${user.id}, enqueueing job`);
-
-    const job = await this.ofeExportQueue.add(
-      OFE_EXPORT_JOB,
-      { userId: user.id, dto },
-      {
-        removeOnComplete: 100,
-        removeOnFail: 50,
-      },
+    this.logger.log(
+      `${format.toUpperCase()} export job ${job.id} queued for user ${user.id}`,
     );
 
-    this.logger.log(`OFE export job ${job.id} queued for user ${user.id}`);
-
     return {
       message:
-        'OFE export started. You will receive an email with the file when the export is complete.',
+        format === 'ofe'
+          ? 'OFE export started. You will receive an email with the file when the export is complete.'
+          : 'CSV export started. You will receive an email with the file when the export is complete.',
     };
   }
 }

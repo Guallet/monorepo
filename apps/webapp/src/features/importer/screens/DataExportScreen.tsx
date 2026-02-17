@@ -53,13 +53,10 @@ export function DataExportScreen() {
           : undefined,
         accounts:
           selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
+        format: exportFormat,
       };
 
-      if (exportFormat === 'ofe') {
-        await gualletClient.dataExporter.exportOfe(exportPayload);
-      } else {
-        await gualletClient.dataExporter.exportCsv(exportPayload);
-      }
+      await gualletClient.dataExporter.exportCsv(exportPayload);
 
       setIsModalOpened(true);
     } catch (e) {

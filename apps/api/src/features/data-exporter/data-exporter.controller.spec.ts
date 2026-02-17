@@ -65,6 +65,29 @@ describe('DataExporterController', () => {
       expect(result.message).toContain('CSV export started');
     });
 
+    it('should queue OFE export job when format is ofe', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      const dto = {
+        startDate: '2024-01-01T00:00:00.000Z',
+        format: 'ofe' as const,
+      };
+
+      const result = await controller.exportCsv(mockUser as any, dto);
+
+      expect(ofeQueue.add).toHaveBeenCalledWith(
+        OFE_EXPORT_JOB,
+        {
+          userId: 'user-123',
+          dto: expect.objectContaining({
+            startDate: dto.startDate,
+          }),
+        },
+        expect.any(Object),
+      );
+      expect(ofeQueue.add.mock.calls[0][1].dto.format).toBeUndefined();
+      expect(result.message).toContain('OFE export started');
+    });
+
     it('should queue export job without filters', async () => {
       const mockUser = { id: 'user-456', email: 'test2@example.com' };
       const dto = {};
@@ -77,24 +100,6 @@ describe('DataExporterController', () => {
         expect.any(Object),
       );
       expect(result.message).toContain('CSV export started');
-    });
-  });
-
-  describe('exportOfe', () => {
-    it('should queue OFE export job and return success message', async () => {
-      const mockUser = { id: 'user-123', email: 'test@example.com' };
-      const dto = {
-        startDate: '2024-01-01T00:00:00.000Z',
-      };
-
-      const result = await controller.exportOfe(mockUser as any, dto);
-
-      expect(ofeQueue.add).toHaveBeenCalledWith(
-        OFE_EXPORT_JOB,
-        { userId: 'user-123', dto },
-        expect.any(Object),
-      );
-      expect(result.message).toContain('OFE export started');
     });
   });
 });
