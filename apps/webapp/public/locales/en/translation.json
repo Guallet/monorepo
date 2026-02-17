@@ -372,12 +372,12 @@
       "modal": {
         "title": "Export Started Successfully!",
         "description": "Your data export is now being processed in the background.",
-        "emailTitle": "You'll receive an email with the CSV file",
-        "emailDescription": "We'll send you an email with the exported data attached as a CSV file. You can open it with any spreadsheet application.",
+        "emailTitle": "You'll receive an email with the exported file",
+        "emailDescription": "We'll send you an email with the exported data attached in the selected format.",
         "button": "Got it"
       },
       "title": "Export Transactions",
-      "description": "Export your transactions to a CSV file. The file will be sent to your email.",
+      "description": "Export your transactions and receive the file by email.",
       "error": {
         "title": "Export Error"
       },
@@ -391,13 +391,18 @@
         "accounts": {
           "label": "Accounts",
           "placeholder": "Select accounts (leave empty for all)"
+        },
+        "format": {
+          "label": "Export Format",
+          "csv": "CSV",
+          "ofe": "OFE"
         }
       },
       "info": {
         "title": "What happens next?",
         "step1": "Your export request will be processed in the background",
-        "step2": "The CSV file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
-        "step3": "You'll receive an email with the CSV file attached",
+        "step2": "The exported file will include: Date, Description, Amount, Currency, Account, Category, and Notes",
+        "step3": "You'll receive an email with the exported file attached",
         "step4": "You can continue using the app while the export is processed"
       },
       "exportButton": "Export Transactions"
@@ -623,6 +628,16 @@
           }
         },
         "quickEdit": {
+          "notifications": {
+            "success": {
+              "title": "Success",
+              "message": "Transaction updated successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to update transaction"
+            }
+          },
           "title": "Quick edit transaction",
           "form": {
             "notes": {
@@ -642,21 +657,10 @@
             "saveButton": {
               "label": "Save"
             }
-          },
-          "notifications": {
-            "success": {
-              "title": "Success",
-              "message": "Transaction updated successfully"
-            },
-            "error": {
-              "title": "Error",
-              "message": "Failed to update transaction"
-            }
           }
         }
       },
       "create": {
-        "title": "Add Transaction",
         "notifications": {
           "success": {
             "title": "Success",
@@ -667,39 +671,8 @@
             "message": "Failed to create transaction"
           }
         },
+        "title": "Add Transaction",
         "form": {
-          "type": {
-            "expense": "Expense",
-            "income": "Income"
-          },
-          "description": {
-            "label": "Description",
-            "placeholder": "Enter transaction description"
-          },
-          "notes": {
-            "label": "Notes",
-            "placeholder": "Enter transaction notes"
-          },
-          "account": {
-            "label": "Account",
-            "placeholder": "Select an account"
-          },
-          "currency": {
-            "label": "Currency",
-            "description": "The currency of the transaction"
-          },
-          "amount": {
-            "label": "Amount",
-            "placeholder": "Enter transaction amount"
-          },
-          "date": {
-            "label": "Date",
-            "placeholder": "Select transaction date"
-          },
-          "category": {
-            "label": "Category",
-            "placeholder": "Select a category"
-          },
           "submitButton": {
             "label": "Add Transaction"
           }
@@ -734,38 +707,6 @@
         },
         "title": "Edit Transaction",
         "form": {
-          "type": {
-            "expense": "Expense",
-            "income": "Income"
-          },
-          "description": {
-            "label": "Description",
-            "placeholder": "Enter transaction description"
-          },
-          "notes": {
-            "label": "Notes",
-            "placeholder": "Enter transaction notes"
-          },
-          "account": {
-            "label": "Account",
-            "placeholder": "Select an account"
-          },
-          "currency": {
-            "label": "Currency",
-            "description": "The currency of the transaction"
-          },
-          "amount": {
-            "label": "Amount",
-            "placeholder": "Enter transaction amount"
-          },
-          "date": {
-            "label": "Date",
-            "placeholder": "Select transaction date"
-          },
-          "category": {
-            "label": "Category",
-            "placeholder": "Select a category"
-          },
           "submitButton": {
             "label": "Update Transaction"
           },
