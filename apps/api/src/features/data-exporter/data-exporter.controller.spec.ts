@@ -3,14 +3,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataExporterController } from './data-exporter.controller';
 import { getQueueToken } from '@nestjs/bullmq';
-import { CSV_EXPORT_QUEUE } from './processors/csv-export.processor';
+import {
+  CSV_EXPORT_QUEUE,
+  CSV_EXPORT_JOB,
+} from './processors/csv-export.processor';
+import {
+  OFE_EXPORT_QUEUE,
+  OFE_EXPORT_JOB,
+} from './processors/ofe-export.processor';
 
 describe('DataExporterController', () => {
   let controller: DataExporterController;
-  let mockQueue: jest.Mocked<any>;
+  let csvQueue: jest.Mocked<any>;
+  let ofeQueue: jest.Mocked<any>;
 
   beforeEach(async () => {
-    mockQueue = {
+    csvQueue = {
+      add: jest.fn().mockResolvedValue({ id: 'test-csv-job-id' }),
+    };
+    ofeQueue = {
       add: jest.fn().mockResolvedValue({ id: 'test-job-id' }),
     };
 
@@ -19,7 +30,11 @@ describe('DataExporterController', () => {
       providers: [
         {
           provide: getQueueToken(CSV_EXPORT_QUEUE),
-          useValue: mockQueue,
+          useValue: csvQueue,
+        },
+        {
+          provide: getQueueToken(OFE_EXPORT_QUEUE),
+          useValue: ofeQueue,
         },
       ],
     }).compile();
@@ -42,9 +57,9 @@ describe('DataExporterController', () => {
 
       const result = await controller.exportCsv(mockUser as any, dto);
 
-      expect(mockQueue.add).toHaveBeenCalledWith(
-        'process-csv-export',
-        { userId: 'user-123', dto, format: 'csv' },
+      expect(csvQueue.add).toHaveBeenCalledWith(
+        CSV_EXPORT_JOB,
+        { userId: 'user-123', dto },
         expect.any(Object),
       );
       expect(result.message).toContain('CSV export started');
@@ -56,9 +71,9 @@ describe('DataExporterController', () => {
 
       const result = await controller.exportCsv(mockUser as any, dto);
 
-      expect(mockQueue.add).toHaveBeenCalledWith(
-        'process-csv-export',
-        { userId: 'user-456', dto, format: 'csv' },
+      expect(csvQueue.add).toHaveBeenCalledWith(
+        CSV_EXPORT_JOB,
+        { userId: 'user-456', dto },
         expect.any(Object),
       );
       expect(result.message).toContain('CSV export started');
@@ -74,9 +89,9 @@ describe('DataExporterController', () => {
 
       const result = await controller.exportOfe(mockUser as any, dto);
 
-      expect(mockQueue.add).toHaveBeenCalledWith(
-        'process-csv-export',
-        { userId: 'user-123', dto, format: 'ofe' },
+      expect(ofeQueue.add).toHaveBeenCalledWith(
+        OFE_EXPORT_JOB,
+        { userId: 'user-123', dto },
         expect.any(Object),
       );
       expect(result.message).toContain('OFE export started');

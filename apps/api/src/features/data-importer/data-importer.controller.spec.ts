@@ -5,16 +5,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DataImporterController } from './data-importer.controller';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { CsvImportRequestDto } from './dto/csv-import-request.dto';
+import { OfeImportRequestDto } from './dto/ofe-import-request.dto';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Queue, Job } from 'bullmq';
 import {
   CSV_IMPORT_QUEUE,
   CSV_IMPORT_JOB,
 } from './processors/csv-import.processor';
+import {
+  OFE_IMPORT_QUEUE,
+  OFE_IMPORT_JOB,
+} from './processors/ofe-import.processor';
 
 describe('DataImporterController', () => {
   let controller: DataImporterController;
   let csvImportQueue: jest.Mocked<Queue>;
+  let ofeImportQueue: jest.Mocked<Queue>;
 
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
@@ -23,7 +29,10 @@ describe('DataImporterController', () => {
   );
 
   beforeEach(async () => {
-    const mockQueue = {
+    const mockCsvQueue = {
+      add: jest.fn(),
+    };
+    const mockOfeQueue = {
       add: jest.fn(),
     };
 
@@ -32,13 +41,18 @@ describe('DataImporterController', () => {
       providers: [
         {
           provide: getQueueToken(CSV_IMPORT_QUEUE),
-          useValue: mockQueue,
+          useValue: mockCsvQueue,
+        },
+        {
+          provide: getQueueToken(OFE_IMPORT_QUEUE),
+          useValue: mockOfeQueue,
         },
       ],
     }).compile();
 
     controller = module.get<DataImporterController>(DataImporterController);
     csvImportQueue = module.get(getQueueToken(CSV_IMPORT_QUEUE));
+    ofeImportQueue = module.get(getQueueToken(OFE_IMPORT_QUEUE));
 
     jest.clearAllMocks();
   });
@@ -84,7 +98,7 @@ describe('DataImporterController', () => {
 
       expect(csvImportQueue.add).toHaveBeenCalledWith(
         CSV_IMPORT_JOB,
-        { userId: mockUser.id, dto, format: 'csv' },
+        { userId: mockUser.id, dto },
         {
           removeOnComplete: 100,
           removeOnFail: 50,
@@ -123,28 +137,19 @@ describe('DataImporterController', () => {
 
   describe('importOfe', () => {
     it('should enqueue OFE import job and return accepted response', async () => {
-      const dto: CsvImportRequestDto = {
-        csvData: [],
-        fieldMappings: {
-          account: 'account',
-          date: 'date',
-          amount: 'amount',
-          description: 'description',
-          notes: 'notes',
-          category: 'category',
-        },
-        accountMappings: {},
-        categoryMappings: {},
+      const dto: OfeImportRequestDto = {
+        ofeContent:
+          '<OFX><BANKMSGSRSV1><STMTTRNRS><STMTRS><BANKTRANLIST><STMTTRN><DTPOSTED>20240101</DTPOSTED><TRNAMT>1</TRNAMT><NAME>Test</NAME></STMTTRN></BANKTRANLIST></STMTRS></STMTTRNRS></BANKMSGSRSV1></OFX>',
       };
 
       const mockJob = { id: 'job-234' } as Job;
-      csvImportQueue.add.mockResolvedValue(mockJob as any);
+      ofeImportQueue.add.mockResolvedValue(mockJob as any);
 
       const result = await controller.importOfe(mockUser, dto);
 
-      expect(csvImportQueue.add).toHaveBeenCalledWith(
-        CSV_IMPORT_JOB,
-        { userId: mockUser.id, dto, format: 'ofe' },
+      expect(ofeImportQueue.add).toHaveBeenCalledWith(
+        OFE_IMPORT_JOB,
+        { userId: mockUser.id, dto },
         {
           removeOnComplete: 100,
           removeOnFail: 50,

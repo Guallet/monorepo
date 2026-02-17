@@ -34,7 +34,6 @@ const BATCH_SIZE = 150;
 export interface CsvImportJobData {
   userId: string;
   dto: CsvImportRequestDto;
-  format?: 'csv' | 'ofe';
 }
 
 interface PreparedTransaction {

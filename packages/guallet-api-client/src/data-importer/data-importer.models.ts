@@ -36,5 +36,12 @@ export interface CsvImportResponse {
   failedCount: number;
 }
 
-export type OfeImportRequest = CsvImportRequest;
-export type OfeImportResponse = CsvImportResponse;
+export interface OfeImportRequest {
+  ofeContent: string;
+}
+
+export interface OfeImportResponse {
+  message: string;
+  processedCount: number;
+  failedCount: number;
+}

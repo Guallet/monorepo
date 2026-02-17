@@ -8,5 +8,12 @@ export interface CsvExportResponse {
   message: string;
 }
 
-export type OfeExportRequest = CsvExportRequest;
-export type OfeExportResponse = CsvExportResponse;
+export interface OfeExportRequest {
+  startDate?: string;
+  endDate?: string;
+  accounts?: string[];
+}
+
+export interface OfeExportResponse {
+  message: string;
+}

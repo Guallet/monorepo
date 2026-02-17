@@ -11,6 +11,8 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { CsvImportRequestDto } from './dto/csv-import-request.dto';
 import { CsvImportResponseDto } from './dto/csv-import-response.dto';
+import { OfeImportRequestDto } from './dto/ofe-import-request.dto';
+import { OfeImportResponseDto } from './dto/ofe-import-response.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
@@ -18,6 +20,11 @@ import {
   CSV_IMPORT_JOB,
   CsvImportJobData,
 } from './processors/csv-import.processor';
+import {
+  OFE_IMPORT_QUEUE,
+  OFE_IMPORT_JOB,
+  OfeImportJobData,
+} from './processors/ofe-import.processor';
 
 @ApiTags('Data Import / Export')
 @Controller('data-importer')
@@ -27,6 +34,8 @@ export class DataImporterController {
   constructor(
     @InjectQueue(CSV_IMPORT_QUEUE)
     private readonly csvImportQueue: Queue<CsvImportJobData>,
+    @InjectQueue(OFE_IMPORT_QUEUE)
+    private readonly ofeImportQueue: Queue<OfeImportJobData>,
   ) {}
 
   @Post('csv')
@@ -45,7 +54,7 @@ export class DataImporterController {
     // Enqueue the import job for background processing
     const job = await this.csvImportQueue.add(
       CSV_IMPORT_JOB,
-      { userId: user.id, dto, format: 'csv' },
+      { userId: user.id, dto },
       {
         removeOnComplete: 100, // Keep last 100 completed jobs
         removeOnFail: 50, // Keep last 50 failed jobs
@@ -67,17 +76,17 @@ export class DataImporterController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'OFE import job has been queued for processing',
-    type: CsvImportResponseDto,
+    type: OfeImportResponseDto,
   })
   async importOfe(
     @RequestUser() user: UserPrincipal,
-    @Body() dto: CsvImportRequestDto,
-  ): Promise<CsvImportResponseDto> {
+    @Body() dto: OfeImportRequestDto,
+  ): Promise<OfeImportResponseDto> {
     this.logger.log(`OFE import request from user ${user.id}, enqueueing job`);
 
-    const job = await this.csvImportQueue.add(
-      CSV_IMPORT_JOB,
-      { userId: user.id, dto, format: 'ofe' },
+    const job = await this.ofeImportQueue.add(
+      OFE_IMPORT_JOB,
+      { userId: user.id, dto },
       {
         removeOnComplete: 100,
         removeOnFail: 50,

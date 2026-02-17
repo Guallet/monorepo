@@ -5,6 +5,10 @@ import {
   CsvImportProcessor,
   CSV_IMPORT_QUEUE,
 } from './processors/csv-import.processor';
+import {
+  OfeImportProcessor,
+  OFE_IMPORT_QUEUE,
+} from './processors/ofe-import.processor';
 import { AccountsModule } from '../accounts/accounts.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { TransactionsModule } from '../transactions/transactions.module';
@@ -17,6 +21,9 @@ import { NotificationsModule } from '../notifications/notifications.module';
     BullModule.registerQueue({
       name: CSV_IMPORT_QUEUE,
     }),
+    BullModule.registerQueue({
+      name: OFE_IMPORT_QUEUE,
+    }),
     AccountsModule,
     CategoriesModule,
     TransactionsModule,
@@ -25,6 +32,6 @@ import { NotificationsModule } from '../notifications/notifications.module';
     NotificationsModule,
   ],
   controllers: [DataImporterController],
-  providers: [CsvImportProcessor],
+  providers: [CsvImportProcessor, OfeImportProcessor],
 })
 export class DataImporterModule {}
