@@ -84,7 +84,7 @@ describe('DataImporterController', () => {
 
       expect(csvImportQueue.add).toHaveBeenCalledWith(
         CSV_IMPORT_JOB,
-        { userId: mockUser.id, dto },
+        { userId: mockUser.id, dto, format: 'csv' },
         {
           removeOnComplete: 100,
           removeOnFail: 50,
@@ -144,7 +144,7 @@ describe('DataImporterController', () => {
 
       expect(csvImportQueue.add).toHaveBeenCalledWith(
         CSV_IMPORT_JOB,
-        { userId: mockUser.id, dto },
+        { userId: mockUser.id, dto, format: 'ofe' },
         {
           removeOnComplete: 100,
           removeOnFail: 50,

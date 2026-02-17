@@ -16,6 +16,7 @@ export const CSV_EXPORT_JOB = 'process-csv-export';
 export interface CsvExportJobData {
   userId: string;
   dto: CsvExportRequestDto;
+  format?: 'csv' | 'ofe';
 }
 
 @Processor(CSV_EXPORT_QUEUE)

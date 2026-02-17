@@ -45,7 +45,7 @@ export class DataImporterController {
     // Enqueue the import job for background processing
     const job = await this.csvImportQueue.add(
       CSV_IMPORT_JOB,
-      { userId: user.id, dto },
+      { userId: user.id, dto, format: 'csv' },
       {
         removeOnComplete: 100, // Keep last 100 completed jobs
         removeOnFail: 50, // Keep last 50 failed jobs
@@ -77,7 +77,7 @@ export class DataImporterController {
 
     const job = await this.csvImportQueue.add(
       CSV_IMPORT_JOB,
-      { userId: user.id, dto },
+      { userId: user.id, dto, format: 'ofe' },
       {
         removeOnComplete: 100,
         removeOnFail: 50,

@@ -45,7 +45,7 @@ export class DataExporterController {
     // Enqueue the export job for background processing
     const job = await this.csvExportQueue.add(
       CSV_EXPORT_JOB,
-      { userId: user.id, dto },
+      { userId: user.id, dto, format: 'csv' },
       {
         removeOnComplete: 100,
         removeOnFail: 50,
@@ -75,7 +75,7 @@ export class DataExporterController {
 
     const job = await this.csvExportQueue.add(
       CSV_EXPORT_JOB,
-      { userId: user.id, dto },
+      { userId: user.id, dto, format: 'ofe' },
       {
         removeOnComplete: 100,
         removeOnFail: 50,

@@ -44,7 +44,7 @@ describe('DataExporterController', () => {
 
       expect(mockQueue.add).toHaveBeenCalledWith(
         'process-csv-export',
-        { userId: 'user-123', dto },
+        { userId: 'user-123', dto, format: 'csv' },
         expect.any(Object),
       );
       expect(result.message).toContain('CSV export started');
@@ -58,7 +58,7 @@ describe('DataExporterController', () => {
 
       expect(mockQueue.add).toHaveBeenCalledWith(
         'process-csv-export',
-        { userId: 'user-456', dto },
+        { userId: 'user-456', dto, format: 'csv' },
         expect.any(Object),
       );
       expect(result.message).toContain('CSV export started');
@@ -76,7 +76,7 @@ describe('DataExporterController', () => {
 
       expect(mockQueue.add).toHaveBeenCalledWith(
         'process-csv-export',
-        { userId: 'user-123', dto },
+        { userId: 'user-123', dto, format: 'ofe' },
         expect.any(Object),
       );
       expect(result.message).toContain('OFE export started');
