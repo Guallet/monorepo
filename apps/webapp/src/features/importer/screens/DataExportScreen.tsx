@@ -185,7 +185,11 @@ export function DataExportScreen() {
                     },
                   ]}
                   value={exportFormat}
-                  onChange={(value) => setExportFormat(value as 'csv' | 'ofe')}
+                  onChange={(value) => {
+                    if (value === 'csv' || value === 'ofe') {
+                      setExportFormat(value);
+                    }
+                  }}
                 />
               </Stack>
             </Stack>
