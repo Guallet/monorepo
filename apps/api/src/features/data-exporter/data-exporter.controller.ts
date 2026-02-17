@@ -59,4 +59,34 @@ export class DataExporterController {
         'CSV export started. You will receive an email with the file when the export is complete.',
     };
   }
+
+  @Post('ofe')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'OFE export job has been queued for processing',
+    type: CsvExportResponseDto,
+  })
+  async exportOfe(
+    @RequestUser() user: UserPrincipal,
+    @Body() dto: CsvExportRequestDto,
+  ): Promise<CsvExportResponseDto> {
+    this.logger.log(`OFE export request from user ${user.id}, enqueueing job`);
+
+    const job = await this.csvExportQueue.add(
+      CSV_EXPORT_JOB,
+      { userId: user.id, dto },
+      {
+        removeOnComplete: 100,
+        removeOnFail: 50,
+      },
+    );
+
+    this.logger.log(`OFE export job ${job.id} queued for user ${user.id}`);
+
+    return {
+      message:
+        'OFE export started. You will receive an email with the file when the export is complete.',
+    };
+  }
 }

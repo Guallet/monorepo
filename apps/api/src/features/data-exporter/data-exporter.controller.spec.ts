@@ -64,4 +64,22 @@ describe('DataExporterController', () => {
       expect(result.message).toContain('CSV export started');
     });
   });
+
+  describe('exportOfe', () => {
+    it('should queue OFE export job and return success message', async () => {
+      const mockUser = { id: 'user-123', email: 'test@example.com' };
+      const dto = {
+        startDate: '2024-01-01T00:00:00.000Z',
+      };
+
+      const result = await controller.exportOfe(mockUser as any, dto);
+
+      expect(mockQueue.add).toHaveBeenCalledWith(
+        'process-csv-export',
+        { userId: 'user-123', dto },
+        expect.any(Object),
+      );
+      expect(result.message).toContain('OFE export started');
+    });
+  });
 });

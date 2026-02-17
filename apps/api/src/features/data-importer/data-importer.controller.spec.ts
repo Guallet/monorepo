@@ -120,4 +120,42 @@ describe('DataImporterController', () => {
       );
     });
   });
+
+  describe('importOfe', () => {
+    it('should enqueue OFE import job and return accepted response', async () => {
+      const dto: CsvImportRequestDto = {
+        csvData: [],
+        fieldMappings: {
+          account: 'account',
+          date: 'date',
+          amount: 'amount',
+          description: 'description',
+          notes: 'notes',
+          category: 'category',
+        },
+        accountMappings: {},
+        categoryMappings: {},
+      };
+
+      const mockJob = { id: 'job-234' } as Job;
+      csvImportQueue.add.mockResolvedValue(mockJob as any);
+
+      const result = await controller.importOfe(mockUser, dto);
+
+      expect(csvImportQueue.add).toHaveBeenCalledWith(
+        CSV_IMPORT_JOB,
+        { userId: mockUser.id, dto },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 50,
+        },
+      );
+      expect(result).toEqual({
+        message:
+          'OFE import started. You will receive an email when the import is complete.',
+        processedCount: 0,
+        failedCount: 0,
+      });
+    });
+  });
 });

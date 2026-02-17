@@ -61,4 +61,36 @@ export class DataImporterController {
       failedCount: 0,
     };
   }
+
+  @Post('ofe')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'OFE import job has been queued for processing',
+    type: CsvImportResponseDto,
+  })
+  async importOfe(
+    @RequestUser() user: UserPrincipal,
+    @Body() dto: CsvImportRequestDto,
+  ): Promise<CsvImportResponseDto> {
+    this.logger.log(`OFE import request from user ${user.id}, enqueueing job`);
+
+    const job = await this.csvImportQueue.add(
+      CSV_IMPORT_JOB,
+      { userId: user.id, dto },
+      {
+        removeOnComplete: 100,
+        removeOnFail: 50,
+      },
+    );
+
+    this.logger.log(`OFE import job ${job.id} queued for user ${user.id}`);
+
+    return {
+      message:
+        'OFE import started. You will receive an email when the import is complete.',
+      processedCount: 0,
+      failedCount: 0,
+    };
+  }
 }
