@@ -2,7 +2,7 @@ export interface CsvExportRequest {
   startDate?: string;
   endDate?: string;
   accounts?: string[];
-  format?: 'csv' | 'ofe';
+  format?: 'csv' | 'ofe' | 'json';
 }
 
 export interface CsvExportResponse {

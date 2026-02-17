@@ -395,7 +395,8 @@
         "format": {
           "label": "Export Format",
           "csv": "CSV",
-          "ofe": "OFE"
+          "ofe": "OFE",
+          "json": "JSON"
         }
       },
       "info": {

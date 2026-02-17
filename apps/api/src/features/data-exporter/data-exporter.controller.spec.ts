@@ -11,11 +11,16 @@ import {
   OFE_EXPORT_QUEUE,
   OFE_EXPORT_JOB,
 } from './processors/ofe-export.processor';
+import {
+  JSON_EXPORT_QUEUE,
+  JSON_EXPORT_JOB,
+} from './processors/json-export.processor';
 
 describe('DataExporterController', () => {
   let controller: DataExporterController;
   let csvQueue: jest.Mocked<any>;
   let ofeQueue: jest.Mocked<any>;
+  let jsonQueue: jest.Mocked<any>;
 
   beforeEach(async () => {
     csvQueue = {
@@ -23,6 +28,9 @@ describe('DataExporterController', () => {
     };
     ofeQueue = {
       add: jest.fn().mockResolvedValue({ id: 'test-job-id' }),
+    };
+    jsonQueue = {
+      add: jest.fn().mockResolvedValue({ id: 'test-json-job-id' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -35,6 +43,10 @@ describe('DataExporterController', () => {
         {
           provide: getQueueToken(OFE_EXPORT_QUEUE),
           useValue: ofeQueue,
+        },
+        {
+          provide: getQueueToken(JSON_EXPORT_QUEUE),
+          useValue: jsonQueue,
         },
       ],
     }).compile();
@@ -100,6 +112,22 @@ describe('DataExporterController', () => {
         expect.any(Object),
       );
       expect(result.message).toContain('CSV export started');
+    });
+
+    it('should queue JSON export job when format is json', async () => {
+      const mockUser = { id: 'user-789', email: 'test3@example.com' };
+      const dto = {
+        format: 'json' as const,
+      };
+
+      const result = await controller.exportCsv(mockUser as any, dto);
+
+      expect(jsonQueue.add).toHaveBeenCalledWith(
+        JSON_EXPORT_JOB,
+        { userId: 'user-789', dto: {} },
+        expect.any(Object),
+      );
+      expect(result.message).toContain('JSON export started');
     });
   });
 });

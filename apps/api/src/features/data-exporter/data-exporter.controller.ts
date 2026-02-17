@@ -23,6 +23,11 @@ import {
   OFE_EXPORT_JOB,
   OfeExportJobData,
 } from './processors/ofe-export.processor';
+import {
+  JSON_EXPORT_QUEUE,
+  JSON_EXPORT_JOB,
+  JsonExportJobData,
+} from './processors/json-export.processor';
 
 @ApiTags('Data Import / Export')
 @Controller('data-exporter')
@@ -34,6 +39,8 @@ export class DataExporterController {
     private readonly csvExportQueue: Queue<CsvExportJobData>,
     @InjectQueue(OFE_EXPORT_QUEUE)
     private readonly ofeExportQueue: Queue<OfeExportJobData>,
+    @InjectQueue(JSON_EXPORT_QUEUE)
+    private readonly jsonExportQueue: Queue<JsonExportJobData>,
   ) {}
 
   @Post('csv')
@@ -52,8 +59,21 @@ export class DataExporterController {
       `${format.toUpperCase()} export request from user ${user.id}, enqueueing job`,
     );
 
-    const queue = format === 'ofe' ? this.ofeExportQueue : this.csvExportQueue;
-    const jobName = format === 'ofe' ? OFE_EXPORT_JOB : CSV_EXPORT_JOB;
+    const queueByFormat = {
+      csv: this.csvExportQueue,
+      ofe: this.ofeExportQueue,
+      json: this.jsonExportQueue,
+    } as const;
+    const jobNameByFormat = {
+      csv: CSV_EXPORT_JOB,
+      ofe: OFE_EXPORT_JOB,
+      json: JSON_EXPORT_JOB,
+    } as const;
+    const messageByFormat = (fmt: typeof format) =>
+      `${fmt.toUpperCase()} export started. You will receive an email with the file when the export is complete.`;
+
+    const queue = queueByFormat[format];
+    const jobName = jobNameByFormat[format];
 
     const job = await queue.add(
       jobName,
@@ -69,10 +89,7 @@ export class DataExporterController {
     );
 
     return {
-      message:
-        format === 'ofe'
-          ? 'OFE export started. You will receive an email with the file when the export is complete.'
-          : 'CSV export started. You will receive an email with the file when the export is complete.',
+      message: messageByFormat(format),
     };
   }
 }

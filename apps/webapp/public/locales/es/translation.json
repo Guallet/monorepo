@@ -398,7 +398,8 @@
         "format": {
           "label": "Formato de exportación",
           "csv": "CSV",
-          "ofe": "OFE"
+          "ofe": "OFE",
+          "json": "JSON"
         }
       },
       "info": {

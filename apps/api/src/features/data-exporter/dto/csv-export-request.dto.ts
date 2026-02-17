@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export type ExportFormat = 'csv' | 'ofe';
+export type ExportFormat = 'csv' | 'ofe' | 'json';
 
 export class CsvExportRequestDto {
   @ApiPropertyOptional({
@@ -25,7 +25,7 @@ export class CsvExportRequestDto {
 
   @ApiPropertyOptional({
     description: 'Export format. Defaults to csv',
-    enum: ['csv', 'ofe'],
+    enum: ['csv', 'ofe', 'json'],
     example: 'csv',
   })
   format?: ExportFormat;

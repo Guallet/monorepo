@@ -29,7 +29,9 @@ export function DataExportScreen() {
   ]);
 
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
-  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe'>('csv');
+  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>(
+    'csv',
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -180,10 +182,14 @@ export function DataExportScreen() {
                       value: 'ofe',
                       label: t('screens.dataExport.filters.format.ofe'),
                     },
+                    {
+                      value: 'json',
+                      label: t('screens.dataExport.filters.format.json'),
+                    },
                   ]}
                   value={exportFormat}
                   onChange={(value) => {
-                    if (value === 'csv' || value === 'ofe') {
+                    if (value === 'csv' || value === 'ofe' || value === 'json') {
                       setExportFormat(value);
                     }
                   }}

@@ -367,7 +367,7 @@ describe('CsvExportProcessor', () => {
 
       const csvContent =
         emailService.sendExportCompletionEmail.mock.calls[0][0].csvContent;
-      const lines = csvContent.split('\n');
+      const lines = csvContent!.split('\n');
 
       expect(lines[0]).toBe(
         'Date,Account,Description,Amount,Currency,Notes,Category',
@@ -455,7 +455,7 @@ describe('CsvExportProcessor', () => {
 
       const csvContent =
         emailService.sendExportCompletionEmail.mock.calls[0][0].csvContent;
-      const lines = csvContent.split('\n');
+      const lines = csvContent!.split('\n');
       const dataLine = lines[1];
 
       expect(dataLine).toContain('2024-03-25');
@@ -478,7 +478,7 @@ describe('CsvExportProcessor', () => {
 
       const csvContent =
         emailService.sendExportCompletionEmail.mock.calls[0][0].csvContent;
-      const lines = csvContent.split('\n');
+      const lines = csvContent!.split('\n');
 
       expect(lines.length).toBe(1); // Only header
       expect(lines[0]).toBe(
@@ -518,7 +518,7 @@ describe('CsvExportProcessor', () => {
 
       const csvContent =
         emailService.sendExportCompletionEmail.mock.calls[0][0].csvContent;
-      const lines = csvContent.split('\n');
+      const lines = csvContent!.split('\n');
       const dataLine = lines[1];
 
       // Should use account ID when name not found, and empty string for category
