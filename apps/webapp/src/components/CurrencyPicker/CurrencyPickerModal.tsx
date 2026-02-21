@@ -1,4 +1,5 @@
 import { Currency, ISO4217Currencies } from '@guallet/money';
+import { useUserSettings } from '@guallet/api-react';
 import { SearchBoxInput, useIsMobile } from '@guallet/ui-react';
 import {
   ScrollArea,
@@ -12,6 +13,7 @@ import {
 } from '@mantine/core';
 import { useMemo, useState } from 'react';
 import { IconCheck } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import classes from './CurrencyPicker.module.css';
 
@@ -95,7 +97,9 @@ export function CurrencyPickerModal({
   onCurrenciesSelected,
   onCancel,
 }: Readonly<CurrencyPickerModalProps>) {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const { settings } = useUserSettings();
   const defaultCurrencyCode = useDefaultCurrency();
   const [query, setQuery] = useState('');
   const [selectedCurrencies, setSelectedCurrencies] = useState<Currency[]>(
@@ -106,7 +110,7 @@ export function CurrencyPickerModal({
         : [],
   );
 
-  const { defaultCurrency, otherCurrencies } = useMemo(() => {
+  const { prioritizedCurrencies, otherCurrencies } = useMemo(() => {
     let filtered = currencyCodes;
     if (query !== '' && query !== null && query !== undefined) {
       filtered = currencyCodes.filter((currency) =>
@@ -114,18 +118,40 @@ export function CurrencyPickerModal({
       );
     }
 
-    const defaultCurr = filtered.find((c) => c.code === defaultCurrencyCode);
-    const others = filtered.filter((c) => c.code !== defaultCurrencyCode);
+    const preferredCurrencyCodes =
+      settings?.currencies.preferred_currencies ?? [];
+    const prioritizedCurrencyCodes = [
+      defaultCurrencyCode,
+      ...preferredCurrencyCodes,
+    ]
+      .filter((currencyCode) => currencyCode !== undefined)
+      .filter(
+        (currencyCode, index, array) => array.indexOf(currencyCode) === index,
+      );
 
-    return { defaultCurrency: defaultCurr, otherCurrencies: others };
-  }, [query, defaultCurrencyCode]);
+    const prioritized = prioritizedCurrencyCodes
+      .map((currencyCode) =>
+        filtered.find((currency) => currency.code === currencyCode),
+      )
+      .filter((currency): currency is Currency => currency !== undefined);
+
+    const prioritizedCurrencyCodeSet = new Set(
+      prioritized.map((currency) => currency.code),
+    );
+    const others = filtered.filter(
+      (currency) => !prioritizedCurrencyCodeSet.has(currency.code),
+    );
+
+    return { prioritizedCurrencies: prioritized, otherCurrencies: others };
+  }, [query, defaultCurrencyCode, settings?.currencies.preferred_currencies]);
 
   const isCurrencySelected = (currency: Currency) =>
     selectedCurrencies.some((selected) => selected.code === currency.code);
 
   const onCurrencyPress = (currency: Currency) => {
     if (selectionMode === 'single') {
-      setSelectedCurrencies([currency]);
+      onCurrencySelected?.(currency);
+      onCancel();
       return;
     }
 
@@ -159,20 +185,28 @@ export function CurrencyPickerModal({
         onSearchQueryChanged={(newQuery) => {
           setQuery(newQuery);
         }}
-        placeholder="Search currencies"
+        placeholder={t('components.currencyPickerModal.search.placeholder')}
       />
       <ScrollArea type="scroll" scrollbars="y" style={{ flex: 1 }}>
-        {!defaultCurrency && otherCurrencies.length === 0 && (
-          <Text>No currencies found</Text>
+        {prioritizedCurrencies.length === 0 && otherCurrencies.length === 0 && (
+          <Text>
+            {t('components.currencyPickerModal.emptyState.noCurrencies')}
+          </Text>
         )}
         <Flex direction="column" gap={4}>
-          {defaultCurrency && (
+          {prioritizedCurrencies.length > 0 && (
             <>
-              <CurrencyItem
-                currency={defaultCurrency}
-                isSelected={isCurrencySelected(defaultCurrency)}
-                onSelect={() => onCurrencyPress(defaultCurrency)}
-              />
+              <Text size="xs" c="dimmed" px="xs">
+                {t('components.currencyPickerModal.sections.suggested')}
+              </Text>
+              {prioritizedCurrencies.map((currency) => (
+                <CurrencyItem
+                  key={currency.code}
+                  currency={currency}
+                  isSelected={isCurrencySelected(currency)}
+                  onSelect={() => onCurrencyPress(currency)}
+                />
+              ))}
               {otherCurrencies.length > 0 && <Divider my="xs" />}
             </>
           )}
@@ -187,25 +221,19 @@ export function CurrencyPickerModal({
         </Flex>
       </ScrollArea>
       <Group justify="end" mt="md">
-        <Button variant="transparent" color="dark" onClick={() => onCancel()}>
-          Cancel
+        <Button variant="outline" onClick={() => onCancel()}>
+          {t('components.currencyPickerModal.buttons.cancel')}
         </Button>
-        <Button
-          onClick={() => {
-            if (selectionMode === 'single') {
-              const selectedCurrency = selectedCurrencies[0];
-              if (selectedCurrency) {
-                onCurrencySelected?.(selectedCurrency);
-              }
-              return;
-            }
-
-            onCurrenciesSelected?.(selectedCurrencies);
-          }}
-          disabled={selectedCurrencies.length === 0}
-        >
-          Confirm
-        </Button>
+        {selectionMode === 'multiple' && (
+          <Button
+            onClick={() => {
+              onCurrenciesSelected?.(selectedCurrencies);
+            }}
+            disabled={selectedCurrencies.length === 0}
+          >
+            {t('components.currencyPickerModal.buttons.confirm')}
+          </Button>
+        )}
       </Group>
     </Flex>
   );

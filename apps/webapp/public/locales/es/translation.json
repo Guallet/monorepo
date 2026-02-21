@@ -117,6 +117,31 @@
         "value_other": "{{count}} seleccionadas"
       }
     },
+    "currencyPickerModal": {
+      "search": {
+        "placeholder": "Buscar monedas"
+      },
+      "emptyState": {
+        "noCurrencies": "No se encontraron monedas"
+      },
+      "sections": {
+        "suggested": "Monedas sugeridas"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+      }
+    },
+    "currencyPicker": {
+      "modal": {
+        "title": "Seleccionar moneda"
+      },
+      "input": {
+        "label": "Moneda de la cuenta",
+        "description": "La moneda de la cuenta",
+        "placeholder": "Seleccionar moneda"
+      }
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categorías"
