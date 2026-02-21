@@ -1,12 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useUserSettings, useUserSettingsMutations } from '@guallet/api-react';
 import { BaseRow } from '@guallet/ui-react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { Modal, Stack, MultiSelect, Group, Button } from '@mantine/core';
+import { Modal, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ISO4217Currencies } from '@guallet/money';
+import { Currency } from '@guallet/money';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
+import { CurrencyPickerModal } from '@/components/CurrencyPicker/CurrencyPickerModal';
 
 export function PreferredCurrenciesRow() {
   const { t } = useTranslation();
@@ -14,29 +15,24 @@ export function PreferredCurrenciesRow() {
   const { updateUserSettingsMutation } = useUserSettingsMutations();
   const [isModalOpen, { open: openModal, close: closeModal }] =
     useDisclosure(false);
-  const [selectedCurrencies, setSelectedCurrencies] = useState<string[]>(
-    settings?.currencies.preferred_currencies ?? [],
-  );
+  const [selectedCurrencies, setSelectedCurrencies] = useState<Currency[]>([]);
 
-  const currencyOptions = useMemo(() => {
-    return Object.values(ISO4217Currencies)
-      .sort((a, b) => a.code.localeCompare(b.code))
-      .map((currency) => ({
-        value: currency.code,
-        label: `${currency.code} - ${currency.name}`,
-      }));
-  }, []);
+  const mapCodesToCurrencies = (codes: string[]) => {
+    return codes.map((code) => Currency.fromISOCode(code));
+  };
 
   const openPreferredCurrenciesModal = () => {
-    setSelectedCurrencies(settings?.currencies.preferred_currencies ?? []);
+    setSelectedCurrencies(
+      mapCodesToCurrencies(settings?.currencies.preferred_currencies ?? []),
+    );
     openModal();
   };
 
-  const savePreferredCurrencies = () => {
+  const savePreferredCurrencies = (currencies: Currency[]) => {
     updateUserSettingsMutation.mutate(
       {
         currencies: {
-          preferred_currencies: selectedCurrencies,
+          preferred_currencies: currencies.map((currency) => currency.code),
         },
       },
       {
@@ -80,36 +76,16 @@ export function PreferredCurrenciesRow() {
         }}
       >
         <Stack>
-          <MultiSelect
-            searchable
-            clearable
-            data={currencyOptions}
-            value={selectedCurrencies}
-            onChange={setSelectedCurrencies}
-            label={t('components.preferredCurrenciesRow.modal.input.label')}
-            aria-label={t(
-              'components.preferredCurrenciesRow.modal.input.label',
-            )}
-            placeholder={t(
-              'components.preferredCurrenciesRow.modal.input.placeholder',
-            )}
-            nothingFoundMessage={t(
-              'components.preferredCurrenciesRow.modal.input.nothingFoundMessage',
-            )}
-            maxDropdownHeight={300}
+          <CurrencyPickerModal
+            key={`${isModalOpen}-${selectedCurrencies.map((currency) => currency.code).join(',')}`}
+            selectionMode="multiple"
+            initialCurrencies={selectedCurrencies}
+            onCurrenciesSelected={(currencies) => {
+              setSelectedCurrencies(currencies);
+              savePreferredCurrencies(currencies);
+            }}
+            onCancel={closeModal}
           />
-
-          <Group justify="end">
-            <Button variant="default" onClick={closeModal}>
-              {t('components.preferredCurrenciesRow.modal.buttons.cancel')}
-            </Button>
-            <Button
-              onClick={savePreferredCurrencies}
-              loading={updateUserSettingsMutation.isPending}
-            >
-              {t('components.preferredCurrenciesRow.modal.buttons.save')}
-            </Button>
-          </Group>
         </Stack>
       </Modal>
 

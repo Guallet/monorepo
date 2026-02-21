@@ -114,6 +114,31 @@
         "value_other": "{{count}} selected"
       }
     },
+    "currencyPickerModal": {
+      "search": {
+        "placeholder": "Search currencies"
+      },
+      "emptyState": {
+        "noCurrencies": "No currencies found"
+      },
+      "sections": {
+        "suggested": "Suggested currencies"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      }
+    },
+    "currencyPicker": {
+      "modal": {
+        "title": "Select currency"
+      },
+      "input": {
+        "label": "Account currency",
+        "description": "The currency of the account",
+        "placeholder": "Select currency"
+      }
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categories"

@@ -51,6 +51,7 @@ export function DefaultCurrencyRow() {
       >
         <Stack>
           <CurrencyPickerModal
+            selectionMode="single"
             onCurrencySelected={(currency: Currency) => {
               saveSelectedCurrency(currency);
               closeModal();
