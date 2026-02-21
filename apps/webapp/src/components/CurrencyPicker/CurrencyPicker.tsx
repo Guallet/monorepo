@@ -9,12 +9,14 @@ interface CurrencyPickerProps extends InputWrapperProps {
   value: string | null;
   onValueChanged: (value: string | null) => void;
   name: string | undefined;
+  selectionMode?: 'single' | 'multiple';
 }
 
 export function CurrencyPicker({
   value,
   onValueChanged,
   name,
+  selectionMode = 'single',
   ...props
 }: Readonly<CurrencyPickerProps>) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -31,6 +33,7 @@ export function CurrencyPicker({
       >
         <CurrencyPickerModal
           initialCurrency={currency}
+          selectionMode={selectionMode}
           onCurrencySelected={(currency) => {
             onValueChanged?.(currency.code);
             close();

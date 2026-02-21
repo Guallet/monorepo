@@ -22,8 +22,11 @@ const currencyCodes = Object.values(ISO4217Currencies)
   });
 
 interface CurrencyPickerModalProps {
+  selectionMode?: 'single' | 'multiple';
   initialCurrency?: Currency | null;
-  onCurrencySelected: (currency: Currency) => void;
+  initialCurrencies?: Currency[];
+  onCurrencySelected?: (currency: Currency) => void;
+  onCurrenciesSelected?: (currencies: Currency[]) => void;
   onCancel: () => void;
 }
 
@@ -85,15 +88,22 @@ function CurrencyItem({
 }
 
 export function CurrencyPickerModal({
+  selectionMode = 'single',
   initialCurrency,
+  initialCurrencies,
   onCurrencySelected,
+  onCurrenciesSelected,
   onCancel,
 }: Readonly<CurrencyPickerModalProps>) {
   const isMobile = useIsMobile();
   const defaultCurrencyCode = useDefaultCurrency();
   const [query, setQuery] = useState('');
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency | null>(
-    initialCurrency || null,
+  const [selectedCurrencies, setSelectedCurrencies] = useState<Currency[]>(
+    selectionMode === 'multiple'
+      ? (initialCurrencies ?? [])
+      : initialCurrency
+        ? [initialCurrency]
+        : [],
   );
 
   const { defaultCurrency, otherCurrencies } = useMemo(() => {
@@ -109,6 +119,30 @@ export function CurrencyPickerModal({
 
     return { defaultCurrency: defaultCurr, otherCurrencies: others };
   }, [query, defaultCurrencyCode]);
+
+  const isCurrencySelected = (currency: Currency) =>
+    selectedCurrencies.some((selected) => selected.code === currency.code);
+
+  const onCurrencyPress = (currency: Currency) => {
+    if (selectionMode === 'single') {
+      setSelectedCurrencies([currency]);
+      return;
+    }
+
+    setSelectedCurrencies((currentSelected) => {
+      const isSelected = currentSelected.some(
+        (selected) => selected.code === currency.code,
+      );
+
+      if (isSelected) {
+        return currentSelected.filter(
+          (selected) => selected.code !== currency.code,
+        );
+      }
+
+      return [...currentSelected, currency];
+    });
+  };
 
   return (
     <Flex
@@ -136,8 +170,8 @@ export function CurrencyPickerModal({
             <>
               <CurrencyItem
                 currency={defaultCurrency}
-                isSelected={selectedCurrency?.code === defaultCurrency.code}
-                onSelect={() => setSelectedCurrency(defaultCurrency)}
+                isSelected={isCurrencySelected(defaultCurrency)}
+                onSelect={() => onCurrencyPress(defaultCurrency)}
               />
               {otherCurrencies.length > 0 && <Divider my="xs" />}
             </>
@@ -146,8 +180,8 @@ export function CurrencyPickerModal({
             <CurrencyItem
               key={currency.code}
               currency={currency}
-              isSelected={selectedCurrency?.code === currency.code}
-              onSelect={() => setSelectedCurrency(currency)}
+              isSelected={isCurrencySelected(currency)}
+              onSelect={() => onCurrencyPress(currency)}
             />
           ))}
         </Flex>
@@ -158,11 +192,17 @@ export function CurrencyPickerModal({
         </Button>
         <Button
           onClick={() => {
-            if (selectedCurrency) {
-              onCurrencySelected(selectedCurrency);
+            if (selectionMode === 'single') {
+              const selectedCurrency = selectedCurrencies[0];
+              if (selectedCurrency) {
+                onCurrencySelected?.(selectedCurrency);
+              }
+              return;
             }
+
+            onCurrenciesSelected?.(selectedCurrencies);
           }}
-          disabled={!selectedCurrency}
+          disabled={selectedCurrencies.length === 0}
         >
           Confirm
         </Button>
