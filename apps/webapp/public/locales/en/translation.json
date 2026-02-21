@@ -99,6 +99,7 @@
       "modal": {
         "title": "Select Preferred Currencies",
         "input": {
+          "label": "Preferred currencies",
           "placeholder": "Select one or more currencies",
           "nothingFoundMessage": "No currencies found"
         },

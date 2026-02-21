@@ -101,6 +101,7 @@
       "modal": {
         "title": "Seleccionar monedas preferidas",
         "input": {
+          "label": "Monedas preferidas",
           "placeholder": "Selecciona una o más monedas",
           "nothingFoundMessage": "No se encontraron monedas"
         },

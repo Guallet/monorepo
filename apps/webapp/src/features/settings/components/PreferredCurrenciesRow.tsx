@@ -86,6 +86,10 @@ export function PreferredCurrenciesRow() {
             data={currencyOptions}
             value={selectedCurrencies}
             onChange={setSelectedCurrencies}
+            label={t('components.preferredCurrenciesRow.modal.input.label')}
+            aria-label={t(
+              'components.preferredCurrenciesRow.modal.input.label',
+            )}
             placeholder={t(
               'components.preferredCurrenciesRow.modal.input.placeholder',
             )}
