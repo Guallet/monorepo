@@ -30,6 +30,7 @@ export function CurrencyPicker({
         size="lg"
       >
         <CurrencyPickerModal
+          initialCurrency={currency}
           onCurrencySelected={(currency) => {
             onValueChanged?.(currency.code);
             close();
