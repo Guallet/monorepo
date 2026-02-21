@@ -85,6 +85,34 @@
       "accountsLinked_other": "{{count}} accounts linked",
       "noAccountsLinked": "No accounts linked"
     },
+    "preferredCurrenciesRow": {
+      "notifications": {
+        "success": {
+          "title": "Success",
+          "message": "Preferred currencies updated successfully"
+        },
+        "error": {
+          "title": "Error",
+          "message": "Failed to update preferred currencies"
+        }
+      },
+      "modal": {
+        "title": "Select Preferred Currencies",
+        "input": {
+          "placeholder": "Select one or more currencies",
+          "nothingFoundMessage": "No currencies found"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      },
+      "row": {
+        "label": "Preferred Currencies",
+        "value_one": "{{count}} selected",
+        "value_other": "{{count}} selected"
+      }
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categories"

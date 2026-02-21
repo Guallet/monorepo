@@ -87,6 +87,35 @@
       "accountsLinked_other": "",
       "noAccountsLinked": "Sin cuentas vinculadas"
     },
+    "preferredCurrenciesRow": {
+      "notifications": {
+        "success": {
+          "title": "Éxito",
+          "message": "Monedas preferidas actualizadas correctamente"
+        },
+        "error": {
+          "title": "Error",
+          "message": "No se pudieron actualizar las monedas preferidas"
+        }
+      },
+      "modal": {
+        "title": "Seleccionar monedas preferidas",
+        "input": {
+          "placeholder": "Selecciona una o más monedas",
+          "nothingFoundMessage": "No se encontraron monedas"
+        },
+        "buttons": {
+          "cancel": "Cancelar",
+          "save": "Guardar"
+        }
+      },
+      "row": {
+        "label": "Monedas preferidas",
+        "value_one": "{{count}} seleccionada",
+        "value_many": "{{count}} seleccionadas",
+        "value_other": "{{count}} seleccionadas"
+      }
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categorías"
