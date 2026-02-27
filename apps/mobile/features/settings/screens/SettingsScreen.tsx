@@ -10,7 +10,7 @@ import { useAuth } from '@/auth/useAuth';
 import { useUser, useUserSettings } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Label, Title, useTheme } from '@luna-ui/react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 
 function SettingsRow({
   label,
@@ -86,7 +86,7 @@ export function SettingsScreen() {
           <SettingsSection title="Data">
             <SettingsRow
               label="Categories"
-              onPress={() => router.push('/(tabs)/categories' as any)}
+              onPress={() => router.push('/(tabs)/categories' as Href)}
             />
           </SettingsSection>
 
