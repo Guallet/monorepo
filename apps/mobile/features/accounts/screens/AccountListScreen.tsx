@@ -4,14 +4,13 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useAccounts } from '@guallet/api-react';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Label, Title, useTheme } from '@luna-ui/react-native';
+import { EmptyState, Label, ListRow, useTheme } from '@luna-ui/react-native';
 
 function getAccountTypeLabel(type: AccountTypeDto): string {
   switch (type) {
@@ -47,17 +46,15 @@ function AccountRow({ account }: { account: AccountDto }) {
   const balanceColor = account.balance.amount < 0 ? '#EF4444' : colors.text;
 
   return (
-    <View style={styles.accountRow}>
-      <View style={styles.accountInfo}>
-        <Text style={[styles.accountName, { color: colors.text }]}>
-          {account.name}
+    <ListRow
+      title={account.name}
+      subtitle={getAccountTypeLabel(account.type)}
+      right={
+        <Text style={[styles.accountBalance, { color: balanceColor }]}>
+          {formatBalance(account.balance.amount, account.currency)}
         </Text>
-        <Label size="sm">{getAccountTypeLabel(account.type)}</Label>
-      </View>
-      <Text style={[styles.accountBalance, { color: balanceColor }]}>
-        {formatBalance(account.balance.amount, account.currency)}
-      </Text>
-    </View>
+      }
+    />
   );
 }
 
@@ -110,12 +107,10 @@ export function AccountListScreen() {
     <SafeAreaView style={styles.container}>
       <AppScreen headerTitle="Accounts" isLoading={isLoading}>
         {accounts.length === 0 && !isLoading ? (
-          <View style={styles.emptyState}>
-            <Title>No accounts yet</Title>
-            <Label center>
-              Add your first account to start tracking your finances.
-            </Label>
-          </View>
+          <EmptyState
+            title="No accounts yet"
+            message="Add your first account to start tracking your finances."
+          />
         ) : (
           <FlatList
             data={groupedAccounts}
@@ -139,13 +134,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    gap: 8,
-  },
   section: {
     marginBottom: 16,
   },
@@ -156,24 +144,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     paddingHorizontal: 16,
     paddingVertical: 8,
-  },
-  accountRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'white',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E7EB',
-  },
-  accountInfo: {
-    flex: 1,
-    gap: 2,
-  },
-  accountName: {
-    fontSize: 16,
-    fontWeight: '500',
   },
   accountBalance: {
     fontSize: 16,

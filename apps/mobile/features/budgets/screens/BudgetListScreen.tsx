@@ -11,7 +11,13 @@ import { useBudgets } from '@guallet/api-react';
 import { BudgetDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Label, Title, useTheme } from '@luna-ui/react-native';
+import {
+  Card,
+  EmptyState,
+  Label,
+  ProgressBar,
+  useTheme,
+} from '@luna-ui/react-native';
 
 function formatAmount(amount: number, currency: string): string {
   try {
@@ -34,7 +40,7 @@ function BudgetCard({ budget }: { budget: BudgetDto }) {
   const remaining = budget.amount - budget.spent;
 
   return (
-    <View style={styles.budgetCard}>
+    <Card gap={8}>
       <View style={styles.budgetHeader}>
         <Text style={[styles.budgetName, { color: colors.text }]}>
           {budget.name}
@@ -44,17 +50,7 @@ function BudgetCard({ budget }: { budget: BudgetDto }) {
           {formatAmount(budget.amount, budget.currency)}
         </Text>
       </View>
-      <View style={styles.progressBarBackground}>
-        <View
-          style={[
-            styles.progressBarFill,
-            {
-              width: `${Math.min(percent, 100)}%`,
-              backgroundColor: progressColor,
-            },
-          ]}
-        />
-      </View>
+      <ProgressBar value={percent} color={progressColor} />
       <View style={styles.budgetFooter}>
         <Label size="sm">
           {percent.toFixed(0)}% used
@@ -64,7 +60,7 @@ function BudgetCard({ budget }: { budget: BudgetDto }) {
           {formatAmount(Math.abs(remaining), budget.currency)}
         </Label>
       </View>
-    </View>
+    </Card>
   );
 }
 
@@ -82,12 +78,10 @@ export function BudgetListScreen() {
     <SafeAreaView style={styles.container}>
       <AppScreen headerTitle="Budgets" isLoading={isLoading && !refreshing}>
         {budgets.length === 0 && !isLoading ? (
-          <View style={styles.emptyState}>
-            <Title>No budgets yet</Title>
-            <Label center>
-              Create your first budget to start tracking your spending.
-            </Label>
-          </View>
+          <EmptyState
+            title="No budgets yet"
+            message="Create your first budget to start tracking your spending."
+          />
         ) : (
           <FlatList
             data={budgets}
@@ -108,27 +102,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    gap: 8,
-  },
   listContent: {
     padding: 16,
     gap: 12,
-  },
-  budgetCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    gap: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
   },
   budgetHeader: {
     flexDirection: 'row',
@@ -142,16 +118,6 @@ const styles = StyleSheet.create({
   },
   budgetAmount: {
     fontSize: 14,
-  },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: 4,
   },
   budgetFooter: {
     flexDirection: 'row',

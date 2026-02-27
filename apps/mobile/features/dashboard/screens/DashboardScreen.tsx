@@ -11,7 +11,7 @@ import { useAccounts, useTransactions } from '@guallet/api-react';
 import { AccountDto, TransactionDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Label, Title, useTheme } from '@luna-ui/react-native';
+import { Card, EmptyState, ListRow, Title, useTheme } from '@luna-ui/react-native';
 
 function formatAmount(amount: number, currency: string): string {
   try {
@@ -34,36 +34,30 @@ function AccountSummaryCard({ account }: { account: AccountDto }) {
   const balanceColor = account.balance.amount < 0 ? '#EF4444' : colors.text;
 
   return (
-    <View style={styles.accountCard}>
+    <Card style={styles.accountCard}>
       <Text style={[styles.accountName, { color: colors.text }]}>
         {account.name}
       </Text>
       <Text style={[styles.accountBalance, { color: balanceColor }]}>
         {formatAmount(account.balance.amount, account.currency)}
       </Text>
-    </View>
+    </Card>
   );
 }
 
 function RecentTransactionRow({ transaction }: { transaction: TransactionDto }) {
-  const { colors } = useTheme();
   const amountColor = transaction.amount < 0 ? '#EF4444' : '#10B981';
 
   return (
-    <View style={styles.transactionRow}>
-      <View style={styles.transactionInfo}>
-        <Text
-          style={[styles.transactionDescription, { color: colors.text }]}
-          numberOfLines={1}
-        >
-          {transaction.description}
+    <ListRow
+      title={transaction.description}
+      subtitle={formatDate(transaction.date)}
+      right={
+        <Text style={[styles.transactionAmount, { color: amountColor }]}>
+          {formatAmount(transaction.amount, transaction.currency)}
         </Text>
-        <Label size="sm">{formatDate(transaction.date)}</Label>
-      </View>
-      <Text style={[styles.transactionAmount, { color: amountColor }]}>
-        {formatAmount(transaction.amount, transaction.currency)}
-      </Text>
-    </View>
+      }
+    />
   );
 }
 
@@ -150,12 +144,11 @@ export function DashboardScreen() {
           }
           ListEmptyComponent={
             !isLoading ? (
-              <View style={styles.emptyState}>
-                <Title>Welcome to Guallet</Title>
-                <Label center>
-                  Add accounts and transactions to get started.
-                </Label>
-              </View>
+              <EmptyState
+                title="Welcome to Guallet"
+                message="Add accounts and transactions to get started."
+                style={styles.emptyState}
+              />
             ) : null
           }
         />
@@ -169,11 +162,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    gap: 8,
     marginTop: 48,
   },
   sectionHeader: {
@@ -186,15 +174,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   accountCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
     width: 160,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
     gap: 4,
   },
   accountName: {
@@ -204,25 +184,6 @@ const styles = StyleSheet.create({
   accountBalance: {
     fontSize: 18,
     fontWeight: '700',
-  },
-  transactionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'white',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E7EB',
-  },
-  transactionInfo: {
-    flex: 1,
-    gap: 2,
-    marginRight: 12,
-  },
-  transactionDescription: {
-    fontSize: 16,
-    fontWeight: '500',
   },
   transactionAmount: {
     fontSize: 16,
