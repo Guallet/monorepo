@@ -12,7 +12,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './assets/images/icon.png',
   scheme: 'guallet',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',

@@ -35,10 +35,10 @@ export function ForgotPasswordScreen() {
     setEmailError(null);
     setIsLoading(true);
 
-    const success = await resetPassword(email);
+    const result = await resetPassword(email, 'guallet://login/reset-password');
     setIsLoading(false);
 
-    if (success) {
+    if (result.success) {
       router.navigate({
         pathname: '/login/reset-password-sent',
         params: { email },
