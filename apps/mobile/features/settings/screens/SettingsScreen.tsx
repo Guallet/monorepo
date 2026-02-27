@@ -52,6 +52,18 @@ export function SettingsScreen() {
               title="Categories"
               onPress={() => router.push('/(tabs)/categories' as Href)}
             />
+            <ListRow
+              title="Saving Goals"
+              onPress={() => router.push('/(tabs)/saving-goals' as Href)}
+            />
+            <ListRow
+              title="Subscriptions"
+              onPress={() => router.push('/(tabs)/subscriptions' as Href)}
+            />
+            <ListRow
+              title="Notifications"
+              onPress={() => router.push('/(tabs)/notifications' as Href)}
+            />
           </Section>
 
           <View style={{ gap: 12, marginTop: 8 }}>

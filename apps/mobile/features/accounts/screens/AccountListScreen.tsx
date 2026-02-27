@@ -11,6 +11,7 @@ import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { EmptyState, Label, ListRow, useTheme } from '@luna-ui/react-native';
+import { useRouter } from 'expo-router';
 
 function getAccountTypeLabel(type: AccountTypeDto): string {
   switch (type) {
@@ -43,12 +44,14 @@ function formatBalance(amount: number, currency: string): string {
 
 function AccountRow({ account }: { account: AccountDto }) {
   const { colors } = useTheme();
+  const router = useRouter();
   const balanceColor = account.balance.amount < 0 ? '#EF4444' : colors.text;
 
   return (
     <ListRow
       title={account.name}
       subtitle={getAccountTypeLabel(account.type)}
+      onPress={() => router.push(`/account/${account.id}`)}
       right={
         <Text style={[styles.accountBalance, { color: balanceColor }]}>
           {formatBalance(account.balance.amount, account.currency)}

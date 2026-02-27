@@ -11,6 +11,7 @@ import { TransactionDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { EmptyState, ListRow, useTheme } from '@luna-ui/react-native';
+import { useRouter } from 'expo-router';
 
 function formatDate(date: Date): string {
   const d = new Date(date);
@@ -35,11 +36,13 @@ function TransactionRow({
   transaction: TransactionDto;
 }) {
   const amountColor = transaction.amount < 0 ? '#EF4444' : '#10B981';
+  const router = useRouter();
 
   return (
     <ListRow
       title={transaction.description}
       subtitle={formatDate(transaction.date)}
+      onPress={() => router.push(`/transaction/${transaction.id}`)}
       right={
         <Text style={[styles.transactionAmount, { color: amountColor }]}>
           {formatAmount(transaction.amount, transaction.currency)}

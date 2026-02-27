@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useBudgets } from '@guallet/api-react';
@@ -18,6 +19,7 @@ import {
   ProgressBar,
   useTheme,
 } from '@luna-ui/react-native';
+import { useRouter } from 'expo-router';
 
 function formatAmount(amount: number, currency: string): string {
   try {
@@ -35,12 +37,17 @@ function getProgressColor(percent: number): string {
 
 function BudgetCard({ budget }: { budget: BudgetDto }) {
   const { colors } = useTheme();
+  const router = useRouter();
   const percent = budget.amount > 0 ? (budget.spent / budget.amount) * 100 : 0;
   const progressColor = getProgressColor(percent);
   const remaining = budget.amount - budget.spent;
 
   return (
-    <Card gap={8}>
+    <TouchableOpacity
+      onPress={() => router.push(`/budget/${budget.id}`)}
+      activeOpacity={0.7}
+    >
+      <Card gap={8}>
       <View style={styles.budgetHeader}>
         <Text style={[styles.budgetName, { color: colors.text }]}>
           {budget.name}
@@ -61,6 +68,7 @@ function BudgetCard({ budget }: { budget: BudgetDto }) {
         </Label>
       </View>
     </Card>
+    </TouchableOpacity>
   );
 }
 
