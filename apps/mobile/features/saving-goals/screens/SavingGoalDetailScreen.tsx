@@ -7,7 +7,7 @@ import {
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useSavingGoal } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Label, Section, useTheme } from '@luna-ui/react-native';
+import { Card, EmptyState, Label, Section, useTheme } from '@luna-ui/react-native';
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -34,6 +34,12 @@ export function SavingGoalDetailScreen({
         headerTitle={savingGoal?.name ?? 'Saving Goal'}
         isLoading={isLoading}
       >
+        {!savingGoal && !isLoading && (
+          <EmptyState
+            title="Saving goal not found"
+            message="This saving goal could not be loaded."
+          />
+        )}
         {savingGoal && (
           <ScrollView contentContainerStyle={styles.content}>
             <Card style={styles.headerCard} gap={8}>

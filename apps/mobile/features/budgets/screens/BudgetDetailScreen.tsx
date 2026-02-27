@@ -184,8 +184,12 @@ export function BudgetDetailScreen({ budgetId }: BudgetDetailScreenProps) {
           ListEmptyComponent={
             !isLoading && !transactionsLoading ? (
               <EmptyState
-                title="No spending yet"
-                message="Transactions matching this budget will appear here."
+                title={budget ? 'No spending yet' : 'Budget not found'}
+                message={
+                  budget
+                    ? 'Transactions matching this budget will appear here.'
+                    : 'This budget could not be loaded.'
+                }
               />
             ) : null
           }

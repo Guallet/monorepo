@@ -8,7 +8,7 @@ import { AppScreen } from '@/components/layout/AppScreen';
 import { useTransaction } from '@guallet/api-react';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Label, Section, useTheme } from '@luna-ui/react-native';
+import { Card, EmptyState, Label, Section, useTheme } from '@luna-ui/react-native';
 
 function formatAmount(amount: number, currency: string): string {
   try {
@@ -44,6 +44,12 @@ export function TransactionDetailScreen({
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <AppScreen headerTitle="Transaction" isLoading={isLoading}>
+        {!transaction && !isLoading && (
+          <EmptyState
+            title="Transaction not found"
+            message="This transaction could not be loaded."
+          />
+        )}
         {transaction && (
           <ScrollView contentContainerStyle={styles.content}>
             <Card style={styles.amountCard} gap={8}>

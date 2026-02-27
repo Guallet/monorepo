@@ -9,7 +9,7 @@ import { useSubscription } from '@guallet/api-react';
 import { RecurrenceCadence, RecurringPaymentType } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Label, Section, useTheme } from '@luna-ui/react-native';
+import { Card, EmptyState, Label, Section, useTheme } from '@luna-ui/react-native';
 
 function formatAmount(amount: number, currency: string): string {
   try {
@@ -74,6 +74,12 @@ export function SubscriptionDetailScreen({
         headerTitle={subscription?.name ?? 'Subscription'}
         isLoading={isLoading}
       >
+        {!subscription && !isLoading && (
+          <EmptyState
+            title="Subscription not found"
+            message="This subscription could not be loaded."
+          />
+        )}
         {subscription && (
           <ScrollView contentContainerStyle={styles.content}>
             <Card style={styles.headerCard} gap={8}>

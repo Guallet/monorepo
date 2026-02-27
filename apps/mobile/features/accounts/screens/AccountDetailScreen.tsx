@@ -10,7 +10,7 @@ import { AppScreen } from '@/components/layout/AppScreen';
 import { useAccount } from '@guallet/api-react';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Label, Section, useTheme } from '@luna-ui/react-native';
+import { Card, EmptyState, Label, Section, useTheme } from '@luna-ui/react-native';
 
 function formatBalance(amount: number, currency: string): string {
   try {
@@ -44,6 +44,12 @@ export function AccountDetailScreen({ accountId }: AccountDetailScreenProps) {
         headerTitle={account?.name ?? 'Account'}
         isLoading={isLoading && !refreshing}
       >
+        {!account && !isLoading && (
+          <EmptyState
+            title="Account not found"
+            message="This account could not be loaded."
+          />
+        )}
         {account && (
           <ScrollView
             contentContainerStyle={styles.content}
