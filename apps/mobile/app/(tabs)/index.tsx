@@ -1,21 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { DashboardScreen } from '@/features/dashboard/screens/DashboardScreen';
 
-export default function DashboardScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
-    </View>
-  );
+export default function Screen() {
+  return <DashboardScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});

@@ -1,21 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { TransactionListScreen } from '@/features/transactions/screens/TransactionListScreen';
 
-export default function TransactionsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Transactions</Text>
-    </View>
-  );
+export default function Screen() {
+  return <TransactionListScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});

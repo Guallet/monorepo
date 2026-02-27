@@ -43,6 +43,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="accounts"
+        options={{
+          title: 'Accounts',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="creditcard.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="transactions"
         options={{
           title: 'Transactions',
@@ -67,6 +76,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="gearshape.fill" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="categories"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
