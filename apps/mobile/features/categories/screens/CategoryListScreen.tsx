@@ -3,11 +3,13 @@ import {
   Text,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useGroupedCategories, AppCategory } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar, EmptyState, useTheme } from '@luna-ui/react-native';
+import { useRouter } from 'expo-router';
 
 function CategoryRow({ category, isSubcategory = false }: { category: AppCategory; isSubcategory?: boolean }) {
   const { colors } = useTheme();
@@ -39,10 +41,24 @@ function CategorySection({ category }: { category: AppCategory }) {
 
 export function CategoryListScreen() {
   const { categories, isLoading } = useGroupedCategories();
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppScreen headerTitle="Categories" isLoading={isLoading}>
+      <AppScreen
+        headerTitle="Categories"
+        isLoading={isLoading}
+        headerOptions={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => router.push('/category/new')}
+              style={styles.headerButton}
+            >
+              <Text style={styles.headerButtonText}>+</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      >
         {categories.length === 0 && !isLoading ? (
           <EmptyState
             title="No categories yet"
@@ -63,6 +79,15 @@ export function CategoryListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  headerButtonText: {
+    fontSize: 28,
+    color: '#007AFF',
+    fontWeight: '400',
   },
   section: {
     marginBottom: 4,

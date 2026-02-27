@@ -4,6 +4,7 @@ import {
   FlatList,
   StyleSheet,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useTransactions } from '@guallet/api-react';
@@ -54,6 +55,7 @@ function TransactionRow({
 
 export function TransactionListScreen() {
   const { transactions, isLoading, refetch } = useTransactions();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
@@ -64,7 +66,20 @@ export function TransactionListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppScreen headerTitle="Transactions" isLoading={isLoading && !refreshing}>
+      <AppScreen
+        headerTitle="Transactions"
+        isLoading={isLoading && !refreshing}
+        headerOptions={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => router.push('/transaction/new')}
+              style={styles.headerButton}
+            >
+              <Text style={styles.headerButtonText}>+</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      >
         {transactions.length === 0 && !isLoading ? (
           <EmptyState
             title="No transactions yet"
@@ -88,6 +103,15 @@ export function TransactionListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  headerButtonText: {
+    fontSize: 28,
+    color: '#007AFF',
+    fontWeight: '400',
   },
   transactionAmount: {
     fontSize: 16,

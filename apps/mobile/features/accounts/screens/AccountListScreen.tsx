@@ -4,6 +4,7 @@ import {
   Text,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useAccounts } from '@guallet/api-react';
@@ -69,6 +70,7 @@ interface AccountGroup {
 
 export function AccountListScreen() {
   const { accounts, isLoading } = useAccounts();
+  const router = useRouter();
 
   const groupedAccounts = useMemo(() => {
     if (!accounts || accounts.length === 0) return [];
@@ -108,7 +110,20 @@ export function AccountListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppScreen headerTitle="Accounts" isLoading={isLoading}>
+      <AppScreen
+        headerTitle="Accounts"
+        isLoading={isLoading}
+        headerOptions={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => router.push('/account/new')}
+              style={styles.headerButton}
+            >
+              <Text style={styles.headerButtonText}>+</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      >
         {accounts.length === 0 && !isLoading ? (
           <EmptyState
             title="No accounts yet"
@@ -136,6 +151,15 @@ export function AccountListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  headerButtonText: {
+    fontSize: 28,
+    color: '#007AFF',
+    fontWeight: '400',
   },
   section: {
     marginBottom: 16,

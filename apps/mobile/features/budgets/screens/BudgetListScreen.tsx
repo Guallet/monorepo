@@ -74,6 +74,7 @@ function BudgetCard({ budget }: { budget: BudgetDto }) {
 
 export function BudgetListScreen() {
   const { budgets, isLoading, refetch } = useBudgets();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
@@ -84,7 +85,20 @@ export function BudgetListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppScreen headerTitle="Budgets" isLoading={isLoading && !refreshing}>
+      <AppScreen
+        headerTitle="Budgets"
+        isLoading={isLoading && !refreshing}
+        headerOptions={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => router.push('/budget/new')}
+              style={styles.headerButton}
+            >
+              <Text style={styles.headerButtonText}>+</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      >
         {budgets.length === 0 && !isLoading ? (
           <EmptyState
             title="No budgets yet"
@@ -109,6 +123,15 @@ export function BudgetListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  headerButtonText: {
+    fontSize: 28,
+    color: '#007AFF',
+    fontWeight: '400',
   },
   listContent: {
     padding: 16,

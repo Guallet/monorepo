@@ -61,8 +61,19 @@ export function SettingsScreen() {
               onPress={() => router.push('/(tabs)/subscriptions' as Href)}
             />
             <ListRow
+              title="Connections"
+              onPress={() => router.push('/(tabs)/connections' as Href)}
+            />
+            <ListRow
               title="Notifications"
               onPress={() => router.push('/(tabs)/notifications' as Href)}
+            />
+          </Section>
+
+          <Section title="Reports">
+            <ListRow
+              title="Cashflow Report"
+              onPress={() => router.push('/(tabs)/reports' as Href)}
             />
           </Section>
 
