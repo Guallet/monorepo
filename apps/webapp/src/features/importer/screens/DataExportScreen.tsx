@@ -7,10 +7,10 @@ import {
   Paper,
   Group,
   MultiSelect,
+  Select,
   Modal,
   Alert,
   List,
-  SegmentedControl,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useState } from 'react';
@@ -168,33 +168,30 @@ export function DataExportScreen() {
                 searchable
               />
 
-              <Stack gap={4}>
-                <Text size="sm" fw={500}>
-                  {t('screens.dataExport.filters.format.label')}
-                </Text>
-                <SegmentedControl
-                  data={[
-                    {
-                      value: 'csv',
-                      label: t('screens.dataExport.filters.format.csv'),
-                    },
-                    {
-                      value: 'ofe',
-                      label: t('screens.dataExport.filters.format.ofe'),
-                    },
-                    {
-                      value: 'json',
-                      label: t('screens.dataExport.filters.format.json'),
-                    },
-                  ]}
-                  value={exportFormat}
-                  onChange={(value) => {
-                    if (value === 'csv' || value === 'ofe' || value === 'json') {
-                      setExportFormat(value);
-                    }
-                  }}
-                />
-              </Stack>
+              <Select
+                label={t('screens.dataExport.filters.format.label')}
+                data={[
+                  {
+                    value: 'csv',
+                    label: t('screens.dataExport.filters.format.csv'),
+                  },
+                  {
+                    value: 'ofe',
+                    label: t('screens.dataExport.filters.format.ofe'),
+                  },
+                  {
+                    value: 'json',
+                    label: t('screens.dataExport.filters.format.json'),
+                  },
+                ]}
+                value={exportFormat}
+                allowDeselect={false}
+                onChange={(value) => {
+                  if (value === 'csv' || value === 'ofe' || value === 'json') {
+                    setExportFormat(value);
+                  }
+                }}
+              />
             </Stack>
           </Paper>
 

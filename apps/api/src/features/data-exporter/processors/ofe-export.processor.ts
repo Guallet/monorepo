@@ -85,7 +85,7 @@ export class OfeExportProcessor extends WorkerHost {
       accountId: string;
       description: string;
       notes?: string;
-      amount: number;
+      amount: number | string;
       currency: string;
       date: Date;
     }>,
@@ -95,8 +95,9 @@ export class OfeExportProcessor extends WorkerHost {
     const currency = transactions[0]?.currency || 'GBP';
     const stmtTrns = transactions
       .map((tx) => {
-        const amount = tx.amount.toFixed(2);
-        const trnType = tx.amount < 0 ? 'DEBIT' : 'CREDIT';
+        const normalizedAmount = this.normalizeAmount(tx.amount);
+        const amount = normalizedAmount.toFixed(2);
+        const trnType = normalizedAmount < 0 ? 'DEBIT' : 'CREDIT';
         const description = this.escapeOfe(tx.description || '');
         const memo = this.escapeOfe(tx.notes || '');
         const accountName = this.escapeOfe(
@@ -136,6 +137,12 @@ export class OfeExportProcessor extends WorkerHost {
 
   private escapeOfe(value: string): string {
     return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;');
+  }
+
+  private normalizeAmount(amount: number | string): number {
+    const parsedAmount =
+      typeof amount === 'number' ? amount : Number.parseFloat(amount);
+    return Number.isFinite(parsedAmount) ? parsedAmount : 0;
   }
 
   private async sendExportEmail(
