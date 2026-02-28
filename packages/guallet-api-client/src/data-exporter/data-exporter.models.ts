@@ -1,20 +1,10 @@
-export interface CsvExportRequest {
+export interface DataExportRequest {
   startDate?: string;
   endDate?: string;
   accounts?: string[];
   format?: 'csv' | 'ofe' | 'json';
 }
 
-export interface CsvExportResponse {
-  message: string;
-}
-
-export interface OfeExportRequest {
-  startDate?: string;
-  endDate?: string;
-  accounts?: string[];
-}
-
-export interface OfeExportResponse {
+export interface DataExportResponse {
   message: string;
 }

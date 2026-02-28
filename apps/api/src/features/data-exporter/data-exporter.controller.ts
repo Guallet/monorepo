@@ -30,7 +30,7 @@ import {
 } from './processors/json-export.processor';
 
 @ApiTags('Data Import / Export')
-@Controller('data-exporter')
+@Controller('data')
 export class DataExporterController {
   private readonly logger = new Logger(DataExporterController.name);
 
@@ -43,14 +43,14 @@ export class DataExporterController {
     private readonly jsonExportQueue: Queue<JsonExportJobData>,
   ) {}
 
-  @Post('csv')
+  @Post('export')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Export job has been queued for processing',
     type: DataExportResponseDto,
   })
-  async exportCsv(
+  async exportData(
     @RequestUser() user: UserPrincipal,
     @Body() dto: DataExportRequestDto,
   ): Promise<DataExportResponseDto> {

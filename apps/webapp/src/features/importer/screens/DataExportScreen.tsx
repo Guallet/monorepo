@@ -58,7 +58,7 @@ export function DataExportScreen() {
         format: exportFormat,
       };
 
-      await gualletClient.dataExporter.exportCsv(exportPayload);
+      await gualletClient.dataExporter.exportData(exportPayload);
 
       setIsModalOpened(true);
     } catch (e) {
