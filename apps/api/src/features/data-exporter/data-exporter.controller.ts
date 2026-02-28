@@ -9,8 +9,8 @@ import {
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { CsvExportRequestDto } from './dto/csv-export-request.dto';
-import { CsvExportResponseDto } from './dto/csv-export-response.dto';
+import { DataExportRequestDto } from './dto/data-export-request.dto';
+import { DataExportResponseDto } from './dto/data-export-response.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
@@ -48,12 +48,12 @@ export class DataExporterController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Export job has been queued for processing',
-    type: CsvExportResponseDto,
+    type: DataExportResponseDto,
   })
   async exportCsv(
     @RequestUser() user: UserPrincipal,
-    @Body() dto: CsvExportRequestDto,
-  ): Promise<CsvExportResponseDto> {
+    @Body() dto: DataExportRequestDto,
+  ): Promise<DataExportResponseDto> {
     const { format = 'csv', ...exportDto } = dto;
     this.logger.log(
       `${format.toUpperCase()} export request from user ${user.id}, enqueueing job`,

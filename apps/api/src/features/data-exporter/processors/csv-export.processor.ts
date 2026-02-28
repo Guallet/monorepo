@@ -4,7 +4,7 @@ import { Job } from 'bullmq';
 import { TransactionsService } from '../../transactions/transactions.service';
 import { EmailService } from '../../email/email.service';
 import { UsersService } from '../../users/users.service';
-import { CsvExportRequestDto } from '../dto/csv-export-request.dto';
+import { DataExportRequestDto } from '../dto/data-export-request.dto';
 import { AccountsService } from '../../accounts/accounts.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { NotificationsService } from '../../notifications/notifications.service';
@@ -15,7 +15,7 @@ export const CSV_EXPORT_JOB = 'process-csv-export';
 
 export interface CsvExportJobData {
   userId: string;
-  dto: CsvExportRequestDto;
+  dto: DataExportRequestDto;
 }
 
 @Processor(CSV_EXPORT_QUEUE)

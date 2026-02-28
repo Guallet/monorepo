@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export type ExportFormat = 'csv' | 'ofe' | 'json';
 
-export class CsvExportRequestDto {
+export class DataExportRequestDto {
   @ApiPropertyOptional({
     description: 'Start date for filtering transactions (ISO 8601 format)',
     example: '2024-01-01T00:00:00.000Z',

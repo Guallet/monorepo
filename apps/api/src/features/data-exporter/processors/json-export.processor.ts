@@ -8,12 +8,12 @@ import { EmailService } from '../../email/email.service';
 import { UsersService } from '../../users/users.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { NotificationType } from '../../notifications/entities/notification.entity';
-import { CsvExportRequestDto } from '../dto/csv-export-request.dto';
+import { DataExportRequestDto } from '../dto/data-export-request.dto';
 
 export const JSON_EXPORT_QUEUE = 'json-export';
 export const JSON_EXPORT_JOB = 'process-json-export';
 
-type ExportRequestDto = Omit<CsvExportRequestDto, 'format'>;
+type ExportRequestDto = Omit<DataExportRequestDto, 'format'>;
 
 export interface JsonExportJobData {
   userId: string;
