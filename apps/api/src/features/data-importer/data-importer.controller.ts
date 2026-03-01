@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Post,
   Body,
@@ -9,54 +10,65 @@ import {
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { CsvImportRequestDto } from './dto/csv-import-request.dto';
-import { CsvImportResponseDto } from './dto/csv-import-response.dto';
+import { DataImportRequestDto } from './dto/data-import-request.dto';
+import { DataImportResponseDto } from './dto/data-import-response.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
-  CSV_IMPORT_QUEUE,
-  CSV_IMPORT_JOB,
-  CsvImportJobData,
-} from './processors/csv-import.processor';
+  IMPORT_DATA_QUEUE,
+  IMPORT_DATA_JOB,
+  SUPPORTED_IMPORT_FORMATS,
+  ImportJobData,
+} from './processors/import-data.processor';
 
 @ApiTags('Data Import / Export')
-@Controller('data-importer')
+@Controller('data')
 export class DataImporterController {
   private readonly logger = new Logger(DataImporterController.name);
 
   constructor(
-    @InjectQueue(CSV_IMPORT_QUEUE)
-    private readonly csvImportQueue: Queue<CsvImportJobData>,
+    @InjectQueue(IMPORT_DATA_QUEUE)
+    private readonly importQueue: Queue<ImportJobData>,
   ) {}
 
-  @Post('csv')
+  @Post('import')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
-    description: 'CSV import job has been queued for processing',
-    type: CsvImportResponseDto,
+    description: 'Import job has been queued for processing',
+    type: DataImportResponseDto,
   })
-  async importCsv(
+  async importData(
     @RequestUser() user: UserPrincipal,
-    @Body() dto: CsvImportRequestDto,
-  ): Promise<CsvImportResponseDto> {
-    this.logger.log(`CSV import request from user ${user.id}, enqueueing job`);
+    @Body() dto: DataImportRequestDto,
+  ): Promise<DataImportResponseDto> {
+    const format = dto.format || 'csv';
 
-    // Enqueue the import job for background processing
-    const job = await this.csvImportQueue.add(
-      CSV_IMPORT_JOB,
+    if (!SUPPORTED_IMPORT_FORMATS.includes(format)) {
+      throw new BadRequestException(
+        `Unsupported import format "${format}". Supported formats: ${SUPPORTED_IMPORT_FORMATS.join(', ')}`,
+      );
+    }
+
+    this.logger.log(
+      `${format.toUpperCase()} import request from user ${user.id}, enqueueing job`,
+    );
+
+    const job = await this.importQueue.add(
+      IMPORT_DATA_JOB,
       { userId: user.id, dto },
       {
-        removeOnComplete: 100, // Keep last 100 completed jobs
-        removeOnFail: 50, // Keep last 50 failed jobs
+        removeOnComplete: 100,
+        removeOnFail: 50,
       },
     );
 
-    this.logger.log(`CSV import job ${job.id} queued for user ${user.id}`);
+    this.logger.log(
+      `${format.toUpperCase()} import job ${job.id} queued for user ${user.id}`,
+    );
 
     return {
-      message:
-        'CSV import started. You will receive an email when the import is complete.',
+      message: `${format.toUpperCase()} import started. You will receive an email when the import is complete.`,
       processedCount: 0,
       failedCount: 0,
     };

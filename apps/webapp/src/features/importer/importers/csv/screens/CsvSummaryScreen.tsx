@@ -105,7 +105,8 @@ export function CsvSummaryScreen() {
       }
 
       // Call the new bulk import API
-      await gualletClient.dataImporter.importCsv({
+      await gualletClient.dataImporter.importData({
+        format: 'csv',
         csvData: csvData.data as CsvRowData[],
         fieldMappings,
         accountMappings: apiAccountMappings,
