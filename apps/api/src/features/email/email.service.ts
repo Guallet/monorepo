@@ -202,6 +202,14 @@ export class EmailService implements OnModuleInit {
     exportFormatLabel?: string;
   }): Promise<void> {
     const finalAttachmentContent = attachmentContent ?? csvContent;
+
+    if (!finalAttachmentContent) {
+      this.logger.warn(
+        'No attachment content provided for export completion email',
+      );
+      return;
+    }
+
     const finalAttachmentFilename =
       attachmentFilename ??
       `guallet-export-${new Date().toISOString().split('T')[0]}.csv`;
