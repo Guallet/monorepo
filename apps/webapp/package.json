@@ -10,7 +10,8 @@
     "lint": "eslint . --fix",
     "preview": "vite preview",
     "prebuild": "pnpm i18n:extract",
-    "i18n:extract": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
+    "i18n:extract": "i18next 'src/**/*.{js,jsx,ts,tsx}'",
+    "doctor": "react-doctor . --verbose"
   },
   "dependencies": {
     "@guallet/api-client": "workspace:*",
@@ -69,6 +70,7 @@
     "postcss-simple-vars": "workspace:*",
     "typescript": "workspace:*",
     "typescript-eslint": "workspace:*",
-    "vite": "workspace:*"
+    "vite": "workspace:*",
+    "react-doctor": "^0.0.29"
   }
 }
