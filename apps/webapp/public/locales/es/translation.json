@@ -5,6 +5,31 @@
         "tooltip": "Eliminar"
       }
     },
+    "currencyPicker": {
+      "modal": {
+        "title": "Seleccionar moneda"
+      },
+      "input": {
+        "label": "Moneda de la cuenta",
+        "description": "La moneda de la cuenta",
+        "placeholder": "Seleccionar moneda"
+      }
+    },
+    "currencyPickerModal": {
+      "search": {
+        "placeholder": "Buscar monedas"
+      },
+      "emptyState": {
+        "noCurrencies": "No se encontraron monedas"
+      },
+      "sections": {
+        "suggested": "Monedas sugeridas"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+      }
+    },
     "dialogs": {
       "delete": {
         "cancelButton": {
@@ -99,47 +124,13 @@
         }
       },
       "modal": {
-        "title": "Seleccionar monedas preferidas",
-        "input": {
-          "label": "Monedas preferidas",
-          "placeholder": "Selecciona una o más monedas",
-          "nothingFoundMessage": "No se encontraron monedas"
-        },
-        "buttons": {
-          "cancel": "Cancelar",
-          "save": "Guardar"
-        }
+        "title": "Seleccionar monedas preferidas"
       },
       "row": {
         "label": "Monedas preferidas",
         "value_one": "{{count}} seleccionada",
         "value_many": "{{count}} seleccionadas",
         "value_other": "{{count}} seleccionadas"
-      }
-    },
-    "currencyPickerModal": {
-      "search": {
-        "placeholder": "Buscar monedas"
-      },
-      "emptyState": {
-        "noCurrencies": "No se encontraron monedas"
-      },
-      "sections": {
-        "suggested": "Monedas sugeridas"
-      },
-      "buttons": {
-        "cancel": "Cancelar",
-        "confirm": "Confirmar"
-      }
-    },
-    "currencyPicker": {
-      "modal": {
-        "title": "Seleccionar moneda"
-      },
-      "input": {
-        "label": "Moneda de la cuenta",
-        "description": "La moneda de la cuenta",
-        "placeholder": "Seleccionar moneda"
       }
     },
     "transactionsFilter": {
@@ -635,6 +626,16 @@
           }
         },
         "quickEdit": {
+          "notifications": {
+            "success": {
+              "title": "Éxito",
+              "message": "Transacción actualizada correctamente"
+            },
+            "error": {
+              "title": "Error",
+              "message": "No se pudo actualizar la transacción"
+            }
+          },
           "title": "Edición rápida de transacción",
           "form": {
             "notes": {
@@ -654,21 +655,10 @@
             "saveButton": {
               "label": "Guardar"
             }
-          },
-          "notifications": {
-            "success": {
-              "title": "Éxito",
-              "message": "Transacción actualizada correctamente"
-            },
-            "error": {
-              "title": "Error",
-              "message": "No se pudo actualizar la transacción"
-            }
           }
         }
       },
       "create": {
-        "title": "Agregar transacción",
         "notifications": {
           "success": {
             "title": "Éxito",
@@ -679,39 +669,8 @@
             "message": "No se pudo crear la transacción"
           }
         },
+        "title": "Agregar transacción",
         "form": {
-          "type": {
-            "expense": "Gasto",
-            "income": "Ingreso"
-          },
-          "description": {
-            "label": "Descripción",
-            "placeholder": "Ingresa la descripción de la transacción"
-          },
-          "notes": {
-            "label": "Notas",
-            "placeholder": "Ingresa notas de la transacción"
-          },
-          "account": {
-            "label": "Cuenta",
-            "placeholder": "Selecciona una cuenta"
-          },
-          "currency": {
-            "label": "Moneda",
-            "description": "La moneda de la transacción"
-          },
-          "amount": {
-            "label": "Monto",
-            "placeholder": "Ingresa el monto de la transacción"
-          },
-          "date": {
-            "label": "Fecha",
-            "placeholder": "Selecciona la fecha de la transacción"
-          },
-          "category": {
-            "label": "Categoría",
-            "placeholder": "Selecciona una categoría"
-          },
           "submitButton": {
             "label": "Agregar transacción"
           }
@@ -746,38 +705,6 @@
         },
         "title": "Editar transacción",
         "form": {
-          "type": {
-            "expense": "Gasto",
-            "income": "Ingreso"
-          },
-          "description": {
-            "label": "Descripción",
-            "placeholder": "Ingresa la descripción de la transacción"
-          },
-          "notes": {
-            "label": "Notas",
-            "placeholder": "Ingresa notas de la transacción"
-          },
-          "account": {
-            "label": "Cuenta",
-            "placeholder": "Selecciona una cuenta"
-          },
-          "currency": {
-            "label": "Moneda",
-            "description": "La moneda de la transacción"
-          },
-          "amount": {
-            "label": "Monto",
-            "placeholder": "Ingresa el monto de la transacción"
-          },
-          "date": {
-            "label": "Fecha",
-            "placeholder": "Selecciona la fecha de la transacción"
-          },
-          "category": {
-            "label": "Categoría",
-            "placeholder": "Selecciona una categoría"
-          },
           "submitButton": {
             "label": "Actualizar transacción"
           },

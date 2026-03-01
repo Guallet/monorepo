@@ -6,34 +6,23 @@ import { AccountTypeDto, CreateAccountRequest } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
 import {
-  Alert,
   Button,
   Group,
-  NativeSelect,
+  Select,
   NumberInput,
-  rem,
-  SimpleGrid,
   Stack,
-  Stepper,
-  Text,
   TextInput,
   Checkbox,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { IconChevronDown, IconInfoCircle } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { useState } from 'react';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import {
   accountFormDataSchema,
   AddAccountFormData,
   getAccountProperties,
-  getCommonStepFields,
-  getCommonStepSchema,
-  getSpecificStepFields,
-  getSummaryEntries,
   hasSpecificStep,
 } from './addAccountFormSchema';
 
@@ -76,70 +65,12 @@ export function AddAccountScreen() {
   const currencyValue = values.currency;
   const currency = currencyValue ? Currency.fromISOCode(currencyValue) : null;
 
-  const [currentStep, setCurrentStep] = useState(0);
-
   const accountTypes = Object.values(AccountTypeDto).map((accountType) => ({
-      label: getAccountTypeTitleSingular(accountType),
-      value: accountType,
-    }),
-  );
+    label: getAccountTypeTitleSingular(accountType),
+    value: accountType,
+  }));
 
-  const hasSecondStep = hasSpecificStep(values.account_type);
-  const summaryStep = hasSecondStep ? 2 : 1;
-
-  const setFieldIssues = (fields: Array<keyof AddAccountFormData>, issues: Array<{ field: string; message: string }>) => {
-    fields.forEach((field) => {
-      form.clearFieldError(field);
-    });
-
-    issues.forEach((issue) => {
-      form.setFieldError(issue.field, issue.message);
-    });
-  };
-
-  const validateCommonStep = (): boolean => {
-    const result = getCommonStepSchema().safeParse(form.values);
-
-    const fields = getCommonStepFields();
-    if (result.success) {
-      setFieldIssues(fields, []);
-      return true;
-    }
-
-    const issues = result.error.issues
-      .map((issue) => ({
-        field: String(issue.path[0] ?? ''),
-        message: issue.message,
-      }))
-      .filter((issue) => fields.includes(issue.field as keyof AddAccountFormData));
-
-    setFieldIssues(fields, issues);
-    return issues.length === 0;
-  };
-
-  const validateSpecificStep = (): boolean => {
-    const fields = getSpecificStepFields(values.account_type);
-    if (!fields.length) {
-      return true;
-    }
-
-    const result = accountFormDataSchema.safeParse(form.values);
-
-    if (result.success) {
-      setFieldIssues(fields, []);
-      return true;
-    }
-
-    const issues = result.error.issues
-      .map((issue) => ({
-        field: String(issue.path[0] ?? ''),
-        message: issue.message,
-      }))
-      .filter((issue) => fields.includes(issue.field as keyof AddAccountFormData));
-
-    setFieldIssues(fields, issues);
-    return issues.length === 0;
-  };
+  const hasSpecificFields = hasSpecificStep(values.account_type);
 
   async function onFormSubmit(data: AddAccountFormData): Promise<void> {
     if (data.currency === null) {
@@ -190,15 +121,13 @@ export function AddAccountScreen() {
     switch (values.account_type) {
       case AccountTypeDto.CURRENT_ACCOUNT:
         return (
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+          <Stack>
             <TextInput
-              required
               label="Account number"
               placeholder="Enter account number"
               {...form.getInputProps('currentAccountNumber')}
             />
             <TextInput
-              required
               label="Sort code"
               placeholder="00-00-00"
               {...form.getInputProps('currentSortCode')}
@@ -212,19 +141,17 @@ export function AddAccountScreen() {
                 parser: getNumberParser,
               })}
             />
-          </SimpleGrid>
+          </Stack>
         );
       case AccountTypeDto.CREDIT_CARD:
         return (
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+          <Stack>
             <TextInput
-              required
               label="Account number"
               placeholder="Enter account number"
               {...form.getInputProps('creditCardAccountNumber')}
             />
             <NumberInput
-              required
               label="Interest rate"
               leftSection="%"
               decimalScale={2}
@@ -233,7 +160,6 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Credit limit"
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
@@ -242,7 +168,6 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Cycle day"
               min={1}
               max={31}
@@ -250,13 +175,12 @@ export function AddAccountScreen() {
                 parser: getNumberParser,
               })}
             />
-          </SimpleGrid>
+          </Stack>
         );
       case AccountTypeDto.SAVINGS:
         return (
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+          <Stack>
             <NumberInput
-              required
               label="Interest rate"
               leftSection="%"
               decimalScale={2}
@@ -264,13 +188,12 @@ export function AddAccountScreen() {
                 parser: getNumberParser,
               })}
             />
-          </SimpleGrid>
+          </Stack>
         );
       case AccountTypeDto.MORTGAGE:
         return (
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+          <Stack>
             <NumberInput
-              required
               label="Property value"
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
@@ -279,7 +202,6 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Mortgage amount"
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
@@ -288,7 +210,6 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Interest rate"
               leftSection="%"
               decimalScale={2}
@@ -297,20 +218,18 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Term length"
               description="Years"
               {...form.getInputProps('mortgageTermLength', {
                 parser: getNumberParser,
               })}
             />
-          </SimpleGrid>
+          </Stack>
         );
       case AccountTypeDto.LOAN:
         return (
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+          <Stack>
             <NumberInput
-              required
               label="Loan amount"
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
@@ -319,7 +238,6 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Interest rate"
               leftSection="%"
               decimalScale={2}
@@ -328,14 +246,13 @@ export function AddAccountScreen() {
               })}
             />
             <NumberInput
-              required
               label="Term length"
               description="Years"
               {...form.getInputProps('loanTermLength', {
                 parser: getNumberParser,
               })}
             />
-          </SimpleGrid>
+          </Stack>
         );
       default:
         return null;
@@ -356,134 +273,54 @@ export function AddAccountScreen() {
         <Stack>
           <AppSection title="Create new account">
             <Stack>
-              <Stepper active={currentStep}>
-                <Stepper.Step label="Step 1" description="Common fields">
-                  <Stack mt="md">
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                      <TextInput
-                        required
-                        label="Account name"
-                        placeholder="Enter account name"
-                        {...form.getInputProps('name')}
-                      />
-                      <NativeSelect
-                        required
-                        rightSection={
-                          <IconChevronDown
-                            style={{ width: rem(16), height: rem(16) }}
-                          />
-                        }
-                        label="Account type"
-                        data={accountTypes}
-                        {...form.getInputProps('account_type')}
-                        onChange={(event) => {
-                          const type = event.currentTarget.value as AccountTypeDto;
-                          form.setFieldValue('account_type', type);
-                          const nextSummaryStep = hasSpecificStep(type) ? 2 : 1;
-                          if (currentStep > nextSummaryStep) {
-                            setCurrentStep(nextSummaryStep);
-                          }
-                        }}
-                      />
-                    </SimpleGrid>
-
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                      <CurrencyPicker
-                        name="currency"
-                        required
-                        value={values.currency}
-                        onValueChanged={(newValue) => {
-                          form.setFieldValue('currency', newValue);
-                        }}
-                      />
-                      <NumberInput
-                        label="Initial balance"
-                        required
-                        description="Initial balance of the account"
-                        leftSection={currency?.symbol}
-                        decimalScale={currency?.decimalPlaces}
-                        {...form.getInputProps('balance', {
-                          parser: getNumberParser,
-                        })}
-                      />
-                    </SimpleGrid>
-
-                    <Checkbox
-                      label="Create initial balance transaction"
-                      description="If checked, an initial transaction will be created to reflect the starting balance"
-                      {...form.getInputProps('createInitialTransaction', {
-                        type: 'checkbox',
-                      })}
-                    />
-                  </Stack>
-                </Stepper.Step>
-
-                {hasSecondStep && (
-                  <Stepper.Step
-                    label="Step 2"
-                    description="Account-type specific details"
-                  >
-                    <Stack mt="md">{renderSpecificFields()}</Stack>
-                  </Stepper.Step>
-                )}
-
-                <Stepper.Step label="Summary" description="Confirm details">
-                  <Stack mt="md">
-                    <Alert icon={<IconInfoCircle size={16} />} color="blue">
-                      Please review the account details before final submission.
-                    </Alert>
-                    <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                      {getSummaryEntries(values).map(([label, value]) => (
-                        <Text key={label}>
-                          <Text span fw={600}>
-                            {label}:
-                          </Text>{' '}
-                          {value}
-                        </Text>
-                      ))}
-                    </SimpleGrid>
-                  </Stack>
-                </Stepper.Step>
-              </Stepper>
+              <TextInput
+                required
+                label="Account name"
+                placeholder="Enter account name"
+                {...form.getInputProps('name')}
+              />
+              <Select
+                required
+                label="Account type"
+                searchable
+                data={accountTypes}
+                {...form.getInputProps('account_type')}
+                onChange={(value) => {
+                  if (!value) return;
+                  form.setFieldValue('account_type', value as AccountTypeDto);
+                }}
+              />
+              <CurrencyPicker
+                name="currency"
+                required
+                value={values.currency}
+                onValueChanged={(newValue) => {
+                  form.setFieldValue('currency', newValue);
+                }}
+              />
+              <NumberInput
+                label="Initial balance"
+                required
+                description="Initial balance of the account"
+                leftSection={currency?.symbol}
+                decimalScale={currency?.decimalPlaces}
+                {...form.getInputProps('balance', {
+                  parser: getNumberParser,
+                })}
+              />
+              <Checkbox
+                label="Create initial balance transaction"
+                description="If checked, an initial transaction will be created to reflect the starting balance"
+                {...form.getInputProps('createInitialTransaction', {
+                  type: 'checkbox',
+                })}
+              />
+              {hasSpecificFields && renderSpecificFields()}
             </Stack>
           </AppSection>
 
           <Group>
-            {currentStep > 0 && (
-              <Button
-                variant="default"
-                onClick={() => {
-                  setCurrentStep(currentStep - 1);
-                }}
-              >
-                Back
-              </Button>
-            )}
-
-            {currentStep < summaryStep && (
-              <Button
-                onClick={() => {
-                  if (currentStep === 0) {
-                    if (!validateCommonStep()) {
-                      return;
-                    }
-                    setCurrentStep(1);
-                    return;
-                  }
-
-                  if (hasSecondStep && !validateSpecificStep()) {
-                    return;
-                  }
-
-                  setCurrentStep(summaryStep);
-                }}
-              >
-                Continue
-              </Button>
-            )}
-
-            {currentStep === summaryStep && <Button type="submit">Create account</Button>}
-
+            <Button type="submit">Create account</Button>
             <Button
               variant="outline"
               onClick={() => {

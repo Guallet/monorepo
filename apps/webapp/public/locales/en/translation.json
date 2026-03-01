@@ -5,6 +5,31 @@
         "tooltip": "Delete"
       }
     },
+    "currencyPicker": {
+      "modal": {
+        "title": "Select currency"
+      },
+      "input": {
+        "label": "Account currency",
+        "description": "The currency of the account",
+        "placeholder": "Select currency"
+      }
+    },
+    "currencyPickerModal": {
+      "search": {
+        "placeholder": "Search currencies"
+      },
+      "emptyState": {
+        "noCurrencies": "No currencies found"
+      },
+      "sections": {
+        "suggested": "Suggested currencies"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      }
+    },
     "dialogs": {
       "delete": {
         "cancelButton": {
@@ -97,46 +122,12 @@
         }
       },
       "modal": {
-        "title": "Select Preferred Currencies",
-        "input": {
-          "label": "Preferred currencies",
-          "placeholder": "Select one or more currencies",
-          "nothingFoundMessage": "No currencies found"
-        },
-        "buttons": {
-          "cancel": "Cancel",
-          "save": "Save"
-        }
+        "title": "Select Preferred Currencies"
       },
       "row": {
         "label": "Preferred Currencies",
         "value_one": "{{count}} selected",
         "value_other": "{{count}} selected"
-      }
-    },
-    "currencyPickerModal": {
-      "search": {
-        "placeholder": "Search currencies"
-      },
-      "emptyState": {
-        "noCurrencies": "No currencies found"
-      },
-      "sections": {
-        "suggested": "Suggested currencies"
-      },
-      "buttons": {
-        "cancel": "Cancel",
-        "confirm": "Confirm"
-      }
-    },
-    "currencyPicker": {
-      "modal": {
-        "title": "Select currency"
-      },
-      "input": {
-        "label": "Account currency",
-        "description": "The currency of the account",
-        "placeholder": "Select currency"
       }
     },
     "transactionsFilter": {
@@ -629,6 +620,16 @@
           }
         },
         "quickEdit": {
+          "notifications": {
+            "success": {
+              "title": "Success",
+              "message": "Transaction updated successfully"
+            },
+            "error": {
+              "title": "Error",
+              "message": "Failed to update transaction"
+            }
+          },
           "title": "Quick edit transaction",
           "form": {
             "notes": {
@@ -648,21 +649,10 @@
             "saveButton": {
               "label": "Save"
             }
-          },
-          "notifications": {
-            "success": {
-              "title": "Success",
-              "message": "Transaction updated successfully"
-            },
-            "error": {
-              "title": "Error",
-              "message": "Failed to update transaction"
-            }
           }
         }
       },
       "create": {
-        "title": "Add Transaction",
         "notifications": {
           "success": {
             "title": "Success",
@@ -673,39 +663,8 @@
             "message": "Failed to create transaction"
           }
         },
+        "title": "Add Transaction",
         "form": {
-          "type": {
-            "expense": "Expense",
-            "income": "Income"
-          },
-          "description": {
-            "label": "Description",
-            "placeholder": "Enter transaction description"
-          },
-          "notes": {
-            "label": "Notes",
-            "placeholder": "Enter transaction notes"
-          },
-          "account": {
-            "label": "Account",
-            "placeholder": "Select an account"
-          },
-          "currency": {
-            "label": "Currency",
-            "description": "The currency of the transaction"
-          },
-          "amount": {
-            "label": "Amount",
-            "placeholder": "Enter transaction amount"
-          },
-          "date": {
-            "label": "Date",
-            "placeholder": "Select transaction date"
-          },
-          "category": {
-            "label": "Category",
-            "placeholder": "Select a category"
-          },
           "submitButton": {
             "label": "Add Transaction"
           }
@@ -740,38 +699,6 @@
         },
         "title": "Edit Transaction",
         "form": {
-          "type": {
-            "expense": "Expense",
-            "income": "Income"
-          },
-          "description": {
-            "label": "Description",
-            "placeholder": "Enter transaction description"
-          },
-          "notes": {
-            "label": "Notes",
-            "placeholder": "Enter transaction notes"
-          },
-          "account": {
-            "label": "Account",
-            "placeholder": "Select an account"
-          },
-          "currency": {
-            "label": "Currency",
-            "description": "The currency of the transaction"
-          },
-          "amount": {
-            "label": "Amount",
-            "placeholder": "Enter transaction amount"
-          },
-          "date": {
-            "label": "Date",
-            "placeholder": "Select transaction date"
-          },
-          "category": {
-            "label": "Category",
-            "placeholder": "Select a category"
-          },
           "submitButton": {
             "label": "Update Transaction"
           },

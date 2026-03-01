@@ -31,127 +31,7 @@ export const accountFormBaseSchema = z.object({
   loanTermLength: z.number().nullable().optional(),
 });
 
-export const accountFormDataSchema = accountFormBaseSchema.superRefine(
-  (values, ctx) => {
-    switch (values.account_type) {
-      case AccountTypeDto.CURRENT_ACCOUNT: {
-        if (!values.currentAccountNumber) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['currentAccountNumber'],
-            message: 'Account number is required',
-          });
-        }
-        if (!values.currentSortCode) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['currentSortCode'],
-            message: 'Sort code is required',
-          });
-        }
-        break;
-      }
-      case AccountTypeDto.CREDIT_CARD: {
-        if (!values.creditCardAccountNumber) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['creditCardAccountNumber'],
-            message: 'Account number is required',
-          });
-        }
-        if (values.creditCardInterestRate == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['creditCardInterestRate'],
-            message: 'Interest rate is required',
-          });
-        }
-        if (values.creditCardCreditLimit == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['creditCardCreditLimit'],
-            message: 'Credit limit is required',
-          });
-        }
-        if (values.creditCardCycleDay == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['creditCardCycleDay'],
-            message: 'Cycle day is required',
-          });
-        }
-        break;
-      }
-      case AccountTypeDto.SAVINGS: {
-        if (values.savingsInterestRate == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['savingsInterestRate'],
-            message: 'Interest rate is required',
-          });
-        }
-        break;
-      }
-      case AccountTypeDto.MORTGAGE: {
-        if (values.mortgagePropertyValue == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['mortgagePropertyValue'],
-            message: 'Property value is required',
-          });
-        }
-        if (values.mortgageAmount == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['mortgageAmount'],
-            message: 'Mortgage amount is required',
-          });
-        }
-        if (values.mortgageInterestRate == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['mortgageInterestRate'],
-            message: 'Interest rate is required',
-          });
-        }
-        if (values.mortgageTermLength == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['mortgageTermLength'],
-            message: 'Term length is required',
-          });
-        }
-        break;
-      }
-      case AccountTypeDto.LOAN: {
-        if (values.loanAmount == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['loanAmount'],
-            message: 'Loan amount is required',
-          });
-        }
-        if (values.loanInterestRate == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['loanInterestRate'],
-            message: 'Interest rate is required',
-          });
-        }
-        if (values.loanTermLength == null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['loanTermLength'],
-            message: 'Term length is required',
-          });
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  },
-);
+export const accountFormDataSchema = accountFormBaseSchema;
 
 export type AddAccountFormData = z.infer<typeof accountFormDataSchema>;
 
@@ -218,20 +98,6 @@ type AccountProperties =
   | MortgageAccountProperties
   | LoanAccountProperties;
 
-function requireString(value: string | undefined, field: string): string {
-  if (!value) {
-    throw new Error(`Missing required field: ${field}`);
-  }
-  return value;
-}
-
-function requireNumber(value: number | null | undefined, field: string): number {
-  if (value == null) {
-    throw new Error(`Missing required field: ${field}`);
-  }
-  return value;
-}
-
 export function getAccountProperties(
   values: AddAccountFormData,
 ): AccountProperties | null {
@@ -239,62 +105,43 @@ export function getAccountProperties(
     case AccountTypeDto.CURRENT_ACCOUNT:
       return {
         details: {
-          accountNumber: requireString(
-            values.currentAccountNumber,
-            'currentAccountNumber',
-          ),
-          sortCode: requireString(values.currentSortCode, 'currentSortCode'),
+          accountNumber: values.currentAccountNumber ?? '',
+          sortCode: values.currentSortCode ?? '',
         },
         overdraft: values.currentOverdraftLimit ?? null,
       };
     case AccountTypeDto.CREDIT_CARD:
       return {
-        accountNumber: requireString(
-          values.creditCardAccountNumber,
-          'creditCardAccountNumber',
-        ),
-        interestRate: requireNumber(
-          values.creditCardInterestRate,
-          'creditCardInterestRate',
-        ),
-        creditLimit: requireNumber(
-          values.creditCardCreditLimit,
-          'creditCardCreditLimit',
-        ),
-        cycleDay: requireNumber(values.creditCardCycleDay, 'creditCardCycleDay'),
+        accountNumber: values.creditCardAccountNumber ?? '',
+        interestRate: values.creditCardInterestRate ?? null,
+        creditLimit: values.creditCardCreditLimit ?? null,
+        cycleDay: values.creditCardCycleDay ?? null,
       };
     case AccountTypeDto.SAVINGS:
       return {
-        interestRate: requireNumber(
-          values.savingsInterestRate,
-          'savingsInterestRate',
-        ),
+        interestRate: values.savingsInterestRate ?? null,
       };
     case AccountTypeDto.MORTGAGE:
       return {
-        propertyValue: requireNumber(
-          values.mortgagePropertyValue,
-          'mortgagePropertyValue',
-        ),
-        mortgageAmount: requireNumber(values.mortgageAmount, 'mortgageAmount'),
-        interestRate: requireNumber(
-          values.mortgageInterestRate,
-          'mortgageInterestRate',
-        ),
-        termLength: requireNumber(values.mortgageTermLength, 'mortgageTermLength'),
+        propertyValue: values.mortgagePropertyValue ?? null,
+        mortgageAmount: values.mortgageAmount ?? null,
+        interestRate: values.mortgageInterestRate ?? null,
+        termLength: values.mortgageTermLength ?? null,
       };
     case AccountTypeDto.LOAN:
       return {
-        loanAmount: requireNumber(values.loanAmount, 'loanAmount'),
-        interestRate: requireNumber(values.loanInterestRate, 'loanInterestRate'),
-        termLength: requireNumber(values.loanTermLength, 'loanTermLength'),
+        loanAmount: values.loanAmount ?? null,
+        interestRate: values.loanInterestRate ?? null,
+        termLength: values.loanTermLength ?? null,
       };
     default:
       return null;
   }
 }
 
-export function getSummaryEntries(values: AddAccountFormData): Array<[string, string]> {
+export function getSummaryEntries(
+  values: AddAccountFormData,
+): Array<[string, string]> {
   const entries: Array<[string, string]> = [
     ['Account name', values.name],
     ['Account type', values.account_type],
