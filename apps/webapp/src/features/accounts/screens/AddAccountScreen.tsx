@@ -26,8 +26,14 @@ import {
   hasSpecificStep,
 } from './addAccountFormSchema';
 
+/** Used for required numeric fields — empty string becomes 0. */
 function getNumberParser(value: string): number {
   return value ? Number.parseFloat(value) : 0;
+}
+
+/** Used for optional/nullable numeric fields — empty string becomes null. */
+function getNullableNumberParser(value: string): number | null {
+  return value ? Number.parseFloat(value) : null;
 }
 
 export function AddAccountScreen() {
@@ -138,7 +144,7 @@ export function AddAccountScreen() {
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('currentOverdraftLimit', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
           </Stack>
@@ -156,7 +162,7 @@ export function AddAccountScreen() {
               leftSection="%"
               decimalScale={2}
               {...form.getInputProps('creditCardInterestRate', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
@@ -164,7 +170,7 @@ export function AddAccountScreen() {
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('creditCardCreditLimit', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
@@ -172,7 +178,7 @@ export function AddAccountScreen() {
               min={1}
               max={31}
               {...form.getInputProps('creditCardCycleDay', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
           </Stack>
@@ -185,7 +191,7 @@ export function AddAccountScreen() {
               leftSection="%"
               decimalScale={2}
               {...form.getInputProps('savingsInterestRate', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
           </Stack>
@@ -198,7 +204,7 @@ export function AddAccountScreen() {
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('mortgagePropertyValue', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
@@ -206,7 +212,7 @@ export function AddAccountScreen() {
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('mortgageAmount', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
@@ -214,14 +220,14 @@ export function AddAccountScreen() {
               leftSection="%"
               decimalScale={2}
               {...form.getInputProps('mortgageInterestRate', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
               label="Term length"
               description="Years"
               {...form.getInputProps('mortgageTermLength', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
           </Stack>
@@ -234,7 +240,7 @@ export function AddAccountScreen() {
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('loanAmount', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
@@ -242,14 +248,14 @@ export function AddAccountScreen() {
               leftSection="%"
               decimalScale={2}
               {...form.getInputProps('loanInterestRate', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
             <NumberInput
               label="Term length"
               description="Years"
               {...form.getInputProps('loanTermLength', {
-                parser: getNumberParser,
+                parser: getNullableNumberParser,
               })}
             />
           </Stack>
