@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 import { DataImporterController } from './data-importer.controller';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { DataImportRequestDto } from './dto/data-import-request.dto';
@@ -10,6 +11,7 @@ import { Queue, Job } from 'bullmq';
 import {
   IMPORT_DATA_QUEUE,
   IMPORT_DATA_JOB,
+  SUPPORTED_IMPORT_FORMATS,
 } from './processors/import-data.processor';
 
 describe('DataImporterController', () => {
@@ -201,6 +203,18 @@ describe('DataImporterController', () => {
       const result = await controller.importData(mockUser, dto);
 
       expect(result.message).toContain('import started');
+    });
+
+    it('should return 400 for an unsupported format', async () => {
+      const dto = { format: 'xml' as any } as DataImportRequestDto;
+
+      await expect(controller.importData(mockUser, dto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(controller.importData(mockUser, dto)).rejects.toThrow(
+        `Unsupported import format "xml". Supported formats: ${SUPPORTED_IMPORT_FORMATS.join(', ')}`,
+      );
+      expect(importQueue.add).not.toHaveBeenCalled();
     });
   });
 });

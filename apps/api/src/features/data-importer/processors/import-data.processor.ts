@@ -5,10 +5,8 @@ import { EmailService } from '../../email/email.service';
 import { UsersService } from '../../users/users.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { NotificationType } from '../../notifications/entities/notification.entity';
-import {
-  DataImportRequestDto,
-  ImportFormat,
-} from '../dto/data-import-request.dto';
+import { DataFormat } from '../../data-formats';
+import { DataImportRequestDto } from '../dto/data-import-request.dto';
 import { ImportEngine } from '../engines/import-engine.interface';
 import { CsvImportEngine } from '../engines/csv-import.engine';
 import { OfeImportEngine } from '../engines/ofe-import.engine';
@@ -16,6 +14,8 @@ import { JsonImportEngine } from '../engines/json-import.engine';
 
 export const IMPORT_DATA_QUEUE = 'import-data';
 export const IMPORT_DATA_JOB = 'process-import';
+
+export { SUPPORTED_DATA_FORMATS as SUPPORTED_IMPORT_FORMATS } from '../../data-formats';
 
 export interface ImportJobData {
   userId: string;
@@ -27,7 +27,7 @@ export class ImportDataProcessor extends WorkerHost {
   private readonly logger = new Logger(ImportDataProcessor.name);
 
   /** Format → engine look-up populated in the constructor */
-  private readonly engines: Record<ImportFormat, ImportEngine>;
+  private readonly engines: Record<DataFormat, ImportEngine>;
 
   constructor(
     private readonly emailService: EmailService,

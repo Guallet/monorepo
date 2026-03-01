@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Post,
   Body,
@@ -16,6 +17,7 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import {
   IMPORT_DATA_QUEUE,
   IMPORT_DATA_JOB,
+  SUPPORTED_IMPORT_FORMATS,
   ImportJobData,
 } from './processors/import-data.processor';
 
@@ -41,6 +43,13 @@ export class DataImporterController {
     @Body() dto: DataImportRequestDto,
   ): Promise<DataImportResponseDto> {
     const format = dto.format || 'csv';
+
+    if (!SUPPORTED_IMPORT_FORMATS.includes(format)) {
+      throw new BadRequestException(
+        `Unsupported import format "${format}". Supported formats: ${SUPPORTED_IMPORT_FORMATS.join(', ')}`,
+      );
+    }
+
     this.logger.log(
       `${format.toUpperCase()} import request from user ${user.id}, enqueueing job`,
     );

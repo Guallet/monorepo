@@ -13,11 +13,14 @@ import { ExportEngine } from '../engines/export-engine.interface';
 import { CsvExportEngine } from '../engines/csv-export.engine';
 import { OfeExportEngine } from '../engines/ofe-export.engine';
 import { JsonExportEngine } from '../engines/json-export.engine';
+import { DataFormat } from '../../data-formats';
 
 export const EXPORT_DATA_QUEUE = 'export-data';
 export const EXPORT_DATA_JOB = 'process-export';
+export { SUPPORTED_DATA_FORMATS as SUPPORTED_EXPORT_FORMATS } from '../../data-formats';
 
-export type ExportFormat = 'csv' | 'ofe' | 'json';
+/** All formats the export pipeline accepts. Alias of {@link DataFormat}. */
+export type ExportFormat = DataFormat;
 
 export interface ExportJobData {
   userId: string;

@@ -5,8 +5,10 @@ import {
   AccountMapping,
   CategoryMapping,
 } from './csv-import-request.dto';
+import { DataFormat } from '../../data-formats';
 
-export type ImportFormat = 'csv' | 'ofe' | 'json';
+/** All formats the import pipeline accepts. Alias of {@link DataFormat}. */
+export type ImportFormat = DataFormat;
 
 export class DataImportRequestDto {
   @ApiProperty({
