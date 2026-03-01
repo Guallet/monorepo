@@ -5,7 +5,7 @@ import { normalizeAmount } from './normalize-amount.util';
 @Injectable()
 export class OfeExportEngine implements ExportEngine {
   readonly fileExtension = '.ofx';
-  readonly formatLabel = 'OFX';
+  readonly formatLabel = 'OFE';
 
   generateContent(params: ExportEngineParams): string {
     const { transactions, accountsMap } = params;
