@@ -31,19 +31,102 @@ export const accountFormBaseSchema = z.object({
   loanTermLength: z.number().nullable().optional(),
 });
 
-export const accountFormDataSchema = accountFormBaseSchema;
+export const accountFormDataSchema = accountFormBaseSchema.superRefine(
+  (values, ctx) => {
+    const required = (
+      value: string | number | null | undefined,
+      path: string,
+      message: string,
+    ) => {
+      const empty = value === null || value === undefined || value === '';
+      if (empty)
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message });
+    };
+
+    switch (values.account_type) {
+      case AccountTypeDto.CURRENT_ACCOUNT:
+        required(
+          values.currentAccountNumber,
+          'currentAccountNumber',
+          'Account number is required',
+        );
+        required(
+          values.currentSortCode,
+          'currentSortCode',
+          'Sort code is required',
+        );
+        break;
+      case AccountTypeDto.CREDIT_CARD:
+        required(
+          values.creditCardAccountNumber,
+          'creditCardAccountNumber',
+          'Account number is required',
+        );
+        required(
+          values.creditCardInterestRate,
+          'creditCardInterestRate',
+          'Interest rate is required',
+        );
+        required(
+          values.creditCardCreditLimit,
+          'creditCardCreditLimit',
+          'Credit limit is required',
+        );
+        required(
+          values.creditCardCycleDay,
+          'creditCardCycleDay',
+          'Cycle day is required',
+        );
+        break;
+      case AccountTypeDto.SAVINGS:
+        required(
+          values.savingsInterestRate,
+          'savingsInterestRate',
+          'Interest rate is required',
+        );
+        break;
+      case AccountTypeDto.MORTGAGE:
+        required(
+          values.mortgagePropertyValue,
+          'mortgagePropertyValue',
+          'Property value is required',
+        );
+        required(
+          values.mortgageAmount,
+          'mortgageAmount',
+          'Mortgage amount is required',
+        );
+        required(
+          values.mortgageInterestRate,
+          'mortgageInterestRate',
+          'Interest rate is required',
+        );
+        required(
+          values.mortgageTermLength,
+          'mortgageTermLength',
+          'Term length is required',
+        );
+        break;
+      case AccountTypeDto.LOAN:
+        required(values.loanAmount, 'loanAmount', 'Loan amount is required');
+        required(
+          values.loanInterestRate,
+          'loanInterestRate',
+          'Interest rate is required',
+        );
+        required(
+          values.loanTermLength,
+          'loanTermLength',
+          'Term length is required',
+        );
+        break;
+    }
+  },
+);
 
 export type AddAccountFormData = z.infer<typeof accountFormDataSchema>;
 
-const STEP_ONE_FIELDS: Array<keyof AddAccountFormData> = [
-  'name',
-  'currency',
-  'balance',
-  'createInitialTransaction',
-  'account_type',
-];
-
-const STEP_TWO_FIELDS_BY_TYPE: Partial<
+const SPECIFIC_FIELDS_BY_TYPE: Partial<
   Record<AccountTypeDto, Array<keyof AddAccountFormData>>
 > = {
   [AccountTypeDto.CURRENT_ACCOUNT]: [
@@ -67,24 +150,10 @@ const STEP_TWO_FIELDS_BY_TYPE: Partial<
   [AccountTypeDto.LOAN]: ['loanAmount', 'loanInterestRate', 'loanTermLength'],
 };
 
-export function getCommonStepFields(): Array<keyof AddAccountFormData> {
-  return STEP_ONE_FIELDS;
-}
-
-export function getCommonStepSchema() {
-  return accountFormBaseSchema.pick({
-    name: true,
-    currency: true,
-    balance: true,
-    createInitialTransaction: true,
-    account_type: true,
-  });
-}
-
 export function getSpecificStepFields(
   accountType: AccountTypeDto,
 ): Array<keyof AddAccountFormData> {
-  return STEP_TWO_FIELDS_BY_TYPE[accountType] ?? [];
+  return SPECIFIC_FIELDS_BY_TYPE[accountType] ?? [];
 }
 
 export function hasSpecificStep(accountType: AccountTypeDto): boolean {
