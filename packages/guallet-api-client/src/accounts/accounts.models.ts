@@ -76,26 +76,26 @@ export interface CurrentAccountProperties {
 
 export interface CreditCardProperties {
   accountNumber: string;
-  interestRate: number;
-  creditLimit: number;
-  cycleDay: number | string;
+  interestRate: number | null;
+  creditLimit: number | null;
+  cycleDay: number | null;
 }
 
 export interface SavingAccountProperties {
-  interestRate: number;
+  interestRate: number | null;
 }
 
 export interface MortgageAccountProperties {
-  propertyValue: number;
-  mortgageAmount: number;
-  interestRate: number;
-  termLength: number;
+  propertyValue: number | null;
+  mortgageAmount: number | null;
+  interestRate: number | null;
+  termLength: number | null;
 }
 
 export interface LoanAccountProperties {
-  loanAmount: number;
-  interestRate: number;
-  termLength: number;
+  loanAmount: number | null;
+  interestRate: number | null;
+  termLength: number | null;
 }
 
 export interface AccountChartsDto {
