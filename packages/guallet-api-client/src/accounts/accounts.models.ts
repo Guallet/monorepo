@@ -11,6 +11,8 @@ export type AccountDto = {
     | CurrentAccountProperties
     | CreditCardProperties
     | SavingAccountProperties
+    | MortgageAccountProperties
+    | LoanAccountProperties
     | null;
 };
 
