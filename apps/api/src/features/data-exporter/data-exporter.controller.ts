@@ -14,20 +14,10 @@ import { DataExportResponseDto } from './dto/data-export-response.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
-  CSV_EXPORT_QUEUE,
-  CSV_EXPORT_JOB,
-  CsvExportJobData,
-} from './processors/csv-export.processor';
-import {
-  OFE_EXPORT_QUEUE,
-  OFE_EXPORT_JOB,
-  OfeExportJobData,
-} from './processors/ofe-export.processor';
-import {
-  JSON_EXPORT_QUEUE,
-  JSON_EXPORT_JOB,
-  JsonExportJobData,
-} from './processors/json-export.processor';
+  EXPORT_DATA_QUEUE,
+  EXPORT_DATA_JOB,
+  ExportJobData,
+} from './processors/export-data.processor';
 
 @ApiTags('Data Import / Export')
 @Controller('data')
@@ -35,12 +25,8 @@ export class DataExporterController {
   private readonly logger = new Logger(DataExporterController.name);
 
   constructor(
-    @InjectQueue(CSV_EXPORT_QUEUE)
-    private readonly csvExportQueue: Queue<CsvExportJobData>,
-    @InjectQueue(OFE_EXPORT_QUEUE)
-    private readonly ofeExportQueue: Queue<OfeExportJobData>,
-    @InjectQueue(JSON_EXPORT_QUEUE)
-    private readonly jsonExportQueue: Queue<JsonExportJobData>,
+    @InjectQueue(EXPORT_DATA_QUEUE)
+    private readonly exportQueue: Queue<ExportJobData>,
   ) {}
 
   @Post('export')
@@ -54,30 +40,14 @@ export class DataExporterController {
     @RequestUser() user: UserPrincipal,
     @Body() dto: DataExportRequestDto,
   ): Promise<DataExportResponseDto> {
-    const { format = 'csv', ...exportDto } = dto;
+    const { format = 'csv' } = dto;
     this.logger.log(
       `${format.toUpperCase()} export request from user ${user.id}, enqueueing job`,
     );
 
-    const queueByFormat = {
-      csv: this.csvExportQueue,
-      ofe: this.ofeExportQueue,
-      json: this.jsonExportQueue,
-    } as const;
-    const jobNameByFormat = {
-      csv: CSV_EXPORT_JOB,
-      ofe: OFE_EXPORT_JOB,
-      json: JSON_EXPORT_JOB,
-    } as const;
-    const messageByFormat = (fmt: typeof format) =>
-      `${fmt.toUpperCase()} export started. You will receive an email with the file when the export is complete.`;
-
-    const queue = queueByFormat[format];
-    const jobName = jobNameByFormat[format];
-
-    const job = await queue.add(
-      jobName,
-      { userId: user.id, dto: exportDto },
+    const job = await this.exportQueue.add(
+      EXPORT_DATA_JOB,
+      { userId: user.id, dto: dto },
       {
         removeOnComplete: 100,
         removeOnFail: 50,
@@ -89,7 +59,7 @@ export class DataExporterController {
     );
 
     return {
-      message: messageByFormat(format),
+      message: `${format.toUpperCase()} export started. You will receive an email with the file when the export is complete.`,
     };
   }
 }
