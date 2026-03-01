@@ -170,6 +170,7 @@ describe('AccountsService', () => {
         type: dto.type,
         source: AccountSource.UNKNOWN,
         source_name: undefined,
+        properties: null,
       });
       expect(mockTransactionRepository.save).not.toHaveBeenCalled();
     });
@@ -207,6 +208,7 @@ describe('AccountsService', () => {
         type: dto.type,
         source: AccountSource.UNKNOWN,
         source_name: undefined,
+        properties: null,
       });
       expect(mockTransactionRepository.save).not.toHaveBeenCalled();
     });
@@ -332,6 +334,43 @@ describe('AccountsService', () => {
       const result = await service.create({ user_id: userId, dto });
 
       expect(result.balance).toBe(-200000);
+    });
+
+    it('should persist account-type specific properties', async () => {
+      const userId = 'user-123';
+      const dto: CreateAccountRequest = {
+        name: 'Mortgage',
+        type: AccountType.MORTGAGE,
+        currency: 'GBP',
+        properties: {
+          propertyValue: 350000,
+          mortgageAmount: 250000,
+          interestRate: 4.2,
+          termLength: 30,
+        },
+      };
+
+      const savedAccount = {
+        id: 'account-1',
+        user_id: userId,
+        name: dto.name,
+        balance: 0,
+        currency: dto.currency,
+        type: dto.type,
+        source: AccountSource.UNKNOWN,
+        properties: dto.properties,
+      };
+
+      mockAccountRepository.save.mockResolvedValue(savedAccount);
+
+      const result = await service.create({ user_id: userId, dto });
+
+      expect(result.properties).toEqual(dto.properties);
+      expect(mockAccountRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: dto.properties,
+        }),
+      );
     });
   });
 

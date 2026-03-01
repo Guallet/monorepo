@@ -11,6 +11,8 @@ export type AccountDto = {
     | CurrentAccountProperties
     | CreditCardProperties
     | SavingAccountProperties
+    | MortgageAccountProperties
+    | LoanAccountProperties
     | null;
 };
 
@@ -46,6 +48,13 @@ export type CreateAccountRequest = {
   institution_id?: string;
   source?: AccountSourceDto;
   source_name?: string;
+  properties?:
+    | CurrentAccountProperties
+    | CreditCardProperties
+    | SavingAccountProperties
+    | MortgageAccountProperties
+    | LoanAccountProperties
+    | null;
 };
 
 export type UpdateAccountRequest = {
@@ -67,13 +76,26 @@ export interface CurrentAccountProperties {
 
 export interface CreditCardProperties {
   accountNumber: string;
-  interestRate: number;
-  creditLimit: number;
-  cycleDay: 'number' | 'string';
+  interestRate: number | null;
+  creditLimit: number | null;
+  cycleDay: number | null;
 }
 
 export interface SavingAccountProperties {
-  interestRate: number;
+  interestRate: number | null;
+}
+
+export interface MortgageAccountProperties {
+  propertyValue: number | null;
+  mortgageAmount: number | null;
+  interestRate: number | null;
+  termLength: number | null;
+}
+
+export interface LoanAccountProperties {
+  loanAmount: number | null;
+  interestRate: number | null;
+  termLength: number | null;
 }
 
 export interface AccountChartsDto {
