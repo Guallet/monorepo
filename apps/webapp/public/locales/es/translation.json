@@ -87,6 +87,61 @@
       "accountsLinked_other": "",
       "noAccountsLinked": "Sin cuentas vinculadas"
     },
+    "preferredCurrenciesRow": {
+      "notifications": {
+        "success": {
+          "title": "Éxito",
+          "message": "Monedas preferidas actualizadas correctamente"
+        },
+        "error": {
+          "title": "Error",
+          "message": "No se pudieron actualizar las monedas preferidas"
+        }
+      },
+      "modal": {
+        "title": "Seleccionar monedas preferidas",
+        "input": {
+          "label": "Monedas preferidas",
+          "placeholder": "Selecciona una o más monedas",
+          "nothingFoundMessage": "No se encontraron monedas"
+        },
+        "buttons": {
+          "cancel": "Cancelar",
+          "save": "Guardar"
+        }
+      },
+      "row": {
+        "label": "Monedas preferidas",
+        "value_one": "{{count}} seleccionada",
+        "value_many": "{{count}} seleccionadas",
+        "value_other": "{{count}} seleccionadas"
+      }
+    },
+    "currencyPickerModal": {
+      "search": {
+        "placeholder": "Buscar monedas"
+      },
+      "emptyState": {
+        "noCurrencies": "No se encontraron monedas"
+      },
+      "sections": {
+        "suggested": "Monedas sugeridas"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+      }
+    },
+    "currencyPicker": {
+      "modal": {
+        "title": "Seleccionar moneda"
+      },
+      "input": {
+        "label": "Moneda de la cuenta",
+        "description": "La moneda de la cuenta",
+        "placeholder": "Seleccionar moneda"
+      }
+    },
     "transactionsFilter": {
       "categories": {
         "label": "Categorías"
@@ -320,12 +375,12 @@
       "modal": {
         "title": "¡Exportación Iniciada Exitosamente!",
         "description": "Tu exportación de datos se está procesando en segundo plano.",
-        "emailTitle": "Recibirás un correo electrónico con el archivo CSV",
-        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos como un archivo CSV. Puedes abrirlo con cualquier aplicación de hojas de cálculo.",
+        "emailTitle": "Recibirás un correo electrónico con el archivo exportado",
+        "emailDescription": "Te enviaremos un correo electrónico con los datos exportados adjuntos en el formato seleccionado.",
         "button": "Entendido"
       },
       "title": "Exportar Transacciones",
-      "description": "Exporta tus transacciones a un archivo CSV. El archivo se enviará a tu correo electrónico.",
+      "description": "Exporta tus transacciones y recibe el archivo por correo electrónico.",
       "error": {
         "title": "Error de Exportación"
       },
@@ -339,13 +394,19 @@
         "accounts": {
           "label": "Cuentas",
           "placeholder": "Selecciona cuentas (deja vacío para todas)"
+        },
+        "format": {
+          "label": "Formato de exportación",
+          "csv": "CSV",
+          "ofe": "OFE",
+          "json": "JSON"
         }
       },
       "info": {
         "title": "¿Qué ocurre después?",
         "step1": "Tu solicitud de exportación se procesará en segundo plano",
-        "step2": "El archivo CSV incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
-        "step3": "Recibirás un correo electrónico con el archivo CSV adjunto",
+        "step2": "El archivo exportado incluirá: Fecha, Descripción, Importe, Moneda, Cuenta, Categoría y Notas",
+        "step3": "Recibirás un correo electrónico con el archivo exportado adjunto",
         "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
       },
       "exportButton": "Exportar Transacciones"

@@ -1,14 +1,14 @@
 import { GualletClientImpl } from '../GualletClient';
-import { CsvExportRequest, CsvExportResponse } from './data-exporter.models';
+import { DataExportRequest, DataExportResponse } from './data-exporter.models';
 
-const DATA_EXPORTER_PATH = 'data-exporter';
+const DATA_EXPORT_PATH = 'data';
 
 export class DataExporterApi {
   constructor(private readonly client: GualletClientImpl) {}
 
-  async exportCsv(request: CsvExportRequest): Promise<CsvExportResponse> {
-    return await this.client.post<CsvExportResponse, CsvExportRequest>({
-      path: `${DATA_EXPORTER_PATH}/csv`,
+  async exportData(request: DataExportRequest): Promise<DataExportResponse> {
+    return await this.client.post<DataExportResponse, DataExportRequest>({
+      path: `${DATA_EXPORT_PATH}/export`,
       payload: request,
     });
   }

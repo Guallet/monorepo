@@ -189,12 +189,32 @@ export class EmailService implements OnModuleInit {
     userName,
     transactionCount,
     csvContent,
+    attachmentContent,
+    attachmentFilename,
+    exportFormatLabel,
   }: {
     to: string;
     userName: string;
     transactionCount: number;
-    csvContent: string;
+    csvContent?: string;
+    attachmentContent?: string;
+    attachmentFilename?: string;
+    exportFormatLabel?: string;
   }): Promise<void> {
+    const finalAttachmentContent = attachmentContent ?? csvContent;
+
+    if (!finalAttachmentContent) {
+      this.logger.warn(
+        'No attachment content provided for export completion email',
+      );
+      return;
+    }
+
+    const finalAttachmentFilename =
+      attachmentFilename ??
+      `guallet-export-${new Date().toISOString().split('T')[0]}.csv`;
+    const finalExportFormatLabel = exportFormatLabel ?? 'CSV';
+
     await this.sendEmail({
       to,
       subject: 'Your Data Export is Ready',
@@ -202,12 +222,13 @@ export class EmailService implements OnModuleInit {
       context: {
         userName,
         transactionCount,
+        exportFormatLabel: finalExportFormatLabel,
         year: new Date().getFullYear(),
       },
       attachments: [
         {
-          filename: `guallet-export-${new Date().toISOString().split('T')[0]}.csv`,
-          content: csvContent,
+          filename: finalAttachmentFilename,
+          content: finalAttachmentContent,
         },
       ],
     });

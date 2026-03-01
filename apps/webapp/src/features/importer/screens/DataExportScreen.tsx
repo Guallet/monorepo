@@ -7,6 +7,7 @@ import {
   Paper,
   Group,
   MultiSelect,
+  Select,
   Modal,
   Alert,
   List,
@@ -28,6 +29,9 @@ export function DataExportScreen() {
   ]);
 
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
+  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>(
+    'csv',
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +46,7 @@ export function DataExportScreen() {
       setError(null);
       setIsLoading(true);
 
-      await gualletClient.dataExporter.exportCsv({
+      const exportPayload = {
         startDate: dateRange[0]
           ? new Date(dateRange[0]).toISOString()
           : undefined,
@@ -51,7 +55,10 @@ export function DataExportScreen() {
           : undefined,
         accounts:
           selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
-      });
+        format: exportFormat,
+      };
+
+      await gualletClient.dataExporter.exportData(exportPayload);
 
       setIsModalOpened(true);
     } catch (e) {
@@ -159,6 +166,31 @@ export function DataExportScreen() {
                 onChange={setSelectedAccountIds}
                 clearable
                 searchable
+              />
+
+              <Select
+                label={t('screens.dataExport.filters.format.label')}
+                data={[
+                  {
+                    value: 'csv',
+                    label: t('screens.dataExport.filters.format.csv'),
+                  },
+                  {
+                    value: 'ofe',
+                    label: t('screens.dataExport.filters.format.ofe'),
+                  },
+                  {
+                    value: 'json',
+                    label: t('screens.dataExport.filters.format.json'),
+                  },
+                ]}
+                value={exportFormat}
+                allowDeselect={false}
+                onChange={(value) => {
+                  if (value === 'csv' || value === 'ofe' || value === 'json') {
+                    setExportFormat(value);
+                  }
+                }}
               />
             </Stack>
           </Paper>

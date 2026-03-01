@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { DataExporterController } from './data-exporter.controller';
 import {
-  CsvExportProcessor,
-  CSV_EXPORT_QUEUE,
-} from './processors/csv-export.processor';
+  ExportDataProcessor,
+  EXPORT_DATA_QUEUE,
+} from './processors/export-data.processor';
+import { CsvExportEngine } from './engines/csv-export.engine';
+import { OfeExportEngine } from './engines/ofe-export.engine';
+import { JsonExportEngine } from './engines/json-export.engine';
 import { AccountsModule } from '../accounts/accounts.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { TransactionsModule } from '../transactions/transactions.module';
@@ -15,7 +18,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 @Module({
   imports: [
     BullModule.registerQueue({
-      name: CSV_EXPORT_QUEUE,
+      name: EXPORT_DATA_QUEUE,
     }),
     AccountsModule,
     CategoriesModule,
@@ -25,6 +28,11 @@ import { NotificationsModule } from '../notifications/notifications.module';
     NotificationsModule,
   ],
   controllers: [DataExporterController],
-  providers: [CsvExportProcessor],
+  providers: [
+    ExportDataProcessor,
+    CsvExportEngine,
+    OfeExportEngine,
+    JsonExportEngine,
+  ],
 })
 export class DataExporterModule {}
