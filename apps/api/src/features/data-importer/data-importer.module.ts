@@ -2,13 +2,12 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { DataImporterController } from './data-importer.controller';
 import {
-  CsvImportProcessor,
-  CSV_IMPORT_QUEUE,
-} from './processors/csv-import.processor';
-import {
-  OfeImportProcessor,
-  OFE_IMPORT_QUEUE,
-} from './processors/ofe-import.processor';
+  ImportDataProcessor,
+  IMPORT_DATA_QUEUE,
+} from './processors/import-data.processor';
+import { CsvImportEngine } from './engines/csv-import.engine';
+import { OfeImportEngine } from './engines/ofe-import.engine';
+import { JsonImportEngine } from './engines/json-import.engine';
 import { AccountsModule } from '../accounts/accounts.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { TransactionsModule } from '../transactions/transactions.module';
@@ -19,10 +18,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 @Module({
   imports: [
     BullModule.registerQueue({
-      name: CSV_IMPORT_QUEUE,
-    }),
-    BullModule.registerQueue({
-      name: OFE_IMPORT_QUEUE,
+      name: IMPORT_DATA_QUEUE,
     }),
     AccountsModule,
     CategoriesModule,
@@ -32,6 +28,11 @@ import { NotificationsModule } from '../notifications/notifications.module';
     NotificationsModule,
   ],
   controllers: [DataImporterController],
-  providers: [CsvImportProcessor, OfeImportProcessor],
+  providers: [
+    ImportDataProcessor,
+    CsvImportEngine,
+    OfeImportEngine,
+    JsonImportEngine,
+  ],
 })
 export class DataImporterModule {}

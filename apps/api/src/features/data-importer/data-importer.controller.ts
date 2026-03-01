@@ -9,83 +9,44 @@ import {
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { CsvImportRequestDto } from './dto/csv-import-request.dto';
-import { CsvImportResponseDto } from './dto/csv-import-response.dto';
-import { OfeImportRequestDto } from './dto/ofe-import-request.dto';
-import { OfeImportResponseDto } from './dto/ofe-import-response.dto';
+import { DataImportRequestDto } from './dto/data-import-request.dto';
+import { DataImportResponseDto } from './dto/data-import-response.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
-  CSV_IMPORT_QUEUE,
-  CSV_IMPORT_JOB,
-  CsvImportJobData,
-} from './processors/csv-import.processor';
-import {
-  OFE_IMPORT_QUEUE,
-  OFE_IMPORT_JOB,
-  OfeImportJobData,
-} from './processors/ofe-import.processor';
+  IMPORT_DATA_QUEUE,
+  IMPORT_DATA_JOB,
+  ImportJobData,
+} from './processors/import-data.processor';
 
 @ApiTags('Data Import / Export')
-@Controller('data-importer')
+@Controller('data')
 export class DataImporterController {
   private readonly logger = new Logger(DataImporterController.name);
 
   constructor(
-    @InjectQueue(CSV_IMPORT_QUEUE)
-    private readonly csvImportQueue: Queue<CsvImportJobData>,
-    @InjectQueue(OFE_IMPORT_QUEUE)
-    private readonly ofeImportQueue: Queue<OfeImportJobData>,
+    @InjectQueue(IMPORT_DATA_QUEUE)
+    private readonly importQueue: Queue<ImportJobData>,
   ) {}
 
-  @Post('csv')
+  @Post('import')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
-    description: 'CSV import job has been queued for processing',
-    type: CsvImportResponseDto,
+    description: 'Import job has been queued for processing',
+    type: DataImportResponseDto,
   })
-  async importCsv(
+  async importData(
     @RequestUser() user: UserPrincipal,
-    @Body() dto: CsvImportRequestDto,
-  ): Promise<CsvImportResponseDto> {
-    this.logger.log(`CSV import request from user ${user.id}, enqueueing job`);
-
-    // Enqueue the import job for background processing
-    const job = await this.csvImportQueue.add(
-      CSV_IMPORT_JOB,
-      { userId: user.id, dto },
-      {
-        removeOnComplete: 100, // Keep last 100 completed jobs
-        removeOnFail: 50, // Keep last 50 failed jobs
-      },
+    @Body() dto: DataImportRequestDto,
+  ): Promise<DataImportResponseDto> {
+    const format = dto.format || 'csv';
+    this.logger.log(
+      `${format.toUpperCase()} import request from user ${user.id}, enqueueing job`,
     );
 
-    this.logger.log(`CSV import job ${job.id} queued for user ${user.id}`);
-
-    return {
-      message:
-        'CSV import started. You will receive an email when the import is complete.',
-      processedCount: 0,
-      failedCount: 0,
-    };
-  }
-
-  @Post('ofe')
-  @HttpCode(HttpStatus.ACCEPTED)
-  @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'OFE import job has been queued for processing',
-    type: OfeImportResponseDto,
-  })
-  async importOfe(
-    @RequestUser() user: UserPrincipal,
-    @Body() dto: OfeImportRequestDto,
-  ): Promise<OfeImportResponseDto> {
-    this.logger.log(`OFE import request from user ${user.id}, enqueueing job`);
-
-    const job = await this.ofeImportQueue.add(
-      OFE_IMPORT_JOB,
+    const job = await this.importQueue.add(
+      IMPORT_DATA_JOB,
       { userId: user.id, dto },
       {
         removeOnComplete: 100,
@@ -93,11 +54,12 @@ export class DataImporterController {
       },
     );
 
-    this.logger.log(`OFE import job ${job.id} queued for user ${user.id}`);
+    this.logger.log(
+      `${format.toUpperCase()} import job ${job.id} queued for user ${user.id}`,
+    );
 
     return {
-      message:
-        'OFE import started. You will receive an email when the import is complete.',
+      message: `${format.toUpperCase()} import started. You will receive an email when the import is complete.`,
       processedCount: 0,
       failedCount: 0,
     };
