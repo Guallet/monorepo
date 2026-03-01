@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ExportEngine, ExportEngineParams } from './export-engine.interface';
+import { normalizeAmount } from './normalize-amount.util';
 
 @Injectable()
 export class CsvExportEngine implements ExportEngine {
@@ -29,7 +30,7 @@ export class CsvExportEngine implements ExportEngine {
         this.formatDate(tx.date),
         this.escapeCsvField(accountName),
         this.escapeCsvField(tx.description || ''),
-        tx.amount.toString(),
+        normalizeAmount(tx.amount).toString(),
         tx.currency,
         this.escapeCsvField(tx.notes || ''),
         this.escapeCsvField(categoryName),

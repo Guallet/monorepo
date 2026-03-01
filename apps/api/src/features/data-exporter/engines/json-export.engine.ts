@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ExportEngine, ExportEngineParams } from './export-engine.interface';
+import { normalizeAmount } from './normalize-amount.util';
 
 @Injectable()
 export class JsonExportEngine implements ExportEngine {
@@ -10,15 +11,18 @@ export class JsonExportEngine implements ExportEngine {
     const { transactions, accountsMap, categoriesMap } = params;
 
     return JSON.stringify(
-      transactions.map((tx) => ({
-        id: tx.id,
-        date: tx.date.toISOString(),
-        account: accountsMap.get(tx.accountId) || tx.accountId,
-        description: tx.description,
-        amount: tx.amount,
-        currency: tx.currency,
-        notes: tx.notes || '',
-        category: tx.categoryId ? categoriesMap.get(tx.categoryId) || '' : '',
+      transactions.map((transaction) => ({
+        id: transaction.id,
+        date: transaction.date.toISOString(),
+        account:
+          accountsMap.get(transaction.accountId) || transaction.accountId,
+        description: transaction.description,
+        amount: normalizeAmount(transaction.amount),
+        currency: transaction.currency,
+        notes: transaction.notes || '',
+        category: transaction.categoryId
+          ? categoriesMap.get(transaction.categoryId) || ''
+          : '',
       })),
       null,
       2,

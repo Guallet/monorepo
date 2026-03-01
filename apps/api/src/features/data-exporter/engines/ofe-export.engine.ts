@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ExportEngine, ExportEngineParams } from './export-engine.interface';
+import { normalizeAmount } from './normalize-amount.util';
 
 @Injectable()
 export class OfeExportEngine implements ExportEngine {
@@ -13,7 +14,7 @@ export class OfeExportEngine implements ExportEngine {
     const currency = transactions[0]?.currency || 'GBP';
     const stmtTrns = transactions
       .map((tx) => {
-        const normalizedAmount = this.normalizeAmount(tx.amount);
+        const normalizedAmount = normalizeAmount(tx.amount);
         const amount = normalizedAmount.toFixed(2);
         const trnType = normalizedAmount < 0 ? 'DEBIT' : 'CREDIT';
         const description = this.escapeOfe(tx.description || '');
@@ -53,15 +54,5 @@ export class OfeExportEngine implements ExportEngine {
 
   private escapeOfe(value: string): string {
     return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;');
-  }
-
-  /**
-   * TypeORM decimal columns may return strings at runtime.
-   * Safely coerce to a finite number, defaulting to 0.
-   */
-  normalizeAmount(amount: number | string): number {
-    const parsedAmount =
-      typeof amount === 'number' ? amount : Number.parseFloat(amount);
-    return Number.isFinite(parsedAmount) ? parsedAmount : 0;
   }
 }
