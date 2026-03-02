@@ -31,6 +31,7 @@
     "eas:env:pull": "eas env:pull --environment development"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.5.1",
     "@expo/vector-icons": "^15.0.2",
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
@@ -52,6 +53,7 @@
     "expo-haptics": "~55.0.8",
     "expo-image": "~55.0.5",
     "expo-linking": "~55.0.7",
+    "expo-network": "^55.0.8",
     "expo-router": "~55.0.3",
     "expo-secure-store": "~55.0.8",
     "expo-splash-screen": "~55.0.10",

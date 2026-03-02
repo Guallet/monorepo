@@ -18,4 +18,3 @@ export function AuthProvider({ children }: Readonly<MobileAuthProviderProps>) {
     </BaseAuthProvider>
   );
 }
-

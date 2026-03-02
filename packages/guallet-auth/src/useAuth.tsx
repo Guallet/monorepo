@@ -6,9 +6,24 @@ import React, {
   useCallback,
 } from 'react';
 import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
-import type { createGualletAuthClient } from './auth';
+import type { createAuthClient } from 'better-auth/react';
+import type {
+  emailOTPClient,
+  magicLinkClient,
+} from 'better-auth/client/plugins';
 
-type BetterAuthClient = ReturnType<typeof createGualletAuthClient>;
+// Define the client type directly from createAuthClient with explicit plugins.
+// This preserves plugin type inference (emailOtp, magicLink methods) which
+// TypeScript cannot resolve when going through a wrapper factory function.
+type GualletAuthOptions = {
+  baseURL: string;
+  basePath: string;
+  plugins: [
+    ReturnType<typeof emailOTPClient>,
+    ReturnType<typeof magicLinkClient>,
+  ];
+};
+type BetterAuthClient = ReturnType<typeof createAuthClient<GualletAuthOptions>>;
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -16,15 +31,19 @@ export const useAuth = () => {
 
 interface AuthProviderProps {
   children: React.ReactNode;
-  authClient: BetterAuthClient;
+  // Accept any Better Auth client — consumers create clients via the factory
+  // which wraps createAuthClient, losing generic plugin type inference.
+  // We cast to BetterAuthClient internally for full method access.
+  authClient: any;
   onUserChange?: (userId: string | null) => void;
 }
 
 export function AuthProvider({
   children,
-  authClient,
+  authClient: rawAuthClient,
   onUserChange,
 }: Readonly<AuthProviderProps>) {
+  const authClient = rawAuthClient as BetterAuthClient;
   const { data: session, isPending, refetch } = authClient.useSession();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
