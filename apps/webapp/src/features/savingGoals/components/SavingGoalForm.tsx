@@ -1,18 +1,11 @@
 import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
-import {
-  Button,
-  MultiSelect,
-  Card,
-  Group,
-  NumberInput,
-  Stack,
-  Text,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
-import { DateInput } from '@mantine/dates';
 import { notifications } from '@/lib/notifications';
 import { IconPigMoney, IconDeviceFloppy, IconX } from '@tabler/icons-react';
 import { useEffect } from 'react';
@@ -58,6 +51,55 @@ function getSavingGoalFormDefaultValues(
       : new Date(),
     accounts: savingGoal?.accounts || [],
   };
+}
+
+function formatDateForInput(date: Date): string {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function parseDateInput(value: string): Date | null {
+  if (value.trim() === '') {
+    return null;
+  }
+
+  const parsedDate = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return null;
+  }
+
+  return parsedDate;
+}
+
+function toggleAccountSelection(
+  selectedValues: string[],
+  accountId: string,
+  shouldBeSelected: boolean,
+): string[] {
+  if (shouldBeSelected) {
+    if (selectedValues.includes(accountId)) {
+      return selectedValues;
+    }
+
+    return [...selectedValues, accountId];
+  }
+
+  return selectedValues.filter((currentAccountId) => currentAccountId !== accountId);
+}
+
+function getSubmitButtonLabel(
+  isEditing: boolean,
+  isSubmitting: boolean,
+): string {
+  if (isEditing) {
+    return isSubmitting ? 'Updating Goal...' : 'Update Goal';
+  }
+
+  return isSubmitting ? 'Creating Goal...' : 'Create Goal';
 }
 
 export function SavingGoalForm({
@@ -139,36 +181,45 @@ export function SavingGoalForm({
 
   const isSubmitting =
     createSavingGoalMutation.isPending || updateSavingGoalMutation.isPending;
+  const minimumTargetDate = formatDateForInput(new Date());
+  const submitButtonLabel = getSubmitButtonLabel(isEditing, isSubmitting);
 
   return (
-    <Card withBorder shadow="sm" radius="lg" p="lg">
-      <Stack gap="md">
-        <Group>
-          <IconPigMoney size={24} />
-          <Text size="xl" fw={700}>
+    <Card className="rounded-lg border p-6 shadow-sm">
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <IconPigMoney className="h-6 w-6" />
+          <h2 className="text-2xl font-bold">
             {isEditing ? 'Edit Saving Goal' : 'Create New Saving Goal'}
-          </Text>
-        </Group>
+          </h2>
+        </div>
 
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <Stack gap="md">
+          <div className="space-y-4">
             <Controller
               name="name"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  label="Goal Name"
-                  placeholder="e.g., Emergency Fund, Vacation, New Car"
-                  required
-                  value={field.value}
-                  onChange={(event) => {
-                    field.onChange(event.currentTarget.value);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  ref={field.ref}
-                  error={errors.name?.message}
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="saving-goal-name">Goal Name</Label>
+                  <Input
+                    id="saving-goal-name"
+                    placeholder="e.g., Emergency Fund, Vacation, New Car"
+                    required
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.target.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                  />
+                  {errors.name?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.name.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
 
@@ -176,19 +227,27 @@ export function SavingGoalForm({
               name="description"
               control={control}
               render={({ field }) => (
-                <Textarea
-                  label="Description"
-                  placeholder="Optional description of your saving goal"
-                  rows={3}
-                  value={field.value}
-                  onChange={(event) => {
-                    field.onChange(event.currentTarget.value);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  ref={field.ref}
-                  error={errors.description?.message}
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="saving-goal-description">Description</Label>
+                  <textarea
+                    id="saving-goal-description"
+                    placeholder="Optional description of your saving goal"
+                    rows={3}
+                    className="min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.target.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                  />
+                  {errors.description?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.description.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
 
@@ -196,24 +255,31 @@ export function SavingGoalForm({
               name="target_amount"
               control={control}
               render={({ field }) => (
-                <NumberInput
-                  label="Target Amount"
-                  placeholder="Enter target amount"
-                  required
-                  min={0}
-                  step={0.01}
-                  thousandSeparator=","
-                  decimalScale={2}
-                  value={field.value}
-                  onChange={(value) => {
-                    const parsedValue =
-                      typeof value === 'number' ? value : Number(value || 0);
-                    field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  error={errors.target_amount?.message}
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="saving-goal-target-amount">
+                    Target Amount
+                  </Label>
+                  <Input
+                    id="saving-goal-target-amount"
+                    type="number"
+                    placeholder="Enter target amount"
+                    required
+                    min={0}
+                    step={0.01}
+                    value={field.value}
+                    onChange={(event) => {
+                      const parsedValue = Number(event.target.value);
+                      field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
+                  {errors.target_amount?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.target_amount.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
 
@@ -221,19 +287,28 @@ export function SavingGoalForm({
               name="target_date"
               control={control}
               render={({ field }) => (
-                <DateInput
-                  label="Target Date"
-                  placeholder="When do you want to reach this goal?"
-                  required
-                  minDate={new Date()}
-                  value={field.value}
-                  onChange={(value) => {
-                    field.onChange(value ?? new Date());
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  error={errors.target_date?.message}
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="saving-goal-target-date">Target Date</Label>
+                  <Input
+                    id="saving-goal-target-date"
+                    type="date"
+                    placeholder="When do you want to reach this goal?"
+                    required
+                    min={minimumTargetDate}
+                    value={formatDateForInput(field.value)}
+                    onChange={(event) => {
+                      const parsedDate = parseDateInput(event.target.value);
+                      field.onChange(parsedDate ?? new Date());
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
+                  {errors.target_date?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.target_date.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
 
@@ -241,44 +316,76 @@ export function SavingGoalForm({
               name="accounts"
               control={control}
               render={({ field }) => (
-                <MultiSelect
-                  label="Linked Accounts"
-                  placeholder="Select accounts to track for this goal"
-                  data={accountOptions}
-                  searchable
-                  clearable
-                  description="Select accounts that contribute to this saving goal. Progress will be calculated based on the balance of these accounts."
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  error={errors.accounts?.message}
-                />
+                <div className="grid gap-2">
+                  <Label>Linked Accounts</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Select accounts that contribute to this saving goal. Progress will be calculated based on the balance of these accounts.
+                  </p>
+                  <div className="max-h-56 overflow-y-auto rounded-md border">
+                    {accountOptions.length === 0 ? (
+                      <p className="p-3 text-sm text-muted-foreground">
+                        No accounts available.
+                      </p>
+                    ) : (
+                      accountOptions.map((option) => {
+                        const selectedValues = field.value ?? [];
+                        const isChecked = selectedValues.includes(option.value);
+
+                        return (
+                          <label
+                            key={option.value}
+                            className="flex cursor-pointer items-center gap-2 border-b px-3 py-2 text-sm last:border-b-0 hover:bg-accent/40"
+                          >
+                            <Checkbox
+                              checked={isChecked}
+                              onCheckedChange={(checked) => {
+                                field.onChange(
+                                  toggleAccountSelection(
+                                    selectedValues,
+                                    option.value,
+                                    checked === true,
+                                  ),
+                                );
+                              }}
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        );
+                      })
+                    )}
+                  </div>
+                  {errors.accounts?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.accounts.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
 
-            <Group justify="flex-end" gap="sm">
+            <div className="flex flex-wrap justify-end gap-2">
               {onCancel && (
                 <Button
                   type="button"
                   variant="outline"
-                  leftSection={<IconX size={16} />}
                   onClick={onCancel}
                   disabled={isSubmitting}
                 >
+                  <IconX className="h-4 w-4" />
                   Cancel
                 </Button>
               )}
               <Button
                 type="submit"
-                leftSection={<IconDeviceFloppy size={16} />}
-                loading={isSubmitting}
+                disabled={isSubmitting}
               >
-                {isEditing ? 'Update Goal' : 'Create Goal'}
+                <IconDeviceFloppy className="h-4 w-4" />
+                {submitButtonLabel}
               </Button>
-            </Group>
-          </Stack>
+            </div>
+          </div>
         </form>
-      </Stack>
+      </div>
     </Card>
   );
 }

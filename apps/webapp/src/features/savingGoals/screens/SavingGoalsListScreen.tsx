@@ -1,13 +1,15 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
-import { useSavingGoalMutations, useSavingGoals } from "@guallet/api-react";
-import { Stack, Button, Text, Group, Modal } from "@mantine/core";
+import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { useSavingGoalMutations, useSavingGoals } from '@guallet/api-react';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { notifications } from "@/lib/notifications";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { SavingGoalRow } from "../components/SavingGoalRow";
-import { IconPlus, IconPigMoney } from "@tabler/icons-react";
+import { notifications } from '@/lib/notifications';
+import { useNavigate } from '@tanstack/react-router';
+import { IconPlus, IconPigMoney } from '@tabler/icons-react';
+import { useState } from 'react';
+import { SavingGoalRow } from '../components/SavingGoalRow';
 
 export function SavingGoalsListScreen() {
   const navigate = useNavigate();
@@ -35,20 +37,20 @@ export function SavingGoalsListScreen() {
       {
         onSuccess: () => {
           notifications.show({
-            title: "Success",
+            title: 'Success',
             message: `Saving goal "${goalToDelete.name}" has been deleted`,
-            color: "green",
+            color: 'green',
           });
         },
         onError: (error) => {
-          console.error("Failed to delete saving goal:", error);
+          console.error('Failed to delete saving goal:', error);
           notifications.show({
-            title: "Error",
-            message: "Failed to delete saving goal",
-            color: "red",
+            title: 'Error',
+            message: 'Failed to delete saving goal',
+            color: 'red',
           });
         },
-      }
+      },
     );
 
     closeDeleteModal();
@@ -65,41 +67,43 @@ export function SavingGoalsListScreen() {
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack gap="lg">
-        <Group justify="space-between" align="center">
-          <Group>
-            <IconPigMoney size={24} />
-            <Text size="xl" fw={700}>
-              Saving Goals
-            </Text>
-          </Group>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <IconPigMoney className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Saving Goals</h1>
+          </div>
           <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={() => navigate({ to: "/saving-goals/new" })}
+            type="button"
+            className="gap-2"
+            onClick={() => navigate({ to: '/saving-goals/new' })}
           >
+            <IconPlus className="h-4 w-4" />
             New Saving Goal
           </Button>
-        </Group>
+        </div>
 
         {savingGoals.length === 0 ? (
-          <Stack align="center" gap="lg" py="xl">
-            <IconPigMoney size={48} opacity={0.5} />
-            <Text size="lg" c="dimmed" ta="center">
-              No saving goals yet
-            </Text>
-            <Text size="sm" c="dimmed" ta="center">
-              Create your first saving goal to start tracking your progress
-              towards your financial targets.
-            </Text>
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={() => navigate({ to: "/saving-goals/new" })}
-            >
-              Create Your First Goal
-            </Button>
-          </Stack>
+          <Card className="rounded-lg border p-6 shadow-sm">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <IconPigMoney className="h-12 w-12 text-muted-foreground" />
+              <p className="text-lg text-muted-foreground">No saving goals yet</p>
+              <p className="max-w-[560px] text-sm text-muted-foreground">
+                Create your first saving goal to start tracking your progress
+                towards your financial targets.
+              </p>
+              <Button
+                type="button"
+                className="gap-2"
+                onClick={() => navigate({ to: '/saving-goals/new' })}
+              >
+                <IconPlus className="h-4 w-4" />
+                Create Your First Goal
+              </Button>
+            </div>
+          </Card>
         ) : (
-          <Stack gap="md">
+          <div className="flex flex-col gap-3">
             {savingGoals.map((goal) => (
               <SavingGoalRow
                 key={goal.id}
@@ -109,31 +113,20 @@ export function SavingGoalsListScreen() {
                 onDelete={() => handleDelete(goal)}
               />
             ))}
-          </Stack>
+          </div>
         )}
-      </Stack>
+      </div>
 
-      <Modal
-        opened={deleteModalOpened}
-        onClose={closeDeleteModal}
+      <DeleteDialogConfirmation
+        isOpen={deleteModalOpened}
+        onClose={() => {
+          closeDeleteModal();
+          setGoalToDelete(null);
+        }}
+        onConfirm={confirmDelete}
         title="Delete Saving Goal"
-        centered
-      >
-        <Stack gap="md">
-          <Text>
-            Are you sure you want to delete the saving goal "
-            {goalToDelete?.name}"? This action cannot be undone.
-          </Text>
-          <Group justify="flex-end">
-            <Button variant="outline" onClick={closeDeleteModal}>
-              Cancel
-            </Button>
-            <Button color="red" onClick={confirmDelete}>
-              Delete
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
+        message={`Are you sure you want to delete the saving goal "${goalToDelete?.name ?? ''}"? This action cannot be undone.`}
+      />
     </BaseScreen>
   );
 }

@@ -1,19 +1,9 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
 import { useSavingGoal, useAccounts } from '@guallet/api-react';
-import {
-  Stack,
-  Button,
-  Text,
-  Group,
-  Card,
-  Progress,
-  Badge,
-  Grid,
-  ActionIcon,
-  List,
-  Alert,
-} from '@mantine/core';
 import {
   IconPigMoney,
   IconEdit,
@@ -38,6 +28,44 @@ function getDaysRemainingText(
   return `${Math.abs(daysRemaining)} days overdue`;
 }
 
+function getProgressBarClass(isCompleted: boolean, isOverdue: boolean): string {
+  if (isCompleted) return 'bg-emerald-500';
+  if (isOverdue) return 'bg-red-500';
+  return 'bg-blue-500';
+}
+
+function getStatusInfo(
+  isCompleted: boolean,
+  isOverdue: boolean,
+  daysRemaining: number,
+): { label: string; className: string } {
+  if (isCompleted) {
+    return {
+      label: 'Completed',
+      className: 'bg-emerald-100 text-emerald-800',
+    };
+  }
+
+  if (isOverdue) {
+    return {
+      label: 'Overdue',
+      className: 'bg-red-100 text-red-800',
+    };
+  }
+
+  if (daysRemaining <= 30) {
+    return {
+      label: 'Due Soon',
+      className: 'bg-orange-100 text-orange-800',
+    };
+  }
+
+  return {
+    label: 'On Track',
+    className: 'bg-blue-100 text-blue-800',
+  };
+}
+
 interface SavingGoalDetailScreenProps {
   goalId: string;
   onEdit?: (goal: SavingGoalDto) => void;
@@ -55,8 +83,11 @@ export function SavingGoalDetailScreen({
   if (error) {
     return (
       <BaseScreen>
-        <Alert color="red" title="Error">
-          Failed to load saving goal details
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Failed to load saving goal details
+          </AlertDescription>
         </Alert>
       </BaseScreen>
     );
@@ -94,243 +125,192 @@ export function SavingGoalDetailScreen({
   // Calculate monthly savings needed (simplified calculation)
   const monthsRemaining = Math.max(1, daysRemaining / 30);
   const monthlySavingsNeeded = remainingAmount / monthsRemaining;
-
-  const getProgressColor = () => {
-    if (isCompleted) return 'green';
-    if (isOverdue) return 'red';
-    if (progress > 75) return 'blue';
-    if (progress > 50) return 'yellow';
-    return 'gray';
-  };
-
-  const getStatusBadge = () => {
-    if (isCompleted)
-      return (
-        <Badge color="green" size="lg">
-          Completed
-        </Badge>
-      );
-    if (isOverdue)
-      return (
-        <Badge color="red" size="lg">
-          Overdue
-        </Badge>
-      );
-    if (daysRemaining <= 30)
-      return (
-        <Badge color="orange" size="lg">
-          Due Soon
-        </Badge>
-      );
-    return (
-      <Badge color="blue" size="lg">
-        On Track
-      </Badge>
-    );
-  };
+  const statusInfo = getStatusInfo(isCompleted, isOverdue, daysRemaining);
+  const progressBarClass = getProgressBarClass(isCompleted, isOverdue);
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack gap="lg">
-        {/* Header */}
-        <Group justify="space-between">
-          <Group>
-            {onBack && (
-              <ActionIcon variant="subtle" size="lg" onClick={onBack}>
-                <IconArrowLeft size={20} />
-              </ActionIcon>
-            )}
-            <IconPigMoney size={28} />
-            <Text size="xl" fw={700}>
-              {savingGoal.name}
-            </Text>
-          </Group>
-
-          <Group>
-            {getStatusBadge()}
-            {onEdit && (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            {onBack ? (
               <Button
-                leftSection={<IconEdit size={16} />}
-                onClick={() => onEdit(savingGoal)}
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                aria-label="Go back"
               >
+                <IconArrowLeft className="h-5 w-5" />
+              </Button>
+            ) : null}
+            <IconPigMoney className="h-7 w-7" />
+            <h1 className="truncate text-2xl font-bold">
+              {savingGoal.name}
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span
+              className={`rounded-full px-2 py-0.5 text-sm font-medium ${statusInfo.className}`}
+            >
+              {statusInfo.label}
+            </span>
+            {onEdit ? (
+              <Button
+                type="button"
+                onClick={() => onEdit(savingGoal)}
+                className="gap-2"
+              >
+                <IconEdit className="h-4 w-4" />
                 Edit Goal
               </Button>
-            )}
-          </Group>
-        </Group>
+            ) : null}
+          </div>
+        </div>
 
-        {/* Progress Overview */}
-        <Card withBorder shadow="sm" radius="lg" p="lg">
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text size="lg" fw={600}>
-                Progress Overview
-              </Text>
-              <Text size="sm" c="dimmed">
+        <Card className="rounded-lg border p-6 shadow-sm">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-lg font-semibold">Progress Overview</p>
+              <p className="text-sm text-muted-foreground">
                 {progress.toFixed(1)}% complete
-              </Text>
-            </Group>
+              </p>
+            </div>
 
-            <Progress
-              value={progress}
-              size="xl"
-              color={getProgressColor()}
-              striped={!isCompleted}
-              animated={!isCompleted}
-            />
+            <div className="h-4 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className={`${progressBarClass} h-full transition-all`}
+                style={{ width: `${Math.min(progress, 100)}%` }}
+              />
+            </div>
 
-            <Grid>
-              <Grid.Col span={6}>
-                <Stack gap="xs">
-                  <Group gap="xs">
-                    <IconCurrencyDollar size={16} />
-                    <Text size="sm" c="dimmed">
-                      Current Amount
-                    </Text>
-                  </Group>
-                  <Text size="lg" fw={600}>
-                    {Money.fromCurrencyCode({
-                      amount: currentAmount,
-                      currencyCode: 'GBP',
-                    }).format()}
-                  </Text>
-                </Stack>
-              </Grid.Col>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <IconCurrencyDollar className="h-4 w-4" />
+                  <span>Current Amount</span>
+                </div>
+                <p className="text-lg font-semibold">
+                  {Money.fromCurrencyCode({
+                    amount: currentAmount,
+                    currencyCode: 'GBP',
+                  }).format()}
+                </p>
+              </div>
 
-              <Grid.Col span={6}>
-                <Stack gap="xs">
-                  <Group gap="xs">
-                    <IconPigMoney size={16} />
-                    <Text size="sm" c="dimmed">
-                      Target Amount
-                    </Text>
-                  </Group>
-                  <Text size="lg" fw={600}>
-                    {Money.fromCurrencyCode({
-                      amount: savingGoal.target_amount,
-                      currencyCode: 'GBP',
-                    }).format()}
-                  </Text>
-                </Stack>
-              </Grid.Col>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <IconPigMoney className="h-4 w-4" />
+                  <span>Target Amount</span>
+                </div>
+                <p className="text-lg font-semibold">
+                  {Money.fromCurrencyCode({
+                    amount: savingGoal.target_amount,
+                    currencyCode: 'GBP',
+                  }).format()}
+                </p>
+              </div>
 
-              <Grid.Col span={6}>
-                <Stack gap="xs">
-                  <Group gap="xs">
-                    <IconCalendar size={16} />
-                    <Text size="sm" c="dimmed">
-                      Target Date
-                    </Text>
-                  </Group>
-                  <Text size="lg" fw={600}>
-                    {targetDate.toLocaleDateString()}
-                  </Text>
-                </Stack>
-              </Grid.Col>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <IconCalendar className="h-4 w-4" />
+                  <span>Target Date</span>
+                </div>
+                <p className="text-lg font-semibold">
+                  {targetDate.toLocaleDateString()}
+                </p>
+              </div>
 
-              <Grid.Col span={6}>
-                <Stack gap="xs">
-                  <Group gap="xs">
-                    <IconCurrencyDollar size={16} />
-                    <Text size="sm" c="dimmed">
-                      Remaining
-                    </Text>
-                  </Group>
-                  <Text
-                    size="lg"
-                    fw={600}
-                    c={isCompleted ? 'green' : undefined}
-                  >
-                    {Money.fromCurrencyCode({
-                      amount: remainingAmount,
-                      currencyCode: 'GBP',
-                    }).format()}
-                  </Text>
-                </Stack>
-              </Grid.Col>
-            </Grid>
-          </Stack>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <IconCurrencyDollar className="h-4 w-4" />
+                  <span>Remaining</span>
+                </div>
+                <p
+                  className={`text-lg font-semibold ${
+                    isCompleted ? 'text-emerald-600' : ''
+                  }`}
+                >
+                  {Money.fromCurrencyCode({
+                    amount: remainingAmount,
+                    currencyCode: 'GBP',
+                  }).format()}
+                </p>
+              </div>
+            </div>
+          </div>
         </Card>
 
-        {/* Description */}
-        {savingGoal.description && (
-          <Card withBorder shadow="sm" radius="lg" p="lg">
-            <Stack gap="md">
-              <Text size="lg" fw={600}>
-                Description
-              </Text>
-              <Text>{savingGoal.description}</Text>
-            </Stack>
+        {savingGoal.description ? (
+          <Card className="rounded-lg border p-6 shadow-sm">
+            <div className="space-y-2">
+              <p className="text-lg font-semibold">Description</p>
+              <p>{savingGoal.description}</p>
+            </div>
           </Card>
-        )}
+        ) : null}
 
-        {/* Insights */}
-        <Card withBorder shadow="sm" radius="lg" p="lg">
-          <Stack gap="md">
-            <Text size="lg" fw={600}>
-              Insights
-            </Text>
+        <Card className="rounded-lg border p-6 shadow-sm">
+          <div className="space-y-3">
+            <p className="text-lg font-semibold">Insights</p>
 
-            {!isCompleted && daysRemaining > 0 && (
-              <Group>
-                <IconInfoCircle size={16} />
-                <Text size="sm">
+            {!isCompleted && daysRemaining > 0 ? (
+              <div className="flex items-start gap-2 text-sm">
+                <IconInfoCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <p>
                   You need to save approximately{' '}
-                  <Text span fw={600}>
+                  <span className="font-semibold">
                     {Money.fromCurrencyCode({
                       amount: monthlySavingsNeeded,
                       currencyCode: 'GBP',
                     }).format()}
-                  </Text>{' '}
+                  </span>{' '}
                   per month to reach your goal.
-                </Text>
-              </Group>
-            )}
+                </p>
+              </div>
+            ) : null}
 
-            <Group>
-              <IconCalendar size={16} />
-              <Text size="sm">
-                {getDaysRemainingText(daysRemaining, isCompleted)}
-              </Text>
-            </Group>
-          </Stack>
+            <div className="flex items-start gap-2 text-sm">
+              <IconCalendar className="mt-0.5 h-4 w-4 shrink-0" />
+              <p>{getDaysRemainingText(daysRemaining, isCompleted)}</p>
+            </div>
+          </div>
         </Card>
 
-        {/* Linked Accounts */}
-        <Card withBorder shadow="sm" radius="lg" p="lg">
-          <Stack gap="md">
-            <Group>
-              <IconBuildingBank size={20} />
-              <Text size="lg" fw={600}>
-                Linked Accounts
-              </Text>
-            </Group>
+        <Card className="rounded-lg border p-6 shadow-sm">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <IconBuildingBank className="h-5 w-5" />
+              <p className="text-lg font-semibold">Linked Accounts</p>
+            </div>
 
             {linkedAccounts.length > 0 ? (
-              <List spacing="sm">
+              <ul className="space-y-2">
                 {linkedAccounts.map((account) => (
-                  <List.Item key={account.id}>
-                    <Group justify="space-between">
-                      <Text>{account.name}</Text>
-                      <Text size="sm" c="dimmed">
-                        {Money.fromCurrencyCode({
-                          amount: account.balance.amount,
-                          currencyCode: account.balance.currency,
-                        }).format()}
-                      </Text>
-                    </Group>
-                  </List.Item>
+                  <li
+                    key={account.id}
+                    className="flex items-center justify-between gap-2 rounded-md border p-2"
+                  >
+                    <span>{account.name}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {Money.fromCurrencyCode({
+                        amount: account.balance.amount,
+                        currencyCode: account.balance.currency,
+                      }).format()}
+                    </span>
+                  </li>
                 ))}
-              </List>
+              </ul>
             ) : (
-              <Text size="sm" c="dimmed" fs="italic">
+              <p className="text-sm italic text-muted-foreground">
                 No accounts linked to this goal. Link accounts to automatically
                 track your progress.
-              </Text>
+              </p>
             )}
-          </Stack>
+          </div>
         </Card>
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }
