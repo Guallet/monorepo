@@ -5,7 +5,8 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
+import { AuthContext } from './AuthContext';
+import type { AuthResult, ExternalAuthProvider } from './AuthContext';
 import type { createGualletAuthClient } from './auth';
 
 type BetterAuthClient = ReturnType<typeof createGualletAuthClient>;

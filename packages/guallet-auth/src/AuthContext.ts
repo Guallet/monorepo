@@ -53,7 +53,7 @@ export const AuthContext = createContext<AuthContextWithMethods>({
   isLoading: true,
   isAuthenticated: false,
   userId: null,
-  login: async (email: string, password: string): Promise<AuthResult> => {
+  login: async (_email: string, _password: string): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
@@ -65,7 +65,7 @@ export const AuthContext = createContext<AuthContextWithMethods>({
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
     };
   },
-  createAccount: async (args: {
+  createAccount: async (_args: {
     name: string;
     email: string;
     password: string;
@@ -76,29 +76,29 @@ export const AuthContext = createContext<AuthContextWithMethods>({
     };
   },
   loginWithProvider: async (
-    provider: ExternalAuthProvider,
-    redirectUrl: string,
+    _provider: ExternalAuthProvider,
+    _redirectUrl: string,
   ): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
     };
   },
-  getOtpCode: async (email: string): Promise<AuthResult> => {
+  getOtpCode: async (_email: string): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
     };
   },
-  verifyOtpCode: async (email: string, code: string): Promise<AuthResult> => {
+  verifyOtpCode: async (_email: string, _code: string): Promise<AuthResult> => {
     return {
       success: false,
       error: { code: 'NOT_IMPLEMENTED', message: 'Function not implemented.' },
     };
   },
   resetPassword: async (
-    email: string,
-    redirectUrl: string,
+    _email: string,
+    _redirectUrl: string,
   ): Promise<AuthResult> => {
     return {
       success: false,
@@ -106,8 +106,8 @@ export const AuthContext = createContext<AuthContextWithMethods>({
     };
   },
   confirmPasswordReset: async (
-    newPassword: string,
-    token: string,
+    _newPassword: string,
+    _token: string,
   ): Promise<AuthResult> => {
     return {
       success: false,
