@@ -51,10 +51,7 @@ export function BudgetDetailsScreen({
             variant="outline"
             size="icon"
             title={t('screens.budgets.details.editButton.tooltip', 'Edit')}
-            aria-label={t(
-              'screens.budgets.details.editButton.tooltip',
-              'Edit',
-            )}
+            aria-label={t('screens.budgets.details.editButton.tooltip', 'Edit')}
             onClick={() => {
               console.log('Edit budget');
             }}

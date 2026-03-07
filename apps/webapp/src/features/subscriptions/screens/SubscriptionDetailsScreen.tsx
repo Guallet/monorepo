@@ -153,9 +153,7 @@ export function SubscriptionDetailsScreen({
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-bold">
-              {subscription.name}
-            </h1>
+            <h1 className="text-2xl font-bold">{subscription.name}</h1>
             <span
               className={`w-fit rounded-full px-2 py-0.5 text-xs font-medium ${getPaymentTypeBadgeClass(subscription.type)}`}
             >
@@ -174,7 +172,9 @@ export function SubscriptionDetailsScreen({
             </div>
             <div className="flex items-center justify-between gap-2">
               <p className="text-muted-foreground">Frequency</p>
-              <p className="font-medium">{getCadenceLabel(subscription.cadence)}</p>
+              <p className="font-medium">
+                {getCadenceLabel(subscription.cadence)}
+              </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <p className="text-muted-foreground">Start Date</p>
@@ -188,7 +188,9 @@ export function SubscriptionDetailsScreen({
             </div>
             <div className="flex items-center justify-between gap-2">
               <p className="text-muted-foreground">Type</p>
-              <p className="font-medium">{getPaymentTypeLabel(subscription.type)}</p>
+              <p className="font-medium">
+                {getPaymentTypeLabel(subscription.type)}
+              </p>
             </div>
           </div>
         </AppSection>

@@ -1,7 +1,7 @@
 import { BudgetDetailsScreen } from '@/features/budgets/screens/BudgetDetailsScreen';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/budgets/$id")({
+export const Route = createFileRoute('/_app/budgets/$id')({
   component: BudgetDetailsPage,
   notFoundComponent: () => {
     return <h1>Budget not found</h1>;

@@ -166,7 +166,10 @@ export function CreateBudgetScreen() {
               render={({ field }) => (
                 <div className="grid gap-2">
                   <Label htmlFor="create-budget-currency">
-                    {t('screens.budgets.create.form.currency.label', 'Currency')}
+                    {t(
+                      'screens.budgets.create.form.currency.label',
+                      'Currency',
+                    )}
                   </Label>
                   <p className="text-sm text-muted-foreground">
                     {t(
@@ -225,7 +228,9 @@ export function CreateBudgetScreen() {
                     value={field.value}
                     onChange={(event) => {
                       const parsedValue = Number(event.target.value);
-                      field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+                      field.onChange(
+                        Number.isNaN(parsedValue) ? 0 : parsedValue,
+                      );
                     }}
                     onBlur={field.onBlur}
                     name={field.name}
