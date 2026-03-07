@@ -1,21 +1,13 @@
-import { Currency, ISO4217Currencies } from '@guallet/money';
 import { useUserSettings } from '@guallet/api-react';
+import { Currency, ISO4217Currencies } from '@guallet/money';
 import { SearchBoxInput, useIsMobile } from '@guallet/ui-react';
-import {
-  ScrollArea,
-  Group,
-  UnstyledButton,
-  Button,
-  Text,
-  Flex,
-  Center,
-  Divider,
-} from '@mantine/core';
-import { useMemo, useState } from 'react';
 import { IconCheck } from '@tabler/icons-react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
-import classes from './CurrencyPicker.module.css';
+import { cn } from '@/lib/utils';
 
 const currencyCodes = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -36,56 +28,69 @@ function CurrencyItem({
   currency,
   isSelected,
   onSelect,
-}: {
+}: Readonly<{
   currency: Currency;
   isSelected: boolean;
   onSelect: () => void;
-}) {
+}>) {
+  let symbolSizeClass = 'text-sm';
+  if (currency.symbol.length > 3) {
+    symbolSizeClass = 'text-[10px]';
+  } else if (currency.symbol.length > 2) {
+    symbolSizeClass = 'text-xs';
+  }
+
   return (
-    <UnstyledButton
-      className={classes.currencyItem}
-      data-selected={isSelected || undefined}
+    <button
+      type="button"
+      className={cn(
+        'flex w-full items-center justify-between rounded-md px-3 py-2 text-left transition-colors hover:bg-accent',
+        isSelected ? 'bg-primary/10' : 'bg-background',
+      )}
       onClick={onSelect}
     >
-      <Group wrap="nowrap" justify="space-between" w="100%">
-        <Group wrap="nowrap" gap="md">
-          <Center
-            className={classes.currencyIcon}
-            data-selected={isSelected || undefined}
-          >
-            <Text
-              className={classes.currencySymbol}
-              c={isSelected ? 'blue' : 'dark'}
-              style={{
-                fontSize:
-                  currency.symbol.length > 3
-                    ? '10px'
-                    : currency.symbol.length > 2
-                      ? '12px'
-                      : '14px',
-              }}
-            >
-              {currency.symbol}
-            </Text>
-          </Center>
-          <Text fw={isSelected ? 600 : 400} size="sm">
-            {currency.name}
-          </Text>
-        </Group>
-        <Group wrap="nowrap" gap="xs">
-          <Text
-            c={isSelected ? 'blue' : 'dimmed'}
-            size="sm"
-            fw={isSelected ? 600 : 500}
-          >
-            {currency.code}
-          </Text>
-          {isSelected && (
-            <IconCheck size={16} color="var(--mantine-color-blue-filled)" />
+      <div className="flex min-w-0 items-center gap-3">
+        <div
+          className={cn(
+            'flex size-8 items-center justify-center rounded-full border bg-muted',
+            isSelected
+              ? 'border-primary/30 bg-primary/10'
+              : 'border-transparent',
           )}
-        </Group>
-      </Group>
-    </UnstyledButton>
+        >
+          <span
+            className={cn(
+              'font-medium leading-none text-foreground',
+              symbolSizeClass,
+            )}
+          >
+            {currency.symbol}
+          </span>
+        </div>
+        <span
+          className={cn(
+            'truncate text-sm text-foreground',
+            isSelected ? 'font-semibold' : 'font-normal',
+          )}
+        >
+          {currency.name}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span
+          className={cn(
+            'text-sm',
+            isSelected
+              ? 'font-semibold text-primary'
+              : 'font-medium text-muted-foreground',
+          )}
+        >
+          {currency.code}
+        </span>
+        {isSelected ? <IconCheck size={16} className="text-primary" /> : null}
+      </div>
+    </button>
   );
 }
 
@@ -102,19 +107,25 @@ export function CurrencyPickerModal({
   const { settings } = useUserSettings();
   const defaultCurrencyCode = useDefaultCurrency();
   const [query, setQuery] = useState('');
+
+  let initialSelectedCurrencies: Currency[] = [];
+  if (selectionMode === 'multiple') {
+    initialSelectedCurrencies = initialCurrencies ?? [];
+  } else if (initialCurrency) {
+    initialSelectedCurrencies = [initialCurrency];
+  }
+
   const [selectedCurrencies, setSelectedCurrencies] = useState<Currency[]>(
-    selectionMode === 'multiple'
-      ? (initialCurrencies ?? [])
-      : initialCurrency
-        ? [initialCurrency]
-        : [],
+    initialSelectedCurrencies,
   );
 
   const { prioritizedCurrencies, otherCurrencies } = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
     let filtered = currencyCodes;
-    if (query !== '' && query !== null && query !== undefined) {
+
+    if (normalizedQuery !== '') {
       filtered = currencyCodes.filter((currency) =>
-        JSON.stringify(currency).toLowerCase().includes(query.toLowerCase()),
+        JSON.stringify(currency).toLowerCase().includes(normalizedQuery),
       );
     }
 
@@ -138,6 +149,7 @@ export function CurrencyPickerModal({
     const prioritizedCurrencyCodeSet = new Set(
       prioritized.map((currency) => currency.code),
     );
+
     const others = filtered.filter(
       (currency) => !prioritizedCurrencyCodeSet.has(currency.code),
     );
@@ -171,34 +183,29 @@ export function CurrencyPickerModal({
   };
 
   return (
-    <Flex
-      align="stretch"
-      justify="center"
-      direction="column"
-      gap="sm"
-      style={{
-        height: isMobile ? 'calc(100dvh - 80px)' : '500px',
-      }}
+    <div
+      className="flex flex-col gap-3"
+      style={{ height: isMobile ? 'calc(100dvh - 80px)' : '500px' }}
     >
       <SearchBoxInput
         query={query}
-        onSearchQueryChanged={(newQuery) => {
-          setQuery(newQuery);
-        }}
+        onSearchQueryChanged={setQuery}
         placeholder={t('components.currencyPickerModal.search.placeholder')}
       />
-      <ScrollArea type="scroll" scrollbars="y" style={{ flex: 1 }}>
-        {prioritizedCurrencies.length === 0 && otherCurrencies.length === 0 && (
-          <Text>
+
+      <div className="flex-1 overflow-y-auto rounded-md border p-1">
+        {prioritizedCurrencies.length === 0 && otherCurrencies.length === 0 ? (
+          <p className="p-2 text-sm text-muted-foreground">
             {t('components.currencyPickerModal.emptyState.noCurrencies')}
-          </Text>
-        )}
-        <Flex direction="column" gap={4}>
-          {prioritizedCurrencies.length > 0 && (
+          </p>
+        ) : null}
+
+        <div className="flex flex-col gap-1">
+          {prioritizedCurrencies.length > 0 ? (
             <>
-              <Text size="xs" c="dimmed" px="xs">
+              <p className="px-2 py-1 text-xs uppercase tracking-wide text-muted-foreground">
                 {t('components.currencyPickerModal.sections.suggested')}
-              </Text>
+              </p>
               {prioritizedCurrencies.map((currency) => (
                 <CurrencyItem
                   key={currency.code}
@@ -207,9 +214,12 @@ export function CurrencyPickerModal({
                   onSelect={() => onCurrencyPress(currency)}
                 />
               ))}
-              {otherCurrencies.length > 0 && <Divider my="xs" />}
+              {otherCurrencies.length > 0 ? (
+                <Separator className="my-1" />
+              ) : null}
             </>
-          )}
+          ) : null}
+
           {otherCurrencies.map((currency) => (
             <CurrencyItem
               key={currency.code}
@@ -218,13 +228,15 @@ export function CurrencyPickerModal({
               onSelect={() => onCurrencyPress(currency)}
             />
           ))}
-        </Flex>
-      </ScrollArea>
-      <Group justify="end" mt="md">
-        <Button variant="outline" onClick={() => onCancel()}>
+        </div>
+      </div>
+
+      <div className="mt-2 flex justify-end gap-2">
+        <Button variant="outline" onClick={onCancel}>
           {t('components.currencyPickerModal.buttons.cancel')}
         </Button>
-        {selectionMode === 'multiple' && (
+
+        {selectionMode === 'multiple' ? (
           <Button
             onClick={() => {
               onCurrenciesSelected?.(selectedCurrencies);
@@ -233,8 +245,8 @@ export function CurrencyPickerModal({
           >
             {t('components.currencyPickerModal.buttons.confirm')}
           </Button>
-        )}
-      </Group>
-    </Flex>
+        ) : null}
+      </div>
+    </div>
   );
 }

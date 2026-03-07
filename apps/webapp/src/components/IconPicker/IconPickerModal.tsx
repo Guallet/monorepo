@@ -1,62 +1,34 @@
-import { ActionIcon, Button, Group, Stack } from "@mantine/core";
-import { GualletIcon } from "../GualletIcon/GualletIcon";
-import {
-  IconBabyCarriage,
-  IconBriefcase,
-  IconBalloon,
-  IconBasket,
-  IconBike,
-  IconBuildingBank,
-  IconCar,
-  IconCash,
-  IconCreditCard,
-  IconCup,
-  IconGift,
-  IconHeartHandshake,
-  IconHome,
-  IconLego,
-  IconMovie,
-  IconPaw,
-  IconPigMoney,
-  IconPlane,
-  IconPlug,
-  IconQuestionMark,
-  IconSchool,
-  IconShield,
-  IconShirt,
-  IconShoppingCart,
-  IconStethoscope,
-  IconToolsKitchen3,
-} from "@tabler/icons-react";
+import { Button } from '@/components/ui/button';
+import { GualletIcon } from '../GualletIcon/GualletIcon';
 
 const validIconNames = [
-  IconCash,
-  IconBriefcase,
-  IconHome,
-  IconBuildingBank,
-  IconPlug,
-  IconShield,
-  IconShoppingCart,
-  IconToolsKitchen3,
-  IconCup,
-  IconBasket,
-  IconCar,
-  IconMovie,
-  IconPlane,
-  IconBalloon,
-  IconBike,
-  IconShirt,
-  IconLego,
-  IconBabyCarriage,
-  IconSchool,
-  IconStethoscope,
-  IconPaw,
-  IconPigMoney,
-  IconCreditCard,
-  IconHeartHandshake,
-  IconGift,
-  IconQuestionMark,
-].map((Icon) => Icon.displayName);
+  'IconCash',
+  'IconBriefcase',
+  'IconHome',
+  'IconBuildingBank',
+  'IconPlug',
+  'IconShield',
+  'IconShoppingCart',
+  'IconToolsKitchen3',
+  'IconCup',
+  'IconBasket',
+  'IconCar',
+  'IconMovie',
+  'IconPlane',
+  'IconBalloon',
+  'IconBike',
+  'IconShirt',
+  'IconLego',
+  'IconBabyCarriage',
+  'IconSchool',
+  'IconStethoscope',
+  'IconPaw',
+  'IconPigMoney',
+  'IconCreditCard',
+  'IconHeartHandshake',
+  'IconGift',
+  'IconQuestionMark',
+] as const;
 
 interface IconPickerModalProps {
   onIconSelected: (icon: string | undefined) => void;
@@ -68,21 +40,26 @@ export function IconPickerModal({
   onCancel,
 }: Readonly<IconPickerModalProps>) {
   return (
-    <Stack>
-      <Group wrap="wrap">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-7">
         {validIconNames.map((iconName) => (
-          <ActionIcon
+          <button
+            type="button"
             key={iconName}
-            variant="outline"
             aria-label={iconName}
-            size={50}
+            className="flex h-12 w-12 items-center justify-center rounded-md border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             onClick={() => onIconSelected(iconName)}
           >
             <GualletIcon iconName={iconName} />
-          </ActionIcon>
+          </button>
         ))}
-      </Group>
-      <Button onClick={onCancel}>Cancel</Button>
-    </Stack>
+      </div>
+
+      <div className="flex justify-end">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 }

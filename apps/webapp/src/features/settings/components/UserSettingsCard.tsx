@@ -1,34 +1,47 @@
-import { AppSection } from "@/components/Cards/AppSection";
-import { useUser } from "@guallet/api-react";
-import { Avatar, Button, Stack, Text } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
+import { AppSection } from '@/components/Cards/AppSection';
+import { Button } from '@/components/ui/button';
+import { useUser } from '@guallet/api-react';
+import { useNavigate } from '@tanstack/react-router';
 
 export function UserSettingsCard() {
-  // TODO: Replace this with a prop callback rather than navigate directly from here
   const navigate = useNavigate();
   const { user } = useUser();
+  const initials =
+    user?.name
+      ?.split(' ')
+      .map((namePart) => namePart[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() ?? 'U';
 
   return (
     <AppSection title="User Information" gap={0}>
-      <Stack align="center">
-        <Avatar
-          src={user?.profile_src}
-          alt={user?.name}
-          style={{ alignSelf: "center" }}
-          size={120}
-        />
-        <Text>{user?.name}</Text>
-        <Text>{user?.email}</Text>
+      <div className="flex flex-col items-center gap-3 py-2">
+        <div className="flex size-[120px] items-center justify-center overflow-hidden rounded-full border bg-muted">
+          {user?.profile_src ? (
+            <img
+              src={user.profile_src}
+              alt={user?.name ?? 'User avatar'}
+              className="size-full object-cover"
+            />
+          ) : (
+            <span className="text-2xl font-semibold text-muted-foreground">
+              {initials}
+            </span>
+          )}
+        </div>
+        <p className="text-base font-medium">{user?.name}</p>
+        <p className="text-sm text-muted-foreground">{user?.email}</p>
         <Button
           variant="outline"
-          color="red"
+          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
           onClick={() => {
-            navigate({ to: "/logout" });
+            navigate({ to: '/logout' });
           }}
         >
           Log out
         </Button>
-      </Stack>
+      </div>
     </AppSection>
   );
 }

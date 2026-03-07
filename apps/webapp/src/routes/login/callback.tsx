@@ -1,14 +1,7 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@guallet/auth';
-import {
-  Center,
-  Loader,
-  Text,
-  Paper,
-  Stack,
-  Title,
-  Button,
-} from '@mantine/core';
 import { Link, Navigate, createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
@@ -32,9 +25,15 @@ function LoginCallbackPage() {
 
   if (isAuthLoading) {
     return (
-      <Center>
-        <Loader />
-      </Center>
+      <BaseScreen fullScreen>
+        <div className="flex min-h-screen items-center justify-center">
+          <output className="sr-only">Loading</output>
+          <div
+            aria-hidden="true"
+            className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
+          />
+        </div>
+      </BaseScreen>
     );
   }
 
@@ -42,21 +41,23 @@ function LoginCallbackPage() {
   if (error) {
     return (
       <BaseScreen isLoading={isAuthLoading}>
-        <Stack justify="center" align="center" h="100%">
-          <Paper withBorder shadow="md" p={30} mt={20} radius="md">
-            <Stack>
-              <Title>Authentication error</Title>
-              <Text>{error_code}</Text>
-              <Text>
+        <div className="flex min-h-screen items-center justify-center p-6">
+          <Card className="w-full max-w-lg shadow-md">
+            <CardContent className="space-y-4 p-6">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Authentication error
+              </h1>
+              <p className="text-sm text-muted-foreground">{error_code}</p>
+              <p className="text-sm text-muted-foreground">
                 {error_description?.replaceAll('+', ' ') ??
                   'An unknown error occurred.'}
-              </Text>
-              <Button component={Link} to="/login">
-                Go back to login screen
+              </p>
+              <Button asChild>
+                <Link to="/login">Go back to login screen</Link>
               </Button>
-            </Stack>
-          </Paper>
-        </Stack>
+            </CardContent>
+          </Card>
+        </div>
       </BaseScreen>
     );
   }

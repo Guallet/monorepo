@@ -1,109 +1,130 @@
+import { useMemo, useState } from 'react';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import {
-  Button,
-  Divider,
-  Group,
-  Popover,
-  ScrollArea,
-  Stack,
-} from "@mantine/core";
-import { DateListPicker, DateRangeSelectionItem } from "./DateListPicker";
-import { CalendarDateRangePicker } from "./CalendarDateRangePicker";
-import { useState } from "react";
+  DateListPicker,
+  DateRangeSelectionItem,
+  findDateRangeSelectionItem,
+} from './DateListPicker';
+import { CalendarDateRangePicker } from './CalendarDateRangePicker';
 
 interface Props {
   selectedRange: { startDate: Date; endDate: Date } | null;
   onRangeSelected: (range: { startDate: Date; endDate: Date } | null) => void;
 }
 
-export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
-  const [range, setRange] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
-  } | null>(selectedRange ?? null);
-  const [opened, setOpened] = useState<boolean>(false);
+interface DraftRange {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+function toCompleteRange(range: DraftRange | null): {
+  startDate: Date;
+  endDate: Date;
+} | null {
+  if (!range?.startDate || !range?.endDate) {
+    return null;
+  }
+
+  return {
+    startDate: range.startDate,
+    endDate: range.endDate,
+  };
+}
+
+export function DateRangeButton({
+  selectedRange,
+  onRangeSelected,
+}: Readonly<Props>) {
+  const [isOpened, setIsOpened] = useState(false);
+  const [range, setRange] = useState<DraftRange | null>(selectedRange ?? null);
   const [listItemSelected, setListItemSelected] =
-    useState<DateRangeSelectionItem | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>("Select range");
+    useState<DateRangeSelectionItem | null>(
+      findDateRangeSelectionItem(selectedRange),
+    );
+
+  const buttonLabel = useMemo(() => {
+    if (!selectedRange) {
+      return 'Select range';
+    }
+
+    const matchingSelection = findDateRangeSelectionItem(selectedRange);
+
+    return matchingSelection?.label ?? 'Custom range';
+  }, [selectedRange]);
+
+  const openModal = () => {
+    const matchingSelection = findDateRangeSelectionItem(selectedRange);
+
+    setListItemSelected(matchingSelection);
+    setRange(selectedRange ?? null);
+    setIsOpened(true);
+  };
+
+  const closeModal = () => {
+    setIsOpened(false);
+  };
+
+  const applySelection = () => {
+    onRangeSelected(toCompleteRange(range));
+    closeModal();
+  };
 
   return (
-    <Popover
-      position="bottom"
-      withArrow
-      shadow="md"
-      opened={opened}
-      onChange={setOpened}
-    >
-      <Popover.Target>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setOpened(!opened);
-          }}
-        >
-          {buttonLabel}
-        </Button>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <Stack>
-          <Group>
-            <ScrollArea h={300}>
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full justify-start"
+        onClick={openModal}
+      >
+        {buttonLabel}
+      </Button>
+
+      <ResponsiveModal
+        opened={isOpened}
+        onClose={closeModal}
+        title="Select date range"
+        size="xl"
+      >
+        <div className="flex flex-col gap-4">
+          <div className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)]">
+            <div className="max-h-[320px] overflow-y-auto rounded-md border p-1">
               <DateListPicker
                 value={listItemSelected}
-                onItemSelected={(selectedRange) => {
-                  setListItemSelected(selectedRange);
+                onItemSelected={(selectedItem) => {
+                  setListItemSelected(selectedItem);
                   setRange({
-                    startDate: selectedRange.range.startDate,
-                    endDate: selectedRange.range.endDate,
+                    startDate: selectedItem.range.startDate,
+                    endDate: selectedItem.range.endDate,
                   });
                 }}
               />
-            </ScrollArea>
-            <Divider orientation="vertical" />
+            </div>
+
             <CalendarDateRangePicker
               startDate={range?.startDate ?? null}
               endDate={range?.endDate ?? null}
-              onRangeChanged={(x) => {
+              onRangeChanged={(nextRange) => {
                 setListItemSelected(null);
-                setRange({
-                  startDate: x?.startDate ?? null,
-                  endDate: x?.endDate ?? null,
-                });
+                setRange(nextRange);
               }}
             />
-          </Group>
-          <Divider />
-          <Group>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setOpened(false);
-              }}
-            >
+          </div>
+
+          <Separator />
+
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={closeModal}>
               Cancel
             </Button>
-            <Button
-              onClick={() => {
-                onRangeSelected({
-                  startDate: range?.startDate ?? new Date(),
-                  endDate: range?.endDate ?? new Date(),
-                });
-
-                setButtonLabel(
-                  !range
-                    ? "Select range"
-                    : listItemSelected
-                      ? listItemSelected.label
-                      : "Custom range"
-                );
-
-                setOpened(false);
-              }}
-            >
+            <Button type="button" onClick={applySelection}>
               Apply
             </Button>
-          </Group>
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+          </div>
+        </div>
+      </ResponsiveModal>
+    </>
   );
 }

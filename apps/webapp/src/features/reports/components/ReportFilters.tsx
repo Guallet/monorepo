@@ -1,4 +1,3 @@
-import { Group } from '@mantine/core';
 import { Category } from '../../categories/models/Category';
 import { useState } from 'react';
 import { DateRangeButton } from '../../../components/DateRangeButton/DateRangeButton';
@@ -29,7 +28,7 @@ export function ReportFilters({ accounts, categories }: Readonly<IProps>) {
   return (
     <div>
       <h1>Reports Filters</h1>
-      <Group>
+      <div className="flex flex-wrap items-start gap-3">
         <MultiSelectCheckbox
           data={[...new Set(accounts.map((x) => x.name))]}
           placeholder="Select the accounts"
@@ -69,7 +68,7 @@ export function ReportFilters({ accounts, categories }: Readonly<IProps>) {
             }
           }}
         />
-      </Group>
+      </div>
     </div>
   );
 }

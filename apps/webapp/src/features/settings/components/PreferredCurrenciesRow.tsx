@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useUserSettings, useUserSettingsMutations } from '@guallet/api-react';
-import { BaseRow } from '@guallet/ui-react';
+import { BaseRow, ResponsiveModal } from '@guallet/ui-react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { Modal, Stack } from '@mantine/core';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { Currency } from '@guallet/money';
 import { notifications } from '@/lib/notifications';
@@ -65,29 +64,23 @@ export function PreferredCurrenciesRow() {
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={isModalOpen}
         onClose={closeModal}
         title={t('components.preferredCurrenciesRow.modal.title')}
-        centered
-        overlayProps={{
-          backgroundOpacity: 0.55,
-          blur: 3,
-        }}
+        size="lg"
       >
-        <Stack>
-          <CurrencyPickerModal
-            key={`${isModalOpen}-${selectedCurrencies.map((currency) => currency.code).join(',')}`}
-            selectionMode="multiple"
-            initialCurrencies={selectedCurrencies}
-            onCurrenciesSelected={(currencies) => {
-              setSelectedCurrencies(currencies);
-              savePreferredCurrencies(currencies);
-            }}
-            onCancel={closeModal}
-          />
-        </Stack>
-      </Modal>
+        <CurrencyPickerModal
+          key={`${isModalOpen}-${selectedCurrencies.map((currency) => currency.code).join(',')}`}
+          selectionMode="multiple"
+          initialCurrencies={selectedCurrencies}
+          onCurrenciesSelected={(currencies) => {
+            setSelectedCurrencies(currencies);
+            savePreferredCurrencies(currencies);
+          }}
+          onCancel={closeModal}
+        />
+      </ResponsiveModal>
 
       <BaseRow
         label={t('components.preferredCurrenciesRow.row.label')}

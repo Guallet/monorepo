@@ -1,11 +1,10 @@
 import { useUserSettings, useUserSettingsMutations } from '@guallet/api-react';
+import { BaseRow, ResponsiveModal } from '@guallet/ui-react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { Modal, Stack } from '@mantine/core';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { CurrencyPickerModal } from '@/components/CurrencyPicker/CurrencyPickerModal';
 import { Currency } from '@guallet/money';
 import { notifications } from '@/lib/notifications';
-import { BaseRow } from '@guallet/ui-react/';
 
 export function DefaultCurrencyRow() {
   const { settings } = useUserSettings();
@@ -39,29 +38,21 @@ export function DefaultCurrencyRow() {
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={isModalOpen}
         onClose={closeModal}
         title="Select Default Currency"
-        centered
-        overlayProps={{
-          backgroundOpacity: 0.55,
-          blur: 3,
-        }}
+        size="lg"
       >
-        <Stack>
-          <CurrencyPickerModal
-            selectionMode="single"
-            onCurrencySelected={(currency: Currency) => {
-              saveSelectedCurrency(currency);
-              closeModal();
-            }}
-            onCancel={() => {
-              closeModal();
-            }}
-          />
-        </Stack>
-      </Modal>
+        <CurrencyPickerModal
+          selectionMode="single"
+          onCurrencySelected={(currency: Currency) => {
+            saveSelectedCurrency(currency);
+            closeModal();
+          }}
+          onCancel={closeModal}
+        />
+      </ResponsiveModal>
       <BaseRow
         label="Default Currency"
         value={settings?.currencies.default_currency ?? ''}

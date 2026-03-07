@@ -1,17 +1,10 @@
-import {
-  Center,
-  Paper,
-  Stack,
-  Text,
-  TextInput,
-  Button,
-  Title,
-  Anchor,
-  Alert,
-} from '@mantine/core';
+import { IconAlertCircle, IconMail } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconMail, IconAlertCircle } from '@tabler/icons-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 interface ValidateOtpScreenProps {
   email: string;
@@ -34,105 +27,90 @@ export function ValidateOtpScreen({
   const isCodeValid = code.length === 6;
 
   return (
-    <Center style={{ minHeight: '100vh' }}>
-      <Paper
-        radius="md"
-        p="xl"
-        withBorder
-        style={{
-          margin: '1.5rem',
-          maxWidth: 420,
-          width: '100%',
-        }}
-      >
-        <Stack align="center" gap="md">
-          <IconMail size={48} color="var(--mantine-color-blue-6)" />
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <Card className="w-full max-w-md shadow-md">
+        <CardContent className="space-y-5 p-6 text-center">
+          <IconMail className="mx-auto h-12 w-12 text-primary" />
 
-          <Title order={2} ta="center">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t('screens.validateOtp.title', 'Check your email')}
-          </Title>
+          </h1>
 
-          <Text ta="center" c="dimmed">
+          <p className="text-sm text-muted-foreground">
             {t(
               'screens.validateOtp.description',
               "We've sent a 6-digit code to",
             )}{' '}
-            <Text span fw={600}>
-              {email}
-            </Text>
-            .{' '}
+            <span className="font-semibold text-foreground">{email}</span>.{' '}
             {t(
               'screens.validateOtp.instructionText',
               'Enter the code below to sign in.',
             )}
-          </Text>
+          </p>
 
-          <Text ta="center" c="dimmed" size="sm">
+          <p className="text-sm text-muted-foreground">
             {t(
               'screens.validateOtp.instructionNote',
               'The email also contains a magic link you can click to sign in automatically.',
             )}
-          </Text>
+          </p>
 
           {error && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title={t('screens.validateOtp.error.title', 'Error')}
-              color="red"
-              w="100%"
-            >
-              {error}
+            <Alert variant="destructive" className="text-left">
+              <IconAlertCircle className="h-4 w-4" />
+              <AlertTitle>
+                {t('screens.validateOtp.error.title', 'Error')}
+              </AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          <TextInput
+          <Input
             placeholder={t(
               'screens.validateOtp.form.codeInput.placeholder',
               'Enter the 6 digit code',
             )}
             value={code}
             onChange={(event) => {
-              setCode(event.currentTarget.value);
+              setCode(event.target.value);
             }}
             maxLength={6}
-            size="lg"
-            w="100%"
-            styles={{
-              input: {
-                textAlign: 'center',
-                letterSpacing: '0.5em',
-                fontWeight: 600,
-              },
-            }}
+            className="text-center text-lg font-semibold tracking-[0.45em]"
+            inputMode="numeric"
+            autoComplete="one-time-code"
           />
 
           <Button
-            fullWidth
+            className="w-full"
             onClick={() => {
               onValidateOtp(code);
             }}
-            disabled={!isCodeValid}
-            loading={isLoading}
+            disabled={!isCodeValid || isLoading}
           >
             {t('screens.validateOtp.form.verifyButton.label', 'Verify code')}
           </Button>
 
           {onResendCode && (
-            <Text size="sm" ta="center">
+            <p className="text-sm text-muted-foreground">
               {t(
                 'screens.validateOtp.resendCode.question',
                 "Didn't receive the code?",
               )}{' '}
-              <Anchor component="button" type="button" onClick={onResendCode}>
+              <button
+                type="button"
+                className="font-medium text-primary hover:underline"
+                onClick={onResendCode}
+                disabled={isLoading}
+              >
                 {t(
                   'screens.validateOtp.resendCode.resendButton',
                   'Resend code',
                 )}
-              </Anchor>
-            </Text>
+              </button>
+            </p>
           )}
-        </Stack>
-      </Paper>
-    </Center>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

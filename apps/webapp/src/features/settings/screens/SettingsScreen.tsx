@@ -1,4 +1,4 @@
-import { Button, Stack, Title } from '@mantine/core';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import { UserSettingsCard } from '../components/UserSettingsCard';
 import { AppSection } from '@/components/Cards/AppSection';
@@ -14,8 +14,8 @@ export function SettingsScreen() {
 
   return (
     <BaseScreen>
-      <Stack>
-        <Title>Settings</Title>
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
         <UserSettingsCard />
 
         <AppSection title="User Preferences" itemPadding={0}>
@@ -50,11 +50,14 @@ export function SettingsScreen() {
         </AppSection>
 
         <AppSection title="Danger zone">
-          <Button variant="outline" color="red">
+          <Button
+            variant="outline"
+            className="border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          >
             Close account
           </Button>
         </AppSection>
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

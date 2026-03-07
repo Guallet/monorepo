@@ -1,8 +1,8 @@
-import { DeleteDialogConfirmation } from "@/components/Dialogs/DeleteDialogConfirmation";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
+import { Button } from '@/components/ui/button';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { IconTrash } from "@tabler/icons-react";
-import { useTranslation } from "react-i18next";
+import { IconTrash } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteIconButtonProps {
   modalTitle: string;
@@ -24,7 +24,7 @@ export function DeleteIconButton({
     useDisclosure(false);
 
   const tooltipLabel =
-    tooltipText || t("components.buttons.deleteIconButton.tooltip", "Delete");
+    tooltipText ?? t('components.buttons.deleteIconButton.tooltip', 'Delete');
 
   return (
     <>
@@ -41,11 +41,17 @@ export function DeleteIconButton({
         title={modalTitle}
         message={modalMessage}
       />
-      <Tooltip label={tooltipLabel}>
-        <ActionIcon variant="light" color="red" onClick={openModal}>
-          <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
-        </ActionIcon>
-      </Tooltip>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        title={tooltipLabel}
+        aria-label={tooltipLabel}
+        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+        onClick={openModal}
+      >
+        <IconTrash className="h-4 w-4" stroke={1.5} />
+      </Button>
     </>
   );
 }

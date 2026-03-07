@@ -12,7 +12,7 @@ import {
   IconRepeat,
   Icon,
 } from '@tabler/icons-react';
-import { AppShell, Button, Divider, ScrollArea } from '@mantine/core';
+import { Button } from '@/components/ui/button';
 import { LinksGroup } from './NavbarLinksGroup';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -98,12 +98,11 @@ interface Props {
 }
 
 export function AppNavBar({ onItemSelected }: Readonly<Props>) {
-  // TODO: Instead of this hook, the navbar should use the <Link> component
   const navigate = useNavigate();
 
   return (
-    <>
-      <AppShell.Section grow my="md" component={ScrollArea}>
+    <div className="flex h-full flex-col">
+      <div className="flex-1 overflow-y-auto py-4">
         {menuData.map((item) => {
           return (
             <LinksGroup
@@ -113,20 +112,22 @@ export function AppNavBar({ onItemSelected }: Readonly<Props>) {
             />
           );
         })}
-      </AppShell.Section>
-      <AppShell.Section>
-        <Divider />
+      </div>
 
+      <div className="border-t p-3">
         <Button
-          variant="transparent"
+          type="button"
+          variant="ghost"
+          className="w-full justify-start gap-2"
           onClick={() => {
+            onItemSelected();
             navigate({ to: '/logout' });
           }}
         >
-          <IconLogout />
+          <IconLogout className="h-4 w-4" />
           Logout
         </Button>
-      </AppShell.Section>
-    </>
+      </div>
+    </div>
   );
 }

@@ -1,15 +1,13 @@
-import { Text, Group } from "@mantine/core";
-
 interface Props {
   title: string;
   rightContent: string | null;
 }
 
-export default function GroupHeader({ title, rightContent }: Props) {
+export default function GroupHeader({ title, rightContent }: Readonly<Props>) {
   return (
-    <Group justify="space-between" pl="md" pr="md">
-      <Text fw={700}>{title}</Text>
-      <Text fw={700}>{rightContent}</Text>
-    </Group>
+    <div className="flex items-center justify-between px-4">
+      <p className="font-bold">{title}</p>
+      <p className="font-bold">{rightContent}</p>
+    </div>
   );
 }

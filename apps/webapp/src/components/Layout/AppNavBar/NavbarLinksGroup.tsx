@@ -1,16 +1,7 @@
 import { useState } from 'react';
-import {
-  Group,
-  Box,
-  Collapse,
-  ThemeIcon,
-  Text,
-  UnstyledButton,
-  rem,
-} from '@mantine/core';
 import { Icon, IconChevronRight } from '@tabler/icons-react';
-import classes from './NavbarLinksGroup.module.css';
 import { useNavigate } from '@tanstack/react-router';
+import { cn } from '@/lib/utils';
 
 interface LinksGroupProps {
   icon: Icon;
@@ -29,65 +20,62 @@ export function LinksGroup({
   subLinks,
   onItemSelected,
 }: Readonly<LinksGroupProps>) {
-  const hasLinks = Array.isArray(subLinks);
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const hasLinks = Array.isArray(subLinks) && subLinks.length > 0;
+  const [opened, setOpened] = useState(Boolean(initiallyOpened));
 
-  // TODO: Instead of using the navigate hook, we should use the <Link> component
   const navigation = useNavigate();
 
-  const items = (hasLinks ? subLinks : []).map((link) => (
-    <Text<'a'>
-      component="a"
-      className={classes.link}
-      href={link.link}
-      key={link.label}
-      onClick={(event) => {
-        // Do it this way to preserve the menu state
-        // If we relay in just the href, then the navbar state
-        // will be lost after navigation, collapsing all the items
-        event.preventDefault();
+  const items = (hasLinks ? subLinks : []).map((subLink) => (
+    <button
+      type="button"
+      className="ml-8 block w-[calc(100%-2rem)] border-l border-border px-4 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      key={subLink.label}
+      onClick={() => {
         onItemSelected();
-        navigation({ to: link.link });
+        navigation({ to: subLink.link });
       }}
     >
-      {link.label}
-    </Text>
+      {subLink.label}
+    </button>
   ));
 
-  return (
-    <>
-      <UnstyledButton
-        onClick={() => {
-          setOpened((o) => !o);
+  const onMainPress = () => {
+    if (hasLinks) {
+      setOpened((current) => !current);
+    }
 
-          if (link) {
-            navigation({ to: link });
-            onItemSelected();
-          }
-        }}
-        className={classes.control}
+    if (link) {
+      navigation({ to: link });
+      onItemSelected();
+    }
+  };
+
+  return (
+    <div>
+      <button
+        type="button"
+        className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+        onClick={onMainPress}
       >
-        <Group justify="space-between" gap={0}>
-          <Box style={{ display: 'flex', alignItems: 'center' }}>
-            <ThemeIcon variant="light" size={30}>
-              <Icon style={{ width: rem(18), height: rem(18) }} />
-            </ThemeIcon>
-            <Box ml="md">{label}</Box>
-          </Box>
-          {hasLinks && (
-            <IconChevronRight
-              className={classes.chevron}
-              stroke={1.5}
-              style={{
-                width: rem(16),
-                height: rem(16),
-                transform: opened ? 'rotate(-90deg)' : 'none',
-              }}
-            />
-          )}
-        </Group>
-      </UnstyledButton>
-      {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
-    </>
+        <span className="flex items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
+            <Icon className="h-[18px] w-[18px]" />
+          </span>
+          <span>{label}</span>
+        </span>
+
+        {hasLinks ? (
+          <IconChevronRight
+            stroke={1.5}
+            className={cn(
+              'h-4 w-4 text-muted-foreground transition-transform duration-200',
+              opened ? '-rotate-90' : 'rotate-0',
+            )}
+          />
+        ) : null}
+      </button>
+
+      {hasLinks && opened ? <div className="pb-1">{items}</div> : null}
+    </div>
   );
 }

@@ -1,6 +1,5 @@
-import { Colors } from "@/theme/colors";
-import { Box, LoadingOverlay } from "@mantine/core";
-import { ReactNode } from "react";
+import { Colors } from '@/theme/colors';
+import { ReactNode } from 'react';
 
 interface BaseScreenProps {
   isLoading?: boolean;
@@ -14,19 +13,27 @@ export function BaseScreen({
   fullScreen = false,
 }: Readonly<BaseScreenProps>) {
   return (
-    <Box
+    <div
+      className="relative"
       style={{
         backgroundColor: Colors.pageBackground,
-        height: fullScreen ? "100dvh" : undefined,
-        width: fullScreen ? "100dvw" : undefined,
+        minHeight: fullScreen ? '100dvh' : undefined,
+        minWidth: fullScreen ? '100dvw' : undefined,
       }}
     >
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
+      {isLoading && (
+        <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+          <output className="sr-only">Loading</output>
+          <div
+            aria-hidden="true"
+            className="h-8 w-8 animate-spin rounded-full border-4"
+            style={{
+              borderColor: `${Colors.primary} ${Colors.primary} transparent ${Colors.primary}`,
+            }}
+          />
+        </div>
+      )}
       {children}
-    </Box>
+    </div>
   );
 }

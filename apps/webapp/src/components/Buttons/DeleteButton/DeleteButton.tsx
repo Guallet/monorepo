@@ -1,6 +1,7 @@
-import { DeleteDialogConfirmation } from "@/components/Dialogs/DeleteDialogConfirmation";
-import { Button } from "@mantine/core";
+import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
+import { Button } from '@/components/ui/button';
 import { useDisclosure } from '@/hooks/useDisclosure';
+import { cn } from '@/lib/utils';
 
 interface DeleteButtonProps extends React.ComponentProps<typeof Button> {
   children: React.ReactNode;
@@ -16,6 +17,9 @@ export function DeleteButton({
   modalMessage,
   onDelete,
   onCancel,
+  className,
+  variant = 'outline',
+  ...props
 }: Readonly<DeleteButtonProps>) {
   const [isModalOpened, { open: openModal, close: closeModal }] =
     useDisclosure(false);
@@ -36,8 +40,12 @@ export function DeleteButton({
         message={modalMessage}
       />
       <Button
-        variant="outline"
-        color="red"
+        variant={variant}
+        className={cn(
+          'border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive',
+          className,
+        )}
+        {...props}
         onClick={() => {
           openModal();
         }}

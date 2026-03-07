@@ -1,21 +1,42 @@
-//Source: https://tanstack.com/router/latest/docs/framework/react/guide/custom-link#link
+// Source: https://tanstack.com/router/latest/docs/framework/react/guide/custom-link#link
 
 import * as React from 'react';
 import { createLink, LinkComponent } from '@tanstack/react-router';
-import { Anchor, AnchorProps } from '@mantine/core';
+import { cn } from '@/lib/utils';
 
-type MantineAnchorProps = Omit<AnchorProps, 'href'>;
+type NavAnchorProps = React.ComponentPropsWithoutRef<'a'> & {
+  size?: 'sm' | 'md' | 'lg';
+};
 
-const MantineLinkComponent = React.forwardRef<
-  HTMLAnchorElement,
-  MantineAnchorProps
->((props, ref) => {
-  return <Anchor ref={ref} {...props} />;
-});
+const navAnchorSizeClass: Record<
+  NonNullable<NavAnchorProps['size']>,
+  string
+> = {
+  sm: 'text-sm',
+  md: 'text-base',
+  lg: 'text-lg',
+};
 
-const CreatedLinkComponent = createLink(MantineLinkComponent);
+const NavAnchorComponent = React.forwardRef<HTMLAnchorElement, NavAnchorProps>(
+  ({ className, size = 'md', ...props }, ref) => {
+    return (
+      <a
+        ref={ref}
+        className={cn(
+          'font-medium text-primary hover:underline',
+          navAnchorSizeClass[size],
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
+NavAnchorComponent.displayName = 'NavAnchorComponent';
 
-export const NavLinkButton: LinkComponent<typeof MantineLinkComponent> = (
+const CreatedLinkComponent = createLink(NavAnchorComponent);
+
+export const NavLinkButton: LinkComponent<typeof NavAnchorComponent> = (
   props,
 ) => {
   return <CreatedLinkComponent {...props} />;

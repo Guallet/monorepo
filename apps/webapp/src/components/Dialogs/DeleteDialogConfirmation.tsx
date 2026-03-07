@@ -1,6 +1,6 @@
-import { ResponsiveModal } from "@guallet/ui-react";
-import { Group, Button, Text, Stack } from "@mantine/core";
-import { useTranslation } from "react-i18next";
+import { ResponsiveModal } from '@guallet/ui-react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
 
 interface DeleteDialogConfirmationProps {
   isOpen: boolean;
@@ -26,30 +26,34 @@ export function DeleteDialogConfirmation({
 
   const cancelButtonLabel = cancelLabel
     ? t(cancelLabel)
-    : t("components.dialogs.delete.cancelButton.label", "Cancel");
+    : t('components.dialogs.delete.cancelButton.label', 'Cancel');
   const deleteButtonLabel = deleteLabel
     ? t(deleteLabel)
-    : t("components.dialogs.delete.deleteButton.label", "Delete");
+    : t('components.dialogs.delete.deleteButton.label', 'Delete');
 
   return (
     <ResponsiveModal opened={isOpen} onClose={onClose} title={title} size="sm">
-      <Stack>
-        <Text>{message}</Text>
-        <Text size="sm">
+      <div className="flex flex-col gap-4">
+        <p>{message}</p>
+        <p className="text-sm text-muted-foreground">
           {t(
-            "components.dialogs.delete.subWarning.text",
-            "This action cannot be undone."
+            'components.dialogs.delete.subWarning.text',
+            'This action cannot be undone.',
           )}
-        </Text>
-        <Group>
-          <Button variant="outline" onClick={onClose}>
+        </p>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="outline" onClick={onClose}>
             {cancelButtonLabel}
           </Button>
-          <Button variant="filled" color="red" onClick={onConfirm}>
+          <Button
+            type="button"
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            onClick={onConfirm}
+          >
             {deleteButtonLabel}
           </Button>
-        </Group>
-      </Stack>
+        </div>
+      </div>
     </ResponsiveModal>
   );
 }

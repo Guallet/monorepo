@@ -1,5 +1,5 @@
-import { Burger, Group, Title, Tooltip, UnstyledButton } from '@mantine/core';
-import { IconUser } from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
+import { IconMenu2, IconUser, IconX } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { GualletLogo } from '../GualletLogo/GualletLogo';
 import { NotificationIcon } from '@/features/notifications/components/NotificationIcon';
@@ -13,33 +13,46 @@ export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
   const navigate = useNavigate();
 
   return (
-    <Group h="100%" px="md" justify="space-between">
-      <Group>
-        <Burger
-          opened={isOpened}
+    <div className="flex h-full items-center justify-between gap-4">
+      <div className="flex items-center gap-3">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="sm:hidden"
+          aria-label="Toggle navigation menu"
           onClick={onToggle}
-          hiddenFrom="sm"
-          size="sm"
-        />
-        <UnstyledButton
-          variant="transparent"
+        >
+          {isOpened ? (
+            <IconX className="h-5 w-5" />
+          ) : (
+            <IconMenu2 className="h-5 w-5" />
+          )}
+        </Button>
+
+        <button
+          type="button"
+          className="flex items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-accent"
           onClick={() => {
             navigate({ to: '/dashboard' });
           }}
         >
-          <Group>
-            <GualletLogo size={40} />
-            <Title order={2}>Guallet</Title>
-          </Group>
-        </UnstyledButton>
-      </Group>
+          <GualletLogo size={40} />
+          <h2 className="text-2xl font-semibold tracking-tight">Guallet</h2>
+        </button>
+      </div>
 
-      <Group>
+      <div className="flex items-center gap-2">
         <NotificationIcon />
-        <Tooltip label="User">
-          <IconUser />
-        </Tooltip>
-      </Group>
-    </Group>
+        <button
+          type="button"
+          title="User"
+          aria-label="User"
+          className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        >
+          <IconUser className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
-import { Money } from "@guallet/money";
-import { Text, TextProps } from "@mantine/core";
+import { Money } from '@guallet/money';
+import { cn } from '@/lib/utils';
 
-interface AmountLabelProps extends TextProps {
+interface AmountLabelProps extends React.HTMLAttributes<HTMLParagraphElement> {
   amount: number;
   currencyCode: string;
 }
@@ -9,6 +9,7 @@ interface AmountLabelProps extends TextProps {
 export function AmountLabel({
   amount,
   currencyCode,
+  className,
   ...props
 }: Readonly<AmountLabelProps>) {
   const money = Money.fromCurrencyCode({
@@ -17,8 +18,8 @@ export function AmountLabel({
   });
 
   return (
-    <Text size="lg" fw={700} {...props}>
+    <p className={cn('text-lg font-bold', className)} {...props}>
       {money.format()}
-    </Text>
+    </p>
   );
 }

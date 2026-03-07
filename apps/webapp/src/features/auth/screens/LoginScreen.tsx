@@ -1,39 +1,32 @@
-import {
-  Alert,
-  Anchor,
-  Button,
-  Container,
-  Divider,
-  Group,
-  Paper,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuth } from '@guallet/auth';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from '@tanstack/react-router';
+import { z } from 'zod';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { GoogleButton } from '../components/GoogleButton';
-import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
-import { IconAlertCircle } from '@tabler/icons-react';
-import { useAuth } from '@guallet/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
 
-// Define schemas for form validation using Zod
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const passwordFormSchema = z.object({
-  email: z.email({ message: 'Invalid email address' }),
+  email: z.string().regex(EMAIL_REGEX, { message: 'Invalid email address' }),
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
 });
 
 const magicLinkFormSchema = z.object({
-  email: z.email({ message: 'Invalid email address' }),
+  email: z.string().regex(EMAIL_REGEX, { message: 'Invalid email address' }),
 });
 
 type PasswordFormData = z.infer<typeof passwordFormSchema>;
@@ -99,10 +92,6 @@ export function LoginScreen({
     } else if (success) {
       console.log('Success login');
       console.log('Redirecting to', redirect || '/dashboard');
-      // navigation({
-      //   to: redirect || '/dashboard',
-      //   replace: true,
-      // });
     }
   };
 
@@ -135,210 +124,239 @@ export function LoginScreen({
     // Save the redirect url in the local storage to be able to restore it later
     localStorage.setItem('redirectDestination', redirect);
     const result = await loginWithProvider('google', oAuthRedirectionTo);
-    if (!result.success) {
-      console.error('Error logging in with Google', result.error);
-    } else {
+    if (result.success) {
       console.log('Success login with Google');
+      return;
     }
+
+    console.error('Error logging in with Google', result.error);
   };
 
   const toggleLoginType = () => {
     setLoginType(loginType === 'password' ? 'magic-link' : 'password');
   };
 
-  const displayError = localMagicLinkError;
+  const displayError =
+    loginType === 'magic-link' ? localMagicLinkError : passwordError;
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Container
-        size={420}
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <Stack justify="center" align="center">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8">
+        <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <GualletLogo size={50} />
-          <Text ta="center" size="lg" w={500}>
+          <h1 className="text-xl font-semibold tracking-tight">
             {t('screens.login.title.label', 'CNF: Sign in to your account')}
-          </Text>
-        </Stack>
+          </h1>
+        </div>
 
-        <Paper withBorder shadow="md" p={30} mt={20} radius="md">
-          {displayError && loginType === 'magic-link' && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title={t(
-                'screens.login.form.magicLink.error.title',
-                'CNF: Error sending magic link',
-              )}
-              color="red"
-              mb="md"
-            >
-              {displayError}
-            </Alert>
-          )}
-
-          {passwordError && loginType === 'password' && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title={t(
-                'screens.login.form.password.error.title',
-                'CNF: Login failed',
-              )}
-              color="red"
-              mb="md"
-            >
-              {passwordError}
-            </Alert>
-          )}
-
-          {loginType === 'password' ? (
-            <form onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}>
-              <Controller
-                name="email"
-                control={passwordControl}
-                render={({ field }) => (
-                  <TextInput
-                    label={t('screens.login.form.email.label', 'CNF: Email')}
-                    type="email"
-                    placeholder={t(
-                      'screens.login.form.email.placeholder',
-                      'CNF: Enter your email',
-                    )}
-                    value={field.value}
-                    onChange={(event) => {
-                      field.onChange(event.currentTarget.value);
-                    }}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    ref={field.ref}
-                    error={passwordErrors.email?.message}
-                    required
-                  />
-                )}
-              />
-
-              <Controller
-                name="password"
-                control={passwordControl}
-                render={({ field }) => (
-                  <PasswordInput
-                    label={t(
-                      'screens.login.form.password.label',
-                      'CNF: Password',
-                    )}
-                    placeholder={t(
-                      'screens.login.form.password.placeholder',
-                      'CNF: Enter your password',
-                    )}
-                    value={field.value}
-                    onChange={(event) => {
-                      field.onChange(event.currentTarget.value);
-                    }}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    ref={field.ref}
-                    error={passwordErrors.password?.message}
-                    required
-                    mt="md"
-                  />
-                )}
-              />
-
-              <Group justify="flex-end" mt="md">
-                <NavLinkButton to="/login/forgot-password" size="sm">
-                  {t(
-                    'screens.login.form.forgotPassword.label',
-                    'CNF: Forgot password?',
-                  )}
-                </NavLinkButton>
-              </Group>
-
-              <Button fullWidth mt="md" type="submit" color="blue">
-                {t('screens.login.form.submitButton.label', 'CNF: Sign in')}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={magicLinkForm.handleSubmit(handleMagicLinkSubmit)}>
-              <Controller
-                name="email"
-                control={magicLinkControl}
-                render={({ field }) => (
-                  <TextInput
-                    label={t('screens.login.form.email.label', 'CNF: Email')}
-                    type="email"
-                    placeholder={t(
-                      'screens.login.form.email.placeholder',
-                      'CNF: Enter your email',
-                    )}
-                    value={field.value}
-                    onChange={(event) => {
-                      field.onChange(event.currentTarget.value);
-                    }}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    ref={field.ref}
-                    error={magicLinkErrors.email?.message}
-                    required
-                  />
-                )}
-              />
-
-              <Button fullWidth mt="md" type="submit" color="blue">
-                {t(
-                  'screens.login.form.sendMagicLink.label',
-                  'CNF: Send magic link',
-                )}
-              </Button>
-            </form>
-          )}
-
-          <Text ta="center" size="sm" mt="md">
-            <Anchor component="button" type="button" onClick={toggleLoginType}>
-              {loginType === 'password'
-                ? t(
-                    'screens.login.form.useMagicLink.label',
-                    'CNF: Use magic link instead',
-                  )
-                : t(
-                    'screens.login.form.usePassword.label',
-                    'CNF: Use password instead',
-                  )}
-            </Anchor>
-          </Text>
-
-          <Divider
-            label={t(
-              'screens.login.form.divider.label',
-              'CNF: Or continue with',
+        <Card className="shadow-md">
+          <CardContent className="space-y-5 p-6">
+            {displayError && (
+              <Alert variant="destructive">
+                <IconAlertCircle className="h-4 w-4" />
+                <AlertTitle>
+                  {loginType === 'magic-link'
+                    ? t(
+                        'screens.login.form.magicLink.error.title',
+                        'CNF: Error sending magic link',
+                      )
+                    : t(
+                        'screens.login.form.password.error.title',
+                        'CNF: Login failed',
+                      )}
+                </AlertTitle>
+                <AlertDescription>{displayError}</AlertDescription>
+              </Alert>
             )}
-            labelPosition="center"
-            my="lg"
-          />
 
-          <Group grow>
-            <GoogleButton onClick={handleGoogleLogin}>
+            {loginType === 'password' ? (
+              <form
+                onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}
+                className="space-y-4"
+              >
+                <Controller
+                  name="email"
+                  control={passwordControl}
+                  render={({ field }) => (
+                    <div className="grid gap-2">
+                      <Label htmlFor="login-email">
+                        {t('screens.login.form.email.label', 'CNF: Email')}
+                      </Label>
+                      <Input
+                        id="login-email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder={t(
+                          'screens.login.form.email.placeholder',
+                          'CNF: Enter your email',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {passwordErrors.email?.message && (
+                        <p className="text-sm text-destructive">
+                          {passwordErrors.email.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name="password"
+                  control={passwordControl}
+                  render={({ field }) => (
+                    <div className="grid gap-2">
+                      <Label htmlFor="login-password">
+                        {t(
+                          'screens.login.form.password.label',
+                          'CNF: Password',
+                        )}
+                      </Label>
+                      <Input
+                        id="login-password"
+                        type="password"
+                        autoComplete="current-password"
+                        placeholder={t(
+                          'screens.login.form.password.placeholder',
+                          'CNF: Enter your password',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {passwordErrors.password?.message && (
+                        <p className="text-sm text-destructive">
+                          {passwordErrors.password.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <div className="flex justify-end">
+                  <Link
+                    to="/login/forgot-password"
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    {t(
+                      'screens.login.form.forgotPassword.label',
+                      'CNF: Forgot password?',
+                    )}
+                  </Link>
+                </div>
+
+                <Button className="w-full" type="submit" disabled={isLoading}>
+                  {t('screens.login.form.submitButton.label', 'CNF: Sign in')}
+                </Button>
+              </form>
+            ) : (
+              <form
+                onSubmit={magicLinkForm.handleSubmit(handleMagicLinkSubmit)}
+                className="space-y-4"
+              >
+                <Controller
+                  name="email"
+                  control={magicLinkControl}
+                  render={({ field }) => (
+                    <div className="grid gap-2">
+                      <Label htmlFor="magic-link-email">
+                        {t('screens.login.form.email.label', 'CNF: Email')}
+                      </Label>
+                      <Input
+                        id="magic-link-email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder={t(
+                          'screens.login.form.email.placeholder',
+                          'CNF: Enter your email',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {magicLinkErrors.email?.message && (
+                        <p className="text-sm text-destructive">
+                          {magicLinkErrors.email.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Button className="w-full" type="submit" disabled={isLoading}>
+                  {t(
+                    'screens.login.form.sendMagicLink.label',
+                    'CNF: Send magic link',
+                  )}
+                </Button>
+              </form>
+            )}
+
+            <p className="text-center text-sm">
+              <button
+                type="button"
+                className="font-medium text-primary hover:underline"
+                onClick={toggleLoginType}
+              >
+                {loginType === 'password'
+                  ? t(
+                      'screens.login.form.useMagicLink.label',
+                      'CNF: Use magic link instead',
+                    )
+                  : t(
+                      'screens.login.form.usePassword.label',
+                      'CNF: Use password instead',
+                    )}
+              </button>
+            </p>
+
+            <div className="flex items-center gap-3">
+              <Separator className="flex-1" />
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                {t('screens.login.form.divider.label', 'CNF: Or continue with')}
+              </span>
+              <Separator className="flex-1" />
+            </div>
+
+            <GoogleButton onClick={handleGoogleLogin} className="w-full">
               {t(
                 'screens.login.form.googleLoginButton.label',
                 'CNF: Continue with Google',
               )}
             </GoogleButton>
-          </Group>
-        </Paper>
+          </CardContent>
+        </Card>
 
-        <Text ta="center" size="sm" mt="md">
+        <p className="mt-4 text-center text-sm text-muted-foreground">
           {t(
             'screens.login.createAccount.label',
             "CNF: Don't have an account?",
           )}{' '}
-          <NavLinkButton to="/register">
+          <Link
+            to="/register"
+            className="font-medium text-primary hover:underline"
+          >
             {t('screens.login.createAccount.cta', 'CNF: Sign up!')}
-          </NavLinkButton>
-        </Text>
-      </Container>
+          </Link>
+        </p>
+      </div>
     </BaseScreen>
   );
 }

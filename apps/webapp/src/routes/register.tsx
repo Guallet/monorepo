@@ -1,20 +1,18 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@guallet/auth';
-import {
-  Anchor,
-  Button,
-  Checkbox,
-  Container,
-  Group,
-  Modal,
-  Paper,
-  PasswordInput,
-  TextInput,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
@@ -22,6 +20,8 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const Route = createFileRoute('/register')({
   component: RouteComponent,
@@ -42,7 +42,7 @@ function RouteComponent() {
           'CNF: Name must have at least 2 characters',
         ),
       }),
-      email: z.string().email({
+      email: z.string().regex(EMAIL_REGEX, {
         message: t(
           'screens.register.form.email.validation',
           'CNF: Invalid email',
@@ -67,11 +67,8 @@ function RouteComponent() {
   type FormValues = z.infer<typeof registerFormSchema>;
 
   useEffect(() => {
-    // If there is already a logged in user, just navigate away from here. Force the user to logout before create a new account
     if (!isLoading && isAuthenticated) {
-      navigate({
-        to: '/dashboard',
-      });
+      navigate({ to: '/dashboard' });
     }
   }, [isLoading, isAuthenticated, navigate]);
 
@@ -116,6 +113,7 @@ function RouteComponent() {
         'CNF: Unable to log in. Please try again.',
       ),
     };
+
     return errorMessages[code] ?? defaultMessage;
   };
 
@@ -123,7 +121,6 @@ function RouteComponent() {
     setIsSubmitting(true);
 
     try {
-      // Step 1: Create the account
       const createResult = await createAccount({
         name: values.name,
         email: values.email,
@@ -136,9 +133,7 @@ function RouteComponent() {
           createResult.error.message,
         );
 
-        // Special case: email confirmation required
         if (createResult.error.code === 'email_confirmation_required') {
-          // reset the form to avoid resubmission issues
           setShowEmailConfirmModal(true);
           form.reset();
           return;
@@ -157,7 +152,6 @@ function RouteComponent() {
         return;
       }
 
-      // Step 2: Log in the user
       const loginResult = await login(values.email, values.password);
 
       if (loginResult.error) {
@@ -181,12 +175,10 @@ function RouteComponent() {
           withBorder: true,
         });
 
-        // Redirect to login page since account was created
         navigate({ to: '/login', search: { redirect: '/dashboard' } });
         return;
       }
 
-      // Success - redirect to dashboard
       notifications.show({
         title: t(
           'screens.register.notifications.success.title',
@@ -214,160 +206,223 @@ function RouteComponent() {
 
   return (
     <>
-      <Modal
-        opened={showEmailConfirmModal}
-        onClose={handleEmailConfirmModalClose}
-        title={t(
-          'screens.register.emailConfirmModal.title',
-          'CNF: Check your email',
-        )}
-        centered
+      <Dialog
+        open={showEmailConfirmModal}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleEmailConfirmModalClose();
+          }
+        }}
       >
-        <Stack>
-          <Text>
-            {t(
-              'screens.register.emailConfirmModal.message',
-              'CNF: Please check your email to confirm your account. You will need to verify your email address before you can log in.',
-            )}
-          </Text>
-          <Button fullWidth onClick={handleEmailConfirmModalClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t(
+                'screens.register.emailConfirmModal.title',
+                'CNF: Check your email',
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {t(
+                'screens.register.emailConfirmModal.message',
+                'CNF: Please check your email to confirm your account. You will need to verify your email address before you can log in.',
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <Button className="w-full" onClick={handleEmailConfirmModalClose}>
             {t(
               'screens.register.emailConfirmModal.button',
               'CNF: Go to login page',
             )}
           </Button>
-        </Stack>
-      </Modal>
+        </DialogContent>
+      </Dialog>
+
       <BaseScreen fullScreen>
-        <Container size={450}>
-          {/* <LoginScreenHeader /> */}
-          <Paper withBorder shadow="md" p={30} radius="md">
-            <Title order={2} ta="center" mb="md">
-              {t('screens.register.title', 'CNF: Create new account')}
-            </Title>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              <Stack>
+        <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8">
+          <Card className="shadow-md">
+            <CardContent className="space-y-6 p-6">
+              <h1 className="text-center text-2xl font-semibold tracking-tight">
+                {t('screens.register.title', 'CNF: Create new account')}
+              </h1>
+
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-4"
+              >
                 <Controller
                   name="name"
                   control={control}
                   render={({ field }) => (
-                    <TextInput
-                      label={t('screens.register.form.name.label', 'CNF: Name')}
-                      placeholder={t(
-                        'screens.register.form.name.placeholder',
-                        'CNF: Enter your name',
+                    <div className="grid gap-2">
+                      <Label htmlFor="register-name">
+                        {t('screens.register.form.name.label', 'CNF: Name')}
+                      </Label>
+                      <Input
+                        id="register-name"
+                        placeholder={t(
+                          'screens.register.form.name.placeholder',
+                          'CNF: Enter your name',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {errors.name?.message && (
+                        <p className="text-sm text-destructive">
+                          {errors.name.message}
+                        </p>
                       )}
-                      value={field.value}
-                      onChange={(event) => {
-                        field.onChange(event.currentTarget.value);
-                      }}
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                      error={errors.name?.message}
-                      required
-                    />
+                    </div>
                   )}
                 />
+
                 <Controller
                   name="email"
                   control={control}
                   render={({ field }) => (
-                    <TextInput
-                      label={t(
-                        'screens.register.form.email.label',
-                        'CNF: Email address',
+                    <div className="grid gap-2">
+                      <Label htmlFor="register-email">
+                        {t(
+                          'screens.register.form.email.label',
+                          'CNF: Email address',
+                        )}
+                      </Label>
+                      <Input
+                        id="register-email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder={t(
+                          'screens.register.form.email.placeholder',
+                          'CNF: Enter your email',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {errors.email?.message && (
+                        <p className="text-sm text-destructive">
+                          {errors.email.message}
+                        </p>
                       )}
-                      placeholder={t(
-                        'screens.register.form.email.placeholder',
-                        'CNF: Enter your email',
-                      )}
-                      value={field.value}
-                      onChange={(event) => {
-                        field.onChange(event.currentTarget.value);
-                      }}
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                      error={errors.email?.message}
-                      required
-                    />
+                    </div>
                   )}
                 />
+
                 <Controller
                   name="password"
                   control={control}
                   render={({ field }) => (
-                    <PasswordInput
-                      label={t(
-                        'screens.register.form.password.label',
-                        'CNF: Password',
+                    <div className="grid gap-2">
+                      <Label htmlFor="register-password">
+                        {t(
+                          'screens.register.form.password.label',
+                          'CNF: Password',
+                        )}
+                      </Label>
+                      <Input
+                        id="register-password"
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder={t(
+                          'screens.register.form.password.placeholder',
+                          'CNF: Password',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {errors.password?.message && (
+                        <p className="text-sm text-destructive">
+                          {errors.password.message}
+                        </p>
                       )}
-                      placeholder={t(
-                        'screens.register.form.password.placeholder',
-                        'CNF: Password',
-                      )}
-                      value={field.value}
-                      onChange={(event) => {
-                        field.onChange(event.currentTarget.value);
-                      }}
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                      error={errors.password?.message}
-                      required
-                    />
+                    </div>
                   )}
                 />
+
                 <Controller
                   name="confirmPassword"
                   control={control}
                   render={({ field }) => (
-                    <PasswordInput
-                      label={t(
-                        'screens.register.form.confirmPassword.label',
-                        'CNF: Confirm Password',
+                    <div className="grid gap-2">
+                      <Label htmlFor="register-confirm-password">
+                        {t(
+                          'screens.register.form.confirmPassword.label',
+                          'CNF: Confirm Password',
+                        )}
+                      </Label>
+                      <Input
+                        id="register-confirm-password"
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder={t(
+                          'screens.register.form.confirmPassword.placeholder',
+                          'CNF: Confirm your password',
+                        )}
+                        value={field.value}
+                        onChange={(event) => {
+                          field.onChange(event.target.value);
+                        }}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                        required
+                      />
+                      {errors.confirmPassword?.message && (
+                        <p className="text-sm text-destructive">
+                          {errors.confirmPassword.message}
+                        </p>
                       )}
-                      placeholder={t(
-                        'screens.register.form.confirmPassword.placeholder',
-                        'CNF: Confirm your password',
-                      )}
-                      value={field.value}
-                      onChange={(event) => {
-                        field.onChange(event.currentTarget.value);
-                      }}
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                      error={errors.confirmPassword?.message}
-                      required
-                    />
+                    </div>
                   )}
                 />
-                <Group>
-                  <Checkbox />
-                  <Text size="sm">
+
+                <div className="flex items-start gap-3">
+                  <Checkbox id="register-terms-and-policy" />
+                  <Label
+                    htmlFor="register-terms-and-policy"
+                    className="text-sm font-normal leading-relaxed text-muted-foreground"
+                  >
                     {t(
                       'screens.register.form.termsAgreement',
                       'CNF: Agree the {{link}}.',
                       {
                         link: '',
                       },
-                    )}
-                    <Anchor href="https://guallet.io">
+                    )}{' '}
+                    <a
+                      href="https://guallet.io"
+                      className="font-medium text-primary hover:underline"
+                    >
                       {t(
                         'screens.register.form.termsLink',
                         'CNF: terms and policy',
                       )}
-                    </Anchor>
-                    .
-                  </Text>
-                </Group>
+                      .
+                    </a>
+                  </Label>
+                </div>
+
                 <Button
-                  fullWidth
-                  mt="md"
+                  className="w-full"
                   type="submit"
-                  loading={isSubmitting}
                   disabled={isSubmitting}
                 >
                   {t(
@@ -375,19 +430,24 @@ function RouteComponent() {
                     'CNF: Create new account',
                   )}
                 </Button>
-              </Stack>
-            </form>
-          </Paper>
-          <Text ta="center" size="sm" mt="md">
+              </form>
+            </CardContent>
+          </Card>
+
+          <p className="mt-4 text-center text-sm text-muted-foreground">
             {t(
               'screens.register.alreadyHaveAccount',
               'CNF: Already have an account?',
             )}{' '}
-            <Link to="/login" search={{ redirect: '/dashboard' }}>
+            <Link
+              to="/login"
+              search={{ redirect: '/dashboard' }}
+              className="font-medium text-primary hover:underline"
+            >
               {t('screens.register.signInLink', 'CNF: Sign in')}
             </Link>
-          </Text>
-        </Container>
+          </p>
+        </div>
       </BaseScreen>
     </>
   );

@@ -1,20 +1,26 @@
-import { Image } from "@mantine/core";
-import svgLogo from "@/assets/guallet.svg";
+import svgLogo from '@/assets/guallet.svg';
+import { cn } from '@/lib/utils';
 
-interface Props extends React.ComponentPropsWithoutRef<typeof Image> {
+interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
   size?: string | number;
 }
 
-export function GualletLogo({ size = 40, ...props }: Readonly<Props>) {
+export function GualletLogo({
+  size = 40,
+  className,
+  style,
+  alt = 'Guallet logo',
+  ...props
+}: Readonly<Props>) {
   return (
-    <Image
+    <img
       {...props}
       src={svgLogo}
-      radius="md"
-      h={size}
-      w={size}
-      fit="fill"
-      alt="Guallet logo"
+      alt={alt}
+      width={size}
+      height={size}
+      className={cn('rounded-md object-fill', className)}
+      style={{ width: size, height: size, ...style }}
     />
   );
 }

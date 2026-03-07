@@ -1,10 +1,28 @@
-import { Card, Group, Space, Stack, Text } from '@mantine/core';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
-interface AppSectionProps extends React.ComponentProps<typeof Card> {
+interface AppSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
   itemPadding?: number | string;
   children: React.ReactNode;
   headerActions?: React.ReactNode;
+  gap?: number | string;
+}
+
+const paddingByToken: Record<string, string> = {
+  xs: 'p-2',
+  sm: 'p-3',
+  md: 'p-4',
+  lg: 'p-6',
+  xl: 'p-8',
+};
+
+function getPaddingClass(itemPadding: number | string): string {
+  if (typeof itemPadding !== 'string') {
+    return '';
+  }
+
+  return paddingByToken[itemPadding] ?? '';
 }
 
 export function AppSection({
@@ -12,25 +30,41 @@ export function AppSection({
   children,
   itemPadding = 'md',
   headerActions,
+  className,
+  style,
+  gap,
   ...props
 }: Readonly<AppSectionProps>) {
+  const paddingClass = getPaddingClass(itemPadding);
+  let dynamicPaddingStyle: React.CSSProperties | undefined;
+
+  if (typeof itemPadding === 'number' || paddingClass === '') {
+    dynamicPaddingStyle = { padding: itemPadding };
+  }
+
+  const rootGapClass = gap === 0 || gap === '0' ? 'space-y-0' : 'space-y-2';
+
   return (
-    <Stack gap={0}>
+    <div className={cn(rootGapClass)}>
       {title && (
-        <>
-          <Group>
-            <Text fw={700} pl="md" pr="md" style={{ flex: 1 }}>
-              {title}
-            </Text>
-            {headerActions}
-          </Group>
-          <Space h="xs" />
-        </>
+        <div className="flex items-center justify-between gap-2 px-4 py-1">
+          <h2 className="flex-1 text-base font-bold">{title}</h2>
+          {headerActions}
+        </div>
       )}
 
-      <Card withBorder shadow="sm" radius="lg" padding={itemPadding} {...props}>
-        {children}
+      <Card
+        className={cn('rounded-lg border shadow-sm', className)}
+        style={style}
+      >
+        <div
+          className={cn(paddingClass)}
+          style={dynamicPaddingStyle}
+          {...props}
+        >
+          {children}
+        </div>
       </Card>
-    </Stack>
+    </div>
   );
 }

@@ -1,8 +1,9 @@
-import { Center, Paper, Stack, Text, Button, Title } from '@mantine/core';
 import { IconMailCheck } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { useRouter, useCanGoBack, useNavigate } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ResetPasswordSentScreenProps {
   email: string;
@@ -17,48 +18,38 @@ export function ResetPasswordSentScreen({
   const navigate = useNavigate();
 
   return (
-    <Center style={{ minHeight: '100vh' }}>
-      <Stack align="center">
-        <GualletLogo size={50} />
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-md space-y-6">
+        <div className="flex justify-center">
+          <GualletLogo size={50} />
+        </div>
 
-        <Paper
-          radius="md"
-          p="xl"
-          withBorder
-          style={{
-            margin: '1.5rem',
-            maxWidth: 420,
-            width: '100%',
-          }}
-        >
-          <Stack align="center" gap="md">
-            <IconMailCheck size={48} color="var(--mantine-color-green-6)" />
+        <Card className="shadow-md">
+          <CardContent className="space-y-5 p-6 text-center">
+            <IconMailCheck className="mx-auto h-12 w-12 text-emerald-600" />
 
-            <Title order={2} ta="center">
+            <h1 className="text-2xl font-semibold tracking-tight">
               {t('screens.resetPasswordSent.title', 'Check your email')}
-            </Title>
+            </h1>
 
-            <Text ta="center" c="dimmed">
+            <p className="text-sm text-muted-foreground">
               {t(
                 'screens.resetPasswordSent.description',
                 "We've sent a password reset link to",
               )}{' '}
-              <Text span fw={600}>
-                {email}
-              </Text>
-              .
-            </Text>
+              <span className="font-semibold text-foreground">{email}</span>.
+            </p>
 
-            <Text ta="center" c="dimmed" size="sm">
+            <p className="text-sm text-muted-foreground">
               {t(
                 'screens.resetPasswordSent.instructions',
                 "Click the link in the email to reset your password. If you don't see it, check your spam folder.",
               )}
-            </Text>
+            </p>
 
             <Button
               variant="outline"
-              fullWidth
+              className="w-full"
               onClick={() => {
                 if (canGoBack) {
                   router.history.back();
@@ -72,9 +63,9 @@ export function ResetPasswordSentScreen({
             >
               {t('screens.resetPasswordSent.backButton', 'Back to login')}
             </Button>
-          </Stack>
-        </Paper>
-      </Stack>
-    </Center>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

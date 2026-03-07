@@ -1,6 +1,5 @@
 import GualletAppShell from '@/components/Layout/GualletAppShell';
 import { useAuth } from '@guallet/auth';
-import { Center, Loader } from '@mantine/core';
 import { Navigate, createFileRoute, useRouter } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_app')({
@@ -14,9 +13,13 @@ function ProtectedRoute() {
 
   if (isLoading) {
     return (
-      <Center>
-        <Loader />
-      </Center>
+      <div className="flex min-h-screen items-center justify-center">
+        <output className="sr-only">Loading</output>
+        <div
+          aria-hidden="true"
+          className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
+        />
+      </div>
     );
   } else {
     if (!isAuthenticated) {

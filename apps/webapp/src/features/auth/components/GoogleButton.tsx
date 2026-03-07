@@ -1,18 +1,23 @@
-import { Button, ButtonProps } from "@mantine/core";
+import { Button, type ButtonProps } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-export function GoogleButton(
-  props: ButtonProps & React.ComponentPropsWithoutRef<"button">
-) {
-  return <Button leftSection={<GoogleIcon />} variant="default" {...props} />;
+export function GoogleButton(props: Readonly<ButtonProps>) {
+  const { className, children, variant = 'outline', ...rest } = props;
+
+  return (
+    <Button className={cn('gap-2', className)} variant={variant} {...rest}>
+      <GoogleIcon className="h-4 w-4" />
+      {children}
+    </Button>
+  );
 }
 
-function GoogleIcon(props: React.ComponentPropsWithoutRef<"svg">) {
+function GoogleIcon(props: Readonly<React.ComponentPropsWithoutRef<'svg'>>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMid"
       viewBox="0 0 256 262"
-      style={{ width: "0.9rem", height: "0.9rem" }}
       {...props}
     >
       <path

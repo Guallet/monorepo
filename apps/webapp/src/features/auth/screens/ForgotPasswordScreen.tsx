@@ -1,26 +1,19 @@
-import {
-  Alert,
-  Button,
-  Center,
-  Paper,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { IconAlertCircle, IconLock } from '@tabler/icons-react';
-import { useTranslation } from 'react-i18next';
-import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { useCanGoBack, useNavigate, useRouter } from '@tanstack/react-router';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-const formSchema = z.object({
-  email: z.email({ message: 'Invalid email address' }),
-});
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type FormData = z.infer<typeof formSchema>;
+interface FormData {
+  email: string;
+}
 
 interface ForgotPasswordScreenProps {
   onSubmit: (email: string) => Promise<void>;
@@ -39,7 +32,6 @@ export function ForgotPasswordScreen({
   const navigate = useNavigate();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
     },
@@ -54,89 +46,96 @@ export function ForgotPasswordScreen({
   };
 
   return (
-    <Center style={{ minHeight: '100vh' }}>
-      <Stack align="center">
-        <GualletLogo size={50} />
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-md space-y-6">
+        <div className="flex justify-center">
+          <GualletLogo size={50} />
+        </div>
 
-        <Paper
-          radius="md"
-          p="xl"
-          withBorder
-          style={{
-            margin: '1.5rem',
-            maxWidth: 420,
-            width: '100%',
-          }}
-        >
-          <Stack align="center" gap="md">
-            <IconLock size={48} color="var(--mantine-color-blue-6)" />
-
-            <Title order={2} ta="center">
-              {t('screens.forgotPassword.title.label', 'Forgot your password?')}
-            </Title>
-
-            <Text ta="center" c="dimmed">
-              {t(
-                'screens.forgotPassword.description.label',
-                "Enter your email address and we'll send you a link to reset your password.",
-              )}
-            </Text>
+        <Card className="shadow-md">
+          <CardContent className="space-y-6 p-6">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <IconLock className="h-12 w-12 text-primary" />
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {t(
+                  'screens.forgotPassword.title.label',
+                  'Forgot your password?',
+                )}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {t(
+                  'screens.forgotPassword.description.label',
+                  "Enter your email address and we'll send you a link to reset your password.",
+                )}
+              </p>
+            </div>
 
             {error && (
-              <Alert
-                icon={<IconAlertCircle size={16} />}
-                title={t('screens.forgotPassword.error.title', 'Error')}
-                color="red"
-                w="100%"
-              >
-                {error}
+              <Alert variant="destructive">
+                <IconAlertCircle className="h-4 w-4" />
+                <AlertTitle>
+                  {t('screens.forgotPassword.error.title', 'Error')}
+                </AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              style={{ width: '100%' }}
+              className="space-y-4"
             >
-              <Stack gap="md">
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <TextInput
-                      label={t(
-                        'screens.forgotPassword.form.email.label',
-                        'Email',
-                      )}
+              <Controller
+                name="email"
+                control={control}
+                rules={{
+                  required: 'Email is required',
+                  pattern: {
+                    value: EMAIL_REGEX,
+                    message: 'Invalid email address',
+                  },
+                }}
+                render={({ field }) => (
+                  <div className="grid gap-2">
+                    <Label htmlFor="forgot-password-email">
+                      {t('screens.forgotPassword.form.email.label', 'Email')}
+                    </Label>
+                    <Input
+                      id="forgot-password-email"
                       type="email"
+                      autoComplete="email"
                       placeholder={t(
                         'screens.forgotPassword.form.email.placeholder',
                         'Enter your email',
                       )}
                       value={field.value}
                       onChange={(event) => {
-                        field.onChange(event.currentTarget.value);
+                        field.onChange(event.target.value);
                       }}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
-                      error={errors.email?.message}
                       required
                     />
-                  )}
-                />
+                    {errors.email?.message && (
+                      <p className="text-sm text-destructive">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
 
-                <Button fullWidth type="submit" loading={isLoading}>
-                  {t(
-                    'screens.forgotPassword.form.submitButton.label',
-                    'Send reset link',
-                  )}
-                </Button>
-              </Stack>
+              <Button className="w-full" type="submit" disabled={isLoading}>
+                {t(
+                  'screens.forgotPassword.form.submitButton.label',
+                  'Send reset link',
+                )}
+              </Button>
             </form>
 
             <Button
               variant="outline"
-              fullWidth
+              className="w-full"
               onClick={() => {
                 if (canGoBack) {
                   router.history.back();
@@ -150,9 +149,9 @@ export function ForgotPasswordScreen({
             >
               {t('screens.forgotPassword.backButton.label', 'Back to login')}
             </Button>
-          </Stack>
-        </Paper>
-      </Stack>
-    </Center>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

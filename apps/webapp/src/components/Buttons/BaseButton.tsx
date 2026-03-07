@@ -1,20 +1,31 @@
-import { UnstyledButton } from "@mantine/core";
-import classes from "./BaseButton.module.css";
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
-interface Props {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
-export function BaseButton({ children, onClick }: Props) {
+export function BaseButton({
+  children,
+  onClick,
+  className,
+  type = 'button',
+  disabled,
+  ...props
+}: Readonly<Props>) {
   return (
-    <UnstyledButton
-      className={classes.baseButton}
+    <button
+      type={type}
+      className={cn(
+        'inline-flex items-center rounded-md px-2 py-1 text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50',
+        className,
+      )}
       onClick={onClick}
-      disabled={onClick == null}
+      disabled={disabled ?? onClick == null}
+      {...props}
     >
       {children}
-    </UnstyledButton>
+    </button>
   );
 }
