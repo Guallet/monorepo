@@ -7,7 +7,7 @@ export const gualletClient = createClient({
   tokenHelper: {
     getAccessToken: async () => {
       const { data } = await authClient.getSession();
-      return data?.session?.id ?? null;
+      return data?.session?.token ?? null;
     },
   },
 });

@@ -1,11 +1,5 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import {
   useAccounts,
@@ -44,9 +38,6 @@ export function AddTransactionScreen() {
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const selectedAccount = accounts.find((a) => a.id === selectedAccountId);
-  const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
 
   async function handleSubmit() {
     if (!description.trim()) {

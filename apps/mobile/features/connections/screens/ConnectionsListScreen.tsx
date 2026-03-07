@@ -1,15 +1,9 @@
 import { useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  RefreshControl,
-} from 'react-native';
+import { FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useOpenBankingConnections } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { EmptyState, ListRow, useTheme } from '@luna-ui/react-native';
+import { EmptyState, ListRow } from '@luna-ui/react-native';
 import { useRouter } from 'expo-router';
 
 function formatDate(dateStr: string | null | undefined): string {
@@ -35,10 +29,7 @@ export function ConnectionsListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppScreen
-        headerTitle="Connections"
-        isLoading={isLoading && !refreshing}
-      >
+      <AppScreen headerTitle="Connections" isLoading={isLoading && !refreshing}>
         {connections.length === 0 && !isLoading ? (
           <EmptyState
             title="No connections yet"

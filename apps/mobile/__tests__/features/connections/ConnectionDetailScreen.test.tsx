@@ -61,7 +61,7 @@ jest.mock('@guallet/api-react', () => ({
 }));
 
 jest.mock('@luna-ui/react-native', () => {
-  const { View, Text, TouchableOpacity } = require('react-native');
+  const { View, Text } = require('react-native');
   return {
     Section: ({ title, children }: any) => (
       <View testID={`section-${title}`}>
@@ -133,7 +133,9 @@ describe('ConnectionDetailScreen', () => {
   it('shows "No accounts linked" when no accounts', () => {
     mockAccountsData = [];
     render(<ConnectionDetailScreen connectionId="conn-1" />);
-    expect(screen.getByText('No accounts linked to this connection.')).toBeTruthy();
+    expect(
+      screen.getByText('No accounts linked to this connection.'),
+    ).toBeTruthy();
   });
 
   it('shows loading message while accounts are loading', () => {

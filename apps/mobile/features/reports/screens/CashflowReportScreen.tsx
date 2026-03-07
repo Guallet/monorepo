@@ -1,29 +1,15 @@
 import { useMemo } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useCashflowReports } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Card,
-  EmptyState,
-  Label,
-  Section,
-  useTheme,
-} from '@luna-ui/react-native';
-import { Money } from '@guallet/money';
-
+import { Card, EmptyState, Label, useTheme } from '@luna-ui/react-native';
 function formatAmount(value: string): string {
-  try {
-    const num = parseFloat(value);
-    return Money.fromCurrencyCode({ amount: num, currencyCode: 'GBP' }).format();
-  } catch {
-    return value;
-  }
+  const num = parseFloat(value);
+  if (isNaN(num)) return value;
+  const abs = Math.abs(num);
+  const sign = num < 0 ? '-' : num > 0 ? '+' : '';
+  return `${sign}${abs.toFixed(2)}`;
 }
 
 export function CashflowReportScreen() {
@@ -49,9 +35,7 @@ export function CashflowReportScreen() {
         ) : (
           <FlatList
             data={categoryRows}
-            keyExtractor={(item, index) =>
-              item.categoryId ?? `row-${index}`
-            }
+            keyExtractor={(item, index) => item.categoryId ?? `row-${index}`}
             ListHeaderComponent={
               cashflowData ? (
                 <View style={{ padding: spacing.md }}>

@@ -11,11 +11,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar, EmptyState, useTheme } from '@luna-ui/react-native';
 import { useRouter } from 'expo-router';
 
-function CategoryRow({ category, isSubcategory = false }: { category: AppCategory; isSubcategory?: boolean }) {
+function CategoryRow({
+  category,
+  isSubcategory = false,
+}: {
+  category: AppCategory;
+  isSubcategory?: boolean;
+}) {
   const { colors } = useTheme();
 
   return (
-    <View style={[styles.categoryRow, isSubcategory && styles.subcategoryRow]}>
+    <View
+      style={[
+        styles.categoryRow,
+        isSubcategory && styles.subcategoryRow,
+        { backgroundColor: colors.background },
+      ]}
+    >
       <Avatar
         size={32}
         color={category.colour || '#E5E7EB'}
@@ -97,7 +109,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#E5E7EB',
     gap: 12,

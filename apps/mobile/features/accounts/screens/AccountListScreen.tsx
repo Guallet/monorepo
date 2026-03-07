@@ -11,7 +11,7 @@ import { useAccounts } from '@guallet/api-react';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { EmptyState, Label, ListRow, useTheme } from '@luna-ui/react-native';
+import { EmptyState, ListRow, useTheme } from '@luna-ui/react-native';
 import { useRouter } from 'expo-router';
 
 function getAccountTypeLabel(type: AccountTypeDto): string {

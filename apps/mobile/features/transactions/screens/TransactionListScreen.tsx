@@ -11,7 +11,7 @@ import { useTransactions } from '@guallet/api-react';
 import { TransactionDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { EmptyState, ListRow, useTheme } from '@luna-ui/react-native';
+import { EmptyState, ListRow } from '@luna-ui/react-native';
 import { useRouter } from 'expo-router';
 
 function formatDate(date: Date): string {
@@ -31,11 +31,7 @@ function formatAmount(amount: number, currency: string): string {
   }
 }
 
-function TransactionRow({
-  transaction,
-}: {
-  transaction: TransactionDto;
-}) {
+function TransactionRow({ transaction }: { transaction: TransactionDto }) {
   const amountColor = transaction.amount < 0 ? '#EF4444' : '#10B981';
   const router = useRouter();
 

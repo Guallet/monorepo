@@ -1,21 +1,11 @@
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import {
   useOpenBankingConnection,
   useOpenBankingAccountsForConnection,
 } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  EmptyState,
-  ListRow,
-  Section,
-  useTheme,
-} from '@luna-ui/react-native';
+import { EmptyState, ListRow, Section, useTheme } from '@luna-ui/react-native';
 
 function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return 'Unknown';
@@ -41,10 +31,7 @@ export function ConnectionDetailScreen({
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <AppScreen
-        headerTitle="Connection Details"
-        isLoading={isLoading}
-      >
+      <AppScreen headerTitle="Connection Details" isLoading={isLoading}>
         {!connection && !isLoading ? (
           <EmptyState
             title="Connection not found"
@@ -57,14 +44,8 @@ export function ConnectionDetailScreen({
                 title="Institution"
                 value={connection.institution_id ?? 'Unknown'}
               />
-              <ListRow
-                title="Created"
-                value={formatDate(connection.created)}
-              />
-              <ListRow
-                title="Status"
-                value={connection.status ?? 'Unknown'}
-              />
+              <ListRow title="Created" value={formatDate(connection.created)} />
+              <ListRow title="Status" value={connection.status ?? 'Unknown'} />
             </Section>
 
             <Section title="Linked Accounts">
@@ -82,7 +63,11 @@ export function ConnectionDetailScreen({
                 accounts.map((account) => (
                   <ListRow
                     key={account.id}
-                    title={account.details?.name ?? account.metadata?.owner_name ?? 'Account'}
+                    title={
+                      account.details?.name ??
+                      account.metadata?.owner_name ??
+                      'Account'
+                    }
                     subtitle={account.details?.currency ?? ''}
                   />
                 ))

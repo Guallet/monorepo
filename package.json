@@ -51,6 +51,7 @@
       "eslint-plugin-turbo": "^2.7.4",
       "globals": "^16.0.0",
       "jest": "^30.2.0",
+      "mobile>jest": "^29.7.0",
       "postcss": "^8.5.3",
       "postcss-preset-mantine": "^1.17.0",
       "postcss-simple-vars": "^7.0.1",

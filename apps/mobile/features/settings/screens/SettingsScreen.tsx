@@ -1,19 +1,9 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useAuth } from '@/auth/useAuth';
 import { useUser, useUserSettings } from '@guallet/api-react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Button,
-  ListRow,
-  Section,
-  useTheme,
-} from '@luna-ui/react-native';
+import { Button, ListRow, Section, useTheme } from '@luna-ui/react-native';
 import { useRouter, type Href } from 'expo-router';
 
 export function SettingsScreen() {
