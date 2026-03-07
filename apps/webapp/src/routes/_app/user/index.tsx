@@ -1,6 +1,6 @@
 import { Text, Button, Stack, Image, Modal, Group } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { gualletClient } from '@/api/gualletClient';
 import { useUser } from '@guallet/api-react';
 

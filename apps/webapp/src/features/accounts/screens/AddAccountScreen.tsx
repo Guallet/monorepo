@@ -2,38 +2,52 @@ import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AccountTypeDto, CreateAccountRequest } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
 import {
   Button,
+  Checkbox,
   Group,
-  Select,
   NumberInput,
+  Select,
   Stack,
   TextInput,
-  Checkbox,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import {
-  accountFormDataSchema,
   AddAccountFormData,
+  accountFormDataSchema,
   getAccountProperties,
   hasSpecificStep,
 } from './addAccountFormSchema';
 
-/** Used for required numeric fields — empty string becomes 0. */
-function getNumberParser(value: string): number {
-  return value ? Number.parseFloat(value) : 0;
+/** Used for required numeric fields - empty string becomes 0. */
+function parseNumberValue(value: string | number): number {
+  if (typeof value === 'number') {
+    return Number.isNaN(value) ? 0 : value;
+  }
+
+  const parsedValue = Number.parseFloat(value);
+  return Number.isNaN(parsedValue) ? 0 : parsedValue;
 }
 
-/** Used for optional/nullable numeric fields — empty string becomes null. */
-function getNullableNumberParser(value: string): number | null {
-  return value ? Number.parseFloat(value) : null;
+/** Used for optional/nullable numeric fields - empty string becomes null. */
+function parseNullableNumberValue(value: string | number): number | null {
+  if (value === '') {
+    return null;
+  }
+
+  if (typeof value === 'number') {
+    return Number.isNaN(value) ? null : value;
+  }
+
+  const parsedValue = Number.parseFloat(value);
+  return Number.isNaN(parsedValue) ? null : parsedValue;
 }
 
 export function AddAccountScreen() {
@@ -42,8 +56,8 @@ export function AddAccountScreen() {
   const defaultCurrency = useDefaultCurrency();
 
   const form = useForm<AddAccountFormData>({
-    validate: zod4Resolver(accountFormDataSchema),
-    initialValues: {
+    resolver: zodResolver(accountFormDataSchema),
+    defaultValues: {
       name: '',
       account_type: AccountTypeDto.CURRENT_ACCOUNT,
       currency: defaultCurrency,
@@ -66,9 +80,21 @@ export function AddAccountScreen() {
       loanTermLength: null,
     },
   });
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = form;
 
-  const { values } = form;
-  const currencyValue = values.currency;
+  const accountType = useWatch({
+    control,
+    name: 'account_type',
+  });
+  const currencyValue = useWatch({
+    control,
+    name: 'currency',
+  });
+
   const currency = currencyValue ? Currency.fromISOCode(currencyValue) : null;
 
   const accountTypes = Object.values(AccountTypeDto).map((accountType) => ({
@@ -76,7 +102,8 @@ export function AddAccountScreen() {
     value: accountType,
   }));
 
-  const hasSpecificFields = hasSpecificStep(values.account_type);
+  const currentAccountType = accountType ?? AccountTypeDto.CURRENT_ACCOUNT;
+  const hasSpecificFields = hasSpecificStep(currentAccountType);
 
   async function onFormSubmit(data: AddAccountFormData): Promise<void> {
     if (data.currency === null) {
@@ -124,139 +151,298 @@ export function AddAccountScreen() {
   }
 
   const renderSpecificFields = () => {
-    switch (values.account_type) {
+    switch (currentAccountType) {
       case AccountTypeDto.CURRENT_ACCOUNT:
         return (
           <Stack>
-            <TextInput
-              label="Account number"
-              placeholder="Enter account number"
-              {...form.getInputProps('currentAccountNumber')}
+            <Controller
+              name="currentAccountNumber"
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  label="Account number"
+                  placeholder="Enter account number"
+                  value={field.value ?? ''}
+                  onChange={(event) => {
+                    field.onChange(event.currentTarget.value);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                  error={errors.currentAccountNumber?.message}
+                />
+              )}
             />
-            <TextInput
-              label="Sort code"
-              placeholder="00-00-00"
-              {...form.getInputProps('currentSortCode')}
+            <Controller
+              name="currentSortCode"
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  label="Sort code"
+                  placeholder="00-00-00"
+                  value={field.value ?? ''}
+                  onChange={(event) => {
+                    field.onChange(event.currentTarget.value);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                  error={errors.currentSortCode?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Overdraft limit"
-              description="Optional"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('currentOverdraftLimit', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="currentOverdraftLimit"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Overdraft limit"
+                  description="Optional"
+                  leftSection={currency?.symbol}
+                  decimalScale={currency?.decimalPlaces}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.currentOverdraftLimit?.message}
+                />
+              )}
             />
           </Stack>
         );
       case AccountTypeDto.CREDIT_CARD:
         return (
           <Stack>
-            <TextInput
-              label="Account number"
-              placeholder="Enter account number"
-              {...form.getInputProps('creditCardAccountNumber')}
+            <Controller
+              name="creditCardAccountNumber"
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  label="Account number"
+                  placeholder="Enter account number"
+                  value={field.value ?? ''}
+                  onChange={(event) => {
+                    field.onChange(event.currentTarget.value);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                  error={errors.creditCardAccountNumber?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('creditCardInterestRate', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="creditCardInterestRate"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Interest rate"
+                  leftSection="%"
+                  decimalScale={2}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.creditCardInterestRate?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Credit limit"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('creditCardCreditLimit', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="creditCardCreditLimit"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Credit limit"
+                  leftSection={currency?.symbol}
+                  decimalScale={currency?.decimalPlaces}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.creditCardCreditLimit?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Cycle day"
-              min={1}
-              max={31}
-              {...form.getInputProps('creditCardCycleDay', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="creditCardCycleDay"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Cycle day"
+                  min={1}
+                  max={31}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.creditCardCycleDay?.message}
+                />
+              )}
             />
           </Stack>
         );
       case AccountTypeDto.SAVINGS:
         return (
           <Stack>
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('savingsInterestRate', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="savingsInterestRate"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Interest rate"
+                  leftSection="%"
+                  decimalScale={2}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.savingsInterestRate?.message}
+                />
+              )}
             />
           </Stack>
         );
       case AccountTypeDto.MORTGAGE:
         return (
           <Stack>
-            <NumberInput
-              label="Property value"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('mortgagePropertyValue', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="mortgagePropertyValue"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Property value"
+                  leftSection={currency?.symbol}
+                  decimalScale={currency?.decimalPlaces}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.mortgagePropertyValue?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Mortgage amount"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('mortgageAmount', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="mortgageAmount"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Mortgage amount"
+                  leftSection={currency?.symbol}
+                  decimalScale={currency?.decimalPlaces}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.mortgageAmount?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('mortgageInterestRate', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="mortgageInterestRate"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Interest rate"
+                  leftSection="%"
+                  decimalScale={2}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.mortgageInterestRate?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Term length"
-              description="Years"
-              {...form.getInputProps('mortgageTermLength', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="mortgageTermLength"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Term length"
+                  description="Years"
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.mortgageTermLength?.message}
+                />
+              )}
             />
           </Stack>
         );
       case AccountTypeDto.LOAN:
         return (
           <Stack>
-            <NumberInput
-              label="Loan amount"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('loanAmount', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="loanAmount"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Loan amount"
+                  leftSection={currency?.symbol}
+                  decimalScale={currency?.decimalPlaces}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.loanAmount?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('loanInterestRate', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="loanInterestRate"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Interest rate"
+                  leftSection="%"
+                  decimalScale={2}
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.loanInterestRate?.message}
+                />
+              )}
             />
-            <NumberInput
-              label="Term length"
-              description="Years"
-              {...form.getInputProps('loanTermLength', {
-                parser: getNullableNumberParser,
-              })}
+            <Controller
+              name="loanTermLength"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Term length"
+                  description="Years"
+                  value={field.value ?? ''}
+                  onChange={(value) => {
+                    field.onChange(parseNullableNumberValue(value));
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.loanTermLength?.message}
+                />
+              )}
             />
           </Stack>
         );
@@ -268,7 +454,7 @@ export function AddAccountScreen() {
   return (
     <BaseScreen>
       <form
-        onSubmit={form.onSubmit(onFormSubmit, () => {
+        onSubmit={handleSubmit(onFormSubmit, () => {
           notifications.show({
             title: 'Validation error',
             message: 'Please correct the highlighted fields before submitting.',
@@ -279,47 +465,92 @@ export function AddAccountScreen() {
         <Stack>
           <AppSection title="Create new account">
             <Stack>
-              <TextInput
-                required
-                label="Account name"
-                placeholder="Enter account name"
-                {...form.getInputProps('name')}
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    required
+                    label="Account name"
+                    placeholder="Enter account name"
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={errors.name?.message}
+                  />
+                )}
               />
-              <Select
-                required
-                label="Account type"
-                searchable
-                data={accountTypes}
-                {...form.getInputProps('account_type')}
-                onChange={(value) => {
-                  if (!value) return;
-                  form.setFieldValue('account_type', value as AccountTypeDto);
-                }}
+              <Controller
+                name="account_type"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    required
+                    label="Account type"
+                    searchable
+                    data={accountTypes}
+                    value={field.value}
+                    onChange={(value) => {
+                      if (!value) {
+                        return;
+                      }
+                      field.onChange(value as AccountTypeDto);
+                    }}
+                    error={errors.account_type?.message}
+                  />
+                )}
               />
-              <CurrencyPicker
+              <Controller
                 name="currency"
-                required
-                value={values.currency}
-                onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue);
-                }}
+                control={control}
+                render={({ field }) => (
+                  <CurrencyPicker
+                    name={field.name}
+                    required
+                    value={field.value}
+                    onValueChanged={field.onChange}
+                    error={errors.currency?.message}
+                  />
+                )}
               />
-              <NumberInput
-                label="Initial balance"
-                required
-                description="Initial balance of the account"
-                leftSection={currency?.symbol}
-                decimalScale={currency?.decimalPlaces}
-                {...form.getInputProps('balance', {
-                  parser: getNumberParser,
-                })}
+              <Controller
+                name="balance"
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    label="Initial balance"
+                    required
+                    description="Initial balance of the account"
+                    leftSection={currency?.symbol}
+                    decimalScale={currency?.decimalPlaces}
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(parseNumberValue(value));
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    error={errors.balance?.message}
+                  />
+                )}
               />
-              <Checkbox
-                label="Create initial balance transaction"
-                description="If checked, an initial transaction will be created to reflect the starting balance"
-                {...form.getInputProps('createInitialTransaction', {
-                  type: 'checkbox',
-                })}
+              <Controller
+                name="createInitialTransaction"
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    label="Create initial balance transaction"
+                    description="If checked, an initial transaction will be created to reflect the starting balance"
+                    checked={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.checked);
+                    }}
+                    onBlur={field.onBlur}
+                  />
+                )}
               />
               {hasSpecificFields && renderSpecificFields()}
             </Stack>
@@ -328,6 +559,7 @@ export function AddAccountScreen() {
           <Group>
             <Button type="submit">Create account</Button>
             <Button
+              type="button"
               variant="outline"
               onClick={() => {
                 navigate({ to: '/accounts' });

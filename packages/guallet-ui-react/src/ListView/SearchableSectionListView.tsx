@@ -1,6 +1,5 @@
-import { Stack, Text } from "@mantine/core";
-import { SearchBoxInput } from "../SearchBoxInput/SearchBoxInput";
-import React, { useState, useEffect } from "react";
+import { SearchBoxInput } from '../SearchBoxInput/SearchBoxInput';
+import React, { useMemo, useState } from 'react';
 
 export interface Section<T> {
   title: string;
@@ -10,7 +9,7 @@ export interface Section<T> {
 interface SearchableSectionLisProps<T> {
   data: Section<T>[];
   sectionWrapperTemplate?: (
-    children: React.ReactNode
+    children: React.ReactNode,
   ) => React.ReactNode | null;
   sectionHeaderTemplate: (section: Section<T>) => React.ReactNode;
   itemTemplate: (item: T, index: number) => React.ReactNode;
@@ -26,31 +25,28 @@ export function SearchableSectionListView<T>({
   emptyView,
   placeholder,
 }: Readonly<SearchableSectionLisProps<T>>) {
-  const [filteredData, setFilteredData] = useState(data);
-  const [queryString, setQueryString] = useState("");
+  const [queryString, setQueryString] = useState('');
 
-  useEffect(() => {
+  const filteredData = useMemo(() => {
     if (!queryString.trim()) {
-      setFilteredData(data);
-    } else {
-      const filtered = data
-        .map((section) => ({
-          ...section,
-          data: section.data.filter((item) =>
-            // TODO: Improve this hack of converting to JSON
-            JSON.stringify(item)
-              .toLowerCase()
-              .includes(queryString.toLowerCase())
-          ),
-        }))
-        .filter((section) => section.data.length > 0);
-
-      setFilteredData(filtered);
+      return data;
     }
+
+    return data
+      .map((section) => ({
+        ...section,
+        data: section.data.filter((item) =>
+          // Generic fallback: use serialized data for broad text matching.
+          JSON.stringify(item)
+            .toLowerCase()
+            .includes(queryString.toLowerCase()),
+        ),
+      }))
+      .filter((section) => section.data.length > 0);
   }, [data, queryString]);
 
   return (
-    <Stack>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <SearchBoxInput
         placeholder={placeholder}
         query={queryString}
@@ -60,27 +56,30 @@ export function SearchableSectionListView<T>({
       />
       {filteredData.length === 0 && (emptyView || <DefaultEmptyView />)}
       {filteredData.map((section) => (
-        <Stack key={section.title}>
+        <div
+          key={section.title}
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+        >
           {sectionHeaderTemplate(section)}
           {sectionWrapperTemplate ? (
             sectionWrapperTemplate(
               <>
                 {section.data.map((item, index) => itemTemplate(item, index))}
-              </>
+              </>,
             )
           ) : (
             <>{section.data.map((item, index) => itemTemplate(item, index))}</>
           )}
-        </Stack>
+        </div>
       ))}
-    </Stack>
+    </div>
   );
 }
 
 function DefaultEmptyView() {
   return (
-    <Stack>
-      <Text>No items found</Text>
-    </Stack>
+    <div>
+      <p>No items found</p>
+    </div>
   );
 }

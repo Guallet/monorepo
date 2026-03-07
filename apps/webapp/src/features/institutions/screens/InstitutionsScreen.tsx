@@ -2,7 +2,7 @@ import { useGualletClient, useInstitutions } from "@guallet/api-react";
 import InstitutionsTable from "../components/InstitutionsTable";
 import { Stack, Button } from "@mantine/core";
 import { useState } from "react";
-import { notifications } from "@mantine/notifications";
+import { notifications } from "@/lib/notifications";
 
 export function InstitutionsScreen() {
   const [isSyncingBanks, setIsSyncingBanks] = useState<boolean>(false);

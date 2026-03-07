@@ -1,25 +1,25 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@guallet/auth';
 import {
-  Container,
-  Paper,
-  Title,
-  Stack,
-  TextInput,
-  PasswordInput,
-  Group,
-  Checkbox,
   Anchor,
-  Text,
   Button,
+  Checkbox,
+  Container,
+  Group,
   Modal,
+  Paper,
+  PasswordInput,
+  TextInput,
+  Stack,
+  Text,
+  Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { IconCheck, IconExclamationMark } from '@tabler/icons-react';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -34,30 +34,35 @@ function RouteComponent() {
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
   const { t } = useTranslation();
 
-  const registerFormSchema = z.object({
-    name: z.string().min(2, { 
+  const registerFormSchema = z
+    .object({
+      name: z.string().min(2, {
+        message: t(
+          'screens.register.form.name.validation',
+          'CNF: Name must have at least 2 characters',
+        ),
+      }),
+      email: z.string().email({
+        message: t(
+          'screens.register.form.email.validation',
+          'CNF: Invalid email',
+        ),
+      }),
+      password: z.string().min(6, {
+        message: t(
+          'screens.register.form.password.validation',
+          'CNF: Password must have at least 6 characters',
+        ),
+      }),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
       message: t(
-        'screens.register.form.name.validation',
-        'CNF: Name must have at least 2 characters',
+        'screens.register.form.confirmPassword.validation',
+        'CNF: Passwords do not match',
       ),
-    }),
-    email: z.string().email({ 
-      message: t('screens.register.form.email.validation', 'CNF: Invalid email'),
-    }),
-    password: z.string().min(6, { 
-      message: t(
-        'screens.register.form.password.validation',
-        'CNF: Password must have at least 6 characters',
-      ),
-    }),
-    confirmPassword: z.string(),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: t(
-      'screens.register.form.confirmPassword.validation',
-      'CNF: Passwords do not match',
-    ),
-    path: ['confirmPassword'],
-  });
+      path: ['confirmPassword'],
+    });
 
   type FormValues = z.infer<typeof registerFormSchema>;
 
@@ -71,15 +76,18 @@ function RouteComponent() {
   }, [isLoading, isAuthenticated, navigate]);
 
   const form = useForm<FormValues>({
-    mode: 'uncontrolled',
-    validate: zod4Resolver(registerFormSchema),
-    initialValues: {
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: {
       name: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
   });
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   const getErrorMessage = (code: string, defaultMessage: string): string => {
     const errorMessages: Record<string, string> = {
@@ -237,56 +245,104 @@ function RouteComponent() {
             <Title order={2} ta="center" mb="md">
               {t('screens.register.title', 'CNF: Create new account')}
             </Title>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
               <Stack>
-                <TextInput
-                  {...form.getInputProps('name')}
-                  key={form.key('name')}
-                  label={t('screens.register.form.name.label', 'CNF: Name')}
-                  placeholder={t(
-                    'screens.register.form.name.placeholder',
-                    'CNF: Enter your name',
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label={t('screens.register.form.name.label', 'CNF: Name')}
+                      placeholder={t(
+                        'screens.register.form.name.placeholder',
+                        'CNF: Enter your name',
+                      )}
+                      value={field.value}
+                      onChange={(event) => {
+                        field.onChange(event.currentTarget.value);
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      error={errors.name?.message}
+                      required
+                    />
                   )}
-                  required
                 />
-                <TextInput
-                  {...form.getInputProps('email')}
-                  key={form.key('email')}
-                  label={t(
-                    'screens.register.form.email.label',
-                    'CNF: Email address',
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label={t(
+                        'screens.register.form.email.label',
+                        'CNF: Email address',
+                      )}
+                      placeholder={t(
+                        'screens.register.form.email.placeholder',
+                        'CNF: Enter your email',
+                      )}
+                      value={field.value}
+                      onChange={(event) => {
+                        field.onChange(event.currentTarget.value);
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      error={errors.email?.message}
+                      required
+                    />
                   )}
-                  placeholder={t(
-                    'screens.register.form.email.placeholder',
-                    'CNF: Enter your email',
-                  )}
-                  required
                 />
-                <PasswordInput
-                  {...form.getInputProps('password')}
-                  key={form.key('password')}
-                  label={t(
-                    'screens.register.form.password.label',
-                    'CNF: Password',
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <PasswordInput
+                      label={t(
+                        'screens.register.form.password.label',
+                        'CNF: Password',
+                      )}
+                      placeholder={t(
+                        'screens.register.form.password.placeholder',
+                        'CNF: Password',
+                      )}
+                      value={field.value}
+                      onChange={(event) => {
+                        field.onChange(event.currentTarget.value);
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      error={errors.password?.message}
+                      required
+                    />
                   )}
-                  placeholder={t(
-                    'screens.register.form.password.placeholder',
-                    'CNF: Password',
-                  )}
-                  required
                 />
-                <PasswordInput
-                  {...form.getInputProps('confirmPassword')}
-                  key={form.key('confirmPassword')}
-                  label={t(
-                    'screens.register.form.confirmPassword.label',
-                    'CNF: Confirm Password',
+                <Controller
+                  name="confirmPassword"
+                  control={control}
+                  render={({ field }) => (
+                    <PasswordInput
+                      label={t(
+                        'screens.register.form.confirmPassword.label',
+                        'CNF: Confirm Password',
+                      )}
+                      placeholder={t(
+                        'screens.register.form.confirmPassword.placeholder',
+                        'CNF: Confirm your password',
+                      )}
+                      value={field.value}
+                      onChange={(event) => {
+                        field.onChange(event.currentTarget.value);
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      error={errors.confirmPassword?.message}
+                      required
+                    />
                   )}
-                  placeholder={t(
-                    'screens.register.form.confirmPassword.placeholder',
-                    'CNF: Confirm your password',
-                  )}
-                  required
                 />
                 <Group>
                   <Checkbox />

@@ -1,28 +1,28 @@
 import {
-  Paper,
-  Group,
-  Divider,
-  Stack,
-  TextInput,
-  Button,
-  Text,
-  PasswordInput,
-  Container,
-  Anchor,
   Alert,
+  Anchor,
+  Button,
+  Container,
+  Divider,
+  Group,
+  Paper,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
 } from '@mantine/core';
 import { useState } from 'react';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-import { useForm } from '@mantine/form';
 import { useNavigate } from '@tanstack/react-router';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { GoogleButton } from '../components/GoogleButton';
 import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { useAuth } from '@guallet/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
 
 // Define schemas for form validation using Zod
 const passwordFormSchema = z.object({
@@ -67,19 +67,27 @@ export function LoginScreen({
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const passwordForm = useForm<PasswordFormData>({
-    initialValues: {
+    resolver: zodResolver(passwordFormSchema),
+    defaultValues: {
       email: '',
       password: '',
     },
-    validate: zod4Resolver(passwordFormSchema),
   });
+  const {
+    control: passwordControl,
+    formState: { errors: passwordErrors },
+  } = passwordForm;
 
   const magicLinkForm = useForm<MagicLinkFormData>({
-    initialValues: {
+    resolver: zodResolver(magicLinkFormSchema),
+    defaultValues: {
       email: '',
     },
-    validate: zod4Resolver(magicLinkFormSchema),
   });
+  const {
+    control: magicLinkControl,
+    formState: { errors: magicLinkErrors },
+  } = magicLinkForm;
 
   const handlePasswordSubmit = async (data: PasswordFormData) => {
     console.log('Logging in with email and password');
@@ -188,27 +196,56 @@ export function LoginScreen({
           )}
 
           {loginType === 'password' ? (
-            <form onSubmit={passwordForm.onSubmit(handlePasswordSubmit)}>
-              <TextInput
-                {...passwordForm.getInputProps('email')}
-                label={t('screens.login.form.email.label', 'CNF: Email')}
-                type="email"
-                placeholder={t(
-                  'screens.login.form.email.placeholder',
-                  'CNF: Enter your email',
+            <form onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}>
+              <Controller
+                name="email"
+                control={passwordControl}
+                render={({ field }) => (
+                  <TextInput
+                    label={t('screens.login.form.email.label', 'CNF: Email')}
+                    type="email"
+                    placeholder={t(
+                      'screens.login.form.email.placeholder',
+                      'CNF: Enter your email',
+                    )}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={passwordErrors.email?.message}
+                    required
+                  />
                 )}
-                required
               />
 
-              <PasswordInput
-                {...passwordForm.getInputProps('password')}
-                label={t('screens.login.form.password.label', 'CNF: Password')}
-                placeholder={t(
-                  'screens.login.form.password.placeholder',
-                  'CNF: Enter your password',
+              <Controller
+                name="password"
+                control={passwordControl}
+                render={({ field }) => (
+                  <PasswordInput
+                    label={t(
+                      'screens.login.form.password.label',
+                      'CNF: Password',
+                    )}
+                    placeholder={t(
+                      'screens.login.form.password.placeholder',
+                      'CNF: Enter your password',
+                    )}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={passwordErrors.password?.message}
+                    required
+                    mt="md"
+                  />
                 )}
-                required
-                mt="md"
               />
 
               <Group justify="flex-end" mt="md">
@@ -225,16 +262,29 @@ export function LoginScreen({
               </Button>
             </form>
           ) : (
-            <form onSubmit={magicLinkForm.onSubmit(handleMagicLinkSubmit)}>
-              <TextInput
-                {...magicLinkForm.getInputProps('email')}
-                label={t('screens.login.form.email.label', 'CNF: Email')}
-                type="email"
-                placeholder={t(
-                  'screens.login.form.email.placeholder',
-                  'CNF: Enter your email',
+            <form onSubmit={magicLinkForm.handleSubmit(handleMagicLinkSubmit)}>
+              <Controller
+                name="email"
+                control={magicLinkControl}
+                render={({ field }) => (
+                  <TextInput
+                    label={t('screens.login.form.email.label', 'CNF: Email')}
+                    type="email"
+                    placeholder={t(
+                      'screens.login.form.email.placeholder',
+                      'CNF: Enter your email',
+                    )}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={magicLinkErrors.email?.message}
+                    required
+                  />
                 )}
-                required
               />
 
               <Button fullWidth mt="md" type="submit" color="blue">

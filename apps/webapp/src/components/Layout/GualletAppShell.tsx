@@ -1,6 +1,6 @@
 import { AppShell } from "@mantine/core";
 import { AppNavBar } from "./AppNavBar/AppNavBar";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure } from '@/hooks/useDisclosure';
 import AppHeader from "./AppHeader";
 import { Outlet } from "@tanstack/react-router";
 import { Colors } from "@/theme/colors";

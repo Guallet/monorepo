@@ -3,7 +3,7 @@ import {
   useOpenBankingAccountsForConnection,
 } from '@guallet/api-react';
 import { Button, Card, Flex, Loader, Stack, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 

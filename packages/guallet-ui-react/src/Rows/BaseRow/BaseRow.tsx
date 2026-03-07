@@ -1,9 +1,10 @@
-import { Group, Text } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
-import classes from "./BaseRow.module.css";
+import { IconChevronRight } from '@tabler/icons-react';
+import classes from './BaseRow.module.css';
 
-interface BaseRowProps
-  extends Omit<React.ComponentProps<typeof Group>, "onClick"> {
+interface BaseRowProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onClick'
+> {
   label: string;
   value?: React.ReactNode;
   onClick?: () => void;
@@ -17,29 +18,46 @@ export function BaseRow({
   onClick,
   leftSection,
   rightSection,
+  className,
+  ...props
 }: Readonly<BaseRowProps>) {
   const rightSectionContent =
-    rightSection || (onClick !== null ? <IconChevronRight /> : null);
-  return (
-    <Group
-      p="md"
-      justify="space-between"
-      wrap="nowrap"
-      {...(onClick && {
-        onClick: () => onClick(),
-        style: { cursor: "pointer" },
-        className: classes.baseRow,
-      })}
-    >
-      <Group>
-        {leftSection}
-        <Text>{label}</Text>
-      </Group>
+    rightSection || (onClick ? <IconChevronRight size={16} /> : null);
 
-      <Group justify="end" wrap="nowrap">
+  const classNameValue = [classes.baseRow, className].filter(Boolean).join(' ');
+
+  if (onClick) {
+    return (
+      <button
+        {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+        className={[classNameValue, classes.interactive].join(' ')}
+        onClick={onClick}
+        type="button"
+      >
+        <div className={classes.leftGroup}>
+          {leftSection}
+          <span className={classes.label}>{label}</span>
+        </div>
+
+        <div className={classes.rightGroup}>
+          {value}
+          {rightSectionContent}
+        </div>
+      </button>
+    );
+  }
+
+  return (
+    <div {...props} className={classNameValue}>
+      <div className={classes.leftGroup}>
+        {leftSection}
+        <span className={classes.label}>{label}</span>
+      </div>
+
+      <div className={classes.rightGroup}>
         {value}
         {rightSectionContent}
-      </Group>
-    </Group>
+      </div>
+    </div>
   );
 }

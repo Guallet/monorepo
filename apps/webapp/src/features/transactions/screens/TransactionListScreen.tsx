@@ -15,11 +15,11 @@ import {
 } from '../components/TransactionsFilter';
 import { useEffect, useState } from 'react';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
-import { useForm } from '@mantine/form';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { z } from 'zod';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useTranslation } from 'react-i18next';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 const quickEditTransactionSchema = z.object({
   notes: z.string().nullable().optional(),
@@ -56,7 +56,16 @@ export function TransactionListScreen({
   const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
     null,
   );
-  const { category } = useCategory(selectedTransaction?.categoryId ?? null);
+  const quickEditForm = useForm<QuickEditTransactionData>({
+    defaultValues: {
+      notes: '',
+      categoryId: null,
+    },
+    resolver: zodResolver(quickEditTransactionSchema),
+  });
+  const quickEditCategoryId =
+    useWatch({ control: quickEditForm.control, name: 'categoryId' }) ?? null;
+  const { category } = useCategory(quickEditCategoryId);
   const { updateTransactionNotesMutation, updateTransactionCategoryMutation } =
     useTransactionMutations();
   const { transactions, metadata, isLoading } = useTransactionsWithFilter({
@@ -67,14 +76,6 @@ export function TransactionListScreen({
     startDate: null,
     endDate: null,
   });
-  const quickEditForm = useForm<QuickEditTransactionData>({
-    initialValues: {
-      notes: '',
-      categoryId: null,
-    },
-    validate: zod4Resolver(quickEditTransactionSchema),
-  });
-
   useEffect(() => {
     setSelectedCategory(category);
   }, [category]);
@@ -142,40 +143,55 @@ export function TransactionListScreen({
           size="lg"
         >
           <form
-            onSubmit={quickEditForm.onSubmit((values) => {
+            onSubmit={quickEditForm.handleSubmit((values) => {
               onQuickEditSubmit(values);
             })}
           >
             <Stack>
-              <Textarea
-                resize="vertical"
-                label={t(
-                  'screens.transactions.list.quickEdit.form.notes.label',
-                  'Notes',
+              <Controller
+                name="notes"
+                control={quickEditForm.control}
+                render={({ field }) => (
+                  <Textarea
+                    resize="vertical"
+                    label={t(
+                      'screens.transactions.list.quickEdit.form.notes.label',
+                      'Notes',
+                    )}
+                    placeholder={t(
+                      'screens.transactions.list.quickEdit.form.notes.placeholder',
+                      'Enter transaction notes',
+                    )}
+                    value={field.value ?? ''}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                  />
                 )}
-                placeholder={t(
-                  'screens.transactions.list.quickEdit.form.notes.placeholder',
-                  'Enter transaction notes',
-                )}
-                {...quickEditForm.getInputProps('notes')}
               />
-              <CategoryPicker
-                label={t(
-                  'screens.transactions.list.quickEdit.form.category.label',
-                  'Category',
+              <Controller
+                name="categoryId"
+                control={quickEditForm.control}
+                render={({ field }) => (
+                  <CategoryPicker
+                    label={t(
+                      'screens.transactions.list.quickEdit.form.category.label',
+                      'Category',
+                    )}
+                    placeholder={t(
+                      'screens.transactions.list.quickEdit.form.category.placeholder',
+                      'Select a category',
+                    )}
+                    selectedCategory={selectedCategory}
+                    onCategorySelected={(selectedCategoryValue) => {
+                      setSelectedCategory(selectedCategoryValue);
+                      field.onChange(selectedCategoryValue.id || null);
+                    }}
+                  />
                 )}
-                placeholder={t(
-                  'screens.transactions.list.quickEdit.form.category.placeholder',
-                  'Select a category',
-                )}
-                selectedCategory={selectedCategory}
-                onCategorySelected={(selectedCategory) => {
-                  setSelectedCategory(selectedCategory);
-                  quickEditForm.setFieldValue(
-                    'categoryId',
-                    selectedCategory.id,
-                  );
-                }}
               />
               <Group justify="space-between">
                 <Button
@@ -230,7 +246,7 @@ export function TransactionListScreen({
           transactions={transactions}
           onTransactionClicked={(transaction) => {
             setSelectedTransaction(transaction);
-            quickEditForm.setValues({
+            quickEditForm.reset({
               notes: transaction.notes ?? '',
               categoryId: transaction.categoryId ?? null,
             });

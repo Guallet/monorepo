@@ -7,75 +7,55 @@ import {
   RecurrenceCadence,
 } from '@guallet/api-client';
 import { useSubscriptionsMutations } from '@guallet/api-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Button,
+  Group,
+  NativeSelect,
+  NumberInput,
   Stack,
   TextInput,
-  NativeSelect,
   rem,
-  NumberInput,
-  Group,
-  Button,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
-import { z } from 'zod';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { Currency } from '@guallet/money';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
-
-const subscriptionFormDataSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  amount: z.number().min(0, { message: 'Amount must be positive' }),
-  currency: z.string().nullable().default(null),
-  cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
-  type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
-  startDate: z.date({ required_error: 'Start date is required' }),
-  imageUrl: z.string().optional(),
-});
-type AddSubscriptionFormData = z.infer<typeof subscriptionFormDataSchema>;
-
-const paymentTypes = [
-  { label: 'Subscription', value: RecurringPaymentType.SUBSCRIPTION },
-  { label: 'Regular Payment', value: RecurringPaymentType.REGULAR_PAYMENT },
-  { label: 'Regular Income', value: RecurringPaymentType.REGULAR_INCOME },
-];
-
-const cadenceOptions = [
-  { label: 'Weekly', value: RecurrenceCadence.WEEKLY },
-  { label: 'Bi-weekly', value: RecurrenceCadence.BIWEEKLY },
-  { label: 'Monthly', value: RecurrenceCadence.MONTHLY },
-  { label: 'Quarterly', value: RecurrenceCadence.QUARTERLY },
-  { label: 'Yearly', value: RecurrenceCadence.YEARLY },
-];
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import {
+  cadenceOptions,
+  getSubscriptionFormDefaultValues,
+  paymentTypeOptions,
+  subscriptionFormSchema,
+  type SubscriptionFormData,
+} from '../models/SubscriptionForm';
 
 export function AddSubscriptionScreen() {
   const navigate = useNavigate();
   const { createSubscriptionMutation } = useSubscriptionsMutations();
   const defaultCurrency = useDefaultCurrency();
 
-  const form = useForm<AddSubscriptionFormData>({
-    validate: zod4Resolver(subscriptionFormDataSchema),
-    initialValues: {
-      name: '',
-      amount: 0,
-      currency: defaultCurrency,
-      cadence: RecurrenceCadence.MONTHLY,
-      type: RecurringPaymentType.SUBSCRIPTION,
-      startDate: new Date(),
-      imageUrl: '',
-    },
+  const form = useForm<SubscriptionFormData>({
+    resolver: zodResolver(subscriptionFormSchema),
+    defaultValues: getSubscriptionFormDefaultValues(defaultCurrency),
   });
-  const { values } = form;
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
-  const currencyValue = values.currency;
+  const currencyValue = useWatch({
+    control,
+    name: 'currency',
+  });
+
   const currency = currencyValue
     ? Currency.fromISOCode(currencyValue)
     : Currency.fromISOCode(defaultCurrency);
 
-  async function onFormSubmit(data: AddSubscriptionFormData): Promise<void> {
+  async function onFormSubmit(data: SubscriptionFormData): Promise<void> {
     console.log('Submitting form data', data);
     if (data.currency === null) {
       notifications.show({
@@ -123,77 +103,149 @@ export function AddSubscriptionScreen() {
 
   return (
     <BaseScreen>
-      <form onSubmit={form.onSubmit(onFormSubmit)}>
+      <form onSubmit={form.handleSubmit(onFormSubmit)}>
         <Stack>
           <AppSection title="Create new subscription">
             <Stack>
-              <TextInput
-                required
-                label="Name"
-                placeholder="e.g., Netflix, Spotify, Gym membership"
-                {...form.getInputProps('name')}
-                error={form.errors.name}
-              />
-              <NativeSelect
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    required
+                    label="Name"
+                    placeholder="e.g., Netflix, Spotify, Gym membership"
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={errors.name?.message}
                   />
-                }
-                label="Type"
-                data={paymentTypes}
-                {...form.getInputProps('type')}
-                onChange={(event) => {
-                  const type = event.currentTarget
-                    .value as RecurringPaymentType;
-                  form.setFieldValue('type', type);
-                }}
+                )}
               />
-              <NativeSelect
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => (
+                  <NativeSelect
+                    required
+                    rightSection={
+                      <IconChevronDown
+                        style={{ width: rem(16), height: rem(16) }}
+                      />
+                    }
+                    label="Type"
+                    data={paymentTypeOptions}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(
+                        event.currentTarget.value as RecurringPaymentType,
+                      );
+                    }}
+                    error={errors.type?.message}
                   />
-                }
-                label="Frequency"
-                data={cadenceOptions}
-                {...form.getInputProps('cadence')}
-                onChange={(event) => {
-                  const cadence = event.currentTarget
-                    .value as RecurrenceCadence;
-                  form.setFieldValue('cadence', cadence);
-                }}
+                )}
               />
-              <CurrencyPicker
+              <Controller
+                name="cadence"
+                control={control}
+                render={({ field }) => (
+                  <NativeSelect
+                    required
+                    rightSection={
+                      <IconChevronDown
+                        style={{ width: rem(16), height: rem(16) }}
+                      />
+                    }
+                    label="Frequency"
+                    data={cadenceOptions}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(
+                        event.currentTarget.value as RecurrenceCadence,
+                      );
+                    }}
+                    error={errors.cadence?.message}
+                  />
+                )}
+              />
+              <Controller
                 name="currency"
-                required
-                value={values.currency}
-                onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue);
-                }}
+                control={control}
+                render={({ field }) => (
+                  <CurrencyPicker
+                    name={field.name}
+                    required
+                    value={field.value}
+                    onValueChanged={field.onChange}
+                    error={errors.currency?.message}
+                  />
+                )}
               />
-              <NumberInput
-                label="Amount"
-                required
-                description="The recurring payment amount"
-                {...form.getInputProps('amount')}
-                leftSection={currency.symbol}
-                decimalScale={currency.decimalPlaces ?? 2}
-                min={0}
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    label="Amount"
+                    required
+                    description="The recurring payment amount"
+                    value={field.value}
+                    onChange={(value) => {
+                      const parsedValue =
+                        typeof value === 'number' ? value : Number(value || 0);
+                      field.onChange(
+                        Number.isNaN(parsedValue) ? 0 : parsedValue,
+                      );
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    error={errors.amount?.message}
+                    leftSection={currency.symbol}
+                    decimalScale={currency.decimalPlaces ?? 2}
+                    min={0}
+                  />
+                )}
               />
-              <DateInput
-                label="Start Date"
-                required
-                description="The date when this payment starts or first occurs"
-                placeholder="Select a date"
-                {...form.getInputProps('startDate')}
+              <Controller
+                name="startDate"
+                control={control}
+                render={({ field }) => (
+                  <DateInput
+                    label="Start Date"
+                    required
+                    description="The date when this payment starts or first occurs"
+                    placeholder="Select a date"
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value ?? new Date());
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    error={errors.startDate?.message}
+                  />
+                )}
               />
-              <TextInput
-                label="Image URL (optional)"
-                placeholder="https://example.com/logo.png"
-                {...form.getInputProps('imageUrl')}
+              <Controller
+                name="imageUrl"
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    label="Image URL (optional)"
+                    placeholder="https://example.com/logo.png"
+                    value={field.value ?? ''}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={errors.imageUrl?.message}
+                  />
+                )}
               />
             </Stack>
           </AppSection>
@@ -205,6 +257,7 @@ export function AddSubscriptionScreen() {
               Create subscription
             </Button>
             <Button
+              type="button"
               variant="outline"
               onClick={() => {
                 navigate({ to: '/subscriptions' });

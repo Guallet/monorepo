@@ -1,31 +1,19 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { useForm } from '@mantine/form';
 import { useTransactionMutations } from '@guallet/api-react';
 import { Button, Stack } from '@mantine/core';
 import { CreateTransactionRequest } from '@guallet/api-client';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { TransactionFormFields } from '../components/TransactionFormFields';
 import {
-  TransactionFormData,
-  TransactionFormFields,
-} from '../components/TransactionFormFields';
-
-const formSchema = z.object({
-  type: z.enum(['expense', 'income']),
-  accountId: z.string().min(2, { error: 'Account ID is invalid' }),
-  description: z
-    .string()
-    .min(2, { error: 'Description should have at least 2 letters' }),
-  notes: z.string().optional().nullable(),
-  amount: z.number().gte(0, { error: 'Amount must be zero or greater' }),
-  currency: z.string().nullable(),
-  date: z.date(),
-  categoryId: z.string().optional().nullable(),
-});
+  getTransactionFormDefaultValues,
+  transactionFormSchema,
+  type TransactionFormData,
+} from '../models/TransactionForm';
 
 export function AddTransactionScreen() {
   const { t } = useTranslation();
@@ -34,17 +22,8 @@ export function AddTransactionScreen() {
   const { createTransactionMutation } = useTransactionMutations();
 
   const form = useForm<TransactionFormData>({
-    validate: zod4Resolver(formSchema),
-    initialValues: {
-      type: 'expense',
-      accountId: '',
-      description: '',
-      notes: '',
-      amount: 0,
-      currency: null,
-      date: new Date(),
-      categoryId: null,
-    },
+    resolver: zodResolver(transactionFormSchema),
+    defaultValues: getTransactionFormDefaultValues(),
   });
 
   async function onFormSubmit(data: TransactionFormData): Promise<void> {
@@ -95,7 +74,7 @@ export function AddTransactionScreen() {
       <AppSection
         title={t('screens.transactions.create.title', 'Add Transaction')}
       >
-        <form onSubmit={form.onSubmit(onFormSubmit)}>
+        <form onSubmit={form.handleSubmit(onFormSubmit)}>
           <Stack>
             <TransactionFormFields
               form={form}

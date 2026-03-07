@@ -1,7 +1,7 @@
 import { Currency } from '@guallet/money';
 import { ResponsiveModal } from '@guallet/ui-react';
 import { Input, InputWrapperProps } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { IconSelector } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { CurrencyPickerModal } from './CurrencyPickerModal';

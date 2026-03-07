@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { AppSection } from '@/components/Cards/AppSection';
 import { TransactionRow } from '@/features/transactions/components/TransactionRow';
 import { IconEdit } from '@tabler/icons-react';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { DeleteIconButton } from '@/components/Buttons/DeleteButton';
 

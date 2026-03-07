@@ -15,7 +15,7 @@ import { FlagEmoji } from "../components/FlagEmoji";
 import { ObInstitutionDto, OpenBankingCountryDto } from "@guallet/api-client";
 import { SearchableListView } from "@guallet/ui-react";
 import { ObInstitutionRow } from "../components/ObInstitutionRow";
-import { notifications } from "@mantine/notifications";
+import { notifications } from "@/lib/notifications";
 
 interface ConnectionCreateScreenProps {
   selectedCountryCode?: string;

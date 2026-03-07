@@ -1,25 +1,25 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AccountTypeDto, UpdateAccountRequest } from '@guallet/api-client';
 import { useAccount, useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
 import {
-  Stack,
-  TextInput,
-  NativeSelect,
-  rem,
-  NumberInput,
-  Group,
   Button,
   Checkbox,
+  Group,
+  NativeSelect,
+  NumberInput,
+  Stack,
+  TextInput,
+  rem,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
@@ -28,7 +28,7 @@ interface EditAccountScreenProps {
 }
 
 const editAccountFormDataSchema = z.object({
-  name: z.string().min(1, { message: 'Account name is required' }),
+  name: z.string().min(1, { error: 'Account name is required' }),
   currency: z.string().default('GBP'),
   account_type: z.enum(AccountTypeDto).default(AccountTypeDto.UNKNOWN),
   balance: z.number().default(0),
@@ -69,21 +69,35 @@ export function EditAccountScreen({
   const { updateAccountMutation } = useAccountMutations();
 
   const form = useForm<EditAccountFormData>({
-    initialValues: {
+    resolver: zodResolver(editAccountFormDataSchema),
+    defaultValues: {
       name: account?.name ?? '',
       account_type: account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
       currency: account?.currency ?? defaultCurrency,
       balance: account?.balance.amount ?? 0,
       balanceTransactionCheck: true,
     },
-    validate: zod4Resolver(editAccountFormDataSchema),
   });
-  const { values } = form;
-  const currency = Currency.fromISOCode(values.currency);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = form;
+
+  const selectedCurrency = useWatch({
+    control,
+    name: 'currency',
+  });
+  const balanceTransactionCheck = useWatch({
+    control,
+    name: 'balanceTransactionCheck',
+  });
+
+  const currency = Currency.fromISOCode(selectedCurrency ?? defaultCurrency);
 
   useEffect(() => {
     if (account) {
-      form.setValues({
+      form.reset({
         name: account.name,
         account_type: account.type,
         currency: account.currency,
@@ -134,71 +148,113 @@ export function EditAccountScreen({
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <form onSubmit={form.onSubmit((values) => onFormSubmit(values))}>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <Stack>
           <AppSection title="Account details">
             <Stack>
-              <TextInput
-                key={form.key('name')}
-                {...form.getInputProps('name')}
-                required
-                label="Account name"
-                placeholder="Enter account name"
-                error={form.errors.name}
-              />
-              <NativeSelect
-                key={form.key('account_type')}
-                {...form.getInputProps('account_type')}
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <TextInput
+                    required
+                    label="Account name"
+                    placeholder="Enter account name"
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    error={errors.name?.message}
                   />
-                }
-                label="Account type"
-                data={accountTypes}
+                )}
               />
-              <CurrencyPicker
+              <Controller
+                name="account_type"
+                control={control}
+                render={({ field }) => (
+                  <NativeSelect
+                    required
+                    rightSection={
+                      <IconChevronDown
+                        style={{ width: rem(16), height: rem(16) }}
+                      />
+                    }
+                    label="Account type"
+                    data={accountTypes}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(
+                        event.currentTarget.value as AccountTypeDto,
+                      );
+                    }}
+                    error={errors.account_type?.message}
+                  />
+                )}
+              />
+              <Controller
                 name="currency"
-                required
-                value={form.values.currency}
-                onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue ?? defaultCurrency);
-                }}
+                control={control}
+                render={({ field }) => (
+                  <CurrencyPicker
+                    name={field.name}
+                    required
+                    value={field.value}
+                    onValueChanged={(newValue) => {
+                      field.onChange(newValue ?? defaultCurrency);
+                    }}
+                    error={errors.currency?.message}
+                  />
+                )}
               />
-              <NumberInput
-                key={form.key('balance')}
-                {...form.getInputProps('balance', {
-                  parser: (value: string) => {
-                    return value ? Number.parseFloat(value) : 0;
-                  },
-                  formatter: (value: unknown) => {
-                    return value?.toString() ?? '';
-                  },
-                })}
-                label="Balance"
-                required
-                description="Current balance of the account"
-                leftSection={currency.symbol}
-                decimalScale={currency.decimalPlaces}
+              <Controller
+                name="balance"
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    label="Balance"
+                    required
+                    description="Current balance of the account"
+                    leftSection={currency.symbol}
+                    decimalScale={currency.decimalPlaces}
+                    value={field.value}
+                    onChange={(value) => {
+                      const parsedValue =
+                        typeof value === 'number' ? value : Number(value || 0);
+                      field.onChange(
+                        Number.isNaN(parsedValue) ? 0 : parsedValue,
+                      );
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    error={errors.balance?.message}
+                  />
+                )}
               />
-              <Checkbox
-                name="balance-transaction"
-                checked={values.balanceTransactionCheck}
-                onChange={(event) =>
-                  form.setFieldValue(
-                    'balanceTransactionCheck',
-                    event.currentTarget.checked,
-                  )
-                }
-                label="(Recommended) Create a new transaction to sync the balance"
-                description="This will create a new transaction in the account to match the balance, so it's easier to track balance changes."
+              <Controller
+                name="balanceTransactionCheck"
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    name="balance-transaction"
+                    checked={balanceTransactionCheck}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.checked);
+                    }}
+                    onBlur={field.onBlur}
+                    label="(Recommended) Create a new transaction to sync the balance"
+                    description="This will create a new transaction in the account to match the balance, so it's easier to track balance changes."
+                  />
+                )}
               />
             </Stack>
           </AppSection>
           <Group>
             <Button type="submit">Update account</Button>
             <Button
+              type="button"
               variant="outline"
               onClick={() => {
                 // Go back

@@ -4,30 +4,18 @@ import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfi
 import { UpdateTransactionRequest } from '@guallet/api-client';
 import { useTransaction, useTransactionMutations } from '@guallet/api-react';
 import { Button, Group, Stack } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { TransactionFormFields } from '../components/TransactionFormFields';
 import {
-  TransactionFormData,
-  TransactionFormFields,
-} from '../components/TransactionFormFields';
-
-const formSchema = z.object({
-  type: z.enum(['expense', 'income']),
-  accountId: z.string().min(2, { error: 'Account ID is invalid' }),
-  description: z
-    .string()
-    .min(2, { error: 'Description should have at least 2 letters' }),
-  notes: z.string().optional().nullable(),
-  amount: z.number().gte(0, { error: 'Amount must be zero or greater' }),
-  currency: z.string().nullable(),
-  date: z.date(),
-  categoryId: z.string().optional().nullable(),
-});
+  getTransactionFormDefaultValues,
+  transactionFormSchema,
+  type TransactionFormData,
+} from '../models/TransactionForm';
 
 interface EditTransactionScreenProps {
   transactionId: string;
@@ -43,23 +31,15 @@ export function EditTransactionScreen({
     useTransactionMutations();
   const syncedTransactionIdRef = useRef<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   const form = useForm<TransactionFormData>({
-    validate: zod4Resolver(formSchema),
-    initialValues: {
-      type: 'expense',
-      accountId: '',
-      description: '',
-      notes: '',
-      amount: 0,
-      currency: null,
-      date: new Date(),
-      categoryId: null,
-    },
+    resolver: zodResolver(transactionFormSchema),
+    defaultValues: getTransactionFormDefaultValues(),
   });
 
   useEffect(() => {
     if (transaction && syncedTransactionIdRef.current !== transaction.id) {
-      form.setValues({
+      form.reset({
         type: transaction.amount >= 0 ? 'income' : 'expense',
         accountId: transaction.accountId,
         description: transaction.description,
@@ -168,7 +148,7 @@ export function EditTransactionScreen({
       <AppSection
         title={t('screens.transactions.edit.title', 'Edit Transaction')}
       >
-        <form onSubmit={form.onSubmit(onFormSubmit)}>
+        <form onSubmit={form.handleSubmit(onFormSubmit)}>
           <Stack>
             <TransactionFormFields
               form={form}

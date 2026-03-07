@@ -4,7 +4,7 @@ import { FilterData } from './FilterData';
 import { useAccounts, useCategories } from '@guallet/api-react';
 import { ActionIcon, Card, Group, Indicator, Modal, Text } from '@mantine/core';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { IconFilter } from '@tabler/icons-react';
 
 interface TransactionsFilterDataWrapperProps {

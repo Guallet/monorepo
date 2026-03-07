@@ -1,7 +1,7 @@
 import { ResponsiveModal } from '@guallet/ui-react';
 import { CategoryDto } from '@guallet/api-client';
 import { Input, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CategoryPickerModal } from './CategoryPickerModal';

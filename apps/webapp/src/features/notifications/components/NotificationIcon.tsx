@@ -14,7 +14,7 @@ import {
   Button,
   Text,
 } from '@mantine/core';
-import { notifications as MantineNotifications } from '@mantine/notifications';
+import { notifications as MantineNotifications } from '@/lib/notifications';
 import {
   IconAlertTriangle,
   IconAlertCircle,

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Stack, Title } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
 import {

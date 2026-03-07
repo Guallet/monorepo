@@ -1,5 +1,5 @@
 import { useAuth } from '@guallet/auth';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 

@@ -12,7 +12,7 @@ import {
   Loader,
   Modal,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
 

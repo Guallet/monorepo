@@ -12,24 +12,14 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { UseFormReturnType } from '@mantine/form';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Controller, type UseFormReturn } from 'react-hook-form';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
-
-export type TransactionFormData = {
-  type: 'expense' | 'income';
-  accountId: string;
-  description: string;
-  notes?: string | null;
-  amount: number;
-  currency: string | null;
-  date: Date;
-  categoryId?: string | null;
-};
+import type { TransactionFormData } from '../models/TransactionForm';
 
 interface TransactionFormFieldsProps {
-  form: UseFormReturnType<TransactionFormData>;
+  form: UseFormReturn<TransactionFormData>;
   translationKeyPrefix:
     | 'screens.transactions.create'
     | 'screens.transactions.edit';
@@ -41,15 +31,25 @@ export function TransactionFormFields({
 }: Readonly<TransactionFormFieldsProps>) {
   const { t } = useTranslation();
   const { accounts } = useAccounts();
-  const { category } = useCategory(form.values.categoryId ?? null);
+  const {
+    control,
+    formState: { errors },
+    setValue,
+    watch,
+  } = form;
+  const categoryId = watch('categoryId') ?? null;
+  const accountId = watch('accountId') || null;
+  const selectedFormCurrency = watch('currency');
+
+  const { category } = useCategory(categoryId);
   const defaultCurrency = useDefaultCurrency();
   const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
     null,
   );
   const previousAccountIdRef = useRef<string | null>(null);
 
-  const selectedCurrency = form.values.currency
-    ? Currency.fromISOCode(form.values.currency)
+  const selectedCurrency = selectedFormCurrency
+    ? Currency.fromISOCode(selectedFormCurrency)
     : Currency.fromISOCode(defaultCurrency);
 
   useEffect(() => {
@@ -57,8 +57,6 @@ export function TransactionFormFields({
   }, [category]);
 
   useEffect(() => {
-    const accountId = form.values.accountId || null;
-
     const accountChanged = accountId !== previousAccountIdRef.current;
 
     previousAccountIdRef.current = accountId;
@@ -66,110 +64,191 @@ export function TransactionFormFields({
     const accountCurrency =
       accounts.find((account) => account.id === accountId)?.currency ?? null;
 
-    const currencyMissing = !form.values.currency;
+    const currencyMissing = !selectedFormCurrency;
 
     if (accountCurrency && (accountChanged || currencyMissing)) {
-      form.setFieldValue('currency', accountCurrency);
+      setValue('currency', accountCurrency, { shouldDirty: true });
     }
-  }, [accounts, form, form.values.accountId, form.values.currency]);
+  }, [accountId, accounts, selectedFormCurrency, setValue]);
 
   return (
     <Stack>
-      <SegmentedControl
-        value={form.values.type}
-        onChange={(value) =>
-          form.setFieldValue('type', value as 'expense' | 'income')
-        }
-        data={[
-          {
-            value: 'expense',
-            label: t(`${translationKeyPrefix}.form.type.expense`, 'Expense'),
-          },
-          {
-            value: 'income',
-            label: t(`${translationKeyPrefix}.form.type.income`, 'Income'),
-          },
-        ]}
-        fullWidth
-        withItemsBorders
-      />
-      <TextInput
-        required
-        label={t(
-          `${translationKeyPrefix}.form.description.label`,
-          'Description',
+      <Controller
+        name="type"
+        control={control}
+        render={({ field }) => (
+          <SegmentedControl
+            value={field.value}
+            onChange={(value) => field.onChange(value as 'expense' | 'income')}
+            data={[
+              {
+                value: 'expense',
+                label: t(
+                  `${translationKeyPrefix}.form.type.expense`,
+                  'Expense',
+                ),
+              },
+              {
+                value: 'income',
+                label: t(`${translationKeyPrefix}.form.type.income`, 'Income'),
+              },
+            ]}
+            fullWidth
+            withItemsBorders
+          />
         )}
-        placeholder={t(
-          `${translationKeyPrefix}.form.description.placeholder`,
-          'Enter transaction description',
-        )}
-        {...form.getInputProps('description')}
       />
-      <Textarea
-        resize="vertical"
-        label={t(`${translationKeyPrefix}.form.notes.label`, 'Notes')}
-        placeholder={t(
-          `${translationKeyPrefix}.form.notes.placeholder`,
-          'Enter transaction notes',
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            required
+            label={t(
+              `${translationKeyPrefix}.form.description.label`,
+              'Description',
+            )}
+            placeholder={t(
+              `${translationKeyPrefix}.form.description.placeholder`,
+              'Enter transaction description',
+            )}
+            value={field.value}
+            onChange={(event) => {
+              field.onChange(event.currentTarget.value);
+            }}
+            onBlur={field.onBlur}
+            name={field.name}
+            ref={field.ref}
+            error={errors.description?.message}
+          />
         )}
-        {...form.getInputProps('notes')}
       />
-      <AccountInput
-        required
-        label={t(`${translationKeyPrefix}.form.account.label`, 'Account')}
-        placeholder={t(
-          `${translationKeyPrefix}.form.account.placeholder`,
-          'Select an account',
+      <Controller
+        name="notes"
+        control={control}
+        render={({ field }) => (
+          <Textarea
+            resize="vertical"
+            label={t(`${translationKeyPrefix}.form.notes.label`, 'Notes')}
+            placeholder={t(
+              `${translationKeyPrefix}.form.notes.placeholder`,
+              'Enter transaction notes',
+            )}
+            value={field.value ?? ''}
+            onChange={(event) => {
+              field.onChange(event.currentTarget.value);
+            }}
+            onBlur={field.onBlur}
+            name={field.name}
+            ref={field.ref}
+            error={errors.notes?.message}
+          />
         )}
-        {...form.getInputProps('accountId')}
       />
-      <CurrencyPicker
+      <Controller
+        name="accountId"
+        control={control}
+        render={({ field }) => (
+          <AccountInput
+            required
+            label={t(`${translationKeyPrefix}.form.account.label`, 'Account')}
+            placeholder={t(
+              `${translationKeyPrefix}.form.account.placeholder`,
+              'Select an account',
+            )}
+            value={field.value || null}
+            onChange={(value) => {
+              field.onChange(value ?? '');
+            }}
+            error={errors.accountId?.message}
+          />
+        )}
+      />
+      <Controller
         name="currency"
-        required
-        value={form.values.currency}
-        label={t(`${translationKeyPrefix}.form.currency.label`, 'Currency')}
-        description={t(
-          `${translationKeyPrefix}.form.currency.description`,
-          'The currency of the transaction',
+        control={control}
+        render={({ field }) => (
+          <CurrencyPicker
+            name={field.name}
+            required
+            value={field.value}
+            label={t(`${translationKeyPrefix}.form.currency.label`, 'Currency')}
+            description={t(
+              `${translationKeyPrefix}.form.currency.description`,
+              'The currency of the transaction',
+            )}
+            onValueChanged={field.onChange}
+            error={errors.currency?.message}
+          />
         )}
-        onValueChanged={(newValue) => {
-          form.setFieldValue('currency', newValue);
-        }}
       />
-      <NumberInput
-        required
-        label={t(`${translationKeyPrefix}.form.amount.label`, 'Amount')}
-        placeholder={t(
-          `${translationKeyPrefix}.form.amount.placeholder`,
-          'Enter transaction amount',
+      <Controller
+        name="amount"
+        control={control}
+        render={({ field }) => (
+          <NumberInput
+            required
+            label={t(`${translationKeyPrefix}.form.amount.label`, 'Amount')}
+            placeholder={t(
+              `${translationKeyPrefix}.form.amount.placeholder`,
+              'Enter transaction amount',
+            )}
+            fixedDecimalScale
+            leftSection={selectedCurrency.symbol}
+            decimalScale={selectedCurrency.decimalPlaces}
+            value={field.value}
+            onChange={(value) => {
+              const parsedValue =
+                typeof value === 'number' ? value : Number(value || 0);
+              field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+            }}
+            onBlur={field.onBlur}
+            name={field.name}
+            error={errors.amount?.message}
+          />
         )}
-        fixedDecimalScale
-        leftSection={selectedCurrency.symbol}
-        decimalScale={selectedCurrency.decimalPlaces}
-        {...form.getInputProps('amount')}
       />
 
-      <DateInput
-        required
-        label={t(`${translationKeyPrefix}.form.date.label`, 'Date')}
-        placeholder={t(
-          `${translationKeyPrefix}.form.date.placeholder`,
-          'Select transaction date',
+      <Controller
+        name="date"
+        control={control}
+        render={({ field }) => (
+          <DateInput
+            required
+            label={t(`${translationKeyPrefix}.form.date.label`, 'Date')}
+            placeholder={t(
+              `${translationKeyPrefix}.form.date.placeholder`,
+              'Select transaction date',
+            )}
+            maxDate={new Date()}
+            value={field.value}
+            onChange={(value) => {
+              field.onChange(value ?? new Date());
+            }}
+            onBlur={field.onBlur}
+            name={field.name}
+            error={errors.date?.message}
+          />
         )}
-        maxDate={new Date()}
-        {...form.getInputProps('date')}
       />
-      <CategoryPicker
-        label={t(`${translationKeyPrefix}.form.category.label`, 'Category')}
-        placeholder={t(
-          `${translationKeyPrefix}.form.category.placeholder`,
-          'Select a category',
+      <Controller
+        name="categoryId"
+        control={control}
+        render={({ field }) => (
+          <CategoryPicker
+            label={t(`${translationKeyPrefix}.form.category.label`, 'Category')}
+            placeholder={t(
+              `${translationKeyPrefix}.form.category.placeholder`,
+              'Select a category',
+            )}
+            selectedCategory={selectedCategory}
+            onCategorySelected={(selectedCategoryValue: CategoryDto) => {
+              setSelectedCategory(selectedCategoryValue);
+              field.onChange(selectedCategoryValue.id || null);
+            }}
+            error={errors.categoryId?.message}
+          />
         )}
-        selectedCategory={selectedCategory}
-        onCategorySelected={(selectedCategoryValue: CategoryDto) => {
-          setSelectedCategory(selectedCategoryValue);
-          form.setFieldValue('categoryId', selectedCategoryValue.id || null);
-        }}
       />
     </Stack>
   );

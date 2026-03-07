@@ -19,7 +19,7 @@ import {
   IconGripVertical,
   IconDotsVertical,
 } from '@tabler/icons-react';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useState } from 'react';
 import { RuleDto } from '@guallet/api-client';
 import { Category } from '@/features/categories/models/Category';

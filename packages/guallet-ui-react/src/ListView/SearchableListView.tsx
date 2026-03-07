@@ -1,6 +1,5 @@
-import { Paper, Space, Stack, Text } from "@mantine/core";
-import { SearchBoxInput } from "../SearchBoxInput/SearchBoxInput";
-import { useEffect, useState } from "react";
+import { SearchBoxInput } from '../SearchBoxInput/SearchBoxInput';
+import { useMemo, useState } from 'react';
 
 interface SearchableListViewProps<T> {
   items: T[];
@@ -15,44 +14,77 @@ export function SearchableListView<T>({
   itemTemplate,
   emptyView,
   placeholder,
-  gap = "md",
+  gap = 'md',
 }: Readonly<SearchableListViewProps<T>>) {
-  const [filteredItems, setFilteredItems] = useState([] as T[]);
-  const [queryString, setQueryString] = useState("");
+  const [queryString, setQueryString] = useState('');
 
-  useEffect(() => {
-    if (items !== null || items !== undefined) {
-      setFilteredItems(items);
+  const filteredItems = useMemo(() => {
+    if (!queryString.trim()) {
+      return items;
     }
-  }, [items]);
+
+    return items.filter((item) =>
+      // This generic fallback compares against a serialized representation.
+      JSON.stringify(item).toLowerCase().includes(queryString.toLowerCase()),
+    );
+  }, [items, queryString]);
 
   return (
-    <Stack gap={gap}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: resolveGap(gap),
+      }}
+    >
       <SearchBoxInput
         placeholder={placeholder}
         query={queryString}
         onSearchQueryChanged={(query) => {
           setQueryString(query);
-          const queryItems = items.filter((item) =>
-            // TODO: Improve this hack of converting to JSON
-            JSON.stringify(item).toLowerCase().includes(query.toLowerCase())
-          );
-          setFilteredItems(queryItems);
         }}
       />
-      <Space h="sm" />
-      <Paper withBorder shadow="sm" radius="lg">
+      <div style={{ height: '0.5rem' }} />
+      <div
+        style={{
+          border: '1px solid rgba(148, 163, 184, 0.35)',
+          borderRadius: '0.75rem',
+          boxShadow: '0 4px 12px rgba(15, 23, 42, 0.08)',
+          padding: '0.5rem',
+        }}
+      >
         {filteredItems.length === 0 && (emptyView || <DefaultEmptyView />)}
-        {filteredItems.map(itemTemplate)}
-      </Paper>
-    </Stack>
+        {filteredItems.map((item, index) => itemTemplate(item, index))}
+      </div>
+    </div>
   );
 }
 
 function DefaultEmptyView() {
   return (
-    <Stack>
-      <Text>No items found</Text>
-    </Stack>
+    <div>
+      <p>No items found</p>
+    </div>
   );
+}
+
+function resolveGap(gap: number | string): string {
+  if (typeof gap === 'number') {
+    return `${gap}px`;
+  }
+
+  switch (gap) {
+    case 'xs':
+      return '0.25rem';
+    case 'sm':
+      return '0.5rem';
+    case 'md':
+      return '1rem';
+    case 'lg':
+      return '1.5rem';
+    case 'xl':
+      return '2rem';
+    default:
+      return gap;
+  }
 }

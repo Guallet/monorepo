@@ -2,7 +2,7 @@ import { AppSection } from "@/components/Cards/AppSection";
 import { gualletClient } from "@/api/gualletClient";
 import { useCategory } from "@guallet/api-react";
 import { Stack, TextInput, ColorInput, Button } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+import { notifications } from "@/lib/notifications";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { BaseScreen } from "@/components/Screens/BaseScreen";

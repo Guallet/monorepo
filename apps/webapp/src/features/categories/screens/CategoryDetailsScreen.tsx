@@ -4,7 +4,7 @@ import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useGroupedCategory, useCategoryMutations } from '@guallet/api-react';
 import { Stack, Button, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { CategoryRow } from '../components/CategoryRow/CategoryRow';
 

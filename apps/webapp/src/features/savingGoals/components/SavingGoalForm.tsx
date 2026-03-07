@@ -1,20 +1,23 @@
 import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
 import {
-  Stack,
-  TextInput,
-  Textarea,
-  NumberInput,
   Button,
-  Group,
   MultiSelect,
   Card,
+  Group,
+  NumberInput,
+  Stack,
   Text,
+  Textarea,
+  TextInput,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { IconPigMoney, IconDeviceFloppy, IconX } from '@tabler/icons-react';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 interface SavingGoalFormProps {
   savingGoal?: SavingGoalDto;
@@ -22,12 +25,39 @@ interface SavingGoalFormProps {
   onCancel?: () => void;
 }
 
-interface FormValues {
-  name: string;
-  description: string;
-  target_amount: number;
-  target_date: Date;
-  accounts: string[];
+const savingGoalFormSchema = z.object({
+  name: z.string().trim().min(1, { error: 'Name is required' }),
+  description: z.string(),
+  target_amount: z
+    .number()
+    .gt(0, { error: 'Target amount must be greater than 0' }),
+  target_date: z.date().refine(
+    (value) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return value >= today;
+    },
+    {
+      error: 'Target date cannot be in the past',
+    },
+  ),
+  accounts: z.array(z.string()),
+});
+
+type SavingGoalFormData = z.infer<typeof savingGoalFormSchema>;
+
+function getSavingGoalFormDefaultValues(
+  savingGoal?: SavingGoalDto,
+): SavingGoalFormData {
+  return {
+    name: savingGoal?.name || '',
+    description: savingGoal?.description || '',
+    target_amount: savingGoal?.target_amount || 0,
+    target_date: savingGoal?.target_date
+      ? new Date(savingGoal.target_date)
+      : new Date(),
+    accounts: savingGoal?.accounts || [],
+  };
 }
 
 export function SavingGoalForm({
@@ -41,37 +71,25 @@ export function SavingGoalForm({
 
   const isEditing = !!savingGoal;
 
-  const form = useForm<FormValues>({
-    initialValues: {
-      name: savingGoal?.name || '',
-      description: savingGoal?.description || '',
-      target_amount: savingGoal?.target_amount || 0,
-      target_date: savingGoal?.target_date
-        ? new Date(savingGoal.target_date)
-        : new Date(),
-      accounts: savingGoal?.accounts || [],
-    },
-    validate: {
-      name: (value) => (value.trim() === '' ? 'Name is required' : null),
-      target_amount: (value) =>
-        value <= 0 ? 'Target amount must be greater than 0' : null,
-      target_date: (value) => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (value < today) {
-          return 'Target date cannot be in the past';
-        }
-        return null;
-      },
-    },
+  const form = useForm<SavingGoalFormData>({
+    resolver: zodResolver(savingGoalFormSchema),
+    defaultValues: getSavingGoalFormDefaultValues(savingGoal),
   });
+  const {
+    control,
+    formState: { errors },
+  } = form;
+
+  useEffect(() => {
+    form.reset(getSavingGoalFormDefaultValues(savingGoal));
+  }, [form, savingGoal]);
 
   const accountOptions = accounts.map((account) => ({
     value: account.id,
     label: `${account.name} (${account.sourceName || account.source || 'Manual'})`,
   }));
 
-  const handleSubmit = async (values: FormValues) => {
+  const handleSubmit = async (values: SavingGoalFormData) => {
     try {
       let result: SavingGoalDto;
 
@@ -132,55 +150,116 @@ export function SavingGoalForm({
           </Text>
         </Group>
 
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           <Stack gap="md">
-            <TextInput
-              label="Goal Name"
-              placeholder="e.g., Emergency Fund, Vacation, New Car"
-              required
-              {...form.getInputProps('name')}
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  label="Goal Name"
+                  placeholder="e.g., Emergency Fund, Vacation, New Car"
+                  required
+                  value={field.value}
+                  onChange={(event) => {
+                    field.onChange(event.currentTarget.value);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                  error={errors.name?.message}
+                />
+              )}
             />
 
-            <Textarea
-              label="Description"
-              placeholder="Optional description of your saving goal"
-              rows={3}
-              {...form.getInputProps('description')}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  label="Description"
+                  placeholder="Optional description of your saving goal"
+                  rows={3}
+                  value={field.value}
+                  onChange={(event) => {
+                    field.onChange(event.currentTarget.value);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                  error={errors.description?.message}
+                />
+              )}
             />
 
-            <NumberInput
-              label="Target Amount"
-              placeholder="Enter target amount"
-              required
-              min={0}
-              step={0.01}
-              //   prefix="$"
-              thousandSeparator=","
-              decimalScale={2}
-              {...form.getInputProps('target_amount')}
+            <Controller
+              name="target_amount"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label="Target Amount"
+                  placeholder="Enter target amount"
+                  required
+                  min={0}
+                  step={0.01}
+                  thousandSeparator=","
+                  decimalScale={2}
+                  value={field.value}
+                  onChange={(value) => {
+                    const parsedValue =
+                      typeof value === 'number' ? value : Number(value || 0);
+                    field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.target_amount?.message}
+                />
+              )}
             />
 
-            <DateInput
-              label="Target Date"
-              placeholder="When do you want to reach this goal?"
-              required
-              minDate={new Date()}
-              {...form.getInputProps('target_date')}
+            <Controller
+              name="target_date"
+              control={control}
+              render={({ field }) => (
+                <DateInput
+                  label="Target Date"
+                  placeholder="When do you want to reach this goal?"
+                  required
+                  minDate={new Date()}
+                  value={field.value}
+                  onChange={(value) => {
+                    field.onChange(value ?? new Date());
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.target_date?.message}
+                />
+              )}
             />
 
-            <MultiSelect
-              label="Linked Accounts"
-              placeholder="Select accounts to track for this goal"
-              data={accountOptions}
-              searchable
-              clearable
-              description="Select accounts that contribute to this saving goal. Progress will be calculated based on the balance of these accounts."
-              {...form.getInputProps('accounts')}
+            <Controller
+              name="accounts"
+              control={control}
+              render={({ field }) => (
+                <MultiSelect
+                  label="Linked Accounts"
+                  placeholder="Select accounts to track for this goal"
+                  data={accountOptions}
+                  searchable
+                  clearable
+                  description="Select accounts that contribute to this saving goal. Progress will be calculated based on the balance of these accounts."
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.accounts?.message}
+                />
+              )}
             />
 
             <Group justify="flex-end" gap="sm">
               {onCancel && (
                 <Button
+                  type="button"
                   variant="outline"
                   leftSection={<IconX size={16} />}
                   onClick={onCancel}

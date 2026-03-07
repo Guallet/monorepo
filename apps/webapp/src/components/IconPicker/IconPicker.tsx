@@ -6,7 +6,7 @@ import {
   Text,
   ThemeIcon,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { IconPickerModal } from "./IconPickerModal";
 import { IconSelect } from "@tabler/icons-react";
 import { GualletIcon } from "../GualletIcon/GualletIcon";

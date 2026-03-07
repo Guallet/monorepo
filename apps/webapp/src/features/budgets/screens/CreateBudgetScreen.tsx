@@ -3,14 +3,14 @@ import {
   useBudgetMutations,
   useUserSettings,
 } from '@guallet/api-react';
-import { useForm } from '@mantine/form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  TextInput,
+  Button,
+  Group,
   NumberInput,
   Select,
-  Button,
   Stack,
-  Group,
+  TextInput,
 } from '@mantine/core';
 import { GualletColorPicker } from '@/components/GualletColorPicker/GualletColorPicker';
 import { Currency } from '@guallet/money';
@@ -20,10 +20,25 @@ import { useLocale } from '@/i18n/useLocale';
 import { CategoryMultiSelect } from '@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect';
 import { useMemo } from 'react';
 import { CategoryDto } from '@guallet/api-client';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { IconPicker } from '@/components/IconPicker/IconPicker';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+const createBudgetFormSchema = z.object({
+  name: z.string().min(2, { error: 'Name is too short' }),
+  amount: z.number().gt(0, { error: 'Amount must be positive' }),
+  currency: z.string().min(1, { error: 'Currency is required' }),
+  colour: z.string().min(1, { error: 'Colour is required' }),
+  icon: z.string(),
+  categories: z
+    .array(z.custom<CategoryDto>())
+    .min(1, { error: 'Select at least one category' }),
+});
+
+type CreateBudgetFormData = z.infer<typeof createBudgetFormSchema>;
 
 export function CreateBudgetScreen() {
   const { createBudgetMutation } = useBudgetMutations();
@@ -33,26 +48,21 @@ export function CreateBudgetScreen() {
   const { t } = useTranslation();
   const { settings } = useUserSettings();
 
-  const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
+  const form = useForm<CreateBudgetFormData>({
+    resolver: zodResolver(createBudgetFormSchema),
+    defaultValues: {
       name: '',
       amount: 0,
-      currency: settings?.currencies.default_currency,
+      currency: settings?.currencies.default_currency ?? '',
       colour: '',
       icon: '',
-      categories: [] as CategoryDto[],
-    },
-    // TODO: Validate using Zod
-    validate: {
-      name: (value) => (value.length < 2 ? 'Name is too short' : null),
-      amount: (value) => (value <= 0 ? 'Amount must be positive' : null),
-      currency: (value) => (value ? null : 'Currency is required'),
-      colour: (value) => (value ? null : 'Colour is required'),
-      categories: (value: CategoryDto[]) =>
-        value.length === 0 ? 'Select at least one category' : null,
+      categories: [],
     },
   });
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   // Only available currencies from the existing accounts
   // TODO: Create a hook to get the user currencies. The default one and the ones used by their accounts
@@ -77,7 +87,7 @@ export function CreateBudgetScreen() {
     [availableCurrencies],
   );
 
-  const handleSubmit = (values: typeof form.values) => {
+  const handleSubmit = (values: CreateBudgetFormData) => {
     console.log('Submitting budget:', values);
     createBudgetMutation.mutate(
       {
@@ -121,87 +131,142 @@ export function CreateBudgetScreen() {
 
   return (
     <BaseScreen>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Stack>
           <AppSection
             title={t('screens.budgets.create.form.title', 'Create new Budget')}
           >
-            <TextInput
-              label={t('screens.budgets.create.form.name.label', 'Name')}
-              placeholder={t(
-                'screens.budgets.create.form.name.placeholder',
-                'Budget name',
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextInput
+                  label={t('screens.budgets.create.form.name.label', 'Name')}
+                  placeholder={t(
+                    'screens.budgets.create.form.name.placeholder',
+                    'Budget name',
+                  )}
+                  value={field.value}
+                  onChange={(event) => {
+                    field.onChange(event.currentTarget.value);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                  error={errors.name?.message}
+                  required
+                />
               )}
-              {...form.getInputProps('name')}
-              required
             />
-            <Select
-              label={t(
-                'screens.budgets.create.form.currency.label',
-                'Currency',
+            <Controller
+              name="currency"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label={t(
+                    'screens.budgets.create.form.currency.label',
+                    'Currency',
+                  )}
+                  description={t(
+                    'screens.budgets.create.form.currency.description',
+                    'Only available currencies from your existing accounts are shown.',
+                  )}
+                  placeholder={t(
+                    'screens.budgets.create.form.currency.placeholder',
+                    'Select currency',
+                  )}
+                  data={currencyOptions}
+                  value={field.value || null}
+                  onChange={(value) => {
+                    field.onChange(value ?? '');
+                  }}
+                  error={errors.currency?.message}
+                  required
+                />
               )}
-              description={t(
-                'screens.budgets.create.form.currency.description',
-                'Only available currencies from your existing accounts are shown.',
-              )}
-              placeholder={t(
-                'screens.budgets.create.form.currency.placeholder',
-                'Select currency',
-              )}
-              data={currencyOptions}
-              {...form.getInputProps('currency')}
-              required
             />
-            <NumberInput
-              label={t(
-                'screens.budgets.create.form.amount.label',
-                'Budget Amount',
+            <Controller
+              name="amount"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  label={t(
+                    'screens.budgets.create.form.amount.label',
+                    'Budget Amount',
+                  )}
+                  min={0}
+                  value={field.value}
+                  onChange={(value) => {
+                    const parsedValue =
+                      typeof value === 'number' ? value : Number(value || 0);
+                    field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+                  }}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  error={errors.amount?.message}
+                  required
+                />
               )}
-              min={0}
-              {...form.getInputProps('amount')}
-              required
             />
-            <GualletColorPicker
-              label={t(
-                'screens.budgets.create.form.colorPicker.label',
-                'Color',
+            <Controller
+              name="colour"
+              control={control}
+              render={({ field }) => (
+                <GualletColorPicker
+                  label={t(
+                    'screens.budgets.create.form.colorPicker.label',
+                    'Color',
+                  )}
+                  placeholder={t(
+                    'screens.budgets.create.form.colorPicker.placeholder',
+                    'Select the category colour',
+                  )}
+                  value={field.value}
+                  onColourSelected={(colour: string) => {
+                    field.onChange(colour);
+                  }}
+                  error={errors.colour?.message}
+                />
               )}
-              placeholder={t(
-                'screens.budgets.create.form.colorPicker.placeholder',
-                'Select the category colour',
-              )}
-              // {...form.getInputProps("colour")}
-              value={form.values.colour}
-              onColourSelected={(colour: string) => {
-                console.log('Selected colour:', colour);
-                form.setFieldValue('colour', colour);
-              }}
             />
-            <IconPicker
-              {...form.getInputProps('icon')}
+            <Controller
               name="icon"
-              label={t('screens.budgets.create.form.icon.label', 'Icon')}
-              description={t(
-                'screens.budgets.create.form.icon.description',
-                'Select an icon for the budget',
+              control={control}
+              render={({ field }) => (
+                <IconPicker
+                  name={field.name}
+                  label={t('screens.budgets.create.form.icon.label', 'Icon')}
+                  description={t(
+                    'screens.budgets.create.form.icon.description',
+                    'Select an icon for the budget',
+                  )}
+                  required
+                  value={field.value}
+                  onValueChanged={(iconName) => {
+                    field.onChange(iconName ?? '');
+                  }}
+                  error={errors.icon?.message}
+                />
               )}
-              required
-              value={form.values.icon}
-              onValueChanged={(iconName) =>
-                form.setFieldValue('icon', iconName ?? '')
-              }
             />
-            <CategoryMultiSelect
-              required
-              label={t(
-                'screens.budgets.create.form.categories.label',
-                'Categories',
+            <Controller
+              name="categories"
+              control={control}
+              render={({ field }) => (
+                <CategoryMultiSelect
+                  required
+                  label={t(
+                    'screens.budgets.create.form.categories.label',
+                    'Categories',
+                  )}
+                  selectedCategories={field.value}
+                  onSelectionChanged={(categories: CategoryDto[]) => {
+                    console.log('Selected categories:', categories);
+                    field.onChange(categories);
+                  }}
+                  error={errors.categories?.message}
+                />
               )}
-              selectedCategories={form.values.categories}
-              onSelectionChanged={(categories: CategoryDto[]) => {
-                console.log('Selected categories:', categories);
-                form.setFieldValue('categories', categories);
-              }}
             />
           </AppSection>
           <Group justify="flex-end" mt="md">

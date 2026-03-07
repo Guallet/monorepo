@@ -8,7 +8,7 @@ import {
   Badge,
   Divider,
 } from '@mantine/core';
-import { notifications as MantineNotifications } from '@mantine/notifications';
+import { notifications as MantineNotifications } from '@/lib/notifications';
 import { IconChecks } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { BaseScreen } from '@/components/Screens/BaseScreen';

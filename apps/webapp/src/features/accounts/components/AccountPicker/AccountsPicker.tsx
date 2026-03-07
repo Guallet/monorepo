@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { AccountDto } from "@guallet/api-client";
 import { ResponsiveModal } from "@guallet/ui-react";
 import { useAccounts } from "@guallet/api-react";

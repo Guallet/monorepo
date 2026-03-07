@@ -1,20 +1,20 @@
 import {
+  Alert,
+  Button,
   Center,
   Paper,
   Stack,
   Text,
   TextInput,
-  Button,
   Title,
-  Alert,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { IconAlertCircle, IconLock } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
 import { useCanGoBack, useNavigate, useRouter } from '@tanstack/react-router';
+import { Controller, useForm } from 'react-hook-form';
 
 const formSchema = z.object({
   email: z.email({ message: 'Invalid email address' }),
@@ -39,11 +39,15 @@ export function ForgotPasswordScreen({
   const navigate = useNavigate();
 
   const form = useForm<FormData>({
-    initialValues: {
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       email: '',
     },
-    validate: zod4Resolver(formSchema),
   });
+  const {
+    control,
+    formState: { errors },
+  } = form;
 
   const handleSubmit = async (data: FormData) => {
     await onSubmit(data.email);
@@ -90,19 +94,35 @@ export function ForgotPasswordScreen({
             )}
 
             <form
-              onSubmit={form.onSubmit(handleSubmit)}
+              onSubmit={form.handleSubmit(handleSubmit)}
               style={{ width: '100%' }}
             >
               <Stack gap="md">
-                <TextInput
-                  {...form.getInputProps('email')}
-                  label={t('screens.forgotPassword.form.email.label', 'Email')}
-                  type="email"
-                  placeholder={t(
-                    'screens.forgotPassword.form.email.placeholder',
-                    'Enter your email',
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label={t(
+                        'screens.forgotPassword.form.email.label',
+                        'Email',
+                      )}
+                      type="email"
+                      placeholder={t(
+                        'screens.forgotPassword.form.email.placeholder',
+                        'Enter your email',
+                      )}
+                      value={field.value}
+                      onChange={(event) => {
+                        field.onChange(event.currentTarget.value);
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                      error={errors.email?.message}
+                      required
+                    />
                   )}
-                  required
                 />
 
                 <Button fullWidth type="submit" loading={isLoading}>

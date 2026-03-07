@@ -3,9 +3,9 @@ import { useUserSettings, useUserSettingsMutations } from '@guallet/api-react';
 import { BaseRow } from '@guallet/ui-react';
 import { IconChevronRight } from '@tabler/icons-react';
 import { Modal, Stack } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure } from '@/hooks/useDisclosure';
 import { Currency } from '@guallet/money';
-import { notifications } from '@mantine/notifications';
+import { notifications } from '@/lib/notifications';
 import { useTranslation } from 'react-i18next';
 import { CurrencyPickerModal } from '@/components/CurrencyPicker/CurrencyPickerModal';
 

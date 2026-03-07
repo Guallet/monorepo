@@ -1,5 +1,4 @@
-import { Stack, Text } from "@mantine/core";
-import React from "react";
+import React from 'react';
 
 interface IProps<T> {
   items: T[];
@@ -13,16 +12,16 @@ export function ListView<T>({
   emptyView,
 }: Readonly<IProps<T>>) {
   if (items.length === 0) {
-    return <Stack>{emptyView || <DefaultEmptyView />}</Stack>;
+    return <div>{emptyView || <DefaultEmptyView />}</div>;
   }
 
-  return <Stack>{items.map(itemTemplate)}</Stack>;
+  return <div>{items.map((item, index) => itemTemplate(item, index))}</div>;
 }
 
 function DefaultEmptyView() {
   return (
-    <Stack>
-      <Text>No items found</Text>
-    </Stack>
+    <div>
+      <p>No items found</p>
+    </div>
   );
 }
