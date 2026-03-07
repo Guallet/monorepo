@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button } from '@/components/ui/button';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { AccountDto } from "@guallet/api-client";
 import { ResponsiveModal } from "@guallet/ui-react";

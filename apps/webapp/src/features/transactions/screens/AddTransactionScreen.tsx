@@ -1,8 +1,8 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { useTransactionMutations } from '@guallet/api-react';
-import { Button, Stack } from '@mantine/core';
 import { CreateTransactionRequest } from '@guallet/api-client';
 import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
@@ -20,6 +20,7 @@ export function AddTransactionScreen() {
   const navigate = useNavigate();
 
   const { createTransactionMutation } = useTransactionMutations();
+  const isSubmitting = createTransactionMutation.isPending;
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionFormSchema),
@@ -75,19 +76,19 @@ export function AddTransactionScreen() {
         title={t('screens.transactions.create.title', 'Add Transaction')}
       >
         <form onSubmit={form.handleSubmit(onFormSubmit)}>
-          <Stack>
+          <div className="flex flex-col gap-4">
             <TransactionFormFields
               form={form}
               translationKeyPrefix="screens.transactions.create"
             />
 
-            <Button type="submit">
+            <Button type="submit" disabled={isSubmitting}>
               {t(
                 'screens.transactions.create.form.submitButton.label',
                 'Add Transaction',
               )}
             </Button>
-          </Stack>
+          </div>
         </form>
       </AppSection>
     </BaseScreen>

@@ -2,14 +2,13 @@ import { AccountAvatar } from '@/components/AccountAvatar/AccountAvatar';
 import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
 import { TransactionDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
-import { Group, Stack, Text } from '@mantine/core';
+import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
-import classes from './TransactionRow.module.css';
 
 type AvatarType = 'account' | 'category';
 
 interface TransactionRowProps extends Omit<
-  React.ComponentProps<typeof Group>,
+  React.HTMLAttributes<HTMLDivElement>,
   'onClick'
 > {
   transaction: TransactionDto;
@@ -23,6 +22,7 @@ export function TransactionRow({
   avatarType = 'account',
   showNotes = false,
   onClick,
+  className,
   ...props
 }: Readonly<TransactionRowProps>) {
   const money = useMemo(
@@ -35,16 +35,25 @@ export function TransactionRow({
   );
 
   return (
-    <Group
-      justify="space-between"
-      align="center"
-      wrap="nowrap"
-      p="md"
-      {...(onClick && {
-        onClick: () => onClick(transaction),
-        style: { cursor: 'pointer' },
-        className: classes.transactionRow,
-      })}
+    <div
+      className={cn(
+        'flex items-center gap-3 px-4 py-3',
+        onClick ? 'cursor-pointer transition-colors hover:bg-accent/40' : null,
+        className,
+      )}
+      {...(onClick
+        ? {
+            role: 'button' as const,
+            tabIndex: 0,
+            onClick: () => onClick(transaction),
+            onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onClick(transaction);
+              }
+            },
+          }
+        : null)}
       {...props}
     >
       {avatarType === 'category' ? (
@@ -52,23 +61,15 @@ export function TransactionRow({
       ) : (
         <AccountAvatar accountId={transaction.accountId} />
       )}
-      <Stack
-        gap={2}
-        style={{
-          flexGrow: 1,
-          overflow: 'hidden',
-        }}
-      >
-        <Text lineClamp={1} truncate="end">
-          {transaction.description}
-        </Text>
-        {showNotes && transaction.notes && (
-          <Text size="xs" c="dimmed" lineClamp={1} truncate="end">
+      <div className="min-w-0 flex-1 space-y-0.5 overflow-hidden">
+        <p className="truncate">{transaction.description}</p>
+        {showNotes && transaction.notes ? (
+          <p className="truncate text-xs text-muted-foreground">
             {transaction.notes}
-          </Text>
-        )}
-      </Stack>
-      <Text style={{ fontWeight: 'bold' }}>{money?.format()}</Text>
-    </Group>
+          </p>
+        ) : null}
+      </div>
+      <p className="font-bold">{money?.format()}</p>
+    </div>
   );
 }

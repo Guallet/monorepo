@@ -542,10 +542,6 @@
             "label": "Create your first rule"
           }
         },
-        "actions": {
-          "edit": "Edit",
-          "delete": "Delete"
-        },
         "title": "Categorization Rules",
         "createButton": {
           "label": "Create Rule"
@@ -614,10 +610,10 @@
     "transactions": {
       "list": {
         "header": {
-          "title": "Transactions",
           "add": {
             "tooltip": "Add new transaction"
-          }
+          },
+          "title": "Transactions"
         },
         "quickEdit": {
           "notifications": {
@@ -767,5 +763,8 @@
       "alreadyHaveAccount": "Already have an account?",
       "signInLink": "Sign in"
     }
+  },
+  "common": {
+    "loading": "Loading..."
   }
 }

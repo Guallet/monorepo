@@ -1,9 +1,7 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useInfiniteTransactionInbox } from '@guallet/api-react';
-import { Badge, Center, Group, Loader, Stack, Title } from '@mantine/core';
 import { InboxTransactionCard } from '../components/InboxTransactionCard';
-import { useEffect } from 'react';
-import { useIntersection } from '@mantine/hooks';
+import { useEffect, useRef } from 'react';
 
 export function TransactionInboxScreen() {
   const {
@@ -14,24 +12,48 @@ export function TransactionInboxScreen() {
     fetchNextPage,
   } = useInfiniteTransactionInbox();
 
-  const { ref, entry } = useIntersection({
-    threshold: 1,
-  });
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+    const target = loadMoreRef.current;
+
+    if (!target || !hasNextPage) {
+      return;
     }
-  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+
+        if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        threshold: 1,
+      },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, transactions.length]);
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
-        <Group>
-          <Title>Transactions Inbox</Title>
-          <Badge>{transactions.length}</Badge>
-        </Group>
-        <Stack gap="xs">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Transactions Inbox
+          </h1>
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-sm font-medium text-primary">
+            {transactions.length}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-2">
           {transactions.map((transaction) => (
             <InboxTransactionCard
               key={transaction.id}
@@ -44,15 +66,16 @@ export function TransactionInboxScreen() {
               }}
             />
           ))}
-          {hasNextPage && (
-            <div ref={ref}>
-              <Center p="md">
-                {isFetchingNextPage && <Loader size="sm" />}
-              </Center>
+
+          {hasNextPage ? (
+            <div ref={loadMoreRef} className="flex justify-center py-4">
+              {isFetchingNextPage ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              ) : null}
             </div>
-          )}
-        </Stack>
-      </Stack>
+          ) : null}
+        </div>
+      </div>
     </BaseScreen>
   );
 }

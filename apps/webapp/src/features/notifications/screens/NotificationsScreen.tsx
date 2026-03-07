@@ -1,14 +1,7 @@
-import {
-  Stack,
-  Title,
-  Text,
-  Group,
-  Button,
-  Paper,
-  Badge,
-  Divider,
-} from '@mantine/core';
-import { notifications as MantineNotifications } from '@/lib/notifications';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { notifications } from '@/lib/notifications';
 import { IconChecks } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
@@ -21,7 +14,7 @@ import { validateRoute } from '@/utils/routeValidation';
 export function NotificationsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { notifications, isLoading } = useNotifications();
+  const { notifications: notificationList, isLoading } = useNotifications();
   const {
     markAsRead,
     markAsUnread,
@@ -31,7 +24,7 @@ export function NotificationsScreen() {
     isDeleting,
   } = useNotificationMutations();
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notificationList.filter((n) => !n.isRead).length;
 
   const handleNotificationClick = async (notification: NotificationDto) => {
     if (!notification.isRead) {
@@ -51,7 +44,7 @@ export function NotificationsScreen() {
           error,
         });
 
-        MantineNotifications.show({
+        notifications.show({
           title: t(
             'screens.notifications.icon.navigationErrorTitle',
             'Navigation Error',
@@ -69,68 +62,71 @@ export function NotificationsScreen() {
   if (isLoading) {
     return (
       <BaseScreen>
-        <Stack>
-          <Title>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {t('screens.notifications.screen.title', 'Notifications')}
-          </Title>
-          <Text c="dimmed">
+          </h1>
+          <p className="text-muted-foreground">
             {t(
               'screens.notifications.screen.loading',
               'Loading notifications...',
             )}
-          </Text>
-        </Stack>
+          </p>
+        </div>
       </BaseScreen>
     );
   }
 
   return (
     <BaseScreen>
-      <Stack>
-        <Group justify="space-between" align="center">
-          <Group>
-            <Title>
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold tracking-tight">
               {t('screens.notifications.screen.title', 'Notifications')}
-            </Title>
+            </h1>
             {unreadCount > 0 && (
-              <Badge color="red" size="lg">
+              <span className="rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-sm text-red-700">
                 {t(
                   'screens.notifications.screen.unreadCount',
                   '{{count}} unread',
                   { count: unreadCount },
                 )}
-              </Badge>
+              </span>
             )}
-          </Group>
+          </div>
+
           {unreadCount > 0 && (
             <Button
-              leftSection={<IconChecks size={16} />}
-              variant="subtle"
+              type="button"
+              variant="outline"
+              className="gap-2"
               onClick={() => markAllAsRead()}
-              loading={isUpdating}
+              disabled={isUpdating}
             >
+              <IconChecks size={16} />
               {t(
                 'screens.notifications.screen.markAllAsRead',
                 'Mark all as read',
               )}
             </Button>
           )}
-        </Group>
+        </div>
 
-        <Divider />
+        <Separator />
 
-        {notifications.length === 0 ? (
-          <Paper p="xl" withBorder>
-            <Text c="dimmed" ta="center">
+        {notificationList.length === 0 ? (
+          <Card className="p-8">
+            <p className="text-center text-muted-foreground">
               {t(
                 'screens.notifications.screen.emptyState',
                 'You have no notifications',
               )}
-            </Text>
-          </Paper>
+            </p>
+          </Card>
         ) : (
-          <Stack gap="sm">
-            {notifications.map((notification) => (
+          <div className="space-y-2">
+            {notificationList.map((notification) => (
               <NotificationRow
                 key={notification.id}
                 notification={notification}
@@ -142,9 +138,9 @@ export function NotificationsScreen() {
                 isDeleting={isDeleting}
               />
             ))}
-          </Stack>
+          </div>
         )}
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

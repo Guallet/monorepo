@@ -1,19 +1,10 @@
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { SearchBoxInput } from '@guallet/ui-react';
-import {
-  ActionIcon,
-  Button,
-  Checkbox,
-  Group,
-  ScrollArea,
-  Stack,
-  Text,
-  Tooltip,
-} from '@mantine/core';
 import { useMemo, useState } from 'react';
 import { AccountCheckbox } from './AccountCheckbox';
 import { IconDeselect, IconSelectAll } from '@tabler/icons-react';
 import { getAccountTypeTitle } from '../../models/Account';
+import { Button } from '@/components/ui/button';
 
 interface AccountsPickerModalProps {
   accounts: AccountDto[];
@@ -31,44 +22,57 @@ export function AccountPickerModal({
   const [query, setQuery] = useState('');
 
   const filteredAccounts = useMemo(() => {
-    if (query === '' || query === null || query === undefined) {
+    if (!query) {
       return accounts;
     }
-    return accounts.filter((account) => {
-      return account.name.toLowerCase().includes(query.toLowerCase());
-    });
+    const normalizedQuery = query.toLowerCase();
+    return accounts.filter((account) =>
+      account.name.toLowerCase().includes(normalizedQuery),
+    );
   }, [query, accounts]);
 
-  const [selectedIds, setSelectedIds] = useState(
-    selectedAccounts.map((x) => x.id),
+  const [selectedIds, setSelectedIds] = useState<string[]>(
+    selectedAccounts.map((account) => account.id),
   );
 
   const groupedAccounts = useMemo(() => {
     const groups: { type: AccountTypeDto; items: AccountDto[] }[] = [];
-    filteredAccounts.forEach((account) => {
-      const type = account.type;
-      const group = groups.find((g) => g.type === type);
-      if (group) {
-        group.items.push(account);
+
+    for (const account of filteredAccounts) {
+      const existingGroup = groups.find((group) => group.type === account.type);
+      if (existingGroup) {
+        existingGroup.items.push(account);
       } else {
-        groups.push({ type, items: [account] });
+        groups.push({ type: account.type, items: [account] });
       }
-    });
+    }
 
     return groups;
   }, [filteredAccounts]);
+
+  function setAccountSelected(accountId: string, checked: boolean) {
+    setSelectedIds((currentIds) => {
+      const idSet = new Set(currentIds);
+      if (checked) {
+        idSet.add(accountId);
+      } else {
+        idSet.delete(accountId);
+      }
+      return [...idSet];
+    });
+  }
 
   function deselectAll() {
     setSelectedIds([]);
   }
 
   function selectAll() {
-    setSelectedIds(accounts.map((x) => x.id));
+    setSelectedIds(accounts.map((account) => account.id));
   }
 
   return (
-    <Stack w={'30em'}>
-      <Group>
+    <div className="w-full space-y-3 sm:w-[30rem]">
+      <div className="flex items-center gap-2">
         <SearchBoxInput
           style={{ flexGrow: 1 }}
           query={query}
@@ -76,62 +80,68 @@ export function AccountPickerModal({
             setQuery(newQuery);
           }}
         />
-        <Tooltip label="Select all">
-          <ActionIcon
-            onClick={() => {
-              selectAll();
-            }}
-          >
-            <IconSelectAll />
-          </ActionIcon>
-        </Tooltip>
 
-        <Tooltip label="Clear all">
-          <ActionIcon
-            onClick={() => {
-              deselectAll();
-            }}
-          >
-            <IconDeselect />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
-      <ScrollArea.Autosize mah={300}>
-        {filteredAccounts.length === 0 && <Text>No accounts found</Text>}
-        <Checkbox.Group value={selectedIds} onChange={setSelectedIds}>
-          {groupedAccounts.map(
-            (group: { type: AccountTypeDto; items: AccountDto[] }) => (
-              <Stack key={group.type}>
-                <Text w={500}>{getAccountTypeTitle(group.type)}</Text>
-                <Checkbox.Group value={selectedIds} onChange={setSelectedIds}>
-                  {group.items.map((item) => (
-                    <AccountCheckbox
-                      key={item.id}
-                      account={item}
-                      style={{
-                        marginBottom: '5px',
-                      }}
-                    />
-                  ))}
-                </Checkbox.Group>
-              </Stack>
-            ),
-          )}
-        </Checkbox.Group>
-      </ScrollArea.Autosize>
-      <Group>
         <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          title="Select all"
+          onClick={selectAll}
+        >
+          <IconSelectAll />
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          title="Clear all"
+          onClick={deselectAll}
+        >
+          <IconDeselect />
+        </Button>
+      </div>
+
+      <div className="max-h-72 space-y-3 overflow-y-auto pr-1">
+        {filteredAccounts.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No accounts found</p>
+        ) : null}
+
+        {groupedAccounts.map((group) => (
+          <div key={group.type} className="space-y-2">
+            <p className="text-sm font-medium">{getAccountTypeTitle(group.type)}</p>
+            <div className="space-y-1">
+              {group.items.map((account) => (
+                <AccountCheckbox
+                  key={account.id}
+                  account={account}
+                  checked={selectedIds.includes(account.id)}
+                  onCheckedChange={(checked) => {
+                    setAccountSelected(account.id, checked);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button
+          type="button"
           disabled={selectedIds.length === 0}
           onClick={() => {
             onSelectAccounts(
-              accounts.filter((x) => selectedIds.includes(x.id)),
+              accounts.filter((account) => selectedIds.includes(account.id)),
             );
           }}
         >
           Select
         </Button>
-        <Button onClick={() => onCancel()}>Cancel</Button>
-      </Group>
-    </Stack>
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 }

@@ -2,9 +2,11 @@ import { AppSection } from '@/components/Cards/AppSection';
 import { GualletColorPicker } from '@/components/GualletColorPicker/GualletColorPicker';
 import { IconPicker } from '@/components/IconPicker/IconPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCategoryMutations } from '@guallet/api-react';
-import { Button, Group, Stack, TextInput } from '@mantine/core';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from '@tanstack/react-router';
 import { z } from 'zod';
@@ -75,61 +77,67 @@ export function AddCategoryScreen({
 
   return (
     <BaseScreen isLoading={createCategoryMutation.isPending}>
-      <form onSubmit={form.handleSubmit(onFormSubmit)}>
-        <Stack gap={'md'}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onFormSubmit)}>
           <AppSection title="Add Category">
-            <Controller
-              name="name"
-              control={control}
-              render={({ field }) => (
-                <TextInput
-                  withAsterisk
-                  label="Name"
-                  placeholder="Enter category name"
-                  value={field.value}
-                  onChange={(event) => {
-                    field.onChange(event.currentTarget.value);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  ref={field.ref}
-                  error={errors.name?.message}
-                />
-              )}
-            />
-            <Controller
-              name="icon"
-              control={control}
-              render={({ field }) => (
-                <IconPicker
-                  name={field.name}
-                  label="Icon"
-                  description="Select an icon for the category"
-                  required
-                  value={selectedIcon ?? ''}
-                  onValueChanged={(iconName) => {
-                    field.onChange(iconName ?? '');
-                  }}
-                  error={errors.icon?.message}
-                />
-              )}
-            />
-            <Controller
-              name="colour"
-              control={control}
-              render={({ field }) => (
-                <GualletColorPicker
-                  label="Colour"
-                  value={selectedColour ?? ''}
-                  onColourSelected={(colour) => {
-                    field.onChange(colour);
-                  }}
-                  error={errors.colour?.message}
-                />
-              )}
-            />
+            <div className="space-y-4">
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <div className="grid gap-2">
+                    <Label htmlFor="category-name">Name</Label>
+                    <Input
+                      id="category-name"
+                      required
+                      placeholder="Enter category name"
+                      value={field.value}
+                      onChange={(event) => {
+                        field.onChange(event.currentTarget.value);
+                      }}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    />
+                    {errors.name?.message ? (
+                      <p className="text-sm text-destructive">{errors.name.message}</p>
+                    ) : null}
+                  </div>
+                )}
+              />
+              <Controller
+                name="icon"
+                control={control}
+                render={({ field }) => (
+                  <IconPicker
+                    name={field.name}
+                    label="Icon"
+                    description="Select an icon for the category"
+                    required
+                    value={selectedIcon ?? ''}
+                    onValueChanged={(iconName) => {
+                      field.onChange(iconName ?? '');
+                    }}
+                    error={errors.icon?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="colour"
+                control={control}
+                render={({ field }) => (
+                  <GualletColorPicker
+                    label="Colour"
+                    value={selectedColour ?? ''}
+                    onColourSelected={(colour) => {
+                      field.onChange(colour);
+                    }}
+                    error={errors.colour?.message}
+                  />
+                )}
+              />
+            </div>
           </AppSection>
-          <Group>
+          <div className="flex flex-wrap gap-2">
             <Button type="submit">Create category</Button>
             <Button
               type="button"
@@ -140,8 +148,7 @@ export function AddCategoryScreen({
             >
               Cancel
             </Button>
-          </Group>
-        </Stack>
+          </div>
       </form>
     </BaseScreen>
   );

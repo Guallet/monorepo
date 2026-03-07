@@ -1,16 +1,22 @@
 import { CategoryDto } from '@guallet/api-client';
 import { ResponsiveModal } from '@guallet/ui-react';
-import { Input, Text } from '@mantine/core';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { useMemo } from 'react';
+import { cn } from '@/lib/utils';
+import { useId, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CategoryMultiSelectModal } from './CategoryMultiSelectModal';
 import { useCategories } from '@guallet/api-react';
 
-interface CategoryMultiSelectProps
-  extends React.ComponentProps<typeof Input.Wrapper> {
+interface CategoryMultiSelectProps {
   selectedCategories: CategoryDto[];
   onSelectionChanged: (selectedCategories: CategoryDto[]) => void;
+  label?: string;
+  description?: string;
+  error?: string;
+  required?: boolean;
+  className?: string;
 }
 
 export function CategoryMultiSelect({
@@ -19,6 +25,7 @@ export function CategoryMultiSelect({
   ...props
 }: Readonly<CategoryMultiSelectProps>) {
   const { t } = useTranslation();
+  const inputId = useId();
 
   const [opened, { open, close }] = useDisclosure(false);
   const { categories } = useCategories();
@@ -44,28 +51,53 @@ export function CategoryMultiSelect({
 
   return (
     <>
-      <Input.Wrapper {...props}>
-        <Input
-          readOnly
-          value={inputValue}
-          onClick={open}
-          placeholder={t(
-            'components.categoryMultiSelect.input.placeholder',
-            'Select categories',
+      <div className={cn('grid gap-2', props.className)}>
+        {props.label ? (
+          <Label htmlFor={inputId}>
+            {props.label}
+            {props.required ? ' *' : ''}
+          </Label>
+        ) : null}
+
+        <Button
+          id={inputId}
+          type="button"
+          variant="outline"
+          className={cn(
+            'w-full justify-start font-normal',
+            !inputValue && 'text-muted-foreground',
+            props.error && 'border-destructive',
           )}
-          pointer={true}
-        />
-      </Input.Wrapper>
+          onClick={open}
+        >
+          <span className="truncate">
+            {inputValue ||
+              t(
+                'components.categoryMultiSelect.input.placeholder',
+                'Select categories',
+              )}
+          </span>
+        </Button>
+
+        {props.description ? (
+          <p className="text-sm text-muted-foreground">{props.description}</p>
+        ) : null}
+
+        {props.error ? (
+          <p className="text-sm text-destructive">{props.error}</p>
+        ) : null}
+      </div>
+
       <ResponsiveModal
         opened={opened}
         onClose={close}
         title={
-          <Text>
+          <span>
             {t(
               'components.categoryMultiSelect.modal.title',
               'Select Categories',
             )}
-          </Text>
+          </span>
         }
         size="lg"
       >

@@ -1,7 +1,7 @@
 import { AppSection } from '@/components/Cards/AppSection';
+import { Button } from '@/components/ui/button';
 import { TransactionRow } from '@/features/transactions/components/TransactionRow';
 import { useAccountTransactions } from '@guallet/api-react';
-import { Button, Center, Loader, Stack, Text } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 
 interface TransactionsSectionProps {
@@ -17,22 +17,20 @@ export function TransactionsSection({
   const renderTransactionsContent = () => {
     if (isLoading) {
       return (
-        <Center>
-          <Loader />
-        </Center>
+        <div className="py-4 text-center text-sm text-muted-foreground">Loading...</div>
       );
     }
 
     if (transactions.length === 0) {
       return (
-        <Center>
-          <Text>No transactions found for this month</Text>
-        </Center>
+        <div className="py-4 text-center text-sm text-muted-foreground">
+          No transactions found for this month
+        </div>
       );
     }
 
     return (
-      <Stack gap={0}>
+      <div className="space-y-0">
         {transactions.map((transaction) => (
           <TransactionRow
             key={transaction.id}
@@ -40,7 +38,7 @@ export function TransactionsSection({
             avatarType={'category'}
           />
         ))}
-      </Stack>
+      </div>
     );
   };
 
@@ -49,6 +47,7 @@ export function TransactionsSection({
       title="Latest transactions"
       headerActions={
         <Button
+          type="button"
           variant="outline"
           onClick={() => {
             navigation({

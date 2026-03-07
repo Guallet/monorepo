@@ -1,18 +1,23 @@
 import { ResponsiveModal } from '@guallet/ui-react';
 import { CategoryDto } from '@guallet/api-client';
-import { Input, Text } from '@mantine/core';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { useMemo } from 'react';
+import { cn } from '@/lib/utils';
+import { useId, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CategoryPickerModal } from './CategoryPickerModal';
 import { CategoryIcon } from '@/components/Categories/CategoryIcon';
 
-interface CategoryPickerProps extends React.ComponentProps<
-  typeof Input.Wrapper
-> {
+interface CategoryPickerProps {
   selectedCategory: CategoryDto | null;
   onCategorySelected: (selectedCategory: CategoryDto) => void;
   placeholder?: string;
+  label?: string;
+  description?: string;
+  error?: string;
+  required?: boolean;
+  className?: string;
 }
 
 export function CategoryPicker({
@@ -23,6 +28,7 @@ export function CategoryPicker({
 }: Readonly<CategoryPickerProps>) {
   const { t } = useTranslation();
   const [opened, { open, close }] = useDisclosure(false);
+  const inputId = useId();
 
   const inputValue = useMemo(() => {
     if (!selectedCategory) {
@@ -39,27 +45,47 @@ export function CategoryPicker({
 
   return (
     <>
-      <Input.Wrapper {...props}>
-        <Input
-          readOnly
-          value={inputValue}
+      <div className={cn('grid gap-2', props.className)}>
+        {props.label ? (
+          <Label htmlFor={inputId}>
+            {props.label}
+            {props.required ? ' *' : ''}
+          </Label>
+        ) : null}
+
+        <Button
+          id={inputId}
+          type="button"
+          variant="outline"
+          className={cn(
+            'w-full justify-start gap-2 font-normal',
+            !inputValue && 'text-muted-foreground',
+            props.error && 'border-destructive',
+          )}
           onClick={open}
-          placeholder={inputPlaceholder}
-          pointer={true}
-          leftSection={
-            selectedCategory ? (
-              <CategoryIcon categoryId={selectedCategory.id} />
-            ) : null
-          }
-        />
-      </Input.Wrapper>
+        >
+          {selectedCategory ? (
+            <CategoryIcon categoryId={selectedCategory.id} />
+          ) : null}
+          <span className="truncate">{inputValue ?? inputPlaceholder}</span>
+        </Button>
+
+        {props.description ? (
+          <p className="text-sm text-muted-foreground">{props.description}</p>
+        ) : null}
+
+        {props.error ? (
+          <p className="text-sm text-destructive">{props.error}</p>
+        ) : null}
+      </div>
+
       <ResponsiveModal
         opened={opened}
         onClose={close}
         title={
-          <Text>
+          <span>
             {t('components.categoryPicker.modal.title', 'Select Category')}
-          </Text>
+          </span>
         }
         size="lg"
       >

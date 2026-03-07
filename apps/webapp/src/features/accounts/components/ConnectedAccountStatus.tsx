@@ -1,6 +1,5 @@
 import { formatDate } from "@/utils/dateUtils";
 import { useConnectedAccount } from "@guallet/api-react";
-import { Group, Tooltip, Text, Badge } from "@mantine/core";
 
 interface ConnectedAccountStatusProps {
   accountId: string;
@@ -11,19 +10,17 @@ export function ConnectedAccountStatus({
   const { connectedAccount } = useConnectedAccount(accountId);
 
   return connectedAccount ? (
-    <Tooltip
-      label={`Last synced at ${formatDate(connectedAccount.updated_at, "LLLL")}`}
-      position="top-start"
+    <div
+      className="flex items-center gap-2"
+      title={`Last synced at ${formatDate(connectedAccount.updated_at, 'LLLL')}`}
     >
-      <Group>
-        <Badge size="xs" color="green">
-          Synced
-        </Badge>
+      <span className="rounded-full border border-green-500/40 bg-green-500/10 px-2 py-0.5 text-xs text-green-700">
+        Synced
+      </span>
 
-        <Text size="sm" c="dimmed">
-          {formatDate(connectedAccount?.updated_at, "L LT") || "Unknown date"}
-        </Text>
-      </Group>
-    </Tooltip>
+      <span className="text-sm text-muted-foreground">
+        {formatDate(connectedAccount?.updated_at, 'L LT') || 'Unknown date'}
+      </span>
+    </div>
   ) : null;
 }

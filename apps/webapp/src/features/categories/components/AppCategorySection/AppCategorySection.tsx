@@ -1,7 +1,8 @@
 import { AppSection } from "@/components/Cards/AppSection";
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { CategoryDto } from "@guallet/api-client";
 import { AppCategory } from "@guallet/api-react";
-import { Group, ActionIcon, Stack, Divider, Button } from "@mantine/core";
 import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 import { useState } from "react";
 import { AppCategoryRow } from "../AppCategoryRow/AppCategoryRow";
@@ -22,40 +23,35 @@ export function AppCategorySection({
 
   return (
     <AppSection>
-      <Group>
-        {isExpanded ? (
-          <ActionIcon
-            variant="transparent"
+      <div className="space-y-2">
+        <div className="flex items-start gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => {
-              setIsExpanded(false);
+              setIsExpanded(!isExpanded);
             }}
           >
-            <IconChevronDown />
-          </ActionIcon>
-        ) : (
-          <ActionIcon
-            variant="transparent"
-            onClick={() => {
-              setIsExpanded(true);
-            }}
-          >
-            <IconChevronRight />
-          </ActionIcon>
-        )}
+            {isExpanded ? <IconChevronDown /> : <IconChevronRight />}
+          </Button>
 
-        <AppCategoryRow
-          category={category}
-          onClick={(category) => {
-            if (onCategorySelected) {
-              onCategorySelected(category);
-            }
-          }}
-        />
-      </Group>
+          <div className="min-w-0 flex-1">
+            <AppCategoryRow
+              category={category}
+              onClick={(selectedCategory) => {
+                if (onCategorySelected) {
+                  onCategorySelected(selectedCategory);
+                }
+              }}
+            />
+          </div>
+        </div>
+
       {isExpanded && (
-        <Stack>
+        <div className="space-y-2 pl-11">
           {category.subCategories.length > 0 && (
-            <Divider label="Sub-categories" labelPosition="center" />
+            <p className="text-xs text-muted-foreground">Sub-categories</p>
           )}
           {category.subCategories.map((subCategory) => (
             <CategoryRow
@@ -68,7 +64,9 @@ export function AppCategorySection({
               }}
             />
           ))}
+          <Separator />
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               if (onAddSubcategoryClick) {
@@ -78,8 +76,9 @@ export function AppCategorySection({
           >
             Add sub-category
           </Button>
-        </Stack>
+        </div>
       )}
+      </div>
     </AppSection>
   );
 }

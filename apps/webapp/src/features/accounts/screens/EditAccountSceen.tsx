@@ -1,24 +1,16 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AccountTypeDto, UpdateAccountRequest } from '@guallet/api-client';
 import { useAccount, useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
-import {
-  Button,
-  Checkbox,
-  Group,
-  NativeSelect,
-  NumberInput,
-  Stack,
-  TextInput,
-  rem,
-} from '@mantine/core';
 import { notifications } from '@/lib/notifications';
-import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import React, { useEffect, type ChangeEvent, type ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
@@ -37,7 +29,7 @@ const editAccountFormDataSchema = z.object({
 type EditAccountFormData = z.infer<typeof editAccountFormDataSchema>;
 
 function getLocalizedType(name: AccountTypeDto): string {
-  // TODO: Localize this
+  // Temporary English labels until dedicated translation keys are wired in.
   switch (name) {
     case AccountTypeDto.CREDIT_CARD:
       return 'Credit Card';
@@ -57,6 +49,204 @@ function getLocalizedType(name: AccountTypeDto): string {
     default:
       return 'Other';
   }
+}
+
+interface StackProps {
+  children: ReactNode;
+}
+
+function Stack({ children }: Readonly<StackProps>) {
+  return <div className="space-y-4">{children}</div>;
+}
+
+interface GroupProps {
+  children: ReactNode;
+}
+
+function Group({ children }: Readonly<GroupProps>) {
+  return <div className="flex flex-wrap gap-2">{children}</div>;
+}
+
+interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  description?: string;
+  error?: string;
+}
+
+const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+  ({ label, description, error, id, className, ...props }, ref) => (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Input id={id} ref={ref} className={className} {...props} />
+      {description ? (
+        <p className="text-sm text-muted-foreground">{description}</p>
+      ) : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    </div>
+  ),
+);
+
+TextInput.displayName = 'TextInput';
+
+interface NativeSelectDataOption {
+  label: string;
+  value: string;
+}
+
+interface NativeSelectProps {
+  label: string;
+  required?: boolean;
+  data: NativeSelectDataOption[];
+  value?: string;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  error?: string;
+}
+
+function NativeSelect({
+  label,
+  required,
+  data,
+  value,
+  onChange,
+  error,
+}: Readonly<NativeSelectProps>) {
+  return (
+    <div className="grid gap-2">
+      <Label>{label}</Label>
+      <select
+        required={required}
+        value={value ?? ''}
+        onChange={onChange}
+        className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      >
+        {data.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </select>
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    </div>
+  );
+}
+
+interface NumberInputProps {
+  label: string;
+  required?: boolean;
+  description?: string;
+  leftSection?: ReactNode;
+  decimalScale?: number;
+  value?: number | string | null;
+  onChange?: (value: string | number) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  name?: string;
+  min?: number;
+  max?: number;
+  error?: string;
+}
+
+function NumberInput({
+  label,
+  required,
+  description,
+  leftSection,
+  decimalScale,
+  value,
+  onChange,
+  onBlur,
+  name,
+  min,
+  max,
+  error,
+}: Readonly<NumberInputProps>) {
+  const hasLeftSection = Boolean(leftSection);
+  const normalizedValue = value ?? '';
+  const step =
+    decimalScale !== undefined && decimalScale > 0
+      ? Number((1 / 10 ** decimalScale).toFixed(decimalScale))
+      : 1;
+
+  return (
+    <div className="grid gap-2">
+      <Label>{label}</Label>
+      <div className="relative">
+        {hasLeftSection ? (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            {leftSection}
+          </span>
+        ) : null}
+        <Input
+          type="number"
+          required={required}
+          min={min}
+          max={max}
+          step={step}
+          value={normalizedValue}
+          onBlur={onBlur}
+          name={name}
+          className={hasLeftSection ? 'pl-8' : undefined}
+          onChange={(event) => {
+            const nextValue = event.currentTarget.value;
+            if (nextValue === '') {
+              onChange?.('');
+              return;
+            }
+
+            const parsedValue = Number(nextValue);
+            if (Number.isNaN(parsedValue)) {
+              onChange?.(nextValue);
+              return;
+            }
+
+            onChange?.(parsedValue);
+          }}
+        />
+      </div>
+      {description ? (
+        <p className="text-sm text-muted-foreground">{description}</p>
+      ) : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    </div>
+  );
+}
+
+interface CheckboxProps {
+  name?: string;
+  checked: boolean;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  label: string;
+  description?: string;
+}
+
+function Checkbox({
+  name,
+  checked,
+  onChange,
+  onBlur,
+  label,
+  description,
+}: Readonly<CheckboxProps>) {
+  return (
+    <label className="flex items-start gap-2 rounded-md border p-3">
+      <input
+        type="checkbox"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        onBlur={onBlur}
+        className="mt-1 h-4 w-4"
+      />
+      <span className="space-y-1">
+        <span className="block text-sm font-medium">{label}</span>
+        {description ? (
+          <span className="block text-sm text-muted-foreground">
+            {description}
+          </span>
+        ) : null}
+      </span>
+    </label>
+  );
 }
 
 export function EditAccountScreen({

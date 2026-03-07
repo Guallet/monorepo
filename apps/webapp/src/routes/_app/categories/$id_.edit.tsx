@@ -1,7 +1,9 @@
 import { AppSection } from "@/components/Cards/AppSection";
 import { gualletClient } from "@/api/gualletClient";
 import { useCategory } from "@guallet/api-react";
-import { Stack, TextInput, ColorInput, Button } from "@mantine/core";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { notifications } from "@/lib/notifications";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -65,56 +67,53 @@ function EditCategoryPage() {
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
+      <div className="space-y-4">
         <AppSection title="Category details">
-          <TextInput
-            label="Name"
-            placeholder="Enter category name"
-            value={name}
-            onChange={(event) => setName(event.currentTarget.value)}
-          />
-          <TextInput
-            label="Icon"
-            placeholder="Enter icon name"
-            value={icon}
-            onChange={(event) => setIcon(event.currentTarget.value)}
-          />
-          <ColorInput
-            closeOnColorSwatchClick
-            label="Colour"
-            placeholder="Select the category colour"
-            value={color}
-            onChange={(value) => setColor(value)}
-            format="hex"
-            swatches={[
-              "#25262b",
-              "#868e96",
-              "#fa5252",
-              "#e64980",
-              "#be4bdb",
-              "#7950f2",
-              "#4c6ef5",
-              "#228be6",
-              "#15aabf",
-              "#12b886",
-              "#40c057",
-              "#82c91e",
-              "#fab005",
-              "#fd7e14",
-              "#fd7e14",
-              "#fd7e14",
-            ]}
-          />
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="category-edit-name">Name</Label>
+              <Input
+                id="category-edit-name"
+                placeholder="Enter category name"
+                value={name}
+                onChange={(event) => setName(event.currentTarget.value)}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="category-edit-icon">Icon</Label>
+              <Input
+                id="category-edit-icon"
+                placeholder="Enter icon name"
+                value={icon}
+                onChange={(event) => setIcon(event.currentTarget.value)}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="category-edit-colour">Colour</Label>
+              <Input
+                id="category-edit-colour"
+                type="color"
+                value={color || '#25262b'}
+                onChange={(event) => {
+                  setColor(event.currentTarget.value);
+                }}
+                className="h-10 w-20 cursor-pointer p-1"
+              />
+            </div>
+          </div>
         </AppSection>
         <Button
+          type="button"
           onClick={() => {
             handleSave();
           }}
-          loading={isBusy}
+          disabled={isBusy}
         >
-          Save
+          {isBusy ? 'Saving...' : 'Save'}
         </Button>
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

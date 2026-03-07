@@ -3,18 +3,9 @@ import {
   useUnreadNotifications,
   useNotificationMutations,
 } from '@guallet/api-react';
-import {
-  Popover,
-  UnstyledButton,
-  Indicator,
-  Center,
-  Stack,
-  Group,
-  Divider,
-  Button,
-  Text,
-} from '@mantine/core';
-import { notifications as MantineNotifications } from '@/lib/notifications';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { notifications as appNotifications } from '@/lib/notifications';
 import {
   IconAlertTriangle,
   IconAlertCircle,
@@ -27,6 +18,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isValidRoute } from '@/utils/routeValidation';
 import { NotificationItem } from './NotificationItem';
+import { ResponsiveModal } from '@guallet/ui-react';
 
 export function NotificationIcon() {
   const { t } = useTranslation();
@@ -69,7 +61,7 @@ export function NotificationIcon() {
           action: notification.action,
         });
 
-        MantineNotifications.show({
+        appNotifications.show({
           title: t(
             'screens.notifications.icon.navigationErrorTitle',
             'Navigation Error',
@@ -87,25 +79,25 @@ export function NotificationIcon() {
   const renderNotificationContent = () => {
     if (isLoading) {
       return (
-        <Text size="sm" c="dimmed" ta="center" py="md">
+        <p className="py-4 text-center text-sm text-muted-foreground">
           {t('screens.notifications.icon.loading', 'Loading...')}
-        </Text>
+        </p>
       );
     }
 
     if (displayNotifications.length === 0) {
       return (
-        <Text size="sm" c="dimmed" ta="center" py="md">
+        <p className="py-4 text-center text-sm text-muted-foreground">
           {t(
             'screens.notifications.icon.noNotifications',
             'No new notifications',
           )}
-        </Text>
+        </p>
       );
     }
 
     return (
-      <Stack gap="xs">
+      <div className="space-y-2">
         {displayNotifications.map((notification) => (
           <NotificationItem
             key={notification.id}
@@ -115,56 +107,51 @@ export function NotificationIcon() {
             onMarkAsRead={() => markAsRead(notification.id)}
           />
         ))}
-      </Stack>
+      </div>
     );
   };
 
   return (
-    <Popover
-      width={320}
-      position="bottom-end"
-      withArrow
-      shadow="md"
-      opened={opened}
-      onChange={setOpened}
-    >
-      <Popover.Target>
-        <UnstyledButton onClick={() => setOpened((o) => !o)}>
-          <Indicator
-            withBorder
-            processing={hasUnread}
-            color="red"
-            disabled={!hasUnread}
-          >
-            <Center>
-              <IconBell />
-            </Center>
-          </Indicator>
-        </UnstyledButton>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <Stack gap="xs">
-          <Group justify="space-between">
-            <Text fw={600} size="sm">
-              {t('screens.notifications.screen.title', 'Notifications')}
-            </Text>
-            {hasUnread && (
-              <Text size="xs" c="dimmed">
-                {t(
-                  'screens.notifications.screen.unreadCount',
-                  '{{count}} unread',
-                  { count: unreadCount },
-                )}
-              </Text>
-            )}
-          </Group>
-          <Divider />
+    <>
+      <button
+        type="button"
+        className="relative rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        title={t('screens.notifications.screen.title', 'Notifications')}
+        onClick={() => {
+          setOpened(true);
+        }}
+      >
+        <IconBell className="h-5 w-5" />
+        {hasUnread ? (
+          <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-red-500" />
+        ) : null}
+      </button>
+
+      <ResponsiveModal
+        opened={opened}
+        onClose={() => {
+          setOpened(false);
+        }}
+        title={<span>{t('screens.notifications.screen.title', 'Notifications')}</span>}
+        size="md"
+      >
+        <div className="space-y-3">
+          {hasUnread ? (
+            <p className="text-xs text-muted-foreground">
+              {t('screens.notifications.screen.unreadCount', '{{count}} unread', {
+                count: unreadCount,
+              })}
+            </p>
+          ) : null}
+
+          <Separator />
           {renderNotificationContent()}
-          <Divider />
+          <Separator />
+
           <Button
-            variant="subtle"
-            size="xs"
-            fullWidth
+            type="button"
+            variant="outline"
+            className="w-full"
             onClick={() => {
               setOpened(false);
               navigate({ to: '/notifications' });
@@ -172,8 +159,8 @@ export function NotificationIcon() {
           >
             {t('screens.notifications.icon.viewAll', 'View all notifications')}
           </Button>
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+        </div>
+      </ResponsiveModal>
+    </>
   );
 }

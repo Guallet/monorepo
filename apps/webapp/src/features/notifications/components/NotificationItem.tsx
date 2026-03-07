@@ -1,5 +1,5 @@
 import { NotificationDto, NotificationType } from '@guallet/api-client';
-import { ActionIcon, Box, Group, Stack, Tooltip, Text } from '@mantine/core';
+import { Button } from '@/components/ui/button';
 import { IconCheck } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -18,45 +18,43 @@ export function NotificationItem({
   onMarkAsRead,
 }: Readonly<NotificationItemProps>) {
   const { t } = useTranslation();
+  const itemOpacityClass = notification.isRead ? 'opacity-60' : 'opacity-100';
+  const itemCursorClass = notification.action ? 'cursor-pointer' : 'cursor-default';
 
   return (
-    <Group
-      gap="xs"
-      wrap="nowrap"
-      style={{
-        cursor: notification.action ? 'pointer' : 'default',
-        opacity: notification.isRead ? 0.6 : 1,
-      }}
-      onClick={onClick}
-    >
-      <Box>{getIcon(notification.type)}</Box>
-      <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-        <Text size="xs" lineClamp={2}>
-          {notification.message}
-        </Text>
-        <Text size="xs" c="dimmed">
-          {dayjs(notification.createdAt).fromNow()}
-        </Text>
-      </Stack>
+    <div className={`flex items-start gap-2 rounded-md border p-2 ${itemOpacityClass} ${itemCursorClass}`}>
+      <button
+        type="button"
+        className="flex min-w-0 flex-1 items-start gap-2 text-left"
+        onClick={onClick}
+      >
+        <div>{getIcon(notification.type)}</div>
+        <div className="min-w-0 flex-1 space-y-1">
+          <p className="line-clamp-2 text-xs">{notification.message}</p>
+          <p className="text-xs text-muted-foreground">
+            {dayjs(notification.createdAt).fromNow()}
+          </p>
+        </div>
+      </button>
+
       {!notification.isRead && (
-        <Tooltip
-          label={t(
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          title={t(
             'screens.notifications.screen.actions.markAsRead',
             'Mark as read',
           )}
+          onClick={(e) => {
+            e.stopPropagation();
+            onMarkAsRead();
+          }}
         >
-          <ActionIcon
-            variant="subtle"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onMarkAsRead();
-            }}
-          >
-            <IconCheck size={14} />
-          </ActionIcon>
-        </Tooltip>
+          <IconCheck size={14} />
+        </Button>
       )}
-    </Group>
+    </div>
   );
 }

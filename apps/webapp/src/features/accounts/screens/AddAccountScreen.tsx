@@ -1,22 +1,17 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AccountTypeDto, CreateAccountRequest } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
-import {
-  Button,
-  Checkbox,
-  Group,
-  NumberInput,
-  Select,
-  Stack,
-  TextInput,
-} from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
+import React, { type ChangeEvent, type ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import {
@@ -48,6 +43,207 @@ function parseNullableNumberValue(value: string | number): number | null {
 
   const parsedValue = Number.parseFloat(value);
   return Number.isNaN(parsedValue) ? null : parsedValue;
+}
+
+interface StackProps {
+  children: ReactNode;
+}
+
+function Stack({ children }: Readonly<StackProps>) {
+  return <div className="space-y-4">{children}</div>;
+}
+
+interface GroupProps {
+  children: ReactNode;
+}
+
+function Group({ children }: Readonly<GroupProps>) {
+  return <div className="flex flex-wrap gap-2">{children}</div>;
+}
+
+interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  description?: string;
+  error?: string;
+}
+
+const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+  ({ label, description, error, id, className, ...props }, ref) => {
+    return (
+      <div className="grid gap-2">
+        <Label htmlFor={id}>{label}</Label>
+        <Input id={id} ref={ref} className={className} {...props} />
+        {description ? (
+          <p className="text-sm text-muted-foreground">{description}</p>
+        ) : null}
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      </div>
+    );
+  },
+);
+
+TextInput.displayName = 'TextInput';
+
+interface SelectDataOption {
+  label: string;
+  value: string;
+}
+
+interface SelectProps {
+  label: string;
+  required?: boolean;
+  searchable?: boolean;
+  data: SelectDataOption[];
+  value?: string;
+  onChange?: (value: string | null) => void;
+  error?: string;
+}
+
+function Select({
+  label,
+  required,
+  data,
+  value,
+  onChange,
+  error,
+}: Readonly<SelectProps>) {
+  return (
+    <div className="grid gap-2">
+      <Label>{label}</Label>
+      <select
+        required={required}
+        value={value ?? ''}
+        onChange={(event) => {
+          const nextValue = event.currentTarget.value;
+          onChange?.(nextValue === '' ? null : nextValue);
+        }}
+        className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      >
+        {data.map((item) => (
+          <option key={item.value} value={item.value}>
+            {item.label}
+          </option>
+        ))}
+      </select>
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    </div>
+  );
+}
+
+interface NumberInputProps {
+  label: string;
+  required?: boolean;
+  description?: string;
+  leftSection?: ReactNode;
+  decimalScale?: number;
+  value?: number | string | null;
+  onChange?: (value: string | number) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  name?: string;
+  min?: number;
+  max?: number;
+  error?: string;
+}
+
+function NumberInput({
+  label,
+  required,
+  description,
+  leftSection,
+  decimalScale,
+  value,
+  onChange,
+  onBlur,
+  name,
+  min,
+  max,
+  error,
+}: Readonly<NumberInputProps>) {
+  const hasLeftSection = Boolean(leftSection);
+  const normalizedValue = value ?? '';
+  const step =
+    decimalScale !== undefined && decimalScale > 0
+      ? Number((1 / 10 ** decimalScale).toFixed(decimalScale))
+      : 1;
+
+  return (
+    <div className="grid gap-2">
+      <Label>{label}</Label>
+      <div className="relative">
+        {hasLeftSection ? (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            {leftSection}
+          </span>
+        ) : null}
+        <Input
+          type="number"
+          required={required}
+          min={min}
+          max={max}
+          step={step}
+          value={normalizedValue}
+          onBlur={onBlur}
+          name={name}
+          className={hasLeftSection ? 'pl-8' : undefined}
+          onChange={(event) => {
+            const nextValue = event.currentTarget.value;
+            if (nextValue === '') {
+              onChange?.('');
+              return;
+            }
+
+            const parsedValue = Number(nextValue);
+            if (Number.isNaN(parsedValue)) {
+              onChange?.(nextValue);
+              return;
+            }
+
+            onChange?.(parsedValue);
+          }}
+        />
+      </div>
+      {description ? (
+        <p className="text-sm text-muted-foreground">{description}</p>
+      ) : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+    </div>
+  );
+}
+
+interface CheckboxProps {
+  label: string;
+  description?: string;
+  checked: boolean;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+}
+
+function Checkbox({
+  label,
+  description,
+  checked,
+  onChange,
+  onBlur,
+}: Readonly<CheckboxProps>) {
+  return (
+    <label className="flex items-start gap-2 rounded-md border p-3">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        onBlur={onBlur}
+        className="mt-1 h-4 w-4"
+      />
+      <span className="space-y-1">
+        <span className="block text-sm font-medium">{label}</span>
+        {description ? (
+          <span className="block text-sm text-muted-foreground">
+            {description}
+          </span>
+        ) : null}
+      </span>
+    </label>
+  );
 }
 
 export function AddAccountScreen() {

@@ -1,12 +1,5 @@
-import {
-  Paper,
-  Group,
-  Box,
-  Stack,
-  Badge,
-  Text,
-  ActionIcon,
-} from '@mantine/core';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   IconCheck,
   IconTrash,
@@ -43,6 +36,9 @@ export function NotificationRow({
   isDeleting,
 }: Readonly<NotificationRowProps>) {
   const { t } = useTranslation();
+  const isRead = notification.isRead;
+  const itemOpacityClass = isRead ? 'opacity-70' : 'opacity-100';
+  const itemCursorClass = notification.action ? 'cursor-pointer' : 'cursor-default';
 
   const getNotificationIcon = (type: NotificationType) => {
     switch (type) {
@@ -62,68 +58,66 @@ export function NotificationRow({
     switch (type) {
       case NotificationType.WARNING:
         return (
-          <Badge color="orange" size="xs">
+          <span className="rounded-full border border-orange-500/40 bg-orange-500/10 px-2 py-0.5 text-xs text-orange-700">
             {t('screens.notifications.screen.types.warning', 'Warning')}
-          </Badge>
+          </span>
         );
       case NotificationType.IMPORTANT:
         return (
-          <Badge color="red" size="xs">
+          <span className="rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-xs text-red-700">
             {t('screens.notifications.screen.types.important', 'Important')}
-          </Badge>
+          </span>
         );
       case NotificationType.ACTION_REQUIRED:
         return (
-          <Badge color="blue" size="xs">
+          <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-2 py-0.5 text-xs text-blue-700">
             {t(
               'screens.notifications.screen.types.actionRequired',
               'Action Required',
             )}
-          </Badge>
+          </span>
         );
       case NotificationType.INFO:
       default:
         return (
-          <Badge color="gray" size="xs">
+          <span className="rounded-full border border-slate-500/40 bg-slate-500/10 px-2 py-0.5 text-xs text-slate-700">
             {t('screens.notifications.screen.types.info', 'Info')}
-          </Badge>
+          </span>
         );
     }
   };
 
   return (
-    <Paper
-      p="md"
-      withBorder
-      style={{
-        opacity: notification.isRead ? 0.7 : 1,
-        cursor: notification.action ? 'pointer' : 'default',
-      }}
+    <Card
+      className={`p-4 ${itemOpacityClass} ${itemCursorClass}`}
       onClick={() => onClick(notification)}
     >
-      <Group justify="space-between" wrap="nowrap" align="flex-start">
-        <Group gap="md" wrap="nowrap" align="flex-start">
-          <Box mt={4}>{getNotificationIcon(notification.type)}</Box>
-          <Stack gap={4}>
-            <Group gap="xs">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <div className="mt-1">{getNotificationIcon(notification.type)}</div>
+          <div className="min-w-0 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
               {getTypeBadge(notification.type)}
-              {!notification.isRead && (
-                <Badge color="blue" size="xs" variant="dot">
+              {!isRead && (
+                <span className="rounded-full border border-blue-500/40 bg-blue-500/10 px-2 py-0.5 text-xs text-blue-700">
                   {t('screens.notifications.screen.badges.new', 'New')}
-                </Badge>
+                </span>
               )}
-            </Group>
-            <Text size="sm">{notification.message}</Text>
-            <Text size="xs" c="dimmed">
+            </div>
+            <p className="text-sm">{notification.message}</p>
+            <p className="text-xs text-muted-foreground">
               {dayjs(notification.createdAt).fromNow()}
-            </Text>
-          </Stack>
-        </Group>
-        <Group gap="xs">
-          {notification.isRead ? (
-            <ActionIcon
-              variant="subtle"
-              color="gray"
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1">
+          {isRead ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={isUpdating}
               onClick={(e) => {
                 e.stopPropagation();
                 onMarkAsUnread(notification.id);
@@ -132,14 +126,15 @@ export function NotificationRow({
                 'screens.notifications.screen.actions.markAsUnread',
                 'Mark as unread',
               )}
-              loading={isUpdating}
             >
               <IconEyeOff size={16} />
-            </ActionIcon>
+            </Button>
           ) : (
-            <ActionIcon
-              variant="subtle"
-              color="blue"
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={isUpdating}
               onClick={(e) => {
                 e.stopPropagation();
                 onMarkAsRead(notification.id);
@@ -148,14 +143,16 @@ export function NotificationRow({
                 'screens.notifications.screen.actions.markAsRead',
                 'Mark as read',
               )}
-              loading={isUpdating}
             >
               <IconCheck size={16} />
-            </ActionIcon>
+            </Button>
           )}
-          <ActionIcon
-            variant="subtle"
-            color="red"
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            disabled={isDeleting}
+            className="text-destructive hover:text-destructive"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(notification.id);
@@ -164,12 +161,11 @@ export function NotificationRow({
               'screens.notifications.screen.actions.delete',
               'Delete notification',
             )}
-            loading={isDeleting}
           >
             <IconTrash size={16} />
-          </ActionIcon>
-        </Group>
-      </Group>
-    </Paper>
+          </Button>
+        </div>
+      </div>
+    </Card>
   );
 }

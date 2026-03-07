@@ -1,5 +1,5 @@
 import { SearchBoxInput } from "@guallet/ui-react";
-import { Group, Button } from "@mantine/core";
+import { Button } from '@/components/ui/button';
 import { useState } from "react";
 
 interface AccountsHeaderProps {
@@ -14,7 +14,7 @@ export function AccountsHeader({
   const [query, setQuery] = useState("");
 
   return (
-    <Group justify="space-between">
+    <div className="flex flex-wrap items-center gap-2">
       <SearchBoxInput
         style={{ flexGrow: 1 }}
         query={query}
@@ -23,7 +23,9 @@ export function AccountsHeader({
           onSearchQueryChanged(query);
         }}
       />
-      <Button onClick={onAddNewAccount}>Add new account</Button>
-    </Group>
+      <Button type="button" onClick={onAddNewAccount}>
+        Add new account
+      </Button>
+    </div>
   );
 }

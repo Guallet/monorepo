@@ -547,10 +547,6 @@
             "label": "Crear tu primera regla"
           }
         },
-        "actions": {
-          "edit": "Editar",
-          "delete": "Eliminar"
-        },
         "title": "Reglas de categorización",
         "createButton": {
           "label": "Crear regla"
@@ -620,10 +616,10 @@
     "transactions": {
       "list": {
         "header": {
-          "title": "Transacciones",
           "add": {
             "tooltip": "Agregar nueva transacción"
-          }
+          },
+          "title": "Transacciones"
         },
         "quickEdit": {
           "notifications": {
@@ -773,5 +769,8 @@
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
     }
+  },
+  "common": {
+    "loading": "Loading..."
   }
 }

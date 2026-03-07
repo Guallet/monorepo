@@ -1,23 +1,16 @@
 import { AppSection } from '@/components/Cards/AppSection';
+import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
+import { Button } from '@/components/ui/button';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccount, useAccountMutations } from '@guallet/api-react';
-import {
-  Loader,
-  Modal,
-  Stack,
-  Group,
-  Space,
-  Button,
-  Text,
-} from '@mantine/core';
 import { notifications } from '@/lib/notifications';
-import { useNavigate, notFound } from '@tanstack/react-router';
+import { notFound, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { CreditCardDetails } from '../AccountDetails/CreditCardDetails';
 import { CurrentAccountDetails } from '../AccountDetails/CurrentAccountDetails';
-import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { AccountDetailsHeader } from '../components/AccountDetailsHeader';
 import { TransactionsSection } from '../components/AccountDetails/TransactionsSection';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 
 interface AccountDetailsScreenProps {
   accountId: string;
@@ -27,8 +20,8 @@ export function AccountDetailsScreen({
   accountId,
 }: Readonly<AccountDetailsScreenProps>) {
   const navigation = useNavigate();
-
   const { account, isLoading } = useAccount(accountId);
+  const { deleteAccountMutation } = useAccountMutations();
 
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
     useState(false);
@@ -41,84 +34,20 @@ export function AccountDetailsScreen({
     setIsDeleteAccountModalOpen(false);
   }
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  async function handleDeleteAccount(): Promise<void> {
+    if (!account) {
+      return;
+    }
 
-  if (!account) {
-    throw notFound();
-  }
-
-  return (
-    <BaseScreen isLoading={isLoading}>
-      <Modal
-        centered
-        opened={isDeleteAccountModalOpen}
-        onClose={hideModal}
-        title="Delete account"
-        size="auto"
-      >
-        <DeleteAccountDialog
-          account={account}
-          onCancel={hideModal}
-          onAccountDeleted={() => {
-            notifications.show({
-              title: 'Account deleted',
-              message: 'The account has been deleted',
-              color: 'green',
-            });
-            navigation({ to: '/accounts' });
-          }}
-        />
-      </Modal>
-
-      <Stack>
-        <AccountDetailsHeader accountId={accountId} />
-
-        {/* Show info dependent on account type */}
-        <AppSection itemPadding="xl">
-          {AccountDetailsSelector(account)}
-        </AppSection>
-        <Space />
-        <TransactionsSection accountId={account.id} />
-
-        <Space />
-
-        <Button
-          fullWidth
-          onClick={() => {
-            navigation({
-              to: `/accounts/$id/edit`,
-              params: { id: account.id },
-            });
-          }}
-        >
-          Edit
-        </Button>
-        <Button fullWidth color="red" onClick={showDeleteAccountModal}>
-          Delete
-        </Button>
-      </Stack>
-    </BaseScreen>
-  );
-}
-
-interface DialogProps {
-  account: AccountDto;
-  onCancel: () => void;
-  onAccountDeleted: () => void;
-}
-function DeleteAccountDialog({
-  account,
-  onCancel,
-  onAccountDeleted,
-}: Readonly<DialogProps>) {
-  const { deleteAccountMutation } = useAccountMutations();
-
-  async function deleteAccount() {
     try {
       await deleteAccountMutation.mutateAsync({ id: account.id });
-      onAccountDeleted();
+      notifications.show({
+        title: 'Account deleted',
+        message: 'The account has been deleted',
+        color: 'green',
+      });
+      hideModal();
+      navigation({ to: '/accounts' });
     } catch (error) {
       console.error('Error deleting account:', error);
       notifications.show({
@@ -129,28 +58,56 @@ function DeleteAccountDialog({
     }
   }
 
+  if (!isLoading && !account) {
+    throw notFound();
+  }
+
   return (
-    <Stack>
-      <Text>Are you sure you want to delete the account?</Text>
-      <Text size="sm"> This action and cannot be undone.</Text>
-      <Group justify="flex-end">
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button
-          color="red"
-          loading={deleteAccountMutation.isPending}
-          onClick={() => {
-            deleteAccount();
-          }}
-        >
-          Delete account
-        </Button>
-      </Group>
-    </Stack>
+    <BaseScreen isLoading={isLoading}>
+      <DeleteDialogConfirmation
+        isOpen={isDeleteAccountModalOpen}
+        onClose={hideModal}
+        onConfirm={handleDeleteAccount}
+        title="Delete account"
+        message="Are you sure you want to delete the account?"
+      />
+
+      {account ? (
+        <div className="space-y-4">
+          <AccountDetailsHeader accountId={accountId} />
+
+          <AppSection itemPadding="xl">{AccountDetailsSelector(account)}</AppSection>
+
+          <TransactionsSection accountId={account.id} />
+
+          <Button
+            type="button"
+            className="w-full"
+            onClick={() => {
+              navigation({
+                to: `/accounts/$id/edit`,
+                params: { id: account.id },
+              });
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            className="w-full"
+            onClick={showDeleteAccountModal}
+            disabled={deleteAccountMutation.isPending}
+          >
+            Delete
+          </Button>
+        </div>
+      ) : null}
+    </BaseScreen>
   );
 }
 
 function AccountDetailsSelector(account: Readonly<AccountDto>) {
-  // TODO: Create different components for each account type
   switch (account.type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
       return <CurrentAccountDetails account={account} />;

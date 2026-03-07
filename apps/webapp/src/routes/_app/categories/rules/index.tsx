@@ -1,24 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import {
-  ActionIcon,
-  Badge,
-  Button,
-  Card,
-  Group,
-  Stack,
-  Text,
-  Title,
-  Switch,
-  Menu,
-  Loader,
-} from '@mantine/core';
-import {
-  IconPlus,
-  IconEdit,
-  IconTrash,
-  IconGripVertical,
-  IconDotsVertical,
-} from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { IconEdit, IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
 import { notifications } from '@/lib/notifications';
 import { useState } from 'react';
 import { RuleDto } from '@guallet/api-client';
@@ -151,143 +135,148 @@ function RulesPage() {
   const renderContent = () => {
     if (isRulesLoading || isRulesFetching) {
       return (
-        <Card withBorder p="xl" ta="center">
-          <Group justify="center">
-            <Loader />
-          </Group>
+        <Card className="p-6 text-center">
+          <p className="text-sm text-muted-foreground">{t('common.loading', 'Loading...')}</p>
         </Card>
       );
     }
+
     if (rules.length === 0) {
       return (
-        <Card withBorder p="xl" ta="center">
-          <Text c="dimmed">{t('screens.rules.list.emptyState.title')}</Text>
+        <Card className="p-6 text-center">
+          <p className="text-muted-foreground">{t('screens.rules.list.emptyState.title')}</p>
           <Button
-            mt="md"
-            variant="light"
-            leftSection={<IconPlus size={16} />}
+            type="button"
+            className="mt-4 gap-2"
+            variant="outline"
             onClick={() => navigate({ to: '/categories/rules/new' })}
           >
+            <IconPlus size={16} />
             {t('screens.rules.list.emptyState.createButton.label')}
           </Button>
         </Card>
       );
     }
-    return (
-      <Stack gap="xs">
-        {rules.map((rule, index) => (
-          <Card
-            key={rule.id}
-            withBorder
-            shadow="sm"
-            p="sm"
-            draggable
-            onDragStart={(e) => handleDragStart(e, rule)}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, rule)}
-            style={{
-              cursor: 'grab',
-              opacity: draggedItem?.id === rule.id ? 0.5 : 1,
-            }}
-          >
-            <Group justify="space-between" wrap="nowrap">
-              <Group gap="sm" wrap="nowrap" style={{ flex: 1 }}>
-                <ActionIcon variant="subtle" style={{ cursor: 'grab' }}>
-                  <IconGripVertical size={16} />
-                </ActionIcon>
-                <Badge size="sm" variant="light" color="gray">
-                  #{index + 1}
-                </Badge>
-                <Stack gap={2} style={{ flex: 1 }}>
-                  <Group gap="xs">
-                    <Text fw={500}>{rule.name}</Text>
-                    {!rule.isActive && (
-                      <Badge size="xs" color="gray">
-                        {t('screens.rules.list.rule.disabled')}
-                      </Badge>
-                    )}
-                  </Group>
-                  {rule.description && (
-                    <Text size="sm" c="dimmed" lineClamp={1}>
-                      {rule.description}
-                    </Text>
-                  )}
-                  <Group gap="xs">
-                    <Text size="xs" c="dimmed">
-                      {getPluralizedConditions(
-                        rule.conditions.length,
-                        rule.conditionLogic,
-                      )}
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                      →
-                    </Text>
-                    <Badge size="xs" variant="light">
-                      {getCategoryName(rule.resultCategoryId)}
-                    </Badge>
-                  </Group>
-                </Stack>
-              </Group>
 
-              <Group gap="xs" wrap="nowrap">
-                <Switch
-                  size="sm"
-                  checked={rule.isActive}
-                  onChange={() => handleToggleActive(rule)}
-                />
-                <Menu shadow="md" width={200}>
-                  <Menu.Target>
-                    <ActionIcon variant="subtle">
-                      <IconDotsVertical size={16} />
-                    </ActionIcon>
-                  </Menu.Target>
-                  <Menu.Dropdown>
-                    <Menu.Item
-                      leftSection={<IconEdit size={14} />}
-                      onClick={() =>
-                        navigate({
-                          to: '/categories/rules/$id/edit',
-                          params: { id: rule.id },
-                        })
-                      }
-                    >
-                      {t('screens.rules.list.actions.edit')}
-                    </Menu.Item>
-                    <Menu.Divider />
-                    <Menu.Item
-                      color="red"
-                      leftSection={<IconTrash size={14} />}
-                      onClick={() => handleDelete(rule.id)}
-                    >
-                      {t('screens.rules.list.actions.delete')}
-                    </Menu.Item>
-                  </Menu.Dropdown>
-                </Menu>
-              </Group>
-            </Group>
-          </Card>
-        ))}
-      </Stack>
+    return (
+      <div className="space-y-2">
+        {rules.map((rule, index) => {
+          const isRuleDisabled = rule.isActive === false;
+
+          return (
+            <Card
+              key={rule.id}
+              className="p-3"
+              draggable
+              onDragStart={(e) => handleDragStart(e, rule)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, rule)}
+              style={{
+                cursor: 'grab',
+                opacity: draggedItem?.id === rule.id ? 0.5 : 1,
+              }}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 flex-1 items-start gap-2">
+                  <span className="mt-1 text-muted-foreground">
+                    <IconGripVertical size={16} />
+                  </span>
+                  <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border px-2 text-xs">
+                    #{index + 1}
+                  </span>
+
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium">{rule.name}</p>
+                      {isRuleDisabled ? (
+                        <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">
+                          {t('screens.rules.list.rule.disabled')}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    {rule.description ? (
+                      <p className="truncate text-sm text-muted-foreground">
+                        {rule.description}
+                      </p>
+                    ) : null}
+
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                      <span>
+                        {getPluralizedConditions(
+                          rule.conditions.length,
+                          rule.conditionLogic,
+                        )}
+                      </span>
+                      <span>{'->'}</span>
+                      <span className="rounded-full border px-2 py-0.5 text-foreground">
+                        {getCategoryName(rule.resultCategoryId)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <Checkbox
+                    checked={rule.isActive}
+                    onCheckedChange={() => {
+                      handleToggleActive(rule);
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() =>
+                      navigate({
+                        to: '/categories/rules/$id/edit',
+                        params: { id: rule.id },
+                      })
+                    }
+                  >
+                    <IconEdit size={14} />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => {
+                      handleDelete(rule.id);
+                    }}
+                  >
+                    <IconTrash size={14} />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
     );
   };
 
   return (
-    <Stack gap="md">
-      <Group justify="space-between" align="center">
-        <Title order={2}>{t('screens.rules.list.title')}</Title>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {t('screens.rules.list.title')}
+        </h2>
         <Button
-          leftSection={<IconPlus size={16} />}
+          type="button"
+          className="gap-2"
           onClick={() => navigate({ to: '/categories/rules/new' })}
         >
+          <IconPlus size={16} />
           {t('screens.rules.list.createButton.label')}
         </Button>
-      </Group>
+      </div>
 
-      <Text c="dimmed" size="sm">
+      <p className="text-sm text-muted-foreground">
         {t('screens.rules.list.description')}
-      </Text>
+      </p>
 
       {renderContent()}
-    </Stack>
+    </div>
   );
 }

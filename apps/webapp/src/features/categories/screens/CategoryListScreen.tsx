@@ -1,6 +1,6 @@
 import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { Button } from '@/components/ui/button';
 import { useGroupedCategories } from "@guallet/api-react";
-import { Stack, Button } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { AppCategorySection } from "../components/AppCategorySection/AppCategorySection";
 
@@ -10,8 +10,9 @@ export function CategoryListScreen() {
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
+      <div className="space-y-3">
         <Button
+          type="button"
           onClick={() =>
             navigation({
               to: "/categories/new",
@@ -38,7 +39,7 @@ export function CategoryListScreen() {
             }}
           />
         ))}
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

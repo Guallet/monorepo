@@ -1,15 +1,4 @@
 import { SearchBoxInput } from '@guallet/ui-react';
-import {
-  Text,
-  Stack,
-  Group,
-  Tree,
-  useTree,
-  getTreeExpandedState,
-  TreeNodeData,
-  ActionIcon,
-  Tooltip,
-} from '@mantine/core';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCategories } from '@guallet/api-react';
@@ -20,6 +9,7 @@ import {
   IconChevronsUp,
 } from '@tabler/icons-react';
 import { CategoryIcon } from '@/components/Categories/CategoryIcon';
+import { Button } from '@/components/ui/button';
 
 interface CategoryPickerModalProps {
   selectedCategory: CategoryDto | null;
@@ -27,26 +17,49 @@ interface CategoryPickerModalProps {
   close: () => void;
 }
 
-function mapCategoriesToTreeData(categories: CategoryDto[]): TreeNodeData[] {
-  const rootCategories = categories.filter((category) => !category.parentId);
+type CategoryGroup = {
+  root: CategoryDto;
+  children: CategoryDto[];
+};
 
-  const data: TreeNodeData[] = rootCategories.map((category) => {
-    const subcategories = categories.filter(
-      (cat) => cat.parentId === category.id,
-    );
+function getCategoryGroups(
+  categories: CategoryDto[],
+  filterQuery: string,
+): CategoryGroup[] {
+  const normalizedQuery = filterQuery.trim().toLowerCase();
 
-    return {
-      value: category.id,
-      label: category.name,
-      ...(subcategories && {
-        children: subcategories.map((sub) => ({
-          value: sub.id,
-          label: sub.name,
-        })),
-      }),
-    } as TreeNodeData;
-  });
-  return data;
+  if (!normalizedQuery) {
+    const roots = categories.filter((category) => !category.parentId);
+    return roots.map((root) => ({
+      root,
+      children: categories.filter((category) => category.parentId === root.id),
+    }));
+  }
+
+  const visibleCategoryIds = new Set<string>();
+
+  for (const category of categories) {
+    const isMatch = category.name.toLowerCase().includes(normalizedQuery);
+    if (!isMatch) {
+      continue;
+    }
+
+    visibleCategoryIds.add(category.id);
+    if (category.parentId) {
+      visibleCategoryIds.add(category.parentId);
+    }
+  }
+
+  const filteredCategories = categories.filter((category) =>
+    visibleCategoryIds.has(category.id),
+  );
+
+  const roots = filteredCategories.filter((category) => !category.parentId);
+
+  return roots.map((root) => ({
+    root,
+    children: filteredCategories.filter((category) => category.parentId === root.id),
+  }));
 }
 
 export function CategoryPickerModal({
@@ -57,54 +70,37 @@ export function CategoryPickerModal({
   const { categories } = useCategories();
   const [filterQuery, setFilterQuery] = useState('');
 
+  const groupedCategories = useMemo(
+    () => getCategoryGroups(categories, filterQuery),
+    [categories, filterQuery],
+  );
+
+  const [expandedRootIds, setExpandedRootIds] = useState<string[]>([]);
+
+  const rootsWithChildren = useMemo(
+    () =>
+      groupedCategories
+        .filter((group) => group.children.length > 0)
+        .map((group) => group.root.id),
+    [groupedCategories],
+  );
+
   const onCategorySelected = (category: CategoryDto) => {
     onSelectionChanged(category);
     close();
   };
 
-  const filteredData = useMemo(() => {
-    if (filterQuery.trim() === '') {
-      return mapCategoriesToTreeData(categories);
-    } else {
-      const filteredCategories = categories.filter((item: CategoryDto) => {
-        const json = JSON.stringify(item.name);
-        return json.toLowerCase().includes(filterQuery.toLowerCase());
-      });
-
-      const missingParentCategories = [
-        ...new Set(
-          filteredCategories
-            .map((item: CategoryDto) => {
-              if (item.parentId) {
-                return categories.find((cat) => cat.id === item.parentId);
-              }
-              return null;
-            })
-            .filter(
-              (item): item is CategoryDto =>
-                item !== null && item !== undefined,
-            ),
-        ),
-      ];
-
-      const allCategories = [...filteredCategories, ...missingParentCategories];
-
-      return mapCategoriesToTreeData(allCategories);
-    }
-  }, [filterQuery, categories]);
-
-  // TODO: There is a known issue with re-rendering the tree when the data changes
-  // https://github.com/mantinedev/mantine/issues/7266
-  const tree = useTree({
-    initialExpandedState: getTreeExpandedState(
-      mapCategoriesToTreeData(categories),
-      '*',
-    ),
-  });
+  const toggleRoot = (rootId: string) => {
+    setExpandedRootIds((currentIds) =>
+      currentIds.includes(rootId)
+        ? currentIds.filter((id) => id !== rootId)
+        : [...currentIds, rootId],
+    );
+  };
 
   return (
-    <Stack>
-      <Group mb="md">
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
         <SearchBoxInput
           style={{ flexGrow: 1 }}
           placeholder={t(
@@ -115,92 +111,101 @@ export function CategoryPickerModal({
           debounceWait={350}
           onSearchQueryChanged={(value) => setFilterQuery(value)}
         />
-        <Tooltip
-          label={t(
-            'components.categoryPicker.modal.expandAllButton.label',
-            'Expand all',
-          )}
-        >
-          <ActionIcon
-            variant="outline"
-            onClick={() => {
-              tree.expandAllNodes();
-            }}
-          >
-            <IconChevronsDown />
-          </ActionIcon>
-        </Tooltip>
 
-        <Tooltip
-          label={t(
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          title={t('components.categoryPicker.modal.expandAllButton.label', 'Expand all')}
+          onClick={() => {
+            setExpandedRootIds(rootsWithChildren);
+          }}
+        >
+          <IconChevronsDown />
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          title={t(
             'components.categoryPicker.modal.collapseAllButton.label',
             'Collapse all',
           )}
+          onClick={() => {
+            setExpandedRootIds([]);
+          }}
         >
-          <ActionIcon
-            variant="outline"
-            onClick={() => {
-              tree.collapseAllNodes();
-            }}
-          >
-            <IconChevronsUp />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
+          <IconChevronsUp />
+        </Button>
+      </div>
 
-      {filteredData.length === 0 && (
-        <Text c="dimmed" size="sm">
+      {groupedCategories.length === 0 && (
+        <p className="text-sm text-muted-foreground">
           {t(
             'components.categoryPicker.modal.searchBox.emptyResults',
             'No categories found',
           )}
-        </Text>
+        </p>
       )}
-      <Tree
-        style={{
-          flexGrow: 1,
-        }}
-        tree={tree}
-        data={filteredData}
-        levelOffset={23}
-        expandOnClick={false}
-        renderNode={({ node, expanded, hasChildren, elementProps }) => (
-          <Group gap="xs" {...elementProps}>
-            <Group
-              gap={5}
-              onClick={() => {
-                tree.toggleExpanded(node.value);
 
-                const selectedCategory = categories.find(
-                  (cat) => cat.id === node.value,
-                );
+      <div className="space-y-2">
+        {groupedCategories.map((group) => {
+          const hasChildren = group.children.length > 0;
+          const isExpanded = expandedRootIds.includes(group.root.id);
 
-                if (selectedCategory) {
+          return (
+            <div key={group.root.id} className="rounded-md border">
+              <button
+                type="button"
+                className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left hover:bg-accent"
+                onClick={() => {
                   if (!hasChildren) {
-                    onCategorySelected(selectedCategory);
+                    onCategorySelected(group.root);
+                    return;
                   }
 
-                  if (hasChildren && expanded) {
-                    onCategorySelected(selectedCategory);
-                  }
-                }
-              }}
-            >
-              <CategoryIcon categoryId={node.value} />
-              <Text>{node.label}</Text>
+                  toggleRoot(group.root.id);
 
-              {hasChildren && (
-                <IconChevronDown
-                  size={14}
-                  style={{
-                    transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                  }}
-                />
-              )}
-            </Group>
-          </Group>
-        )}
-      />
-    </Stack>
+                  if (isExpanded) {
+                    onCategorySelected(group.root);
+                  }
+                }}
+              >
+                <span className="flex min-w-0 items-center gap-2">
+                  <CategoryIcon categoryId={group.root.id} />
+                  <span className="truncate">{group.root.name}</span>
+                </span>
+
+                {hasChildren ? (
+                  <IconChevronDown
+                    className={isExpanded ? 'rotate-180 transition-transform' : 'transition-transform'}
+                    size={14}
+                  />
+                ) : null}
+              </button>
+
+              {hasChildren && isExpanded ? (
+                <div className="space-y-1 border-t px-3 py-2">
+                  {group.children.map((child) => (
+                    <button
+                      key={child.id}
+                      type="button"
+                      className="flex w-full items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent"
+                      onClick={() => {
+                        onCategorySelected(child);
+                      }}
+                    >
+                      <CategoryIcon categoryId={child.id} />
+                      <span className="truncate">{child.name}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 import { AccountDto } from '@guallet/api-client';
 import { LineChart } from '@mantine/charts';
-import { Text } from '@mantine/core';
 
 interface Props {
   account: AccountDto;
@@ -63,9 +62,9 @@ export function CreditCardDetails({ account }: Readonly<Props>) {
 
   return (
     <>
-      <Text size="lg" fw={500} mb="md">
+      <p className="mb-4 text-lg font-medium">
         TODO: Sample chart data. Get real data from API
-      </Text>
+      </p>
       <LineChart
         // w={500}
         h={300}

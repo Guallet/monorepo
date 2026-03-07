@@ -1,4 +1,3 @@
-import { useMantineTheme } from '@mantine/core';
 import {
   IconCategory,
   IconMoneybag,
@@ -18,7 +17,7 @@ interface CategoryIconProps extends React.ComponentProps<Icon> {
  * @deprecated This component is deprecated and should not be used.
  */
 export function CategoryIcon({ icon, colour, ...rest }: CategoryIconProps) {
-  const { primaryColor: defaultColor } = useMantineTheme();
+  const defaultColor = '#2563eb';
 
   let IconToBeUsed = IconCategory;
 
@@ -38,6 +37,6 @@ export function CategoryIcon({ icon, colour, ...rest }: CategoryIconProps) {
   }
 
   return (
-    IconToBeUsed && <IconToBeUsed {...rest} color={colour ?? defaultColor} />
+    IconToBeUsed && <IconToBeUsed {...rest} color={colour || defaultColor} />
   );
 }

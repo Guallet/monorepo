@@ -1,7 +1,8 @@
 import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { AccountDto, AccountTypeDto } from "@guallet/api-client";
 import { useAccounts } from "@guallet/api-react";
-import { Stack, Button, Text, Card } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,6 +41,38 @@ const compareAccountTypes = (
   return typeA.localeCompare(typeB);
 };
 
+function sectionWrapperTemplate(children: ReactNode) {
+  return <Card className="rounded-lg border shadow-sm">{children}</Card>;
+}
+
+function sectionHeaderTemplate(section: Section<AccountDto>) {
+  return (
+    <AccountsListHeader
+      accountType={section.data[0].type}
+      accounts={section.data}
+    />
+  );
+}
+
+type AccountNavigate = ReturnType<typeof useNavigate>;
+
+function createItemTemplate(navigation: AccountNavigate) {
+  return function itemTemplate(account: AccountDto) {
+    return (
+      <AccountRow
+        key={account.id}
+        account={account}
+        onClick={() => {
+          navigation({
+            to: '/accounts/$id',
+            params: { id: account.id },
+          });
+        }}
+      />
+    );
+  };
+}
+
 export function AccountListScreen() {
   const { t } = useTranslation();
   const navigation = useNavigate();
@@ -59,10 +92,20 @@ export function AccountListScreen() {
     return groups;
   }, [accounts, isLoading]);
 
+  const itemTemplate = useMemo(() => createItemTemplate(navigation), [
+    navigation,
+  ]);
+
+  const emptyAccountsMessage = t(
+    'screens.accounts.list.emptyQuery',
+    'CFN: No bank accounts found',
+  );
+
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
+      <div className="space-y-4">
         <Button
+          type="button"
           onClick={() => {
             navigation({ to: "/accounts/new" });
           }}
@@ -71,43 +114,16 @@ export function AccountListScreen() {
         </Button>
         <SearchableSectionListView<AccountDto>
           data={groupedAccounts}
-          sectionWrapperTemplate={(children: ReactNode) => (
-            <Card withBorder shadow="sm" radius="lg">
-              {children}
-            </Card>
-          )}
-          sectionHeaderTemplate={(section: Section<AccountDto>) => {
-            return (
-              <AccountsListHeader
-                accountType={section.data[0].type}
-                accounts={section.data}
-              />
-            );
-          }}
-          itemTemplate={(account: AccountDto) => (
-            <AccountRow
-              key={account.id}
-              account={account}
-              onClick={() => {
-                navigation({
-                  to: "/accounts/$id",
-                  params: { id: account.id },
-                });
-              }}
-            />
-          )}
+          sectionWrapperTemplate={sectionWrapperTemplate}
+          sectionHeaderTemplate={sectionHeaderTemplate}
+          itemTemplate={itemTemplate}
           emptyView={
-            <Stack>
-              <Text>
-                {t(
-                  "screens.accounts.list.emptyQuery",
-                  "CFN: No bank accounts found"
-                )}
-              </Text>
-            </Stack>
+            <div className="space-y-2">
+              <p>{emptyAccountsMessage}</p>
+            </div>
           }
         />
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

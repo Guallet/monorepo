@@ -1,7 +1,6 @@
 import { AppSection } from "@/components/Cards/AppSection";
 import { AccountChartData, AccountDto } from "@guallet/api-client";
 import { useAccountCharts } from "@guallet/api-react";
-import { Center, Loader, Text } from "@mantine/core";
 import {
   XAxis,
   YAxis,
@@ -36,18 +35,16 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
   }));
 
   if (isLoading) {
-    return <Loader />;
+    return <p className="text-sm text-muted-foreground">Loading...</p>;
   }
 
   if (chartData?.length === 0) {
     return (
       <AppSection title="">
-        <Center>
-          <Text>
+        <div className="py-4 text-center text-sm text-muted-foreground">
             No data available yet. Add some transactions to start seeing some
             insights
-          </Text>
-        </Center>
+        </div>
       </AppSection>
     );
   }

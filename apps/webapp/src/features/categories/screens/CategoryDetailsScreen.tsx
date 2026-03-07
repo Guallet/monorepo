@@ -2,8 +2,8 @@ import { DeleteButton } from '@/components/Buttons/DeleteButton';
 import { AppSection } from '@/components/Cards/AppSection';
 import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
 import { useGroupedCategory, useCategoryMutations } from '@guallet/api-react';
-import { Stack, Button, Text } from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { CategoryRow } from '../components/CategoryRow/CategoryRow';
@@ -59,20 +59,20 @@ export function CategoriesScreen({
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
+      <div className="space-y-4">
         <AppSection>
-          <Stack align="center">
+          <div className="flex flex-col items-center gap-2 text-center">
             <GualletIcon
               iconName={category?.icon ?? 'question'}
               iconColor={category?.colour ?? 'black'}
             />
-            <Text>{category?.name}</Text>
-          </Stack>
+            <p className="text-sm font-medium">{category?.name}</p>
+          </div>
         </AppSection>
 
         {isParent && (
-          <Stack>
-            <AppSection title="Sub-categories">
+          <AppSection title="Sub-categories">
+            <div className="space-y-2">
               {category?.subCategories.map((subCategory) => (
                 <CategoryRow
                   key={subCategory.id}
@@ -87,6 +87,7 @@ export function CategoriesScreen({
               ))}
 
               <Button
+                type="button"
                 variant="outline"
                 onClick={() =>
                   navigation({
@@ -97,13 +98,14 @@ export function CategoriesScreen({
               >
                 Add new sub category
               </Button>
-            </AppSection>
-          </Stack>
+            </div>
+          </AppSection>
         )}
 
         <AppSection>
-          <Stack>
+          <div className="space-y-2">
             <Button
+              type="button"
               onClick={() =>
                 navigation({
                   to: '/categories/$id/edit',
@@ -122,9 +124,9 @@ export function CategoriesScreen({
             >
               Delete category
             </DeleteButton>
-          </Stack>
+          </div>
         </AppSection>
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

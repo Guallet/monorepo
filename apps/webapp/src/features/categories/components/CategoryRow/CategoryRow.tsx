@@ -1,6 +1,5 @@
 import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
 import { CategoryDto } from "@guallet/api-client";
-import { UnstyledButton, Group, Text } from "@mantine/core";
 
 interface CategoryRowProps {
   category: CategoryDto;
@@ -9,17 +8,17 @@ interface CategoryRowProps {
 
 export function CategoryRow({ category, onClick }: Readonly<CategoryRowProps>) {
   return (
-    <UnstyledButton
+    <button
+      type="button"
+      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-accent"
       onClick={() => {
         if (onClick) {
           onClick(category);
         }
       }}
     >
-      <Group>
-        <CategoryAvatar categoryId={category.id} color={category.colour} />
-        <Text>{category.name}</Text>
-      </Group>
-    </UnstyledButton>
+      <CategoryAvatar categoryId={category.id} color={category.colour} />
+      <span>{category.name}</span>
+    </button>
   );
 }

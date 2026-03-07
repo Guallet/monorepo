@@ -1,68 +1,40 @@
-import { Checkbox, Text, UnstyledButton, Group } from "@mantine/core";
-import classes from "./AccountCheckbox.module.css";
-import { useRef } from "react";
-import { AccountDto } from "@guallet/api-client";
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
+import { AccountAvatar } from '@/components/AccountAvatar/AccountAvatar';
+import { AccountDto } from '@guallet/api-client';
 
 interface AccountCheckboxProps {
   account: AccountDto;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
 }
 
-// NOTE: This component is meant to be used in within a Controlled
-// https://mantine.dev/core/checkbox/#controlled-checkboxgroup
-// If that is not the case, the component will not work as expected and you will need to find an
-// alternative way to handle the checkbox state
 export function AccountCheckbox({
   account,
-  ...others
-}: AccountCheckboxProps &
-  Omit<React.ComponentPropsWithoutRef<"button">, keyof AccountCheckboxProps>) {
-  const ref = useRef<HTMLInputElement>(null);
-
+  checked,
+  onCheckedChange,
+}: Readonly<AccountCheckboxProps>) {
   return (
-    <UnstyledButton
+    <button
+      type="button"
+      className={`flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left transition-colors hover:bg-accent ${
+        checked ? 'border-primary bg-primary/5' : 'border-input'
+      }`}
       onClick={() => {
-        if (ref.current) {
-          ref.current.click();
-        }
+        onCheckedChange(!checked);
       }}
-      className={classes.button}
-      {...others}
     >
-      <Group wrap="nowrap">
-        <Checkbox
-          value={account.id}
-          ref={ref}
-          tabIndex={-1}
-          styles={{
-            input: { cursor: "pointer" },
-          }}
-        />
+      <input
+        type="checkbox"
+        checked={checked}
+        readOnly
+        tabIndex={-1}
+        className="h-4 w-4"
+      />
 
-        <AccountAvatar
-          accountId={account.id}
-          // size={40}
-          style={{
-            marginLeft: 10,
-          }}
-        />
+      <AccountAvatar accountId={account.id} />
 
-        <div className={classes.body}>
-          <Text
-            fw={500}
-            size="sm"
-            lh={1}
-            lineClamp={1}
-            truncate="end"
-            style={{
-              flexGrow: 1,
-              overflow: "hidden",
-            }}
-          >
-            {account.name}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
+      <span className="min-w-0 flex-1 truncate text-sm font-medium">
+        {account.name}
+      </span>
+    </button>
   );
 }

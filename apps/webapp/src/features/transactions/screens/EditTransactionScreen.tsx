@@ -1,9 +1,9 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
 import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
 import { UpdateTransactionRequest } from '@guallet/api-client';
 import { useTransaction, useTransactionMutations } from '@guallet/api-react';
-import { Button, Group, Stack } from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
@@ -31,6 +31,8 @@ export function EditTransactionScreen({
     useTransactionMutations();
   const syncedTransactionIdRef = useRef<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const isSubmitting =
+    updateTransactionMutation.isPending || deleteTransactionMutation.isPending;
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionFormSchema),
@@ -149,20 +151,22 @@ export function EditTransactionScreen({
         title={t('screens.transactions.edit.title', 'Edit Transaction')}
       >
         <form onSubmit={form.handleSubmit(onFormSubmit)}>
-          <Stack>
+          <div className="flex flex-col gap-4">
             <TransactionFormFields
               form={form}
               translationKeyPrefix="screens.transactions.edit"
             />
-            <Group>
-              <Button type="submit">
+            <div className="flex flex-wrap gap-2">
+              <Button type="submit" disabled={isSubmitting}>
                 {t(
                   'screens.transactions.edit.form.submitButton.label',
                   'Update Transaction',
                 )}
               </Button>
               <Button
+                type="button"
                 variant="outline"
+                disabled={isSubmitting}
                 onClick={() => {
                   navigate({ to: '/transactions' });
                 }}
@@ -173,7 +177,10 @@ export function EditTransactionScreen({
                 )}
               </Button>
               <Button
-                color="red"
+                type="button"
+                variant="outline"
+                disabled={isSubmitting}
+                className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => {
                   setIsDeleteDialogOpen(true);
                 }}
@@ -183,8 +190,8 @@ export function EditTransactionScreen({
                   'Delete',
                 )}
               </Button>
-            </Group>
-          </Stack>
+            </div>
+          </div>
         </form>
       </AppSection>
     </BaseScreen>

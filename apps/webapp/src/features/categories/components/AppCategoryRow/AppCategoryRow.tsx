@@ -1,5 +1,4 @@
 import { AppCategory } from "@guallet/api-react";
-import { Group, Badge, Tooltip } from "@mantine/core";
 import { CategoryRow } from "../CategoryRow/CategoryRow";
 
 interface AppCategoryRowProps {
@@ -10,25 +9,30 @@ export function AppCategoryRow({
   category,
   onClick,
 }: Readonly<AppCategoryRowProps>) {
+  const subCategoriesCount = category.subCategories.length;
+  const badgeLabel =
+    subCategoriesCount === 0
+      ? 'No subcategories'
+      : `${subCategoriesCount} sub-categories`;
+
   return (
-    <Group>
-      <CategoryRow
-        category={category}
-        onClick={() => {
-          if (onClick) {
-            onClick(category);
-          }
-        }}
-      />
-      <Tooltip
-        label={
-          category.subCategories.length === 0
-            ? "No subcategories"
-            : `${category.subCategories.length} sub-categories`
-        }
+    <div className="flex w-full items-center gap-2">
+      <div className="min-w-0 flex-1">
+        <CategoryRow
+          category={category}
+          onClick={() => {
+            if (onClick) {
+              onClick(category);
+            }
+          }}
+        />
+      </div>
+      <span
+        className="inline-flex min-h-6 min-w-6 items-center justify-center rounded-full border px-2 text-xs"
+        title={badgeLabel}
       >
-        <Badge circle>{category.subCategories.length}</Badge>
-      </Tooltip>
-    </Group>
+        {subCategoriesCount}
+      </span>
+    </div>
   );
 }

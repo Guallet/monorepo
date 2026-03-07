@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Stack, Title } from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
@@ -84,25 +83,25 @@ function EditRulePage() {
 
   if (isRuleLoading || isFieldsLoading) {
     return (
-      <Stack gap="md">
-        <Title order={2}>{t('screens.rules.edit.title')}</Title>
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.edit.title')}</h2>
         <div>{t('screens.rules.edit.loading')}</div>
-      </Stack>
+      </div>
     );
   }
 
   if (!rule && !isRuleLoading) {
     return (
-      <Stack gap="md">
-        <Title order={2}>{t('screens.rules.edit.title')}</Title>
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.edit.title')}</h2>
         <div>{t('screens.rules.edit.notFound')}</div>
-      </Stack>
+      </div>
     );
   }
 
   return (
-    <Stack gap="md">
-      <Title order={2}>{t('screens.rules.edit.title')}</Title>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.edit.title')}</h2>
       <RuleForm
         key={rule?.id}
         initialData={initialData}
@@ -112,6 +111,6 @@ function EditRulePage() {
         isSubmitting={isSubmitting}
         submitLabel={t('screens.rules.edit.submitButton.label')}
       />
-    </Stack>
+    </div>
   );
 }

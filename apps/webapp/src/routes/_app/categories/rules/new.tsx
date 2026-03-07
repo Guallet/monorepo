@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Stack, Title } from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
@@ -61,8 +60,8 @@ function NewRulePage() {
   };
 
   return (
-    <Stack gap="md">
-      <Title order={2}>{t('screens.rules.create.title')}</Title>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.create.title')}</h2>
       <RuleForm
         fieldDefinitions={fieldDefinitions}
         onSubmit={handleSubmit}
@@ -70,6 +69,6 @@ function NewRulePage() {
         isSubmitting={isSubmitting}
         submitLabel={t('screens.rules.create.submitButton.label')}
       />
-    </Stack>
+    </div>
   );
 }

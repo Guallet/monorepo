@@ -1,5 +1,4 @@
 import { TransactionDto } from '@guallet/api-client';
-import { Stack } from '@mantine/core';
 import { TransactionRow } from './TransactionRow';
 import { AppSection } from '@/components/Cards/AppSection';
 import { useLocale } from '@/i18n/useLocale';
@@ -29,7 +28,7 @@ export function TransactionList({
   );
 
   return (
-    <Stack>
+    <div className="flex flex-col gap-4">
       {Object.entries(groupedTransactions)
         .sort(
           ([dateA], [dateB]) =>
@@ -46,7 +45,7 @@ export function TransactionList({
               })}
               itemPadding="0"
             >
-              <Stack gap={0}>
+              <div className="flex flex-col gap-0">
                 {transactions.map((transaction) => (
                   <TransactionRow
                     key={transaction.id}
@@ -58,10 +57,10 @@ export function TransactionList({
                     }}
                   />
                 ))}
-              </Stack>
+              </div>
             </AppSection>
           );
         })}
-    </Stack>
+    </div>
   );
 }

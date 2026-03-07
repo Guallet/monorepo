@@ -1,7 +1,8 @@
 import 'core-js';
 import { AccountRow } from './AccountRow';
 import { AccountsListHeader } from './AccountsListHeader';
-import { Box, Card, Divider, Space } from '@mantine/core';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
   onAccountSelected: (account: AccountDto) => void;
 }
 
-// TODO: Replace this with Object.groupBy when we can drop support for Node 16
+// Compatibility helper until runtime support for Object.groupBy is guaranteed.
 function groupBy<T, K extends string | number | symbol>(
   array: T[],
   keySelector: (item: T) => K,
@@ -63,33 +64,30 @@ export function AccountsList({ accounts, onAccountSelected }: Readonly<Props>) {
           return compareAccountTypes(a[0], b[0]);
         })
         .map(([key, value]) => (
-          <Box key={key}>
-            <>
-              <AccountsListHeader
-                accountType={key as AccountTypeDto}
-                accounts={value}
-              />
-              <Space h="xs" />
-              <Card withBorder shadow="sm" radius="lg">
-                {value.map(
-                  (account: AccountDto, index: number, array: AccountDto[]) => {
-                    return (
-                      <>
-                        <AccountRow
-                          key={account.id}
-                          account={account}
-                          onClick={() => {
-                            onAccountSelected(account);
-                          }}
-                        />
-                        {index < array.length - 1 && <Divider />}
-                      </>
-                    );
-                  },
-                )}
-              </Card>
-            </>
-          </Box>
+          <div key={key} className="space-y-2">
+            <AccountsListHeader
+              accountType={key as AccountTypeDto}
+              accounts={value}
+            />
+
+            <Card className="rounded-lg border shadow-sm">
+              {value.map(
+                (account: AccountDto, index: number, array: AccountDto[]) => {
+                  return (
+                    <div key={account.id}>
+                      <AccountRow
+                        account={account}
+                        onClick={() => {
+                          onAccountSelected(account);
+                        }}
+                      />
+                      {index < array.length - 1 ? <Separator /> : null}
+                    </div>
+                  );
+                },
+              )}
+            </Card>
+          </div>
         ))}
     </>
   );

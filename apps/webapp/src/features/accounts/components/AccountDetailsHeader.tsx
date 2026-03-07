@@ -1,6 +1,5 @@
 import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
 import { AmountLabel } from "@/components/Amount/AmountLabel";
-import { Group, Stack, Text } from "@mantine/core";
 import { getAccountTypeTitleSingular } from "../models/Account";
 import { useAccount } from "@guallet/api-react";
 import { ConnectedAccountStatus } from "./ConnectedAccountStatus";
@@ -17,30 +16,23 @@ export function AccountDetailsHeader({
   }
 
   return (
-    <Group justify="space-between" align="top">
+    <div className="flex items-start justify-between gap-3">
       <AccountAvatar accountId={accountId} showTooltip />
 
-      <Stack
-        gap={0}
-        style={{
-          flexGrow: 1,
-        }}
-      >
-        <Text size="lg" fw={700}>
-          {account?.name}
-        </Text>
-        <Text size="sm" c="dimmed">
+      <div className="min-w-0 flex-1 space-y-0.5">
+        <p className="text-lg font-bold">{account?.name}</p>
+        <p className="text-sm text-muted-foreground">
           {getAccountTypeTitleSingular(account.type)}
-        </Text>
+        </p>
         {account.source === "synced" && (
           <ConnectedAccountStatus accountId={account.id} />
         )}
-      </Stack>
+      </div>
 
       <AmountLabel
         amount={account.balance.amount}
         currencyCode={account.currency}
       />
-    </Group>
+    </div>
   );
 }
