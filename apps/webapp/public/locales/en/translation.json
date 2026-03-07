@@ -376,8 +376,7 @@
         "title": "Filters (Optional)",
         "description": "By default, all your transactions will be exported. Use the filters below to export a specific subset.",
         "dateRange": {
-          "label": "Date Range",
-          "placeholder": "Pick date range (leave empty for all)"
+          "label": "Date Range"
         },
         "accounts": {
           "label": "Accounts",
@@ -460,6 +459,9 @@
           "value": {
             "label": "Value",
             "placeholder": "Enter value"
+          },
+          "removeButton": {
+            "label": "Remove condition"
           },
           "addButton": {
             "label": "Add Condition"

@@ -1,27 +1,28 @@
-import { Badge, Tooltip } from "@mantine/core";
 import {
   IconCancel,
   IconCheck,
   IconClock,
   IconHourglassEmpty,
-} from "@tabler/icons-react";
-import React from "react";
+} from '@tabler/icons-react';
+import React from 'react';
 
 export function ConnectionStatusBadge({
   status,
 }: Readonly<{
   status: string;
 }>) {
+  const colorClassName = getStatusClassName(status);
+
   return (
-    <Tooltip label={getStatusTooltip(status)} withArrow>
-      <Badge
-        variant="light"
-        leftSection={getStatusIcon(status)}
-        color={getStatusColor(status)}
-      >
+    <span
+      title={getStatusTooltip(status)}
+      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${colorClassName}`}
+    >
+      {getStatusIcon(status)}
+      <span>
         {getStatusLabel(status)}
-      </Badge>
-    </Tooltip>
+      </span>
+    </span>
   );
 }
 
@@ -56,26 +57,26 @@ function getStatusLabel(status: string) {
   return status;
 }
 
-function getStatusColor(status: string) {
-  if (status === "CR") return "blue";
-  if (status === "GC") return "orange";
-  if (status === "UA") return "yellow";
-  if (status === "RJ") return "red";
-  if (status === "SA") return "purple";
-  if (status === "GA") return "blue";
-  if (status === "LN") return "green";
-  if (status === "EX") return "red";
-  return status;
+function getStatusClassName(status: string) {
+  if (status === 'CR') return 'border-blue-200 bg-blue-50 text-blue-700';
+  if (status === 'GC') return 'border-orange-200 bg-orange-50 text-orange-700';
+  if (status === 'UA') return 'border-amber-200 bg-amber-50 text-amber-700';
+  if (status === 'RJ') return 'border-red-200 bg-red-50 text-red-700';
+  if (status === 'SA') return 'border-purple-200 bg-purple-50 text-purple-700';
+  if (status === 'GA') return 'border-blue-200 bg-blue-50 text-blue-700';
+  if (status === 'LN') return 'border-emerald-200 bg-emerald-50 text-emerald-700';
+  if (status === 'EX') return 'border-red-200 bg-red-50 text-red-700';
+  return 'border-border bg-muted text-muted-foreground';
 }
 
 function getStatusIcon(status: string): React.ReactNode {
-  if (status === "CR") return <IconClock size={12} />;
-  if (status === "GC") return <IconHourglassEmpty size={12} />;
-  if (status === "UA") return <IconClock size={12} />;
-  if (status === "RJ") return <IconCancel size={12} />;
-  if (status === "SA") return <IconClock size={12} />;
-  if (status === "GA") return <IconCheck size={12} />;
-  if (status === "LN") return <IconCheck size={12} />;
-  if (status === "EX") return <IconHourglassEmpty size={12} />;
-  return status;
+  if (status === 'CR') return <IconClock size={12} />;
+  if (status === 'GC') return <IconHourglassEmpty size={12} />;
+  if (status === 'UA') return <IconClock size={12} />;
+  if (status === 'RJ') return <IconCancel size={12} />;
+  if (status === 'SA') return <IconClock size={12} />;
+  if (status === 'GA') return <IconCheck size={12} />;
+  if (status === 'LN') return <IconCheck size={12} />;
+  if (status === 'EX') return <IconHourglassEmpty size={12} />;
+  return null;
 }

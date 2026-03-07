@@ -1,8 +1,9 @@
-import { Text, Button, Stack, Image, Modal, Group } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { gualletClient } from '@/api/gualletClient';
 import { useUser } from '@guallet/api-react';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/_app/user/')({
   component: UserDetailsPage,
@@ -26,20 +27,22 @@ function UserDetailsPage() {
 
   return (
     <>
-      <Modal
-        centered
+      <ResponsiveModal
         opened={isDeleteAccountModalOpened}
         onClose={closeDeleteAccountConfirmation}
         title="Delete your profile"
+        size="sm"
       >
-        <Stack>
-          <Text size="sm">
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-muted-foreground">
             Are you sure you want to delete your profile? This action is
             destructive and you will have to contact support to restore your
             data.
-          </Text>
-          <Group justify="flex-end" grow>
+          </p>
+          <div className="flex justify-end gap-2">
             <Button
+              type="button"
+              variant="outline"
               onClick={() => {
                 closeDeleteAccountConfirmation();
               }}
@@ -47,34 +50,38 @@ function UserDetailsPage() {
               Cancel
             </Button>
             <Button
-              color="red"
+              type="button"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => {
-                deleteAccount();
+                void deleteAccount();
               }}
             >
               Delete my account
             </Button>
-          </Group>
-        </Stack>
-      </Modal>
-      <Stack>
-        <Stack align="center">
-          <Image
-            src={user?.profile_src}
-            alt={user?.name}
-            w={200}
-            h="auto"
-            fit="contain"
-            // radius={100}
-            fallbackSrc={`https://dummyimage.com/200x200/8c8c8c/fff.png&text=${user?.name}`}
-            style={{
-              borderRadius: '50%',
+          </div>
+        </div>
+      </ResponsiveModal>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col items-center gap-2">
+          <img
+            src={
+              user?.profile_src ??
+              `https://dummyimage.com/200x200/8c8c8c/fff.png&text=${user?.name}`
+            }
+            alt={user?.name ?? 'User avatar'}
+            width={200}
+            className="h-auto rounded-full object-contain"
+            onError={(event) => {
+              event.currentTarget.src = `https://dummyimage.com/200x200/8c8c8c/fff.png&text=${user?.name}`;
             }}
           />
-          <Text>{user?.name}</Text>
-          <Text>{user?.email}</Text>
-        </Stack>
+          <p className="text-lg font-semibold">{user?.name}</p>
+          <p className="text-sm text-muted-foreground">{user?.email}</p>
+        </div>
+
         <Button
+          type="button"
           onClick={() => {
             navigate({ to: '/user/edit' });
           }}
@@ -82,14 +89,15 @@ function UserDetailsPage() {
           Edit Profile
         </Button>
         <Button
+          type="button"
+          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           onClick={() => {
             openDeleteAccountConfirmation();
           }}
-          color="red"
         >
           Delete account
         </Button>
-      </Stack>
+      </div>
     </>
   );
 }

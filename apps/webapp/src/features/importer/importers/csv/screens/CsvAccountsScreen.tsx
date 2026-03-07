@@ -1,16 +1,4 @@
-import {
-  Stack,
-  Table,
-  Select,
-  Button,
-  Container,
-  Title,
-  Text,
-  Paper,
-  Group,
-  Badge,
-  Alert,
-} from '@mantine/core';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
 import {
   useAccountMappings,
@@ -33,143 +21,154 @@ export function CsvAccountsScreen() {
   const { setAccountMappings } = useCsvActions();
 
   return (
-    <Container size="xl" py="xl">
-      <Stack gap="xl">
-        <Stack gap="xs">
-          <Title order={2}>Map Accounts</Title>
-          <Text c="dimmed" size="sm">
+    <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Map Accounts</h1>
+        <p className="text-sm text-muted-foreground">
             Map your CSV accounts to existing accounts or create new ones.
-          </Text>
-        </Stack>
+        </p>
+      </div>
 
-        <CsvStepper
-          activeStep={2}
-          onStepClick={(stepIndex) => {
-            switch (stepIndex) {
-              case 0:
-                navigate({
-                  to: '/importer/csv',
-                });
-                break;
-              case 1:
-                navigate({
-                  to: '/importer/csv/properties',
-                });
-                break;
-            }
-          }}
-        />
-
-        <Alert
-          icon={<IconInfoCircle size={16} />}
-          title="Account Mapping"
-          color="blue"
-        >
-          <Text size="sm">
-            Select an existing account or choose "Map to a new account" to
-            create a new one. All transactions will be imported to the mapped
-            accounts.
-          </Text>
-        </Alert>
-
-        <Paper shadow="sm" p="md" withBorder>
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text fw={500}>Account Mappings</Text>
-              <Badge color="blue">
-                {csvAccounts.length === 0 ? '1' : csvAccounts.length}{' '}
-                {csvAccounts.length === 1 ? 'account' : 'accounts'}
-              </Badge>
-            </Group>
-
-            <Table striped highlightOnHover withTableBorder>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>CSV Account</Table.Th>
-                  <Table.Th>Map to Account</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {csvAccounts.length === 0 ? (
-                  <Table.Tr>
-                    <Table.Td>
-                      <Text fw={500}>Default Account</Text>
-                      <Text size="xs" c="dimmed">
-                        All transactions
-                      </Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Select
-                        searchable
-                        placeholder="Select or create an account"
-                        data={availableAccounts.map((x) => ({
-                          value: x?.id ?? '',
-                          label: x?.name ?? 'Create new account',
-                        }))}
-                        onChange={(value) => {
-                          const updatedMappings = { ...mappings };
-                          updatedMappings[DEFAULT_ACCOUNT_NAME] =
-                            remoteAccounts.find((x) => x.id === value);
-                          setAccountMappings(updatedMappings);
-                        }}
-                      />
-                    </Table.Td>
-                  </Table.Tr>
-                ) : (
-                  csvAccounts.map((x) => {
-                    return (
-                      <Table.Tr key={x ?? 'source'}>
-                        <Table.Td>
-                          <Text fw={500}>{x ?? 'Unspecified'}</Text>
-                        </Table.Td>
-                        <Table.Td>
-                          <Select
-                            searchable
-                            placeholder="Select or create an account"
-                            data={availableAccounts.map((acc) => ({
-                              value: acc?.id ?? '',
-                              label: acc?.name ?? 'Create new account',
-                            }))}
-                            onChange={(value) => {
-                              const updatedMappings = { ...mappings };
-                              updatedMappings[x] = remoteAccounts.find(
-                                (acc) => acc.id === value,
-                              );
-                              setAccountMappings(updatedMappings);
-                            }}
-                          />
-                        </Table.Td>
-                      </Table.Tr>
-                    );
-                  })
-                )}
-              </Table.Tbody>
-            </Table>
-          </Stack>
-        </Paper>
-
-        <Group justify="space-between">
-          <Button
-            variant="subtle"
-            onClick={() => {
+      <CsvStepper
+        activeStep={2}
+        onStepClick={(stepIndex) => {
+          switch (stepIndex) {
+            case 0:
+              navigate({
+                to: '/importer/csv',
+              });
+              break;
+            case 1:
               navigate({
                 to: '/importer/csv/properties',
               });
-            }}
-          >
-            Back
-          </Button>
-          <Button
-            onClick={() => {
-              navigate({
-                to: '/importer/csv/categories',
-              });
-            }}
-          >
-            Continue to Categories
-          </Button>
-        </Group>
-      </Stack>
-    </Container>
+              break;
+          }
+        }}
+      />
+
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-blue-900">
+        <div className="mb-1 flex items-center gap-2 text-sm font-semibold">
+          <IconInfoCircle className="h-4 w-4" />
+          Account Mapping
+        </div>
+        <p className="text-sm text-blue-800">
+            Select an existing account or choose "Map to a new account" to
+            create a new one. All transactions will be imported to the mapped
+            accounts.
+        </p>
+      </div>
+
+      <div className="rounded-xl border bg-card p-4 shadow-sm">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <p className="font-semibold">Account Mappings</p>
+          <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+            {csvAccounts.length === 0 ? '1' : csvAccounts.length}{' '}
+            {csvAccounts.length === 1 ? 'account' : 'accounts'}
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-muted/40">
+                <th className="border px-3 py-2 text-left font-semibold">CSV Account</th>
+                <th className="border px-3 py-2 text-left font-semibold">Map to Account</th>
+              </tr>
+            </thead>
+            <tbody>
+              {csvAccounts.length === 0 ? (
+                <tr>
+                  <td className="border px-3 py-2">
+                    <p className="font-semibold">Default Account</p>
+                    <p className="text-xs text-muted-foreground">
+                        All transactions
+                    </p>
+                  </td>
+                  <td className="border px-3 py-2">
+                    <select
+                      className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                      defaultValue=""
+                      onChange={(event) => {
+                        const value = event.currentTarget.value;
+                        const updatedMappings = { ...mappings };
+                        updatedMappings[DEFAULT_ACCOUNT_NAME] =
+                          remoteAccounts.find((account) => account.id === value);
+                        setAccountMappings(updatedMappings);
+                      }}
+                    >
+                      <option value="">Select or create an account</option>
+                      {availableAccounts.map((account) => (
+                        <option key={account?.id ?? 'new-account'} value={account?.id ?? ''}>
+                          {account?.name ?? 'Create new account'}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                </tr>
+              ) : (
+                csvAccounts.map((accountName) => {
+                  const mappedAccountId = mappings[accountName]?.id ?? '';
+
+                  return (
+                    <tr key={accountName ?? 'source'}>
+                      <td className="border px-3 py-2">
+                        <p className="font-semibold">{accountName ?? 'Unspecified'}</p>
+                      </td>
+                      <td className="border px-3 py-2">
+                        <select
+                          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                          value={mappedAccountId}
+                          onChange={(event) => {
+                            const value = event.currentTarget.value;
+                            const updatedMappings = { ...mappings };
+                            updatedMappings[accountName] = remoteAccounts.find(
+                              (account) => account.id === value,
+                            );
+                            setAccountMappings(updatedMappings);
+                          }}
+                        >
+                          <option value="">Select or create an account</option>
+                          {availableAccounts.map((account) => (
+                            <option
+                              key={account?.id ?? `new-account-${accountName}`}
+                              value={account?.id ?? ''}
+                            >
+                              {account?.name ?? 'Create new account'}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="flex justify-between">
+        <Button
+          variant="ghost"
+          onClick={() => {
+            navigate({
+              to: '/importer/csv/properties',
+            });
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          onClick={() => {
+            navigate({
+              to: '/importer/csv/categories',
+            });
+          }}
+        >
+          Continue to Categories
+        </Button>
+      </div>
+    </div>
   );
 }

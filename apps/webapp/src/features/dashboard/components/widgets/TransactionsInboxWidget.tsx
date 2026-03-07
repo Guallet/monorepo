@@ -1,16 +1,14 @@
-import { TransactionDto } from "@guallet/api-client";
-import { WidgetCard } from "./WidgetCard";
-import { useAccount, useTransactionInbox } from "@guallet/api-react";
-import { Loader, Stack, Text, Group, Badge, Box, useMantineTheme, Center, ScrollArea } from "@mantine/core";
-import { IconInbox } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
+import { TransactionDto } from '@guallet/api-client';
+import { useAccount, useTransactionInbox } from '@guallet/api-react';
+import { Money } from '@guallet/money';
+import { IconInbox } from '@tabler/icons-react';
+import { WidgetCard } from './WidgetCard';
 
 function TransactionRow({
   transaction,
 }: Readonly<{ transaction: TransactionDto }>) {
   const { account } = useAccount(transaction.accountId);
-  const theme = useMantineTheme();
-  
+
   const amount = Money.fromCurrencyCode({
     currencyCode: transaction.currency,
     amount: Math.abs(transaction.amount),
@@ -19,94 +17,65 @@ function TransactionRow({
   const isIncome = transaction.amount > 0;
 
   return (
-    <Box 
-      p="sm" 
-      mb="xs"
-      style={{
-        borderRadius: theme.radius.md,
-        backgroundColor: theme.colors.gray[0],
-        border: `1px solid ${theme.colors.gray[2]}`,
-      }}
-    >
-      <Group justify="space-between" align="flex-start">
-        <Stack gap="xs" style={{ flex: 1, minWidth: 0 }}>
-          <Text 
-            size="sm" 
-            fw={600}
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
+    <div className="mb-2 rounded-lg border bg-muted/40 p-3 last:mb-0">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1 space-y-2">
+          <p className="truncate text-sm font-semibold">
             {transaction.description}
-          </Text>
-          <Badge size="xs" color="blue" variant="light">
+          </p>
+          <span className="inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
             {account?.name || "Unknown Account"}
-          </Badge>
-        </Stack>
-        <Text 
-          size="sm" 
-          fw={700}
-          c={isIncome ? "teal" : "red"}
-          style={{ whiteSpace: 'nowrap', marginLeft: 8 }}
+          </span>
+        </div>
+        <p
+          className={`whitespace-nowrap text-sm font-bold ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}
         >
           {isIncome ? '+' : '-'}{amount.format()}
-        </Text>
-      </Group>
-    </Box>
+        </p>
+      </div>
+    </div>
   );
 }
 
-export function TransactionsInboxWidget({ onClick }: { onClick?: () => void }) {
+export function TransactionsInboxWidget({
+  onClick,
+}: Readonly<{ onClick?: () => void }>) {
   const { transactions, metadata, isLoading } = useTransactionInbox({ pageSize: 10 });
-  const theme = useMantineTheme();
 
   return (
-    <WidgetCard 
-      title="Transaction Inbox" 
+    <WidgetCard
+      title="Transaction Inbox"
       icon={<IconInbox size={20} />}
       onClick={onClick}
     >
       {isLoading ? (
-        <Center h={200}>
-          <Loader size="md" />
-        </Center>
+        <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
+          Loading...
+        </div>
       ) : (
-        <Stack gap="sm">
-          <Box
-            p="sm"
-            style={{
-              borderRadius: theme.radius.md,
-              backgroundColor: theme.colors.blue[0],
-              border: `1px solid ${theme.colors.blue[2]}`,
-            }}
-          >
-            <Text size="sm" ta="center">
+        <div className="space-y-3">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-center">
+            <p className="text-sm">
               You have{" "}
-              <Text span c="blue" fw={700} size="lg">
+              <span className="text-lg font-bold text-blue-700">
                 {metadata?.total ?? 0}
-              </Text>{" "}
+              </span>{" "}
               transactions to categorize
-            </Text>
-          </Box>
-          
+            </p>
+          </div>
+
           {transactions.length > 0 ? (
-            <ScrollArea h={200} type="auto">
-              <Stack gap="xs">
-                {transactions.slice(0, 5).map((item: TransactionDto) => (
-                  <TransactionRow key={item.id} transaction={item} />
-                ))}
-              </Stack>
-            </ScrollArea>
+            <div className="max-h-[200px] overflow-y-auto pr-1">
+              {transactions.slice(0, 5).map((item: TransactionDto) => (
+                <TransactionRow key={item.id} transaction={item} />
+              ))}
+            </div>
           ) : (
-            <Center h={100}>
-              <Text size="sm" c="dimmed">
+            <div className="flex h-[100px] items-center justify-center text-sm text-muted-foreground">
                 No pending transactions.
-              </Text>
-            </Center>
+            </div>
           )}
-        </Stack>
+        </div>
       )}
     </WidgetCard>
   );

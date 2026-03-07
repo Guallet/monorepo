@@ -1,9 +1,8 @@
-import { WidgetCard } from './WidgetCard';
 import { useTransactionsWithFilter } from '@guallet/api-react';
-import { Loader, useMantineTheme, Center, Stack, Text } from '@mantine/core';
-import { IconChartLine } from '@tabler/icons-react';
 import { LineChart } from '@mantine/charts';
+import { IconChartLine } from '@tabler/icons-react';
 import { useMemo } from 'react';
+import { WidgetCard } from './WidgetCard';
 
 interface BalanceTrendWidgetProps {
   startDate: string | null;
@@ -20,8 +19,6 @@ export function BalanceTrendWidget({
     startDate: startDate ? new Date(startDate) : null,
     endDate: endDate ? new Date(endDate) : null,
   });
-
-  const theme = useMantineTheme();
 
   const { sampledData, hasPositiveTrend } = useMemo(() => {
     // Sort transactions by date
@@ -82,16 +79,16 @@ export function BalanceTrendWidget({
   if (isLoading) {
     return (
       <WidgetCard title="Balance Trend" icon={<IconChartLine size={20} />}>
-        <Center h={250}>
-          <Loader size="md" />
-        </Center>
+        <div className="flex h-[250px] items-center justify-center text-sm text-muted-foreground">
+          Loading...
+        </div>
       </WidgetCard>
     );
   }
 
   const chartContent =
     sampledData.length > 0 ? (
-      <Stack gap="xs">
+      <div className="space-y-2">
         <LineChart
           h={250}
           data={sampledData}
@@ -106,7 +103,7 @@ export function BalanceTrendWidget({
           curveType="natural"
           connectNulls
           strokeWidth={3}
-          dotProps={{ r: 4, strokeWidth: 2, fill: theme.white }}
+          dotProps={{ r: 4, strokeWidth: 2, fill: '#ffffff' }}
           activeDotProps={{ r: 6, strokeWidth: 2 }}
           gridAxis="xy"
           withLegend={false}
@@ -116,24 +113,24 @@ export function BalanceTrendWidget({
             domain: ['dataMin - 100', 'dataMax + 100'],
           }}
           style={{
-            backgroundColor: theme.colors.gray[0],
-            borderRadius: theme.radius.md,
+            backgroundColor: 'hsl(var(--muted))',
+            borderRadius: '0.75rem',
             padding: '12px',
           }}
         />
-        <Text size="xs" c="dimmed" ta="center" mt="xs">
+        <p className="mt-2 text-center text-xs text-muted-foreground">
           Balance trend over selected period
-        </Text>
-      </Stack>
+        </p>
+      </div>
     ) : (
-      <Center h={250}>
-        <Stack gap="xs" align="center">
-          <IconChartLine size={48} color={theme.colors.gray[4]} />
-          <Text size="sm" c="dimmed" ta="center">
+      <div className="flex h-[250px] items-center justify-center">
+        <div className="space-y-2 text-center">
+          <IconChartLine className="mx-auto h-12 w-12 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">
             No transaction data available.
-          </Text>
-        </Stack>
-      </Center>
+          </p>
+        </div>
+      </div>
     );
 
   return (

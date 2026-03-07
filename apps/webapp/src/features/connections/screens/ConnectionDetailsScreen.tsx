@@ -1,11 +1,11 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useOpenBankingAccountsForConnection } from "@guallet/api-react";
-import { DebugJson } from "@guallet/ui-react";
-import { Button, Stack } from "@mantine/core";
-import { ConnectionCard } from "../components/ConnectionCard";
-import { DeleteButton } from "@/components/Buttons/DeleteButton";
-import { AppSection } from "@/components/Cards/AppSection";
-import { useTranslation } from "react-i18next";
+import { DeleteButton } from '@/components/Buttons/DeleteButton';
+import { AppSection } from '@/components/Cards/AppSection';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { useOpenBankingAccountsForConnection } from '@guallet/api-react';
+import { DebugJson } from '@guallet/ui-react';
+import { useTranslation } from 'react-i18next';
+import { ConnectionCard } from '../components/ConnectionCard';
 
 interface ConnectionDetailsScreenProps {
   connectionId: string;
@@ -20,13 +20,13 @@ export function ConnectionDetailsScreen({
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
+      <div className="space-y-4">
         <ConnectionCard connectionId={connectionId} />
         <AppSection title="Accounts">
           <DebugJson data={accounts} />
         </AppSection>
         <AppSection>
-          <Stack>
+          <div className="space-y-2">
             <Button
               variant="outline"
               onClick={() => {
@@ -59,14 +59,14 @@ export function ConnectionDetailsScreen({
                 "Are you sure you want to delete this connection?"
               )}
               onDelete={() => {
-                //TODO: Handle delete connection
+                console.log('Delete connection action is not implemented yet.');
               }}
             >
               {t("screens.connections.details.deleteButton.label", "Delete")}
             </DeleteButton>
-          </Stack>
+          </div>
         </AppSection>
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }

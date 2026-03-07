@@ -1,14 +1,12 @@
-import { WidgetCard } from "./WidgetCard";
-import { useTransactions, useAccounts, useCategories } from "@guallet/api-react";
-import { Loader, Stack, Text, Group, Box, useMantineTheme, Center, Badge, ScrollArea } from "@mantine/core";
-import { IconReceipt, IconArrowUp, IconArrowDown } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
+import { useAccounts, useCategories, useTransactions } from '@guallet/api-react';
+import { Money } from '@guallet/money';
+import { IconArrowDown, IconArrowUp, IconReceipt } from '@tabler/icons-react';
+import { WidgetCard } from './WidgetCard';
 
 export function LastTransactionsWidget() {
   const { transactions, isLoading: transactionsLoading } = useTransactions();
   const { accounts, isLoading: accountsLoading } = useAccounts();
   const { categories, isLoading: categoriesLoading } = useCategories();
-  const theme = useMantineTheme();
 
   const isLoading = transactionsLoading || accountsLoading || categoriesLoading;
 
@@ -17,107 +15,93 @@ export function LastTransactionsWidget() {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 10);
 
-  return (
-    <WidgetCard 
-      title="Recent Transactions" 
-      icon={<IconReceipt size={20} />}
-    >
-      {isLoading ? (
-        <Center h={300}>
-          <Loader size="md" />
-        </Center>
-      ) : lastTransactions.length > 0 ? (
-        <ScrollArea h={300} type="auto">
-          <Stack gap="xs">
-            {lastTransactions.map((transaction) => {
-              const account = accounts.find(a => a.id === transaction.accountId);
-              const category = categories.find(c => c.id === transaction.categoryId);
-              const isIncome = transaction.amount > 0;
-              
-              const amount = Money.fromCurrencyCode({
-                currencyCode: transaction.currency,
-                amount: Math.abs(transaction.amount),
-              });
+  let content: React.ReactNode;
 
-              return (
-                <Box
-                  key={transaction.id}
-                  p="sm"
-                  style={{
-                    borderRadius: theme.radius.md,
-                    backgroundColor: theme.colors.gray[0],
-                    border: `1px solid ${theme.colors.gray[2]}`,
-                    transition: 'all 0.2s ease',
-                  }}
+  if (isLoading) {
+    content = (
+      <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
+        Loading...
+      </div>
+    );
+  } else if (lastTransactions.length > 0) {
+    content = (
+      <div className="max-h-[300px] space-y-2 overflow-y-auto pr-1">
+        {lastTransactions.map((transaction) => {
+          const account = accounts.find((a) => a.id === transaction.accountId);
+          const category = categories.find(
+            (c) => c.id === transaction.categoryId,
+          );
+          const isIncome = transaction.amount > 0;
+
+          const amount = Money.fromCurrencyCode({
+            currencyCode: transaction.currency,
+            amount: Math.abs(transaction.amount),
+          });
+
+          return (
+            <div
+              key={transaction.id}
+              className="rounded-lg border bg-muted/40 p-3"
+            >
+              <div className="mb-2 flex items-start justify-between gap-3">
+                <div className="flex min-w-0 flex-1 items-center gap-2">
+                  {isIncome ? (
+                    <IconArrowUp className="h-4 w-4 text-emerald-600" />
+                  ) : (
+                    <IconArrowDown className="h-4 w-4 text-red-600" />
+                  )}
+                  <p className="truncate text-sm font-semibold">
+                    {transaction.description}
+                  </p>
+                </div>
+                <p
+                  className={`whitespace-nowrap text-sm font-bold ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}
                 >
-                  <Group justify="space-between" mb="xs">
-                    <Group gap="xs" style={{ flex: 1, minWidth: 0 }}>
-                      {isIncome ? (
-                        <IconArrowUp size={16} color={theme.colors.teal[6]} />
-                      ) : (
-                        <IconArrowDown size={16} color={theme.colors.red[6]} />
-                      )}
-                      <Text 
-                        fw={600} 
-                        size="sm"
-                        style={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {transaction.description}
-                      </Text>
-                    </Group>
-                    <Text 
-                      fw={700} 
-                      size="sm"
-                      c={isIncome ? "teal" : "red"}
-                      style={{ whiteSpace: 'nowrap' }}
+                  {isIncome ? '+' : '-'}{amount.format()}
+                </p>
+              </div>
+
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  {account ? (
+                    <span className="inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+                      {account.name}
+                    </span>
+                  ) : null}
+                  {category ? (
+                    <span
+                      className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium text-white"
+                      style={{
+                        backgroundColor: category.colour || '#6b7280',
+                      }}
                     >
-                      {isIncome ? '+' : '-'}{amount.format()}
-                    </Text>
-                  </Group>
-                  
-                  <Group justify="space-between" mt="xs">
-                    <Group gap="xs">
-                      {account && (
-                        <Badge size="xs" color="blue" variant="light">
-                          {account.name}
-                        </Badge>
-                      )}
-                      {category && (
-                        <Badge 
-                          size="xs" 
-                          variant="light"
-                          style={{
-                            backgroundColor: category.colour || theme.colors.gray[2],
-                            color: theme.white,
-                          }}
-                        >
-                          {category.name}
-                        </Badge>
-                      )}
-                    </Group>
-                    <Text size="xs" c="dimmed">
-                      {new Date(transaction.date).toLocaleDateString()}
-                    </Text>
-                  </Group>
-                </Box>
-              );
-            })}
-          </Stack>
-        </ScrollArea>
-      ) : (
-        <Center h={300}>
-          <Stack gap="xs" align="center">
-            <IconReceipt size={48} color={theme.colors.gray[4]} />
-            <Text size="sm" c="dimmed" ta="center">
-              No transactions found.
-            </Text>
-          </Stack>
-        </Center>
-      )}
+                      {category.name}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(transaction.date).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  } else {
+    content = (
+      <div className="flex h-[300px] items-center justify-center">
+        <div className="space-y-2 text-center">
+          <IconReceipt className="mx-auto h-12 w-12 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">No transactions found.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <WidgetCard title="Recent Transactions" icon={<IconReceipt size={20} />}>
+      {content}
     </WidgetCard>
   );
 }

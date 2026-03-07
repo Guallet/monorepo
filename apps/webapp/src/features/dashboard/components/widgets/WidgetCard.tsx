@@ -1,12 +1,27 @@
-import { Card, Group, Text, Box, useMantineTheme } from "@mantine/core";
-import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
-interface WidgetCardProps extends React.ComponentProps<typeof Card> {
+interface WidgetCardProps extends React.HTMLAttributes<HTMLDivElement> {
   onClick?: () => void;
   title: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
   action?: React.ReactNode;
+}
+
+function triggerClickFromKeyboard(
+  event: React.KeyboardEvent<HTMLDivElement>,
+  onClick?: () => void,
+) {
+  if (!onClick) {
+    return;
+  }
+
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    onClick();
+  }
 }
 
 export function WidgetCard({
@@ -15,52 +30,39 @@ export function WidgetCard({
   children,
   icon,
   action,
+  className,
+  onKeyDown,
   ...props
 }: Readonly<WidgetCardProps>) {
-  const theme = useMantineTheme();
-  
   return (
-    <Card 
-      shadow="md" 
-      padding="lg" 
-      radius="lg" 
-      withBorder 
+    <Card
+      className={cn(
+        'flex h-full flex-col rounded-xl transition-all',
+        onClick
+          ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+          : '',
+        className,
+      )}
       onClick={onClick}
-      style={{
-        cursor: onClick ? 'pointer' : 'default',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+      onKeyDown={(event) => {
+        triggerClickFromKeyboard(event, onClick);
+        onKeyDown?.(event);
       }}
-      styles={{
-        root: {
-          '&:hover': onClick ? {
-            transform: 'translateY(-2px)',
-            boxShadow: theme.shadows.xl,
-          } : {},
-        }
-      }}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
       {...props}
     >
-      <Group justify="space-between" mb="md">
-        <Group gap="xs">
-          {icon && <Box style={{ color: theme.colors.blue[6] }}>{icon}</Box>}
-          <Text
-            size="sm"
-            fw={600}
-            tt="uppercase"
-            c="dimmed"
-          >
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <div className="flex items-center gap-2">
+          {icon ? <span className="text-blue-600">{icon}</span> : null}
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {title}
-          </Text>
-        </Group>
-        {action && <Box>{action}</Box>}
-      </Group>
+          </CardTitle>
+        </div>
+        {action ? <div>{action}</div> : null}
+      </CardHeader>
 
-      <Box style={{ flex: 1 }}>
-        {children}
-      </Box>
+      <CardContent className="flex-1">{children}</CardContent>
     </Card>
   );
 }

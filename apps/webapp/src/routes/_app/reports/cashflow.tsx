@@ -1,10 +1,10 @@
-import { Stack, Table, Text, useMantineTheme } from '@mantine/core';
-import { YearPickerInput } from '@mantine/dates';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { ReportFilters } from '@/features/reports/components/ReportFilters';
 import { CashflowDataDto } from '@/features/reports/CashFlow/cashflow.models';
 import { CashFlowRow } from '@/features/reports/CashFlow/CashFlowCategoryRow';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import { z } from 'zod';
 import {
@@ -16,6 +16,21 @@ const pageSearchSchema = z.object({
   year: z.number().catch(new Date().getUTCFullYear()),
 });
 
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
 export const Route = createFileRoute('/_app/reports/cashflow')({
   component: CashFlowPage,
   validateSearch: pageSearchSchema,
@@ -23,40 +38,54 @@ export const Route = createFileRoute('/_app/reports/cashflow')({
 
 export function CashFlowPage() {
   const { year } = Route.useSearch();
-  const [selectedYear, setSelectedYear] = useState<Date | null>(null);
+  const [selectedYear, setSelectedYear] = useState(year);
+
+  useEffect(() => {
+    setSelectedYear(year);
+  }, [year]);
 
   const { accounts } = useAccounts();
   const { categories, isLoading: categoriesLoading } = useCategories();
   const { cashflowData, isLoading: reportLoading } = useCashflowReports({
-    year,
+    year: selectedYear,
   });
 
   const isLoading = categoriesLoading || reportLoading;
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <p>Loading...</p>;
   }
 
   return (
-    <Stack>
-      <Text>Cash flow</Text>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">Cash flow</h1>
+
       <ReportFilters
         accounts={accounts}
-        selectedAccounts={[]}
         categories={categories}
-        selectedCategories={[]}
-        onFiltersUpdate={(x) => {
-          console.log('Filters updated', x);
+        onFiltersUpdate={(filters) => {
+          console.log('Filters updated', filters);
         }}
       />
-      <YearPickerInput
-        label="Pick year"
-        placeholder="Pick a year to run the report"
-        value={selectedYear}
-        onChange={setSelectedYear}
-      />
+
+      <div className="max-w-xs space-y-2">
+        <Label htmlFor="cashflow-year">Pick year</Label>
+        <Input
+          id="cashflow-year"
+          type="number"
+          placeholder="Pick a year to run the report"
+          value={selectedYear}
+          onChange={(event) => {
+            const nextYear = event.currentTarget.valueAsNumber;
+            if (!Number.isNaN(nextYear)) {
+              setSelectedYear(nextYear);
+            }
+          }}
+        />
+      </div>
+
       {cashflowData && <CashFlowTable reportData={cashflowData} />}
-    </Stack>
+    </div>
   );
 }
 
@@ -64,68 +93,30 @@ interface CashFlowTableProps {
   reportData: CashflowDataDto;
 }
 
-function CashFlowTable({ reportData }: CashFlowTableProps) {
-  const theme = useMantineTheme();
+function CashFlowTable({ reportData }: Readonly<CashFlowTableProps>) {
+  const rows = reportData.data.map((row) => (
+    <CashFlowRow key={row.categoryId} row={row} />
+  ));
 
-  const rows = reportData.data.map((row) => <CashFlowRow row={row} />);
-
-  const rootCategoriesData = reportData.data.filter((x) => x.isParent);
+  const rootCategoriesData = reportData.data.filter((row) => row.isParent);
   const totalRow = (
-    <Table.Tr
-      key="totalRow"
-      style={{
-        fontWeight: 'bold',
-        backgroundColor: theme.colors.gray[5],
-        color: 'white',
-      }}
-    >
-      <Table.Td>Total</Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[0]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[1]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[2]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[3]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[4]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[5]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[6]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[7]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[8]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[9]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[10]))}
-      </Table.Td>
-      <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[11]))}
-      </Table.Td>
-    </Table.Tr>
+    <tr key="totalRow" className="bg-muted font-semibold">
+      <td className="px-3 py-2">Total</td>
+      {MONTH_LABELS.map((_, index) => (
+        <td key={`total-${index}`} className="px-3 py-2">
+          {getArraySum(rootCategoriesData.map((row) => row.values[index]))}
+        </td>
+      ))}
+    </tr>
   );
 
   return (
-    <Table.ScrollContainer minWidth={500}>
-      <Table highlightOnHover withTableBorder withColumnBorders>
+    <div className="overflow-x-auto rounded-md border">
+      <table className="min-w-[820px] w-full border-collapse text-sm">
         <CashFlowHeadRow />
-        <Table.Tbody>{[...rows, totalRow]}</Table.Tbody>
-      </Table>
-    </Table.ScrollContainer>
+        <tbody>{[...rows, totalRow]}</tbody>
+      </table>
+    </div>
   );
 }
 
@@ -139,22 +130,15 @@ function getArraySum(array: string[]): string {
 
 function CashFlowHeadRow() {
   return (
-    <Table.Thead>
-      <Table.Tr>
-        <Table.Th>Category</Table.Th>
-        <Table.Th>Jan</Table.Th>
-        <Table.Th>Feb</Table.Th>
-        <Table.Th>Mar</Table.Th>
-        <Table.Th>Apr</Table.Th>
-        <Table.Th>May</Table.Th>
-        <Table.Th>Jun</Table.Th>
-        <Table.Th>Jul</Table.Th>
-        <Table.Th>Aug</Table.Th>
-        <Table.Th>Sep</Table.Th>
-        <Table.Th>Oct</Table.Th>
-        <Table.Th>Nov</Table.Th>
-        <Table.Th>Dec</Table.Th>
-      </Table.Tr>
-    </Table.Thead>
+    <thead>
+      <tr className="border-b bg-muted/60 text-left">
+        <th className="px-3 py-2">Category</th>
+        {MONTH_LABELS.map((label) => (
+          <th key={label} className="px-3 py-2">
+            {label}
+          </th>
+        ))}
+      </tr>
+    </thead>
   );
 }

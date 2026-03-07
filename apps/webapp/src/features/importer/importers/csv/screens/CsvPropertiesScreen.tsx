@@ -1,19 +1,4 @@
-import {
-  Button,
-  List,
-  Select,
-  rem,
-  Stack,
-  Table,
-  Text,
-  ThemeIcon,
-  Container,
-  Title,
-  Paper,
-  Group,
-  Alert,
-  Badge,
-} from '@mantine/core';
+import { Button } from '@/components/ui/button';
 import { FieldMappings } from '../models';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
@@ -23,7 +8,7 @@ import {
   useCsvMappings,
   useCsvActions,
 } from '../state/csvState';
-import { IconExclamationCircle, IconAlertCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconExclamationCircle } from '@tabler/icons-react';
 import { isDate } from '@/utils/dateUtils';
 import { isValidNumber } from '@/utils/numberUtils';
 import { CsvStepper } from '../components/CsvStepper';
@@ -44,6 +29,8 @@ export function CsvPropertiesScreen() {
 
   const [isValidDateField, setIsValidDateField] = useState(true);
   const [isValidAmountField, setIsValidAmountField] = useState(true);
+  const hasInvalidDateField = isValidDateField === false;
+  const hasInvalidAmountField = isValidAmountField === false;
 
   const canContinue =
     mappings.date !== '' &&
@@ -53,242 +40,275 @@ export function CsvPropertiesScreen() {
     isValidAmountField;
 
   return (
-    <Container size="xl" py="xl">
-      <Stack gap="xl">
-        <Stack gap="xs">
-          <Title order={2}>Map CSV Fields</Title>
-          <Text c="dimmed" size="sm">
+    <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Map CSV Fields</h1>
+        <p className="text-sm text-muted-foreground">
             Match your CSV columns to transaction fields. Required fields are
             marked with *.
-          </Text>
-        </Stack>
+        </p>
+      </div>
 
-        <CsvStepper
-          activeStep={1}
-          onStepClick={(stepIndex) => {
-            if (stepIndex === 0) {
-              navigate({
-                to: '/importer/csv',
-              });
-            }
-          }}
-        />
+      <CsvStepper
+        activeStep={1}
+        onStepClick={(stepIndex) => {
+          if (stepIndex === 0) {
+            navigate({
+              to: '/importer/csv',
+            });
+          }
+        }}
+      />
 
-        {(!isValidDateField || !isValidAmountField) && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            title="Validation Issues"
-            color="red"
-          >
-            <List
-              icon={
-                <ThemeIcon color="red" size={20} radius="xl">
-                  <IconExclamationCircle
-                    style={{ width: rem(12), height: rem(12) }}
-                  />
-                </ThemeIcon>
-              }
-            >
-              {!isValidDateField && (
-                <List.Item>
+      {hasInvalidDateField || hasInvalidAmountField ? (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
+          <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
+            <IconAlertCircle className="h-4 w-4" />
+            Validation Issues
+          </div>
+          <ul className="space-y-1 text-sm">
+            {hasInvalidDateField ? (
+              <li className="flex items-start gap-2">
+                <IconExclamationCircle className="mt-0.5 h-4 w-4" />
+                <span>
                   The selected DATE field doesn't follow a valid date pattern
-                </List.Item>
-              )}
-              {!isValidAmountField && (
-                <List.Item>The selected AMOUNT field is not a number</List.Item>
-              )}
-            </List>
-          </Alert>
-        )}
+                </span>
+              </li>
+            ) : null}
+            {hasInvalidAmountField ? (
+              <li className="flex items-start gap-2">
+                <IconExclamationCircle className="mt-0.5 h-4 w-4" />
+                <span>The selected AMOUNT field is not a number</span>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      ) : null}
 
-        <Paper shadow="sm" p="md" withBorder>
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text fw={500}>Field Mappings</Text>
-              <Badge color="blue">{csvData.data.length} transactions</Badge>
-            </Group>
+      <div className="rounded-xl border bg-card p-4 shadow-sm">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <p className="font-semibold">Field Mappings</p>
+          <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+            {csvData.data.length} transactions
+          </span>
+        </div>
 
-            <Table striped highlightOnHover withTableBorder>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-muted/40">
+                <th className="border px-3 py-2 text-left font-semibold">
                     Account{' '}
-                    <Text component="span" c="red">
+                    <span className="text-red-600">
                       *
-                    </Text>
-                  </Table.Th>
-                  <Table.Th>
+                    </span>
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">
                     Date{' '}
-                    <Text component="span" c="red">
+                    <span className="text-red-600">
                       *
-                    </Text>
-                  </Table.Th>
-                  <Table.Th>
+                    </span>
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">
                     Amount{' '}
-                    <Text component="span" c="red">
+                    <span className="text-red-600">
                       *
-                    </Text>
-                  </Table.Th>
-                  <Table.Th>
+                    </span>
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">
                     Description{' '}
-                    <Text component="span" c="red">
+                    <span className="text-red-600">
                       *
-                    </Text>
-                  </Table.Th>
-                  <Table.Th>Notes</Table.Th>
-                  <Table.Th>Category</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                <Table.Tr>
-                  <Table.Td>
-                    <Select
-                      placeholder="Select column"
-                      data={availableFields}
-                      value={mappings.account || EMPTY_MAP_FIELD_VALUE}
-                      onChange={(value) => {
-                        const fieldValue =
-                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setCsvMappings({
-                          ...mappings,
-                          account: fieldValue ?? '',
-                        });
-                      }}
-                      searchable
-                      clearable
-                    />
-                  </Table.Td>
-                  <Table.Td>
-                    <Select
-                      placeholder="Select column"
-                      data={availableFields}
-                      value={mappings.date || EMPTY_MAP_FIELD_VALUE}
-                      onChange={(value) => {
-                        const fieldValue =
-                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setCsvMappings({
-                          ...mappings,
-                          date: fieldValue ?? '',
-                        });
+                    </span>
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">Notes</th>
+                <th className="border px-3 py-2 text-left font-semibold">Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border px-2 py-2">
+                  <select
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={mappings.account || EMPTY_MAP_FIELD_VALUE}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      const fieldValue =
+                        value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                      setCsvMappings({
+                        ...mappings,
+                        account: fieldValue,
+                      });
+                    }}
+                  >
+                    {availableFields.map((field) => (
+                      <option key={field} value={field}>
+                        {field}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="border px-2 py-2">
+                  <select
+                    className={`h-10 w-full rounded-md border bg-background px-3 text-sm ${
+                      isValidDateField ? 'border-input' : 'border-red-400'
+                    }`}
+                    value={mappings.date || EMPTY_MAP_FIELD_VALUE}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      const fieldValue =
+                        value === EMPTY_MAP_FIELD_VALUE ? '' : value;
 
-                        const testDates = sampleData.map(
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          (x: any) => x[fieldValue || ''],
-                        );
-                        const isValid =
-                          fieldValue === '' ||
-                          testDates.every((input) => isDate(input));
-                        setIsValidDateField(isValid);
-                      }}
-                      searchable
-                      error={!isValidDateField}
-                    />
-                  </Table.Td>
-                  <Table.Td>
-                    <Select
-                      placeholder="Select column"
-                      data={availableFields}
-                      value={mappings.amount || EMPTY_MAP_FIELD_VALUE}
-                      onChange={(value) => {
-                        const fieldValue =
-                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setCsvMappings({
-                          ...mappings,
-                          amount: fieldValue ?? '',
-                        });
+                      setCsvMappings({
+                        ...mappings,
+                        date: fieldValue,
+                      });
 
-                        const testAmounts = sampleData.map(
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          (x: any) => x[fieldValue || ''],
-                        );
-                        const isValid =
-                          fieldValue === '' ||
-                          testAmounts.every((input) => isValidNumber(input));
-                        setIsValidAmountField(isValid);
-                      }}
-                      searchable
-                      error={!isValidAmountField}
-                    />
-                  </Table.Td>
-                  <Table.Td>
-                    <Select
-                      placeholder="Select column"
-                      data={availableFields}
-                      value={mappings.description || EMPTY_MAP_FIELD_VALUE}
-                      onChange={(value) => {
-                        const fieldValue =
-                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setCsvMappings({
-                          ...mappings,
-                          description: fieldValue ?? '',
-                        });
-                      }}
-                      searchable
-                      clearable
-                    />
-                  </Table.Td>
-                  <Table.Td>
-                    <Select
-                      placeholder="Select column"
-                      data={availableFields}
-                      value={mappings.notes || EMPTY_MAP_FIELD_VALUE}
-                      onChange={(value) => {
-                        const fieldValue =
-                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setCsvMappings({
-                          ...mappings,
-                          notes: fieldValue ?? '',
-                        });
-                      }}
-                      searchable
-                      clearable
-                    />
-                  </Table.Td>
-                  <Table.Td>
-                    <Select
-                      placeholder="Select column"
-                      data={availableFields}
-                      value={mappings.category || EMPTY_MAP_FIELD_VALUE}
-                      onChange={(value) => {
-                        const fieldValue =
-                          value === EMPTY_MAP_FIELD_VALUE ? '' : value;
-                        setCsvMappings({
-                          ...mappings,
-                          category: fieldValue ?? '',
-                        });
-                      }}
-                      searchable
-                      clearable
-                    />
-                  </Table.Td>
-                </Table.Tr>
-                {sampleData.map((x, index) => (
-                  <RowElement key={index} mappings={mappings} element={x} />
-                ))}
-              </Table.Tbody>
-            </Table>
+                      const testDates = sampleData.map(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (item: any) => item[fieldValue || ''],
+                      );
+                      const isValid =
+                        fieldValue === '' ||
+                        testDates.every((input) => isDate(input));
+                      setIsValidDateField(isValid);
+                    }}
+                  >
+                    {availableFields.map((field) => (
+                      <option key={field} value={field}>
+                        {field}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="border px-2 py-2">
+                  <select
+                    className={`h-10 w-full rounded-md border bg-background px-3 text-sm ${
+                      isValidAmountField ? 'border-input' : 'border-red-400'
+                    }`}
+                    value={mappings.amount || EMPTY_MAP_FIELD_VALUE}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      const fieldValue =
+                        value === EMPTY_MAP_FIELD_VALUE ? '' : value;
 
-            <Text size="xs" c="dimmed">
+                      setCsvMappings({
+                        ...mappings,
+                        amount: fieldValue,
+                      });
+
+                      const testAmounts = sampleData.map(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        (item: any) => item[fieldValue || ''],
+                      );
+                      const isValid =
+                        fieldValue === '' ||
+                        testAmounts.every((input) => isValidNumber(input));
+                      setIsValidAmountField(isValid);
+                    }}
+                  >
+                    {availableFields.map((field) => (
+                      <option key={field} value={field}>
+                        {field}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="border px-2 py-2">
+                  <select
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={mappings.description || EMPTY_MAP_FIELD_VALUE}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      const fieldValue =
+                        value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                      setCsvMappings({
+                        ...mappings,
+                        description: fieldValue,
+                      });
+                    }}
+                  >
+                    {availableFields.map((field) => (
+                      <option key={field} value={field}>
+                        {field}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="border px-2 py-2">
+                  <select
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={mappings.notes || EMPTY_MAP_FIELD_VALUE}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      const fieldValue =
+                        value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                      setCsvMappings({
+                        ...mappings,
+                        notes: fieldValue,
+                      });
+                    }}
+                  >
+                    {availableFields.map((field) => (
+                      <option key={field} value={field}>
+                        {field}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="border px-2 py-2">
+                  <select
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    value={mappings.category || EMPTY_MAP_FIELD_VALUE}
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
+                      const fieldValue =
+                        value === EMPTY_MAP_FIELD_VALUE ? '' : value;
+                      setCsvMappings({
+                        ...mappings,
+                        category: fieldValue,
+                      });
+                    }}
+                  >
+                    {availableFields.map((field) => (
+                      <option key={field} value={field}>
+                        {field}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+              </tr>
+
+              {sampleData.map((row, index) => (
+                <RowElement
+                  key={`${index}-${String(row[mappings.date])}-${String(row[mappings.amount])}`}
+                  mappings={mappings}
+                  element={row}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="mt-3 text-xs text-muted-foreground">
               Preview showing {Math.min(SAMPLE_ARRAY_SIZE, csvData.data.length)}{' '}
               of {csvData.data.length} transactions
-            </Text>
-          </Stack>
-        </Paper>
+        </p>
+      </div>
 
-        <Group justify="flex-end">
-          <Button
-            onClick={() => {
-              navigate({
-                to: '/importer/csv/accounts',
-              });
-            }}
-            disabled={!canContinue}
-          >
-            Continue to Accounts
-          </Button>
-        </Group>
-      </Stack>
-    </Container>
+      <div className="flex justify-end">
+        <Button
+          onClick={() => {
+            navigate({
+              to: '/importer/csv/accounts',
+            });
+          }}
+          disabled={!canContinue}
+        >
+          Continue to Accounts
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -299,13 +319,13 @@ interface RowElementProps {
 }
 function RowElement({ mappings, element }: Readonly<RowElementProps>) {
   return (
-    <Table.Tr>
-      <Table.Td>{element[mappings.account] || '-'}</Table.Td>
-      <Table.Td>{element[mappings.date] || '-'}</Table.Td>
-      <Table.Td>{element[mappings.amount] || '-'}</Table.Td>
-      <Table.Td>{element[mappings.description] || '-'}</Table.Td>
-      <Table.Td>{element[mappings.notes] || '-'}</Table.Td>
-      <Table.Td>{element[mappings.category] || '-'}</Table.Td>
-    </Table.Tr>
+    <tr>
+      <td className="border px-3 py-2">{element[mappings.account] || '-'}</td>
+      <td className="border px-3 py-2">{element[mappings.date] || '-'}</td>
+      <td className="border px-3 py-2">{element[mappings.amount] || '-'}</td>
+      <td className="border px-3 py-2">{element[mappings.description] || '-'}</td>
+      <td className="border px-3 py-2">{element[mappings.notes] || '-'}</td>
+      <td className="border px-3 py-2">{element[mappings.category] || '-'}</td>
+    </tr>
   );
 }

@@ -1,39 +1,34 @@
-import { Group, Paper, Text } from "@mantine/core";
-import classes from "./Cards.module.css";
 import {
   IconCoin,
   IconArrowUpRight,
   IconArrowDownRight,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
 export function CategoriesCard() {
   const diff = 34;
   const DiffIcon = diff > 0 ? IconArrowUpRight : IconArrowDownRight;
+  const diffClassName = diff > 0 ? 'text-emerald-600' : 'text-red-600';
+
   return (
-    <Paper withBorder p="md" radius="md" key="totalBalance">
-      <Group justify="space-between">
-        <Text size="xs" c="dimmed" className={classes.title}>
-          Total Balance
-        </Text>
-        <IconCoin className={classes.icon} size="1.4rem" stroke={1.5} />
-      </Group>
+    <div className="rounded-xl border bg-card p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Categories
+        </p>
+        <IconCoin className="h-5 w-5 text-muted-foreground" stroke={1.5} />
+      </div>
 
-      <Group align="flex-end" gap="xs" mt={25}>
-        <Text className={classes.value}>$1000</Text>
-        <Text
-          c={diff > 0 ? "teal" : "red"}
-          fz="sm"
-          fw={500}
-          className={classes.diff}
-        >
+      <div className="mt-6 flex items-end gap-2">
+        <p className="text-2xl font-bold leading-none">$1000</p>
+        <p className={`flex items-center gap-1 text-sm font-medium ${diffClassName}`}>
           <span>{diff}%</span>
-          <DiffIcon size="1rem" stroke={1.5} />
-        </Text>
-      </Group>
+          <DiffIcon className="h-4 w-4" stroke={1.5} />
+        </p>
+      </div>
 
-      <Text fz="xs" c="dimmed" mt={7}>
+      <p className="mt-2 text-xs text-muted-foreground">
         Compared to previous month
-      </Text>
-    </Paper>
+      </p>
+    </div>
   );
 }

@@ -3,18 +3,6 @@ import { useState } from 'react';
 import { Dropzone, FileWithPath } from '@mantine/dropzone';
 import { CSV_MIME_TYPE } from '../models';
 import {
-  Container,
-  Group,
-  rem,
-  Text,
-  Title,
-  Stack,
-  Paper,
-  List,
-  ThemeIcon,
-  Alert,
-} from '@mantine/core';
-import {
   IconFileTypeCsv,
   IconUpload,
   IconX,
@@ -71,120 +59,136 @@ export function CsvImporterScreen() {
   }
 
   return (
-    <Container size="md" py="xl">
-      <Stack gap="xl">
-        <Stack gap="xs">
-          <Title order={2}>Import CSV File</Title>
-          <Text c="dimmed" size="sm">
+    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Import CSV File</h1>
+        <p className="text-sm text-muted-foreground">
             Upload your transaction data in CSV format. We'll help you map the
             fields and import everything automatically.
-          </Text>
-          <CsvStepper activeStep={0} />
-        </Stack>
+        </p>
+        <CsvStepper activeStep={0} />
+      </div>
 
-        {error && (
-          <Alert
-            icon={<IconInfoCircle size={16} />}
-            title="Error"
-            color="red"
-            withCloseButton
-            onClose={() => setError(null)}
-          >
-            {error}
-          </Alert>
-        )}
-
-        <Paper shadow="xs" p="xl" withBorder>
-          <Dropzone
-            onDrop={(files) => {
-              readFile(files[0]);
-            }}
-            onReject={(files) => {
-              const rejection = files[0];
-              if (rejection.errors[0]?.code === 'file-too-large') {
-                setError('File is too large. Maximum size is 5MB.');
-              } else if (rejection.errors[0]?.code === 'file-invalid-type') {
-                setError('Invalid file type. Please upload a CSV file.');
-              }
-            }}
-            maxSize={5 * 1024 ** 2}
-            accept={[CSV_MIME_TYPE]}
-            maxFiles={1}
-            multiple={false}
-            loading={isLoading}
-          >
-            <Group
-              justify="center"
-              gap="xl"
-              mih={220}
-              style={{ pointerEvents: 'none' }}
-            >
-              <Dropzone.Accept>
-                <IconUpload
-                  style={{
-                    width: rem(52),
-                    height: rem(52),
-                    color: 'var(--mantine-color-blue-6)',
-                  }}
-                  stroke={1.5}
-                />
-              </Dropzone.Accept>
-              <Dropzone.Reject>
-                <IconX
-                  style={{
-                    width: rem(52),
-                    height: rem(52),
-                    color: 'var(--mantine-color-red-6)',
-                  }}
-                  stroke={1.5}
-                />
-              </Dropzone.Reject>
-              <Dropzone.Idle>
-                <IconFileTypeCsv
-                  style={{
-                    width: rem(52),
-                    height: rem(52),
-                    color: 'var(--mantine-color-dimmed)',
-                  }}
-                  stroke={1.5}
-                />
-              </Dropzone.Idle>
-
-              <div>
-                <Text size="xl" inline fw={500}>
-                  Drag CSV file here or click to select
-                </Text>
-                <Text size="sm" c="dimmed" inline mt={7}>
-                  File should not exceed 5MB
-                </Text>
+      {error ? (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <IconInfoCircle className="h-4 w-4" />
+                Error
               </div>
-            </Group>
-          </Dropzone>
-        </Paper>
-
-        <Paper p="md" withBorder>
-          <Stack gap="sm">
-            <Text fw={500} size="sm">
-              CSV Requirements:
-            </Text>
-            <List
-              spacing="xs"
-              size="sm"
-              center
-              icon={
-                <ThemeIcon color="teal" size={20} radius="xl">
-                  <IconCheck style={{ width: rem(12), height: rem(12) }} />
-                </ThemeIcon>
-              }
+              <p className="text-sm">{error}</p>
+            </div>
+            <button
+              type="button"
+              className="text-xs underline"
+              onClick={() => {
+                setError(null);
+              }}
             >
-              <List.Item>First row should contain column headers</List.Item>
-              <List.Item>Must include date and amount columns</List.Item>
-              <List.Item>Supported formats: .csv files only</List.Item>
-              <List.Item>Maximum file size: 5MB</List.Item>
-            </List>
-          </Stack>
-        </Paper>
-      </Stack>
-    </Container>
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="rounded-xl border bg-card p-4 shadow-sm">
+        <Dropzone
+          onDrop={(files) => {
+            readFile(files[0]);
+          }}
+          onReject={(files) => {
+            const rejection = files[0];
+            if (rejection.errors[0]?.code === 'file-too-large') {
+              setError('File is too large. Maximum size is 5MB.');
+            } else if (rejection.errors[0]?.code === 'file-invalid-type') {
+              setError('Invalid file type. Please upload a CSV file.');
+            }
+          }}
+          maxSize={5 * 1024 ** 2}
+          accept={[CSV_MIME_TYPE]}
+          maxFiles={1}
+          multiple={false}
+          loading={isLoading}
+        >
+          <div
+            className="pointer-events-none flex min-h-[220px] items-center justify-center gap-8"
+          >
+            <Dropzone.Accept>
+              <IconUpload
+                style={{
+                  width: 52,
+                  height: 52,
+                  color: '#2563eb',
+                }}
+                stroke={1.5}
+              />
+            </Dropzone.Accept>
+            <Dropzone.Reject>
+              <IconX
+                style={{
+                  width: 52,
+                  height: 52,
+                  color: '#dc2626',
+                }}
+                stroke={1.5}
+              />
+            </Dropzone.Reject>
+            <Dropzone.Idle>
+              <IconFileTypeCsv
+                style={{
+                  width: 52,
+                  height: 52,
+                  color: '#6b7280',
+                }}
+                stroke={1.5}
+              />
+            </Dropzone.Idle>
+
+            <div>
+              <p className="text-lg font-medium">
+                Drag CSV file here or click to select
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                File should not exceed 5MB
+              </p>
+            </div>
+          </div>
+        </Dropzone>
+      </div>
+
+      <div className="rounded-xl border bg-card p-4 shadow-sm">
+        <div className="space-y-3">
+          <p className="text-sm font-semibold">CSV Requirements:</p>
+
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            <li className="flex items-start gap-2">
+              <span className="inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                <IconCheck className="h-3 w-3" />
+              </span>
+              <span>First row should contain column headers</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                <IconCheck className="h-3 w-3" />
+              </span>
+              <span>Must include date and amount columns</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                <IconCheck className="h-3 w-3" />
+              </span>
+              <span>Supported formats: .csv files only</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="inline-flex h-5 w-5 flex-none items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                <IconCheck className="h-3 w-3" />
+              </span>
+              <span>Maximum file size: 5MB</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 }

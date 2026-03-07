@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Button, Text, TextInput } from "@mantine/core";
+import { useState } from 'react';
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export const Route = createLazyFileRoute("/_app/tools/mortgage")({
   component: () => MortgageCalculator(),
@@ -22,45 +23,60 @@ function MortgageCalculator() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto" }}>
-      <Text size="xl" style={{ marginBottom: 20 }}>
+    <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+      <h1 className="text-2xl font-semibold">
         Mortgage Calculator
-      </Text>
-      <form>
-        <TextInput
-          label="Loan Amount"
-          type="number"
-          value={loanAmount}
-          onChange={(e) => setLoanAmount(Number(e.currentTarget.value))}
-          style={{ marginBottom: 10 }}
-        />
-        <TextInput
-          label="Interest Rate (%)"
-          type="number"
-          step={0.01}
-          value={interestRate}
-          onChange={(e) => setInterestRate(Number(e.currentTarget.value))}
-          style={{ marginBottom: 10 }}
-        />
-        <TextInput
-          label="Loan Term (years)"
+      </h1>
+      <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <div className="space-y-2">
+          <label htmlFor="mortgage-loan-amount" className="text-sm font-medium">
+            Loan Amount
+          </label>
+          <Input
+            id="mortgage-loan-amount"
+            type="number"
+            value={loanAmount}
+            onChange={(e) => setLoanAmount(Number(e.currentTarget.value))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="mortgage-interest-rate" className="text-sm font-medium">
+            Interest Rate (%)
+          </label>
+          <Input
+            id="mortgage-interest-rate"
+            type="number"
+            step={0.01}
+            value={interestRate}
+            onChange={(e) => setInterestRate(Number(e.currentTarget.value))}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="mortgage-loan-term" className="text-sm font-medium">
+            Loan Term (years)
+          </label>
+          <Input
+            id="mortgage-loan-term"
           type="number"
           value={loanTerm}
           onChange={(e) => setLoanTerm(Number(e.currentTarget.value))}
-          style={{ marginBottom: 20 }}
-        />
+          />
+        </div>
+
         <Button
+          type="button"
           variant="outline"
-          color="blue"
           onClick={calculateMonthlyPayment}
-          fullWidth
+          className="w-full"
         >
           Calculate
         </Button>
       </form>
-      <Text size="lg" style={{ marginTop: 20 }}>
+      <p className="text-lg font-medium">
         Monthly Payment: ${monthlyPayment.toFixed(2)}
-      </Text>
+      </p>
     </div>
   );
 }

@@ -1,22 +1,12 @@
-import { useSavingGoals, useAccounts } from '@guallet/api-react';
-import { WidgetCard } from './WidgetCard';
+import { cn } from '@/lib/utils';
+import { useAccounts, useSavingGoals } from '@guallet/api-react';
 import { Money } from '@guallet/money';
-import {
-  Loader,
-  Stack,
-  Text,
-  Progress,
-  Group,
-  Box,
-  useMantineTheme,
-  Center,
-} from '@mantine/core';
 import { IconPigMoney, IconFlag } from '@tabler/icons-react';
+import { WidgetCard } from './WidgetCard';
 
 export function SavingGoalsWidget() {
   const { savingGoals, isLoading: goalsLoading } = useSavingGoals();
   const { accounts, isLoading: accountsLoading } = useAccounts();
-  const theme = useMantineTheme();
 
   const isLoading = goalsLoading || accountsLoading;
 
@@ -44,97 +34,110 @@ export function SavingGoalsWidget() {
     };
   });
 
+  let content: React.ReactNode;
+
+  if (isLoading) {
+    content = (
+      <div className="flex h-[150px] items-center justify-center text-sm text-muted-foreground">
+        Loading...
+      </div>
+    );
+  } else if (goalsWithProgress.length > 0) {
+    content = (
+      <div className="space-y-4">
+        {goalsWithProgress.map((goal) => {
+          const isComplete = goal.progress >= 100;
+          const current = Money.fromCurrencyCode({
+            currencyCode: goal.currency,
+            amount: goal.currentAmount,
+          });
+          const target = Money.fromCurrencyCode({
+            currencyCode: goal.currency,
+            amount: Number(goal.target_amount),
+          });
+
+          return (
+            <div
+              key={goal.id}
+              className={cn(
+                'rounded-lg border p-3',
+                isComplete
+                  ? 'border-emerald-200 bg-emerald-50'
+                  : 'border-border bg-muted/40',
+              )}
+            >
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <IconFlag
+                    className={cn(
+                      'h-4 w-4',
+                      isComplete ? 'text-emerald-600' : 'text-blue-600',
+                    )}
+                  />
+                  <p className="text-sm font-semibold">{goal.name}</p>
+                </div>
+                <p
+                  className={cn(
+                    'text-xs font-medium',
+                    isComplete ? 'text-emerald-700' : 'text-muted-foreground',
+                  )}
+                >
+                  {goal.progress.toFixed(0)}%
+                </p>
+              </div>
+
+              {goal.description ? (
+                <p className="mb-2 text-xs text-muted-foreground">
+                  {goal.description}
+                </p>
+              ) : null}
+
+              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className={cn(
+                    'h-full transition-all',
+                    isComplete ? 'bg-emerald-500' : 'bg-blue-500',
+                  )}
+                  style={{ width: `${goal.progress}%` }}
+                />
+              </div>
+
+              <div className="mt-2 flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">{current.format()}</p>
+                <p
+                  className={cn(
+                    'text-xs font-semibold',
+                    isComplete ? 'text-emerald-600' : 'text-blue-600',
+                  )}
+                >
+                  {target.format()}
+                </p>
+              </div>
+
+              {goal.target_date ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Target: {new Date(goal.target_date).toLocaleDateString()}
+                </p>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    );
+  } else {
+    content = (
+      <div className="flex h-[150px] items-center justify-center">
+        <div className="space-y-2 text-center">
+          <IconPigMoney className="mx-auto h-12 w-12 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">No saving goals found.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <WidgetCard title="Saving Goals" icon={<IconPigMoney size={20} />}>
-      {isLoading ? (
-        <Center h={150}>
-          <Loader size="md" />
-        </Center>
-      ) : goalsWithProgress.length > 0 ? (
-        <Stack gap="md">
-          {goalsWithProgress.map((goal) => {
-            const isComplete = goal.progress >= 100;
-            const current = Money.fromCurrencyCode({
-              currencyCode: goal.currency,
-              amount: goal.currentAmount,
-            });
-            const target = Money.fromCurrencyCode({
-              currencyCode: goal.currency,
-              amount: Number(goal.target_amount),
-            });
-
-            return (
-              <Box
-                key={goal.id}
-                p="sm"
-                style={{
-                  borderRadius: theme.radius.md,
-                  backgroundColor: isComplete
-                    ? theme.colors.teal[0]
-                    : theme.colors.gray[0],
-                  border: `1px solid ${isComplete ? theme.colors.teal[2] : theme.colors.gray[2]}`,
-                }}
-              >
-                <Group justify="space-between" mb="xs">
-                  <Group gap="xs">
-                    <IconFlag
-                      size={16}
-                      color={
-                        isComplete ? theme.colors.teal[6] : theme.colors.blue[6]
-                      }
-                    />
-                    <Text fw={600} size="sm">
-                      {goal.name}
-                    </Text>
-                  </Group>
-                  <Text size="xs" c={isComplete ? 'teal' : 'dimmed'} fw={500}>
-                    {goal.progress.toFixed(0)}%
-                  </Text>
-                </Group>
-
-                {goal.description && (
-                  <Text size="xs" c="dimmed" mb="xs">
-                    {goal.description}
-                  </Text>
-                )}
-
-                <Progress
-                  value={goal.progress}
-                  color={isComplete ? 'teal' : 'blue'}
-                  size="lg"
-                  radius="xl"
-                  striped={isComplete}
-                  animated={isComplete}
-                />
-
-                <Group justify="space-between" mt="xs">
-                  <Text size="xs" c="dimmed">
-                    {current.format()}
-                  </Text>
-                  <Text size="xs" fw={600} c={isComplete ? 'teal' : 'blue'}>
-                    {target.format()}
-                  </Text>
-                </Group>
-
-                {goal.target_date && (
-                  <Text size="xs" c="dimmed" mt="xs">
-                    Target: {new Date(goal.target_date).toLocaleDateString()}
-                  </Text>
-                )}
-              </Box>
-            );
-          })}
-        </Stack>
-      ) : (
-        <Center h={150}>
-          <Stack gap="xs" align="center">
-            <IconPigMoney size={48} color={theme.colors.gray[4]} />
-            <Text size="sm" c="dimmed" ta="center">
-              No saving goals found.
-            </Text>
-          </Stack>
-        </Center>
-      )}
+      {content}
     </WidgetCard>
   );
 }

@@ -379,8 +379,7 @@
         "title": "Filtros (Opcional)",
         "description": "Por defecto, se exportarán todas tus transacciones. Utiliza los filtros a continuación para exportar un subconjunto específico.",
         "dateRange": {
-          "label": "Rango de Fechas",
-          "placeholder": "Selecciona un rango de fechas (deja vacío para todas)"
+          "label": "Rango de Fechas"
         },
         "accounts": {
           "label": "Cuentas",
@@ -464,6 +463,9 @@
           "value": {
             "label": "Valor",
             "placeholder": "Ingresar valor"
+          },
+          "removeButton": {
+            "label": "Remove condition"
           },
           "addButton": {
             "label": "Agregar condición"

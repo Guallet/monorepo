@@ -1,5 +1,4 @@
 import { useAuth } from '@guallet/auth';
-import { Loader, Stack, Text } from '@mantine/core';
 import { Link, createLazyFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
@@ -9,7 +8,7 @@ export const Route = createLazyFileRoute('/userdeleted')({
 
 function DeleteAccountConfirmationPage() {
   const { logout } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     logout()
@@ -22,17 +21,17 @@ function DeleteAccountConfirmationPage() {
 
   if (isLoading) {
     return (
-      <Stack>
-        <Loader />
-        <Text>Deleting your data...</Text>
-      </Stack>
+      <div className="flex flex-col items-center gap-3 py-8">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+        <p className="text-sm text-muted-foreground">Deleting your data...</p>
+      </div>
     );
   }
 
   return (
-    <Stack>
-      <Text>Your account and all your data has been deleted</Text>
+    <div className="flex flex-col gap-3 py-6">
+      <p>Your account and all your data has been deleted</p>
       <Link to="/">Go to home page</Link>
-    </Stack>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 import { WidgetCard } from "./WidgetCard";
 import { useTransactionsWithFilter } from "@guallet/api-react";
-import { Box, Text, Loader, Center, useMantineTheme } from "@mantine/core";
 import { IconChartBar } from "@tabler/icons-react";
 import { BarChart } from "@mantine/charts";
 
@@ -19,8 +18,6 @@ export function MonthlyInAndOutWidget({
     startDate: startDate ? new Date(startDate) : null,
     endDate: endDate ? new Date(endDate) : null,
   });
-
-  const theme = useMantineTheme();
 
   // Group transactions by month
   const monthlyData = transactions.reduce((acc, transaction) => {
@@ -51,50 +48,51 @@ export function MonthlyInAndOutWidget({
       spending: Math.round(spending),
     }));
 
+  let content: React.ReactNode;
+
+  if (isLoading) {
+    content = (
+      <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
+        Loading...
+      </div>
+    );
+  } else if (data.length > 0) {
+    content = (
+      <div className="mt-2 rounded-xl bg-muted p-4">
+        <BarChart
+          h={280}
+          data={data}
+          dataKey="month"
+          series={[
+            { name: 'income', label: 'Income', color: 'teal.6' },
+            { name: 'spending', label: 'Spending', color: 'red.6' },
+          ]}
+          tickLine="y"
+          gridAxis="xy"
+          withLegend
+          legendProps={{
+            verticalAlign: 'top',
+            height: 40,
+          }}
+          tooltipAnimationDuration={200}
+          barProps={{ radius: [4, 4, 0, 0] }}
+        />
+      </div>
+    );
+  } else {
+    content = (
+      <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
+        No transaction data available.
+      </div>
+    );
+  }
+
   return (
     <WidgetCard 
       title="Income vs. Spending" 
       icon={<IconChartBar size={20} />}
     >
-      {isLoading ? (
-        <Center h={280}>
-          <Loader size="md" />
-        </Center>
-      ) : data.length > 0 ? (
-        <Box
-          style={{
-            backgroundColor: theme.colors.gray[0],
-            borderRadius: theme.radius.md,
-            padding: 16,
-            marginTop: 8,
-          }}
-        >
-          <BarChart
-            h={280}
-            data={data}
-            dataKey="month"
-            series={[
-              { name: 'income', label: 'Income', color: 'teal.6' },
-              { name: 'spending', label: 'Spending', color: 'red.6' },
-            ]}
-            tickLine="y"
-            gridAxis="xy"
-            withLegend
-            legendProps={{ 
-              verticalAlign: 'top',
-              height: 40,
-            }}
-            tooltipAnimationDuration={200}
-            barProps={{ radius: [4, 4, 0, 0] }}
-          />
-        </Box>
-      ) : (
-        <Center h={280}>
-          <Text size="sm" c="dimmed">
-            No transaction data available.
-          </Text>
-        </Center>
-      )}
+      {content}
     </WidgetCard>
   );
 }

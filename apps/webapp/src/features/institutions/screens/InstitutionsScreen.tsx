@@ -1,8 +1,8 @@
 import { useGualletClient, useInstitutions } from "@guallet/api-react";
 import InstitutionsTable from "../components/InstitutionsTable";
-import { Stack, Button } from "@mantine/core";
 import { useState } from "react";
 import { notifications } from "@/lib/notifications";
+import { Button } from '@/components/ui/button';
 
 export function InstitutionsScreen() {
   const [isSyncingBanks, setIsSyncingBanks] = useState<boolean>(false);
@@ -49,16 +49,17 @@ export function InstitutionsScreen() {
   }
 
   return (
-    <Stack>
+    <div className="flex flex-col gap-4">
       <Button
-        loading={isSyncingBanks}
+        type="button"
+        disabled={isSyncingBanks}
         onClick={() => {
-          onSyncBanks();
+          void onSyncBanks();
         }}
       >
-        Sync Banks with Nordigen
+        {isSyncingBanks ? 'Syncing banks...' : 'Sync Banks with Nordigen'}
       </Button>
       <InstitutionsTable institutions={institutions} />
-    </Stack>
+    </div>
   );
 }

@@ -1,13 +1,15 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { Button, Card, Stack, Text } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from '@tanstack/react-router';
 
 export function DataImporterHomeScreen() {
   const navigate = useNavigate();
+
   return (
     <BaseScreen>
-      <Stack>
-        <Text>Select your importer</Text>
+      <div className="space-y-4">
+        <p className="text-sm text-muted-foreground">Select your importer</p>
         <ImporterCard
           name="CSV Importer"
           description="Import your transactions from a CSV file"
@@ -15,7 +17,7 @@ export function DataImporterHomeScreen() {
             navigate({ to: "/importer/csv" });
           }}
         />
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }
@@ -31,12 +33,18 @@ function ImporterCard({
   onClick,
 }: Readonly<ImporterCardProps>) {
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Text fw={500}>{name}</Text>
-      {description && <Text>{description}</Text>}
-      <Button color="blue" fullWidth mt="md" radius="md" onClick={onClick}>
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">{name}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {description ? (
+          <p className="text-sm text-muted-foreground">{description}</p>
+        ) : null}
+        <Button className="w-full" onClick={onClick}>
         Import
-      </Button>
+        </Button>
+      </CardContent>
     </Card>
   );
 }

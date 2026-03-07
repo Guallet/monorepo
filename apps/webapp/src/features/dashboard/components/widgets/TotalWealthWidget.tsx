@@ -1,8 +1,7 @@
-import { useAccounts } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Money } from "@guallet/money";
-import { Loader, Stack, Text, Group, Box, useMantineTheme, Center } from "@mantine/core";
-import { IconWallet, IconTrendingUp } from "@tabler/icons-react";
+import { useAccounts } from '@guallet/api-react';
+import { WidgetCard } from './WidgetCard';
+import { Money } from '@guallet/money';
+import { IconWallet, IconTrendingUp } from '@tabler/icons-react';
 
 function getArraySum(array: number[]): number {
   let sum = 0;
@@ -14,10 +13,9 @@ function getArraySum(array: number[]): number {
 
 export function TotalWealthWidget() {
   const { accounts, isLoading } = useAccounts();
-  const theme = useMantineTheme();
 
   const currencies = new Set(
-    accounts.map((account) => account.balance.currency)
+    accounts.map((account) => account.balance.currency),
   );
 
   const balances = [...currencies].map((currency) => {
@@ -34,43 +32,38 @@ export function TotalWealthWidget() {
   });
 
   return (
-    <WidgetCard 
-      title="Total Wealth" 
-      icon={<IconWallet size={20} />}
-    >
+    <WidgetCard title="Total Wealth" icon={<IconWallet size={20} />}>
       {isLoading ? (
-        <Center h={100}>
-          <Loader size="md" />
-        </Center>
+        <div className="flex h-[100px] items-center justify-center text-sm text-muted-foreground">
+          Loading...
+        </div>
       ) : (
-        <Stack gap="md" align="center" justify="center" h="100%">
+        <div className="flex h-full flex-col items-center justify-center gap-4">
           {balances.map((balance) => {
             const isPositive = balance.amount >= 0;
+            const accountCount = accounts.filter(
+              (account) => account.currency === balance.currency.code,
+            ).length;
+
             return (
-              <Box key={balance.currency.code} style={{ textAlign: 'center', width: '100%' }}>
-                <Group gap="xs" justify="center" mb="xs">
-                  <IconTrendingUp 
-                    size={24} 
-                    style={{ 
-                      color: isPositive ? theme.colors.teal[6] : theme.colors.red[6]
-                    }} 
+              <div key={balance.currency.code} className="w-full text-center">
+                <div className="mb-2 flex justify-center">
+                  <IconTrendingUp
+                    className={`h-6 w-6 ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}
                   />
-                </Group>
-                <Text
-                  size="xl"
-                  fw={700}
-                  c={isPositive ? "teal" : "red"}
-                  style={{ fontSize: '2rem' }}
+                </div>
+                <p
+                  className={`text-3xl font-bold ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}
                 >
                   {balance.format()}
-                </Text>
-                <Text size="xs" c="dimmed" mt="xs">
-                  Across {accounts.filter(a => a.currency === balance.currency.code).length} accounts
-                </Text>
-              </Box>
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Across {accountCount} accounts
+                </p>
+              </div>
             );
           })}
-        </Stack>
+        </div>
       )}
     </WidgetCard>
   );

@@ -2,16 +2,6 @@ import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { WidgetCard } from './WidgetCard';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { Money } from '@guallet/money';
-import {
-  Loader,
-  Stack,
-  Text,
-  Group,
-  Box,
-  useMantineTheme,
-  Center,
-  RingProgress,
-} from '@mantine/core';
 import { IconArrowUp, IconArrowDown, IconChartPie } from '@tabler/icons-react';
 
 interface TotalIncomeExpenditureWidgetProps {
@@ -29,8 +19,6 @@ export function TotalIncomeExpenditureWidget({
     startDate: startDate ? new Date(startDate) : null,
     endDate: endDate ? new Date(endDate) : null,
   });
-
-  const theme = useMantineTheme();
 
   // Calculate total income and expenditure
   const income = transactions
@@ -51,89 +39,69 @@ export function TotalIncomeExpenditureWidget({
   const total = income + expenditure;
   const incomePercent = total > 0 ? (income / total) * 100 : 50;
   const balance = income - expenditure;
+  const ringAngle = Math.max(0, Math.min(incomePercent, 100)) * 3.6;
+  const ringBackground = `conic-gradient(#0d9488 0deg ${ringAngle}deg, #dc2626 ${ringAngle}deg 360deg)`;
 
   return (
     <WidgetCard title="Income vs Expenditure" icon={<IconChartPie size={20} />}>
       {isLoading ? (
-        <Center h={200}>
-          <Loader size="md" />
-        </Center>
+        <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
+          Loading...
+        </div>
       ) : (
-        <Stack gap="lg" align="center">
-          <Center>
-            <RingProgress
-              size={180}
-              thickness={20}
-              sections={[
-                { value: incomePercent, color: 'teal', tooltip: 'Income' },
-                {
-                  value: 100 - incomePercent,
-                  color: 'red',
-                  tooltip: 'Expenditure',
-                },
-              ]}
-              label={
-                <Center>
-                  <Stack gap={0} align="center">
-                    <Text size="xs" c="dimmed" fw={500}>
-                      Balance
-                    </Text>
-                    <Text size="lg" fw={700} c={balance >= 0 ? 'teal' : 'red'}>
-                      {balance >= 0 ? '+' : ''}
-                      {Money.fromCurrencyCode({
-                        amount: balance,
-                        currencyCode,
-                      }).format()}
-                    </Text>
-                  </Stack>
-                </Center>
-              }
-            />
-          </Center>
+        <div className="flex flex-col items-center gap-6">
+          <div
+            className="relative h-44 w-44 rounded-full"
+            style={{ background: ringBackground }}
+          >
+            <div className="absolute inset-4 flex items-center justify-center rounded-full bg-card">
+              <div className="space-y-1 text-center">
+                <p className="text-xs font-medium text-muted-foreground">Balance</p>
+                <p
+                  className={`text-lg font-bold ${balance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}
+                >
+                  {balance >= 0 ? '+' : ''}
+                  {Money.fromCurrencyCode({
+                    amount: balance,
+                    currencyCode,
+                  }).format()}
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <Group grow style={{ width: '100%' }}>
-            <Box
-              p="md"
-              style={{
-                borderRadius: theme.radius.md,
-                backgroundColor: theme.colors.teal[0],
-                border: `1px solid ${theme.colors.teal[2]}`,
-              }}
-            >
-              <Group gap="xs" mb="xs">
-                <IconArrowUp size={20} color={theme.colors.teal[6]} />
-                <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+          <div className="grid w-full gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+              <div className="mb-2 flex items-center gap-2">
+                <IconArrowUp className="h-5 w-5 text-emerald-600" />
+                <p className="text-xs font-semibold uppercase text-muted-foreground">
                   Income
-                </Text>
-              </Group>
-              <Text size="xl" fw={700} c="teal">
+                </p>
+              </div>
+              <p className="text-xl font-bold text-emerald-700">
                 {Money.fromCurrencyCode({
                   amount: income,
-                  currencyCode: currencyCode,
+                  currencyCode,
                 }).format()}
-              </Text>
-            </Box>
+              </p>
+            </div>
 
-            <Box
-              p="md"
-              style={{
-                borderRadius: theme.radius.md,
-                backgroundColor: theme.colors.red[0],
-                border: `1px solid ${theme.colors.red[2]}`,
-              }}
-            >
-              <Group gap="xs" mb="xs">
-                <IconArrowDown size={20} color={theme.colors.red[6]} />
-                <Text size="xs" c="dimmed" fw={600} tt="uppercase">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+              <div className="mb-2 flex items-center gap-2">
+                <IconArrowDown className="h-5 w-5 text-red-600" />
+                <p className="text-xs font-semibold uppercase text-muted-foreground">
                   Expenditure
-                </Text>
-              </Group>
-              <Text size="xl" fw={700} c="red">
-                {expenditure.toFixed(0)}
-              </Text>
-            </Box>
-          </Group>
-        </Stack>
+                </p>
+              </div>
+              <p className="text-xl font-bold text-red-700">
+                {Money.fromCurrencyCode({
+                  amount: expenditure,
+                  currencyCode,
+                }).format()}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
     </WidgetCard>
   );

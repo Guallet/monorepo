@@ -1,22 +1,15 @@
-import {
-  ActionIcon,
-  Button,
-  Card,
-  Group,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-  Textarea,
-  Switch,
-  Divider,
-} from '@mantine/core';
-import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
+import { IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { CategoryDto, FieldDefinitionDto } from '@guallet/api-client';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useCategory } from '@guallet/api-react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 export interface RuleFormData {
   name: string;
@@ -46,6 +39,11 @@ interface RuleFormProps {
 let conditionIdCounter = 0;
 const generateConditionId = () => `temp-${++conditionIdCounter}`;
 
+const selectClassName =
+  'flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+const textAreaClassName =
+  'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+
 export function RuleForm({
   initialData,
   fieldDefinitions,
@@ -56,9 +54,7 @@ export function RuleForm({
 }: Readonly<RuleFormProps>) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialData?.name ?? '');
-  const [description, setDescription] = useState(
-    initialData?.description ?? '',
-  );
+  const [description, setDescription] = useState(initialData?.description ?? '');
   const [resultCategoryId, setResultCategoryId] = useState(
     initialData?.resultCategoryId ?? '',
   );
@@ -79,15 +75,15 @@ export function RuleForm({
     useState<ConditionFormData | null>(null);
 
   const handleAddCondition = () => {
-    setConditions([
-      ...conditions,
+    setConditions((prev) => [
+      ...prev,
       { id: generateConditionId(), field: '', operator: '', value: '' },
     ]);
   };
 
   const handleRemoveCondition = (id: string) => {
     if (conditions.length > 1) {
-      setConditions(conditions.filter((c) => c.id !== id));
+      setConditions((prev) => prev.filter((condition) => condition.id !== id));
     }
   };
 
@@ -96,44 +92,44 @@ export function RuleForm({
     field: keyof ConditionFormData,
     value: string,
   ) => {
-    setConditions(
-      conditions.map((c) => {
-        if (c.id === id) {
-          const updated = { ...c, [field]: value };
-          // Reset operator when field changes
-          if (field === 'field') {
-            updated.operator = '';
-          }
-          return updated;
+    setConditions((prev) =>
+      prev.map((condition) => {
+        if (condition.id !== id) {
+          return condition;
         }
-        return c;
+
+        const updated = { ...condition, [field]: value };
+        if (field === 'field') {
+          updated.operator = '';
+        }
+        return updated;
       }),
     );
   };
 
   const getOperatorsForField = (fieldName: string) => {
-    const fieldDef = fieldDefinitions.find((f) => f.name === fieldName);
+    const fieldDef = fieldDefinitions.find((field) => field.name === fieldName);
     return fieldDef?.operators ?? [];
   };
 
   const handleDragStart = (
-    e: React.DragEvent,
+    event: React.DragEvent,
     condition: ConditionFormData,
   ) => {
     setDraggedCondition(condition);
-    e.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
   };
 
   const handleDrop = (
-    e: React.DragEvent,
+    event: React.DragEvent,
     targetCondition: ConditionFormData,
   ) => {
-    e.preventDefault();
+    event.preventDefault();
     if (!draggedCondition || draggedCondition.id === targetCondition.id) {
       setDraggedCondition(null);
       return;
@@ -141,10 +137,10 @@ export function RuleForm({
 
     const newConditions = [...conditions];
     const draggedIndex = newConditions.findIndex(
-      (c) => c.id === draggedCondition.id,
+      (condition) => condition.id === draggedCondition.id,
     );
     const targetIndex = newConditions.findIndex(
-      (c) => c.id === targetCondition.id,
+      (condition) => condition.id === targetCondition.id,
     );
 
     newConditions.splice(draggedIndex, 1);
@@ -154,8 +150,8 @@ export function RuleForm({
     setDraggedCondition(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     onSubmit({
       name,
       description,
@@ -170,201 +166,236 @@ export function RuleForm({
     name.trim() !== '' &&
     resultCategoryId !== '' &&
     conditions.every(
-      (c) => c.field !== '' && c.operator !== '' && c.value !== '',
+      (condition) =>
+        condition.field !== '' &&
+        condition.operator !== '' &&
+        condition.value !== '',
     );
 
-  const fieldOptions = fieldDefinitions.map((f) => ({
-    value: f.name,
-    label: f.label,
+  const fieldOptions = fieldDefinitions.map((field) => ({
+    value: field.name,
+    label: field.label,
   }));
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack gap="md">
-        <Card withBorder p="md">
-          <Stack gap="md">
-            <TextInput
-              label={t('screens.rules.form.name.label')}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Card>
+        <CardContent className="space-y-4 pt-6">
+          <div className="space-y-2">
+            <Label htmlFor="rule-name">{t('screens.rules.form.name.label')}</Label>
+            <Input
+              id="rule-name"
               placeholder={t('screens.rules.form.name.placeholder')}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(event) => setName(event.target.value)}
               required
             />
+          </div>
 
-            <Textarea
-              label={t('screens.rules.form.description.label')}
+          <div className="space-y-2">
+            <Label htmlFor="rule-description">
+              {t('screens.rules.form.description.label')}
+            </Label>
+            <textarea
+              id="rule-description"
+              className={textAreaClassName}
               placeholder={t('screens.rules.form.description.placeholder')}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(event) => setDescription(event.target.value)}
               rows={2}
             />
+          </div>
 
-            <Switch
-              label={t('screens.rules.form.isActive.label')}
+          <div className="flex items-center gap-2">
+            <input
+              id="rule-is-active"
+              type="checkbox"
               checked={isActive}
-              onChange={(e) => setIsActive(e.currentTarget.checked)}
+              onChange={(event) => setIsActive(event.currentTarget.checked)}
+              className="h-4 w-4 rounded border border-input"
             />
-          </Stack>
-        </Card>
+            <Label htmlFor="rule-is-active" className="cursor-pointer">
+              {t('screens.rules.form.isActive.label')}
+            </Label>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card withBorder p="md">
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text fw={500}>{t('screens.rules.form.conditions.title')}</Text>
-              <Select
-                size="xs"
-                w={120}
-                value={conditionLogic}
-                onChange={(value) =>
-                  setConditionLogic((value as 'and' | 'or') ?? 'and')
-                }
-                data={[
-                  {
-                    value: 'and',
-                    label: t('screens.rules.form.conditions.logic.all'),
-                  },
-                  {
-                    value: 'or',
-                    label: t('screens.rules.form.conditions.logic.any'),
-                  },
-                ]}
-              />
-            </Group>
+      <Card>
+        <CardContent className="space-y-4 pt-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-medium">
+              {t('screens.rules.form.conditions.title')}
+            </p>
+            <select
+              className={cn(selectClassName, 'h-8 w-[120px] text-xs')}
+              value={conditionLogic}
+              onChange={(event) =>
+                setConditionLogic((event.target.value as 'and' | 'or') ?? 'and')
+              }
+            >
+              <option value="and">
+                {t('screens.rules.form.conditions.logic.all')}
+              </option>
+              <option value="or">{t('screens.rules.form.conditions.logic.any')}</option>
+            </select>
+          </div>
 
-            {conditions.map((condition, index) => (
-              <div key={condition.id}>
-                {index > 0 && (
-                  <Divider
-                    label={conditionLogic.toUpperCase()}
-                    labelPosition="center"
-                    my="xs"
-                  />
+          {conditions.map((condition, index) => (
+            <div key={condition.id}>
+              {index > 0 ? (
+                <div className="relative my-2">
+                  <Separator />
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">
+                    {conditionLogic.toUpperCase()}
+                  </span>
+                </div>
+              ) : null}
+
+              <Card
+                draggable
+                onDragStart={(event) => handleDragStart(event, condition)}
+                onDragOver={handleDragOver}
+                onDrop={(event) => handleDrop(event, condition)}
+                className={cn(
+                  'border',
+                  draggedCondition?.id === condition.id ? 'opacity-50' : '',
                 )}
-                <Card
-                  withBorder
-                  p="sm"
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, condition)}
-                  onDragOver={handleDragOver}
-                  onDrop={(e) => handleDrop(e, condition)}
-                  style={{
-                    cursor: 'grab',
-                    opacity: draggedCondition?.id === condition.id ? 0.5 : 1,
-                  }}
-                >
-                  <Group gap="xs" wrap="nowrap" align="flex-end">
-                    <ActionIcon
-                      variant="subtle"
-                      style={{ cursor: 'grab' }}
-                      mb={4}
+              >
+                <CardContent className="pt-4">
+                  <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
+                    <span
+                      aria-hidden="true"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-muted-foreground"
                     >
                       <IconGripVertical size={16} />
-                    </ActionIcon>
-                    <Select
-                      label={t('screens.rules.form.conditions.field.label')}
-                      placeholder={t(
-                        'screens.rules.form.conditions.field.placeholder',
-                      )}
-                      data={fieldOptions}
-                      value={condition.field}
-                      onChange={(value) =>
-                        handleConditionChange(
-                          condition.id,
-                          'field',
-                          value ?? '',
-                        )
-                      }
-                      style={{ flex: 1 }}
-                    />
-                    <Select
-                      label={t('screens.rules.form.conditions.operator.label')}
-                      placeholder={t(
-                        'screens.rules.form.conditions.operator.placeholder',
-                      )}
-                      data={getOperatorsForField(condition.field)}
-                      value={condition.operator}
-                      onChange={(value) =>
-                        handleConditionChange(
-                          condition.id,
-                          'operator',
-                          value ?? '',
-                        )
-                      }
-                      disabled={!condition.field}
-                      style={{ flex: 1 }}
-                    />
-                    <TextInput
-                      label={t('screens.rules.form.conditions.value.label')}
-                      placeholder={t(
-                        'screens.rules.form.conditions.value.placeholder',
-                      )}
-                      value={condition.value}
-                      onChange={(e) =>
-                        handleConditionChange(
-                          condition.id,
-                          'value',
-                          e.target.value,
-                        )
-                      }
-                      style={{ flex: 1 }}
-                    />
-                    <ActionIcon
-                      variant="subtle"
-                      color="red"
+                    </span>
+
+                    <div className="min-w-[180px] flex-1 space-y-2">
+                      <Label htmlFor={`condition-field-${condition.id}`}>
+                        {t('screens.rules.form.conditions.field.label')}
+                      </Label>
+                      <select
+                        id={`condition-field-${condition.id}`}
+                        className={selectClassName}
+                        value={condition.field}
+                        onChange={(event) =>
+                          handleConditionChange(
+                            condition.id,
+                            'field',
+                            event.target.value,
+                          )
+                        }
+                      >
+                        <option value="">
+                          {t('screens.rules.form.conditions.field.placeholder')}
+                        </option>
+                        {fieldOptions.map((fieldOption) => (
+                          <option key={fieldOption.value} value={fieldOption.value}>
+                            {fieldOption.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="min-w-[180px] flex-1 space-y-2">
+                      <Label htmlFor={`condition-operator-${condition.id}`}>
+                        {t('screens.rules.form.conditions.operator.label')}
+                      </Label>
+                      <select
+                        id={`condition-operator-${condition.id}`}
+                        className={selectClassName}
+                        value={condition.operator}
+                        onChange={(event) =>
+                          handleConditionChange(
+                            condition.id,
+                            'operator',
+                            event.target.value,
+                          )
+                        }
+                        disabled={!condition.field}
+                      >
+                        <option value="">
+                          {t('screens.rules.form.conditions.operator.placeholder')}
+                        </option>
+                        {getOperatorsForField(condition.field).map((operator) => (
+                          <option key={operator.value} value={operator.value}>
+                            {operator.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="min-w-[180px] flex-1 space-y-2">
+                      <Label htmlFor={`condition-value-${condition.id}`}>
+                        {t('screens.rules.form.conditions.value.label')}
+                      </Label>
+                      <Input
+                        id={`condition-value-${condition.id}`}
+                        placeholder={t(
+                          'screens.rules.form.conditions.value.placeholder',
+                        )}
+                        value={condition.value}
+                        onChange={(event) =>
+                          handleConditionChange(
+                            condition.id,
+                            'value',
+                            event.target.value,
+                          )
+                        }
+                      />
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => handleRemoveCondition(condition.id)}
                       disabled={conditions.length === 1}
-                      mb={4}
+                      className="text-destructive hover:text-destructive"
+                      aria-label={t(
+                        'screens.rules.form.conditions.removeButton.label',
+                        'Remove condition',
+                      )}
                     >
                       <IconTrash size={16} />
-                    </ActionIcon>
-                  </Group>
-                </Card>
-              </div>
-            ))}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
 
-            <Button
-              variant="light"
-              leftSection={<IconPlus size={16} />}
-              onClick={handleAddCondition}
-            >
-              {t('screens.rules.form.conditions.addButton.label')}
-            </Button>
-          </Stack>
-        </Card>
-
-        <Card withBorder p="md">
-          <Stack gap="md">
-            <Text fw={500}>{t('screens.rules.form.category.title')}</Text>
-            {/* <Select
-              label="Category"
-              placeholder="Select category to assign"
-              data={categoryOptions}
-              value={resultCategoryId}
-              onChange={(value) => setResultCategoryId(value ?? '')}
-              searchable
-              required
-            /> */}
-            <CategoryPicker
-              required
-              label={t('screens.rules.form.category.label')}
-              placeholder={t('screens.rules.form.category.placeholder')}
-              selectedCategory={category}
-              onCategorySelected={(selectedCategory: CategoryDto) => {
-                setResultCategoryId(selectedCategory.id ?? '');
-              }}
-            />
-          </Stack>
-        </Card>
-
-        <Group justify="flex-end" mt="md">
-          <Button variant="subtle" onClick={onCancel} disabled={isSubmitting}>
-            {t('screens.rules.form.buttons.cancel')}
+          <Button type="button" variant="secondary" onClick={handleAddCondition}>
+            <IconPlus size={16} />
+            {t('screens.rules.form.conditions.addButton.label')}
           </Button>
-          <Button type="submit" loading={isSubmitting} disabled={!isFormValid}>
-            {submitLabel}
-          </Button>
-        </Group>
-      </Stack>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-4 pt-6">
+          <p className="text-sm font-medium">{t('screens.rules.form.category.title')}</p>
+          <CategoryPicker
+            required
+            label={t('screens.rules.form.category.label')}
+            placeholder={t('screens.rules.form.category.placeholder')}
+            selectedCategory={category}
+            onCategorySelected={(selectedCategory: CategoryDto) => {
+              setResultCategoryId(selectedCategory.id ?? '');
+            }}
+          />
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
+          {t('screens.rules.form.buttons.cancel')}
+        </Button>
+        <Button type="submit" disabled={isSubmitting || !isFormValid}>
+          {isSubmitting ? `${submitLabel}...` : submitLabel}
+        </Button>
+      </div>
     </form>
   );
 }

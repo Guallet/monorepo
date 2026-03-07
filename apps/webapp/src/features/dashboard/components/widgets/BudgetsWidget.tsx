@@ -1,88 +1,89 @@
-import { useBudgets } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Loader, Stack, Text, Progress, Group, Box, useMantineTheme, Center } from "@mantine/core";
-import { IconTargetArrow } from "@tabler/icons-react";
+import { useBudgets } from '@guallet/api-react';
+import { IconTargetArrow } from '@tabler/icons-react';
+import { WidgetCard } from './WidgetCard';
 
 export function BudgetsWidget() {
   const { budgets, isLoading } = useBudgets();
-  const theme = useMantineTheme();
+
+  let content: React.ReactNode;
+
+  if (isLoading) {
+    content = (
+      <div className="flex h-[100px] items-center justify-center text-sm text-muted-foreground">
+        Loading...
+      </div>
+    );
+  } else if (!budgets || budgets.length === 0) {
+    content = (
+      <div className="flex h-[100px] items-center justify-center text-sm text-muted-foreground">
+        No budgets found.
+      </div>
+    );
+  } else {
+    content = (
+      <div className="space-y-4">
+        {budgets.map((budget) => {
+          const spent = Number(budget.spent ?? 0);
+          const total = Number(budget.amount ?? 0);
+          const remaining = total - spent;
+          const rawPercent = total > 0 ? (spent / total) * 100 : 0;
+          const percent = Math.min(rawPercent, 100);
+          const isOverBudget = rawPercent > 100;
+          const isNearLimit = rawPercent > 90 && !isOverBudget;
+
+          let containerClassName = 'border-border bg-muted/40';
+          let amountClassName = 'text-muted-foreground';
+          let progressClassName = 'bg-emerald-500';
+
+          if (isOverBudget) {
+            containerClassName = 'border-red-200 bg-red-50';
+            amountClassName = 'text-red-600';
+            progressClassName = 'bg-red-500';
+          } else if (isNearLimit) {
+            containerClassName = 'border-amber-200 bg-amber-50';
+            amountClassName = 'text-amber-600';
+            progressClassName = 'bg-amber-500';
+          }
+
+          return (
+            <div
+              key={budget.id}
+              className={`rounded-lg border p-3 ${containerClassName}`}
+            >
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <p className="text-sm font-semibold">{budget.name}</p>
+                <p className={`text-sm font-medium ${amountClassName}`}>
+                  {spent.toFixed(0)} / {total.toFixed(0)}
+                </p>
+              </div>
+
+              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className={`h-full rounded-full transition-all ${progressClassName}`}
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
+
+              <div className="mt-2 flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">Remaining</p>
+                <p
+                  className={`text-xs font-medium ${
+                    remaining < 0 ? 'text-red-600' : 'text-emerald-600'
+                  }`}
+                >
+                  {remaining.toFixed(0)}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <WidgetCard title="Budgets" icon={<IconTargetArrow size={20} />}>
-      {isLoading ? (
-        <Center h={100}>
-          <Loader size="md" />
-        </Center>
-      ) : (
-        <Stack gap="md">
-          {budgets && budgets.length > 0 ? (
-            budgets.map((budget) => {
-              const spent = Number(budget.spent ?? 0);
-              const total = Number(budget.amount ?? 0);
-              const remaining = total - spent;
-              const percent =
-                total > 0 ? Math.min((spent / total) * 100, 100) : 0;
-              const isOverBudget = percent > 100;
-              const isNearLimit = percent > 90 && !isOverBudget;
-              
-              return (
-                <Box 
-                  key={budget.id}
-                  p="sm"
-                  style={{
-                    borderRadius: theme.radius.md,
-                    backgroundColor: isOverBudget 
-                      ? theme.colors.red[0] 
-                      : isNearLimit 
-                      ? theme.colors.yellow[0] 
-                      : theme.colors.gray[0],
-                    border: `1px solid ${
-                      isOverBudget 
-                        ? theme.colors.red[2] 
-                        : isNearLimit 
-                        ? theme.colors.yellow[2] 
-                        : theme.colors.gray[2]
-                    }`,
-                  }}
-                >
-                  <Group justify="space-between" mb="xs">
-                    <Text fw={600} size="sm">{budget.name}</Text>
-                    <Text size="sm" c={isOverBudget ? "red" : isNearLimit ? "yellow" : "dimmed"} fw={500}>
-                      {spent.toFixed(0)} / {total.toFixed(0)}
-                    </Text>
-                  </Group>
-                  <Progress 
-                    value={percent} 
-                    color={isOverBudget ? "red" : isNearLimit ? "yellow" : "teal"}
-                    size="md"
-                    radius="xl"
-                    striped={isOverBudget}
-                    animated={isOverBudget}
-                  />
-                  <Group justify="space-between" mt="xs">
-                    <Text size="xs" c="dimmed">
-                      Remaining
-                    </Text>
-                    <Text 
-                      size="xs" 
-                      fw={500}
-                      c={remaining < 0 ? "red" : "teal"}
-                    >
-                      {remaining.toFixed(0)}
-                    </Text>
-                  </Group>
-                </Box>
-              );
-            })
-          ) : (
-            <Center h={100}>
-              <Text size="sm" c="dimmed">
-                No budgets found.
-              </Text>
-            </Center>
-          )}
-        </Stack>
-      )}
+      {content}
     </WidgetCard>
   );
 }

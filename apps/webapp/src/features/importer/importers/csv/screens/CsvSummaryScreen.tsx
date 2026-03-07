@@ -1,48 +1,34 @@
 import {
   AccountDto,
-  CategoryDto,
-  CsvRowData,
   AccountMapping,
+  CategoryDto,
   CategoryMapping,
+  CsvRowData,
 } from '@guallet/api-client';
-import { FieldMappings } from '../models';
-import { DEFAULT_ACCOUNT_NAME } from './CsvAccountsScreen';
-import { formatDate, parseDate } from '@/utils/dateUtils';
-import { parseNumber } from '@/utils/numberUtils';
-import {
-  Modal,
-  Stack,
-  Title,
-  Button,
-  LoadingOverlay,
-  Accordion,
-  Badge,
-  Table,
-  Text,
-  Container,
-  Paper,
-  Group,
-  Alert,
-  List,
-} from '@mantine/core';
-import { useNavigate } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
-import {
-  useCsvInfo,
-  useCsvMappings,
-  useCsvActions,
-  useAccountMappings,
-  useCategoriesMappings,
-  useCsvAccounts,
-  useCsvCategories,
-} from '../state/csvState';
 import {
   useAccounts,
   useCategories,
   useGualletClient,
 } from '@guallet/api-react';
+import { Button } from '@/components/ui/button';
+import { formatDate, parseDate } from '@/utils/dateUtils';
+import { parseNumber } from '@/utils/numberUtils';
+import { ResponsiveModal } from '@guallet/ui-react';
 import { IconCheck, IconMail } from '@tabler/icons-react';
+import { useNavigate } from '@tanstack/react-router';
+import { useMemo, useState } from 'react';
+import { FieldMappings } from '../models';
+import {
+  useAccountMappings,
+  useCategoriesMappings,
+  useCsvAccounts,
+  useCsvActions,
+  useCsvCategories,
+  useCsvInfo,
+  useCsvMappings,
+} from '../state/csvState';
 import { CsvStepper } from '../components/CsvStepper';
+import { DEFAULT_ACCOUNT_NAME } from './CsvAccountsScreen';
 
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
@@ -55,11 +41,8 @@ export function CsvSummaryScreen() {
   const transactions = csvData.data;
   const fieldMappings = useCsvMappings();
 
-  // Data
   const accountMappings = useAccountMappings();
   const categoriesMappings = useCategoriesMappings();
-
-  // Note: mapping is performed on demand in preview rendering
 
   const [error, setError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
@@ -70,14 +53,13 @@ export function CsvSummaryScreen() {
       setError(null);
       setIsBusy(true);
 
-      // Prepare account mappings for API
       const apiAccountMappings: Record<string, AccountMapping> = {};
       for (const [key, account] of Object.entries(accountMappings)) {
         if (account) {
           apiAccountMappings[key] = {
             id: account.id,
             name: account.name || key,
-            shouldCreate: !account.id, // If no ID, we need to create it
+            shouldCreate: !account.id,
           };
         } else {
           apiAccountMappings[key] = {
@@ -87,7 +69,6 @@ export function CsvSummaryScreen() {
         }
       }
 
-      // Prepare category mappings for API
       const apiCategoryMappings: Record<string, CategoryMapping> = {};
       for (const [key, category] of Object.entries(categoriesMappings)) {
         if (category) {
@@ -104,7 +85,6 @@ export function CsvSummaryScreen() {
         }
       }
 
-      // Call the new bulk import API
       await gualletClient.dataImporter.importData({
         format: 'csv',
         csvData: csvData.data as CsvRowData[],
@@ -127,7 +107,7 @@ export function CsvSummaryScreen() {
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={isModalOpened}
         onClose={() => {
           setIsModalOpened(false);
@@ -135,49 +115,38 @@ export function CsvSummaryScreen() {
             to: '/dashboard',
           });
         }}
-        closeOnClickOutside
-        closeOnEscape
-        withCloseButton={false}
-        centered
+        title="Import Started Successfully!"
         size="md"
       >
-        <Stack align="center" gap="lg" py="md">
-          <div
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: '50%',
-              backgroundColor: 'var(--mantine-color-green-1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <IconCheck size={48} color="var(--mantine-color-green-6)" />
+        <div className="space-y-6 py-2">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+            <IconCheck className="h-12 w-12 text-emerald-600" />
           </div>
 
-          <Stack align="center" gap="xs">
-            <Title order={2}>Import Started Successfully!</Title>
-            <Text c="dimmed" ta="center">
+          <div className="space-y-2 text-center">
+            <h2 className="text-xl font-semibold">Import Started Successfully!</h2>
+            <p className="text-sm text-muted-foreground">
               Your CSV import is now being processed in the background.
-            </Text>
-          </Stack>
+            </p>
+          </div>
 
-          <Alert icon={<IconMail size={16} />} color="blue" w="100%">
-            <Stack gap="xs">
-              <Text fw={500} size="sm">
-                You'll receive an email notification
-              </Text>
-              <Text size="sm">
-                We'll send you an email with the import results, including the
-                number of transactions successfully processed.
-              </Text>
-            </Stack>
-          </Alert>
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <div className="flex items-start gap-3">
+              <IconMail className="mt-0.5 h-4 w-4 text-blue-600" />
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-blue-900">
+                  You&apos;ll receive an email notification
+                </p>
+                <p className="text-sm text-blue-800">
+                  We&apos;ll send you an email with the import results, including
+                  the number of transactions successfully processed.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <Button
-            fullWidth
-            size="md"
+            className="w-full"
             onClick={() => {
               navigate({
                 to: '/',
@@ -186,170 +155,158 @@ export function CsvSummaryScreen() {
           >
             Go to Dashboard
           </Button>
-        </Stack>
-      </Modal>
+        </div>
+      </ResponsiveModal>
 
-      <LoadingOverlay
-        visible={isBusy}
-        zIndex={1000}
-        overlayProps={{ radius: 'sm', blur: 2 }}
-        loaderProps={{
-          children: `Submitting your import request...`,
-        }}
-      />
+      {isBusy ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-sm">
+          <div className="rounded-lg border bg-card px-5 py-3 text-sm font-medium shadow-lg">
+            Submitting your import request...
+          </div>
+        </div>
+      ) : null}
 
-      <Container size="xl" py="xl">
-        <Stack gap="xl">
-          <Stack gap="xs">
-            <Title order={2}>Review & Import</Title>
-            <Text c="dimmed" size="sm">
-              Review your data before importing. All {transactions.length}{' '}
-              transactions will be processed on the server.
-            </Text>
-          </Stack>
+      <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight">Review &amp; Import</h1>
+          <p className="text-sm text-muted-foreground">
+            Review your data before importing. All {transactions.length}{' '}
+            transactions will be processed on the server.
+          </p>
+        </div>
 
-          <CsvStepper
-            activeStep={4}
-            onStepClick={(stepIndex) => {
-              switch (stepIndex) {
-                case 0:
-                  navigate({
-                    to: '/importer/csv',
-                  });
-                  break;
-                case 1:
-                  navigate({
-                    to: '/importer/csv/properties',
-                  });
-                  break;
-                case 2:
-                  navigate({
-                    to: '/importer/csv/accounts',
-                  });
-                  break;
-                case 3:
-                  navigate({
-                    to: '/importer/csv/categories',
-                  });
-                  break;
-                default:
-                  break;
-              }
-            }}
-          />
-
-          {error && (
-            <Alert
-              color="red"
-              title="Import Error"
-              withCloseButton
-              onClose={() => setError(null)}
-            >
-              {error}
-            </Alert>
-          )}
-
-          <Paper shadow="sm" p="md" withBorder>
-            <Stack gap="md">
-              <Group justify="space-between">
-                <Text fw={500}>Import Summary</Text>
-                <Badge size="lg" color="blue">
-                  {transactions.length} transactions
-                </Badge>
-              </Group>
-
-              <Accordion defaultValue="Transactions" variant="separated">
-                <Accordion.Item value="Transactions">
-                  <Accordion.Control>
-                    <Group>
-                      <Text fw={500}>Transactions</Text>
-                      <Badge>{csvData.data.length}</Badge>
-                    </Group>
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    <TransactionsContent />
-                  </Accordion.Panel>
-                </Accordion.Item>
-
-                <Accordion.Item value="Accounts">
-                  <Accordion.Control>
-                    <Group>
-                      <Text fw={500}>Accounts</Text>
-                      <Badge>{accounts.length || 1}</Badge>
-                    </Group>
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    <AccountsImportedContent />
-                  </Accordion.Panel>
-                </Accordion.Item>
-
-                <Accordion.Item value="Categories">
-                  <Accordion.Control>
-                    <Group>
-                      <Text fw={500}>Categories</Text>
-                      <Badge>{categories.length}</Badge>
-                    </Group>
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    {categories.length > 0 ? (
-                      <Text size="sm">
-                        {categories.length} categories will be mapped
-                      </Text>
-                    ) : (
-                      <Text size="sm" c="dimmed">
-                        No categories to be imported
-                      </Text>
-                    )}
-                  </Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-            </Stack>
-          </Paper>
-
-          <Paper p="md" withBorder>
-            <Stack gap="sm">
-              <Text fw={500} size="sm">
-                What happens next?
-              </Text>
-              <List size="sm" spacing="xs">
-                <List.Item>
-                  Your data will be processed asynchronously on the server
-                </List.Item>
-                <List.Item>
-                  Accounts and categories will be created as needed
-                </List.Item>
-                <List.Item>
-                  You'll receive an email when the import is complete
-                </List.Item>
-                <List.Item>
-                  You can continue using the app while processing happens
-                </List.Item>
-              </List>
-            </Stack>
-          </Paper>
-
-          <Group justify="space-between">
-            <Button
-              variant="subtle"
-              onClick={() => {
+        <CsvStepper
+          activeStep={4}
+          onStepClick={(stepIndex) => {
+            switch (stepIndex) {
+              case 0:
+                navigate({
+                  to: '/importer/csv',
+                });
+                break;
+              case 1:
+                navigate({
+                  to: '/importer/csv/properties',
+                });
+                break;
+              case 2:
+                navigate({
+                  to: '/importer/csv/accounts',
+                });
+                break;
+              case 3:
                 navigate({
                   to: '/importer/csv/categories',
                 });
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              size="md"
-              onClick={async () => {
-                await importData();
-              }}
-            >
-              Start Import
-            </Button>
-          </Group>
-        </Stack>
-      </Container>
+                break;
+              default:
+                break;
+            }
+          }}
+        />
+
+        {error ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="text-sm font-semibold">Import Error</p>
+              <button
+                type="button"
+                className="text-xs underline"
+                onClick={() => {
+                  setError(null);
+                }}
+              >
+                Close
+              </button>
+            </div>
+            <p className="text-sm">{error}</p>
+          </div>
+        ) : null}
+
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <p className="font-semibold">Import Summary</p>
+            <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+              {transactions.length} transactions
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            <details open className="rounded-lg border">
+              <summary className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3">
+                <span className="font-semibold">Transactions</span>
+                <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
+                  {csvData.data.length}
+                </span>
+              </summary>
+              <div className="border-t p-4">
+                <TransactionsContent />
+              </div>
+            </details>
+
+            <details className="rounded-lg border">
+              <summary className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3">
+                <span className="font-semibold">Accounts</span>
+                <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
+                  {accounts.length || 1}
+                </span>
+              </summary>
+              <div className="border-t p-4">
+                <AccountsImportedContent />
+              </div>
+            </details>
+
+            <details className="rounded-lg border">
+              <summary className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3">
+                <span className="font-semibold">Categories</span>
+                <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
+                  {categories.length}
+                </span>
+              </summary>
+              <div className="border-t p-4">
+                {categories.length > 0 ? (
+                  <p className="text-sm">{categories.length} categories will be mapped</p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    No categories to be imported
+                  </p>
+                )}
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-sm font-semibold">What happens next?</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>Your data will be processed asynchronously on the server</li>
+            <li>Accounts and categories will be created as needed</li>
+            <li>You&apos;ll receive an email when the import is complete</li>
+            <li>You can continue using the app while processing happens</li>
+          </ul>
+        </div>
+
+        <div className="flex justify-between">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              navigate({
+                to: '/importer/csv/categories',
+              });
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            size="lg"
+            onClick={async () => {
+              await importData();
+            }}
+          >
+            Start Import
+          </Button>
+        </div>
+      </div>
     </>
   );
 }
@@ -361,57 +318,62 @@ function AccountsImportedContent() {
 
   if (accounts.length === 0) {
     const destinationAccount = remoteAccounts.find(
-      (x) => x.id == accountMappings[DEFAULT_ACCOUNT_NAME]?.id,
+      (account) => account.id == accountMappings[DEFAULT_ACCOUNT_NAME]?.id,
     );
 
     return (
-      <Table striped highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>CSV Account</Table.Th>
-            <Table.Th>Maps to</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Td>Default Account</Table.Td>
-            <Table.Td>
-              <Badge color="teal" variant="light">
-                {destinationAccount?.name ?? 'New account'}
-              </Badge>
-            </Table.Td>
-          </Table.Tr>
-        </Table.Tbody>
-      </Table>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-muted/40">
+              <th className="border px-3 py-2 text-left font-semibold">CSV Account</th>
+              <th className="border px-3 py-2 text-left font-semibold">Maps to</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border px-3 py-2">Default Account</td>
+              <td className="border px-3 py-2">
+                <span className="inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                  {destinationAccount?.name ?? 'New account'}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     );
   }
 
   return (
-    <Table striped highlightOnHover>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>CSV Account</Table.Th>
-          <Table.Th>Maps to</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {accounts.map((account) => {
-          const destinationAccount = remoteAccounts.find(
-            (x) => x.id == accountMappings[account]?.id,
-          );
-          return (
-            <Table.Tr key={account}>
-              <Table.Td>{account}</Table.Td>
-              <Table.Td>
-                <Badge color="teal" variant="light">
-                  {destinationAccount?.name ?? 'New account'}
-                </Badge>
-              </Table.Td>
-            </Table.Tr>
-          );
-        })}
-      </Table.Tbody>
-    </Table>
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse text-sm">
+        <thead>
+          <tr className="bg-muted/40">
+            <th className="border px-3 py-2 text-left font-semibold">CSV Account</th>
+            <th className="border px-3 py-2 text-left font-semibold">Maps to</th>
+          </tr>
+        </thead>
+        <tbody>
+          {accounts.map((accountName) => {
+            const destinationAccount = remoteAccounts.find(
+              (account) => account.id == accountMappings[accountName]?.id,
+            );
+
+            return (
+              <tr key={accountName}>
+                <td className="border px-3 py-2">{accountName}</td>
+                <td className="border px-3 py-2">
+                  <span className="inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                    {destinationAccount?.name ?? 'New account'}
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -420,102 +382,95 @@ function TransactionsContent() {
   const fieldMappings = useCsvMappings();
 
   const transactions = csvData.data as CsvRowData[];
-  const SAMPLE_ARRAY_SIZE = 10;
+  const sampleArraySize = 10;
 
-  // Account data
   const { accounts: remoteAccounts } = useAccounts();
   const accountMappings = useAccountMappings();
 
-  // Category data
   const { categories: remoteCategories } = useCategories();
   const categoriesMappings = useCategoriesMappings();
 
   const sampleTransactions = useMemo(() => {
-    // Fisher-Yates shuffle algorithm (deterministic with index)
-    const arr = [...transactions];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor((i + 1) * 0.5); // Pseudo-random based on index
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+    const shuffledTransactions = [...transactions];
+    for (let index = shuffledTransactions.length - 1; index > 0; index--) {
+      const randomIndex = Math.floor((index + 1) * 0.5);
+      [shuffledTransactions[index], shuffledTransactions[randomIndex]] = [
+        shuffledTransactions[randomIndex],
+        shuffledTransactions[index],
+      ];
     }
-    return arr.slice(0, SAMPLE_ARRAY_SIZE);
+
+    return shuffledTransactions.slice(0, sampleArraySize);
   }, [transactions]);
 
   return (
-    <Stack gap="md">
-      <Group justify="space-between">
-        <Text size="sm" fw={500}>
-          Sample Preview
-        </Text>
-        <Text size="xs" c="dimmed">
-          Showing {Math.min(SAMPLE_ARRAY_SIZE, transactions.length)} of{' '}
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-semibold">Sample Preview</p>
+        <p className="text-xs text-muted-foreground">
+          Showing {Math.min(sampleArraySize, transactions.length)} of{' '}
           {transactions.length} transactions
-        </Text>
-      </Group>
+        </p>
+      </div>
 
-      <Table striped highlightOnHover withTableBorder>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Account</Table.Th>
-            <Table.Th>Date</Table.Th>
-            <Table.Th>Amount</Table.Th>
-            <Table.Th>Description</Table.Th>
-            <Table.Th>Notes</Table.Th>
-            <Table.Th>Category</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {sampleTransactions.map((transaction: CsvRowData, index) => {
-            const entry = mapTransaction(
-              transaction,
-              fieldMappings,
-              accountMappings,
-              categoriesMappings,
-            );
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-muted/40">
+              <th className="border px-3 py-2 text-left font-semibold">Account</th>
+              <th className="border px-3 py-2 text-left font-semibold">Date</th>
+              <th className="border px-3 py-2 text-left font-semibold">Amount</th>
+              <th className="border px-3 py-2 text-left font-semibold">Description</th>
+              <th className="border px-3 py-2 text-left font-semibold">Notes</th>
+              <th className="border px-3 py-2 text-left font-semibold">Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sampleTransactions.map((transaction: CsvRowData, index) => {
+              const entry = mapTransaction(
+                transaction,
+                fieldMappings,
+                accountMappings,
+                categoriesMappings,
+              );
 
-            const destinationServerAccountName =
-              remoteAccounts.find((x) => x.id == entry.destinationAccountId)
-                ?.name ?? 'New account';
+              const destinationServerAccountName =
+                remoteAccounts.find(
+                  (account) => account.id == entry.destinationAccountId,
+                )?.name ?? 'New account';
 
-            const destinationServerCategoryName =
-              remoteCategories.find((x) => x.id == entry.destinationCategoryId)
-                ?.name ?? 'Untagged';
+              const destinationServerCategoryName =
+                remoteCategories.find(
+                  (category) => category.id == entry.destinationCategoryId,
+                )?.name ?? 'Untagged';
 
-            return (
-              <Table.Tr
-                key={`${entry.sourceAccount}-${entry.date}-${entry.amount}-${index}`}
-              >
-                <Table.Td>
-                  <Badge size="sm" variant="light">
-                    {destinationServerAccountName}
-                  </Badge>
-                </Table.Td>
-                <Table.Td>
-                  <Text size="sm">{formatDate(entry.date)}</Text>
-                </Table.Td>
-                <Table.Td>
-                  <Text size="sm" fw={500}>
-                    {entry.amount}
-                  </Text>
-                </Table.Td>
-                <Table.Td>
-                  <Text size="sm">{entry.description}</Text>
-                </Table.Td>
-                <Table.Td>
-                  <Text size="sm" c="dimmed">
+              return (
+                <tr
+                  key={`${entry.sourceAccount}-${entry.date}-${entry.amount}-${index}`}
+                >
+                  <td className="border px-3 py-2">
+                    <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
+                      {destinationServerAccountName}
+                    </span>
+                  </td>
+                  <td className="border px-3 py-2">{formatDate(entry.date)}</td>
+                  <td className="border px-3 py-2 font-semibold">{entry.amount}</td>
+                  <td className="border px-3 py-2">{entry.description}</td>
+                  <td className="border px-3 py-2 text-muted-foreground">
                     {entry.notes || '-'}
-                  </Text>
-                </Table.Td>
-                <Table.Td>
-                  <Badge size="sm" color="gray" variant="light">
-                    {destinationServerCategoryName}
-                  </Badge>
-                </Table.Td>
-              </Table.Tr>
-            );
-          })}
-        </Table.Tbody>
-      </Table>
-    </Stack>
+                  </td>
+                  <td className="border px-3 py-2">
+                    <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
+                      {destinationServerCategoryName}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
@@ -559,9 +514,9 @@ function mapTransaction(
     description: String(descriptionValue ?? ''),
     notes: notesValue == null ? null : String(notesValue),
 
-    sourceAccount: accountValue,
-    destinationAccountId: destinationAccount?.id,
-    sourceCategory: categoryValue,
-    destinationCategoryId: destinationCategory?.id,
-  } as CSVTransaction;
+    sourceAccount: String(accountValue ?? DEFAULT_ACCOUNT_NAME),
+    destinationAccountId: destinationAccount?.id ?? null,
+    sourceCategory: categoryValue == null ? null : String(categoryValue),
+    destinationCategoryId: destinationCategory?.id ?? null,
+  };
 }

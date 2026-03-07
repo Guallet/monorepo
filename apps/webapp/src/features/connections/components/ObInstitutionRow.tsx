@@ -1,6 +1,5 @@
 import { ObInstitutionDto } from "@guallet/api-client";
 import { TextRow } from "@guallet/ui-react";
-import { Avatar } from "@mantine/core";
 
 interface BankCardProps
   extends Omit<React.ComponentProps<typeof TextRow>, "label"> {
@@ -13,7 +12,17 @@ export function ObInstitutionRow({
   return (
     <TextRow
       label={institution.name}
-      leftSection={<Avatar src={institution.logo} />}
+      leftSection={
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted">
+          {institution.logo ? (
+            <img
+              src={institution.logo}
+              alt={institution.name}
+              className="h-full w-full object-cover"
+            />
+          ) : null}
+        </span>
+      }
       {...props}
     />
   );

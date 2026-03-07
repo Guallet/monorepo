@@ -1,27 +1,25 @@
-import React, { useMemo, useState } from 'react';
 import { InstitutionDto } from '@guallet/api-client';
-import {
-  TextInput,
-  Select,
-  Button,
-  Table,
-  Image,
-  Group,
-  Space,
-} from '@mantine/core';
+import { useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface InstitutionsTableProps {
   institutions: InstitutionDto[];
 }
 
-const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
+const selectClassName =
+  'flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+
+export default function InstitutionsTable({
   institutions,
-}) => {
+}: Readonly<InstitutionsTableProps>) {
   const [searchTerm, setSearchTerm] = useState('');
   const [countryFilter, setCountryFilter] = useState('');
   const [userInstitutionFilter, setUserInstitutionFilter] = useState<
     'user' | 'system' | 'all'
   >('all');
+
   const filteredInstitutions = useMemo(() => {
     let results = institutions;
 
@@ -46,38 +44,6 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
     return results;
   }, [institutions, searchTerm, countryFilter, userInstitutionFilter]);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleCountryFilter = (value: string | null) => {
-    setCountryFilter(value ?? '');
-  };
-
-  const handleUserInstitutionFilter = (value: string | null) => {
-    setUserInstitutionFilter((value ?? 'all') as 'user' | 'system' | 'all');
-  };
-
-  const rows = filteredInstitutions.map((institution) => (
-    <tr key={institution.id}>
-      <td>
-        <Image src={institution.image_src} alt={institution.name} width={50} />
-      </td>
-      <td>{institution.name}</td>
-      <td>{institution.countries}</td>
-      <td>
-        {institution.user_id && (
-          <Group gap="xs">
-            <Button size="xs">Edit</Button>
-            <Button size="xs" color="red">
-              Remove
-            </Button>
-          </Group>
-        )}
-      </td>
-    </tr>
-  ));
-
   const countries = useMemo(
     () =>
       Array.from(
@@ -86,46 +52,121 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
     [institutions],
   );
 
+  const hasResults = filteredInstitutions.length > 0;
+
   return (
-    <div>
-      <Group justify="space-between">
-        <TextInput
-          placeholder="Search by name"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-        <Select
-          value={countryFilter}
-          onChange={handleCountryFilter}
-          data={[{ value: '', label: 'All Countries' }].concat(
-            countries.map((country) => ({ value: country, label: country })),
-          )}
-        />
-        <Select
-          value={userInstitutionFilter}
-          onChange={handleUserInstitutionFilter}
-          data={[
-            { value: 'all', label: 'All Institutions' },
-            { value: 'user', label: 'User Institutions' },
-            { value: 'system', label: 'System Institutions' },
-          ]}
-        />
-        <Button>Create New Institution</Button>
-      </Group>
-      <Space h="md" />
-      <Table striped>
-        <thead>
-          <tr>
-            <th>Logo</th>
-            <th>Name</th>
-            <th>Countries</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="min-w-[220px] flex-1 space-y-2">
+          <Label htmlFor="institutions-search">Search by name</Label>
+          <Input
+            id="institutions-search"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+        </div>
+
+        <div className="min-w-[180px] space-y-2">
+          <Label htmlFor="institutions-country-filter">Country</Label>
+          <select
+            id="institutions-country-filter"
+            className={selectClassName}
+            value={countryFilter}
+            onChange={(event) => setCountryFilter(event.target.value)}
+          >
+            <option value="">All Countries</option>
+            {countries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="min-w-[220px] space-y-2">
+          <Label htmlFor="institutions-type-filter">Type</Label>
+          <select
+            id="institutions-type-filter"
+            className={selectClassName}
+            value={userInstitutionFilter}
+            onChange={(event) =>
+              setUserInstitutionFilter(
+                event.target.value as 'user' | 'system' | 'all',
+              )
+            }
+          >
+            <option value="all">All Institutions</option>
+            <option value="user">User Institutions</option>
+            <option value="system">System Institutions</option>
+          </select>
+        </div>
+
+        <Button type="button">Create New Institution</Button>
+      </div>
+
+      <div className="overflow-x-auto rounded-md border">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b bg-muted/60 text-left">
+              <th className="px-3 py-2">Logo</th>
+              <th className="px-3 py-2">Name</th>
+              <th className="px-3 py-2">Countries</th>
+              <th className="px-3 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hasResults ? (
+              filteredInstitutions.map((institution) => (
+                <tr key={institution.id} className="border-b last:border-b-0">
+                  <td className="px-3 py-2">
+                    <img
+                      src={institution.image_src}
+                      alt={institution.name}
+                      width={50}
+                      height={50}
+                      className="h-10 w-10 rounded object-contain"
+                    />
+                  </td>
+                  <td className="px-3 py-2">{institution.name}</td>
+                  <td className="px-3 py-2">
+                    {institution.countries.join(', ')}
+                  </td>
+                  <td className="px-3 py-2">
+                    {institution.user_id ? (
+                      <div className="flex items-center gap-2">
+                        <Button type="button" size="sm" variant="outline">
+                          Edit
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">
+                        System institution
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-3 py-6 text-center text-muted-foreground"
+                >
+                  No institutions match the selected filters.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
-};
-
-export default InstitutionsTable;
+}

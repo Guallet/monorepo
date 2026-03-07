@@ -1,5 +1,5 @@
-import { Button, ScrollArea, Stack } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute("/_app/reports/")({
   component: ReportsPage,
@@ -7,20 +7,17 @@ export const Route = createFileRoute("/_app/reports/")({
 
 function ReportsPage() {
   return (
-    <Stack style={{ height: "calc(100dvh - 92px)" }}>
+    <div className="flex h-[calc(100dvh-92px)] flex-col gap-4">
       {/* HEADER */}
-      <Stack>
-        <h1>Reports Page</h1>
-      </Stack>
+      <div>
+        <h1 className="text-2xl font-semibold">Reports Page</h1>
+      </div>
 
       {/* MAIN CONTENT */}
-      <ScrollArea
-        style={{
-          flexGrow: 1,
-        }}
-      >
-        <Stack>
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col gap-2">
           <Link
+            className="w-fit text-primary underline-offset-4 hover:underline"
             to="/reports/cashflow"
             search={{
               year: new Date().getUTCFullYear(),
@@ -28,13 +25,13 @@ function ReportsPage() {
           >
             Cashflow
           </Link>
-        </Stack>
-      </ScrollArea>
+        </div>
+      </div>
 
       {/* Footer. Always at the bottom */}
-      <Stack>
-        <Button>Button at the Bottom</Button>
-      </Stack>
-    </Stack>
+      <div>
+        <Button type="button">Button at the Bottom</Button>
+      </div>
+    </div>
   );
 }

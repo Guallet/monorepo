@@ -1,79 +1,68 @@
-import { Group, Table, Text } from '@mantine/core';
-import { CategoryDataRowDto } from './cashflow.models';
 import { useState } from 'react';
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
+import { CategoryDataRowDto } from './cashflow.models';
 
 interface IProps {
   row: CategoryDataRowDto;
 }
 
-export function CashFlowRow({ row }: IProps) {
+export function CashFlowRow({ row }: Readonly<IProps>) {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const subCategoryRows = row.subcategories.map((subCategory) => {
-    return (
-      <Table.Tr
-        key={row.categoryId}
-        style={{
-          fontWeight: 'normal',
-        }}
-      >
-        <Table.Td>{subCategory.categoryName}</Table.Td>
-        <Table.Td>{subCategory.values[0]}</Table.Td>
-        <Table.Td>{subCategory.values[1]}</Table.Td>
-        <Table.Td>{subCategory.values[2]}</Table.Td>
-        <Table.Td>{subCategory.values[3]}</Table.Td>
-        <Table.Td>{subCategory.values[4]}</Table.Td>
-        <Table.Td>{subCategory.values[5]}</Table.Td>
-        <Table.Td>{subCategory.values[6]}</Table.Td>
-        <Table.Td>{subCategory.values[7]}</Table.Td>
-        <Table.Td>{subCategory.values[8]}</Table.Td>
-        <Table.Td>{subCategory.values[9]}</Table.Td>
-        <Table.Td>{subCategory.values[10]}</Table.Td>
-        <Table.Td>{subCategory.values[11]}</Table.Td>
-      </Table.Tr>
-    );
-  });
+  const canExpand = row.subcategories.length > 0;
 
   const parentRow = (
-    <Table.Tr
-      key={row.categoryId}
-      style={{
-        fontWeight: row.isParent ? 'bold' : 'normal',
-      }}
-      onClick={() => {
-        setIsExpanded(!isExpanded);
-      }}
-    >
-      <Table.Td>
-        <Group>
-          {isExpanded === false ? (
-            <IconChevronDown size={15} />
-          ) : (
-            <IconChevronRight size={15} />
-          )}
-
-          <Text fw={700}>{row.categoryName}</Text>
-        </Group>
-      </Table.Td>
-      <Table.Td>{row.values[0]}</Table.Td>
-      <Table.Td>{row.values[1]}</Table.Td>
-      <Table.Td>{row.values[2]}</Table.Td>
-      <Table.Td>{row.values[3]}</Table.Td>
-      <Table.Td>{row.values[4]}</Table.Td>
-      <Table.Td>{row.values[5]}</Table.Td>
-      <Table.Td>{row.values[6]}</Table.Td>
-      <Table.Td>{row.values[7]}</Table.Td>
-      <Table.Td>{row.values[8]}</Table.Td>
-      <Table.Td>{row.values[9]}</Table.Td>
-      <Table.Td>{row.values[10]}</Table.Td>
-      <Table.Td>{row.values[11]}</Table.Td>
-    </Table.Tr>
+    <tr key={`${row.categoryId}-parent`} className={row.isParent ? 'font-semibold' : undefined}>
+      <td className="px-3 py-2">
+        {canExpand ? (
+          <button
+            type="button"
+            className="flex items-center gap-2 text-left"
+            onClick={() => {
+              setIsExpanded((prev) => !prev);
+            }}
+          >
+            {isExpanded ? (
+              <IconChevronDown size={15} />
+            ) : (
+              <IconChevronRight size={15} />
+            )}
+            <span>{row.categoryName}</span>
+          </button>
+        ) : (
+          <span className="pl-5">{row.categoryName}</span>
+        )}
+      </td>
+      {row.values.map((value, index) => (
+        <td key={`${row.categoryId}-value-${index}`} className="px-3 py-2">
+          {value}
+        </td>
+      ))}
+    </tr>
   );
 
-  if (isExpanded) {
-    return [parentRow, ...subCategoryRows];
-  } else {
-    return [parentRow];
+  if (!isExpanded) {
+    return parentRow;
   }
+
+  return (
+    <>
+      {parentRow}
+      {row.subcategories.map((subCategory) => (
+        <tr
+          key={`${row.categoryId}-${subCategory.categoryId}`}
+          className="text-muted-foreground"
+        >
+          <td className="px-3 py-2 pl-8">{subCategory.categoryName}</td>
+          {subCategory.values.map((value, index) => (
+            <td
+              key={`${subCategory.categoryId}-value-${index}`}
+              className="px-3 py-2"
+            >
+              {value}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  );
 }

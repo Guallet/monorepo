@@ -1,18 +1,10 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import {
-  Stack,
-  Title,
-  Text,
-  Button,
-  Paper,
-  Group,
-  MultiSelect,
-  Select,
-  Modal,
-  Alert,
-  List,
-} from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { ResponsiveModal } from '@guallet/ui-react';
 import { useState } from 'react';
 import { useAccounts, useGualletClient } from '@guallet/api-react';
 import { IconCheck, IconMail } from '@tabler/icons-react';
@@ -40,6 +32,24 @@ export function DataExportScreen() {
     value: account.id,
     label: account.name,
   }));
+
+  const toggleAccountSelection = (accountId: string) => {
+    setSelectedAccountIds((currentSelection) => {
+      if (currentSelection.includes(accountId)) {
+        return currentSelection.filter((selectedId) => selectedId !== accountId);
+      }
+
+      return [...currentSelection, accountId];
+    });
+  };
+
+  const selectAllAccounts = () => {
+    setSelectedAccountIds(accountOptions.map((account) => account.value));
+  };
+
+  const clearAllAccounts = () => {
+    setSelectedAccountIds([]);
+  };
 
   const handleExport = async () => {
     try {
@@ -71,150 +81,246 @@ export function DataExportScreen() {
 
   return (
     <>
-      <Modal
+      <ResponsiveModal
         opened={isModalOpened}
-        onClose={() => setIsModalOpened(false)}
-        closeOnClickOutside
-        closeOnEscape
-        withCloseButton={false}
-        centered
+        onClose={() => {
+          setIsModalOpened(false);
+        }}
+        title={t('screens.dataExport.modal.title')}
         size="md"
       >
-        <Stack align="center" gap="lg" py="md">
+        <div className="space-y-6 py-2">
           <div
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: '50%',
-              backgroundColor: 'var(--mantine-color-green-1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100"
           >
-            <IconCheck size={48} color="var(--mantine-color-green-6)" />
+            <IconCheck className="h-12 w-12 text-emerald-600" />
           </div>
 
-          <Stack align="center" gap="xs">
-            <Title order={2}>{t('screens.dataExport.modal.title')}</Title>
-            <Text c="dimmed" ta="center">
+          <div className="space-y-2 text-center">
+            <h2 className="text-xl font-semibold">
+              {t('screens.dataExport.modal.title')}
+            </h2>
+            <p className="text-sm text-muted-foreground">
               {t('screens.dataExport.modal.description')}
-            </Text>
-          </Stack>
+            </p>
+          </div>
 
-          <Alert icon={<IconMail size={16} />} color="blue" w="100%">
-            <Stack gap="xs">
-              <Text fw={500} size="sm">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <div className="flex items-start gap-3">
+              <IconMail className="mt-0.5 h-4 w-4 text-blue-600" />
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-blue-900">
                 {t('screens.dataExport.modal.emailTitle')}
-              </Text>
-              <Text size="sm">
+                </p>
+                <p className="text-sm text-blue-800">
                 {t('screens.dataExport.modal.emailDescription')}
-              </Text>
-            </Stack>
-          </Alert>
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <Button fullWidth size="md" onClick={() => setIsModalOpened(false)}>
+          <Button
+            className="w-full"
+            onClick={() => {
+              setIsModalOpened(false);
+            }}
+          >
             {t('screens.dataExport.modal.button')}
           </Button>
-        </Stack>
-      </Modal>
+        </div>
+      </ResponsiveModal>
 
       <BaseScreen>
-        <Stack gap="xl">
-          <Stack gap="xs">
-            <Title order={2}>{t('screens.dataExport.title')}</Title>
-            <Text c="dimmed">{t('screens.dataExport.description')}</Text>
-          </Stack>
+        <div className="space-y-6">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {t('screens.dataExport.title')}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {t('screens.dataExport.description')}
+            </p>
+          </div>
 
           {error && (
-            <Alert
-              color="red"
-              title={t('screens.dataExport.error.title')}
-              withCloseButton
-              onClose={() => setError(null)}
-            >
-              {error}
-            </Alert>
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-800">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold">
+                    {t('screens.dataExport.error.title')}
+                  </p>
+                  <p className="text-sm">{error}</p>
+                </div>
+                <button
+                  type="button"
+                  className="text-xs text-red-700 underline"
+                  onClick={() => {
+                    setError(null);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           )}
 
-          <Paper shadow="sm" p="lg" withBorder>
-            <Stack gap="md">
-              <Title order={4}>{t('screens.dataExport.filters.title')}</Title>
-              <Text size="sm" c="dimmed">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('screens.dataExport.filters.title')}</CardTitle>
+              <p className="text-sm text-muted-foreground">
                 {t('screens.dataExport.filters.description')}
-              </Text>
+              </p>
+            </CardHeader>
 
-              <DatePickerInput
-                type="range"
-                label={t('screens.dataExport.filters.dateRange.label')}
-                placeholder={t(
-                  'screens.dataExport.filters.dateRange.placeholder',
-                )}
-                value={dateRange}
-                onChange={setDateRange}
-                clearable
-                maxDate={new Date()}
-              />
+            <CardContent className="space-y-5">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="data-export-start-date">
+                    {t('screens.dataExport.filters.dateRange.label')} (start)
+                  </Label>
+                  <Input
+                    id="data-export-start-date"
+                    type="date"
+                    max={new Date().toISOString().slice(0, 10)}
+                    value={dateRange[0] ?? ''}
+                    onChange={(event) => {
+                      const nextStart = event.currentTarget.value || null;
+                      setDateRange([nextStart, dateRange[1]]);
+                    }}
+                  />
+                </div>
 
-              <MultiSelect
-                label={t('screens.dataExport.filters.accounts.label')}
-                placeholder={t(
-                  'screens.dataExport.filters.accounts.placeholder',
-                )}
-                data={accountOptions}
-                value={selectedAccountIds}
-                onChange={setSelectedAccountIds}
-                clearable
-                searchable
-              />
+                <div className="grid gap-2">
+                  <Label htmlFor="data-export-end-date">
+                    {t('screens.dataExport.filters.dateRange.label')} (end)
+                  </Label>
+                  <Input
+                    id="data-export-end-date"
+                    type="date"
+                    max={new Date().toISOString().slice(0, 10)}
+                    value={dateRange[1] ?? ''}
+                    onChange={(event) => {
+                      const nextEnd = event.currentTarget.value || null;
+                      setDateRange([dateRange[0], nextEnd]);
+                    }}
+                  />
+                </div>
+              </div>
 
-              <Select
-                label={t('screens.dataExport.filters.format.label')}
-                data={[
-                  {
-                    value: 'csv',
-                    label: t('screens.dataExport.filters.format.csv'),
-                  },
-                  {
-                    value: 'ofe',
-                    label: t('screens.dataExport.filters.format.ofe'),
-                  },
-                  {
-                    value: 'json',
-                    label: t('screens.dataExport.filters.format.json'),
-                  },
-                ]}
-                value={exportFormat}
-                allowDeselect={false}
-                onChange={(value) => {
-                  if (value === 'csv' || value === 'ofe' || value === 'json') {
-                    setExportFormat(value);
-                  }
-                }}
-              />
-            </Stack>
-          </Paper>
+              <div className="grid gap-2">
+                <Label>{t('screens.dataExport.filters.accounts.label')}</Label>
+                <p className="text-xs text-muted-foreground">
+                  {t('screens.dataExport.filters.accounts.placeholder')}
+                </p>
 
-          <Paper p="md" withBorder>
-            <Stack gap="sm">
-              <Text fw={500} size="sm">
+                <div className="max-h-44 space-y-2 overflow-y-auto rounded-md border p-3">
+                  {accountOptions.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      No accounts available
+                    </p>
+                  ) : (
+                    accountOptions.map((account) => {
+                      const isSelected = selectedAccountIds.includes(
+                        account.value,
+                      );
+
+                      return (
+                        <label
+                          key={account.value}
+                          className="flex cursor-pointer items-center gap-2 text-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {
+                              toggleAccountSelection(account.value);
+                            }}
+                            className="h-4 w-4"
+                          />
+                          <span>{account.label}</span>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={selectAllAccounts}
+                  >
+                    Select all
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAllAccounts}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="data-export-format">
+                  {t('screens.dataExport.filters.format.label')}
+                </Label>
+                <select
+                  id="data-export-format"
+                  className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  value={exportFormat}
+                  onChange={(event) => {
+                    const value = event.currentTarget.value;
+
+                    if (value === 'csv' || value === 'ofe' || value === 'json') {
+                      setExportFormat(value);
+                    }
+                  }}
+                >
+                  <option value="csv">
+                    {t('screens.dataExport.filters.format.csv')}
+                  </option>
+                  <option value="ofe">
+                    {t('screens.dataExport.filters.format.ofe')}
+                  </option>
+                  <option value="json">
+                    {t('screens.dataExport.filters.format.json')}
+                  </option>
+                </select>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">
                 {t('screens.dataExport.info.title')}
-              </Text>
-              <List size="sm" spacing="xs">
-                <List.Item>{t('screens.dataExport.info.step1')}</List.Item>
-                <List.Item>{t('screens.dataExport.info.step2')}</List.Item>
-                <List.Item>{t('screens.dataExport.info.step3')}</List.Item>
-                <List.Item>{t('screens.dataExport.info.step4')}</List.Item>
-              </List>
-            </Stack>
-          </Paper>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                <li>{t('screens.dataExport.info.step1')}</li>
+                <li>{t('screens.dataExport.info.step2')}</li>
+                <li>{t('screens.dataExport.info.step3')}</li>
+                <li>{t('screens.dataExport.info.step4')}</li>
+              </ul>
+            </CardContent>
+          </Card>
 
-          <Group justify="flex-end">
-            <Button size="md" onClick={handleExport} loading={isLoading}>
-              {t('screens.dataExport.exportButton')}
+          <Separator />
+
+          <div className="flex justify-end">
+            <Button
+              size="lg"
+              onClick={handleExport}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Exporting...' : t('screens.dataExport.exportButton')}
             </Button>
-          </Group>
-        </Stack>
+          </div>
+        </div>
       </BaseScreen>
     </>
   );

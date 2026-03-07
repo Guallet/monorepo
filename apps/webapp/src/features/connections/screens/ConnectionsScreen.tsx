@@ -1,11 +1,11 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useOpenBankingConnections } from "@guallet/api-react";
-import { Button, Stack, Title } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
-import { ConnectionCard } from "../components/ConnectionCard";
-import EmptyState from "@/components/EmptyState/EmptyState";
-import { useTranslation } from "react-i18next";
-import { ObConnection } from "@guallet/api-client";
+import EmptyState from '@/components/EmptyState/EmptyState';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { ObConnection } from '@guallet/api-client';
+import { useOpenBankingConnections } from '@guallet/api-react';
+import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
+import { ConnectionCard } from '../components/ConnectionCard';
 
 export function ConnectionsScreen() {
   const { connections, isLoading } = useOpenBankingConnections();
@@ -39,8 +39,10 @@ function ConnectionList({
   const navigate = useNavigate();
 
   return (
-    <Stack>
-      <Title>{t("screens.connections.list.title", "Connections")}</Title>
+    <div className="space-y-4">
+      <h1 className="text-2xl font-semibold tracking-tight">
+        {t("screens.connections.list.title", "Connections")}
+      </h1>
       <Button
         onClick={() => {
           navigate({ to: "/connections/connect" });
@@ -48,7 +50,7 @@ function ConnectionList({
       >
         {t("screens.connections.list.addButton", "Add a new connection")}
       </Button>
-      <Stack gap="xs">
+      <div className="space-y-2">
         {connections.map((connection) => (
           <ConnectionCard
             key={connection.id}
@@ -56,7 +58,7 @@ function ConnectionList({
             onClick={() => navigate({ to: `/connections/${connection.id}` })}
           />
         ))}
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   );
 }

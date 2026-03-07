@@ -2,7 +2,8 @@ import {
   useConnectionMutations,
   useOpenBankingAccountsForConnection,
 } from '@guallet/api-react';
-import { Button, Card, Flex, Loader, Stack, Text } from '@mantine/core';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { notifications } from '@/lib/notifications';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
@@ -76,17 +77,10 @@ export function ConnectionCallbackScreen({
 
   if (isLoading || linkObAccountsMutation.isPending) {
     return (
-      <Flex
-        mih={50}
-        gap="md"
-        justify="center"
-        align="center"
-        direction="column"
-        wrap="wrap"
-      >
-        <Loader />
-        <Text>Syncing accounts...</Text>
-      </Flex>
+      <div className="flex min-h-[160px] flex-col items-center justify-center gap-3">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+        <p className="text-sm text-muted-foreground">Syncing accounts...</p>
+      </div>
     );
   }
 
@@ -101,19 +95,23 @@ export function ConnectionCallbackScreen({
   }
 
   return (
-    <Stack>
-      <Text>Connected to the following accounts:</Text>
+    <div className="space-y-3">
+      <p className="text-sm text-muted-foreground">
+        Connected to the following accounts:
+      </p>
       {accounts.map((account) => {
         return (
-          <Card withBorder key={account.id}>
-            <Stack key={account.id}>
-              <Text>{account.details.name ?? account.details.ownerName}</Text>
-              <Text>Details: {account.details.details}</Text>
-              <Text>Account number: {account.details.bban}</Text>
-              <Text>Iban: {account.details.iban}</Text>
-              <Text>Currency: {account.details.currency}</Text>
-              <Text>Type: {account.details.cashAccountType}</Text>
-            </Stack>
+          <Card key={account.id}>
+            <CardContent className="space-y-1 pt-6 text-sm">
+              <p className="font-semibold">
+                {account.details.name ?? account.details.ownerName}
+              </p>
+              <p>Details: {account.details.details}</p>
+              <p>Account number: {account.details.bban}</p>
+              <p>Iban: {account.details.iban}</p>
+              <p>Currency: {account.details.currency}</p>
+              <p>Type: {account.details.cashAccountType}</p>
+            </CardContent>
           </Card>
         );
       })}
@@ -124,7 +122,7 @@ export function ConnectionCallbackScreen({
       >
         Go back to accounts
       </Button>
-    </Stack>
+    </div>
   );
 }
 
@@ -139,12 +137,12 @@ function ErrorView({
   onActionPressed,
 }: Readonly<ErrorViewProps>) {
   return (
-    <Stack>
-      <Text>Error adding the account</Text>
-      <Text>Error: {error}</Text>
-      {details && <Text>What went wrong: {details}</Text>}
+    <div className="space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+      <p className="font-semibold">Error adding the account</p>
+      <p>Error: {error}</p>
+      {details ? <p>What went wrong: {details}</p> : null}
       <Button onClick={onActionPressed}>Go back to connections</Button>
-    </Stack>
+    </div>
   );
 }
 
@@ -155,9 +153,9 @@ function EmptyAccountsView({
   onActionPressed,
 }: Readonly<EmptyAccountsViewProps>) {
   return (
-    <Stack>
-      <Text>There are no accounts available to connect</Text>
+    <div className="space-y-3 rounded-lg border bg-card p-4">
+      <p>There are no accounts available to connect</p>
       <Button onClick={onActionPressed}>Go back to connections</Button>
-    </Stack>
+    </div>
   );
 }
