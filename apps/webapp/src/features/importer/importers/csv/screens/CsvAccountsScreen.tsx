@@ -25,7 +25,7 @@ export function CsvAccountsScreen() {
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Map Accounts</h1>
         <p className="text-sm text-muted-foreground">
-            Map your CSV accounts to existing accounts or create new ones.
+          Map your CSV accounts to existing accounts or create new ones.
         </p>
       </div>
 
@@ -53,9 +53,8 @@ export function CsvAccountsScreen() {
           Account Mapping
         </div>
         <p className="text-sm text-blue-800">
-            Select an existing account or choose "Map to a new account" to
-            create a new one. All transactions will be imported to the mapped
-            accounts.
+          Select an existing account or choose "Map to a new account" to create
+          a new one. All transactions will be imported to the mapped accounts.
         </p>
       </div>
 
@@ -72,8 +71,12 @@ export function CsvAccountsScreen() {
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="bg-muted/40">
-                <th className="border px-3 py-2 text-left font-semibold">CSV Account</th>
-                <th className="border px-3 py-2 text-left font-semibold">Map to Account</th>
+                <th className="border px-3 py-2 text-left font-semibold">
+                  CSV Account
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">
+                  Map to Account
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -82,7 +85,7 @@ export function CsvAccountsScreen() {
                   <td className="border px-3 py-2">
                     <p className="font-semibold">Default Account</p>
                     <p className="text-xs text-muted-foreground">
-                        All transactions
+                      All transactions
                     </p>
                   </td>
                   <td className="border px-3 py-2">
@@ -93,13 +96,18 @@ export function CsvAccountsScreen() {
                         const value = event.currentTarget.value;
                         const updatedMappings = { ...mappings };
                         updatedMappings[DEFAULT_ACCOUNT_NAME] =
-                          remoteAccounts.find((account) => account.id === value);
+                          remoteAccounts.find(
+                            (account) => account.id === value,
+                          );
                         setAccountMappings(updatedMappings);
                       }}
                     >
                       <option value="">Select or create an account</option>
                       {availableAccounts.map((account) => (
-                        <option key={account?.id ?? 'new-account'} value={account?.id ?? ''}>
+                        <option
+                          key={account?.id ?? 'new-account'}
+                          value={account?.id ?? ''}
+                        >
                           {account?.name ?? 'Create new account'}
                         </option>
                       ))}
@@ -113,7 +121,9 @@ export function CsvAccountsScreen() {
                   return (
                     <tr key={accountName ?? 'source'}>
                       <td className="border px-3 py-2">
-                        <p className="font-semibold">{accountName ?? 'Unspecified'}</p>
+                        <p className="font-semibold">
+                          {accountName ?? 'Unspecified'}
+                        </p>
                       </td>
                       <td className="border px-3 py-2">
                         <select

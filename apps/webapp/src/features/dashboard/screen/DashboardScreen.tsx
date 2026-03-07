@@ -1,19 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { TotalWealthWidget } from "@/features/dashboard/components/widgets/TotalWealthWidget";
-import { useState } from "react";
-import dayjs from "dayjs";
-import quarterOfYear from "dayjs/plugin/quarterOfYear";
-import { MonthlyInAndOutWidget } from "../components/widgets/MonthlyInAndOutWidget";
-import { TransactionsInboxWidget } from "../components/widgets/TransactionsInboxWidget";
-import { BudgetsWidget } from "../components/widgets/BudgetsWidget";
-import { TotalIncomeExpenditureWidget } from "../components/widgets/TotalIncomeExpenditureWidget";
-import { CurrentAccountsWidget } from "../components/widgets/CurrentAccountsWidget";
-import { SavingGoalsWidget } from "../components/widgets/SavingGoalsWidget";
-import { ExpenditureByCategoryWidget } from "../components/widgets/ExpenditureByCategoryWidget";
-import { LastTransactionsWidget } from "../components/widgets/LastTransactionsWidget";
-import { BalanceTrendWidget } from "../components/widgets/BalanceTrendWidget";
+import { TotalWealthWidget } from '@/features/dashboard/components/widgets/TotalWealthWidget';
+import { useState } from 'react';
+import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+import { MonthlyInAndOutWidget } from '../components/widgets/MonthlyInAndOutWidget';
+import { TransactionsInboxWidget } from '../components/widgets/TransactionsInboxWidget';
+import { BudgetsWidget } from '../components/widgets/BudgetsWidget';
+import { TotalIncomeExpenditureWidget } from '../components/widgets/TotalIncomeExpenditureWidget';
+import { CurrentAccountsWidget } from '../components/widgets/CurrentAccountsWidget';
+import { SavingGoalsWidget } from '../components/widgets/SavingGoalsWidget';
+import { ExpenditureByCategoryWidget } from '../components/widgets/ExpenditureByCategoryWidget';
+import { LastTransactionsWidget } from '../components/widgets/LastTransactionsWidget';
+import { BalanceTrendWidget } from '../components/widgets/BalanceTrendWidget';
 import {
   IconCalendar,
   IconCalendarStats,
@@ -89,9 +89,9 @@ export function DashboardScreen() {
           <TotalWealthWidget />
         </div>
         <div>
-          <TotalIncomeExpenditureWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
+          <TotalIncomeExpenditureWidget
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
           />
         </div>
         <div>
@@ -104,24 +104,21 @@ export function DashboardScreen() {
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <div>
-          <MonthlyInAndOutWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
+          <MonthlyInAndOutWidget
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
           />
         </div>
         <div>
-          <BalanceTrendWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
-          />
+          <BalanceTrendWidget startDate={dateRange[0]} endDate={dateRange[1]} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <ExpenditureByCategoryWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
+          <ExpenditureByCategoryWidget
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
           />
         </div>
         <div>
@@ -300,10 +297,7 @@ function DateFilter({ value, onChange, onClose }: Readonly<DateFilterProps>) {
         >
           Reset
         </Button>
-        <Button
-          type="button"
-          onClick={onClose}
-        >
+        <Button type="button" onClick={onClose}>
           Done
         </Button>
       </div>

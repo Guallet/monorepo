@@ -54,7 +54,9 @@ export function RuleForm({
 }: Readonly<RuleFormProps>) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialData?.name ?? '');
-  const [description, setDescription] = useState(initialData?.description ?? '');
+  const [description, setDescription] = useState(
+    initialData?.description ?? '',
+  );
   const [resultCategoryId, setResultCategoryId] = useState(
     initialData?.resultCategoryId ?? '',
   );
@@ -182,7 +184,9 @@ export function RuleForm({
       <Card>
         <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
-            <Label htmlFor="rule-name">{t('screens.rules.form.name.label')}</Label>
+            <Label htmlFor="rule-name">
+              {t('screens.rules.form.name.label')}
+            </Label>
             <Input
               id="rule-name"
               placeholder={t('screens.rules.form.name.placeholder')}
@@ -237,7 +241,9 @@ export function RuleForm({
               <option value="and">
                 {t('screens.rules.form.conditions.logic.all')}
               </option>
-              <option value="or">{t('screens.rules.form.conditions.logic.any')}</option>
+              <option value="or">
+                {t('screens.rules.form.conditions.logic.any')}
+              </option>
             </select>
           </div>
 
@@ -291,7 +297,10 @@ export function RuleForm({
                           {t('screens.rules.form.conditions.field.placeholder')}
                         </option>
                         {fieldOptions.map((fieldOption) => (
-                          <option key={fieldOption.value} value={fieldOption.value}>
+                          <option
+                            key={fieldOption.value}
+                            value={fieldOption.value}
+                          >
                             {fieldOption.label}
                           </option>
                         ))}
@@ -316,13 +325,17 @@ export function RuleForm({
                         disabled={!condition.field}
                       >
                         <option value="">
-                          {t('screens.rules.form.conditions.operator.placeholder')}
+                          {t(
+                            'screens.rules.form.conditions.operator.placeholder',
+                          )}
                         </option>
-                        {getOperatorsForField(condition.field).map((operator) => (
-                          <option key={operator.value} value={operator.value}>
-                            {operator.label}
-                          </option>
-                        ))}
+                        {getOperatorsForField(condition.field).map(
+                          (operator) => (
+                            <option key={operator.value} value={operator.value}>
+                              {operator.label}
+                            </option>
+                          ),
+                        )}
                       </select>
                     </div>
 
@@ -366,7 +379,11 @@ export function RuleForm({
             </div>
           ))}
 
-          <Button type="button" variant="secondary" onClick={handleAddCondition}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleAddCondition}
+          >
             <IconPlus size={16} />
             {t('screens.rules.form.conditions.addButton.label')}
           </Button>
@@ -375,7 +392,9 @@ export function RuleForm({
 
       <Card>
         <CardContent className="space-y-4 pt-6">
-          <p className="text-sm font-medium">{t('screens.rules.form.category.title')}</p>
+          <p className="text-sm font-medium">
+            {t('screens.rules.form.category.title')}
+          </p>
           <CategoryPicker
             required
             label={t('screens.rules.form.category.label')}
@@ -389,7 +408,12 @@ export function RuleForm({
       </Card>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
           {t('screens.rules.form.buttons.cancel')}
         </Button>
         <Button type="submit" disabled={isSubmitting || !isFormValid}>

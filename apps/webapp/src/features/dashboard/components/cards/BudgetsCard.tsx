@@ -20,7 +20,9 @@ export function BudgetsCard() {
 
       <div className="mt-6 flex items-end gap-2">
         <p className="text-2xl font-bold leading-none">$1000</p>
-        <p className={`flex items-center gap-1 text-sm font-medium ${diffClassName}`}>
+        <p
+          className={`flex items-center gap-1 text-sm font-medium ${diffClassName}`}
+        >
           <span>{diff}%</span>
           <DiffIcon className="h-4 w-4" stroke={1.5} />
         </p>

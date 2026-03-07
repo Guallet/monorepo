@@ -90,9 +90,7 @@ export function CsvStepper({
             className={cn(
               'flex items-start gap-3 rounded-lg border p-3 text-left transition-colors',
               isActive ? 'border-primary bg-primary/5' : 'border-border',
-              isComplete && !isActive
-                ? 'border-emerald-200 bg-emerald-50'
-                : '',
+              isComplete && !isActive ? 'border-emerald-200 bg-emerald-50' : '',
               canClick ? 'cursor-pointer hover:bg-accent' : 'cursor-default',
             )}
             disabled={!canClick}

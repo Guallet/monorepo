@@ -17,12 +17,12 @@ export function ConnectionsScreen() {
       {connections.length === 0 && !isLoading ? (
         <EmptyState
           text={t(
-            "screens.connections.list.emptyState",
-            "No Connections Found. Create a new connection to get started."
+            'screens.connections.list.emptyState',
+            'No Connections Found. Create a new connection to get started.',
           )}
           iconName="IconPlugConnected"
           onClick={() => {
-            navigate({ to: "/connections/connect" });
+            navigate({ to: '/connections/connect' });
           }}
         />
       ) : (
@@ -41,14 +41,14 @@ function ConnectionList({
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold tracking-tight">
-        {t("screens.connections.list.title", "Connections")}
+        {t('screens.connections.list.title', 'Connections')}
       </h1>
       <Button
         onClick={() => {
-          navigate({ to: "/connections/connect" });
+          navigate({ to: '/connections/connect' });
         }}
       >
-        {t("screens.connections.list.addButton", "Add a new connection")}
+        {t('screens.connections.list.addButton', 'Add a new connection')}
       </Button>
       <div className="space-y-2">
         {connections.map((connection) => (

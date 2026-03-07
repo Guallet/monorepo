@@ -36,7 +36,9 @@ export function DataExportScreen() {
   const toggleAccountSelection = (accountId: string) => {
     setSelectedAccountIds((currentSelection) => {
       if (currentSelection.includes(accountId)) {
-        return currentSelection.filter((selectedId) => selectedId !== accountId);
+        return currentSelection.filter(
+          (selectedId) => selectedId !== accountId,
+        );
       }
 
       return [...currentSelection, accountId];
@@ -90,9 +92,7 @@ export function DataExportScreen() {
         size="md"
       >
         <div className="space-y-6 py-2">
-          <div
-            className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100"
-          >
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
             <IconCheck className="h-12 w-12 text-emerald-600" />
           </div>
 
@@ -110,10 +110,10 @@ export function DataExportScreen() {
               <IconMail className="mt-0.5 h-4 w-4 text-blue-600" />
               <div className="space-y-1">
                 <p className="text-sm font-semibold text-blue-900">
-                {t('screens.dataExport.modal.emailTitle')}
+                  {t('screens.dataExport.modal.emailTitle')}
                 </p>
                 <p className="text-sm text-blue-800">
-                {t('screens.dataExport.modal.emailDescription')}
+                  {t('screens.dataExport.modal.emailDescription')}
                 </p>
               </div>
             </div>
@@ -274,7 +274,11 @@ export function DataExportScreen() {
                   onChange={(event) => {
                     const value = event.currentTarget.value;
 
-                    if (value === 'csv' || value === 'ofe' || value === 'json') {
+                    if (
+                      value === 'csv' ||
+                      value === 'ofe' ||
+                      value === 'json'
+                    ) {
                       setExportFormat(value);
                     }
                   }}
@@ -312,12 +316,10 @@ export function DataExportScreen() {
           <Separator />
 
           <div className="flex justify-end">
-            <Button
-              size="lg"
-              onClick={handleExport}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Exporting...' : t('screens.dataExport.exportButton')}
+            <Button size="lg" onClick={handleExport} disabled={isLoading}>
+              {isLoading
+                ? 'Exporting...'
+                : t('screens.dataExport.exportButton')}
             </Button>
           </div>
         </div>

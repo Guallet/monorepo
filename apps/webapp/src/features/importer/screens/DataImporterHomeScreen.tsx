@@ -14,7 +14,7 @@ export function DataImporterHomeScreen() {
           name="CSV Importer"
           description="Import your transactions from a CSV file"
           onClick={() => {
-            navigate({ to: "/importer/csv" });
+            navigate({ to: '/importer/csv' });
           }}
         />
       </div>
@@ -42,7 +42,7 @@ function ImporterCard({
           <p className="text-sm text-muted-foreground">{description}</p>
         ) : null}
         <Button className="w-full" onClick={onClick}>
-        Import
+          Import
         </Button>
       </CardContent>
     </Card>

@@ -1,8 +1,10 @@
-import { ObInstitutionDto } from "@guallet/api-client";
-import { TextRow } from "@guallet/ui-react";
+import { ObInstitutionDto } from '@guallet/api-client';
+import { TextRow } from '@guallet/ui-react';
 
-interface BankCardProps
-  extends Omit<React.ComponentProps<typeof TextRow>, "label"> {
+interface BankCardProps extends Omit<
+  React.ComponentProps<typeof TextRow>,
+  'label'
+> {
   institution: ObInstitutionDto;
 }
 export function ObInstitutionRow({

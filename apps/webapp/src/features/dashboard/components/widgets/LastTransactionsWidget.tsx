@@ -1,4 +1,8 @@
-import { useAccounts, useCategories, useTransactions } from '@guallet/api-react';
+import {
+  useAccounts,
+  useCategories,
+  useTransactions,
+} from '@guallet/api-react';
 import { Money } from '@guallet/money';
 import { IconArrowDown, IconArrowUp, IconReceipt } from '@tabler/icons-react';
 import { WidgetCard } from './WidgetCard';
@@ -57,7 +61,8 @@ export function LastTransactionsWidget() {
                 <p
                   className={`whitespace-nowrap text-sm font-bold ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}
                 >
-                  {isIncome ? '+' : '-'}{amount.format()}
+                  {isIncome ? '+' : '-'}
+                  {amount.format()}
                 </p>
               </div>
 
@@ -93,7 +98,9 @@ export function LastTransactionsWidget() {
       <div className="flex h-[300px] items-center justify-center">
         <div className="space-y-2 text-center">
           <IconReceipt className="mx-auto h-12 w-12 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">No transactions found.</p>
+          <p className="text-sm text-muted-foreground">
+            No transactions found.
+          </p>
         </div>
       </div>
     );

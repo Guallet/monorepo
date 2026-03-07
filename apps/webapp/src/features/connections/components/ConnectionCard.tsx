@@ -26,12 +26,12 @@ export function ConnectionCard({
     (inst) => inst.nordigen_id === connection?.institution_id,
   );
 
-  const formattedDate = new Date(connection?.created ?? "").toLocaleDateString(
+  const formattedDate = new Date(connection?.created ?? '').toLocaleDateString(
     locale,
     {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     },
   );
 
@@ -48,27 +48,26 @@ export function ConnectionCard({
             <ConnectionStatusBadge
               status={
                 connection.status ||
-                t("components.connectionCard.status.unknown", "unknown")
+                t('components.connectionCard.status.unknown', 'unknown')
               }
             />
           </div>
 
           <p className="text-sm text-muted-foreground">
-            {t("components.connectionCard.created", "Created:")} {" "}
-            {formattedDate}
+            {t('components.connectionCard.created', 'Created:')} {formattedDate}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t("components.connectionCard.updated", "Updated:")} {" "}
+            {t('components.connectionCard.updated', 'Updated:')}{' '}
             {connection.updated_at}
           </p>
           <p className="text-sm">
             {connection.accounts.length > 0
-              ? t("components.connectionCard.accountsLinked", {
+              ? t('components.connectionCard.accountsLinked', {
                   count: connection.accounts.length,
                 })
               : t(
-                  "components.connectionCard.noAccountsLinked",
-                  "No accounts linked"
+                  'components.connectionCard.noAccountsLinked',
+                  'No accounts linked',
                 )}
           </p>
         </>

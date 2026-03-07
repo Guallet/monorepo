@@ -30,39 +30,39 @@ export function ConnectionDetailsScreen({
             <Button
               variant="outline"
               onClick={() => {
-                console.log("TODO: Handle refresh connection");
+                console.log('TODO: Handle refresh connection');
               }}
             >
               {t(
-                "screens.connections.details.refreshButton.label",
-                "Refresh Connection"
+                'screens.connections.details.refreshButton.label',
+                'Refresh Connection',
               )}
             </Button>
             <Button
               variant="outline"
               onClick={() => {
-                console.log("TODO: Handle update accounts connection");
+                console.log('TODO: Handle update accounts connection');
               }}
             >
               {t(
-                "screens.connections.details.updateButton.label",
-                "Update Connected accounts"
+                'screens.connections.details.updateButton.label',
+                'Update Connected accounts',
               )}
             </Button>
             <DeleteButton
               modalTitle={t(
-                "screens.connections.details.deleteButton.modalTitle",
-                "Delete connection"
+                'screens.connections.details.deleteButton.modalTitle',
+                'Delete connection',
               )}
               modalMessage={t(
-                "screens.connections.details.deleteButton.modalMessage",
-                "Are you sure you want to delete this connection?"
+                'screens.connections.details.deleteButton.modalMessage',
+                'Are you sure you want to delete this connection?',
               )}
               onDelete={() => {
                 console.log('Delete connection action is not implemented yet.');
               }}
             >
-              {t("screens.connections.details.deleteButton.label", "Delete")}
+              {t('screens.connections.details.deleteButton.label', 'Delete')}
             </DeleteButton>
           </div>
         </AppSection>

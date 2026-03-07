@@ -11,7 +11,10 @@ export function CashFlowRow({ row }: Readonly<IProps>) {
   const canExpand = row.subcategories.length > 0;
 
   const parentRow = (
-    <tr key={`${row.categoryId}-parent`} className={row.isParent ? 'font-semibold' : undefined}>
+    <tr
+      key={`${row.categoryId}-parent`}
+      className={row.isParent ? 'font-semibold' : undefined}
+    >
       <td className="px-3 py-2">
         {canExpand ? (
           <button

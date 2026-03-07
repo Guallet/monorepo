@@ -24,13 +24,14 @@ function TransactionRow({
             {transaction.description}
           </p>
           <span className="inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
-            {account?.name || "Unknown Account"}
+            {account?.name || 'Unknown Account'}
           </span>
         </div>
         <p
           className={`whitespace-nowrap text-sm font-bold ${isIncome ? 'text-emerald-600' : 'text-red-600'}`}
         >
-          {isIncome ? '+' : '-'}{amount.format()}
+          {isIncome ? '+' : '-'}
+          {amount.format()}
         </p>
       </div>
     </div>
@@ -40,7 +41,9 @@ function TransactionRow({
 export function TransactionsInboxWidget({
   onClick,
 }: Readonly<{ onClick?: () => void }>) {
-  const { transactions, metadata, isLoading } = useTransactionInbox({ pageSize: 10 });
+  const { transactions, metadata, isLoading } = useTransactionInbox({
+    pageSize: 10,
+  });
 
   return (
     <WidgetCard
@@ -56,10 +59,10 @@ export function TransactionsInboxWidget({
         <div className="space-y-3">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-center">
             <p className="text-sm">
-              You have{" "}
+              You have{' '}
               <span className="text-lg font-bold text-blue-700">
                 {metadata?.total ?? 0}
-              </span>{" "}
+              </span>{' '}
               transactions to categorize
             </p>
           </div>
@@ -72,7 +75,7 @@ export function TransactionsInboxWidget({
             </div>
           ) : (
             <div className="flex h-[100px] items-center justify-center text-sm text-muted-foreground">
-                No pending transactions.
+              No pending transactions.
             </div>
           )}
         </div>

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export const Route = createLazyFileRoute("/_app/tools/mortgage")({
+export const Route = createLazyFileRoute('/_app/tools/mortgage')({
   component: () => MortgageCalculator(),
 });
 
@@ -24,9 +24,7 @@ function MortgageCalculator() {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-4">
-      <h1 className="text-2xl font-semibold">
-        Mortgage Calculator
-      </h1>
+      <h1 className="text-2xl font-semibold">Mortgage Calculator</h1>
       <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
         <div className="space-y-2">
           <label htmlFor="mortgage-loan-amount" className="text-sm font-medium">
@@ -41,7 +39,10 @@ function MortgageCalculator() {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="mortgage-interest-rate" className="text-sm font-medium">
+          <label
+            htmlFor="mortgage-interest-rate"
+            className="text-sm font-medium"
+          >
             Interest Rate (%)
           </label>
           <Input
@@ -59,9 +60,9 @@ function MortgageCalculator() {
           </label>
           <Input
             id="mortgage-loan-term"
-          type="number"
-          value={loanTerm}
-          onChange={(e) => setLoanTerm(Number(e.currentTarget.value))}
+            type="number"
+            value={loanTerm}
+            onChange={(e) => setLoanTerm(Number(e.currentTarget.value))}
           />
         </div>
 

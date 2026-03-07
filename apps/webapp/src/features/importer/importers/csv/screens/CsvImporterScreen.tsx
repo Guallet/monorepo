@@ -61,10 +61,12 @@ export function CsvImporterScreen() {
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Import CSV File</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Import CSV File
+        </h1>
         <p className="text-sm text-muted-foreground">
-            Upload your transaction data in CSV format. We'll help you map the
-            fields and import everything automatically.
+          Upload your transaction data in CSV format. We'll help you map the
+          fields and import everything automatically.
         </p>
         <CsvStepper activeStep={0} />
       </div>
@@ -111,9 +113,7 @@ export function CsvImporterScreen() {
           multiple={false}
           loading={isLoading}
         >
-          <div
-            className="pointer-events-none flex min-h-[220px] items-center justify-center gap-8"
-          >
+          <div className="pointer-events-none flex min-h-[220px] items-center justify-center gap-8">
             <Dropzone.Accept>
               <IconUpload
                 style={{

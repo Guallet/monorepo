@@ -47,7 +47,8 @@ export function ConnectionCreateScreen({
 
   const hasSelectedCountry = Boolean(selectedCountryCode);
   const showInstitutionList = hasSelectedCountry && institutions.length > 0;
-  const showNoInstitutionsMessage = hasSelectedCountry && institutions.length === 0;
+  const showNoInstitutionsMessage =
+    hasSelectedCountry && institutions.length === 0;
 
   const handleInstitutionClick = (institution: ObInstitutionDto) => {
     createConnectionMutation.mutate(

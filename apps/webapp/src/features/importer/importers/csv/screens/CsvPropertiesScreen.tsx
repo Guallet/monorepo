@@ -42,10 +42,12 @@ export function CsvPropertiesScreen() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Map CSV Fields</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Map CSV Fields
+        </h1>
         <p className="text-sm text-muted-foreground">
-            Match your CSV columns to transaction fields. Required fields are
-            marked with *.
+          Match your CSV columns to transaction fields. Required fields are
+          marked with *.
         </p>
       </div>
 
@@ -98,31 +100,23 @@ export function CsvPropertiesScreen() {
             <thead>
               <tr className="bg-muted/40">
                 <th className="border px-3 py-2 text-left font-semibold">
-                    Account{' '}
-                    <span className="text-red-600">
-                      *
-                    </span>
+                  Account <span className="text-red-600">*</span>
                 </th>
                 <th className="border px-3 py-2 text-left font-semibold">
-                    Date{' '}
-                    <span className="text-red-600">
-                      *
-                    </span>
+                  Date <span className="text-red-600">*</span>
                 </th>
                 <th className="border px-3 py-2 text-left font-semibold">
-                    Amount{' '}
-                    <span className="text-red-600">
-                      *
-                    </span>
+                  Amount <span className="text-red-600">*</span>
                 </th>
                 <th className="border px-3 py-2 text-left font-semibold">
-                    Description{' '}
-                    <span className="text-red-600">
-                      *
-                    </span>
+                  Description <span className="text-red-600">*</span>
                 </th>
-                <th className="border px-3 py-2 text-left font-semibold">Notes</th>
-                <th className="border px-3 py-2 text-left font-semibold">Category</th>
+                <th className="border px-3 py-2 text-left font-semibold">
+                  Notes
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">
+                  Category
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -291,8 +285,8 @@ export function CsvPropertiesScreen() {
         </div>
 
         <p className="mt-3 text-xs text-muted-foreground">
-              Preview showing {Math.min(SAMPLE_ARRAY_SIZE, csvData.data.length)}{' '}
-              of {csvData.data.length} transactions
+          Preview showing {Math.min(SAMPLE_ARRAY_SIZE, csvData.data.length)} of{' '}
+          {csvData.data.length} transactions
         </p>
       </div>
 
@@ -323,7 +317,9 @@ function RowElement({ mappings, element }: Readonly<RowElementProps>) {
       <td className="border px-3 py-2">{element[mappings.account] || '-'}</td>
       <td className="border px-3 py-2">{element[mappings.date] || '-'}</td>
       <td className="border px-3 py-2">{element[mappings.amount] || '-'}</td>
-      <td className="border px-3 py-2">{element[mappings.description] || '-'}</td>
+      <td className="border px-3 py-2">
+        {element[mappings.description] || '-'}
+      </td>
       <td className="border px-3 py-2">{element[mappings.notes] || '-'}</td>
       <td className="border px-3 py-2">{element[mappings.category] || '-'}</td>
     </tr>

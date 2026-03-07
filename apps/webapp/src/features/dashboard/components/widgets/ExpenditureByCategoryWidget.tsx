@@ -26,11 +26,14 @@ export function ExpenditureByCategoryWidget({
   // Calculate expenditure by category (only negative transactions)
   const categorySpending = transactions
     .filter((t) => t.amount < 0 && t.categoryId)
-    .reduce((acc, t) => {
-      const categoryId = t.categoryId!;
-      acc[categoryId] = (acc[categoryId] || 0) + Math.abs(t.amount);
-      return acc;
-    }, {} as Record<string, number>);
+    .reduce(
+      (acc, t) => {
+        const categoryId = t.categoryId!;
+        acc[categoryId] = (acc[categoryId] || 0) + Math.abs(t.amount);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
   // Get top 5 categories
   const topCategories = Object.entries(categorySpending)
@@ -68,10 +71,10 @@ export function ExpenditureByCategoryWidget({
     content = (
       <div className="space-y-4">
         {topCategories.map((category, index) => {
-          const percentage = totalSpending > 0
-            ? (category.amount / totalSpending) * 100
-            : 0;
-          const color = category.color || categoryColors[index % categoryColors.length];
+          const percentage =
+            totalSpending > 0 ? (category.amount / totalSpending) * 100 : 0;
+          const color =
+            category.color || categoryColors[index % categoryColors.length];
 
           return (
             <div key={category.id}>
@@ -81,7 +84,9 @@ export function ExpenditureByCategoryWidget({
                     className="h-3 w-3 rounded-full"
                     style={{ backgroundColor: color }}
                   />
-                  <p className="truncate text-sm font-semibold">{category.name}</p>
+                  <p className="truncate text-sm font-semibold">
+                    {category.name}
+                  </p>
                 </div>
                 <p className="text-sm font-medium text-muted-foreground">
                   {category.amount.toFixed(0)}
@@ -125,7 +130,10 @@ export function ExpenditureByCategoryWidget({
   }
 
   return (
-    <WidgetCard title="Expenditure by Category" icon={<IconCategory size={20} />}>
+    <WidgetCard
+      title="Expenditure by Category"
+      icon={<IconCategory size={20} />}
+    >
       {content}
     </WidgetCard>
   );

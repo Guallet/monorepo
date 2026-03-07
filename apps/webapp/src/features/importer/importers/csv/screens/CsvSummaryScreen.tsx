@@ -124,7 +124,9 @@ export function CsvSummaryScreen() {
           </div>
 
           <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold">Import Started Successfully!</h2>
+            <h2 className="text-xl font-semibold">
+              Import Started Successfully!
+            </h2>
             <p className="text-sm text-muted-foreground">
               Your CSV import is now being processed in the background.
             </p>
@@ -138,8 +140,8 @@ export function CsvSummaryScreen() {
                   You&apos;ll receive an email notification
                 </p>
                 <p className="text-sm text-blue-800">
-                  We&apos;ll send you an email with the import results, including
-                  the number of transactions successfully processed.
+                  We&apos;ll send you an email with the import results,
+                  including the number of transactions successfully processed.
                 </p>
               </div>
             </div>
@@ -168,7 +170,9 @@ export function CsvSummaryScreen() {
 
       <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Review &amp; Import</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Review &amp; Import
+          </h1>
           <p className="text-sm text-muted-foreground">
             Review your data before importing. All {transactions.length}{' '}
             transactions will be processed on the server.
@@ -265,7 +269,9 @@ export function CsvSummaryScreen() {
               </summary>
               <div className="border-t p-4">
                 {categories.length > 0 ? (
-                  <p className="text-sm">{categories.length} categories will be mapped</p>
+                  <p className="text-sm">
+                    {categories.length} categories will be mapped
+                  </p>
                 ) : (
                   <p className="text-sm text-muted-foreground">
                     No categories to be imported
@@ -326,8 +332,12 @@ function AccountsImportedContent() {
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-muted/40">
-              <th className="border px-3 py-2 text-left font-semibold">CSV Account</th>
-              <th className="border px-3 py-2 text-left font-semibold">Maps to</th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                CSV Account
+              </th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                Maps to
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -350,8 +360,12 @@ function AccountsImportedContent() {
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr className="bg-muted/40">
-            <th className="border px-3 py-2 text-left font-semibold">CSV Account</th>
-            <th className="border px-3 py-2 text-left font-semibold">Maps to</th>
+            <th className="border px-3 py-2 text-left font-semibold">
+              CSV Account
+            </th>
+            <th className="border px-3 py-2 text-left font-semibold">
+              Maps to
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -417,12 +431,22 @@ function TransactionsContent() {
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-muted/40">
-              <th className="border px-3 py-2 text-left font-semibold">Account</th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                Account
+              </th>
               <th className="border px-3 py-2 text-left font-semibold">Date</th>
-              <th className="border px-3 py-2 text-left font-semibold">Amount</th>
-              <th className="border px-3 py-2 text-left font-semibold">Description</th>
-              <th className="border px-3 py-2 text-left font-semibold">Notes</th>
-              <th className="border px-3 py-2 text-left font-semibold">Category</th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                Amount
+              </th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                Description
+              </th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                Notes
+              </th>
+              <th className="border px-3 py-2 text-left font-semibold">
+                Category
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -454,7 +478,9 @@ function TransactionsContent() {
                     </span>
                   </td>
                   <td className="border px-3 py-2">{formatDate(entry.date)}</td>
-                  <td className="border px-3 py-2 font-semibold">{entry.amount}</td>
+                  <td className="border px-3 py-2 font-semibold">
+                    {entry.amount}
+                  </td>
                   <td className="border px-3 py-2">{entry.description}</td>
                   <td className="border px-3 py-2 text-muted-foreground">
                     {entry.notes || '-'}

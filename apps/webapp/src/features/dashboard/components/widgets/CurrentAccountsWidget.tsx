@@ -34,10 +34,7 @@ export function CurrentAccountsWidget() {
           const isCreditCard = account.type === AccountTypeDto.CREDIT_CARD;
 
           return (
-            <div
-              key={account.id}
-              className="rounded-lg border bg-muted/40 p-4"
-            >
+            <div key={account.id} className="rounded-lg border bg-muted/40 p-4">
               <div className="mb-2 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   {isCreditCard ? (
@@ -77,7 +74,9 @@ export function CurrentAccountsWidget() {
       <div className="flex h-[150px] items-center justify-center">
         <div className="space-y-2 text-center">
           <IconBuildingBank className="mx-auto h-12 w-12 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">No current accounts found.</p>
+          <p className="text-sm text-muted-foreground">
+            No current accounts found.
+          </p>
         </div>
       </div>
     );

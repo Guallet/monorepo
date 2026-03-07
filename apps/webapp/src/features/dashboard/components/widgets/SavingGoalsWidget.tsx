@@ -103,7 +103,9 @@ export function SavingGoalsWidget() {
               </div>
 
               <div className="mt-2 flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">{current.format()}</p>
+                <p className="text-xs text-muted-foreground">
+                  {current.format()}
+                </p>
                 <p
                   className={cn(
                     'text-xs font-semibold',
@@ -129,7 +131,9 @@ export function SavingGoalsWidget() {
       <div className="flex h-[150px] items-center justify-center">
         <div className="space-y-2 text-center">
           <IconPigMoney className="mx-auto h-12 w-12 text-muted-foreground/50" />
-          <p className="text-sm text-muted-foreground">No saving goals found.</p>
+          <p className="text-sm text-muted-foreground">
+            No saving goals found.
+          </p>
         </div>
       </div>
     );

@@ -56,7 +56,9 @@ export function TotalIncomeExpenditureWidget({
           >
             <div className="absolute inset-4 flex items-center justify-center rounded-full bg-card">
               <div className="space-y-1 text-center">
-                <p className="text-xs font-medium text-muted-foreground">Balance</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Balance
+                </p>
                 <p
                   className={`text-lg font-bold ${balance >= 0 ? 'text-emerald-600' : 'text-red-600'}`}
                 >

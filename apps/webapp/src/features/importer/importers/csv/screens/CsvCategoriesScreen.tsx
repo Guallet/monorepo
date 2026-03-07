@@ -25,9 +25,11 @@ export function CsvCategoriesScreen() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Map Categories</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Map Categories
+        </h1>
         <p className="text-sm text-muted-foreground">
-            Map your CSV categories to existing categories or leave untagged.
+          Map your CSV categories to existing categories or leave untagged.
         </p>
       </div>
 
@@ -70,8 +72,12 @@ export function CsvCategoriesScreen() {
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="bg-muted/40">
-                <th className="border px-3 py-2 text-left font-semibold">CSV Category</th>
-                <th className="border px-3 py-2 text-left font-semibold">Map to Category</th>
+                <th className="border px-3 py-2 text-left font-semibold">
+                  CSV Category
+                </th>
+                <th className="border px-3 py-2 text-left font-semibold">
+                  Map to Category
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -113,8 +119,7 @@ export function CsvCategoriesScreen() {
         </div>
 
         <p className="mt-3 text-xs text-muted-foreground">
-              Tip: Leave categories untagged if you want to categorize them
-              later
+          Tip: Leave categories untagged if you want to categorize them later
         </p>
       </div>
 
