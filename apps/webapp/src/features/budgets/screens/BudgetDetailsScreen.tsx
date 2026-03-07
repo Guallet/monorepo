@@ -1,11 +1,11 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
 import {
   useBudget,
   useBudgetMutations,
   useBudgetTransactions,
 } from '@guallet/api-react';
 import { BudgetCard } from '../components/BudgetCard';
-import { Stack, Title, Text, Group, ActionIcon, Tooltip } from '@mantine/core';
 import { useState } from 'react';
 import { MonthSelectorHeader } from '@/components/MonthSelectorHeader/MonthSelectorHeader';
 import { useTranslation } from 'react-i18next';
@@ -40,23 +40,27 @@ export function BudgetDetailsScreen({
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack align="stretch">
-        <Group>
-          <Title order={2} flex={1}>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <h1 className="flex-1 text-2xl font-semibold tracking-tight">
             {budget?.name}
-          </Title>
-          <Tooltip
-            label={t('screens.budgets.details.editButton.tooltip', 'Edit')}
+          </h1>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            title={t('screens.budgets.details.editButton.tooltip', 'Edit')}
+            aria-label={t(
+              'screens.budgets.details.editButton.tooltip',
+              'Edit',
+            )}
+            onClick={() => {
+              console.log('Edit budget');
+            }}
           >
-            <ActionIcon
-              variant="outline"
-              onClick={() => {
-                console.log('Edit budget');
-              }}
-            >
-              <IconEdit style={{ width: '70%', height: '70%' }} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
+            <IconEdit className="h-4 w-4" stroke={1.5} />
+          </Button>
 
           <DeleteIconButton
             tooltipText={t(
@@ -72,7 +76,6 @@ export function BudgetDetailsScreen({
               'Are you sure you want to delete the budget?',
             )}
             onDelete={() => {
-              // Handle account deletion
               deleteBudgetMutation.mutate(budgetId, {
                 onSuccess: () => {
                   notifications.show({
@@ -102,18 +105,22 @@ export function BudgetDetailsScreen({
               });
             }}
           />
-        </Group>
+        </div>
+
         <MonthSelectorHeader
-          style={{ flexGrow: 1 }}
+          className="max-w-md"
           date={selectedDate}
           onDateChanged={(newDate: Date) => {
             setSelectedDate(newDate);
           }}
         />
+
         {budget && <BudgetCard budgetId={budget.id} />}
-        <Title order={2}>
+
+        <h2 className="text-xl font-semibold">
           {t('screens.budgets.details.transactions.title', 'Transactions')}
-        </Title>
+        </h2>
+
         <AppSection>
           {transactions.length > 0 ? (
             transactions.map((transaction) => (
@@ -127,7 +134,7 @@ export function BudgetDetailsScreen({
             <EmptyTransactionsView />
           )}
         </AppSection>
-      </Stack>
+      </div>
     </BaseScreen>
   );
 }
@@ -135,13 +142,13 @@ export function BudgetDetailsScreen({
 function EmptyTransactionsView() {
   const { t } = useTranslation();
   return (
-    <Stack align="stretch">
-      <Text>
+    <div className="text-sm text-muted-foreground">
+      <p>
         {t(
           'screens.budgets.details.transactions.emptyView.body',
           'No transactions found for the current selected month',
         )}
-      </Text>
-    </Stack>
+      </p>
+    </div>
   );
 }

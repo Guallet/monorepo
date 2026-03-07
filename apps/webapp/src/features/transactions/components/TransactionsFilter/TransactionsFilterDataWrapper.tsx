@@ -2,10 +2,12 @@ import { AccountDto, CategoryDto } from '@guallet/api-client';
 import { TransactionsFilter } from './TransactionsFilter';
 import { FilterData } from './FilterData';
 import { useAccounts, useCategories } from '@guallet/api-react';
-import { ActionIcon, Card, Group, Indicator, Modal, Text } from '@mantine/core';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { IconFilter } from '@tabler/icons-react';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 interface TransactionsFilterDataWrapperProps {
   selectedAccounts: AccountDto[] | string[] | null;
@@ -21,7 +23,7 @@ export function TransactionsFilterDataWrapper({
   onFiltersUpdate,
 }: Readonly<TransactionsFilterDataWrapperProps>) {
   const isMobile = useIsMobile();
-  const [opened, { open, close }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure();
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
@@ -74,45 +76,50 @@ export function TransactionsFilterDataWrapper({
   if (isMobile) {
     return (
       <>
-        <Card withBorder radius="md" p="sm">
-          <Group justify="space-between" wrap="nowrap">
-            <Text size="sm" fw={500}>
-              Filters
-            </Text>
-            <Indicator
-              label={activeFiltersCount > 0 ? activeFiltersCount : undefined}
-              disabled={activeFiltersCount === 0}
-              inline
-              size={18}
-            >
-              <ActionIcon
-                variant="light"
-                size="lg"
+        <Card className="rounded-md border p-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-medium">Filters</p>
+
+            <div className="relative">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
                 onClick={open}
                 aria-label="Open filters"
+                className="h-9 w-9"
               >
-                <IconFilter size={20} />
-              </ActionIcon>
-            </Indicator>
-          </Group>
+                <IconFilter className="h-5 w-5" />
+              </Button>
+
+              {activeFiltersCount > 0 ? (
+                <span
+                  className="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-primary-foreground"
+                  aria-hidden="true"
+                >
+                  {activeFiltersCount}
+                </span>
+              ) : null}
+            </div>
+          </div>
         </Card>
-        <Modal
+
+        <ResponsiveModal
           opened={opened}
           onClose={close}
-          title={<Text fw={600}>Filter Transactions</Text>}
-          fullScreen={isMobile}
-          centered
+          title="Filter Transactions"
           size="lg"
-          transitionProps={{ transition: 'slide-up', duration: 200 }}
         >
-          <TransactionsFilter
-            filters={filters}
-            onFiltersUpdate={handleFiltersUpdate}
-            onCloseMobileModal={() => {
-              close();
-            }}
-          />
-        </Modal>
+          <div className="pt-1">
+            <TransactionsFilter
+              filters={filters}
+              onFiltersUpdate={handleFiltersUpdate}
+              onCloseMobileModal={() => {
+                close();
+              }}
+            />
+          </div>
+        </ResponsiveModal>
       </>
     );
   }

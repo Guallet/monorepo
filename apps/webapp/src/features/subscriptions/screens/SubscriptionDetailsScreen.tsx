@@ -1,35 +1,27 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
 import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
 import { useSubscription, useSubscriptionsMutations } from '@guallet/api-react';
-import {
-  Stack,
-  Group,
-  Button,
-  Text,
-  Avatar,
-  Badge,
-  Loader,
-  Modal,
-} from '@mantine/core';
 import { notifications } from '@/lib/notifications';
 import { useNavigate, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
+import { ResponsiveModal } from '@guallet/ui-react';
 
 interface SubscriptionDetailsScreenProps {
   subscriptionId: string;
 }
 
-function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
+function getPaymentTypeBadgeClass(type: RecurringPaymentType): string {
   switch (type) {
     case RecurringPaymentType.SUBSCRIPTION:
-      return 'blue';
+      return 'bg-blue-100 text-blue-800';
     case RecurringPaymentType.REGULAR_PAYMENT:
-      return 'orange';
+      return 'bg-orange-100 text-orange-800';
     case RecurringPaymentType.REGULAR_INCOME:
-      return 'green';
+      return 'bg-green-100 text-green-800';
     default:
-      return 'gray';
+      return 'bg-muted text-muted-foreground';
   }
 }
 
@@ -107,7 +99,11 @@ export function SubscriptionDetailsScreen({
   }
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <BaseScreen isLoading>
+        <div className="min-h-24" />
+      </BaseScreen>
+    );
   }
 
   if (!subscription) {
@@ -116,88 +112,92 @@ export function SubscriptionDetailsScreen({
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Modal
-        centered
+      <ResponsiveModal
         opened={isDeleteModalOpen}
         onClose={hideModal}
         title="Delete subscription"
-        size="auto"
+        size="sm"
       >
-        <Stack>
-          <Text>Are you sure you want to delete this subscription?</Text>
-          <Text size="sm" c="dimmed">
+        <div className="flex flex-col gap-4">
+          <p>Are you sure you want to delete this subscription?</p>
+          <p className="text-sm text-muted-foreground">
             This action cannot be undone.
-          </Text>
-          <Group justify="flex-end">
-            <Button variant="outline" onClick={hideModal}>
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={hideModal}>
               Cancel
             </Button>
             <Button
-              color="red"
+              type="button"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={handleDelete}
-              loading={deleteSubscriptionMutation.isPending}
+              disabled={deleteSubscriptionMutation.isPending}
             >
-              Delete
+              {deleteSubscriptionMutation.isPending ? 'Deleting...' : 'Delete'}
             </Button>
-          </Group>
-        </Stack>
-      </Modal>
+          </div>
+        </div>
+      </ResponsiveModal>
 
-      <Stack>
-        {/* Header */}
-        <Group>
-          <Avatar src={subscription.imageUrl} radius="xl" size="xl">
-            {subscription.name.charAt(0).toUpperCase()}
-          </Avatar>
-          <Stack gap={4}>
-            <Text size="xl" fw={700}>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-lg font-semibold">
+            {subscription.imageUrl ? (
+              <img
+                alt={subscription.name}
+                className="h-full w-full object-cover"
+                src={subscription.imageUrl}
+              />
+            ) : (
+              subscription.name.charAt(0).toUpperCase()
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-bold">
               {subscription.name}
-            </Text>
-            <Badge
-              size="md"
-              color={getPaymentTypeBadgeColor(subscription.type)}
+            </h1>
+            <span
+              className={`w-fit rounded-full px-2 py-0.5 text-xs font-medium ${getPaymentTypeBadgeClass(subscription.type)}`}
             >
               {getPaymentTypeLabel(subscription.type)}
-            </Badge>
-          </Stack>
-        </Group>
+            </span>
+          </div>
+        </div>
 
-        {/* Details Section */}
         <AppSection title="Details">
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text c="dimmed">Amount</Text>
-              <Text fw={600} size="lg">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Amount</p>
+              <p className="text-lg font-semibold">
                 {formatCurrency(subscription.amount, subscription.currency)}
-              </Text>
-            </Group>
-            <Group justify="space-between">
-              <Text c="dimmed">Frequency</Text>
-              <Text fw={500}>{getCadenceLabel(subscription.cadence)}</Text>
-            </Group>
-            <Group justify="space-between">
-              <Text c="dimmed">Start Date</Text>
-              <Text fw={500}>
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Frequency</p>
+              <p className="font-medium">{getCadenceLabel(subscription.cadence)}</p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Start Date</p>
+              <p className="font-medium">
                 {new Date(subscription.startDate).toLocaleDateString()}
-              </Text>
-            </Group>
-            <Group justify="space-between">
-              <Text c="dimmed">Currency</Text>
-              <Text fw={500}>{subscription.currency}</Text>
-            </Group>
-            <Group justify="space-between">
-              <Text c="dimmed">Type</Text>
-              <Text fw={500}>{getPaymentTypeLabel(subscription.type)}</Text>
-            </Group>
-          </Stack>
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Currency</p>
+              <p className="font-medium">{subscription.currency}</p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Type</p>
+              <p className="font-medium">{getPaymentTypeLabel(subscription.type)}</p>
+            </div>
+          </div>
         </AppSection>
 
-        {/* Cost Summary */}
         <AppSection title="Cost Summary">
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text c="dimmed">Monthly estimate</Text>
-              <Text fw={500}>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Monthly estimate</p>
+              <p className="font-medium">
                 {formatCurrency(
                   calculateMonthlyAmount(
                     subscription.amount,
@@ -205,11 +205,11 @@ export function SubscriptionDetailsScreen({
                   ),
                   subscription.currency,
                 )}
-              </Text>
-            </Group>
-            <Group justify="space-between">
-              <Text c="dimmed">Yearly estimate</Text>
-              <Text fw={500}>
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-muted-foreground">Yearly estimate</p>
+              <p className="font-medium">
                 {formatCurrency(
                   calculateYearlyAmount(
                     subscription.amount,
@@ -217,15 +217,15 @@ export function SubscriptionDetailsScreen({
                   ),
                   subscription.currency,
                 )}
-              </Text>
-            </Group>
-          </Stack>
+              </p>
+            </div>
+          </div>
         </AppSection>
 
-        {/* Actions */}
-        <Stack>
+        <div className="flex flex-col gap-2">
           <Button
-            fullWidth
+            type="button"
+            className="w-full"
             onClick={() => {
               navigation({
                 to: '/subscriptions/$id/edit',
@@ -236,24 +236,25 @@ export function SubscriptionDetailsScreen({
             Edit
           </Button>
           <Button
-            fullWidth
-            color="red"
+            type="button"
             variant="outline"
+            className="w-full border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive"
             onClick={showDeleteModal}
           >
             Delete
           </Button>
           <Button
-            fullWidth
-            variant="subtle"
+            type="button"
+            className="w-full"
+            variant="ghost"
             onClick={() => {
               navigation({ to: '/subscriptions' });
             }}
           >
             Back to list
           </Button>
-        </Stack>
-      </Stack>
+        </div>
+      </div>
     </BaseScreen>
   );
 }

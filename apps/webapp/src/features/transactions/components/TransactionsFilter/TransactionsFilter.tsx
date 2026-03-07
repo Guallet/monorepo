@@ -1,6 +1,7 @@
 import { AccountsPicker } from '@/features/accounts/components/AccountPicker/AccountsPicker';
 import { DateRangeButton } from '@/components/DateRangeButton/DateRangeButton';
-import { Card, Group, Stack, Box, Button } from '@mantine/core';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { FilterData } from './FilterData';
 import { AccountDto, CategoryDto } from '@guallet/api-client';
 import { CategoryMultiSelect } from '@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect';
@@ -25,6 +26,29 @@ export function TransactionsFilter({
   const { accounts } = useAccounts();
   const { categories } = useCategories();
 
+  const updateAccounts = (nextAccounts: AccountDto[]) => {
+    onFiltersUpdate({
+      ...filters,
+      selectedAccounts: nextAccounts,
+    });
+  };
+
+  const updateCategories = (nextCategories: CategoryDto[]) => {
+    onFiltersUpdate({
+      ...filters,
+      selectedCategories: nextCategories,
+    });
+  };
+
+  const updateDateRange = (
+    selectedRange: { startDate: Date; endDate: Date } | null,
+  ) => {
+    onFiltersUpdate({
+      ...filters,
+      dateRange: selectedRange,
+    });
+  };
+
   const handleResetFilters = () => {
     onFiltersUpdate({
       selectedAccounts: accounts,
@@ -38,123 +62,88 @@ export function TransactionsFilter({
   // Mobile view: Stack filters vertically
   if (isMobile) {
     return (
-      <Stack gap="sm">
+      <div className="flex flex-col gap-3">
         <AccountsPicker
           selectedAccounts={filters.selectedAccounts ?? []}
-          onSelectedAccountsChange={(accounts: AccountDto[]) => {
-            onFiltersUpdate({
-              ...filters,
-              selectedAccounts: accounts,
-            });
-          }}
+          onSelectedAccountsChange={updateAccounts}
         />
+
         <CategoryMultiSelect
           label={t(
             'components.transactionsFilter.categories.label',
             'Categories',
           )}
           selectedCategories={filters.selectedCategories ?? []}
-          onSelectionChanged={(categories: CategoryDto[]) => {
-            onFiltersUpdate({
-              ...filters,
-              selectedCategories: categories,
-            });
-          }}
+          onSelectionChanged={updateCategories}
         />
+
         <DateRangeButton
           selectedRange={filters.dateRange ?? null}
-          onRangeSelected={(selectedRange) => {
-            if (selectedRange) {
-              onFiltersUpdate({
-                ...filters,
-                dateRange: selectedRange,
-              });
-            } else {
-              onFiltersUpdate({
-                ...filters,
-                dateRange: null,
-              });
-            }
-          }}
+          onRangeSelected={updateDateRange}
         />
+
         <Button
-          variant="outlined"
-          leftSection={<IconFilterOff size={16} />}
+          type="button"
+          variant="outline"
+          className="w-full gap-2"
           onClick={handleResetFilters}
-          fullWidth
         >
+          <IconFilterOff className="h-4 w-4" />
           {t('components.transactionsFilter.reset', 'Reset filters')}
         </Button>
 
         <Button
-          variant="filled"
+          type="button"
+          className="w-full"
           onClick={() => onCloseMobileModal?.()}
-          fullWidth
         >
           {t('components.transactionsFilter.apply', 'Apply filters')}
         </Button>
-      </Stack>
+      </div>
     );
   }
 
   // Desktop view: Show filters in a Card with horizontal layout and proper alignment
   return (
-    <Card withBorder radius="md" padding="md" shadow="sm">
-      <Group gap="md" align="flex-end">
-        <Box style={{ minWidth: 200 }}>
+    <Card className="rounded-md border p-4 shadow-sm">
+      <div className="flex flex-wrap items-end gap-4">
+        <div className="min-w-[200px]">
           <AccountsPicker
             selectedAccounts={filters.selectedAccounts ?? []}
-            onSelectedAccountsChange={(accounts: AccountDto[]) => {
-              onFiltersUpdate({
-                ...filters,
-                selectedAccounts: accounts,
-              });
-            }}
+            onSelectedAccountsChange={updateAccounts}
           />
-        </Box>
-        <Box style={{ minWidth: 200, flexGrow: 1 }}>
+        </div>
+
+        <div className="min-w-[200px] flex-1">
           <CategoryMultiSelect
             label={t(
               'components.transactionsFilter.categories.label',
               'Categories',
             )}
             selectedCategories={filters.selectedCategories ?? []}
-            onSelectionChanged={(categories: CategoryDto[]) => {
-              onFiltersUpdate({
-                ...filters,
-                selectedCategories: categories,
-              });
-            }}
+            onSelectionChanged={updateCategories}
           />
-        </Box>
-        <Box style={{ minWidth: 200 }}>
+        </div>
+
+        <div className="min-w-[200px]">
           <DateRangeButton
             selectedRange={filters.dateRange ?? null}
-            onRangeSelected={(selectedRange) => {
-              if (selectedRange) {
-                onFiltersUpdate({
-                  ...filters,
-                  dateRange: selectedRange,
-                });
-              } else {
-                onFiltersUpdate({
-                  ...filters,
-                  dateRange: null,
-                });
-              }
-            }}
+            onRangeSelected={updateDateRange}
           />
-        </Box>
-        <Box>
+        </div>
+
+        <div>
           <Button
-            variant="outlined"
-            leftSection={<IconFilterOff size={16} />}
+            type="button"
+            variant="outline"
+            className="gap-2"
             onClick={handleResetFilters}
           >
+            <IconFilterOff className="h-4 w-4" />
             {t('components.transactionsFilter.reset', 'Reset filters')}
           </Button>
-        </Box>
-      </Group>
+        </div>
+      </div>
     </Card>
   );
 }

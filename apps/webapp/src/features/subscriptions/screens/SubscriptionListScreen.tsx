@@ -1,20 +1,12 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   SubscriptionDto,
   RecurringPaymentType,
   RecurrenceCadence,
 } from '@guallet/api-client';
 import { useSubscriptions } from '@guallet/api-react';
-import {
-  Stack,
-  Button,
-  Text,
-  Card,
-  Group,
-  Badge,
-  Avatar,
-  ActionIcon,
-} from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { IconPlus, IconChevronRight } from '@tabler/icons-react';
@@ -22,16 +14,16 @@ import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 
-function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
+function getPaymentTypeBadgeClass(type: RecurringPaymentType): string {
   switch (type) {
     case RecurringPaymentType.SUBSCRIPTION:
-      return 'blue';
+      return 'bg-blue-100 text-blue-800';
     case RecurringPaymentType.REGULAR_PAYMENT:
-      return 'orange';
+      return 'bg-orange-100 text-orange-800';
     case RecurringPaymentType.REGULAR_INCOME:
-      return 'green';
+      return 'bg-green-100 text-green-800';
     default:
-      return 'gray';
+      return 'bg-muted text-muted-foreground';
   }
 }
 
@@ -157,6 +149,7 @@ function SubscriptionRow({
   onClick,
 }: Readonly<SubscriptionRowProps>) {
   const { t } = useTranslation();
+  const initials = subscription.name.charAt(0).toUpperCase();
 
   const nextPaymentDate = useMemo(
     () =>
@@ -172,59 +165,59 @@ function SubscriptionRow({
   );
 
   return (
-    <Card
-      withBorder
-      shadow="sm"
-      radius="md"
-      padding="md"
-      onClick={onClick}
-      style={{ cursor: 'pointer' }}
-    >
-      <Group justify="space-between">
-        <Group>
-          <Avatar src={subscription.imageUrl} radius="xl" size="md">
-            {subscription.name.charAt(0).toUpperCase()}
-          </Avatar>
-          <Stack gap={2}>
-            <Text fw={500}>{subscription.name}</Text>
-            <Group gap="xs">
-              <Badge
-                size="sm"
-                color={getPaymentTypeBadgeColor(subscription.type)}
-              >
-                {getPaymentTypeLabel(subscription.type, t)}
-              </Badge>
-              <Text size="xs" c="dimmed">
-                {getCadenceLabel(subscription.cadence, t)}
-              </Text>
-            </Group>
-            {nextPaymentDate && (
-              <Group gap="xs">
-                <Text size="xs">
-                  {t('screens.subscriptions.list.nextPayment.label')}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {formatted}
-                </Text>
-                {message && (
-                  <Badge size="sm" variant="light" color="blue">
-                    {message}
-                  </Badge>
-                )}
-              </Group>
-            )}
-          </Stack>
-        </Group>
-        <Group>
-          <Text fw={600} size="lg">
-            {formatCurrency(subscription.amount, subscription.currency)}
-          </Text>
-          <ActionIcon variant="subtle" color="gray">
-            <IconChevronRight size={16} />
-          </ActionIcon>
-        </Group>
-      </Group>
-    </Card>
+    <button type="button" className="w-full text-left" onClick={onClick}>
+      <Card className="cursor-pointer border shadow-sm transition-colors hover:bg-accent/30">
+        <div className="flex items-center justify-between gap-3 p-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-sm font-semibold">
+              {subscription.imageUrl ? (
+                <img
+                  alt={subscription.name}
+                  className="h-full w-full object-cover"
+                  src={subscription.imageUrl}
+                />
+              ) : (
+                initials
+              )}
+            </div>
+            <div className="min-w-0 space-y-1">
+              <p className="truncate font-medium">{subscription.name}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${getPaymentTypeBadgeClass(subscription.type)}`}
+                >
+                  {getPaymentTypeLabel(subscription.type, t)}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {getCadenceLabel(subscription.cadence, t)}
+                </span>
+              </div>
+              {nextPaymentDate ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs">
+                    {t('screens.subscriptions.list.nextPayment.label')}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatted}
+                  </span>
+                  {message ? (
+                    <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                      {message}
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <p className="text-lg font-semibold">
+              {formatCurrency(subscription.amount, subscription.currency)}
+            </p>
+            <IconChevronRight className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
+      </Card>
+    </button>
   );
 }
 
@@ -233,29 +226,28 @@ export function SubscriptionListScreen() {
   const navigation = useNavigate();
   const { subscriptions, isLoading } = useSubscriptions();
   const defaultCurrency = useDefaultCurrency();
+  const safeSubscriptions = useMemo(() => subscriptions ?? [], [subscriptions]);
 
   const groupedSubscriptions = useMemo(() => {
-    if (isLoading || !subscriptions) {
+    if (isLoading || safeSubscriptions.length === 0) {
       return { subscriptions: [], regularPayments: [], regularIncome: [] };
     }
 
     return {
-      subscriptions: subscriptions.filter(
+      subscriptions: safeSubscriptions.filter(
         (s) => s.type === RecurringPaymentType.SUBSCRIPTION,
       ),
-      regularPayments: subscriptions.filter(
+      regularPayments: safeSubscriptions.filter(
         (s) => s.type === RecurringPaymentType.REGULAR_PAYMENT,
       ),
-      regularIncome: subscriptions.filter(
+      regularIncome: safeSubscriptions.filter(
         (s) => s.type === RecurringPaymentType.REGULAR_INCOME,
       ),
     };
-  }, [subscriptions, isLoading]);
+  }, [safeSubscriptions, isLoading]);
 
   const totalMonthlyAmount = useMemo(() => {
-    if (!subscriptions) return 0;
-
-    return subscriptions.reduce((total, sub) => {
+    return safeSubscriptions.reduce((total, sub) => {
       let monthlyAmount = sub.amount;
       switch (sub.cadence) {
         case RecurrenceCadence.WEEKLY:
@@ -273,57 +265,59 @@ export function SubscriptionListScreen() {
       }
       return total + monthlyAmount;
     }, 0);
-  }, [subscriptions]);
+  }, [safeSubscriptions]);
 
   return (
     <BaseScreen isLoading={isLoading}>
-      <Stack>
-        <Group justify="space-between">
-          <Stack gap={0}>
-            <Text size="xl" fw={700}>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold">
               {t('screens.subscriptions.list.title')}
-            </Text>
-            <Text c="dimmed" size="sm">
+            </h1>
+            <p className="text-sm text-muted-foreground">
               {t('screens.subscriptions.list.estimatedMonthly')}{' '}
               {formatCurrency(totalMonthlyAmount, defaultCurrency)}
-            </Text>
-          </Stack>
+            </p>
+          </div>
           <Button
-            leftSection={<IconPlus size={16} />}
+            type="button"
             onClick={() => {
               navigation({ to: '/subscriptions/new' });
             }}
           >
+            <IconPlus className="h-4 w-4" />
             {t('screens.subscriptions.list.addButton.label')}
           </Button>
-        </Group>
+        </div>
 
-        {subscriptions.length === 0 && !isLoading && (
-          <Card withBorder shadow="sm" radius="md" padding="xl">
-            <Stack align="center" gap="md">
-              <Text size="lg" c="dimmed">
+        {safeSubscriptions.length === 0 && !isLoading ? (
+          <Card className="border p-6 shadow-sm">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <p className="text-lg text-muted-foreground">
                 {t('screens.subscriptions.list.emptyState.title')}
-              </Text>
-              <Text size="sm" c="dimmed">
+              </p>
+              <p className="text-sm text-muted-foreground">
                 {t('screens.subscriptions.list.emptyState.description')}
-              </Text>
+              </p>
               <Button
+                type="button"
                 onClick={() => {
                   navigation({ to: '/subscriptions/new' });
                 }}
               >
                 {t('screens.subscriptions.list.emptyState.button.label')}
               </Button>
-            </Stack>
+            </div>
           </Card>
-        )}
+        ) : null}
 
-        {groupedSubscriptions.subscriptions.length > 0 && (
-          <Stack gap="xs">
-            <Text fw={600} size="md">
+        {groupedSubscriptions.subscriptions.length > 0 ? (
+          <section className="space-y-2">
+            <h2 className="text-base font-semibold">
               {t('screens.subscriptions.list.sections.subscriptions')} (
               {groupedSubscriptions.subscriptions.length})
-            </Text>
+            </h2>
             {groupedSubscriptions.subscriptions.map((subscription) => (
               <SubscriptionRow
                 key={subscription.id}
@@ -336,15 +330,15 @@ export function SubscriptionListScreen() {
                 }}
               />
             ))}
-          </Stack>
-        )}
+          </section>
+        ) : null}
 
-        {groupedSubscriptions.regularPayments.length > 0 && (
-          <Stack gap="xs">
-            <Text fw={600} size="md">
+        {groupedSubscriptions.regularPayments.length > 0 ? (
+          <section className="space-y-2">
+            <h2 className="text-base font-semibold">
               {t('screens.subscriptions.list.sections.regularPayments')} (
               {groupedSubscriptions.regularPayments.length})
-            </Text>
+            </h2>
             {groupedSubscriptions.regularPayments.map((subscription) => (
               <SubscriptionRow
                 key={subscription.id}
@@ -357,15 +351,15 @@ export function SubscriptionListScreen() {
                 }}
               />
             ))}
-          </Stack>
-        )}
+          </section>
+        ) : null}
 
-        {groupedSubscriptions.regularIncome.length > 0 && (
-          <Stack gap="xs">
-            <Text fw={600} size="md">
+        {groupedSubscriptions.regularIncome.length > 0 ? (
+          <section className="space-y-2">
+            <h2 className="text-base font-semibold">
               {t('screens.subscriptions.list.sections.regularIncome')} (
               {groupedSubscriptions.regularIncome.length})
-            </Text>
+            </h2>
             {groupedSubscriptions.regularIncome.map((subscription) => (
               <SubscriptionRow
                 key={subscription.id}
@@ -378,9 +372,9 @@ export function SubscriptionListScreen() {
                 }}
               />
             ))}
-          </Stack>
-        )}
-      </Stack>
+          </section>
+        ) : null}
+      </div>
     </BaseScreen>
   );
 }

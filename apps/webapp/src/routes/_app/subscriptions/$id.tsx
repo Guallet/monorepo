@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Stack, Text } from '@mantine/core';
 import { SubscriptionDetailsScreen } from '@/features/subscriptions/screens/SubscriptionDetailsScreen';
 
 export const Route = createFileRoute('/_app/subscriptions/$id')({
@@ -10,10 +9,10 @@ export const Route = createFileRoute('/_app/subscriptions/$id')({
   errorComponent: ({ error }) => {
     console.error('Error loading subscription', error);
     return (
-      <Stack>
-        <Text>Error loading subscription</Text>
-        <Text>{`${JSON.stringify(error)}`}</Text>
-      </Stack>
+      <div className="flex flex-col gap-2">
+        <p>Error loading subscription</p>
+        <p>{`${JSON.stringify(error)}`}</p>
+      </div>
     );
   },
 });

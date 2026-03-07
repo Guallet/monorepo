@@ -41,7 +41,9 @@ export function MultiSelectCheckbox({
   const toggleSelectedValue = (selectedValue: string) => {
     setValue((currentValue) => {
       const nextValue = currentValue.includes(selectedValue)
-        ? currentValue.filter((existingValue) => existingValue !== selectedValue)
+        ? currentValue.filter(
+            (existingValue) => existingValue !== selectedValue,
+          )
         : [...currentValue, selectedValue];
 
       onSelectionChanged?.(nextValue);
@@ -88,7 +90,9 @@ export function MultiSelectCheckbox({
           setIsOpen((currentOpen) => !currentOpen);
         }}
       >
-        <span className={cn(value.length === 0 ? 'text-muted-foreground' : null)}>
+        <span
+          className={cn(value.length === 0 ? 'text-muted-foreground' : null)}
+        >
           {selectedItemsLabel}
         </span>
       </Button>

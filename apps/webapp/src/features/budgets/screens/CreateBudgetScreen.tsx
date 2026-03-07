@@ -4,18 +4,13 @@ import {
   useUserSettings,
 } from '@guallet/api-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Button,
-  Group,
-  NumberInput,
-  Select,
-  Stack,
-  TextInput,
-} from '@mantine/core';
 import { GualletColorPicker } from '@/components/GualletColorPicker/GualletColorPicker';
 import { Currency } from '@guallet/money';
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useLocale } from '@/i18n/useLocale';
 import { CategoryMultiSelect } from '@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect';
 import { useMemo } from 'react';
@@ -64,13 +59,10 @@ export function CreateBudgetScreen() {
     formState: { errors },
   } = form;
 
-  // Only available currencies from the existing accounts
-  // TODO: Create a hook to get the user currencies. The default one and the ones used by their accounts
   const availableCurrencies = useMemo(
     () =>
       accounts
         .map((account) => account.currency)
-        // remove duplicates
         .filter(
           (currencyCode, index, self) => self.indexOf(currencyCode) === index,
         )
@@ -132,7 +124,7 @@ export function CreateBudgetScreen() {
   return (
     <BaseScreen>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <Stack>
+        <div className="flex flex-col gap-4">
           <AppSection
             title={t('screens.budgets.create.form.title', 'Create new Budget')}
           >
@@ -140,74 +132,114 @@ export function CreateBudgetScreen() {
               name="name"
               control={control}
               render={({ field }) => (
-                <TextInput
-                  label={t('screens.budgets.create.form.name.label', 'Name')}
-                  placeholder={t(
-                    'screens.budgets.create.form.name.placeholder',
-                    'Budget name',
-                  )}
-                  value={field.value}
-                  onChange={(event) => {
-                    field.onChange(event.currentTarget.value);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  ref={field.ref}
-                  error={errors.name?.message}
-                  required
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="create-budget-name">
+                    {t('screens.budgets.create.form.name.label', 'Name')}
+                  </Label>
+                  <Input
+                    id="create-budget-name"
+                    placeholder={t(
+                      'screens.budgets.create.form.name.placeholder',
+                      'Budget name',
+                    )}
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.target.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    required
+                  />
+                  {errors.name?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.name.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
+
             <Controller
               name="currency"
               control={control}
               render={({ field }) => (
-                <Select
-                  label={t(
-                    'screens.budgets.create.form.currency.label',
-                    'Currency',
-                  )}
-                  description={t(
-                    'screens.budgets.create.form.currency.description',
-                    'Only available currencies from your existing accounts are shown.',
-                  )}
-                  placeholder={t(
-                    'screens.budgets.create.form.currency.placeholder',
-                    'Select currency',
-                  )}
-                  data={currencyOptions}
-                  value={field.value || null}
-                  onChange={(value) => {
-                    field.onChange(value ?? '');
-                  }}
-                  error={errors.currency?.message}
-                  required
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="create-budget-currency">
+                    {t('screens.budgets.create.form.currency.label', 'Currency')}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      'screens.budgets.create.form.currency.description',
+                      'Only available currencies from your existing accounts are shown.',
+                    )}
+                  </p>
+                  <select
+                    id="create-budget-currency"
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.target.value);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    required
+                  >
+                    <option value="">
+                      {t(
+                        'screens.budgets.create.form.currency.placeholder',
+                        'Select currency',
+                      )}
+                    </option>
+                    {currencyOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.currency?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.currency.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
+
             <Controller
               name="amount"
               control={control}
               render={({ field }) => (
-                <NumberInput
-                  label={t(
-                    'screens.budgets.create.form.amount.label',
-                    'Budget Amount',
-                  )}
-                  min={0}
-                  value={field.value}
-                  onChange={(value) => {
-                    const parsedValue =
-                      typeof value === 'number' ? value : Number(value || 0);
-                    field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  error={errors.amount?.message}
-                  required
-                />
+                <div className="grid gap-2">
+                  <Label htmlFor="create-budget-amount">
+                    {t(
+                      'screens.budgets.create.form.amount.label',
+                      'Budget Amount',
+                    )}
+                  </Label>
+                  <Input
+                    id="create-budget-amount"
+                    type="number"
+                    min={0}
+                    step="any"
+                    value={field.value}
+                    onChange={(event) => {
+                      const parsedValue = Number(event.target.value);
+                      field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    required
+                  />
+                  {errors.amount?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.amount.message}
+                    </p>
+                  ) : null}
+                </div>
               )}
             />
+
             <Controller
               name="colour"
               control={control}
@@ -229,6 +261,7 @@ export function CreateBudgetScreen() {
                 />
               )}
             />
+
             <Controller
               name="icon"
               control={control}
@@ -249,6 +282,7 @@ export function CreateBudgetScreen() {
                 />
               )}
             />
+
             <Controller
               name="categories"
               control={control}
@@ -269,23 +303,25 @@ export function CreateBudgetScreen() {
               )}
             />
           </AppSection>
-          <Group justify="flex-end" mt="md">
+
+          <div className="flex justify-end">
             <Button
               type="submit"
-              loading={createBudgetMutation.status === 'pending'}
+              disabled={createBudgetMutation.status === 'pending'}
             >
               {t(
                 'screens.budgets.create.form.submitButton.label',
                 'Create Budget',
               )}
             </Button>
-          </Group>
+          </div>
+
           {createBudgetMutation.status === 'error' && (
-            <div style={{ color: 'red' }}>
+            <div className="text-destructive">
               Error: {createBudgetMutation.error?.message}
             </div>
           )}
-        </Stack>
+        </div>
       </form>
     </BaseScreen>
   );

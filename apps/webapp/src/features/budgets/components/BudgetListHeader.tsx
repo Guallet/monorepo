@@ -1,6 +1,5 @@
-import { BudgetDto } from "@guallet/api-client";
-import { Group, Text } from "@mantine/core";
-import { useMemo } from "react";
+import { BudgetDto } from '@guallet/api-client';
+import { useMemo } from 'react';
 
 interface BudgetListHeaderProps {
   budgets: BudgetDto[];
@@ -10,35 +9,29 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
   const { totalBudget, totalSpent, remaining } = useMemo(() => {
     const totalBudget = budgets.reduce(
       (acc, budget) => acc + Number(budget.amount),
-      0
+      0,
     );
     const totalSpent = budgets.reduce(
       (acc, budget) => acc + Number(budget.spent),
-      0
+      0,
     );
     const remaining = totalBudget - totalSpent;
     return { totalBudget, totalSpent, remaining };
   }, [budgets]);
 
   return (
-    <Group justify="space-between" mb="md" align="center">
-      <Group align="apart" mb="xs">
-        <Text fz="md" fw={500}>
-          Budget total
-        </Text>
-        <Text fz="md" fw={500}>
-          £{remaining}
-        </Text>
-      </Group>
+    <div className="mb-4 rounded-md border bg-card p-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-base font-medium">Budget total</p>
+        <p className="text-base font-semibold">£{remaining}</p>
+      </div>
 
-      <Group align="apart">
-        <Text fz="sm" c="dimmed">
+      <div className="mt-1 flex items-center justify-between gap-2 text-sm text-muted-foreground">
+        <p>
           £{totalSpent} / £{totalBudget}
-        </Text>
-        <Text fz="sm" c="dimmed">
-          Left
-        </Text>
-      </Group>
-    </Group>
+        </p>
+        <p>Left</p>
+      </div>
+    </div>
   );
 }
