@@ -1,7 +1,7 @@
-import { IconChevronRight } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
-import { AccountDto } from "@guallet/api-client";
-import { InstitutionLogo } from "@/components/InstitutionLogo/InstitutionLogo";
+import { IconChevronRight } from '@tabler/icons-react';
+import { Money } from '@guallet/money';
+import { AccountDto } from '@guallet/api-client';
+import { InstitutionLogo } from '@/components/InstitutionLogo/InstitutionLogo';
 
 interface Props {
   account: AccountDto;
@@ -24,7 +24,11 @@ export function AccountRow({ account, onClick }: Readonly<Props>) {
         }
       }}
     >
-      <InstitutionLogo radius="xl" size={50} institutionId={account.institutionId} />
+      <InstitutionLogo
+        radius="xl"
+        size={50}
+        institutionId={account.institutionId}
+      />
       <span className="flex-1">{account.name}</span>
       <span className="font-semibold">{money.format()}</span>
 

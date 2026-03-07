@@ -17,7 +17,9 @@ export function LoanForm() {
           className="pl-8"
         />
       </div>
-      <p className="text-sm text-muted-foreground">The interest rate of the account</p>
+      <p className="text-sm text-muted-foreground">
+        The interest rate of the account
+      </p>
     </div>
   );
 }

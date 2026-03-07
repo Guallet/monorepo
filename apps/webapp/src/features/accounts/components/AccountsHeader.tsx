@@ -1,6 +1,6 @@
-import { SearchBoxInput } from "@guallet/ui-react";
+import { SearchBoxInput } from '@guallet/ui-react';
 import { Button } from '@/components/ui/button';
-import { useState } from "react";
+import { useState } from 'react';
 
 interface AccountsHeaderProps {
   onAddNewAccount: () => void;
@@ -11,7 +11,7 @@ export function AccountsHeader({
   onAddNewAccount,
   onSearchQueryChanged,
 }: Readonly<AccountsHeaderProps>) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   return (
     <div className="flex flex-wrap items-center gap-2">

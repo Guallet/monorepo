@@ -38,7 +38,9 @@ export function NotificationRow({
   const { t } = useTranslation();
   const isRead = notification.isRead;
   const itemOpacityClass = isRead ? 'opacity-70' : 'opacity-100';
-  const itemCursorClass = notification.action ? 'cursor-pointer' : 'cursor-default';
+  const itemCursorClass = notification.action
+    ? 'cursor-pointer'
+    : 'cursor-default';
 
   const getNotificationIcon = (type: NotificationType) => {
     switch (type) {

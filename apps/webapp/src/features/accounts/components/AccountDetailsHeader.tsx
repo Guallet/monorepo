@@ -1,8 +1,8 @@
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
-import { AmountLabel } from "@/components/Amount/AmountLabel";
-import { getAccountTypeTitleSingular } from "../models/Account";
-import { useAccount } from "@guallet/api-react";
-import { ConnectedAccountStatus } from "./ConnectedAccountStatus";
+import { AccountAvatar } from '@/components/AccountAvatar/AccountAvatar';
+import { AmountLabel } from '@/components/Amount/AmountLabel';
+import { getAccountTypeTitleSingular } from '../models/Account';
+import { useAccount } from '@guallet/api-react';
+import { ConnectedAccountStatus } from './ConnectedAccountStatus';
 
 interface AccountDetailsHeaderProps {
   accountId: string;
@@ -24,7 +24,7 @@ export function AccountDetailsHeader({
         <p className="text-sm text-muted-foreground">
           {getAccountTypeTitleSingular(account.type)}
         </p>
-        {account.source === "synced" && (
+        {account.source === 'synced' && (
           <ConnectedAccountStatus accountId={account.id} />
         )}
       </div>

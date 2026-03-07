@@ -1,19 +1,19 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { AccountDto, AccountTypeDto } from "@guallet/api-client";
-import { useAccounts } from "@guallet/api-react";
-import { useNavigate } from "@tanstack/react-router";
-import { ReactNode, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { AccountRow } from "../components/AccountRow";
-import { AccountsListHeader } from "../components/AccountsListHeader";
-import { SearchableSectionListView, Section } from "@guallet/ui-react";
+import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { useAccounts } from '@guallet/api-react';
+import { useNavigate } from '@tanstack/react-router';
+import { ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AccountRow } from '../components/AccountRow';
+import { AccountsListHeader } from '../components/AccountsListHeader';
+import { SearchableSectionListView, Section } from '@guallet/ui-react';
 
 // We want the Current accounts first, then credit cards, then alphabetically, and last the unknown accounts
 const compareAccountTypes = (
   a: Section<AccountDto>,
-  b: Section<AccountDto>
+  b: Section<AccountDto>,
 ) => {
   const typeA = a.data[0].type;
   const typeB = b.data[0].type;
@@ -92,9 +92,10 @@ export function AccountListScreen() {
     return groups;
   }, [accounts, isLoading]);
 
-  const itemTemplate = useMemo(() => createItemTemplate(navigation), [
-    navigation,
-  ]);
+  const itemTemplate = useMemo(
+    () => createItemTemplate(navigation),
+    [navigation],
+  );
 
   const emptyAccountsMessage = t(
     'screens.accounts.list.emptyQuery',
@@ -107,7 +108,7 @@ export function AccountListScreen() {
         <Button
           type="button"
           onClick={() => {
-            navigation({ to: "/accounts/new" });
+            navigation({ to: '/accounts/new' });
           }}
         >
           Add new account

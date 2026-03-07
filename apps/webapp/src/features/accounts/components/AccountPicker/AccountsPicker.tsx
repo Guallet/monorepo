@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { AccountDto } from "@guallet/api-client";
-import { ResponsiveModal } from "@guallet/ui-react";
-import { useAccounts } from "@guallet/api-react";
-import { AccountPickerModal } from "./AccountPickerModal";
+import { AccountDto } from '@guallet/api-client';
+import { ResponsiveModal } from '@guallet/ui-react';
+import { useAccounts } from '@guallet/api-react';
+import { AccountPickerModal } from './AccountPickerModal';
 
 interface AccountsPickerProps {
   selectedAccounts: AccountDto[];
@@ -21,7 +21,7 @@ export function AccountsPicker({
   let buttonCaption: string;
   switch (selectedAccounts.length) {
     case 0:
-      buttonCaption = "Select accounts";
+      buttonCaption = 'Select accounts';
       break;
     case 1:
       buttonCaption = `${selectedAccounts[0].name} selected`;

@@ -1,6 +1,6 @@
-import { CategoryIcon } from "@/components/Categories/CategoryIcon";
+import { CategoryIcon } from '@/components/Categories/CategoryIcon';
 import { Checkbox } from '@/components/ui/checkbox';
-import { IconChevronDown } from "@tabler/icons-react";
+import { IconChevronDown } from '@tabler/icons-react';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface CategoryTreeLike {
@@ -57,7 +57,7 @@ export function CategoryTreeNode({
         {hasChildren && (
           <IconChevronDown
             size={14}
-            style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         )}
       </button>

@@ -78,77 +78,79 @@ export function AddCategoryScreen({
   return (
     <BaseScreen isLoading={createCategoryMutation.isPending}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onFormSubmit)}>
-          <AppSection title="Add Category">
-            <div className="space-y-4">
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => (
-                  <div className="grid gap-2">
-                    <Label htmlFor="category-name">Name</Label>
-                    <Input
-                      id="category-name"
-                      required
-                      placeholder="Enter category name"
-                      value={field.value}
-                      onChange={(event) => {
-                        field.onChange(event.currentTarget.value);
-                      }}
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                    />
-                    {errors.name?.message ? (
-                      <p className="text-sm text-destructive">{errors.name.message}</p>
-                    ) : null}
-                  </div>
-                )}
-              />
-              <Controller
-                name="icon"
-                control={control}
-                render={({ field }) => (
-                  <IconPicker
-                    name={field.name}
-                    label="Icon"
-                    description="Select an icon for the category"
+        <AppSection title="Add Category">
+          <div className="space-y-4">
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <div className="grid gap-2">
+                  <Label htmlFor="category-name">Name</Label>
+                  <Input
+                    id="category-name"
                     required
-                    value={selectedIcon ?? ''}
-                    onValueChanged={(iconName) => {
-                      field.onChange(iconName ?? '');
+                    placeholder="Enter category name"
+                    value={field.value}
+                    onChange={(event) => {
+                      field.onChange(event.currentTarget.value);
                     }}
-                    error={errors.icon?.message}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
                   />
-                )}
-              />
-              <Controller
-                name="colour"
-                control={control}
-                render={({ field }) => (
-                  <GualletColorPicker
-                    label="Colour"
-                    value={selectedColour ?? ''}
-                    onColourSelected={(colour) => {
-                      field.onChange(colour);
-                    }}
-                    error={errors.colour?.message}
-                  />
-                )}
-              />
-            </div>
-          </AppSection>
-          <div className="flex flex-wrap gap-2">
-            <Button type="submit">Create category</Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                navigate({ to: '/categories' });
-              }}
-            >
-              Cancel
-            </Button>
+                  {errors.name?.message ? (
+                    <p className="text-sm text-destructive">
+                      {errors.name.message}
+                    </p>
+                  ) : null}
+                </div>
+              )}
+            />
+            <Controller
+              name="icon"
+              control={control}
+              render={({ field }) => (
+                <IconPicker
+                  name={field.name}
+                  label="Icon"
+                  description="Select an icon for the category"
+                  required
+                  value={selectedIcon ?? ''}
+                  onValueChanged={(iconName) => {
+                    field.onChange(iconName ?? '');
+                  }}
+                  error={errors.icon?.message}
+                />
+              )}
+            />
+            <Controller
+              name="colour"
+              control={control}
+              render={({ field }) => (
+                <GualletColorPicker
+                  label="Colour"
+                  value={selectedColour ?? ''}
+                  onColourSelected={(colour) => {
+                    field.onChange(colour);
+                  }}
+                  error={errors.colour?.message}
+                />
+              )}
+            />
           </div>
+        </AppSection>
+        <div className="flex flex-wrap gap-2">
+          <Button type="submit">Create category</Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              navigate({ to: '/categories' });
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
     </BaseScreen>
   );

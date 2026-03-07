@@ -18,7 +18,9 @@ export function CreditCardForm() {
             className="pl-8"
           />
         </div>
-        <p className="text-sm text-muted-foreground">The credit limit of the account</p>
+        <p className="text-sm text-muted-foreground">
+          The credit limit of the account
+        </p>
       </div>
 
       <div className="grid gap-2">
@@ -35,7 +37,9 @@ export function CreditCardForm() {
             className="pl-8"
           />
         </div>
-        <p className="text-sm text-muted-foreground">The interest rate of the account</p>
+        <p className="text-sm text-muted-foreground">
+          The interest rate of the account
+        </p>
       </div>
     </div>
   );

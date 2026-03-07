@@ -65,7 +65,7 @@ export function AccountInput({
   }, [accounts]);
 
   const selectedAccount = value
-    ? accounts.find((account) => account.id === value) ?? null
+    ? (accounts.find((account) => account.id === value) ?? null)
     : null;
 
   return (
@@ -115,7 +115,10 @@ export function AccountInput({
 
       {groupedAccounts.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          {t('components.accountInput.nothingFoundMessage', 'No accounts found')}
+          {t(
+            'components.accountInput.nothingFoundMessage',
+            'No accounts found',
+          )}
         </p>
       ) : null}
     </div>

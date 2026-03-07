@@ -1,6 +1,6 @@
-import { AppSection } from "@/components/Cards/AppSection";
-import { AccountChartData, AccountDto } from "@guallet/api-client";
-import { useAccountCharts } from "@guallet/api-react";
+import { AppSection } from '@/components/Cards/AppSection';
+import { AccountChartData, AccountDto } from '@guallet/api-client';
+import { useAccountCharts } from '@guallet/api-react';
 import {
   XAxis,
   YAxis,
@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Bar,
   BarChart,
-} from "recharts";
+} from 'recharts';
 
 function compareChartItems(a: AccountChartData, b: AccountChartData): number {
   const aDate = new Date(a.year, a.month, 1).getTime();
@@ -26,8 +26,8 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
   const { data, isLoading } = useAccountCharts(account.id);
 
   const chartData = data?.chart.sort(compareChartItems).map((x) => ({
-    name: new Date(x.year, x.month, 1).toLocaleString("default", {
-      month: "long",
+    name: new Date(x.year, x.month, 1).toLocaleString('default', {
+      month: 'long',
     }),
     total: (x.total_in + x.total_out).toFixed(2),
     in: Math.abs(x.total_in),
@@ -42,8 +42,8 @@ export function CurrentAccountDetails({ account }: Readonly<Props>) {
     return (
       <AppSection title="">
         <div className="py-4 text-center text-sm text-muted-foreground">
-            No data available yet. Add some transactions to start seeing some
-            insights
+          No data available yet. Add some transactions to start seeing some
+          insights
         </div>
       </AppSection>
     );

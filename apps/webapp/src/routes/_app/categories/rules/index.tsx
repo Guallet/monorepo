@@ -2,7 +2,12 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { IconEdit, IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
+import {
+  IconEdit,
+  IconGripVertical,
+  IconPlus,
+  IconTrash,
+} from '@tabler/icons-react';
 import { notifications } from '@/lib/notifications';
 import { useState } from 'react';
 import { RuleDto } from '@guallet/api-client';
@@ -136,7 +141,9 @@ function RulesPage() {
     if (isRulesLoading || isRulesFetching) {
       return (
         <Card className="p-6 text-center">
-          <p className="text-sm text-muted-foreground">{t('common.loading', 'Loading...')}</p>
+          <p className="text-sm text-muted-foreground">
+            {t('common.loading', 'Loading...')}
+          </p>
         </Card>
       );
     }
@@ -144,7 +151,9 @@ function RulesPage() {
     if (rules.length === 0) {
       return (
         <Card className="p-6 text-center">
-          <p className="text-muted-foreground">{t('screens.rules.list.emptyState.title')}</p>
+          <p className="text-muted-foreground">
+            {t('screens.rules.list.emptyState.title')}
+          </p>
           <Button
             type="button"
             className="mt-4 gap-2"

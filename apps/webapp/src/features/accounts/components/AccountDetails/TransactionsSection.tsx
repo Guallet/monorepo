@@ -17,7 +17,9 @@ export function TransactionsSection({
   const renderTransactionsContent = () => {
     if (isLoading) {
       return (
-        <div className="py-4 text-center text-sm text-muted-foreground">Loading...</div>
+        <div className="py-4 text-center text-sm text-muted-foreground">
+          Loading...
+        </div>
       );
     }
 

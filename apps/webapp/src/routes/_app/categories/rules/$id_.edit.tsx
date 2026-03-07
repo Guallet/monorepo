@@ -84,7 +84,9 @@ function EditRulePage() {
   if (isRuleLoading || isFieldsLoading) {
     return (
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.edit.title')}</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {t('screens.rules.edit.title')}
+        </h2>
         <div>{t('screens.rules.edit.loading')}</div>
       </div>
     );
@@ -93,7 +95,9 @@ function EditRulePage() {
   if (!rule && !isRuleLoading) {
     return (
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.edit.title')}</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {t('screens.rules.edit.title')}
+        </h2>
         <div>{t('screens.rules.edit.notFound')}</div>
       </div>
     );
@@ -101,7 +105,9 @@ function EditRulePage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.edit.title')}</h2>
+      <h2 className="text-2xl font-semibold tracking-tight">
+        {t('screens.rules.edit.title')}
+      </h2>
       <RuleForm
         key={rule?.id}
         initialData={initialData}

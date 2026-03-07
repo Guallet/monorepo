@@ -1,5 +1,5 @@
-import { formatDate } from "@/utils/dateUtils";
-import { useConnectedAccount } from "@guallet/api-react";
+import { formatDate } from '@/utils/dateUtils';
+import { useConnectedAccount } from '@guallet/api-react';
 
 interface ConnectedAccountStatusProps {
   accountId: string;

@@ -109,7 +109,9 @@ export function AccountPickerModal({
 
         {groupedAccounts.map((group) => (
           <div key={group.type} className="space-y-2">
-            <p className="text-sm font-medium">{getAccountTypeTitle(group.type)}</p>
+            <p className="text-sm font-medium">
+              {getAccountTypeTitle(group.type)}
+            </p>
             <div className="space-y-1">
               {group.items.map((account) => (
                 <AccountCheckbox

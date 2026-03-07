@@ -61,7 +61,9 @@ function NewRulePage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold tracking-tight">{t('screens.rules.create.title')}</h2>
+      <h2 className="text-2xl font-semibold tracking-tight">
+        {t('screens.rules.create.title')}
+      </h2>
       <RuleForm
         fieldDefinitions={fieldDefinitions}
         onSubmit={handleSubmit}

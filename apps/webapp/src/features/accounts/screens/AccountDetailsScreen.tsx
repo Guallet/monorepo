@@ -76,7 +76,9 @@ export function AccountDetailsScreen({
         <div className="space-y-4">
           <AccountDetailsHeader accountId={accountId} />
 
-          <AppSection itemPadding="xl">{AccountDetailsSelector(account)}</AppSection>
+          <AppSection itemPadding="xl">
+            {AccountDetailsSelector(account)}
+          </AppSection>
 
           <TransactionsSection accountId={account.id} />
 

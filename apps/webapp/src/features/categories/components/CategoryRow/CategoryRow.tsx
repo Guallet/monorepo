@@ -1,5 +1,5 @@
-import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
-import { CategoryDto } from "@guallet/api-client";
+import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
+import { CategoryDto } from '@guallet/api-client';
 
 interface CategoryRowProps {
   category: CategoryDto;

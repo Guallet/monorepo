@@ -1,8 +1,8 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { Button } from '@/components/ui/button';
-import { useGroupedCategories } from "@guallet/api-react";
-import { useNavigate } from "@tanstack/react-router";
-import { AppCategorySection } from "../components/AppCategorySection/AppCategorySection";
+import { useGroupedCategories } from '@guallet/api-react';
+import { useNavigate } from '@tanstack/react-router';
+import { AppCategorySection } from '../components/AppCategorySection/AppCategorySection';
 
 export function CategoryListScreen() {
   const { categories, isLoading } = useGroupedCategories();
@@ -15,7 +15,7 @@ export function CategoryListScreen() {
           type="button"
           onClick={() =>
             navigation({
-              to: "/categories/new",
+              to: '/categories/new',
             })
           }
         >
@@ -27,13 +27,13 @@ export function CategoryListScreen() {
             category={category}
             onCategorySelected={(category) => {
               navigation({
-                to: "/categories/$id",
+                to: '/categories/$id',
                 params: { id: category.id },
               });
             }}
             onAddSubcategoryClick={(parentCategory) => {
               navigation({
-                to: "/categories/new",
+                to: '/categories/new',
                 search: { parent: parentCategory.id },
               });
             }}

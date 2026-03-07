@@ -19,10 +19,14 @@ export function NotificationItem({
 }: Readonly<NotificationItemProps>) {
   const { t } = useTranslation();
   const itemOpacityClass = notification.isRead ? 'opacity-60' : 'opacity-100';
-  const itemCursorClass = notification.action ? 'cursor-pointer' : 'cursor-default';
+  const itemCursorClass = notification.action
+    ? 'cursor-pointer'
+    : 'cursor-default';
 
   return (
-    <div className={`flex items-start gap-2 rounded-md border p-2 ${itemOpacityClass} ${itemCursorClass}`}>
+    <div
+      className={`flex items-start gap-2 rounded-md border p-2 ${itemOpacityClass} ${itemCursorClass}`}
+    >
       <button
         type="button"
         className="flex min-w-0 flex-1 items-start gap-2 text-left"

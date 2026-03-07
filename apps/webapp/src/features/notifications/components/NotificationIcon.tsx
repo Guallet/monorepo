@@ -132,15 +132,23 @@ export function NotificationIcon() {
         onClose={() => {
           setOpened(false);
         }}
-        title={<span>{t('screens.notifications.screen.title', 'Notifications')}</span>}
+        title={
+          <span>
+            {t('screens.notifications.screen.title', 'Notifications')}
+          </span>
+        }
         size="md"
       >
         <div className="space-y-3">
           {hasUnread ? (
             <p className="text-xs text-muted-foreground">
-              {t('screens.notifications.screen.unreadCount', '{{count}} unread', {
-                count: unreadCount,
-              })}
+              {t(
+                'screens.notifications.screen.unreadCount',
+                '{{count}} unread',
+                {
+                  count: unreadCount,
+                },
+              )}
             </p>
           ) : null}
 

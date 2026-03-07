@@ -58,7 +58,9 @@ function getCategoryGroups(
 
   return roots.map((root) => ({
     root,
-    children: filteredCategories.filter((category) => category.parentId === root.id),
+    children: filteredCategories.filter(
+      (category) => category.parentId === root.id,
+    ),
   }));
 }
 
@@ -116,7 +118,10 @@ export function CategoryPickerModal({
           type="button"
           variant="outline"
           size="icon"
-          title={t('components.categoryPicker.modal.expandAllButton.label', 'Expand all')}
+          title={t(
+            'components.categoryPicker.modal.expandAllButton.label',
+            'Expand all',
+          )}
           onClick={() => {
             setExpandedRootIds(rootsWithChildren);
           }}
@@ -179,7 +184,11 @@ export function CategoryPickerModal({
 
                 {hasChildren ? (
                   <IconChevronDown
-                    className={isExpanded ? 'rotate-180 transition-transform' : 'transition-transform'}
+                    className={
+                      isExpanded
+                        ? 'rotate-180 transition-transform'
+                        : 'transition-transform'
+                    }
                     size={14}
                   />
                 ) : null}

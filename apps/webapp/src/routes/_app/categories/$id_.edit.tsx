@@ -1,15 +1,15 @@
-import { AppSection } from "@/components/Cards/AppSection";
-import { gualletClient } from "@/api/gualletClient";
-import { useCategory } from "@guallet/api-react";
+import { AppSection } from '@/components/Cards/AppSection';
+import { gualletClient } from '@/api/gualletClient';
+import { useCategory } from '@guallet/api-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { notifications } from "@/lib/notifications";
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { notifications } from '@/lib/notifications';
+import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 
-export const Route = createFileRoute("/_app/categories/$id_/edit")({
+export const Route = createFileRoute('/_app/categories/$id_/edit')({
   component: EditCategoryPage,
 });
 
@@ -20,9 +20,9 @@ function EditCategoryPage() {
   const { category, isLoading } = useCategory(id);
   const [isBusy, setIsBusy] = useState<boolean>(false);
 
-  const [name, setName] = useState<string>("");
-  const [icon, setIcon] = useState<string>("");
-  const [color, setColor] = useState<string>("");
+  const [name, setName] = useState<string>('');
+  const [icon, setIcon] = useState<string>('');
+  const [color, setColor] = useState<string>('');
 
   useEffect(() => {
     if (category) {
@@ -52,12 +52,12 @@ function EditCategoryPage() {
       });
 
       notifications.show({
-        title: "Category updated",
+        title: 'Category updated',
         message: `Category ${updatedCategory.name} has been updated`,
-        color: "green",
+        color: 'green',
       });
 
-      navigation({ to: "/categories/$id", params: { id: id } });
+      navigation({ to: '/categories/$id', params: { id: id } });
     } catch (error) {
       console.error(error);
     } finally {

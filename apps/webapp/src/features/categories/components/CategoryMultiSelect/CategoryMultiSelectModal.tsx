@@ -60,7 +60,9 @@ function getCategoryGroups(
 
   return roots.map((root) => ({
     root,
-    children: filteredCategories.filter((category) => category.parentId === root.id),
+    children: filteredCategories.filter(
+      (category) => category.parentId === root.id,
+    ),
   }));
 }
 
@@ -104,9 +106,8 @@ export function CategoryMultiSelectModal({
     [groupedCategories],
   );
 
-  const [expandedRootIds, setExpandedRootIds] = useState<string[]>(
-    rootsWithChildren,
-  );
+  const [expandedRootIds, setExpandedRootIds] =
+    useState<string[]>(rootsWithChildren);
 
   const visibleExpandedRootIds = useMemo(() => {
     const allowedIds = new Set(rootsWithChildren);
@@ -215,7 +216,10 @@ export function CategoryMultiSelectModal({
           type="button"
           variant="outline"
           size="icon"
-          title={t('components.categoryMultiSelect.modal.checkAllButton.label', 'Check all')}
+          title={t(
+            'components.categoryMultiSelect.modal.checkAllButton.label',
+            'Check all',
+          )}
           onClick={selectAllVisibleCategories}
         >
           <IconSelectAll />
@@ -238,7 +242,10 @@ export function CategoryMultiSelectModal({
           type="button"
           variant="outline"
           size="icon"
-          title={t('components.categoryMultiSelect.modal.expandAllButton.label', 'Expand all')}
+          title={t(
+            'components.categoryMultiSelect.modal.expandAllButton.label',
+            'Expand all',
+          )}
           onClick={() => {
             setExpandedRootIds(rootsWithChildren);
           }}
@@ -301,7 +308,11 @@ export function CategoryMultiSelectModal({
                   <Checkbox
                     checked={rootCheckState}
                     onCheckedChange={(checked) => {
-                      setGroupSelection(group.root.id, childIds, checked === true);
+                      setGroupSelection(
+                        group.root.id,
+                        childIds,
+                        checked === true,
+                      );
                     }}
                   />
                   <CategoryIcon categoryId={group.root.id} />
@@ -318,7 +329,11 @@ export function CategoryMultiSelectModal({
                     }}
                   >
                     <IconChevronDown
-                      className={isExpanded ? 'rotate-180 transition-transform' : 'transition-transform'}
+                      className={
+                        isExpanded
+                          ? 'rotate-180 transition-transform'
+                          : 'transition-transform'
+                      }
                       size={14}
                     />
                   </Button>
@@ -328,11 +343,17 @@ export function CategoryMultiSelectModal({
               {hasChildren && isExpanded ? (
                 <div className="space-y-1 border-t px-3 py-2 pl-8">
                   {group.children.map((child) => (
-                    <label key={child.id} className="flex items-center gap-2 rounded-sm px-2 py-1 hover:bg-accent">
+                    <label
+                      key={child.id}
+                      className="flex items-center gap-2 rounded-sm px-2 py-1 hover:bg-accent"
+                    >
                       <Checkbox
                         checked={selectedCategoryIdSet.has(child.id)}
                         onCheckedChange={(checked) => {
-                          setSingleCategorySelection(child.id, checked === true);
+                          setSingleCategorySelection(
+                            child.id,
+                            checked === true,
+                          );
                         }}
                       />
                       <CategoryIcon categoryId={child.id} />

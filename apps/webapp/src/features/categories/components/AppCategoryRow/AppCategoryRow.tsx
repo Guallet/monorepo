@@ -1,5 +1,5 @@
-import { AppCategory } from "@guallet/api-react";
-import { CategoryRow } from "../CategoryRow/CategoryRow";
+import { AppCategory } from '@guallet/api-react';
+import { CategoryRow } from '../CategoryRow/CategoryRow';
 
 interface AppCategoryRowProps {
   category: AppCategory;

@@ -68,7 +68,11 @@ export function CategoriesListItem({
             setIsExpanded(!isExpanded);
           }}
         >
-          {isExpanded ? <IconChevronDown size={18} /> : <IconChevronRight size={18} />}
+          {isExpanded ? (
+            <IconChevronDown size={18} />
+          ) : (
+            <IconChevronRight size={18} />
+          )}
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-md border bg-muted">
             <GualletIcon iconName={category.icon} iconColor={category.colour} />
           </span>
