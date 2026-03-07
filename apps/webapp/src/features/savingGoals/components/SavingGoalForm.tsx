@@ -88,7 +88,9 @@ function toggleAccountSelection(
     return [...selectedValues, accountId];
   }
 
-  return selectedValues.filter((currentAccountId) => currentAccountId !== accountId);
+  return selectedValues.filter(
+    (currentAccountId) => currentAccountId !== accountId,
+  );
 }
 
 function getSubmitButtonLabel(
@@ -269,7 +271,9 @@ export function SavingGoalForm({
                     value={field.value}
                     onChange={(event) => {
                       const parsedValue = Number(event.target.value);
-                      field.onChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
+                      field.onChange(
+                        Number.isNaN(parsedValue) ? 0 : parsedValue,
+                      );
                     }}
                     onBlur={field.onBlur}
                     name={field.name}
@@ -319,7 +323,9 @@ export function SavingGoalForm({
                 <div className="grid gap-2">
                   <Label>Linked Accounts</Label>
                   <p className="text-sm text-muted-foreground">
-                    Select accounts that contribute to this saving goal. Progress will be calculated based on the balance of these accounts.
+                    Select accounts that contribute to this saving goal.
+                    Progress will be calculated based on the balance of these
+                    accounts.
                   </p>
                   <div className="max-h-56 overflow-y-auto rounded-md border">
                     {accountOptions.length === 0 ? (
@@ -375,10 +381,7 @@ export function SavingGoalForm({
                   Cancel
                 </Button>
               )}
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" disabled={isSubmitting}>
                 <IconDeviceFloppy className="h-4 w-4" />
                 {submitButtonLabel}
               </Button>

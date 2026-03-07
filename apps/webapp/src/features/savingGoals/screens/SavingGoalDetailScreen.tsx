@@ -145,9 +145,7 @@ export function SavingGoalDetailScreen({
               </Button>
             ) : null}
             <IconPigMoney className="h-7 w-7" />
-            <h1 className="truncate text-2xl font-bold">
-              {savingGoal.name}
-            </h1>
+            <h1 className="truncate text-2xl font-bold">{savingGoal.name}</h1>
           </div>
 
           <div className="flex items-center gap-2">

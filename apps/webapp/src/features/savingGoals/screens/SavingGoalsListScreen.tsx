@@ -87,7 +87,9 @@ export function SavingGoalsListScreen() {
           <Card className="rounded-lg border p-6 shadow-sm">
             <div className="flex flex-col items-center gap-3 text-center">
               <IconPigMoney className="h-12 w-12 text-muted-foreground" />
-              <p className="text-lg text-muted-foreground">No saving goals yet</p>
+              <p className="text-lg text-muted-foreground">
+                No saving goals yet
+              </p>
               <p className="max-w-[560px] text-sm text-muted-foreground">
                 Create your first saving goal to start tracking your progress
                 towards your financial targets.

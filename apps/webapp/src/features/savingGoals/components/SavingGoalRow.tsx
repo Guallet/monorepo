@@ -115,9 +115,7 @@ export function SavingGoalRow({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-muted-foreground">
-            Progress
-          </p>
+          <p className="text-sm text-muted-foreground">Progress</p>
           <p className="text-sm font-medium">
             {Money.fromCurrencyCode({
               amount: currentAmount,
