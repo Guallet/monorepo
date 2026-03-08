@@ -19,6 +19,11 @@ export default defineConfig([
       "react-refresh/only-export-components": "off",
     },
     languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
       ecmaVersion: 2020,
       globals: globals.browser,
     },
