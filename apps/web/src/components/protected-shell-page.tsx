@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import { Navigate } from "@tanstack/react-router"
 import { useAuth } from "@guallet/auth"
 
@@ -9,9 +9,11 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 export function ProtectedShellPage({
   title,
   description,
+  children,
 }: {
   title: string
   description?: string
+  children?: ReactNode
 }) {
   const { isLoading, isAuthenticated } = useAuth()
 
@@ -48,6 +50,7 @@ export function ProtectedShellPage({
                   {description}
                 </p>
               ) : null}
+              {children}
             </div>
           </div>
         </div>

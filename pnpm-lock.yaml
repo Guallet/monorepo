@@ -396,12 +396,24 @@ importers:
       '@fontsource-variable/geist':
         specifier: ^5.2.8
         version: 5.2.8
+      '@guallet/api-client':
+        specifier: workspace:*
+        version: link:../../packages/guallet-api-client
+      '@guallet/api-react':
+        specifier: workspace:*
+        version: link:../../packages/guallet-api-react
       '@guallet/auth':
         specifier: workspace:*
         version: link:../../packages/guallet-auth
+      '@guallet/money':
+        specifier: workspace:*
+        version: link:../../packages/guallet-money
       '@tailwindcss/vite':
         specifier: ^4.1.17
         version: 4.2.1(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.1))
+      '@tanstack/react-query':
+        specifier: ^5.83.1
+        version: 5.90.2(react@19.1.0)
       '@tanstack/react-router':
         specifier: ^1.151.3
         version: 1.151.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
