@@ -4,9 +4,11 @@ import {
   useAccounts,
   useCategories,
   useInfiniteTransactionInbox,
+  useTransactionMutations,
 } from "@guallet/api-react"
 import { ArrowDownLeftIcon, ArrowUpRightIcon, SearchIcon } from "lucide-react"
 
+import { CategoryAvatar } from "@/components/category-avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +18,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -30,6 +47,7 @@ type TransactionType = "income" | "expense"
 type InboxStatus = "pending" | "suggested" | "categorized"
 type DisplayInboxTransaction = {
   id: string
+  categoryId: string | null
   date: Date
   description: string
   account: string
@@ -69,9 +87,17 @@ export function TransactionsInboxScreen() {
   } = useInfiniteTransactionInbox()
   const { accounts } = useAccounts()
   const { categories } = useCategories()
+  const { updateTransactionCategoryMutation } = useTransactionMutations()
 
   const [query, setQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | InboxStatus>("all")
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<DisplayInboxTransaction | null>(null)
+  const [selectedCategoryId, setSelectedCategoryId] = useState("")
+  const [editCategoryError, setEditCategoryError] = useState<string | null>(
+    null
+  )
 
   const accountById = useMemo(() => {
     return new Map(accounts.map((account) => [account.id, account]))
@@ -79,6 +105,10 @@ export function TransactionsInboxScreen() {
 
   const categoryById = useMemo(() => {
     return new Map(categories.map((category) => [category.id, category]))
+  }, [categories])
+
+  const categoryOptions = useMemo(() => {
+    return [...categories].sort((a, b) => a.name.localeCompare(b.name))
   }, [categories])
 
   const mappedTransactions = useMemo<DisplayInboxTransaction[]>(() => {
@@ -99,10 +129,11 @@ export function TransactionsInboxScreen() {
 
       return {
         id: transaction.id,
+        categoryId: resolvedCategoryId,
         date: transaction.date,
         description: transaction.description,
         account: accountName ?? "Unknown account",
-        category: categoryName ?? "Uncategorized",
+        category: categoryName ?? "untagged",
         currency: transaction.currency,
         amount: Math.abs(transaction.amount),
         type: transaction.amount >= 0 ? "income" : "expense",
@@ -142,6 +173,47 @@ export function TransactionsInboxScreen() {
       ).length,
     }
   }, [filteredTransactions])
+
+  const isSavingCategory = updateTransactionCategoryMutation.isPending
+
+  const openEditCategoryDialog = (transaction: DisplayInboxTransaction) => {
+    setSelectedTransaction(transaction)
+    setSelectedCategoryId(transaction.categoryId ?? "")
+    setEditCategoryError(null)
+    setIsCategoryDialogOpen(true)
+  }
+
+  const handleCategoryDialogOpenChange = (isOpen: boolean) => {
+    setIsCategoryDialogOpen(isOpen)
+
+    if (!isOpen) {
+      setSelectedTransaction(null)
+      setSelectedCategoryId("")
+      setEditCategoryError(null)
+    }
+  }
+
+  const handleSaveCategory = async () => {
+    if (!selectedTransaction || !selectedCategoryId) {
+      return
+    }
+
+    setEditCategoryError(null)
+
+    try {
+      await updateTransactionCategoryMutation.mutateAsync({
+        id: selectedTransaction.id,
+        categoryId: selectedCategoryId,
+      })
+      handleCategoryDialogOpenChange(false)
+    } catch (mutationError) {
+      setEditCategoryError(
+        mutationError instanceof Error
+          ? mutationError.message
+          : "Failed to update transaction category."
+      )
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -245,9 +317,9 @@ export function TransactionsInboxScreen() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Date</TableHead>
+                    <TableHead>Category</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Account</TableHead>
-                    <TableHead>Category</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
                   </TableRow>
@@ -268,6 +340,22 @@ export function TransactionsInboxScreen() {
                         <TableCell>
                           {dateFormatter.format(transaction.date)}
                         </TableCell>
+                        <TableCell>
+                          <button
+                            type="button"
+                            className="flex w-full items-center gap-2 rounded-md px-1 py-0.5 text-left hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                            onClick={() => {
+                              openEditCategoryDialog(transaction)
+                            }}
+                            aria-label={`Change category for ${transaction.description}`}
+                          >
+                            <CategoryAvatar
+                              categoryId={transaction.categoryId}
+                              size="sm"
+                            />
+                            <span>{transaction.category}</span>
+                          </button>
+                        </TableCell>
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-2">
                             {transaction.type === "income" ? (
@@ -279,7 +367,6 @@ export function TransactionsInboxScreen() {
                           </div>
                         </TableCell>
                         <TableCell>{transaction.account}</TableCell>
-                        <TableCell>{transaction.category}</TableCell>
                         <TableCell>
                           <StatusBadge status={transaction.status} />
                           {transaction.ruleId ? (
@@ -329,6 +416,87 @@ export function TransactionsInboxScreen() {
           ) : null}
         </CardContent>
       </Card>
+
+      <Dialog
+        open={isCategoryDialogOpen}
+        onOpenChange={handleCategoryDialogOpenChange}
+      >
+        <DialogContent>
+          <form
+            className="grid gap-4"
+            onSubmit={(event) => {
+              event.preventDefault()
+              void handleSaveCategory()
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Change transaction category</DialogTitle>
+              <DialogDescription>
+                {selectedTransaction ? (
+                  <span
+                    className="block truncate"
+                    title={selectedTransaction.description}
+                  >
+                    {selectedTransaction.description}
+                  </span>
+                ) : (
+                  "Select a category for this transaction."
+                )}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-2">
+              <p className="text-sm font-medium text-foreground">Category</p>
+              <Select
+                value={selectedCategoryId}
+                onValueChange={setSelectedCategoryId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryOptions.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {categoryOptions.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No categories available.
+                </p>
+              ) : null}
+              {editCategoryError ? (
+                <p className="text-sm text-destructive">{editCategoryError}</p>
+              ) : null}
+            </div>
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  handleCategoryDialogOpenChange(false)
+                }}
+                disabled={isSavingCategory}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  isSavingCategory ||
+                  categoryOptions.length === 0 ||
+                  !selectedCategoryId
+                }
+              >
+                {isSavingCategory ? "Saving..." : "Save category"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
