@@ -11,7 +11,8 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate({ from: "/login" })
-  const { isLoading, isAuthenticated, getOtpCode, loginWithProvider } = useAuth()
+  const { isLoading, isAuthenticated, getOtpCode, loginWithProvider } =
+    useAuth()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)

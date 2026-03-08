@@ -5,15 +5,18 @@ import { AuthProvider } from "@guallet/auth"
 
 import "./index.css"
 import { ThemeProvider } from "@/components/theme-provider.tsx"
+import { TooltipProvider } from "@/components/ui/tooltip.tsx"
 import { authClient } from "@/auth/client.ts"
 import { router } from "./router.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <AuthProvider authClient={authClient}>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <TooltipProvider>
+        <AuthProvider authClient={authClient}>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </TooltipProvider>
     </ThemeProvider>
   </StrictMode>
 )

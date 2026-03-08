@@ -117,7 +117,7 @@ function OtpVerificationPage() {
                 setCode(nextValue.slice(0, 8))
               }}
               placeholder="123456"
-              className="h-11 rounded-lg border border-input bg-background px-3 text-sm outline-none transition focus:border-ring focus:ring-3 focus:ring-ring/40"
+              className="h-11 rounded-lg border border-input bg-background px-3 text-sm transition outline-none focus:border-ring focus:ring-3 focus:ring-ring/40"
             />
           </label>
 

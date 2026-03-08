@@ -1,8 +1,16 @@
+import type { CSSProperties } from "react"
 import { useState } from "react"
 import { Navigate, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useAuth } from "@guallet/auth"
 
+import dashboardData from "@/app/dashboard/data.json"
+import { AppSidebar } from "@/components/app-sidebar"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+import { DataTable } from "@/components/data-table"
+import { SectionCards } from "@/components/section-cards"
+import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
@@ -42,51 +50,50 @@ function DashboardPage() {
   }
 
   return (
-    <main className="min-h-svh bg-[radial-gradient(circle_at_100%_0%,hsl(179_56%_89%),transparent_45%),linear-gradient(155deg,hsl(0_0%_100%)_0%,hsl(194_41%_96%)_100%)] px-6 py-10 text-foreground sm:px-10">
-      <section className="mx-auto w-full max-w-3xl rounded-3xl border border-border/70 bg-card/90 p-8 shadow-2xl backdrop-blur sm:p-10">
-        <p className="text-xs font-semibold tracking-[0.22em] text-muted-foreground uppercase">
-          Dashboard
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          You are signed in
-        </h1>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">
-          Authentication is active with Better Auth. This is your protected
-          landing page after OTP, magic-link, or Google login.
-        </p>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <div className="flex items-center justify-between px-4 lg:px-6">
+                <div className="text-sm text-muted-foreground">
+                  Signed in as{" "}
+                  <span className="font-mono">{userId ?? "Unknown"}</span>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleSignOut}
+                  disabled={isSigningOut}
+                >
+                  {isSigningOut ? "Signing out..." : "Sign out"}
+                </Button>
+              </div>
 
-        <dl className="mt-8 grid gap-4 rounded-2xl border border-border/70 bg-background/70 p-5 sm:grid-cols-2">
-          <div className="space-y-1">
-            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              Session status
-            </dt>
-            <dd className="font-medium">Authenticated</dd>
-          </div>
-          <div className="space-y-1">
-            <dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              User ID
-            </dt>
-            <dd className="truncate font-mono text-sm">{userId ?? "Unknown"}</dd>
-          </div>
-        </dl>
+              {error ? (
+                <p className="mx-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive lg:mx-6">
+                  {error}
+                </p>
+              ) : null}
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Button type="button" onClick={handleSignOut} disabled={isSigningOut}>
-            {isSigningOut ? "Signing out..." : "Sign out"}
-          </Button>
-          <Button asChild type="button" variant="outline">
-            <a href="https://www.better-auth.com/docs" target="_blank" rel="noreferrer">
-              Better Auth docs
-            </a>
-          </Button>
+              <SectionCards />
+              <div className="px-4 lg:px-6">
+                <ChartAreaInteractive />
+              </div>
+              <DataTable data={dashboardData} />
+            </div>
+          </div>
         </div>
-
-        {error ? (
-          <p className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
-      </section>
-    </main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
