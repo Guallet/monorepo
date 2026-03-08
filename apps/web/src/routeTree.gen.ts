@@ -9,12 +9,51 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SavingGoalsRouteImport } from './routes/saving-goals'
+import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConnectionsRouteImport } from './routes/connections'
+import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as BudgetsRouteImport } from './routes/budgets'
+import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransactionsInboxRouteImport } from './routes/transactions.inbox'
+import { Route as ToolsMortgageRouteImport } from './routes/tools.mortgage'
+import { Route as ToolsLoanRouteImport } from './routes/tools.loan'
+import { Route as ReportsCashflowRouteImport } from './routes/reports.cashflow'
 import { Route as LoginOtpRouteImport } from './routes/login.otp'
 import { Route as LoginCallbackRouteImport } from './routes/login.callback'
+import { Route as CategoriesRulesRouteImport } from './routes/categories.rules'
 
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionsRoute = SubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavingGoalsRoute = SavingGoalsRouteImport.update({
+  id: '/saving-goals',
+  path: '/saving-goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -25,10 +64,50 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConnectionsRoute = ConnectionsRouteImport.update({
+  id: '/connections',
+  path: '/connections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesRoute = CategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetsRoute = BudgetsRouteImport.update({
+  id: '/budgets',
+  path: '/budgets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountsRoute = AccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const TransactionsInboxRoute = TransactionsInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => TransactionsRoute,
+} as any)
+const ToolsMortgageRoute = ToolsMortgageRouteImport.update({
+  id: '/tools/mortgage',
+  path: '/tools/mortgage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsLoanRoute = ToolsLoanRouteImport.update({
+  id: '/tools/loan',
+  path: '/tools/loan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsCashflowRoute = ReportsCashflowRouteImport.update({
+  id: '/cashflow',
+  path: '/cashflow',
+  getParentRoute: () => ReportsRoute,
 } as any)
 const LoginOtpRoute = LoginOtpRouteImport.update({
   id: '/otp',
@@ -40,51 +119,196 @@ const LoginCallbackRoute = LoginCallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => LoginRoute,
 } as any)
+const CategoriesRulesRoute = CategoriesRulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => CategoriesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/budgets': typeof BudgetsRoute
+  '/categories': typeof CategoriesRouteWithChildren
+  '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRouteWithChildren
+  '/reports': typeof ReportsRouteWithChildren
+  '/saving-goals': typeof SavingGoalsRoute
+  '/settings': typeof SettingsRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/transactions': typeof TransactionsRouteWithChildren
+  '/categories/rules': typeof CategoriesRulesRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/otp': typeof LoginOtpRoute
+  '/reports/cashflow': typeof ReportsCashflowRoute
+  '/tools/loan': typeof ToolsLoanRoute
+  '/tools/mortgage': typeof ToolsMortgageRoute
+  '/transactions/inbox': typeof TransactionsInboxRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/budgets': typeof BudgetsRoute
+  '/categories': typeof CategoriesRouteWithChildren
+  '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRouteWithChildren
+  '/reports': typeof ReportsRouteWithChildren
+  '/saving-goals': typeof SavingGoalsRoute
+  '/settings': typeof SettingsRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/transactions': typeof TransactionsRouteWithChildren
+  '/categories/rules': typeof CategoriesRulesRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/otp': typeof LoginOtpRoute
+  '/reports/cashflow': typeof ReportsCashflowRoute
+  '/tools/loan': typeof ToolsLoanRoute
+  '/tools/mortgage': typeof ToolsMortgageRoute
+  '/transactions/inbox': typeof TransactionsInboxRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/budgets': typeof BudgetsRoute
+  '/categories': typeof CategoriesRouteWithChildren
+  '/connections': typeof ConnectionsRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRouteWithChildren
+  '/reports': typeof ReportsRouteWithChildren
+  '/saving-goals': typeof SavingGoalsRoute
+  '/settings': typeof SettingsRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/transactions': typeof TransactionsRouteWithChildren
+  '/categories/rules': typeof CategoriesRulesRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/otp': typeof LoginOtpRoute
+  '/reports/cashflow': typeof ReportsCashflowRoute
+  '/tools/loan': typeof ToolsLoanRoute
+  '/tools/mortgage': typeof ToolsMortgageRoute
+  '/transactions/inbox': typeof TransactionsInboxRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/login/callback' | '/login/otp'
+  fullPaths:
+    | '/'
+    | '/accounts'
+    | '/budgets'
+    | '/categories'
+    | '/connections'
+    | '/dashboard'
+    | '/login'
+    | '/reports'
+    | '/saving-goals'
+    | '/settings'
+    | '/subscriptions'
+    | '/transactions'
+    | '/categories/rules'
+    | '/login/callback'
+    | '/login/otp'
+    | '/reports/cashflow'
+    | '/tools/loan'
+    | '/tools/mortgage'
+    | '/transactions/inbox'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/login/callback' | '/login/otp'
+  to:
+    | '/'
+    | '/accounts'
+    | '/budgets'
+    | '/categories'
+    | '/connections'
+    | '/dashboard'
+    | '/login'
+    | '/reports'
+    | '/saving-goals'
+    | '/settings'
+    | '/subscriptions'
+    | '/transactions'
+    | '/categories/rules'
+    | '/login/callback'
+    | '/login/otp'
+    | '/reports/cashflow'
+    | '/tools/loan'
+    | '/tools/mortgage'
+    | '/transactions/inbox'
   id:
     | '__root__'
     | '/'
+    | '/accounts'
+    | '/budgets'
+    | '/categories'
+    | '/connections'
     | '/dashboard'
     | '/login'
+    | '/reports'
+    | '/saving-goals'
+    | '/settings'
+    | '/subscriptions'
+    | '/transactions'
+    | '/categories/rules'
     | '/login/callback'
     | '/login/otp'
+    | '/reports/cashflow'
+    | '/tools/loan'
+    | '/tools/mortgage'
+    | '/transactions/inbox'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountsRoute: typeof AccountsRoute
+  BudgetsRoute: typeof BudgetsRoute
+  CategoriesRoute: typeof CategoriesRouteWithChildren
+  ConnectionsRoute: typeof ConnectionsRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRouteWithChildren
+  ReportsRoute: typeof ReportsRouteWithChildren
+  SavingGoalsRoute: typeof SavingGoalsRoute
+  SettingsRoute: typeof SettingsRoute
+  SubscriptionsRoute: typeof SubscriptionsRoute
+  TransactionsRoute: typeof TransactionsRouteWithChildren
+  ToolsLoanRoute: typeof ToolsLoanRoute
+  ToolsMortgageRoute: typeof ToolsMortgageRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriptions': {
+      id: '/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/subscriptions'
+      preLoaderRoute: typeof SubscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saving-goals': {
+      id: '/saving-goals'
+      path: '/saving-goals'
+      fullPath: '/saving-goals'
+      preLoaderRoute: typeof SavingGoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -99,12 +323,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/connections': {
+      id: '/connections'
+      path: '/connections'
+      fullPath: '/connections'
+      preLoaderRoute: typeof ConnectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories': {
+      id: '/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/budgets': {
+      id: '/budgets'
+      path: '/budgets'
+      fullPath: '/budgets'
+      preLoaderRoute: typeof BudgetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accounts': {
+      id: '/accounts'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof AccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/transactions/inbox': {
+      id: '/transactions/inbox'
+      path: '/inbox'
+      fullPath: '/transactions/inbox'
+      preLoaderRoute: typeof TransactionsInboxRouteImport
+      parentRoute: typeof TransactionsRoute
+    }
+    '/tools/mortgage': {
+      id: '/tools/mortgage'
+      path: '/tools/mortgage'
+      fullPath: '/tools/mortgage'
+      preLoaderRoute: typeof ToolsMortgageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/loan': {
+      id: '/tools/loan'
+      path: '/tools/loan'
+      fullPath: '/tools/loan'
+      preLoaderRoute: typeof ToolsLoanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports/cashflow': {
+      id: '/reports/cashflow'
+      path: '/cashflow'
+      fullPath: '/reports/cashflow'
+      preLoaderRoute: typeof ReportsCashflowRouteImport
+      parentRoute: typeof ReportsRoute
     }
     '/login/otp': {
       id: '/login/otp'
@@ -120,8 +400,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginCallbackRouteImport
       parentRoute: typeof LoginRoute
     }
+    '/categories/rules': {
+      id: '/categories/rules'
+      path: '/rules'
+      fullPath: '/categories/rules'
+      preLoaderRoute: typeof CategoriesRulesRouteImport
+      parentRoute: typeof CategoriesRoute
+    }
   }
 }
+
+interface CategoriesRouteChildren {
+  CategoriesRulesRoute: typeof CategoriesRulesRoute
+}
+
+const CategoriesRouteChildren: CategoriesRouteChildren = {
+  CategoriesRulesRoute: CategoriesRulesRoute,
+}
+
+const CategoriesRouteWithChildren = CategoriesRoute._addFileChildren(
+  CategoriesRouteChildren,
+)
 
 interface LoginRouteChildren {
   LoginCallbackRoute: typeof LoginCallbackRoute
@@ -135,10 +434,44 @@ const LoginRouteChildren: LoginRouteChildren = {
 
 const LoginRouteWithChildren = LoginRoute._addFileChildren(LoginRouteChildren)
 
+interface ReportsRouteChildren {
+  ReportsCashflowRoute: typeof ReportsCashflowRoute
+}
+
+const ReportsRouteChildren: ReportsRouteChildren = {
+  ReportsCashflowRoute: ReportsCashflowRoute,
+}
+
+const ReportsRouteWithChildren =
+  ReportsRoute._addFileChildren(ReportsRouteChildren)
+
+interface TransactionsRouteChildren {
+  TransactionsInboxRoute: typeof TransactionsInboxRoute
+}
+
+const TransactionsRouteChildren: TransactionsRouteChildren = {
+  TransactionsInboxRoute: TransactionsInboxRoute,
+}
+
+const TransactionsRouteWithChildren = TransactionsRoute._addFileChildren(
+  TransactionsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountsRoute: AccountsRoute,
+  BudgetsRoute: BudgetsRoute,
+  CategoriesRoute: CategoriesRouteWithChildren,
+  ConnectionsRoute: ConnectionsRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRouteWithChildren,
+  ReportsRoute: ReportsRouteWithChildren,
+  SavingGoalsRoute: SavingGoalsRoute,
+  SettingsRoute: SettingsRoute,
+  SubscriptionsRoute: SubscriptionsRoute,
+  TransactionsRoute: TransactionsRouteWithChildren,
+  ToolsLoanRoute: ToolsLoanRoute,
+  ToolsMortgageRoute: ToolsMortgageRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

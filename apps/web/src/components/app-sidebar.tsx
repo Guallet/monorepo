@@ -1,7 +1,6 @@
 import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
@@ -15,16 +14,18 @@ import {
   GalleryVerticalEndIcon,
   AudioLinesIcon,
   TerminalIcon,
-  TerminalSquareIcon,
-  BotIcon,
   BookOpenIcon,
   Settings2Icon,
-  FrameIcon,
-  PieChartIcon,
-  MapIcon,
+  LandmarkIcon,
+  ArrowRightLeftIcon,
+  TargetIcon,
+  Repeat2Icon,
+  ChartLineIcon,
+  WrenchIcon,
+  LayoutDashboardIcon,
+  FunnelIcon,
 } from "lucide-react"
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -50,106 +51,109 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: <TerminalSquareIcon />,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: <LayoutDashboardIcon />,
       isActive: true,
+    },
+    {
+      title: "Accounts",
+      url: "/accounts",
+      icon: <LandmarkIcon />,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Overview",
+          url: "/accounts",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Connections",
+          url: "/connections",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: <BotIcon />,
+      title: "Transactions",
+      url: "/transactions",
+      icon: <ArrowRightLeftIcon />,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "All transactions",
+          url: "/transactions",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "Inbox",
+          url: "/transactions/inbox",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
+      title: "Categories",
+      url: "/categories",
       icon: <BookOpenIcon />,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Manage Categories",
+          url: "/categories",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Rules",
+          url: "/categories/rules",
+        },
+      ],
+    },
+    {
+      title: "Budgets",
+      url: "/budgets",
+      icon: <FunnelIcon />,
+    },
+    {
+      title: "Saving Goals",
+      url: "/saving-goals",
+      icon: <TargetIcon />,
+    },
+    {
+      title: "Subscriptions",
+      url: "/subscriptions",
+      icon: <Repeat2Icon />,
+    },
+    {
+      title: "Reports",
+      url: "/reports",
+      icon: <ChartLineIcon />,
+      items: [
+        {
+          title: "Cashflow",
+          url: "/reports/cashflow",
+        },
+      ],
+    },
+    {
+      title: "Tools",
+      url: "/",
+      icon: <WrenchIcon />,
+      items: [
+        {
+          title: "Pensions",
+          url: "/",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Investments",
+          url: "/",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "Loans",
+          url: "/tools/loan",
+        },
+        {
+          title: "Mortgages",
+          url: "/tools/mortgage",
         },
       ],
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: <Settings2Icon />,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: <FrameIcon />,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: <PieChartIcon />,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: <MapIcon />,
     },
   ],
 }
@@ -162,7 +166,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
