@@ -10,6 +10,7 @@ import { ArrowDownLeftIcon, ArrowUpRightIcon, SearchIcon } from "lucide-react"
 
 import { AcountAvatar } from "@/components/acount-avatar"
 import { CategoryAvatar } from "@/components/category-avatar"
+import { CategoryPickerDialog } from "@/components/category-picker-dialog"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -27,13 +28,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Tooltip,
   TooltipContent,
@@ -90,10 +84,6 @@ export function TransactionsScreen() {
   const [notesDraft, setNotesDraft] = useState("")
   const [editNotesError, setEditNotesError] = useState<string | null>(null)
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false)
-  const [selectedCategoryId, setSelectedCategoryId] = useState("")
-  const [editCategoryError, setEditCategoryError] = useState<string | null>(
-    null
-  )
 
   const accountById = useMemo(() => {
     return new Map(accounts.map((account) => [account.id, account]))
@@ -101,10 +91,6 @@ export function TransactionsScreen() {
 
   const categoryById = useMemo(() => {
     return new Map(categories.map((category) => [category.id, category]))
-  }, [categories])
-
-  const categoryOptions = useMemo(() => {
-    return [...categories].sort((a, b) => a.name.localeCompare(b.name))
   }, [categories])
 
   const mappedTransactions = useMemo<DisplayTransaction[]>(() => {
@@ -151,7 +137,6 @@ export function TransactionsScreen() {
   }, [mappedTransactions, query, typeFilter])
 
   const isSavingNotes = updateTransactionNotesMutation.isPending
-  const isSavingCategory = updateTransactionCategoryMutation.isPending
 
   const openEditNotesDialog = (transaction: DisplayTransaction) => {
     setSelectedTransaction(transaction)
@@ -194,8 +179,6 @@ export function TransactionsScreen() {
 
   const openEditCategoryDialog = (transaction: DisplayTransaction) => {
     setSelectedTransaction(transaction)
-    setSelectedCategoryId(transaction.categoryId ?? "")
-    setEditCategoryError(null)
     setIsCategoryDialogOpen(true)
   }
 
@@ -204,30 +187,23 @@ export function TransactionsScreen() {
 
     if (!isOpen) {
       setSelectedTransaction(null)
-      setSelectedCategoryId("")
-      setEditCategoryError(null)
     }
   }
 
-  const handleSaveCategory = async () => {
-    if (!selectedTransaction || !selectedCategoryId) {
+  const handleCategorySelected = async (categoryId: string) => {
+    if (!selectedTransaction) {
       return
     }
 
-    setEditCategoryError(null)
+    const transactionId = selectedTransaction.id
 
     try {
       await updateTransactionCategoryMutation.mutateAsync({
-        id: selectedTransaction.id,
-        categoryId: selectedCategoryId,
+        id: transactionId,
+        categoryId,
       })
-      handleCategoryDialogOpenChange(false)
     } catch (mutationError) {
-      setEditCategoryError(
-        mutationError instanceof Error
-          ? mutationError.message
-          : "Failed to update transaction category."
-      )
+      console.error("Failed to update transaction category", mutationError)
     }
   }
 
@@ -307,7 +283,7 @@ export function TransactionsScreen() {
                     <span className="sr-only">Account</span>
                   </TableHead>
                   <TableHead className="w-28">Date</TableHead>
-                  <TableHead>Category</TableHead>
+                  <TableHead className="w-24 text-center">Category</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead className="w-32 text-right">Amount</TableHead>
                 </TableRow>
@@ -331,10 +307,10 @@ export function TransactionsScreen() {
                       <TableCell className="align-top">
                         {dateFormatter.format(transaction.date)}
                       </TableCell>
-                      <TableCell className="align-top">
+                      <TableCell className="w-24 text-center align-top">
                         <button
                           type="button"
-                          className="flex w-full items-center gap-2 rounded-md px-1 py-0.5 text-left hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                          className="mx-auto inline-flex items-center rounded-md px-1 py-0.5 text-left hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                           onClick={() => {
                             openEditCategoryDialog(transaction)
                           }}
@@ -344,7 +320,6 @@ export function TransactionsScreen() {
                             categoryId={transaction.categoryId}
                             size="sm"
                           />
-                          <span>{transaction.category}</span>
                         </button>
                       </TableCell>
                       <TableCell className="min-w-0 align-top">
@@ -467,86 +442,20 @@ export function TransactionsScreen() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
+      <CategoryPickerDialog
         open={isCategoryDialogOpen}
         onOpenChange={handleCategoryDialogOpenChange}
-      >
-        <DialogContent>
-          <form
-            className="grid gap-4"
-            onSubmit={(event) => {
-              event.preventDefault()
-              void handleSaveCategory()
-            }}
-          >
-            <DialogHeader>
-              <DialogTitle>Change transaction category</DialogTitle>
-              <DialogDescription>
-                {selectedTransaction ? (
-                  <span
-                    className="block truncate"
-                    title={selectedTransaction.description}
-                  >
-                    {selectedTransaction.description}
-                  </span>
-                ) : (
-                  "Select a category for this transaction."
-                )}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="grid gap-2">
-              <p className="text-sm font-medium text-foreground">Category</p>
-              <Select
-                value={selectedCategoryId}
-                onValueChange={setSelectedCategoryId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {categoryOptions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No categories available.
-                </p>
-              ) : null}
-              {editCategoryError ? (
-                <p className="text-sm text-destructive">{editCategoryError}</p>
-              ) : null}
-            </div>
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  handleCategoryDialogOpenChange(false)
-                }}
-                disabled={isSavingCategory}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={
-                  isSavingCategory ||
-                  categoryOptions.length === 0 ||
-                  !selectedCategoryId
-                }
-              >
-                {isSavingCategory ? "Saving..." : "Save category"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+        selectedCategoryId={selectedTransaction?.categoryId ?? null}
+        title="Change transaction category"
+        description={
+          selectedTransaction
+            ? selectedTransaction.description
+            : "Select a category for this transaction."
+        }
+        onCategorySelected={(categoryId) => {
+          void handleCategorySelected(categoryId)
+        }}
+      />
     </div>
   )
 }
