@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Stack } from 'expo-router';
-import { ModalLoaderOverlay } from '@luna-ui/react-native';
+import { ModalLoaderOverlay } from '@guallet/ui-react-native';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {
   isLoading?: boolean;

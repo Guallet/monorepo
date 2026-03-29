@@ -70,8 +70,9 @@ pnpm --filter guallet-money test:cov  # With coverage report
 - `packages/guallet-api-react` — TanStack Query hooks wrapping the API client
 - `packages/guallet-auth` — Better Auth configuration shared across apps
 - `packages/guallet-money` — Type-safe money/currency library (tested to 80% coverage)
-- `packages/guallet-ui-react` — Shared Mantine-based React components
-- `luna-ui/react-native` — Custom React Native component library
+- `packages/guallet-theme` — Platform-agnostic design token types and default values
+- `packages/guallet-ui-react` — Shared Mantine-based React components (web)
+- `packages/guallet-ui-react-native` — Custom Luna UI React Native component library
 
 ### API Architecture (NestJS)
 

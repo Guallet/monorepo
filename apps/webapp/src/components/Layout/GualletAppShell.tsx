@@ -3,16 +3,17 @@ import { AppNavBar } from "./AppNavBar/AppNavBar";
 import { useDisclosure } from "@mantine/hooks";
 import AppHeader from "./AppHeader";
 import { Outlet } from "@tanstack/react-router";
-import { Colors } from "@/theme/colors";
+import { useTheme } from "@guallet/ui-react";
 
 export default function GualletAppShell() {
   const [opened, { close, toggle }] = useDisclosure();
+  const { colors } = useTheme();
 
   return (
     <AppShell
       header={{ height: 60 }}
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
-      bg={Colors.pageBackground}
+      bg={colors.pageBackground}
       padding="md"
     >
       <AppShell.Header>

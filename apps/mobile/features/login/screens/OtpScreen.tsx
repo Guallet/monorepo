@@ -8,7 +8,7 @@ import {
   OtpInput,
   Title,
   useTheme,
-} from '@luna-ui/react-native';
+} from '@guallet/ui-react-native';
 import { openInbox } from 'react-native-email-link';
 import { useAuth } from '@/auth/useAuth';
 

@@ -1,6 +1,6 @@
 import { Stack, Text } from "@mantine/core";
 import { SearchBoxInput } from "../SearchBoxInput/SearchBoxInput";
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 
 export interface Section<T> {
   title: string;
@@ -26,27 +26,18 @@ export function SearchableSectionListView<T>({
   emptyView,
   placeholder,
 }: Readonly<SearchableSectionLisProps<T>>) {
-  const [filteredData, setFilteredData] = useState(data);
   const [queryString, setQueryString] = useState("");
 
-  useEffect(() => {
-    if (!queryString.trim()) {
-      setFilteredData(data);
-    } else {
-      const filtered = data
-        .map((section) => ({
-          ...section,
-          data: section.data.filter((item) =>
-            // TODO: Improve this hack of converting to JSON
-            JSON.stringify(item)
-              .toLowerCase()
-              .includes(queryString.toLowerCase())
-          ),
-        }))
-        .filter((section) => section.data.length > 0);
-
-      setFilteredData(filtered);
-    }
+  const filteredData = useMemo(() => {
+    if (!queryString.trim()) return data;
+    return data
+      .map((section) => ({
+        ...section,
+        data: section.data.filter((item) =>
+          JSON.stringify(item).toLowerCase().includes(queryString.toLowerCase())
+        ),
+      }))
+      .filter((section) => section.data.length > 0);
   }, [data, queryString]);
 
   return (

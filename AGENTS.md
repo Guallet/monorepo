@@ -12,8 +12,9 @@
 | Mobile | Expo 54, React Native 0.81, Expo Router, Luna UI | `apps/mobile` |
 | API client types | TypeScript (no runtime, types + fetch wrappers) | `packages/guallet-api-client` |
 | React query hooks | TanStack Query wrappers over the API client | `packages/guallet-api-react` |
-| Shared React UI | Mantine-based components | `packages/guallet-ui-react` |
-| React Native UI | Custom Luna UI component library | `luna-ui/react-native` |
+| Design tokens | Platform-agnostic theme types and default values | `packages/guallet-theme` |
+| Shared React UI | Mantine-based components (web) | `packages/guallet-ui-react` |
+| React Native UI | Custom Luna UI component library | `packages/guallet-ui-react-native` |
 | Money / currency | Type-safe money library (80 % coverage threshold) | `packages/guallet-money` |
 
 ## Common Commands
