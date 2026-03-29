@@ -1,12 +1,11 @@
 import { generateColors } from '@mantine/colors-generator';
 import { GualletTheme } from '@guallet/theme';
-import type { MantineThemeOverride } from '@mantine/core';
+import { createTheme, type MantineThemeOverride } from '@mantine/core';
 
 export function createMantineGualletTheme(
   theme: GualletTheme,
 ): MantineThemeOverride {
-
-  return {
+  return createTheme({
     primaryColor: 'primary',
     colors: {
       primary: generateColors(theme.colors.primary),
@@ -36,5 +35,5 @@ export function createMantineGualletTheme(
     other: {
       colors: theme.colors,
     },
-  };
+  });
 }
