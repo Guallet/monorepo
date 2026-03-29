@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { MantineProvider } from '@mantine/core';
-import { DefaultTheme, GualletTheme } from '@guallet/theme';
+import { GualletTheme } from '@guallet/theme';
+import { DefaultTheme } from './DefaultTheme';
 import { GualletThemeContext } from './GualletThemeContext';
 import { createMantineGualletTheme } from './createMantineTheme';
 
@@ -25,7 +26,7 @@ export function GualletThemeProvider({
 
   return (
     <GualletThemeContext.Provider value={resolvedTheme}>
-      <MantineProvider theme={createMantineGualletTheme(theme)}>
+      <MantineProvider theme={createMantineGualletTheme(resolvedTheme)}>
         {children}
       </MantineProvider>
     </GualletThemeContext.Provider>

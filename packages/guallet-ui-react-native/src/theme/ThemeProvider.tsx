@@ -1,5 +1,6 @@
 import { createContext, PropsWithChildren } from "react";
-import { GualletTheme, DefaultTheme } from "@guallet/theme";
+import { GualletTheme } from "@guallet/theme";
+import { DefaultTheme } from "./DefaultTheme";
 
 export const ThemeContext = createContext<GualletTheme>(DefaultTheme);
 

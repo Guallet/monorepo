@@ -1,19 +1,10 @@
 import { generateColors } from '@mantine/colors-generator';
-import { DefaultTheme, GualletTheme } from '@guallet/theme';
+import { GualletTheme } from '@guallet/theme';
 import type { MantineThemeOverride } from '@mantine/core';
 
 export function createMantineGualletTheme(
-  overrides?: Partial<GualletTheme>,
+  theme: GualletTheme,
 ): MantineThemeOverride {
-  const theme: GualletTheme = {
-    ...DefaultTheme,
-    ...overrides,
-    colors: { ...DefaultTheme.colors, ...overrides?.colors },
-    spacing: { ...DefaultTheme.spacing, ...overrides?.spacing },
-    typography: { ...DefaultTheme.typography, ...overrides?.typography },
-    borderRadius: { ...DefaultTheme.borderRadius, ...overrides?.borderRadius },
-    breakpoints: { ...DefaultTheme.breakpoints, ...overrides?.breakpoints },
-  };
 
   return {
     primaryColor: 'primary',
