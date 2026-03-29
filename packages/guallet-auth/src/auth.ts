@@ -22,6 +22,9 @@ export function createGualletAuthClient(options: CreateAuthClientOptions) {
   return createAuthClient({
     baseURL,
     basePath,
+    fetchOptions: {
+      credentials: 'include',
+    },
     plugins: [emailOTPClient(), magicLinkClient()],
   });
 }

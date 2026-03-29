@@ -67,6 +67,12 @@ export const createAuth = ({
             secure: true,
           },
         },
+        session_token: {
+          attributes: {
+            sameSite: 'none',
+            secure: true,
+          },
+        },
       },
     },
     // AUTH METHODS

@@ -1,5 +1,4 @@
 import React, {
-  useState,
   useContext,
   useEffect,
   useMemo,
@@ -26,39 +25,13 @@ export function AuthProvider({
   onUserChange,
 }: Readonly<AuthProviderProps>) {
   const { data: session, isPending, refetch } = authClient.useSession();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const initializeAuth = useCallback(async () => {
-    try {
-      console.log('Initializing auth session...');
-      const session = await authClient.getSession();
-      const authenticated = session?.data?.user.id !== undefined;
-      setIsAuthenticated(authenticated);
-      console.log('Initial session: isAuthenticated:', authenticated);
-    } catch (error) {
-      console.error('Error initializing auth session:', error);
-    }
-  }, [authClient]);
+  // Derive isAuthenticated directly from session so it's always in sync with
+  // isPending — avoids the one-render lag that caused the callback page to
+  // redirect to login before the session was reflected in state.
+  const isAuthenticated = !isPending && session?.user?.id !== undefined;
 
   useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
-
-  useEffect(() => {
-    const authenticated = session?.user?.id !== undefined;
-    setIsAuthenticated(authenticated);
-    console.log('Initial session: isAuthenticated:', authenticated);
-  }, [authClient]);
-
-  useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
-
-  useEffect(() => {
-    const authenticated = session?.user?.id !== undefined;
-    setIsAuthenticated(authenticated);
-    console.log('Session updated: isAuthenticated:', authenticated);
-
     if (onUserChange) {
       onUserChange(session?.user?.id ?? null);
     }
