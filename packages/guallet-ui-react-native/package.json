@@ -1,30 +1,29 @@
 {
-  "name": "@guallet/ui-react",
+  "name": "@guallet/ui-react-native",
   "version": "0.1.0",
-  "description": "Common React Components fow Web using Mantine",
-  "main": "./index.tsx",
-  "types": "./index.tsx",
+  "description": "Guallet UI components for React Native",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "private": true,
   "license": "Apache-2.0",
   "scripts": {
     "lint": "eslint \"**/*.ts*\""
   },
+  "keywords": [],
+  "author": "cjgaliana",
   "dependencies": {
     "@guallet/theme": "workspace:*",
-    "@mantine/colors-generator": "^8.2.7",
-    "@mantine/core": "workspace:*",
-    "@mantine/hooks": "workspace:*",
-    "@tabler/icons-react": "workspace:*",
-    "react": "workspace:*",
-    "react-dom": "workspace:*"
+    "@expo/vector-icons": "^15.0.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.4"
   },
   "devDependencies": {
     "@eslint/js": "workspace:*",
     "@types/react": "workspace:*",
-    "@types/react-dom": "workspace:*",
     "eslint": "workspace:*",
     "eslint-plugin-react-hooks": "workspace:*",
     "globals": "workspace:*",
-    "react": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*",
     "typescript-eslint": "workspace:*"

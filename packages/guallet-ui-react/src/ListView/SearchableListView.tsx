@@ -1,6 +1,6 @@
 import { Paper, Space, Stack, Text } from "@mantine/core";
 import { SearchBoxInput } from "../SearchBoxInput/SearchBoxInput";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface SearchableListViewProps<T> {
   items: T[];
@@ -17,14 +17,14 @@ export function SearchableListView<T>({
   placeholder,
   gap = "md",
 }: Readonly<SearchableListViewProps<T>>) {
-  const [filteredItems, setFilteredItems] = useState([] as T[]);
   const [queryString, setQueryString] = useState("");
 
-  useEffect(() => {
-    if (items !== null || items !== undefined) {
-      setFilteredItems(items);
-    }
-  }, [items]);
+  const filteredItems = useMemo(() => {
+    if (!queryString.trim()) return items;
+    return items.filter((item) =>
+      JSON.stringify(item).toLowerCase().includes(queryString.toLowerCase())
+    );
+  }, [items, queryString]);
 
   return (
     <Stack gap={gap}>
@@ -33,11 +33,6 @@ export function SearchableListView<T>({
         query={queryString}
         onSearchQueryChanged={(query) => {
           setQueryString(query);
-          const queryItems = items.filter((item) =>
-            // TODO: Improve this hack of converting to JSON
-            JSON.stringify(item).toLowerCase().includes(query.toLowerCase())
-          );
-          setFilteredItems(queryItems);
         }}
       />
       <Space h="sm" />

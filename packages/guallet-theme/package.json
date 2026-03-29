@@ -1,0 +1,19 @@
+{
+  "name": "@guallet/theme",
+  "version": "0.1.0",
+  "description": "Platform-agnostic design tokens for Guallet",
+  "private": true,
+  "license": "Apache-2.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "typescript": "workspace:*"
+  }
+}

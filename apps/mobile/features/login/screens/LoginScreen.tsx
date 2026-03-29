@@ -9,7 +9,7 @@ import {
   useTheme,
   TextInput,
   Title,
-} from '@luna-ui/react-native';
+} from '@guallet/ui-react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BuildConfig } from '@/BuildConfig';

@@ -6,7 +6,7 @@ import '@mantine/notifications/styles.css';
 import '@mantine/charts/styles.css';
 import '@mantine/dropzone/styles.css';
 
-import { MantineProvider } from '@mantine/core';
+import { GualletThemeProvider } from '@guallet/ui-react';
 import { Notifications } from '@mantine/notifications';
 import { RouterProvider } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -27,7 +27,7 @@ const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <MantineProvider>
+    <GualletThemeProvider>
       <DatesProvider
         settings={{
           locale: i18next.language,
@@ -46,6 +46,6 @@ export default function App() {
           </QueryClientProvider>
         </AuthProvider>
       </DatesProvider>
-    </MantineProvider>
+    </GualletThemeProvider>
   );
 }

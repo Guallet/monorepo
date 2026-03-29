@@ -242,9 +242,9 @@ importers:
       '@guallet/auth':
         specifier: workspace:*
         version: link:../../packages/guallet-auth
-      '@luna-ui/react-native':
+      '@guallet/ui-react-native':
         specifier: workspace:*
-        version: link:../../luna-ui/react-native
+        version: link:../../packages/guallet-ui-react-native
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0))
@@ -393,6 +393,9 @@ importers:
       '@guallet/money':
         specifier: workspace:*
         version: link:../../packages/guallet-money
+      '@guallet/theme':
+        specifier: workspace:*
+        version: link:../../packages/guallet-theme
       '@guallet/ui-react':
         specifier: workspace:*
         version: link:../../packages/guallet-ui-react
@@ -548,46 +551,6 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.2.3)(lightningcss@1.30.2)(sugarss@5.0.0(postcss@8.5.6))(terser@5.43.1)(tsx@4.21.0)(yaml@2.8.1)
 
-  luna-ui/react-native:
-    dependencies:
-      '@expo/vector-icons':
-        specifier: ^15.0.2
-        version: 15.0.2(expo-font@14.0.8(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0))(react@19.1.0)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      react-native:
-        specifier: 0.81.4
-        version: 0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0)
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.39.2
-        version: 9.39.2
-      '@types/react':
-        specifier: ^19.0.12
-        version: 19.1.8
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.2
-      eslint-plugin-react-hooks:
-        specifier: ^7.0.1
-        version: 7.0.1(eslint@9.39.2)
-      globals:
-        specifier: ^16.0.0
-        version: 16.3.0
-      tsconfig:
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      typescript-eslint:
-        specifier: ^8.53.0
-        version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
-
   packages/eslint-config-custom:
     dependencies:
       eslint-config-next:
@@ -686,8 +649,23 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  packages/guallet-theme:
+    devDependencies:
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
   packages/guallet-ui-react:
     dependencies:
+      '@guallet/theme':
+        specifier: workspace:*
+        version: link:../guallet-theme
+      '@mantine/colors-generator':
+        specifier: ^8.2.7
+        version: 8.3.18(chroma-js@3.2.0)
       '@mantine/core':
         specifier: ^8.2.7
         version: 8.2.7(@mantine/hooks@8.2.7(react@19.1.0))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -713,6 +691,49 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.4
         version: 19.1.6(@types/react@19.1.8)
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2
+      eslint-plugin-react-hooks:
+        specifier: ^7.0.1
+        version: 7.0.1(eslint@9.39.2)
+      globals:
+        specifier: ^16.0.0
+        version: 16.3.0
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.53.0
+        version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
+
+  packages/guallet-ui-react-native:
+    dependencies:
+      '@expo/vector-icons':
+        specifier: ^15.0.2
+        version: 15.0.2(expo-font@14.0.8(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0))(react@19.1.0)
+      '@guallet/theme':
+        specifier: workspace:*
+        version: link:../guallet-theme
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      react-native:
+        specifier: 0.81.4
+        version: 0.81.4(@babel/core@7.28.6)(@types/react@19.1.8)(react@19.1.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.39.2
+        version: 9.39.2
+      '@types/react':
+        specifier: ^19.0.12
+        version: 19.1.8
       eslint:
         specifier: ^9.39.2
         version: 9.39.2
@@ -2459,6 +2480,11 @@ packages:
       react: ^19.1.0
       react-dom: ^19.1.0
       recharts: '>=2.13.3'
+
+  '@mantine/colors-generator@8.3.18':
+    resolution: {integrity: sha512-u7gNAuVD/WPvB49uNszfkn7lQr85OXTI0Ijkbutcymhv0/utqlapQvZlQAYHwdrrWpQgqPNLsDBt3VSheVe9jw==}
+    peerDependencies:
+      chroma-js: '>=2.4.2'
 
   '@mantine/core@8.2.7':
     resolution: {integrity: sha512-gfVDf/qFxt66PrsktYEJt/MZbiNo3KCx6PxKKcskSe/J2g5g1kf4nhhvBFlYaicDX93PfT4MgTnipyfJQ09NDA==}
@@ -4944,6 +4970,9 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
+  chroma-js@3.2.0:
+    resolution: {integrity: sha512-os/OippSlX1RlWWr+QDPcGUZs0uoqr32urfxESG9U93lhUfbnlyckte84Q8P1UQY/qth983AS1JONKmLS4T0nw==}
+
   chrome-launcher@0.15.2:
     resolution: {integrity: sha512-zdLEwNo3aUVzIhKhTtXfxhdvZhUghrnmkvcAq2NoDd+LeOHKf03H5jwZ8T/STsAlzyALkBVK552iaG1fGf1xVQ==}
     engines: {node: '>=12.13.0'}
@@ -6512,6 +6541,7 @@ packages:
   i18next-parser@9.3.0:
     resolution: {integrity: sha512-VaQqk/6nLzTFx1MDiCZFtzZXKKyBV6Dv0cJMFM/hOt4/BWHWRgYafzYfVQRUzotwUwjqeNCprWnutzD/YAGczg==}
     engines: {node: ^18.0.0 || ^20.0.0 || ^22.0.0, npm: '>=6', yarn: '>=1'}
+    deprecated: Project is deprecated, use i18next-cli instead
     hasBin: true
 
   i18next@24.2.3:
@@ -12105,6 +12135,10 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
       recharts: 3.1.0(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react-is@19.2.0)(react@19.1.0)(redux@5.0.1)
 
+  '@mantine/colors-generator@8.3.18(chroma-js@3.2.0)':
+    dependencies:
+      chroma-js: 3.2.0
+
   '@mantine/core@8.2.7(@mantine/hooks@8.2.7(react@19.1.0))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -14766,6 +14800,8 @@ snapshots:
       readdirp: 4.1.2
 
   chownr@3.0.0: {}
+
+  chroma-js@3.2.0: {}
 
   chrome-launcher@0.15.2:
     dependencies:

@@ -17,7 +17,7 @@ import { GualletClientProvider } from '@guallet/api-react';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { LunaProvider } from '@luna-ui/react-native';
+import { LunaProvider } from '@guallet/ui-react-native';
 
 // Create a client
 const queryClient = new QueryClient();

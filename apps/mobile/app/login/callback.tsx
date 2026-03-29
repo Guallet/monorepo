@@ -1,5 +1,5 @@
 import { useAuth } from '@guallet/auth';
-import { Button } from '@luna-ui/react-native';
+import { Button } from '@guallet/ui-react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { View, Text, ActivityIndicator } from 'react-native';
 

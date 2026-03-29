@@ -25,7 +25,7 @@ export function SearchBoxInput({
 
   useEffect(() => {
     onSearchQueryChanged?.(filterValue);
-  }, [filterValue]);
+  }, [filterValue, onSearchQueryChanged]);
 
   return (
     <TextInput

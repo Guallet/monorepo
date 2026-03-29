@@ -1,4 +1,4 @@
-import { Colors } from "@/theme/colors";
+import { useTheme } from "@guallet/ui-react";
 import { Box, LoadingOverlay } from "@mantine/core";
 import { ReactNode } from "react";
 
@@ -13,10 +13,12 @@ export function BaseScreen({
   isLoading = false,
   fullScreen = false,
 }: Readonly<BaseScreenProps>) {
+  const { colors } = useTheme();
+
   return (
     <Box
       style={{
-        backgroundColor: Colors.pageBackground,
+        backgroundColor: colors.pageBackground,
         height: fullScreen ? "100dvh" : undefined,
         width: fullScreen ? "100dvw" : undefined,
       }}
