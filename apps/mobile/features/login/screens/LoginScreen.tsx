@@ -81,10 +81,10 @@ export function LoginScreen() {
 
     setEmailError(null);
     setIsLoading(true);
-    const isCodeSent = await getOtpCode(email);
+    const result = await getOtpCode(email);
     setIsLoading(false);
 
-    if (isCodeSent) {
+    if (result.success) {
       router.navigate({
         pathname: '/login/otp',
         params: { email },
@@ -97,9 +97,9 @@ export function LoginScreen() {
   const loginWithGoogle = async () => {
     try {
       setIsLoading(true);
-      const canLogin = await loginWithProvider('google');
+      const result = await loginWithProvider('google', 'guallet://login/callback');
       setIsLoading(false);
-      if (!canLogin) {
+      if (!result.success) {
         alert('Failed to login with Google. Please try again.');
       } else {
         router.replace('/(tabs)');

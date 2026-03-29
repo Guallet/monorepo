@@ -4,6 +4,8 @@ import { emailOTPClient, magicLinkClient } from 'better-auth/client/plugins';
 export interface CreateAuthClientOptions {
   baseURL: string;
   basePath?: string;
+  /** Additional Better Auth client plugins (e.g. expoClient for React Native) */
+  plugins?: any[];
 }
 
 /**
@@ -17,11 +19,11 @@ export interface CreateAuthClientOptions {
  * @returns A configured Guallet Auth client
  */
 export function createGualletAuthClient(options: CreateAuthClientOptions) {
-  const { baseURL, basePath = '/auth' } = options;
+  const { baseURL, basePath = '/auth', plugins = [] } = options;
 
   return createAuthClient({
     baseURL,
     basePath,
-    plugins: [emailOTPClient(), magicLinkClient()],
+    plugins: [emailOTPClient(), magicLinkClient(), ...plugins],
   });
 }

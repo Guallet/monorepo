@@ -1,21 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { BudgetListScreen } from '@/features/budgets/screens/BudgetListScreen';
 
-export default function BudgetsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Budgets</Text>
-    </View>
-  );
+export default function Screen() {
+  return <BudgetListScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});

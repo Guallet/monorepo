@@ -12,9 +12,9 @@
   "author": "cjgaliana",
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-native": "0.81.4"
+    "react": ">=19.1.0",
+    "react-dom": ">=19.1.0",
+    "react-native": ">=0.81.4"
   },
   "devDependencies": {
     "@eslint/js": "workspace:*",

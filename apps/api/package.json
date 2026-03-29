@@ -27,6 +27,7 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.5.1",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.13",
@@ -39,7 +40,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "@thallesp/nestjs-better-auth": "^2.4.0",
     "axios": "^1.13.5",
-    "better-auth": "^1.4.18",
+    "better-auth": "^1.5.1",
     "bullmq": "^5.69.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",

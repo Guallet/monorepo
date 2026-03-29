@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 import { emailOTP, magicLink } from 'better-auth/plugins';
+import { expo } from '@better-auth/expo';
 import { EmailService } from 'src/features/email/email.service';
 
 export const createAuth = ({
@@ -24,7 +25,14 @@ export const createAuth = ({
 
   return betterAuth({
     appName: 'Guallet',
-    trustedOrigins: [...authConfig.allowedOrigins],
+    trustedOrigins: [
+      ...authConfig.allowedOrigins,
+      'guallet://',
+      // Development mode - Expo's exp:// scheme with local IP ranges
+      ...(process.env.NODE_ENV === 'production'
+        ? []
+        : ['exp://', 'exp://**', 'exp://192.168.*.*:*/**']),
+    ],
     basePath: '/auth',
     baseURL: authConfig.baseUrl,
     // DATABASE CONFIG
@@ -74,6 +82,7 @@ export const createAuth = ({
     },
     // PLUGINS
     plugins: [
+      expo(),
       emailOTP({
         // OTP will expire after 5 minutes
         expiresIn: 60 * 5,
