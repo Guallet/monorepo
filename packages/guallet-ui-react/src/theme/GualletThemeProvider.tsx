@@ -12,6 +12,7 @@ export function GualletThemeProvider({
   children,
   theme,
 }: PropsWithChildren<GualletThemeProviderProps>) {
+  // No need to memoize this as we are using React Compiler which will optimize this for us.
   const resolvedTheme: GualletTheme = {
     ...DefaultTheme,
     ...theme,

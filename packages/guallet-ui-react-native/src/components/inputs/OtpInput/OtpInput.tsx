@@ -1,6 +1,6 @@
-import { View, StyleSheet } from "react-native";
-import { OtpNumberInput } from "./OtpNumberInput";
-import { useState } from "react";
+import { View, StyleSheet } from 'react-native';
+import { OtpNumberInput } from './OtpNumberInput';
+import { useState } from 'react';
 
 interface OtpInputProps extends React.ComponentProps<typeof View> {
   // Define any props you want to pass to the OtpInput component
@@ -13,7 +13,7 @@ export function OtpInput({
   length = 6,
   ...props
 }: Readonly<OtpInputProps>) {
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [code, setCode] = useState(Array.from({ length }, () => ''));
 
   return (
     <View {...props} style={[styles.codeContainer, props.style]}>
@@ -25,8 +25,8 @@ export function OtpInput({
             const updatedValue = [...code];
             updatedValue[index] = newValue;
             setCode(updatedValue);
-            if (updatedValue.every((val) => val !== "")) {
-              onCodeChanged(updatedValue.join(""));
+            if (updatedValue.every((val) => val !== '')) {
+              onCodeChanged(updatedValue.join(''));
             }
           }}
         />
@@ -37,7 +37,7 @@ export function OtpInput({
 
 const styles = StyleSheet.create({
   codeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

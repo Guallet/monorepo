@@ -1,14 +1,14 @@
-import React from "react";
-import { Text, TextProps, StyleSheet } from "react-native";
+import React from 'react';
+import { Text, TextProps, StyleSheet } from 'react-native';
 
 export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
-export type TitleSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+export type TitleSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 
 export interface TitleProps extends TextProps {
   lineClamp?: number;
   order?: TitleOrder;
   size?: TitleSize;
-  textWrap?: "wrap" | "nowrap" | "balance" | "pretty" | "stable";
+  textWrap?: 'wrap' | 'nowrap' | 'balance' | 'pretty' | 'stable';
   children: React.ReactNode;
   center?: boolean;
 }
@@ -35,7 +35,7 @@ export function Title({
   lineClamp,
   order = 1,
   size,
-  textWrap = "wrap",
+  textWrap = 'wrap',
   style,
   children,
   center = false,
@@ -47,21 +47,21 @@ export function Title({
     styles.base,
     {
       fontSize,
-      fontWeight: (order <= 2 ? "bold" : order <= 4 ? "600" : "500") as
-        | "bold"
-        | "600"
-        | "500",
+      fontWeight: (order <= 2 ? 'bold' : order <= 4 ? '600' : '500') as
+        | 'bold'
+        | '600'
+        | '500',
     },
-    textWrap === "nowrap" && styles.nowrap,
+    textWrap === 'nowrap' && styles.nowrap,
     style,
   ];
 
   return (
     <Text
       {...rest}
-      style={[titleStyle, center && { textAlign: "center" }]}
+      style={[titleStyle, center && { textAlign: 'center' }]}
       numberOfLines={lineClamp}
-      ellipsizeMode={lineClamp ? "tail" : undefined}
+      ellipsizeMode={lineClamp ? 'tail' : undefined}
     >
       {children}
     </Text>
@@ -70,10 +70,10 @@ export function Title({
 
 const styles = StyleSheet.create({
   base: {
-    color: "#000",
+    color: '#000',
     lineHeight: 1.2,
   },
   nowrap: {
-    flexWrap: "nowrap",
+    flexWrap: 'nowrap',
   },
 });
