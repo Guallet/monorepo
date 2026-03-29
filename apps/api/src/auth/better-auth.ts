@@ -53,6 +53,22 @@ export const createAuth = ({
       expiresIn: 60 * 60 * 24 * 7, // 7 days
       updateAge: 60 * 60 * 24, // 1 day
     },
+    // ADVANCED CONFIG
+    // The webapp and API are on different domains (cross-origin). The OAuth state
+    // cookie must use SameSite=None so browsers allow it to be set and sent
+    // during the cross-origin OAuth flow.
+    // This should be updated to SameSite=Lax if the webapp and API are ever served from the same domain.
+    advanced: {
+      useSecureCookies: true,
+      cookies: {
+        state: {
+          attributes: {
+            sameSite: 'none',
+            secure: true,
+          },
+        },
+      },
+    },
     // AUTH METHODS
     emailAndPassword: {
       enabled: true,
