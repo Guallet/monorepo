@@ -84,7 +84,7 @@ export const createAuth = ({
         create: {
           after: async (user) => {
             eventEmitter?.emit('user.created', { userId: user.id });
-            return Promise.resolve();
+            return await Promise.resolve();
           },
         },
       },
