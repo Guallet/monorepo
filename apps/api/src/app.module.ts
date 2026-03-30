@@ -22,7 +22,6 @@ import { RegularPaymentsModule } from './features/regular-payments/regular-payme
 import { DataImporterModule } from './features/data-importer/data-importer.module';
 import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
-import { EmailService } from './features/email/email.service';
 import { NotificationsModule } from './features/notifications/notifications.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
@@ -106,10 +105,9 @@ import { AppController } from './app.controller';
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],
-      inject: [ConfigService, EmailService, EventEmitter2],
+      inject: [ConfigService, EventEmitter2],
       useFactory: (
         configService: ConfigService<AppConfig>,
-        emailService: EmailService,
         eventEmitter: EventEmitter2,
       ) => {
         const database = configService.get('database', { infer: true })!;
@@ -119,7 +117,6 @@ import { AppController } from './app.controller';
           auth: createAuth({
             databaseConfig: database,
             authConfig: authConfig,
-            emailService: emailService,
             eventEmitter: eventEmitter,
           }),
         };
