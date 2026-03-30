@@ -1,4 +1,4 @@
-import { Center, Paper, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Center, Loader, Paper, Stack, Text, UnstyledButton } from "@mantine/core";
 import {
   GualletIcon,
   GualletIconName,
@@ -8,18 +8,21 @@ interface EmptyStateProps {
   iconName: GualletIconName;
   text: string;
   onClick: () => void;
+  loading?: boolean;
 }
 
 export default function EmptyState({
   iconName,
   text,
   onClick,
+  loading = false,
 }: Readonly<EmptyStateProps>) {
   return (
     <UnstyledButton
-      style={{ width: "100%" }}
+      style={{ width: "100%", opacity: loading ? 0.6 : 1, cursor: loading ? "default" : "pointer" }}
+      disabled={loading}
       onClick={() => {
-        onClick();
+        if (!loading) onClick();
       }}
     >
       <Paper shadow="sm" p="lg" radius="md" withBorder>
@@ -33,12 +36,16 @@ export default function EmptyState({
           }}
         >
           <Stack justify="center" align="center" gap="xs">
-            <GualletIcon
-              iconName={iconName}
-              size={48}
-              stroke={1.5}
-              color="#9ca3af"
-            />
+            {loading ? (
+              <Loader size={48} />
+            ) : (
+              <GualletIcon
+                iconName={iconName}
+                size={48}
+                stroke={1.5}
+                color="#9ca3af"
+              />
+            )}
             <Text size="lg" w={500} c="dark" ta="center">
               {text}
             </Text>

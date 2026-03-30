@@ -29,6 +29,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth';
+import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 
 @Module({
@@ -100,13 +101,16 @@ import { AppController } from './app.controller';
         };
       },
     }),
+    // EVENTS
+    EventEmitterModule.forRoot(),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],
-      inject: [ConfigService, EmailService],
+      inject: [ConfigService, EmailService, EventEmitter2],
       useFactory: (
         configService: ConfigService<AppConfig>,
         emailService: EmailService,
+        eventEmitter: EventEmitter2,
       ) => {
         const database = configService.get('database', { infer: true })!;
         const authConfig = configService.get('auth', { infer: true })!;
@@ -116,6 +120,7 @@ import { AppController } from './app.controller';
             databaseConfig: database,
             authConfig: authConfig,
             emailService: emailService,
+            eventEmitter: eventEmitter,
           }),
         };
       },

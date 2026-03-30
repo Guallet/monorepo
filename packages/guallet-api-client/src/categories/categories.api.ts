@@ -45,4 +45,11 @@ export class CategoriesApi {
       path: `${CATEGORIES_PATH}/${id}`,
     });
   }
+
+  async seedDefaults(): Promise<CategoryDto[]> {
+    return await this.client.post<CategoryDto[], undefined>({
+      path: `${CATEGORIES_PATH}/seed`,
+      payload: undefined,
+    });
+  }
 }

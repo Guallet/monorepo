@@ -33,6 +33,14 @@ export class CategoriesService {
   }
 
   async createDefaultCategoriesForUser(userId: string): Promise<Category[]> {
+    const existing = await this.findAllUserCategories(userId);
+    if (existing.length > 0) {
+      this.logger.warn(
+        `User ${userId} already has categories, skipping default seeding`,
+      );
+      return existing;
+    }
+
     const newCategories: Category[] = [];
     for (const category of defaultCategories) {
       const entity = this.categoryRepository.create({

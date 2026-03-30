@@ -1,11 +1,11 @@
 import {
   CreateCategoryRequest,
   UpdateCategoryRequest,
-} from "@guallet/api-client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+} from '@guallet/api-client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const CATEGORIES_QUERY_KEY = "categories";
+const CATEGORIES_QUERY_KEY = 'categories';
 
 export function useCategoryMutations() {
   const queryClient = useQueryClient();
@@ -67,4 +67,21 @@ export function useCategoryMutations() {
     updateCategoryMutation,
     deleteCategoryMutation,
   };
+}
+
+export function useSeedDefaultCategoriesMutation() {
+  const queryClient = useQueryClient();
+  const gualletClient = useGualletClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      return await gualletClient.categories.seedDefaults();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 }
