@@ -3,15 +3,18 @@ import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 import { emailOTP, magicLink } from 'better-auth/plugins';
 import { EmailService } from 'src/features/email/email.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export const createAuth = ({
   databaseConfig,
   authConfig,
   emailService,
+  eventEmitter,
 }: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
   emailService: EmailService;
+  eventEmitter?: EventEmitter2;
 }) => {
   const database = new Pool({
     host: databaseConfig.host,
@@ -71,6 +74,17 @@ export const createAuth = ({
           attributes: {
             sameSite: 'none',
             secure: true,
+          },
+        },
+      },
+    },
+    // LIFECYCLE HOOKS
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user) => {
+            eventEmitter?.emit('user.created', { userId: user.id });
+            return Promise.resolve();
           },
         },
       },

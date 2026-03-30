@@ -108,7 +108,7 @@ describe('CategoriesService', () => {
   });
 
   describe('createDefaultCategoriesForUser', () => {
-    it('should create default categories for user', async () => {
+    it('should create default categories when user has none', async () => {
       const userId = 'user-123';
       const mockCategory = {
         id: 'cat-1',
@@ -118,6 +118,8 @@ describe('CategoriesService', () => {
         colour: '#000000',
       };
 
+      // No existing categories
+      mockCategoryRepository.find.mockResolvedValue([]);
       mockCategoryRepository.create.mockReturnValue(mockCategory);
       mockCategoryRepository.save.mockResolvedValue(mockCategory);
 
@@ -125,8 +127,30 @@ describe('CategoriesService', () => {
 
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
       expect(mockCategoryRepository.create).toHaveBeenCalled();
       expect(mockCategoryRepository.save).toHaveBeenCalled();
+    });
+
+    it('should skip seeding and return existing categories when user already has categories', async () => {
+      const userId = 'user-123';
+      const existingCategories = [
+        {
+          id: 'cat-1',
+          user_id: userId,
+          name: 'Food',
+          icon: '🍔',
+          colour: '#FF5733',
+        },
+      ];
+
+      mockCategoryRepository.find.mockResolvedValue(existingCategories);
+
+      const result = await service.createDefaultCategoriesForUser(userId);
+
+      expect(result).toEqual(existingCategories);
+      expect(mockCategoryRepository.create).not.toHaveBeenCalled();
+      expect(mockCategoryRepository.save).not.toHaveBeenCalled();
     });
   });
 
