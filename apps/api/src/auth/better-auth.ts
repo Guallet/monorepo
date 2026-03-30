@@ -2,18 +2,15 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 import { emailOTP, magicLink } from 'better-auth/plugins';
-import { EmailService } from 'src/features/email/email.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export const createAuth = ({
   databaseConfig,
   authConfig,
-  emailService,
   eventEmitter,
 }: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
-  emailService: EmailService;
   eventEmitter?: EventEmitter2;
 }) => {
   const database = new Pool({
@@ -93,12 +90,13 @@ export const createAuth = ({
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
-      sendResetPassword: async ({ user, url }) => {
-        await emailService.sendPasswordResetEmail({
+      sendResetPassword: ({ user, url }) => {
+        eventEmitter?.emit('auth.email.password-reset', {
           to: user.email,
           url,
           userName: user.name,
         });
+        return Promise.resolve();
       },
     },
     socialProviders: {
@@ -113,24 +111,17 @@ export const createAuth = ({
       emailOTP({
         // OTP will expire after 5 minutes
         expiresIn: 60 * 5,
-        // Send OTP via email using EmailService
-        sendVerificationOTP: async ({ email, otp, type }) => {
-          await emailService.sendAuthOtpEmail({
-            to: email,
-            otp,
-            type,
-          });
+        sendVerificationOTP: ({ email, otp, type }) => {
+          eventEmitter?.emit('auth.email.otp', { to: email, otp, type });
+          return Promise.resolve();
         },
       }),
       magicLink({
         // Magic link will expire after 10 minutes
         expiresIn: 60 * 10,
-        // Send magic link via email using EmailService
-        sendMagicLink: async ({ email, url }) => {
-          await emailService.sendAuthMagicLinkEmail({
-            to: email,
-            url,
-          });
+        sendMagicLink: ({ email, url }) => {
+          eventEmitter?.emit('auth.email.magic-link', { to: email, url });
+          return Promise.resolve();
         },
       }),
     ],
@@ -159,13 +150,4 @@ export const auth = createAuth({
       },
     },
   },
-  // Note: Email service is mocked here since the CLI runs outside NestJS
-  emailService: {
-    sendAuthOtpEmail: () => {
-      return Promise.resolve();
-    },
-    sendAuthMagicLinkEmail: () => {
-      return Promise.resolve();
-    },
-  } as unknown as EmailService,
 });
