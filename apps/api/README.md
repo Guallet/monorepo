@@ -76,6 +76,34 @@ pnpm db:migrate     # apply migrations
 
 ---
 
+## Admin scripts 🛠️
+
+Utility scripts live in `apps/api/scripts/` and are run with `ts-node` directly against the database — no server startup required.
+
+### `set-user-role` — promote or demote a user
+
+Sets the `roles` field on a user record. Useful for granting the first user admin access after a fresh deployment.
+
+**Valid roles:** `admin`, `beta` (or `""` to clear all roles)
+
+```bash
+# From apps/api — by email
+pnpm script:set-role -- --email user@example.com --role admin
+
+# By user ID
+pnpm script:set-role -- --id <user-id> --role admin
+
+# Grant beta access
+pnpm script:set-role -- --email user@example.com --role beta
+
+# Clear all roles
+pnpm script:set-role -- --email user@example.com --role ""
+```
+
+The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`, `DATABASE_NAME`). Make sure the env file is populated before running.
+
+---
+
 ## How it works — architecture overview 🧭
 - Entry point: `src/main.ts` — configures Express, CORS, middleware and Swagger (`/docs`).
 - Configuration: `src/configuration.ts` + `ConfigModule` with Joi validation.
