@@ -70,36 +70,30 @@ export function SavingGoalDetailScreen({
     );
   }
 
-  // Calculate progress and status
-  const currentAmount = 0; // This will be calculated from linked accounts in the future
-  const progress =
-    savingGoal.target_amount > 0
-      ? (currentAmount / savingGoal.target_amount) * 100
-      : 0;
-  const isCompleted = progress >= 100;
-  const remainingAmount = Math.max(0, savingGoal.target_amount - currentAmount);
+  const {
+    currentAmount,
+    targetAmount,
+    progressPercentage,
+    isCompleted,
+    isOverdue,
+    remainingAmount,
+    daysRemaining,
+    targetDate,
+  } = savingGoal;
 
-  const targetDate = new Date(savingGoal.target_date);
-  const today = new Date();
-  const isOverdue = targetDate < today && !isCompleted;
-  const daysRemaining = Math.ceil(
-    (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  );
+  const monthlySavingsNeeded =
+    remainingAmount / Math.max(1, (daysRemaining ?? 0) / 30);
 
   // Get linked account details
   const linkedAccounts = accounts.filter((account) =>
     savingGoal.accounts.includes(account.id),
   );
 
-  // Calculate monthly savings needed (simplified calculation)
-  const monthsRemaining = Math.max(1, daysRemaining / 30);
-  const monthlySavingsNeeded = remainingAmount / monthsRemaining;
-
   const getProgressColor = () => {
     if (isCompleted) return 'green';
     if (isOverdue) return 'red';
-    if (progress > 75) return 'blue';
-    if (progress > 50) return 'yellow';
+    if (progressPercentage > 75) return 'blue';
+    if (progressPercentage > 50) return 'yellow';
     return 'gray';
   };
 
@@ -116,7 +110,7 @@ export function SavingGoalDetailScreen({
           Overdue
         </Badge>
       );
-    if (daysRemaining <= 30)
+    if (daysRemaining !== null && daysRemaining <= 30)
       return (
         <Badge color="orange" size="lg">
           Due Soon
@@ -167,12 +161,12 @@ export function SavingGoalDetailScreen({
                 Progress Overview
               </Text>
               <Text size="sm" c="dimmed">
-                {progress.toFixed(1)}% complete
+                {progressPercentage.toFixed(1)}% complete
               </Text>
             </Group>
 
             <Progress
-              value={progress}
+              value={progressPercentage}
               size="xl"
               color={getProgressColor()}
               striped={!isCompleted}
@@ -207,7 +201,7 @@ export function SavingGoalDetailScreen({
                   </Group>
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
-                      amount: savingGoal.target_amount,
+                      amount: targetAmount,
                       currencyCode: 'GBP',
                     }).format()}
                   </Text>
@@ -223,7 +217,9 @@ export function SavingGoalDetailScreen({
                     </Text>
                   </Group>
                   <Text size="lg" fw={600}>
-                    {targetDate.toLocaleDateString()}
+                    {targetDate
+                      ? new Date(targetDate).toLocaleDateString()
+                      : 'No target date'}
                   </Text>
                 </Stack>
               </Grid.Col>
@@ -271,7 +267,7 @@ export function SavingGoalDetailScreen({
               Insights
             </Text>
 
-            {!isCompleted && daysRemaining > 0 && (
+            {!isCompleted && daysRemaining !== null && daysRemaining > 0 && (
               <Group>
                 <IconInfoCircle size={16} />
                 <Text size="sm">
@@ -287,12 +283,14 @@ export function SavingGoalDetailScreen({
               </Group>
             )}
 
-            <Group>
-              <IconCalendar size={16} />
-              <Text size="sm">
-                {getDaysRemainingText(daysRemaining, isCompleted)}
-              </Text>
-            </Group>
+            {daysRemaining !== null && (
+              <Group>
+                <IconCalendar size={16} />
+                <Text size="sm">
+                  {getDaysRemainingText(daysRemaining, isCompleted)}
+                </Text>
+              </Group>
+            )}
           </Stack>
         </Card>
 
