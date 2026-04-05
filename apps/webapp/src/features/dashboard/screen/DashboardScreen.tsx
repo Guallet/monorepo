@@ -1,19 +1,27 @@
-import { TotalWealthWidget } from "@/features/dashboard/components/widgets/TotalWealthWidget";
-import { Grid, Container, Popover, Button, Title, Group, Box } from "@mantine/core";
-import { useState } from "react";
-import { DatePicker } from "@mantine/dates";
-import dayjs from "dayjs";
-import quarterOfYear from "dayjs/plugin/quarterOfYear";
-import { MonthlyInAndOutWidget } from "../components/widgets/MonthlyInAndOutWidget";
-import { TransactionsInboxWidget } from "../components/widgets/TransactionsInboxWidget";
-import { BudgetsWidget } from "../components/widgets/BudgetsWidget";
-import { TotalIncomeExpenditureWidget } from "../components/widgets/TotalIncomeExpenditureWidget";
-import { CurrentAccountsWidget } from "../components/widgets/CurrentAccountsWidget";
-import { SavingGoalsWidget } from "../components/widgets/SavingGoalsWidget";
-import { ExpenditureByCategoryWidget } from "../components/widgets/ExpenditureByCategoryWidget";
-import { LastTransactionsWidget } from "../components/widgets/LastTransactionsWidget";
-import { BalanceTrendWidget } from "../components/widgets/BalanceTrendWidget";
-import { IconCalendar } from "@tabler/icons-react";
+import { TotalWealthWidget } from '@/features/dashboard/components/widgets/TotalWealthWidget';
+import {
+  Grid,
+  Container,
+  Popover,
+  Button,
+  Title,
+  Group,
+  Box,
+} from '@mantine/core';
+import { useState } from 'react';
+import { DatePicker } from '@mantine/dates';
+import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+import { MonthlyInAndOutWidget } from '../components/widgets/MonthlyInAndOutWidget';
+import { TransactionsInboxWidget } from '../components/widgets/TransactionsInboxWidget';
+import { BudgetsWidget } from '../components/widgets/BudgetsWidget';
+import { TotalIncomeExpenditureWidget } from '../components/widgets/TotalIncomeExpenditureWidget';
+import { CurrentAccountsWidget } from '../components/widgets/CurrentAccountsWidget';
+import { SavingGoalsWidget } from '../components/widgets/SavingGoalsWidget';
+import { ExpenditureByCategoryWidget } from '../components/widgets/ExpenditureByCategoryWidget';
+import { LastTransactionsWidget } from '../components/widgets/LastTransactionsWidget';
+import { BalanceTrendWidget } from '../components/widgets/BalanceTrendWidget';
+import { IconCalendar } from '@tabler/icons-react';
 
 dayjs.extend(quarterOfYear);
 
@@ -52,17 +60,17 @@ export function DashboardScreen() {
                     const start = dayjs(dateRange[0]);
                     const end = dayjs(dateRange[1]);
                     const now = dayjs();
-                    const firstOfMonth = now.startOf("month");
-                    const lastOfMonth = now.endOf("month");
+                    const firstOfMonth = now.startOf('month');
+                    const lastOfMonth = now.endOf('month');
                     if (
-                      start.isSame(firstOfMonth, "day") &&
-                      end.isSame(lastOfMonth, "day")
+                      start.isSame(firstOfMonth, 'day') &&
+                      end.isSame(lastOfMonth, 'day')
                     ) {
-                      return now.format("MMMM YYYY");
+                      return now.format('MMMM YYYY');
                     }
-                    return `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`;
+                    return `${start.format('DD MMM')} - ${end.format('DD MMM YYYY')}`;
                   }
-                  return "Select Date Range";
+                  return 'Select Date Range';
                 })()}
               </Button>
             </Popover.Target>
@@ -77,15 +85,15 @@ export function DashboardScreen() {
         </Group>
       </Box>
 
-      <Grid gutter="lg">
+      <Grid gap="lg">
         {/* Row 1: Key metrics */}
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
           <TotalWealthWidget />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <TotalIncomeExpenditureWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
+          <TotalIncomeExpenditureWidget
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
@@ -97,23 +105,20 @@ export function DashboardScreen() {
 
         {/* Row 2: Charts */}
         <Grid.Col span={{ base: 12, lg: 6 }}>
-          <MonthlyInAndOutWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
+          <MonthlyInAndOutWidget
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, lg: 6 }}>
-          <BalanceTrendWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
-          />
+          <BalanceTrendWidget startDate={dateRange[0]} endDate={dateRange[1]} />
         </Grid.Col>
 
         {/* Row 3: Categories and Budgets */}
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <ExpenditureByCategoryWidget 
-            startDate={dateRange[0]} 
-            endDate={dateRange[1]} 
+          <ExpenditureByCategoryWidget
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6 }}>
@@ -144,85 +149,85 @@ function DateFilter({ onChange }: Readonly<DatePickerProps>) {
       onChange={onChange}
       presets={[
         {
-          value: [today.format("YYYY-MM-DD"), today.format("YYYY-MM-DD")],
-          label: "Today",
+          value: [today.format('YYYY-MM-DD'), today.format('YYYY-MM-DD')],
+          label: 'Today',
         },
         {
           value: [
-            today.subtract(1, "day").format("YYYY-MM-DD"),
-            today.subtract(1, "day").format("YYYY-MM-DD"),
+            today.subtract(1, 'day').format('YYYY-MM-DD'),
+            today.subtract(1, 'day').format('YYYY-MM-DD'),
           ],
-          label: "Yesterday",
+          label: 'Yesterday',
         },
         {
           value: [
-            today.subtract(6, "day").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.subtract(6, 'day').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Last 7 days",
+          label: 'Last 7 days',
         },
         {
           value: [
-            today.subtract(29, "day").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.subtract(29, 'day').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Last 30 days",
+          label: 'Last 30 days',
         },
         {
           value: [
-            today.subtract(364, "day").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.subtract(364, 'day').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Last 365 days",
+          label: 'Last 365 days',
         },
         {
           value: [
-            today.subtract(1, "month").startOf("month").format("YYYY-MM-DD"),
-            today.subtract(1, "month").endOf("month").format("YYYY-MM-DD"),
+            today.subtract(1, 'month').startOf('month').format('YYYY-MM-DD'),
+            today.subtract(1, 'month').endOf('month').format('YYYY-MM-DD'),
           ],
-          label: "Last month",
+          label: 'Last month',
         },
         {
           value: [
-            today.subtract(11, "month").startOf("month").format("YYYY-MM-DD"),
-            today.endOf("month").format("YYYY-MM-DD"),
+            today.subtract(11, 'month').startOf('month').format('YYYY-MM-DD'),
+            today.endOf('month').format('YYYY-MM-DD'),
           ],
-          label: "Last 12 months",
+          label: 'Last 12 months',
         },
         {
           value: [
-            today.subtract(1, "year").startOf("year").format("YYYY-MM-DD"),
-            today.subtract(1, "year").endOf("year").format("YYYY-MM-DD"),
+            today.subtract(1, 'year').startOf('year').format('YYYY-MM-DD'),
+            today.subtract(1, 'year').endOf('year').format('YYYY-MM-DD'),
           ],
-          label: "Last year",
+          label: 'Last year',
         },
         {
           value: [
-            today.startOf("week").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.startOf('week').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Week to date",
+          label: 'Week to date',
         },
         {
           value: [
-            today.startOf("month").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.startOf('month').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Month to date",
+          label: 'Month to date',
         },
         {
           value: [
-            today.startOf("quarter").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.startOf('quarter').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Quarter to date",
+          label: 'Quarter to date',
         },
         {
           value: [
-            today.startOf("year").format("YYYY-MM-DD"),
-            today.format("YYYY-MM-DD"),
+            today.startOf('year').format('YYYY-MM-DD'),
+            today.format('YYYY-MM-DD'),
           ],
-          label: "Year to date",
+          label: 'Year to date',
         },
       ]}
     />

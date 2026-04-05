@@ -31,15 +31,12 @@ export function SavingGoalsWidget() {
       0,
     );
 
-    const targetAmount = Number(goal.target_amount);
-    const progress =
-      targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
     const currency = goalAccounts[0]?.currency || 'GBP';
 
     return {
       ...goal,
       currentAmount,
-      progress: Math.min(progress, 100),
+      progressPercentage: Math.min(goal.progressPercentage, 100),
       currency,
     };
   });
@@ -53,14 +50,14 @@ export function SavingGoalsWidget() {
       ) : goalsWithProgress.length > 0 ? (
         <Stack gap="md">
           {goalsWithProgress.map((goal) => {
-            const isComplete = goal.progress >= 100;
+            const isComplete = goal.progressPercentage >= 100;
             const current = Money.fromCurrencyCode({
               currencyCode: goal.currency,
               amount: goal.currentAmount,
             });
             const target = Money.fromCurrencyCode({
               currencyCode: goal.currency,
-              amount: Number(goal.target_amount),
+              amount: Number(goal.targetAmount),
             });
 
             return (
@@ -88,7 +85,7 @@ export function SavingGoalsWidget() {
                     </Text>
                   </Group>
                   <Text size="xs" c={isComplete ? 'teal' : 'dimmed'} fw={500}>
-                    {goal.progress.toFixed(0)}%
+                    {goal.progressPercentage.toFixed(0)}%
                   </Text>
                 </Group>
 
@@ -99,7 +96,7 @@ export function SavingGoalsWidget() {
                 )}
 
                 <Progress
-                  value={goal.progress}
+                  value={goal.progressPercentage}
                   color={isComplete ? 'teal' : 'blue'}
                   size="lg"
                   radius="xl"
@@ -116,9 +113,9 @@ export function SavingGoalsWidget() {
                   </Text>
                 </Group>
 
-                {goal.target_date && (
+                {goal.targetDate && (
                   <Text size="xs" c="dimmed" mt="xs">
-                    Target: {new Date(goal.target_date).toLocaleDateString()}
+                    Target: {new Date(goal.targetDate).toLocaleDateString()}
                   </Text>
                 )}
               </Box>

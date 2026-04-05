@@ -2,10 +2,16 @@ export type SavingGoalDto = {
   id: string;
   name: string;
   description?: string;
-  target_amount: number;
-  target_date: string;
+  targetAmount: number;
+  targetDate: string;
   accounts: string[];
   priority?: number;
+  currentAmount: number;
+  progressPercentage: number;
+  isCompleted: boolean;
+  isOverdue: boolean;
+  remainingAmount: number;
+  daysRemaining: number | null;
 };
 
 export type CreateSavingGoalRequest = {

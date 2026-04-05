@@ -45,7 +45,7 @@
     "react": "workspace:*",
     "react-dom": "workspace:*",
     "react-i18next": "^15.6.0",
-    "recharts": "^3.1.0",
+    "recharts": "^3.2.1",
     "zod": "^4.0.5",
     "zustand": "^5.0.11"
   },
@@ -56,7 +56,7 @@
     "@types/papaparse": "^5.3.16",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
-    "@vitejs/plugin-react": "^5.1.2",
+    "@vitejs/plugin-react": "^6.0.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "baseline-browser-mapping": "^2.9.15",
     "eslint": "workspace:*",

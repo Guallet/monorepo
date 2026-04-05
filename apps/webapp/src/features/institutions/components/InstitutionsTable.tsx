@@ -81,7 +81,14 @@ const InstitutionsTable: React.FC<InstitutionsTableProps> = ({
   const countries = useMemo(
     () =>
       Array.from(
-        new Set(institutions.flatMap((institution) => institution.countries)),
+        new Set(
+          institutions
+            .flatMap((institution) => institution.countries)
+            .filter(
+              (country): country is string =>
+                typeof country === 'string' && country.trim() !== '',
+            ),
+        ),
       ).sort((a, b) => a.localeCompare(b)),
     [institutions],
   );
