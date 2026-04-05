@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@guallet/theme": "workspace:*",
-    "@mantine/colors-generator": "^8.2.7",
+    "@mantine/colors-generator": "8.3.18",
     "@mantine/core": "workspace:*",
     "@mantine/hooks": "workspace:*",
     "@tabler/icons-react": "workspace:*",
