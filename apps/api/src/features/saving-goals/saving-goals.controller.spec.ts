@@ -60,6 +60,7 @@ describe('SavingGoalsController', () => {
         description: createDto.description,
         target_amount: createDto.targetAmount,
         target_date: createDto.targetDate,
+        accounts: createDto.accounts,
       };
 
       mockSavingGoalsService.create.mockResolvedValue(mockGoal);
@@ -67,6 +68,13 @@ describe('SavingGoalsController', () => {
       const result = await controller.create(mockUser, createDto);
 
       expect(result).toBeDefined();
+      expect(result.id).toBe('goal-1');
+      expect(result.name).toBe(createDto.name);
+      expect(result.targetAmount).toBe(createDto.targetAmount);
+      expect(result.currentAmount).toBe(0);
+      expect(result.progressPercentage).toBe(0);
+      expect(result.isCompleted).toBe(false);
+      expect(result.remainingAmount).toBe(createDto.targetAmount);
       expect(mockSavingGoalsService.create).toHaveBeenCalledWith({
         userId: mockUser.id,
         request: createDto,
@@ -82,12 +90,14 @@ describe('SavingGoalsController', () => {
           userId: mockUser.id,
           name: 'Vacation',
           target_amount: 5000,
+          accounts: [],
         },
         {
           id: 'goal-2',
           userId: mockUser.id,
           name: 'Emergency Fund',
           target_amount: 10000,
+          accounts: [],
         },
       ];
 
@@ -123,6 +133,7 @@ describe('SavingGoalsController', () => {
         userId: mockUser.id,
         name: 'Vacation',
         target_amount: 5000,
+        accounts: [],
       };
 
       mockSavingGoalsService.findByIdForUser.mockResolvedValue(mockGoal);
@@ -130,6 +141,8 @@ describe('SavingGoalsController', () => {
       const result = await controller.findOne(mockUser, goalId);
 
       expect(result).toBeDefined();
+      expect(result.id).toBe(goalId);
+      expect(result.progressPercentage).toBe(0);
       expect(mockSavingGoalsService.findByIdForUser).toHaveBeenCalledWith({
         id: goalId,
         userId: mockUser.id,
@@ -150,6 +163,7 @@ describe('SavingGoalsController', () => {
         userId: mockUser.id,
         name: updateDto.name,
         target_amount: updateDto.targetAmount,
+        accounts: [],
       };
 
       mockSavingGoalsService.update.mockResolvedValue(mockGoal);
@@ -172,6 +186,8 @@ describe('SavingGoalsController', () => {
         id: goalId,
         userId: mockUser.id,
         name: 'Vacation',
+        target_amount: 1000,
+        accounts: [],
       };
 
       mockSavingGoalsService.remove.mockResolvedValue(mockGoal);

@@ -30,17 +30,7 @@ export function SavingGoalRow({
   onEdit,
   onDelete,
 }: Readonly<SavingGoalRowProps>) {
-  // For now, we'll calculate progress as 0% since we don't have current amount
-  // This should be calculated based on the actual amount saved from linked accounts
-  const currentAmount = 0; // This will be calculated from linked accounts in the future
-  const progress =
-    savingGoal.target_amount > 0
-      ? (currentAmount / savingGoal.target_amount) * 100
-      : 0;
-  const isCompleted = progress >= 100;
-
-  const targetDate = new Date(savingGoal.target_date);
-  const isOverdue = targetDate < new Date() && !isCompleted;
+  const { currentAmount, targetAmount, progressPercentage, isCompleted, isOverdue, targetDate } = savingGoal;
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't trigger card click when clicking action buttons
@@ -126,14 +116,14 @@ export function SavingGoalRow({
             }).format()}{' '}
             /{' '}
             {Money.fromCurrencyCode({
-              amount: savingGoal.target_amount,
+              amount: targetAmount,
               currencyCode: 'GBP',
             }).format()}
           </Text>
         </Group>
 
         <Progress
-          value={progress}
+          value={progressPercentage}
           size="lg"
           color={getProgressColor(isCompleted, isOverdue)}
           striped={!isCompleted}
@@ -142,10 +132,12 @@ export function SavingGoalRow({
 
         <Group justify="space-between">
           <Text size="xs" c="dimmed">
-            {progress.toFixed(1)}% complete
+            {progressPercentage.toFixed(1)}% complete
           </Text>
           <Text size="xs" c="dimmed">
-            Target: {targetDate.toLocaleDateString()}
+            {targetDate
+              ? `Target: ${new Date(targetDate).toLocaleDateString()}`
+              : 'No target date'}
           </Text>
         </Group>
 

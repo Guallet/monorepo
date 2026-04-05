@@ -33,13 +33,65 @@ export class SavingGoalDto {
   })
   accounts: string[];
 
+  @ApiProperty({
+    description: 'The current amount saved (sum of linked account balances)',
+  })
+  currentAmount: number;
+
+  @ApiProperty({
+    description: 'Progress towards the goal as a percentage (0-100)',
+  })
+  progressPercentage: number;
+
+  @ApiProperty({ description: 'Whether the goal has been reached' })
+  isCompleted: boolean;
+
+  @ApiProperty({
+    description:
+      'Whether the target date has passed without completing the goal',
+  })
+  isOverdue: boolean;
+
+  @ApiProperty({ description: 'Amount still needed to reach the target' })
+  remainingAmount: number;
+
+  @ApiProperty({
+    description:
+      'Days remaining until the target date, negative if overdue, null if no target date',
+    nullable: true,
+  })
+  daysRemaining: number | null;
+
   static fromDomain(domain: SavingGoal): SavingGoalDto {
+    // TODO: compute currentAmount from linked account balances
+    const currentAmount = 0;
+    const targetAmount = domain.target_amount;
+    const progressPercentage =
+      targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
+    const isCompleted = progressPercentage >= 100;
+
+    const now = new Date();
+    const targetDate = domain.target_date ?? null;
+    const isOverdue = targetDate !== null && targetDate < now && !isCompleted;
+    const daysRemaining = targetDate
+      ? Math.ceil(
+          (targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+        )
+      : null;
+
     return {
       id: domain.id,
       name: domain.name,
-      targetAmount: domain.target_amount,
+      description: domain.description,
+      targetAmount: targetAmount,
       targetDate: domain.target_date,
       accounts: domain.accounts,
+      currentAmount: currentAmount,
+      progressPercentage: progressPercentage,
+      isCompleted: isCompleted,
+      isOverdue: isOverdue,
+      remainingAmount: Math.max(0, targetAmount - currentAmount),
+      daysRemaining: daysRemaining,
     };
   }
 }
