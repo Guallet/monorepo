@@ -16,6 +16,7 @@ const callbackSearchSchema = z.object({
   error: z.string().optional(),
   error_code: z.string().optional(),
   error_description: z.string().optional(),
+  redirectTo: z.string().catch('/dashboard'),
 });
 
 export const Route = createFileRoute('/login/callback')({
@@ -25,10 +26,8 @@ export const Route = createFileRoute('/login/callback')({
 
 function LoginCallbackPage() {
   const { isLoading: isAuthLoading, isAuthenticated } = useAuth();
-  const { error, error_code, error_description } = Route.useSearch();
-
-  // Read the destination redirection from the localstorage
-  const redirectTo = localStorage.getItem('redirectDestination') ?? 'dashboard';
+  const { error, error_code, error_description, redirectTo } =
+    Route.useSearch();
 
   if (isAuthLoading) {
     return (
@@ -62,7 +61,7 @@ function LoginCallbackPage() {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" search={{ redirect: `${redirectTo}` }} />;
+    return <Navigate to="/login" search={{ redirect: redirectTo }} />;
   }
 
   return <Navigate from="/" to={redirectTo} />;

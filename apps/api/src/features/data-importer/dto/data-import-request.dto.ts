@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsEnum,
+  IsOptional,
+  IsArray,
+  IsObject,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import {
   CsvRowData,
   FieldMappings,
   AccountMapping,
@@ -16,6 +24,7 @@ export class DataImportRequestDto {
     enum: ['csv', 'ofe', 'json'],
     example: 'csv',
   })
+  @IsEnum(['csv', 'ofe', 'json'] as const)
   format: ImportFormat;
 
   // ── CSV-specific fields ─────────────────────────────────────────────
@@ -23,21 +32,29 @@ export class DataImportRequestDto {
   @ApiPropertyOptional({
     description: 'Rows of parsed CSV data (required for format=csv)',
   })
+  @IsOptional()
+  @IsArray()
   csvData?: CsvRowData[];
 
   @ApiPropertyOptional({
     description: 'Field mappings for CSV columns (required for format=csv)',
   })
+  @IsOptional()
+  @IsObject()
   fieldMappings?: FieldMappings;
 
   @ApiPropertyOptional({
     description: 'Account mappings (required for format=csv)',
   })
+  @IsOptional()
+  @IsObject()
   accountMappings?: Record<string, AccountMapping>;
 
   @ApiPropertyOptional({
     description: 'Category mappings (required for format=csv)',
   })
+  @IsOptional()
+  @IsObject()
   categoryMappings?: Record<string, CategoryMapping>;
 
   // ── OFE-specific fields ─────────────────────────────────────────────
@@ -45,6 +62,9 @@ export class DataImportRequestDto {
   @ApiPropertyOptional({
     description: 'Raw OFE/OFX file content (required for format=ofe)',
   })
+  @IsOptional()
+  @IsString()
+  @MaxLength(4 * 1024 * 1024) // 4 MB max
   ofeContent?: string;
 
   // ── JSON-specific fields ────────────────────────────────────────────
@@ -52,5 +72,8 @@ export class DataImportRequestDto {
   @ApiPropertyOptional({
     description: 'Raw JSON content string (required for format=json)',
   })
+  @IsOptional()
+  @IsString()
+  @MaxLength(8 * 1024 * 1024) // 8 MB max
   jsonContent?: string;
 }

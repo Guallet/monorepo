@@ -1,22 +1,42 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsDateString,
+  IsArray,
+  IsUUID,
+  IsInt,
+  Min,
+  ArrayNotEmpty,
+} from 'class-validator';
 
 export class CreateSavingGoalDto {
   @ApiProperty({ description: 'The name of the saving goal' })
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
   @ApiProperty({
     description: 'The description of the saving goal',
     nullable: true,
   })
+  @IsOptional()
+  @IsString()
   description?: string;
 
   @ApiProperty({ description: 'The target amount to be saved' })
+  @IsNumber()
+  @Min(0)
   targetAmount: number;
 
   @ApiProperty({
     description: 'The target date for the saving goal',
     nullable: true,
   })
+  @IsOptional()
+  @IsDateString()
   targetDate?: Date;
 
   @ApiProperty({
@@ -24,10 +44,16 @@ export class CreateSavingGoalDto {
       'The priority of the saving goal (higher number means higher priority)',
     nullable: true,
   })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
   priority?: number;
 
   @ApiProperty({
     description: 'The account ids used as source for the saving goal',
   })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID(undefined, { each: true })
   accounts: string[];
 }

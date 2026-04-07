@@ -10,10 +10,13 @@ import 'react-native-get-random-values';
 export class LargeSecureStore {
   private async _encrypt(key: string, value: string) {
     const encryptionKey = crypto.getRandomValues(new Uint8Array(256 / 8));
+    // Generate a random 16-byte counter (IV) per encryption to prevent counter
+    // reuse if the same key were ever used more than once.
+    const iv = crypto.getRandomValues(new Uint8Array(16));
 
     const cipher = new aesjs.ModeOfOperation.ctr(
       encryptionKey,
-      new aesjs.Counter(1),
+      new aesjs.Counter(iv),
     );
     const encryptedBytes = cipher.encrypt(aesjs.utils.utf8.toBytes(value));
 
@@ -22,7 +25,12 @@ export class LargeSecureStore {
       aesjs.utils.hex.fromBytes(encryptionKey),
     );
 
-    return aesjs.utils.hex.fromBytes(encryptedBytes);
+    // Store iv:ciphertext so decrypt can reconstruct the same counter
+    return (
+      aesjs.utils.hex.fromBytes(iv) +
+      ':' +
+      aesjs.utils.hex.fromBytes(encryptedBytes)
+    );
   }
 
   private async _decrypt(key: string, value: string) {
@@ -31,11 +39,25 @@ export class LargeSecureStore {
       return encryptionKeyHex;
     }
 
+    const separatorIndex = value.indexOf(':');
+    if (separatorIndex === -1) {
+      // Legacy value encrypted without IV — fall back to counter=1
+      const cipher = new aesjs.ModeOfOperation.ctr(
+        aesjs.utils.hex.toBytes(encryptionKeyHex),
+        new aesjs.Counter(1),
+      );
+      const decryptedBytes = cipher.decrypt(aesjs.utils.hex.toBytes(value));
+      return aesjs.utils.utf8.fromBytes(decryptedBytes);
+    }
+
+    const ivHex = value.slice(0, separatorIndex);
+    const encryptedHex = value.slice(separatorIndex + 1);
+
     const cipher = new aesjs.ModeOfOperation.ctr(
       aesjs.utils.hex.toBytes(encryptionKeyHex),
-      new aesjs.Counter(1),
+      new aesjs.Counter(aesjs.utils.hex.toBytes(ivHex)),
     );
-    const decryptedBytes = cipher.decrypt(aesjs.utils.hex.toBytes(value));
+    const decryptedBytes = cipher.decrypt(aesjs.utils.hex.toBytes(encryptedHex));
 
     return aesjs.utils.utf8.fromBytes(decryptedBytes);
   }

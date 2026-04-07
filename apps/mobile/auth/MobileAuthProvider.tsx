@@ -5,10 +5,6 @@ import { BuildConfig } from '@/BuildConfig';
 import { setAnalyticsDeviceId } from '@/utils/analytics';
 import { AuthProvider as BaseAuthProvider } from '@guallet/auth';
 
-console.log(
-  'Configuring Google Signin with webClientId:',
-  BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
-);
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'],
   webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,

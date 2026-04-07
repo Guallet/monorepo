@@ -23,8 +23,6 @@ import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
 } from 'src/features/nordigen/dto/nordigen-account.dto';
-import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'src/configuration';
 
 @ApiTags('Open Banking')
 @Controller('openbanking')
@@ -32,7 +30,6 @@ export class ObConnectionsController {
   private readonly logger = new Logger(ObConnectionsController.name);
 
   constructor(
-    private readonly configService: ConfigService<AppConfig>,
     private readonly openbankingService: OpenbankingService,
     private readonly nordigenService: NordigenService,
     private readonly institutionService: InstitutionsService,
@@ -91,21 +88,11 @@ export class ObConnectionsController {
       });
       return deleteResult;
     } catch (error) {
-      // Log the error but don't throw it
       this.logger.error(
         `Couldn't delete requisition ${id} from Nordigen`,
         error,
       );
-      if (
-        this.configService.get('environment', { infer: true }) === 'development'
-      ) {
-        throw new InternalServerErrorException({
-          error: error,
-          connection_id: id,
-        });
-      } else {
-        throw new InternalServerErrorException();
-      }
+      throw new InternalServerErrorException();
     }
   }
 
@@ -170,11 +157,8 @@ export class ObConnectionsController {
 
       return remoteAccounts;
     } catch (error) {
-      this.logger.error("Couldn't get accounts");
-      throw new InternalServerErrorException({
-        error: error,
-        requisition: requisition,
-      });
+      this.logger.error("Couldn't get accounts", error);
+      throw new InternalServerErrorException();
     }
   }
 
