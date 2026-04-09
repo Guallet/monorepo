@@ -37,7 +37,7 @@ export class CreateSavingGoalDto {
   })
   @IsOptional()
   @IsDateString()
-  targetDate?: Date;
+  targetDate?: string;
 
   @ApiProperty({
     description:

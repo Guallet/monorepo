@@ -30,7 +30,7 @@ export class CreateTransactionDto {
   currency?: string;
 
   @IsDateString()
-  date: Date;
+  date: string;
 
   @IsOptional()
   @IsUUID()
