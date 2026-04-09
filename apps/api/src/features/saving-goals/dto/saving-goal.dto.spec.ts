@@ -61,7 +61,9 @@ describe('SavingGoalDto.fromDomain', () => {
 
   describe('daysRemaining', () => {
     it('is null when no target date is set', () => {
-      const dto = SavingGoalDto.fromDomain(makeGoal({ target_date: undefined }));
+      const dto = SavingGoalDto.fromDomain(
+        makeGoal({ target_date: undefined }),
+      );
       expect(dto.daysRemaining).toBeNull();
     });
 
@@ -82,7 +84,9 @@ describe('SavingGoalDto.fromDomain', () => {
 
   describe('isOverdue', () => {
     it('is false when no target date is set', () => {
-      const dto = SavingGoalDto.fromDomain(makeGoal({ target_date: undefined }));
+      const dto = SavingGoalDto.fromDomain(
+        makeGoal({ target_date: undefined }),
+      );
       expect(dto.isOverdue).toBe(false);
     });
 
