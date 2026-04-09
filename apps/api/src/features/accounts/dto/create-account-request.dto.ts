@@ -8,19 +8,15 @@ import {
   IsEnum,
   IsUUID,
   Length,
-  IsObject,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { plainToInstance, Transform } from 'class-transformer';
 import { AccountSource } from '../entities/accountSource.model';
-import {
-  CreditCardProperties,
-  CurrentAccountProperties,
-  LoanAccountProperties,
-  MortgageAccountProperties,
-  SavingAccountProperties,
-} from '../entities/account-properties.model';
 import { AccountType } from '../entities/accountType.model';
+import {
+  AccountPropertiesDto,
+  PROPERTIES_DTO_MAP,
+} from './account-properties.dto';
 
 export class CreateAccountRequest {
   @ApiProperty({ description: 'The name of the account' })
@@ -91,16 +87,15 @@ export class CreateAccountRequest {
     nullable: true,
   })
   @IsOptional()
-  @IsObject()
   @ValidateNested()
-  @Type(() => Object)
-  properties?:
-    | CurrentAccountProperties
-    | CreditCardProperties
-    | SavingAccountProperties
-    | MortgageAccountProperties
-    | LoanAccountProperties
-    | null;
+  @Transform(
+    ({ value, obj }: { value: unknown; obj: CreateAccountRequest }) => {
+      if (value == null) return value;
+      const Cls = PROPERTIES_DTO_MAP[obj.type];
+      return Cls ? plainToInstance(Cls, value) : value;
+    },
+  )
+  properties?: AccountPropertiesDto | null;
 
   constructor(props: CreateAccountRequest) {
     Object.assign(this, props);
