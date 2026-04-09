@@ -11,7 +11,7 @@ export function CategoryAvatar({
 }: Readonly<CategoryAvatarProps>) {
   return (
     <Avatar color="blue" radius="sm" {...props}>
-      <CategoryIcon categoryId={categoryId} />
+      <CategoryIcon categoryId={categoryId} iconColor="white" />
     </Avatar>
   );
 }

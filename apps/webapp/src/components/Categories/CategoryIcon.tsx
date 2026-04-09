@@ -3,24 +3,33 @@ import { GualletIcon, GualletIconName } from "../GualletIcon/GualletIcon";
 
 interface CategoryIconProps {
   categoryId: string | null;
+  iconColor?: string;
 }
 
 const defaultIconName: GualletIconName = "IconQuestionMark";
 
-export function CategoryIcon({ categoryId }: CategoryIconProps) {
+export function CategoryIcon({ categoryId, iconColor }: CategoryIconProps) {
   return categoryId === null ? (
-    <GualletIcon iconName={defaultIconName} />
+    <GualletIcon iconName={defaultIconName} iconColor={iconColor} />
   ) : (
-    <GualletCategoryIcon categoryId={categoryId} />
+    <GualletCategoryIcon categoryId={categoryId} iconColor={iconColor} />
   );
 }
 
-function GualletCategoryIcon({ categoryId }: Readonly<{ categoryId: string }>) {
+function GualletCategoryIcon({
+  categoryId,
+  iconColor,
+}: Readonly<{ categoryId: string; iconColor?: string }>) {
   const { category } = useCategory(categoryId);
 
   if (category) {
-    return <GualletIcon iconName={category.icon} iconColor={category.colour} />;
+    return (
+      <GualletIcon
+        iconName={category.icon}
+        iconColor={iconColor ?? category.colour}
+      />
+    );
   } else {
-    return <GualletIcon iconName={defaultIconName} />;
+    return <GualletIcon iconName={defaultIconName} iconColor={iconColor} />;
   }
 }

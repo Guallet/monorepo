@@ -37,8 +37,11 @@ function ItemHeader({
     <Center>
       <Accordion.Control>
         <Group>
-          <Avatar color="blue" radius="sm">
-            <GualletIcon iconName={iconName} iconColor={iconColour} />
+          <Avatar
+            style={{ backgroundColor: iconColour }}
+            radius="sm"
+          >
+            <GualletIcon iconName={iconName} iconColor="white" />
           </Avatar>
           <Text>{title}</Text>
         </Group>
@@ -118,7 +121,7 @@ function SubCategoryItem({ category, onEdit, onDelete }: SubCategoryItemProps) {
 
   return (
     <Group style={{ marginLeft: "4em" }}>
-      <CategoryAvatar categoryId={category.id} />
+      <CategoryAvatar categoryId={category.id} color={category.colour} />
       <Text>{category.name}</Text>
       <Menu
         opened={menuOpened}
