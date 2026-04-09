@@ -26,7 +26,9 @@ export class SavingGoalsService {
       name: request.name,
       description: request.description,
       target_amount: request.targetAmount,
-      target_date: request.targetDate,
+      target_date: request.targetDate
+        ? new Date(request.targetDate)
+        : undefined,
       accounts: request.accounts,
       priority: request.priority,
     });

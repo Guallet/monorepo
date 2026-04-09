@@ -82,15 +82,11 @@ export function LoginScreen({
   });
 
   const handlePasswordSubmit = async (data: PasswordFormData) => {
-    console.log('Logging in with email and password');
-    setPasswordError(null); // Clear previous error
+    setPasswordError(null);
     const { success, error } = await login(data.email, data.password);
     if (error) {
-      console.error('Error logging in', error);
       setPasswordError(error.message || 'Login failed');
     } else if (success) {
-      console.log('Success login');
-      console.log('Redirecting to', redirect || '/dashboard');
       // navigation({
       //   to: redirect || '/dashboard',
       //   replace: true,
@@ -99,12 +95,10 @@ export function LoginScreen({
   };
 
   const handleMagicLinkSubmit = async (data: MagicLinkFormData) => {
-    console.log('Sending magic link to', data.email);
     try {
       setLocalMagicLinkError(null);
       const { success, error } = await getOtpCode(data.email);
       if (error) {
-        console.error('Error sending the OTP', error);
         setLocalMagicLinkError(error.message || 'Failed to send magic link');
       } else if (success) {
         navigation({
@@ -123,15 +117,7 @@ export function LoginScreen({
   };
 
   const handleGoogleLogin = async () => {
-    console.log('Logging in with Google');
-    // Save the redirect url in the local storage to be able to restore it later
-    localStorage.setItem('redirectDestination', redirect);
-    const result = await loginWithProvider('google', oAuthRedirectionTo);
-    if (!result.success) {
-      console.error('Error logging in with Google', result.error);
-    } else {
-      console.log('Success login with Google');
-    }
+    await loginWithProvider('google', oAuthRedirectionTo);
   };
 
   const toggleLoginType = () => {

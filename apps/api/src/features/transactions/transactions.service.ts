@@ -196,16 +196,16 @@ export class TransactionsService {
       dto.accountId,
     );
 
-    const entity = {
+    const entity = this.repository.create({
       accountId: dto.accountId,
       description: dto.description,
       notes: dto.notes,
       amount: dto.amount,
       // Get the current currency of the account in case the user doesn't provide one
       currency: dto.currency ?? account.currency,
-      date: dto.date,
+      date: new Date(dto.date),
       categoryId: dto.categoryId,
-    };
+    });
     return this.repository.save(entity);
   }
 
@@ -249,7 +249,7 @@ export class TransactionsService {
       description: dto.description ?? dbEntity.description,
       notes: dto.notes ?? dbEntity.notes,
       currency: dto.currency ?? dbEntity.currency,
-      date: dto.date ?? dbEntity.date,
+      date: dto.date ? new Date(dto.date) : dbEntity.date,
       categoryId: dto.categoryId ?? dbEntity.categoryId,
     };
     return await this.repository.save(updatedEntity);

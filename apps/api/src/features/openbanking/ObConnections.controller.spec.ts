@@ -4,7 +4,6 @@ import { OpenbankingService } from './openbanking.service';
 import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { InstitutionsService } from 'src/features/institutions/institutions.service';
 import { UserPrincipal } from 'src/auth/user-principal';
-import { ConfigService } from '@nestjs/config';
 import {
   InternalServerErrorException,
   NotFoundException,
@@ -35,10 +34,6 @@ describe('ObConnectionsController', () => {
     findOneByNordigenId: jest.fn(),
   };
 
-  const mockConfigService = {
-    get: jest.fn(),
-  };
-
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
     'test@example.com',
@@ -60,10 +55,6 @@ describe('ObConnectionsController', () => {
         {
           provide: InstitutionsService,
           useValue: mockInstitutionsService,
-        },
-        {
-          provide: ConfigService,
-          useValue: mockConfigService,
         },
       ],
     }).compile();
@@ -198,10 +189,9 @@ describe('ObConnectionsController', () => {
       );
     });
 
-    it('should throw InternalServerErrorException on error in development', async () => {
+    it('should throw InternalServerErrorException on error', async () => {
       const connectionId = 'conn-1';
 
-      mockConfigService.get.mockReturnValue('development');
       mockNordigenService.deleteRequisition.mockRejectedValue(
         new Error('API Error'),
       );
