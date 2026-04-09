@@ -41,7 +41,9 @@ describe('TransactionsService', () => {
 
     // Clear all mocks before each test
     jest.clearAllMocks();
-    mockTransactionRepository.create.mockImplementation((value) => value);
+    mockTransactionRepository.create.mockImplementation(
+      (value: Partial<Transaction>) => value,
+    );
   });
 
   it('should be defined', () => {
