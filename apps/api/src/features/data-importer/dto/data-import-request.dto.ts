@@ -64,7 +64,7 @@ export class DataImportRequestDto {
   })
   @IsOptional()
   @IsString()
-  @MaxLength(4 * 1024 * 1024) // 4 MB max
+  @MaxLength(10 * 1024 * 1024) // 10 MB max
   ofeContent?: string;
 
   // ── JSON-specific fields ────────────────────────────────────────────
@@ -74,6 +74,6 @@ export class DataImportRequestDto {
   })
   @IsOptional()
   @IsString()
-  @MaxLength(8 * 1024 * 1024) // 8 MB max
+  @MaxLength(10 * 1024 * 1024) // 10 MB max
   jsonContent?: string;
 }
