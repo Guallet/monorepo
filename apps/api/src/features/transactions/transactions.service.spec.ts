@@ -10,6 +10,7 @@ describe('TransactionsService', () => {
   let service: TransactionsService;
 
   const mockTransactionRepository = {
+    create: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
@@ -40,6 +41,7 @@ describe('TransactionsService', () => {
 
     // Clear all mocks before each test
     jest.clearAllMocks();
+    mockTransactionRepository.create.mockImplementation((value) => value);
   });
 
   it('should be defined', () => {
@@ -250,7 +252,7 @@ describe('TransactionsService', () => {
           description: 'Test transaction',
           amount: 100,
           currency: 'GBP',
-          date: new Date('2024-01-15'),
+          date: new Date('2024-01-15').toISOString(),
           categoryId: 'category-1',
           notes: 'Test notes',
         },
@@ -264,6 +266,7 @@ describe('TransactionsService', () => {
       const mockTransaction: Partial<Transaction> = {
         id: 'trans-1',
         ...createData.dto,
+        date: new Date(createData.dto.date),
       };
 
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
@@ -287,7 +290,7 @@ describe('TransactionsService', () => {
           description: 'Test transaction',
           amount: 100,
           currency: undefined,
-          date: new Date('2024-01-15'),
+          date: new Date('2024-01-15').toISOString(),
           categoryId: 'category-1',
           notes: undefined,
         },

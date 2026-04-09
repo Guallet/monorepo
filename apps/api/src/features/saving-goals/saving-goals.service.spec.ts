@@ -45,7 +45,7 @@ describe('SavingGoalsService', () => {
           name: 'Vacation',
           description: 'Summer vacation fund',
           targetAmount: 5000,
-          targetDate: new Date('2025-06-01'),
+          targetDate: new Date('2025-06-01').toDateString(),
           accounts: ['account-1'],
           priority: 1,
         },

@@ -48,7 +48,7 @@ describe('SavingGoalsController', () => {
         name: 'Vacation',
         description: 'Summer vacation fund',
         targetAmount: 5000,
-        targetDate: new Date('2025-06-01'),
+        targetDate: new Date('2025-06-01').toISOString(),
         accounts: ['account-1'],
         priority: 1,
       };
@@ -59,7 +59,7 @@ describe('SavingGoalsController', () => {
         name: createDto.name,
         description: createDto.description,
         target_amount: createDto.targetAmount,
-        target_date: createDto.targetDate,
+        target_date: new Date(createDto.targetDate),
         accounts: createDto.accounts,
       };
 

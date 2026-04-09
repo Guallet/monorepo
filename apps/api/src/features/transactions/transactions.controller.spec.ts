@@ -206,7 +206,7 @@ describe('TransactionsController', () => {
         description: 'New transaction',
         amount: 100,
         currency: 'GBP',
-        date: new Date('2024-01-15'),
+        date: new Date('2024-01-15').toISOString(),
         categoryId: 'category-1',
         notes: 'Test notes',
       };
@@ -214,6 +214,7 @@ describe('TransactionsController', () => {
       const mockTransaction: Partial<Transaction> = {
         id: 'trans-1',
         ...createDto,
+        date: new Date(createDto.date),
       };
 
       mockTransactionsService.create.mockResolvedValue(mockTransaction);
