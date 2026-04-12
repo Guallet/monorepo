@@ -5,7 +5,7 @@ nixPkgs = ["nodejs_22", "pnpm"]
 cmds = ["pnpm install --frozen-lockfile"]
 
 [phases.build]
-cmds = ["pnpm build"]
+cmds = ["pnpm --filter webapp build"]
 
 [variables]
-NIXPACKS_STATIC_DIRECTORY = "dist"
+NIXPACKS_STATIC_DIRECTORY = "apps/webapp/dist"
