@@ -36,7 +36,7 @@ import { AppController } from './app.controller';
     // CONFIG AND ENVIRONMENT
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
+      // envFilePath: ['.env.local', '.env'],
       load: [configuration],
       cache: true,
       validationSchema: Joi.object({
