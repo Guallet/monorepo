@@ -298,7 +298,7 @@ function RouteComponent() {
                         link: '',
                       },
                     )}
-                    <Anchor href="https://guallet.io">
+                    <Anchor href="/terms" target="_blank" rel="noopener noreferrer">
                       {t(
                         'screens.register.form.termsLink',
                         'CNF: terms and policy',
