@@ -79,10 +79,10 @@ export function LandingScreen() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  const heroAnimation = useScrollAnimation(0);
-  const featuresAnimation = useScrollAnimation();
-  const openSourceAnimation = useScrollAnimation();
-  const ctaAnimation = useScrollAnimation();
+  const { ref: heroRef, isVisible: heroIsVisible } = useScrollAnimation(0);
+  const { ref: featuresRef, isVisible: featuresIsVisible } = useScrollAnimation();
+  const { ref: openSourceRef, isVisible: openSourceIsVisible } = useScrollAnimation();
+  const { ref: ctaRef, isVisible: ctaIsVisible } = useScrollAnimation();
 
   const features = [
     {
@@ -158,7 +158,7 @@ export function LandingScreen() {
       <Box style={{ flex: 1 }}>
         {/* ─── Hero ─────────────────────────────────────────── */}
         <Box
-          ref={heroAnimation.ref}
+          ref={heroRef}
           style={{
             background:
               'linear-gradient(135deg, var(--mantine-color-blue-6) 0%, var(--mantine-color-violet-6) 100%)',
@@ -167,7 +167,7 @@ export function LandingScreen() {
           }}
         >
           <Container size="md">
-            <Stack align="center" gap="xl" style={animationStyle(heroAnimation.isVisible)}>
+            <Stack align="center" gap="xl" style={animationStyle(heroIsVisible)}>
               <Badge
                 size="lg"
                 variant="white"
@@ -243,11 +243,11 @@ export function LandingScreen() {
         {/* ─── Features ─────────────────────────────────────── */}
         <Box py={80}>
           <Container size="xl">
-            <div ref={featuresAnimation.ref}>
+            <div ref={featuresRef}>
               <Stack
                 align="center"
                 mb={48}
-                style={animationStyle(featuresAnimation.isVisible)}
+                style={animationStyle(featuresIsVisible)}
               >
                 <Badge variant="light" size="lg">
                   {t('landing.features.badge', 'Features')}
@@ -285,8 +285,8 @@ export function LandingScreen() {
           style={{ background: 'var(--mantine-color-dark-filled)' }}
         >
           <Container size="md">
-            <div ref={openSourceAnimation.ref}>
-              <Stack align="center" gap="xl" style={animationStyle(openSourceAnimation.isVisible)}>
+            <div ref={openSourceRef}>
+              <Stack align="center" gap="xl" style={animationStyle(openSourceIsVisible)}>
                 <ThemeIcon size={72} radius="xl" variant="light" color="gray">
                   <IconBrandGithub size={40} />
                 </ThemeIcon>
@@ -325,9 +325,9 @@ export function LandingScreen() {
         {!isAuthenticated && (
           <Box py={80}>
             <Container size="sm">
-              <div ref={ctaAnimation.ref}>
+              <div ref={ctaRef}>
                 <Center>
-                  <Stack align="center" gap="lg" style={animationStyle(ctaAnimation.isVisible)}>
+                  <Stack align="center" gap="lg" style={animationStyle(ctaIsVisible)}>
                     <Title order={2} ta="center">
                       {t('landing.cta.title', 'Ready to take control of your finances?')}
                     </Title>
