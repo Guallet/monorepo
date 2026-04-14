@@ -1,9 +1,6 @@
-import { Navigate, createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { LandingScreen } from '@/features/landing/screens/LandingScreen';
 
-export const Route = createLazyFileRoute("/")({
-  component: () => Index(),
+export const Route = createLazyFileRoute('/')({
+  component: LandingScreen,
 });
-
-function Index() {
-  return <Navigate to="/dashboard" replace={true} />;
-}

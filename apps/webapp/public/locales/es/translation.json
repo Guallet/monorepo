@@ -773,5 +773,177 @@
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "signInLink": "Iniciar sesión"
     }
+  },
+  "landing": {
+    "header": {
+      "login": "Iniciar sesión",
+      "createAccount": "Crear cuenta",
+      "goToDashboard": "Ir al panel"
+    },
+    "footer": {
+      "terms": "Términos y condiciones",
+      "privacy": "Política de privacidad",
+      "github": "GitHub",
+      "copyright": "© {{year}} Guallet. Código abierto."
+    },
+    "hero": {
+      "openSourceBadge": "Código abierto",
+      "title": "Tus finanzas,\nbajo control.",
+      "subtitle": "Guallet es un gestor de finanzas personales gratuito y de código abierto que te ayuda a controlar tus gastos, establecer presupuestos y alcanzar tus metas financieras.",
+      "getStarted": "Comenzar — es gratis",
+      "login": "Iniciar sesión",
+      "goToDashboard": "Ir al panel"
+    },
+    "features": {
+      "badge": "Características",
+      "title": "Todo lo que necesitas para gestionar tu dinero",
+      "subtitle": "Un conjunto completo de herramientas de finanzas personales — gratuito, de código abierto y diseñado para la privacidad.",
+      "accounts": {
+        "title": "Gestión de cuentas",
+        "description": "Controla todas tus cuentas bancarias, tarjetas de crédito y ahorros en un solo lugar."
+      },
+      "transactions": {
+        "title": "Transacciones",
+        "description": "Registra y categoriza cada transacción automáticamente. Importa desde CSV o conecta tu banco."
+      },
+      "reports": {
+        "title": "Informes e información",
+        "description": "Visualiza tus patrones de gasto y flujo de caja con hermosos gráficos."
+      },
+      "budgets": {
+        "title": "Presupuestos",
+        "description": "Establece presupuestos por categoría y recibe alertas cuando te acerques a tus límites."
+      },
+      "subscriptions": {
+        "title": "Suscripciones",
+        "description": "No te pierdas ningún pago recurrente. Controla todas tus suscripciones en un solo lugar."
+      },
+      "savingGoals": {
+        "title": "Metas de ahorro",
+        "description": "Establece y sigue metas de ahorro — desde un fondo de emergencia hasta tus próximas vacaciones."
+      },
+      "privacy": {
+        "title": "Privacidad primero",
+        "description": "Tus datos financieros son tuyos. Aloja Guallet tú mismo o usa nuestra nube segura."
+      },
+      "openBanking": {
+        "title": "Banca abierta",
+        "description": "Conéctate a miles de bancos e instituciones a través de APIs de banca abierta."
+      }
+    },
+    "openSource": {
+      "title": "Código abierto y gratuito para siempre",
+      "description": "Guallet es 100% de código abierto bajo la licencia Apache 2.0. Inspecciona el código, contribuye con mejoras o alójalo en tu propia infraestructura.",
+      "viewOnGithub": "Ver en GitHub"
+    },
+    "cta": {
+      "title": "¿Listo para tomar el control de tus finanzas?",
+      "subtitle": "Únete a miles de personas que confían en Guallet para gestionar su dinero.",
+      "button": "Crea tu cuenta gratuita"
+    }
+  },
+  "terms": {
+    "title": "Términos y condiciones",
+    "lastUpdated": "Última actualización: abril de 2025",
+    "intro": "Por favor, lee estos Términos y condiciones detenidamente antes de usar Guallet. Al acceder o usar el servicio, aceptas estar sujeto a estos términos.",
+    "section1": {
+      "title": "1. Aceptación de los términos",
+      "body": "Al crear una cuenta o usar Guallet, confirmas que tienes al menos 18 años y capacidad legal para aceptar estos términos. Si no estás de acuerdo, por favor no uses el servicio."
+    },
+    "section2": {
+      "title": "2. Licencia de código abierto",
+      "body": "Guallet se publica como software de código abierto bajo la Licencia Apache 2.0. Puedes inspeccionar, bifurcar y contribuir al código fuente en GitHub.",
+      "githubLink": "Ver código fuente en GitHub"
+    },
+    "section3": {
+      "title": "3. Tu cuenta",
+      "body": "Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades que ocurran bajo tu cuenta. Notifícanos inmediatamente sobre cualquier uso no autorizado."
+    },
+    "section4": {
+      "title": "4. Uso aceptable",
+      "intro": "Aceptas no:",
+      "item1": "Usar el servicio para ningún propósito ilegal",
+      "item2": "Intentar obtener acceso no autorizado a ninguna parte del servicio",
+      "item3": "Transmitir código dañino o malicioso",
+      "item4": "Violar ninguna ley o regulación aplicable"
+    },
+    "section5": {
+      "title": "5. Datos y privacidad",
+      "body": "El uso del servicio también se rige por nuestra Política de privacidad, que se incorpora a estos Términos por referencia."
+    },
+    "section6": {
+      "title": "6. Exclusión de garantías",
+      "body": "Guallet se proporciona \"tal cual\" sin garantías de ningún tipo. No garantizamos la exactitud, integridad o disponibilidad del servicio en ningún momento."
+    },
+    "section7": {
+      "title": "7. Limitación de responsabilidad",
+      "body": "En la máxima medida permitida por la ley, Guallet y sus colaboradores no serán responsables de daños indirectos, incidentales, especiales, consecuentes o punitivos que surjan del uso del servicio."
+    },
+    "section8": {
+      "title": "8. Cambios en los términos",
+      "body": "Podemos actualizar estos Términos de vez en cuando. El uso continuado del servicio después de que los cambios entren en vigor constituye la aceptación de los Términos revisados."
+    },
+    "section9": {
+      "title": "9. Contacto",
+      "body": "Si tienes alguna pregunta sobre estos Términos, por favor abre un problema en nuestro repositorio de GitHub.",
+      "githubLink": "Abrir un problema en GitHub"
+    }
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "lastUpdated": "Última actualización: abril de 2025",
+    "intro": "Esta Política de privacidad describe cómo Guallet recopila, usa y protege tu información personal cuando usas nuestro servicio.",
+    "section1": {
+      "title": "1. Información que recopilamos",
+      "intro": "Recopilamos los siguientes tipos de información:",
+      "accountData": "Datos de cuenta: ",
+      "accountDataDesc": "Nombre, dirección de correo electrónico y contraseña (almacenada como hash seguro).",
+      "financialData": "Datos financieros: ",
+      "financialDataDesc": "Saldos de cuentas, transacciones, presupuestos y otros registros financieros que decidas ingresar.",
+      "usageData": "Datos de uso: ",
+      "usageDataDesc": "Análisis básicos como visitas a páginas y uso de funciones para ayudarnos a mejorar el producto."
+    },
+    "section2": {
+      "title": "2. Cómo usamos tu información",
+      "item1": "Para proporcionar y mantener el servicio",
+      "item2": "Para autenticarte y mantener tu cuenta segura",
+      "item3": "Para enviarte notificaciones importantes sobre tu cuenta",
+      "item4": "Para mejorar y desarrollar nuevas funciones basadas en patrones de uso anónimos"
+    },
+    "section3": {
+      "title": "3. Almacenamiento y seguridad de datos",
+      "body": "Tus datos se almacenan en bases de datos cifradas. Implementamos medidas de seguridad estándar de la industria, incluyendo HTTPS, hash de contraseñas y auditorías de seguridad periódicas. Ningún sistema es 100% seguro; por favor, también toma medidas para proteger tus propias credenciales de cuenta."
+    },
+    "section4": {
+      "title": "4. Compartición de datos",
+      "body": "No vendemos, intercambiamos ni alquilamos tus datos personales a terceros. Podemos compartir datos anónimos y agregados con fines analíticos. Cuando conectas tu banco a través de la banca abierta, tus datos se transmiten directamente a través de la API segura del proveedor; nunca almacenamos tus credenciales bancarias."
+    },
+    "section5": {
+      "title": "5. Cookies",
+      "body": "Usamos cookies esenciales para mantenerte conectado y recordar tus preferencias. No usamos cookies de publicidad ni de seguimiento."
+    },
+    "section6": {
+      "title": "6. Tus derechos",
+      "intro": "Tienes derecho a:",
+      "item1": "Acceder a los datos personales que tenemos sobre ti",
+      "item2": "Corregir datos inexactos",
+      "item3": "Solicitar la eliminación de tu cuenta y los datos asociados",
+      "item4": "Exportar tus datos en un formato legible por máquina",
+      "contact": "Para ejercer cualquiera de estos derechos, por favor abre un problema en nuestro repositorio de GitHub."
+    },
+    "section7": {
+      "title": "7. Código abierto",
+      "body": "Guallet es de código abierto. Puedes revisar exactamente cómo se manejan tus datos leyendo el código fuente en GitHub.",
+      "githubLink": "Ver código fuente en GitHub"
+    },
+    "section8": {
+      "title": "8. Cambios en esta política",
+      "body": "Podemos actualizar esta Política de privacidad periódicamente. Te notificaremos de cambios significativos por correo electrónico o mediante un aviso prominente en la aplicación."
+    },
+    "section9": {
+      "title": "9. Contáctanos",
+      "body": "Si tienes preguntas o inquietudes sobre esta Política de privacidad, por favor contáctanos abriendo un problema en GitHub.",
+      "githubLink": "Abrir un problema en GitHub"
+    }
   }
 }

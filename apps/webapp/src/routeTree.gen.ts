@@ -11,6 +11,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as AppRouteImport } from './routes/_app'
@@ -77,6 +79,16 @@ const UserdeletedLazyRoute = UserdeletedLazyRouteImport.update({
   path: '/userdeleted',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/userdeleted.lazy').then((d) => d.Route))
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -370,6 +382,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/privacy': typeof PrivacyRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
@@ -428,6 +442,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/privacy': typeof PrivacyRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
@@ -488,6 +504,8 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/privacy': typeof PrivacyRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
@@ -548,6 +566,8 @@ export interface FileRouteTypes {
     | '/'
     | '/logout'
     | '/register'
+    | '/terms'
+    | '/privacy'
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
@@ -606,6 +626,8 @@ export interface FileRouteTypes {
     | '/'
     | '/logout'
     | '/register'
+    | '/terms'
+    | '/privacy'
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
@@ -665,6 +687,8 @@ export interface FileRouteTypes {
     | '/_app'
     | '/logout'
     | '/register'
+    | '/terms'
+    | '/privacy'
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
@@ -725,6 +749,8 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LogoutRoute: typeof LogoutRoute
   RegisterRoute: typeof RegisterRoute
+  TermsRoute: typeof TermsRoute
+  PrivacyRoute: typeof PrivacyRoute
   UserdeletedLazyRoute: typeof UserdeletedLazyRoute
   LoginCallbackRoute: typeof LoginCallbackRoute
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
@@ -747,6 +773,20 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logout': {
@@ -1244,6 +1284,8 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LogoutRoute: LogoutRoute,
   RegisterRoute: RegisterRoute,
+  TermsRoute: TermsRoute,
+  PrivacyRoute: PrivacyRoute,
   UserdeletedLazyRoute: UserdeletedLazyRoute,
   LoginCallbackRoute: LoginCallbackRoute,
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,
