@@ -775,29 +775,18 @@
     }
   },
   "landing": {
-    "header": {
-      "login": "Iniciar sesión",
-      "createAccount": "Crear cuenta",
-      "goToDashboard": "Ir al panel"
-    },
     "footer": {
       "terms": "Términos y condiciones",
       "privacy": "Política de privacidad",
       "github": "GitHub",
       "copyright": "© {{year}} Guallet. Código abierto."
     },
-    "hero": {
-      "openSourceBadge": "Código abierto",
-      "title": "Tus finanzas,\nbajo control.",
-      "subtitle": "Guallet es un gestor de finanzas personales gratuito y de código abierto que te ayuda a controlar tus gastos, establecer presupuestos y alcanzar tus metas financieras.",
-      "getStarted": "Comenzar — es gratis",
+    "header": {
+      "goToDashboard": "Ir al panel",
       "login": "Iniciar sesión",
-      "goToDashboard": "Ir al panel"
+      "createAccount": "Crear cuenta"
     },
     "features": {
-      "badge": "Características",
-      "title": "Todo lo que necesitas para gestionar tu dinero",
-      "subtitle": "Un conjunto completo de herramientas de finanzas personales — gratuito, de código abierto y diseñado para la privacidad.",
       "accounts": {
         "title": "Gestión de cuentas",
         "description": "Controla todas tus cuentas bancarias, tarjetas de crédito y ahorros en un solo lugar."
@@ -829,7 +818,18 @@
       "openBanking": {
         "title": "Banca abierta",
         "description": "Conéctate a miles de bancos e instituciones a través de APIs de banca abierta."
-      }
+      },
+      "badge": "Características",
+      "title": "Todo lo que necesitas para gestionar tu dinero",
+      "subtitle": "Un conjunto completo de herramientas de finanzas personales — gratuito, de código abierto y diseñado para la privacidad."
+    },
+    "hero": {
+      "openSourceBadge": "Código abierto",
+      "title": "Tus finanzas,\nbajo control.",
+      "subtitle": "Guallet es un gestor de finanzas personales gratuito y de código abierto que te ayuda a controlar tus gastos, establecer presupuestos y alcanzar tus metas financieras.",
+      "goToDashboard": "Ir al panel",
+      "getStarted": "Comenzar — es gratis",
+      "login": "Iniciar sesión"
     },
     "openSource": {
       "title": "Código abierto y gratuito para siempre",
@@ -840,53 +840,6 @@
       "title": "¿Listo para tomar el control de tus finanzas?",
       "subtitle": "Únete a miles de personas que confían en Guallet para gestionar su dinero.",
       "button": "Crea tu cuenta gratuita"
-    }
-  },
-  "terms": {
-    "title": "Términos y condiciones",
-    "lastUpdated": "Última actualización: abril de 2025",
-    "intro": "Por favor, lee estos Términos y condiciones detenidamente antes de usar Guallet. Al acceder o usar el servicio, aceptas estar sujeto a estos términos.",
-    "section1": {
-      "title": "1. Aceptación de los términos",
-      "body": "Al crear una cuenta o usar Guallet, confirmas que tienes al menos 18 años y capacidad legal para aceptar estos términos. Si no estás de acuerdo, por favor no uses el servicio."
-    },
-    "section2": {
-      "title": "2. Licencia de código abierto",
-      "body": "Guallet se publica como software de código abierto bajo la Licencia Apache 2.0. Puedes inspeccionar, bifurcar y contribuir al código fuente en GitHub.",
-      "githubLink": "Ver código fuente en GitHub"
-    },
-    "section3": {
-      "title": "3. Tu cuenta",
-      "body": "Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades que ocurran bajo tu cuenta. Notifícanos inmediatamente sobre cualquier uso no autorizado."
-    },
-    "section4": {
-      "title": "4. Uso aceptable",
-      "intro": "Aceptas no:",
-      "item1": "Usar el servicio para ningún propósito ilegal",
-      "item2": "Intentar obtener acceso no autorizado a ninguna parte del servicio",
-      "item3": "Transmitir código dañino o malicioso",
-      "item4": "Violar ninguna ley o regulación aplicable"
-    },
-    "section5": {
-      "title": "5. Datos y privacidad",
-      "body": "El uso del servicio también se rige por nuestra Política de privacidad, que se incorpora a estos Términos por referencia."
-    },
-    "section6": {
-      "title": "6. Exclusión de garantías",
-      "body": "Guallet se proporciona \"tal cual\" sin garantías de ningún tipo. No garantizamos la exactitud, integridad o disponibilidad del servicio en ningún momento."
-    },
-    "section7": {
-      "title": "7. Limitación de responsabilidad",
-      "body": "En la máxima medida permitida por la ley, Guallet y sus colaboradores no serán responsables de daños indirectos, incidentales, especiales, consecuentes o punitivos que surjan del uso del servicio."
-    },
-    "section8": {
-      "title": "8. Cambios en los términos",
-      "body": "Podemos actualizar estos Términos de vez en cuando. El uso continuado del servicio después de que los cambios entren en vigor constituye la aceptación de los Términos revisados."
-    },
-    "section9": {
-      "title": "9. Contacto",
-      "body": "Si tienes alguna pregunta sobre estos Términos, por favor abre un problema en nuestro repositorio de GitHub.",
-      "githubLink": "Abrir un problema en GitHub"
     }
   },
   "privacy": {
@@ -943,6 +896,53 @@
     "section9": {
       "title": "9. Contáctanos",
       "body": "Si tienes preguntas o inquietudes sobre esta Política de privacidad, por favor contáctanos abriendo un problema en GitHub.",
+      "githubLink": "Abrir un problema en GitHub"
+    }
+  },
+  "terms": {
+    "title": "Términos y condiciones",
+    "lastUpdated": "Última actualización: abril de 2025",
+    "intro": "Por favor, lee estos Términos y condiciones detenidamente antes de usar Guallet. Al acceder o usar el servicio, aceptas estar sujeto a estos términos.",
+    "section1": {
+      "title": "1. Aceptación de los términos",
+      "body": "Al crear una cuenta o usar Guallet, confirmas que tienes al menos 18 años y capacidad legal para aceptar estos términos. Si no estás de acuerdo, por favor no uses el servicio."
+    },
+    "section2": {
+      "title": "2. Licencia de código abierto",
+      "body": "Guallet se publica como software de código abierto bajo la Licencia Apache 2.0. Puedes inspeccionar, bifurcar y contribuir al código fuente en GitHub.",
+      "githubLink": "Ver código fuente en GitHub"
+    },
+    "section3": {
+      "title": "3. Tu cuenta",
+      "body": "Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades que ocurran bajo tu cuenta. Notifícanos inmediatamente sobre cualquier uso no autorizado."
+    },
+    "section4": {
+      "title": "4. Uso aceptable",
+      "intro": "Aceptas no:",
+      "item1": "Usar el servicio para ningún propósito ilegal",
+      "item2": "Intentar obtener acceso no autorizado a ninguna parte del servicio",
+      "item3": "Transmitir código dañino o malicioso",
+      "item4": "Violar ninguna ley o regulación aplicable"
+    },
+    "section5": {
+      "title": "5. Datos y privacidad",
+      "body": "El uso del servicio también se rige por nuestra Política de privacidad, que se incorpora a estos Términos por referencia."
+    },
+    "section6": {
+      "title": "6. Exclusión de garantías",
+      "body": "Guallet se proporciona \"tal cual\" sin garantías de ningún tipo. No garantizamos la exactitud, integridad o disponibilidad del servicio en ningún momento."
+    },
+    "section7": {
+      "title": "7. Limitación de responsabilidad",
+      "body": "En la máxima medida permitida por la ley, Guallet y sus colaboradores no serán responsables de daños indirectos, incidentales, especiales, consecuentes o punitivos que surjan del uso del servicio."
+    },
+    "section8": {
+      "title": "8. Cambios en los términos",
+      "body": "Podemos actualizar estos Términos de vez en cuando. El uso continuado del servicio después de que los cambios entren en vigor constituye la aceptación de los Términos revisados."
+    },
+    "section9": {
+      "title": "9. Contacto",
+      "body": "Si tienes alguna pregunta sobre estos Términos, por favor abre un problema en nuestro repositorio de GitHub.",
       "githubLink": "Abrir un problema en GitHub"
     }
   }

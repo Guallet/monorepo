@@ -11,8 +11,8 @@
         ".env*"
       ],
       "outputs": [
-        ".next/**",
-        "!.next/cache/**"
+        "dist/**",
+        "!dist/.vinxi/**"
       ]
     },
     "lint": {

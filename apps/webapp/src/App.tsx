@@ -22,10 +22,17 @@ import { AuthProvider } from '@guallet/auth';
 // Init i18n
 import i18next from './i18n/i18n';
 
-// Create a Query client
-const queryClient = new QueryClient();
+let browserQueryClient: QueryClient | undefined;
+
+function getQueryClient() {
+  browserQueryClient ??= new QueryClient();
+
+  return browserQueryClient;
+}
 
 export default function App() {
+  const queryClient = getQueryClient();
+
   return (
     <GualletThemeProvider>
       <DatesProvider
