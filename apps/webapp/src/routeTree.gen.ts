@@ -12,8 +12,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
@@ -84,14 +84,14 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LogoutRoute = LogoutRouteImport.update({
@@ -381,9 +381,9 @@ const AppCategoriesRulesIdEditRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/logout': typeof LogoutRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
-  '/privacy': typeof PrivacyRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
@@ -441,9 +441,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/logout': typeof LogoutRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
-  '/privacy': typeof PrivacyRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
@@ -503,9 +503,9 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/_app': typeof AppRouteWithChildren
   '/logout': typeof LogoutRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
-  '/privacy': typeof PrivacyRoute
   '/userdeleted': typeof UserdeletedLazyRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
@@ -565,9 +565,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/logout'
+    | '/privacy'
     | '/register'
     | '/terms'
-    | '/privacy'
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
@@ -625,9 +625,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/logout'
+    | '/privacy'
     | '/register'
     | '/terms'
-    | '/privacy'
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
@@ -686,9 +686,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/logout'
+    | '/privacy'
     | '/register'
     | '/terms'
-    | '/privacy'
     | '/userdeleted'
     | '/login/callback'
     | '/login/forgot-password'
@@ -748,9 +748,9 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AppRoute: typeof AppRouteWithChildren
   LogoutRoute: typeof LogoutRoute
+  PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   TermsRoute: typeof TermsRoute
-  PrivacyRoute: typeof PrivacyRoute
   UserdeletedLazyRoute: typeof UserdeletedLazyRoute
   LoginCallbackRoute: typeof LoginCallbackRoute
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
@@ -768,18 +768,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserdeletedLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/terms': {
       id: '/terms'
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -1283,9 +1283,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AppRoute: AppRouteWithChildren,
   LogoutRoute: LogoutRoute,
+  PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   TermsRoute: TermsRoute,
-  PrivacyRoute: PrivacyRoute,
   UserdeletedLazyRoute: UserdeletedLazyRoute,
   LoginCallbackRoute: LoginCallbackRoute,
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,

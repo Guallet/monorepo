@@ -1,38 +1,43 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 import {
   useConnectionMutations,
   useOpenBankingInstitutionsForCountry,
   useOpenBankingSupportedCountries,
-} from "@guallet/api-react";
+} from '@guallet/api-react';
 import {
   Autocomplete,
   AutocompleteProps,
   Text,
   Group,
   Stack,
-} from "@mantine/core";
-import { FlagEmoji } from "../components/FlagEmoji";
-import { ObInstitutionDto, OpenBankingCountryDto } from "@guallet/api-client";
-import { SearchableListView } from "@guallet/ui-react";
-import { ObInstitutionRow } from "../components/ObInstitutionRow";
-import { notifications } from "@mantine/notifications";
+} from '@mantine/core';
+import { useCallback } from 'react';
+import { FlagEmoji } from '../components/FlagEmoji';
+import { ObInstitutionDto, OpenBankingCountryDto } from '@guallet/api-client';
+import { SearchableListView } from '@guallet/ui-react';
+import { ObInstitutionRow } from '../components/ObInstitutionRow';
+import { notifications } from '@mantine/notifications';
 
 interface ConnectionCreateScreenProps {
   selectedCountryCode?: string;
   onCountryChange?: (country?: OpenBankingCountryDto) => void;
 }
 
-const renderAutocompleteOption: AutocompleteProps["renderOption"] = ({
+const renderAutocompleteOption: AutocompleteProps['renderOption'] = ({
   option,
-}) => (
-  <Group gap="sm">
-    <FlagEmoji countryCode={option.value} />
-    <Text size="sm">{option.label}</Text>
-    <Text size="xs" opacity={0.5}>
-      {option.value}
-    </Text>
-  </Group>
-);
+}) => {
+  const typedOption = option as { label: string; value: string };
+
+  return (
+    <Group gap="sm">
+      <FlagEmoji countryCode={typedOption.value} />
+      <Text size="sm">{typedOption.label}</Text>
+      <Text size="xs" opacity={0.5}>
+        {typedOption.value}
+      </Text>
+    </Group>
+  );
+};
 
 export function ConnectionCreateScreen({
   selectedCountryCode,
@@ -43,10 +48,53 @@ export function ConnectionCreateScreen({
     useOpenBankingInstitutionsForCountry(selectedCountryCode);
 
   const countrySelected = countries.find(
-    (country) => country.code === selectedCountryCode
+    (country) => country.code === selectedCountryCode,
   );
 
   const { createConnectionMutation } = useConnectionMutations();
+
+  const redirectOrigin =
+    globalThis.window === undefined ? '' : globalThis.window.location.origin;
+
+  const renderInstitutionRow = useCallback(
+    (institution: ObInstitutionDto) => (
+      <ObInstitutionRow
+        institution={institution}
+        onClick={() => {
+          if (!redirectOrigin) {
+            return;
+          }
+
+          createConnectionMutation.mutate(
+            {
+              request: {
+                institution_id: institution.id,
+                redirect_to: `${redirectOrigin}/connections/connect/callback`,
+              },
+            },
+            {
+              onSuccess: (data) => {
+                // Open the website to complete the connection
+                if (globalThis.window !== undefined) {
+                  globalThis.window.open(data.link, '_self');
+                }
+              },
+              onError: (error) => {
+                console.error('Error creating connection:', error);
+                notifications.show({
+                  title: 'Error',
+                  message:
+                    'There was an error creating the connection. Please try again.',
+                  color: 'red',
+                });
+              },
+            },
+          );
+        }}
+      />
+    ),
+    [createConnectionMutation, redirectOrigin],
+  );
 
   return (
     <BaseScreen>
@@ -83,36 +131,7 @@ export function ConnectionCreateScreen({
                 </Text>
               </Stack>
             }
-            itemTemplate={(institution: ObInstitutionDto) => (
-              <ObInstitutionRow
-                institution={institution}
-                onClick={() => {
-                  createConnectionMutation.mutate(
-                    {
-                      request: {
-                        institution_id: institution.id,
-                        redirect_to: `${window.location.origin}/connections/connect/callback`,
-                      },
-                    },
-                    {
-                      onSuccess: (data) => {
-                        // Open the website to complete the connection
-                        window.open(data.link, "_self");
-                      },
-                      onError: (error) => {
-                        console.error("Error creating connection:", error);
-                        notifications.show({
-                          title: "Error",
-                          message:
-                            "There was an error creating the connection. Please try again.",
-                          color: "red",
-                        });
-                      },
-                    }
-                  );
-                }}
-              />
-            )}
+            itemTemplate={renderInstitutionRow}
           />
         )}
       </Stack>

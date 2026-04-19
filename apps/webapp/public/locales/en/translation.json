@@ -769,29 +769,18 @@
     }
   },
   "landing": {
-    "header": {
-      "login": "Log in",
-      "createAccount": "Create account",
-      "goToDashboard": "Go to Dashboard"
-    },
     "footer": {
       "terms": "Terms & Conditions",
       "privacy": "Privacy Policy",
       "github": "GitHub",
       "copyright": "© {{year}} Guallet. Open source."
     },
-    "hero": {
-      "openSourceBadge": "Open Source",
-      "title": "Your finances,\nunder control.",
-      "subtitle": "Guallet is a free, open-source personal finance manager that helps you track spending, set budgets, and reach your financial goals.",
-      "getStarted": "Get started — it's free",
+    "header": {
+      "goToDashboard": "Go to Dashboard",
       "login": "Log in",
-      "goToDashboard": "Go to Dashboard"
+      "createAccount": "Create account"
     },
     "features": {
-      "badge": "Features",
-      "title": "Everything you need to manage your money",
-      "subtitle": "A complete personal finance toolkit — free, open source, and designed for privacy.",
       "accounts": {
         "title": "Account Management",
         "description": "Track all your bank accounts, credit cards, and savings in one place."
@@ -823,7 +812,18 @@
       "openBanking": {
         "title": "Open Banking",
         "description": "Connect to thousands of banks and institutions via open banking APIs."
-      }
+      },
+      "badge": "Features",
+      "title": "Everything you need to manage your money",
+      "subtitle": "A complete personal finance toolkit — free, open source, and designed for privacy."
+    },
+    "hero": {
+      "openSourceBadge": "Open Source",
+      "title": "Your finances,\nunder control.",
+      "subtitle": "Guallet is a free, open-source personal finance manager that helps you track spending, set budgets, and reach your financial goals.",
+      "goToDashboard": "Go to Dashboard",
+      "getStarted": "Get started — it's free",
+      "login": "Log in"
     },
     "openSource": {
       "title": "Open Source & Free Forever",
@@ -834,53 +834,6 @@
       "title": "Ready to take control of your finances?",
       "subtitle": "Join thousands of people who trust Guallet to manage their money.",
       "button": "Create your free account"
-    }
-  },
-  "terms": {
-    "title": "Terms and Conditions",
-    "lastUpdated": "Last updated: April 2025",
-    "intro": "Please read these Terms and Conditions carefully before using Guallet. By accessing or using the service you agree to be bound by these terms.",
-    "section1": {
-      "title": "1. Acceptance of Terms",
-      "body": "By creating an account or using Guallet you confirm that you are at least 18 years of age and have the legal capacity to enter into these terms. If you do not agree, please do not use the service."
-    },
-    "section2": {
-      "title": "2. Open Source Licence",
-      "body": "Guallet is released as open source software under the Apache 2.0 Licence. You may inspect, fork, and contribute to the source code on GitHub.",
-      "githubLink": "View source on GitHub"
-    },
-    "section3": {
-      "title": "3. Your Account",
-      "body": "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. Notify us immediately of any unauthorised use."
-    },
-    "section4": {
-      "title": "4. Acceptable Use",
-      "intro": "You agree not to:",
-      "item1": "Use the service for any unlawful purpose",
-      "item2": "Attempt to gain unauthorised access to any part of the service",
-      "item3": "Transmit any harmful or malicious code",
-      "item4": "Violate any applicable laws or regulations"
-    },
-    "section5": {
-      "title": "5. Data and Privacy",
-      "body": "Your use of the service is also governed by our Privacy Policy, which is incorporated into these Terms by reference."
-    },
-    "section6": {
-      "title": "6. Disclaimer of Warranties",
-      "body": "Guallet is provided \"as is\" without warranties of any kind. We do not guarantee the accuracy, completeness, or availability of the service at any given time."
-    },
-    "section7": {
-      "title": "7. Limitation of Liability",
-      "body": "To the maximum extent permitted by law, Guallet and its contributors shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service."
-    },
-    "section8": {
-      "title": "8. Changes to Terms",
-      "body": "We may update these Terms from time to time. Continued use of the service after changes become effective constitutes acceptance of the revised Terms."
-    },
-    "section9": {
-      "title": "9. Contact",
-      "body": "If you have any questions about these Terms please open an issue on our GitHub repository.",
-      "githubLink": "Open an issue on GitHub"
     }
   },
   "privacy": {
@@ -937,6 +890,53 @@
     "section9": {
       "title": "9. Contact Us",
       "body": "If you have questions or concerns about this Privacy Policy, please contact us by opening an issue on GitHub.",
+      "githubLink": "Open an issue on GitHub"
+    }
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "lastUpdated": "Last updated: April 2025",
+    "intro": "Please read these Terms and Conditions carefully before using Guallet. By accessing or using the service you agree to be bound by these terms.",
+    "section1": {
+      "title": "1. Acceptance of Terms",
+      "body": "By creating an account or using Guallet you confirm that you are at least 18 years of age and have the legal capacity to enter into these terms. If you do not agree, please do not use the service."
+    },
+    "section2": {
+      "title": "2. Open Source Licence",
+      "body": "Guallet is released as open source software under the Apache 2.0 Licence. You may inspect, fork, and contribute to the source code on GitHub.",
+      "githubLink": "View source on GitHub"
+    },
+    "section3": {
+      "title": "3. Your Account",
+      "body": "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. Notify us immediately of any unauthorised use."
+    },
+    "section4": {
+      "title": "4. Acceptable Use",
+      "intro": "You agree not to:",
+      "item1": "Use the service for any unlawful purpose",
+      "item2": "Attempt to gain unauthorised access to any part of the service",
+      "item3": "Transmit any harmful or malicious code",
+      "item4": "Violate any applicable laws or regulations"
+    },
+    "section5": {
+      "title": "5. Data and Privacy",
+      "body": "Your use of the service is also governed by our Privacy Policy, which is incorporated into these Terms by reference."
+    },
+    "section6": {
+      "title": "6. Disclaimer of Warranties",
+      "body": "Guallet is provided \"as is\" without warranties of any kind. We do not guarantee the accuracy, completeness, or availability of the service at any given time."
+    },
+    "section7": {
+      "title": "7. Limitation of Liability",
+      "body": "To the maximum extent permitted by law, Guallet and its contributors shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service."
+    },
+    "section8": {
+      "title": "8. Changes to Terms",
+      "body": "We may update these Terms from time to time. Continued use of the service after changes become effective constitutes acceptance of the revised Terms."
+    },
+    "section9": {
+      "title": "9. Contact",
+      "body": "If you have any questions about these Terms please open an issue on our GitHub repository.",
       "githubLink": "Open an issue on GitHub"
     }
   }

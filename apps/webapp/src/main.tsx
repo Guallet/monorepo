@@ -1,8 +1,8 @@
-import './utils/sentry';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import * as Sentry from '@sentry/react';
+import { initSentry } from './utils/sentry';
 import './index.css';
 
 // Original implementation
@@ -12,6 +12,8 @@ import './index.css';
 //   </React.StrictMode>
 // );
 // End Original implementation
+
+initSentry();
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container!, {
