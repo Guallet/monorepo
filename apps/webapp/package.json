@@ -13,11 +13,12 @@
     "i18n:extract": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "5.2.8",
     "@guallet/api-client": "workspace:*",
-    "@guallet/theme": "workspace:*",
     "@guallet/api-react": "workspace:*",
     "@guallet/auth": "workspace:*",
     "@guallet/money": "workspace:*",
+    "@guallet/theme": "workspace:*",
     "@guallet/ui-react": "workspace:*",
     "@mantine/charts": "workspace:*",
     "@mantine/core": "workspace:*",

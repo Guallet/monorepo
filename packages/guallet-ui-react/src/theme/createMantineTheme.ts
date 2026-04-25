@@ -6,6 +6,7 @@ export function createMantineGualletTheme(
   theme: GualletTheme,
 ): MantineThemeOverride {
   return createTheme({
+    fontFamily: 'Inter Variable, Inter, sans-serif',
     // primaryColor: 'primary',
     // colors: {
     //   primary: generateColors(theme.colors.primary),
