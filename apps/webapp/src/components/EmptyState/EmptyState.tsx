@@ -1,5 +1,5 @@
 import { useTheme } from '@guallet/ui-react';
-import { Box, Button, Card, Center, Group, Loader, SimpleGrid, Stack, Text } from '@mantine/core';
+import { Box, Button, Center, Group, Loader, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { ReactNode } from 'react';
 
 interface EmptyStateAction {
@@ -35,11 +35,11 @@ export function EmptyState({
 }: Readonly<EmptyStateProps>) {
   const { spacing } = useTheme();
   const hasTraits = traits && traits.length > 0;
-  const traitCols = !traits ? 1 : traits.length <= 2 ? traits.length : 3;
+  const traitCols = traits && traits.length >= 3 ? 3 : (traits?.length ?? 1);
 
   return (
     <Box maw={720} mx="auto" pt={spacing.xl} pb={spacing.xxl}>
-      <Card
+      <Paper
         withBorder
         shadow="sm"
         radius="lg"
@@ -52,8 +52,6 @@ export function EmptyState({
           p={spacing.xl}
           style={{
             textAlign: 'center',
-            background:
-              'radial-gradient(120% 100% at 50% 0%, var(--mantine-color-blue-0) 0%, var(--mantine-color-white) 60%)',
             borderBottom: hasTraits ? '1px solid var(--mantine-color-gray-2)' : undefined,
           }}
         >
@@ -113,7 +111,7 @@ export function EmptyState({
             ))}
           </SimpleGrid>
         )}
-      </Card>
+      </Paper>
     </Box>
   );
 }
