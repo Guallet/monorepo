@@ -124,35 +124,29 @@ export function SavingGoalDetailScreen({
   };
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={savingGoal.name}
+      actions={
+        <>
+          {onBack && (
+            <ActionIcon variant="subtle" size="lg" onClick={onBack}>
+              <IconArrowLeft size={20} />
+            </ActionIcon>
+          )}
+          {getStatusBadge()}
+          {onEdit && (
+            <Button
+              leftSection={<IconEdit size={16} />}
+              onClick={() => onEdit(savingGoal)}
+            >
+              Edit Goal
+            </Button>
+          )}
+        </>
+      }
+    >
       <Stack gap="lg">
-        {/* Header */}
-        <Group justify="space-between">
-          <Group>
-            {onBack && (
-              <ActionIcon variant="subtle" size="lg" onClick={onBack}>
-                <IconArrowLeft size={20} />
-              </ActionIcon>
-            )}
-            <IconPigMoney size={28} />
-            <Text size="xl" fw={700}>
-              {savingGoal.name}
-            </Text>
-          </Group>
-
-          <Group>
-            {getStatusBadge()}
-            {onEdit && (
-              <Button
-                leftSection={<IconEdit size={16} />}
-                onClick={() => onEdit(savingGoal)}
-              >
-                Edit Goal
-              </Button>
-            )}
-          </Group>
-        </Group>
-
         {/* Progress Overview */}
         <Card withBorder shadow="sm" radius="lg" p="lg">
           <Stack gap="md">

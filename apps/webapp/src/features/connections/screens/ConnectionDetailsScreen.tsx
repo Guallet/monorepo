@@ -19,7 +19,10 @@ export function ConnectionDetailsScreen({
     useOpenBankingAccountsForConnection(connectionId);
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t("screens.connections.details.title", "Connection")}
+    >
       <Stack>
         <ConnectionCard connectionId={connectionId} />
         <AppSection title="Accounts">

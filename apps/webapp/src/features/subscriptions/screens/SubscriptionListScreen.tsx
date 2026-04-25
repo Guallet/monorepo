@@ -276,27 +276,25 @@ export function SubscriptionListScreen() {
   }, [subscriptions]);
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.subscriptions.list.title')}
+      actions={
+        <Button
+          leftSection={<IconPlus size={16} />}
+          onClick={() => {
+            navigation({ to: '/subscriptions/new' });
+          }}
+        >
+          {t('screens.subscriptions.list.addButton.label')}
+        </Button>
+      }
+    >
       <Stack>
-        <Group justify="space-between">
-          <Stack gap={0}>
-            <Text size="xl" fw={700}>
-              {t('screens.subscriptions.list.title')}
-            </Text>
-            <Text c="dimmed" size="sm">
-              {t('screens.subscriptions.list.estimatedMonthly')}{' '}
-              {formatCurrency(totalMonthlyAmount, defaultCurrency)}
-            </Text>
-          </Stack>
-          <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={() => {
-              navigation({ to: '/subscriptions/new' });
-            }}
-          >
-            {t('screens.subscriptions.list.addButton.label')}
-          </Button>
-        </Group>
+        <Text c="dimmed" size="sm">
+          {t('screens.subscriptions.list.estimatedMonthly')}{' '}
+          {formatCurrency(totalMonthlyAmount, defaultCurrency)}
+        </Text>
 
         {subscriptions.length === 0 && !isLoading && (
           <Card withBorder shadow="sm" radius="md" padding="xl">

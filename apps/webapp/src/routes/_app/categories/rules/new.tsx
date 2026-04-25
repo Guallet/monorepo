@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Stack, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
 import { useFieldDefinitions, useRuleMutations } from '@guallet/api-react';
 import { useTranslation } from 'react-i18next';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 
 export const Route = createFileRoute('/_app/categories/rules/new')({
   component: NewRulePage,
@@ -61,8 +61,10 @@ function NewRulePage() {
   };
 
   return (
-    <Stack gap="md">
-      <Title order={2}>{t('screens.rules.create.title')}</Title>
+    <BaseScreen
+      isLoading={isSubmitting}
+      title={t('screens.rules.create.title')}
+    >
       <RuleForm
         fieldDefinitions={fieldDefinitions}
         onSubmit={handleSubmit}
@@ -70,6 +72,6 @@ function NewRulePage() {
         isSubmitting={isSubmitting}
         submitLabel={t('screens.rules.create.submitButton.label')}
       />
-    </Stack>
+    </BaseScreen>
   );
 }

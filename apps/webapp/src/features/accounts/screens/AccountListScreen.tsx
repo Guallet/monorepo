@@ -3,13 +3,13 @@ import { EmptyState } from '@/components/EmptyState/EmptyState';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccounts } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
-import { Card, Stack } from '@mantine/core';
+import { Button, Card, Stack } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccountRow } from '../components/AccountRow';
 import { AccountsEmptyState } from '../components/AccountsEmptyState';
-import { AccountsHeader } from '../components/AccountsHeader';
 import { AccountsListHeader } from '../components/AccountsListHeader';
 import { AddAccountCta } from '../components/AddAccountCta';
 import { NetWorthSummary } from '../components/NetWorthSummary';
@@ -62,17 +62,30 @@ export function AccountListScreen() {
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
-      <AccountsHeader
-        onAddNewAccount={goToAddManualAccount}
-        searchQuery={searchQuery}
-        onSearchQueryChanged={setSearchQuery}
-      />
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('feature.accounts.list.title', 'Accounts')}
+      search={{
+        value: searchQuery,
+        onChange: setSearchQuery,
+        placeholder: t(
+          'feature.accounts.list.searchPlaceholder',
+          'Search accounts...',
+        ),
+      }}
+      actions={
+        <Button
+          leftSection={<IconPlus size={16} />}
+          onClick={goToAddManualAccount}
+        >
+          {t('feature.accounts.list.addAccount', 'Add account')}
+        </Button>
+      }
+    >
       <Stack
         maw={1100}
         mx="auto"
         gap={spacing.md}
-        pt={spacing.md}
         pb={spacing.xl}
       >
         {!isLoading && (!accounts || accounts.length === 0) ? (

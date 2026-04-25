@@ -1,6 +1,5 @@
 import {
   Stack,
-  Title,
   Text,
   Group,
   Button,
@@ -66,42 +65,21 @@ export function NotificationsScreen() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <BaseScreen>
-        <Stack>
-          <Title>
-            {t('screens.notifications.screen.title', 'Notifications')}
-          </Title>
-          <Text c="dimmed">
-            {t(
-              'screens.notifications.screen.loading',
-              'Loading notifications...',
-            )}
-          </Text>
-        </Stack>
-      </BaseScreen>
-    );
-  }
-
   return (
-    <BaseScreen>
-      <Stack>
-        <Group justify="space-between" align="center">
-          <Group>
-            <Title>
-              {t('screens.notifications.screen.title', 'Notifications')}
-            </Title>
-            {unreadCount > 0 && (
-              <Badge color="red" size="lg">
-                {t(
-                  'screens.notifications.screen.unreadCount',
-                  '{{count}} unread',
-                  { count: unreadCount },
-                )}
-              </Badge>
-            )}
-          </Group>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.notifications.screen.title', 'Notifications')}
+      actions={
+        <Group gap="xs" wrap="nowrap">
+          {unreadCount > 0 && (
+            <Badge color="red" size="lg">
+              {t(
+                'screens.notifications.screen.unreadCount',
+                '{{count}} unread',
+                { count: unreadCount },
+              )}
+            </Badge>
+          )}
           {unreadCount > 0 && (
             <Button
               leftSection={<IconChecks size={16} />}
@@ -116,10 +94,19 @@ export function NotificationsScreen() {
             </Button>
           )}
         </Group>
-
+      }
+    >
+      <Stack>
         <Divider />
 
-        {notifications.length === 0 ? (
+        {isLoading ? (
+          <Text c="dimmed">
+            {t(
+              'screens.notifications.screen.loading',
+              'Loading notifications...',
+            )}
+          </Text>
+        ) : notifications.length === 0 ? (
           <Paper p="xl" withBorder>
             <Text c="dimmed" ta="center">
               {t(

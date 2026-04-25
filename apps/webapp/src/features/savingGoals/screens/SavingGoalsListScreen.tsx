@@ -6,10 +6,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { SavingGoalRow } from "../components/SavingGoalRow";
 import { IconPlus, IconPigMoney } from "@tabler/icons-react";
 
 export function SavingGoalsListScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { savingGoals, isLoading } = useSavingGoals();
   const [
@@ -64,23 +66,19 @@ export function SavingGoalsListScreen() {
   };
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t("screens.savingGoals.list.title", "Saving Goals")}
+      actions={
+        <Button
+          leftSection={<IconPlus size={16} />}
+          onClick={() => navigate({ to: "/saving-goals/new" })}
+        >
+          {t("screens.savingGoals.list.addButton", "New Saving Goal")}
+        </Button>
+      }
+    >
       <Stack gap="lg">
-        <Group justify="space-between" align="center">
-          <Group>
-            <IconPigMoney size={24} />
-            <Text size="xl" fw={700}>
-              Saving Goals
-            </Text>
-          </Group>
-          <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={() => navigate({ to: "/saving-goals/new" })}
-          >
-            New Saving Goal
-          </Button>
-        </Group>
-
         {savingGoals.length === 0 ? (
           <Stack align="center" gap="lg" py="xl">
             <IconPigMoney size={48} opacity={0.5} />

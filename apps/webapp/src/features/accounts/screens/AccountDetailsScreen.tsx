@@ -13,6 +13,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { useNavigate, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CreditCardDetails } from '../AccountDetails/CreditCardDetails';
 import { CurrentAccountDetails } from '../AccountDetails/CurrentAccountDetails';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
@@ -26,6 +27,7 @@ interface AccountDetailsScreenProps {
 export function AccountDetailsScreen({
   accountId,
 }: Readonly<AccountDetailsScreenProps>) {
+  const { t } = useTranslation();
   const navigation = useNavigate();
 
   const { account, isLoading } = useAccount(accountId);
@@ -50,7 +52,10 @@ export function AccountDetailsScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={account?.name ?? t('feature.accounts.details.title', 'Account')}
+    >
       <Modal
         centered
         opened={isDeleteAccountModalOpen}

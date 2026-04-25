@@ -17,6 +17,7 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import {
@@ -37,6 +38,7 @@ function getNullableNumberParser(value: string): number | null {
 }
 
 export function AddAccountScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { createAccountMutation } = useAccountMutations();
   const defaultCurrency = useDefaultCurrency();
@@ -266,7 +268,7 @@ export function AddAccountScreen() {
   };
 
   return (
-    <BaseScreen>
+    <BaseScreen title={t('feature.accounts.add.title', 'New account')}>
       <form
         onSubmit={form.onSubmit(onFormSubmit, () => {
           notifications.show({

@@ -5,6 +5,7 @@ import { Stack, TextInput, ColorInput, Button } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BaseScreen } from "@/components/Screens/BaseScreen";
 
 export const Route = createFileRoute("/_app/categories/$id_/edit")({
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/_app/categories/$id_/edit")({
 });
 
 function EditCategoryPage() {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { id } = Route.useParams();
 
@@ -64,7 +66,10 @@ function EditCategoryPage() {
   };
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t("screens.categories.edit.title", "Edit category")}
+    >
       <Stack>
         <AppSection title="Category details">
           <TextInput

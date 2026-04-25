@@ -15,6 +15,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { useNavigate, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SubscriptionDetailsScreenProps {
   subscriptionId: string;
@@ -73,6 +74,7 @@ function formatCurrency(amount: number, currency: string): string {
 export function SubscriptionDetailsScreen({
   subscriptionId,
 }: Readonly<SubscriptionDetailsScreenProps>) {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { subscription, isLoading } = useSubscription(subscriptionId);
   const { deleteSubscriptionMutation } = useSubscriptionsMutations();
@@ -115,7 +117,13 @@ export function SubscriptionDetailsScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={
+        subscription?.name ??
+        t('screens.subscriptions.details.title', 'Subscription')
+      }
+    >
       <Modal
         centered
         opened={isDeleteModalOpen}

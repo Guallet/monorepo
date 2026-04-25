@@ -4,6 +4,7 @@ import {
   useSeedDefaultCategoriesMutation,
 } from '@guallet/api-react';
 import { Stack, Button } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { AppCategorySection } from '../components/AppCategorySection/AppCategorySection';
@@ -16,17 +17,26 @@ export function CategoryListScreen() {
   const { t } = useTranslation();
 
   return (
-    <BaseScreen isLoading={isLoading}>
-      <Stack>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.categories.list.title', 'Categories')}
+      actions={
         <Button
+          leftSection={<IconPlus size={16} />}
           onClick={() =>
             navigation({
               to: '/categories/new',
             })
           }
         >
-          {t('screens.categories.list.addParentCategory', 'Add new parent category')}
+          {t(
+            'screens.categories.list.addParentCategory',
+            'Add new parent category',
+          )}
         </Button>
+      }
+    >
+      <Stack>
         {categories.length === 0 && !isLoading ? (
           <EmptyState
             loading={seedMutation.isPending}

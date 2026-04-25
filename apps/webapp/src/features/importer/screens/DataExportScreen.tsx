@@ -119,12 +119,9 @@ export function DataExportScreen() {
         </Stack>
       </Modal>
 
-      <BaseScreen>
+      <BaseScreen title={t('screens.dataExport.title')}>
         <Stack gap="xl">
-          <Stack gap="xs">
-            <Title order={2}>{t('screens.dataExport.title')}</Title>
-            <Text c="dimmed">{t('screens.dataExport.description')}</Text>
-          </Stack>
+          <Text c="dimmed">{t('screens.dataExport.description')}</Text>
 
           {error && (
             <Alert
