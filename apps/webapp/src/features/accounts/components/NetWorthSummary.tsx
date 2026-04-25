@@ -37,7 +37,13 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
     const primary =
       Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'GBP';
 
-    return { totals, assets, liabilities, primary, currencies: Object.keys(totals) };
+    return {
+      totals,
+      assets,
+      liabilities,
+      primary,
+      currencies: Object.keys(totals),
+    };
   }, [accounts]);
 
   const primaryTotal = totals[primary] ?? 0;
@@ -47,7 +53,13 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
     <Card withBorder shadow="sm" radius="lg" p="lg">
       <Group justify="space-between" align="flex-start" wrap="wrap" gap="lg">
         <Stack gap={spacing.xs} miw={240}>
-          <Text size="xs" fw={600} tt="uppercase" c="dimmed" style={{ letterSpacing: '0.06em' }}>
+          <Text
+            size="xs"
+            fw={600}
+            tt="uppercase"
+            c="dimmed"
+            style={{ letterSpacing: '0.06em' }}
+          >
             {t('feature.accounts.list.summary.netWorth', 'Net worth')}
           </Text>
           <Group align="baseline" gap="md" wrap="wrap">
@@ -80,8 +92,10 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
               count: accounts.length,
               accountCount: accounts.length,
               currencyCount: currencies.length,
-              defaultValue_one: 'Across {{accountCount}} account in {{currencyCount}} currencies',
-              defaultValue_other: 'Across {{accountCount}} accounts in {{currencyCount}} currencies',
+              defaultValue_one:
+                'Across {{accountCount}} account in {{currencyCount}} currencies',
+              defaultValue_other:
+                'Across {{accountCount}} accounts in {{currencyCount}} currencies',
             })}
           </Text>
         </Stack>
@@ -94,7 +108,10 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
           />
           <Divider orientation="vertical" />
           <SummaryBlock
-            label={t('feature.accounts.list.summary.liabilities', 'Liabilities')}
+            label={t(
+              'feature.accounts.list.summary.liabilities',
+              'Liabilities',
+            )}
             totals={liabilities}
             positive={false}
           />

@@ -43,7 +43,10 @@ export function AccountsHeader({
           style={{ flex: 1, maxWidth: 420 }}
           value={searchQuery}
           leftSection={<IconSearch size={16} />}
-          placeholder={t('feature.accounts.list.searchPlaceholder', 'Search accounts...')}
+          placeholder={t(
+            'feature.accounts.list.searchPlaceholder',
+            'Search accounts...',
+          )}
           onChange={(e) => onSearchQueryChanged(e.target.value)}
         />
         <Button

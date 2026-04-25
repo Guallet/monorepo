@@ -27,7 +27,12 @@ export function AddAccountCta({
         borderColor: 'var(--mantine-color-gray-4)',
       }}
     >
-      <Group justify="space-between" align="center" gap={spacing.md} wrap="wrap">
+      <Group
+        justify="space-between"
+        align="center"
+        gap={spacing.md}
+        wrap="wrap"
+      >
         <Stack gap={spacing.xs}>
           <Text size="sm" fw={600}>
             {t('feature.accounts.list.addCta.title', 'Missing an account?')}
@@ -43,7 +48,11 @@ export function AddAccountCta({
           <Button variant="outline" size="sm" onClick={onAddManual}>
             {t('feature.accounts.list.addCta.addManually', 'Add manually')}
           </Button>
-          <Button size="sm" leftSection={<IconPlus size={14} />} onClick={onConnectBank}>
+          <Button
+            size="sm"
+            leftSection={<IconPlus size={14} />}
+            onClick={onConnectBank}
+          >
             {t('feature.accounts.list.addCta.connectBank', 'Connect a bank')}
           </Button>
         </Group>

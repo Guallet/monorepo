@@ -39,7 +39,9 @@ export function AccountListScreen() {
     return accounts.filter((a) => a.name.toLowerCase().includes(q));
   }, [accounts, searchQuery]);
 
-  const groupedAccounts = useMemo<{ type: AccountTypeDto; data: AccountDto[] }[]>(() => {
+  const groupedAccounts = useMemo<
+    { type: AccountTypeDto; data: AccountDto[] }[]
+  >(() => {
     const map: Record<string, AccountDto[]> = {};
     for (const account of filteredAccounts) {
       if (!map[account.type]) map[account.type] = [];
@@ -78,15 +80,24 @@ export function AccountListScreen() {
             onConnectBank={goToConnectBank}
             onAddManual={goToAddManualAccount}
           />
-        ) : !isLoading && accounts && accounts.length > 0 && groupedAccounts.length === 0 ? (
+        ) : !isLoading &&
+          accounts &&
+          accounts.length > 0 &&
+          groupedAccounts.length === 0 ? (
           <EmptyState
-            title={t('feature.accounts.list.emptyQuery.title', 'No matching accounts')}
+            title={t(
+              'feature.accounts.list.emptyQuery.title',
+              'No matching accounts',
+            )}
             description={t(
               'feature.accounts.list.emptyQuery.description',
               'Try a different search term or clear the current filter to see all your accounts.',
             )}
             primaryAction={{
-              label: t('feature.accounts.list.emptyQuery.clearSearch', 'Clear search'),
+              label: t(
+                'feature.accounts.list.emptyQuery.clearSearch',
+                'Clear search',
+              ),
               onClick: () => setSearchQuery(''),
             }}
           />
@@ -105,7 +116,10 @@ export function AccountListScreen() {
                     account={account}
                     isLast={i === data.length - 1}
                     onClick={() =>
-                      navigate({ to: '/accounts/$id', params: { id: account.id } })
+                      navigate({
+                        to: '/accounts/$id',
+                        params: { id: account.id },
+                      })
                     }
                   />
                 ))}

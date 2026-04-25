@@ -1,5 +1,14 @@
 import { useTheme } from '@guallet/ui-react';
-import { Box, Button, Card, Center, Group, SimpleGrid, Stack, Text } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Center,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyIllustration } from './EmptyIllustration';
@@ -19,7 +28,13 @@ export function AccountsEmptyState({
 
   return (
     <Box maw={720} mx="auto" pt={spacing.xl} pb={spacing.xxl}>
-      <Card withBorder shadow="sm" radius="lg" p={0} style={{ overflow: 'hidden' }}>
+      <Card
+        withBorder
+        shadow="sm"
+        radius="lg"
+        p={0}
+        style={{ overflow: 'hidden' }}
+      >
         <Stack
           align="center"
           gap={spacing.xs}
@@ -34,7 +49,12 @@ export function AccountsEmptyState({
           <Center>
             <EmptyIllustration />
           </Center>
-          <Text fz={24} fw={700} mt={spacing.md} style={{ letterSpacing: '-0.01em' }}>
+          <Text
+            fz={24}
+            fw={700}
+            mt={spacing.md}
+            style={{ letterSpacing: '-0.01em' }}
+          >
             {t('feature.accounts.list.emptyState.title', 'No accounts yet')}
           </Text>
           <Text size="sm" c="dimmed" maw={420} style={{ lineHeight: 1.6 }}>
@@ -44,32 +64,50 @@ export function AccountsEmptyState({
             )}
           </Text>
           <Group justify="center" gap={spacing.xs} mt={spacing.md} wrap="wrap">
-            <Button leftSection={<IconPlus size={16} />} onClick={onConnectBank}>
-              {t('feature.accounts.list.emptyState.connectBank', 'Connect a bank')}
+            <Button
+              leftSection={<IconPlus size={16} />}
+              onClick={onConnectBank}
+            >
+              {t(
+                'feature.accounts.list.emptyState.connectBank',
+                'Connect a bank',
+              )}
             </Button>
             <Button variant="outline" onClick={onAddManual}>
-              {t('feature.accounts.list.emptyState.addManually', 'Add manually')}
+              {t(
+                'feature.accounts.list.emptyState.addManually',
+                'Add manually',
+              )}
             </Button>
           </Group>
         </Stack>
 
         <SimpleGrid cols={3} p={spacing.md}>
           <EmptyTrait
-            title={t('feature.accounts.list.emptyState.trait1.title', 'Read-only by design')}
+            title={t(
+              'feature.accounts.list.emptyState.trait1.title',
+              'Read-only by design',
+            )}
             body={t(
               'feature.accounts.list.emptyState.trait1.body',
               'Guallet never moves money. We only read balances and transactions.',
             )}
           />
           <EmptyTrait
-            title={t('feature.accounts.list.emptyState.trait2.title', 'Multi-currency')}
+            title={t(
+              'feature.accounts.list.emptyState.trait2.title',
+              'Multi-currency',
+            )}
             body={t(
               'feature.accounts.list.emptyState.trait2.body',
               'Hold accounts in different currencies — totals stay separate, never converted behind your back.',
             )}
           />
           <EmptyTrait
-            title={t('feature.accounts.list.emptyState.trait3.title', 'Self-host or cloud')}
+            title={t(
+              'feature.accounts.list.emptyState.trait3.title',
+              'Self-host or cloud',
+            )}
             body={t(
               'feature.accounts.list.emptyState.trait3.body',
               'Your financial data stays yours. Use our hosted version or run Guallet on your own server.',
