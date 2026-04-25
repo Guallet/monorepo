@@ -1,5 +1,6 @@
-import { Button, Stack, Title } from '@mantine/core';
+import { Button, Stack } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 import { UserSettingsCard } from '../components/UserSettingsCard';
 import { AppSection } from '@/components/Cards/AppSection';
 import { LanguageRow } from '../components/LanguageRow';
@@ -10,12 +11,12 @@ import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow } from '@guallet/ui-react';
 
 export function SettingsScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
-    <BaseScreen>
+    <BaseScreen title={t('screens.settings.title', 'Settings')}>
       <Stack>
-        <Title>Settings</Title>
         <UserSettingsCard />
 
         <AppSection title="User Preferences" itemPadding={0}>

@@ -143,6 +143,60 @@
   },
   "feature": {
     "accounts": {
+      "list": {
+        "row": {
+          "manualAccount": "Manual account"
+        },
+        "emptyState": {
+          "title": "No accounts yet",
+          "description": "Track all your bank accounts, credit cards and savings in one place. Connect through open banking, or add an account manually if your provider isn't supported.",
+          "connectBank": "Connect a bank",
+          "addManually": "Add manually",
+          "trait1": {
+            "title": "Read-only by design",
+            "body": "Guallet never moves money. We only read balances and transactions."
+          },
+          "trait2": {
+            "title": "Multi-currency",
+            "body": "Hold accounts in different currencies — totals stay separate, never converted behind your back."
+          },
+          "trait3": {
+            "title": "Self-host or cloud",
+            "body": "Your financial data stays yours. Use our hosted version or run Guallet on your own server."
+          }
+        },
+        "header": {
+          "multipleCurrencies": "Multiple currencies — totals hidden",
+          "accountCount_one": "{{count}} account",
+          "accountCount_many": "",
+          "accountCount_other": "{{count}} accounts",
+          "currencyCount_one": "{{count}} currency",
+          "currencyCount_many": "",
+          "currencyCount_other": "{{count}} currencies"
+        },
+        "addCta": {
+          "title": "Missing an account?",
+          "description": "Connect via open banking, or add a manual account for cash, crypto or anything else.",
+          "addManually": "Add manually",
+          "connectBank": "Connect a bank"
+        },
+        "summary": {
+          "netWorth": "Net worth",
+          "coverage_one": "Across {{accountCount}} account in {{currencyCount}} currencies",
+          "coverage_many": "",
+          "coverage_other": "Across {{accountCount}} accounts in {{currencyCount}} currencies",
+          "assets": "Assets",
+          "liabilities": "Liabilities"
+        },
+        "title": "Accounts",
+        "searchPlaceholder": "Search accounts...",
+        "addAccount": "Add account",
+        "emptyQuery": {
+          "title": "No matching accounts",
+          "description": "Try a different search term or clear the current filter to see all your accounts.",
+          "clearSearch": "Clear search"
+        }
+      },
       "accountType": {
         "currentAccounts": "Cuentas corrientes",
         "creditCards": "Tarjetas de crédito",
@@ -159,15 +213,19 @@
         "mortgage": "Hipoteca",
         "pension": "Pensión",
         "savingsAccount": "Cuenta de ahorro"
+      },
+      "details": {
+        "title": "Account"
+      },
+      "add": {
+        "title": "New account"
+      },
+      "edit": {
+        "title": "Edit account"
       }
     }
   },
   "screens": {
-    "accounts": {
-      "list": {
-        "emptyQuery": "CFN: No se encontraron cuentas bancarias"
-      }
-    },
     "forgotPassword": {
       "title": {
         "label": "¿Olvidaste tu contraseña?"
@@ -268,6 +326,7 @@
     },
     "budgets": {
       "details": {
+        "title": "Budget",
         "editButton": {
           "tooltip": "Editar"
         },
@@ -296,9 +355,13 @@
         }
       },
       "list": {
-        "emptyState": "No se encontraron presupuestos. Crea un nuevo presupuesto para comenzar.",
+        "title": "Budgets",
         "createBudgetButton": {
           "label": "Crear nuevo presupuesto"
+        },
+        "emptyState": {
+          "title": "No budgets yet",
+          "description": "Create your first budget to start tracking and controlling your spending."
         }
       },
       "create": {
@@ -311,8 +374,8 @@
             "title": "Error al crear el presupuesto"
           }
         },
+        "title": "New budget",
         "form": {
-          "title": "Crear nuevo presupuesto",
           "name": {
             "label": "Nombre",
             "placeholder": "Nombre del presupuesto"
@@ -342,8 +405,32 @@
         }
       }
     },
-    "connections": {
+    "categories": {
+      "add": {
+        "title": "New category"
+      },
       "details": {
+        "title": "Category"
+      },
+      "list": {
+        "title": "Categories",
+        "addParentCategory": "Add new parent category",
+        "emptyState": {
+          "title": "No categories yet",
+          "description": "Create your default categories to start organising your transactions.",
+          "primaryAction": "Create default categories"
+        }
+      },
+      "edit": {
+        "title": "Edit category"
+      }
+    },
+    "connections": {
+      "create": {
+        "title": "Connect a bank"
+      },
+      "details": {
+        "title": "Connection",
         "refreshButton": {
           "label": "Actualizar conexión"
         },
@@ -357,9 +444,12 @@
         }
       },
       "list": {
-        "emptyState": "No se encontraron conexiones. Crea una nueva conexión para comenzar.",
         "title": "Conexiones",
-        "addButton": "Agregar nueva conexión"
+        "addButton": "Agregar nueva conexión",
+        "emptyState": {
+          "title": "No connections yet",
+          "description": "Connect your bank accounts via open banking to automatically import transactions."
+        }
       }
     },
     "dataExport": {
@@ -402,6 +492,11 @@
       },
       "exportButton": "Exportar Transacciones"
     },
+    "importer": {
+      "home": {
+        "title": "Import data"
+      }
+    },
     "notifications": {
       "icon": {
         "navigationErrorTitle": "Error de navegación",
@@ -429,8 +524,8 @@
         "badges": {
           "new": "Nueva"
         },
-        "loading": "Cargando notificaciones...",
         "markAllAsRead": "Marcar todas como leídas",
+        "loading": "Cargando notificaciones...",
         "emptyState": "No tienes notificaciones"
       }
     },
@@ -574,7 +669,31 @@
         }
       }
     },
+    "savingGoals": {
+      "list": {
+        "title": "Saving Goals",
+        "addButton": "New Saving Goal"
+      },
+      "edit": {
+        "title": "Edit saving goal"
+      },
+      "create": {
+        "title": "New saving goal"
+      }
+    },
+    "settings": {
+      "title": "Settings"
+    },
     "subscriptions": {
+      "create": {
+        "title": "New subscription"
+      },
+      "edit": {
+        "title": "Edit subscription"
+      },
+      "details": {
+        "title": "Subscription"
+      },
       "list": {
         "types": {
           "subscription": "Suscripción",
@@ -599,10 +718,10 @@
           "label": "Próximo pago:"
         },
         "title": "Suscripciones y pagos recurrentes",
-        "estimatedMonthly": "Estimación mensual:",
         "addButton": {
           "label": "Agregar nuevo"
         },
+        "estimatedMonthly": "Estimación mensual:",
         "emptyState": {
           "title": "Aún no hay suscripciones",
           "description": "Comienza a registrar tus pagos y suscripciones recurrentes",
@@ -618,46 +737,6 @@
       }
     },
     "transactions": {
-      "list": {
-        "header": {
-          "title": "Transacciones",
-          "add": {
-            "tooltip": "Agregar nueva transacción"
-          }
-        },
-        "quickEdit": {
-          "notifications": {
-            "success": {
-              "title": "Éxito",
-              "message": "Transacción actualizada correctamente"
-            },
-            "error": {
-              "title": "Error",
-              "message": "No se pudo actualizar la transacción"
-            }
-          },
-          "title": "Edición rápida de transacción",
-          "form": {
-            "notes": {
-              "label": "Notas",
-              "placeholder": "Ingresa notas de la transacción"
-            },
-            "category": {
-              "label": "Categoría",
-              "placeholder": "Selecciona una categoría"
-            },
-            "editFullButton": {
-              "label": "Editar transacción completa"
-            },
-            "cancelButton": {
-              "label": "Cancelar"
-            },
-            "saveButton": {
-              "label": "Guardar"
-            }
-          }
-        }
-      },
       "create": {
         "notifications": {
           "success": {
@@ -699,11 +778,11 @@
             }
           }
         },
+        "title": "Editar transacción",
         "deleteDialog": {
           "title": "Eliminar transacción",
           "message": "¿Estás seguro de que deseas eliminar esta transacción?"
         },
-        "title": "Editar transacción",
         "form": {
           "submitButton": {
             "label": "Actualizar transacción"
@@ -713,6 +792,49 @@
           },
           "deleteButton": {
             "label": "Eliminar"
+          }
+        }
+      },
+      "inbox": {
+        "title": "Transactions Inbox"
+      },
+      "list": {
+        "quickEdit": {
+          "notifications": {
+            "success": {
+              "title": "Éxito",
+              "message": "Transacción actualizada correctamente"
+            },
+            "error": {
+              "title": "Error",
+              "message": "No se pudo actualizar la transacción"
+            }
+          },
+          "title": "Edición rápida de transacción",
+          "form": {
+            "notes": {
+              "label": "Notas",
+              "placeholder": "Ingresa notas de la transacción"
+            },
+            "category": {
+              "label": "Categoría",
+              "placeholder": "Selecciona una categoría"
+            },
+            "editFullButton": {
+              "label": "Editar transacción completa"
+            },
+            "cancelButton": {
+              "label": "Cancelar"
+            },
+            "saveButton": {
+              "label": "Guardar"
+            }
+          }
+        },
+        "header": {
+          "title": "Transacciones",
+          "add": {
+            "tooltip": "Agregar nueva transacción"
           }
         }
       }
@@ -775,29 +897,18 @@
     }
   },
   "landing": {
-    "header": {
-      "login": "Iniciar sesión",
-      "createAccount": "Crear cuenta",
-      "goToDashboard": "Ir al panel"
-    },
     "footer": {
       "terms": "Términos y condiciones",
       "privacy": "Política de privacidad",
       "github": "GitHub",
       "copyright": "© {{year}} Guallet. Código abierto."
     },
-    "hero": {
-      "openSourceBadge": "Código abierto",
-      "title": "Tus finanzas,\nbajo control.",
-      "subtitle": "Guallet es un gestor de finanzas personales gratuito y de código abierto que te ayuda a controlar tus gastos, establecer presupuestos y alcanzar tus metas financieras.",
-      "getStarted": "Comenzar — es gratis",
+    "header": {
+      "goToDashboard": "Ir al panel",
       "login": "Iniciar sesión",
-      "goToDashboard": "Ir al panel"
+      "createAccount": "Crear cuenta"
     },
     "features": {
-      "badge": "Características",
-      "title": "Todo lo que necesitas para gestionar tu dinero",
-      "subtitle": "Un conjunto completo de herramientas de finanzas personales — gratuito, de código abierto y diseñado para la privacidad.",
       "accounts": {
         "title": "Gestión de cuentas",
         "description": "Controla todas tus cuentas bancarias, tarjetas de crédito y ahorros en un solo lugar."
@@ -829,7 +940,18 @@
       "openBanking": {
         "title": "Banca abierta",
         "description": "Conéctate a miles de bancos e instituciones a través de APIs de banca abierta."
-      }
+      },
+      "badge": "Características",
+      "title": "Todo lo que necesitas para gestionar tu dinero",
+      "subtitle": "Un conjunto completo de herramientas de finanzas personales — gratuito, de código abierto y diseñado para la privacidad."
+    },
+    "hero": {
+      "openSourceBadge": "Código abierto",
+      "title": "Tus finanzas,\nbajo control.",
+      "subtitle": "Guallet es un gestor de finanzas personales gratuito y de código abierto que te ayuda a controlar tus gastos, establecer presupuestos y alcanzar tus metas financieras.",
+      "goToDashboard": "Ir al panel",
+      "getStarted": "Comenzar — es gratis",
+      "login": "Iniciar sesión"
     },
     "openSource": {
       "title": "Código abierto y gratuito para siempre",
@@ -840,53 +962,6 @@
       "title": "¿Listo para tomar el control de tus finanzas?",
       "subtitle": "Únete a miles de personas que confían en Guallet para gestionar su dinero.",
       "button": "Crea tu cuenta gratuita"
-    }
-  },
-  "terms": {
-    "title": "Términos y condiciones",
-    "lastUpdated": "Última actualización: abril de 2025",
-    "intro": "Por favor, lee estos Términos y condiciones detenidamente antes de usar Guallet. Al acceder o usar el servicio, aceptas estar sujeto a estos términos.",
-    "section1": {
-      "title": "1. Aceptación de los términos",
-      "body": "Al crear una cuenta o usar Guallet, confirmas que tienes al menos 18 años y capacidad legal para aceptar estos términos. Si no estás de acuerdo, por favor no uses el servicio."
-    },
-    "section2": {
-      "title": "2. Licencia de código abierto",
-      "body": "Guallet se publica como software de código abierto bajo la Licencia Apache 2.0. Puedes inspeccionar, bifurcar y contribuir al código fuente en GitHub.",
-      "githubLink": "Ver código fuente en GitHub"
-    },
-    "section3": {
-      "title": "3. Tu cuenta",
-      "body": "Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades que ocurran bajo tu cuenta. Notifícanos inmediatamente sobre cualquier uso no autorizado."
-    },
-    "section4": {
-      "title": "4. Uso aceptable",
-      "intro": "Aceptas no:",
-      "item1": "Usar el servicio para ningún propósito ilegal",
-      "item2": "Intentar obtener acceso no autorizado a ninguna parte del servicio",
-      "item3": "Transmitir código dañino o malicioso",
-      "item4": "Violar ninguna ley o regulación aplicable"
-    },
-    "section5": {
-      "title": "5. Datos y privacidad",
-      "body": "El uso del servicio también se rige por nuestra Política de privacidad, que se incorpora a estos Términos por referencia."
-    },
-    "section6": {
-      "title": "6. Exclusión de garantías",
-      "body": "Guallet se proporciona \"tal cual\" sin garantías de ningún tipo. No garantizamos la exactitud, integridad o disponibilidad del servicio en ningún momento."
-    },
-    "section7": {
-      "title": "7. Limitación de responsabilidad",
-      "body": "En la máxima medida permitida por la ley, Guallet y sus colaboradores no serán responsables de daños indirectos, incidentales, especiales, consecuentes o punitivos que surjan del uso del servicio."
-    },
-    "section8": {
-      "title": "8. Cambios en los términos",
-      "body": "Podemos actualizar estos Términos de vez en cuando. El uso continuado del servicio después de que los cambios entren en vigor constituye la aceptación de los Términos revisados."
-    },
-    "section9": {
-      "title": "9. Contacto",
-      "body": "Si tienes alguna pregunta sobre estos Términos, por favor abre un problema en nuestro repositorio de GitHub.",
-      "githubLink": "Abrir un problema en GitHub"
     }
   },
   "privacy": {
@@ -943,6 +1018,53 @@
     "section9": {
       "title": "9. Contáctanos",
       "body": "Si tienes preguntas o inquietudes sobre esta Política de privacidad, por favor contáctanos abriendo un problema en GitHub.",
+      "githubLink": "Abrir un problema en GitHub"
+    }
+  },
+  "terms": {
+    "title": "Términos y condiciones",
+    "lastUpdated": "Última actualización: abril de 2025",
+    "intro": "Por favor, lee estos Términos y condiciones detenidamente antes de usar Guallet. Al acceder o usar el servicio, aceptas estar sujeto a estos términos.",
+    "section1": {
+      "title": "1. Aceptación de los términos",
+      "body": "Al crear una cuenta o usar Guallet, confirmas que tienes al menos 18 años y capacidad legal para aceptar estos términos. Si no estás de acuerdo, por favor no uses el servicio."
+    },
+    "section2": {
+      "title": "2. Licencia de código abierto",
+      "body": "Guallet se publica como software de código abierto bajo la Licencia Apache 2.0. Puedes inspeccionar, bifurcar y contribuir al código fuente en GitHub.",
+      "githubLink": "Ver código fuente en GitHub"
+    },
+    "section3": {
+      "title": "3. Tu cuenta",
+      "body": "Eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades que ocurran bajo tu cuenta. Notifícanos inmediatamente sobre cualquier uso no autorizado."
+    },
+    "section4": {
+      "title": "4. Uso aceptable",
+      "intro": "Aceptas no:",
+      "item1": "Usar el servicio para ningún propósito ilegal",
+      "item2": "Intentar obtener acceso no autorizado a ninguna parte del servicio",
+      "item3": "Transmitir código dañino o malicioso",
+      "item4": "Violar ninguna ley o regulación aplicable"
+    },
+    "section5": {
+      "title": "5. Datos y privacidad",
+      "body": "El uso del servicio también se rige por nuestra Política de privacidad, que se incorpora a estos Términos por referencia."
+    },
+    "section6": {
+      "title": "6. Exclusión de garantías",
+      "body": "Guallet se proporciona \"tal cual\" sin garantías de ningún tipo. No garantizamos la exactitud, integridad o disponibilidad del servicio en ningún momento."
+    },
+    "section7": {
+      "title": "7. Limitación de responsabilidad",
+      "body": "En la máxima medida permitida por la ley, Guallet y sus colaboradores no serán responsables de daños indirectos, incidentales, especiales, consecuentes o punitivos que surjan del uso del servicio."
+    },
+    "section8": {
+      "title": "8. Cambios en los términos",
+      "body": "Podemos actualizar estos Términos de vez en cuando. El uso continuado del servicio después de que los cambios entren en vigor constituye la aceptación de los Términos revisados."
+    },
+    "section9": {
+      "title": "9. Contacto",
+      "body": "Si tienes alguna pregunta sobre estos Términos, por favor abre un problema en nuestro repositorio de GitHub.",
       "githubLink": "Abrir un problema en GitHub"
     }
   }

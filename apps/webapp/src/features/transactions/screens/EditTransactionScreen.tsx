@@ -147,7 +147,10 @@ export function EditTransactionScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.transactions.edit.title', 'Edit Transaction')}
+    >
       <DeleteDialogConfirmation
         isOpen={isDeleteDialogOpen}
         onClose={() => {
@@ -165,9 +168,7 @@ export function EditTransactionScreen({
           'Are you sure you want to delete this transaction?',
         )}
       />
-      <AppSection
-        title={t('screens.transactions.edit.title', 'Edit Transaction')}
-      >
+      <AppSection>
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack>
             <TransactionFormFields

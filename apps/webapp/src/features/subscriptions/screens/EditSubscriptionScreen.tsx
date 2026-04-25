@@ -24,6 +24,7 @@ import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
@@ -59,6 +60,7 @@ const cadenceOptions = [
 export function EditSubscriptionScreen({
   subscriptionId,
 }: Readonly<EditSubscriptionScreenProps>) {
+  const { t } = useTranslation();
   const { subscription, isLoading } = useSubscription(subscriptionId);
   const defaultCurrency = useDefaultCurrency();
   const navigate = useNavigate();
@@ -133,7 +135,10 @@ export function EditSubscriptionScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.subscriptions.edit.title', 'Edit subscription')}
+    >
       <form onSubmit={form.onSubmit((values) => onFormSubmit(values))}>
         <Stack>
           <AppSection title="Edit subscription">

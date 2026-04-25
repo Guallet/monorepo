@@ -20,6 +20,7 @@ import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
@@ -62,6 +63,7 @@ function getLocalizedType(name: AccountTypeDto): string {
 export function EditAccountScreen({
   accountId,
 }: Readonly<EditAccountScreenProps>) {
+  const { t } = useTranslation();
   const { account, isLoading } = useAccount(accountId);
   const defaultCurrency = useDefaultCurrency();
   const navigate = useNavigate();
@@ -133,7 +135,10 @@ export function EditAccountScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('feature.accounts.edit.title', 'Edit account')}
+    >
       <form onSubmit={form.onSubmit((values) => onFormSubmit(values))}>
         <Stack>
           <AppSection title="Account details">

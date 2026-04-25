@@ -25,6 +25,7 @@ import { z } from 'zod';
 import { notifications } from '@mantine/notifications';
 import { Currency } from '@guallet/money';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import { useTranslation } from 'react-i18next';
 
 const subscriptionFormDataSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -52,6 +53,7 @@ const cadenceOptions = [
 ];
 
 export function AddSubscriptionScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { createSubscriptionMutation } = useSubscriptionsMutations();
   const defaultCurrency = useDefaultCurrency();
@@ -122,7 +124,9 @@ export function AddSubscriptionScreen() {
   }
 
   return (
-    <BaseScreen>
+    <BaseScreen
+      title={t('screens.subscriptions.create.title', 'New subscription')}
+    >
       <form onSubmit={form.onSubmit(onFormSubmit)}>
         <Stack>
           <AppSection title="Create new subscription">

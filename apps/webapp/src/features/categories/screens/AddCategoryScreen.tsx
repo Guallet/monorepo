@@ -7,6 +7,7 @@ import { Stack, Button, TextInput, Group } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useNavigate } from '@tanstack/react-router';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 const categoryFormDataSchema = z.object({
@@ -23,6 +24,7 @@ interface AddCategoryScreenProps {
 export function AddCategoryScreen({
   parentId,
 }: Readonly<AddCategoryScreenProps>) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { createCategoryMutation } = useCategoryMutations();
 
@@ -62,10 +64,13 @@ export function AddCategoryScreen({
   }
 
   return (
-    <BaseScreen isLoading={createCategoryMutation.isPending}>
+    <BaseScreen
+      isLoading={createCategoryMutation.isPending}
+      title={t('screens.categories.add.title', 'New category')}
+    >
       <form onSubmit={form.onSubmit(onFormSubmit)}>
         <Stack gap={'md'}>
-          <AppSection title="Add Category">
+          <AppSection>
             <TextInput
               withAsterisk
               label="Name"

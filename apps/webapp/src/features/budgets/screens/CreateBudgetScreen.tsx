@@ -120,12 +120,12 @@ export function CreateBudgetScreen() {
   };
 
   return (
-    <BaseScreen>
+    <BaseScreen
+      title={t('screens.budgets.create.title', 'New budget')}
+    >
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
-          <AppSection
-            title={t('screens.budgets.create.form.title', 'Create new Budget')}
-          >
+          <AppSection>
             <TextInput
               label={t('screens.budgets.create.form.name.label', 'Name')}
               placeholder={t(

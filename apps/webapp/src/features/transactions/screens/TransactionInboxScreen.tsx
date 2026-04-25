@@ -1,11 +1,13 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useInfiniteTransactionInbox } from '@guallet/api-react';
-import { Badge, Center, Group, Loader, Stack, Title } from '@mantine/core';
+import { Badge, Center, Loader, Stack } from '@mantine/core';
 import { InboxTransactionCard } from '../components/InboxTransactionCard';
 import { useEffect } from 'react';
 import { useIntersection } from '@mantine/hooks';
+import { useTranslation } from 'react-i18next';
 
 export function TransactionInboxScreen() {
+  const { t } = useTranslation();
   const {
     transactions,
     isLoading,
@@ -25,12 +27,12 @@ export function TransactionInboxScreen() {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.transactions.inbox.title', 'Transactions Inbox')}
+      actions={<Badge>{transactions.length}</Badge>}
+    >
       <Stack>
-        <Group>
-          <Title>Transactions Inbox</Title>
-          <Badge>{transactions.length}</Badge>
-        </Group>
         <Stack gap="xs">
           {transactions.map((transaction) => (
             <InboxTransactionCard

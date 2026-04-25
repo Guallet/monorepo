@@ -91,10 +91,10 @@ export function AddTransactionScreen() {
   }
 
   return (
-    <BaseScreen>
-      <AppSection
-        title={t('screens.transactions.create.title', 'Add Transaction')}
-      >
+    <BaseScreen
+      title={t('screens.transactions.create.title', 'Add Transaction')}
+    >
+      <AppSection>
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack>
             <TransactionFormFields
