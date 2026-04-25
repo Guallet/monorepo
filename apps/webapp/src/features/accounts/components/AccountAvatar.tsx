@@ -20,7 +20,10 @@ interface AccountAvatarProps extends AvatarProps {
   account: AccountDto;
 }
 
-export function AccountAvatar({ account }: Readonly<AccountAvatarProps>) {
+export function AccountAvatar({
+  account,
+  ...props
+}: Readonly<AccountAvatarProps>) {
   const { institution } = useInstitution(account.institutionId || null);
 
   if (institution?.image_src) {
@@ -31,6 +34,7 @@ export function AccountAvatar({ account }: Readonly<AccountAvatarProps>) {
         size={44}
         radius={14}
         style={{ flexShrink: 0 }}
+        {...props}
       />
     );
   }
@@ -39,24 +43,23 @@ export function AccountAvatar({ account }: Readonly<AccountAvatarProps>) {
   const hue = hueFor(account.name);
 
   return (
-    <div
+    <Avatar
+      size={44}
+      radius={14}
+      {...props}
       style={{
-        width: 44,
-        height: 44,
-        borderRadius: 14,
         background: `oklch(95% 0.03 ${hue})`,
         color: `oklch(38% 0.08 ${hue})`,
-        border: `1.5px dashed oklch(70% 0.06 ${hue})`,
-        display: 'grid',
-        placeItems: 'center',
+        outline: `1.5px dashed oklch(70% 0.06 ${hue})`,
         fontWeight: 700,
         fontSize: 13,
         letterSpacing: '-0.01em',
         flexShrink: 0,
         userSelect: 'none',
+        ...props.style,
       }}
     >
       {initials}
-    </div>
+    </Avatar>
   );
 }

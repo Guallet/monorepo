@@ -10,27 +10,27 @@ import {
   IconPigMoney,
   IconReceipt,
 } from '@tabler/icons-react';
-import { FC } from 'react';
+import { ReactNode } from 'react';
 import { getAccountTypeTitle } from '@/features/accounts/models/Account';
 
-function getGroupIcon(type: AccountTypeDto): FC<{ size?: number }> {
+function renderGroupIcon(type: AccountTypeDto): ReactNode {
   switch (type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
-      return IconBuildingBank;
+      return <IconBuildingBank size={20} />;
     case AccountTypeDto.SAVINGS:
-      return IconPigMoney;
+      return <IconPigMoney size={20} />;
     case AccountTypeDto.CREDIT_CARD:
-      return IconCreditCard;
+      return <IconCreditCard size={20} />;
     case AccountTypeDto.INVESTMENT:
-      return IconChartBar;
+      return <IconChartBar size={20} />;
     case AccountTypeDto.MORTGAGE:
-      return IconHome;
+      return <IconHome size={20} />;
     case AccountTypeDto.LOAN:
-      return IconReceipt;
+      return <IconReceipt size={20} />;
     case AccountTypeDto.PENSION:
-      return IconBriefcase;
+      return <IconBriefcase size={20} />;
     default:
-      return IconBuildingBank;
+      return <IconBuildingBank size={20} />;
   }
 }
 
@@ -91,7 +91,6 @@ interface HeaderProps {
 }
 
 export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderProps>) {
-  const Icon = getGroupIcon(accountType);
   const byCurrency = groupByCurrency(accounts);
   const currencyCount = Object.keys(byCurrency).length;
 
@@ -106,7 +105,7 @@ export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderPro
     >
       <Group gap={12} align="center" style={{ flex: 1, minWidth: 0 }}>
         <ThemeIcon variant="light" size={36} radius={10}>
-          <Icon size={20} />
+          {renderGroupIcon(accountType)}
         </ThemeIcon>
         <div>
           <Text fw={700} size="md" style={{ letterSpacing: '-0.01em' }}>

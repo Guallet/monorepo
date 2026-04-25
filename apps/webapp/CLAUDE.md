@@ -51,6 +51,30 @@ Pattern: route file → screen component → sub-components. Screens use `BaseSc
 
 Mantine 8 is the component library. Forms use `@mantine/form` + `mantine-form-zod-resolver` + Zod. The `@/` path alias maps to `src/`.
 
+### Component conventions
+
+**One component per file.** Every exported component lives in its own `.tsx` file named after it.
+
+**Props interface extends the base Mantine component.** When a component wraps a Mantine element, its props interface must extend that element's props type so callers can pass through any native prop:
+
+```tsx
+// e.g. a component based on Avatar
+interface AccountAvatarProps extends AvatarProps {
+  account: AccountDto;
+}
+
+export function AccountAvatar({
+  account,
+  ...props
+}: Readonly<AccountAvatarProps>) {
+  return <Avatar {...props}>{/* ... */}</Avatar>;
+}
+```
+
+- Always accept props as `Readonly<XxxProps>`.
+- Spread `...props` onto the underlying Mantine component so size, radius, style, etc. can be overridden by the caller.
+- Merge `style` explicitly (`{ ...defaultStyle, ...props.style }`) so callers can still add inline styles.
+
 ### React Compiler
 
 `babel-plugin-react-compiler` is enabled in the Vite config. The compiler handles memoization automatically — avoid sprinkling `useMemo`/`useCallback` unless profiling shows a real need.
