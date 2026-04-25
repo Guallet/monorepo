@@ -3,7 +3,7 @@ import { useOpenBankingConnections } from "@guallet/api-react";
 import { Button, Stack, Title } from "@mantine/core";
 import { useNavigate } from "@tanstack/react-router";
 import { ConnectionCard } from "../components/ConnectionCard";
-import EmptyState from "@/components/EmptyState/EmptyState";
+import { EmptyState } from "@/components/EmptyState/EmptyState";
 import { useTranslation } from "react-i18next";
 import { ObConnection } from "@guallet/api-client";
 
@@ -16,13 +16,14 @@ export function ConnectionsScreen() {
     <BaseScreen isLoading={isLoading}>
       {connections.length === 0 && !isLoading ? (
         <EmptyState
-          text={t(
-            "screens.connections.list.emptyState",
-            "No Connections Found. Create a new connection to get started."
+          title={t("screens.connections.list.emptyState.title", "No connections yet")}
+          description={t(
+            "screens.connections.list.emptyState.description",
+            "Connect your bank accounts via open banking to automatically import transactions."
           )}
-          iconName="IconPlugConnected"
-          onClick={() => {
-            navigate({ to: "/connections/connect" });
+          primaryAction={{
+            label: t("screens.connections.list.addButton", "Connect a bank"),
+            onClick: () => navigate({ to: "/connections/connect" }),
           }}
         />
       ) : (

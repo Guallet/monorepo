@@ -1,15 +1,26 @@
-import { Group, Text, UnstyledButton, rem } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
-import { AccountDto } from "@guallet/api-client";
-import { InstitutionLogo } from "@/components/InstitutionLogo/InstitutionLogo";
+import { AccountDto } from '@guallet/api-client';
+import { useInstitution } from '@guallet/api-react';
+import { Money } from '@guallet/money';
+import { Group, Stack, Text, UnstyledButton } from '@mantine/core';
+import { IconChevronRight } from '@tabler/icons-react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AccountAvatar } from './AccountAvatar';
 
 interface Props {
   account: AccountDto;
+  isLast?: boolean;
   onClick?: () => void;
 }
 
-export function AccountRow({ account, onClick }: Readonly<Props>) {
+export function AccountRow({
+  account,
+  isLast = true,
+  onClick,
+}: Readonly<Props>) {
+  const [hovered, setHovered] = useState(false);
+  const { t } = useTranslation();
+  const { institution } = useInstitution(account.institutionId || null);
   const money = Money.fromCurrencyCode({
     amount: account.balance.amount,
     currencyCode: account.currency,
@@ -17,34 +28,64 @@ export function AccountRow({ account, onClick }: Readonly<Props>) {
 
   return (
     <UnstyledButton
-      pt={"md"}
-      pb={"md"}
-      onClick={() => {
-        if (onClick) {
-          onClick();
-        }
+      w="100%"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 14,
+        padding: '14px 16px',
+        borderBottom: isLast ? 'none' : '1px solid var(--mantine-color-gray-2)',
+        background: hovered ? 'var(--mantine-color-gray-0)' : 'transparent',
+        transition: 'background 150ms ease',
       }}
     >
-      <Group gap="sm">
-        <InstitutionLogo
-          radius="xl"
-          size={50}
-          institutionId={account.institutionId}
-        />
+      <AccountAvatar accountId={account.id} />
+      <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
         <Text
+          size="sm"
+          fw={600}
           style={{
-            flex: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}
         >
           {account.name}
         </Text>
-        <Text fw={700}>{money.format()}</Text>
-
-        <IconChevronRight
-          style={{ width: rem(14), height: rem(14) }}
-          stroke={2}
-        />
-      </Group>
+        <Group gap={4} wrap="nowrap">
+          <Text size="xs" c="dimmed">
+            {institution
+              ? institution.name
+              : t('feature.accounts.list.row.manualAccount', 'Manual account')}
+          </Text>
+          <Text size="xs" c="dimmed" aria-hidden>
+            ·
+          </Text>
+          <Text size="xs" c="dimmed">
+            {account.currency}
+          </Text>
+        </Group>
+      </Stack>
+      <Text
+        fw={700}
+        fz={17}
+        c={money.isNegative() ? 'red' : undefined}
+        style={{ fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}
+      >
+        {money.format()}
+      </Text>
+      <IconChevronRight
+        size={16}
+        style={{
+          color: 'var(--mantine-color-dimmed)',
+          flexShrink: 0,
+          opacity: hovered ? 1 : 0.4,
+          transition: 'opacity 150ms',
+        }}
+      />
     </UnstyledButton>
   );
 }

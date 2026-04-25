@@ -1,4 +1,4 @@
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
+import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 import { AmountLabel } from "@/components/Amount/AmountLabel";
 import { Group, Stack, Text } from "@mantine/core";
 import { getAccountTypeTitleSingular } from "../models/Account";

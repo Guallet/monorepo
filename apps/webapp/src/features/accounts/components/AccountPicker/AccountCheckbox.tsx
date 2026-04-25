@@ -2,7 +2,7 @@ import { Checkbox, Text, UnstyledButton, Group } from "@mantine/core";
 import classes from "./AccountCheckbox.module.css";
 import { useRef } from "react";
 import { AccountDto } from "@guallet/api-client";
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
+import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 
 interface AccountCheckboxProps {
   account: AccountDto;

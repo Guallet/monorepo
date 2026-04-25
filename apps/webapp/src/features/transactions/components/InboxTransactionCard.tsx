@@ -1,4 +1,4 @@
-import { AccountAvatar } from "@/components/AccountAvatar/AccountAvatar";
+import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
 import { useLocale } from "@/i18n/useLocale";
 import { InboxTransactionDto } from "@guallet/api-client";
