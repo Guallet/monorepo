@@ -6,7 +6,7 @@ import {
 import { Stack, Button } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { AppCategorySection } from '../components/AppCategorySection/AppCategorySection';
-import EmptyState from '@/components/EmptyState/EmptyState';
+import { EmptyState } from '@/components/EmptyState/EmptyState';
 
 export function CategoryListScreen() {
   const { categories, isLoading } = useGroupedCategories();
@@ -28,9 +28,12 @@ export function CategoryListScreen() {
         {categories.length === 0 && !isLoading ? (
           <EmptyState
             loading={seedMutation.isPending}
-            iconName="IconCategory"
-            text="No categories yet. Click to create your default categories."
-            onClick={() => seedMutation.mutate()}
+            title="No categories yet"
+            description="Create your default categories to start organising your transactions."
+            primaryAction={{
+              label: 'Create default categories',
+              onClick: () => seedMutation.mutate(),
+            }}
           />
         ) : (
           categories.map((category) => (

@@ -38,7 +38,7 @@ export function AccountsHeader({
         <TextInput
           style={{ flex: 1, maxWidth: 420 }}
           leftSection={<IconSearch size={16} />}
-          placeholder="Search transactions, accounts..."
+          placeholder="Search accounts..."
           onChange={(e) => onSearchQueryChanged(e.target.value)}
         />
         <Button

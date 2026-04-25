@@ -4,7 +4,7 @@ import { BudgetCard } from "../components/BudgetCard";
 import { Button, Stack } from "@mantine/core";
 import { BudgetListHeader } from "../components/BudgetListHeader";
 import { useNavigate } from "@tanstack/react-router";
-import EmptyState from "@/components/EmptyState/EmptyState";
+import { EmptyState } from "@/components/EmptyState/EmptyState";
 import { useTranslation } from "react-i18next";
 
 export function BudgetListScreen() {
@@ -17,13 +17,14 @@ export function BudgetListScreen() {
     <BaseScreen isLoading={isLoading}>
       {budgets.length === 0 ? (
         <EmptyState
-          text={t(
-            "screens.budgets.list.emptyState",
-            "No Budgets Found. Create a new budget to get started."
+          title={t("screens.budgets.list.emptyState.title", "No budgets yet")}
+          description={t(
+            "screens.budgets.list.emptyState.description",
+            "Create your first budget to start tracking and controlling your spending."
           )}
-          iconName="IconPlus"
-          onClick={() => {
-            navigate({ to: "/budgets/create" });
+          primaryAction={{
+            label: t("screens.budgets.list.createBudgetButton.label", "Create new Budget"),
+            onClick: () => navigate({ to: "/budgets/create" }),
           }}
         />
       ) : (
