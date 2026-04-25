@@ -1,6 +1,7 @@
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
-import { Group, Text, ThemeIcon } from '@mantine/core';
+import { Group, Stack, Text, ThemeIcon } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
 import {
   IconBriefcase,
   IconBuildingBank,
@@ -47,13 +48,14 @@ function groupByCurrency(accounts: AccountDto[]): Record<string, AccountDto[]> {
 }
 
 function GroupTotals({ accounts }: { accounts: AccountDto[] }) {
+  const { t } = useTranslation();
   const byCurrency = groupByCurrency(accounts);
   const currencies = Object.entries(byCurrency);
 
   if (currencies.length > 2) {
     return (
       <Text size="xs" c="dimmed" fs="italic" ta="right" maw={220}>
-        Multiple currencies — totals hidden
+        {t('feature.accounts.list.header.multipleCurrencies', 'Multiple currencies — totals hidden')}
       </Text>
     );
   }
@@ -91,8 +93,19 @@ interface HeaderProps {
 }
 
 export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderProps>) {
+  const { t } = useTranslation();
   const byCurrency = groupByCurrency(accounts);
   const currencyCount = Object.keys(byCurrency).length;
+
+  const accountCountText = t('feature.accounts.list.header.accountCount', {
+    count: accounts.length,
+    defaultValue_one: '{{count}} account',
+    defaultValue_other: '{{count}} accounts',
+  });
+  const currencySuffix =
+    currencyCount > 1
+      ? ` · ${t('feature.accounts.list.header.currencyCount', { count: currencyCount, defaultValue_one: '{{count}} currency', defaultValue_other: '{{count}} currencies' })}`
+      : '';
 
   return (
     <Group
@@ -107,15 +120,14 @@ export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderPro
         <ThemeIcon variant="light" size={36} radius={10}>
           {renderGroupIcon(accountType)}
         </ThemeIcon>
-        <div>
+        <Stack gap={2}>
           <Text fw={700} size="md" style={{ letterSpacing: '-0.01em' }}>
             {getAccountTypeTitle(accountType)}
           </Text>
           <Text size="xs" c="dimmed">
-            {accounts.length} {accounts.length === 1 ? 'account' : 'accounts'}
-            {currencyCount > 1 ? ` · ${currencyCount} currencies` : ''}
+            {accountCountText}{currencySuffix}
           </Text>
-        </div>
+        </Stack>
       </Group>
       <GroupTotals accounts={accounts} />
     </Group>

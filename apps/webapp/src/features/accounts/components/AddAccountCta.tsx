@@ -1,6 +1,7 @@
 import { useTheme } from '@guallet/ui-react';
 import { Button, Card, Group, Stack, Text } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 interface AddAccountCtaProps {
   onAdd: () => void;
@@ -8,6 +9,7 @@ interface AddAccountCtaProps {
 
 export function AddAccountCta({ onAdd }: Readonly<AddAccountCtaProps>) {
   const { spacing } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -24,18 +26,21 @@ export function AddAccountCta({ onAdd }: Readonly<AddAccountCtaProps>) {
       <Group justify="space-between" align="center" gap={spacing.md} wrap="wrap">
         <Stack gap={spacing.xs}>
           <Text size="sm" fw={600}>
-            Missing an account?
+            {t('feature.accounts.list.addCta.title', 'Missing an account?')}
           </Text>
           <Text size="xs" c="dimmed">
-            Connect via open banking, or add a manual account for cash, crypto or anything else.
+            {t(
+              'feature.accounts.list.addCta.description',
+              'Connect via open banking, or add a manual account for cash, crypto or anything else.',
+            )}
           </Text>
         </Stack>
         <Group gap={spacing.xs}>
           <Button variant="outline" size="sm" onClick={onAdd}>
-            Add manually
+            {t('feature.accounts.list.addCta.addManually', 'Add manually')}
           </Button>
           <Button size="sm" leftSection={<IconPlus size={14} />} onClick={onAdd}>
-            Connect a bank
+            {t('feature.accounts.list.addCta.connectBank', 'Connect a bank')}
           </Button>
         </Group>
       </Group>

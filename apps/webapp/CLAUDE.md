@@ -120,6 +120,32 @@ The available tokens are:
 
 English (default) and Spanish. Translation JSON files live in `public/locales/<lng>/translation.json`. Keys are extracted automatically (`prebuild` script) — use `useTranslation` + `t('key')` and let the extractor handle `en` keys. Don't hand-edit the generated JSON.
 
+**No hardcoded user-visible strings.** Every string rendered to the UI must go through `t()`. Always provide a sensible English default as the second argument so the app works before translations are extracted:
+
+```tsx
+import { useTranslation } from 'react-i18next';
+
+export function MyComponent() {
+  const { t } = useTranslation();
+
+  return (
+    <Text>{t('feature.myFeature.someLabel', 'My label')}</Text>
+  );
+}
+```
+
+For plurals, pass `count` and use `defaultValue_one` / `defaultValue_other`:
+
+```tsx
+t('feature.accounts.list.header.accountCount', {
+  count: accounts.length,
+  defaultValue_one: '{{count}} account',
+  defaultValue_other: '{{count}} accounts',
+})
+```
+
+Key naming convention: `<scope>.<feature>.<screen>.<element>` — e.g. `feature.accounts.list.title`, `screens.budgets.list.emptyState.description`.
+
 ### Environment variables
 
 Must be prefixed `VITE_`. Copy `webapp.env.sample` (in monorepo root) to `apps/webapp/.env`. Required var: `VITE_API_URL` (default `http://localhost:5000`).

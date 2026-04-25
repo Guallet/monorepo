@@ -1,6 +1,7 @@
 import { useTheme } from '@guallet/ui-react';
 import { Box, Button, Group, TextInput, Title } from '@mantine/core';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 interface AccountsHeaderProps {
   onAddNewAccount: () => void;
@@ -12,6 +13,7 @@ export function AccountsHeader({
   onSearchQueryChanged,
 }: Readonly<AccountsHeaderProps>) {
   const { spacing } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -33,12 +35,12 @@ export function AccountsHeader({
     >
       <Group justify="space-between" align="center" gap="md" wrap="nowrap">
         <Title order={2} style={{ letterSpacing: '-0.01em', flexShrink: 0 }}>
-          Accounts
+          {t('feature.accounts.list.title', 'Accounts')}
         </Title>
         <TextInput
           style={{ flex: 1, maxWidth: 420 }}
           leftSection={<IconSearch size={16} />}
-          placeholder="Search accounts..."
+          placeholder={t('feature.accounts.list.searchPlaceholder', 'Search accounts...')}
           onChange={(e) => onSearchQueryChanged(e.target.value)}
         />
         <Button
@@ -46,7 +48,7 @@ export function AccountsHeader({
           onClick={onAddNewAccount}
           style={{ flexShrink: 0 }}
         >
-          Add account
+          {t('feature.accounts.list.addAccount', 'Add account')}
         </Button>
       </Group>
     </Box>
