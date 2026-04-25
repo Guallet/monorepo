@@ -4,6 +4,7 @@ import { Money } from '@guallet/money';
 import { Group, Stack, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AccountAvatar } from './AccountAvatar';
 
 interface Props {
@@ -18,6 +19,7 @@ export function AccountRow({
   onClick,
 }: Readonly<Props>) {
   const [hovered, setHovered] = useState(false);
+  const { t } = useTranslation();
   const { institution } = useInstitution(account.institutionId || null);
   const money = Money.fromCurrencyCode({
     amount: account.balance.amount,
@@ -55,7 +57,9 @@ export function AccountRow({
         </Text>
         <Group gap={4} wrap="nowrap">
           <Text size="xs" c="dimmed">
-            {institution ? institution.name : <em>Manual account</em>}
+            {institution
+              ? institution.name
+              : t('feature.accounts.list.row.manualAccount', 'Manual account')}
           </Text>
           <Text size="xs" c="dimmed" aria-hidden>
             ·

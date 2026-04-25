@@ -3,6 +3,7 @@ import { Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import { Card, Divider, Group, Stack, Text } from '@mantine/core';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SummaryBlock } from './SummaryBlock';
 
 function formatMoney(amount: number, currency: string): string {
@@ -15,6 +16,7 @@ interface NetWorthSummaryProps {
 
 export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
   const { spacing } = useTheme();
+  const { t } = useTranslation();
 
   const { totals, assets, liabilities, primary, currencies } = useMemo(() => {
     const totals: Record<string, number> = {};
@@ -46,7 +48,7 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
       <Group justify="space-between" align="flex-start" wrap="wrap" gap="lg">
         <Stack gap={spacing.xs} miw={240}>
           <Text size="xs" fw={600} tt="uppercase" c="dimmed" style={{ letterSpacing: '0.06em' }}>
-            Net worth
+            {t('feature.accounts.list.summary.netWorth', 'Net worth')}
           </Text>
           <Group align="baseline" gap="md" wrap="wrap">
             <Text
@@ -74,15 +76,28 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
             ))}
           </Group>
           <Text size="xs" c="dimmed">
-            Across {accounts.length} {accounts.length === 1 ? 'account' : 'accounts'} in{' '}
-            {currencies.length} {currencies.length === 1 ? 'currency' : 'currencies'}
+            {t('feature.accounts.list.summary.coverage', {
+              count: accounts.length,
+              accountCount: accounts.length,
+              currencyCount: currencies.length,
+              defaultValue_one: 'Across {{accountCount}} account in {{currencyCount}} currencies',
+              defaultValue_other: 'Across {{accountCount}} accounts in {{currencyCount}} currencies',
+            })}
           </Text>
         </Stack>
 
         <Group gap="lg" align="flex-start">
-          <SummaryBlock label="Assets" totals={assets} positive />
+          <SummaryBlock
+            label={t('feature.accounts.list.summary.assets', 'Assets')}
+            totals={assets}
+            positive
+          />
           <Divider orientation="vertical" />
-          <SummaryBlock label="Liabilities" totals={liabilities} positive={false} />
+          <SummaryBlock
+            label={t('feature.accounts.list.summary.liabilities', 'Liabilities')}
+            totals={liabilities}
+            positive={false}
+          />
         </Group>
       </Group>
     </Card>

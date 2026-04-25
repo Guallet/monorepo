@@ -1,10 +1,12 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { EmptyState } from '@/components/EmptyState/EmptyState';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccounts } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
 import { Card, Stack } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AccountRow } from '../components/AccountRow';
 import { AccountsEmptyState } from '../components/AccountsEmptyState';
 import { AccountsHeader } from '../components/AccountsHeader';
@@ -27,6 +29,7 @@ export function AccountListScreen() {
   const navigate = useNavigate();
   const { accounts, isLoading } = useAccounts();
   const { spacing } = useTheme();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredAccounts = useMemo(() => {
@@ -48,14 +51,19 @@ export function AccountListScreen() {
     }));
   }, [filteredAccounts]);
 
-  function goToAddAccount() {
+  function goToAddManualAccount() {
     navigate({ to: '/accounts/new' });
+  }
+
+  function goToConnectBank() {
+    navigate({ to: '/connections/connect' });
   }
 
   return (
     <BaseScreen isLoading={isLoading}>
       <AccountsHeader
-        onAddNewAccount={goToAddAccount}
+        onAddNewAccount={goToAddManualAccount}
+        searchQuery={searchQuery}
         onSearchQueryChanged={setSearchQuery}
       />
       <Stack
@@ -66,7 +74,22 @@ export function AccountListScreen() {
         pb={spacing.xl}
       >
         {!isLoading && (!accounts || accounts.length === 0) ? (
-          <AccountsEmptyState onAdd={goToAddAccount} />
+          <AccountsEmptyState
+            onConnectBank={goToConnectBank}
+            onAddManual={goToAddManualAccount}
+          />
+        ) : !isLoading && accounts && accounts.length > 0 && groupedAccounts.length === 0 ? (
+          <EmptyState
+            title={t('feature.accounts.list.emptyQuery.title', 'No matching accounts')}
+            description={t(
+              'feature.accounts.list.emptyQuery.description',
+              'Try a different search term or clear the current filter to see all your accounts.',
+            )}
+            primaryAction={{
+              label: t('feature.accounts.list.emptyQuery.clearSearch', 'Clear search'),
+              onClick: () => setSearchQuery(''),
+            }}
+          />
         ) : (
           <>
             {accounts && accounts.length > 0 && (
@@ -90,7 +113,10 @@ export function AccountListScreen() {
             ))}
 
             {accounts && accounts.length > 0 && (
-              <AddAccountCta onAdd={goToAddAccount} />
+              <AddAccountCta
+                onConnectBank={goToConnectBank}
+                onAddManual={goToAddManualAccount}
+              />
             )}
           </>
         )}

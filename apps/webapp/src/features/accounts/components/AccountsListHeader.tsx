@@ -47,7 +47,7 @@ function groupByCurrency(accounts: AccountDto[]): Record<string, AccountDto[]> {
   );
 }
 
-function GroupTotals({ accounts }: { accounts: AccountDto[] }) {
+function GroupTotals({ accounts }: Readonly<{ accounts: AccountDto[] }>) {
   const { t } = useTranslation();
   const byCurrency = groupByCurrency(accounts);
   const currencies = Object.entries(byCurrency);
@@ -55,16 +55,32 @@ function GroupTotals({ accounts }: { accounts: AccountDto[] }) {
   if (currencies.length > 2) {
     return (
       <Text size="xs" c="dimmed" fs="italic" ta="right" maw={220}>
-        {t('feature.accounts.list.header.multipleCurrencies', 'Multiple currencies — totals hidden')}
+        {t(
+          'feature.accounts.list.header.multipleCurrencies',
+          'Multiple currencies — totals hidden',
+        )}
       </Text>
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        gap: 2,
+      }}
+    >
       {currencies.map(([currency, accs], i) => {
-        const total = accs.reduce((sum, a) => sum + Number(a.balance.amount), 0);
-        const money = Money.fromCurrencyCode({ amount: total, currencyCode: currency });
+        const total = accs.reduce(
+          (sum, a) => sum + Number(a.balance.amount),
+          0,
+        );
+        const money = Money.fromCurrencyCode({
+          amount: total,
+          currencyCode: currency,
+        });
         const isPrimary = i === 0;
         return (
           <Text
@@ -92,7 +108,10 @@ interface HeaderProps {
   accounts: AccountDto[];
 }
 
-export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderProps>) {
+export function AccountsListHeader({
+  accountType,
+  accounts,
+}: Readonly<HeaderProps>) {
   const { t } = useTranslation();
   const byCurrency = groupByCurrency(accounts);
   const currencyCount = Object.keys(byCurrency).length;
@@ -125,7 +144,8 @@ export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderPro
             {getAccountTypeTitle(accountType)}
           </Text>
           <Text size="xs" c="dimmed">
-            {accountCountText}{currencySuffix}
+            {accountCountText}
+            {currencySuffix}
           </Text>
         </Stack>
       </Group>

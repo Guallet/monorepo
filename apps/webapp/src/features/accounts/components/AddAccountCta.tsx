@@ -4,10 +4,14 @@ import { IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
 interface AddAccountCtaProps {
-  onAdd: () => void;
+  onConnectBank: () => void;
+  onAddManual: () => void;
 }
 
-export function AddAccountCta({ onAdd }: Readonly<AddAccountCtaProps>) {
+export function AddAccountCta({
+  onConnectBank,
+  onAddManual,
+}: Readonly<AddAccountCtaProps>) {
   const { spacing } = useTheme();
   const { t } = useTranslation();
 
@@ -36,10 +40,10 @@ export function AddAccountCta({ onAdd }: Readonly<AddAccountCtaProps>) {
           </Text>
         </Stack>
         <Group gap={spacing.xs}>
-          <Button variant="outline" size="sm" onClick={onAdd}>
+          <Button variant="outline" size="sm" onClick={onAddManual}>
             {t('feature.accounts.list.addCta.addManually', 'Add manually')}
           </Button>
-          <Button size="sm" leftSection={<IconPlus size={14} />} onClick={onAdd}>
+          <Button size="sm" leftSection={<IconPlus size={14} />} onClick={onConnectBank}>
             {t('feature.accounts.list.addCta.connectBank', 'Connect a bank')}
           </Button>
         </Group>

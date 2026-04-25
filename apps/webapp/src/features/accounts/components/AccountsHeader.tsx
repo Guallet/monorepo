@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 interface AccountsHeaderProps {
   onAddNewAccount: () => void;
+  searchQuery: string;
   onSearchQueryChanged: (searchQuery: string) => void;
 }
 
 export function AccountsHeader({
   onAddNewAccount,
+  searchQuery,
   onSearchQueryChanged,
 }: Readonly<AccountsHeaderProps>) {
   const { spacing } = useTheme();
@@ -39,6 +41,7 @@ export function AccountsHeader({
         </Title>
         <TextInput
           style={{ flex: 1, maxWidth: 420 }}
+          value={searchQuery}
           leftSection={<IconSearch size={16} />}
           placeholder={t('feature.accounts.list.searchPlaceholder', 'Search accounts...')}
           onChange={(e) => onSearchQueryChanged(e.target.value)}

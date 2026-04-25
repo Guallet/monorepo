@@ -6,10 +6,14 @@ import { EmptyIllustration } from './EmptyIllustration';
 import { EmptyTrait } from './EmptyTrait';
 
 interface AccountsEmptyStateProps {
-  onAdd: () => void;
+  onConnectBank: () => void;
+  onAddManual: () => void;
 }
 
-export function AccountsEmptyState({ onAdd }: Readonly<AccountsEmptyStateProps>) {
+export function AccountsEmptyState({
+  onConnectBank,
+  onAddManual,
+}: Readonly<AccountsEmptyStateProps>) {
   const { spacing } = useTheme();
   const { t } = useTranslation();
 
@@ -40,10 +44,10 @@ export function AccountsEmptyState({ onAdd }: Readonly<AccountsEmptyStateProps>)
             )}
           </Text>
           <Group justify="center" gap={spacing.xs} mt={spacing.md} wrap="wrap">
-            <Button leftSection={<IconPlus size={16} />} onClick={onAdd}>
+            <Button leftSection={<IconPlus size={16} />} onClick={onConnectBank}>
               {t('feature.accounts.list.emptyState.connectBank', 'Connect a bank')}
             </Button>
-            <Button variant="outline" onClick={onAdd}>
+            <Button variant="outline" onClick={onAddManual}>
               {t('feature.accounts.list.emptyState.addManually', 'Add manually')}
             </Button>
           </Group>
