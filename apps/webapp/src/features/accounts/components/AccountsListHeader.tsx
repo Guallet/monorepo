@@ -1,84 +1,124 @@
-import GroupHeader from '@/components/GroupHeader/GroupHeader';
-import { getAccountTypeTitle } from '@/features/accounts/models/Account';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
-import 'core-js/actual/array/group-by';
+import { Group, Text, ThemeIcon } from '@mantine/core';
+import {
+  IconBriefcase,
+  IconBuildingBank,
+  IconChartBar,
+  IconCreditCard,
+  IconHome,
+  IconPigMoney,
+  IconReceipt,
+} from '@tabler/icons-react';
+import { FC } from 'react';
+import { getAccountTypeTitle } from '@/features/accounts/models/Account';
+
+function getGroupIcon(type: AccountTypeDto): FC<{ size?: number }> {
+  switch (type) {
+    case AccountTypeDto.CURRENT_ACCOUNT:
+      return IconBuildingBank;
+    case AccountTypeDto.SAVINGS:
+      return IconPigMoney;
+    case AccountTypeDto.CREDIT_CARD:
+      return IconCreditCard;
+    case AccountTypeDto.INVESTMENT:
+      return IconChartBar;
+    case AccountTypeDto.MORTGAGE:
+      return IconHome;
+    case AccountTypeDto.LOAN:
+      return IconReceipt;
+    case AccountTypeDto.PENSION:
+      return IconBriefcase;
+    default:
+      return IconBuildingBank;
+  }
+}
+
+function groupByCurrency(accounts: AccountDto[]): Record<string, AccountDto[]> {
+  return accounts.reduce(
+    (acc, account) => {
+      const key = account.currency;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(account);
+      return acc;
+    },
+    {} as Record<string, AccountDto[]>,
+  );
+}
+
+function GroupTotals({ accounts }: { accounts: AccountDto[] }) {
+  const byCurrency = groupByCurrency(accounts);
+  const currencies = Object.entries(byCurrency);
+
+  if (currencies.length > 2) {
+    return (
+      <Text size="xs" c="dimmed" fs="italic" ta="right" maw={220}>
+        Multiple currencies — totals hidden
+      </Text>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
+      {currencies.map(([currency, accs], i) => {
+        const total = accs.reduce((sum, a) => sum + Number(a.balance.amount), 0);
+        const money = Money.fromCurrencyCode({ amount: total, currencyCode: currency });
+        const isPrimary = i === 0;
+        return (
+          <Text
+            key={currency}
+            fz={isPrimary ? 22 : 14}
+            fw={700}
+            c={money.isNegative() ? 'red' : undefined}
+            style={{
+              fontVariantNumeric: 'tabular-nums',
+              letterSpacing: '-0.02em',
+              opacity: isPrimary ? 1 : 0.7,
+              lineHeight: 1.15,
+            }}
+          >
+            {money.format()}
+          </Text>
+        );
+      })}
+    </div>
+  );
+}
 
 interface HeaderProps {
   accountType: AccountTypeDto;
   accounts: AccountDto[];
 }
 
-function sumArray(array: number[]): number {
-  const sum = array.reduce(function (a, b) {
-    return Number(a) + Number(b);
-  }, 0);
-
-  return sum;
-}
-
-// TODO: Replace this with Object.groupBy when we can drop support for Node 16
-function groupBy<T, K extends string | number | symbol>(
-  array: T[],
-  selector: (item: T) => K,
-): Record<K, T[]> {
-  return array.reduce(
-    (acc, item) => {
-      const key = selector(item);
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(item);
-      return acc;
-    },
-    {} as Record<K, T[]>,
-  );
-}
-
-export function AccountsListHeader({
-  accountType,
-  accounts,
-}: Readonly<HeaderProps>) {
-  function getTotalBalance(): string {
-    const currencies = Object.entries(
-      groupBy(accounts, (x: AccountDto) => x.currency),
-    );
-
-    if (currencies.length == 1) {
-      // Display Single Balance
-      const total = accounts.map((e) => +e.balance.amount);
-      const sum = sumArray(total);
-
-      const money = Money.fromCurrencyCode({
-        amount: sum,
-        currencyCode: currencies[0][0],
-      });
-      return money.format();
-    } else if (currencies.length == 2) {
-      // Display 2 Balances
-      const balances = currencies.map((entry) => {
-        const [currency, accounts] = entry;
-
-        const total = accounts.map((e) => +e.balance.amount);
-        const sum = sumArray(total);
-
-        const money = Money.fromCurrencyCode({
-          amount: sum,
-          currencyCode: currency,
-        });
-        return money.format();
-      });
-      return balances.join(' + ');
-    } else {
-      // Don't display anything. Too many balances
-      return '';
-    }
-  }
+export function AccountsListHeader({ accountType, accounts }: Readonly<HeaderProps>) {
+  const Icon = getGroupIcon(accountType);
+  const byCurrency = groupByCurrency(accounts);
+  const currencyCount = Object.keys(byCurrency).length;
 
   return (
-    <GroupHeader
-      title={getAccountTypeTitle(accountType)}
-      rightContent={getTotalBalance()}
-    />
+    <Group
+      justify="space-between"
+      align="center"
+      gap={14}
+      px="md"
+      py="sm"
+      style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }}
+    >
+      <Group gap={12} align="center" style={{ flex: 1, minWidth: 0 }}>
+        <ThemeIcon variant="light" size={36} radius={10}>
+          <Icon size={20} />
+        </ThemeIcon>
+        <div>
+          <Text fw={700} size="md" style={{ letterSpacing: '-0.01em' }}>
+            {getAccountTypeTitle(accountType)}
+          </Text>
+          <Text size="xs" c="dimmed">
+            {accounts.length} {accounts.length === 1 ? 'account' : 'accounts'}
+            {currencyCount > 1 ? ` · ${currencyCount} currencies` : ''}
+          </Text>
+        </div>
+      </Group>
+      <GroupTotals accounts={accounts} />
+    </Group>
   );
 }
