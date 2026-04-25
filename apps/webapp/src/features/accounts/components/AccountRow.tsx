@@ -1,7 +1,7 @@
 import { AccountDto } from '@guallet/api-client';
 import { useInstitution } from '@guallet/api-react';
 import { Money } from '@guallet/money';
-import { Group, Text, UnstyledButton } from '@mantine/core';
+import { Group, Stack, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import { useState } from 'react';
 import { AccountAvatar } from './AccountAvatar';
@@ -41,7 +41,7 @@ export function AccountRow({
       }}
     >
       <AccountAvatar account={account} />
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
         <Text
           size="sm"
           fw={600}
@@ -64,7 +64,7 @@ export function AccountRow({
             {account.currency}
           </Text>
         </Group>
-      </div>
+      </Stack>
       <Text
         fw={700}
         fz={17}

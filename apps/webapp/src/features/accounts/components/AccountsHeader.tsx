@@ -1,4 +1,5 @@
-import { Button, Group, TextInput, Title } from '@mantine/core';
+import { useTheme } from '@guallet/ui-react';
+import { Box, Button, Group, TextInput, Title } from '@mantine/core';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 
 interface AccountsHeaderProps {
@@ -10,8 +11,10 @@ export function AccountsHeader({
   onAddNewAccount,
   onSearchQueryChanged,
 }: Readonly<AccountsHeaderProps>) {
+  const { spacing } = useTheme();
+
   return (
-    <div
+    <Box
       style={{
         position: 'sticky',
         top: 'var(--app-shell-header-height, 60px)',
@@ -24,8 +27,8 @@ export function AccountsHeader({
         marginTop: 'calc(-1 * var(--app-shell-padding))',
         paddingLeft: 'var(--app-shell-padding)',
         paddingRight: 'var(--app-shell-padding)',
-        paddingTop: 12,
-        paddingBottom: 12,
+        paddingTop: spacing.sm,
+        paddingBottom: spacing.sm,
       }}
     >
       <Group justify="space-between" align="center" gap="md" wrap="nowrap">
@@ -46,6 +49,6 @@ export function AccountsHeader({
           Add account
         </Button>
       </Group>
-    </div>
+    </Box>
   );
 }

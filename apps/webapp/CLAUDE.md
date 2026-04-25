@@ -75,6 +75,43 @@ export function AccountAvatar({
 - Spread `...props` onto the underlying Mantine component so size, radius, style, etc. can be overridden by the caller.
 - Merge `style` explicitly (`{ ...defaultStyle, ...props.style }`) so callers can still add inline styles.
 
+**Prefer Mantine layout components over HTML elements.** Use Mantine's layout primitives instead of raw `div`s for any structural element:
+
+- `Stack` — vertical arrangement with consistent gap
+- `Group` — horizontal arrangement with consistent gap
+- `Flex` — flexible layout needing custom direction or alignment
+- `Grid` / `SimpleGrid` — multi-column grids
+- `Container` — centred, max-width content wrapper
+- `Center` — single-child horizontal + vertical centering
+- `Box` — generic styled wrapper (replaces unstyled `div`/`span`)
+
+Only use raw HTML elements (`div`, `span`, `section`, etc.) when no Mantine component fits and the semantic element matters (e.g. `<main>`, `<nav>`, `<article>`).
+
+**No hardcoded design values.** Never use raw numbers or strings for spacing, colors, or typography. Always pull values from the design system via `useTheme()` from `@guallet/ui-react`:
+
+```tsx
+import { useTheme } from '@guallet/ui-react';
+
+export function MyComponent() {
+  const { spacing, colors, typography, borderRadius } = useTheme();
+
+  return (
+    <Box style={{ padding: spacing.md, borderRadius: borderRadius.md }}>
+      ...
+    </Box>
+  );
+}
+```
+
+The available tokens are:
+
+| Token group   | Keys |
+|---------------|------|
+| `spacing`     | `none` · `xs` (4) · `sm` (8) · `md` (16) · `lg` (24) · `xl` (32) · `xxl` (40) |
+| `borderRadius`| `xs` · `sm` · `md` · `lg` · `xl` |
+| `colors`      | `primary` · `secondary` · `error` · `success` · `warning` · `pageBackground` · … |
+| `typography`  | `fontFamily` · `fontFamilyMono` · size/weight scales |
+
 ### React Compiler
 
 `babel-plugin-react-compiler` is enabled in the Vite config. The compiler handles memoization automatically — avoid sprinkling `useMemo`/`useCallback` unless profiling shows a real need.
