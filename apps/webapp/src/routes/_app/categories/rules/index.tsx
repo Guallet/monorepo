@@ -5,12 +5,11 @@ import {
   Button,
   Card,
   Group,
-  Stack,
-  Text,
-  Title,
-  Switch,
-  Menu,
   Loader,
+  Menu,
+  Stack,
+  Switch,
+  Text,
 } from '@mantine/core';
 import {
   IconPlus,
@@ -25,6 +24,7 @@ import { RuleDto } from '@guallet/api-client';
 import { Category } from '@/features/categories/models/Category';
 import { useCategories, useRuleMutations, useRules } from '@guallet/api-react';
 import { useTranslation } from 'react-i18next';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 
 export const Route = createFileRoute('/_app/categories/rules/')({
   component: RulesPage,
@@ -272,22 +272,24 @@ function RulesPage() {
   };
 
   return (
-    <Stack gap="md">
-      <Group justify="space-between" align="center">
-        <Title order={2}>{t('screens.rules.list.title')}</Title>
+    <BaseScreen
+      isLoading={isRulesLoading}
+      title={t('screens.rules.list.title')}
+      actions={
         <Button
           leftSection={<IconPlus size={16} />}
           onClick={() => navigate({ to: '/categories/rules/new' })}
         >
           {t('screens.rules.list.createButton.label')}
         </Button>
-      </Group>
-
-      <Text c="dimmed" size="sm">
-        {t('screens.rules.list.description')}
-      </Text>
-
-      {renderContent()}
-    </Stack>
+      }
+    >
+      <Stack gap="md">
+        <Text c="dimmed" size="sm">
+          {t('screens.rules.list.description')}
+        </Text>
+        {renderContent()}
+      </Stack>
+    </BaseScreen>
   );
 }

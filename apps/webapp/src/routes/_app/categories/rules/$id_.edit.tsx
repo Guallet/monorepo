@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Stack, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
@@ -9,6 +8,7 @@ import {
   useRuleMutations,
 } from '@guallet/api-react';
 import { useTranslation } from 'react-i18next';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 
 export const Route = createFileRoute('/_app/categories/rules/$id_/edit')({
   component: EditRulePage,
@@ -82,36 +82,27 @@ function EditRulePage() {
     navigate({ to: '/categories/rules' });
   };
 
-  if (isRuleLoading || isFieldsLoading) {
-    return (
-      <Stack gap="md">
-        <Title order={2}>{t('screens.rules.edit.title')}</Title>
-        <div>{t('screens.rules.edit.loading')}</div>
-      </Stack>
-    );
-  }
-
-  if (!rule && !isRuleLoading) {
-    return (
-      <Stack gap="md">
-        <Title order={2}>{t('screens.rules.edit.title')}</Title>
-        <div>{t('screens.rules.edit.notFound')}</div>
-      </Stack>
-    );
-  }
-
   return (
-    <Stack gap="md">
-      <Title order={2}>{t('screens.rules.edit.title')}</Title>
-      <RuleForm
-        key={rule?.id}
-        initialData={initialData}
-        fieldDefinitions={fieldDefinitions ?? []}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        isSubmitting={isSubmitting}
-        submitLabel={t('screens.rules.edit.submitButton.label')}
-      />
-    </Stack>
+    <BaseScreen
+      isLoading={isRuleLoading || isFieldsLoading}
+      title={
+        rule?.name ?? t('screens.rules.edit.title')
+      }
+    >
+      {!isRuleLoading && !isFieldsLoading && rule && (
+        <RuleForm
+          key={rule.id}
+          initialData={initialData}
+          fieldDefinitions={fieldDefinitions ?? []}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+          isSubmitting={isSubmitting}
+          submitLabel={t('screens.rules.edit.submitButton.label')}
+        />
+      )}
+      {!isRuleLoading && !rule && (
+        <div>{t('screens.rules.edit.notFound')}</div>
+      )}
+    </BaseScreen>
   );
 }
