@@ -1,6 +1,5 @@
-import { AccountDto } from '@guallet/api-client';
-import { useInstitution } from '@guallet/api-react';
-import { Avatar, AvatarProps } from '@mantine/core';
+import { useAccount, useInstitution } from '@guallet/api-react';
+import { Avatar, AvatarProps, Tooltip } from '@mantine/core';
 
 function initialsFor(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean);
@@ -17,49 +16,41 @@ function hueFor(str: string): number {
 }
 
 interface AccountAvatarProps extends AvatarProps {
-  account: AccountDto;
+  accountId: string;
+  showTooltip?: boolean;
 }
 
 export function AccountAvatar({
-  account,
+  accountId,
+  showTooltip = false,
   ...props
 }: Readonly<AccountAvatarProps>) {
-  const { institution } = useInstitution(account.institutionId || null);
+  const { account } = useAccount(accountId);
+  const { institution } = useInstitution(account?.institutionId ?? null);
 
-  if (institution?.image_src) {
-    return (
-      <Avatar
-        src={institution.image_src}
-        alt={institution.name}
-        size={44}
-        radius={14}
-        style={{ flexShrink: 0 }}
-        {...props}
-      />
-    );
-  }
-
-  const initials = initialsFor(account.name);
-  const hue = hueFor(account.name);
-
-  return (
+  const avatar = institution?.image_src ? (
+    <Avatar src={institution.image_src} alt={institution.name} {...props} />
+  ) : (
     <Avatar
-      size={44}
-      radius={14}
       {...props}
       style={{
-        background: `oklch(95% 0.03 ${hue})`,
-        color: `oklch(38% 0.08 ${hue})`,
-        outline: `1.5px dashed oklch(70% 0.06 ${hue})`,
+        background: `oklch(95% 0.03 ${hueFor(account?.name ?? '')})`,
+        color: `oklch(38% 0.08 ${hueFor(account?.name ?? '')})`,
+        outline: `1.5px dashed oklch(70% 0.06 ${hueFor(account?.name ?? '')})`,
         fontWeight: 700,
         fontSize: 13,
         letterSpacing: '-0.01em',
-        flexShrink: 0,
         userSelect: 'none',
         ...props.style,
       }}
     >
-      {initials}
+      {account ? initialsFor(account.name) : null}
     </Avatar>
   );
+
+  if (showTooltip && institution?.name) {
+    return <Tooltip label={institution.name}>{avatar}</Tooltip>;
+  }
+
+  return avatar;
 }

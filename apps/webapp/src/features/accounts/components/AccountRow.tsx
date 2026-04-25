@@ -40,7 +40,7 @@ export function AccountRow({
         transition: 'background 150ms ease',
       }}
     >
-      <AccountAvatar account={account} />
+      <AccountAvatar accountId={account.id} />
       <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
         <Text
           size="sm"
