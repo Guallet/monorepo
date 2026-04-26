@@ -20,6 +20,11 @@
         "^lint"
       ]
     },
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ]
+    },
     "check-types": {
       "dependsOn": [
         "^check-types"

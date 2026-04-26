@@ -11,7 +11,10 @@ interface MonthlyInOutChartProps {
 }
 
 function compareChartItems(a: AccountChartData, b: AccountChartData): number {
-  return new Date(a.year, a.month, 1).getTime() - new Date(b.year, b.month, 1).getTime();
+  return (
+    new Date(a.year, a.month, 1).getTime() -
+    new Date(b.year, b.month, 1).getTime()
+  );
 }
 
 export function MonthlyInOutChart({
@@ -22,7 +25,7 @@ export function MonthlyInOutChart({
   const { t } = useTranslation();
   const { spacing } = useTheme();
 
-  const chartData = chart.sort(compareChartItems).map((x) => ({
+  const chartData = [...chart].sort(compareChartItems).map((x) => ({
     month: new Date(x.year, x.month, 1).toLocaleString('default', {
       month: 'short',
       year: '2-digit',
@@ -32,7 +35,7 @@ export function MonthlyInOutChart({
   }));
 
   return (
-    <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+    <Card withBorder shadow="sm" radius="lg" p="lg">
       <Text fw={600} mb={spacing.sm}>
         {t(
           'feature.accounts.details.monthlyInOut.title',
@@ -61,7 +64,10 @@ export function MonthlyInOutChart({
             {
               name: 'in',
               color: 'green.5',
-              label: t('feature.accounts.details.monthlyInOut.income', 'Income'),
+              label: t(
+                'feature.accounts.details.monthlyInOut.income',
+                'Income',
+              ),
             },
             {
               name: 'out',

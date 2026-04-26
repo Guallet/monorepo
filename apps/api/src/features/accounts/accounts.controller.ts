@@ -31,6 +31,19 @@ import { OpenbankingService } from '../openbanking/openbanking.service';
 import { AccountSource, toAccountSource } from './entities/accountSource.model';
 import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
 
+function parseDateParam(value: string | undefined, name: string): Date | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    throw new BadRequestException(`Invalid ${name} query parameter`);
+  }
+
+  return parsed;
+}
+
 @ApiTags('Accounts')
 @Controller('accounts')
 export class AccountsController {
@@ -111,17 +124,23 @@ export class AccountsController {
       accountId,
     );
 
-    const endDate = endDateParam ? new Date(endDateParam) : new Date();
+    const endDate = parseDateParam(endDateParam, 'endDate') ?? new Date();
 
-    const startDate = startDateParam
-      ? new Date(startDateParam)
-      : (() => {
-          const d = new Date();
-          d.setMonth(d.getMonth() - 3);
-          d.setDate(1);
-          d.setHours(0, 0, 0, 0);
-          return d;
-        })();
+    const startDate =
+      parseDateParam(startDateParam, 'startDate') ??
+      (() => {
+        const d = new Date();
+        d.setMonth(d.getMonth() - 3);
+        d.setDate(1);
+        d.setHours(0, 0, 0, 0);
+        return d;
+      })();
+
+    if (startDate > endDate) {
+      throw new BadRequestException(
+        'startDate must be before or equal to endDate',
+      );
+    }
 
     const transactions = await this.transactionsService.getAccountTransactions({
       accountId: account.id,
@@ -182,7 +201,6 @@ export class AccountsController {
       (a, b) => a.date.getTime() - b.date.getTime(),
     );
     const balanceHistory: BalanceHistoryPoint[] = [];
-    let runningBalance = balanceAtRangeEnd;
 
     // Work backwards to get opening balance, then forward for history
     const reversedTxns = [...sortedTxns].reverse();
@@ -191,7 +209,6 @@ export class AccountsController {
       openingBalance -= Number(t.amount);
     }
 
-    runningBalance = openingBalance;
     const dailyMap = new Map<string, number>();
     for (const t of sortedTxns) {
       const dateKey = t.date.toISOString().split('T')[0];
@@ -199,11 +216,13 @@ export class AccountsController {
     }
 
     // Build one balance point per day that has transactions
-    const sortedDays = Array.from(dailyMap.keys()).sort();
+    const sortedDays = Array.from(dailyMap.keys()).sort((left, right) =>
+      left.localeCompare(right),
+    );
     for (const day of sortedDays) {
-      runningBalance += dailyMap.get(day)!;
+      openingBalance += dailyMap.get(day) ?? 0;
       balanceHistory.push(
-        new BalanceHistoryPoint(day, Math.round(runningBalance * 100) / 100),
+        new BalanceHistoryPoint(day, Math.round(openingBalance * 100) / 100),
       );
     }
 

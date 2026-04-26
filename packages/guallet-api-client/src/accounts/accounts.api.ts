@@ -56,9 +56,13 @@ export class AccountsApi {
     const params = new URLSearchParams();
     if (startDate) params.append('startDate', startDate.toISOString());
     if (endDate) params.append('endDate', endDate.toISOString());
+
+    const basePath = `${ACCOUNTS_PATH}/${accountId}/charts`;
     const query = params.toString();
+    const path = query ? `${basePath}?${query}` : basePath;
+
     return await this.client.get<AccountChartsDto>({
-      path: `${ACCOUNTS_PATH}/${accountId}/charts${query ? `?${query}` : ''}`,
+      path,
     });
   }
 
