@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import { DateListPicker, DateRangeSelectionItem } from './DateListPicker';
 import { CalendarDateRangePicker } from './CalendarDateRangePicker';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface Props {
   selectedRange: { startDate: Date; endDate: Date } | null;
@@ -41,17 +41,6 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const [listItemSelected, setListItemSelected] =
     useState<DateRangeSelectionItem | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>(() =>
-    formatInitialLabel(selectedRange),
-  );
-
-  useEffect(() => {
-    setRange(selectedRange ?? null);
-    setButtonLabel(formatInitialLabel(selectedRange));
-    if (!selectedRange) {
-      setListItemSelected(null);
-    }
-  }, [selectedRange]);
 
   return (
     <Popover
@@ -65,10 +54,12 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
         <Button
           variant="outline"
           onClick={() => {
+            setRange(selectedRange ?? null);
+            setListItemSelected(null);
             setOpened(!opened);
           }}
         >
-          {buttonLabel}
+          {formatInitialLabel(selectedRange)}
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
@@ -115,14 +106,6 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
                   startDate: range?.startDate ?? new Date(),
                   endDate: range?.endDate ?? new Date(),
                 });
-
-                setButtonLabel(
-                  !range
-                    ? 'Select range'
-                    : listItemSelected
-                      ? listItemSelected.label
-                      : 'Custom range',
-                );
 
                 setOpened(false);
               }}
