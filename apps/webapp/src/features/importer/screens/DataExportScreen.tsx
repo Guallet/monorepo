@@ -1,37 +1,34 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useAccounts, useGualletClient } from '@guallet/api-react';
+import { useTheme } from '@guallet/ui-react';
 import {
-  Stack,
-  Title,
-  Text,
+  Alert,
+  Box,
   Button,
-  Paper,
+  Card,
   Group,
+  List,
+  Modal,
   MultiSelect,
   Select,
-  Modal,
-  Alert,
-  List,
+  Stack,
+  Text,
+  Title,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useState } from 'react';
-import { useAccounts, useGualletClient } from '@guallet/api-react';
 import { IconCheck, IconMail } from '@tabler/icons-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export function DataExportScreen() {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const gualletClient = useGualletClient();
   const { accounts } = useAccounts();
 
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([
-    null,
-    null,
-  ]);
-
+  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
-  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>(
-    'csv',
-  );
+  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>('csv');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,21 +42,12 @@ export function DataExportScreen() {
     try {
       setError(null);
       setIsLoading(true);
-
-      const exportPayload = {
-        startDate: dateRange[0]
-          ? new Date(dateRange[0]).toISOString()
-          : undefined,
-        endDate: dateRange[1]
-          ? new Date(dateRange[1]).toISOString()
-          : undefined,
-        accounts:
-          selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
+      await gualletClient.dataExporter.exportData({
+        startDate: dateRange[0] ? new Date(dateRange[0]).toISOString() : undefined,
+        endDate: dateRange[1] ? new Date(dateRange[1]).toISOString() : undefined,
+        accounts: selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
         format: exportFormat,
-      };
-
-      await gualletClient.dataExporter.exportData(exportPayload);
-
+      });
       setIsModalOpened(true);
     } catch (e) {
       console.error(e);
@@ -81,7 +69,7 @@ export function DataExportScreen() {
         size="md"
       >
         <Stack align="center" gap="lg" py="md">
-          <div
+          <Box
             style={{
               width: 80,
               height: 80,
@@ -93,26 +81,21 @@ export function DataExportScreen() {
             }}
           >
             <IconCheck size={48} color="var(--mantine-color-green-6)" />
-          </div>
-
+          </Box>
           <Stack align="center" gap="xs">
             <Title order={2}>{t('screens.dataExport.modal.title')}</Title>
             <Text c="dimmed" ta="center">
               {t('screens.dataExport.modal.description')}
             </Text>
           </Stack>
-
           <Alert icon={<IconMail size={16} />} color="blue" w="100%">
             <Stack gap="xs">
               <Text fw={500} size="sm">
                 {t('screens.dataExport.modal.emailTitle')}
               </Text>
-              <Text size="sm">
-                {t('screens.dataExport.modal.emailDescription')}
-              </Text>
+              <Text size="sm">{t('screens.dataExport.modal.emailDescription')}</Text>
             </Stack>
           </Alert>
-
           <Button fullWidth size="md" onClick={() => setIsModalOpened(false)}>
             {t('screens.dataExport.modal.button')}
           </Button>
@@ -120,98 +103,91 @@ export function DataExportScreen() {
       </Modal>
 
       <BaseScreen title={t('screens.dataExport.title')}>
-        <Stack gap="xl">
-          <Text c="dimmed">{t('screens.dataExport.description')}</Text>
+        <Box maw={600} mx="auto">
+          <Stack gap={spacing.md}>
+            <Text c="dimmed">{t('screens.dataExport.description')}</Text>
 
-          {error && (
-            <Alert
-              color="red"
-              title={t('screens.dataExport.error.title')}
-              withCloseButton
-              onClose={() => setError(null)}
-            >
-              {error}
-            </Alert>
-          )}
+            {error && (
+              <Alert
+                color="red"
+                title={t('screens.dataExport.error.title')}
+                withCloseButton
+                onClose={() => setError(null)}
+              >
+                {error}
+              </Alert>
+            )}
 
-          <Paper shadow="sm" p="lg" withBorder>
-            <Stack gap="md">
-              <Title order={4}>{t('screens.dataExport.filters.title')}</Title>
-              <Text size="sm" c="dimmed">
-                {t('screens.dataExport.filters.description')}
-              </Text>
+            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <Stack gap={spacing.md}>
+                <Text fw={600} size="sm">
+                  {t('screens.dataExport.filters.title')}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  {t('screens.dataExport.filters.description')}
+                </Text>
+                <DatePickerInput
+                  type="range"
+                  label={t('screens.dataExport.filters.dateRange.label')}
+                  placeholder={t('screens.dataExport.filters.dateRange.placeholder')}
+                  value={dateRange}
+                  onChange={setDateRange}
+                  clearable
+                  maxDate={new Date()}
+                />
+                <MultiSelect
+                  label={t('screens.dataExport.filters.accounts.label')}
+                  placeholder={t('screens.dataExport.filters.accounts.placeholder')}
+                  data={accountOptions}
+                  value={selectedAccountIds}
+                  onChange={setSelectedAccountIds}
+                  clearable
+                  searchable
+                />
+                <Select
+                  label={t('screens.dataExport.filters.format.label')}
+                  allowDeselect={false}
+                  data={[
+                    { value: 'csv', label: t('screens.dataExport.filters.format.csv') },
+                    { value: 'ofe', label: t('screens.dataExport.filters.format.ofe') },
+                    { value: 'json', label: t('screens.dataExport.filters.format.json') },
+                  ]}
+                  value={exportFormat}
+                  onChange={(value) => {
+                    if (value === 'csv' || value === 'ofe' || value === 'json') {
+                      setExportFormat(value);
+                    }
+                  }}
+                />
+              </Stack>
+            </Card>
 
-              <DatePickerInput
-                type="range"
-                label={t('screens.dataExport.filters.dateRange.label')}
-                placeholder={t(
-                  'screens.dataExport.filters.dateRange.placeholder',
-                )}
-                value={dateRange}
-                onChange={setDateRange}
-                clearable
-                maxDate={new Date()}
-              />
+            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <Stack gap="sm">
+                <Text fw={600} size="sm">
+                  {t('screens.dataExport.info.title')}
+                </Text>
+                <List size="sm" spacing="xs">
+                  <List.Item>{t('screens.dataExport.info.step1')}</List.Item>
+                  <List.Item>{t('screens.dataExport.info.step2')}</List.Item>
+                  <List.Item>{t('screens.dataExport.info.step3')}</List.Item>
+                  <List.Item>{t('screens.dataExport.info.step4')}</List.Item>
+                </List>
+              </Stack>
+            </Card>
 
-              <MultiSelect
-                label={t('screens.dataExport.filters.accounts.label')}
-                placeholder={t(
-                  'screens.dataExport.filters.accounts.placeholder',
-                )}
-                data={accountOptions}
-                value={selectedAccountIds}
-                onChange={setSelectedAccountIds}
-                clearable
-                searchable
-              />
-
-              <Select
-                label={t('screens.dataExport.filters.format.label')}
-                data={[
-                  {
-                    value: 'csv',
-                    label: t('screens.dataExport.filters.format.csv'),
-                  },
-                  {
-                    value: 'ofe',
-                    label: t('screens.dataExport.filters.format.ofe'),
-                  },
-                  {
-                    value: 'json',
-                    label: t('screens.dataExport.filters.format.json'),
-                  },
-                ]}
-                value={exportFormat}
-                allowDeselect={false}
-                onChange={(value) => {
-                  if (value === 'csv' || value === 'ofe' || value === 'json') {
-                    setExportFormat(value);
-                  }
-                }}
-              />
+            <Stack gap="xs" hiddenFrom="sm">
+              <Button fullWidth size="md" onClick={handleExport} loading={isLoading}>
+                {t('screens.dataExport.exportButton')}
+              </Button>
             </Stack>
-          </Paper>
-
-          <Paper p="md" withBorder>
-            <Stack gap="sm">
-              <Text fw={500} size="sm">
-                {t('screens.dataExport.info.title')}
-              </Text>
-              <List size="sm" spacing="xs">
-                <List.Item>{t('screens.dataExport.info.step1')}</List.Item>
-                <List.Item>{t('screens.dataExport.info.step2')}</List.Item>
-                <List.Item>{t('screens.dataExport.info.step3')}</List.Item>
-                <List.Item>{t('screens.dataExport.info.step4')}</List.Item>
-              </List>
-            </Stack>
-          </Paper>
-
-          <Group justify="flex-end">
-            <Button size="md" onClick={handleExport} loading={isLoading}>
-              {t('screens.dataExport.exportButton')}
-            </Button>
-          </Group>
-        </Stack>
+            <Group justify="flex-end" visibleFrom="sm">
+              <Button size="md" onClick={handleExport} loading={isLoading}>
+                {t('screens.dataExport.exportButton')}
+              </Button>
+            </Group>
+          </Stack>
+        </Box>
       </BaseScreen>
     </>
   );

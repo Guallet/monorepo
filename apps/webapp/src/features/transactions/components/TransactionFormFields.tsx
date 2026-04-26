@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
@@ -41,20 +41,13 @@ export function TransactionFormFields({
 }: Readonly<TransactionFormFieldsProps>) {
   const { t } = useTranslation();
   const { accounts } = useAccounts();
-  const { category } = useCategory(form.values.categoryId ?? null);
+  const { category: selectedCategory } = useCategory(form.values.categoryId ?? null);
   const defaultCurrency = useDefaultCurrency();
-  const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
-    null,
-  );
   const previousAccountIdRef = useRef<string | null>(null);
 
   const selectedCurrency = form.values.currency
     ? Currency.fromISOCode(form.values.currency)
     : Currency.fromISOCode(defaultCurrency);
-
-  useEffect(() => {
-    setSelectedCategory(category);
-  }, [category]);
 
   useEffect(() => {
     const accountId = form.values.accountId || null;
@@ -165,9 +158,8 @@ export function TransactionFormFields({
           `${translationKeyPrefix}.form.category.placeholder`,
           'Select a category',
         )}
-        selectedCategory={selectedCategory}
+        selectedCategory={selectedCategory ?? null}
         onCategorySelected={(selectedCategoryValue: CategoryDto) => {
-          setSelectedCategory(selectedCategoryValue);
           form.setFieldValue('categoryId', selectedCategoryValue.id || null);
         }}
       />

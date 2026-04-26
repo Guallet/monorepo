@@ -1,24 +1,29 @@
-import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { AccountTypeDto, CreateAccountRequest } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
+import { useTheme } from '@guallet/ui-react';
 import {
+  Box,
   Button,
-  Group,
-  Select,
-  NumberInput,
-  Stack,
-  TextInput,
+  Card,
   Checkbox,
+  Divider,
+  Group,
+  NumberInput,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
-import { useTranslation } from 'react-i18next';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useTranslation } from 'react-i18next';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import {
   accountFormDataSchema,
@@ -27,12 +32,10 @@ import {
   hasSpecificStep,
 } from './addAccountFormSchema';
 
-/** Used for required numeric fields — empty string becomes 0. */
 function getNumberParser(value: string): number {
   return value ? Number.parseFloat(value) : 0;
 }
 
-/** Used for optional/nullable numeric fields — empty string becomes null. */
 function getNullableNumberParser(value: string): number | null {
   return value ? Number.parseFloat(value) : null;
 }
@@ -40,6 +43,7 @@ function getNullableNumberParser(value: string): number | null {
 export function AddAccountScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { spacing } = useTheme();
   const { createAccountMutation } = useAccountMutations();
   const defaultCurrency = useDefaultCurrency();
 
@@ -73,9 +77,9 @@ export function AddAccountScreen() {
   const currencyValue = values.currency;
   const currency = currencyValue ? Currency.fromISOCode(currencyValue) : null;
 
-  const accountTypes = Object.values(AccountTypeDto).map((accountType) => ({
-    label: getAccountTypeTitleSingular(accountType),
-    value: accountType,
+  const accountTypes = Object.values(AccountTypeDto).map((type) => ({
+    label: getAccountTypeTitleSingular(type),
+    value: type,
   }));
 
   const hasSpecificFields = hasSpecificStep(values.account_type);
@@ -83,8 +87,14 @@ export function AddAccountScreen() {
   async function onFormSubmit(data: AddAccountFormData): Promise<void> {
     if (data.currency === null) {
       notifications.show({
-        title: 'Currency is required',
-        message: 'Please select a currency for the account',
+        title: t(
+          'feature.accounts.add.errors.currencyRequired.title',
+          'Currency required',
+        ),
+        message: t(
+          'feature.accounts.add.errors.currencyRequired.message',
+          'Please select a currency for the account.',
+        ),
         color: 'red',
       });
       return;
@@ -104,242 +114,384 @@ export function AddAccountScreen() {
         request: accountRequest,
       });
       notifications.show({
-        title: 'Account created',
-        message: `Account ${newAccount.name} created`,
-        color: 'blue',
+        message: t(
+          'feature.accounts.add.notifications.success',
+          '{{name}} created successfully.',
+          { name: newAccount.name },
+        ),
+        color: 'green',
       });
-      navigate({
-        to: '/accounts/$id',
-        params: {
-          id: newAccount.id,
-        },
-      });
+      navigate({ to: '/accounts/$id', params: { id: newAccount.id } });
     } catch (error) {
       console.error('Error creating the account', error);
       notifications.show({
-        title: 'Unable to create account',
-        message:
-          'A network or server error occurred while creating the account. Please try again later.',
+        title: t(
+          'feature.accounts.add.notifications.error.title',
+          'Could not create account',
+        ),
+        message: t(
+          'feature.accounts.add.notifications.error.message',
+          'A network or server error occurred. Please try again.',
+        ),
         color: 'red',
       });
     }
   }
 
-  const renderSpecificFields = () => {
+  function renderSpecificFields() {
     switch (values.account_type) {
       case AccountTypeDto.CURRENT_ACCOUNT:
         return (
-          <Stack>
-            <TextInput
-              label="Account number"
-              placeholder="Enter account number"
-              {...form.getInputProps('currentAccountNumber')}
-            />
-            <TextInput
-              label="Sort code"
-              placeholder="00-00-00"
-              {...form.getInputProps('currentSortCode')}
-            />
+          <>
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
+              <TextInput
+                label={t(
+                  'feature.accounts.add.fields.accountNumber.label',
+                  'Account number',
+                )}
+                placeholder={t(
+                  'feature.accounts.add.fields.accountNumber.placeholder',
+                  'Enter account number',
+                )}
+                {...form.getInputProps('currentAccountNumber')}
+              />
+              <TextInput
+                label={t(
+                  'feature.accounts.add.fields.sortCode.label',
+                  'Sort code',
+                )}
+                placeholder="00-00-00"
+                {...form.getInputProps('currentSortCode')}
+              />
+            </SimpleGrid>
             <NumberInput
-              label="Overdraft limit"
-              description="Optional"
+              label={t(
+                'feature.accounts.add.fields.overdraftLimit.label',
+                'Overdraft limit',
+              )}
+              description={t('common.optional', 'Optional')}
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('currentOverdraftLimit', {
                 parser: getNullableNumberParser,
               })}
             />
-          </Stack>
+          </>
         );
       case AccountTypeDto.CREDIT_CARD:
         return (
-          <Stack>
+          <>
             <TextInput
-              label="Account number"
-              placeholder="Enter account number"
+              label={t(
+                'feature.accounts.add.fields.accountNumber.label',
+                'Account number',
+              )}
+              placeholder={t(
+                'feature.accounts.add.fields.accountNumber.placeholder',
+                'Enter account number',
+              )}
               {...form.getInputProps('creditCardAccountNumber')}
             />
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.interestRate.label',
+                  'Interest rate',
+                )}
+                leftSection="%"
+                decimalScale={2}
+                {...form.getInputProps('creditCardInterestRate', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.creditLimit.label',
+                  'Credit limit',
+                )}
+                leftSection={currency?.symbol}
+                decimalScale={currency?.decimalPlaces}
+                {...form.getInputProps('creditCardCreditLimit', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+            </SimpleGrid>
             <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('creditCardInterestRate', {
-                parser: getNullableNumberParser,
-              })}
-            />
-            <NumberInput
-              label="Credit limit"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('creditCardCreditLimit', {
-                parser: getNullableNumberParser,
-              })}
-            />
-            <NumberInput
-              label="Cycle day"
+              label={t(
+                'feature.accounts.add.fields.cycleDay.label',
+                'Cycle day',
+              )}
               min={1}
               max={31}
               {...form.getInputProps('creditCardCycleDay', {
                 parser: getNullableNumberParser,
               })}
             />
-          </Stack>
+          </>
         );
       case AccountTypeDto.SAVINGS:
         return (
-          <Stack>
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('savingsInterestRate', {
-                parser: getNullableNumberParser,
-              })}
-            />
-          </Stack>
+          <NumberInput
+            label={t(
+              'feature.accounts.add.fields.interestRate.label',
+              'Interest rate',
+            )}
+            leftSection="%"
+            decimalScale={2}
+            {...form.getInputProps('savingsInterestRate', {
+              parser: getNullableNumberParser,
+            })}
+          />
         );
       case AccountTypeDto.MORTGAGE:
         return (
-          <Stack>
-            <NumberInput
-              label="Property value"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('mortgagePropertyValue', {
-                parser: getNullableNumberParser,
-              })}
-            />
-            <NumberInput
-              label="Mortgage amount"
-              leftSection={currency?.symbol}
-              decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('mortgageAmount', {
-                parser: getNullableNumberParser,
-              })}
-            />
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('mortgageInterestRate', {
-                parser: getNullableNumberParser,
-              })}
-            />
-            <NumberInput
-              label="Term length"
-              description="Years"
-              {...form.getInputProps('mortgageTermLength', {
-                parser: getNullableNumberParser,
-              })}
-            />
-          </Stack>
+          <>
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.propertyValue.label',
+                  'Property value',
+                )}
+                leftSection={currency?.symbol}
+                decimalScale={currency?.decimalPlaces}
+                {...form.getInputProps('mortgagePropertyValue', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.mortgageAmount.label',
+                  'Mortgage amount',
+                )}
+                leftSection={currency?.symbol}
+                decimalScale={currency?.decimalPlaces}
+                {...form.getInputProps('mortgageAmount', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.interestRate.label',
+                  'Interest rate',
+                )}
+                leftSection="%"
+                decimalScale={2}
+                {...form.getInputProps('mortgageInterestRate', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.termLength.label',
+                  'Term length',
+                )}
+                description={t(
+                  'feature.accounts.add.fields.termLength.description',
+                  'Years',
+                )}
+                {...form.getInputProps('mortgageTermLength', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+            </SimpleGrid>
+          </>
         );
       case AccountTypeDto.LOAN:
         return (
-          <Stack>
+          <>
             <NumberInput
-              label="Loan amount"
+              label={t(
+                'feature.accounts.add.fields.loanAmount.label',
+                'Loan amount',
+              )}
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
               {...form.getInputProps('loanAmount', {
                 parser: getNullableNumberParser,
               })}
             />
-            <NumberInput
-              label="Interest rate"
-              leftSection="%"
-              decimalScale={2}
-              {...form.getInputProps('loanInterestRate', {
-                parser: getNullableNumberParser,
-              })}
-            />
-            <NumberInput
-              label="Term length"
-              description="Years"
-              {...form.getInputProps('loanTermLength', {
-                parser: getNullableNumberParser,
-              })}
-            />
-          </Stack>
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.interestRate.label',
+                  'Interest rate',
+                )}
+                leftSection="%"
+                decimalScale={2}
+                {...form.getInputProps('loanInterestRate', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+              <NumberInput
+                label={t(
+                  'feature.accounts.add.fields.termLength.label',
+                  'Term length',
+                )}
+                description={t(
+                  'feature.accounts.add.fields.termLength.description',
+                  'Years',
+                )}
+                {...form.getInputProps('loanTermLength', {
+                  parser: getNullableNumberParser,
+                })}
+              />
+            </SimpleGrid>
+          </>
         );
       default:
         return null;
     }
-  };
+  }
 
   return (
     <BaseScreen title={t('feature.accounts.add.title', 'New account')}>
-      <form
-        onSubmit={form.onSubmit(onFormSubmit, () => {
-          notifications.show({
-            title: 'Validation error',
-            message: 'Please correct the highlighted fields before submitting.',
-            color: 'red',
-          });
-        })}
-      >
-        <Stack>
-          <AppSection title="Create new account">
-            <Stack>
-              <TextInput
-                required
-                label="Account name"
-                placeholder="Enter account name"
-                {...form.getInputProps('name')}
-              />
-              <Select
-                required
-                label="Account type"
-                searchable
-                data={accountTypes}
-                {...form.getInputProps('account_type')}
-                onChange={(value) => {
-                  if (!value) return;
-                  form.setFieldValue('account_type', value as AccountTypeDto);
-                }}
-              />
-              <CurrencyPicker
-                name="currency"
-                required
-                value={values.currency}
-                onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue);
-                }}
-              />
-              <NumberInput
-                label="Initial balance"
-                required
-                description="Initial balance of the account"
-                leftSection={currency?.symbol}
-                decimalScale={currency?.decimalPlaces}
-                {...form.getInputProps('balance', {
-                  parser: getNumberParser,
-                })}
-              />
-              <Checkbox
-                label="Create initial balance transaction"
-                description="If checked, an initial transaction will be created to reflect the starting balance"
-                {...form.getInputProps('createInitialTransaction', {
-                  type: 'checkbox',
-                })}
-              />
-              {hasSpecificFields && renderSpecificFields()}
-            </Stack>
-          </AppSection>
-
-          <Group>
-            <Button type="submit">Create account</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigate({ to: '/accounts' });
-              }}
+      {/* Constrain width on desktop; full-width on mobile */}
+      <Box maw={560} mx="auto">
+        <form
+          onSubmit={form.onSubmit(onFormSubmit, () => {
+            notifications.show({
+              title: t(
+                'feature.accounts.add.errors.validation.title',
+                'Check your entries',
+              ),
+              message: t(
+                'feature.accounts.add.errors.validation.message',
+                'Please correct the highlighted fields before continuing.',
+              ),
+              color: 'red',
+            });
+          })}
+        >
+          <Stack gap={spacing.md}>
+            {/* Core account details */}
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
             >
-              Cancel
-            </Button>
-          </Group>
-        </Stack>
-      </form>
+              <Stack gap={spacing.md}>
+                <TextInput
+                  required
+                  label={t(
+                    'feature.accounts.add.fields.name.label',
+                    'Account name',
+                  )}
+                  placeholder={t(
+                    'feature.accounts.add.fields.name.placeholder',
+                    'e.g. HSBC Current Account',
+                  )}
+                  {...form.getInputProps('name')}
+                />
+                <Select
+                  required
+                  label={t(
+                    'feature.accounts.add.fields.type.label',
+                    'Account type',
+                  )}
+                  searchable
+                  data={accountTypes}
+                  {...form.getInputProps('account_type')}
+                  onChange={(value) => {
+                    if (!value) return;
+                    form.setFieldValue('account_type', value as AccountTypeDto);
+                  }}
+                />
+                <CurrencyPicker
+                  name="currency"
+                  required
+                  value={values.currency}
+                  onValueChanged={(newValue) => {
+                    form.setFieldValue('currency', newValue);
+                  }}
+                />
+                <NumberInput
+                  required
+                  label={t(
+                    'feature.accounts.add.fields.balance.label',
+                    'Initial balance',
+                  )}
+                  description={t(
+                    'feature.accounts.add.fields.balance.description',
+                    'Current balance of the account',
+                  )}
+                  leftSection={currency?.symbol}
+                  decimalScale={currency?.decimalPlaces}
+                  {...form.getInputProps('balance', { parser: getNumberParser })}
+                />
+                <Checkbox
+                  label={t(
+                    'feature.accounts.add.fields.createInitialTransaction.label',
+                    'Create an opening balance transaction',
+                  )}
+                  description={t(
+                    'feature.accounts.add.fields.createInitialTransaction.description',
+                    'Records the initial balance as the first transaction',
+                  )}
+                  {...form.getInputProps('createInitialTransaction', {
+                    type: 'checkbox',
+                  })}
+                />
+              </Stack>
+            </Card>
+
+            {/* Type-specific fields */}
+            {hasSpecificFields && (
+              <Card
+                withBorder
+                shadow="sm"
+                radius="lg"
+                padding={{ base: 'md', sm: 'lg' }}
+              >
+                <Stack gap={spacing.md}>
+                  <Text fw={600} size="sm">
+                    {t(
+                      'feature.accounts.add.specificDetails.title',
+                      'Account details',
+                    )}
+                  </Text>
+                  <Divider />
+                  {renderSpecificFields()}
+                </Stack>
+              </Card>
+            )}
+
+            {/* Actions — stacked full-width on mobile, row on sm+ */}
+            <Stack gap="xs" hiddenFrom="sm">
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                loading={createAccountMutation.isPending}
+              >
+                {t('feature.accounts.add.submitButton', 'Create account')}
+              </Button>
+              <Button
+                variant="outline"
+                fullWidth
+                size="md"
+                onClick={() => navigate({ to: '/accounts' })}
+              >
+                {t('feature.accounts.add.cancelButton', 'Cancel')}
+              </Button>
+            </Stack>
+            <Group justify="flex-end" gap="xs" visibleFrom="sm">
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/accounts' })}
+              >
+                {t('feature.accounts.add.cancelButton', 'Cancel')}
+              </Button>
+              <Button
+                type="submit"
+                loading={createAccountMutation.isPending}
+              >
+                {t('feature.accounts.add.submitButton', 'Create account')}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Box>
     </BaseScreen>
   );
 }

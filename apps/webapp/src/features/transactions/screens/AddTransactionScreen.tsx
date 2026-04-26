@@ -1,14 +1,14 @@
-import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { useForm } from '@mantine/form';
 import { useTransactionMutations } from '@guallet/api-react';
-import { Button, Stack } from '@mantine/core';
-import { CreateTransactionRequest } from '@guallet/api-client';
+import { useTheme } from '@guallet/ui-react';
+import { Box, Button, Card, Group, Stack } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { CreateTransactionRequest } from '@guallet/api-client';
 import {
   TransactionFormData,
   TransactionFormFields,
@@ -29,8 +29,8 @@ const formSchema = z.object({
 
 export function AddTransactionScreen() {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const navigate = useNavigate();
-
   const { createTransactionMutation } = useTransactionMutations();
 
   const form = useForm<TransactionFormData>({
@@ -61,13 +61,9 @@ export function AddTransactionScreen() {
     await createTransactionMutation.mutateAsync(request, {
       onSuccess: () => {
         notifications.show({
-          title: t(
-            'screens.transactions.create.notifications.success.title',
-            'Success',
-          ),
           message: t(
             'screens.transactions.create.notifications.success.message',
-            'Transaction created successfully',
+            'Transaction created successfully.',
           ),
           color: 'green',
         });
@@ -82,7 +78,7 @@ export function AddTransactionScreen() {
           ),
           message: t(
             'screens.transactions.create.notifications.error.message',
-            'Failed to create transaction',
+            'Failed to create transaction.',
           ),
           color: 'red',
         });
@@ -91,26 +87,46 @@ export function AddTransactionScreen() {
   }
 
   return (
-    <BaseScreen
-      title={t('screens.transactions.create.title', 'Add Transaction')}
-    >
-      <AppSection>
+    <BaseScreen title={t('screens.transactions.create.title', 'Add transaction')}>
+      <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
-          <Stack>
-            <TransactionFormFields
-              form={form}
-              translationKeyPrefix="screens.transactions.create"
-            />
+          <Stack gap={spacing.md}>
+            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <TransactionFormFields
+                form={form}
+                translationKeyPrefix="screens.transactions.create"
+              />
+            </Card>
 
-            <Button type="submit">
-              {t(
-                'screens.transactions.create.form.submitButton.label',
-                'Add Transaction',
-              )}
-            </Button>
+            <Stack gap="xs" hiddenFrom="sm">
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                loading={createTransactionMutation.isPending}
+              >
+                {t('screens.transactions.create.form.submitButton.label', 'Add transaction')}
+              </Button>
+              <Button
+                variant="outline"
+                fullWidth
+                size="md"
+                onClick={() => navigate({ to: '/transactions' })}
+              >
+                {t('screens.transactions.create.form.cancelButton.label', 'Cancel')}
+              </Button>
+            </Stack>
+            <Group justify="flex-end" gap="xs" visibleFrom="sm">
+              <Button variant="outline" onClick={() => navigate({ to: '/transactions' })}>
+                {t('screens.transactions.create.form.cancelButton.label', 'Cancel')}
+              </Button>
+              <Button type="submit" loading={createTransactionMutation.isPending}>
+                {t('screens.transactions.create.form.submitButton.label', 'Add transaction')}
+              </Button>
+            </Group>
           </Stack>
         </form>
-      </AppSection>
+      </Box>
     </BaseScreen>
   );
 }
