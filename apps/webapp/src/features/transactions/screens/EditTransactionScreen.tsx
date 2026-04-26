@@ -1,9 +1,9 @@
-import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
 import { UpdateTransactionRequest } from '@guallet/api-client';
 import { useTransaction, useTransactionMutations } from '@guallet/api-react';
-import { Button, Group, Stack } from '@mantine/core';
+import { useTheme } from '@guallet/ui-react';
+import { Box, Button, Card, Group, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
@@ -37,12 +37,14 @@ export function EditTransactionScreen({
   transactionId,
 }: Readonly<EditTransactionScreenProps>) {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const navigate = useNavigate();
   const { transaction, isLoading } = useTransaction(transactionId);
   const { updateTransactionMutation, deleteTransactionMutation } =
     useTransactionMutations();
   const syncedTransactionIdRef = useRef<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   const form = useForm<TransactionFormData>({
     validate: zod4Resolver(formSchema),
     initialValues: {
@@ -83,20 +85,11 @@ export function EditTransactionScreen({
         date: data.date,
         categoryId: data.categoryId ?? null,
       };
-
-      await updateTransactionMutation.mutateAsync({
-        id: transactionId,
-        request,
-      });
-
+      await updateTransactionMutation.mutateAsync({ id: transactionId, request });
       notifications.show({
-        title: t(
-          'screens.transactions.edit.notifications.update.success.title',
-          'Success',
-        ),
         message: t(
           'screens.transactions.edit.notifications.update.success.message',
-          'Transaction updated successfully',
+          'Transaction updated successfully.',
         ),
         color: 'green',
       });
@@ -109,7 +102,7 @@ export function EditTransactionScreen({
         ),
         message: t(
           'screens.transactions.edit.notifications.update.error.message',
-          'Failed to update transaction',
+          'Failed to update transaction.',
         ),
         color: 'red',
       });
@@ -120,13 +113,9 @@ export function EditTransactionScreen({
     try {
       await deleteTransactionMutation.mutateAsync({ id: transactionId });
       notifications.show({
-        title: t(
-          'screens.transactions.edit.notifications.delete.success.title',
-          'Success',
-        ),
         message: t(
           'screens.transactions.edit.notifications.delete.success.message',
-          'Transaction deleted successfully',
+          'Transaction deleted successfully.',
         ),
         color: 'green',
       });
@@ -139,7 +128,7 @@ export function EditTransactionScreen({
         ),
         message: t(
           'screens.transactions.edit.notifications.delete.error.message',
-          'Failed to delete transaction',
+          'Failed to delete transaction.',
         ),
         color: 'red',
       });
@@ -149,16 +138,12 @@ export function EditTransactionScreen({
   return (
     <BaseScreen
       isLoading={isLoading}
-      title={t('screens.transactions.edit.title', 'Edit Transaction')}
+      title={t('screens.transactions.edit.title', 'Edit transaction')}
     >
       <DeleteDialogConfirmation
         isOpen={isDeleteDialogOpen}
-        onClose={() => {
-          setIsDeleteDialogOpen(false);
-        }}
-        onConfirm={() => {
-          onDeleteTransaction();
-        }}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={onDeleteTransaction}
         title={t(
           'screens.transactions.edit.deleteDialog.title',
           'Delete transaction',
@@ -168,46 +153,70 @@ export function EditTransactionScreen({
           'Are you sure you want to delete this transaction?',
         )}
       />
-      <AppSection>
+
+      <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
-          <Stack>
-            <TransactionFormFields
-              form={form}
-              translationKeyPrefix="screens.transactions.edit"
-            />
-            <Group>
-              <Button type="submit">
-                {t(
-                  'screens.transactions.edit.form.submitButton.label',
-                  'Update Transaction',
-                )}
+          <Stack gap={spacing.md}>
+            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <TransactionFormFields
+                form={form}
+                translationKeyPrefix="screens.transactions.edit"
+              />
+            </Card>
+
+            {/* Mobile: stack all actions */}
+            <Stack gap="xs" hiddenFrom="sm">
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                loading={updateTransactionMutation.isPending}
+              >
+                {t('screens.transactions.edit.form.submitButton.label', 'Save changes')}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => {
-                  navigate({ to: '/transactions' });
-                }}
+                fullWidth
+                size="md"
+                onClick={() => navigate({ to: '/transactions' })}
               >
-                {t(
-                  'screens.transactions.edit.form.cancelButton.label',
-                  'Cancel',
-                )}
+                {t('screens.transactions.edit.form.cancelButton.label', 'Cancel')}
               </Button>
               <Button
+                variant="outline"
                 color="red"
-                onClick={() => {
-                  setIsDeleteDialogOpen(true);
-                }}
+                fullWidth
+                size="md"
+                onClick={() => setIsDeleteDialogOpen(true)}
               >
-                {t(
-                  'screens.transactions.edit.form.deleteButton.label',
-                  'Delete',
-                )}
+                {t('screens.transactions.edit.form.deleteButton.label', 'Delete')}
               </Button>
+            </Stack>
+
+            {/* Desktop: delete left, cancel + save right */}
+            <Group justify="space-between" visibleFrom="sm">
+              <Button
+                variant="outline"
+                color="red"
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                {t('screens.transactions.edit.form.deleteButton.label', 'Delete')}
+              </Button>
+              <Group gap="xs">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate({ to: '/transactions' })}
+                >
+                  {t('screens.transactions.edit.form.cancelButton.label', 'Cancel')}
+                </Button>
+                <Button type="submit" loading={updateTransactionMutation.isPending}>
+                  {t('screens.transactions.edit.form.submitButton.label', 'Save changes')}
+                </Button>
+              </Group>
             </Group>
           </Stack>
         </form>
-      </AppSection>
+      </Box>
     </BaseScreen>
   );
 }

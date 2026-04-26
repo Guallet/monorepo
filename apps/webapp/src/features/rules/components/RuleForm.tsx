@@ -4,11 +4,12 @@ import {
   Card,
   Group,
   Select,
+  SimpleGrid,
   Stack,
-  Text,
-  TextInput,
-  Textarea,
   Switch,
+  Text,
+  Textarea,
+  TextInput,
   Divider,
 } from '@mantine/core';
 import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
@@ -181,7 +182,7 @@ export function RuleForm({
   return (
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
-        <Card withBorder p="md">
+        <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
           <Stack gap="md">
             <TextInput
               label={t('screens.rules.form.name.label')}
@@ -207,7 +208,7 @@ export function RuleForm({
           </Stack>
         </Card>
 
-        <Card withBorder p="md">
+        <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
           <Stack gap="md">
             <Group justify="space-between">
               <Text fw={500}>{t('screens.rules.form.conditions.title')}</Text>
@@ -252,72 +253,56 @@ export function RuleForm({
                     opacity: draggedCondition?.id === condition.id ? 0.5 : 1,
                   }}
                 >
-                  <Group gap="xs" wrap="nowrap" align="flex-end">
-                    <ActionIcon
-                      variant="subtle"
-                      style={{ cursor: 'grab' }}
-                      mb={4}
-                    >
-                      <IconGripVertical size={16} />
-                    </ActionIcon>
-                    <Select
-                      label={t('screens.rules.form.conditions.field.label')}
-                      placeholder={t(
-                        'screens.rules.form.conditions.field.placeholder',
-                      )}
-                      data={fieldOptions}
-                      value={condition.field}
-                      onChange={(value) =>
-                        handleConditionChange(
-                          condition.id,
-                          'field',
-                          value ?? '',
-                        )
-                      }
-                      style={{ flex: 1 }}
-                    />
-                    <Select
-                      label={t('screens.rules.form.conditions.operator.label')}
-                      placeholder={t(
-                        'screens.rules.form.conditions.operator.placeholder',
-                      )}
-                      data={getOperatorsForField(condition.field)}
-                      value={condition.operator}
-                      onChange={(value) =>
-                        handleConditionChange(
-                          condition.id,
-                          'operator',
-                          value ?? '',
-                        )
-                      }
-                      disabled={!condition.field}
-                      style={{ flex: 1 }}
-                    />
-                    <TextInput
-                      label={t('screens.rules.form.conditions.value.label')}
-                      placeholder={t(
-                        'screens.rules.form.conditions.value.placeholder',
-                      )}
-                      value={condition.value}
-                      onChange={(e) =>
-                        handleConditionChange(
-                          condition.id,
-                          'value',
-                          e.target.value,
-                        )
-                      }
-                      style={{ flex: 1 }}
-                    />
-                    <ActionIcon
-                      variant="subtle"
-                      color="red"
-                      onClick={() => handleRemoveCondition(condition.id)}
-                      disabled={conditions.length === 1}
-                      mb={4}
-                    >
-                      <IconTrash size={16} />
-                    </ActionIcon>
-                  </Group>
+                  <Stack gap="xs">
+                    <Group gap="xs" justify="space-between">
+                      <ActionIcon variant="subtle" style={{ cursor: 'grab' }}>
+                        <IconGripVertical size={16} />
+                      </ActionIcon>
+                      <ActionIcon
+                        variant="subtle"
+                        color="red"
+                        onClick={() => handleRemoveCondition(condition.id)}
+                        disabled={conditions.length === 1}
+                      >
+                        <IconTrash size={16} />
+                      </ActionIcon>
+                    </Group>
+                    <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xs">
+                      <Select
+                        label={t('screens.rules.form.conditions.field.label')}
+                        placeholder={t(
+                          'screens.rules.form.conditions.field.placeholder',
+                        )}
+                        data={fieldOptions}
+                        value={condition.field}
+                        onChange={(value) =>
+                          handleConditionChange(condition.id, 'field', value ?? '')
+                        }
+                      />
+                      <Select
+                        label={t('screens.rules.form.conditions.operator.label')}
+                        placeholder={t(
+                          'screens.rules.form.conditions.operator.placeholder',
+                        )}
+                        data={getOperatorsForField(condition.field)}
+                        value={condition.operator}
+                        onChange={(value) =>
+                          handleConditionChange(condition.id, 'operator', value ?? '')
+                        }
+                        disabled={!condition.field}
+                      />
+                      <TextInput
+                        label={t('screens.rules.form.conditions.value.label')}
+                        placeholder={t(
+                          'screens.rules.form.conditions.value.placeholder',
+                        )}
+                        value={condition.value}
+                        onChange={(e) =>
+                          handleConditionChange(condition.id, 'value', e.target.value)
+                        }
+                      />
+                    </SimpleGrid>
+                  </Stack>
                 </Card>
               </div>
             ))}
@@ -332,7 +317,7 @@ export function RuleForm({
           </Stack>
         </Card>
 
-        <Card withBorder p="md">
+        <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
           <Stack gap="md">
             <Text fw={500}>{t('screens.rules.form.category.title')}</Text>
             {/* <Select
@@ -356,7 +341,15 @@ export function RuleForm({
           </Stack>
         </Card>
 
-        <Group justify="flex-end" mt="md">
+        <Stack gap="xs" hiddenFrom="sm">
+          <Button type="submit" fullWidth size="md" loading={isSubmitting} disabled={!isFormValid}>
+            {submitLabel}
+          </Button>
+          <Button variant="outline" fullWidth size="md" onClick={onCancel} disabled={isSubmitting}>
+            {t('screens.rules.form.buttons.cancel')}
+          </Button>
+        </Stack>
+        <Group justify="flex-end" gap="xs" visibleFrom="sm">
           <Button variant="subtle" onClick={onCancel} disabled={isSubmitting}>
             {t('screens.rules.form.buttons.cancel')}
           </Button>

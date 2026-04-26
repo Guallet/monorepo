@@ -1,28 +1,29 @@
-import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { AccountTypeDto, UpdateAccountRequest } from '@guallet/api-client';
 import { useAccount, useAccountMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
+import { useTheme } from '@guallet/ui-react';
 import {
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Group,
+  NumberInput,
+  Select,
   Stack,
   TextInput,
-  NativeSelect,
-  rem,
-  NumberInput,
-  Group,
-  Button,
-  Checkbox,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { IconChevronDown } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import { getAccountTypeTitleSingular } from '../models/Account';
 
 interface EditAccountScreenProps {
   accountId: string;
@@ -37,37 +38,14 @@ const editAccountFormDataSchema = z.object({
 });
 type EditAccountFormData = z.infer<typeof editAccountFormDataSchema>;
 
-function getLocalizedType(name: AccountTypeDto): string {
-  // TODO: Localize this
-  switch (name) {
-    case AccountTypeDto.CREDIT_CARD:
-      return 'Credit Card';
-    case AccountTypeDto.CURRENT_ACCOUNT:
-      return 'Current account';
-    case AccountTypeDto.INVESTMENT:
-      return 'Investment';
-    case AccountTypeDto.LOAN:
-      return 'Loan';
-    case AccountTypeDto.MORTGAGE:
-      return 'Mortgage';
-    case AccountTypeDto.PENSION:
-      return 'Pension';
-    case AccountTypeDto.SAVINGS:
-      return 'Savings account';
-    case AccountTypeDto.UNKNOWN:
-    default:
-      return 'Other';
-  }
-}
-
 export function EditAccountScreen({
   accountId,
 }: Readonly<EditAccountScreenProps>) {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const { account, isLoading } = useAccount(accountId);
   const defaultCurrency = useDefaultCurrency();
   const navigate = useNavigate();
-
   const { updateAccountMutation } = useAccountMutations();
 
   const form = useForm<EditAccountFormData>({
@@ -95,17 +73,12 @@ export function EditAccountScreen({
     }
   }, [account, form]);
 
-  const accountTypes = Object.entries(AccountTypeDto).map(
-    ({ '1': accountType }) => {
-      return {
-        label: getLocalizedType(accountType),
-        value: accountType,
-      };
-    },
-  );
+  const accountTypes = Object.values(AccountTypeDto).map((type) => ({
+    label: getAccountTypeTitleSingular(type),
+    value: type,
+  }));
 
   async function onFormSubmit(data: EditAccountFormData) {
-    console.log('onFormSubmit', data);
     const accountRequest: UpdateAccountRequest = {
       name: data.name,
       type: data.account_type,
@@ -119,18 +92,27 @@ export function EditAccountScreen({
         request: accountRequest,
       });
       notifications.show({
-        title: 'Account updated',
-        message: `Account ${updatedAccount.name} updated`,
+        message: t(
+          'feature.accounts.edit.notifications.success',
+          '{{name}} updated successfully.',
+          { name: updatedAccount.name },
+        ),
         color: 'green',
       });
-      navigate({
-        to: '/accounts/$id',
-        params: {
-          id: updatedAccount.id,
-        },
-      });
+      navigate({ to: '/accounts/$id', params: { id: updatedAccount.id } });
     } catch (error) {
-      console.error('Error creating the account', error);
+      console.error('Error updating the account', error);
+      notifications.show({
+        title: t(
+          'feature.accounts.edit.notifications.error.title',
+          'Could not update account',
+        ),
+        message: t(
+          'feature.accounts.edit.notifications.error.message',
+          'A network or server error occurred. Please try again.',
+        ),
+        color: 'red',
+      });
     }
   }
 
@@ -139,85 +121,104 @@ export function EditAccountScreen({
       isLoading={isLoading}
       title={t('feature.accounts.edit.title', 'Edit account')}
     >
-      <form onSubmit={form.onSubmit((values) => onFormSubmit(values))}>
-        <Stack>
-          <AppSection title="Account details">
-            <Stack>
-              <TextInput
-                key={form.key('name')}
-                {...form.getInputProps('name')}
-                required
-                label="Account name"
-                placeholder="Enter account name"
-                error={form.errors.name}
-              />
-              <NativeSelect
-                key={form.key('account_type')}
-                {...form.getInputProps('account_type')}
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
-                  />
-                }
-                label="Account type"
-                data={accountTypes}
-              />
-              <CurrencyPicker
-                name="currency"
-                required
-                value={form.values.currency}
-                onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue ?? defaultCurrency);
-                }}
-              />
-              <NumberInput
-                key={form.key('balance')}
-                {...form.getInputProps('balance', {
-                  parser: (value: string) => {
-                    return value ? Number.parseFloat(value) : 0;
-                  },
-                  formatter: (value: unknown) => {
-                    return value?.toString() ?? '';
-                  },
-                })}
-                label="Balance"
-                required
-                description="Current balance of the account"
-                leftSection={currency.symbol}
-                decimalScale={currency.decimalPlaces}
-              />
-              <Checkbox
-                name="balance-transaction"
-                checked={values.balanceTransactionCheck}
-                onChange={(event) =>
-                  form.setFieldValue(
-                    'balanceTransactionCheck',
-                    event.currentTarget.checked,
-                  )
-                }
-                label="(Recommended) Create a new transaction to sync the balance"
-                description="This will create a new transaction in the account to match the balance, so it's easier to track balance changes."
-              />
+      <Box maw={560} mx="auto">
+        <form onSubmit={form.onSubmit(onFormSubmit)}>
+          <Stack gap={spacing.md}>
+            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <Stack gap={spacing.md}>
+                <TextInput
+                  key={form.key('name')}
+                  required
+                  label={t('feature.accounts.edit.fields.name.label', 'Account name')}
+                  placeholder={t(
+                    'feature.accounts.edit.fields.name.placeholder',
+                    'Enter account name',
+                  )}
+                  error={form.errors.name}
+                  {...form.getInputProps('name')}
+                />
+                <Select
+                  key={form.key('account_type')}
+                  required
+                  searchable
+                  label={t('feature.accounts.edit.fields.type.label', 'Account type')}
+                  data={accountTypes}
+                  {...form.getInputProps('account_type')}
+                  onChange={(value) => {
+                    if (!value) return;
+                    form.setFieldValue('account_type', value as AccountTypeDto);
+                  }}
+                />
+                <CurrencyPicker
+                  name="currency"
+                  required
+                  value={values.currency}
+                  onValueChanged={(newValue) => {
+                    form.setFieldValue('currency', newValue ?? defaultCurrency);
+                  }}
+                />
+                <NumberInput
+                  key={form.key('balance')}
+                  required
+                  label={t('feature.accounts.edit.fields.balance.label', 'Balance')}
+                  description={t(
+                    'feature.accounts.edit.fields.balance.description',
+                    'Current balance of the account',
+                  )}
+                  leftSection={currency.symbol}
+                  decimalScale={currency.decimalPlaces}
+                  {...form.getInputProps('balance', {
+                    parser: (value: string) => (value ? Number.parseFloat(value) : 0),
+                    formatter: (value: unknown) => value?.toString() ?? '',
+                  })}
+                />
+                <Checkbox
+                  label={t(
+                    'feature.accounts.edit.fields.balanceTransaction.label',
+                    'Create a transaction to sync the balance',
+                  )}
+                  description={t(
+                    'feature.accounts.edit.fields.balanceTransaction.description',
+                    'Records a transaction to match the new balance, keeping history accurate.',
+                  )}
+                  checked={values.balanceTransactionCheck}
+                  onChange={(e) =>
+                    form.setFieldValue(
+                      'balanceTransactionCheck',
+                      e.currentTarget.checked,
+                    )
+                  }
+                />
+              </Stack>
+            </Card>
+
+            <Stack gap="xs" hiddenFrom="sm">
+              <Button type="submit" fullWidth size="md" loading={updateAccountMutation.isPending}>
+                {t('feature.accounts.edit.submitButton', 'Save changes')}
+              </Button>
+              <Button
+                variant="outline"
+                fullWidth
+                size="md"
+                onClick={() => navigate({ to: '/accounts/$id', params: { id: accountId } })}
+              >
+                {t('feature.accounts.edit.cancelButton', 'Cancel')}
+              </Button>
             </Stack>
-          </AppSection>
-          <Group>
-            <Button type="submit">Update account</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                // Go back
-                navigate({
-                  to: '/accounts/$id',
-                  params: { id: accountId },
-                });
-              }}
-            >
-              Cancel
-            </Button>
-          </Group>
-        </Stack>
-      </form>
+            <Group justify="flex-end" gap="xs" visibleFrom="sm">
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/accounts/$id', params: { id: accountId } })}
+              >
+                {t('feature.accounts.edit.cancelButton', 'Cancel')}
+              </Button>
+              <Button type="submit" loading={updateAccountMutation.isPending}>
+                {t('feature.accounts.edit.submitButton', 'Save changes')}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Box>
     </BaseScreen>
   );
 }

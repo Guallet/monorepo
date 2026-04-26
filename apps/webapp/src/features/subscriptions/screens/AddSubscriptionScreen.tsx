@@ -1,31 +1,31 @@
-import { AppSection } from '@/components/Cards/AppSection';
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import {
   CreateSubscriptionRequest,
-  RecurringPaymentType,
   RecurrenceCadence,
+  RecurringPaymentType,
 } from '@guallet/api-client';
 import { useSubscriptionsMutations } from '@guallet/api-react';
+import { Currency } from '@guallet/money';
+import { useTheme } from '@guallet/ui-react';
 import {
+  Box,
+  Button,
+  Card,
+  Group,
+  NumberInput,
+  Select,
   Stack,
   TextInput,
-  NativeSelect,
-  rem,
-  NumberInput,
-  Group,
-  Button,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { IconChevronDown } from '@tabler/icons-react';
-import { useNavigate } from '@tanstack/react-router';
-import { z } from 'zod';
 import { notifications } from '@mantine/notifications';
-import { Currency } from '@guallet/money';
-import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import { useNavigate } from '@tanstack/react-router';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 const subscriptionFormDataSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -54,6 +54,7 @@ const cadenceOptions = [
 
 export function AddSubscriptionScreen() {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const navigate = useNavigate();
   const { createSubscriptionMutation } = useSubscriptionsMutations();
   const defaultCurrency = useDefaultCurrency();
@@ -71,18 +72,21 @@ export function AddSubscriptionScreen() {
     },
   });
   const { values } = form;
-
-  const currencyValue = values.currency;
-  const currency = currencyValue
-    ? Currency.fromISOCode(currencyValue)
+  const currency = values.currency
+    ? Currency.fromISOCode(values.currency)
     : Currency.fromISOCode(defaultCurrency);
 
   async function onFormSubmit(data: AddSubscriptionFormData): Promise<void> {
-    console.log('Submitting form data', data);
     if (data.currency === null) {
       notifications.show({
-        title: 'Currency is required',
-        message: 'Please select a currency for the subscription',
+        title: t(
+          'screens.subscriptions.create.errors.currencyRequired.title',
+          'Currency required',
+        ),
+        message: t(
+          'screens.subscriptions.create.errors.currencyRequired.message',
+          'Please select a currency for the subscription.',
+        ),
         color: 'red',
       });
       return;
@@ -99,126 +103,155 @@ export function AddSubscriptionScreen() {
     };
 
     try {
-      const newSubscription = await createSubscriptionMutation.mutateAsync({
-        request,
-      });
+      const newSubscription = await createSubscriptionMutation.mutateAsync({ request });
       notifications.show({
-        title: 'Subscription created',
-        message: `${newSubscription.name} has been created`,
+        message: t(
+          'screens.subscriptions.create.notifications.success',
+          '{{name}} created successfully.',
+          { name: newSubscription.name },
+        ),
         color: 'green',
       });
-      navigate({
-        to: '/subscriptions/$id',
-        params: {
-          id: newSubscription.id,
-        },
-      });
+      navigate({ to: '/subscriptions/$id', params: { id: newSubscription.id } });
     } catch (error) {
       console.error('Error creating subscription', error);
       notifications.show({
-        title: 'Error',
-        message: 'Failed to create subscription',
+        title: t(
+          'screens.subscriptions.create.notifications.error.title',
+          'Could not create subscription',
+        ),
+        message: t(
+          'screens.subscriptions.create.notifications.error.message',
+          'A network or server error occurred. Please try again.',
+        ),
         color: 'red',
       });
     }
   }
 
   return (
-    <BaseScreen
-      title={t('screens.subscriptions.create.title', 'New subscription')}
-    >
-      <form onSubmit={form.onSubmit(onFormSubmit)}>
-        <Stack>
-          <AppSection title="Create new subscription">
-            <Stack>
-              <TextInput
-                required
-                label="Name"
-                placeholder="e.g., Netflix, Spotify, Gym membership"
-                {...form.getInputProps('name')}
-                error={form.errors.name}
-              />
-              <NativeSelect
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
-                  />
-                }
-                label="Type"
-                data={paymentTypes}
-                {...form.getInputProps('type')}
-                onChange={(event) => {
-                  const type = event.currentTarget
-                    .value as RecurringPaymentType;
-                  form.setFieldValue('type', type);
-                }}
-              />
-              <NativeSelect
-                required
-                rightSection={
-                  <IconChevronDown
-                    style={{ width: rem(16), height: rem(16) }}
-                  />
-                }
-                label="Frequency"
-                data={cadenceOptions}
-                {...form.getInputProps('cadence')}
-                onChange={(event) => {
-                  const cadence = event.currentTarget
-                    .value as RecurrenceCadence;
-                  form.setFieldValue('cadence', cadence);
-                }}
-              />
-              <CurrencyPicker
-                name="currency"
-                required
-                value={values.currency}
-                onValueChanged={(newValue) => {
-                  form.setFieldValue('currency', newValue);
-                }}
-              />
-              <NumberInput
-                label="Amount"
-                required
-                description="The recurring payment amount"
-                {...form.getInputProps('amount')}
-                leftSection={currency.symbol}
-                decimalScale={currency.decimalPlaces ?? 2}
-                min={0}
-              />
-              <DateInput
-                label="Start Date"
-                required
-                description="The date when this payment starts or first occurs"
-                placeholder="Select a date"
-                {...form.getInputProps('startDate')}
-              />
-              <TextInput
-                label="Image URL (optional)"
-                placeholder="https://example.com/logo.png"
-                {...form.getInputProps('imageUrl')}
-              />
+    <BaseScreen title={t('screens.subscriptions.create.title', 'New subscription')}>
+      <Box maw={560} mx="auto">
+        <form onSubmit={form.onSubmit(onFormSubmit)}>
+          <Stack gap={spacing.md}>
+            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <Stack gap={spacing.md}>
+                <TextInput
+                  required
+                  label={t('screens.subscriptions.create.fields.name.label', 'Name')}
+                  placeholder={t(
+                    'screens.subscriptions.create.fields.name.placeholder',
+                    'e.g. Netflix, Spotify, Gym membership',
+                  )}
+                  error={form.errors.name}
+                  {...form.getInputProps('name')}
+                />
+                <Select
+                  required
+                  label={t('screens.subscriptions.create.fields.type.label', 'Type')}
+                  data={paymentTypes}
+                  {...form.getInputProps('type')}
+                  onChange={(value) => {
+                    if (!value) return;
+                    form.setFieldValue('type', value as RecurringPaymentType);
+                  }}
+                />
+                <Select
+                  required
+                  label={t(
+                    'screens.subscriptions.create.fields.cadence.label',
+                    'Frequency',
+                  )}
+                  data={cadenceOptions}
+                  {...form.getInputProps('cadence')}
+                  onChange={(value) => {
+                    if (!value) return;
+                    form.setFieldValue('cadence', value as RecurrenceCadence);
+                  }}
+                />
+                <CurrencyPicker
+                  name="currency"
+                  required
+                  value={values.currency}
+                  onValueChanged={(newValue) => {
+                    form.setFieldValue('currency', newValue);
+                  }}
+                />
+                <NumberInput
+                  required
+                  label={t('screens.subscriptions.create.fields.amount.label', 'Amount')}
+                  description={t(
+                    'screens.subscriptions.create.fields.amount.description',
+                    'The recurring payment amount',
+                  )}
+                  leftSection={currency.symbol}
+                  decimalScale={currency.decimalPlaces ?? 2}
+                  min={0}
+                  {...form.getInputProps('amount')}
+                />
+                <DateInput
+                  required
+                  label={t(
+                    'screens.subscriptions.create.fields.startDate.label',
+                    'Start date',
+                  )}
+                  description={t(
+                    'screens.subscriptions.create.fields.startDate.description',
+                    'When this payment starts or first occurs',
+                  )}
+                  placeholder={t(
+                    'screens.subscriptions.create.fields.startDate.placeholder',
+                    'Select a date',
+                  )}
+                  {...form.getInputProps('startDate')}
+                />
+                <TextInput
+                  label={t(
+                    'screens.subscriptions.create.fields.imageUrl.label',
+                    'Image URL',
+                  )}
+                  description={t('common.optional', 'Optional')}
+                  placeholder="https://example.com/logo.png"
+                  {...form.getInputProps('imageUrl')}
+                />
+              </Stack>
+            </Card>
+
+            <Stack gap="xs" hiddenFrom="sm">
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                loading={createSubscriptionMutation.isPending}
+              >
+                {t(
+                  'screens.subscriptions.create.submitButton',
+                  'Create subscription',
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                fullWidth
+                size="md"
+                onClick={() => navigate({ to: '/subscriptions' })}
+              >
+                {t('screens.subscriptions.create.cancelButton', 'Cancel')}
+              </Button>
             </Stack>
-          </AppSection>
-          <Group>
-            <Button
-              type="submit"
-              loading={createSubscriptionMutation.isPending}
-            >
-              Create subscription
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigate({ to: '/subscriptions' });
-              }}
-            >
-              Cancel
-            </Button>
-          </Group>
-        </Stack>
-      </form>
+            <Group justify="flex-end" gap="xs" visibleFrom="sm">
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/subscriptions' })}
+              >
+                {t('screens.subscriptions.create.cancelButton', 'Cancel')}
+              </Button>
+              <Button type="submit" loading={createSubscriptionMutation.isPending}>
+                {t('screens.subscriptions.create.submitButton', 'Create subscription')}
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      </Box>
     </BaseScreen>
   );
 }
