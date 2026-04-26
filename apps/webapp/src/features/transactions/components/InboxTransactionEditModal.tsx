@@ -42,9 +42,9 @@ export function InboxTransactionEditModal({
     CategoryDto | null | undefined
   >(undefined);
   const selectedCategory =
-    categoryOverride !== undefined
-      ? categoryOverride
-      : (loadedCategory ?? null);
+    categoryOverride === undefined
+      ? (loadedCategory ?? null)
+      : categoryOverride;
 
   const form = useForm<EditFormValues>({
     initialValues: { notes: transaction.notes ?? '' },
