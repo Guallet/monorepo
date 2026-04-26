@@ -1,3 +1,94 @@
+/* Guallet design tokens — mirrors colors_and_type.css from the design system */
+:root {
+  /* Brand */
+  --gu-primary:        #005EB8;
+  --gu-secondary:      #41B6E6;
+
+  /* Semantic surfaces */
+  --gu-text:           #000000;
+  --gu-background:     #FFFFFF;
+  --gu-surface:        #F5F5F5;
+  --gu-page:           #F7FAFC;
+
+  /* Accent — cool blue family */
+  --gu-accent-dark:    #003087;
+  --gu-accent-bright:  #0072CE;
+  --gu-accent-light:   #41B6E6;
+  --gu-accent-aqua:    #00A9CE;
+
+  /* Support — green (income / positive) */
+  --gu-support-dark:   #006747;
+  --gu-support:        #009639;
+  --gu-support-light:  #78BE20;
+  --gu-support-aqua:   #00A499;
+
+  /* Neutrals */
+  --gu-black:          #231F20;
+  --gu-grey-dark:      #425563;
+  --gu-grey-mid:       #768692;
+  --gu-grey-pale:      #E8EDEE;
+  --gu-white:          #FFFFFF;
+
+  /* Alerts */
+  --gu-error:          #DA291C;
+  --gu-success:        #78BE20;
+  --gu-warning:        #FAE100;
+
+  /* FG / BG shorthand */
+  --gu-fg-1:           var(--gu-black);
+  --gu-fg-2:           var(--gu-grey-dark);
+  --gu-fg-3:           var(--gu-grey-mid);
+  --gu-bg-1:           var(--gu-white);
+  --gu-bg-2:           var(--gu-page);
+  --gu-border:         #E5E7EB;
+  --gu-border-strong:  var(--gu-grey-pale);
+
+  /* Money semantics — apply to every amount display */
+  --gu-money-pos:      var(--gu-support);
+  --gu-money-neg:      var(--gu-error);
+
+  /* Type */
+  --gu-font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --gu-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Spacing */
+  --gu-space-0:   0;
+  --gu-space-xs:  4px;
+  --gu-space-sm:  8px;
+  --gu-space-md:  16px;
+  --gu-space-lg:  24px;
+  --gu-space-xl:  32px;
+  --gu-space-xxl: 40px;
+
+  /* Radii */
+  --gu-radius-xs: 2px;
+  --gu-radius-sm: 4px;
+  --gu-radius-md: 8px;
+  --gu-radius-lg: 16px;
+  --gu-radius-xl: 32px;
+
+  /* Elevation */
+  --gu-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --gu-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --gu-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --gu-shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --gu-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.04);
+
+  /* Motion */
+  --gu-easing:        cubic-bezier(0.2, 0, 0, 1);
+  --gu-duration-fast: 150ms;
+  --gu-duration-base: 200ms;
+  --gu-duration-slow: 600ms;
+}
+
+/* Money amount utility classes */
+.gu-money {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.gu-money--pos { color: var(--gu-money-pos); }
+.gu-money--neg { color: var(--gu-money-neg); }
+
 #root {
   width: 100vw;
   height: 100vh;
