@@ -5,25 +5,30 @@ import {
   Popover,
   ScrollArea,
   Stack,
-} from "@mantine/core";
-import { DateListPicker, DateRangeSelectionItem } from "./DateListPicker";
-import { CalendarDateRangePicker } from "./CalendarDateRangePicker";
-import { useState } from "react";
+} from '@mantine/core';
+import { DateListPicker, DateRangeSelectionItem } from './DateListPicker';
+import { CalendarDateRangePicker } from './CalendarDateRangePicker';
+import { useEffect, useState } from 'react';
 
 interface Props {
   selectedRange: { startDate: Date; endDate: Date } | null;
   onRangeSelected: (range: { startDate: Date; endDate: Date } | null) => void;
 }
 
-function formatInitialLabel(range: { startDate: Date; endDate: Date } | null): string {
-  if (!range) return "Select range";
+function formatInitialLabel(
+  range: { startDate: Date; endDate: Date } | null,
+): string {
+  if (!range) return 'Select range';
   const { startDate, endDate } = range;
   if (
     startDate.getDate() === 1 &&
     startDate.getMonth() === endDate.getMonth() &&
     startDate.getFullYear() === endDate.getFullYear()
   ) {
-    return startDate.toLocaleString("default", { month: "long", year: "numeric" });
+    return startDate.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric',
+    });
   }
   return `${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()}`;
 }
@@ -39,6 +44,14 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
   const [buttonLabel, setButtonLabel] = useState<string>(() =>
     formatInitialLabel(selectedRange),
   );
+
+  useEffect(() => {
+    setRange(selectedRange ?? null);
+    setButtonLabel(formatInitialLabel(selectedRange));
+    if (!selectedRange) {
+      setListItemSelected(null);
+    }
+  }, [selectedRange]);
 
   return (
     <Popover
@@ -105,10 +118,10 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
 
                 setButtonLabel(
                   !range
-                    ? "Select range"
+                    ? 'Select range'
                     : listItemSelected
                       ? listItemSelected.label
-                      : "Custom range"
+                      : 'Custom range',
                 );
 
                 setOpened(false);

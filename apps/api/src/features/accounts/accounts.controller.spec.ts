@@ -25,6 +25,7 @@ describe('AccountsController', () => {
 
   const mockTransactionsService = {
     getAccountTransactions: jest.fn(),
+    getAccountTransactionsSum: jest.fn(),
   };
 
   const mockOpenBankingService = {
@@ -238,7 +239,7 @@ describe('AccountsController', () => {
 
       const now = new Date();
       const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endDate = new Date(now.getFullYear(), now.getMonth(), 31);
+      const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'tx-1',
@@ -258,21 +259,13 @@ describe('AccountsController', () => {
         },
       ];
 
-      const postRangeTransactions: Partial<Transaction>[] = [
-        {
-          id: 'tx-3',
-          accountId: accountId,
-          amount: 25,
-          currency: 'GBP',
-          date: new Date(endDate.getFullYear(), endDate.getMonth() + 1, 1),
-          description: 'Post range income',
-        },
-      ];
-
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockTransactionsService.getAccountTransactions
-        .mockResolvedValueOnce(mockTransactions)
-        .mockResolvedValueOnce(postRangeTransactions);
+      mockTransactionsService.getAccountTransactions.mockResolvedValueOnce(
+        mockTransactions,
+      );
+      mockTransactionsService.getAccountTransactionsSum.mockResolvedValueOnce(
+        25,
+      );
 
       const result = await controller.getAccountChart(
         mockUser,
@@ -299,7 +292,10 @@ describe('AccountsController', () => {
       );
       expect(
         mockTransactionsService.getAccountTransactions,
-      ).toHaveBeenCalledTimes(2);
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionsService.getAccountTransactionsSum,
+      ).toHaveBeenCalledTimes(1);
 
       const callArgs =
         mockTransactionsService.getAccountTransactions.mock.calls[0][0];
@@ -307,11 +303,11 @@ describe('AccountsController', () => {
       expect(callArgs.startDate).toEqual(startDate);
       expect(callArgs.endDate).toEqual(endDate);
 
-      const postRangeCallArgs =
-        mockTransactionsService.getAccountTransactions.mock.calls[1][0];
-      expect(postRangeCallArgs.accountId).toBe(accountId);
-      expect(postRangeCallArgs.startDate).toEqual(endDate);
-      expect(postRangeCallArgs.endDate).toBeInstanceOf(Date);
+      const postRangeSumArgs =
+        mockTransactionsService.getAccountTransactionsSum.mock.calls[0][0];
+      expect(postRangeSumArgs.accountId).toBe(accountId);
+      expect(postRangeSumArgs.startDateExclusive).toEqual(endDate);
+      expect(postRangeSumArgs.endDate).toBeInstanceOf(Date);
     });
 
     it('should group transactions by month correctly', async () => {
@@ -349,9 +345,12 @@ describe('AccountsController', () => {
       ];
 
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockTransactionsService.getAccountTransactions
-        .mockResolvedValueOnce(mockTransactions)
-        .mockResolvedValueOnce([]);
+      mockTransactionsService.getAccountTransactions.mockResolvedValueOnce(
+        mockTransactions,
+      );
+      mockTransactionsService.getAccountTransactionsSum.mockResolvedValueOnce(
+        0,
+      );
 
       const result = await controller.getAccountChart(mockUser, accountId);
 

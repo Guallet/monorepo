@@ -184,17 +184,14 @@ export class AccountsController {
     // Balance history: reconstruct running balance from current account balance
     const currentBalance = Number(account.balance ?? 0);
 
-    // Fetch transactions after endDate to determine balance at endDate
-    const postRangeTransactions =
-      await this.transactionsService.getAccountTransactions({
+    // Aggregate post-range sum in DB instead of materializing all transactions.
+    const postRangeSum =
+      await this.transactionsService.getAccountTransactionsSum({
         accountId: account.id,
-        startDate: endDate,
+        startDateExclusive: endDate,
         endDate: new Date(),
       });
-    const postRangeSum = postRangeTransactions
-      .filter((t) => t.date > endDate)
-      .reduce((acc, t) => acc + Number(t.amount), 0);
-    const balanceAtRangeEnd = currentBalance - postRangeSum;
+    const balanceAtRangeEnd = currentBalance - Number(postRangeSum ?? 0);
 
     // Walk transactions oldest→newest, accumulating daily balance
     const sortedTxns = [...transactions].sort(

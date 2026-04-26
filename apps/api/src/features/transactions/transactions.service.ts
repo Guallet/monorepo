@@ -277,6 +277,28 @@ export class TransactionsService {
     return transactions;
   }
 
+  async getAccountTransactionsSum({
+    accountId,
+    startDateExclusive,
+    endDate,
+  }: {
+    accountId: string;
+    startDateExclusive: Date;
+    endDate: Date;
+  }): Promise<number> {
+    const result = await this.repository
+      .createQueryBuilder('transaction')
+      .select('COALESCE(SUM(transaction.amount), 0)', 'sum')
+      .where('transaction.accountId = :accountId', { accountId })
+      .andWhere('transaction.date > :startDateExclusive', {
+        startDateExclusive,
+      })
+      .andWhere('transaction.date <= :endDate', { endDate })
+      .getRawOne<{ sum: string | number | null }>();
+
+    return Number(result?.sum ?? 0);
+  }
+
   async deleteUserTransaction({
     user_id,
     transaction_id,

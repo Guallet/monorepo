@@ -103,9 +103,18 @@ export interface BalanceHistoryPoint {
   balance: number;
 }
 
+export interface ConnectedAccountDto {
+  id: string;
+  updated_at: string;
+}
+
+export interface ConnectedAccountResponseDto {
+  connectedAccount: ConnectedAccountDto;
+}
+
 export interface AccountChartsDto {
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   chart: AccountChartData[];
   balanceHistory: BalanceHistoryPoint[];
 }

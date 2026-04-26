@@ -20,9 +20,18 @@ export function OpenBankingCard({ accountId }: Readonly<OpenBankingCardProps>) {
     return null;
   }
 
+  const hasValidUpdatedAt =
+    !!connectedAccount.updated_at &&
+    !Number.isNaN(new Date(connectedAccount.updated_at).getTime());
+
   return (
     <UnstyledButton onClick={() => navigate({ to: '/connections' })}>
-      <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+      <Card
+        withBorder
+        shadow="sm"
+        radius="lg"
+        padding={{ base: 'md', sm: 'lg' }}
+      >
         <Group justify="space-between" align="center">
           <Group gap={spacing.sm}>
             <IconPlugConnected size={20} />
@@ -43,12 +52,12 @@ export function OpenBankingCard({ accountId }: Readonly<OpenBankingCardProps>) {
                   'feature.accounts.details.openBanking.lastSynced',
                   'Last synced: {{date}}',
                   {
-                    date:
-                      formatDate(connectedAccount.updated_at, 'L LT') ??
-                      t(
-                        'feature.accounts.details.openBanking.unknownDate',
-                        'Unknown',
-                      ),
+                    date: hasValidUpdatedAt
+                      ? formatDate(connectedAccount.updated_at, 'L LT')
+                      : t(
+                          'feature.accounts.details.openBanking.unknownDate',
+                          'Unknown',
+                        ),
                   },
                 )}
               </Text>

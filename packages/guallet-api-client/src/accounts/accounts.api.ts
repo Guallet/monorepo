@@ -1,12 +1,12 @@
 import {
   AccountChartsDto,
+  ConnectedAccountResponseDto,
   AccountDto,
   CreateAccountRequest,
   UpdateAccountRequest,
 } from './accounts.models';
 import { GualletClientImpl } from './../GualletClient';
 import { TransactionDto } from './../transactions/transactions.models';
-import { ObAccountDto } from './../connections';
 
 const ACCOUNTS_PATH = 'accounts';
 
@@ -73,8 +73,10 @@ export class AccountsApi {
     });
   }
 
-  async getConnectedAccount(accountId: string): Promise<ObAccountDto> {
-    return await this.client.get<ObAccountDto>({
+  async getConnectedAccount(
+    accountId: string,
+  ): Promise<ConnectedAccountResponseDto> {
+    return await this.client.get<ConnectedAccountResponseDto>({
       path: `${ACCOUNTS_PATH}/${accountId}/connection`,
     });
   }
