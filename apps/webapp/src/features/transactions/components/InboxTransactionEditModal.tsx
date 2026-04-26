@@ -1,19 +1,14 @@
-import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useLocale } from '@/i18n/useLocale';
-import { InboxTransactionDto, CategoryDto, UpdateTransactionRequest } from '@guallet/api-client';
+import {
+  InboxTransactionDto,
+  CategoryDto,
+  UpdateTransactionRequest,
+} from '@guallet/api-client';
 import { useCategory, useTransactionMutations } from '@guallet/api-react';
 import { Money } from '@guallet/money';
-import { useTheme } from '@guallet/ui-react';
-import { ResponsiveModal } from '@guallet/ui-react';
-import {
-  Button,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  Textarea,
-} from '@mantine/core';
+import { ResponsiveModal, useTheme } from '@guallet/ui-react';
+import { Button, Divider, Group, Stack, Text, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useEffect, useState } from 'react';
@@ -42,24 +37,25 @@ export function InboxTransactionEditModal({
   const initialCategoryId =
     transaction.processedCategoryId ?? transaction.categoryId;
   const { category: loadedCategory } = useCategory(initialCategoryId);
-  const [selectedCategory, setSelectedCategory] =
-    useState<CategoryDto | null>(null);
-
-  useEffect(() => {
-    setSelectedCategory(loadedCategory ?? null);
-  }, [loadedCategory]);
+  // undefined = no user override yet; fall through to loadedCategory
+  const [categoryOverride, setCategoryOverride] = useState<
+    CategoryDto | null | undefined
+  >(undefined);
+  const selectedCategory =
+    categoryOverride !== undefined
+      ? categoryOverride
+      : (loadedCategory ?? null);
 
   const form = useForm<EditFormValues>({
     initialValues: { notes: transaction.notes ?? '' },
   });
 
-  // Reset form when modal opens with fresh transaction data
+  const { setValues } = form;
   useEffect(() => {
     if (opened) {
-      form.setValues({ notes: transaction.notes ?? '' });
+      setValues({ notes: transaction.notes ?? '' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, transaction.id]);
+  }, [opened, transaction.id, transaction.notes, setValues]);
 
   const amount = Number(transaction.amount);
   const money = Money.fromCurrencyCode({
@@ -74,6 +70,11 @@ export function InboxTransactionEditModal({
     month: 'short',
     year: 'numeric',
   }).format(new Date(transaction.date));
+
+  function handleClose() {
+    setCategoryOverride(undefined);
+    onClose();
+  }
 
   async function handleSave() {
     const request: UpdateTransactionRequest = {
@@ -116,7 +117,7 @@ export function InboxTransactionEditModal({
   return (
     <ResponsiveModal
       opened={opened}
-      onClose={onClose}
+      onClose={handleClose}
       title={t('screens.transactions.inbox.edit.title', 'Edit transaction')}
       size="md"
     >
@@ -155,20 +156,12 @@ export function InboxTransactionEditModal({
             'Select a category',
           )}
           selectedCategory={selectedCategory}
-          onCategorySelected={(cat) => setSelectedCategory(cat)}
-          leftSection={
-            selectedCategory ? (
-              <CategoryAvatar categoryId={selectedCategory.id} size="xs" />
-            ) : null
-          }
+          onCategorySelected={(cat) => setCategoryOverride(cat)}
         />
 
         {/* Notes */}
         <Textarea
-          label={t(
-            'screens.transactions.inbox.edit.form.notes.label',
-            'Notes',
-          )}
+          label={t('screens.transactions.inbox.edit.form.notes.label', 'Notes')}
           placeholder={t(
             'screens.transactions.inbox.edit.form.notes.placeholder',
             'Add a note…',

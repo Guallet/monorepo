@@ -32,12 +32,13 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
       };
     }, [budgets]);
 
-  const progressColor =
-    overallPercent >= 100
-      ? colors.error
-      : overallPercent >= 80
-        ? colors.warning
-        : colors.support;
+  const getProgressColor = (percent: number): string => {
+    if (percent >= 100) return colors.error;
+    if (percent >= 80) return colors.warning;
+    return colors.support;
+  };
+
+  const progressColor = getProgressColor(overallPercent);
 
   function formatAmount(amount: number): string {
     if (!singleCurrency) return '—';
