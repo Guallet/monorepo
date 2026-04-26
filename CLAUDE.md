@@ -110,3 +110,13 @@ Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrat
 ## Code Style
 
 Prettier config: single quotes, trailing commas. ESLint 9 with shared config from `packages/eslint-config-custom`. Pre-commit hook (Husky) runs lint. TypeScript strict mode is used across all packages.
+
+## UI & Design System
+
+**Always consult [DESIGN.MD](./DESIGN.MD) before making any UI changes.** It is the single source of truth for colours, typography, spacing, radius, elevation, motion, and component rules.
+
+Key rules at a glance:
+- Use `useTheme()` from `@guallet/ui-react` for all design tokens — no hardcoded values
+- Cards: `radius="lg"`, `shadow="sm"`, `withBorder`, white background
+- Money: positive → `colors.support` (green), negative → `colors.error` (red), always `fontVariantNumeric: 'tabular-nums'`
+- Every user-visible string must go through `t()` from `react-i18next`

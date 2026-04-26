@@ -51,6 +51,10 @@ Pattern: route file → screen component → sub-components. Screens use `BaseSc
 
 Mantine 8 is the component library. Forms use `@mantine/form` + `mantine-form-zod-resolver` + Zod. The `@/` path alias maps to `src/`.
 
+### Design system
+
+**Read [DESIGN.MD](../../DESIGN.MD) before any UI work.** It covers colors, typography, spacing, radius, elevation, motion, and component rules. The summary below captures the most frequently needed constraints, but the full spec lives there.
+
 ### Component conventions
 
 **One component per file.** Every exported component lives in its own `.tsx` file named after it.
