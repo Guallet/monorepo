@@ -5,14 +5,32 @@ import {
   Popover,
   ScrollArea,
   Stack,
-} from "@mantine/core";
-import { DateListPicker, DateRangeSelectionItem } from "./DateListPicker";
-import { CalendarDateRangePicker } from "./CalendarDateRangePicker";
-import { useState } from "react";
+} from '@mantine/core';
+import { DateListPicker, DateRangeSelectionItem } from './DateListPicker';
+import { CalendarDateRangePicker } from './CalendarDateRangePicker';
+import { useState } from 'react';
 
 interface Props {
   selectedRange: { startDate: Date; endDate: Date } | null;
   onRangeSelected: (range: { startDate: Date; endDate: Date } | null) => void;
+}
+
+function formatInitialLabel(
+  range: { startDate: Date; endDate: Date } | null,
+): string {
+  if (!range) return 'Select range';
+  const { startDate, endDate } = range;
+  if (
+    startDate.getDate() === 1 &&
+    startDate.getMonth() === endDate.getMonth() &&
+    startDate.getFullYear() === endDate.getFullYear()
+  ) {
+    return startDate.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric',
+    });
+  }
+  return `${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()}`;
 }
 
 export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
@@ -23,7 +41,6 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const [listItemSelected, setListItemSelected] =
     useState<DateRangeSelectionItem | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>("Select range");
 
   return (
     <Popover
@@ -37,10 +54,12 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
         <Button
           variant="outline"
           onClick={() => {
+            setRange(selectedRange ?? null);
+            setListItemSelected(null);
             setOpened(!opened);
           }}
         >
-          {buttonLabel}
+          {formatInitialLabel(selectedRange)}
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
@@ -87,14 +106,6 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
                   startDate: range?.startDate ?? new Date(),
                   endDate: range?.endDate ?? new Date(),
                 });
-
-                setButtonLabel(
-                  !range
-                    ? "Select range"
-                    : listItemSelected
-                      ? listItemSelected.label
-                      : "Custom range"
-                );
 
                 setOpened(false);
               }}

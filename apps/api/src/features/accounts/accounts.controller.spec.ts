@@ -25,6 +25,7 @@ describe('AccountsController', () => {
 
   const mockTransactionsService = {
     getAccountTransactions: jest.fn(),
+    getAccountTransactionsSum: jest.fn(),
   };
 
   const mockOpenBankingService = {
@@ -225,7 +226,7 @@ describe('AccountsController', () => {
   });
 
   describe('getAccountChart', () => {
-    it('should return chart data for last 6 months', async () => {
+    it('should return chart data and balance history for the requested range', async () => {
       const accountId = 'account-1';
       const mockAccount: Partial<Account> = {
         id: accountId,
@@ -237,6 +238,8 @@ describe('AccountsController', () => {
       };
 
       const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       const mockTransactions: Partial<Transaction>[] = [
         {
           id: 'tx-1',
@@ -257,25 +260,54 @@ describe('AccountsController', () => {
       ];
 
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockTransactionsService.getAccountTransactions.mockResolvedValue(
+      mockTransactionsService.getAccountTransactions.mockResolvedValueOnce(
         mockTransactions,
       );
+      mockTransactionsService.getAccountTransactionsSum.mockResolvedValueOnce(
+        25,
+      );
 
-      const result = await controller.getAccountChart(mockUser, accountId);
+      const result = await controller.getAccountChart(
+        mockUser,
+        accountId,
+        startDate.toISOString(),
+        endDate.toISOString(),
+      );
 
       expect(result).toBeDefined();
       expect(result.chart).toBeDefined();
+      expect(result.balanceHistory).toMatchObject([
+        {
+          date: mockTransactions[0].date!.toISOString().split('T')[0],
+          balance: 1025,
+        },
+        {
+          date: mockTransactions[1].date!.toISOString().split('T')[0],
+          balance: 975,
+        },
+      ]);
       expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
         mockUser.id,
         accountId,
       );
-      expect(mockTransactionsService.getAccountTransactions).toHaveBeenCalled();
+      expect(
+        mockTransactionsService.getAccountTransactions,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTransactionsService.getAccountTransactionsSum,
+      ).toHaveBeenCalledTimes(1);
 
       const callArgs =
         mockTransactionsService.getAccountTransactions.mock.calls[0][0];
       expect(callArgs.accountId).toBe(accountId);
-      expect(callArgs.startDate).toBeInstanceOf(Date);
-      expect(callArgs.endDate).toBeInstanceOf(Date);
+      expect(callArgs.startDate).toEqual(startDate);
+      expect(callArgs.endDate).toEqual(endDate);
+
+      const postRangeSumArgs =
+        mockTransactionsService.getAccountTransactionsSum.mock.calls[0][0];
+      expect(postRangeSumArgs.accountId).toBe(accountId);
+      expect(postRangeSumArgs.startDateExclusive).toEqual(endDate);
+      expect(postRangeSumArgs.endDate).toBeInstanceOf(Date);
     });
 
     it('should group transactions by month correctly', async () => {
@@ -313,14 +345,67 @@ describe('AccountsController', () => {
       ];
 
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockTransactionsService.getAccountTransactions.mockResolvedValue(
+      mockTransactionsService.getAccountTransactions.mockResolvedValueOnce(
         mockTransactions,
+      );
+      mockTransactionsService.getAccountTransactionsSum.mockResolvedValueOnce(
+        0,
       );
 
       const result = await controller.getAccountChart(mockUser, accountId);
 
       expect(result.chart).toBeDefined();
       expect(result.chart.length).toBeGreaterThan(0);
+      expect(result.balanceHistory).toBeDefined();
+    });
+
+    it('should throw BadRequestException for invalid date params', async () => {
+      const accountId = 'account-1';
+      const mockAccount: Partial<Account> = {
+        id: accountId,
+        user_id: mockUser.id,
+        name: 'Checking Account',
+        balance: 1000,
+        currency: 'GBP',
+        type: AccountType.CURRENT_ACCOUNT,
+      };
+
+      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
+
+      await expect(
+        controller.getAccountChart(mockUser, accountId, 'not-a-date'),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(
+        mockTransactionsService.getAccountTransactions,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException when startDate is after endDate', async () => {
+      const accountId = 'account-1';
+      const mockAccount: Partial<Account> = {
+        id: accountId,
+        user_id: mockUser.id,
+        name: 'Checking Account',
+        balance: 1000,
+        currency: 'GBP',
+        type: AccountType.CURRENT_ACCOUNT,
+      };
+
+      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
+
+      await expect(
+        controller.getAccountChart(
+          mockUser,
+          accountId,
+          '2026-04-30T00:00:00.000Z',
+          '2026-04-01T00:00:00.000Z',
+        ),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(
+        mockTransactionsService.getAccountTransactions,
+      ).not.toHaveBeenCalled();
     });
   });
 

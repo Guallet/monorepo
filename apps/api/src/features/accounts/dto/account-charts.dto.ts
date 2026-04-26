@@ -1,5 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export class BalanceHistoryPoint {
+  date: string;
+  balance: number;
+
+  constructor(date: string, balance: number) {
+    this.date = date;
+    this.balance = balance;
+  }
+}
+
 export class AccountChartsDto {
   @ApiProperty({ description: 'The start date of the chart' })
   startDate: Date;
@@ -8,16 +18,19 @@ export class AccountChartsDto {
   endDate: Date;
 
   chart: ChartData[];
+  balanceHistory: BalanceHistoryPoint[];
 
   static fromDomain(
     startDate: Date,
     endDate: Date,
     data: ChartData[],
+    balanceHistory: BalanceHistoryPoint[],
   ): AccountChartsDto {
     return {
       startDate: startDate,
       endDate: endDate,
       chart: data,
+      balanceHistory,
     };
   }
 }
