@@ -111,7 +111,7 @@ export class BudgetsService {
     });
 
     return transactions.reduce(
-      (acc, transaction) => acc + transaction.amount,
+      (acc, transaction) => acc + Number(transaction.amount),
       0,
     );
   }

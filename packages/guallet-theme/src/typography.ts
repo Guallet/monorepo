@@ -23,7 +23,7 @@ export type Typography = {
 };
 
 export const defaultTypography: Typography = {
-  fontFamily: "system-ui, -apple-system, sans-serif",
+  fontFamily: "Inter Variable, Inter, system-ui, -apple-system, sans-serif",
   fontFamilyMono: "ui-monospace, monospace",
   sizes: {
     xs: 12,

@@ -4,13 +4,13 @@ import { useGualletClient } from "./../GualletClientProvider";
 
 const BUDGETS_QUERY_KEY = "budgets";
 
-export function useBudgets() {
+export function useBudgets(params?: { month?: number; year?: number }) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [BUDGETS_QUERY_KEY],
+    queryKey: [BUDGETS_QUERY_KEY, params],
     queryFn: async () => {
-      return await gualletClient.budgets.getAll();
+      return await gualletClient.budgets.getAll(params);
     },
     gcTime: 1000 * 60 * 60, // 1 Hour
     staleTime: 1000 * 60 * 60, // 1 Hour
@@ -23,15 +23,16 @@ export function useBudgets() {
   };
 }
 
-export function useBudget(budgetId: string) {
+export function useBudget(
+  budgetId: string,
+  params?: { month?: number; year?: number },
+) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [BUDGETS_QUERY_KEY, budgetId],
+    queryKey: [BUDGETS_QUERY_KEY, budgetId, params],
     queryFn: async () => {
-      return await gualletClient.budgets.getById({
-        budgetId,
-      });
+      return await gualletClient.budgets.getById({ budgetId, params });
     },
   });
 
@@ -61,7 +62,6 @@ export function useBudgetTransactions({
   });
 
   return {
-    // budget: query.data ?? null,
     transactions:
       query.data?.filter((dto): dto is TransactionDto => dto !== undefined) ??
       [],
