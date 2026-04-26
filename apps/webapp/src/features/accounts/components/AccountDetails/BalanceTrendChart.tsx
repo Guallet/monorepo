@@ -10,6 +10,26 @@ interface BalanceTrendChartProps {
   isLoading?: boolean;
 }
 
+function formatDateOnlyLabel(dateOnly: string): string {
+  const [yearStr, monthStr, dayStr] = dateOnly.split('-');
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const day = Number(dayStr);
+
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    !Number.isInteger(day)
+  ) {
+    return dateOnly;
+  }
+
+  return new Date(year, month - 1, day).toLocaleDateString('default', {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
 export function BalanceTrendChart({
   balanceHistory,
   currency,
@@ -19,10 +39,7 @@ export function BalanceTrendChart({
   const { spacing } = useTheme();
 
   const chartData = balanceHistory.map((point) => ({
-    date: new Date(point.date).toLocaleDateString('default', {
-      month: 'short',
-      day: 'numeric',
-    }),
+    date: formatDateOnlyLabel(point.date),
     balance: point.balance,
   }));
 
