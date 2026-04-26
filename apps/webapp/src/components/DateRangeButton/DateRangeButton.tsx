@@ -15,6 +15,19 @@ interface Props {
   onRangeSelected: (range: { startDate: Date; endDate: Date } | null) => void;
 }
 
+function formatInitialLabel(range: { startDate: Date; endDate: Date } | null): string {
+  if (!range) return "Select range";
+  const { startDate, endDate } = range;
+  if (
+    startDate.getDate() === 1 &&
+    startDate.getMonth() === endDate.getMonth() &&
+    startDate.getFullYear() === endDate.getFullYear()
+  ) {
+    return startDate.toLocaleString("default", { month: "long", year: "numeric" });
+  }
+  return `${startDate.toLocaleDateString()} – ${endDate.toLocaleDateString()}`;
+}
+
 export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
   const [range, setRange] = useState<{
     startDate: Date | null;
@@ -23,7 +36,9 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const [listItemSelected, setListItemSelected] =
     useState<DateRangeSelectionItem | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>("Select range");
+  const [buttonLabel, setButtonLabel] = useState<string>(() =>
+    formatInitialLabel(selectedRange),
+  );
 
   return (
     <Popover

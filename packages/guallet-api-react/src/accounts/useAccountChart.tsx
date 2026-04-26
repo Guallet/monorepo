@@ -3,13 +3,26 @@ import { useGualletClient } from "./../GualletClientProvider";
 
 const ACCOUNT_CHARTS_QUERY_KEY = "accounts-charts";
 
-export function useAccountCharts(accountId: string) {
+export function useAccountCharts(
+  accountId: string,
+  startDate?: Date,
+  endDate?: Date,
+) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [ACCOUNT_CHARTS_QUERY_KEY, accountId],
+    queryKey: [
+      ACCOUNT_CHARTS_QUERY_KEY,
+      accountId,
+      startDate?.toISOString(),
+      endDate?.toISOString(),
+    ],
     queryFn: async () => {
-      return await gualletClient.accounts.getAccountChartData(accountId);
+      return await gualletClient.accounts.getAccountChartData(
+        accountId,
+        startDate,
+        endDate,
+      );
     },
   });
 

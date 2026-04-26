@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
@@ -19,7 +20,11 @@ import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { AccountDto } from './dto/account.dto';
 import { TransactionsService } from 'src/features/transactions/transactions.service';
-import { AccountChartsDto, ChartData } from './dto/account-charts.dto';
+import {
+  AccountChartsDto,
+  BalanceHistoryPoint,
+  ChartData,
+} from './dto/account-charts.dto';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
 import { OpenbankingService } from '../openbanking/openbanking.service';
@@ -98,49 +103,56 @@ export class AccountsController {
   async getAccountChart(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
+    @Query('startDate') startDateParam?: string,
+    @Query('endDate') endDateParam?: string,
   ): Promise<AccountChartsDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
     );
 
-    // Get the transactions for the account in the last 6 months
-    const sixMothsAgo = new Date();
-    sixMothsAgo.setMonth(sixMothsAgo.getMonth() - 6);
-    sixMothsAgo.setDate(1); // set the day to the first day of the month
-    sixMothsAgo.setHours(0, 0, 0, 0); // set the time to 00:00:00.000
+    const endDate = endDateParam ? new Date(endDateParam) : new Date();
+
+    const startDate = startDateParam
+      ? new Date(startDateParam)
+      : (() => {
+          const d = new Date();
+          d.setMonth(d.getMonth() - 3);
+          d.setDate(1);
+          d.setHours(0, 0, 0, 0);
+          return d;
+        })();
 
     const transactions = await this.transactionsService.getAccountTransactions({
       accountId: account.id,
-      startDate: sixMothsAgo,
-      endDate: new Date(),
+      startDate,
+      endDate,
     });
 
-    // Group the transactions by month
-    const transactionsByMonth = transactions.reduce((acc, transaction) => {
-      const month = transaction.date.getMonth();
-      const year = transaction.date.getFullYear();
-      const key = `${year}-${month}`;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(transaction);
-      return acc;
-    }, {});
+    // Monthly in/out bucketing
+    const transactionsByMonth = transactions.reduce(
+      (acc, transaction) => {
+        const month = transaction.date.getMonth();
+        const year = transaction.date.getFullYear();
+        const key = `${year}-${month}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(transaction);
+        return acc;
+      },
+      {} as Record<string, Transaction[]>,
+    );
 
-    // Convert the grouped transactions into AccountChartsDto format
     const accountCharts = Object.entries(transactionsByMonth).map(
-      ([key, transactions]) => {
+      ([key, txns]) => {
         const [year, month] = key.split('-');
-
-        const totalIn = (transactions as Transaction[])
+        const totalIn = txns
           .filter((t) => t.amount > 0)
           .reduce((acc, t) => acc + Number(t.amount), 0);
-
-        const totalOut = (transactions as Transaction[])
+        const totalOut = txns
           .filter((t) => t.amount < 0)
           .reduce((acc, t) => acc + Number(t.amount), 0);
-
         return {
           year: Number(year),
           month: Number(month),
@@ -150,9 +162,54 @@ export class AccountsController {
       },
     );
 
+    // Balance history: reconstruct running balance from current account balance
+    const currentBalance = Number(account.balance ?? 0);
+
+    // Fetch transactions after endDate to determine balance at endDate
+    const postRangeTransactions =
+      await this.transactionsService.getAccountTransactions({
+        accountId: account.id,
+        startDate: endDate,
+        endDate: new Date(),
+      });
+    const postRangeSum = postRangeTransactions
+      .filter((t) => t.date > endDate)
+      .reduce((acc, t) => acc + Number(t.amount), 0);
+    const balanceAtRangeEnd = currentBalance - postRangeSum;
+
+    // Walk transactions oldest→newest, accumulating daily balance
+    const sortedTxns = [...transactions].sort(
+      (a, b) => a.date.getTime() - b.date.getTime(),
+    );
+    const balanceHistory: BalanceHistoryPoint[] = [];
+    let runningBalance = balanceAtRangeEnd;
+
+    // Work backwards to get opening balance, then forward for history
+    const reversedTxns = [...sortedTxns].reverse();
+    let openingBalance = balanceAtRangeEnd;
+    for (const t of reversedTxns) {
+      openingBalance -= Number(t.amount);
+    }
+
+    runningBalance = openingBalance;
+    const dailyMap = new Map<string, number>();
+    for (const t of sortedTxns) {
+      const dateKey = t.date.toISOString().split('T')[0];
+      dailyMap.set(dateKey, (dailyMap.get(dateKey) ?? 0) + Number(t.amount));
+    }
+
+    // Build one balance point per day that has transactions
+    const sortedDays = Array.from(dailyMap.keys()).sort();
+    for (const day of sortedDays) {
+      runningBalance += dailyMap.get(day)!;
+      balanceHistory.push(
+        new BalanceHistoryPoint(day, Math.round(runningBalance * 100) / 100),
+      );
+    }
+
     return AccountChartsDto.fromDomain(
-      sixMothsAgo,
-      new Date(),
+      startDate,
+      endDate,
       accountCharts.map(
         (d) =>
           new ChartData(
@@ -162,6 +219,7 @@ export class AccountsController {
             Math.round(d.total_out * 100) / 100,
           ),
       ),
+      balanceHistory,
     );
   }
 

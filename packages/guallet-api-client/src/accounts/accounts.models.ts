@@ -98,11 +98,16 @@ export interface LoanAccountProperties {
   termLength: number | null;
 }
 
+export interface BalanceHistoryPoint {
+  date: string;
+  balance: number;
+}
+
 export interface AccountChartsDto {
   startDate: Date;
   endDate: Date;
-
   chart: AccountChartData[];
+  balanceHistory: BalanceHistoryPoint[];
 }
 
 export interface AccountChartData {

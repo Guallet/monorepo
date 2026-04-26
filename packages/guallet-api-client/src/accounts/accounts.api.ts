@@ -48,9 +48,17 @@ export class AccountsApi {
     });
   }
 
-  async getAccountChartData(accountId: string): Promise<AccountChartsDto> {
+  async getAccountChartData(
+    accountId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<AccountChartsDto> {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate.toISOString());
+    if (endDate) params.append('endDate', endDate.toISOString());
+    const query = params.toString();
     return await this.client.get<AccountChartsDto>({
-      path: `${ACCOUNTS_PATH}/${accountId}/charts`,
+      path: `${ACCOUNTS_PATH}/${accountId}/charts${query ? `?${query}` : ''}`,
     });
   }
 
