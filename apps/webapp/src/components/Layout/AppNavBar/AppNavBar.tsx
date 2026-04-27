@@ -80,10 +80,10 @@ const menuData: MenuData[] = [
     label: 'Tools',
     icon: IconTools,
     subLinks: [
-      { label: 'Pensions', link: '/' },
-      { label: 'Investments', link: '/' },
       { label: 'Loans', link: '/tools/loan' },
       { label: 'Mortgages', link: '/tools/mortgage' },
+      { label: 'UK Stamp Duty', link: '/tools/stamp-duty' },
+      { label: 'UK Salary Calculator', link: '/tools/salary' },
     ],
   },
   {

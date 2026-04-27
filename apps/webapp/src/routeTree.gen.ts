@@ -69,6 +69,10 @@ import { Route as AppCategoriesRulesIdEditRouteImport } from './routes/_app/cate
 
 const UserdeletedLazyRouteImport = createFileRoute('/userdeleted')()
 const IndexLazyRouteImport = createFileRoute('/')()
+const AppToolsStampDutyLazyRouteImport = createFileRoute(
+  '/_app/tools/stamp-duty',
+)()
+const AppToolsSalaryLazyRouteImport = createFileRoute('/_app/tools/salary')()
 const AppToolsMortgageLazyRouteImport = createFileRoute(
   '/_app/tools/mortgage',
 )()
@@ -203,6 +207,20 @@ const AppAccountsIndexRoute = AppAccountsIndexRouteImport.update({
   path: '/accounts/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppToolsStampDutyLazyRoute = AppToolsStampDutyLazyRouteImport.update({
+  id: '/tools/stamp-duty',
+  path: '/tools/stamp-duty',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/_app/tools/stamp-duty.lazy').then((d) => d.Route),
+)
+const AppToolsSalaryLazyRoute = AppToolsSalaryLazyRouteImport.update({
+  id: '/tools/salary',
+  path: '/tools/salary',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/_app/tools/salary.lazy').then((d) => d.Route),
+)
 const AppToolsMortgageLazyRoute = AppToolsMortgageLazyRouteImport.update({
   id: '/tools/mortgage',
   path: '/tools/mortgage',
@@ -408,6 +426,8 @@ export interface FileRoutesByFullPath {
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
+  '/tools/salary': typeof AppToolsSalaryLazyRoute
+  '/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
   '/accounts': typeof AppAccountsIndexRoute
   '/budgets': typeof AppBudgetsIndexRoute
   '/categories': typeof AppCategoriesIndexRoute
@@ -468,6 +488,8 @@ export interface FileRoutesByTo {
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
+  '/tools/salary': typeof AppToolsSalaryLazyRoute
+  '/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
   '/accounts': typeof AppAccountsIndexRoute
   '/budgets': typeof AppBudgetsIndexRoute
   '/categories': typeof AppCategoriesIndexRoute
@@ -530,6 +552,8 @@ export interface FileRoutesById {
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/tools/loan': typeof AppToolsLoanLazyRoute
   '/_app/tools/mortgage': typeof AppToolsMortgageLazyRoute
+  '/_app/tools/salary': typeof AppToolsSalaryLazyRoute
+  '/_app/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
   '/_app/accounts/': typeof AppAccountsIndexRoute
   '/_app/budgets/': typeof AppBudgetsIndexRoute
   '/_app/categories/': typeof AppCategoriesIndexRoute
@@ -592,6 +616,8 @@ export interface FileRouteTypes {
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
+    | '/tools/salary'
+    | '/tools/stamp-duty'
     | '/accounts'
     | '/budgets'
     | '/categories'
@@ -652,6 +678,8 @@ export interface FileRouteTypes {
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
+    | '/tools/salary'
+    | '/tools/stamp-duty'
     | '/accounts'
     | '/budgets'
     | '/categories'
@@ -713,6 +741,8 @@ export interface FileRouteTypes {
     | '/_app/user/edit'
     | '/_app/tools/loan'
     | '/_app/tools/mortgage'
+    | '/_app/tools/salary'
+    | '/_app/tools/stamp-duty'
     | '/_app/accounts/'
     | '/_app/budgets/'
     | '/_app/categories/'
@@ -941,6 +971,20 @@ declare module '@tanstack/react-router' {
       path: '/accounts'
       fullPath: '/accounts'
       preLoaderRoute: typeof AppAccountsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tools/stamp-duty': {
+      id: '/_app/tools/stamp-duty'
+      path: '/tools/stamp-duty'
+      fullPath: '/tools/stamp-duty'
+      preLoaderRoute: typeof AppToolsStampDutyLazyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tools/salary': {
+      id: '/_app/tools/salary'
+      path: '/tools/salary'
+      fullPath: '/tools/salary'
+      preLoaderRoute: typeof AppToolsSalaryLazyRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/tools/mortgage': {
@@ -1196,6 +1240,8 @@ interface AppRouteChildren {
   AppUserEditRoute: typeof AppUserEditRoute
   AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
   AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
+  AppToolsSalaryLazyRoute: typeof AppToolsSalaryLazyRoute
+  AppToolsStampDutyLazyRoute: typeof AppToolsStampDutyLazyRoute
   AppAccountsIndexRoute: typeof AppAccountsIndexRoute
   AppBudgetsIndexRoute: typeof AppBudgetsIndexRoute
   AppCategoriesIndexRoute: typeof AppCategoriesIndexRoute
@@ -1246,6 +1292,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppUserEditRoute: AppUserEditRoute,
   AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
   AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,
+  AppToolsSalaryLazyRoute: AppToolsSalaryLazyRoute,
+  AppToolsStampDutyLazyRoute: AppToolsStampDutyLazyRoute,
   AppAccountsIndexRoute: AppAccountsIndexRoute,
   AppBudgetsIndexRoute: AppBudgetsIndexRoute,
   AppCategoriesIndexRoute: AppCategoriesIndexRoute,
