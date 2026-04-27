@@ -21,6 +21,8 @@ import { SavingGoalsWidget } from '../components/widgets/SavingGoalsWidget';
 import { ExpenditureByCategoryWidget } from '../components/widgets/ExpenditureByCategoryWidget';
 import { LastTransactionsWidget } from '../components/widgets/LastTransactionsWidget';
 import { BalanceTrendWidget } from '../components/widgets/BalanceTrendWidget';
+import { RecurringPaymentsWidget } from '../components/widgets/RecurringPaymentsWidget';
+import { NotificationsWidget } from '../components/widgets/NotificationsWidget';
 import { IconCalendar } from '@tabler/icons-react';
 
 dayjs.extend(quarterOfYear);
@@ -40,7 +42,6 @@ export function DashboardScreen() {
       <Box mb="xl">
         <Group justify="space-between" align="center">
           <Title order={2}>Dashboard</Title>
-          {/* Filter popup for date range */}
           <Popover
             position="bottom-end"
             withArrow
@@ -97,10 +98,10 @@ export function DashboardScreen() {
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <CurrentAccountsWidget />
+          <RecurringPaymentsWidget />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <SavingGoalsWidget />
+          <CurrentAccountsWidget />
         </Grid.Col>
 
         {/* Row 2: Charts */}
@@ -125,7 +126,15 @@ export function DashboardScreen() {
           <BudgetsWidget />
         </Grid.Col>
 
-        {/* Row 4: Transactions */}
+        {/* Row 4: Goals and Notifications */}
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <SavingGoalsWidget />
+        </Grid.Col>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <NotificationsWidget />
+        </Grid.Col>
+
+        {/* Row 5: Transactions */}
         <Grid.Col span={{ base: 12, lg: 6 }}>
           <LastTransactionsWidget />
         </Grid.Col>
