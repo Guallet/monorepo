@@ -1,6 +1,7 @@
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
+import { AccountInput } from '@/features/accounts/components/AccountInput';
 import {
   RecurrenceCadence,
   RecurringPaymentType,
@@ -41,6 +42,7 @@ const editSubscriptionFormDataSchema = z.object({
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
   startDate: z.date({ required_error: 'Start date is required' }),
   imageUrl: z.string().optional(),
+  accountId: z.string().nullable().default(null),
 });
 type EditSubscriptionFormData = z.infer<typeof editSubscriptionFormDataSchema>;
 
@@ -101,6 +103,7 @@ export function EditSubscriptionScreen({
       type: subscription?.type ?? RecurringPaymentType.SUBSCRIPTION,
       startDate: subscription?.startDate ? new Date(subscription.startDate) : new Date(),
       imageUrl: subscription?.imageUrl ?? '',
+      accountId: subscription?.accountId ?? null,
     },
     validate: zod4Resolver(editSubscriptionFormDataSchema),
   });
@@ -115,11 +118,13 @@ export function EditSubscriptionScreen({
         currency: subscription.currency,
         cadence: subscription.cadence,
         type: subscription.type,
-        startDate: new Date(subscription.startDate),
+        startDate: new Date(subscription.startDate!),
         imageUrl: subscription.imageUrl ?? '',
+        accountId: subscription.accountId ?? null,
       });
     }
-  }, [form, subscription]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscription]);
 
   async function onFormSubmit(data: EditSubscriptionFormData) {
     const request: UpdateSubscriptionRequest = {
@@ -130,6 +135,7 @@ export function EditSubscriptionScreen({
       type: data.type,
       startDate: data.startDate.toISOString().split('T')[0],
       imageUrl: data.imageUrl || undefined,
+      accountId: data.accountId ?? undefined,
     };
 
     try {
@@ -170,7 +176,6 @@ export function EditSubscriptionScreen({
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.lg}>
-            {/* Form section */}
             <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
               <Stack gap={0} mb={spacing.md}>
                 <Text fw={600} size="sm">
@@ -265,6 +270,16 @@ export function EditSubscriptionScreen({
                     'Select a date',
                   )}
                   {...form.getInputProps('startDate')}
+                />
+
+                <AccountInput
+                  key={form.key('accountId')}
+                  description={t(
+                    'screens.subscriptions.edit.fields.account.description',
+                    'Which account this payment comes from or goes into',
+                  )}
+                  value={values.accountId}
+                  onChange={(val) => form.setFieldValue('accountId', val as string | null)}
                 />
 
                 <TextInput

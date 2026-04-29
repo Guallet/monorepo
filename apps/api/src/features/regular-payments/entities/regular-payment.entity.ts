@@ -1,4 +1,5 @@
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { Account } from 'src/features/accounts/entities/account.entity';
 import { Category } from 'src/features/categories/entities/category.entity';
 import {
   Column,
@@ -63,4 +64,11 @@ export class RegularPayment extends BaseDbEntity {
 
   @Column({ nullable: true })
   categoryId?: string;
+
+  // Account relation
+  @ManyToOne(() => Account, { onDelete: 'SET NULL', nullable: true })
+  account?: Relation<Account>;
+
+  @Column({ nullable: true })
+  accountId?: string;
 }

@@ -1,7 +1,11 @@
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
-import { useSubscription, useSubscriptionsMutations } from '@guallet/api-react';
+import {
+  useAccounts,
+  useSubscription,
+  useSubscriptionsMutations,
+} from '@guallet/api-react';
 import { Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import {
@@ -15,6 +19,7 @@ import {
   Divider,
   ThemeIcon,
   Box,
+  Card,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useNavigate, notFound } from '@tanstack/react-router';
@@ -31,6 +36,7 @@ import {
   IconTrendingUp,
   IconTrendingDown,
   IconAlertTriangle,
+  IconBuildingBank,
 } from '@tabler/icons-react';
 
 interface SubscriptionDetailsScreenProps {
@@ -61,9 +67,15 @@ function getPaymentTypeLabel(
     case RecurringPaymentType.SUBSCRIPTION:
       return t('screens.subscriptions.list.types.subscription', 'Subscription');
     case RecurringPaymentType.REGULAR_PAYMENT:
-      return t('screens.subscriptions.list.types.regularPayment', 'Regular payment');
+      return t(
+        'screens.subscriptions.list.types.regularPayment',
+        'Regular payment',
+      );
     case RecurringPaymentType.REGULAR_INCOME:
-      return t('screens.subscriptions.list.types.regularIncome', 'Regular income');
+      return t(
+        'screens.subscriptions.list.types.regularIncome',
+        'Regular income',
+      );
     default:
       return t('screens.subscriptions.list.types.unknown', 'Unknown');
   }
@@ -89,7 +101,10 @@ function getCadenceLabel(
   }
 }
 
-function calculateMonthlyAmount(amount: number, cadence: RecurrenceCadence): number {
+function calculateMonthlyAmount(
+  amount: number,
+  cadence: RecurrenceCadence,
+): number {
   switch (cadence) {
     case RecurrenceCadence.WEEKLY:
       return (amount * 52) / 12;
@@ -106,7 +121,10 @@ function calculateMonthlyAmount(amount: number, cadence: RecurrenceCadence): num
   }
 }
 
-function calculateYearlyAmount(amount: number, cadence: RecurrenceCadence): number {
+function calculateYearlyAmount(
+  amount: number,
+  cadence: RecurrenceCadence,
+): number {
   switch (cadence) {
     case RecurrenceCadence.WEEKLY:
       return amount * 52;
@@ -151,6 +169,7 @@ export function SubscriptionDetailsScreen({
   const navigation = useNavigate();
   const { subscription, isLoading } = useSubscription(subscriptionId);
   const { deleteSubscriptionMutation } = useSubscriptionsMutations();
+  const { accounts } = useAccounts();
   const { colors, spacing } = useTheme();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -169,7 +188,10 @@ export function SubscriptionDetailsScreen({
     } catch (error) {
       console.error('Error deleting subscription', error);
       notifications.show({
-        title: t('screens.subscriptions.details.notifications.deleteError.title', 'Error'),
+        title: t(
+          'screens.subscriptions.details.notifications.deleteError.title',
+          'Error',
+        ),
         message: t(
           'screens.subscriptions.details.notifications.deleteError.message',
           'Failed to delete subscription.',
@@ -182,6 +204,10 @@ export function SubscriptionDetailsScreen({
   if (!subscription && !isLoading) {
     throw notFound();
   }
+
+  const linkedAccount = subscription?.accountId
+    ? accounts.find((a) => a.id === subscription.accountId)
+    : null;
 
   const isIncome = subscription?.type === RecurringPaymentType.REGULAR_INCOME;
   const amountColor = isIncome ? colors.support : colors.error;
@@ -208,7 +234,10 @@ export function SubscriptionDetailsScreen({
         centered
         opened={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title={t('screens.subscriptions.details.deleteModal.title', 'Delete subscription')}
+        title={t(
+          'screens.subscriptions.details.deleteModal.title',
+          'Delete subscription',
+        )}
         radius="lg"
         size="sm"
       >
@@ -233,8 +262,14 @@ export function SubscriptionDetailsScreen({
             </Stack>
           </Group>
           <Group justify="flex-end" gap="xs">
-            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
-              {t('screens.subscriptions.details.deleteModal.cancelButton', 'Cancel')}
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteModalOpen(false)}
+            >
+              {t(
+                'screens.subscriptions.details.deleteModal.cancelButton',
+                'Cancel',
+              )}
             </Button>
             <Button
               color="red"
@@ -242,7 +277,10 @@ export function SubscriptionDetailsScreen({
               loading={deleteSubscriptionMutation.isPending}
               leftSection={<IconTrash size={16} strokeWidth={1.5} />}
             >
-              {t('screens.subscriptions.details.deleteModal.confirmButton', 'Delete')}
+              {t(
+                'screens.subscriptions.details.deleteModal.confirmButton',
+                'Delete',
+              )}
             </Button>
           </Group>
         </Stack>
@@ -253,58 +291,69 @@ export function SubscriptionDetailsScreen({
           {/* Hero header */}
           <Card withBorder shadow="sm" radius="lg" padding="lg">
             <Stack gap={spacing.md} align="center">
-            <Avatar
-              src={subscription.imageUrl}
-              radius="xl"
-              size={72}
-              style={{ border: `3px solid ${typeColor}33` }}
-            >
-              <Text fw={800} size="xl" style={{ color: typeColor }}>
-                {subscription.name.charAt(0).toUpperCase()}
-              </Text>
-            </Avatar>
-
-            <Stack gap={4} align="center">
-              <Text size="xl" fw={700} style={{ letterSpacing: '-0.01em' }}>
-                {subscription.name}
-              </Text>
-              <Badge
-                size="md"
-                radius="sm"
-                variant="light"
-                style={{ backgroundColor: `${typeColor}18`, color: typeColor }}
+              <Avatar
+                src={subscription.imageUrl}
+                radius="xl"
+                size={72}
+                style={{ border: `3px solid ${typeColor}33` }}
               >
-                {getPaymentTypeLabel(subscription.type, t)}
-              </Badge>
-            </Stack>
+                <Text fw={800} size="xl" style={{ color: typeColor }}>
+                  {subscription.name.charAt(0).toUpperCase()}
+                </Text>
+              </Avatar>
 
-            <Text
-              fw={800}
-              fz={32}
-              style={{
-                color: amountColor,
-                fontVariantNumeric: 'tabular-nums',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              {Money.fromCurrencyCode({
-                currencyCode: subscription.currency,
-                amount: subscription.amount,
-              }).format()}
-            </Text>
+              <Stack gap={4} align="center">
+                <Text size="xl" fw={700} style={{ letterSpacing: '-0.01em' }}>
+                  {subscription.name}
+                </Text>
+                <Badge
+                  size="md"
+                  radius="sm"
+                  variant="light"
+                  style={{
+                    backgroundColor: `${typeColor}18`,
+                    color: typeColor,
+                  }}
+                >
+                  {getPaymentTypeLabel(subscription.type, t)}
+                </Badge>
+              </Stack>
 
-            <Text size="sm" c="dimmed">
-              {getCadenceLabel(subscription.cadence, t)}
-            </Text>
+              <Text
+                fw={800}
+                fz={32}
+                style={{
+                  color: amountColor,
+                  fontVariantNumeric: 'tabular-nums',
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                {Money.fromCurrencyCode({
+                  currencyCode: subscription.currency,
+                  amount: subscription.amount,
+                }).format()}
+              </Text>
+
+              <Text size="sm" c="dimmed">
+                {getCadenceLabel(subscription.cadence, t)}
+              </Text>
             </Stack>
           </Card>
 
           {/* Details */}
-          <AppSection title={t('screens.subscriptions.details.sections.details', 'Details')}>
+          <AppSection
+            title={t(
+              'screens.subscriptions.details.sections.details',
+              'Details',
+            )}
+          >
             <Stack gap={0}>
               <DetailRow
                 icon={<IconRefresh size={16} strokeWidth={1.5} />}
-                label={t('screens.subscriptions.details.fields.frequency', 'Frequency')}
+                label={t(
+                  'screens.subscriptions.details.fields.frequency',
+                  'Frequency',
+                )}
                 value={
                   <Text size="sm" fw={500}>
                     {getCadenceLabel(subscription.cadence, t)}
@@ -314,21 +363,30 @@ export function SubscriptionDetailsScreen({
               <Divider />
               <DetailRow
                 icon={<IconCalendar size={16} strokeWidth={1.5} />}
-                label={t('screens.subscriptions.details.fields.startDate', 'Start date')}
+                label={t(
+                  'screens.subscriptions.details.fields.startDate',
+                  'Start date',
+                )}
                 value={
                   <Text size="sm" fw={500}>
-                    {new Date(subscription.startDate).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
+                    {new Date(subscription.startDate).toLocaleDateString(
+                      'en-GB',
+                      {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      },
+                    )}
                   </Text>
                 }
               />
               <Divider />
               <DetailRow
                 icon={<IconCurrencyPound size={16} strokeWidth={1.5} />}
-                label={t('screens.subscriptions.details.fields.currency', 'Currency')}
+                label={t(
+                  'screens.subscriptions.details.fields.currency',
+                  'Currency',
+                )}
                 value={
                   <Text size="sm" fw={500}>
                     {subscription.currency}
@@ -344,24 +402,50 @@ export function SubscriptionDetailsScreen({
                     size="sm"
                     radius="sm"
                     variant="light"
-                    style={{ backgroundColor: `${typeColor}18`, color: typeColor }}
+                    style={{
+                      backgroundColor: `${typeColor}18`,
+                      color: typeColor,
+                    }}
                   >
                     {getPaymentTypeLabel(subscription.type, t)}
                   </Badge>
                 }
               />
+              {linkedAccount && (
+                <>
+                  <Divider />
+                  <DetailRow
+                    icon={<IconBuildingBank size={16} strokeWidth={1.5} />}
+                    label={t(
+                      'screens.subscriptions.details.fields.account',
+                      'Account',
+                    )}
+                    value={
+                      <Text size="sm" fw={500}>
+                        {linkedAccount.name}
+                      </Text>
+                    }
+                  />
+                </>
+              )}
             </Stack>
           </AppSection>
 
           {/* Cost summary */}
           <AppSection
-            title={t('screens.subscriptions.details.sections.costSummary', 'Cost summary')}
+            title={t(
+              'screens.subscriptions.details.sections.costSummary',
+              'Cost summary',
+            )}
           >
             <Stack gap={0}>
               <DetailRow
-                icon={isIncome
-                  ? <IconTrendingUp size={16} strokeWidth={1.5} />
-                  : <IconTrendingDown size={16} strokeWidth={1.5} />
+                icon={
+                  isIncome ? (
+                    <IconTrendingUp size={16} strokeWidth={1.5} />
+                  ) : (
+                    <IconTrendingDown size={16} strokeWidth={1.5} />
+                  )
                 }
                 label={t(
                   'screens.subscriptions.details.costSummary.monthly',
@@ -371,7 +455,10 @@ export function SubscriptionDetailsScreen({
                   <Text
                     size="sm"
                     fw={600}
-                    style={{ color: amountColor, fontVariantNumeric: 'tabular-nums' }}
+                    style={{
+                      color: amountColor,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
                   >
                     {Money.fromCurrencyCode({
                       currencyCode: subscription.currency,
@@ -382,9 +469,12 @@ export function SubscriptionDetailsScreen({
               />
               <Divider />
               <DetailRow
-                icon={isIncome
-                  ? <IconTrendingUp size={16} strokeWidth={1.5} />
-                  : <IconTrendingDown size={16} strokeWidth={1.5} />
+                icon={
+                  isIncome ? (
+                    <IconTrendingUp size={16} strokeWidth={1.5} />
+                  ) : (
+                    <IconTrendingDown size={16} strokeWidth={1.5} />
+                  )
                 }
                 label={t(
                   'screens.subscriptions.details.costSummary.yearly',
@@ -394,7 +484,10 @@ export function SubscriptionDetailsScreen({
                   <Text
                     size="sm"
                     fw={600}
-                    style={{ color: amountColor, fontVariantNumeric: 'tabular-nums' }}
+                    style={{
+                      color: amountColor,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
                   >
                     {Money.fromCurrencyCode({
                       currencyCode: subscription.currency,
@@ -419,7 +512,10 @@ export function SubscriptionDetailsScreen({
                 })
               }
             >
-              {t('screens.subscriptions.details.actions.edit', 'Edit subscription')}
+              {t(
+                'screens.subscriptions.details.actions.edit',
+                'Edit subscription',
+              )}
             </Button>
             <Button
               fullWidth
@@ -429,7 +525,10 @@ export function SubscriptionDetailsScreen({
               leftSection={<IconTrash size={16} strokeWidth={1.5} />}
               onClick={() => setIsDeleteModalOpen(true)}
             >
-              {t('screens.subscriptions.details.actions.delete', 'Delete subscription')}
+              {t(
+                'screens.subscriptions.details.actions.delete',
+                'Delete subscription',
+              )}
             </Button>
             <Button
               fullWidth
@@ -467,7 +566,10 @@ export function SubscriptionDetailsScreen({
                   })
                 }
               >
-                {t('screens.subscriptions.details.actions.edit', 'Edit subscription')}
+                {t(
+                  'screens.subscriptions.details.actions.edit',
+                  'Edit subscription',
+                )}
               </Button>
             </Group>
           </Group>
