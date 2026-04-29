@@ -40,7 +40,7 @@ const editSubscriptionFormDataSchema = z.object({
   currency: z.string().default('GBP'),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
-  startDate: z.date({ required_error: 'Start date is required' }),
+  startDate: z.date({ error: 'Start date is required' }),
   imageUrl: z.string().optional(),
   accountId: z.string().nullable().default(null),
 });
@@ -62,11 +62,17 @@ export function EditSubscriptionScreen({
       value: RecurringPaymentType.SUBSCRIPTION,
     },
     {
-      label: t('screens.subscriptions.list.types.regularPayment', 'Regular payment'),
+      label: t(
+        'screens.subscriptions.list.types.regularPayment',
+        'Regular payment',
+      ),
       value: RecurringPaymentType.REGULAR_PAYMENT,
     },
     {
-      label: t('screens.subscriptions.list.types.regularIncome', 'Regular income'),
+      label: t(
+        'screens.subscriptions.list.types.regularIncome',
+        'Regular income',
+      ),
       value: RecurringPaymentType.REGULAR_INCOME,
     },
   ];
@@ -101,7 +107,9 @@ export function EditSubscriptionScreen({
       currency: subscription?.currency ?? defaultCurrency,
       cadence: subscription?.cadence ?? RecurrenceCadence.MONTHLY,
       type: subscription?.type ?? RecurringPaymentType.SUBSCRIPTION,
-      startDate: subscription?.startDate ? new Date(subscription.startDate) : new Date(),
+      startDate: subscription?.startDate
+        ? new Date(subscription.startDate)
+        : new Date(),
       imageUrl: subscription?.imageUrl ?? '',
       accountId: subscription?.accountId ?? null,
     },
@@ -123,8 +131,7 @@ export function EditSubscriptionScreen({
         accountId: subscription.accountId ?? null,
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscription]);
+  }, [subscription, form]);
 
   async function onFormSubmit(data: EditSubscriptionFormData) {
     const request: UpdateSubscriptionRequest = {
@@ -176,10 +183,13 @@ export function EditSubscriptionScreen({
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.lg}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card withBorder shadow="sm" radius="lg" padding="lg">
               <Stack gap={0} mb={spacing.md}>
                 <Text fw={600} size="sm">
-                  {t('screens.subscriptions.edit.formSection.title', 'Subscription details')}
+                  {t(
+                    'screens.subscriptions.edit.formSection.title',
+                    'Subscription details',
+                  )}
                 </Text>
                 <Text size="xs" c="dimmed">
                   {t(
@@ -193,7 +203,10 @@ export function EditSubscriptionScreen({
                 <TextInput
                   key={form.key('name')}
                   required
-                  label={t('screens.subscriptions.edit.fields.name.label', 'Name')}
+                  label={t(
+                    'screens.subscriptions.edit.fields.name.label',
+                    'Name',
+                  )}
                   placeholder={t(
                     'screens.subscriptions.edit.fields.name.placeholder',
                     'e.g. Netflix, Spotify, Gym membership',
@@ -205,7 +218,10 @@ export function EditSubscriptionScreen({
                 <Select
                   key={form.key('type')}
                   required
-                  label={t('screens.subscriptions.edit.fields.type.label', 'Type')}
+                  label={t(
+                    'screens.subscriptions.edit.fields.type.label',
+                    'Type',
+                  )}
                   data={paymentTypes}
                   {...form.getInputProps('type')}
                   onChange={(value) => {
@@ -238,7 +254,10 @@ export function EditSubscriptionScreen({
                 <NumberInput
                   key={form.key('amount')}
                   required
-                  label={t('screens.subscriptions.edit.fields.amount.label', 'Amount')}
+                  label={t(
+                    'screens.subscriptions.edit.fields.amount.label',
+                    'Amount',
+                  )}
                   description={t(
                     'screens.subscriptions.edit.fields.amount.description',
                     'Per payment',
@@ -279,7 +298,9 @@ export function EditSubscriptionScreen({
                     'Which account this payment comes from or goes into',
                   )}
                   value={values.accountId}
-                  onChange={(val) => form.setFieldValue('accountId', val as string | null)}
+                  onChange={(val) =>
+                    form.setFieldValue('accountId', val as string | null)
+                  }
                 />
 
                 <TextInput
@@ -310,7 +331,10 @@ export function EditSubscriptionScreen({
                 fullWidth
                 size="md"
                 onClick={() =>
-                  navigate({ to: '/subscriptions/$id', params: { id: subscriptionId } })
+                  navigate({
+                    to: '/subscriptions/$id',
+                    params: { id: subscriptionId },
+                  })
                 }
               >
                 {t('screens.subscriptions.edit.cancelButton', 'Cancel')}
@@ -322,12 +346,18 @@ export function EditSubscriptionScreen({
               <Button
                 variant="outline"
                 onClick={() =>
-                  navigate({ to: '/subscriptions/$id', params: { id: subscriptionId } })
+                  navigate({
+                    to: '/subscriptions/$id',
+                    params: { id: subscriptionId },
+                  })
                 }
               >
                 {t('screens.subscriptions.edit.cancelButton', 'Cancel')}
               </Button>
-              <Button type="submit" loading={updateSubscriptionMutation.isPending}>
+              <Button
+                type="submit"
+                loading={updateSubscriptionMutation.isPending}
+              >
                 {t('screens.subscriptions.edit.submitButton', 'Save changes')}
               </Button>
             </Group>

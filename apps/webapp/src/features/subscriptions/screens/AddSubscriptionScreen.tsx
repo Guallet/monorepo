@@ -176,12 +176,7 @@ export function AddSubscriptionScreen() {
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.lg}>
-            <Card
-              withBorder
-              shadow="sm"
-              radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
-            >
+            <Card withBorder shadow="sm" radius="lg" padding="lg">
               <Stack gap={0} mb={spacing.md}>
                 <Text fw={600} size="sm">
                   {t(

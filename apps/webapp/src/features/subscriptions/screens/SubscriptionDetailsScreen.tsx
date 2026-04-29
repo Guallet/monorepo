@@ -369,14 +369,16 @@ export function SubscriptionDetailsScreen({
                 )}
                 value={
                   <Text size="sm" fw={500}>
-                    {new Date(subscription.startDate).toLocaleDateString(
-                      'en-GB',
-                      {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      },
-                    )}
+                    {subscription.startDate
+                      ? new Date(subscription.startDate).toLocaleDateString(
+                          'en-GB',
+                          {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          },
+                        )
+                      : '—'}
                   </Text>
                 }
               />
