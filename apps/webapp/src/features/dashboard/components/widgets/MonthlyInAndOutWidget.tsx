@@ -1,17 +1,18 @@
 import { WidgetCard } from "./WidgetCard";
 import { useTransactionsWithFilter } from "@guallet/api-react";
-import { Box, Text, Loader, Center, useMantineTheme } from "@mantine/core";
+import { Box, Text, Loader, Center } from "@mantine/core";
 import { IconChartBar } from "@tabler/icons-react";
 import { BarChart } from "@mantine/charts";
+import { useTheme } from "@guallet/ui-react";
 
 interface MonthlyInAndOutWidgetProps {
   startDate: string | null;
   endDate: string | null;
 }
 
-export function MonthlyInAndOutWidget({ 
-  startDate, 
-  endDate 
+export function MonthlyInAndOutWidget({
+  startDate,
+  endDate
 }: Readonly<MonthlyInAndOutWidgetProps>) {
   const { transactions, isLoading } = useTransactionsWithFilter({
     page: 1,
@@ -20,31 +21,29 @@ export function MonthlyInAndOutWidget({
     endDate: endDate ? new Date(endDate) : null,
   });
 
-  const theme = useMantineTheme();
+  const { colors, borderRadius } = useTheme();
 
-  // Group transactions by month
   const monthlyData = transactions.reduce((acc, transaction) => {
     const date = new Date(transaction.date);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const monthLabel = date.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
-    
+
     if (!acc[monthKey]) {
       acc[monthKey] = { month: monthLabel, income: 0, spending: 0, date: date };
     }
-    
+
     if (transaction.amount > 0) {
       acc[monthKey].income += transaction.amount;
     } else {
       acc[monthKey].spending += Math.abs(transaction.amount);
     }
-    
+
     return acc;
   }, {} as Record<string, { month: string; income: number; spending: number; date: Date }>);
 
-  // Convert to array and sort by date
   const data = Object.values(monthlyData)
     .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .slice(-6) // Last 6 months
+    .slice(-6)
     .map(({ month, income, spending }) => ({
       month,
       income: Math.round(income),
@@ -52,25 +51,24 @@ export function MonthlyInAndOutWidget({
     }));
 
   return (
-    <WidgetCard 
-      title="Income vs. Spending" 
+    <WidgetCard
+      title="Income vs. Spending"
       icon={<IconChartBar size={20} />}
     >
       {isLoading ? (
-        <Center h={280}>
+        <Center h={300}>
           <Loader size="md" />
         </Center>
       ) : data.length > 0 ? (
         <Box
           style={{
-            backgroundColor: theme.colors.gray[0],
-            borderRadius: theme.radius.md,
+            backgroundColor: colors.surface,
+            borderRadius: borderRadius.md,
             padding: 16,
-            marginTop: 8,
           }}
         >
           <BarChart
-            h={280}
+            h={300}
             data={data}
             dataKey="month"
             series={[
@@ -80,7 +78,7 @@ export function MonthlyInAndOutWidget({
             tickLine="y"
             gridAxis="xy"
             withLegend
-            legendProps={{ 
+            legendProps={{
               verticalAlign: 'top',
               height: 40,
             }}
@@ -89,7 +87,7 @@ export function MonthlyInAndOutWidget({
           />
         </Box>
       ) : (
-        <Center h={280}>
+        <Center h={300}>
           <Text size="sm" c="dimmed">
             No transaction data available.
           </Text>

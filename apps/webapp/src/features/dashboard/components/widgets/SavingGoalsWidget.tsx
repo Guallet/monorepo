@@ -8,124 +8,163 @@ import {
   Progress,
   Group,
   Box,
-  useMantineTheme,
   Center,
+  ScrollArea,
 } from '@mantine/core';
 import { IconPigMoney, IconFlag } from '@tabler/icons-react';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
+
+const MAX_ITEMS = 5;
 
 export function SavingGoalsWidget() {
   const { savingGoals, isLoading: goalsLoading } = useSavingGoals();
   const { accounts, isLoading: accountsLoading } = useAccounts();
-  const theme = useMantineTheme();
+  const { colors } = useTheme();
+  const router = useRouter();
 
   const isLoading = goalsLoading || accountsLoading;
 
-  // Calculate current amount for each saving goal
-  const goalsWithProgress = savingGoals.map((goal) => {
-    const goalAccounts = accounts.filter((acc) =>
-      goal.accounts.includes(acc.id),
-    );
+  const goalsWithProgress = savingGoals
+    .map((goal) => {
+      const goalAccounts = accounts.filter((acc) =>
+        goal.accounts.includes(acc.id),
+      );
 
-    const currentAmount = goalAccounts.reduce(
-      (sum, acc) => sum + Number(acc.balance.amount),
-      0,
-    );
+      const currentAmount = goalAccounts.reduce(
+        (sum, acc) => sum + Number(acc.balance.amount),
+        0,
+      );
 
-    const currency = goalAccounts[0]?.currency || 'GBP';
+      const currency = goalAccounts[0]?.currency || 'GBP';
 
-    return {
-      ...goal,
-      currentAmount,
-      progressPercentage: Math.min(goal.progressPercentage, 100),
-      currency,
-    };
-  });
+      return {
+        ...goal,
+        currentAmount,
+        progressPercentage: Math.min(goal.progressPercentage, 100),
+        currency,
+      };
+    })
+    .sort((a, b) => {
+      const priorityOrder = { high: 1, medium: 2, low: 3 };
+      const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 3;
+      const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 3;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+      if (a.isCompleted !== b.isCompleted) return b.isCompleted ? -1 : 1;
+      return b.progressPercentage - a.progressPercentage;
+    });
+
+  const hasMore = goalsWithProgress.length > MAX_ITEMS;
+  const displayGoals = goalsWithProgress.slice(0, MAX_ITEMS);
 
   return (
-    <WidgetCard title="Saving Goals" icon={<IconPigMoney size={20} />}>
+    <WidgetCard
+      title="Saving Goals"
+      icon={<IconPigMoney size={20} />}
+      footer={
+        goalsWithProgress.length > 0 && (
+          <Text
+            component="a"
+            size="sm"
+            fw={500}
+            style={{
+              color: colors.primary,
+              cursor: 'pointer',
+              textDecoration: 'none',
+              display: 'block',
+              textAlign: 'center',
+            }}
+            onClick={() => router.navigate({ to: '/saving-goals' })}
+          >
+            View all saving goals →
+          </Text>
+        )
+      }
+    >
       {isLoading ? (
         <Center h={150}>
           <Loader size="md" />
         </Center>
       ) : goalsWithProgress.length > 0 ? (
-        <Stack gap="md">
-          {goalsWithProgress.map((goal) => {
-            const isComplete = goal.progressPercentage >= 100;
-            const current = Money.fromCurrencyCode({
-              currencyCode: goal.currency,
-              amount: goal.currentAmount,
-            });
-            const target = Money.fromCurrencyCode({
-              currencyCode: goal.currency,
-              amount: Number(goal.targetAmount),
-            });
-
-            return (
-              <Box
-                key={goal.id}
-                p="sm"
-                style={{
-                  borderRadius: theme.radius.md,
-                  backgroundColor: isComplete
-                    ? theme.colors.teal[0]
-                    : theme.colors.gray[0],
-                  border: `1px solid ${isComplete ? theme.colors.teal[2] : theme.colors.gray[2]}`,
-                }}
-              >
-                <Group justify="space-between" mb="xs">
-                  <Group gap="xs">
-                    <IconFlag
-                      size={16}
-                      color={
-                        isComplete ? theme.colors.teal[6] : theme.colors.blue[6]
-                      }
-                    />
-                    <Text fw={600} size="sm">
-                      {goal.name}
+        <ScrollArea.Autosize mah={280}>
+          <Stack gap="sm">
+            {displayGoals.map((goal) => {
+              const isComplete = goal.progressPercentage >= 100;
+              return (
+                <Box
+                  key={goal.id}
+                  p="sm"
+                  style={{
+                    borderRadius: '8px',
+                    backgroundColor: isComplete
+                      ? `${colors.support}12`
+                      : colors.surface,
+                    border: `1px solid ${isComplete ? `${colors.support}40` : colors.paleGrey}`,
+                  }}
+                >
+                  <Group justify="space-between" mb="xs">
+                    <Group gap="xs">
+                      <IconFlag
+                        size={14}
+                        style={{
+                          color: isComplete ? colors.support : colors.primary,
+                        }}
+                      />
+                      <Text fw={600} size="sm">
+                        {goal.name}
+                      </Text>
+                    </Group>
+                    <Text
+                      size="xs"
+                      fw={500}
+                      style={{ color: isComplete ? colors.support : undefined }}
+                      c={isComplete ? undefined : 'dimmed'}
+                    >
+                      {goal.progressPercentage.toFixed(0)}%
                     </Text>
                   </Group>
-                  <Text size="xs" c={isComplete ? 'teal' : 'dimmed'} fw={500}>
-                    {goal.progressPercentage.toFixed(0)}%
-                  </Text>
-                </Group>
 
-                {goal.description && (
-                  <Text size="xs" c="dimmed" mb="xs">
-                    {goal.description}
-                  </Text>
-                )}
+                  <Progress
+                    value={goal.progressPercentage}
+                    color={isComplete ? 'teal' : 'blue'}
+                    size="md"
+                    radius="xl"
+                    striped={isComplete}
+                    animated={isComplete}
+                  />
 
-                <Progress
-                  value={goal.progressPercentage}
-                  color={isComplete ? 'teal' : 'blue'}
-                  size="lg"
-                  radius="xl"
-                  striped={isComplete}
-                  animated={isComplete}
-                />
-
-                <Group justify="space-between" mt="xs">
-                  <Text size="xs" c="dimmed">
-                    {current.format()}
-                  </Text>
-                  <Text size="xs" fw={600} c={isComplete ? 'teal' : 'blue'}>
-                    {target.format()}
-                  </Text>
-                </Group>
-
-                {goal.targetDate && (
-                  <Text size="xs" c="dimmed" mt="xs">
-                    Target: {new Date(goal.targetDate).toLocaleDateString()}
-                  </Text>
-                )}
-              </Box>
-            );
-          })}
-        </Stack>
+                  <Group justify="space-between" mt="xs">
+                    <Text size="xs" c="dimmed">
+                      {Money.fromCurrencyCode({
+                        currencyCode: goal.currency,
+                        amount: goal.currentAmount,
+                      }).format()}
+                    </Text>
+                    <Text
+                      size="xs"
+                      fw={600}
+                      style={{ color: isComplete ? colors.support : colors.primary }}
+                    >
+                      {Money.fromCurrencyCode({
+                        currencyCode: goal.currency,
+                        amount: Number(goal.targetAmount),
+                      }).format()}
+                    </Text>
+                  </Group>
+                </Box>
+              );
+            })}
+            {hasMore && (
+              <Text size="xs" c="dimmed" ta="center">
+                +{goalsWithProgress.length - MAX_ITEMS} more goal{goalsWithProgress.length - MAX_ITEMS !== 1 ? 's' : ''}
+              </Text>
+            )}
+          </Stack>
+        </ScrollArea.Autosize>
       ) : (
         <Center h={150}>
           <Stack gap="xs" align="center">
-            <IconPigMoney size={48} color={theme.colors.gray[4]} />
+            <IconPigMoney size={48} style={{ color: colors.paleGrey }} />
             <Text size="sm" c="dimmed" ta="center">
               No saving goals found.
             </Text>

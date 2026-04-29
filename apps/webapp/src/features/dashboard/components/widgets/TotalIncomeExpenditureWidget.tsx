@@ -8,11 +8,11 @@ import {
   Text,
   Group,
   Box,
-  useMantineTheme,
   Center,
   RingProgress,
 } from '@mantine/core';
 import { IconArrowUp, IconArrowDown, IconChartPie } from '@tabler/icons-react';
+import { useTheme } from '@guallet/ui-react';
 
 interface TotalIncomeExpenditureWidgetProps {
   startDate: string | null;
@@ -30,9 +30,8 @@ export function TotalIncomeExpenditureWidget({
     endDate: endDate ? new Date(endDate) : null,
   });
 
-  const theme = useMantineTheme();
+  const { colors } = useTheme();
 
-  // Calculate total income and expenditure
   const income = transactions
     .filter((t) => t.amount > 0)
     .reduce((sum, t) => sum + t.amount, 0);
@@ -95,18 +94,18 @@ export function TotalIncomeExpenditureWidget({
             <Box
               p="md"
               style={{
-                borderRadius: theme.radius.md,
-                backgroundColor: theme.colors.teal[0],
-                border: `1px solid ${theme.colors.teal[2]}`,
+                borderRadius: '8px',
+                backgroundColor: `${colors.support}12`,
+                border: `1px solid ${colors.support}40`,
               }}
             >
               <Group gap="xs" mb="xs">
-                <IconArrowUp size={20} color={theme.colors.teal[6]} />
+                <IconArrowUp size={20} style={{ color: colors.support }} />
                 <Text size="xs" c="dimmed" fw={600} tt="uppercase">
                   Income
                 </Text>
               </Group>
-              <Text size="xl" fw={700} c="teal">
+              <Text size="xl" fw={700} style={{ color: colors.support }}>
                 {Money.fromCurrencyCode({
                   amount: income,
                   currencyCode: currencyCode,
@@ -117,19 +116,22 @@ export function TotalIncomeExpenditureWidget({
             <Box
               p="md"
               style={{
-                borderRadius: theme.radius.md,
-                backgroundColor: theme.colors.red[0],
-                border: `1px solid ${theme.colors.red[2]}`,
+                borderRadius: '8px',
+                backgroundColor: `${colors.error}12`,
+                border: `1px solid ${colors.error}40`,
               }}
             >
               <Group gap="xs" mb="xs">
-                <IconArrowDown size={20} color={theme.colors.red[6]} />
+                <IconArrowDown size={20} style={{ color: colors.error }} />
                 <Text size="xs" c="dimmed" fw={600} tt="uppercase">
                   Expenditure
                 </Text>
               </Group>
-              <Text size="xl" fw={700} c="red">
-                {expenditure.toFixed(0)}
+              <Text size="xl" fw={700} style={{ color: colors.error }}>
+                {Money.fromCurrencyCode({
+                  amount: expenditure,
+                  currencyCode: currencyCode,
+                }).format()}
               </Text>
             </Box>
           </Group>

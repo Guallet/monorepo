@@ -15,7 +15,7 @@ interface WealthCardProps {
   monthDelta?: number;
 }
 
-export function WealthCard({ monthDelta }: WealthCardProps) {
+export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { accounts, isLoading } = useAccounts();
 
