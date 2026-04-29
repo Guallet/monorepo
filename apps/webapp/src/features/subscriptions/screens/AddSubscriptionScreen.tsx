@@ -17,8 +17,10 @@ import {
   NumberInput,
   Select,
   Stack,
+  Text,
   TextInput,
 } from '@mantine/core';
+
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -38,26 +40,50 @@ const subscriptionFormDataSchema = z.object({
 });
 type AddSubscriptionFormData = z.infer<typeof subscriptionFormDataSchema>;
 
-const paymentTypes = [
-  { label: 'Subscription', value: RecurringPaymentType.SUBSCRIPTION },
-  { label: 'Regular Payment', value: RecurringPaymentType.REGULAR_PAYMENT },
-  { label: 'Regular Income', value: RecurringPaymentType.REGULAR_INCOME },
-];
-
-const cadenceOptions = [
-  { label: 'Weekly', value: RecurrenceCadence.WEEKLY },
-  { label: 'Bi-weekly', value: RecurrenceCadence.BIWEEKLY },
-  { label: 'Monthly', value: RecurrenceCadence.MONTHLY },
-  { label: 'Quarterly', value: RecurrenceCadence.QUARTERLY },
-  { label: 'Yearly', value: RecurrenceCadence.YEARLY },
-];
-
 export function AddSubscriptionScreen() {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const { spacing, colors } = useTheme();
   const navigate = useNavigate();
   const { createSubscriptionMutation } = useSubscriptionsMutations();
   const defaultCurrency = useDefaultCurrency();
+
+  const paymentTypes = [
+    {
+      label: t('screens.subscriptions.list.types.subscription', 'Subscription'),
+      value: RecurringPaymentType.SUBSCRIPTION,
+    },
+    {
+      label: t('screens.subscriptions.list.types.regularPayment', 'Regular payment'),
+      value: RecurringPaymentType.REGULAR_PAYMENT,
+    },
+    {
+      label: t('screens.subscriptions.list.types.regularIncome', 'Regular income'),
+      value: RecurringPaymentType.REGULAR_INCOME,
+    },
+  ];
+
+  const cadenceOptions = [
+    {
+      label: t('screens.subscriptions.list.cadence.weekly', 'Weekly'),
+      value: RecurrenceCadence.WEEKLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.biweekly', 'Bi-weekly'),
+      value: RecurrenceCadence.BIWEEKLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.monthly', 'Monthly'),
+      value: RecurrenceCadence.MONTHLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.quarterly', 'Quarterly'),
+      value: RecurrenceCadence.QUARTERLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.yearly', 'Yearly'),
+      value: RecurrenceCadence.YEARLY,
+    },
+  ];
 
   const form = useForm<AddSubscriptionFormData>({
     validate: zod4Resolver(subscriptionFormDataSchema),
@@ -133,8 +159,21 @@ export function AddSubscriptionScreen() {
     <BaseScreen title={t('screens.subscriptions.create.title', 'New subscription')}>
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
-          <Stack gap={spacing.md}>
+          <Stack gap={spacing.lg}>
+            {/* Form section */}
             <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <Stack gap={0} mb={spacing.md}>
+                <Text fw={600} size="sm">
+                  {t('screens.subscriptions.create.formSection.title', 'Subscription details')}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {t(
+                    'screens.subscriptions.create.formSection.description',
+                    'Fill in the details below to track a recurring payment or income.',
+                  )}
+                </Text>
+              </Stack>
+
               <Stack gap={spacing.md}>
                 <TextInput
                   required
@@ -146,6 +185,7 @@ export function AddSubscriptionScreen() {
                   error={form.errors.name}
                   {...form.getInputProps('name')}
                 />
+
                 <Select
                   required
                   label={t('screens.subscriptions.create.fields.type.label', 'Type')}
@@ -182,13 +222,19 @@ export function AddSubscriptionScreen() {
                   label={t('screens.subscriptions.create.fields.amount.label', 'Amount')}
                   description={t(
                     'screens.subscriptions.create.fields.amount.description',
-                    'The recurring payment amount',
+                    'Per payment',
                   )}
-                  leftSection={currency.symbol}
+                  leftSection={
+                    <Text size="sm" style={{ color: colors.midGrey }}>
+                      {currency.symbol}
+                    </Text>
+                  }
                   decimalScale={currency.decimalPlaces ?? 2}
                   min={0}
+                  styles={{ input: { fontVariantNumeric: 'tabular-nums' } }}
                   {...form.getInputProps('amount')}
                 />
+
                 <DateInput
                   required
                   label={t(
@@ -205,10 +251,11 @@ export function AddSubscriptionScreen() {
                   )}
                   {...form.getInputProps('startDate')}
                 />
+
                 <TextInput
                   label={t(
                     'screens.subscriptions.create.fields.imageUrl.label',
-                    'Image URL',
+                    'Logo URL',
                   )}
                   description={t('common.optional', 'Optional')}
                   placeholder="https://example.com/logo.png"
@@ -217,6 +264,7 @@ export function AddSubscriptionScreen() {
               </Stack>
             </Card>
 
+            {/* Mobile actions */}
             <Stack gap="xs" hiddenFrom="sm">
               <Button
                 type="submit"
@@ -224,10 +272,7 @@ export function AddSubscriptionScreen() {
                 size="md"
                 loading={createSubscriptionMutation.isPending}
               >
-                {t(
-                  'screens.subscriptions.create.submitButton',
-                  'Create subscription',
-                )}
+                {t('screens.subscriptions.create.submitButton', 'Create subscription')}
               </Button>
               <Button
                 variant="outline"
@@ -238,6 +283,8 @@ export function AddSubscriptionScreen() {
                 {t('screens.subscriptions.create.cancelButton', 'Cancel')}
               </Button>
             </Stack>
+
+            {/* Desktop actions */}
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
               <Button
                 variant="outline"

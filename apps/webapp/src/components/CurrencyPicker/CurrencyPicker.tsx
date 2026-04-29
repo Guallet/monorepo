@@ -56,6 +56,11 @@ export function CurrencyPicker({
           pointer
           onClick={open}
           rightSection={<IconSelector />}
+          style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
         >
           {currency === null ? (
             <Input.Placeholder>

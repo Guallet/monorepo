@@ -17,6 +17,7 @@ import {
   NumberInput,
   Select,
   Stack,
+  Text,
   TextInput,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
@@ -43,29 +44,53 @@ const editSubscriptionFormDataSchema = z.object({
 });
 type EditSubscriptionFormData = z.infer<typeof editSubscriptionFormDataSchema>;
 
-const paymentTypes = [
-  { label: 'Subscription', value: RecurringPaymentType.SUBSCRIPTION },
-  { label: 'Regular Payment', value: RecurringPaymentType.REGULAR_PAYMENT },
-  { label: 'Regular Income', value: RecurringPaymentType.REGULAR_INCOME },
-];
-
-const cadenceOptions = [
-  { label: 'Weekly', value: RecurrenceCadence.WEEKLY },
-  { label: 'Bi-weekly', value: RecurrenceCadence.BIWEEKLY },
-  { label: 'Monthly', value: RecurrenceCadence.MONTHLY },
-  { label: 'Quarterly', value: RecurrenceCadence.QUARTERLY },
-  { label: 'Yearly', value: RecurrenceCadence.YEARLY },
-];
-
 export function EditSubscriptionScreen({
   subscriptionId,
 }: Readonly<EditSubscriptionScreenProps>) {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const { spacing, colors } = useTheme();
   const { subscription, isLoading } = useSubscription(subscriptionId);
   const defaultCurrency = useDefaultCurrency();
   const navigate = useNavigate();
   const { updateSubscriptionMutation } = useSubscriptionsMutations();
+
+  const paymentTypes = [
+    {
+      label: t('screens.subscriptions.list.types.subscription', 'Subscription'),
+      value: RecurringPaymentType.SUBSCRIPTION,
+    },
+    {
+      label: t('screens.subscriptions.list.types.regularPayment', 'Regular payment'),
+      value: RecurringPaymentType.REGULAR_PAYMENT,
+    },
+    {
+      label: t('screens.subscriptions.list.types.regularIncome', 'Regular income'),
+      value: RecurringPaymentType.REGULAR_INCOME,
+    },
+  ];
+
+  const cadenceOptions = [
+    {
+      label: t('screens.subscriptions.list.cadence.weekly', 'Weekly'),
+      value: RecurrenceCadence.WEEKLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.biweekly', 'Bi-weekly'),
+      value: RecurrenceCadence.BIWEEKLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.monthly', 'Monthly'),
+      value: RecurrenceCadence.MONTHLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.quarterly', 'Quarterly'),
+      value: RecurrenceCadence.QUARTERLY,
+    },
+    {
+      label: t('screens.subscriptions.list.cadence.yearly', 'Yearly'),
+      value: RecurrenceCadence.YEARLY,
+    },
+  ];
 
   const form = useForm<EditSubscriptionFormData>({
     initialValues: {
@@ -144,8 +169,21 @@ export function EditSubscriptionScreen({
     >
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
-          <Stack gap={spacing.md}>
+          <Stack gap={spacing.lg}>
+            {/* Form section */}
             <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+              <Stack gap={0} mb={spacing.md}>
+                <Text fw={600} size="sm">
+                  {t('screens.subscriptions.edit.formSection.title', 'Subscription details')}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {t(
+                    'screens.subscriptions.edit.formSection.description',
+                    'Update the details for this recurring payment or income.',
+                  )}
+                </Text>
+              </Stack>
+
               <Stack gap={spacing.md}>
                 <TextInput
                   key={form.key('name')}
@@ -158,6 +196,7 @@ export function EditSubscriptionScreen({
                   error={form.errors.name}
                   {...form.getInputProps('name')}
                 />
+
                 <Select
                   key={form.key('type')}
                   required
@@ -197,13 +236,19 @@ export function EditSubscriptionScreen({
                   label={t('screens.subscriptions.edit.fields.amount.label', 'Amount')}
                   description={t(
                     'screens.subscriptions.edit.fields.amount.description',
-                    'The recurring payment amount',
+                    'Per payment',
                   )}
-                  leftSection={currency.symbol}
+                  leftSection={
+                    <Text size="sm" style={{ color: colors.midGrey }}>
+                      {currency.symbol}
+                    </Text>
+                  }
                   decimalScale={currency.decimalPlaces}
                   min={0}
+                  styles={{ input: { fontVariantNumeric: 'tabular-nums' } }}
                   {...form.getInputProps('amount')}
                 />
+
                 <DateInput
                   key={form.key('startDate')}
                   required
@@ -221,11 +266,12 @@ export function EditSubscriptionScreen({
                   )}
                   {...form.getInputProps('startDate')}
                 />
+
                 <TextInput
                   key={form.key('imageUrl')}
                   label={t(
                     'screens.subscriptions.edit.fields.imageUrl.label',
-                    'Image URL',
+                    'Logo URL',
                   )}
                   description={t('common.optional', 'Optional')}
                   placeholder="https://example.com/logo.png"
@@ -234,6 +280,7 @@ export function EditSubscriptionScreen({
               </Stack>
             </Card>
 
+            {/* Mobile actions */}
             <Stack gap="xs" hiddenFrom="sm">
               <Button
                 type="submit"
@@ -254,6 +301,8 @@ export function EditSubscriptionScreen({
                 {t('screens.subscriptions.edit.cancelButton', 'Cancel')}
               </Button>
             </Stack>
+
+            {/* Desktop actions */}
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
               <Button
                 variant="outline"
