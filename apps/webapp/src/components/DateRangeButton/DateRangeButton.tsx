@@ -12,10 +12,7 @@ import { IconCalendar, IconChevronDown } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@guallet/ui-react';
-import {
-  DateListPicker,
-  DateRangeSelectionItem,
-} from './DateListPicker';
+import { DateListPicker, DateRangeSelectionItem } from './DateListPicker';
 import { CalendarDateRangePicker } from './CalendarDateRangePicker';
 
 interface Props {
@@ -33,8 +30,10 @@ function formatDateRange(start: Date, end: Date): string {
   return `${fmt(start)} → ${fmt(end)}`;
 }
 
-
-export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Props>) {
+export function DateRangeButton({
+  selectedRange,
+  onRangeSelected,
+}: Readonly<Props>) {
   const { t } = useTranslation();
   const { colors, spacing, borderRadius } = useTheme();
 
@@ -43,8 +42,10 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Pro
     endDate: Date | null;
   } | null>(selectedRange ?? null);
   const [opened, setOpened] = useState(false);
-  const [activePreset, setActivePreset] = useState<DateRangeSelectionItem | null>(null);
-  const [committedPreset, setCommittedPreset] = useState<DateRangeSelectionItem | null>(null);
+  const [activePreset, setActivePreset] =
+    useState<DateRangeSelectionItem | null>(null);
+  const [committedPreset, setCommittedPreset] =
+    useState<DateRangeSelectionItem | null>(null);
 
   function openPopup() {
     setDraft(selectedRange ?? null);
@@ -57,11 +58,14 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Pro
     if (preset.value === 'custom' || !preset.range) {
       return;
     }
-    setDraft({ startDate: preset.range.startDate, endDate: preset.range.endDate });
+    setDraft({
+      startDate: preset.range.startDate,
+      endDate: preset.range.endDate,
+    });
   }
 
   function handleRangeChanged(
-    range: { startDate: Date | null; endDate: Date | null } | null
+    range: { startDate: Date | null; endDate: Date | null } | null,
   ) {
     setActivePreset(null);
     setDraft(range ?? null);
@@ -69,7 +73,7 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Pro
 
   function handleApply() {
     if (!draft?.startDate || !draft?.endDate) return;
-    setCommittedPreset(activePreset?.value !== 'custom' ? activePreset : null);
+    setCommittedPreset(activePreset?.value === 'custom' ? null : activePreset);
     onRangeSelected({ startDate: draft.startDate, endDate: draft.endDate });
     setOpened(false);
   }
@@ -140,8 +144,7 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Pro
           borderRadius: borderRadius.lg,
           overflow: 'hidden',
           border: `1px solid ${colors.paleGrey}`,
-          boxShadow:
-            '0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.10)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.10)',
         }}
       >
         <Group align="flex-start" gap={0} wrap="nowrap">
@@ -163,7 +166,12 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Pro
           </ScrollArea>
 
           {/* Calendar panel */}
-          <Box style={{ flex: 1, padding: `${spacing.md}px ${spacing.md}px ${spacing.sm}px` }}>
+          <Box
+            style={{
+              flex: 1,
+              padding: `${spacing.md}px ${spacing.md}px ${spacing.sm}px`,
+            }}
+          >
             <CalendarDateRangePicker
               startDate={draft?.startDate ?? null}
               endDate={draft?.endDate ?? null}
@@ -175,7 +183,11 @@ export function DateRangeButton({ selectedRange, onRangeSelected }: Readonly<Pro
         <Divider color={colors.surface} />
 
         {/* Footer */}
-        <Group justify="flex-end" gap={spacing.sm} p={`${spacing.sm}px ${spacing.md}px`}>
+        <Group
+          justify="flex-end"
+          gap={spacing.sm}
+          p={`${spacing.sm}px ${spacing.md}px`}
+        >
           <Button
             variant="outline"
             size="sm"
