@@ -1,16 +1,8 @@
 import { useState } from 'react';
-import {
-  Group,
-  Box,
-  Collapse,
-  ThemeIcon,
-  Text,
-  UnstyledButton,
-  rem,
-} from '@mantine/core';
-import { Icon, IconChevronRight } from '@tabler/icons-react';
+import { Box, Collapse, UnstyledButton, rem } from '@mantine/core';
+import { Icon, IconChevronDown } from '@tabler/icons-react';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import classes from './NavbarLinksGroup.module.css';
-import { useNavigate } from '@tanstack/react-router';
 
 interface LinksGroupProps {
   icon: Icon;
@@ -21,6 +13,10 @@ interface LinksGroupProps {
   onItemSelected: () => void;
 }
 
+function isPathActive(itemPath: string, currentPath: string): boolean {
+  return currentPath === itemPath || currentPath.startsWith(`${itemPath}/`);
+}
+
 export function LinksGroup({
   icon: Icon,
   label,
@@ -29,65 +25,69 @@ export function LinksGroup({
   subLinks,
   onItemSelected,
 }: Readonly<LinksGroupProps>) {
-  const hasLinks = Array.isArray(subLinks);
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const hasLinks = Array.isArray(subLinks) && subLinks.length > 0;
+  const navigate = useNavigate();
+  const { location } = useRouterState();
+  const currentPath = location.pathname;
 
-  // TODO: Instead of using the navigate hook, we should use the <Link> component
-  const navigation = useNavigate();
+  const isDirectlyActive = !!link && isPathActive(link, currentPath);
+  const hasActiveSub =
+    hasLinks && subLinks!.some((sub) => isPathActive(sub.link, currentPath));
 
-  const items = (hasLinks ? subLinks : []).map((link) => (
-    <Text<'a'>
-      component="a"
-      className={classes.link}
-      href={link.link}
-      key={link.label}
-      onClick={(event) => {
-        // Do it this way to preserve the menu state
-        // If we relay in just the href, then the navbar state
-        // will be lost after navigation, collapsing all the items
-        event.preventDefault();
-        onItemSelected();
-        navigation({ to: link.link });
-      }}
-    >
-      {link.label}
-    </Text>
-  ));
+  const [manuallyOpened, setManuallyOpened] = useState(initiallyOpened || false);
+  const opened = manuallyOpened || hasActiveSub;
+
+  const items = (hasLinks ? subLinks! : []).map((sub) => {
+    const isSubActive = isPathActive(sub.link, currentPath);
+    return (
+      <UnstyledButton
+        key={sub.label}
+        className={classes.subLink}
+        data-active={isSubActive || undefined}
+        onClick={() => {
+          navigate({ to: sub.link });
+          onItemSelected();
+        }}
+      >
+        {isSubActive && <span className={classes.dot} />}
+        <span style={{ paddingLeft: isSubActive ? 0 : rem(12) }}>{sub.label}</span>
+      </UnstyledButton>
+    );
+  });
 
   return (
     <>
       <UnstyledButton
+        className={classes.control}
+        data-active={(isDirectlyActive || hasActiveSub) || undefined}
         onClick={() => {
-          setOpened((o) => !o);
-
-          if (link) {
-            navigation({ to: link });
+          if (hasLinks) {
+            setManuallyOpened((isOpened) => !isOpened);
+          } else if (link) {
+            navigate({ to: link });
             onItemSelected();
           }
         }}
-        className={classes.control}
       >
-        <Group justify="space-between" gap={0}>
-          <Box style={{ display: 'flex', alignItems: 'center' }}>
-            <ThemeIcon variant="light" size={30}>
-              <Icon style={{ width: rem(18), height: rem(18) }} />
-            </ThemeIcon>
-            <Box ml="md">{label}</Box>
-          </Box>
-          {hasLinks && (
-            <IconChevronRight
-              className={classes.chevron}
-              stroke={1.5}
-              style={{
-                width: rem(16),
-                height: rem(16),
-                transform: opened ? 'rotate(-90deg)' : 'none',
-              }}
-            />
-          )}
-        </Group>
+        <Icon style={{ width: rem(18), height: rem(18), flexShrink: 0 }} />
+        <Box style={{ flex: 1 }}>{label}</Box>
+        {hasLinks && (
+          <IconChevronDown
+            className={classes.chevron}
+            stroke={1.8}
+            style={{
+              width: rem(16),
+              height: rem(16),
+              transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
+            }}
+          />
+        )}
       </UnstyledButton>
-      {hasLinks ? <Collapse expanded={opened}>{items}</Collapse> : null}
+      {hasLinks && (
+        <Collapse expanded={opened}>
+          <Box className={classes.subLinksContainer}>{items}</Box>
+        </Collapse>
+      )}
     </>
   );
 }
