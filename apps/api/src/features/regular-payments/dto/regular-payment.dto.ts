@@ -24,6 +24,7 @@ export class RegularPaymentDto {
 
   imageUrl?: string;
   categoryId?: string;
+  accountId?: string;
 
   static fromDomain(entity: RegularPayment): RegularPaymentDto {
     const dto = new RegularPaymentDto();
@@ -37,6 +38,7 @@ export class RegularPaymentDto {
     dto.startDate = entity.startDate;
     dto.imageUrl = entity.imageUrl;
     dto.categoryId = entity.category ? entity.category.id : undefined;
+    dto.accountId = entity.accountId;
     return dto;
   }
 }

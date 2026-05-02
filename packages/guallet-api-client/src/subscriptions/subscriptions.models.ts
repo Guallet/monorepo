@@ -23,6 +23,7 @@ export type SubscriptionDto = {
   startDate?: string;
   imageUrl?: string;
   categoryId?: string;
+  accountId?: string;
 };
 
 export type CreateSubscriptionRequest = {
@@ -34,6 +35,7 @@ export type CreateSubscriptionRequest = {
   type: RecurringPaymentType;
   imageUrl?: string;
   categoryId?: string;
+  accountId?: string;
 };
 
 export type UpdateSubscriptionRequest = {
@@ -45,4 +47,5 @@ export type UpdateSubscriptionRequest = {
   type?: RecurringPaymentType;
   imageUrl?: string;
   categoryId?: string;
+  accountId?: string;
 };

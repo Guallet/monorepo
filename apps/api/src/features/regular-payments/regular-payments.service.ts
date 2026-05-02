@@ -45,7 +45,7 @@ export class RegularPaymentsService {
       }
     }
 
-    const savedEntity = await this.repository.save({
+    const newEntity = this.repository.create({
       user_id: userId,
       amount: createRegularPaymentDto.amount,
       cadence: createRegularPaymentDto.cadence,
@@ -59,8 +59,10 @@ export class RegularPaymentsService {
       category: createRegularPaymentDto.categoryId
         ? { id: createRegularPaymentDto.categoryId }
         : undefined,
+      accountId: createRegularPaymentDto.accountId,
     });
 
+    const savedEntity = await this.repository.save(newEntity);
     return savedEntity;
   }
 
@@ -150,6 +152,7 @@ export class RegularPaymentsService {
       startDate: dto.startDate ? new Date(dto.startDate) : entity.startDate,
       imageUrl: dto.imageUrl ?? entity.imageUrl,
       categoryId: dto.categoryId ?? entity.categoryId,
+      accountId: dto.accountId ?? entity.accountId,
     });
 
     return updatedEntity;

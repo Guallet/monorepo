@@ -9,7 +9,7 @@ import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 
 type AccountInputProps = React.ComponentProps<typeof Select>;
 
-export function AccountInput({ ...props }: AccountInputProps) {
+export function AccountInput({ ...props }: Readonly<AccountInputProps>) {
   const { t } = useTranslation();
 
   const { accounts } = useAccounts();

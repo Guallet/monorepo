@@ -28,11 +28,17 @@ export class CreateRegularPaymentDto {
   @IsISO4217CurrencyCode()
   currency: string;
 
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  accountId?: string;
 
   @ApiProperty({ enum: RecurrenceCadence })
   @IsEnum(RecurrenceCadence)
