@@ -3,6 +3,9 @@ import { ActionIcon, Box, Group, Stack, Tooltip, Text } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 interface NotificationItemProps {
   notification: NotificationDto;
