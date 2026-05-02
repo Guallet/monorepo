@@ -21,12 +21,14 @@ The Docker setup includes the following services:
 ## Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Guallet/monorepo.git
    cd monorepo
    ```
 
 2. **Create environment files**
+
    ```bash
    cp database.env.sample database.env
    cp api.env.sample api.env
@@ -34,15 +36,16 @@ The Docker setup includes the following services:
    ```
 
 3. **Configure environment variables**
-   
+
    Edit the `.env` files and fill in the required values:
-   
+
    **`webapp.env`**:
    **`api.env`**:
    **`database.env`**:
    - Database and Redis credentials (change defaults for production)
 
 4. **Start the application**
+
    ```bash
    docker-compose up -d
    ```
@@ -130,6 +133,7 @@ All environment variables can be configured in the `.env` file:
 You can also use the npm scripts defined in `package.json`:
 
 ### Start all services
+
 ```bash
 pnpm docker:compose:up
 # Or standard docker-compose
@@ -137,6 +141,7 @@ docker-compose up -d
 ```
 
 ### Start and rebuild all services
+
 ```bash
 pnpm docker:compose:up:build
 # Or standard docker-compose
@@ -144,6 +149,7 @@ docker-compose up -d --build
 ```
 
 ### Stop all services
+
 ```bash
 pnpm docker:compose:down
 # Or standard docker-compose
@@ -151,6 +157,7 @@ docker-compose down
 ```
 
 ### View logs
+
 ```bash
 # All services
 docker-compose logs -f
@@ -161,18 +168,21 @@ docker-compose logs -f webapp
 ```
 
 ### Restart a service
+
 ```bash
 docker-compose restart api
 docker-compose restart webapp
 ```
 
 ### Rebuild a service
+
 ```bash
 docker-compose build api
 docker-compose build webapp
 ```
 
 ### Remove all data (including database)
+
 ```bash
 docker-compose down -v
 ```
@@ -198,17 +208,17 @@ version: '3.8'
 services:
   postgres:
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Use strong password
-  
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use strong password
+
   redis:
-    command: redis-server --requirepass ${REDIS_PASSWORD}  # Use strong password
-  
+    command: redis-server --requirepass ${REDIS_PASSWORD} # Use strong password
+
   api:
     environment:
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     restart: always
-  
+
   webapp:
     restart: always
 ```
@@ -220,11 +230,13 @@ services:
 If the API cannot connect to the database:
 
 1. Check if PostgreSQL is healthy:
+
    ```bash
    docker-compose ps postgres
    ```
 
 2. View PostgreSQL logs:
+
    ```bash
    docker-compose logs postgres
    ```
@@ -236,12 +248,13 @@ If the API cannot connect to the database:
 If you get port binding errors:
 
 1. Check which services are using the ports:
+
    ```bash
    # On Linux/Mac
    lsof -i :3000
    lsof -i :5000
    lsof -i :5050
-   
+
    # On Windows
    netstat -ano | findstr :3000
    netstat -ano | findstr :5000
@@ -255,11 +268,13 @@ If you get port binding errors:
 If the build fails:
 
 1. Clean Docker build cache:
+
    ```bash
    docker-compose build --no-cache
    ```
 
 2. Ensure you have enough disk space:
+
    ```bash
    docker system df
    ```
@@ -292,7 +307,7 @@ If the build fails:
        │PostgreSQL│     │  Redis   │    │pgAdmin  │
        │(internal)│     │(internal)│    │Port 5050│
        └──────────┘     └──────────┘    └─────────┘
-                  
+
               └──────────────────────────┘
                    guallet-network
                   (Internal Bridge)
@@ -301,6 +316,7 @@ If the build fails:
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/Guallet/monorepo/issues
 - Documentation: Check the main README.md
 

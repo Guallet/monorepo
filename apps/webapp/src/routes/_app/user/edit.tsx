@@ -20,7 +20,12 @@ function EditUserPage() {
       <Box maw={560} mx="auto">
         <form method="post" id="edit-user-form">
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <TextInput
                   name="name"
@@ -59,7 +64,10 @@ function EditUserPage() {
               </Button>
             </Stack>
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
-              <Button variant="outline" onClick={() => navigate({ to: '/user' })}>
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/user' })}
+              >
                 {t('screens.user.edit.cancelButton', 'Cancel')}
               </Button>
               <Button type="submit">

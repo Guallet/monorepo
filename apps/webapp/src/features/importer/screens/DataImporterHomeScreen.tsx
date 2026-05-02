@@ -1,20 +1,20 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { Button, Card, Stack, Text } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { Button, Card, Stack, Text } from '@mantine/core';
+import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 
 export function DataImporterHomeScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   return (
-    <BaseScreen title={t("screens.importer.home.title", "Import data")}>
+    <BaseScreen title={t('screens.importer.home.title', 'Import data')}>
       <Stack>
         <Text>Select your importer</Text>
         <ImporterCard
           name="CSV Importer"
           description="Import your transactions from a CSV file"
           onClick={() => {
-            navigate({ to: "/importer/csv" });
+            navigate({ to: '/importer/csv' });
           }}
         />
       </Stack>

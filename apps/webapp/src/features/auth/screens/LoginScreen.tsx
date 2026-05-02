@@ -96,7 +96,8 @@ export function LoginScreen({
         });
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to send magic link';
+      const msg =
+        err instanceof Error ? err.message : 'Failed to send magic link';
       setLocalMagicLinkError(msg);
     }
   };
@@ -111,7 +112,12 @@ export function LoginScreen({
       <Box mb={spacing.xl}>
         <Text
           component="h1"
-          style={{ margin: `0 0 ${spacing.xs}px`, fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em' }}
+          style={{
+            margin: `0 0 ${spacing.xs}px`,
+            fontSize: 26,
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+          }}
         >
           {t('screens.login.title.label', 'Welcome back')}
         </Text>
@@ -124,12 +130,18 @@ export function LoginScreen({
         {/* Social buttons */}
         <SimpleGrid cols={1}>
           <GoogleButton onClick={handleGoogleLogin} loading={isLoading}>
-            {t('screens.login.form.googleLoginButton.label', 'Continue with Google')}
+            {t(
+              'screens.login.form.googleLoginButton.label',
+              'Continue with Google',
+            )}
           </GoogleButton>
         </SimpleGrid>
 
         <Divider
-          label={t('screens.login.form.divider.label', 'or continue with email')}
+          label={t(
+            'screens.login.form.divider.label',
+            'or continue with email',
+          )}
           labelPosition="center"
         />
 
@@ -146,7 +158,10 @@ export function LoginScreen({
         {localMagicLinkError && loginType === 'magic-link' && (
           <Alert
             icon={<IconAlertCircle size={16} />}
-            title={t('screens.login.form.magicLink.error.title', 'Error sending code')}
+            title={t(
+              'screens.login.form.magicLink.error.title',
+              'Error sending code',
+            )}
             color="red"
           >
             {localMagicLinkError}
@@ -160,7 +175,10 @@ export function LoginScreen({
                 {...passwordForm.getInputProps('email')}
                 label={t('screens.login.form.email.label', 'Email')}
                 type="email"
-                placeholder={t('screens.login.form.email.placeholder', 'you@example.com')}
+                placeholder={t(
+                  'screens.login.form.email.placeholder',
+                  'you@example.com',
+                )}
                 autoFocus
               />
 
@@ -177,16 +195,27 @@ export function LoginScreen({
                     {t('screens.login.form.password.label', 'Password')}
                   </Text>
                   <NavLinkButton to="/login/forgot-password" size="xs">
-                    {t('screens.login.form.forgotPassword.label', 'Forgot password?')}
+                    {t(
+                      'screens.login.form.forgotPassword.label',
+                      'Forgot password?',
+                    )}
                   </NavLinkButton>
                 </Box>
                 <PasswordInput
                   {...passwordForm.getInputProps('password')}
-                  placeholder={t('screens.login.form.password.placeholder', 'Enter your password')}
+                  placeholder={t(
+                    'screens.login.form.password.placeholder',
+                    'Enter your password',
+                  )}
                 />
               </Box>
 
-              <Button fullWidth type="submit" loading={isLoading} mt={spacing.xs}>
+              <Button
+                fullWidth
+                type="submit"
+                loading={isLoading}
+                mt={spacing.xs}
+              >
                 {t('screens.login.form.submitButton.label', 'Sign in')}
               </Button>
             </Stack>
@@ -198,11 +227,22 @@ export function LoginScreen({
                 {...magicLinkForm.getInputProps('email')}
                 label={t('screens.login.form.email.label', 'Email')}
                 type="email"
-                placeholder={t('screens.login.form.email.placeholder', 'you@example.com')}
+                placeholder={t(
+                  'screens.login.form.email.placeholder',
+                  'you@example.com',
+                )}
                 autoFocus
               />
-              <Button fullWidth type="submit" loading={isLoading} mt={spacing.xs}>
-                {t('screens.login.form.sendMagicLink.label', 'Send one-time code')}
+              <Button
+                fullWidth
+                type="submit"
+                loading={isLoading}
+                mt={spacing.xs}
+              >
+                {t(
+                  'screens.login.form.sendMagicLink.label',
+                  'Send one-time code',
+                )}
               </Button>
             </Stack>
           </form>
@@ -220,8 +260,14 @@ export function LoginScreen({
           }
         >
           {loginType === 'password'
-            ? t('screens.login.form.useMagicLink.label', 'Sign in with one-time code instead')
-            : t('screens.login.form.usePassword.label', 'Sign in with password instead')}
+            ? t(
+                'screens.login.form.useMagicLink.label',
+                'Sign in with one-time code instead',
+              )
+            : t(
+                'screens.login.form.usePassword.label',
+                'Sign in with password instead',
+              )}
         </Button>
       </Stack>
 

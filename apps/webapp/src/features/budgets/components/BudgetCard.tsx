@@ -21,7 +21,10 @@ interface BudgetCardProps {
   year?: number;
 }
 
-function spendingColor(percent: number, colors: ReturnType<typeof useTheme>['colors']): string {
+function spendingColor(
+  percent: number,
+  colors: ReturnType<typeof useTheme>['colors'],
+): string {
   if (percent >= 100) return colors.error;
   if (percent >= 80) return colors.warning;
   return colors.support;
@@ -94,7 +97,12 @@ export function BudgetCard({
           }}
         >
           {budget.icon ? (
-            <GualletIcon iconName={budget.icon} iconColor="#ffffff" size={20} strokeWidth={1.5} />
+            <GualletIcon
+              iconName={budget.icon}
+              iconColor="#ffffff"
+              size={20}
+              strokeWidth={1.5}
+            />
           ) : (
             <IconWallet size={20} color="#ffffff" strokeWidth={1.5} />
           )}

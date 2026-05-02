@@ -82,12 +82,7 @@ export function AccountListScreen() {
         </Button>
       }
     >
-      <Stack
-        maw={1100}
-        mx="auto"
-        gap={spacing.md}
-        pb={spacing.xl}
-      >
+      <Stack maw={1100} mx="auto" gap={spacing.md} pb={spacing.xl}>
         {!isLoading && (!accounts || accounts.length === 0) ? (
           <AccountsEmptyState
             onConnectBank={goToConnectBank}

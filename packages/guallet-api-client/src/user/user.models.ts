@@ -28,9 +28,9 @@ export type UpdateUserSettingsRequest = {
 
 /** Allowed date format values */
 export const ALLOWED_DATE_FORMATS = [
-  "MM/DD/YYYY",
-  "DD/MM/YYYY",
-  "YYYY/MM/DD",
+  'MM/DD/YYYY',
+  'DD/MM/YYYY',
+  'YYYY/MM/DD',
 ] as const;
 
 export type DateFormat = (typeof ALLOWED_DATE_FORMATS)[number];

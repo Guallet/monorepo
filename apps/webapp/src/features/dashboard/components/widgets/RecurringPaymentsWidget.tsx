@@ -1,29 +1,42 @@
-import { useSubscriptions } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Money } from "@guallet/money";
-import { Loader, Stack, Text, Group, Box, Center, ScrollArea } from "@mantine/core";
-import { IconReceipt, IconRepeat } from "@tabler/icons-react";
-import { RecurringPaymentType, RecurrenceCadence } from "@guallet/api-client";
-import { useTheme } from "@guallet/ui-react";
-import { useRouter } from "@tanstack/react-router";
+import { useSubscriptions } from '@guallet/api-react';
+import { WidgetCard } from './WidgetCard';
+import { Money } from '@guallet/money';
+import {
+  Loader,
+  Stack,
+  Text,
+  Group,
+  Box,
+  Center,
+  ScrollArea,
+} from '@mantine/core';
+import { IconReceipt, IconRepeat } from '@tabler/icons-react';
+import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
 
 const MAX_ITEMS = 3;
 
 const CADENCE_LABELS: Record<RecurrenceCadence, string> = {
-  [RecurrenceCadence.WEEKLY]: "weekly",
-  [RecurrenceCadence.BIWEEKLY]: "biweekly",
-  [RecurrenceCadence.MONTHLY]: "monthly",
-  [RecurrenceCadence.QUARTERLY]: "quarterly",
-  [RecurrenceCadence.YEARLY]: "yearly",
+  [RecurrenceCadence.WEEKLY]: 'weekly',
+  [RecurrenceCadence.BIWEEKLY]: 'biweekly',
+  [RecurrenceCadence.MONTHLY]: 'monthly',
+  [RecurrenceCadence.QUARTERLY]: 'quarterly',
+  [RecurrenceCadence.YEARLY]: 'yearly',
 };
 
 function toMonthlyAmount(amount: number, cadence: RecurrenceCadence): number {
   switch (cadence) {
-    case RecurrenceCadence.WEEKLY: return amount * 4.33;
-    case RecurrenceCadence.BIWEEKLY: return amount * 2.17;
-    case RecurrenceCadence.MONTHLY: return amount;
-    case RecurrenceCadence.QUARTERLY: return amount / 3;
-    case RecurrenceCadence.YEARLY: return amount / 12;
+    case RecurrenceCadence.WEEKLY:
+      return amount * 4.33;
+    case RecurrenceCadence.BIWEEKLY:
+      return amount * 2.17;
+    case RecurrenceCadence.MONTHLY:
+      return amount;
+    case RecurrenceCadence.QUARTERLY:
+      return amount / 3;
+    case RecurrenceCadence.YEARLY:
+      return amount / 12;
   }
 }
 
@@ -36,7 +49,7 @@ export function RecurringPaymentsWidget() {
     .filter(
       (s) =>
         s.type === RecurringPaymentType.SUBSCRIPTION ||
-        s.type === RecurringPaymentType.REGULAR_PAYMENT
+        s.type === RecurringPaymentType.REGULAR_PAYMENT,
     )
     .sort((a, b) => {
       const aMonthly = toMonthlyAmount(a.amount, a.cadence);
@@ -46,7 +59,7 @@ export function RecurringPaymentsWidget() {
 
   const totalMonthly = recurringPayments.reduce(
     (sum, s) => sum + toMonthlyAmount(s.amount, s.cadence),
-    0
+    0,
   );
 
   const hasMore = recurringPayments.length > MAX_ITEMS;
@@ -126,7 +139,11 @@ export function RecurringPaymentsWidget() {
                         </Text>
                       </Stack>
                       <Stack gap={0} align="flex-end">
-                        <Text fw={700} size="sm" style={{ color: colors.error }}>
+                        <Text
+                          fw={700}
+                          size="sm"
+                          style={{ color: colors.error }}
+                        >
                           {Money.fromCurrencyCode({
                             amount: monthly,
                             currencyCode: item.currency,

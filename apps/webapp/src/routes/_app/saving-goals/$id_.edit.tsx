@@ -1,12 +1,12 @@
-import { SavingGoalForm } from "@/features/savingGoals/components/SavingGoalForm";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useSavingGoal } from "@guallet/api-react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
-import { Alert } from "@mantine/core";
-import { useTranslation } from "react-i18next";
+import { SavingGoalForm } from '@/features/savingGoals/components/SavingGoalForm';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useSavingGoal } from '@guallet/api-react';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { Alert } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
 
-export const Route = createFileRoute("/_app/saving-goals/$id_/edit")({
+export const Route = createFileRoute('/_app/saving-goals/$id_/edit')({
   component: EditSavingGoalPage,
 });
 
@@ -16,15 +16,15 @@ function EditSavingGoalPage() {
   const navigate = useNavigate();
   const { savingGoal, isLoading, error } = useSavingGoal(id);
 
-  const title = t("screens.savingGoals.edit.title", "Edit saving goal");
+  const title = t('screens.savingGoals.edit.title', 'Edit saving goal');
 
   const handleSuccess = (goal: SavingGoalDto) => {
-    console.log("Updated goal:", goal.id);
-    navigate({ to: "/saving-goals" });
+    console.log('Updated goal:', goal.id);
+    navigate({ to: '/saving-goals' });
   };
 
   const handleCancel = () => {
-    navigate({ to: "/saving-goals" });
+    navigate({ to: '/saving-goals' });
   };
 
   if (error) {

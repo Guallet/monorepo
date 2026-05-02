@@ -1,6 +1,6 @@
-import { useInstitution } from "@guallet/api-react";
-import { Avatar } from "@mantine/core";
-import { IconBuildingBank } from "@tabler/icons-react";
+import { useInstitution } from '@guallet/api-react';
+import { Avatar } from '@mantine/core';
+import { IconBuildingBank } from '@tabler/icons-react';
 
 export function InstitutionAvatar({
   institutionId,

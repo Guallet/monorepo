@@ -1,12 +1,12 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   CreateUserRequest,
   UpdateUserSettingsRequest,
   User,
   UserSettings,
-} from "./user.models";
+} from './user.models';
 
-const USERS_PATH = "users";
+const USERS_PATH = 'users';
 
 export class UserApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -22,7 +22,7 @@ export class UserApi {
   }
 
   async updateUserSettings(
-    request: UpdateUserSettingsRequest
+    request: UpdateUserSettingsRequest,
   ): Promise<UserSettings> {
     return await this.client.patch<UserSettings, UpdateUserSettingsRequest>({
       path: `${USERS_PATH}/settings`,

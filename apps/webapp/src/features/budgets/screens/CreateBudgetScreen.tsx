@@ -4,7 +4,11 @@ import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { CategoryMultiSelect } from '@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect';
 import { useLocale } from '@/i18n/useLocale';
 import { CategoryDto } from '@guallet/api-client';
-import { useAccounts, useBudgetMutations, useUserSettings } from '@guallet/api-react';
+import {
+  useAccounts,
+  useBudgetMutations,
+  useUserSettings,
+} from '@guallet/api-react';
 import { Currency } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import {
@@ -49,16 +53,25 @@ export function CreateBudgetScreen() {
           : null,
       amount: (value) =>
         value <= 0
-          ? t('screens.budgets.create.form.amount.error', 'Amount must be positive')
+          ? t(
+              'screens.budgets.create.form.amount.error',
+              'Amount must be positive',
+            )
           : null,
       currency: (value) =>
         value
           ? null
-          : t('screens.budgets.create.form.currency.error', 'Currency is required'),
+          : t(
+              'screens.budgets.create.form.currency.error',
+              'Currency is required',
+            ),
       colour: (value) =>
         value
           ? null
-          : t('screens.budgets.create.form.colorPicker.error', 'Colour is required'),
+          : t(
+              'screens.budgets.create.form.colorPicker.error',
+              'Colour is required',
+            ),
       categories: (value: CategoryDto[]) =>
         value.length === 0
           ? t(
@@ -129,7 +142,12 @@ export function CreateBudgetScreen() {
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <TextInput
                   required
@@ -142,7 +160,10 @@ export function CreateBudgetScreen() {
                 />
                 <Select
                   required
-                  label={t('screens.budgets.create.form.currency.label', 'Currency')}
+                  label={t(
+                    'screens.budgets.create.form.currency.label',
+                    'Currency',
+                  )}
                   description={t(
                     'screens.budgets.create.form.currency.description',
                     'Only currencies from your existing accounts are shown.',
@@ -156,12 +177,18 @@ export function CreateBudgetScreen() {
                 />
                 <NumberInput
                   required
-                  label={t('screens.budgets.create.form.amount.label', 'Budget amount')}
+                  label={t(
+                    'screens.budgets.create.form.amount.label',
+                    'Budget amount',
+                  )}
                   min={0}
                   {...form.getInputProps('amount')}
                 />
                 <GualletColorPicker
-                  label={t('screens.budgets.create.form.colorPicker.label', 'Color')}
+                  label={t(
+                    'screens.budgets.create.form.colorPicker.label',
+                    'Color',
+                  )}
                   placeholder={t(
                     'screens.budgets.create.form.colorPicker.placeholder',
                     'Select a color',
@@ -187,7 +214,10 @@ export function CreateBudgetScreen() {
                 />
                 <CategoryMultiSelect
                   required
-                  label={t('screens.budgets.create.form.categories.label', 'Categories')}
+                  label={t(
+                    'screens.budgets.create.form.categories.label',
+                    'Categories',
+                  )}
                   selectedCategories={form.values.categories}
                   onSelectionChanged={(categories: CategoryDto[]) => {
                     form.setFieldValue('categories', categories);
@@ -203,7 +233,10 @@ export function CreateBudgetScreen() {
                 size="md"
                 loading={createBudgetMutation.isPending}
               >
-                {t('screens.budgets.create.form.submitButton.label', 'Create budget')}
+                {t(
+                  'screens.budgets.create.form.submitButton.label',
+                  'Create budget',
+                )}
               </Button>
               <Button
                 variant="outline"
@@ -215,11 +248,17 @@ export function CreateBudgetScreen() {
               </Button>
             </Stack>
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
-              <Button variant="outline" onClick={() => navigate({ to: '/budgets' })}>
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/budgets' })}
+              >
                 {t('screens.budgets.create.form.cancelButton.label', 'Cancel')}
               </Button>
               <Button type="submit" loading={createBudgetMutation.isPending}>
-                {t('screens.budgets.create.form.submitButton.label', 'Create budget')}
+                {t(
+                  'screens.budgets.create.form.submitButton.label',
+                  'Create budget',
+                )}
               </Button>
             </Group>
           </Stack>

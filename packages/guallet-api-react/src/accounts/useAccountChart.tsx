@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { useQuery } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const ACCOUNT_CHARTS_QUERY_KEY = "accounts-charts";
+const ACCOUNT_CHARTS_QUERY_KEY = 'accounts-charts';
 
 export function useAccountCharts(
   accountId: string,

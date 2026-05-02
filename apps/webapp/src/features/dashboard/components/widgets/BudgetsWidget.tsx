@@ -1,9 +1,18 @@
-import { useBudgets } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Loader, Stack, Text, Progress, Group, Box, Center, ScrollArea } from "@mantine/core";
-import { IconTargetArrow } from "@tabler/icons-react";
-import { useTheme } from "@guallet/ui-react";
-import { useRouter } from "@tanstack/react-router";
+import { useBudgets } from '@guallet/api-react';
+import { WidgetCard } from './WidgetCard';
+import {
+  Loader,
+  Stack,
+  Text,
+  Progress,
+  Group,
+  Box,
+  Center,
+  ScrollArea,
+} from '@mantine/core';
+import { IconTargetArrow } from '@tabler/icons-react';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
 
 const MAX_ITEMS = 6;
 
@@ -12,20 +21,29 @@ export function BudgetsWidget() {
   const { colors } = useTheme();
   const router = useRouter();
 
-  const sortedBudgets = (budgets ?? []).map((budget) => {
-    const spent = Number(budget.spent ?? 0);
-    const total = Number(budget.amount ?? 0);
-    const remaining = total - spent;
-    const percent =
-      total > 0 ? Math.min((spent / total) * 100, 100) : 0;
-    const isOverBudget = percent > 100;
-    const isNearLimit = percent > 90 && !isOverBudget;
-    return { ...budget, spent, total, remaining, percent, isOverBudget, isNearLimit };
-  }).sort((a, b) => {
-    if (a.isOverBudget !== b.isOverBudget) return a.isOverBudget ? -1 : 1;
-    if (a.isNearLimit !== b.isNearLimit) return a.isNearLimit ? -1 : 1;
-    return b.percent - a.percent;
-  });
+  const sortedBudgets = (budgets ?? [])
+    .map((budget) => {
+      const spent = Number(budget.spent ?? 0);
+      const total = Number(budget.amount ?? 0);
+      const remaining = total - spent;
+      const percent = total > 0 ? Math.min((spent / total) * 100, 100) : 0;
+      const isOverBudget = percent > 100;
+      const isNearLimit = percent > 90 && !isOverBudget;
+      return {
+        ...budget,
+        spent,
+        total,
+        remaining,
+        percent,
+        isOverBudget,
+        isNearLimit,
+      };
+    })
+    .sort((a, b) => {
+      if (a.isOverBudget !== b.isOverBudget) return a.isOverBudget ? -1 : 1;
+      if (a.isNearLimit !== b.isNearLimit) return a.isNearLimit ? -1 : 1;
+      return b.percent - a.percent;
+    });
 
   const hasMore = sortedBudgets.length > MAX_ITEMS;
   const displayBudgets = sortedBudgets.slice(0, MAX_ITEMS);
@@ -80,10 +98,10 @@ export function BudgetsWidget() {
                   ? nearLimitBorder
                   : normalBorder;
               const progressColor = budget.isOverBudget
-                ? "red"
+                ? 'red'
                 : budget.isNearLimit
-                  ? "yellow"
-                  : "teal";
+                  ? 'yellow'
+                  : 'teal';
               const textColor = budget.isOverBudget
                 ? colors.error
                 : budget.isNearLimit
@@ -101,12 +119,10 @@ export function BudgetsWidget() {
                   }}
                 >
                   <Group justify="space-between" mb="xs">
-                    <Text fw={600} size="sm">{budget.name}</Text>
-                    <Text
-                      size="sm"
-                      fw={500}
-                      style={{ color: textColor }}
-                    >
+                    <Text fw={600} size="sm">
+                      {budget.name}
+                    </Text>
+                    <Text size="sm" fw={500} style={{ color: textColor }}>
                       {budget.spent.toFixed(0)} / {budget.total.toFixed(0)}
                     </Text>
                   </Group>
@@ -125,7 +141,10 @@ export function BudgetsWidget() {
                     <Text
                       size="xs"
                       fw={500}
-                      style={{ color: budget.remaining < 0 ? colors.error : colors.support }}
+                      style={{
+                        color:
+                          budget.remaining < 0 ? colors.error : colors.support,
+                      }}
                     >
                       {budget.remaining.toFixed(0)}
                     </Text>
@@ -135,7 +154,8 @@ export function BudgetsWidget() {
             })}
             {hasMore && (
               <Text size="xs" c="dimmed" ta="center">
-                +{sortedBudgets.length - MAX_ITEMS} more budget{sortedBudgets.length - MAX_ITEMS !== 1 ? 's' : ''}
+                +{sortedBudgets.length - MAX_ITEMS} more budget
+                {sortedBudgets.length - MAX_ITEMS !== 1 ? 's' : ''}
               </Text>
             )}
           </Stack>

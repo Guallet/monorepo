@@ -1,10 +1,10 @@
-import { Icon, IconQuestionMark } from "@tabler/icons-react";
-import * as TablerIcons from "@tabler/icons-react";
+import { Icon, IconQuestionMark } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
 
 export type GualletIconName = keyof typeof TablerIcons;
 
 const validIconNames = Object.keys(TablerIcons).filter(
-  (name) => name.startsWith("Icon") && name !== "Icon"
+  (name) => name.startsWith('Icon') && name !== 'Icon',
 );
 
 function isValidIcon(iconName?: string): boolean {

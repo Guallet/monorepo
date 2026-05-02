@@ -1,2 +1,2 @@
-export * from "./BaseRow/BaseRow";
-export * from "./TextRow";
+export * from './BaseRow/BaseRow';
+export * from './TextRow';

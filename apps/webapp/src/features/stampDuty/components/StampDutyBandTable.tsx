@@ -71,9 +71,7 @@ export function StampDutyBandTable({
                 </Table.Th>
                 <Table.Th>{result.effectiveRate}%</Table.Th>
                 <Table.Th>—</Table.Th>
-                <Table.Th>
-                  {formatCurrency(result.totalDue, currency)}
-                </Table.Th>
+                <Table.Th>{formatCurrency(result.totalDue, currency)}</Table.Th>
               </Table.Tr>
             </Table.Tfoot>
           </Table>

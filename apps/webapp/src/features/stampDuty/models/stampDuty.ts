@@ -110,9 +110,7 @@ export function calculateStampDuty(values: StampDutyValues): StampDutyResult {
     bandResults.reduce((sum, b) => sum + b.taxDue, 0),
   );
   const effectiveRate =
-    propertyPrice > 0
-      ? roundCurrency((totalDue / propertyPrice) * 100)
-      : 0;
+    propertyPrice > 0 ? roundCurrency((totalDue / propertyPrice) * 100) : 0;
 
   return {
     bands: bandResults,

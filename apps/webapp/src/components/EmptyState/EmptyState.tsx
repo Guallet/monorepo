@@ -1,5 +1,15 @@
 import { useTheme } from '@guallet/ui-react';
-import { Box, Button, Center, Group, Loader, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Center,
+  Group,
+  Loader,
+  Paper,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { ReactNode } from 'react';
 
 interface EmptyStateAction {
@@ -52,7 +62,9 @@ export function EmptyState({
           p={spacing.xl}
           style={{
             textAlign: 'center',
-            borderBottom: hasTraits ? '1px solid var(--mantine-color-gray-2)' : undefined,
+            borderBottom: hasTraits
+              ? '1px solid var(--mantine-color-gray-2)'
+              : undefined,
           }}
         >
           {loading ? (
@@ -79,9 +91,18 @@ export function EmptyState({
           )}
 
           {(primaryAction || secondaryAction) && !loading && (
-            <Group justify="center" gap={spacing.xs} mt={spacing.md} wrap="wrap">
+            <Group
+              justify="center"
+              gap={spacing.xs}
+              mt={spacing.md}
+              wrap="wrap"
+            >
               {primaryAction && (
-                <Button leftSection={primaryAction.icon} onClick={primaryAction.onClick} variant={primaryAction.variant}>
+                <Button
+                  leftSection={primaryAction.icon}
+                  onClick={primaryAction.onClick}
+                  variant={primaryAction.variant}
+                >
                   {primaryAction.label}
                 </Button>
               )}

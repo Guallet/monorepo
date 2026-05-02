@@ -80,8 +80,10 @@ export function LandingScreen() {
   const { isAuthenticated } = useAuth();
 
   const { ref: heroRef, isVisible: heroIsVisible } = useScrollAnimation(0);
-  const { ref: featuresRef, isVisible: featuresIsVisible } = useScrollAnimation();
-  const { ref: openSourceRef, isVisible: openSourceIsVisible } = useScrollAnimation();
+  const { ref: featuresRef, isVisible: featuresIsVisible } =
+    useScrollAnimation();
+  const { ref: openSourceRef, isVisible: openSourceIsVisible } =
+    useScrollAnimation();
   const { ref: ctaRef, isVisible: ctaIsVisible } = useScrollAnimation();
 
   const features = [
@@ -152,7 +154,9 @@ export function LandingScreen() {
   ];
 
   return (
-    <Box style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
+    >
       <LandingHeader />
 
       <Box style={{ flex: 1 }}>
@@ -167,7 +171,11 @@ export function LandingScreen() {
           }}
         >
           <Container size="md">
-            <Stack align="center" gap="xl" style={animationStyle(heroIsVisible)}>
+            <Stack
+              align="center"
+              gap="xl"
+              style={animationStyle(heroIsVisible)}
+            >
               <Badge
                 size="lg"
                 variant="white"
@@ -185,12 +193,12 @@ export function LandingScreen() {
                 order={1}
                 ta="center"
                 c="white"
-                style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.15 }}
+                style={{
+                  fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                  lineHeight: 1.15,
+                }}
               >
-                {t(
-                  'landing.hero.title',
-                  'Your finances,\nunder control.',
-                )}
+                {t('landing.hero.title', 'Your finances,\nunder control.')}
               </Title>
 
               <Text
@@ -221,14 +229,17 @@ export function LandingScreen() {
                       variant="white"
                       onClick={() => navigate({ to: '/register' })}
                     >
-                      {t('landing.hero.getStarted', 'Get started — it\'s free')}
+                      {t('landing.hero.getStarted', "Get started — it's free")}
                     </Button>
                     <Button
                       size="lg"
                       variant="outline"
                       color="white"
                       onClick={() =>
-                        navigate({ to: '/login', search: { redirect: '/dashboard' } })
+                        navigate({
+                          to: '/login',
+                          search: { redirect: '/dashboard' },
+                        })
                       }
                     >
                       {t('landing.hero.login', 'Log in')}
@@ -253,7 +264,10 @@ export function LandingScreen() {
                   {t('landing.features.badge', 'Features')}
                 </Badge>
                 <Title order={2} ta="center">
-                  {t('landing.features.title', 'Everything you need to manage your money')}
+                  {t(
+                    'landing.features.title',
+                    'Everything you need to manage your money',
+                  )}
                 </Title>
                 <Text size="lg" c="dimmed" ta="center" maw={560}>
                   {t(
@@ -280,13 +294,14 @@ export function LandingScreen() {
         </Box>
 
         {/* ─── Open Source ──────────────────────────────────── */}
-        <Box
-          py={80}
-          style={{ background: 'var(--mantine-color-dark-filled)' }}
-        >
+        <Box py={80} style={{ background: 'var(--mantine-color-dark-filled)' }}>
           <Container size="md">
             <div ref={openSourceRef}>
-              <Stack align="center" gap="xl" style={animationStyle(openSourceIsVisible)}>
+              <Stack
+                align="center"
+                gap="xl"
+                style={animationStyle(openSourceIsVisible)}
+              >
                 <ThemeIcon size={72} radius="xl" variant="light" color="gray">
                   <IconBrandGithub size={40} />
                 </ThemeIcon>
@@ -327,9 +342,16 @@ export function LandingScreen() {
             <Container size="sm">
               <div ref={ctaRef}>
                 <Center>
-                  <Stack align="center" gap="lg" style={animationStyle(ctaIsVisible)}>
+                  <Stack
+                    align="center"
+                    gap="lg"
+                    style={animationStyle(ctaIsVisible)}
+                  >
                     <Title order={2} ta="center">
-                      {t('landing.cta.title', 'Ready to take control of your finances?')}
+                      {t(
+                        'landing.cta.title',
+                        'Ready to take control of your finances?',
+                      )}
                     </Title>
                     <Text size="lg" c="dimmed" ta="center">
                       {t(

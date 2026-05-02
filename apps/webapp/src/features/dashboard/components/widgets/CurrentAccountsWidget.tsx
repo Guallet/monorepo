@@ -1,11 +1,20 @@
-import { useAccounts } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Money } from "@guallet/money";
-import { Loader, Stack, Text, Group, Box, Center, Badge, ScrollArea } from "@mantine/core";
-import { IconBuildingBank, IconCreditCard } from "@tabler/icons-react";
-import { AccountTypeDto } from "@guallet/api-client";
-import { useTheme } from "@guallet/ui-react";
-import { useRouter } from "@tanstack/react-router";
+import { useAccounts } from '@guallet/api-react';
+import { WidgetCard } from './WidgetCard';
+import { Money } from '@guallet/money';
+import {
+  Loader,
+  Stack,
+  Text,
+  Group,
+  Box,
+  Center,
+  Badge,
+  ScrollArea,
+} from '@mantine/core';
+import { IconBuildingBank, IconCreditCard } from '@tabler/icons-react';
+import { AccountTypeDto } from '@guallet/api-client';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
 
 const MAX_ITEMS = 6;
 
@@ -15,8 +24,9 @@ export function CurrentAccountsWidget() {
   const router = useRouter();
 
   const currentAccounts = accounts.filter(
-    (account) => account.type === AccountTypeDto.CURRENT_ACCOUNT ||
-                 account.type === AccountTypeDto.CREDIT_CARD
+    (account) =>
+      account.type === AccountTypeDto.CURRENT_ACCOUNT ||
+      account.type === AccountTypeDto.CREDIT_CARD,
   );
 
   const hasMore = currentAccounts.length > MAX_ITEMS;
@@ -73,9 +83,15 @@ export function CurrentAccountsWidget() {
                   <Group justify="space-between" mb="xs">
                     <Group gap="xs">
                       {isCreditCard ? (
-                        <IconCreditCard size={16} style={{ color: colors.primary }} />
+                        <IconCreditCard
+                          size={16}
+                          style={{ color: colors.primary }}
+                        />
                       ) : (
-                        <IconBuildingBank size={16} style={{ color: colors.primary }} />
+                        <IconBuildingBank
+                          size={16}
+                          style={{ color: colors.primary }}
+                        />
                       )}
                       <Text fw={600} size="sm">
                         {account.name}
@@ -83,22 +99,18 @@ export function CurrentAccountsWidget() {
                     </Group>
                     <Badge
                       size="sm"
-                      color={isCreditCard ? "blue" : "gray"}
+                      color={isCreditCard ? 'blue' : 'gray'}
                       variant="light"
                     >
-                      {isCreditCard ? "Credit" : "Current"}
+                      {isCreditCard ? 'Credit' : 'Current'}
                     </Badge>
                   </Group>
-                  <Text
-                    size="md"
-                    fw={700}
-                    style={{ color: moneyColor }}
-                  >
+                  <Text size="md" fw={700} style={{ color: moneyColor }}>
                     {balance.format()}
                   </Text>
                   {account.institutionId && (
                     <Text size="xs" c="dimmed" mt="xs">
-                      {account.sourceName || "Connected"}
+                      {account.sourceName || 'Connected'}
                     </Text>
                   )}
                 </Box>
@@ -106,7 +118,8 @@ export function CurrentAccountsWidget() {
             })}
             {hasMore && (
               <Text size="xs" c="dimmed" ta="center">
-                +{currentAccounts.length - MAX_ITEMS} more account{currentAccounts.length - MAX_ITEMS !== 1 ? 's' : ''}
+                +{currentAccounts.length - MAX_ITEMS} more account
+                {currentAccounts.length - MAX_ITEMS !== 1 ? 's' : ''}
               </Text>
             )}
           </Stack>

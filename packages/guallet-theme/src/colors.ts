@@ -35,31 +35,31 @@ export type Colors = {
 };
 
 export const defaultColors: Colors = {
-  primary: "#005EB8",
-  secondary: "#41B6E6",
+  primary: '#005EB8',
+  secondary: '#41B6E6',
 
-  text: "#000000",
-  background: "#FFFFFF",
-  surface: "#F5F5F5",
-  pageBackground: "#F7FAFC",
+  text: '#000000',
+  background: '#FFFFFF',
+  surface: '#F5F5F5',
+  pageBackground: '#F7FAFC',
 
-  darkAccent: "#003087",
-  brightAccent: "#0072CE",
-  lightAccent: "#41B6E6",
-  aquaAccent: "#00A9CE",
+  darkAccent: '#003087',
+  brightAccent: '#0072CE',
+  lightAccent: '#41B6E6',
+  aquaAccent: '#00A9CE',
 
-  darkSupport: "#006747",
-  support: "#009639",
-  lightSupport: "#78BE20",
-  aquaSupport: "#00A499",
+  darkSupport: '#006747',
+  support: '#009639',
+  lightSupport: '#78BE20',
+  aquaSupport: '#00A499',
 
-  black: "#231F20",
-  darkGrey: "#425563",
-  midGrey: "#768692",
-  paleGrey: "#E8EDEE",
-  white: "#FFFFFF",
+  black: '#231F20',
+  darkGrey: '#425563',
+  midGrey: '#768692',
+  paleGrey: '#E8EDEE',
+  white: '#FFFFFF',
 
-  error: "#DA291C",
-  success: "#78BE20",
-  warning: "#FAE100",
+  error: '#DA291C',
+  success: '#78BE20',
+  warning: '#FAE100',
 };

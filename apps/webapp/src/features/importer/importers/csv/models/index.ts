@@ -1,5 +1,5 @@
 // TODO: Maybe migrate this to Zustand?
-export const CSV_MIME_TYPE = "text/csv";
+export const CSV_MIME_TYPE = 'text/csv';
 
 export interface CsvInfoType {
   data: unknown[];
@@ -14,10 +14,10 @@ export interface CsvInfoType {
 // 5. Transaction Notes
 // 6. Category (Optional)
 export type PropertyName =
-  | "account"
-  | "date"
-  | "amount"
-  | "description"
-  | "notes"
-  | "category";
+  | 'account'
+  | 'date'
+  | 'amount'
+  | 'description'
+  | 'notes'
+  | 'category';
 export type FieldMappings = Record<PropertyName, string>;

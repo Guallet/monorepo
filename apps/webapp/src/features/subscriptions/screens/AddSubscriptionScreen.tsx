@@ -103,7 +103,9 @@ export function AddSubscriptionScreen() {
     };
 
     try {
-      const newSubscription = await createSubscriptionMutation.mutateAsync({ request });
+      const newSubscription = await createSubscriptionMutation.mutateAsync({
+        request,
+      });
       notifications.show({
         message: t(
           'screens.subscriptions.create.notifications.success',
@@ -112,7 +114,10 @@ export function AddSubscriptionScreen() {
         ),
         color: 'green',
       });
-      navigate({ to: '/subscriptions/$id', params: { id: newSubscription.id } });
+      navigate({
+        to: '/subscriptions/$id',
+        params: { id: newSubscription.id },
+      });
     } catch (error) {
       console.error('Error creating subscription', error);
       notifications.show({
@@ -130,15 +135,25 @@ export function AddSubscriptionScreen() {
   }
 
   return (
-    <BaseScreen title={t('screens.subscriptions.create.title', 'New subscription')}>
+    <BaseScreen
+      title={t('screens.subscriptions.create.title', 'New subscription')}
+    >
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <TextInput
                   required
-                  label={t('screens.subscriptions.create.fields.name.label', 'Name')}
+                  label={t(
+                    'screens.subscriptions.create.fields.name.label',
+                    'Name',
+                  )}
                   placeholder={t(
                     'screens.subscriptions.create.fields.name.placeholder',
                     'e.g. Netflix, Spotify, Gym membership',
@@ -148,7 +163,10 @@ export function AddSubscriptionScreen() {
                 />
                 <Select
                   required
-                  label={t('screens.subscriptions.create.fields.type.label', 'Type')}
+                  label={t(
+                    'screens.subscriptions.create.fields.type.label',
+                    'Type',
+                  )}
                   data={paymentTypes}
                   {...form.getInputProps('type')}
                   onChange={(value) => {
@@ -179,7 +197,10 @@ export function AddSubscriptionScreen() {
                 />
                 <NumberInput
                   required
-                  label={t('screens.subscriptions.create.fields.amount.label', 'Amount')}
+                  label={t(
+                    'screens.subscriptions.create.fields.amount.label',
+                    'Amount',
+                  )}
                   description={t(
                     'screens.subscriptions.create.fields.amount.description',
                     'The recurring payment amount',
@@ -245,8 +266,14 @@ export function AddSubscriptionScreen() {
               >
                 {t('screens.subscriptions.create.cancelButton', 'Cancel')}
               </Button>
-              <Button type="submit" loading={createSubscriptionMutation.isPending}>
-                {t('screens.subscriptions.create.submitButton', 'Create subscription')}
+              <Button
+                type="submit"
+                loading={createSubscriptionMutation.isPending}
+              >
+                {t(
+                  'screens.subscriptions.create.submitButton',
+                  'Create subscription',
+                )}
               </Button>
             </Group>
           </Stack>

@@ -1,11 +1,20 @@
-import { TransactionDto } from "@guallet/api-client";
-import { WidgetCard } from "./WidgetCard";
-import { useAccount, useTransactionInbox } from "@guallet/api-react";
-import { Loader, Stack, Text, Group, Badge, Box, Center, ScrollArea } from "@mantine/core";
-import { IconInbox } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
-import { useTheme } from "@guallet/ui-react";
-import { useRouter } from "@tanstack/react-router";
+import { TransactionDto } from '@guallet/api-client';
+import { WidgetCard } from './WidgetCard';
+import { useAccount, useTransactionInbox } from '@guallet/api-react';
+import {
+  Loader,
+  Stack,
+  Text,
+  Group,
+  Badge,
+  Box,
+  Center,
+  ScrollArea,
+} from '@mantine/core';
+import { IconInbox } from '@tabler/icons-react';
+import { Money } from '@guallet/money';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
 
 function TransactionRow({
   transaction,
@@ -44,7 +53,7 @@ function TransactionRow({
             {transaction.description}
           </Text>
           <Badge size="xs" color="blue" variant="light">
-            {account?.name || "Unknown Account"}
+            {account?.name || 'Unknown Account'}
           </Badge>
         </Stack>
         <Text
@@ -56,7 +65,8 @@ function TransactionRow({
             marginLeft: 8,
           }}
         >
-          {isIncome ? '+' : '-'}{amount.format()}
+          {isIncome ? '+' : '-'}
+          {amount.format()}
         </Text>
       </Group>
     </Box>
@@ -64,7 +74,9 @@ function TransactionRow({
 }
 
 export function TransactionsInboxWidget() {
-  const { transactions, metadata, isLoading } = useTransactionInbox({ pageSize: 10 });
+  const { transactions, metadata, isLoading } = useTransactionInbox({
+    pageSize: 10,
+  });
   const { colors } = useTheme();
   const router = useRouter();
 
@@ -108,10 +120,10 @@ export function TransactionsInboxWidget() {
             }}
           >
             <Text size="sm" ta="center">
-              You have{" "}
+              You have{' '}
               <Text span c="blue" fw={700} size="lg">
                 {totalPending}
-              </Text>{" "}
+              </Text>{' '}
               transaction{totalPending !== 1 ? 's' : ''} to categorize
             </Text>
           </Box>

@@ -1,5 +1,5 @@
-import { ActionIcon, Button, Group, Stack } from "@mantine/core";
-import { GualletIcon } from "../GualletIcon/GualletIcon";
+import { ActionIcon, Button, Group, Stack } from '@mantine/core';
+import { GualletIcon } from '../GualletIcon/GualletIcon';
 import {
   IconBabyCarriage,
   IconBriefcase,
@@ -27,7 +27,7 @@ import {
   IconShoppingCart,
   IconStethoscope,
   IconToolsKitchen3,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
 const validIconNames = [
   IconCash,

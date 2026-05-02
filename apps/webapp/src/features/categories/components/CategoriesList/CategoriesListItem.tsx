@@ -9,12 +9,12 @@ import {
   Center,
   Text,
   Avatar,
-} from "@mantine/core";
-import { IconDots, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
-import { AppCategory } from "../../models/Category";
-import { GualletIcon } from "@/components/GualletIcon/GualletIcon";
-import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
+} from '@mantine/core';
+import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
+import { useState } from 'react';
+import { AppCategory } from '../../models/Category';
+import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
+import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
 
 interface HeaderProps {
   title: string;
@@ -96,7 +96,7 @@ function AddSubCategoryRowItem({ onRowClick }: AddSubCategoryRowItemProps) {
   return (
     <Box
       style={() => ({
-        cursor: "pointer",
+        cursor: 'pointer',
       })}
       onClick={() => onRowClick()}
     >
@@ -117,7 +117,7 @@ function SubCategoryItem({ category, onEdit, onDelete }: SubCategoryItemProps) {
   const [menuOpened, setMenuOpened] = useState(false);
 
   return (
-    <Group style={{ marginLeft: "4em" }}>
+    <Group style={{ marginLeft: '4em' }}>
       <CategoryAvatar categoryId={category.id} />
       <Text>{category.name}</Text>
       <Menu

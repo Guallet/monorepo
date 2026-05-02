@@ -66,10 +66,7 @@ export function LoanCalculatorForm({
         />
 
         <NumberInput
-          label={t(
-            'screens.tools.loan.form.arrangementFee',
-            'Arrangement fee',
-          )}
+          label={t('screens.tools.loan.form.arrangementFee', 'Arrangement fee')}
           description={t(
             'screens.tools.loan.form.arrangementFeeDescription',
             'One-off upfront fee',

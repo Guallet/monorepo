@@ -1,7 +1,7 @@
-import { ActionIcon, Group } from "@mantine/core";
-import { MonthSelector } from "./MonthSelector";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { useMemo } from "react";
+import { ActionIcon, Group } from '@mantine/core';
+import { MonthSelector } from './MonthSelector';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { useMemo } from 'react';
 
 interface MonthSelectorHeaderProps extends React.ComponentProps<typeof Group> {
   date: Date;
@@ -19,7 +19,7 @@ export function MonthSelectorHeader({
 
   // TODO: Get this from the min transaction date from the user
   const minDate = useMemo(() => {
-    return new Date("2000-01-01");
+    return new Date('2000-01-01');
   }, []);
 
   const maxDate = useMemo(() => {

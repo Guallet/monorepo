@@ -1,7 +1,7 @@
-import { CategoriesScreen } from "@/features/categories/screens/CategoryDetailsScreen";
-import { createFileRoute } from "@tanstack/react-router";
+import { CategoriesScreen } from '@/features/categories/screens/CategoryDetailsScreen';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/categories/$id")({
+export const Route = createFileRoute('/_app/categories/$id')({
   component: CategoryDetailsPage,
 });
 

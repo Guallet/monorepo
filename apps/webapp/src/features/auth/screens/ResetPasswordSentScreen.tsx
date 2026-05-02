@@ -67,7 +67,12 @@ export function ResetPasswordSentScreen({
 
         <Text
           component="h2"
-          style={{ margin: `0 0 ${spacing.sm}px`, fontSize: 24, fontWeight: 700, letterSpacing: '-0.01em' }}
+          style={{
+            margin: `0 0 ${spacing.sm}px`,
+            fontSize: 24,
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+          }}
         >
           {t('screens.resetPasswordSent.title', 'Check your email')}
         </Text>
@@ -75,9 +80,16 @@ export function ResetPasswordSentScreen({
         <Text
           size="sm"
           c="dimmed"
-          style={{ maxWidth: 340, margin: `0 auto ${spacing.sm}px`, lineHeight: 1.6 }}
+          style={{
+            maxWidth: 340,
+            margin: `0 auto ${spacing.sm}px`,
+            lineHeight: 1.6,
+          }}
         >
-          {t('screens.resetPasswordSent.description', "We've sent a password reset link to")}{' '}
+          {t(
+            'screens.resetPasswordSent.description',
+            "We've sent a password reset link to",
+          )}{' '}
           <Text span fw={600} c="dark">
             {email}
           </Text>
@@ -87,7 +99,11 @@ export function ResetPasswordSentScreen({
         <Text
           size="sm"
           c="dimmed"
-          style={{ maxWidth: 340, margin: `0 auto ${spacing.lg}px`, lineHeight: 1.6 }}
+          style={{
+            maxWidth: 340,
+            margin: `0 auto ${spacing.lg}px`,
+            lineHeight: 1.6,
+          }}
         >
           {t(
             'screens.resetPasswordSent.instructions',
@@ -96,7 +112,10 @@ export function ResetPasswordSentScreen({
         </Text>
 
         <Text size="xs" c="dimmed" mb={spacing.md}>
-          {t('screens.resetPasswordSent.spamNote', "Didn't receive it? Check your spam or")}{' '}
+          {t(
+            'screens.resetPasswordSent.spamNote',
+            "Didn't receive it? Check your spam or",
+          )}{' '}
           <Anchor component="button" size="xs" fw={600} onClick={handleBack}>
             {t('screens.resetPasswordSent.tryAnother', 'try another email')}
           </Anchor>

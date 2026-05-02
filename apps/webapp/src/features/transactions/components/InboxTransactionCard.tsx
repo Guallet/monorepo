@@ -3,7 +3,11 @@ import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
 import { CategoryPickerModal } from '@/features/categories/components/CategoryPicker/CategoryPickerModal';
 import { useLocale } from '@/i18n/useLocale';
 import { CategoryDto, InboxTransactionDto } from '@guallet/api-client';
-import { useAccount, useCategory, useTransactionMutations } from '@guallet/api-react';
+import {
+  useAccount,
+  useCategory,
+  useTransactionMutations,
+} from '@guallet/api-react';
 import { Money } from '@guallet/money';
 import { ResponsiveModal, useTheme } from '@guallet/ui-react';
 import {
@@ -36,9 +40,12 @@ export function InboxTransactionCard({
   const { locale } = useLocale();
   const { t } = useTranslation();
 
-  const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false);
-  const [categoryPickerOpened, { open: openCategoryPicker, close: closeCategoryPicker }] =
+  const [editOpened, { open: openEdit, close: closeEdit }] =
     useDisclosure(false);
+  const [
+    categoryPickerOpened,
+    { open: openCategoryPicker, close: closeCategoryPicker },
+  ] = useDisclosure(false);
 
   const { account } = useAccount(transaction.accountId);
   const { updateTransactionCategoryMutation } = useTransactionMutations();
@@ -132,7 +139,12 @@ export function InboxTransactionCard({
           <Group justify="space-between" wrap="nowrap">
             <UnstyledButton
               onClick={openCategoryPicker}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                minWidth: 0,
+              }}
             >
               <CategoryAvatar categoryId={displayCategoryId} size="sm" />
               <Text size="sm" c={displayCategoryId ? undefined : 'dimmed'}>
@@ -173,10 +185,7 @@ export function InboxTransactionCard({
       <ResponsiveModal
         opened={categoryPickerOpened}
         onClose={closeCategoryPicker}
-        title={t(
-          'components.categoryPicker.modal.title',
-          'Select category',
-        )}
+        title={t('components.categoryPicker.modal.title', 'Select category')}
         size="lg"
       >
         <CategoryPickerModal

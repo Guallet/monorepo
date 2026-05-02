@@ -1,29 +1,29 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 import {
   useConnectionMutations,
   useOpenBankingInstitutionsForCountry,
   useOpenBankingSupportedCountries,
-} from "@guallet/api-react";
+} from '@guallet/api-react';
 import {
   Autocomplete,
   AutocompleteProps,
   Text,
   Group,
   Stack,
-} from "@mantine/core";
-import { FlagEmoji } from "../components/FlagEmoji";
-import { ObInstitutionDto, OpenBankingCountryDto } from "@guallet/api-client";
-import { SearchableListView } from "@guallet/ui-react";
-import { ObInstitutionRow } from "../components/ObInstitutionRow";
-import { notifications } from "@mantine/notifications";
-import { useTranslation } from "react-i18next";
+} from '@mantine/core';
+import { FlagEmoji } from '../components/FlagEmoji';
+import { ObInstitutionDto, OpenBankingCountryDto } from '@guallet/api-client';
+import { SearchableListView } from '@guallet/ui-react';
+import { ObInstitutionRow } from '../components/ObInstitutionRow';
+import { notifications } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 
 interface ConnectionCreateScreenProps {
   selectedCountryCode?: string;
   onCountryChange?: (country?: OpenBankingCountryDto) => void;
 }
 
-const renderAutocompleteOption: AutocompleteProps["renderOption"] = ({
+const renderAutocompleteOption: AutocompleteProps['renderOption'] = ({
   option,
 }) => (
   <Group gap="sm">
@@ -45,15 +45,13 @@ export function ConnectionCreateScreen({
     useOpenBankingInstitutionsForCountry(selectedCountryCode);
 
   const countrySelected = countries.find(
-    (country) => country.code === selectedCountryCode
+    (country) => country.code === selectedCountryCode,
   );
 
   const { createConnectionMutation } = useConnectionMutations();
 
   return (
-    <BaseScreen
-      title={t("screens.connections.create.title", "Connect a bank")}
-    >
+    <BaseScreen title={t('screens.connections.create.title', 'Connect a bank')}>
       <Stack>
         <Autocomplete
           disabled={isLoading}
@@ -101,18 +99,18 @@ export function ConnectionCreateScreen({
                     {
                       onSuccess: (data) => {
                         // Open the website to complete the connection
-                        window.open(data.link, "_self");
+                        window.open(data.link, '_self');
                       },
                       onError: (error) => {
-                        console.error("Error creating connection:", error);
+                        console.error('Error creating connection:', error);
                         notifications.show({
-                          title: "Error",
+                          title: 'Error',
                           message:
-                            "There was an error creating the connection. Please try again.",
-                          color: "red",
+                            'There was an error creating the connection. Please try again.',
+                          color: 'red',
                         });
                       },
-                    }
+                    },
                   );
                 }}
               />

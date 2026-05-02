@@ -1,7 +1,7 @@
-import { AppSection } from "@/components/Cards/AppSection";
-import { useUser } from "@guallet/api-react";
-import { Avatar, Button, Stack, Text } from "@mantine/core";
-import { useNavigate } from "@tanstack/react-router";
+import { AppSection } from '@/components/Cards/AppSection';
+import { useUser } from '@guallet/api-react';
+import { Avatar, Button, Stack, Text } from '@mantine/core';
+import { useNavigate } from '@tanstack/react-router';
 
 export function UserSettingsCard() {
   // TODO: Replace this with a prop callback rather than navigate directly from here
@@ -14,7 +14,7 @@ export function UserSettingsCard() {
         <Avatar
           src={user?.profile_src}
           alt={user?.name}
-          style={{ alignSelf: "center" }}
+          style={{ alignSelf: 'center' }}
           size={120}
         />
         <Text>{user?.name}</Text>
@@ -23,7 +23,7 @@ export function UserSettingsCard() {
           variant="outline"
           color="red"
           onClick={() => {
-            navigate({ to: "/logout" });
+            navigate({ to: '/logout' });
           }}
         >
           Log out

@@ -49,8 +49,7 @@ export function useNotificationMutations() {
   });
 
   return {
-    markAsRead: (id: string) =>
-      markAsReadMutation.mutate({ id, isRead: true }),
+    markAsRead: (id: string) => markAsReadMutation.mutate({ id, isRead: true }),
     markAsUnread: (id: string) =>
       markAsReadMutation.mutate({ id, isRead: false }),
     markAllAsRead: () => markAllAsReadMutation.mutate(),

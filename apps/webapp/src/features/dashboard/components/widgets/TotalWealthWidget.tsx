@@ -1,9 +1,9 @@
-import { useAccounts } from "@guallet/api-react";
-import { WidgetCard } from "./WidgetCard";
-import { Money } from "@guallet/money";
-import { Loader, Stack, Text, Group, Box, Center } from "@mantine/core";
-import { IconWallet, IconTrendingUp } from "@tabler/icons-react";
-import { useTheme } from "@guallet/ui-react";
+import { useAccounts } from '@guallet/api-react';
+import { WidgetCard } from './WidgetCard';
+import { Money } from '@guallet/money';
+import { Loader, Stack, Text, Group, Box, Center } from '@mantine/core';
+import { IconWallet, IconTrendingUp } from '@tabler/icons-react';
+import { useTheme } from '@guallet/ui-react';
 
 function getArraySum(array: number[]): number {
   let sum = 0;
@@ -18,7 +18,7 @@ export function TotalWealthWidget() {
   const { colors, spacing } = useTheme();
 
   const currencies = new Set(
-    accounts.map((account) => account.balance.currency)
+    accounts.map((account) => account.balance.currency),
   );
 
   const balances = [...currencies].map((currency) => {
@@ -35,10 +35,7 @@ export function TotalWealthWidget() {
   });
 
   return (
-    <WidgetCard
-      title="Total Wealth"
-      icon={<IconWallet size={20} />}
-    >
+    <WidgetCard title="Total Wealth" icon={<IconWallet size={20} />}>
       {isLoading ? (
         <Center h={100}>
           <Loader size="md" />
@@ -49,12 +46,12 @@ export function TotalWealthWidget() {
             const isPositive = balance.amount >= 0;
             const moneyColor = isPositive ? colors.support : colors.error;
             return (
-              <Box key={balance.currency.code} style={{ textAlign: 'center', width: '100%' }}>
+              <Box
+                key={balance.currency.code}
+                style={{ textAlign: 'center', width: '100%' }}
+              >
                 <Group gap="xs" justify="center">
-                  <IconTrendingUp
-                    size={24}
-                    style={{ color: moneyColor }}
-                  />
+                  <IconTrendingUp size={24} style={{ color: moneyColor }} />
                 </Group>
                 <Text
                   size="xl"
@@ -64,7 +61,12 @@ export function TotalWealthWidget() {
                   {balance.format()}
                 </Text>
                 <Text size="xs" c="dimmed" mt="xs">
-                  Across {accounts.filter(a => a.currency === balance.currency.code).length} accounts
+                  Across{' '}
+                  {
+                    accounts.filter((a) => a.currency === balance.currency.code)
+                      .length
+                  }{' '}
+                  accounts
                 </Text>
               </Box>
             );

@@ -1,7 +1,15 @@
 import { TransactionRow } from '@/features/transactions/components/TransactionRow';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
-import { Button, Card, Center, Group, Loader, Stack, Text } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Center,
+  Group,
+  Loader,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 

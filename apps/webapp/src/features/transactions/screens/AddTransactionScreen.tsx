@@ -87,11 +87,18 @@ export function AddTransactionScreen() {
   }
 
   return (
-    <BaseScreen title={t('screens.transactions.create.title', 'Add transaction')}>
+    <BaseScreen
+      title={t('screens.transactions.create.title', 'Add transaction')}
+    >
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <TransactionFormFields
                 form={form}
                 translationKeyPrefix="screens.transactions.create"
@@ -105,7 +112,10 @@ export function AddTransactionScreen() {
                 size="md"
                 loading={createTransactionMutation.isPending}
               >
-                {t('screens.transactions.create.form.submitButton.label', 'Add transaction')}
+                {t(
+                  'screens.transactions.create.form.submitButton.label',
+                  'Add transaction',
+                )}
               </Button>
               <Button
                 variant="outline"
@@ -113,15 +123,30 @@ export function AddTransactionScreen() {
                 size="md"
                 onClick={() => navigate({ to: '/transactions' })}
               >
-                {t('screens.transactions.create.form.cancelButton.label', 'Cancel')}
+                {t(
+                  'screens.transactions.create.form.cancelButton.label',
+                  'Cancel',
+                )}
               </Button>
             </Stack>
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
-              <Button variant="outline" onClick={() => navigate({ to: '/transactions' })}>
-                {t('screens.transactions.create.form.cancelButton.label', 'Cancel')}
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/transactions' })}
+              >
+                {t(
+                  'screens.transactions.create.form.cancelButton.label',
+                  'Cancel',
+                )}
               </Button>
-              <Button type="submit" loading={createTransactionMutation.isPending}>
-                {t('screens.transactions.create.form.submitButton.label', 'Add transaction')}
+              <Button
+                type="submit"
+                loading={createTransactionMutation.isPending}
+              >
+                {t(
+                  'screens.transactions.create.form.submitButton.label',
+                  'Add transaction',
+                )}
               </Button>
             </Group>
           </Stack>

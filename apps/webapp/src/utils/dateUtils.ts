@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(localizedFormat);
@@ -22,7 +22,7 @@ export function isDate(value: string): boolean {
   return dayjs(value).isValid();
 }
 
-export function formatDate(date: Date | string, format: string = "LL"): string {
+export function formatDate(date: Date | string, format: string = 'LL'): string {
   const day = dayjs(date);
   return day.format(format);
 }

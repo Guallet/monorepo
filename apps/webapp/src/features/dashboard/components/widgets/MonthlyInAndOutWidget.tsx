@@ -1,9 +1,9 @@
-import { WidgetCard } from "./WidgetCard";
-import { useTransactionsWithFilter } from "@guallet/api-react";
-import { Box, Text, Loader, Center } from "@mantine/core";
-import { IconChartBar } from "@tabler/icons-react";
-import { BarChart } from "@mantine/charts";
-import { useTheme } from "@guallet/ui-react";
+import { WidgetCard } from './WidgetCard';
+import { useTransactionsWithFilter } from '@guallet/api-react';
+import { Box, Text, Loader, Center } from '@mantine/core';
+import { IconChartBar } from '@tabler/icons-react';
+import { BarChart } from '@mantine/charts';
+import { useTheme } from '@guallet/ui-react';
 
 interface MonthlyInAndOutWidgetProps {
   startDate: string | null;
@@ -12,7 +12,7 @@ interface MonthlyInAndOutWidgetProps {
 
 export function MonthlyInAndOutWidget({
   startDate,
-  endDate
+  endDate,
 }: Readonly<MonthlyInAndOutWidgetProps>) {
   const { transactions, isLoading } = useTransactionsWithFilter({
     page: 1,
@@ -23,23 +23,37 @@ export function MonthlyInAndOutWidget({
 
   const { colors, borderRadius } = useTheme();
 
-  const monthlyData = transactions.reduce((acc, transaction) => {
-    const date = new Date(transaction.date);
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    const monthLabel = date.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+  const monthlyData = transactions.reduce(
+    (acc, transaction) => {
+      const date = new Date(transaction.date);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthLabel = date.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: '2-digit',
+      });
 
-    if (!acc[monthKey]) {
-      acc[monthKey] = { month: monthLabel, income: 0, spending: 0, date: date };
-    }
+      if (!acc[monthKey]) {
+        acc[monthKey] = {
+          month: monthLabel,
+          income: 0,
+          spending: 0,
+          date: date,
+        };
+      }
 
-    if (transaction.amount > 0) {
-      acc[monthKey].income += transaction.amount;
-    } else {
-      acc[monthKey].spending += Math.abs(transaction.amount);
-    }
+      if (transaction.amount > 0) {
+        acc[monthKey].income += transaction.amount;
+      } else {
+        acc[monthKey].spending += Math.abs(transaction.amount);
+      }
 
-    return acc;
-  }, {} as Record<string, { month: string; income: number; spending: number; date: Date }>);
+      return acc;
+    },
+    {} as Record<
+      string,
+      { month: string; income: number; spending: number; date: Date }
+    >,
+  );
 
   const data = Object.values(monthlyData)
     .sort((a, b) => a.date.getTime() - b.date.getTime())
@@ -51,10 +65,7 @@ export function MonthlyInAndOutWidget({
     }));
 
   return (
-    <WidgetCard
-      title="Income vs. Spending"
-      icon={<IconChartBar size={20} />}
-    >
+    <WidgetCard title="Income vs. Spending" icon={<IconChartBar size={20} />}>
       {isLoading ? (
         <Center h={300}>
           <Loader size="md" />

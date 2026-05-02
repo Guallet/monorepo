@@ -1,9 +1,9 @@
-import { AccountTypeDto } from "@guallet/api-client";
-import { CreditCardForm } from "./CreditCardForm";
-import { CurrentAccountForm } from "./CurrentAccountForm";
-import { LoanForm } from "./LoanForm";
-import { MortgageForm } from "./MortgageForm";
-import { SavingsForm } from "./SavingsForm";
+import { AccountTypeDto } from '@guallet/api-client';
+import { CreditCardForm } from './CreditCardForm';
+import { CurrentAccountForm } from './CurrentAccountForm';
+import { LoanForm } from './LoanForm';
+import { MortgageForm } from './MortgageForm';
+import { SavingsForm } from './SavingsForm';
 
 export interface AccountMetadataFormProps {
   accountType: AccountTypeDto;

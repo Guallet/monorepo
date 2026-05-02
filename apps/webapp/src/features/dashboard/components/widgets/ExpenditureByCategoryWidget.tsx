@@ -1,8 +1,16 @@
-import { WidgetCard } from "./WidgetCard";
-import { useTransactionsWithFilter, useCategories } from "@guallet/api-react";
-import { Loader, Stack, Text, Group, Box, Center, Progress } from "@mantine/core";
-import { IconCategory } from "@tabler/icons-react";
-import { useTheme } from "@guallet/ui-react";
+import { WidgetCard } from './WidgetCard';
+import { useTransactionsWithFilter, useCategories } from '@guallet/api-react';
+import {
+  Loader,
+  Stack,
+  Text,
+  Group,
+  Box,
+  Center,
+  Progress,
+} from '@mantine/core';
+import { IconCategory } from '@tabler/icons-react';
+import { useTheme } from '@guallet/ui-react';
 
 interface ExpenditureByCategoryWidgetProps {
   startDate: string | null;
@@ -11,14 +19,15 @@ interface ExpenditureByCategoryWidgetProps {
 
 export function ExpenditureByCategoryWidget({
   startDate,
-  endDate
+  endDate,
 }: Readonly<ExpenditureByCategoryWidgetProps>) {
-  const { transactions, isLoading: transactionsLoading } = useTransactionsWithFilter({
-    page: 1,
-    pageSize: 1000,
-    startDate: startDate ? new Date(startDate) : null,
-    endDate: endDate ? new Date(endDate) : null,
-  });
+  const { transactions, isLoading: transactionsLoading } =
+    useTransactionsWithFilter({
+      page: 1,
+      pageSize: 1000,
+      startDate: startDate ? new Date(startDate) : null,
+      endDate: endDate ? new Date(endDate) : null,
+    });
 
   const { categories, isLoading: categoriesLoading } = useCategories();
   const { colors } = useTheme();
@@ -26,21 +35,24 @@ export function ExpenditureByCategoryWidget({
   const isLoading = transactionsLoading || categoriesLoading;
 
   const categorySpending = transactions
-    .filter(t => t.amount < 0 && t.categoryId)
-    .reduce((acc, t) => {
-      const categoryId = t.categoryId!;
-      acc[categoryId] = (acc[categoryId] || 0) + Math.abs(t.amount);
-      return acc;
-    }, {} as Record<string, number>);
+    .filter((t) => t.amount < 0 && t.categoryId)
+    .reduce(
+      (acc, t) => {
+        const categoryId = t.categoryId!;
+        acc[categoryId] = (acc[categoryId] || 0) + Math.abs(t.amount);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
   const topCategories = Object.entries(categorySpending)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([categoryId, amount]) => {
-      const category = categories.find(c => c.id === categoryId);
+      const category = categories.find((c) => c.id === categoryId);
       return {
         id: categoryId,
-        name: category?.name || "Unknown",
+        name: category?.name || 'Unknown',
         amount,
         color: category?.colour || colors.primary,
       };
@@ -68,9 +80,8 @@ export function ExpenditureByCategoryWidget({
       ) : topCategories.length > 0 ? (
         <Stack gap="md">
           {topCategories.map((category, index) => {
-            const percentage = totalSpending > 0
-              ? (category.amount / totalSpending) * 100
-              : 0;
+            const percentage =
+              totalSpending > 0 ? (category.amount / totalSpending) * 100 : 0;
             const color = categoryColors[index % categoryColors.length];
 
             return (

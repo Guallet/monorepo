@@ -1,6 +1,6 @@
 /**
  * ResponsiveModal - Example Usage
- * 
+ *
  * This file demonstrates how to use the ResponsiveModal component
  * in different scenarios.
  */
@@ -11,7 +11,7 @@ import { Button, Stack, Text, Group, TextInput } from '@mantine/core';
 
 /**
  * Example 1: Basic Usage
- * 
+ *
  * Simple modal with title and content
  */
 export function BasicModalExample() {
@@ -27,8 +27,12 @@ export function BasicModalExample() {
         size="md"
       >
         <Stack>
-          <Text>This is a responsive modal that adapts to your screen size.</Text>
-          <Text>On mobile, it will be full screen. On desktop, it will be centered.</Text>
+          <Text>
+            This is a responsive modal that adapts to your screen size.
+          </Text>
+          <Text>
+            On mobile, it will be full screen. On desktop, it will be centered.
+          </Text>
           <Button onClick={close}>Close</Button>
         </Stack>
       </ResponsiveModal>
@@ -38,7 +42,7 @@ export function BasicModalExample() {
 
 /**
  * Example 2: Form Modal
- * 
+ *
  * Modal containing a form with multiple fields
  */
 export function FormModalExample() {
@@ -61,15 +65,17 @@ export function FormModalExample() {
       >
         <Stack>
           <TextInput label="Name" placeholder="Enter your name" />
-          <TextInput label="Email" placeholder="Enter your email" type="email" />
-          
+          <TextInput
+            label="Email"
+            placeholder="Enter your email"
+            type="email"
+          />
+
           <Group justify="flex-end">
             <Button variant="outline" onClick={close}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit}>
-              Submit
-            </Button>
+            <Button onClick={handleSubmit}>Submit</Button>
           </Group>
         </Stack>
       </ResponsiveModal>
@@ -79,7 +85,7 @@ export function FormModalExample() {
 
 /**
  * Example 3: No Close Button
- * 
+ *
  * Modal without a close button (must use action buttons)
  */
 export function NoCloseButtonExample() {
@@ -113,7 +119,7 @@ export function NoCloseButtonExample() {
 
 /**
  * Example 4: Large Content Modal
- * 
+ *
  * Modal with scrollable content
  */
 export function LargeContentExample() {
@@ -130,16 +136,16 @@ export function LargeContentExample() {
       >
         <Stack>
           <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </Text>
           <Text>
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco 
-            laboris nisi ut aliquip ex ea commodo consequat.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+            nisi ut aliquip ex ea commodo consequat.
           </Text>
           <Text>
-            Duis aute irure dolor in reprehenderit in voluptate velit 
-            esse cillum dolore eu fugiat nulla pariatur.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur.
           </Text>
           <Button onClick={close}>I Agree</Button>
         </Stack>
@@ -150,7 +156,7 @@ export function LargeContentExample() {
 
 /**
  * Example 5: Custom Size
- * 
+ *
  * Modal with custom pixel width
  */
 export function CustomSizeExample() {

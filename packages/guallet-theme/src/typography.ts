@@ -23,8 +23,8 @@ export type Typography = {
 };
 
 export const defaultTypography: Typography = {
-  fontFamily: "Inter Variable, Inter, system-ui, -apple-system, sans-serif",
-  fontFamilyMono: "ui-monospace, monospace",
+  fontFamily: 'Inter Variable, Inter, system-ui, -apple-system, sans-serif',
+  fontFamilyMono: 'ui-monospace, monospace',
   sizes: {
     xs: 12,
     sm: 14,
@@ -39,9 +39,9 @@ export const defaultTypography: Typography = {
     relaxed: 1.8,
   },
   weights: {
-    regular: "400",
-    medium: "500",
-    semibold: "600",
-    bold: "700",
+    regular: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
   },
 };

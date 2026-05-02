@@ -182,7 +182,12 @@ export function RuleForm({
   return (
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
-        <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+        <Card
+          withBorder
+          shadow="sm"
+          radius="lg"
+          padding={{ base: 'md', sm: 'lg' }}
+        >
           <Stack gap="md">
             <TextInput
               label={t('screens.rules.form.name.label')}
@@ -208,7 +213,12 @@ export function RuleForm({
           </Stack>
         </Card>
 
-        <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+        <Card
+          withBorder
+          shadow="sm"
+          radius="lg"
+          padding={{ base: 'md', sm: 'lg' }}
+        >
           <Stack gap="md">
             <Group justify="space-between">
               <Text fw={500}>{t('screens.rules.form.conditions.title')}</Text>
@@ -276,18 +286,28 @@ export function RuleForm({
                         data={fieldOptions}
                         value={condition.field}
                         onChange={(value) =>
-                          handleConditionChange(condition.id, 'field', value ?? '')
+                          handleConditionChange(
+                            condition.id,
+                            'field',
+                            value ?? '',
+                          )
                         }
                       />
                       <Select
-                        label={t('screens.rules.form.conditions.operator.label')}
+                        label={t(
+                          'screens.rules.form.conditions.operator.label',
+                        )}
                         placeholder={t(
                           'screens.rules.form.conditions.operator.placeholder',
                         )}
                         data={getOperatorsForField(condition.field)}
                         value={condition.operator}
                         onChange={(value) =>
-                          handleConditionChange(condition.id, 'operator', value ?? '')
+                          handleConditionChange(
+                            condition.id,
+                            'operator',
+                            value ?? '',
+                          )
                         }
                         disabled={!condition.field}
                       />
@@ -298,7 +318,11 @@ export function RuleForm({
                         )}
                         value={condition.value}
                         onChange={(e) =>
-                          handleConditionChange(condition.id, 'value', e.target.value)
+                          handleConditionChange(
+                            condition.id,
+                            'value',
+                            e.target.value,
+                          )
                         }
                       />
                     </SimpleGrid>
@@ -317,7 +341,12 @@ export function RuleForm({
           </Stack>
         </Card>
 
-        <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+        <Card
+          withBorder
+          shadow="sm"
+          radius="lg"
+          padding={{ base: 'md', sm: 'lg' }}
+        >
           <Stack gap="md">
             <Text fw={500}>{t('screens.rules.form.category.title')}</Text>
             {/* <Select
@@ -342,10 +371,22 @@ export function RuleForm({
         </Card>
 
         <Stack gap="xs" hiddenFrom="sm">
-          <Button type="submit" fullWidth size="md" loading={isSubmitting} disabled={!isFormValid}>
+          <Button
+            type="submit"
+            fullWidth
+            size="md"
+            loading={isSubmitting}
+            disabled={!isFormValid}
+          >
             {submitLabel}
           </Button>
-          <Button variant="outline" fullWidth size="md" onClick={onCancel} disabled={isSubmitting}>
+          <Button
+            variant="outline"
+            fullWidth
+            size="md"
+            onClick={onCancel}
+            disabled={isSubmitting}
+          >
             {t('screens.rules.form.buttons.cancel')}
           </Button>
         </Stack>

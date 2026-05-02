@@ -1,3 +1,3 @@
-export type { Typography } from "@guallet/theme";
+export type { Typography } from '@guallet/theme';
 
-export type LunaFontSize = "xs" | "sm" | "md" | "lg" | "xl" | number;
+export type LunaFontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;

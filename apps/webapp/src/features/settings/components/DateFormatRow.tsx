@@ -1,10 +1,10 @@
-import { IconChevronRight } from "@tabler/icons-react";
-import { Modal, Stack, Select, Group, Button } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useUserSettings, useUserSettingsMutations } from "@guallet/api-react";
-import { ALLOWED_DATE_FORMATS, DateFormat } from "@guallet/api-client";
-import { notifications } from "@mantine/notifications";
-import { BaseRow } from "@guallet/ui-react";
+import { IconChevronRight } from '@tabler/icons-react';
+import { Modal, Stack, Select, Group, Button } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useUserSettings, useUserSettingsMutations } from '@guallet/api-react';
+import { ALLOWED_DATE_FORMATS, DateFormat } from '@guallet/api-client';
+import { notifications } from '@mantine/notifications';
+import { BaseRow } from '@guallet/ui-react';
 
 export function DateFormatRow() {
   const { settings } = useUserSettings();
@@ -18,19 +18,19 @@ export function DateFormatRow() {
       {
         onSuccess: () => {
           notifications.show({
-            title: "Success",
-            message: "Date format updated",
-            color: "green",
+            title: 'Success',
+            message: 'Date format updated',
+            color: 'green',
           });
         },
         onError: () => {
           notifications.show({
-            title: "Error",
-            message: "Failed to update date format",
-            color: "red",
+            title: 'Error',
+            message: 'Failed to update date format',
+            color: 'red',
           });
         },
-      }
+      },
     );
   };
 
@@ -45,7 +45,7 @@ export function DateFormatRow() {
         <Stack>
           <Select
             data={ALLOWED_DATE_FORMATS}
-            value={settings?.date_format ?? ""}
+            value={settings?.date_format ?? ''}
             placeholder="Select date format"
             onChange={(newDateFormat) => {
               save(newDateFormat as DateFormat);
@@ -53,7 +53,7 @@ export function DateFormatRow() {
             }}
             clearable
           />
-          <Group style={{ justifyContent: "flex-end" }}>
+          <Group style={{ justifyContent: 'flex-end' }}>
             <Button onClick={close}>Cancel</Button>
           </Group>
         </Stack>
@@ -61,7 +61,7 @@ export function DateFormatRow() {
 
       <BaseRow
         label="Date format"
-        value={settings?.date_format ?? ""}
+        value={settings?.date_format ?? ''}
         rightSection={<IconChevronRight />}
         onClick={() => open()}
       />

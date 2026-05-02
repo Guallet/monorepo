@@ -1,10 +1,23 @@
-import { WidgetCard } from "./WidgetCard";
-import { useTransactions, useAccounts, useCategories } from "@guallet/api-react";
-import { Loader, Stack, Text, Group, Box, Center, Badge, ScrollArea } from "@mantine/core";
-import { IconReceipt, IconArrowUp, IconArrowDown } from "@tabler/icons-react";
-import { Money } from "@guallet/money";
-import { useTheme } from "@guallet/ui-react";
-import { useRouter } from "@tanstack/react-router";
+import { WidgetCard } from './WidgetCard';
+import {
+  useTransactions,
+  useAccounts,
+  useCategories,
+} from '@guallet/api-react';
+import {
+  Loader,
+  Stack,
+  Text,
+  Group,
+  Box,
+  Center,
+  Badge,
+  ScrollArea,
+} from '@mantine/core';
+import { IconReceipt, IconArrowUp, IconArrowDown } from '@tabler/icons-react';
+import { Money } from '@guallet/money';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
 
 const MAX_ITEMS = 8;
 
@@ -53,8 +66,12 @@ export function LastTransactionsWidget() {
         <ScrollArea.Autosize mah={320}>
           <Stack gap="xs">
             {lastTransactions.map((transaction) => {
-              const account = accounts.find(a => a.id === transaction.accountId);
-              const category = categories.find(c => c.id === transaction.categoryId);
+              const account = accounts.find(
+                (a) => a.id === transaction.accountId,
+              );
+              const category = categories.find(
+                (c) => c.id === transaction.categoryId,
+              );
               const isIncome = transaction.amount > 0;
 
               const amount = Money.fromCurrencyCode({
@@ -75,9 +92,15 @@ export function LastTransactionsWidget() {
                   <Group justify="space-between">
                     <Group gap="xs" style={{ flex: 1, minWidth: 0 }}>
                       {isIncome ? (
-                        <IconArrowUp size={14} style={{ color: colors.support, flexShrink: 0 }} />
+                        <IconArrowUp
+                          size={14}
+                          style={{ color: colors.support, flexShrink: 0 }}
+                        />
                       ) : (
-                        <IconArrowDown size={14} style={{ color: colors.error, flexShrink: 0 }} />
+                        <IconArrowDown
+                          size={14}
+                          style={{ color: colors.error, flexShrink: 0 }}
+                        />
                       )}
                       <Text
                         fw={600}
@@ -100,7 +123,8 @@ export function LastTransactionsWidget() {
                         marginLeft: 8,
                       }}
                     >
-                      {isIncome ? '+' : '-'}{amount.format()}
+                      {isIncome ? '+' : '-'}
+                      {amount.format()}
                     </Text>
                   </Group>
 
@@ -133,7 +157,8 @@ export function LastTransactionsWidget() {
             })}
             {totalCount > MAX_ITEMS && (
               <Text size="xs" c="dimmed" ta="center">
-                +{totalCount - MAX_ITEMS} more transaction{totalCount - MAX_ITEMS !== 1 ? 's' : ''}
+                +{totalCount - MAX_ITEMS} more transaction
+                {totalCount - MAX_ITEMS !== 1 ? 's' : ''}
               </Text>
             )}
           </Stack>

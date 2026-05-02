@@ -26,9 +26,14 @@ export function DataExportScreen() {
   const gualletClient = useGualletClient();
   const { accounts } = useAccounts();
 
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+  const [dateRange, setDateRange] = useState<[string | null, string | null]>([
+    null,
+    null,
+  ]);
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
-  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>('csv');
+  const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>(
+    'csv',
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +48,14 @@ export function DataExportScreen() {
       setError(null);
       setIsLoading(true);
       await gualletClient.dataExporter.exportData({
-        startDate: dateRange[0] ? new Date(dateRange[0]).toISOString() : undefined,
-        endDate: dateRange[1] ? new Date(dateRange[1]).toISOString() : undefined,
-        accounts: selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
+        startDate: dateRange[0]
+          ? new Date(dateRange[0]).toISOString()
+          : undefined,
+        endDate: dateRange[1]
+          ? new Date(dateRange[1]).toISOString()
+          : undefined,
+        accounts:
+          selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
         format: exportFormat,
       });
       setIsModalOpened(true);
@@ -93,7 +103,9 @@ export function DataExportScreen() {
               <Text fw={500} size="sm">
                 {t('screens.dataExport.modal.emailTitle')}
               </Text>
-              <Text size="sm">{t('screens.dataExport.modal.emailDescription')}</Text>
+              <Text size="sm">
+                {t('screens.dataExport.modal.emailDescription')}
+              </Text>
             </Stack>
           </Alert>
           <Button fullWidth size="md" onClick={() => setIsModalOpened(false)}>
@@ -118,7 +130,12 @@ export function DataExportScreen() {
               </Alert>
             )}
 
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <Text fw={600} size="sm">
                   {t('screens.dataExport.filters.title')}
@@ -129,7 +146,9 @@ export function DataExportScreen() {
                 <DatePickerInput
                   type="range"
                   label={t('screens.dataExport.filters.dateRange.label')}
-                  placeholder={t('screens.dataExport.filters.dateRange.placeholder')}
+                  placeholder={t(
+                    'screens.dataExport.filters.dateRange.placeholder',
+                  )}
                   value={dateRange}
                   onChange={setDateRange}
                   clearable
@@ -137,7 +156,9 @@ export function DataExportScreen() {
                 />
                 <MultiSelect
                   label={t('screens.dataExport.filters.accounts.label')}
-                  placeholder={t('screens.dataExport.filters.accounts.placeholder')}
+                  placeholder={t(
+                    'screens.dataExport.filters.accounts.placeholder',
+                  )}
                   data={accountOptions}
                   value={selectedAccountIds}
                   onChange={setSelectedAccountIds}
@@ -148,13 +169,26 @@ export function DataExportScreen() {
                   label={t('screens.dataExport.filters.format.label')}
                   allowDeselect={false}
                   data={[
-                    { value: 'csv', label: t('screens.dataExport.filters.format.csv') },
-                    { value: 'ofe', label: t('screens.dataExport.filters.format.ofe') },
-                    { value: 'json', label: t('screens.dataExport.filters.format.json') },
+                    {
+                      value: 'csv',
+                      label: t('screens.dataExport.filters.format.csv'),
+                    },
+                    {
+                      value: 'ofe',
+                      label: t('screens.dataExport.filters.format.ofe'),
+                    },
+                    {
+                      value: 'json',
+                      label: t('screens.dataExport.filters.format.json'),
+                    },
                   ]}
                   value={exportFormat}
                   onChange={(value) => {
-                    if (value === 'csv' || value === 'ofe' || value === 'json') {
+                    if (
+                      value === 'csv' ||
+                      value === 'ofe' ||
+                      value === 'json'
+                    ) {
                       setExportFormat(value);
                     }
                   }}
@@ -162,7 +196,12 @@ export function DataExportScreen() {
               </Stack>
             </Card>
 
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap="sm">
                 <Text fw={600} size="sm">
                   {t('screens.dataExport.info.title')}
@@ -177,7 +216,12 @@ export function DataExportScreen() {
             </Card>
 
             <Stack gap="xs" hiddenFrom="sm">
-              <Button fullWidth size="md" onClick={handleExport} loading={isLoading}>
+              <Button
+                fullWidth
+                size="md"
+                onClick={handleExport}
+                loading={isLoading}
+              >
                 {t('screens.dataExport.exportButton')}
               </Button>
             </Stack>
