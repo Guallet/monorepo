@@ -6,7 +6,7 @@ interface IProps {
   startDate: Date | null;
   endDate: Date | null;
   onRangeChanged: (
-    range: { startDate: Date | null; endDate: Date | null } | null
+    range: { startDate: Date | null; endDate: Date | null } | null,
   ) => void;
 }
 
@@ -65,6 +65,7 @@ export function CalendarDateRangePicker({
       </Group>
 
       <DatePicker
+        mx="auto"
         type="range"
         allowSingleDateInRange
         value={[startDate ?? null, endDate ?? null]}
