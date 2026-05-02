@@ -1,9 +1,9 @@
+import { Fragment } from 'react';
 import {
   IconGauge,
   IconPresentationAnalytics,
   IconBuildingBank,
   IconCash,
-  IconSettings,
   IconTools,
   IconCategory2,
   IconChartFunnel,
@@ -11,7 +11,7 @@ import {
   IconRepeat,
   Icon,
 } from '@tabler/icons-react';
-import { AppShell, ScrollArea } from '@mantine/core';
+import { AppShell, Divider, ScrollArea } from '@mantine/core';
 import { LinksGroup } from './NavbarLinksGroup';
 
 type MenuData = {
@@ -26,7 +26,6 @@ const menuData: MenuData[] = [
   {
     label: 'Dashboard',
     icon: IconGauge,
-    initiallyOpened: true,
     link: '/dashboard',
   },
   {
@@ -84,11 +83,6 @@ const menuData: MenuData[] = [
       { label: 'UK Salary Calculator', link: '/tools/salary' },
     ],
   },
-  {
-    label: 'Settings',
-    icon: IconSettings,
-    link: '/settings',
-  },
 ];
 
 interface Props {
@@ -99,11 +93,10 @@ export function AppNavBar({ onItemSelected }: Readonly<Props>) {
   return (
     <AppShell.Section grow my="md" component={ScrollArea}>
       {menuData.map((item) => (
-        <LinksGroup
-          {...item}
-          key={item.label}
-          onItemSelected={onItemSelected}
-        />
+        <Fragment key={item.label}>
+          <LinksGroup {...item} onItemSelected={onItemSelected} />
+          {item.label === 'Subscriptions' && <Divider my="xs" mx="xs" />}
+        </Fragment>
       ))}
     </AppShell.Section>
   );
