@@ -41,7 +41,7 @@ export default function App() {
             <GualletClientProvider client={gualletClient}>
               <RouterProvider router={router} />
               {/* Tanstack Dev Tools */}
-              {/* <TanStackRouterDevtools router={router} /> */}
+              <TanStackRouterDevtools router={router} />
               <ReactQueryDevtools initialIsOpen={false} />
               {/* END Tanstack Dev Tools */}
             </GualletClientProvider>
