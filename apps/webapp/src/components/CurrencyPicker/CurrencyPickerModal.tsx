@@ -1,6 +1,6 @@
 import { Currency, ISO4217Currencies } from '@guallet/money';
 import { useUserSettings } from '@guallet/api-react';
-import { SearchBoxInput, useIsMobile } from '@guallet/ui-react';
+import { SearchBoxInput, useIsMobile, useTheme } from '@guallet/ui-react';
 import {
   ScrollArea,
   Group,
@@ -9,7 +9,6 @@ import {
   Text,
   Flex,
   Center,
-  Divider,
 } from '@mantine/core';
 import { useMemo, useState } from 'react';
 import { IconCheck } from '@tabler/icons-react';
@@ -36,11 +35,13 @@ function CurrencyItem({
   currency,
   isSelected,
   onSelect,
-}: {
+}: Readonly<{
   currency: Currency;
   isSelected: boolean;
   onSelect: () => void;
-}) {
+}>) {
+  const { colors, typography } = useTheme();
+
   return (
     <UnstyledButton
       className={classes.currencyItem}
@@ -48,40 +49,53 @@ function CurrencyItem({
       onClick={onSelect}
     >
       <Group wrap="nowrap" justify="space-between" w="100%">
-        <Group wrap="nowrap" gap="md">
+        <Group wrap="nowrap" gap="sm">
           <Center
             className={classes.currencyIcon}
             data-selected={isSelected || undefined}
           >
             <Text
               className={classes.currencySymbol}
-              c={isSelected ? 'blue' : 'dark'}
+              c={isSelected ? colors.primary : colors.black}
               style={{
                 fontSize:
                   currency.symbol.length > 3
                     ? '10px'
                     : currency.symbol.length > 2
-                      ? '12px'
-                      : '14px',
+                      ? `${typography.sizes.xs}px`
+                      : `${typography.sizes.sm}px`,
               }}
             >
               {currency.symbol}
             </Text>
           </Center>
-          <Text fw={isSelected ? 600 : 400} size="sm">
+          <Text
+            fw={
+              isSelected
+                ? typography.weights.semibold
+                : typography.weights.regular
+            }
+            size="sm"
+            c={isSelected ? colors.primary : colors.black}
+            style={{ flex: 1 }}
+          >
             {currency.name}
           </Text>
         </Group>
         <Group wrap="nowrap" gap="xs">
           <Text
-            c={isSelected ? 'blue' : 'dimmed'}
+            c={isSelected ? colors.primary : colors.midGrey}
             size="sm"
-            fw={isSelected ? 600 : 500}
+            fw={
+              isSelected
+                ? typography.weights.semibold
+                : typography.weights.medium
+            }
           >
             {currency.code}
           </Text>
           {isSelected && (
-            <IconCheck size={16} color="var(--mantine-color-blue-filled)" />
+            <IconCheck size={typography.sizes.md} color={colors.primary} />
           )}
         </Group>
       </Group>
@@ -185,19 +199,28 @@ export function CurrencyPickerModal({
         onSearchQueryChanged={(newQuery) => {
           setQuery(newQuery);
         }}
-        placeholder={t('components.currencyPickerModal.search.placeholder')}
+        placeholder={t(
+          'components.currencyPickerModal.search.placeholder',
+          'Search currencies…',
+        )}
       />
       <ScrollArea type="scroll" scrollbars="y" style={{ flex: 1 }}>
         {prioritizedCurrencies.length === 0 && otherCurrencies.length === 0 && (
-          <Text>
-            {t('components.currencyPickerModal.emptyState.noCurrencies')}
+          <Text c="dimmed" size="sm" ta="center" py="xl">
+            {t(
+              'components.currencyPickerModal.emptyState.noCurrencies',
+              'No currencies found',
+            )}
           </Text>
         )}
-        <Flex direction="column" gap={4}>
+        <Flex direction="column" gap={2}>
           {prioritizedCurrencies.length > 0 && (
             <>
-              <Text size="xs" c="dimmed" px="xs">
-                {t('components.currencyPickerModal.sections.suggested')}
+              <Text className={classes.sectionLabel}>
+                {t(
+                  'components.currencyPickerModal.sections.suggested',
+                  'Suggested',
+                )}
               </Text>
               {prioritizedCurrencies.map((currency) => (
                 <CurrencyItem
@@ -207,31 +230,41 @@ export function CurrencyPickerModal({
                   onSelect={() => onCurrencyPress(currency)}
                 />
               ))}
-              {otherCurrencies.length > 0 && <Divider my="xs" />}
             </>
           )}
-          {otherCurrencies.map((currency) => (
-            <CurrencyItem
-              key={currency.code}
-              currency={currency}
-              isSelected={isCurrencySelected(currency)}
-              onSelect={() => onCurrencyPress(currency)}
-            />
-          ))}
+          {otherCurrencies.length > 0 && (
+            <>
+              <Text className={classes.sectionLabel}>
+                {t(
+                  'components.currencyPickerModal.sections.all',
+                  'All currencies',
+                )}
+              </Text>
+              {otherCurrencies.map((currency) => (
+                <CurrencyItem
+                  key={currency.code}
+                  currency={currency}
+                  isSelected={isCurrencySelected(currency)}
+                  onSelect={() => onCurrencyPress(currency)}
+                />
+              ))}
+            </>
+          )}
         </Flex>
       </ScrollArea>
-      <Group justify="end" mt="md">
-        <Button variant="outline" onClick={() => onCancel()}>
-          {t('components.currencyPickerModal.buttons.cancel')}
+      <Group grow gap="sm" mt="xs">
+        <Button variant="default" onClick={() => onCancel()}>
+          {t('components.currencyPickerModal.buttons.cancel', 'Cancel')}
         </Button>
         {selectionMode === 'multiple' && (
           <Button
+            leftSection={<IconCheck size={16} />}
             onClick={() => {
               onCurrenciesSelected?.(selectedCurrencies);
             }}
             disabled={selectedCurrencies.length === 0}
           >
-            {t('components.currencyPickerModal.buttons.confirm')}
+            {t('components.currencyPickerModal.buttons.confirm', 'Confirm')}
           </Button>
         )}
       </Group>

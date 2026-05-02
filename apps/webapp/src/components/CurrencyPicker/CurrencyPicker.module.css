@@ -1,7 +1,7 @@
 .currencyItem {
   display: block;
   width: 100%;
-  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  padding: 10px var(--mantine-spacing-md);
   border-radius: var(--mantine-radius-md);
   transition: background-color 150ms ease;
 
@@ -21,13 +21,14 @@
 }
 
 .currencyIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mantine-radius-sm);
   background-color: light-dark(
     var(--mantine-color-gray-1),
     var(--mantine-color-dark-6)
   );
+  flex-shrink: 0;
 
   &[data-selected] {
     background-color: var(--mantine-color-white);
@@ -40,4 +41,22 @@
   font-weight: 500;
   line-height: 1;
   text-align: center;
+}
+
+.sectionLabel {
+  display: block;
+  width: 100%;
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--mantine-color-dimmed);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  background-color: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-7)
+  );
+  border-top: 1px solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  border-bottom: 1px solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
 }
