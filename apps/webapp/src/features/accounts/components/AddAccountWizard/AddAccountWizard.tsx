@@ -1,5 +1,12 @@
-import { AccountTypeDto, CreateAccountRequest, ObInstitutionDto } from '@guallet/api-client';
-import { useAccountMutations, useConnectionMutations } from '@guallet/api-react';
+import {
+  AccountTypeDto,
+  CreateAccountRequest,
+  ObInstitutionDto,
+} from '@guallet/api-client';
+import {
+  useAccountMutations,
+  useConnectionMutations,
+} from '@guallet/api-react';
 import { Box } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -66,7 +73,9 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
   });
 
   const [obCountry, setObCountry] = useState('GB');
-  const [obInstitution, setObInstitution] = useState<ObInstitutionDto | null>(null);
+  const [obInstitution, setObInstitution] = useState<ObInstitutionDto | null>(
+    null,
+  );
 
   const { createAccountMutation } = useAccountMutations();
   const { createConnectionMutation } = useConnectionMutations();
@@ -83,7 +92,10 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     const currency = form.values.currency;
     if (!currency) {
       notifications.show({
-        title: t('feature.accounts.add.errors.currencyRequired.title', 'Currency required'),
+        title: t(
+          'feature.accounts.add.errors.currencyRequired.title',
+          'Currency required',
+        ),
         message: t(
           'feature.accounts.add.errors.currencyRequired.message',
           'Please select a currency for the account.',
@@ -117,7 +129,10 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
       setStep('m-success');
     } catch {
       notifications.show({
-        title: t('feature.accounts.add.notifications.error.title', 'Could not create account'),
+        title: t(
+          'feature.accounts.add.notifications.error.title',
+          'Could not create account',
+        ),
         message: t(
           'feature.accounts.add.notifications.error.message',
           'A network or server error occurred. Please try again.',
@@ -133,7 +148,7 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
       {
         request: {
           institution_id: obInstitution.id,
-          redirect_to: `${window.location.origin}/connections/connect/callback`,
+          redirect_to: `${globalThis.location.origin}/connections/connect/callback`,
         },
       },
       {
@@ -142,7 +157,10 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
         },
         onError: () => {
           notifications.show({
-            title: t('feature.accounts.add.obRedirect.error.title', 'Connection failed'),
+            title: t(
+              'feature.accounts.add.obRedirect.error.title',
+              'Connection failed',
+            ),
             message: t(
               'feature.accounts.add.obRedirect.error.message',
               'Could not start the bank connection. Please try again.',
@@ -158,7 +176,9 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     <Box maw={560} mx="auto">
       {step === 'method' && (
         <StepChooseMethod
-          onChoose={(method) => setStep(method === 'ob' ? 'ob-country' : 'm-type')}
+          onChoose={(method) =>
+            setStep(method === 'ob' ? 'ob-country' : 'm-type')
+          }
         />
       )}
       {step === 'm-type' && (
