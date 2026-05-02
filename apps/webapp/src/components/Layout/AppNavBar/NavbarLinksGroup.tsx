@@ -32,12 +32,14 @@ export function LinksGroup({
 
   const isDirectlyActive = !!link && isPathActive(link, currentPath);
   const hasActiveSub =
-    hasLinks && subLinks!.some((sub) => isPathActive(sub.link, currentPath));
+    hasLinks && subLinks.some((sub) => isPathActive(sub.link, currentPath));
 
-  const [manuallyOpened, setManuallyOpened] = useState(initiallyOpened || false);
+  const [manuallyOpened, setManuallyOpened] = useState(
+    initiallyOpened || false,
+  );
   const opened = manuallyOpened || hasActiveSub;
 
-  const items = (hasLinks ? subLinks! : []).map((sub) => {
+  const items = (hasLinks ? subLinks : []).map((sub) => {
     const isSubActive = isPathActive(sub.link, currentPath);
     return (
       <UnstyledButton
@@ -50,7 +52,9 @@ export function LinksGroup({
         }}
       >
         {isSubActive && <span className={classes.dot} />}
-        <span style={{ paddingLeft: isSubActive ? 0 : rem(12) }}>{sub.label}</span>
+        <span style={{ paddingLeft: isSubActive ? 0 : rem(12) }}>
+          {sub.label}
+        </span>
       </UnstyledButton>
     );
   });
@@ -59,7 +63,7 @@ export function LinksGroup({
     <>
       <UnstyledButton
         className={classes.control}
-        data-active={(isDirectlyActive || hasActiveSub) || undefined}
+        data-active={isDirectlyActive || hasActiveSub || undefined}
         onClick={() => {
           if (hasLinks) {
             setManuallyOpened((isOpened) => !isOpened);
