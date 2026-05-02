@@ -12,12 +12,15 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { UseFormReturnType } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { Currency } from '@guallet/money';
 import { useTranslation } from 'react-i18next';
 import { getAccountTypeTitleSingular } from '../../models/Account';
-import { AddAccountFormData, hasSpecificStep } from '../../screens/addAccountFormSchema';
+import {
+  AddAccountFormData,
+  hasSpecificStep,
+} from '../../screens/addAccountFormSchema';
 import { BackButton } from './BackButton';
 import { InstitutionPicker } from './InstitutionPicker';
 import { WizardProgress } from './WizardProgress';
@@ -31,7 +34,7 @@ function getNullableNumberParser(value: string): number | null {
 }
 
 interface StepManualDetailsProps {
-  form: ReturnType<typeof useForm<AddAccountFormData>>;
+  form: UseFormReturnType<AddAccountFormData>;
   onNext: () => void;
   onBack: () => void;
 }
@@ -51,16 +54,20 @@ export function StepManualDetails({
 
   function handleNext() {
     const result = form.validate();
-    if (!result.hasErrors) onNext();
-    else {
+    if (result.hasErrors) {
       notifications.show({
-        title: t('feature.accounts.add.errors.validation.title', 'Check your entries'),
+        title: t(
+          'feature.accounts.add.errors.validation.title',
+          'Check your entries',
+        ),
         message: t(
           'feature.accounts.add.errors.validation.message',
           'Please correct the highlighted fields before continuing.',
         ),
         color: 'red',
       });
+    } else {
+      onNext();
     }
   }
 
@@ -71,7 +78,10 @@ export function StepManualDetails({
           <>
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
               <TextInput
-                label={t('feature.accounts.add.fields.accountNumber.label', 'Account number')}
+                label={t(
+                  'feature.accounts.add.fields.accountNumber.label',
+                  'Account number',
+                )}
                 placeholder={t(
                   'feature.accounts.add.fields.accountNumber.placeholder',
                   'Enter account number',
@@ -79,13 +89,19 @@ export function StepManualDetails({
                 {...form.getInputProps('currentAccountNumber')}
               />
               <TextInput
-                label={t('feature.accounts.add.fields.sortCode.label', 'Sort code')}
+                label={t(
+                  'feature.accounts.add.fields.sortCode.label',
+                  'Sort code',
+                )}
                 placeholder="00-00-00"
                 {...form.getInputProps('currentSortCode')}
               />
             </SimpleGrid>
             <NumberInput
-              label={t('feature.accounts.add.fields.overdraftLimit.label', 'Overdraft limit')}
+              label={t(
+                'feature.accounts.add.fields.overdraftLimit.label',
+                'Overdraft limit',
+              )}
               description={t('common.optional', 'Optional')}
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
@@ -99,7 +115,10 @@ export function StepManualDetails({
         return (
           <>
             <TextInput
-              label={t('feature.accounts.add.fields.accountNumber.label', 'Account number')}
+              label={t(
+                'feature.accounts.add.fields.accountNumber.label',
+                'Account number',
+              )}
               placeholder={t(
                 'feature.accounts.add.fields.accountNumber.placeholder',
                 'Enter account number',
@@ -108,7 +127,10 @@ export function StepManualDetails({
             />
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
               <NumberInput
-                label={t('feature.accounts.add.fields.interestRate.label', 'Interest rate')}
+                label={t(
+                  'feature.accounts.add.fields.interestRate.label',
+                  'Interest rate',
+                )}
                 leftSection="%"
                 decimalScale={2}
                 {...form.getInputProps('creditCardInterestRate', {
@@ -116,7 +138,10 @@ export function StepManualDetails({
                 })}
               />
               <NumberInput
-                label={t('feature.accounts.add.fields.creditLimit.label', 'Credit limit')}
+                label={t(
+                  'feature.accounts.add.fields.creditLimit.label',
+                  'Credit limit',
+                )}
                 leftSection={currency?.symbol}
                 decimalScale={currency?.decimalPlaces}
                 {...form.getInputProps('creditCardCreditLimit', {
@@ -125,47 +150,80 @@ export function StepManualDetails({
               />
             </SimpleGrid>
             <NumberInput
-              label={t('feature.accounts.add.fields.cycleDay.label', 'Cycle day')}
+              label={t(
+                'feature.accounts.add.fields.cycleDay.label',
+                'Cycle day',
+              )}
               min={1}
               max={31}
-              {...form.getInputProps('creditCardCycleDay', { parser: getNullableNumberParser })}
+              {...form.getInputProps('creditCardCycleDay', {
+                parser: getNullableNumberParser,
+              })}
             />
           </>
         );
       case AccountTypeDto.SAVINGS:
         return (
           <NumberInput
-            label={t('feature.accounts.add.fields.interestRate.label', 'Interest rate')}
+            label={t(
+              'feature.accounts.add.fields.interestRate.label',
+              'Interest rate',
+            )}
             leftSection="%"
             decimalScale={2}
-            {...form.getInputProps('savingsInterestRate', { parser: getNullableNumberParser })}
+            {...form.getInputProps('savingsInterestRate', {
+              parser: getNullableNumberParser,
+            })}
           />
         );
       case AccountTypeDto.MORTGAGE:
         return (
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
             <NumberInput
-              label={t('feature.accounts.add.fields.propertyValue.label', 'Property value')}
+              label={t(
+                'feature.accounts.add.fields.propertyValue.label',
+                'Property value',
+              )}
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('mortgagePropertyValue', { parser: getNullableNumberParser })}
+              {...form.getInputProps('mortgagePropertyValue', {
+                parser: getNullableNumberParser,
+              })}
             />
             <NumberInput
-              label={t('feature.accounts.add.fields.mortgageAmount.label', 'Mortgage amount')}
+              label={t(
+                'feature.accounts.add.fields.mortgageAmount.label',
+                'Mortgage amount',
+              )}
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('mortgageAmount', { parser: getNullableNumberParser })}
+              {...form.getInputProps('mortgageAmount', {
+                parser: getNullableNumberParser,
+              })}
             />
             <NumberInput
-              label={t('feature.accounts.add.fields.interestRate.label', 'Interest rate')}
+              label={t(
+                'feature.accounts.add.fields.interestRate.label',
+                'Interest rate',
+              )}
               leftSection="%"
               decimalScale={2}
-              {...form.getInputProps('mortgageInterestRate', { parser: getNullableNumberParser })}
+              {...form.getInputProps('mortgageInterestRate', {
+                parser: getNullableNumberParser,
+              })}
             />
             <NumberInput
-              label={t('feature.accounts.add.fields.termLength.label', 'Term length')}
-              description={t('feature.accounts.add.fields.termLength.description', 'Years')}
-              {...form.getInputProps('mortgageTermLength', { parser: getNullableNumberParser })}
+              label={t(
+                'feature.accounts.add.fields.termLength.label',
+                'Term length',
+              )}
+              description={t(
+                'feature.accounts.add.fields.termLength.description',
+                'Years',
+              )}
+              {...form.getInputProps('mortgageTermLength', {
+                parser: getNullableNumberParser,
+              })}
             />
           </SimpleGrid>
         );
@@ -173,22 +231,40 @@ export function StepManualDetails({
         return (
           <>
             <NumberInput
-              label={t('feature.accounts.add.fields.loanAmount.label', 'Loan amount')}
+              label={t(
+                'feature.accounts.add.fields.loanAmount.label',
+                'Loan amount',
+              )}
               leftSection={currency?.symbol}
               decimalScale={currency?.decimalPlaces}
-              {...form.getInputProps('loanAmount', { parser: getNullableNumberParser })}
+              {...form.getInputProps('loanAmount', {
+                parser: getNullableNumberParser,
+              })}
             />
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
               <NumberInput
-                label={t('feature.accounts.add.fields.interestRate.label', 'Interest rate')}
+                label={t(
+                  'feature.accounts.add.fields.interestRate.label',
+                  'Interest rate',
+                )}
                 leftSection="%"
                 decimalScale={2}
-                {...form.getInputProps('loanInterestRate', { parser: getNullableNumberParser })}
+                {...form.getInputProps('loanInterestRate', {
+                  parser: getNullableNumberParser,
+                })}
               />
               <NumberInput
-                label={t('feature.accounts.add.fields.termLength.label', 'Term length')}
-                description={t('feature.accounts.add.fields.termLength.description', 'Years')}
-                {...form.getInputProps('loanTermLength', { parser: getNullableNumberParser })}
+                label={t(
+                  'feature.accounts.add.fields.termLength.label',
+                  'Term length',
+                )}
+                description={t(
+                  'feature.accounts.add.fields.termLength.description',
+                  'Years',
+                )}
+                {...form.getInputProps('loanTermLength', {
+                  parser: getNullableNumberParser,
+                })}
               />
             </SimpleGrid>
           </>
@@ -214,9 +290,13 @@ export function StepManualDetails({
         {t('feature.accounts.add.detailsStep.title', 'Account details')}
       </Title>
       <Text size="sm" c="dimmed" mb="md">
-        {t('feature.accounts.add.detailsStep.subtitle', 'Setting up a {{type}}', {
-          type: typeMeta.toLowerCase(),
-        })}
+        {t(
+          'feature.accounts.add.detailsStep.subtitle',
+          'Setting up a {{type}}',
+          {
+            type: typeMeta.toLowerCase(),
+          },
+        )}
       </Text>
 
       <Stack gap={spacing.md}>
@@ -252,7 +332,10 @@ export function StepManualDetails({
 
         <NumberInput
           required
-          label={t('feature.accounts.add.fields.balance.label', 'Starting balance')}
+          label={t(
+            'feature.accounts.add.fields.balance.label',
+            'Starting balance',
+          )}
           description={t(
             'feature.accounts.add.fields.balance.description',
             'Current balance of the account',
@@ -271,7 +354,9 @@ export function StepManualDetails({
             'feature.accounts.add.fields.createInitialTransaction.description',
             'Records the initial balance as the first transaction',
           )}
-          {...form.getInputProps('createInitialTransaction', { type: 'checkbox' })}
+          {...form.getInputProps('createInitialTransaction', {
+            type: 'checkbox',
+          })}
         />
       </Stack>
 
@@ -287,7 +372,10 @@ export function StepManualDetails({
                 c="dimmed"
                 style={{ letterSpacing: '0.06em' }}
               >
-                {t('feature.accounts.add.specificDetails.title', 'Account details')}
+                {t(
+                  'feature.accounts.add.specificDetails.title',
+                  'Account details',
+                )}
               </Text>
             }
           />

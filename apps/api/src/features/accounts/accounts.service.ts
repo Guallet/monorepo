@@ -80,6 +80,7 @@ export class AccountsService {
       type: dto.type ?? AccountType.UNKNOWN,
       source: (dto.source as AccountSource) ?? AccountSource.UNKNOWN,
       source_name: dto.source_name,
+      institutionId: dto.institution_id ?? null,
       properties: dto.properties ?? null,
     });
 

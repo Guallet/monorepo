@@ -1,6 +1,6 @@
 import { useTheme } from '@guallet/ui-react';
 import { Avatar, Box, Button, Card, Center, Group, Stack, Text, Title } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { UseFormReturnType } from '@mantine/form';
 import { IconCheck } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { Currency } from '@guallet/money';
@@ -9,7 +9,7 @@ import { getAccountTypeTitleSingular } from '../../models/Account';
 import { AddAccountFormData } from '../../screens/addAccountFormSchema';
 
 interface StepManualSuccessProps {
-  form: ReturnType<typeof useForm<AddAccountFormData>>;
+  form: UseFormReturnType<AddAccountFormData>;
   accountId: string | null;
   onDone: () => void;
   onAddAnother: () => void;
@@ -18,7 +18,7 @@ interface StepManualSuccessProps {
 export function StepManualSuccess({
   form,
   accountId,
-  onDone: _onDone,
+  onDone,
   onAddAnother,
 }: Readonly<StepManualSuccessProps>) {
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ export function StepManualSuccess({
     if (accountId) {
       navigate({ to: '/accounts/$id', params: { id: accountId } });
     } else {
-      navigate({ to: '/accounts' });
+      onDone();
     }
   }
 

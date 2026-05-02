@@ -19,7 +19,7 @@ interface ErrorViewProps {
   onBack: () => void;
 }
 
-export function ErrorView({ error: _error, details: _details, onRetry, onBack }: Readonly<ErrorViewProps>) {
+export function ErrorView({ error, details, onRetry, onBack }: Readonly<ErrorViewProps>) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -47,6 +47,20 @@ export function ErrorView({ error: _error, details: _details, onRetry, onBack }:
             "Your bank rejected the connection request. This can happen if the session expired or the bank's Open Banking service is temporarily unavailable.",
           )}
         </Text>
+
+        <Card withBorder radius="md" p="sm" w="100%" maw={380}>
+          <Stack gap={4}>
+            <Text size="xs" fw={700} c="dimmed">
+              {t('screens.connections.callback.error.details', 'Error details')}
+            </Text>
+            <Text size="xs">{error}</Text>
+            {details && (
+              <Text size="xs" c="dimmed">
+                {details}
+              </Text>
+            )}
+          </Stack>
+        </Card>
 
         <Card withBorder={false} bg="gray.0" radius="md" p="md" w="100%" maw={380}>
           <Text size="xs" fw={700} c="dimmed" mb="xs">

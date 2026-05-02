@@ -5,7 +5,7 @@ import {
 import { Center, Loader, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CancelledView } from '../components/ConnectionCallback/CancelledView';
 import { ErrorView } from '../components/ConnectionCallback/ErrorView';
@@ -25,26 +25,19 @@ export function ConnectionCallbackScreen({
   const { accounts, isLoading } = useOpenBankingAccountsForConnection(connectionId);
   const { linkObAccountsMutation } = useConnectionMutations();
   const navigate = useNavigate();
-  const alreadyLinkedRef = useRef(false);
   const { t } = useTranslation();
 
   const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    if (accounts.length > 0 && Object.keys(selectedIds).length === 0) {
-      setSelectedIds(accounts.reduce((acc, a) => ({ ...acc, [a.id]: true }), {}));
-    }
-  }, [accounts]);
-
-  useEffect(() => {
-    if (!connectionId || accounts.length === 0 || alreadyLinkedRef.current) {
-      return;
-    }
-    alreadyLinkedRef.current = true;
-  }, [connectionId, accounts]);
+  const defaultSelectedIds = useMemo(
+    () => Object.fromEntries(accounts.map((account) => [account.id, true])),
+    [accounts],
+  );
+  const effectiveSelectedIds =
+    Object.keys(selectedIds).length > 0 ? selectedIds : defaultSelectedIds;
 
   function handleImport() {
-    const accountIds = Object.entries(selectedIds)
+    const accountIds = Object.entries(effectiveSelectedIds)
       .filter(([, selected]) => selected)
       .map(([id]) => id);
 
@@ -81,7 +74,7 @@ export function ConnectionCallbackScreen({
         error={error}
         details={details}
         onRetry={() => navigate({ to: '/accounts/new', replace: true })}
-        onBack={() => navigate({ to: '/connections', replace: true })}
+        onBack={() => navigate({ to: '/accounts/new', replace: true })}
       />
     );
   }
@@ -92,7 +85,7 @@ export function ConnectionCallbackScreen({
         error={linkObAccountsMutation.error?.message ?? t('screens.connections.callback.error.unknown', 'Unknown error')}
         details={linkObAccountsMutation.error?.cause?.toString()}
         onRetry={() => navigate({ to: '/accounts/new', replace: true })}
-        onBack={() => navigate({ to: '/connections', replace: true })}
+        onBack={() => navigate({ to: '/accounts/new', replace: true })}
       />
     );
   }
@@ -116,7 +109,7 @@ export function ConnectionCallbackScreen({
     return (
       <CancelledView
         onRetry={() => navigate({ to: '/accounts/new', replace: true })}
-        onBack={() => navigate({ to: '/accounts', replace: true })}
+        onBack={() => navigate({ to: '/accounts/new', replace: true })}
       />
     );
   }
@@ -124,7 +117,7 @@ export function ConnectionCallbackScreen({
   return (
     <SuccessView
       accounts={accounts}
-      selectedIds={selectedIds}
+      selectedIds={effectiveSelectedIds}
       onToggle={(id) => setSelectedIds((prev) => ({ ...prev, [id]: !prev[id] }))}
       onImport={handleImport}
       onBack={() => navigate({ to: '/accounts/new', replace: true })}
