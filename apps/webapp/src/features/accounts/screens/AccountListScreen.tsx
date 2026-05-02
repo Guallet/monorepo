@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import { AccountRow } from '../components/AccountRow';
 import { AccountsEmptyState } from '../components/AccountsEmptyState';
 import { AccountsListHeader } from '../components/AccountsListHeader';
-import { AddAccountCta } from '../components/AddAccountCta';
 import { NetWorthSummary } from '../components/NetWorthSummary';
 
 const GROUP_ORDER: AccountTypeDto[] = [
@@ -82,12 +81,7 @@ export function AccountListScreen() {
         </Button>
       }
     >
-      <Stack
-        maw={1100}
-        mx="auto"
-        gap={spacing.md}
-        pb={spacing.xl}
-      >
+      <Stack maw={1100} mx="auto" gap={spacing.md} pb={spacing.xl}>
         {!isLoading && (!accounts || accounts.length === 0) ? (
           <AccountsEmptyState
             onConnectBank={goToConnectBank}
@@ -138,13 +132,6 @@ export function AccountListScreen() {
                 ))}
               </Card>
             ))}
-
-            {accounts && accounts.length > 0 && (
-              <AddAccountCta
-                onConnectBank={goToConnectBank}
-                onAddManual={goToAddManualAccount}
-              />
-            )}
           </>
         )}
       </Stack>
