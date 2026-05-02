@@ -1,30 +1,27 @@
 import {
-  Paper,
-  Group,
   Divider,
   Stack,
   TextInput,
   Button,
   Text,
   PasswordInput,
-  Container,
-  Anchor,
   Alert,
+  Box,
+  SimpleGrid,
 } from '@mantine/core';
 import { useState } from 'react';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
 import { useNavigate } from '@tanstack/react-router';
-import { GualletLogo } from '@/components/GualletLogo/GualletLogo';
-import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { GoogleButton } from '../components/GoogleButton';
 import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { IconAlertCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconMail } from '@tabler/icons-react';
 import { useAuth } from '@guallet/auth';
+import { useTheme } from '@guallet/ui-react';
+import { AuthLayout } from '../components/AuthLayout';
+import { GoogleButton } from '../components/GoogleButton';
 
-// Define schemas for form validation using Zod
 const passwordFormSchema = z.object({
   email: z.email({ message: 'Invalid email address' }),
   password: z
@@ -49,10 +46,10 @@ export function LoginScreen({
   redirect: rawRedirect,
 }: Readonly<LoginScreenProps>) {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const navigation = useNavigate();
   const { isLoading, login, loginWithProvider, getOtpCode } = useAuth();
 
-  // Don't allow redirecting to login page itself
   const redirect =
     rawRedirect === 'login' || rawRedirect === '/login'
       ? '/dashboard'
@@ -67,17 +64,12 @@ export function LoginScreen({
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const passwordForm = useForm<PasswordFormData>({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues: { email: '', password: '' },
     validate: zod4Resolver(passwordFormSchema),
   });
 
   const magicLinkForm = useForm<MagicLinkFormData>({
-    initialValues: {
-      email: '',
-    },
+    initialValues: { email: '' },
     validate: zod4Resolver(magicLinkFormSchema),
   });
 
@@ -87,10 +79,7 @@ export function LoginScreen({
     if (error) {
       setPasswordError(error.message || 'Login failed');
     } else if (success) {
-      // navigation({
-      //   to: redirect || '/dashboard',
-      //   replace: true,
-      // });
+      navigation({ to: redirect || '/dashboard', replace: true });
     }
   };
 
@@ -103,16 +92,12 @@ export function LoginScreen({
       } else if (success) {
         navigation({
           to: '/login/validateotp',
-          search: {
-            email: data.email,
-            redirectTo: redirect,
-          },
+          search: { email: data.email, redirectTo: redirect },
         });
       }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to send magic link';
-      setLocalMagicLinkError(errorMessage);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to send magic link';
+      setLocalMagicLinkError(msg);
     }
   };
 
@@ -120,161 +105,133 @@ export function LoginScreen({
     await loginWithProvider('google', oAuthRedirectionTo);
   };
 
-  const toggleLoginType = () => {
-    setLoginType(loginType === 'password' ? 'magic-link' : 'password');
-  };
-
-  const displayError = localMagicLinkError;
-
   return (
-    <BaseScreen isLoading={isLoading}>
-      <Container
-        size={420}
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <Stack justify="center" align="center">
-          <GualletLogo size={50} />
-          <Text ta="center" size="lg" w={500}>
-            {t('screens.login.title.label', 'CNF: Sign in to your account')}
-          </Text>
-        </Stack>
+    <AuthLayout>
+      {/* Header */}
+      <Box mb={spacing.xl}>
+        <Text
+          component="h1"
+          style={{ margin: `0 0 ${spacing.xs}px`, fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em' }}
+        >
+          {t('screens.login.title.label', 'Welcome back')}
+        </Text>
+        <Text size="sm" c="dimmed">
+          {t('screens.login.subtitle', 'Sign in to your Guallet account')}
+        </Text>
+      </Box>
 
-        <Paper withBorder shadow="md" p={30} mt={20} radius="md">
-          {displayError && loginType === 'magic-link' && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title={t(
-                'screens.login.form.magicLink.error.title',
-                'CNF: Error sending magic link',
-              )}
-              color="red"
-              mb="md"
-            >
-              {displayError}
-            </Alert>
-          )}
+      <Stack gap="sm">
+        {/* Social buttons */}
+        <SimpleGrid cols={1}>
+          <GoogleButton onClick={handleGoogleLogin} loading={isLoading}>
+            {t('screens.login.form.googleLoginButton.label', 'Continue with Google')}
+          </GoogleButton>
+        </SimpleGrid>
 
-          {passwordError && loginType === 'password' && (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              title={t(
-                'screens.login.form.password.error.title',
-                'CNF: Login failed',
-              )}
-              color="red"
-              mb="md"
-            >
-              {passwordError}
-            </Alert>
-          )}
+        <Divider
+          label={t('screens.login.form.divider.label', 'or continue with email')}
+          labelPosition="center"
+        />
 
-          {loginType === 'password' ? (
-            <form onSubmit={passwordForm.onSubmit(handlePasswordSubmit)}>
+        {/* Error alerts */}
+        {passwordError && loginType === 'password' && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            title={t('screens.login.form.password.error.title', 'Login failed')}
+            color="red"
+          >
+            {passwordError}
+          </Alert>
+        )}
+        {localMagicLinkError && loginType === 'magic-link' && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            title={t('screens.login.form.magicLink.error.title', 'Error sending code')}
+            color="red"
+          >
+            {localMagicLinkError}
+          </Alert>
+        )}
+
+        {loginType === 'password' ? (
+          <form onSubmit={passwordForm.onSubmit(handlePasswordSubmit)}>
+            <Stack gap="sm">
               <TextInput
                 {...passwordForm.getInputProps('email')}
-                label={t('screens.login.form.email.label', 'CNF: Email')}
+                label={t('screens.login.form.email.label', 'Email')}
                 type="email"
-                placeholder={t(
-                  'screens.login.form.email.placeholder',
-                  'CNF: Enter your email',
-                )}
-                required
+                placeholder={t('screens.login.form.email.placeholder', 'you@example.com')}
+                autoFocus
               />
 
-              <PasswordInput
-                {...passwordForm.getInputProps('password')}
-                label={t('screens.login.form.password.label', 'CNF: Password')}
-                placeholder={t(
-                  'screens.login.form.password.placeholder',
-                  'CNF: Enter your password',
-                )}
-                required
-                mt="md"
-              />
+              <Box>
+                <Box
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                    marginBottom: spacing.xs,
+                  }}
+                >
+                  <Text component="label" size="sm" fw={500}>
+                    {t('screens.login.form.password.label', 'Password')}
+                  </Text>
+                  <NavLinkButton to="/login/forgot-password" size="xs">
+                    {t('screens.login.form.forgotPassword.label', 'Forgot password?')}
+                  </NavLinkButton>
+                </Box>
+                <PasswordInput
+                  {...passwordForm.getInputProps('password')}
+                  placeholder={t('screens.login.form.password.placeholder', 'Enter your password')}
+                />
+              </Box>
 
-              <Group justify="flex-end" mt="md">
-                <NavLinkButton to="/login/forgot-password" size="sm">
-                  {t(
-                    'screens.login.form.forgotPassword.label',
-                    'CNF: Forgot password?',
-                  )}
-                </NavLinkButton>
-              </Group>
-
-              <Button fullWidth mt="md" type="submit" color="blue">
-                {t('screens.login.form.submitButton.label', 'CNF: Sign in')}
+              <Button fullWidth type="submit" loading={isLoading} mt={spacing.xs}>
+                {t('screens.login.form.submitButton.label', 'Sign in')}
               </Button>
-            </form>
-          ) : (
-            <form onSubmit={magicLinkForm.onSubmit(handleMagicLinkSubmit)}>
+            </Stack>
+          </form>
+        ) : (
+          <form onSubmit={magicLinkForm.onSubmit(handleMagicLinkSubmit)}>
+            <Stack gap="sm">
               <TextInput
                 {...magicLinkForm.getInputProps('email')}
-                label={t('screens.login.form.email.label', 'CNF: Email')}
+                label={t('screens.login.form.email.label', 'Email')}
                 type="email"
-                placeholder={t(
-                  'screens.login.form.email.placeholder',
-                  'CNF: Enter your email',
-                )}
-                required
+                placeholder={t('screens.login.form.email.placeholder', 'you@example.com')}
+                autoFocus
               />
-
-              <Button fullWidth mt="md" type="submit" color="blue">
-                {t(
-                  'screens.login.form.sendMagicLink.label',
-                  'CNF: Send magic link',
-                )}
+              <Button fullWidth type="submit" loading={isLoading} mt={spacing.xs}>
+                {t('screens.login.form.sendMagicLink.label', 'Send one-time code')}
               </Button>
-            </form>
-          )}
+            </Stack>
+          </form>
+        )}
 
-          <Text ta="center" size="sm" mt="md">
-            <Anchor component="button" type="button" onClick={toggleLoginType}>
-              {loginType === 'password'
-                ? t(
-                    'screens.login.form.useMagicLink.label',
-                    'CNF: Use magic link instead',
-                  )
-                : t(
-                    'screens.login.form.usePassword.label',
-                    'CNF: Use password instead',
-                  )}
-            </Anchor>
-          </Text>
+        <Divider />
 
-          <Divider
-            label={t(
-              'screens.login.form.divider.label',
-              'CNF: Or continue with',
-            )}
-            labelPosition="center"
-            my="lg"
-          />
+        {/* OTP / password toggle */}
+        <Button
+          variant="default"
+          fullWidth
+          leftSection={<IconMail size={16} />}
+          onClick={() =>
+            setLoginType(loginType === 'password' ? 'magic-link' : 'password')
+          }
+        >
+          {loginType === 'password'
+            ? t('screens.login.form.useMagicLink.label', 'Sign in with one-time code instead')
+            : t('screens.login.form.usePassword.label', 'Sign in with password instead')}
+        </Button>
+      </Stack>
 
-          <Group grow>
-            <GoogleButton onClick={handleGoogleLogin}>
-              {t(
-                'screens.login.form.googleLoginButton.label',
-                'CNF: Continue with Google',
-              )}
-            </GoogleButton>
-          </Group>
-        </Paper>
-
-        <Text ta="center" size="sm" mt="md">
-          {t(
-            'screens.login.createAccount.label',
-            "CNF: Don't have an account?",
-          )}{' '}
-          <NavLinkButton to="/register">
-            {t('screens.login.createAccount.cta', 'CNF: Sign up!')}
-          </NavLinkButton>
-        </Text>
-      </Container>
-    </BaseScreen>
+      {/* Footer */}
+      <Text ta="center" size="sm" mt={spacing.lg} c="dimmed">
+        {t('screens.login.createAccount.label', "Don't have an account?")}{' '}
+        <NavLinkButton to="/register" size="sm">
+          {t('screens.login.createAccount.cta', 'Create one')}
+        </NavLinkButton>
+      </Text>
+    </AuthLayout>
   );
 }
