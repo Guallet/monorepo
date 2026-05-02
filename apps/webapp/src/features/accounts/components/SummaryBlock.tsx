@@ -22,7 +22,13 @@ export function SummaryBlock({
 
   return (
     <Box miw={120}>
-      <Text size="xs" fw={600} tt="uppercase" c="dimmed" style={{ letterSpacing: '0.06em' }}>
+      <Text
+        size="xs"
+        fw={600}
+        tt="uppercase"
+        c="dimmed"
+        style={{ letterSpacing: '0.06em' }}
+      >
         {label}
       </Text>
       {entries.length === 0 ? (
@@ -50,7 +56,9 @@ export function SummaryBlock({
               }}
             >
               {positive ? '+' : '−'}
-              {formatMoney(Math.abs(amount), currency).replace('−', '').replace('-', '')}
+              {formatMoney(Math.abs(amount), currency)
+                .replace('−', '')
+                .replace('-', '')}
             </Text>
           ))}
         </Stack>

@@ -1,11 +1,11 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { useOpenBankingAccountsForConnection } from "@guallet/api-react";
-import { DebugJson } from "@guallet/ui-react";
-import { Button, Stack } from "@mantine/core";
-import { ConnectionCard } from "../components/ConnectionCard";
-import { DeleteButton } from "@/components/Buttons/DeleteButton";
-import { AppSection } from "@/components/Cards/AppSection";
-import { useTranslation } from "react-i18next";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { useOpenBankingAccountsForConnection } from '@guallet/api-react';
+import { DebugJson } from '@guallet/ui-react';
+import { Button, Stack } from '@mantine/core';
+import { ConnectionCard } from '../components/ConnectionCard';
+import { DeleteButton } from '@/components/Buttons/DeleteButton';
+import { AppSection } from '@/components/Cards/AppSection';
+import { useTranslation } from 'react-i18next';
 
 interface ConnectionDetailsScreenProps {
   connectionId: string;
@@ -21,7 +21,7 @@ export function ConnectionDetailsScreen({
   return (
     <BaseScreen
       isLoading={isLoading}
-      title={t("screens.connections.details.title", "Connection")}
+      title={t('screens.connections.details.title', 'Connection')}
     >
       <Stack>
         <ConnectionCard connectionId={connectionId} />
@@ -33,39 +33,39 @@ export function ConnectionDetailsScreen({
             <Button
               variant="outline"
               onClick={() => {
-                console.log("TODO: Handle refresh connection");
+                console.log('TODO: Handle refresh connection');
               }}
             >
               {t(
-                "screens.connections.details.refreshButton.label",
-                "Refresh Connection"
+                'screens.connections.details.refreshButton.label',
+                'Refresh Connection',
               )}
             </Button>
             <Button
               variant="outline"
               onClick={() => {
-                console.log("TODO: Handle update accounts connection");
+                console.log('TODO: Handle update accounts connection');
               }}
             >
               {t(
-                "screens.connections.details.updateButton.label",
-                "Update Connected accounts"
+                'screens.connections.details.updateButton.label',
+                'Update Connected accounts',
               )}
             </Button>
             <DeleteButton
               modalTitle={t(
-                "screens.connections.details.deleteButton.modalTitle",
-                "Delete connection"
+                'screens.connections.details.deleteButton.modalTitle',
+                'Delete connection',
               )}
               modalMessage={t(
-                "screens.connections.details.deleteButton.modalMessage",
-                "Are you sure you want to delete this connection?"
+                'screens.connections.details.deleteButton.modalMessage',
+                'Are you sure you want to delete this connection?',
               )}
               onDelete={() => {
                 //TODO: Handle delete connection
               }}
             >
-              {t("screens.connections.details.deleteButton.label", "Delete")}
+              {t('screens.connections.details.deleteButton.label', 'Delete')}
             </DeleteButton>
           </Stack>
         </AppSection>

@@ -1,7 +1,7 @@
-import { CsvAccountsScreen } from "@/features/importer/importers/csv/screens/CsvAccountsScreen";
-import { createFileRoute } from "@tanstack/react-router";
+import { CsvAccountsScreen } from '@/features/importer/importers/csv/screens/CsvAccountsScreen';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/importer/csv/accounts")({
+export const Route = createFileRoute('/_app/importer/csv/accounts')({
   component: RouteComponent,
 });
 

@@ -28,7 +28,8 @@ export function Stack({
   style,
 }: Readonly<StackProps>) {
   const { spacing } = useTheme();
-  const gapValue = typeof gap === 'string' ? getSpacingValue(spacing, gap) : gap;
+  const gapValue =
+    typeof gap === 'string' ? getSpacingValue(spacing, gap) : gap;
 
   const stackStyle = StyleSheet.create({
     container: {

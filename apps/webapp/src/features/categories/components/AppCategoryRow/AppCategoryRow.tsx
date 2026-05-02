@@ -1,6 +1,6 @@
-import { AppCategory } from "@guallet/api-react";
-import { Group, Badge, Tooltip } from "@mantine/core";
-import { CategoryRow } from "../CategoryRow/CategoryRow";
+import { AppCategory } from '@guallet/api-react';
+import { Group, Badge, Tooltip } from '@mantine/core';
+import { CategoryRow } from '../CategoryRow/CategoryRow';
 
 interface AppCategoryRowProps {
   category: AppCategory;
@@ -23,7 +23,7 @@ export function AppCategoryRow({
       <Tooltip
         label={
           category.subCategories.length === 0
-            ? "No subcategories"
+            ? 'No subcategories'
             : `${category.subCategories.length} sub-categories`
         }
       >

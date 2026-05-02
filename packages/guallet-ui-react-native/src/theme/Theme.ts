@@ -1,1 +1,1 @@
-export type { GualletTheme as LunaTheme } from "@guallet/theme";
+export type { GualletTheme as LunaTheme } from '@guallet/theme';

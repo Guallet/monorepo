@@ -1,6 +1,6 @@
-import { Stack, Text } from "@mantine/core";
-import { SearchBoxInput } from "../SearchBoxInput/SearchBoxInput";
-import React, { useMemo, useState } from "react";
+import { Stack, Text } from '@mantine/core';
+import { SearchBoxInput } from '../SearchBoxInput/SearchBoxInput';
+import React, { useMemo, useState } from 'react';
 
 export interface Section<T> {
   title: string;
@@ -10,7 +10,7 @@ export interface Section<T> {
 interface SearchableSectionLisProps<T> {
   data: Section<T>[];
   sectionWrapperTemplate?: (
-    children: React.ReactNode
+    children: React.ReactNode,
   ) => React.ReactNode | null;
   sectionHeaderTemplate: (section: Section<T>) => React.ReactNode;
   itemTemplate: (item: T, index: number) => React.ReactNode;
@@ -26,7 +26,7 @@ export function SearchableSectionListView<T>({
   emptyView,
   placeholder,
 }: Readonly<SearchableSectionLisProps<T>>) {
-  const [queryString, setQueryString] = useState("");
+  const [queryString, setQueryString] = useState('');
 
   const filteredData = useMemo(() => {
     if (!queryString.trim()) return data;
@@ -34,7 +34,9 @@ export function SearchableSectionListView<T>({
       .map((section) => ({
         ...section,
         data: section.data.filter((item) =>
-          JSON.stringify(item).toLowerCase().includes(queryString.toLowerCase())
+          JSON.stringify(item)
+            .toLowerCase()
+            .includes(queryString.toLowerCase()),
         ),
       }))
       .filter((section) => section.data.length > 0);
@@ -57,7 +59,7 @@ export function SearchableSectionListView<T>({
             sectionWrapperTemplate(
               <>
                 {section.data.map((item, index) => itemTemplate(item, index))}
-              </>
+              </>,
             )
           ) : (
             <>{section.data.map((item, index) => itemTemplate(item, index))}</>

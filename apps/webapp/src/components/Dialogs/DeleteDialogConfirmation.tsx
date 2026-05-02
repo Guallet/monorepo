@@ -1,6 +1,6 @@
-import { ResponsiveModal } from "@guallet/ui-react";
-import { Group, Button, Text, Stack } from "@mantine/core";
-import { useTranslation } from "react-i18next";
+import { ResponsiveModal } from '@guallet/ui-react';
+import { Group, Button, Text, Stack } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteDialogConfirmationProps {
   isOpen: boolean;
@@ -26,10 +26,10 @@ export function DeleteDialogConfirmation({
 
   const cancelButtonLabel = cancelLabel
     ? t(cancelLabel)
-    : t("components.dialogs.delete.cancelButton.label", "Cancel");
+    : t('components.dialogs.delete.cancelButton.label', 'Cancel');
   const deleteButtonLabel = deleteLabel
     ? t(deleteLabel)
-    : t("components.dialogs.delete.deleteButton.label", "Delete");
+    : t('components.dialogs.delete.deleteButton.label', 'Delete');
 
   return (
     <ResponsiveModal opened={isOpen} onClose={onClose} title={title} size="sm">
@@ -37,8 +37,8 @@ export function DeleteDialogConfirmation({
         <Text>{message}</Text>
         <Text size="sm">
           {t(
-            "components.dialogs.delete.subWarning.text",
-            "This action cannot be undone."
+            'components.dialogs.delete.subWarning.text',
+            'This action cannot be undone.',
           )}
         </Text>
         <Group>

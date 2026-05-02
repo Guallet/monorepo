@@ -1,8 +1,8 @@
-import { ObConnectionRequest } from "@guallet/api-client";
-import { useGualletClient } from "./../GualletClientProvider";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ObConnectionRequest } from '@guallet/api-client';
+import { useGualletClient } from './../GualletClientProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-const CONNECTIONS_QUERY_KEY = "connections";
+const CONNECTIONS_QUERY_KEY = 'connections';
 
 export function useConnectionMutations() {
   const queryClient = useQueryClient();
@@ -11,7 +11,7 @@ export function useConnectionMutations() {
   const createConnectionMutation = useMutation({
     mutationFn: async ({ request }: { request: ObConnectionRequest }) => {
       return await gualletClient.connections.createOpenBankingConnection(
-        request
+        request,
       );
     },
     onSuccess: async (data, variables) => {

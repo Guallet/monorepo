@@ -1,10 +1,24 @@
-import { useUnreadNotifications } from "@guallet/api-react";
-import { NotificationType, NotificationDto } from "@guallet/api-client";
-import { WidgetCard } from "./WidgetCard";
-import { Loader, Stack, Text, Group, Box, Center, Badge, ScrollArea } from "@mantine/core";
-import { IconBell, IconInfoCircle, IconAlertTriangle, IconAlertCircle } from "@tabler/icons-react";
-import { useTheme } from "@guallet/ui-react";
-import { useRouter } from "@tanstack/react-router";
+import { useUnreadNotifications } from '@guallet/api-react';
+import { NotificationType, NotificationDto } from '@guallet/api-client';
+import { WidgetCard } from './WidgetCard';
+import {
+  Loader,
+  Stack,
+  Text,
+  Group,
+  Box,
+  Center,
+  Badge,
+  ScrollArea,
+} from '@mantine/core';
+import {
+  IconBell,
+  IconInfoCircle,
+  IconAlertTriangle,
+  IconAlertCircle,
+} from '@tabler/icons-react';
+import { useTheme } from '@guallet/ui-react';
+import { useRouter } from '@tanstack/react-router';
 
 const MAX_ITEMS = 3;
 
@@ -22,7 +36,9 @@ const NOTIFICATION_COLORS: Record<NotificationType, string> = {
   [NotificationType.ACTION_REQUIRED]: '#DA291C',
 };
 
-function NotificationRow({ notification }: Readonly<{ notification: NotificationDto }>) {
+function NotificationRow({
+  notification,
+}: Readonly<{ notification: NotificationDto }>) {
   const { colors } = useTheme();
   const IconComponent = NOTIFICATION_ICONS[notification.type] ?? IconInfoCircle;
   const iconColor = NOTIFICATION_COLORS[notification.type] ?? colors.primary;
@@ -131,7 +147,8 @@ export function NotificationsWidget() {
               ))}
               {hasMore && (
                 <Text size="xs" c="dimmed" ta="center">
-                  +{notifications.length - MAX_ITEMS} more notification{notifications.length - MAX_ITEMS !== 1 ? 's' : ''}
+                  +{notifications.length - MAX_ITEMS} more notification
+                  {notifications.length - MAX_ITEMS !== 1 ? 's' : ''}
                 </Text>
               )}
             </Stack>

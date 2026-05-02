@@ -1,6 +1,6 @@
-import { CategoryIcon } from "@/components/Categories/CategoryIcon";
-import { Checkbox, Group, RenderTreeNodePayload, Text } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
+import { CategoryIcon } from '@/components/Categories/CategoryIcon';
+import { Checkbox, Group, RenderTreeNodePayload, Text } from '@mantine/core';
+import { IconChevronDown } from '@tabler/icons-react';
 
 export function CategoryTreeNode({
   node,
@@ -29,7 +29,7 @@ export function CategoryTreeNode({
         {hasChildren && (
           <IconChevronDown
             size={14}
-            style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         )}
       </Group>

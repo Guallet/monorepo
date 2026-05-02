@@ -124,12 +124,20 @@ export function EditAccountScreen({
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <TextInput
                   key={form.key('name')}
                   required
-                  label={t('feature.accounts.edit.fields.name.label', 'Account name')}
+                  label={t(
+                    'feature.accounts.edit.fields.name.label',
+                    'Account name',
+                  )}
                   placeholder={t(
                     'feature.accounts.edit.fields.name.placeholder',
                     'Enter account name',
@@ -141,7 +149,10 @@ export function EditAccountScreen({
                   key={form.key('account_type')}
                   required
                   searchable
-                  label={t('feature.accounts.edit.fields.type.label', 'Account type')}
+                  label={t(
+                    'feature.accounts.edit.fields.type.label',
+                    'Account type',
+                  )}
                   data={accountTypes}
                   {...form.getInputProps('account_type')}
                   onChange={(value) => {
@@ -160,7 +171,10 @@ export function EditAccountScreen({
                 <NumberInput
                   key={form.key('balance')}
                   required
-                  label={t('feature.accounts.edit.fields.balance.label', 'Balance')}
+                  label={t(
+                    'feature.accounts.edit.fields.balance.label',
+                    'Balance',
+                  )}
                   description={t(
                     'feature.accounts.edit.fields.balance.description',
                     'Current balance of the account',
@@ -168,7 +182,8 @@ export function EditAccountScreen({
                   leftSection={currency.symbol}
                   decimalScale={currency.decimalPlaces}
                   {...form.getInputProps('balance', {
-                    parser: (value: string) => (value ? Number.parseFloat(value) : 0),
+                    parser: (value: string) =>
+                      value ? Number.parseFloat(value) : 0,
                     formatter: (value: unknown) => value?.toString() ?? '',
                   })}
                 />
@@ -193,14 +208,21 @@ export function EditAccountScreen({
             </Card>
 
             <Stack gap="xs" hiddenFrom="sm">
-              <Button type="submit" fullWidth size="md" loading={updateAccountMutation.isPending}>
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                loading={updateAccountMutation.isPending}
+              >
                 {t('feature.accounts.edit.submitButton', 'Save changes')}
               </Button>
               <Button
                 variant="outline"
                 fullWidth
                 size="md"
-                onClick={() => navigate({ to: '/accounts/$id', params: { id: accountId } })}
+                onClick={() =>
+                  navigate({ to: '/accounts/$id', params: { id: accountId } })
+                }
               >
                 {t('feature.accounts.edit.cancelButton', 'Cancel')}
               </Button>
@@ -208,7 +230,9 @@ export function EditAccountScreen({
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
               <Button
                 variant="outline"
-                onClick={() => navigate({ to: '/accounts/$id', params: { id: accountId } })}
+                onClick={() =>
+                  navigate({ to: '/accounts/$id', params: { id: accountId } })
+                }
               >
                 {t('feature.accounts.edit.cancelButton', 'Cancel')}
               </Button>

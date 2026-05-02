@@ -12,10 +12,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StampDutyBandTable } from '../components/StampDutyBandTable';
 import { StampDutyForm } from '../components/StampDutyForm';
-import {
-  calculateStampDuty,
-  type StampDutyValues,
-} from '../models/stampDuty';
+import { calculateStampDuty, type StampDutyValues } from '../models/stampDuty';
 
 const CURRENCY = 'GBP';
 

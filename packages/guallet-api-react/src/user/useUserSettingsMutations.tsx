@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
-import { UpdateUserSettingsRequest } from "@guallet/api-client";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
+import { UpdateUserSettingsRequest } from '@guallet/api-client';
 
-const USER_QUERY_KEY = "user";
+const USER_QUERY_KEY = 'user';
 
 export function useUserSettingsMutations() {
   const gualletClient = useGualletClient();
@@ -14,7 +14,7 @@ export function useUserSettingsMutations() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [USER_QUERY_KEY, "settings"],
+        queryKey: [USER_QUERY_KEY, 'settings'],
       });
     },
   });

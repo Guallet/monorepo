@@ -1,1 +1,1 @@
-export { OtpInput } from "./OtpInput";
+export { OtpInput } from './OtpInput';

@@ -32,14 +32,17 @@ docker-compose up -d
 ## Default Credentials
 
 ### Database (Internal Only - Not Exposed)
+
 - Username: `guallet`
 - Password: `guallet_password`
 - Database: `guallet`
 
 ### Redis (Internal Only - Not Exposed)
+
 - Password: `guallet_redis_password`
 
 ### pgAdmin (GUI)
+
 - URL: http://localhost:5050
 - Email: `admin@guallet.io`
 - Password: `admin`
@@ -75,6 +78,7 @@ The PostgreSQL database is **not exposed** to your host machine for security. To
    - Add server with host: `postgres`, port: `5432`
 
 2. **Via Docker exec**:
+
    ```bash
    docker exec -it guallet-postgres psql -U guallet -d guallet
    ```
@@ -89,14 +93,15 @@ If you get port conflicts, you can change the port mappings in `docker-compose.y
 
 ```yaml
 ports:
-  - "3001:3000"  # Change host port (left side)
-  - "5001:5000"
-  - "5051:80"
+  - '3001:3000' # Change host port (left side)
+  - '5001:5000'
+  - '5051:80'
 ```
 
 ### Services Not Starting
 
 Check service health:
+
 ```bash
 docker-compose ps
 docker-compose logs <service-name>

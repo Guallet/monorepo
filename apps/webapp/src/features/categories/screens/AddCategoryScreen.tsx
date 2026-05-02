@@ -68,7 +68,12 @@ export function AddCategoryScreen({
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <TextInput
                   withAsterisk
@@ -94,7 +99,10 @@ export function AddCategoryScreen({
                   }
                 />
                 <GualletColorPicker
-                  label={t('screens.categories.add.fields.colour.label', 'Colour')}
+                  label={t(
+                    'screens.categories.add.fields.colour.label',
+                    'Colour',
+                  )}
                   {...form.getInputProps('colour')}
                   value={form.values.colour}
                   onColourSelected={(colour) =>
@@ -123,7 +131,10 @@ export function AddCategoryScreen({
               </Button>
             </Stack>
             <Group justify="flex-end" gap="xs" visibleFrom="sm">
-              <Button variant="outline" onClick={() => navigate({ to: '/categories' })}>
+              <Button
+                variant="outline"
+                onClick={() => navigate({ to: '/categories' })}
+              >
                 {t('screens.categories.add.cancelButton', 'Cancel')}
               </Button>
               <Button type="submit" loading={createCategoryMutation.isPending}>

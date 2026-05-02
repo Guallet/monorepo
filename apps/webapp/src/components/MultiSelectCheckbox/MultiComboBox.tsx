@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Input,
   Combobox,
@@ -7,7 +7,7 @@ import {
   Checkbox,
   Button,
   Divider,
-} from "@mantine/core";
+} from '@mantine/core';
 
 interface IProps {
   data: string[];
@@ -24,7 +24,7 @@ export function MultiSelectCheckbox({
 }: IProps) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
-    onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
+    onDropdownOpen: () => combobox.updateSelectedOptionIndex('active'),
   });
 
   const [value, setValue] = useState<string[]>([]);
@@ -33,7 +33,7 @@ export function MultiSelectCheckbox({
     setValue((current) =>
       current.includes(val)
         ? current.filter((v) => v !== val)
-        : [...current, val]
+        : [...current, val],
     );
 
   const options = data.map((item) => (
@@ -44,7 +44,7 @@ export function MultiSelectCheckbox({
           onChange={() => {}}
           aria-hidden
           tabIndex={-1}
-          style={{ pointerEvents: "none" }}
+          style={{ pointerEvents: 'none' }}
         />
         <span>{item}</span>
       </Group>
@@ -65,8 +65,8 @@ export function MultiSelectCheckbox({
               ? value.length === data.length
                 ? allItemsSelectedMessage
                 : value.length === 1
-                ? value[0] // The item value
-                : `${value.length} accounts selected`
+                  ? value[0] // The item value
+                  : `${value.length} accounts selected`
               : emptyMessage
           }
           placeholder={placeholder}

@@ -1,1 +1,1 @@
-export type { Colors } from "@guallet/theme";
+export type { Colors } from '@guallet/theme';

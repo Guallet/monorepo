@@ -1,4 +1,4 @@
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet } from 'react-native';
 
 interface OtpNumberInputProps {
   value: string;
@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 56,
     borderRadius: 12,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
     fontSize: 24,
-    fontWeight: "600",
-    color: "#000",
+    fontWeight: '600',
+    color: '#000',
   },
 });

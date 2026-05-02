@@ -1,7 +1,7 @@
-import { Checkbox, Text, UnstyledButton, Group } from "@mantine/core";
-import classes from "./AccountCheckbox.module.css";
-import { useRef } from "react";
-import { AccountDto } from "@guallet/api-client";
+import { Checkbox, Text, UnstyledButton, Group } from '@mantine/core';
+import classes from './AccountCheckbox.module.css';
+import { useRef } from 'react';
+import { AccountDto } from '@guallet/api-client';
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 
 interface AccountCheckboxProps {
@@ -16,7 +16,7 @@ export function AccountCheckbox({
   account,
   ...others
 }: AccountCheckboxProps &
-  Omit<React.ComponentPropsWithoutRef<"button">, keyof AccountCheckboxProps>) {
+  Omit<React.ComponentPropsWithoutRef<'button'>, keyof AccountCheckboxProps>) {
   const ref = useRef<HTMLInputElement>(null);
 
   return (
@@ -35,7 +35,7 @@ export function AccountCheckbox({
           ref={ref}
           tabIndex={-1}
           styles={{
-            input: { cursor: "pointer" },
+            input: { cursor: 'pointer' },
           }}
         />
 
@@ -56,7 +56,7 @@ export function AccountCheckbox({
             truncate="end"
             style={{
               flexGrow: 1,
-              overflow: "hidden",
+              overflow: 'hidden',
             }}
           >
             {account.name}

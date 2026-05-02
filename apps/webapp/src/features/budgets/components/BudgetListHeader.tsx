@@ -1,7 +1,15 @@
 import { BudgetDto } from '@guallet/api-client';
 import { Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
-import { Card, Divider, Group, Progress, SimpleGrid, Stack, Text } from '@mantine/core';
+import {
+  Card,
+  Divider,
+  Group,
+  Progress,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,10 +26,17 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
       const currencies = new Set(budgets.map((b) => b.currency));
       const currency = currencies.size === 1 ? [...currencies][0] : null;
 
-      const totalBudget = budgets.reduce((acc, b) => acc + Number(b.amount ?? 0), 0);
-      const totalSpent = budgets.reduce((acc, b) => acc + Number(b.spent ?? 0), 0);
+      const totalBudget = budgets.reduce(
+        (acc, b) => acc + Number(b.amount ?? 0),
+        0,
+      );
+      const totalSpent = budgets.reduce(
+        (acc, b) => acc + Number(b.spent ?? 0),
+        0,
+      );
       const remaining = totalBudget - totalSpent;
-      const overallPercent = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+      const overallPercent =
+        totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
 
       return {
         totalBudget,
@@ -97,10 +112,7 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
           <Text size="xs" c="dimmed">
             {t('screens.budgets.header.budgeted', 'Budgeted')}
           </Text>
-          <Text
-            fw={700}
-            style={{ fontVariantNumeric: 'tabular-nums' }}
-          >
+          <Text fw={700} style={{ fontVariantNumeric: 'tabular-nums' }}>
             {formatAmount(totalBudget)}
           </Text>
         </Stack>

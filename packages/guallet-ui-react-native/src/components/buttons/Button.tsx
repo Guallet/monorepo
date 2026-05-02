@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   TouchableOpacity,
   Text,
   StyleSheet,
   ViewStyle,
   TextStyle,
-} from "react-native";
+} from 'react-native';
 
-type ButtonVariant = "filled" | "light" | "outline" | "subtle" | "transparent";
+type ButtonVariant = 'filled' | 'light' | 'outline' | 'subtle' | 'transparent';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -20,22 +20,22 @@ interface ButtonProps {
 export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
-  variant = "filled",
+  variant = 'filled',
   style,
   disabled = false,
 }) => {
   const getVariantStyles = (): ViewStyle => {
     if (disabled) {
       switch (variant) {
-        case "filled":
+        case 'filled':
           return styles.filledDisabled;
-        case "light":
+        case 'light':
           return styles.lightDisabled;
-        case "outline":
+        case 'outline':
           return styles.outlineDisabled;
-        case "subtle":
+        case 'subtle':
           return styles.subtleDisabled;
-        case "transparent":
+        case 'transparent':
           return styles.transparentDisabled;
         default:
           return styles.filledDisabled;
@@ -43,15 +43,15 @@ export const Button: React.FC<ButtonProps> = ({
     }
 
     switch (variant) {
-      case "filled":
+      case 'filled':
         return styles.filled;
-      case "light":
+      case 'light':
         return styles.light;
-      case "outline":
+      case 'outline':
         return styles.outline;
-      case "subtle":
+      case 'subtle':
         return styles.subtle;
-      case "transparent":
+      case 'transparent':
         return styles.transparent;
       default:
         return styles.filled;
@@ -64,12 +64,12 @@ export const Button: React.FC<ButtonProps> = ({
     }
 
     switch (variant) {
-      case "filled":
+      case 'filled':
         return styles.filledText;
-      case "light":
-      case "outline":
-      case "subtle":
-      case "transparent":
+      case 'light':
+      case 'outline':
+      case 'subtle':
+      case 'transparent':
         return styles.variantText;
       default:
         return styles.filledText;
@@ -83,7 +83,7 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       activeOpacity={disabled ? 1 : 0.7}
     >
-      {typeof children === "string" ? (
+      {typeof children === 'string' ? (
         <Text style={[styles.text, getTextStyles()]}>{children}</Text>
       ) : (
         children
@@ -95,56 +95,56 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   button: {
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 50,
   },
   text: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   filled: {
-    backgroundColor: "#007AFF",
+    backgroundColor: '#007AFF',
   },
   filledDisabled: {
-    backgroundColor: "#D1D5DB",
+    backgroundColor: '#D1D5DB',
   },
   filledText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   light: {
-    backgroundColor: "#E1F0FF",
+    backgroundColor: '#E1F0FF',
   },
   lightDisabled: {
-    backgroundColor: "#F3F4F6",
+    backgroundColor: '#F3F4F6',
   },
   outline: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: "#007AFF",
+    borderColor: '#007AFF',
   },
   outlineDisabled: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: "#D1D5DB",
+    borderColor: '#D1D5DB',
   },
   subtle: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: '#F5F5F5',
   },
   subtleDisabled: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: '#F9FAFB',
   },
   transparent: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   transparentDisabled: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   disabledText: {
-    color: "#9CA3AF",
+    color: '#9CA3AF',
   },
   variantText: {
-    color: "#007AFF",
+    color: '#007AFF',
   },
 });
 

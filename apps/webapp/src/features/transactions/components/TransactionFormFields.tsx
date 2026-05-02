@@ -41,7 +41,9 @@ export function TransactionFormFields({
 }: Readonly<TransactionFormFieldsProps>) {
   const { t } = useTranslation();
   const { accounts } = useAccounts();
-  const { category: selectedCategory } = useCategory(form.values.categoryId ?? null);
+  const { category: selectedCategory } = useCategory(
+    form.values.categoryId ?? null,
+  );
   const defaultCurrency = useDefaultCurrency();
   const previousAccountIdRef = useRef<string | null>(null);
 

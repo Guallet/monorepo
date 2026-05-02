@@ -40,7 +40,10 @@ export function CategoryListScreen() {
         {categories.length === 0 && !isLoading ? (
           <EmptyState
             loading={seedMutation.isPending}
-            title={t('screens.categories.list.emptyState.title', 'No categories yet')}
+            title={t(
+              'screens.categories.list.emptyState.title',
+              'No categories yet',
+            )}
             description={t(
               'screens.categories.list.emptyState.description',
               'Create your default categories to start organising your transactions.',

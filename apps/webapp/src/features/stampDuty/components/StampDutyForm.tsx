@@ -1,5 +1,11 @@
 import { useTheme } from '@guallet/ui-react';
-import { Card, NumberInput, SegmentedControl, Stack, Text } from '@mantine/core';
+import {
+  Card,
+  NumberInput,
+  SegmentedControl,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import type { BuyerType, StampDutyValues } from '../models/stampDuty';
 

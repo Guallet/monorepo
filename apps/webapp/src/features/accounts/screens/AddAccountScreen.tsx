@@ -417,7 +417,9 @@ export function AddAccountScreen() {
                   )}
                   leftSection={currency?.symbol}
                   decimalScale={currency?.decimalPlaces}
-                  {...form.getInputProps('balance', { parser: getNumberParser })}
+                  {...form.getInputProps('balance', {
+                    parser: getNumberParser,
+                  })}
                 />
                 <Checkbox
                   label={t(
@@ -482,10 +484,7 @@ export function AddAccountScreen() {
               >
                 {t('feature.accounts.add.cancelButton', 'Cancel')}
               </Button>
-              <Button
-                type="submit"
-                loading={createAccountMutation.isPending}
-              >
+              <Button type="submit" loading={createAccountMutation.isPending}>
                 {t('feature.accounts.add.submitButton', 'Create account')}
               </Button>
             </Group>

@@ -23,8 +23,10 @@ This Turborepo includes the following packages/apps:
 Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Requirements
+
 In order to compile/run the project locally, you will need:
-- Node >=v22.x 
+
+- Node >=v22.x
 - PNPM >= 10.0.0
 - Postgres database
 - Redis
@@ -34,6 +36,7 @@ In order to compile/run the project locally, you will need:
 The easiest way to run the entire project is using Docker. See [DOCKER.md](./DOCKER.md) for detailed instructions.
 
 Quick start with Docker (using npm scripts):
+
 ```bash
 # Initialize the repository and generate env files
 cp database.env.sample database.env
@@ -53,6 +56,7 @@ pnpm docker:compose:down
 ```
 
 This will start:
+
 - PostgreSQL database (internal network only)
 - Redis for background jobs (internal network only)
 - API server on http://localhost:5000

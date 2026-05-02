@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { CategoryMultiSelectModal } from './CategoryMultiSelectModal';
 import { useCategories } from '@guallet/api-react';
 
-interface CategoryMultiSelectProps
-  extends React.ComponentProps<typeof Input.Wrapper> {
+interface CategoryMultiSelectProps extends React.ComponentProps<
+  typeof Input.Wrapper
+> {
   selectedCategories: CategoryDto[];
   onSelectionChanged: (selectedCategories: CategoryDto[]) => void;
 }

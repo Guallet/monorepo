@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 import {
   CreateSavingGoalRequest,
   UpdateSavingGoalRequest,
-} from "@guallet/api-client/src/savingGoals";
+} from '@guallet/api-client/src/savingGoals';
 
-const SAVING_GOALS_QUERY_KEY = "savingGoals";
+const SAVING_GOALS_QUERY_KEY = 'savingGoals';
 
 export function useSavingGoalMutations() {
   const queryClient = useQueryClient();

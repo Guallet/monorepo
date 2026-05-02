@@ -101,11 +101,7 @@ export function LoanComparisonSection({
 
   const costDiff = loanA.summary.totalCost - loanB.summary.totalCost;
   const winnerLabel =
-    costDiff < 0
-      ? resolvedLabelA
-      : costDiff > 0
-        ? resolvedLabelB
-        : null;
+    costDiff < 0 ? resolvedLabelA : costDiff > 0 ? resolvedLabelB : null;
   const saving = Math.abs(costDiff);
 
   const chartData = [
@@ -246,10 +242,7 @@ export function LoanComparisonSection({
           />
 
           <CompareMetricRow
-            label={t(
-              'screens.tools.loan.metrics.termMonths',
-              'Term (months)',
-            )}
+            label={t('screens.tools.loan.metrics.termMonths', 'Term (months)')}
             valueA={String(loanA.summary.payoffMonths)}
             valueB={String(loanB.summary.payoffMonths)}
             winnerSide={
@@ -268,7 +261,10 @@ export function LoanComparisonSection({
       <Card withBorder shadow="sm" radius="lg" p="lg">
         <Stack gap={spacing.sm}>
           <Text fw={600}>
-            {t('screens.tools.loan.compare.chartTitle', 'Side-by-side comparison')}
+            {t(
+              'screens.tools.loan.compare.chartTitle',
+              'Side-by-side comparison',
+            )}
           </Text>
           <BarChart
             h={280}

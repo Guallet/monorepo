@@ -124,7 +124,12 @@ export function AuthLayout({ children }: Readonly<AuthLayoutProps>) {
               t('auth.layout.feature2', 'Multi-currency, multi-account'),
               t('auth.layout.feature3', 'Self-host or secure cloud'),
             ].map((feature) => (
-              <Flex key={feature} align="center" gap={spacing.sm} mb={spacing.sm}>
+              <Flex
+                key={feature}
+                align="center"
+                gap={spacing.sm}
+                mb={spacing.sm}
+              >
                 <Box
                   style={{
                     width: spacing.md,
@@ -148,7 +153,11 @@ export function AuthLayout({ children }: Readonly<AuthLayoutProps>) {
                 </Box>
                 <Box
                   component="span"
-                  style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', fontWeight: 500 }}
+                  style={{
+                    fontSize: 13,
+                    color: 'rgba(255,255,255,0.85)',
+                    fontWeight: 500,
+                  }}
                 >
                   {feature}
                 </Box>
@@ -157,7 +166,11 @@ export function AuthLayout({ children }: Readonly<AuthLayoutProps>) {
           </Box>
 
           <Box
-            style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.03em' }}
+            style={{
+              fontSize: 11,
+              color: 'rgba(255,255,255,0.4)',
+              letterSpacing: '0.03em',
+            }}
           >
             {t('auth.layout.license', 'Open source · Apache 2.0')}
           </Box>

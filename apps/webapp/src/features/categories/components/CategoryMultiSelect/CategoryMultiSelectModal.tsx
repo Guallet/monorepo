@@ -1,4 +1,4 @@
-import { SearchBoxInput } from "@guallet/ui-react";
+import { SearchBoxInput } from '@guallet/ui-react';
 import {
   Text,
   Stack,
@@ -10,18 +10,18 @@ import {
   TreeNodeData,
   Tooltip,
   ActionIcon,
-} from "@mantine/core";
-import { CategoryTreeNode } from "./CategoryTreeNode";
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useCategories } from "@guallet/api-react";
-import { CategoryDto } from "@guallet/api-client";
+} from '@mantine/core';
+import { CategoryTreeNode } from './CategoryTreeNode';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCategories } from '@guallet/api-react';
+import { CategoryDto } from '@guallet/api-client';
 import {
   IconChevronsDown,
   IconChevronsUp,
   IconDeselect,
   IconSelectAll,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
 interface CategoryMultiSelectModalProps {
   selectedCategories: CategoryDto[];
@@ -34,7 +34,7 @@ function mapCategoriesToTreeData(categories: CategoryDto[]): TreeNodeData[] {
 
   const data: TreeNodeData[] = rootCategories.map((category) => {
     const subcategories = categories.filter(
-      (cat) => cat.parentId === category.id
+      (cat) => cat.parentId === category.id,
     );
 
     return {
@@ -58,7 +58,7 @@ export function CategoryMultiSelectModal({
 }: Readonly<CategoryMultiSelectModalProps>) {
   const { t } = useTranslation();
   const { categories } = useCategories();
-  const [filterQuery, setFilterQuery] = useState("");
+  const [filterQuery, setFilterQuery] = useState('');
 
   const onSubmitSelectedCategories = () => {
     const selectedNodes = tree.getCheckedNodes();
@@ -71,7 +71,7 @@ export function CategoryMultiSelectModal({
   };
 
   const filteredData = useMemo(() => {
-    if (filterQuery.trim() === "") {
+    if (filterQuery.trim() === '') {
       return mapCategoriesToTreeData(categories);
     } else {
       const filteredCategories = categories.filter((item: CategoryDto) => {
@@ -89,8 +89,9 @@ export function CategoryMultiSelectModal({
               return null;
             })
             .filter(
-              (item): item is CategoryDto => item !== null && item !== undefined
-            )
+              (item): item is CategoryDto =>
+                item !== null && item !== undefined,
+            ),
         ),
       ];
 
@@ -103,7 +104,7 @@ export function CategoryMultiSelectModal({
   // TODO: There is a known issue with re-rendering the tree when the data changes
   // https://github.com/mantinedev/mantine/issues/7266
   const tree = useTree({
-    initialExpandedState: getTreeExpandedState(filteredData, "*"),
+    initialExpandedState: getTreeExpandedState(filteredData, '*'),
     initialCheckedState: selectedCategories.map((cat) => cat.id),
   });
 
@@ -113,8 +114,8 @@ export function CategoryMultiSelectModal({
         <SearchBoxInput
           style={{ flexGrow: 1 }}
           placeholder={t(
-            "components.categoryMultiSelect.modal.searchBox.placeholder",
-            "Search categories"
+            'components.categoryMultiSelect.modal.searchBox.placeholder',
+            'Search categories',
           )}
           query={filterQuery}
           debounceWait={350}
@@ -123,8 +124,8 @@ export function CategoryMultiSelectModal({
 
         <Tooltip
           label={t(
-            "components.categoryMultiSelect.modal.checkAllButton.label",
-            "Check all"
+            'components.categoryMultiSelect.modal.checkAllButton.label',
+            'Check all',
           )}
         >
           <ActionIcon variant="outline" onClick={() => tree.checkAllNodes()}>
@@ -134,8 +135,8 @@ export function CategoryMultiSelectModal({
 
         <Tooltip
           label={t(
-            "components.categoryMultiSelect.modal.uncheckAllButton.label",
-            "Uncheck all"
+            'components.categoryMultiSelect.modal.uncheckAllButton.label',
+            'Uncheck all',
           )}
         >
           <ActionIcon variant="outline" onClick={() => tree.uncheckAllNodes()}>
@@ -145,8 +146,8 @@ export function CategoryMultiSelectModal({
 
         <Tooltip
           label={t(
-            "components.categoryMultiSelect.modal.expandAllButton.label",
-            "Expand all"
+            'components.categoryMultiSelect.modal.expandAllButton.label',
+            'Expand all',
           )}
         >
           <ActionIcon variant="outline" onClick={() => tree.expandAllNodes()}>
@@ -156,8 +157,8 @@ export function CategoryMultiSelectModal({
 
         <Tooltip
           label={t(
-            "components.categoryMultiSelect.modal.collapseAllButton.label",
-            "Collapse all"
+            'components.categoryMultiSelect.modal.collapseAllButton.label',
+            'Collapse all',
           )}
         >
           <ActionIcon variant="outline" onClick={() => tree.collapseAllNodes()}>
@@ -168,8 +169,8 @@ export function CategoryMultiSelectModal({
       <Group justify="flex-end">
         <Button onClick={onSubmitSelectedCategories}>
           {t(
-            "components.categoryMultiSelect.modal.selectButton.label",
-            "Select categories"
+            'components.categoryMultiSelect.modal.selectButton.label',
+            'Select categories',
           )}
         </Button>
       </Group>
@@ -177,8 +178,8 @@ export function CategoryMultiSelectModal({
       {filteredData.length === 0 && (
         <Text c="dimmed" size="sm">
           {t(
-            "components.categoryMultiSelect.modal.searchBox.emptyResults",
-            "No categories found"
+            'components.categoryMultiSelect.modal.searchBox.emptyResults',
+            'No categories found',
           )}
         </Text>
       )}

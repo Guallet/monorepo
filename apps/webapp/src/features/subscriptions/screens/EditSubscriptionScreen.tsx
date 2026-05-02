@@ -74,7 +74,9 @@ export function EditSubscriptionScreen({
       currency: subscription?.currency ?? defaultCurrency,
       cadence: subscription?.cadence ?? RecurrenceCadence.MONTHLY,
       type: subscription?.type ?? RecurringPaymentType.SUBSCRIPTION,
-      startDate: subscription?.startDate ? new Date(subscription.startDate) : new Date(),
+      startDate: subscription?.startDate
+        ? new Date(subscription.startDate)
+        : new Date(),
       imageUrl: subscription?.imageUrl ?? '',
     },
     validate: zod4Resolver(editSubscriptionFormDataSchema),
@@ -145,12 +147,20 @@ export function EditSubscriptionScreen({
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <Stack gap={spacing.md}>
                 <TextInput
                   key={form.key('name')}
                   required
-                  label={t('screens.subscriptions.edit.fields.name.label', 'Name')}
+                  label={t(
+                    'screens.subscriptions.edit.fields.name.label',
+                    'Name',
+                  )}
                   placeholder={t(
                     'screens.subscriptions.edit.fields.name.placeholder',
                     'e.g. Netflix, Spotify, Gym membership',
@@ -161,7 +171,10 @@ export function EditSubscriptionScreen({
                 <Select
                   key={form.key('type')}
                   required
-                  label={t('screens.subscriptions.edit.fields.type.label', 'Type')}
+                  label={t(
+                    'screens.subscriptions.edit.fields.type.label',
+                    'Type',
+                  )}
                   data={paymentTypes}
                   {...form.getInputProps('type')}
                   onChange={(value) => {
@@ -194,7 +207,10 @@ export function EditSubscriptionScreen({
                 <NumberInput
                   key={form.key('amount')}
                   required
-                  label={t('screens.subscriptions.edit.fields.amount.label', 'Amount')}
+                  label={t(
+                    'screens.subscriptions.edit.fields.amount.label',
+                    'Amount',
+                  )}
                   description={t(
                     'screens.subscriptions.edit.fields.amount.description',
                     'The recurring payment amount',
@@ -248,7 +264,10 @@ export function EditSubscriptionScreen({
                 fullWidth
                 size="md"
                 onClick={() =>
-                  navigate({ to: '/subscriptions/$id', params: { id: subscriptionId } })
+                  navigate({
+                    to: '/subscriptions/$id',
+                    params: { id: subscriptionId },
+                  })
                 }
               >
                 {t('screens.subscriptions.edit.cancelButton', 'Cancel')}
@@ -258,12 +277,18 @@ export function EditSubscriptionScreen({
               <Button
                 variant="outline"
                 onClick={() =>
-                  navigate({ to: '/subscriptions/$id', params: { id: subscriptionId } })
+                  navigate({
+                    to: '/subscriptions/$id',
+                    params: { id: subscriptionId },
+                  })
                 }
               >
                 {t('screens.subscriptions.edit.cancelButton', 'Cancel')}
               </Button>
-              <Button type="submit" loading={updateSubscriptionMutation.isPending}>
+              <Button
+                type="submit"
+                loading={updateSubscriptionMutation.isPending}
+              >
                 {t('screens.subscriptions.edit.submitButton', 'Save changes')}
               </Button>
             </Group>

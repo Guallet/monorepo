@@ -1,15 +1,15 @@
-import { ResponsiveModal } from "@guallet/ui-react";
+import { ResponsiveModal } from '@guallet/ui-react';
 import {
   Group,
   Input,
   InputWrapperProps,
   Text,
   ThemeIcon,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconPickerModal } from "./IconPickerModal";
-import { IconSelect } from "@tabler/icons-react";
-import { GualletIcon } from "../GualletIcon/GualletIcon";
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconPickerModal } from './IconPickerModal';
+import { IconSelect } from '@tabler/icons-react';
+import { GualletIcon } from '../GualletIcon/GualletIcon';
 
 interface IconPickerProps extends InputWrapperProps {
   value: string | null;

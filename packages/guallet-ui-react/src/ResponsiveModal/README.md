@@ -5,15 +5,18 @@ A reusable modal component built on top of **Mantine's Modal** that automaticall
 ## Features
 
 ✨ **Responsive Behavior**
+
 - **Mobile devices** (≤ 50em / 800px): Full-screen modal with optimized padding
 - **Desktop/Tablet**: Centered modal with configurable size
 
 🎯 **Built with Mantine**
+
 - Leverages Mantine's Modal component
 - Fully compatible with Mantine's theme system
 - Uses Mantine hooks for responsive detection
 
 ♿ **Accessible by Default**
+
 - Focus trap enabled
 - ESC key to close
 - Overlay click to close
@@ -41,7 +44,7 @@ function MyComponent() {
   return (
     <>
       <Button onClick={open}>Open Modal</Button>
-      
+
       <ResponsiveModal
         opened={opened}
         onClose={close}
@@ -57,18 +60,19 @@ function MyComponent() {
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `opened` | `boolean` | **required** | Controls whether the modal is visible |
-| `onClose` | `() => void` | **required** | Callback fired when modal should close |
-| `title` | `React.ReactNode` | `undefined` | Modal title (can be string or JSX) |
-| `children` | `React.ReactNode` | **required** | Modal content |
-| `size` | `string \| number` | `"md"` | Modal size on desktop (e.g., "xs", "sm", "md", "lg", "xl", or pixel value) |
-| `withCloseButton` | `boolean` | `true` | Whether to show the close button |
+| Prop              | Type               | Default      | Description                                                                |
+| ----------------- | ------------------ | ------------ | -------------------------------------------------------------------------- |
+| `opened`          | `boolean`          | **required** | Controls whether the modal is visible                                      |
+| `onClose`         | `() => void`       | **required** | Callback fired when modal should close                                     |
+| `title`           | `React.ReactNode`  | `undefined`  | Modal title (can be string or JSX)                                         |
+| `children`        | `React.ReactNode`  | **required** | Modal content                                                              |
+| `size`            | `string \| number` | `"md"`       | Modal size on desktop (e.g., "xs", "sm", "md", "lg", "xl", or pixel value) |
+| `withCloseButton` | `boolean`          | `true`       | Whether to show the close button                                           |
 
 ## Responsive Behavior
 
 ### Mobile (≤ 50em / 800px)
+
 ```tsx
 {
   fullScreen: true,
@@ -78,6 +82,7 @@ function MyComponent() {
 ```
 
 ### Desktop/Tablet (> 50em / 800px)
+
 ```tsx
 {
   fullScreen: false,
@@ -101,7 +106,7 @@ function ConfirmDialog() {
   return (
     <>
       <Button onClick={open}>Delete Item</Button>
-      
+
       <ResponsiveModal
         opened={opened}
         onClose={close}
@@ -111,8 +116,12 @@ function ConfirmDialog() {
         <Stack>
           <p>Are you sure you want to delete this item?</p>
           <Group justify="flex-end">
-            <Button variant="outline" onClick={close}>Cancel</Button>
-            <Button color="red" onClick={close}>Delete</Button>
+            <Button variant="outline" onClick={close}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={close}>
+              Delete
+            </Button>
           </Group>
         </Stack>
       </ResponsiveModal>
@@ -134,7 +143,7 @@ function UserForm() {
   return (
     <>
       <Button onClick={open}>Add User</Button>
-      
+
       <ResponsiveModal
         opened={opened}
         onClose={close}
@@ -159,7 +168,7 @@ function UserForm() {
   opened={opened}
   onClose={close}
   title="Custom Width"
-  size={600}  // 600px on desktop
+  size={600} // 600px on desktop
 >
   <p>This modal is 600px wide on desktop</p>
 </ResponsiveModal>
@@ -178,7 +187,9 @@ function UserForm() {
     <p>You must choose an option to continue</p>
     <Group>
       <Button onClick={close}>Accept</Button>
-      <Button variant="outline" onClick={close}>Decline</Button>
+      <Button variant="outline" onClick={close}>
+        Decline
+      </Button>
     </Group>
   </Stack>
 </ResponsiveModal>
@@ -194,31 +205,26 @@ import { useIsMobile } from '@guallet/ui-react';
 function MyComponent() {
   const isMobile = useIsMobile();
 
-  return (
-    <div>
-      {isMobile ? (
-        <MobileLayout />
-      ) : (
-        <DesktopLayout />
-      )}
-    </div>
-  );
+  return <div>{isMobile ? <MobileLayout /> : <DesktopLayout />}</div>;
 }
 ```
 
 ## Best Practices
 
 1. **Always use `useDisclosure`** for managing modal state:
+
    ```tsx
    const [opened, { open, close }] = useDisclosure(false);
    ```
 
 2. **Provide meaningful titles** for accessibility:
+
    ```tsx
    <ResponsiveModal title="Edit Profile" ...>
    ```
 
 3. **Keep modal content focused** - avoid cramming too much content:
+
    ```tsx
    // Good: Focused content
    <ResponsiveModal title="Add Comment">
@@ -228,6 +234,7 @@ function MyComponent() {
    ```
 
 4. **For complex forms**, consider using larger sizes on desktop:
+
    ```tsx
    <ResponsiveModal size="xl" ...>
      <ComplexForm />

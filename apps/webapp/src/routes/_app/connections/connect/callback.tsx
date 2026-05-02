@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router';
 
-import { z } from "zod";
-import { ConnectionCallbackScreen } from "@/features/connections/screens/ConnectionCallbackScreen";
+import { z } from 'zod';
+import { ConnectionCallbackScreen } from '@/features/connections/screens/ConnectionCallbackScreen';
 
 const pageSearchSchema = z.object({
   ref: z.string().optional().nullable(),
@@ -9,7 +9,7 @@ const pageSearchSchema = z.object({
   details: z.string().optional().nullable(),
 });
 
-export const Route = createFileRoute("/_app/connections/connect/callback")({
+export const Route = createFileRoute('/_app/connections/connect/callback')({
   component: ConnectionCallbackPage,
   validateSearch: pageSearchSchema,
 });

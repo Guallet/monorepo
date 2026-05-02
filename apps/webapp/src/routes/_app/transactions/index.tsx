@@ -1,6 +1,6 @@
-import { TransactionListScreen } from "@/features/transactions/screens/TransactionListScreen";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
+import { TransactionListScreen } from '@/features/transactions/screens/TransactionListScreen';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { z } from 'zod';
 
 const transactionsSearchSchema = z.object({
   page: z.number().optional().default(1),
@@ -16,7 +16,7 @@ const transactionsSearchSchema = z.object({
     .optional(),
 });
 
-export const Route = createFileRoute("/_app/transactions/")({
+export const Route = createFileRoute('/_app/transactions/')({
   component: TransactionPage,
   validateSearch: transactionsSearchSchema,
 });
@@ -44,12 +44,12 @@ function TransactionPage() {
       dateRange={parsedDateRange}
       onAddTransaction={() => {
         navigate({
-          to: "/transactions/create",
+          to: '/transactions/create',
         });
       }}
       onEditTransaction={(transactionId) => {
         navigate({
-          to: "/transactions/$id/edit",
+          to: '/transactions/$id/edit',
           params: {
             id: transactionId,
           },
@@ -72,8 +72,8 @@ function TransactionPage() {
               dateRange: {
                 startDate: filters.dateRange.startDate
                   .toISOString()
-                  .split("T")[0],
-                endDate: filters.dateRange.endDate.toISOString().split("T")[0],
+                  .split('T')[0],
+                endDate: filters.dateRange.endDate.toISOString().split('T')[0],
               },
             }),
           }),

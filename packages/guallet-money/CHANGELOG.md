@@ -7,6 +7,7 @@ All notable changes to the @guallet/money package will be documented in this fil
 ### Added
 
 #### Money Class
+
 - **Arithmetic operations**: `add()`, `subtract()`, `multiply()`, `divide()`
 - **Comparison methods**: `equals()`, `greaterThan()`, `greaterThanOrEqual()`, `lessThan()`, `lessThanOrEqual()`
 - **Helper methods**: `abs()`, `negate()`, `round()`, `isZero()`, `isPositive()`, `isNegative()`
@@ -20,21 +21,25 @@ All notable changes to the @guallet/money package will be documented in this fil
   - Positive sign display
 
 #### Currency Class
+
 - **Comparison method**: `equals()` for currency comparison
 - **String representation**: `toString()` method
 
 #### Type Safety & Validation
+
 - Made all properties `readonly` for immutability
 - Private constructors to enforce factory pattern usage
 - Input validation with descriptive error messages
 - Type-safe error handling (TypeError for type validation)
 
 #### Platform Compatibility
+
 - Removed `navigator.language` dependency
 - Added environment detection for locale defaults
 - Full Node.js, browser, and React Native support
 
 #### Documentation
+
 - Comprehensive README with API documentation
 - Code examples demonstrating all features
 - Best practices guide
@@ -58,6 +63,7 @@ All notable changes to the @guallet/money package will be documented in this fil
 ### Migration Guide (0.1.0 → 0.2.0)
 
 #### Before (0.1.0)
+
 ```typescript
 const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 money.format(); // Basic formatting only
@@ -65,6 +71,7 @@ money.format(); // Basic formatting only
 ```
 
 #### After (0.2.0)
+
 ```typescript
 const money = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 
@@ -88,6 +95,7 @@ const rounded = money.round();
 ## [0.1.0] - Initial Release
 
 ### Added
+
 - Basic Money class with amount and currency
 - Basic Currency class with ISO 4217 support
 - Simple formatting with `format()` method
