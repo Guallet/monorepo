@@ -140,6 +140,59 @@
   },
   "feature": {
     "accounts": {
+      "details": {
+        "properties": {
+          "title": "Account details",
+          "edit": "Edit",
+          "accountNumber": "Account number",
+          "sortCode": "Sort code",
+          "overdraft": "Overdraft limit",
+          "interestRate": "Interest rate",
+          "creditLimit": "Credit limit",
+          "cycleDay": "Billing cycle day",
+          "propertyValue": "Property value",
+          "mortgageAmount": "Mortgage amount",
+          "termLength": "Term length",
+          "termLengthYears_one": "{{count}} years",
+          "termLengthYears_other": "{{count}} years",
+          "loanAmount": "Loan amount"
+        },
+        "balanceTrend": {
+          "title": "Balance over time",
+          "empty": "No balance data for this period"
+        },
+        "dangerZone": {
+          "deleteSuccess": "Account deleted successfully.",
+          "deleteError": {
+            "title": "Error",
+            "message": "Failed to delete account. Please try again."
+          },
+          "deleteDialog": {
+            "title": "Delete account",
+            "message": "Are you sure you want to delete this account? This action cannot be undone."
+          },
+          "title": "Danger zone",
+          "deleteButton": "Delete account"
+        },
+        "monthlyInOut": {
+          "title": "Monthly income vs spending",
+          "empty": "No transaction data for this period",
+          "income": "Income",
+          "spending": "Spending"
+        },
+        "openBanking": {
+          "title": "Open Banking connection",
+          "synced": "Synced",
+          "lastSynced": "Last synced: {{date}}"
+        },
+        "transactions": {
+          "title": "Latest transactions",
+          "viewAll": "View all",
+          "empty": "No transactions for this period"
+        },
+        "title": "Account",
+        "editButton": "Edit"
+      },
       "list": {
         "row": {
           "manualAccount": "Manual account"
@@ -208,19 +261,132 @@
         "pension": "Pension",
         "savingsAccount": "Savings Account"
       },
-      "details": {
-        "title": "Account"
-      },
       "add": {
-        "title": "New account"
+        "errors": {
+          "currencyRequired": {
+            "title": "Currency required",
+            "message": "Please select a currency for the account."
+          },
+          "validation": {
+            "title": "Check your entries",
+            "message": "Please correct the highlighted fields before continuing."
+          }
+        },
+        "notifications": {
+          "success": "{{name}} created successfully.",
+          "error": {
+            "title": "Could not create account",
+            "message": "A network or server error occurred. Please try again."
+          }
+        },
+        "fields": {
+          "accountNumber": {
+            "label": "Account number",
+            "placeholder": "Enter account number"
+          },
+          "sortCode": {
+            "label": "Sort code"
+          },
+          "overdraftLimit": {
+            "label": "Overdraft limit"
+          },
+          "interestRate": {
+            "label": "Interest rate"
+          },
+          "creditLimit": {
+            "label": "Credit limit"
+          },
+          "cycleDay": {
+            "label": "Cycle day"
+          },
+          "propertyValue": {
+            "label": "Property value"
+          },
+          "mortgageAmount": {
+            "label": "Mortgage amount"
+          },
+          "termLength": {
+            "label": "Term length",
+            "description": "Years"
+          },
+          "loanAmount": {
+            "label": "Loan amount"
+          },
+          "name": {
+            "label": "Account name",
+            "placeholder": "e.g. HSBC Current Account"
+          },
+          "type": {
+            "label": "Account type"
+          },
+          "balance": {
+            "label": "Initial balance",
+            "description": "Current balance of the account"
+          },
+          "createInitialTransaction": {
+            "label": "Create an opening balance transaction",
+            "description": "Records the initial balance as the first transaction"
+          }
+        },
+        "title": "New account",
+        "specificDetails": {
+          "title": "Account details"
+        },
+        "submitButton": "Create account",
+        "cancelButton": "Cancel"
       },
       "edit": {
-        "title": "Edit account"
+        "notifications": {
+          "success": "{{name}} updated successfully.",
+          "error": {
+            "title": "Could not update account",
+            "message": "A network or server error occurred. Please try again."
+          }
+        },
+        "title": "Edit account",
+        "fields": {
+          "name": {
+            "label": "Account name",
+            "placeholder": "Enter account name"
+          },
+          "type": {
+            "label": "Account type"
+          },
+          "balance": {
+            "label": "Balance",
+            "description": "Current balance of the account"
+          },
+          "balanceTransaction": {
+            "label": "Create a transaction to sync the balance",
+            "description": "Records a transaction to match the new balance, keeping history accurate."
+          }
+        },
+        "submitButton": "Save changes",
+        "cancelButton": "Cancel"
       }
+    }
+  },
+  "common": {
+    "optional": "Optional"
+  },
+  "auth": {
+    "layout": {
+      "headline": {
+        "line1": "Your finances,",
+        "line2": "under control."
+      },
+      "description": "Track every account, card and saving goal in one place — without giving anyone access to your money.",
+      "feature1": "Open Banking sync — read-only",
+      "feature2": "Multi-currency, multi-account",
+      "feature3": "Self-host or secure cloud",
+      "license": "Open source · Apache 2.0"
     }
   },
   "screens": {
     "forgotPassword": {
+      "backButton": {
+        "label": "Back to login"
+      },
       "title": {
         "label": "Forgot your password?"
       },
@@ -238,20 +404,29 @@
         "submitButton": {
           "label": "Send reset link"
         }
-      },
-      "backButton": {
-        "label": "Back to login"
       }
+    },
+    "resetPasswordSent": {
+      "title": "Check your email",
+      "description": "We've sent a password reset link to",
+      "expiry": "It expires in 30 minutes.",
+      "spamNote": "Didn't receive it? Check your spam or",
+      "tryAnother": "try another email",
+      "backButton": "Back to login",
+      "instructions": "Click the link in the email to reset your password. If you don't see it, check your spam folder.",
+      "backToSignIn": "Back to sign in"
     },
     "login": {
       "title": {
         "label": "Sign in to your account"
       },
+      "subtitle": "Sign in to your Guallet account",
       "form": {
-        "magicLink": {
-          "error": {
-            "title": "Error sending magic link"
-          }
+        "googleLoginButton": {
+          "label": "Continue with Google"
+        },
+        "divider": {
+          "label": "Or continue with"
         },
         "password": {
           "error": {
@@ -259,6 +434,11 @@
           },
           "label": "Password",
           "placeholder": "Enter your password"
+        },
+        "magicLink": {
+          "error": {
+            "title": "Error sending magic link"
+          }
         },
         "email": {
           "label": "Email",
@@ -278,12 +458,6 @@
         },
         "usePassword": {
           "label": "Use password instead"
-        },
-        "divider": {
-          "label": "Or continue with"
-        },
-        "googleLoginButton": {
-          "label": "Continue with Google"
         }
       },
       "createAccount": {
@@ -291,34 +465,109 @@
         "cta": "Sign up!"
       }
     },
-    "resetPasswordSent": {
-      "title": "Check your email",
-      "description": "We've sent a password reset link to",
-      "instructions": "Click the link in the email to reset your password. If you don't see it, check your spam folder.",
-      "backButton": "Back to login"
+    "register": {
+      "errors": {
+        "userAlreadyExists": "An account with this email already exists.",
+        "weakPassword": "Password is too weak. Please use a stronger password.",
+        "invalidEmail": "Please enter a valid email address.",
+        "emailConfirmationRequired": "Please check your email to confirm your account.",
+        "signupDisabled": "Registration is currently disabled.",
+        "loginError": "Unable to log in. Please try again."
+      },
+      "notifications": {
+        "termsRequired": {
+          "title": "Terms required",
+          "message": "You must agree to the terms to continue."
+        },
+        "accountCreationFailed": {
+          "title": "Account creation failed"
+        },
+        "loginFailed": {
+          "title": "Login failed",
+          "message": "Account created successfully, but login failed: {{error}}"
+        },
+        "success": {
+          "title": "Welcome!",
+          "message": "Your account has been created successfully."
+        }
+      },
+      "emailConfirmModal": {
+        "title": "Check your email",
+        "message": "Please check your email to confirm your account. You will need to verify your email address before you can log in.",
+        "button": "Go back to login page"
+      },
+      "title": "Create new account",
+      "subtitle": "Free forever · No card required",
+      "form": {
+        "googleButton": {
+          "label": "Sign up with Google"
+        },
+        "divider": {
+          "label": "or sign up with email"
+        },
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter your name"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Password"
+        },
+        "confirmPassword": {
+          "label": "Confirm Password",
+          "placeholder": "Confirm your password"
+        },
+        "termsAgreement": {
+          "prefix": "I agree to the",
+          "conjunction": "and"
+        },
+        "termsLink": "terms and conditions",
+        "privacyLink": "Privacy Policy",
+        "submitButton": "Create new account"
+      },
+      "alreadyHaveAccount": "Already have an account?",
+      "signInLink": "Sign in"
     },
     "validateOtp": {
       "title": "Check your email",
       "description": "We've sent a 6-digit code to",
-      "instructionText": "Enter the code below to sign in.",
-      "instructionNote": "The email also contains a magic link you can click to sign in automatically.",
       "error": {
         "title": "Error"
       },
+      "digitCounter": "{{filled}}/6 digits entered",
       "form": {
-        "codeInput": {
-          "placeholder": "Enter the 6 digit code"
-        },
         "verifyButton": {
           "label": "Verify code"
         }
       },
       "resendCode": {
+        "sent": "Code resent!",
+        "countdown": "Resend code in",
         "question": "Didn't receive the code?",
         "resendButton": "Resend code"
       }
     },
     "budgets": {
+      "card": {
+        "overBudget": "over budget",
+        "remaining": "left",
+        "categoryCount_one": "{{count}} category",
+        "categoryCount_other": "{{count}} categories",
+        "spentOf": "{{spent}} of {{budget}} spent"
+      },
+      "header": {
+        "title": "Budget overview",
+        "budgetCount_one": "{{count}} budget",
+        "budgetCount_other": "{{count}} budgets",
+        "used": "used",
+        "budgeted": "Budgeted",
+        "spent": "Spent",
+        "remaining": "Remaining"
+      },
       "details": {
         "title": "Budget",
         "editButton": {
@@ -355,53 +604,87 @@
         },
         "emptyState": {
           "title": "No budgets yet",
-          "description": "Create your first budget to start tracking and controlling your spending."
+          "description": "Create your first budget to start tracking and controlling your spending.",
+          "trait1": {
+            "title": "Set a limit",
+            "body": "Define a monthly spending cap for any category."
+          },
+          "trait2": {
+            "title": "Track progress",
+            "body": "See at a glance how much you have left to spend."
+          },
+          "trait3": {
+            "title": "Stay in control",
+            "body": "Get notified before you go over your limit."
+          }
         }
       },
       "create": {
+        "form": {
+          "name": {
+            "error": "Name is too short",
+            "label": "Name",
+            "placeholder": "Budget name"
+          },
+          "amount": {
+            "error": "Amount must be positive",
+            "label": "Budget Amount"
+          },
+          "currency": {
+            "error": "Currency is required",
+            "label": "Currency",
+            "description": "Only available currencies from your existing accounts are shown.",
+            "placeholder": "Select currency"
+          },
+          "colorPicker": {
+            "error": "Colour is required",
+            "label": "Color",
+            "placeholder": "Select the category colour"
+          },
+          "categories": {
+            "error": "Select at least one category",
+            "label": "Categories"
+          },
+          "icon": {
+            "label": "Icon",
+            "description": "Select an icon for the budget"
+          },
+          "submitButton": {
+            "label": "Create Budget"
+          },
+          "cancelButton": {
+            "label": "Cancel"
+          }
+        },
         "notifications": {
           "success": {
-            "title": "Budget Created",
             "message": "Your new budget has been created successfully."
           },
           "error": {
             "title": "Error Creating Budget"
           }
         },
-        "title": "New budget",
-        "form": {
-          "name": {
-            "label": "Name",
-            "placeholder": "Budget name"
-          },
-          "currency": {
-            "label": "Currency",
-            "description": "Only available currencies from your existing accounts are shown.",
-            "placeholder": "Select currency"
-          },
-          "amount": {
-            "label": "Budget Amount"
-          },
-          "colorPicker": {
-            "label": "Color",
-            "placeholder": "Select the category colour"
-          },
-          "icon": {
-            "label": "Icon",
-            "description": "Select an icon for the budget"
-          },
-          "categories": {
-            "label": "Categories"
-          },
-          "submitButton": {
-            "label": "Create Budget"
-          }
-        }
+        "title": "New budget"
       }
     },
     "categories": {
       "add": {
-        "title": "New category"
+        "title": "New category",
+        "fields": {
+          "name": {
+            "label": "Name",
+            "placeholder": "Enter category name"
+          },
+          "icon": {
+            "label": "Icon",
+            "description": "Select an icon for the category"
+          },
+          "colour": {
+            "label": "Colour"
+          }
+        },
+        "submitButton": "Create category",
+        "cancelButton": "Cancel"
       },
       "details": {
         "title": "Category"
@@ -491,6 +774,213 @@
         "title": "Import data"
       }
     },
+    "tools": {
+      "loan": {
+        "amortization": {
+          "title": "Monthly schedule",
+          "month": "Month",
+          "payment": "Payment",
+          "interest": "Interest",
+          "principal": "Principal",
+          "balance": "Balance"
+        },
+        "form": {
+          "amount": "Loan amount",
+          "interestRate": "Annual interest rate",
+          "termMonths": "Term (months)",
+          "arrangementFee": "Arrangement fee",
+          "arrangementFeeDescription": "One-off upfront fee"
+        },
+        "compare": {
+          "loanA": "Loan A",
+          "loanB": "Loan B",
+          "chart": {
+            "monthlyPayment": "Monthly payment",
+            "totalInterest": "Total interest",
+            "totalCost": "Total cost"
+          },
+          "winner": "{{label}} is cheaper overall",
+          "saving": "Save {{amount}}",
+          "equal": "Both loans have the same total cost",
+          "metric": "Metric",
+          "chartTitle": "Side-by-side comparison"
+        },
+        "metrics": {
+          "monthlyPayment": "Monthly payment",
+          "totalInterest": "Total interest",
+          "totalRepayable": "Total repayable",
+          "totalCost": "Total cost (inc. fee)",
+          "termMonths": "Term (months)"
+        },
+        "title": "Loan calculator",
+        "tabs": {
+          "calculator": "Calculator",
+          "compare": "Compare loans"
+        },
+        "overview": {
+          "costBreakdown": "Interest as % of loan"
+        }
+      },
+      "mortgage": {
+        "inputs": {
+          "title": "Mortgage details",
+          "principal": "Remaining balance",
+          "principalDescription": "Current mortgage balance still outstanding.",
+          "propertyValue": "Property value",
+          "propertyValueDescription": "Optional. Used to estimate equity and loan-to-value.",
+          "rate": "Annual interest rate",
+          "rateDescription": "Fixed-rate annuity assumption for v1.",
+          "term": "Remaining term",
+          "termDescription": "Years left on the mortgage.",
+          "years": " years"
+        },
+        "repayment": {
+          "title": "Repayment strategy",
+          "monthlyOverpayment": "Extra monthly payment",
+          "monthlyOverpaymentDescription": "Additional amount paid every month.",
+          "oneOffOverpayment": "One-off overpayment",
+          "oneOffOverpaymentDescription": "Optional lump sum applied once.",
+          "oneOffMonth": "One-off payment month",
+          "oneOffMonthDescription": "Month number from today for the lump sum.",
+          "metrics": {
+            "timeSaved": "Time saved",
+            "interestSaved": "Interest saved",
+            "paymentWithOverpay": "Monthly outgoing",
+            "payoffWithPlan": "Repayment payoff term"
+          },
+          "summaryActive": "Your repayment plan shortens the mortgage and reduces lifetime interest. Use the charts to compare the remaining balance against the base mortgage.",
+          "summaryEmpty": "Add an extra monthly payment or a one-off overpayment to see how faster repayment changes your mortgage."
+        },
+        "charts": {
+          "balanceTitle": "Balance over time",
+          "balanceBaseline": "Base mortgage",
+          "balanceRepayment": "Repayment plan",
+          "breakdownTitle": "Annual payment mix",
+          "breakdownPrincipal": "Principal",
+          "breakdownInterest": "Interest",
+          "breakdownExtra": "Overpayment"
+        },
+        "term": {
+          "monthsOnly_one": "{{count}} months",
+          "monthsOnly_other": "{{count}} months",
+          "yearsOnly_one": "{{count}} years",
+          "yearsOnly_other": "{{count}} years",
+          "yearsMonths": "{{years}} years {{months}} months"
+        },
+        "amortization": {
+          "title": "Monthly amortization schedule",
+          "month": "Month",
+          "payment": "Payment",
+          "interest": "Interest",
+          "principal": "Principal",
+          "extra": "Extra",
+          "balance": "Balance",
+          "description": "This schedule reflects the repayment plan, including any recurring or one-off overpayments."
+        },
+        "title": "Mortgage calculator",
+        "tabs": {
+          "overview": "Overview",
+          "amortization": "Amortization",
+          "repayment": "Repayment"
+        },
+        "metrics": {
+          "monthlyPayment": "Scheduled monthly payment",
+          "termRemaining": "Time to repay",
+          "totalInterest": "Total interest"
+        },
+        "overview": {
+          "equity": "Estimated equity based on the current property value."
+        }
+      },
+      "salary": {
+        "breakdown": {
+          "gross": "Gross income",
+          "pension": "Pension contribution",
+          "totalIncomeTax": "Income tax",
+          "incomeTax": "Income tax",
+          "nationalInsurance": "National Insurance",
+          "studentLoan": "Student loan",
+          "takeHome": "Take-home pay",
+          "title": "Pay breakdown",
+          "item": "Item",
+          "annual": "Annual",
+          "monthly": "Monthly",
+          "weekly": "Weekly"
+        },
+        "form": {
+          "frequency": {
+            "annual": "Annual",
+            "monthly": "Monthly",
+            "weekly": "Weekly"
+          },
+          "pension": {
+            "none": "None",
+            "salaryScrifice": "Salary sacrifice",
+            "reliefAtSource": "Relief at source",
+            "modePercent": "%",
+            "modeFixed": "£ / year",
+            "typeLabel": "Pension contribution",
+            "placeholderPercent": "e.g. 5",
+            "placeholderFixed": "e.g. 3000"
+          },
+          "studentLoan": {
+            "none": "None",
+            "plan1": "Plan 1 (pre-2012)",
+            "plan2": "Plan 2 (post-2012 England/Wales)",
+            "plan4": "Plan 4 (Scotland)",
+            "plan5": "Plan 5 (from 2023)",
+            "postgrad": "Postgraduate loan",
+            "label": "Student loan repayment"
+          },
+          "incomeLabel": "Gross income",
+          "scotland": "I pay Scottish income tax"
+        },
+        "title": "Salary calculator",
+        "disclaimer": "Based on 2025/26 UK tax rates. Assumes PAYE employment. This is a guide only — consult HMRC or a tax adviser for definitive figures.",
+        "reliefAtSourceNote": "Relief at source: HMRC will add {{amount}} basic-rate tax relief directly into your pension pot.",
+        "tabs": {
+          "overview": "Overview",
+          "breakdown": "Tax breakdown"
+        },
+        "metrics": {
+          "takeHomeAnnual": "Take-home (annual)",
+          "takeHomeMonthly": "Take-home (monthly)",
+          "takeHomeWeekly": "Take-home (weekly)",
+          "incomeTax": "Income tax",
+          "nationalInsurance": "National Insurance",
+          "studentLoan": "Student loan",
+          "pension": "Pension contribution"
+        }
+      },
+      "stampDuty": {
+        "bandTable": {
+          "title": "Tax band breakdown",
+          "band": "Band",
+          "rate": "Rate",
+          "taxableAmount": "Taxable amount",
+          "taxDue": "Tax due",
+          "total": "Total"
+        },
+        "form": {
+          "buyerType": {
+            "standard": "Standard",
+            "firstTimeBuyer": "First-time buyer",
+            "additionalProperty": "Additional property"
+          },
+          "propertyPrice": "Property price",
+          "buyerTypeLabel": "Buyer type"
+        },
+        "title": "Stamp Duty calculator",
+        "disclaimer": "Rates apply to England and Northern Ireland only. Based on April 2025 stamp duty land tax (SDLT) bands.",
+        "ftbRelief": "First-time buyer relief applied — nil-rate band extended to £300,000.",
+        "ftbReliefBadge": "FTB relief",
+        "ftbReliefUnavailable": "Property price exceeds £500,000 — first-time buyer relief is not available. Standard rates apply.",
+        "metrics": {
+          "totalDue": "Stamp duty due",
+          "effectiveRate": "Effective rate"
+        }
+      }
+    },
     "notifications": {
       "icon": {
         "navigationErrorTitle": "Navigation Error",
@@ -578,11 +1068,10 @@
           }
         },
         "title": "Edit Rule",
-        "loading": "Loading rule...",
-        "notFound": "Rule not found.",
         "submitButton": {
           "label": "Update Rule"
-        }
+        },
+        "notFound": "Rule not found."
       },
       "list": {
         "notifications": {
@@ -662,6 +1151,45 @@
       }
     },
     "savingGoals": {
+      "form": {
+        "fields": {
+          "name": {
+            "error": "Name is required",
+            "label": "Goal name",
+            "placeholder": "e.g. Emergency Fund, Vacation, New Car"
+          },
+          "targetAmount": {
+            "error": "Target amount must be greater than 0",
+            "label": "Target amount",
+            "placeholder": "Enter target amount"
+          },
+          "targetDate": {
+            "error": "Target date cannot be in the past",
+            "label": "Target date",
+            "placeholder": "When do you want to reach this goal?"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Optional description of your saving goal"
+          },
+          "accounts": {
+            "label": "Linked accounts",
+            "description": "Progress is calculated from the balance of these accounts.",
+            "placeholder": "Select accounts"
+          }
+        },
+        "notifications": {
+          "updated": "Saving goal updated successfully.",
+          "created": "Saving goal created successfully.",
+          "error": {
+            "title": "Error",
+            "message": "Failed to save the saving goal. Please try again."
+          }
+        },
+        "updateButton": "Update goal",
+        "createButton": "Create goal",
+        "cancelButton": "Cancel"
+      },
       "list": {
         "title": "Saving Goals",
         "addButton": "New Saving Goal"
@@ -678,10 +1206,82 @@
     },
     "subscriptions": {
       "create": {
-        "title": "New subscription"
+        "errors": {
+          "currencyRequired": {
+            "title": "Currency required",
+            "message": "Please select a currency for the subscription."
+          }
+        },
+        "notifications": {
+          "success": "{{name}} created successfully.",
+          "error": {
+            "title": "Could not create subscription",
+            "message": "A network or server error occurred. Please try again."
+          }
+        },
+        "title": "New subscription",
+        "fields": {
+          "name": {
+            "label": "Name",
+            "placeholder": "e.g. Netflix, Spotify, Gym membership"
+          },
+          "type": {
+            "label": "Type"
+          },
+          "cadence": {
+            "label": "Frequency"
+          },
+          "amount": {
+            "label": "Amount",
+            "description": "The recurring payment amount"
+          },
+          "startDate": {
+            "label": "Start date",
+            "description": "When this payment starts or first occurs",
+            "placeholder": "Select a date"
+          },
+          "imageUrl": {
+            "label": "Image URL"
+          }
+        },
+        "submitButton": "Create subscription",
+        "cancelButton": "Cancel"
       },
       "edit": {
-        "title": "Edit subscription"
+        "notifications": {
+          "success": "{{name}} updated successfully.",
+          "error": {
+            "title": "Could not update subscription",
+            "message": "A network or server error occurred. Please try again."
+          }
+        },
+        "title": "Edit subscription",
+        "fields": {
+          "name": {
+            "label": "Name",
+            "placeholder": "e.g. Netflix, Spotify, Gym membership"
+          },
+          "type": {
+            "label": "Type"
+          },
+          "cadence": {
+            "label": "Frequency"
+          },
+          "amount": {
+            "label": "Amount",
+            "description": "The recurring payment amount"
+          },
+          "startDate": {
+            "label": "Start date",
+            "description": "When this payment starts or first occurs",
+            "placeholder": "Select a date"
+          },
+          "imageUrl": {
+            "label": "Image URL"
+          }
+        },
+        "submitButton": "Save changes",
+        "cancelButton": "Cancel"
       },
       "details": {
         "title": "Subscription"
@@ -728,10 +1328,50 @@
       }
     },
     "transactions": {
+      "inbox": {
+        "card": {
+          "categoryUpdated": "Category updated",
+          "categoryUpdateError": {
+            "title": "Error",
+            "message": "Failed to update category. Please try again."
+          },
+          "uncategorised": "Uncategorised",
+          "autoBadge": "Suggested",
+          "editTooltip": "Edit",
+          "confirmButton": "Confirm"
+        },
+        "edit": {
+          "notifications": {
+            "success": "Transaction updated",
+            "error": {
+              "title": "Error",
+              "message": "Failed to update transaction. Please try again."
+            }
+          },
+          "title": "Edit transaction",
+          "form": {
+            "category": {
+              "label": "Category",
+              "placeholder": "Select a category"
+            },
+            "notes": {
+              "label": "Notes",
+              "placeholder": "Add a note…"
+            },
+            "cancelButton": "Cancel",
+            "saveButton": "Save"
+          }
+        },
+        "title": "Transactions Inbox",
+        "emptyState": {
+          "title": "You're all caught up",
+          "description": "No transactions waiting for your review."
+        },
+        "allLoaded": "All transactions loaded"
+      },
       "create": {
         "notifications": {
           "success": {
-            "title": "Success",
             "message": "Transaction created successfully"
           },
           "error": {
@@ -743,6 +1383,9 @@
         "form": {
           "submitButton": {
             "label": "Add Transaction"
+          },
+          "cancelButton": {
+            "label": "Cancel"
           }
         }
       },
@@ -750,7 +1393,6 @@
         "notifications": {
           "update": {
             "success": {
-              "title": "Success",
               "message": "Transaction updated successfully"
             },
             "error": {
@@ -760,7 +1402,6 @@
           },
           "delete": {
             "success": {
-              "title": "Success",
               "message": "Transaction deleted successfully"
             },
             "error": {
@@ -785,9 +1426,6 @@
             "label": "Delete"
           }
         }
-      },
-      "inbox": {
-        "title": "Transactions Inbox"
       },
       "list": {
         "quickEdit": {
@@ -830,61 +1468,22 @@
         }
       }
     },
-    "register": {
-      "form": {
-        "name": {
-          "validation": "CNF: Name must have at least 2 characters",
-          "label": "Name",
-          "placeholder": "Enter your name"
+    "user": {
+      "edit": {
+        "title": "Edit profile",
+        "fields": {
+          "name": {
+            "label": "Name",
+            "placeholder": "Enter your name"
+          },
+          "email": {
+            "label": "Email",
+            "placeholder": "Enter your email"
+          }
         },
-        "email": {
-          "validation": "CNF: Invalid email",
-          "label": "Email address",
-          "placeholder": "Enter your email"
-        },
-        "password": {
-          "validation": "CNF: Password must have at least 6 characters",
-          "label": "Password",
-          "placeholder": "Password"
-        },
-        "confirmPassword": {
-          "validation": "CNF: Passwords do not match",
-          "label": "Confirm Password",
-          "placeholder": "Confirm your password"
-        },
-        "termsAgreement": "Agree with the {{link}}",
-        "termsLink": "terms and conditions",
-        "submitButton": "Create new account"
-      },
-      "errors": {
-        "userAlreadyExists": "An account with this email already exists.",
-        "weakPassword": "Password is too weak. Please use a stronger password.",
-        "invalidEmail": "Please enter a valid email address.",
-        "emailConfirmationRequired": "Please check your email to confirm your account.",
-        "signupDisabled": "Registration is currently disabled.",
-        "loginError": "Unable to log in. Please try again."
-      },
-      "notifications": {
-        "accountCreationFailed": {
-          "title": "Account creation failed"
-        },
-        "loginFailed": {
-          "title": "Login failed",
-          "message": "Account created successfully, but login failed: {{error}}"
-        },
-        "success": {
-          "title": "Welcome!",
-          "message": "Your account has been created successfully."
-        }
-      },
-      "emailConfirmModal": {
-        "title": "Check your email",
-        "message": "Please check your email to confirm your account. You will need to verify your email address before you can log in.",
-        "button": "Go back to login page"
-      },
-      "title": "Create new account",
-      "alreadyHaveAccount": "Already have an account?",
-      "signInLink": "Sign in"
+        "submitButton": "Save changes",
+        "cancelButton": "Cancel"
+      }
     }
   },
   "landing": {
