@@ -1,8 +1,8 @@
-import { Burger, Group, Title, Tooltip, UnstyledButton } from '@mantine/core';
-import { IconUser } from '@tabler/icons-react';
+import { Burger, Group, Title, UnstyledButton } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { GualletLogo } from '../GualletLogo/GualletLogo';
 import { NotificationIcon } from '@/features/notifications/components/NotificationIcon';
+import { UserMenuButton } from './UserMenuButton';
 
 interface Props {
   isOpened: boolean;
@@ -36,9 +36,7 @@ export default function AppHeader({ isOpened, onToggle }: Readonly<Props>) {
 
       <Group>
         <NotificationIcon />
-        <Tooltip label="User">
-          <IconUser />
-        </Tooltip>
+        <UserMenuButton />
       </Group>
     </Group>
   );
