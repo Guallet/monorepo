@@ -4,7 +4,6 @@ import {
   IconBuildingBank,
   IconCash,
   IconSettings,
-  IconLogout,
   IconTools,
   IconCategory2,
   IconChartFunnel,
@@ -12,9 +11,8 @@ import {
   IconRepeat,
   Icon,
 } from '@tabler/icons-react';
-import { AppShell, Button, Divider, ScrollArea } from '@mantine/core';
+import { AppShell, ScrollArea } from '@mantine/core';
 import { LinksGroup } from './NavbarLinksGroup';
-import { useNavigate } from '@tanstack/react-router';
 
 type MenuData = {
   label: string;
@@ -98,35 +96,15 @@ interface Props {
 }
 
 export function AppNavBar({ onItemSelected }: Readonly<Props>) {
-  // TODO: Instead of this hook, the navbar should use the <Link> component
-  const navigate = useNavigate();
-
   return (
-    <>
-      <AppShell.Section grow my="md" component={ScrollArea}>
-        {menuData.map((item) => {
-          return (
-            <LinksGroup
-              {...item}
-              key={item.label}
-              onItemSelected={onItemSelected}
-            />
-          );
-        })}
-      </AppShell.Section>
-      <AppShell.Section>
-        <Divider />
-
-        <Button
-          variant="transparent"
-          onClick={() => {
-            navigate({ to: '/logout' });
-          }}
-        >
-          <IconLogout />
-          Logout
-        </Button>
-      </AppShell.Section>
-    </>
+    <AppShell.Section grow my="md" component={ScrollArea}>
+      {menuData.map((item) => (
+        <LinksGroup
+          {...item}
+          key={item.label}
+          onItemSelected={onItemSelected}
+        />
+      ))}
+    </AppShell.Section>
   );
 }
