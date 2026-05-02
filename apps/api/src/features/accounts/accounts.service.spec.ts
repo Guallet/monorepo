@@ -170,6 +170,7 @@ describe('AccountsService', () => {
         type: dto.type,
         source: AccountSource.UNKNOWN,
         source_name: undefined,
+        institutionId: null,
         properties: null,
       });
       expect(mockTransactionRepository.save).not.toHaveBeenCalled();
@@ -208,9 +209,42 @@ describe('AccountsService', () => {
         type: dto.type,
         source: AccountSource.UNKNOWN,
         source_name: undefined,
+        institutionId: null,
         properties: null,
       });
       expect(mockTransactionRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should persist the institution id when provided', async () => {
+      const userId = 'user-123';
+      const dto: CreateAccountRequest = {
+        name: 'Institution Account',
+        type: AccountType.CURRENT_ACCOUNT,
+        currency: 'GBP',
+        institution_id: '3f6f0b7d-b3b4-45f9-9b42-8f4f8c9a9f01',
+      };
+
+      const savedAccount = {
+        id: 'account-1',
+        user_id: userId,
+        name: dto.name,
+        balance: 0,
+        currency: dto.currency,
+        type: dto.type,
+        source: AccountSource.UNKNOWN,
+        institutionId: dto.institution_id,
+      };
+
+      mockAccountRepository.save.mockResolvedValue(savedAccount);
+
+      const result = await service.create({ user_id: userId, dto });
+
+      expect(result).toEqual(savedAccount);
+      expect(mockAccountRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          institutionId: dto.institution_id,
+        }),
+      );
     });
 
     it('should create initial balance transaction when requested', async () => {

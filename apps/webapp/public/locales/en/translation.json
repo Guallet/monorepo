@@ -30,6 +30,11 @@
         "confirm": "Confirm"
       }
     },
+    "dateRangePicker": {
+      "selectRange": "Select range",
+      "cancel": "Cancel",
+      "apply": "Apply"
+    },
     "dialogs": {
       "delete": {
         "cancelButton": {
@@ -136,6 +141,12 @@
       },
       "reset": "Reset filters",
       "apply": "Apply filters"
+    }
+  },
+  "layout": {
+    "userMenu": {
+      "settings": "Settings",
+      "logout": "Log out"
     }
   },
   "feature": {
@@ -262,21 +273,51 @@
         "savingsAccount": "Savings Account"
       },
       "add": {
-        "errors": {
-          "currencyRequired": {
-            "title": "Currency required",
-            "message": "Please select a currency for the account."
+        "typeDesc": {
+          "current": "Everyday spending & income",
+          "savings": "Pots, ISAs, easy-access",
+          "credit": "Revolving credit balance",
+          "investment": "ISA, broker, pension",
+          "pension": "Retirement pots & pensions",
+          "mortgage": "Property-secured loan",
+          "loan": "Personal, student, car",
+          "other": "Cash, crypto, or anything else"
+        },
+        "chooseMethod": {
+          "title": "Add an account",
+          "subtitle": "Choose how you'd like to connect your account",
+          "openBanking": {
+            "title": "Connect via Open Banking",
+            "desc": "Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money."
           },
+          "recommended": "Recommended",
+          "manual": {
+            "title": "Add manually",
+            "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
+          }
+        },
+        "steps": {
+          "type": "Type",
+          "details": "Details",
+          "done": "Done"
+        },
+        "typeStep": {
+          "title": "What type of account?",
+          "subtitle": "This helps Guallet categorise balances and transactions correctly."
+        },
+        "institutionPicker": {
+          "placeholder": "Search for a bank…",
+          "searchPlaceholder": "Type to search…",
+          "none": "No institution"
+        },
+        "errors": {
           "validation": {
             "title": "Check your entries",
             "message": "Please correct the highlighted fields before continuing."
-          }
-        },
-        "notifications": {
-          "success": "{{name}} created successfully.",
-          "error": {
-            "title": "Could not create account",
-            "message": "A network or server error occurred. Please try again."
+          },
+          "currencyRequired": {
+            "title": "Currency required",
+            "message": "Please select a currency for the account."
           }
         },
         "fields": {
@@ -316,8 +357,8 @@
             "label": "Account name",
             "placeholder": "e.g. HSBC Current Account"
           },
-          "type": {
-            "label": "Account type"
+          "institution": {
+            "label": "Institution"
           },
           "balance": {
             "label": "Initial balance",
@@ -328,12 +369,61 @@
             "description": "Records the initial balance as the first transaction"
           }
         },
-        "title": "New account",
+        "detailsStep": {
+          "title": "Account details",
+          "subtitle": "Setting up a {{type}}"
+        },
         "specificDetails": {
           "title": "Account details"
         },
         "submitButton": "Create account",
-        "cancelButton": "Cancel"
+        "success": {
+          "title": "Account added!",
+          "subtitle": "\"{{name}}\" has been added to your Guallet.",
+          "newAccount": "New account",
+          "goToAccounts": "Go to Accounts",
+          "addAnother": "Add another account"
+        },
+        "obSteps": {
+          "country": "Country",
+          "bank": "Bank",
+          "connecting": "Connecting"
+        },
+        "obCountry": {
+          "title": "Where is your bank?",
+          "subtitle": "Select the country where your bank is based.",
+          "searchPlaceholder": "Search country…",
+          "noResults": "No results for \"{{search}}\"",
+          "continueWith": "Continue with {{name}}"
+        },
+        "obBank": {
+          "title": "Select your bank",
+          "subtitle": "You'll be redirected to your bank's secure login. Guallet only requests read-only access.",
+          "searchPlaceholder": "Search bank…",
+          "noResults": "No banks found for \"{{search}}\"",
+          "noInstitutions": "No institutions available for this country",
+          "psd2Notice": "You'll be redirected to {{bank}}'s secure website. Guallet requests read-only access via PSD2 Open Banking and never sees your login credentials.",
+          "psd2NoticeGeneric": "Guallet requests read-only access via PSD2 Open Banking and never sees your login credentials.",
+          "connectTo": "Connect to {{bank}}",
+          "selectBank": "Select a bank to continue"
+        },
+        "obRedirect": {
+          "title": "Connecting to {{bank}}",
+          "subtitle": "You'll be redirected to your bank's secure login page. Return to Guallet when done.",
+          "goToBank": "Go to {{bank}}",
+          "error": {
+            "title": "Connection failed",
+            "message": "Could not start the bank connection. Please try again."
+          }
+        },
+        "notifications": {
+          "success": "{{name}} created successfully.",
+          "error": {
+            "title": "Could not create account",
+            "message": "A network or server error occurred. Please try again."
+          }
+        },
+        "title": "New account"
       },
       "edit": {
         "notifications": {
@@ -367,7 +457,10 @@
     }
   },
   "common": {
-    "optional": "Optional"
+    "back": "Back",
+    "continue": "Continue",
+    "optional": "Optional",
+    "startOver": "Start over"
   },
   "auth": {
     "layout": {
@@ -703,6 +796,41 @@
       }
     },
     "connections": {
+      "callback": {
+        "success": {
+          "notification": "Accounts linked successfully",
+          "notificationCount_one": "{{count}} accounts linked",
+          "notificationCount_other": "{{count}} accounts linked",
+          "title": "Accounts found!",
+          "subtitle_one": "Found {{count}} accounts. Choose which to import.",
+          "subtitle_other": "Found {{count}} accounts. Choose which to import.",
+          "selectedCount": "{{selected}} of {{total}} accounts selected",
+          "import_one": "Import {{count}} account",
+          "import_other": "Import {{count}} accounts",
+          "importNone": "Select accounts to import"
+        },
+        "error": {
+          "title": "Link failed",
+          "message": "Could not link accounts. Please try again.",
+          "unknown": "Unknown error",
+          "connectionFailed": "Connection failed",
+          "description": "Your bank rejected the connection request. This can happen if the session expired or the bank's Open Banking service is temporarily unavailable.",
+          "whatToTry": "What to try next",
+          "tip1": "Check your bank app for any pending authorisation requests",
+          "tip2": "Make sure you completed the login process before returning",
+          "tip3": "Try again — the bank's service may now be available",
+          "retry": "Try again",
+          "manual": "Add account manually instead"
+        },
+        "linking": "Linking accounts…",
+        "loading": "Loading accounts…",
+        "cancelled": {
+          "title": "Authorisation cancelled",
+          "description": "No accounts were connected. You cancelled the authorisation. You can try again or add an account manually.",
+          "retry": "Try connecting again",
+          "manual": "Add account manually"
+        }
+      },
       "create": {
         "title": "Connect a bank"
       },

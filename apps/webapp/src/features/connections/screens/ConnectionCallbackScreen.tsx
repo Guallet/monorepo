@@ -2,10 +2,14 @@ import {
   useConnectionMutations,
   useOpenBankingAccountsForConnection,
 } from '@guallet/api-react';
-import { Button, Card, Flex, Loader, Stack, Text } from '@mantine/core';
+import { Center, Loader, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useRef } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CancelledView } from '../components/ConnectionCallback/CancelledView';
+import { ErrorView } from '../components/ConnectionCallback/ErrorView';
+import { SuccessView } from '../components/ConnectionCallback/SuccessView';
 
 interface ConnectionCallbackScreenProps {
   connectionId?: string | null;
@@ -18,46 +22,59 @@ export function ConnectionCallbackScreen({
   error,
   details,
 }: Readonly<ConnectionCallbackScreenProps>) {
-  const { accounts, isLoading } =
-    useOpenBankingAccountsForConnection(connectionId);
+  const { accounts, isLoading } = useOpenBankingAccountsForConnection(connectionId);
   const { linkObAccountsMutation } = useConnectionMutations();
   const navigate = useNavigate();
-  const alreadyLinkedRef = useRef(false);
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    if (!connectionId || accounts.length === 0 || alreadyLinkedRef.current) {
-      return;
-    }
+  const [selectedIds, setSelectedIds] = useState<Record<string, boolean>>({});
 
-    alreadyLinkedRef.current = true;
+  const defaultSelectedIds = useMemo(
+    () => Object.fromEntries(accounts.map((account) => [account.id, true])),
+    [accounts],
+  );
+  const effectiveSelectedIds =
+    Object.keys(selectedIds).length > 0 ? selectedIds : defaultSelectedIds;
 
-    const accountIds = accounts.map((account) => account.id);
+  function handleImport() {
+    const accountIds = Object.entries(effectiveSelectedIds)
+      .filter(([, selected]) => selected)
+      .map(([id]) => id);
+
+    if (accountIds.length === 0) return;
 
     linkObAccountsMutation.mutate(
       { accountIds },
       {
         onSuccess: () => {
           notifications.show({
-            title: 'Accounts linked successfully',
-            message: `${accountIds.length} accounts linked`,
+            title: t('screens.connections.callback.success.notification', 'Accounts linked successfully'),
+            message: t('screens.connections.callback.success.notificationCount', '{{count}} accounts linked', {
+              count: accountIds.length,
+            }),
             color: 'green',
           });
+          navigate({ to: '/accounts', replace: true });
         },
         onError: (mutationError) => {
           console.error('Error linking accounts:', mutationError);
+          notifications.show({
+            title: t('screens.connections.callback.error.title', 'Link failed'),
+            message: t('screens.connections.callback.error.message', 'Could not link accounts. Please try again.'),
+            color: 'red',
+          });
         },
       },
     );
-  }, [connectionId, accounts, linkObAccountsMutation]);
+  }
 
   if (error) {
     return (
       <ErrorView
         error={error}
         details={details}
-        onActionPressed={() => {
-          navigate({ to: '/connections', replace: true });
-        }}
+        onRetry={() => navigate({ to: '/accounts/new', replace: true })}
+        onBack={() => navigate({ to: '/accounts/new', replace: true })}
       />
     );
   }
@@ -65,99 +82,46 @@ export function ConnectionCallbackScreen({
   if (linkObAccountsMutation.isError) {
     return (
       <ErrorView
-        error={linkObAccountsMutation.error?.message}
+        error={linkObAccountsMutation.error?.message ?? t('screens.connections.callback.error.unknown', 'Unknown error')}
         details={linkObAccountsMutation.error?.cause?.toString()}
-        onActionPressed={() => {
-          navigate({ to: '/connections', replace: true });
-        }}
+        onRetry={() => navigate({ to: '/accounts/new', replace: true })}
+        onBack={() => navigate({ to: '/accounts/new', replace: true })}
       />
     );
   }
 
   if (isLoading || linkObAccountsMutation.isPending) {
     return (
-      <Flex
-        mih={50}
-        gap="md"
-        justify="center"
-        align="center"
-        direction="column"
-        wrap="wrap"
-      >
-        <Loader />
-        <Text>Syncing accounts...</Text>
-      </Flex>
+      <Center mih={200}>
+        <Stack align="center" gap="md">
+          <Loader />
+          <Text size="sm" c="dimmed">
+            {linkObAccountsMutation.isPending
+              ? t('screens.connections.callback.linking', 'Linking accounts…')
+              : t('screens.connections.callback.loading', 'Loading accounts…')}
+          </Text>
+        </Stack>
+      </Center>
     );
   }
 
   if (accounts.length === 0) {
     return (
-      <EmptyAccountsView
-        onActionPressed={() => {
-          navigate({ to: '/connections', replace: true });
-        }}
+      <CancelledView
+        onRetry={() => navigate({ to: '/accounts/new', replace: true })}
+        onBack={() => navigate({ to: '/accounts/new', replace: true })}
       />
     );
   }
 
   return (
-    <Stack>
-      <Text>Connected to the following accounts:</Text>
-      {accounts.map((account) => {
-        return (
-          <Card withBorder key={account.id}>
-            <Stack key={account.id}>
-              <Text>{account.details.name ?? account.details.ownerName}</Text>
-              <Text>Details: {account.details.details}</Text>
-              <Text>Account number: {account.details.bban}</Text>
-              <Text>Iban: {account.details.iban}</Text>
-              <Text>Currency: {account.details.currency}</Text>
-              <Text>Type: {account.details.cashAccountType}</Text>
-            </Stack>
-          </Card>
-        );
-      })}
-      <Button
-        onClick={() => {
-          navigate({ to: '/accounts', replace: true });
-        }}
-      >
-        Go back to accounts
-      </Button>
-    </Stack>
-  );
-}
-
-interface ErrorViewProps {
-  error: string;
-  details?: string | null;
-  onActionPressed: () => void;
-}
-function ErrorView({
-  error,
-  details,
-  onActionPressed,
-}: Readonly<ErrorViewProps>) {
-  return (
-    <Stack>
-      <Text>Error adding the account</Text>
-      <Text>Error: {error}</Text>
-      {details && <Text>What went wrong: {details}</Text>}
-      <Button onClick={onActionPressed}>Go back to connections</Button>
-    </Stack>
-  );
-}
-
-interface EmptyAccountsViewProps {
-  onActionPressed: () => void;
-}
-function EmptyAccountsView({
-  onActionPressed,
-}: Readonly<EmptyAccountsViewProps>) {
-  return (
-    <Stack>
-      <Text>There are no accounts available to connect</Text>
-      <Button onClick={onActionPressed}>Go back to connections</Button>
-    </Stack>
+    <SuccessView
+      accounts={accounts}
+      selectedIds={effectiveSelectedIds}
+      onToggle={(id) => setSelectedIds((prev) => ({ ...prev, [id]: !prev[id] }))}
+      onImport={handleImport}
+      onBack={() => navigate({ to: '/accounts/new', replace: true })}
+      isLoading={linkObAccountsMutation.isPending}
+    />
   );
 }
