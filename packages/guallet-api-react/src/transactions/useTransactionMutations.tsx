@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 import {
   CreateTransactionRequest,
   UpdateTransactionRequest,
-} from "@guallet/api-client";
+} from '@guallet/api-client';
 
-const TRANSACTIONS_QUERY_KEY = "transactions";
+const TRANSACTIONS_QUERY_KEY = 'transactions';
 
 export function useTransactionMutations() {
   const gualletClient = useGualletClient();
@@ -44,7 +44,13 @@ export function useTransactionMutations() {
   });
 
   const updateTransactionCategoryMutation = useMutation({
-    mutationFn: async ({ id, categoryId }: { id: string; categoryId: string }) => {
+    mutationFn: async ({
+      id,
+      categoryId,
+    }: {
+      id: string;
+      categoryId: string;
+    }) => {
       return await gualletClient.transactions.updateTransactionCategory({
         transactionId: id,
         categoryId,
@@ -61,7 +67,13 @@ export function useTransactionMutations() {
   });
 
   const updateTransactionMutation = useMutation({
-    mutationFn: async ({ id, request }: { id: string; request: UpdateTransactionRequest }) => {
+    mutationFn: async ({
+      id,
+      request,
+    }: {
+      id: string;
+      request: UpdateTransactionRequest;
+    }) => {
       return await gualletClient.transactions.update({
         transactionId: id,
         request,

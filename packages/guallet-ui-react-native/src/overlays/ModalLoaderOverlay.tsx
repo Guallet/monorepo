@@ -1,5 +1,5 @@
-import { ActivityIndicator, Modal, View } from "react-native";
-import { Label } from "./../../src/components/typography";
+import { ActivityIndicator, Modal, View } from 'react-native';
+import { Label } from './../../src/components/typography';
 
 interface OverlayLoaderProps extends React.ComponentProps<typeof Modal> {
   isVisible: boolean;
@@ -24,19 +24,19 @@ export function ModalLoaderOverlay({
     >
       <View
         style={{
-          position: "absolute",
+          position: 'absolute',
           left: 0,
           right: 0,
           top: 0,
           bottom: 0,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "rgba(100, 100, 100, 0.6)",
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(100, 100, 100, 0.6)',
         }}
       >
         <View
           style={{
-            backgroundColor: "white",
+            backgroundColor: 'white',
             padding: 40,
             borderRadius: 20,
           }}

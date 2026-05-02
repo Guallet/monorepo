@@ -1,7 +1,7 @@
-import { View } from "react-native";
-import { Label } from "../typography";
-import Group from "./Group";
-import { useTheme } from "../../theme";
+import { View } from 'react-native';
+import { Label } from '../typography';
+import Group from './Group';
+import { useTheme } from '../../theme';
 
 interface DividerProps extends React.ComponentProps<typeof View> {
   color?: string;
@@ -10,7 +10,7 @@ interface DividerProps extends React.ComponentProps<typeof View> {
 }
 
 export function Divider({
-  color = "black",
+  color = 'black',
   width = 1,
   label,
   style,

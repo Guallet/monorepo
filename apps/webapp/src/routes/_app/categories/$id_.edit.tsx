@@ -1,14 +1,14 @@
-import { AppSection } from "@/components/Cards/AppSection";
-import { gualletClient } from "@/api/gualletClient";
-import { useCategory } from "@guallet/api-react";
-import { Stack, TextInput, ColorInput, Button } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { BaseScreen } from "@/components/Screens/BaseScreen";
+import { AppSection } from '@/components/Cards/AppSection';
+import { gualletClient } from '@/api/gualletClient';
+import { useCategory } from '@guallet/api-react';
+import { Stack, TextInput, ColorInput, Button } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BaseScreen } from '@/components/Screens/BaseScreen';
 
-export const Route = createFileRoute("/_app/categories/$id_/edit")({
+export const Route = createFileRoute('/_app/categories/$id_/edit')({
   component: EditCategoryPage,
 });
 
@@ -20,9 +20,9 @@ function EditCategoryPage() {
   const { category, isLoading } = useCategory(id);
   const [isBusy, setIsBusy] = useState<boolean>(false);
 
-  const [name, setName] = useState<string>("");
-  const [icon, setIcon] = useState<string>("");
-  const [color, setColor] = useState<string>("");
+  const [name, setName] = useState<string>('');
+  const [icon, setIcon] = useState<string>('');
+  const [color, setColor] = useState<string>('');
 
   useEffect(() => {
     if (category) {
@@ -52,12 +52,12 @@ function EditCategoryPage() {
       });
 
       notifications.show({
-        title: "Category updated",
+        title: 'Category updated',
         message: `Category ${updatedCategory.name} has been updated`,
-        color: "green",
+        color: 'green',
       });
 
-      navigation({ to: "/categories/$id", params: { id: id } });
+      navigation({ to: '/categories/$id', params: { id: id } });
     } catch (error) {
       console.error(error);
     } finally {
@@ -68,7 +68,7 @@ function EditCategoryPage() {
   return (
     <BaseScreen
       isLoading={isLoading}
-      title={t("screens.categories.edit.title", "Edit category")}
+      title={t('screens.categories.edit.title', 'Edit category')}
     >
       <Stack>
         <AppSection title="Category details">
@@ -92,22 +92,22 @@ function EditCategoryPage() {
             onChange={(value) => setColor(value)}
             format="hex"
             swatches={[
-              "#25262b",
-              "#868e96",
-              "#fa5252",
-              "#e64980",
-              "#be4bdb",
-              "#7950f2",
-              "#4c6ef5",
-              "#228be6",
-              "#15aabf",
-              "#12b886",
-              "#40c057",
-              "#82c91e",
-              "#fab005",
-              "#fd7e14",
-              "#fd7e14",
-              "#fd7e14",
+              '#25262b',
+              '#868e96',
+              '#fa5252',
+              '#e64980',
+              '#be4bdb',
+              '#7950f2',
+              '#4c6ef5',
+              '#228be6',
+              '#15aabf',
+              '#12b886',
+              '#40c057',
+              '#82c91e',
+              '#fab005',
+              '#fd7e14',
+              '#fd7e14',
+              '#fd7e14',
             ]}
           />
         </AppSection>

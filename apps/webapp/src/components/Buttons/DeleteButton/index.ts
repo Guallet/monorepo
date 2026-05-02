@@ -1,2 +1,2 @@
-export * from "./DeleteIconButton";
-export * from "./DeleteButton";
+export * from './DeleteIconButton';
+export * from './DeleteButton';

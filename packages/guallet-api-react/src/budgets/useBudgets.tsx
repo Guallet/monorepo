@@ -1,8 +1,8 @@
-import { BudgetDto, TransactionDto } from "@guallet/api-client";
-import { useQuery } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { BudgetDto, TransactionDto } from '@guallet/api-client';
+import { useQuery } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const BUDGETS_QUERY_KEY = "budgets";
+const BUDGETS_QUERY_KEY = 'budgets';
 
 export function useBudgets(params?: { month?: number; year?: number }) {
   const gualletClient = useGualletClient();
@@ -52,7 +52,7 @@ export function useBudgetTransactions({
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [BUDGETS_QUERY_KEY, budgetId, "transactions", args],
+    queryKey: [BUDGETS_QUERY_KEY, budgetId, 'transactions', args],
     queryFn: async () => {
       return await gualletClient.budgets.getBudgetTransactions({
         budgetId,

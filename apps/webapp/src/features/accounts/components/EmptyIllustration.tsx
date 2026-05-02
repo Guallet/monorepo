@@ -29,7 +29,14 @@ export function EmptyIllustration() {
         strokeWidth="1.5"
       />
       <g>
-        <rect x="30" y="40" width="140" height="64" rx="12" fill="var(--mantine-color-blue-6)" />
+        <rect
+          x="30"
+          y="40"
+          width="140"
+          height="64"
+          rx="12"
+          fill="var(--mantine-color-blue-6)"
+        />
         <circle cx="48" cy="58" r="8" fill="white" opacity="0.9" />
         <path
           d="M44 58 L52 58 M44 60 L52 60"
@@ -37,10 +44,42 @@ export function EmptyIllustration() {
           strokeWidth="1.4"
           strokeLinecap="round"
         />
-        <rect x="64" y="54" width="60" height="6" rx="3" fill="white" opacity="0.4" />
-        <rect x="64" y="66" width="40" height="6" rx="3" fill="white" opacity="0.25" />
-        <rect x="40" y="84" width="80" height="6" rx="3" fill="white" opacity="0.15" />
-        <rect x="128" y="84" width="20" height="6" rx="3" fill="var(--mantine-color-teal-4)" opacity="0.9" />
+        <rect
+          x="64"
+          y="54"
+          width="60"
+          height="6"
+          rx="3"
+          fill="white"
+          opacity="0.4"
+        />
+        <rect
+          x="64"
+          y="66"
+          width="40"
+          height="6"
+          rx="3"
+          fill="white"
+          opacity="0.25"
+        />
+        <rect
+          x="40"
+          y="84"
+          width="80"
+          height="6"
+          rx="3"
+          fill="white"
+          opacity="0.15"
+        />
+        <rect
+          x="128"
+          y="84"
+          width="20"
+          height="6"
+          rx="3"
+          fill="var(--mantine-color-teal-4)"
+          opacity="0.9"
+        />
       </g>
     </svg>
   );

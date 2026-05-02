@@ -1,9 +1,9 @@
-import { useInstitutions, useOpenBankingConnection } from "@guallet/api-react";
-import { Card, Group, Stack, Text } from "@mantine/core";
-import { InstitutionAvatar } from "./InstitutionAvatar";
-import { ConnectionStatusBadge } from "./ConnectionStatusBadge";
-import { useTranslation } from "react-i18next";
-import { useLocale } from "@/i18n/useLocale";
+import { useInstitutions, useOpenBankingConnection } from '@guallet/api-react';
+import { Card, Group, Stack, Text } from '@mantine/core';
+import { InstitutionAvatar } from './InstitutionAvatar';
+import { ConnectionStatusBadge } from './ConnectionStatusBadge';
+import { useTranslation } from 'react-i18next';
+import { useLocale } from '@/i18n/useLocale';
 
 interface ConnectionCardProps extends React.ComponentProps<typeof Card> {
   connectionId: string;
@@ -21,16 +21,16 @@ export function ConnectionCard({
   const { locale } = useLocale();
 
   const institution = institutions.find(
-    (inst) => inst.nordigen_id === connection?.institution_id
+    (inst) => inst.nordigen_id === connection?.institution_id,
   );
 
-  const formattedDate = new Date(connection?.created ?? "").toLocaleDateString(
+  const formattedDate = new Date(connection?.created ?? '').toLocaleDateString(
     locale,
     {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    },
   );
 
   return (
@@ -40,7 +40,7 @@ export function ConnectionCard({
       radius="md"
       {...props}
       onClick={onClick}
-      style={{ cursor: onClick ? "pointer" : "default" }}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
       <Stack gap="xs">
         {connection && institution && (
@@ -54,27 +54,27 @@ export function ConnectionCard({
               <ConnectionStatusBadge
                 status={
                   connection.status ||
-                  t("components.connectionCard.status.unknown", "unknown")
+                  t('components.connectionCard.status.unknown', 'unknown')
                 }
               />
             </Group>
 
             <Text size="sm" c="dimmed">
-              {t("components.connectionCard.created", "Created:")}{" "}
+              {t('components.connectionCard.created', 'Created:')}{' '}
               {formattedDate}
             </Text>
             <Text size="sm" c="dimmed">
-              {t("components.connectionCard.updated", "Updated:")}{" "}
+              {t('components.connectionCard.updated', 'Updated:')}{' '}
               {connection.updated_at}
             </Text>
             <Text size="sm">
               {connection.accounts.length > 0
-                ? t("components.connectionCard.accountsLinked", {
+                ? t('components.connectionCard.accountsLinked', {
                     count: connection.accounts.length,
                   })
                 : t(
-                    "components.connectionCard.noAccountsLinked",
-                    "No accounts linked"
+                    'components.connectionCard.noAccountsLinked',
+                    'No accounts linked',
                   )}
             </Text>
           </>

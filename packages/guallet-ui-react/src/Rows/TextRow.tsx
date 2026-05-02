@@ -1,4 +1,4 @@
-import { BaseRow } from "./BaseRow/BaseRow";
+import { BaseRow } from './BaseRow/BaseRow';
 
 interface TextRowProps extends React.ComponentProps<typeof BaseRow> {
   label: string;
@@ -10,7 +10,7 @@ export function TextRow({ label, value, ...props }: Readonly<TextRowProps>) {
       label={label}
       value={value}
       onClick={() => {
-        console.log("Text clicked");
+        console.log('Text clicked');
       }}
       {...props}
     />

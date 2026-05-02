@@ -1,9 +1,11 @@
-import { Group, Text } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
-import classes from "./BaseRow.module.css";
+import { Group, Text } from '@mantine/core';
+import { IconChevronRight } from '@tabler/icons-react';
+import classes from './BaseRow.module.css';
 
-interface BaseRowProps
-  extends Omit<React.ComponentProps<typeof Group>, "onClick"> {
+interface BaseRowProps extends Omit<
+  React.ComponentProps<typeof Group>,
+  'onClick'
+> {
   label: string;
   value?: React.ReactNode;
   onClick?: () => void;
@@ -27,7 +29,7 @@ export function BaseRow({
       wrap="nowrap"
       {...(onClick && {
         onClick: () => onClick(),
-        style: { cursor: "pointer" },
+        style: { cursor: 'pointer' },
         className: classes.baseRow,
       })}
     >

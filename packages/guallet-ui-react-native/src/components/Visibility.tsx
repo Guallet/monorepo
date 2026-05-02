@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View } from 'react-native';
 
 interface VisibilityProps extends React.ComponentProps<typeof View> {
   isVisible: boolean;

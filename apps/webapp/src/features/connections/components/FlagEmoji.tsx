@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import { Text } from '@mantine/core';
 interface FlagEmojiProps {
   countryCode: string;
 }
@@ -6,7 +6,7 @@ interface FlagEmojiProps {
 export function FlagEmoji({ countryCode }: Readonly<FlagEmojiProps>) {
   const codePoints = countryCode
     .toUpperCase()
-    .split("")
+    .split('')
     .map((char) => 127397 + char.charCodeAt(0));
   return <Text>{String.fromCodePoint(...codePoints)}</Text>;
 }

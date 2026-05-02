@@ -1,11 +1,11 @@
-import { useCategory } from "@guallet/api-react";
-import { GualletIcon, GualletIconName } from "../GualletIcon/GualletIcon";
+import { useCategory } from '@guallet/api-react';
+import { GualletIcon, GualletIconName } from '../GualletIcon/GualletIcon';
 
 interface CategoryIconProps {
   categoryId: string | null;
 }
 
-const defaultIconName: GualletIconName = "IconQuestionMark";
+const defaultIconName: GualletIconName = 'IconQuestionMark';
 
 export function CategoryIcon({ categoryId }: CategoryIconProps) {
   return categoryId === null ? (

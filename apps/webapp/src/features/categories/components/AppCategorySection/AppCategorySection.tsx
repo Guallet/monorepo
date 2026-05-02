@@ -1,11 +1,11 @@
-import { AppSection } from "@/components/Cards/AppSection";
-import { CategoryDto } from "@guallet/api-client";
-import { AppCategory } from "@guallet/api-react";
-import { Group, ActionIcon, Stack, Divider, Button } from "@mantine/core";
-import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
-import { useState } from "react";
-import { AppCategoryRow } from "../AppCategoryRow/AppCategoryRow";
-import { CategoryRow } from "../CategoryRow/CategoryRow";
+import { AppSection } from '@/components/Cards/AppSection';
+import { CategoryDto } from '@guallet/api-client';
+import { AppCategory } from '@guallet/api-react';
+import { Group, ActionIcon, Stack, Divider, Button } from '@mantine/core';
+import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
+import { useState } from 'react';
+import { AppCategoryRow } from '../AppCategoryRow/AppCategoryRow';
+import { CategoryRow } from '../CategoryRow/CategoryRow';
 
 interface AppCategorySectionProps {
   category: AppCategory;

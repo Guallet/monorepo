@@ -1,6 +1,6 @@
-import { UnstyledButton } from "@mantine/core";
-import classes from "./BaseButton.module.css";
-import { ReactNode } from "react";
+import { UnstyledButton } from '@mantine/core';
+import classes from './BaseButton.module.css';
+import { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;

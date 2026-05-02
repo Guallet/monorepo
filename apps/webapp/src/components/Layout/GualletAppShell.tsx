@@ -1,9 +1,9 @@
-import { AppShell } from "@mantine/core";
-import { AppNavBar } from "./AppNavBar/AppNavBar";
-import { useDisclosure } from "@mantine/hooks";
-import AppHeader from "./AppHeader";
-import { Outlet } from "@tanstack/react-router";
-import { useTheme } from "@guallet/ui-react";
+import { AppShell } from '@mantine/core';
+import { AppNavBar } from './AppNavBar/AppNavBar';
+import { useDisclosure } from '@mantine/hooks';
+import AppHeader from './AppHeader';
+import { Outlet } from '@tanstack/react-router';
+import { useTheme } from '@guallet/ui-react';
 
 export default function GualletAppShell() {
   const [opened, { close, toggle }] = useDisclosure();
@@ -12,7 +12,7 @@ export default function GualletAppShell() {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       bg={colors.pageBackground}
       padding="md"
     >

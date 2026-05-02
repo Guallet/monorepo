@@ -1,6 +1,6 @@
-import { DeleteDialogConfirmation } from "@/components/Dialogs/DeleteDialogConfirmation";
-import { Button } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { DeleteDialogConfirmation } from '@/components/Dialogs/DeleteDialogConfirmation';
+import { Button } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 interface DeleteButtonProps extends React.ComponentProps<typeof Button> {
   children: React.ReactNode;

@@ -1,14 +1,14 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
-import { useSavingGoalMutations, useSavingGoals } from "@guallet/api-react";
-import { Stack, Button, Text, Group, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { SavingGoalRow } from "../components/SavingGoalRow";
-import { IconPlus, IconPigMoney } from "@tabler/icons-react";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import { useSavingGoalMutations, useSavingGoals } from '@guallet/api-react';
+import { Stack, Button, Text, Group, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SavingGoalRow } from '../components/SavingGoalRow';
+import { IconPlus, IconPigMoney } from '@tabler/icons-react';
 
 export function SavingGoalsListScreen() {
   const { t } = useTranslation();
@@ -37,20 +37,20 @@ export function SavingGoalsListScreen() {
       {
         onSuccess: () => {
           notifications.show({
-            title: "Success",
+            title: 'Success',
             message: `Saving goal "${goalToDelete.name}" has been deleted`,
-            color: "green",
+            color: 'green',
           });
         },
         onError: (error) => {
-          console.error("Failed to delete saving goal:", error);
+          console.error('Failed to delete saving goal:', error);
           notifications.show({
-            title: "Error",
-            message: "Failed to delete saving goal",
-            color: "red",
+            title: 'Error',
+            message: 'Failed to delete saving goal',
+            color: 'red',
           });
         },
-      }
+      },
     );
 
     closeDeleteModal();
@@ -68,13 +68,13 @@ export function SavingGoalsListScreen() {
   return (
     <BaseScreen
       isLoading={isLoading}
-      title={t("screens.savingGoals.list.title", "Saving Goals")}
+      title={t('screens.savingGoals.list.title', 'Saving Goals')}
       actions={
         <Button
           leftSection={<IconPlus size={16} />}
-          onClick={() => navigate({ to: "/saving-goals/new" })}
+          onClick={() => navigate({ to: '/saving-goals/new' })}
         >
-          {t("screens.savingGoals.list.addButton", "New Saving Goal")}
+          {t('screens.savingGoals.list.addButton', 'New Saving Goal')}
         </Button>
       }
     >
@@ -91,7 +91,7 @@ export function SavingGoalsListScreen() {
             </Text>
             <Button
               leftSection={<IconPlus size={16} />}
-              onClick={() => navigate({ to: "/saving-goals/new" })}
+              onClick={() => navigate({ to: '/saving-goals/new' })}
             >
               Create Your First Goal
             </Button>

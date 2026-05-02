@@ -23,8 +23,8 @@ export default function App() {
       <Card>
         <Text variant="heading">Welcome to Luna UI</Text>
         <Text variant="body">Beautiful components for React Native</Text>
-        <Button 
-          title="Get Started" 
+        <Button
+          title="Get Started"
           onPress={() => console.log('Pressed!')}
         />
       </Card>
@@ -36,12 +36,13 @@ export default function App() {
 ## Components
 
 ### Button
+
 Customizable button component with multiple variants.
 
 ```typescript
 import { Button } from '@luna-ui/react-native';
 
-<Button 
+<Button
   title="Primary Button"
   variant="primary"
   size="medium"
@@ -50,6 +51,7 @@ import { Button } from '@luna-ui/react-native';
 ```
 
 ### Text
+
 Typography component with consistent styling.
 
 ```typescript
@@ -61,6 +63,7 @@ import { Text } from '@luna-ui/react-native';
 ```
 
 ### Card
+
 Container component with elevation and rounded corners.
 
 ```typescript
@@ -72,6 +75,7 @@ import { Card } from '@luna-ui/react-native';
 ```
 
 ### Input
+
 Form input component with validation support.
 
 ```typescript
@@ -121,11 +125,13 @@ export default function App() {
 ## Development
 
 ### Prerequisites
+
 - Node.js 16+
 - React Native development environment
 - iOS/Android development tools
 
 ### Setup
+
 ```bash
 # Install dependencies
 npm install
@@ -141,6 +147,7 @@ npm run android
 ```
 
 ### Building
+
 ```bash
 # Build the package
 npm run build
@@ -161,6 +168,7 @@ For detailed API documentation, visit our [documentation site](https://luna-ui.d
 We welcome contributions! Please see our [Contributing Guide](../../CONTRIBUTING.md) for details.
 
 ### Development Workflow
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes

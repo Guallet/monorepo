@@ -57,7 +57,9 @@ export class LargeSecureStore {
       aesjs.utils.hex.toBytes(encryptionKeyHex),
       new aesjs.Counter(aesjs.utils.hex.toBytes(ivHex)),
     );
-    const decryptedBytes = cipher.decrypt(aesjs.utils.hex.toBytes(encryptedHex));
+    const decryptedBytes = cipher.decrypt(
+      aesjs.utils.hex.toBytes(encryptedHex),
+    );
 
     return aesjs.utils.utf8.fromBytes(decryptedBytes);
   }

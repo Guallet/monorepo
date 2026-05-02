@@ -47,8 +47,10 @@ export function SavingGoalsWidget() {
     })
     .sort((a, b) => {
       const priorityOrder = { high: 1, medium: 2, low: 3 };
-      const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] ?? 3;
-      const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] ?? 3;
+      const aPriority =
+        priorityOrder[a.priority as keyof typeof priorityOrder] ?? 3;
+      const bPriority =
+        priorityOrder[b.priority as keyof typeof priorityOrder] ?? 3;
       if (aPriority !== bPriority) return aPriority - bPriority;
       if (a.isCompleted !== b.isCompleted) return b.isCompleted ? -1 : 1;
       return b.progressPercentage - a.progressPercentage;
@@ -143,7 +145,9 @@ export function SavingGoalsWidget() {
                     <Text
                       size="xs"
                       fw={600}
-                      style={{ color: isComplete ? colors.support : colors.primary }}
+                      style={{
+                        color: isComplete ? colors.support : colors.primary,
+                      }}
                     >
                       {Money.fromCurrencyCode({
                         currencyCode: goal.currency,
@@ -156,7 +160,8 @@ export function SavingGoalsWidget() {
             })}
             {hasMore && (
               <Text size="xs" c="dimmed" ta="center">
-                +{goalsWithProgress.length - MAX_ITEMS} more goal{goalsWithProgress.length - MAX_ITEMS !== 1 ? 's' : ''}
+                +{goalsWithProgress.length - MAX_ITEMS} more goal
+                {goalsWithProgress.length - MAX_ITEMS !== 1 ? 's' : ''}
               </Text>
             )}
           </Stack>

@@ -85,9 +85,7 @@ function EditRulePage() {
   return (
     <BaseScreen
       isLoading={isRuleLoading || isFieldsLoading}
-      title={
-        rule?.name ?? t('screens.rules.edit.title')
-      }
+      title={rule?.name ?? t('screens.rules.edit.title')}
     >
       {!isRuleLoading && !isFieldsLoading && rule && (
         <RuleForm
@@ -100,9 +98,7 @@ function EditRulePage() {
           submitLabel={t('screens.rules.edit.submitButton.label')}
         />
       )}
-      {!isRuleLoading && !rule && (
-        <div>{t('screens.rules.edit.notFound')}</div>
-      )}
+      {!isRuleLoading && !rule && <div>{t('screens.rules.edit.notFound')}</div>}
     </BaseScreen>
   );
 }

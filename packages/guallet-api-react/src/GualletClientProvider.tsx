@@ -1,5 +1,5 @@
-import { GualletClient } from "@guallet/api-client";
-import React, { JSX } from "react";
+import { GualletClient } from '@guallet/api-client';
+import React, { JSX } from 'react';
 
 export const GualletClientContext = React.createContext<
   GualletClient | undefined
@@ -14,7 +14,7 @@ export const useGualletClient = (gualletClient?: GualletClient) => {
 
   if (!client) {
     throw new Error(
-      "No GualletClient set, use GualletClientProvider to set one"
+      'No GualletClient set, use GualletClientProvider to set one',
     );
   }
 

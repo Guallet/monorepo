@@ -49,7 +49,9 @@ export function SavingGoalForm({
       name: savingGoal?.name ?? '',
       description: savingGoal?.description ?? '',
       target_amount: savingGoal?.target_amount ?? 0,
-      target_date: savingGoal?.target_date ? new Date(savingGoal.target_date) : new Date(),
+      target_date: savingGoal?.target_date
+        ? new Date(savingGoal.target_date)
+        : new Date(),
       accounts: savingGoal?.accounts ?? [],
     },
     validate: {
@@ -142,11 +144,19 @@ export function SavingGoalForm({
     <Box maw={560} mx="auto">
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap={spacing.md}>
-          <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+          <Card
+            withBorder
+            shadow="sm"
+            radius="lg"
+            padding={{ base: 'md', sm: 'lg' }}
+          >
             <Stack gap={spacing.md}>
               <TextInput
                 required
-                label={t('screens.savingGoals.form.fields.name.label', 'Goal name')}
+                label={t(
+                  'screens.savingGoals.form.fields.name.label',
+                  'Goal name',
+                )}
                 placeholder={t(
                   'screens.savingGoals.form.fields.name.placeholder',
                   'e.g. Emergency Fund, Vacation, New Car',
@@ -235,7 +245,11 @@ export function SavingGoalForm({
           </Stack>
           <Group justify="flex-end" gap="xs" visibleFrom="sm">
             {onCancel && (
-              <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>
+              <Button
+                variant="outline"
+                onClick={onCancel}
+                disabled={isSubmitting}
+              >
                 {t('screens.savingGoals.form.cancelButton', 'Cancel')}
               </Button>
             )}

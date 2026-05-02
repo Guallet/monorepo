@@ -27,7 +27,9 @@ import { NavLinkButton } from '@/components/Buttons/NavLinkButton';
 
 const registerFormSchema = z
   .object({
-    name: z.string().min(2, { message: 'Name must have at least 2 characters' }),
+    name: z
+      .string()
+      .min(2, { message: 'Name must have at least 2 characters' }),
     email: z.email({ message: 'Invalid email' }),
     password: z.string().min(8, { message: 'At least 8 characters' }),
     confirmPassword: z.string(),
@@ -59,7 +61,13 @@ const STRENGTH_LEVELS = [
 ] as const;
 
 export function RegisterScreen() {
-  const { createAccount, login, loginWithProvider, isAuthenticated, isLoading } = useAuth();
+  const {
+    createAccount,
+    login,
+    loginWithProvider,
+    isAuthenticated,
+    isLoading,
+  } = useAuth();
   const { spacing } = useTheme();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -116,7 +124,10 @@ export function RegisterScreen() {
   const handleSubmit = async (values: FormValues) => {
     if (!agreed) {
       notifications.show({
-        title: t('screens.register.notifications.termsRequired.title', 'Terms required'),
+        title: t(
+          'screens.register.notifications.termsRequired.title',
+          'Terms required',
+        ),
         message: t(
           'screens.register.notifications.termsRequired.message',
           'You must agree to the terms to continue.',
@@ -166,7 +177,10 @@ export function RegisterScreen() {
           loginResult.error.message,
         );
         notifications.show({
-          title: t('screens.register.notifications.loginFailed.title', 'Login failed'),
+          title: t(
+            'screens.register.notifications.loginFailed.title',
+            'Login failed',
+          ),
           message: t(
             'screens.register.notifications.loginFailed.message',
             'Account created successfully, but login failed: {{error}}',
@@ -206,7 +220,10 @@ export function RegisterScreen() {
       <Modal
         opened={showEmailConfirmModal}
         onClose={handleEmailConfirmModalClose}
-        title={t('screens.register.emailConfirmModal.title', 'Check your email')}
+        title={t(
+          'screens.register.emailConfirmModal.title',
+          'Check your email',
+        )}
         centered
       >
         <Stack>
@@ -227,7 +244,12 @@ export function RegisterScreen() {
         <Box mb={spacing.lg}>
           <Text
             component="h1"
-            style={{ margin: `0 0 ${spacing.xs}px`, fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em' }}
+            style={{
+              margin: `0 0 ${spacing.xs}px`,
+              fontSize: 26,
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+            }}
           >
             {t('screens.register.title', 'Create your account')}
           </Text>
@@ -246,7 +268,10 @@ export function RegisterScreen() {
         </GoogleButton>
 
         <Divider
-          label={t('screens.register.form.divider.label', 'or sign up with email')}
+          label={t(
+            'screens.register.form.divider.label',
+            'or sign up with email',
+          )}
           labelPosition="center"
           my="sm"
         />
@@ -257,7 +282,10 @@ export function RegisterScreen() {
               {...form.getInputProps('name')}
               key={form.key('name')}
               label={t('screens.register.form.name.label', 'Full name')}
-              placeholder={t('screens.register.form.name.placeholder', 'Alex Galiana')}
+              placeholder={t(
+                'screens.register.form.name.placeholder',
+                'Alex Galiana',
+              )}
               autoFocus
             />
             <TextInput
@@ -265,7 +293,10 @@ export function RegisterScreen() {
               key={form.key('email')}
               label={t('screens.register.form.email.label', 'Email address')}
               type="email"
-              placeholder={t('screens.register.form.email.placeholder', 'you@example.com')}
+              placeholder={t(
+                'screens.register.form.email.placeholder',
+                'you@example.com',
+              )}
             />
 
             {/* Password with strength bar */}
@@ -302,7 +333,10 @@ export function RegisterScreen() {
             <PasswordInput
               {...form.getInputProps('confirmPassword')}
               key={form.key('confirmPassword')}
-              label={t('screens.register.form.confirmPassword.label', 'Confirm password')}
+              label={t(
+                'screens.register.form.confirmPassword.label',
+                'Confirm password',
+              )}
               placeholder={t(
                 'screens.register.form.confirmPassword.placeholder',
                 'Repeat your password',
@@ -315,12 +349,25 @@ export function RegisterScreen() {
               onChange={(e) => setAgreed(e.currentTarget.checked)}
               label={
                 <Text size="sm" c="dimmed">
-                  {t('screens.register.form.termsAgreement.prefix', 'I agree to the')}{' '}
-                  <Anchor href="/terms" target="_blank" rel="noopener noreferrer" fw={600}>
+                  {t(
+                    'screens.register.form.termsAgreement.prefix',
+                    'I agree to the',
+                  )}{' '}
+                  <Anchor
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fw={600}
+                  >
                     {t('screens.register.form.termsLink', 'Terms of Service')}
                   </Anchor>{' '}
                   {t('screens.register.form.termsAgreement.conjunction', 'and')}{' '}
-                  <Anchor href="/privacy" target="_blank" rel="noopener noreferrer" fw={600}>
+                  <Anchor
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fw={600}
+                  >
                     {t('screens.register.form.privacyLink', 'Privacy Policy')}
                   </Anchor>
                 </Text>
@@ -335,7 +382,11 @@ export function RegisterScreen() {
 
         <Text ta="center" size="sm" mt={24} c="dimmed">
           {t('screens.register.alreadyHaveAccount', 'Already have an account?')}{' '}
-          <NavLinkButton to="/login" search={{ redirect: '/dashboard' }} size="sm">
+          <NavLinkButton
+            to="/login"
+            search={{ redirect: '/dashboard' }}
+            size="sm"
+          >
             {t('screens.register.signInLink', 'Sign in')}
           </NavLinkButton>
         </Text>

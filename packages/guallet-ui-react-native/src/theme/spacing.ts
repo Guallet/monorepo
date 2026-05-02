@@ -1,3 +1,3 @@
-export type { Spacing } from "@guallet/theme";
+export type { Spacing } from '@guallet/theme';
 
-export type LunaSpacing = "xs" | "sm" | "md" | "lg" | "xl" | number;
+export type LunaSpacing = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;

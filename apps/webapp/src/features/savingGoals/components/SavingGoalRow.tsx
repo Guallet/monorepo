@@ -30,7 +30,14 @@ export function SavingGoalRow({
   onEdit,
   onDelete,
 }: Readonly<SavingGoalRowProps>) {
-  const { currentAmount, targetAmount, progressPercentage, isCompleted, isOverdue, targetDate } = savingGoal;
+  const {
+    currentAmount,
+    targetAmount,
+    progressPercentage,
+    isCompleted,
+    isOverdue,
+    targetDate,
+  } = savingGoal;
 
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't trigger card click when clicking action buttons

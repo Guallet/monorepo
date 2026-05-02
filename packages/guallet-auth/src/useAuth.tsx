@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useContext, useEffect, useMemo, useCallback } from 'react';
 import { AuthContext, AuthResult, ExternalAuthProvider } from './AuthContext';
 import type { createGualletAuthClient } from './auth';
 

@@ -85,7 +85,10 @@ export function EditTransactionScreen({
         date: data.date,
         categoryId: data.categoryId ?? null,
       };
-      await updateTransactionMutation.mutateAsync({ id: transactionId, request });
+      await updateTransactionMutation.mutateAsync({
+        id: transactionId,
+        request,
+      });
       notifications.show({
         message: t(
           'screens.transactions.edit.notifications.update.success.message',
@@ -157,7 +160,12 @@ export function EditTransactionScreen({
       <Box maw={560} mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+            <Card
+              withBorder
+              shadow="sm"
+              radius="lg"
+              padding={{ base: 'md', sm: 'lg' }}
+            >
               <TransactionFormFields
                 form={form}
                 translationKeyPrefix="screens.transactions.edit"
@@ -172,7 +180,10 @@ export function EditTransactionScreen({
                 size="md"
                 loading={updateTransactionMutation.isPending}
               >
-                {t('screens.transactions.edit.form.submitButton.label', 'Save changes')}
+                {t(
+                  'screens.transactions.edit.form.submitButton.label',
+                  'Save changes',
+                )}
               </Button>
               <Button
                 variant="outline"
@@ -180,7 +191,10 @@ export function EditTransactionScreen({
                 size="md"
                 onClick={() => navigate({ to: '/transactions' })}
               >
-                {t('screens.transactions.edit.form.cancelButton.label', 'Cancel')}
+                {t(
+                  'screens.transactions.edit.form.cancelButton.label',
+                  'Cancel',
+                )}
               </Button>
               <Button
                 variant="outline"
@@ -189,7 +203,10 @@ export function EditTransactionScreen({
                 size="md"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                {t('screens.transactions.edit.form.deleteButton.label', 'Delete')}
+                {t(
+                  'screens.transactions.edit.form.deleteButton.label',
+                  'Delete',
+                )}
               </Button>
             </Stack>
 
@@ -200,17 +217,29 @@ export function EditTransactionScreen({
                 color="red"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                {t('screens.transactions.edit.form.deleteButton.label', 'Delete')}
+                {t(
+                  'screens.transactions.edit.form.deleteButton.label',
+                  'Delete',
+                )}
               </Button>
               <Group gap="xs">
                 <Button
                   variant="outline"
                   onClick={() => navigate({ to: '/transactions' })}
                 >
-                  {t('screens.transactions.edit.form.cancelButton.label', 'Cancel')}
+                  {t(
+                    'screens.transactions.edit.form.cancelButton.label',
+                    'Cancel',
+                  )}
                 </Button>
-                <Button type="submit" loading={updateTransactionMutation.isPending}>
-                  {t('screens.transactions.edit.form.submitButton.label', 'Save changes')}
+                <Button
+                  type="submit"
+                  loading={updateTransactionMutation.isPending}
+                >
+                  {t(
+                    'screens.transactions.edit.form.submitButton.label',
+                    'Save changes',
+                  )}
                 </Button>
               </Group>
             </Group>

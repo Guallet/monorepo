@@ -3,6 +3,7 @@
 Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScript).
 
 ### Quick summary
+
 - Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and integrations (Nordigen, webhooks, CSV importer).
 - Authentication via Better-Auth (magic links / OTP / Social).
 - DB: PostgreSQL (TypeORM). Background jobs: BullMQ + Redis.
@@ -10,6 +11,7 @@ Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScrip
 ---
 
 ## Quick start — run locally 🚀
+
 Prerequisites: Node >= 22, pnpm; Docker is recommended for DB/Redis.
 
 From repository root (recommended):
@@ -32,6 +34,7 @@ Open the API docs: http://localhost:5000/docs
 ---
 
 ## Environment & configuration 🔧
+
 - Copy the sample env files and update values as needed:
 
 ```bash
@@ -45,6 +48,7 @@ cp database.env.sample .env           # DB / docker-compose (repo root)
 ---
 
 ## Database & migrations 🗃️
+
 Bring up local services with Docker Compose (Postgres + Redis):
 
 ```bash
@@ -69,6 +73,7 @@ pnpm db:migrate     # apply migrations
 ---
 
 ## Useful commands
+
 - Start (dev/watch): `pnpm --filter api dev` or `cd apps/api && pnpm dev`
 - Build: `pnpm --filter api build`
 - Tests: `pnpm --filter api test` / `pnpm --filter api test:e2e`
@@ -105,6 +110,7 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ---
 
 ## How it works — architecture overview 🧭
+
 - Entry point: `src/main.ts` — configures Express, CORS, middleware and Swagger (`/docs`).
 - Configuration: `src/configuration.ts` + `ConfigModule` with Joi validation.
 - Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows and CLI migrations.
@@ -116,6 +122,7 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ---
 
 ## Key files
+
 - `src/main.ts`, `src/app.module.ts`, `src/configuration.ts`
 - `src/auth/` — Better-Auth integration
 - `src/features/*` — domain modules (controllers/services)
@@ -124,6 +131,7 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ---
 
 ## Troubleshooting / tips ⚠️
+
 - DB connection refused: ensure `docker-compose up -d` finished and env vars match.
 - Swagger not available: confirm server started on configured `PORT` (default `5000`).
 - Run only API in the monorepo: `pnpm --filter api dev`.
@@ -131,12 +139,14 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ---
 
 ## Tests
+
 - Unit: `pnpm --filter api test`
 - E2E: `pnpm --filter api test:e2e`
 
 ---
 
 ## License
+
 This package is covered by the repository Apache-2.0 license — see the root `LICENSE`.
 
 ---

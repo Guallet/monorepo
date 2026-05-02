@@ -18,16 +18,16 @@ export function PrivacyScreen() {
   const { t } = useTranslation();
 
   return (
-    <Box style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
+    >
       <LandingHeader />
 
       <Box py={64} style={{ flex: 1 }}>
         <Container size="md">
           <Stack gap="xl">
             <Stack gap="xs">
-              <Title order={1}>
-                {t('privacy.title', 'Privacy Policy')}
-              </Title>
+              <Title order={1}>{t('privacy.title', 'Privacy Policy')}</Title>
               <Text c="dimmed" size="sm">
                 {t('privacy.lastUpdated', 'Last updated: April 2025')}
               </Text>
@@ -48,7 +48,10 @@ export function PrivacyScreen() {
                 {t('privacy.section1.title', '1. Information We Collect')}
               </Title>
               <Text>
-                {t('privacy.section1.intro', 'We collect the following types of information:')}
+                {t(
+                  'privacy.section1.intro',
+                  'We collect the following types of information:',
+                )}
               </Text>
               <List spacing="xs">
                 <List.Item>
@@ -88,10 +91,16 @@ export function PrivacyScreen() {
               </Title>
               <List spacing="xs">
                 <List.Item>
-                  {t('privacy.section2.item1', 'To provide and maintain the service')}
+                  {t(
+                    'privacy.section2.item1',
+                    'To provide and maintain the service',
+                  )}
                 </List.Item>
                 <List.Item>
-                  {t('privacy.section2.item2', 'To authenticate you and keep your account secure')}
+                  {t(
+                    'privacy.section2.item2',
+                    'To authenticate you and keep your account secure',
+                  )}
                 </List.Item>
                 <List.Item>
                   {t(
@@ -129,7 +138,7 @@ export function PrivacyScreen() {
               <Text>
                 {t(
                   'privacy.section4.body',
-                  'We do not sell, trade, or rent your personal data to third parties. We may share anonymised, aggregated data for analytical purposes. When you connect your bank via open banking, your data is transmitted directly through the provider\'s secure API — we never store your banking credentials.',
+                  "We do not sell, trade, or rent your personal data to third parties. We may share anonymised, aggregated data for analytical purposes. When you connect your bank via open banking, your data is transmitted directly through the provider's secure API — we never store your banking credentials.",
                 )}
               </Text>
             </Stack>
@@ -157,13 +166,13 @@ export function PrivacyScreen() {
               </Text>
               <List spacing="xs">
                 <List.Item>
-                  {t('privacy.section6.item1', 'Access the personal data we hold about you')}
+                  {t(
+                    'privacy.section6.item1',
+                    'Access the personal data we hold about you',
+                  )}
                 </List.Item>
                 <List.Item>
-                  {t(
-                    'privacy.section6.item2',
-                    'Correct inaccurate data',
-                  )}
+                  {t('privacy.section6.item2', 'Correct inaccurate data')}
                 </List.Item>
                 <List.Item>
                   {t(
@@ -197,7 +206,11 @@ export function PrivacyScreen() {
                   'Guallet is open source. You can review exactly how your data is handled by reading the source code on GitHub.',
                 )}
               </Text>
-              <Anchor href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+              <Anchor
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {t('privacy.section7.githubLink', 'View source code on GitHub')}
               </Anchor>
             </Stack>
@@ -226,7 +239,11 @@ export function PrivacyScreen() {
                   'If you have questions or concerns about this Privacy Policy, please contact us by opening an issue on GitHub.',
                 )}
               </Text>
-              <Anchor href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+              <Anchor
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {t('privacy.section9.githubLink', 'Open an issue on GitHub')}
               </Anchor>
             </Stack>

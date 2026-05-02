@@ -1,11 +1,4 @@
-import {
-  Anchor,
-  Box,
-  Button,
-  Container,
-  Group,
-  Title,
-} from '@mantine/core';
+import { Anchor, Box, Button, Container, Group, Title } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@guallet/auth';
@@ -25,7 +18,8 @@ export function LandingHeader() {
         zIndex: 100,
         borderBottom: '1px solid var(--mantine-color-default-border)',
         backdropFilter: 'blur(10px)',
-        backgroundColor: 'rgba(var(--mantine-color-body-rgb, 255,255,255), 0.85)',
+        backgroundColor:
+          'rgba(var(--mantine-color-body-rgb, 255,255,255), 0.85)',
       }}
     >
       <Container size="xl">
@@ -55,14 +49,15 @@ export function LandingHeader() {
                 <Button
                   variant="subtle"
                   onClick={() =>
-                    navigate({ to: '/login', search: { redirect: '/dashboard' } })
+                    navigate({
+                      to: '/login',
+                      search: { redirect: '/dashboard' },
+                    })
                   }
                 >
                   {t('landing.header.login', 'Log in')}
                 </Button>
-                <Button
-                  onClick={() => navigate({ to: '/register' })}
-                >
+                <Button onClick={() => navigate({ to: '/register' })}>
                   {t('landing.header.createAccount', 'Create account')}
                 </Button>
               </>
