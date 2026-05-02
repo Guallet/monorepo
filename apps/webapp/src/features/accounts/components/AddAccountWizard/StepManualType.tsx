@@ -10,8 +10,10 @@ const ACCOUNT_TYPES = [
   AccountTypeDto.SAVINGS,
   AccountTypeDto.CREDIT_CARD,
   AccountTypeDto.INVESTMENT,
+  AccountTypeDto.PENSION,
   AccountTypeDto.MORTGAGE,
   AccountTypeDto.LOAN,
+  AccountTypeDto.UNKNOWN,
 ];
 
 interface StepManualTypeProps {

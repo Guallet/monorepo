@@ -5,7 +5,9 @@ import {
   IconBuildingBank,
   IconCheck,
   IconCreditCard,
+  IconDots,
   IconPigMoney,
+  IconShieldDollar,
   IconTrendingUp,
 } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
@@ -22,10 +24,14 @@ function getAccountTypeIcon(type: AccountTypeDto): ReactNode {
       return <IconCreditCard size={18} />;
     case AccountTypeDto.INVESTMENT:
       return <IconTrendingUp size={18} />;
+    case AccountTypeDto.PENSION:
+      return <IconShieldDollar size={18} />;
     case AccountTypeDto.MORTGAGE:
       return <IconBuildingBank size={18} />;
     case AccountTypeDto.LOAN:
       return <IconCreditCard size={18} />;
+    case AccountTypeDto.UNKNOWN:
+      return <IconDots size={18} />;
     default:
       return <IconBuildingBank size={18} />;
   }
@@ -37,17 +43,42 @@ function getAccountTypeDesc(
 ): string {
   switch (type) {
     case AccountTypeDto.CURRENT_ACCOUNT:
-      return t('feature.accounts.add.typeDesc.current', 'Everyday spending & income');
+      return t(
+        'feature.accounts.add.typeDesc.current',
+        'Everyday spending & income',
+      );
     case AccountTypeDto.SAVINGS:
-      return t('feature.accounts.add.typeDesc.savings', 'Pots, ISAs, easy-access');
+      return t(
+        'feature.accounts.add.typeDesc.savings',
+        'Pots, ISAs, easy-access',
+      );
     case AccountTypeDto.CREDIT_CARD:
-      return t('feature.accounts.add.typeDesc.credit', 'Revolving credit balance');
+      return t(
+        'feature.accounts.add.typeDesc.credit',
+        'Revolving credit balance',
+      );
     case AccountTypeDto.INVESTMENT:
-      return t('feature.accounts.add.typeDesc.investment', 'ISA, broker, pension');
+      return t(
+        'feature.accounts.add.typeDesc.investment',
+        'ISA, broker, pension',
+      );
+    case AccountTypeDto.PENSION:
+      return t(
+        'feature.accounts.add.typeDesc.pension',
+        'Retirement pots & pensions',
+      );
     case AccountTypeDto.MORTGAGE:
-      return t('feature.accounts.add.typeDesc.mortgage', 'Property-secured loan');
+      return t(
+        'feature.accounts.add.typeDesc.mortgage',
+        'Property-secured loan',
+      );
     case AccountTypeDto.LOAN:
       return t('feature.accounts.add.typeDesc.loan', 'Personal, student, car');
+    case AccountTypeDto.UNKNOWN:
+      return t(
+        'feature.accounts.add.typeDesc.other',
+        'Cash, crypto, or anything else',
+      );
     default:
       return '';
   }

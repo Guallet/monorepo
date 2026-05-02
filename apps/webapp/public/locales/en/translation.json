@@ -278,8 +278,10 @@
           "savings": "Pots, ISAs, easy-access",
           "credit": "Revolving credit balance",
           "investment": "ISA, broker, pension",
+          "pension": "Retirement pots & pensions",
           "mortgage": "Property-secured loan",
-          "loan": "Personal, student, car"
+          "loan": "Personal, student, car",
+          "other": "Cash, crypto, or anything else"
         },
         "chooseMethod": {
           "title": "Add an account",
