@@ -147,6 +147,7 @@ export function InboxTransactionEditModal({
 
         {/* Category picker */}
         <CategoryPicker
+          mode="single"
           label={t(
             'screens.transactions.inbox.edit.form.category.label',
             'Category',
@@ -156,7 +157,7 @@ export function InboxTransactionEditModal({
             'Select a category',
           )}
           selectedCategory={selectedCategory}
-          onCategorySelected={(cat) => setCategoryOverride(cat)}
+          onSelectionChanged={(cat) => setCategoryOverride(cat)}
         />
 
         {/* Notes */}

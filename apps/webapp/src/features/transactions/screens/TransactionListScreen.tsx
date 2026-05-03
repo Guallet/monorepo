@@ -188,6 +188,7 @@ export function TransactionListScreen({
                 {...quickEditForm.getInputProps('notes')}
               />
               <CategoryPicker
+                mode="single"
                 label={t(
                   'screens.transactions.list.quickEdit.form.category.label',
                   'Category',
@@ -197,7 +198,7 @@ export function TransactionListScreen({
                   'Select a category',
                 )}
                 selectedCategory={selectedCategory}
-                onCategorySelected={(selectedCategory) => {
+                onSelectionChanged={(selectedCategory) => {
                   setSelectedCategory(selectedCategory);
                   quickEditForm.setFieldValue(
                     'categoryId',

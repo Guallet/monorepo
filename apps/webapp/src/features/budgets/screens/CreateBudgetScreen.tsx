@@ -1,7 +1,7 @@
 import { GualletColorPicker } from '@/components/GualletColorPicker/GualletColorPicker';
 import { IconPicker } from '@/components/IconPicker/IconPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { CategoryMultiSelect } from '@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect';
+import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useLocale } from '@/i18n/useLocale';
 import { CategoryDto } from '@guallet/api-client';
 import {
@@ -212,7 +212,8 @@ export function CreateBudgetScreen() {
                     form.setFieldValue('icon', iconName ?? '')
                   }
                 />
-                <CategoryMultiSelect
+                <CategoryPicker
+                  mode="multiple"
                   required
                   label={t(
                     'screens.budgets.create.form.categories.label',
