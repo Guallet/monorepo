@@ -22,6 +22,7 @@ export type SubscriptionDto = {
   cadence: RecurrenceCadence;
   startDate?: string;
   imageUrl?: string;
+  accountId?: string;
   categoryId?: string;
 };
 
@@ -33,6 +34,7 @@ export type CreateSubscriptionRequest = {
   startDate?: string;
   type: RecurringPaymentType;
   imageUrl?: string;
+  accountId?: string;
   categoryId?: string;
 };
 
@@ -44,5 +46,6 @@ export type UpdateSubscriptionRequest = {
   startDate?: string;
   type?: RecurringPaymentType;
   imageUrl?: string;
+  accountId?: string | null;
   categoryId?: string;
 };

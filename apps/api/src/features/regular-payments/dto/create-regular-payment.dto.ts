@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsISO4217CurrencyCode,
@@ -28,9 +29,22 @@ export class CreateRegularPaymentDto {
   @IsISO4217CurrencyCode()
   currency: string;
 
+  @Transform(({ value }: { value: unknown }) => {
+    if (typeof value === 'string' && value.trim().length === 0) {
+      return undefined;
+    }
+
+    return value;
+  })
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
+  @IsOptional()
+  @IsUUID()
+  accountId?: string;
+
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 

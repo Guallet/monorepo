@@ -14,20 +14,29 @@ import {
   Badge,
   Avatar,
   ActionIcon,
+  Box,
+  SimpleGrid,
+  ThemeIcon,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import { IconPlus, IconChevronRight } from '@tabler/icons-react';
+import {
+  IconCalendarRepeat,
+  IconChevronRight,
+  IconPlus,
+  IconWallet,
+} from '@tabler/icons-react';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
+import { useTheme } from '@guallet/ui-react';
 
 function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
   switch (type) {
     case RecurringPaymentType.SUBSCRIPTION:
       return 'blue';
     case RecurringPaymentType.REGULAR_PAYMENT:
-      return 'orange';
+      return 'red';
     case RecurringPaymentType.REGULAR_INCOME:
       return 'green';
     default:
@@ -37,37 +46,40 @@ function getPaymentTypeBadgeColor(type: RecurringPaymentType): string {
 
 function getPaymentTypeLabel(
   type: RecurringPaymentType,
-  t: (key: string) => string,
+  t: (key: string, defaultValue: string) => string,
 ): string {
   switch (type) {
     case RecurringPaymentType.SUBSCRIPTION:
-      return t('screens.subscriptions.list.types.subscription');
+      return t('screens.subscriptions.list.types.subscription', 'Subscription');
     case RecurringPaymentType.REGULAR_PAYMENT:
-      return t('screens.subscriptions.list.types.regularPayment');
+      return t(
+        'screens.subscriptions.list.types.regularPayment',
+        'Regular payment',
+      );
     case RecurringPaymentType.REGULAR_INCOME:
-      return t('screens.subscriptions.list.types.regularIncome');
+      return t('screens.subscriptions.list.types.regularIncome', 'Regular income');
     default:
-      return t('screens.subscriptions.list.types.unknown');
+      return t('screens.subscriptions.list.types.unknown', 'Unknown');
   }
 }
 
 function getCadenceLabel(
   cadence: RecurrenceCadence,
-  t: (key: string) => string,
+  t: (key: string, defaultValue: string) => string,
 ): string {
   switch (cadence) {
     case RecurrenceCadence.WEEKLY:
-      return t('screens.subscriptions.list.cadence.weekly') ?? '';
+      return t('screens.subscriptions.list.cadence.weekly', 'Weekly');
     case RecurrenceCadence.BIWEEKLY:
-      return t('screens.subscriptions.list.cadence.biweekly');
+      return t('screens.subscriptions.list.cadence.biweekly', 'Bi-weekly');
     case RecurrenceCadence.MONTHLY:
-      return t('screens.subscriptions.list.cadence.monthly');
+      return t('screens.subscriptions.list.cadence.monthly', 'Monthly');
     case RecurrenceCadence.QUARTERLY:
-      return t('screens.subscriptions.list.cadence.quarterly');
+      return t('screens.subscriptions.list.cadence.quarterly', 'Quarterly');
     case RecurrenceCadence.YEARLY:
-      return t('screens.subscriptions.list.cadence.yearly');
+      return t('screens.subscriptions.list.cadence.yearly', 'Yearly');
     default:
-      return t('screens.subscriptions.list.cadence.unknown');
+      return t('screens.subscriptions.list.cadence.unknown', 'Unknown');
   }
 }
 
@@ -117,7 +129,11 @@ function calculateNextPaymentDate(
 
 function formatNextPaymentDate(
   nextDate: Date | null,
-  t: (key: string, options?: { count?: number }) => string,
+  t: (
+    key: string,
+    defaultValue: string,
+    options?: { count?: number },
+  ) => string,
 ): {
   formatted: string;
   message: string | null;
@@ -133,11 +149,11 @@ function formatNextPaymentDate(
   let message: string | null = null;
 
   if (daysUntil === 0) {
-    message = t('screens.subscriptions.list.nextPayment.today');
+    message = t('screens.subscriptions.list.nextPayment.today', 'Today');
   } else if (daysUntil === 1) {
-    message = t('screens.subscriptions.list.nextPayment.tomorrow');
+    message = t('screens.subscriptions.list.nextPayment.tomorrow', 'Tomorrow');
   } else if (daysUntil > 1 && daysUntil <= 7) {
-    message = t('screens.subscriptions.list.nextPayment.inDays', {
+    message = t('screens.subscriptions.list.nextPayment.inDays', 'In {{count}} days', {
       count: daysUntil,
     });
   }
@@ -157,6 +173,8 @@ function SubscriptionRow({
   onClick,
 }: Readonly<SubscriptionRowProps>) {
   const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
+  const isIncome = subscription.type === RecurringPaymentType.REGULAR_INCOME;
 
   const nextPaymentDate = useMemo(
     () =>
@@ -175,19 +193,21 @@ function SubscriptionRow({
     <Card
       withBorder
       shadow="sm"
-      radius="md"
-      padding="md"
+      radius="lg"
+      padding={spacing.md}
       onClick={onClick}
-      style={{ cursor: 'pointer' }}
+      style={{
+        cursor: 'pointer',
+      }}
     >
-      <Group justify="space-between">
-        <Group>
+      <Group justify="space-between" gap={spacing.md} wrap="nowrap">
+        <Group gap={spacing.md} wrap="nowrap">
           <Avatar src={subscription.imageUrl} radius="xl" size="md">
             {subscription.name.charAt(0).toUpperCase()}
           </Avatar>
-          <Stack gap={2}>
+          <Stack gap={spacing.xs}>
             <Text fw={500}>{subscription.name}</Text>
-            <Group gap="xs">
+            <Group gap={spacing.xs}>
               <Badge
                 size="sm"
                 color={getPaymentTypeBadgeColor(subscription.type)}
@@ -199,9 +219,12 @@ function SubscriptionRow({
               </Text>
             </Group>
             {nextPaymentDate && (
-              <Group gap="xs">
+              <Group gap={spacing.xs}>
                 <Text size="xs">
-                  {t('screens.subscriptions.list.nextPayment.label')}
+                  {t(
+                    'screens.subscriptions.list.nextPayment.label',
+                    'Next payment',
+                  )}
                 </Text>
                 <Text size="xs" c="dimmed">
                   {formatted}
@@ -215,12 +238,19 @@ function SubscriptionRow({
             )}
           </Stack>
         </Group>
-        <Group>
-          <Text fw={600} size="lg">
+        <Group gap={spacing.sm} wrap="nowrap">
+          <Text
+            fw={700}
+            size="lg"
+            style={{
+              color: isIncome ? colors.support : colors.error,
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
             {formatCurrency(subscription.amount, subscription.currency)}
           </Text>
           <ActionIcon variant="subtle" color="gray">
-            <IconChevronRight size={16} />
+            <IconChevronRight size={16} strokeWidth={1.5} />
           </ActionIcon>
         </Group>
       </Group>
@@ -230,6 +260,7 @@ function SubscriptionRow({
 
 export function SubscriptionListScreen() {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const navigation = useNavigate();
   const { subscriptions, isLoading } = useSubscriptions();
   const defaultCurrency = useDefaultCurrency();
@@ -278,49 +309,96 @@ export function SubscriptionListScreen() {
   return (
     <BaseScreen
       isLoading={isLoading}
-      title={t('screens.subscriptions.list.title')}
+      title={t('screens.subscriptions.list.title', 'Subscriptions')}
       actions={
         <Button
-          leftSection={<IconPlus size={16} />}
+          leftSection={<IconPlus size={16} strokeWidth={1.5} />}
           onClick={() => {
             navigation({ to: '/subscriptions/new' });
           }}
         >
-          {t('screens.subscriptions.list.addButton.label')}
+          {t('screens.subscriptions.list.addButton.label', 'Add subscription')}
         </Button>
       }
     >
-      <Stack>
-        <Text c="dimmed" size="sm">
-          {t('screens.subscriptions.list.estimatedMonthly')}{' '}
-          {formatCurrency(totalMonthlyAmount, defaultCurrency)}
-        </Text>
+      <Stack gap={spacing.md}>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={spacing.md}>
+          <Card withBorder shadow="sm" radius="lg" padding={spacing.lg}>
+            <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <IconWallet size={24} strokeWidth={1.5} />
+              </ThemeIcon>
+              <Box>
+                <Text c="dimmed" size="sm">
+                  {t(
+                    'screens.subscriptions.list.summary.monthly.label',
+                    'Estimated monthly',
+                  )}
+                </Text>
+                <Text fw={700} size="xl">
+                  {formatCurrency(totalMonthlyAmount, defaultCurrency)}
+                </Text>
+              </Box>
+            </Group>
+          </Card>
+          <Card withBorder shadow="sm" radius="lg" padding={spacing.lg}>
+            <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <IconCalendarRepeat size={24} strokeWidth={1.5} />
+              </ThemeIcon>
+              <Box>
+                <Text c="dimmed" size="sm">
+                  {t(
+                    'screens.subscriptions.list.summary.total.label',
+                    'Tracked items',
+                  )}
+                </Text>
+                <Text fw={700} size="xl">
+                  {subscriptions.length}
+                </Text>
+              </Box>
+            </Group>
+          </Card>
+        </SimpleGrid>
 
         {subscriptions.length === 0 && !isLoading && (
-          <Card withBorder shadow="sm" radius="md" padding="xl">
-            <Stack align="center" gap="md">
+          <Card withBorder shadow="sm" radius="lg" padding={spacing.xl}>
+            <Stack align="center" gap={spacing.md}>
               <Text size="lg" c="dimmed">
-                {t('screens.subscriptions.list.emptyState.title')}
+                {t(
+                  'screens.subscriptions.list.emptyState.title',
+                  'No subscriptions yet',
+                )}
               </Text>
               <Text size="sm" c="dimmed">
-                {t('screens.subscriptions.list.emptyState.description')}
+                {t(
+                  'screens.subscriptions.list.emptyState.description',
+                  'Add recurring payments and income to keep your forecasts up to date.',
+                )}
               </Text>
               <Button
+                leftSection={<IconPlus size={16} strokeWidth={1.5} />}
                 onClick={() => {
                   navigation({ to: '/subscriptions/new' });
                 }}
               >
-                {t('screens.subscriptions.list.emptyState.button.label')}
+                {t(
+                  'screens.subscriptions.list.emptyState.button.label',
+                  'Add subscription',
+                )}
               </Button>
             </Stack>
           </Card>
         )}
 
         {groupedSubscriptions.subscriptions.length > 0 && (
-          <Stack gap="xs">
+          <Stack gap={spacing.xs}>
             <Text fw={600} size="md">
-              {t('screens.subscriptions.list.sections.subscriptions')} (
-              {groupedSubscriptions.subscriptions.length})
+              {t(
+                'screens.subscriptions.list.sections.subscriptions',
+                'Subscriptions',
+              )}{' '}
+              ({groupedSubscriptions.subscriptions.length})
             </Text>
             {groupedSubscriptions.subscriptions.map((subscription) => (
               <SubscriptionRow
@@ -338,10 +416,13 @@ export function SubscriptionListScreen() {
         )}
 
         {groupedSubscriptions.regularPayments.length > 0 && (
-          <Stack gap="xs">
+          <Stack gap={spacing.xs}>
             <Text fw={600} size="md">
-              {t('screens.subscriptions.list.sections.regularPayments')} (
-              {groupedSubscriptions.regularPayments.length})
+              {t(
+                'screens.subscriptions.list.sections.regularPayments',
+                'Regular payments',
+              )}{' '}
+              ({groupedSubscriptions.regularPayments.length})
             </Text>
             {groupedSubscriptions.regularPayments.map((subscription) => (
               <SubscriptionRow
@@ -359,10 +440,13 @@ export function SubscriptionListScreen() {
         )}
 
         {groupedSubscriptions.regularIncome.length > 0 && (
-          <Stack gap="xs">
+          <Stack gap={spacing.xs}>
             <Text fw={600} size="md">
-              {t('screens.subscriptions.list.sections.regularIncome')} (
-              {groupedSubscriptions.regularIncome.length})
+              {t(
+                'screens.subscriptions.list.sections.regularIncome',
+                'Regular income',
+              )}{' '}
+              ({groupedSubscriptions.regularIncome.length})
             </Text>
             {groupedSubscriptions.regularIncome.map((subscription) => (
               <SubscriptionRow

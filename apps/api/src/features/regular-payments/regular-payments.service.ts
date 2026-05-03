@@ -10,6 +10,7 @@ import { RegularPayment } from './entities/regular-payment.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../categories/entities/category.entity';
+import { Account } from '../accounts/entities/account.entity';
 
 @Injectable()
 export class RegularPaymentsService {
@@ -20,6 +21,8 @@ export class RegularPaymentsService {
     private readonly repository: Repository<RegularPayment>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
   ) {}
 
   async create({
@@ -45,6 +48,19 @@ export class RegularPaymentsService {
       }
     }
 
+    if (createRegularPaymentDto.accountId) {
+      const account = await this.accountRepository.findOne({
+        where: {
+          user_id: userId,
+          id: createRegularPaymentDto.accountId,
+        },
+      });
+
+      if (!account) {
+        throw new BadRequestException('Invalid Account ID: Account not found');
+      }
+    }
+
     const savedEntity = await this.repository.save({
       user_id: userId,
       amount: createRegularPaymentDto.amount,
@@ -56,6 +72,9 @@ export class RegularPaymentsService {
         ? new Date(createRegularPaymentDto.startDate)
         : new Date(),
       imageUrl: createRegularPaymentDto.imageUrl,
+      account: createRegularPaymentDto.accountId
+        ? { id: createRegularPaymentDto.accountId }
+        : undefined,
       category: createRegularPaymentDto.categoryId
         ? { id: createRegularPaymentDto.categoryId }
         : undefined,
@@ -70,6 +89,7 @@ export class RegularPaymentsService {
       where: { user_id: userId },
       relations: {
         category: true,
+        account: true,
       },
     });
     return payments;
@@ -86,6 +106,7 @@ export class RegularPaymentsService {
       where: { user_id: userId, id },
       relations: {
         category: true,
+        account: true,
       },
     });
 
@@ -140,6 +161,22 @@ export class RegularPaymentsService {
       }
     }
 
+    if (dto.accountId && dto.accountId !== entity.accountId) {
+      this.logger.debug(
+        `Verifying account ${dto.accountId} for user ${userId} to update regular payment ${id}`,
+      );
+      const account = await this.accountRepository.findOne({
+        where: {
+          user_id: userId,
+          id: dto.accountId,
+        },
+      });
+
+      if (!account) {
+        throw new BadRequestException('Invalid Account ID: Account not found');
+      }
+    }
+
     const updatedEntity = await this.repository.save({
       ...entity,
       name: dto.name ?? entity.name,
@@ -149,6 +186,7 @@ export class RegularPaymentsService {
       type: dto.type ?? entity.type,
       startDate: dto.startDate ? new Date(dto.startDate) : entity.startDate,
       imageUrl: dto.imageUrl ?? entity.imageUrl,
+      accountId: dto.accountId ?? entity.accountId,
       categoryId: dto.categoryId ?? entity.categoryId,
     });
 

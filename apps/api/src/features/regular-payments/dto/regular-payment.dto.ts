@@ -23,6 +23,7 @@ export class RegularPaymentDto {
   startDate?: Date;
 
   imageUrl?: string;
+  accountId?: string;
   categoryId?: string;
 
   static fromDomain(entity: RegularPayment): RegularPaymentDto {
@@ -36,6 +37,7 @@ export class RegularPaymentDto {
     dto.cadence = entity.cadence;
     dto.startDate = entity.startDate;
     dto.imageUrl = entity.imageUrl;
+    dto.accountId = entity.accountId;
     dto.categoryId = entity.category ? entity.category.id : undefined;
     return dto;
   }

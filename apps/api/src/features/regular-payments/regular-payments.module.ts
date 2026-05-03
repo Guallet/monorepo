@@ -4,9 +4,10 @@ import { RegularPaymentsController } from './regular-payments.controller';
 import { RegularPayment } from './entities/regular-payment.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from '../categories/entities/category.entity';
+import { Account } from '../accounts/entities/account.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RegularPayment, Category])],
+  imports: [TypeOrmModule.forFeature([RegularPayment, Category, Account])],
   controllers: [RegularPaymentsController],
   providers: [RegularPaymentsService],
 })

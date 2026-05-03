@@ -1,5 +1,6 @@
 import { CurrencyPicker } from '@/components/CurrencyPicker/CurrencyPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { AccountInput } from '@/features/accounts/components/AccountInput';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import {
   CreateSubscriptionRequest,
@@ -17,7 +18,9 @@ import {
   NumberInput,
   Select,
   Stack,
+  Text,
   TextInput,
+  ThemeIcon,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -26,6 +29,10 @@ import { useNavigate } from '@tanstack/react-router';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+import {
+  IconCalendarRepeat,
+  IconDeviceFloppy,
+} from '@tabler/icons-react';
 
 const subscriptionFormDataSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -33,8 +40,9 @@ const subscriptionFormDataSchema = z.object({
   currency: z.string().nullable().default(null),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
-  startDate: z.date({ required_error: 'Start date is required' }),
+  startDate: z.date({ error: 'Start date is required' }),
   imageUrl: z.string().optional(),
+  accountId: z.string().nullable().optional(),
 });
 type AddSubscriptionFormData = z.infer<typeof subscriptionFormDataSchema>;
 
@@ -69,6 +77,7 @@ export function AddSubscriptionScreen() {
       type: RecurringPaymentType.SUBSCRIPTION,
       startDate: new Date(),
       imageUrl: '',
+      accountId: null,
     },
   });
   const { values } = form;
@@ -92,6 +101,8 @@ export function AddSubscriptionScreen() {
       return;
     }
 
+    const imageUrl = data.imageUrl?.trim();
+
     const request: CreateSubscriptionRequest = {
       name: data.name,
       amount: data.amount,
@@ -99,7 +110,8 @@ export function AddSubscriptionScreen() {
       cadence: data.cadence,
       type: data.type,
       startDate: data.startDate.toISOString().split('T')[0],
-      imageUrl: data.imageUrl || undefined,
+      imageUrl: imageUrl || undefined,
+      accountId: data.accountId ?? undefined,
     };
 
     try {
@@ -138,16 +150,31 @@ export function AddSubscriptionScreen() {
     <BaseScreen
       title={t('screens.subscriptions.create.title', 'New subscription')}
     >
-      <Box maw={560} mx="auto">
+      <Box mx="auto">
         <form onSubmit={form.onSubmit(onFormSubmit)}>
           <Stack gap={spacing.md}>
-            <Card
-              withBorder
-              shadow="sm"
-              radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
-            >
-              <Stack gap={spacing.md}>
+            <Card withBorder shadow="sm" radius="lg" padding={spacing.lg}>
+              <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+                <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                  <IconCalendarRepeat size={24} strokeWidth={1.5} />
+                </ThemeIcon>
+                <Box>
+                  <Text fw={600}>
+                    {t(
+                      'screens.subscriptions.create.form.title',
+                      'Subscription details',
+                    )}
+                  </Text>
+                  <Text size="sm" c="dimmed" mt={spacing.xs}>
+                    {t(
+                      'screens.subscriptions.create.form.description',
+                      'Track recurring payments, income, and memberships in one place.',
+                    )}
+                  </Text>
+                </Box>
+              </Group>
+
+              <Stack gap={spacing.md} mt={spacing.lg}>
                 <TextInput
                   required
                   label={t(
@@ -167,7 +194,13 @@ export function AddSubscriptionScreen() {
                     'screens.subscriptions.create.fields.type.label',
                     'Type',
                   )}
-                  data={paymentTypes}
+                  data={paymentTypes.map((option) => ({
+                    value: option.value,
+                    label: t(
+                      `screens.subscriptions.create.types.${option.value}`,
+                      option.label,
+                    ),
+                  }))}
                   {...form.getInputProps('type')}
                   onChange={(value) => {
                     if (!value) return;
@@ -180,7 +213,13 @@ export function AddSubscriptionScreen() {
                     'screens.subscriptions.create.fields.cadence.label',
                     'Frequency',
                   )}
-                  data={cadenceOptions}
+                  data={cadenceOptions.map((option) => ({
+                    value: option.value,
+                    label: t(
+                      `screens.subscriptions.create.cadence.${option.value}`,
+                      option.label,
+                    ),
+                  }))}
                   {...form.getInputProps('cadence')}
                   onChange={(value) => {
                     if (!value) return;
@@ -194,6 +233,18 @@ export function AddSubscriptionScreen() {
                   onValueChanged={(newValue) => {
                     form.setFieldValue('currency', newValue);
                   }}
+                />
+                <AccountInput
+                  label={t(
+                    'screens.subscriptions.create.fields.account.label',
+                    'Account',
+                  )}
+                  description={t('common.optional', 'Optional')}
+                  placeholder={t(
+                    'screens.subscriptions.create.fields.account.placeholder',
+                    'Select an account',
+                  )}
+                  {...form.getInputProps('accountId')}
                 />
                 <NumberInput
                   required
@@ -226,48 +277,27 @@ export function AddSubscriptionScreen() {
                   )}
                   {...form.getInputProps('startDate')}
                 />
+
                 <TextInput
                   label={t(
                     'screens.subscriptions.create.fields.imageUrl.label',
                     'Image URL',
                   )}
                   description={t('common.optional', 'Optional')}
-                  placeholder="https://example.com/logo.png"
+                  placeholder={t(
+                    'screens.subscriptions.create.fields.imageUrl.placeholder',
+                    'https://example.com/logo.png',
+                  )}
                   {...form.getInputProps('imageUrl')}
                 />
               </Stack>
             </Card>
 
-            <Stack gap="xs" hiddenFrom="sm">
+            <Group justify="flex-end">
               <Button
                 type="submit"
-                fullWidth
                 size="md"
-                loading={createSubscriptionMutation.isPending}
-              >
-                {t(
-                  'screens.subscriptions.create.submitButton',
-                  'Create subscription',
-                )}
-              </Button>
-              <Button
-                variant="outline"
-                fullWidth
-                size="md"
-                onClick={() => navigate({ to: '/subscriptions' })}
-              >
-                {t('screens.subscriptions.create.cancelButton', 'Cancel')}
-              </Button>
-            </Stack>
-            <Group justify="flex-end" gap="xs" visibleFrom="sm">
-              <Button
-                variant="outline"
-                onClick={() => navigate({ to: '/subscriptions' })}
-              >
-                {t('screens.subscriptions.create.cancelButton', 'Cancel')}
-              </Button>
-              <Button
-                type="submit"
+                leftSection={<IconDeviceFloppy size={16} strokeWidth={1.5} />}
                 loading={createSubscriptionMutation.isPending}
               >
                 {t(
