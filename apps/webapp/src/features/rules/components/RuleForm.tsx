@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Box,
   Button,
   Card,
   Group,
@@ -11,13 +12,23 @@ import {
   Textarea,
   TextInput,
   Divider,
+  ThemeIcon,
 } from '@mantine/core';
-import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
+import {
+  IconArrowRight,
+  IconGripVertical,
+  IconListDetails,
+  IconPlus,
+  IconSettingsAutomation,
+  IconTag,
+  IconTrash,
+} from '@tabler/icons-react';
 import { useState } from 'react';
 import { CategoryDto, FieldDefinitionDto } from '@guallet/api-client';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useCategory } from '@guallet/api-react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@guallet/ui-react';
 
 export interface RuleFormData {
   name: string;
@@ -56,6 +67,7 @@ export function RuleForm({
   submitLabel = 'Save',
 }: Readonly<RuleFormProps>) {
   const { t } = useTranslation();
+  const { borderRadius, colors, spacing } = useTheme();
   const [name, setName] = useState(initialData?.name ?? '');
   const [description, setDescription] = useState(
     initialData?.description ?? '',
@@ -181,47 +193,75 @@ export function RuleForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack gap="md">
-        <Card
-          withBorder
-          shadow="sm"
-          radius="lg"
-          padding={{ base: 'md', sm: 'lg' }}
-        >
-          <Stack gap="md">
+      <Stack gap={spacing.md}>
+        <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+          <Stack gap={spacing.md}>
+            <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <IconListDetails size={22} strokeWidth={1.5} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={600}>
+                  {t('screens.rules.form.details.title', 'Rule details')}
+                </Text>
+                <Text size="sm" c="dimmed" mt={spacing.xs}>
+                  {t(
+                    'screens.rules.form.details.description',
+                    'Name the rule and choose whether it should run now.',
+                  )}
+                </Text>
+              </Box>
+            </Group>
+
             <TextInput
-              label={t('screens.rules.form.name.label')}
-              placeholder={t('screens.rules.form.name.placeholder')}
+              label={t('screens.rules.form.name.label', 'Rule name')}
+              placeholder={t(
+                'screens.rules.form.name.placeholder',
+                'e.g. Grocery stores',
+              )}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
 
             <Textarea
-              label={t('screens.rules.form.description.label')}
-              placeholder={t('screens.rules.form.description.placeholder')}
+              label={t('screens.rules.form.description.label', 'Description')}
+              placeholder={t(
+                'screens.rules.form.description.placeholder',
+                'Optional description of what this rule does',
+              )}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
             />
 
             <Switch
-              label={t('screens.rules.form.isActive.label')}
+              label={t('screens.rules.form.isActive.label', 'Rule is active')}
               checked={isActive}
               onChange={(e) => setIsActive(e.currentTarget.checked)}
             />
           </Stack>
         </Card>
 
-        <Card
-          withBorder
-          shadow="sm"
-          radius="lg"
-          padding={{ base: 'md', sm: 'lg' }}
-        >
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text fw={500}>{t('screens.rules.form.conditions.title')}</Text>
+        <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+          <Stack gap={spacing.md}>
+            <Group justify="space-between" align="flex-start" wrap="nowrap">
+              <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+                <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                  <IconSettingsAutomation size={22} strokeWidth={1.5} />
+                </ThemeIcon>
+                <Box>
+                  <Text fw={600}>
+                    {t('screens.rules.form.conditions.title', 'Conditions')}
+                  </Text>
+                  <Text size="sm" c="dimmed" mt={spacing.xs}>
+                    {t(
+                      'screens.rules.form.conditions.description',
+                      'Choose what a transaction must match before the category is assigned.',
+                    )}
+                  </Text>
+                </Box>
+              </Group>
               <Select
                 size="xs"
                 w={120}
@@ -232,56 +272,93 @@ export function RuleForm({
                 data={[
                   {
                     value: 'and',
-                    label: t('screens.rules.form.conditions.logic.all'),
+                    label: t(
+                      'screens.rules.form.conditions.logic.all',
+                      'Match all',
+                    ),
                   },
                   {
                     value: 'or',
-                    label: t('screens.rules.form.conditions.logic.any'),
+                    label: t(
+                      'screens.rules.form.conditions.logic.any',
+                      'Match any',
+                    ),
                   },
                 ]}
               />
             </Group>
 
             {conditions.map((condition, index) => (
-              <div key={condition.id}>
+              <Box key={condition.id}>
                 {index > 0 && (
                   <Divider
-                    label={conditionLogic.toUpperCase()}
+                    label={
+                      conditionLogic === 'and'
+                        ? t('screens.rules.form.conditions.logic.allDivider', 'And')
+                        : t('screens.rules.form.conditions.logic.anyDivider', 'Or')
+                    }
                     labelPosition="center"
-                    my="xs"
+                    my={spacing.xs}
                   />
                 )}
-                <Card
-                  withBorder
-                  p="sm"
+                <Box
                   draggable
                   onDragStart={(e) => handleDragStart(e, condition)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, condition)}
                   style={{
                     cursor: 'grab',
+                    border: `1px solid ${colors.paleGrey}`,
+                    borderRadius: borderRadius.lg,
+                    padding: spacing.md,
+                    backgroundColor: colors.white,
                     opacity: draggedCondition?.id === condition.id ? 0.5 : 1,
                   }}
                 >
-                  <Stack gap="xs">
+                  <Stack gap={spacing.sm}>
                     <Group gap="xs" justify="space-between">
-                      <ActionIcon variant="subtle" style={{ cursor: 'grab' }}>
-                        <IconGripVertical size={16} />
-                      </ActionIcon>
+                      <Group gap={spacing.xs}>
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          aria-label={t(
+                            'screens.rules.form.conditions.dragHandle',
+                            'Drag condition',
+                          )}
+                          style={{ cursor: 'grab' }}
+                        >
+                          <IconGripVertical size={20} strokeWidth={1.5} />
+                        </ActionIcon>
+                        <Text size="sm" fw={600}>
+                          {t(
+                            'screens.rules.form.conditions.itemTitle',
+                            'Condition {{index}}',
+                            { index: index + 1 },
+                          )}
+                        </Text>
+                      </Group>
                       <ActionIcon
                         variant="subtle"
                         color="red"
                         onClick={() => handleRemoveCondition(condition.id)}
                         disabled={conditions.length === 1}
+                        aria-label={t(
+                          'screens.rules.form.conditions.removeButton.label',
+                          'Remove condition',
+                        )}
                       >
-                        <IconTrash size={16} />
+                        <IconTrash size={20} strokeWidth={1.5} />
                       </ActionIcon>
                     </Group>
-                    <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xs">
+                    <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={spacing.sm}>
                       <Select
-                        label={t('screens.rules.form.conditions.field.label')}
+                        label={t(
+                          'screens.rules.form.conditions.field.label',
+                          'Field',
+                        )}
                         placeholder={t(
                           'screens.rules.form.conditions.field.placeholder',
+                          'Select field',
                         )}
                         data={fieldOptions}
                         value={condition.field}
@@ -296,9 +373,11 @@ export function RuleForm({
                       <Select
                         label={t(
                           'screens.rules.form.conditions.operator.label',
+                          'Operator',
                         )}
                         placeholder={t(
                           'screens.rules.form.conditions.operator.placeholder',
+                          'Select operator',
                         )}
                         data={getOperatorsForField(condition.field)}
                         value={condition.operator}
@@ -312,9 +391,13 @@ export function RuleForm({
                         disabled={!condition.field}
                       />
                       <TextInput
-                        label={t('screens.rules.form.conditions.value.label')}
+                        label={t(
+                          'screens.rules.form.conditions.value.label',
+                          'Value',
+                        )}
                         placeholder={t(
                           'screens.rules.form.conditions.value.placeholder',
+                          'Enter value',
                         )}
                         value={condition.value}
                         onChange={(e) =>
@@ -327,42 +410,49 @@ export function RuleForm({
                       />
                     </SimpleGrid>
                   </Stack>
-                </Card>
-              </div>
+                </Box>
+              </Box>
             ))}
 
             <Button
               variant="light"
-              leftSection={<IconPlus size={16} />}
+              leftSection={<IconPlus size={16} strokeWidth={1.5} />}
               onClick={handleAddCondition}
             >
-              {t('screens.rules.form.conditions.addButton.label')}
+              {t(
+                'screens.rules.form.conditions.addButton.label',
+                'Add condition',
+              )}
             </Button>
           </Stack>
         </Card>
 
-        <Card
-          withBorder
-          shadow="sm"
-          radius="lg"
-          padding={{ base: 'md', sm: 'lg' }}
-        >
-          <Stack gap="md">
-            <Text fw={500}>{t('screens.rules.form.category.title')}</Text>
-            {/* <Select
-              label="Category"
-              placeholder="Select category to assign"
-              data={categoryOptions}
-              value={resultCategoryId}
-              onChange={(value) => setResultCategoryId(value ?? '')}
-              searchable
-              required
-            /> */}
+        <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+          <Stack gap={spacing.md}>
+            <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+              <ThemeIcon size={40} radius="md" variant="light" color="blue">
+                <IconTag size={22} strokeWidth={1.5} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={600}>
+                  {t('screens.rules.form.category.title', 'Then assign category')}
+                </Text>
+                <Text size="sm" c="dimmed" mt={spacing.xs}>
+                  {t(
+                    'screens.rules.form.category.description',
+                    'Matching transactions will be moved into this category.',
+                  )}
+                </Text>
+              </Box>
+            </Group>
             <CategoryPicker
               mode="single"
               required
-              label={t('screens.rules.form.category.label')}
-              placeholder={t('screens.rules.form.category.placeholder')}
+              label={t('screens.rules.form.category.label', 'Category')}
+              placeholder={t(
+                'screens.rules.form.category.placeholder',
+                'Select category to assign',
+              )}
               selectedCategory={category}
               onSelectionChanged={(selectedCategory: CategoryDto) => {
                 setResultCategoryId(selectedCategory.id ?? '');
@@ -371,7 +461,7 @@ export function RuleForm({
           </Stack>
         </Card>
 
-        <Stack gap="xs" hiddenFrom="sm">
+        <Stack gap={spacing.xs} hiddenFrom="sm">
           <Button
             type="submit"
             fullWidth
@@ -388,16 +478,27 @@ export function RuleForm({
             onClick={onCancel}
             disabled={isSubmitting}
           >
-            {t('screens.rules.form.buttons.cancel')}
+            {t('screens.rules.form.buttons.cancel', 'Cancel')}
           </Button>
         </Stack>
-        <Group justify="flex-end" gap="xs" visibleFrom="sm">
-          <Button variant="subtle" onClick={onCancel} disabled={isSubmitting}>
-            {t('screens.rules.form.buttons.cancel')}
-          </Button>
-          <Button type="submit" loading={isSubmitting} disabled={!isFormValid}>
-            {submitLabel}
-          </Button>
+        <Group justify="space-between" gap={spacing.xs} visibleFrom="sm">
+          <Group gap={spacing.xs} style={{ color: colors.midGrey }}>
+            <IconArrowRight size={16} strokeWidth={1.5} />
+            <Text size="sm">
+              {t(
+                'screens.rules.form.footerHint',
+                'Rules apply to new matching transactions.',
+              )}
+            </Text>
+          </Group>
+          <Group gap={spacing.xs}>
+            <Button variant="subtle" onClick={onCancel} disabled={isSubmitting}>
+              {t('screens.rules.form.buttons.cancel', 'Cancel')}
+            </Button>
+            <Button type="submit" loading={isSubmitting} disabled={!isFormValid}>
+              {submitLabel}
+            </Button>
+          </Group>
         </Group>
       </Stack>
     </form>

@@ -1,13 +1,17 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { RuleForm, RuleFormData } from '@/features/rules/components/RuleForm';
 import { useFieldDefinitions, useRuleMutations } from '@guallet/api-react';
+import { useTheme } from '@guallet/ui-react';
+import { Box, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export function NewRuleScreen() {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const navigate = useNavigate();
 
   const { fieldDefinitions } = useFieldDefinitions();
@@ -59,15 +63,39 @@ export function NewRuleScreen() {
   return (
     <BaseScreen
       isLoading={isSubmitting}
-      title={t('screens.rules.create.title')}
+      title={t('screens.rules.create.title', 'Create rule')}
     >
-      <RuleForm
-        fieldDefinitions={fieldDefinitions}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        isSubmitting={isSubmitting}
-        submitLabel={t('screens.rules.create.submitButton.label')}
-      />
+      <Stack gap={spacing.md}>
+        <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+          <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+            <ThemeIcon size={40} radius="md" variant="light" color="blue">
+              <IconInfoCircle size={22} strokeWidth={1.5} />
+            </ThemeIcon>
+            <Box>
+              <Text fw={600}>
+                {t('screens.rules.create.intro.title', 'Automate categorisation')}
+              </Text>
+              <Text size="sm" c="dimmed" mt={spacing.xs}>
+                {t(
+                  'screens.rules.create.intro.description',
+                  'Define the transaction details to match, then choose the category Guallet should assign.',
+                )}
+              </Text>
+            </Box>
+          </Group>
+        </Card>
+
+        <RuleForm
+          fieldDefinitions={fieldDefinitions}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+          isSubmitting={isSubmitting}
+          submitLabel={t(
+            'screens.rules.create.submitButton.label',
+            'Create rule',
+          )}
+        />
+      </Stack>
     </BaseScreen>
   );
 }

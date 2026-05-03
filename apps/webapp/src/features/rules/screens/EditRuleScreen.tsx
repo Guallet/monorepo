@@ -5,7 +5,10 @@ import {
   useRule,
   useRuleMutations,
 } from '@guallet/api-react';
+import { useTheme } from '@guallet/ui-react';
+import { Box, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +19,7 @@ interface EditRuleScreenProps {
 
 export function EditRuleScreen({ id }: Readonly<EditRuleScreenProps>) {
   const { t } = useTranslation();
+  const { spacing } = useTheme();
   const { rule, isLoading: isRuleLoading } = useRule(id);
   const { fieldDefinitions, isLoading: isFieldsLoading } =
     useFieldDefinitions();
@@ -84,20 +88,45 @@ export function EditRuleScreen({ id }: Readonly<EditRuleScreenProps>) {
   return (
     <BaseScreen
       isLoading={isRuleLoading || isFieldsLoading}
-      title={rule?.name ?? t('screens.rules.edit.title')}
+      title={rule?.name ?? t('screens.rules.edit.title', 'Edit rule')}
     >
-      {!isRuleLoading && !isFieldsLoading && rule && (
-        <RuleForm
-          key={rule.id}
-          initialData={initialData}
-          fieldDefinitions={fieldDefinitions ?? []}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-          submitLabel={t('screens.rules.edit.submitButton.label')}
-        />
-      )}
-      {!isRuleLoading && !rule && <div>{t('screens.rules.edit.notFound')}</div>}
+      <Stack gap={spacing.md}>
+        <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+          <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+            <ThemeIcon size={40} radius="md" variant="light" color="blue">
+              <IconInfoCircle size={22} strokeWidth={1.5} />
+            </ThemeIcon>
+            <Box>
+              <Text fw={600}>
+                {t('screens.rules.edit.intro.title', 'Review rule behaviour')}
+              </Text>
+              <Text size="sm" c="dimmed" mt={spacing.xs}>
+                {t(
+                  'screens.rules.edit.intro.description',
+                  'Changes apply to future matching transactions. Existing transactions are not recategorised automatically.',
+                )}
+              </Text>
+            </Box>
+          </Group>
+        </Card>
+
+        {!isRuleLoading && !isFieldsLoading && rule && (
+          <RuleForm
+            key={rule.id}
+            initialData={initialData}
+            fieldDefinitions={fieldDefinitions ?? []}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isSubmitting={isSubmitting}
+            submitLabel={t('screens.rules.edit.submitButton.label', 'Update rule')}
+          />
+        )}
+        {!isRuleLoading && !rule && (
+          <Text c="dimmed">
+            {t('screens.rules.edit.notFound', 'Rule not found.')}
+          </Text>
+        )}
+      </Stack>
     </BaseScreen>
   );
 }
