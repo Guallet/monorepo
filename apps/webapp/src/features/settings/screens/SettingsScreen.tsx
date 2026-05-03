@@ -1,60 +1,178 @@
-import { Button, Stack } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Group,
+  Stack,
+  Text,
+  ThemeIcon,
+} from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { UserSettingsCard } from '../components/UserSettingsCard';
-import { AppSection } from '@/components/Cards/AppSection';
 import { LanguageRow } from '../components/LanguageRow';
 import { DefaultCurrencyRow } from '../components/DefaultCurrencyRow';
 import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
 import { DateFormatRow } from '../components/DateFormatRow';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow } from '@guallet/ui-react';
+import { useTheme } from '@guallet/ui-react';
+import {
+  IconAlertTriangle,
+  IconBuildingBank,
+  IconDatabaseExport,
+  IconDownload,
+  IconLanguage,
+  IconTrash,
+  IconUpload,
+} from '@tabler/icons-react';
+
+interface SettingsSectionProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}
+
+function SettingsSection({
+  title,
+  description,
+  icon,
+  children,
+}: Readonly<SettingsSectionProps>) {
+  const { borderRadius, colors, spacing } = useTheme();
+
+  return (
+    <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+      <Stack gap={spacing.md}>
+        <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+          <ThemeIcon size={40} radius="md" variant="light" color="blue">
+            {icon}
+          </ThemeIcon>
+          <Box>
+            <Text fw={600}>{title}</Text>
+            <Text size="sm" c="dimmed" mt={spacing.xs}>
+              {description}
+            </Text>
+          </Box>
+        </Group>
+
+        <Box
+          style={{
+            border: `1px solid ${colors.paleGrey}`,
+            borderRadius: borderRadius.lg,
+            overflow: 'hidden',
+          }}
+        >
+          {children}
+        </Box>
+      </Stack>
+    </Card>
+  );
+}
 
 export function SettingsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { colors, spacing } = useTheme();
 
   return (
     <BaseScreen title={t('screens.settings.title', 'Settings')}>
-      <Stack>
+      <Stack gap={spacing.md}>
         <UserSettingsCard />
 
-        <AppSection title="User Preferences" itemPadding={0}>
+        <SettingsSection
+          title={t('screens.settings.preferences.title', 'User preferences')}
+          description={t(
+            'screens.settings.preferences.description',
+            'Set regional preferences for currencies, language, and dates.',
+          )}
+          icon={<IconLanguage size={24} strokeWidth={1.5} />}
+        >
           <LanguageRow />
           <DefaultCurrencyRow />
           <PreferredCurrenciesRow />
           <DateFormatRow />
-        </AppSection>
+        </SettingsSection>
 
-        <AppSection title="Institutions" itemPadding={0}>
+        <SettingsSection
+          title={t('screens.settings.institutions.title', 'Institutions')}
+          description={t(
+            'screens.settings.institutions.description',
+            'Manage banks and institutions used to organise your accounts.',
+          )}
+          icon={<IconBuildingBank size={24} strokeWidth={1.5} />}
+        >
           <TextRow
-            label="Manage institutions"
+            label={t(
+              'screens.settings.institutions.manageRow.label',
+              'Manage institutions',
+            )}
             onClick={() => {
               navigate({ to: '/institutions' });
             }}
           />
-        </AppSection>
+        </SettingsSection>
 
-        <AppSection title="Import/Export data" itemPadding={0}>
+        <SettingsSection
+          title={t('screens.settings.data.title', 'Import and export data')}
+          description={t(
+            'screens.settings.data.description',
+            'Move your financial data in or out of Guallet.',
+          )}
+          icon={<IconDatabaseExport size={24} strokeWidth={1.5} />}
+        >
           <TextRow
-            label="Export data"
+            label={t('screens.settings.data.exportRow.label', 'Export data')}
+            leftSection={<IconDownload size={20} strokeWidth={1.5} />}
             onClick={() => {
               navigate({ to: '/settings/export' });
             }}
           />
           <TextRow
-            label="Import data"
+            label={t('screens.settings.data.importRow.label', 'Import data')}
+            leftSection={<IconUpload size={20} strokeWidth={1.5} />}
             onClick={() => {
               navigate({ to: '/importer' });
             }}
           />
-        </AppSection>
+        </SettingsSection>
 
-        <AppSection title="Danger zone">
-          <Button variant="outline" color="red">
-            Close account
-          </Button>
-        </AppSection>
+        <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
+          <Stack gap={spacing.md}>
+            <Group gap={spacing.md} align="flex-start" wrap="nowrap">
+              <ThemeIcon size={40} radius="md" variant="light" color="red">
+                <IconAlertTriangle size={24} strokeWidth={1.5} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={600}>
+                  {t('screens.settings.danger.title', 'Danger zone')}
+                </Text>
+                <Text size="sm" c="dimmed" mt={spacing.xs}>
+                  {t(
+                    'screens.settings.danger.description',
+                    'Permanent account actions live here.',
+                  )}
+                </Text>
+              </Box>
+            </Group>
+            <Button
+              variant="outline"
+              color="red"
+              leftSection={<IconTrash size={16} strokeWidth={1.5} />}
+              style={{
+                borderColor: colors.error,
+                color: colors.error,
+                alignSelf: 'flex-start',
+              }}
+            >
+              {t(
+                'screens.settings.danger.closeAccountButton.label',
+                'Close account',
+              )}
+            </Button>
+          </Stack>
+        </Card>
       </Stack>
     </BaseScreen>
   );
