@@ -70,7 +70,6 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   const {
     selectedCategory = null,
     selectedCategories = [],
-    placeholder: _placeholder,
     ...wrapperProps
   } = rest;
 
