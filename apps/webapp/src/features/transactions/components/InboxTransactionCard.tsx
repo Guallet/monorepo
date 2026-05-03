@@ -189,6 +189,7 @@ export function InboxTransactionCard({
         size="lg"
       >
         <CategoryPickerModal
+          mode="single"
           selectedCategory={category ?? null}
           onSelectionChanged={handleCategorySelected}
           close={closeCategoryPicker}

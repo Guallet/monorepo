@@ -155,13 +155,14 @@ export function TransactionFormFields({
         {...form.getInputProps('date')}
       />
       <CategoryPicker
+        mode="single"
         label={t(`${translationKeyPrefix}.form.category.label`, 'Category')}
         placeholder={t(
           `${translationKeyPrefix}.form.category.placeholder`,
           'Select a category',
         )}
         selectedCategory={selectedCategory ?? null}
-        onCategorySelected={(selectedCategoryValue: CategoryDto) => {
+        onSelectionChanged={(selectedCategoryValue: CategoryDto) => {
           form.setFieldValue('categoryId', selectedCategoryValue.id || null);
         }}
       />

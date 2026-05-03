@@ -359,11 +359,12 @@ export function RuleForm({
               required
             /> */}
             <CategoryPicker
+              mode="single"
               required
               label={t('screens.rules.form.category.label')}
               placeholder={t('screens.rules.form.category.placeholder')}
               selectedCategory={category}
-              onCategorySelected={(selectedCategory: CategoryDto) => {
+              onSelectionChanged={(selectedCategory: CategoryDto) => {
                 setResultCategoryId(selectedCategory.id ?? '');
               }}
             />
