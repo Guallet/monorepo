@@ -40,7 +40,7 @@ function SettingsSection({
   icon,
   children,
 }: Readonly<SettingsSectionProps>) {
-  const { borderRadius, colors, spacing } = useTheme();
+  const { spacing } = useTheme();
 
   return (
     <Card withBorder shadow="sm" radius="lg" p={spacing.lg}>
@@ -57,15 +57,7 @@ function SettingsSection({
           </Box>
         </Group>
 
-        <Box
-          style={{
-            border: `1px solid ${colors.paleGrey}`,
-            borderRadius: borderRadius.lg,
-            overflow: 'hidden',
-          }}
-        >
-          {children}
-        </Box>
+        <Box mx={-spacing.lg}>{children}</Box>
       </Stack>
     </Card>
   );
