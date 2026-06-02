@@ -1,4 +1,8 @@
-import { BadGatewayException, NotFoundException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
@@ -35,6 +39,7 @@ describe('AiService', () => {
   };
 
   const mockAdapter = {
+    validateApiToken: jest.fn(),
     listModels: jest.fn(),
   };
 
@@ -71,6 +76,7 @@ describe('AiService', () => {
     service = module.get<AiService>(AiService);
     jest.clearAllMocks();
     mockProviderRegistry.getAdapter.mockReturnValue(mockAdapter);
+    mockAdapter.validateApiToken.mockResolvedValue(undefined);
   });
 
   it('creates provider connections with encrypted tokens and masked DTOs', async () => {
@@ -96,6 +102,10 @@ describe('AiService', () => {
       },
     });
 
+    expect(mockProviderRegistry.getAdapter).toHaveBeenCalledWith(
+      AiProvider.OPENAI,
+    );
+    expect(mockAdapter.validateApiToken).toHaveBeenCalledWith('sk-test-1234');
     expect(mockCredentialEncryption.encrypt).toHaveBeenCalledWith(
       'sk-test-1234',
     );
@@ -115,6 +125,54 @@ describe('AiService', () => {
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     });
+  });
+
+  it('rejects provider connections when the API token is not valid', async () => {
+    mockAdapter.validateApiToken.mockRejectedValue(
+      new ProviderModelListError('Provider returned 401', 401),
+    );
+
+    await expect(
+      service.createProviderConnection({
+        userId,
+        dto: {
+          provider: AiProvider.OPENAI,
+          displayName: 'OpenAI',
+          apiToken: 'invalid-token',
+        },
+      }),
+    ).rejects.toThrow(BadRequestException);
+
+    expect(mockCredentialEncryption.encrypt).not.toHaveBeenCalled();
+    expect(mockConnectionRepository.create).not.toHaveBeenCalled();
+    expect(mockConnectionRepository.save).not.toHaveBeenCalled();
+  });
+
+  it('does not update stored tokens when replacement token validation fails', async () => {
+    mockConnectionRepository.findOne.mockResolvedValue({
+      id: 'connection-1',
+      user_id: userId,
+      provider: AiProvider.OPENAI,
+      display_name: 'OpenAI',
+      encrypted_token: 'encrypted:old-token',
+      token_hint: '...oken',
+    });
+    mockAdapter.validateApiToken.mockRejectedValue(
+      new ProviderModelListError('Provider returned 403', 403),
+    );
+
+    await expect(
+      service.updateProviderConnection({
+        userId,
+        connectionId: 'connection-1',
+        dto: {
+          apiToken: 'invalid-token',
+        },
+      }),
+    ).rejects.toThrow(BadRequestException);
+
+    expect(mockCredentialEncryption.encrypt).not.toHaveBeenCalled();
+    expect(mockConnectionRepository.save).not.toHaveBeenCalled();
   });
 
   it('lists models through the provider adapter using the decrypted token', async () => {

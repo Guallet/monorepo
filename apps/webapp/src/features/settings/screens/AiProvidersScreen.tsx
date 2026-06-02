@@ -1,7 +1,7 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { EmptyState } from '@/components/EmptyState/EmptyState';
-import { AiAgentDto, AiProvider } from '@guallet/api-client';
-import { useAiAgents } from '@guallet/api-react';
+import { AiProvider, AiProviderConnectionDto } from '@guallet/api-client';
+import { useAiProviderConnections } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
 import {
   Badge,
@@ -13,10 +13,10 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import {
+  IconArrowLeft,
   IconChevronRight,
   IconKey,
   IconPlus,
-  IconRobot,
 } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
@@ -28,11 +28,15 @@ const providerLabels: Record<AiProvider, string> = {
   vercel_ai_gateway: 'Vercel AI Gateway',
 };
 
-function AgentRow({
-  agent,
+function ProviderRow({
+  connection,
   isLast,
   onClick,
-}: Readonly<{ agent: AiAgentDto; isLast: boolean; onClick: () => void }>) {
+}: Readonly<{
+  connection: AiProviderConnectionDto;
+  isLast: boolean;
+  onClick: () => void;
+}>) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -54,23 +58,15 @@ function AgentRow({
       <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
         <Group gap="xs" wrap="nowrap">
           <Text size="sm" fw={600} truncate>
-            {agent.name}
+            {connection.displayName}
           </Text>
           <Badge variant="light" color="primary">
-            {providerLabels[agent.provider]}
+            {providerLabels[connection.provider]}
           </Badge>
         </Group>
-        <Group gap={4} wrap="nowrap">
-          <Text size="xs" c="dimmed" truncate>
-            {agent.modelName ?? agent.modelId}
-          </Text>
-          <Text size="xs" c="dimmed" aria-hidden>
-            ·
-          </Text>
-          <Text size="xs" c="dimmed" truncate>
-            {agent.connectionDisplayName}
-          </Text>
-        </Group>
+        <Text size="xs" c="dimmed" truncate>
+          {connection.tokenHint ?? 'Token configured'}
+        </Text>
       </Stack>
       <IconChevronRight
         size={16}
@@ -86,7 +82,7 @@ function AgentRow({
   );
 }
 
-function AgentsListHeader({ count }: Readonly<{ count: number }>) {
+function ProvidersListHeader({ count }: Readonly<{ count: number }>) {
   const { t } = useTranslation();
 
   return (
@@ -99,16 +95,16 @@ function AgentsListHeader({ count }: Readonly<{ count: number }>) {
       style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }}
     >
       <Group gap={12} align="center" style={{ flex: 1, minWidth: 0 }}>
-        <IconRobot size={24} strokeWidth={1.5} />
+        <IconKey size={24} strokeWidth={1.5} />
         <Stack gap={2}>
           <Text fw={700} size="md" style={{ letterSpacing: '-0.01em' }}>
-            {t('screens.settings.ai.agents.savedTitle', 'Saved agents')}
+            {t('screens.settings.ai.providers.savedTitle', 'Saved providers')}
           </Text>
           <Text size="xs" c="dimmed">
-            {t('screens.settings.ai.agents.count', {
+            {t('screens.settings.ai.providers.count', {
               count,
-              defaultValue_one: '{{count}} agent',
-              defaultValue_other: '{{count}} agents',
+              defaultValue_one: '{{count}} AI provider',
+              defaultValue_other: '{{count}} AI providers',
             })}
           </Text>
         </Stack>
@@ -117,81 +113,92 @@ function AgentsListHeader({ count }: Readonly<{ count: number }>) {
   );
 }
 
-export function AiSettingsScreen() {
+export function AiProvidersScreen() {
   const navigate = useNavigate();
-  const { agents, isLoading } = useAiAgents();
   const { spacing } = useTheme();
   const { t } = useTranslation();
+  const { connections, isLoading } = useAiProviderConnections();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredAgents = useMemo(() => {
+  const filteredConnections = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return agents;
-    return agents.filter((agent) =>
-      [agent.name, agent.modelName, agent.modelId, agent.connectionDisplayName]
+    if (!q) return connections;
+
+    return connections.filter((connection) =>
+      [
+        connection.displayName,
+        providerLabels[connection.provider],
+        connection.tokenHint,
+      ]
         .filter(Boolean)
         .some((value) => value!.toLowerCase().includes(q)),
     );
-  }, [agents, searchQuery]);
+  }, [connections, searchQuery]);
 
   return (
     <BaseScreen
       isLoading={isLoading}
-      title={t('screens.settings.ai.title', 'AI')}
+      title={t('screens.settings.ai.providers.title', 'AI providers')}
       search={{
         value: searchQuery,
         onChange: setSearchQuery,
         placeholder: t(
-          'screens.settings.ai.searchPlaceholder',
-          'Search agents...',
+          'screens.settings.ai.providers.searchPlaceholder',
+          'Search AI providers...',
         ),
       }}
       actions={
         <Group gap="xs">
           <Button
-            variant="outline"
-            leftSection={<IconKey size={16} strokeWidth={1.5} />}
-            onClick={() => navigate({ to: '/settings/ai/providers' })}
+            variant="subtle"
+            leftSection={<IconArrowLeft size={16} strokeWidth={1.5} />}
+            onClick={() => navigate({ to: '/settings/ai' })}
           >
-            {t('screens.settings.ai.providers.manageButton', 'AI providers')}
+            {t('screens.settings.ai.backButton', 'AI')}
           </Button>
           <Button
             leftSection={<IconPlus size={16} strokeWidth={1.5} />}
-            onClick={() => navigate({ to: '/settings/ai/new' })}
+            onClick={() => navigate({ to: '/settings/ai/providers/new' })}
           >
-            {t('screens.settings.ai.addAgentButton', 'Add agent')}
+            {t('screens.settings.ai.providers.addButton', 'Add provider')}
           </Button>
         </Group>
       }
     >
       <Stack maw={1100} mx="auto" gap={spacing.md} pb={spacing.xl}>
-        {!isLoading && agents.length === 0 ? (
+        {!isLoading && connections.length === 0 ? (
           <EmptyState
-            illustration={<IconRobot size={48} strokeWidth={1.5} />}
-            title={t('screens.settings.ai.agents.empty.title', 'No agents')}
-            description={t(
-              'screens.settings.ai.agents.empty.description',
-              'Create an agent by choosing an AI provider, model, and prompt.',
-            )}
-            primaryAction={{
-              label: t('screens.settings.ai.addAgentButton', 'Add agent'),
-              icon: <IconPlus size={16} strokeWidth={1.5} />,
-              onClick: () => navigate({ to: '/settings/ai/new' }),
-            }}
-          />
-        ) : !isLoading && filteredAgents.length === 0 ? (
-          <EmptyState
+            illustration={<IconKey size={48} strokeWidth={1.5} />}
             title={t(
-              'screens.settings.ai.agents.emptyQuery.title',
-              'No matching agents',
+              'screens.settings.ai.providers.empty.title',
+              'No AI providers',
             )}
             description={t(
-              'screens.settings.ai.agents.emptyQuery.description',
-              'Try a different search term or clear the current filter to see all your agents.',
+              'screens.settings.ai.providers.empty.description',
+              'Create an AI provider before adding agents.',
             )}
             primaryAction={{
               label: t(
-                'screens.settings.ai.agents.emptyQuery.clearSearch',
+                'screens.settings.ai.providers.addButton',
+                'Add provider',
+              ),
+              icon: <IconPlus size={16} strokeWidth={1.5} />,
+              onClick: () => navigate({ to: '/settings/ai/providers/new' }),
+            }}
+          />
+        ) : !isLoading && filteredConnections.length === 0 ? (
+          <EmptyState
+            title={t(
+              'screens.settings.ai.providers.emptyQuery.title',
+              'No matching AI providers',
+            )}
+            description={t(
+              'screens.settings.ai.providers.emptyQuery.description',
+              'Try a different search term or clear the current filter to see all your AI providers.',
+            )}
+            primaryAction={{
+              label: t(
+                'screens.settings.ai.providers.emptyQuery.clearSearch',
                 'Clear search',
               ),
               onClick: () => setSearchQuery(''),
@@ -199,16 +206,16 @@ export function AiSettingsScreen() {
           />
         ) : (
           <Card withBorder shadow="sm" radius="lg" p={0}>
-            <AgentsListHeader count={filteredAgents.length} />
-            {filteredAgents.map((agent, index) => (
-              <AgentRow
-                key={agent.id}
-                agent={agent}
-                isLast={index === filteredAgents.length - 1}
+            <ProvidersListHeader count={filteredConnections.length} />
+            {filteredConnections.map((connection, index) => (
+              <ProviderRow
+                key={connection.id}
+                connection={connection}
+                isLast={index === filteredConnections.length - 1}
                 onClick={() =>
                   navigate({
-                    to: '/settings/ai/$id',
-                    params: { id: agent.id },
+                    to: '/settings/ai/providers/$id',
+                    params: { id: connection.id },
                   })
                 }
               />

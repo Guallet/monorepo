@@ -57,6 +57,9 @@ import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/co
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
 import { Route as AppTransactionsIdEditRouteImport } from './routes/_app/transactions/$id_.edit'
 import { Route as AppSubscriptionsIdEditRouteImport } from './routes/_app/subscriptions/$id_.edit'
+import { Route as AppSettingsAiProvidersRouteImport } from './routes/_app/settings/ai_.providers'
+import { Route as AppSettingsAiNewRouteImport } from './routes/_app/settings/ai_.new'
+import { Route as AppSettingsAiIdRouteImport } from './routes/_app/settings/ai_.$id'
 import { Route as AppSavingGoalsIdEditRouteImport } from './routes/_app/saving-goals/$id_.edit'
 import { Route as AppImporterCsvSummaryRouteImport } from './routes/_app/importer/csv/summary'
 import { Route as AppImporterCsvPropertiesRouteImport } from './routes/_app/importer/csv/properties'
@@ -66,6 +69,8 @@ import { Route as AppConnectionsConnectCallbackRouteImport } from './routes/_app
 import { Route as AppCategoriesRulesNewRouteImport } from './routes/_app/categories/rules/new'
 import { Route as AppCategoriesIdEditRouteImport } from './routes/_app/categories/$id_.edit'
 import { Route as AppAccountsIdEditRouteImport } from './routes/_app/accounts/$id_.edit'
+import { Route as AppSettingsAiProvidersNewRouteImport } from './routes/_app/settings/ai_.providers_.new'
+import { Route as AppSettingsAiProvidersIdRouteImport } from './routes/_app/settings/ai_.providers_.$id'
 import { Route as AppCategoriesRulesIdEditRouteImport } from './routes/_app/categories/rules/$id_.edit'
 
 const UserdeletedLazyRouteImport = createFileRoute('/userdeleted')()
@@ -347,6 +352,21 @@ const AppSubscriptionsIdEditRoute = AppSubscriptionsIdEditRouteImport.update({
   path: '/subscriptions/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsAiProvidersRoute = AppSettingsAiProvidersRouteImport.update({
+  id: '/settings/ai_/providers',
+  path: '/settings/ai/providers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsAiNewRoute = AppSettingsAiNewRouteImport.update({
+  id: '/settings/ai_/new',
+  path: '/settings/ai/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsAiIdRoute = AppSettingsAiIdRouteImport.update({
+  id: '/settings/ai_/$id',
+  path: '/settings/ai/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSavingGoalsIdEditRoute = AppSavingGoalsIdEditRouteImport.update({
   id: '/saving-goals/$id_/edit',
   path: '/saving-goals/$id/edit',
@@ -395,6 +415,18 @@ const AppAccountsIdEditRoute = AppAccountsIdEditRouteImport.update({
   path: '/accounts/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsAiProvidersNewRoute =
+  AppSettingsAiProvidersNewRouteImport.update({
+    id: '/settings/ai_/providers_/new',
+    path: '/settings/ai/providers/new',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppSettingsAiProvidersIdRoute =
+  AppSettingsAiProvidersIdRouteImport.update({
+    id: '/settings/ai_/providers_/$id',
+    path: '/settings/ai/providers/$id',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppCategoriesRulesIdEditRoute =
   AppCategoriesRulesIdEditRouteImport.update({
     id: '/categories/rules/$id_/edit',
@@ -458,12 +490,17 @@ export interface FileRoutesByFullPath {
   '/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
+  '/settings/ai/$id': typeof AppSettingsAiIdRoute
+  '/settings/ai/new': typeof AppSettingsAiNewRoute
+  '/settings/ai/providers': typeof AppSettingsAiProvidersRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
   '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
+  '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
+  '/settings/ai/providers/new': typeof AppSettingsAiProvidersNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
@@ -521,12 +558,17 @@ export interface FileRoutesByTo {
   '/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
+  '/settings/ai/$id': typeof AppSettingsAiIdRoute
+  '/settings/ai/new': typeof AppSettingsAiNewRoute
+  '/settings/ai/providers': typeof AppSettingsAiProvidersRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
   '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
+  '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
+  '/settings/ai/providers/new': typeof AppSettingsAiProvidersNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -586,12 +628,17 @@ export interface FileRoutesById {
   '/_app/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/_app/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/_app/saving-goals/$id_/edit': typeof AppSavingGoalsIdEditRoute
+  '/_app/settings/ai_/$id': typeof AppSettingsAiIdRoute
+  '/_app/settings/ai_/new': typeof AppSettingsAiNewRoute
+  '/_app/settings/ai_/providers': typeof AppSettingsAiProvidersRoute
   '/_app/subscriptions/$id_/edit': typeof AppSubscriptionsIdEditRoute
   '/_app/transactions/$id_/edit': typeof AppTransactionsIdEditRoute
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
   '/_app/categories/rules/$id_/edit': typeof AppCategoriesRulesIdEditRoute
+  '/_app/settings/ai_/providers_/$id': typeof AppSettingsAiProvidersIdRoute
+  '/_app/settings/ai_/providers_/new': typeof AppSettingsAiProvidersNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -651,12 +698,17 @@ export interface FileRouteTypes {
     | '/importer/csv/properties'
     | '/importer/csv/summary'
     | '/saving-goals/$id/edit'
+    | '/settings/ai/$id'
+    | '/settings/ai/new'
+    | '/settings/ai/providers'
     | '/subscriptions/$id/edit'
     | '/transactions/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
     | '/categories/rules/$id/edit'
+    | '/settings/ai/providers/$id'
+    | '/settings/ai/providers/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -714,12 +766,17 @@ export interface FileRouteTypes {
     | '/importer/csv/properties'
     | '/importer/csv/summary'
     | '/saving-goals/$id/edit'
+    | '/settings/ai/$id'
+    | '/settings/ai/new'
+    | '/settings/ai/providers'
     | '/subscriptions/$id/edit'
     | '/transactions/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
     | '/categories/rules/$id/edit'
+    | '/settings/ai/providers/$id'
+    | '/settings/ai/providers/new'
   id:
     | '__root__'
     | '/'
@@ -778,12 +835,17 @@ export interface FileRouteTypes {
     | '/_app/importer/csv/properties'
     | '/_app/importer/csv/summary'
     | '/_app/saving-goals/$id_/edit'
+    | '/_app/settings/ai_/$id'
+    | '/_app/settings/ai_/new'
+    | '/_app/settings/ai_/providers'
     | '/_app/subscriptions/$id_/edit'
     | '/_app/transactions/$id_/edit'
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
     | '/_app/categories/rules/$id_/edit'
+    | '/_app/settings/ai_/providers_/$id'
+    | '/_app/settings/ai_/providers_/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1167,6 +1229,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubscriptionsIdEditRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/ai_/providers': {
+      id: '/_app/settings/ai_/providers'
+      path: '/settings/ai/providers'
+      fullPath: '/settings/ai/providers'
+      preLoaderRoute: typeof AppSettingsAiProvidersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai_/new': {
+      id: '/_app/settings/ai_/new'
+      path: '/settings/ai/new'
+      fullPath: '/settings/ai/new'
+      preLoaderRoute: typeof AppSettingsAiNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai_/$id': {
+      id: '/_app/settings/ai_/$id'
+      path: '/settings/ai/$id'
+      fullPath: '/settings/ai/$id'
+      preLoaderRoute: typeof AppSettingsAiIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/saving-goals/$id_/edit': {
       id: '/_app/saving-goals/$id_/edit'
       path: '/saving-goals/$id/edit'
@@ -1230,6 +1313,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIdEditRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/ai_/providers_/new': {
+      id: '/_app/settings/ai_/providers_/new'
+      path: '/settings/ai/providers/new'
+      fullPath: '/settings/ai/providers/new'
+      preLoaderRoute: typeof AppSettingsAiProvidersNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai_/providers_/$id': {
+      id: '/_app/settings/ai_/providers_/$id'
+      path: '/settings/ai/providers/$id'
+      fullPath: '/settings/ai/providers/$id'
+      preLoaderRoute: typeof AppSettingsAiProvidersIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/categories/rules/$id_/edit': {
       id: '/_app/categories/rules/$id_/edit'
       path: '/categories/rules/$id/edit'
@@ -1285,12 +1382,17 @@ interface AppRouteChildren {
   AppImporterCsvPropertiesRoute: typeof AppImporterCsvPropertiesRoute
   AppImporterCsvSummaryRoute: typeof AppImporterCsvSummaryRoute
   AppSavingGoalsIdEditRoute: typeof AppSavingGoalsIdEditRoute
+  AppSettingsAiIdRoute: typeof AppSettingsAiIdRoute
+  AppSettingsAiNewRoute: typeof AppSettingsAiNewRoute
+  AppSettingsAiProvidersRoute: typeof AppSettingsAiProvidersRoute
   AppSubscriptionsIdEditRoute: typeof AppSubscriptionsIdEditRoute
   AppTransactionsIdEditRoute: typeof AppTransactionsIdEditRoute
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
   AppCategoriesRulesIdEditRoute: typeof AppCategoriesRulesIdEditRoute
+  AppSettingsAiProvidersIdRoute: typeof AppSettingsAiProvidersIdRoute
+  AppSettingsAiProvidersNewRoute: typeof AppSettingsAiProvidersNewRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -1338,12 +1440,17 @@ const AppRouteChildren: AppRouteChildren = {
   AppImporterCsvPropertiesRoute: AppImporterCsvPropertiesRoute,
   AppImporterCsvSummaryRoute: AppImporterCsvSummaryRoute,
   AppSavingGoalsIdEditRoute: AppSavingGoalsIdEditRoute,
+  AppSettingsAiIdRoute: AppSettingsAiIdRoute,
+  AppSettingsAiNewRoute: AppSettingsAiNewRoute,
+  AppSettingsAiProvidersRoute: AppSettingsAiProvidersRoute,
   AppSubscriptionsIdEditRoute: AppSubscriptionsIdEditRoute,
   AppTransactionsIdEditRoute: AppTransactionsIdEditRoute,
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
   AppCategoriesRulesIdEditRoute: AppCategoriesRulesIdEditRoute,
+  AppSettingsAiProvidersIdRoute: AppSettingsAiProvidersIdRoute,
+  AppSettingsAiProvidersNewRoute: AppSettingsAiProvidersNewRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

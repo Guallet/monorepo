@@ -1,5 +1,6 @@
 import {
   BadGatewayException,
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -49,6 +50,11 @@ export class AiService {
     userId: string;
     dto: CreateAiProviderConnectionDto;
   }): Promise<AiProviderConnectionDto> {
+    await this.validateProviderApiToken({
+      provider: dto.provider,
+      apiToken: dto.apiToken,
+    });
+
     const connection = this.connectionRepository.create({
       user_id: userId,
       provider: dto.provider,
@@ -79,6 +85,11 @@ export class AiService {
     connection.display_name = dto.displayName ?? connection.display_name;
 
     if (dto.apiToken !== undefined) {
+      await this.validateProviderApiToken({
+        provider: connection.provider,
+        apiToken: dto.apiToken,
+      });
+
       connection.encrypted_token = this.credentialEncryption.encrypt(
         dto.apiToken,
       );
@@ -228,6 +239,36 @@ export class AiService {
     }
 
     return connection;
+  }
+
+  private async validateProviderApiToken({
+    provider,
+    apiToken,
+  }: {
+    provider: AiProviderConnection['provider'];
+    apiToken: string;
+  }): Promise<void> {
+    const adapter = this.providerRegistry.getAdapter(provider);
+
+    try {
+      await adapter.validateApiToken(apiToken);
+    } catch (error) {
+      if (error instanceof ProviderModelListError) {
+        if (
+          error.status === 400 ||
+          error.status === 401 ||
+          error.status === 403
+        ) {
+          throw new BadRequestException('API token is not valid');
+        }
+
+        throw new BadGatewayException(
+          'Could not validate the AI provider token. Please try again.',
+        );
+      }
+
+      throw error;
+    }
   }
 
   private async findAgentForUser({

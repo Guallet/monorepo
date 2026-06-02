@@ -14,6 +14,13 @@ type VercelAiGatewayModelsResponse = {
 };
 
 export class VercelAiGatewayModelsAdapter implements AiProviderAdapter {
+  async validateApiToken(apiToken: string): Promise<void> {
+    await fetchProviderJson<{ credits?: unknown }>({
+      url: 'https://ai-gateway.vercel.sh/v1/credits',
+      apiToken,
+    });
+  }
+
   async listModels(apiToken: string): Promise<AiModelDto[]> {
     const response = await fetchProviderJson<VercelAiGatewayModelsResponse>({
       url: 'https://ai-gateway.vercel.sh/v1/models',

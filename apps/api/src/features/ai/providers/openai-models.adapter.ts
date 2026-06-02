@@ -10,6 +10,13 @@ type OpenAiModelsResponse = {
 };
 
 export class OpenAiModelsAdapter implements AiProviderAdapter {
+  async validateApiToken(apiToken: string): Promise<void> {
+    await fetchProviderJson<OpenAiModelsResponse>({
+      url: 'https://api.openai.com/v1/models',
+      apiToken,
+    });
+  }
+
   async listModels(apiToken: string): Promise<AiModelDto[]> {
     const response = await fetchProviderJson<OpenAiModelsResponse>({
       url: 'https://api.openai.com/v1/models',

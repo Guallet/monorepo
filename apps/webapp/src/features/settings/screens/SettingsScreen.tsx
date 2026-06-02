@@ -25,6 +25,7 @@ import {
   IconBuildingBank,
   IconDatabaseExport,
   IconDownload,
+  IconKey,
   IconLanguage,
   IconRobot,
   IconTrash,
@@ -118,7 +119,7 @@ export function SettingsScreen() {
             title={t('screens.settings.ai.title', 'AI')}
             description={t(
               'screens.settings.ai.description',
-              'Manage provider connections and agents.',
+              'Manage AI providers and agents.',
             )}
             icon={<IconRobot size={24} strokeWidth={1.5} />}
           >
@@ -127,6 +128,16 @@ export function SettingsScreen() {
               leftSection={<IconRobot size={20} strokeWidth={1.5} />}
               onClick={() => {
                 navigate({ to: '/settings/ai' });
+              }}
+            />
+            <TextRow
+              label={t(
+                'screens.settings.ai.providers.manageRow.label',
+                'Manage AI providers',
+              )}
+              leftSection={<IconKey size={20} strokeWidth={1.5} />}
+              onClick={() => {
+                navigate({ to: '/settings/ai/providers' });
               }}
             />
           </SettingsSection>

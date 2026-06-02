@@ -19,6 +19,13 @@ type OpenRouterModelsResponse = {
 };
 
 export class OpenRouterModelsAdapter implements AiProviderAdapter {
+  async validateApiToken(apiToken: string): Promise<void> {
+    await fetchProviderJson<{ data?: unknown }>({
+      url: 'https://openrouter.ai/api/v1/key',
+      apiToken,
+    });
+  }
+
   async listModels(apiToken: string): Promise<AiModelDto[]> {
     const response = await fetchProviderJson<OpenRouterModelsResponse>({
       url: 'https://openrouter.ai/api/v1/models?output_modalities=text',
