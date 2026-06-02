@@ -47,6 +47,10 @@ export interface EmailConfig {
   };
 }
 
+export interface AiConfig {
+  credentialsEncryptionKey: string;
+}
+
 export interface AppConfig {
   environment: string;
   database: DatabaseConfig;
@@ -55,6 +59,7 @@ export interface AppConfig {
   nordigen: NordigenConfig;
   redis: RedisConfig;
   email: EmailConfig;
+  ai: AiConfig;
 }
 
 const configuration = (): AppConfig => ({
@@ -99,6 +104,10 @@ const configuration = (): AppConfig => ({
       pass: process.env.SMTP_PASS,
       secure: process.env.SMTP_SECURE !== 'false',
     },
+  },
+  ai: {
+    credentialsEncryptionKey:
+      process.env.DATABASE_CREDENTIALS_ENCRYPTION_KEY || '',
   },
 });
 export default configuration;

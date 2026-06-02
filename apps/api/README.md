@@ -42,7 +42,7 @@ cp api.env.sample apps/api/.env       # API runtime env (repo root -> apps/api)
 cp database.env.sample .env           # DB / docker-compose (repo root)
 ```
 
-- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `SMTP_*`.
+- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `DATABASE_CREDENTIALS_ENCRYPTION_KEY`, `SMTP_*`.
 - The app loads `.env.local` then `.env` (see `ConfigModule` in `src/app.module.ts`).
 
 ---
