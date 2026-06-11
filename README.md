@@ -18,7 +18,6 @@ This Turborepo includes the following packages/apps:
 - `api`: a [NestJS](https://nestjs.com/) app, providing a REST API (GraphQL API might be available in the future)
 - `webapp`: a Vite+React app
 - `mobile`: an Expo app for iOS and Android
-- `docs`: a Docusaurus project containing the documentation
 
 Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 

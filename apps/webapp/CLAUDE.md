@@ -42,6 +42,7 @@ Pattern: route file → screen component → sub-components. Screens use `BaseSc
 - API client singleton: `src/api/gualletClient.ts` (created once, injects the auth session token)
 - TanStack Query hooks come from `@guallet/api-react` (workspace package)
 - Never call `gualletClient` directly in components — use the hooks from `@guallet/api-react`
+- Streaming responses (AI Assistant chat) are the one case not served by TanStack Query: `useAiChatStream` from `@guallet/api-react` reads the raw `fetch` stream and invalidates the message queries when the stream completes
 
 ### Auth
 

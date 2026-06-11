@@ -1,10 +1,14 @@
 import { GualletClientImpl } from '../GualletClient';
 import {
   AiAgentDto,
+  AiChatMessageDto,
+  AiChatSessionDto,
   AiModelDto,
   AiProviderConnectionDto,
   CreateAiAgentRequest,
+  CreateAiChatSessionRequest,
   CreateAiProviderConnectionRequest,
+  SendAiChatMessageRequest,
   UpdateAiAgentRequest,
   UpdateAiProviderConnectionRequest,
 } from './ai.models';
@@ -12,6 +16,7 @@ import {
 const AI_PATH = 'ai';
 const PROVIDER_CONNECTIONS_PATH = `${AI_PATH}/provider-connections`;
 const AGENTS_PATH = `${AI_PATH}/agents`;
+const CHAT_SESSIONS_PATH = `${AI_PATH}/chat/sessions`;
 
 export class AiApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -89,6 +94,52 @@ export class AiApi {
   async deleteAgent(id: string): Promise<AiAgentDto> {
     return await this.client.fetch_delete<AiAgentDto>({
       path: `${AGENTS_PATH}/${id}`,
+    });
+  }
+
+  async getChatSessions(): Promise<AiChatSessionDto[]> {
+    return await this.client.get<AiChatSessionDto[]>({
+      path: CHAT_SESSIONS_PATH,
+    });
+  }
+
+  async createChatSession(
+    request: CreateAiChatSessionRequest,
+  ): Promise<AiChatSessionDto> {
+    return await this.client.post<AiChatSessionDto, CreateAiChatSessionRequest>(
+      {
+        path: CHAT_SESSIONS_PATH,
+        payload: request,
+      },
+    );
+  }
+
+  async deleteChatSession(id: string): Promise<AiChatSessionDto> {
+    return await this.client.fetch_delete<AiChatSessionDto>({
+      path: `${CHAT_SESSIONS_PATH}/${id}`,
+    });
+  }
+
+  async getChatMessages(sessionId: string): Promise<AiChatMessageDto[]> {
+    return await this.client.get<AiChatMessageDto[]>({
+      path: `${CHAT_SESSIONS_PATH}/${sessionId}/messages`,
+    });
+  }
+
+  // Returns the raw streaming Response; the body is a plain-text token stream.
+  async streamChatMessage({
+    sessionId,
+    request,
+    signal,
+  }: {
+    sessionId: string;
+    request: SendAiChatMessageRequest;
+    signal?: AbortSignal;
+  }): Promise<Response> {
+    return await this.client.postRawResponse<SendAiChatMessageRequest>({
+      path: `${CHAT_SESSIONS_PATH}/${sessionId}/messages`,
+      payload: request,
+      signal,
     });
   }
 }

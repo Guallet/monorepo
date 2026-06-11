@@ -80,6 +80,8 @@ Feature-based modules under `apps/api/src/features/`: `accounts`, `ai`, `budgets
 
 The `ai` module manages user-owned AI provider connections (OpenAI, OpenRouter, Vercel AI Gateway) and agents. Provider API tokens are encrypted at rest with AES-256-GCM using `DATABASE_CREDENTIALS_ENCRYPTION_KEY` and are never returned to clients (only a `tokenHint` with the last 4 characters).
 
+The `ai` module also powers the AI Assistant chat (`/ai/chat/*`, streamed via the Vercel AI SDK): the model receives a server-built summary of the user's finances (24 months of aggregates — never raw transactions) plus a server-owned policy prompt; no tools are ever passed, so the model cannot read or write anything itself. Chat sessions are persisted per user and purged after 30 days by a daily cron. AI endpoints are rate-limited with `@nestjs/throttler` (opt-in per controller — there is no global throttle guard).
+
 Auth lives in `apps/api/src/auth/` using Better Auth. Database configuration in `apps/api/src/database/`. Background jobs via BullMQ + Redis.
 
 ### Web Frontend Architecture
@@ -87,6 +89,8 @@ Auth lives in `apps/api/src/auth/` using Better Auth. Database configuration in 
 Routing is file-system based via TanStack Router in `apps/webapp/src/routes/`. Server state managed by TanStack Query (via `packages/guallet-api-react` hooks). Client state via Zustand. The React Compiler is enabled in the Vite config for automatic memoization.
 
 Components organized in `apps/webapp/src/components/` (generic) and `apps/webapp/src/features/` (domain-specific). i18n via i18next — keys are auto-extracted on `prebuild`.
+
+The AI Assistant lives at `/assistant` (`apps/webapp/src/features/assistant/`): a ChatGPT-style chat against the user's configured AI agents. Replies stream over a raw `fetch` Response (see `useAiChatStream` in `guallet-api-react`) rather than TanStack Query, which handles the non-streaming session/message CRUD.
 
 ### Internal Package Usage
 

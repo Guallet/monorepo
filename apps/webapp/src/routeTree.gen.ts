@@ -21,6 +21,7 @@ import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp
 import { Route as LoginResetPasswordSentRouteImport } from './routes/login/reset-password-sent'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
 import { Route as LoginCallbackRouteImport } from './routes/login/callback'
+import { Route as AppAssistantRouteImport } from './routes/_app/assistant'
 import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transactions/index'
 import { Route as AppSubscriptionsIndexRouteImport } from './routes/_app/subscriptions/index'
@@ -142,6 +143,11 @@ const LoginCallbackRoute = LoginCallbackRouteImport.update({
   id: '/login/callback',
   path: '/login/callback',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppAssistantRoute = AppAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppUserIndexRoute = AppUserIndexRouteImport.update({
   id: '/user/',
@@ -441,6 +447,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/userdeleted': typeof UserdeletedLazyRoute
+  '/assistant': typeof AppAssistantRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
@@ -509,6 +516,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/userdeleted': typeof UserdeletedLazyRoute
+  '/assistant': typeof AppAssistantRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
@@ -579,6 +587,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/userdeleted': typeof UserdeletedLazyRoute
+  '/_app/assistant': typeof AppAssistantRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
@@ -649,6 +658,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/userdeleted'
+    | '/assistant'
     | '/login/callback'
     | '/login/forgot-password'
     | '/login/reset-password-sent'
@@ -717,6 +727,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/userdeleted'
+    | '/assistant'
     | '/login/callback'
     | '/login/forgot-password'
     | '/login/reset-password-sent'
@@ -786,6 +797,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/userdeleted'
+    | '/_app/assistant'
     | '/login/callback'
     | '/login/forgot-password'
     | '/login/reset-password-sent'
@@ -948,6 +960,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login/callback'
       preLoaderRoute: typeof LoginCallbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/assistant': {
+      id: '/_app/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AppAssistantRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/user/': {
       id: '/_app/user/'
@@ -1338,6 +1357,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAssistantRoute: typeof AppAssistantRoute
   AppAccountsIdRoute: typeof AppAccountsIdRoute
   AppAccountsNewRoute: typeof AppAccountsNewRoute
   AppBudgetsIdRoute: typeof AppBudgetsIdRoute
@@ -1396,6 +1416,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAssistantRoute: AppAssistantRoute,
   AppAccountsIdRoute: AppAccountsIdRoute,
   AppAccountsNewRoute: AppAccountsNewRoute,
   AppBudgetsIdRoute: AppBudgetsIdRoute,

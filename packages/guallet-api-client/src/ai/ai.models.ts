@@ -65,3 +65,30 @@ export type UpdateAiAgentRequest = {
   modelName?: string;
   customPrompt?: string;
 };
+
+export type AiChatMessageRole = 'user' | 'assistant';
+
+export type AiChatSessionDto = {
+  id: string;
+  agentId: string;
+  agentName: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AiChatMessageDto = {
+  id: string;
+  sessionId: string;
+  role: AiChatMessageRole;
+  content: string;
+  createdAt: string;
+};
+
+export type CreateAiChatSessionRequest = {
+  agentId: string;
+};
+
+export type SendAiChatMessageRequest = {
+  content: string;
+};

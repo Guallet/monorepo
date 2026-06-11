@@ -206,6 +206,33 @@ export class GualletClientImpl implements GualletClient {
     });
   }
 
+  // Used for endpoints that stream their response body (e.g. AI chat); the
+  // JSON helpers above consume the body, so callers get the raw Response.
+  async postRawResponse<TPayload>({
+    path,
+    payload,
+    signal,
+  }: {
+    path: string;
+    payload: TPayload;
+    signal?: AbortSignal;
+  }): Promise<Response> {
+    const access_token = await this.tokenHelper.getAccessToken();
+    const response = await fetch(`${this.baseUrl}/${path}`, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(access_token && { Authorization: `Bearer ${access_token}` }),
+      },
+      ...(access_token && { credentials: 'include' }),
+      body: JSON.stringify(payload),
+      signal,
+    });
+    this.handleHttpErrors(response);
+    return response;
+  }
+
   private async executeRequest<TDto, TRequest = any>({
     method,
     path,
