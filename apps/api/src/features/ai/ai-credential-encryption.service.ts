@@ -50,18 +50,11 @@ export class AiCredentialEncryptionService {
   }
 
   private parseKey(configuredKey: string): Buffer {
-    const keyCandidates = [
-      Buffer.from(configuredKey, 'base64'),
-      Buffer.from(configuredKey, 'hex'),
-      Buffer.from(configuredKey, 'utf8'),
-    ];
-    const key = keyCandidates.find(
-      (candidate) => candidate.length === KEY_LENGTH,
-    );
+    const key = Buffer.from(configuredKey, 'base64');
 
-    if (!key) {
+    if (key.length !== KEY_LENGTH) {
       throw new InternalServerErrorException(
-        'DATABASE_CREDENTIALS_ENCRYPTION_KEY must decode to exactly 32 bytes',
+        'DATABASE_CREDENTIALS_ENCRYPTION_KEY must be a base64 string that decodes to exactly 32 bytes (generate one with `openssl rand -base64 32`)',
       );
     }
 

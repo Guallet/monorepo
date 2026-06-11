@@ -29,7 +29,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { notFound, useNavigate } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const providerLabels: Record<AiProvider, string> = {
@@ -87,15 +87,20 @@ export function AiProviderDetailsScreen({
     },
   });
 
+  // The form object is not referentially stable across renders, so guard with
+  // the loaded id to avoid re-applying values (and looping) on every render.
+  const loadedConnectionIdRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!connection) return;
+    if (!connection || loadedConnectionIdRef.current === connection.id) return;
+    loadedConnectionIdRef.current = connection.id;
 
     form.setValues({
       displayName: connection.displayName,
       apiToken: '',
     });
     form.resetDirty();
-  }, [connection?.id]);
+  }, [connection, form]);
 
   if (!isLoadingConnections && !connection) {
     throw notFound();

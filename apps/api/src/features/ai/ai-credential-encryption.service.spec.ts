@@ -22,7 +22,17 @@ describe('AiCredentialEncryptionService', () => {
     } as unknown as ConfigService<AppConfig>;
 
     expect(() => new AiCredentialEncryptionService(configService)).toThrow(
-      'DATABASE_CREDENTIALS_ENCRYPTION_KEY must decode to exactly 32 bytes',
+      'DATABASE_CREDENTIALS_ENCRYPTION_KEY must be a base64 string that decodes to exactly 32 bytes',
+    );
+  });
+
+  it('rejects raw 32-character strings that are not base64-encoded keys', () => {
+    const configService = {
+      get: jest.fn().mockReturnValue('a'.repeat(32)),
+    } as unknown as ConfigService<AppConfig>;
+
+    expect(() => new AiCredentialEncryptionService(configService)).toThrow(
+      'DATABASE_CREDENTIALS_ENCRYPTION_KEY must be a base64 string that decodes to exactly 32 bytes',
     );
   });
 });

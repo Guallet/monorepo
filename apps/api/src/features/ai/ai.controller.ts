@@ -8,8 +8,10 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { AiService } from './ai.service';
@@ -23,6 +25,7 @@ import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connecti
 
 @Controller('ai')
 @ApiTags('AI')
+@UseGuards(ThrottlerGuard)
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
@@ -33,8 +36,11 @@ export class AiController {
     return await this.aiService.findProviderConnections(user.id);
   }
 
+  // Stricter limit: this endpoint relays the submitted token to the external
+  // provider for validation, so it could be abused as a token-validation oracle.
   @Post('provider-connections')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
   async createProviderConnection(
     @RequestUser() user: UserPrincipal,
     @Body() dto: CreateAiProviderConnectionDto,
@@ -45,7 +51,10 @@ export class AiController {
     });
   }
 
+  // Stricter limit: replacement tokens are validated against the external
+  // provider, same token-validation-oracle concern as the create endpoint.
   @Patch('provider-connections/:id')
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
   async updateProviderConnection(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -69,7 +78,9 @@ export class AiController {
     });
   }
 
+  // Each call makes an outbound request to the external provider.
   @Get('provider-connections/:id/models')
+  @Throttle({ default: { ttl: 60_000, limit: 30 } })
   async listModels(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,

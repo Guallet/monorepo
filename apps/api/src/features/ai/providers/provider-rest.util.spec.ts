@@ -13,7 +13,7 @@ describe('fetchProviderJson', () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({ data: [{ id: 'model-1' }] }),
-    }) as jest.Mock;
+    });
 
     const result = await fetchProviderJson<{ data: Array<{ id: string }> }>({
       url: 'https://provider.test/v1/models',
@@ -27,16 +27,28 @@ describe('fetchProviderJson', () => {
           Accept: 'application/json',
           Authorization: 'Bearer secret-token',
         },
+        signal: expect.any(AbortSignal),
       },
     );
     expect(result).toEqual({ data: [{ id: 'model-1' }] });
+  });
+
+  it('wraps network failures in a provider model-list error', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new TypeError('fetch failed'));
+
+    await expect(
+      fetchProviderJson({
+        url: 'https://provider.test/v1/models',
+        apiToken: 'secret-token',
+      }),
+    ).rejects.toThrow(ProviderModelListError);
   });
 
   it('throws a provider model-list error for non-2xx responses', async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 401,
-    }) as jest.Mock;
+    });
 
     await expect(
       fetchProviderJson({

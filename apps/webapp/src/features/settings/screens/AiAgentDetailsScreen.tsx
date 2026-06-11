@@ -30,7 +30,7 @@ import {
   IconRobot,
 } from '@tabler/icons-react';
 import { notFound, useNavigate } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const providerLabels: Record<AiProvider, string> = {
@@ -60,7 +60,6 @@ export function AiAgentDetailsScreen({
   const { connections, isLoading: isLoadingConnections } =
     useAiProviderConnections();
   const { updateAgentMutation } = useAiMutations();
-  const [selectedConnectionId, setSelectedConnectionId] = useState('');
 
   const agent = useMemo(
     () => agents.find((candidate) => candidate.id === agentId) ?? null,
@@ -96,16 +95,22 @@ export function AiAgentDetailsScreen({
     },
   });
 
+  const selectedConnectionId = form.values.connectionId;
+
   const {
     models,
     isFetching: isFetchingModels,
     refetch: refetchModels,
   } = useAiModels(selectedConnectionId || undefined);
 
-  useEffect(() => {
-    if (!agent) return;
+  // The form object is not referentially stable across renders, so guard with
+  // the loaded id to avoid re-applying values (and looping) on every render.
+  const loadedAgentIdRef = useRef<string | null>(null);
 
-    setSelectedConnectionId(agent.connectionId);
+  useEffect(() => {
+    if (!agent || loadedAgentIdRef.current === agent.id) return;
+    loadedAgentIdRef.current = agent.id;
+
     form.setValues({
       connectionId: agent.connectionId,
       name: agent.name,
@@ -113,7 +118,7 @@ export function AiAgentDetailsScreen({
       customPrompt: agent.customPrompt ?? '',
     });
     form.resetDirty();
-  }, [agent?.id]);
+  }, [agent, form]);
 
   if (!isLoadingAgents && !agent) {
     throw notFound();
@@ -239,7 +244,6 @@ export function AiAgentDetailsScreen({
                   allowDeselect={false}
                   {...form.getInputProps('connectionId')}
                   onChange={(value) => {
-                    setSelectedConnectionId(value ?? '');
                     form.setFieldValue('connectionId', value ?? '');
                     form.setFieldValue('modelId', '');
                   }}

@@ -6,12 +6,7 @@ export const Route = createFileRoute('/_app/settings/ai_/providers_/$id')({
   component: AiProviderDetailsPage,
   errorComponent: ({ error }) => {
     console.error('Error loading AI provider', error);
-    return (
-      <>
-        <Text>Unable to load AI provider.</Text>
-        <Text>{`${JSON.stringify(error)}`}</Text>
-      </>
-    );
+    return <Text>Unable to load AI provider.</Text>;
   },
 });
 

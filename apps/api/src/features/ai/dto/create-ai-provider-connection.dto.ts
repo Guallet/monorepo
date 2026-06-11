@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { AiProvider } from '../entities/ai-provider.enum';
 
 export class CreateAiProviderConnectionDto {
@@ -7,9 +7,11 @@ export class CreateAiProviderConnectionDto {
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(100)
   displayName: string;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(1024)
   apiToken: string;
 }

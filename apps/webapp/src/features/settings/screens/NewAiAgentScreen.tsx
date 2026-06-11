@@ -40,7 +40,7 @@ import {
   IconRobot,
 } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const providerLabels: Record<AiProvider, string> = {
@@ -120,7 +120,6 @@ export function NewAiAgentScreen() {
   const { createProviderConnectionMutation, createAgentMutation } =
     useAiMutations();
   const [isProviderModalOpen, providerModal] = useDisclosure(false);
-  const [selectedConnectionId, setSelectedConnectionId] = useState('');
 
   const providerForm = useForm<ProviderConnectionFormValues>({
     initialValues: {
@@ -175,6 +174,8 @@ export function NewAiAgentScreen() {
     },
   });
 
+  const selectedConnectionId = agentForm.values.connectionId;
+
   const {
     models,
     isFetching: isFetchingModels,
@@ -190,7 +191,6 @@ export function NewAiAgentScreen() {
   useEffect(() => {
     if (!selectedConnectionId && connections.length > 0) {
       const firstConnection = connections[0];
-      setSelectedConnectionId(firstConnection.id);
       agentForm.setFieldValue('connectionId', firstConnection.id);
     }
   }, [agentForm, connections, selectedConnectionId]);
@@ -212,7 +212,6 @@ export function NewAiAgentScreen() {
         displayName: values.displayName,
         apiToken: values.apiToken,
       });
-      setSelectedConnectionId(connection.id);
       agentForm.setFieldValue('connectionId', connection.id);
       providerForm.reset();
       providerModal.close();
@@ -278,7 +277,6 @@ export function NewAiAgentScreen() {
   };
 
   const selectConnection = (connectionId: string) => {
-    setSelectedConnectionId(connectionId);
     agentForm.setFieldValue('connectionId', connectionId);
     agentForm.setFieldValue('modelId', '');
   };

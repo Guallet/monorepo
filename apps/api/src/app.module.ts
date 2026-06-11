@@ -30,6 +30,7 @@ import { HealthModule } from './features/health/health.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth';
 import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 
 @Module({
@@ -104,6 +105,10 @@ import { AppController } from './app.controller';
     }),
     // EVENTS
     EventEmitterModule.forRoot(),
+    // RATE LIMITING
+    // No APP_GUARD is registered: throttling is opt-in per controller via
+    // @UseGuards(ThrottlerGuard). This default applies where the guard is used.
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],

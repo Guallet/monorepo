@@ -76,7 +76,9 @@ pnpm --filter guallet-money test:cov  # With coverage report
 
 ### API Architecture (NestJS)
 
-Feature-based modules under `apps/api/src/features/`: `accounts`, `budgets`, `categories`, `transactions`, `institutions`, `reports`, `rules`, `saving-goals`, `subscriptions`, `regular-payments`, `data-importer`, `data-exporter`, `openbanking`, `nordigen`, `webhooks`, `notifications`, `email`, `users`.
+Feature-based modules under `apps/api/src/features/`: `accounts`, `ai`, `budgets`, `categories`, `transactions`, `institutions`, `reports`, `rules`, `saving-goals`, `subscriptions`, `regular-payments`, `data-importer`, `data-exporter`, `openbanking`, `nordigen`, `webhooks`, `notifications`, `email`, `users`.
+
+The `ai` module manages user-owned AI provider connections (OpenAI, OpenRouter, Vercel AI Gateway) and agents. Provider API tokens are encrypted at rest with AES-256-GCM using `DATABASE_CREDENTIALS_ENCRYPTION_KEY` and are never returned to clients (only a `tokenHint` with the last 4 characters).
 
 Auth lives in `apps/api/src/auth/` using Better Auth. Database configuration in `apps/api/src/database/`. Background jobs via BullMQ + Redis.
 
@@ -100,6 +102,8 @@ cp webapp.env.sample apps/webapp/.env
 ```
 
 Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrations (Nordigen for open banking, Resend for email, Sentry, Apitally) can be left blank.
+
+`DATABASE_CREDENTIALS_ENCRYPTION_KEY` is required by the API (validated at boot, must be base64 decoding to 32 bytes) — generate one with `openssl rand -base64 32`. It encrypts stored AI provider API tokens.
 
 ## Testing
 
