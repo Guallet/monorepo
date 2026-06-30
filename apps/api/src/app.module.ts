@@ -23,12 +23,14 @@ import { DataImporterModule } from './features/data-importer/data-importer.modul
 import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
+import { AiModule } from './features/ai/ai.module';
 import * as Joi from 'joi';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth';
 import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 
 @Module({
@@ -56,6 +58,7 @@ import { AppController } from './app.controller';
         BETTER_AUTH_BASE_URL: Joi.string().required(),
         NORDIGEN_SECRET_ID: Joi.string().required(),
         NORDIGEN_SECRET_KEY: Joi.string().required(),
+        DATABASE_CREDENTIALS_ENCRYPTION_KEY: Joi.string().required(),
       }),
     }),
     // LOGGING
@@ -102,6 +105,10 @@ import { AppController } from './app.controller';
     }),
     // EVENTS
     EventEmitterModule.forRoot(),
+    // RATE LIMITING
+    // No APP_GUARD is registered: throttling is opt-in per controller via
+    // @UseGuards(ThrottlerGuard). This default applies where the guard is used.
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],
@@ -158,6 +165,7 @@ import { AppController } from './app.controller';
     EmailModule,
     NotificationsModule,
     RegularPaymentsModule,
+    AiModule,
     HealthModule,
   ],
   controllers: [AppController],

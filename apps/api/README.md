@@ -5,8 +5,9 @@ Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScrip
 ### Quick summary
 
 - Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and integrations (Nordigen, webhooks, CSV importer).
+- AI features: user-owned provider connections (OpenAI, OpenRouter, Vercel AI Gateway), agents, and a streaming AI Assistant chat grounded on a server-built financial summary. Provider tokens are AES-256-GCM encrypted at rest; chat sessions are purged after 30 days.
 - Authentication via Better-Auth (magic links / OTP / Social).
-- DB: PostgreSQL (TypeORM). Background jobs: BullMQ + Redis.
+- DB: PostgreSQL (TypeORM). Background jobs: BullMQ + Redis. Scheduled jobs via `@nestjs/schedule` cron.
 
 ---
 
@@ -42,7 +43,7 @@ cp api.env.sample apps/api/.env       # API runtime env (repo root -> apps/api)
 cp database.env.sample .env           # DB / docker-compose (repo root)
 ```
 
-- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `SMTP_*`.
+- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `DATABASE_CREDENTIALS_ENCRYPTION_KEY`, `SMTP_*`.
 - The app loads `.env.local` then `.env` (see `ConfigModule` in `src/app.module.ts`).
 
 ---
@@ -116,7 +117,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows and CLI migrations.
 - Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
-- Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
+- Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
+- AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools. AI endpoints are rate-limited per user via `@nestjs/throttler`.
 - API docs: OpenAPI (Swagger) generated from decorators — visit `/docs`.
 
 ---
@@ -148,7 +150,3 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ## License
 
 This package is covered by the repository Apache-2.0 license — see the root `LICENSE`.
-
----
-
-If you want, I can run the API tests now or add a short example showing DB + Docker setup.

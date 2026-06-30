@@ -4,6 +4,7 @@ import {
   IconPresentationAnalytics,
   IconBuildingBank,
   IconCash,
+  IconSparkles,
   IconTools,
   IconCategory2,
   IconChartFunnel,
@@ -72,6 +73,11 @@ const menuData: MenuData[] = [
     icon: IconPresentationAnalytics,
     link: '/reports',
     subLinks: [{ label: 'Cashflow', link: '/reports/cashflow' }],
+  },
+  {
+    label: 'AI Assistant',
+    icon: IconSparkles,
+    link: '/assistant',
   },
   {
     label: 'Tools',

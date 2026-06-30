@@ -25,7 +25,9 @@ import {
   IconBuildingBank,
   IconDatabaseExport,
   IconDownload,
+  IconKey,
   IconLanguage,
+  IconRobot,
   IconTrash,
   IconUpload,
 } from '@tabler/icons-react';
@@ -111,6 +113,33 @@ export function SettingsScreen() {
             <DefaultCurrencyRow />
             <PreferredCurrenciesRow />
             <DateFormatRow />
+          </SettingsSection>
+
+          <SettingsSection
+            title={t('screens.settings.ai.title', 'AI')}
+            description={t(
+              'screens.settings.ai.description',
+              'Manage AI providers and agents.',
+            )}
+            icon={<IconRobot size={24} strokeWidth={1.5} />}
+          >
+            <TextRow
+              label={t('screens.settings.ai.manageRow.label', 'Manage AI')}
+              leftSection={<IconRobot size={20} strokeWidth={1.5} />}
+              onClick={() => {
+                navigate({ to: '/settings/ai' });
+              }}
+            />
+            <TextRow
+              label={t(
+                'screens.settings.ai.providers.manageRow.label',
+                'Manage AI providers',
+              )}
+              leftSection={<IconKey size={20} strokeWidth={1.5} />}
+              onClick={() => {
+                navigate({ to: '/settings/ai/providers' });
+              }}
+            />
           </SettingsSection>
 
           <SettingsSection

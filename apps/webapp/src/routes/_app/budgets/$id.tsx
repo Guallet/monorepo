@@ -1,5 +1,5 @@
 import { BudgetDetailsScreen } from '@/features/budgets/screens/BudgetDetailsScreen';
-import { Stack, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_app/budgets/$id')({
@@ -8,13 +8,8 @@ export const Route = createFileRoute('/_app/budgets/$id')({
     return <h1>Budget not found</h1>;
   },
   errorComponent: ({ error }) => {
-    console.error('Error loading account', error);
-    return (
-      <Stack>
-        <Text>Error loading account</Text>
-        <Text>{`${JSON.stringify(error)}`}</Text>
-      </Stack>
-    );
+    console.error('Error loading budget', error);
+    return <Text>Error loading budget</Text>;
   },
 });
 

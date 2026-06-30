@@ -13,6 +13,7 @@ export * from './subscriptions';
 export * from './notifications';
 export * from './reports';
 export * from './rules';
+export * from './ai';
 
 export { ApiError, createClient } from './GualletClient';
 export type { GualletClient, TokenHelper } from './GualletClient';
