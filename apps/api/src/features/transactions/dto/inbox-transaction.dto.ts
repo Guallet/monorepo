@@ -1,4 +1,4 @@
-import { InboxTransaction } from '../entities/inbox-transaction.model';
+import { InboxTransaction } from '../entities/inbox-transaction.model.js';
 
 export class InboxTransactionDto {
   id: string;

@@ -1,5 +1,5 @@
-import { UserRole } from 'src/auth/user-principal';
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { UserRole } from '../../../auth/user-principal.js';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 // We need to ensure the database fields name match the ones in the better auth user configuration

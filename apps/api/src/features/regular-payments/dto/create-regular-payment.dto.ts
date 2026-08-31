@@ -13,7 +13,7 @@ import {
 import {
   RecurrenceCadence,
   RecurringPaymentType,
-} from '../entities/regular-payment.entity';
+} from '../entities/regular-payment.entity.js';
 
 export class CreateRegularPaymentDto {
   @IsNotEmpty()

@@ -9,17 +9,17 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { RulesService } from './rules.service';
-import { CreateRuleDto } from './dto/create-rule.dto';
-import { UpdateRuleDto } from './dto/update-rule.dto';
-import { RuleDto } from './dto/rule.dto';
-import { ReorderRulesDto, ReorderConditionsDto } from './dto/reorder-rules.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { RulesService } from './rules.service.js';
+import { CreateRuleDto } from './dto/create-rule.dto.js';
+import { UpdateRuleDto } from './dto/update-rule.dto.js';
+import { RuleDto } from './dto/rule.dto.js';
+import { ReorderRulesDto, ReorderConditionsDto } from './dto/reorder-rules.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto';
-import { TransactionsService } from '../transactions/transactions.service';
-import { LimitsDto } from './dto/limits.dto';
+import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto.js';
+import { TransactionsService } from '../transactions/transactions.service.js';
+import { LimitsDto } from './dto/limits.dto.js';
 
 @ApiTags('Categorization Rules')
 @Controller('rules')

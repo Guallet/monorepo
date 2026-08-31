@@ -11,18 +11,18 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { OpenbankingService } from './openbanking.service';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { ConnectBankInstitutionRequestDto } from './dto/connect-account-request.dto';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
+import { OpenbankingService } from './openbanking.service.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { ConnectBankInstitutionRequestDto } from './dto/connect-account-request.dto.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto.js';
+import { InstitutionsService } from '../../features/institutions/institutions.service.js';
 import { ApiTags } from '@nestjs/swagger';
 import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from 'src/features/nordigen/dto/nordigen-account.dto';
+} from '../../features/nordigen/dto/nordigen-account.dto.js';
 
 @ApiTags('Open Banking')
 @Controller('openbanking')

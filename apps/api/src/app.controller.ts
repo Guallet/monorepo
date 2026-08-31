@@ -2,8 +2,8 @@ import { Controller, Get } from '@nestjs/common';
 import {
   OptionalAuth,
   Session,
-  UserSession,
 } from '@thallesp/nestjs-better-auth';
+import type { UserSession } from '@thallesp/nestjs-better-auth';
 
 @Controller()
 export class AppController {

@@ -10,7 +10,7 @@ import {
   StringOperator,
   NumberOperator,
   DateTimeOperator,
-} from './field-types';
+} from './field-types.js';
 
 describe('Field Types', () => {
   describe('TransactionField', () => {

@@ -11,12 +11,12 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { plainToInstance, Transform } from 'class-transformer';
-import { AccountSource } from '../entities/accountSource.model';
-import { AccountType } from '../entities/accountType.model';
+import { AccountSource } from '../entities/accountSource.model.js';
+import { AccountType } from '../entities/accountType.model.js';
 import {
   AccountPropertiesDto,
   PROPERTIES_DTO_MAP,
-} from './account-properties.dto';
+} from './account-properties.dto.js';
 
 export class CreateAccountRequest {
   @ApiProperty({ description: 'The name of the account' })

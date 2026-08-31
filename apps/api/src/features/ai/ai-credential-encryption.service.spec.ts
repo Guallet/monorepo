@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'src/configuration';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
+import { AppConfig } from '../../configuration.js';
+import { AiCredentialEncryptionService } from './ai-credential-encryption.service.js';
 
 describe('AiCredentialEncryptionService', () => {
   it('encrypts and decrypts credentials without returning plaintext ciphertext', () => {

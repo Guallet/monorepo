@@ -3,18 +3,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Job } from 'bullmq';
-import { ExportDataProcessor, ExportJobData } from './export-data.processor';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { AccountsService } from '../../accounts/accounts.service';
-import { CategoriesService } from '../../categories/categories.service';
-import { EmailService } from '../../email/email.service';
-import { UsersService } from '../../users/users.service';
-import { NotificationsService } from '../../notifications/notifications.service';
-import { CsvExportEngine } from '../engines/csv-export.engine';
-import { OfeExportEngine } from '../engines/ofe-export.engine';
-import { JsonExportEngine } from '../engines/json-export.engine';
-import { Account } from '../../accounts/entities/account.entity';
-import { Category } from '../../categories/entities/category.entity';
+import { ExportDataProcessor, ExportJobData } from './export-data.processor.js';
+import { TransactionsService } from '../../transactions/transactions.service.js';
+import { AccountsService } from '../../accounts/accounts.service.js';
+import { CategoriesService } from '../../categories/categories.service.js';
+import { EmailService } from '../../email/email.service.js';
+import { UsersService } from '../../users/users.service.js';
+import { NotificationsService } from '../../notifications/notifications.service.js';
+import { CsvExportEngine } from '../engines/csv-export.engine.js';
+import { OfeExportEngine } from '../engines/ofe-export.engine.js';
+import { JsonExportEngine } from '../engines/json-export.engine.js';
+import { Account } from '../../accounts/entities/account.entity.js';
+import { Category } from '../../categories/entities/category.entity.js';
 
 describe('ExportDataProcessor', () => {
   let processor: ExportDataProcessor;

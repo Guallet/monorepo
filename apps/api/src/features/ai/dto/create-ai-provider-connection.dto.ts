@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { AiProvider } from '../entities/ai-provider.enum';
+import { AiProvider } from '../entities/ai-provider.enum.js';
 
 export class CreateAiProviderConnectionDto {
   @IsEnum(AiProvider)

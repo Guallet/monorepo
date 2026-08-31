@@ -1,5 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CsvImportRequestDto {
   csvData: CsvRowData[];
+  @ApiProperty({ type: Object })
   fieldMappings: FieldMappings;
   accountMappings: Record<string, AccountMapping>;
   categoryMappings: Record<string, CategoryMapping>;

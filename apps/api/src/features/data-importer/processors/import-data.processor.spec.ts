@@ -3,14 +3,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Job } from 'bullmq';
-import { ImportDataProcessor, ImportJobData } from './import-data.processor';
-import { EmailService } from '../../email/email.service';
-import { UsersService } from '../../users/users.service';
-import { NotificationsService } from '../../notifications/notifications.service';
-import { CsvImportEngine } from '../engines/csv-import.engine';
-import { OfeImportEngine } from '../engines/ofe-import.engine';
-import { JsonImportEngine } from '../engines/json-import.engine';
-import { DataImportRequestDto } from '../dto/data-import-request.dto';
+import { ImportDataProcessor, ImportJobData } from './import-data.processor.js';
+import { EmailService } from '../../email/email.service.js';
+import { UsersService } from '../../users/users.service.js';
+import { NotificationsService } from '../../notifications/notifications.service.js';
+import { CsvImportEngine } from '../engines/csv-import.engine.js';
+import { OfeImportEngine } from '../engines/ofe-import.engine.js';
+import { JsonImportEngine } from '../engines/json-import.engine.js';
+import { DataImportRequestDto } from '../dto/data-import-request.dto.js';
 
 describe('ImportDataProcessor', () => {
   let processor: ImportDataProcessor;

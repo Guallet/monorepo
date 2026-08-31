@@ -1,5 +1,5 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
+import { Transaction } from '../../../features/transactions/entities/transaction.entity.js';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,7 +8,8 @@ import {
   OneToMany,
   ManyToMany,
 } from 'typeorm';
-import { Budget } from 'src/features/budgets/entities/budget.entity';
+import { Budget } from '../../../features/budgets/entities/budget.entity.js';
+import type { Relation } from 'typeorm';
 
 @Entity('categories')
 export class Category extends BaseDbEntity {
@@ -34,7 +35,7 @@ export class Category extends BaseDbEntity {
   @ManyToOne(() => Category, (category) => category.children, {
     onDelete: 'CASCADE',
   })
-  parent: Category;
+  parent: Relation<Category>;
 
   @OneToMany(() => Category, (category) => category.parent, {
     onDelete: 'SET NULL',

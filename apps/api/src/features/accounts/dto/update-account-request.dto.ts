@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { CreateAccountRequest } from './create-account-request.dto';
+import { CreateAccountRequest } from './create-account-request.dto.js';
 
 export class UpdateAccountRequest extends OmitType(CreateAccountRequest, [
   'initial_balance',

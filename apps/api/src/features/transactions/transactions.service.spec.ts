@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TransactionsService } from './transactions.service';
+import { TransactionsService } from './transactions.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Transaction } from './entities/transaction.entity';
-import { AccountsService } from '../accounts/accounts.service';
+import { Transaction } from './entities/transaction.entity.js';
+import { AccountsService } from '../accounts/accounts.service.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 

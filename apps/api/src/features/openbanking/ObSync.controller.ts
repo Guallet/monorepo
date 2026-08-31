@@ -1,8 +1,8 @@
 import { Controller, ForbiddenException, Get, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { SyncService } from './sync.service';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { SyncService } from './sync.service.js';
 
 @ApiTags('Open Banking')
 @Controller('openbanking/sync')

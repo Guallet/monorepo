@@ -1,9 +1,9 @@
 import { Controller, Get, Logger, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { OpenbankingService } from './openbanking.service';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { OpenbankingService } from './openbanking.service.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
 
 @ApiTags('Open Banking')
 @Controller('openbanking/accounts')

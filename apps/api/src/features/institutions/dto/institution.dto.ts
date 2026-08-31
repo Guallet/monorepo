@@ -1,4 +1,4 @@
-import { Institution } from '../entities/institution.entity';
+import { Institution } from '../entities/institution.entity.js';
 
 export class InstitutionDto {
   id: string;

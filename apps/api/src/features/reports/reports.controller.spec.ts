@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReportsController } from './reports.controller';
-import { ReportsService } from './reports.service';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { ReportsController } from './reports.controller.js';
+import { ReportsService } from './reports.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 
 describe('ReportsController', () => {
   let controller: ReportsController;

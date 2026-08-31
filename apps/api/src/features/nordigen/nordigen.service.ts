@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import {
   BadRequestException,
   ForbiddenException,
@@ -10,24 +10,24 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'src/configuration';
+import { AppConfig } from '../../configuration.js';
 import { catchError, firstValueFrom } from 'rxjs';
-import { NordigenInstitutionDto } from './dto/nordigen-institution.dto';
+import { NordigenInstitutionDto } from './dto/nordigen-institution.dto.js';
 import {
   NordigenAccountBalanceDto,
   NordigenAccountBalancesDto,
   NordigenAccountDetailsDto,
   NordigenAccountDto,
   NordigenAccountMetadataDto,
-} from './dto/nordigen-account.dto';
+} from './dto/nordigen-account.dto.js';
 import {
   NordigenTransactionDto,
   NordigenTransactionsDto,
-} from './dto/nordigen-transaction.dto';
-import { NordigenToken } from './entities/nordigen-token.entity';
-import { NordigenTokenDto } from './dto/nordigen-token.dto';
-import { NordigenRepository } from './nordigen.repository';
-import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
+} from './dto/nordigen-transaction.dto.js';
+import { NordigenToken } from './entities/nordigen-token.entity.js';
+import { NordigenTokenDto } from './dto/nordigen-token.dto.js';
+import { NordigenRepository } from './nordigen.repository.js';
+import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto.js';
 
 @Injectable()
 export class NordigenService {
@@ -83,7 +83,7 @@ export class NordigenService {
     const url = `${this.BASE_URL}/api/v2/token/new/`;
 
     const nordigenConfig = this.configService.get('nordigen', { infer: true })!;
-    const response = await firstValueFrom(
+    const response = await firstValueFrom<AxiosResponse<NordigenTokenDto>>(
       this.httpService.post<NordigenTokenDto>(
         url,
         {
@@ -129,7 +129,7 @@ export class NordigenService {
   ): Promise<NordigenToken> {
     const url = `${this.BASE_URL}/api/v2/token/refresh/`;
 
-    const response = await firstValueFrom(
+    const response = await firstValueFrom<AxiosResponse<NordigenTokenDto>>(
       this.httpService.post<NordigenTokenDto>(url, {
         refresh: refresh_token,
       }),
@@ -218,9 +218,9 @@ export class NordigenService {
     const token = await this.getAccessToken();
 
     try {
-      const response = await firstValueFrom(
+      const response = await firstValueFrom<AxiosResponse<T>>(
         this.httpService
-          .get(url, {
+          .get<T>(url, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: 'application/json',
@@ -275,9 +275,9 @@ export class NordigenService {
     const token = await this.getAccessToken();
 
     try {
-      const response = await firstValueFrom(
+      const response = await firstValueFrom<AxiosResponse<T>>(
         this.httpService
-          .post(url, payload, {
+          .post<T>(url, payload, {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
@@ -314,9 +314,9 @@ export class NordigenService {
     const token = await this.getAccessToken();
 
     try {
-      const response = await firstValueFrom(
+      const response = await firstValueFrom<AxiosResponse<T>>(
         this.httpService
-          .delete(url, {
+          .delete<T>(url, {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: 'application/json',

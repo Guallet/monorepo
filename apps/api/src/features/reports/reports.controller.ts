@@ -1,10 +1,10 @@
 import { Controller, Get, Logger, Query, ParseIntPipe } from '@nestjs/common';
-import { ReportsService } from './reports.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { ReportQueryFilter } from './dto/report-query-filter';
+import { ReportsService } from './reports.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { ReportQueryFilter } from './dto/report-query-filter.js';
 import { ApiTags } from '@nestjs/swagger';
-import { CashflowDataDto } from './cashflow/cashflowData.dto';
+import { CashflowDataDto } from './cashflow/cashflowData.dto.js';
 
 @ApiTags('Reports')
 @Controller('reports')

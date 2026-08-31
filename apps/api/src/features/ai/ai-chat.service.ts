@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { ModelMessage, StreamTextResult, ToolSet, streamText } from 'ai';
 import { Repository } from 'typeorm';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
-import { AiFinancialContextService } from './ai-financial-context.service';
-import { AiChatMessageDto } from './dto/ai-chat-message.dto';
-import { AiChatSessionDto } from './dto/ai-chat-session.dto';
-import { AiAgent } from './entities/ai-agent.entity';
-import { AiChatMessage } from './entities/ai-chat-message.entity';
-import { AiChatSession } from './entities/ai-chat-session.entity';
-import { AiProvider } from './entities/ai-provider.enum';
+import { AiCredentialEncryptionService } from './ai-credential-encryption.service.js';
+import { AiFinancialContextService } from './ai-financial-context.service.js';
+import { AiChatMessageDto } from './dto/ai-chat-message.dto.js';
+import { AiChatSessionDto } from './dto/ai-chat-session.dto.js';
+import { AiAgent } from './entities/ai-agent.entity.js';
+import { AiChatMessage } from './entities/ai-chat-message.entity.js';
+import { AiChatSession } from './entities/ai-chat-session.entity.js';
+import { AiProvider } from './entities/ai-provider.enum.js';
 
 const PROVIDER_BASE_URLS: Record<AiProvider, string> = {
   [AiProvider.OPENAI]: 'https://api.openai.com/v1',

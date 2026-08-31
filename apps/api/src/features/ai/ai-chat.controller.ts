@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { Response } from 'express';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { AiChatService } from './ai-chat.service';
-import { AiChatMessageDto } from './dto/ai-chat-message.dto';
-import { AiChatSessionDto } from './dto/ai-chat-session.dto';
-import { CreateAiChatSessionDto } from './dto/create-ai-chat-session.dto';
-import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto';
+import type { Response } from 'express';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { AiChatService } from './ai-chat.service.js';
+import { AiChatMessageDto } from './dto/ai-chat-message.dto.js';
+import { AiChatSessionDto } from './dto/ai-chat-session.dto.js';
+import { CreateAiChatSessionDto } from './dto/create-ai-chat-session.dto.js';
+import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto.js';
 
 @Controller('ai/chat')
 @ApiTags('AI')

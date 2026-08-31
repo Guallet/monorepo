@@ -1,4 +1,4 @@
-import { HealthService } from './health.service';
+import { HealthService } from './health.service.js';
 
 describe('HealthService', () => {
   const mockHealthCheckService = { check: jest.fn() };

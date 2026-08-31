@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { EmailService } from './email.service';
+import { EmailService } from './email.service.js';
 
 @Injectable()
 export class EmailEventListener {

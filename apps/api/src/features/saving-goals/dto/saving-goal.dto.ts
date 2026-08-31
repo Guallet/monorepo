@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { SavingGoal } from '../entities/saving-goal.entity';
+import { SavingGoal } from '../entities/saving-goal.entity.js';
 
 export class SavingGoalDto {
   @ApiProperty({

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SavingGoalsController } from './saving-goals.controller';
-import { SavingGoalsService } from './saving-goals.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { SavingGoal } from './entities/saving-goal.entity';
+import { SavingGoalsController } from './saving-goals.controller.js';
+import { SavingGoalsService } from './saving-goals.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { SavingGoal } from './entities/saving-goal.entity.js';
 
 describe('SavingGoalsController', () => {
   let controller: SavingGoalsController;

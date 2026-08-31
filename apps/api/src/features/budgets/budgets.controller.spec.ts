@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BudgetsController } from './budgets.controller';
-import { BudgetsService } from './budgets.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Budget } from './entities/budget.entity';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { BudgetsController } from './budgets.controller.js';
+import { BudgetsService } from './budgets.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Budget } from './entities/budget.entity.js';
+import { CreateBudgetDto } from './dto/create-budget.dto.js';
+import { UpdateBudgetDto } from './dto/update-budget.dto.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 
 describe('BudgetsController', () => {
   let controller: BudgetsController;

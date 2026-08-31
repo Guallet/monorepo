@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ObASyncController } from './ObSync.controller';
-import { SyncService } from './sync.service';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { ObASyncController } from './ObSync.controller.js';
+import { SyncService } from './sync.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import { ForbiddenException } from '@nestjs/common';
 
 describe('ObASyncController', () => {

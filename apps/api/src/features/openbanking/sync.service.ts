@@ -8,16 +8,16 @@ import {
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { getMoneyBalanceFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { NordigenInstitutionDto } from 'src/features/nordigen/dto/nordigen-institution.dto';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { NotificationsService } from '../notifications/notifications.service';
-import { NotificationType } from '../notifications/entities/notification.entity';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { getMoneyBalanceFrom } from '../../features/nordigen/dto/nordigen-balances.helper.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { InstitutionsService } from '../../features/institutions/institutions.service.js';
+import { NordigenInstitutionDto } from '../../features/nordigen/dto/nordigen-institution.dto.js';
+import { Institution } from '../../features/institutions/entities/institution.entity.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
+import { NotificationType } from '../notifications/entities/notification.entity.js';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
 const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';

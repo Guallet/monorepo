@@ -1,5 +1,5 @@
-import { AiProviderConnection } from '../entities/ai-provider-connection.entity';
-import { AiProvider } from '../entities/ai-provider.enum';
+import { AiProviderConnection } from '../entities/ai-provider-connection.entity.js';
+import { AiProvider } from '../entities/ai-provider.enum.js';
 
 export class AiProviderConnectionDto {
   id: string;

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
-import { TransactionsController } from './transactions.controller';
-import { TransactionsService } from './transactions.service';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { TransactionsController } from './transactions.controller.js';
+import { TransactionsService } from './transactions.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Transaction } from './entities/transaction.entity';
+import { Transaction } from './entities/transaction.entity.js';
 
 describe('TransactionsController', () => {
   let controller: TransactionsController;

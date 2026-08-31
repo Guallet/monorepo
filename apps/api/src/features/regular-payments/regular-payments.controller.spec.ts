@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegularPaymentsController } from './regular-payments.controller';
-import { RegularPaymentsService } from './regular-payments.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
-import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
+import { RegularPaymentsController } from './regular-payments.controller.js';
+import { RegularPaymentsService } from './regular-payments.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto.js';
+import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto.js';
 import {
   RecurrenceCadence,
   RecurringPaymentType,
   RegularPayment,
-} from './entities/regular-payment.entity';
+} from './entities/regular-payment.entity.js';
 
 describe('RegularPaymentsController', () => {
   let controller: RegularPaymentsController;

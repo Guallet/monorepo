@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AiProvider } from '../entities/ai-provider.enum';
-import { AiProviderAdapter } from './ai-provider-adapter.interface';
-import { OpenAiModelsAdapter } from './openai-models.adapter';
-import { OpenRouterModelsAdapter } from './openrouter-models.adapter';
-import { VercelAiGatewayModelsAdapter } from './vercel-ai-gateway-models.adapter';
+import { AiProvider } from '../entities/ai-provider.enum.js';
+import { AiProviderAdapter } from './ai-provider-adapter.interface.js';
+import { OpenAiModelsAdapter } from './openai-models.adapter.js';
+import { OpenRouterModelsAdapter } from './openrouter-models.adapter.js';
+import { VercelAiGatewayModelsAdapter } from './vercel-ai-gateway-models.adapter.js';
 
 @Injectable()
 export class AiProviderRegistryService {

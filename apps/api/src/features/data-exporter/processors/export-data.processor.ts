@@ -1,23 +1,23 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { EmailService } from '../../email/email.service';
-import { UsersService } from '../../users/users.service';
-import { AccountsService } from '../../accounts/accounts.service';
-import { CategoriesService } from '../../categories/categories.service';
-import { NotificationsService } from '../../notifications/notifications.service';
-import { NotificationType } from '../../notifications/entities/notification.entity';
-import { DataExportRequestDto } from '../dto/data-export-request.dto';
-import { ExportEngine } from '../engines/export-engine.interface';
-import { CsvExportEngine } from '../engines/csv-export.engine';
-import { OfeExportEngine } from '../engines/ofe-export.engine';
-import { JsonExportEngine } from '../engines/json-export.engine';
-import { DataFormat } from '../../data-formats';
+import { TransactionsService } from '../../transactions/transactions.service.js';
+import { EmailService } from '../../email/email.service.js';
+import { UsersService } from '../../users/users.service.js';
+import { AccountsService } from '../../accounts/accounts.service.js';
+import { CategoriesService } from '../../categories/categories.service.js';
+import { NotificationsService } from '../../notifications/notifications.service.js';
+import { NotificationType } from '../../notifications/entities/notification.entity.js';
+import { DataExportRequestDto } from '../dto/data-export-request.dto.js';
+import { ExportEngine } from '../engines/export-engine.interface.js';
+import { CsvExportEngine } from '../engines/csv-export.engine.js';
+import { OfeExportEngine } from '../engines/ofe-export.engine.js';
+import { JsonExportEngine } from '../engines/json-export.engine.js';
+import { DataFormat } from '../../data-formats.js';
 
 export const EXPORT_DATA_QUEUE = 'export-data';
 export const EXPORT_DATA_JOB = 'process-export';
-export { SUPPORTED_DATA_FORMATS as SUPPORTED_EXPORT_FORMATS } from '../../data-formats';
+export { SUPPORTED_DATA_FORMATS as SUPPORTED_EXPORT_FORMATS } from '../../data-formats.js';
 
 /** All formats the export pipeline accepts. Alias of {@link DataFormat}. */
 export type ExportFormat = DataFormat;

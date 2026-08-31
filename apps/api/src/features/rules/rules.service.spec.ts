@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
-import { RulesService } from './rules.service';
+import { RulesService } from './rules.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   CategorizationRule,
   RuleCondition,
-} from './entities/categorization-rule.entity';
-import { Transaction } from '../transactions/entities/transaction.entity';
+} from './entities/categorization-rule.entity.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 import { BadRequestException } from '@nestjs/common';
-import { CreateRuleDto } from './dto/create-rule.dto';
-import { UpdateRuleDto } from './dto/update-rule.dto';
+import { CreateRuleDto } from './dto/create-rule.dto.js';
+import { UpdateRuleDto } from './dto/update-rule.dto.js';
 
 describe('RulesService', () => {
   let service: RulesService;

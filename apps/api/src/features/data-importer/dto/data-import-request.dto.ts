@@ -7,13 +7,13 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import {
+import type {
   CsvRowData,
   FieldMappings,
   AccountMapping,
   CategoryMapping,
-} from './csv-import-request.dto';
-import { DataFormat } from '../../data-formats';
+} from './csv-import-request.dto.js';
+import { DataFormat } from '../../data-formats.js';
 
 /** All formats the import pipeline accepts. Alias of {@link DataFormat}. */
 export type ImportFormat = DataFormat;

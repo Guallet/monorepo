@@ -5,10 +5,10 @@ import {
   LoanAccountProperties,
   MortgageAccountProperties,
   SavingAccountProperties,
-} from '../entities/account-properties.model';
-import { Account } from '../entities/account.entity';
-import { AccountType } from '../entities/accountType.model';
-import { AccountSource } from '../entities/accountSource.model';
+} from '../entities/account-properties.model.js';
+import { Account } from '../entities/account.entity.js';
+import { AccountType } from '../entities/accountType.model.js';
+import { AccountSource } from '../entities/accountSource.model.js';
 export class BalanceDto {
   amount: number;
   currency: string;

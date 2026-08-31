@@ -4,7 +4,7 @@ import {
   MAX_RULES_PER_USER,
   TOO_MANY_CONDITIONS_MESSAGE,
   TOO_MANY_RULES_MESSAGE,
-} from '../constants';
+} from '../constants.js';
 
 export class LimitsDto {
   @ApiProperty({

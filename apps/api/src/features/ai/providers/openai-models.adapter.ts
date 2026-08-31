@@ -1,6 +1,6 @@
-import { AiModelDto } from '../dto/ai-model.dto';
-import { AiProviderAdapter } from './ai-provider-adapter.interface';
-import { fetchProviderJson } from './provider-rest.util';
+import { AiModelDto } from '../dto/ai-model.dto.js';
+import { AiProviderAdapter } from './ai-provider-adapter.interface.js';
+import { fetchProviderJson } from './provider-rest.util.js';
 
 type OpenAiModelsResponse = {
   data?: Array<{

@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
-import { CreateRuleDto } from './create-rule.dto';
-import { ReorderRulesDto, ReorderConditionsDto } from './reorder-rules.dto';
+import { CreateRuleDto } from './create-rule.dto.js';
+import { ReorderRulesDto, ReorderConditionsDto } from './reorder-rules.dto.js';
 
 describe('Rules DTO Validation', () => {
   describe('CreateRuleDto', () => {

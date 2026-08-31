@@ -1,5 +1,5 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { Account } from 'src/features/accounts/entities/account.entity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
+import { Account } from '../../../features/accounts/entities/account.entity.js';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('institutions')

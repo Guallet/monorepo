@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
-import { OpenbankingService } from './openbanking.service';
-import { ObConnectionsController } from './ObConnections.controller';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { NordigenModule } from 'src/features/nordigen/nordigen.module';
+import { OpenbankingService } from './openbanking.service.js';
+import { ObConnectionsController } from './ObConnections.controller.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { NordigenModule } from '../../features/nordigen/nordigen.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
-import { ObConnection } from './entities/connection.entity';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { NordigenAccountRepository } from './repositories/nordigen-account.repository';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { InstitutionsModule } from 'src/features/institutions/institutions.module';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { ObAccountsController } from './ObAccounts.controller';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { SyncService } from './sync.service';
-import { ObASyncController } from './ObSync.controller';
-import { NotificationsModule } from '../notifications/notifications.module';
+import { ObConnection } from './entities/connection.entity.js';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { NordigenAccountRepository } from './repositories/nordigen-account.repository.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { InstitutionsModule } from '../../features/institutions/institutions.module.js';
+import { InstitutionsService } from '../../features/institutions/institutions.service.js';
+import { Institution } from '../../features/institutions/entities/institution.entity.js';
+import { ObAccountsController } from './ObAccounts.controller.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { SyncService } from './sync.service.js';
+import { ObASyncController } from './ObSync.controller.js';
+import { NotificationsModule } from '../notifications/notifications.module.js';
 
 @Module({
   imports: [

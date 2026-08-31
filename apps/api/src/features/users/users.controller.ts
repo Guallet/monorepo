@@ -10,14 +10,14 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { UserDto } from './dto/user.dto';
+import { UsersService } from './users.service.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { UserDto } from './dto/user.dto.js';
 import { ApiTags } from '@nestjs/swagger';
-import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto';
+import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto.js';
 
 @ApiTags('Users')
 @Controller('users')

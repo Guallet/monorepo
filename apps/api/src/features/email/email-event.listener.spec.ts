@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EmailEventListener } from './email-event.listener';
-import { EmailService } from './email.service';
+import { EmailEventListener } from './email-event.listener.js';
+import { EmailService } from './email.service.js';
 
 describe('EmailEventListener', () => {
   let listener: EmailEventListener;

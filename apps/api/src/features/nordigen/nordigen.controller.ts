@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { NordigenService } from './nordigen.service';
+import { NordigenService } from './nordigen.service.js';
 
 @Controller('nordigen')
 export class NordigenController {

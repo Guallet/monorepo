@@ -1,4 +1,4 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum NotificationType {

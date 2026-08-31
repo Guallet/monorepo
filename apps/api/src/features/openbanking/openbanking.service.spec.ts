@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OpenbankingService } from './openbanking.service';
+import { OpenbankingService } from './openbanking.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ObConnection } from './entities/connection.entity';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
+import { ObConnection } from './entities/connection.entity.js';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Institution } from '../../features/institutions/entities/institution.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto';
+import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto.js';
 
 describe('OpenbankingService', () => {
   let service: OpenbankingService;

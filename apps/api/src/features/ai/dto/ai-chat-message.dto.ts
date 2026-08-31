@@ -1,7 +1,7 @@
 import {
   AiChatMessage,
   AiChatMessageRole,
-} from '../entities/ai-chat-message.entity';
+} from '../entities/ai-chat-message.entity.js';
 
 export class AiChatMessageDto {
   id: string;

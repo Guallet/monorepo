@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NordigenAccount } from '../entities/nordigen-account.entity';
+import { NordigenAccount } from '../entities/nordigen-account.entity.js';
 
 @Injectable()
 export class NordigenAccountRepository {

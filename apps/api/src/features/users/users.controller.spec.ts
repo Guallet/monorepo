@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UsersController } from './users.controller.js';
+import { UsersService } from './users.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { User } from './entities/user.entity';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { User } from './entities/user.entity.js';
 
 describe('UsersController', () => {
   let controller: UsersController;

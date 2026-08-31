@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { NordigenService } from './nordigen.service';
+import { NordigenService } from './nordigen.service.js';
 import { HttpService } from '@nestjs/axios';
-import { NordigenRepository } from './nordigen.repository';
+import { NordigenRepository } from './nordigen.repository.js';
 import { of } from 'rxjs';
 import { AxiosResponse } from 'axios';
 

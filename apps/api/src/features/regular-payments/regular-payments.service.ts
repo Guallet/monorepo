@@ -4,12 +4,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
-import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
-import { RegularPayment } from './entities/regular-payment.entity';
+import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto.js';
+import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto.js';
+import { RegularPayment } from './entities/regular-payment.entity.js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from '../categories/entities/category.entity';
+import { Category } from '../categories/entities/category.entity.js';
 
 @Injectable()
 export class RegularPaymentsService {

@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
-import { AiService } from './ai.service';
-import { AiAgent } from './entities/ai-agent.entity';
-import { AiProviderConnection } from './entities/ai-provider-connection.entity';
-import { AiProvider } from './entities/ai-provider.enum';
-import { AiProviderRegistryService } from './providers/ai-provider-registry.service';
-import { ProviderModelListError } from './providers/provider-model-list.error';
+import { AiCredentialEncryptionService } from './ai-credential-encryption.service.js';
+import { AiService } from './ai.service.js';
+import { AiAgent } from './entities/ai-agent.entity.js';
+import { AiProviderConnection } from './entities/ai-provider-connection.entity.js';
+import { AiProvider } from './entities/ai-provider.enum.js';
+import { AiProviderRegistryService } from './providers/ai-provider-registry.service.js';
+import { ProviderModelListError } from './providers/provider-model-list.error.js';
 
 describe('AiService', () => {
   let service: AiService;

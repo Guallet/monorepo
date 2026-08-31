@@ -1,4 +1,4 @@
-import { TransactionFieldType, OperatorType } from './field-types';
+import { TransactionFieldType, OperatorType } from './field-types.js';
 
 /**
  * Logic type for combining conditions within a rule

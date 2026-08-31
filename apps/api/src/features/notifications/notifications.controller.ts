@@ -9,12 +9,12 @@ import {
   NotFoundException,
   Post,
 } from '@nestjs/common';
-import { NotificationsService } from './notifications.service';
+import { NotificationsService } from './notifications.service.js';
 import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { NotificationDto } from './dto/notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { NotificationDto } from './dto/notification.dto.js';
+import { UpdateNotificationDto } from './dto/update-notification.dto.js';
 
 @ApiTags('Notifications')
 @Controller('notifications')

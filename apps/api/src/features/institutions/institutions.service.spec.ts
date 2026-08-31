@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { InstitutionsService } from './institutions.service';
+import { InstitutionsService } from './institutions.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Institution } from './entities/institution.entity';
+import { Institution } from './entities/institution.entity.js';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
-import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
+import { CreateInstitutionRequest } from './dto/create-institution-request.dto.js';
+import { UpdateInstitutionRequest } from './dto/update-institution-request.dto.js';
 
 describe('InstitutionsService', () => {
   let service: InstitutionsService;

@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoriesController } from './categories.controller';
-import { CategoriesService } from './categories.service';
+import { CategoriesController } from './categories.controller.js';
+import { CategoriesService } from './categories.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Category } from './entities/category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Category } from './entities/category.entity.js';
+import { CreateCategoryDto } from './dto/create-category.dto.js';
+import { UpdateCategoryDto } from './dto/update-category.dto.js';
 
 describe('CategoriesController', () => {
   let controller: CategoriesController;

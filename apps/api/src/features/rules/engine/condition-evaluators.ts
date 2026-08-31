@@ -7,7 +7,7 @@ import {
   NumberOperatorType,
   StringOperator,
   StringOperatorType,
-} from './field-types';
+} from './field-types.js';
 
 /**
  * Evaluate account field conditions

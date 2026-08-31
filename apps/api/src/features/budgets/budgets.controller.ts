@@ -11,14 +11,14 @@ import {
   Delete,
   HttpStatus,
 } from '@nestjs/common';
-import { BudgetsService } from './budgets.service';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { BudgetsService } from './budgets.service.js';
+import { CreateBudgetDto } from './dto/create-budget.dto.js';
+import { UpdateBudgetDto } from './dto/update-budget.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import { ApiTags } from '@nestjs/swagger';
-import { BudgetDto } from './dto/budget.dto';
-import { TransactionDto } from '../transactions/dto/transaction.dto';
+import { BudgetDto } from './dto/budget.dto.js';
+import { TransactionDto } from '../transactions/dto/transaction.dto.js';
 
 @Controller('budgets')
 @ApiTags('Budgets')

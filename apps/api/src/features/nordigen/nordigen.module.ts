@@ -1,9 +1,9 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { NordigenService } from './nordigen.service';
+import { NordigenService } from './nordigen.service.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NordigenToken } from './entities/nordigen-token.entity';
-import { NordigenRepository } from './nordigen.repository';
+import { NordigenToken } from './entities/nordigen-token.entity.js';
+import { NordigenRepository } from './nordigen.repository.js';
 
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([NordigenToken])],

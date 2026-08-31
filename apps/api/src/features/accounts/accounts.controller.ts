@@ -12,24 +12,24 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { AccountsService } from './accounts.service';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { AccountsService } from './accounts.service.js';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateAccountRequest } from './dto/create-account-request.dto';
-import { UpdateAccountRequest } from './dto/update-account-request.dto';
-import { AccountDto } from './dto/account.dto';
-import { TransactionsService } from 'src/features/transactions/transactions.service';
+import { CreateAccountRequest } from './dto/create-account-request.dto.js';
+import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
+import { AccountDto } from './dto/account.dto.js';
+import { TransactionsService } from '../../features/transactions/transactions.service.js';
 import {
   AccountChartsDto,
   BalanceHistoryPoint,
   ChartData,
-} from './dto/account-charts.dto';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
-import { OpenbankingService } from '../openbanking/openbanking.service';
-import { AccountSource, toAccountSource } from './entities/accountSource.model';
-import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
+} from './dto/account-charts.dto.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { TransactionDto } from '../../features/transactions/dto/transaction.dto.js';
+import { OpenbankingService } from '../openbanking/openbanking.service.js';
+import { AccountSource, toAccountSource } from './entities/accountSource.model.js';
+import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity.js';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
   if (!value) {

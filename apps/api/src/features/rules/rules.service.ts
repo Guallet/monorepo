@@ -9,9 +9,9 @@ import { In, Repository } from 'typeorm';
 import {
   CategorizationRule as CategorizationRuleEntity,
   RuleCondition,
-} from './entities/categorization-rule.entity';
-import { CreateRuleDto } from './dto/create-rule.dto';
-import { UpdateRuleDto } from './dto/update-rule.dto';
+} from './entities/categorization-rule.entity.js';
+import { CreateRuleDto } from './dto/create-rule.dto.js';
+import { UpdateRuleDto } from './dto/update-rule.dto.js';
 import {
   CategorizationRule,
   ConditionLogicType,
@@ -21,15 +21,15 @@ import {
   RuleEvaluationResult,
   OperatorType,
   TransactionField,
-} from './engine';
+} from './engine/index.js';
 
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 import {
   MAX_CONDITIONS_PER_RULE,
   MAX_RULES_PER_USER,
   TOO_MANY_CONDITIONS_MESSAGE,
   TOO_MANY_RULES_MESSAGE,
-} from './constants';
+} from './constants.js';
 
 @Injectable()
 export class RulesService {

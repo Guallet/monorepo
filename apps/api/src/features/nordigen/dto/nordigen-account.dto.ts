@@ -1,4 +1,4 @@
-import { ExternalCashAccountType1Code } from './ExternalCashAccountType1Code.helper';
+import { ExternalCashAccountType1Code } from './ExternalCashAccountType1Code.helper.js';
 
 export class NordigenAccountMetadataDto {
   id: string;

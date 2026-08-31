@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import request from 'supertest';
+import { AppModule } from './../src/app.module.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CategorizationRule } from '../src/features/rules/entities/categorization-rule.entity';
+import { CategorizationRule } from '../src/features/rules/entities/categorization-rule.entity.js';
 
 describe('Rules (e2e)', () => {
   let app: INestApplication;

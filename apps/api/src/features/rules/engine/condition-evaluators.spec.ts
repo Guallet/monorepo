@@ -3,13 +3,13 @@ import {
   evaluateStringCondition,
   evaluateNumberCondition,
   evaluateDateTimeCondition,
-} from './condition-evaluators';
+} from './condition-evaluators.js';
 import {
   AccountOperator,
   StringOperator,
   NumberOperator,
   DateTimeOperator,
-} from './field-types';
+} from './field-types.js';
 
 describe('Condition Evaluators', () => {
   describe('evaluateAccountCondition', () => {

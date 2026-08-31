@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserPrincipal } from './user-principal';
+import { UserPrincipal } from './user-principal.js';
 
 // Used to extract the user data from the request
 // More info: https://docs.nestjs.com/custom-decorators

@@ -1,5 +1,5 @@
-import { AiAgent } from '../entities/ai-agent.entity';
-import { AiProvider } from '../entities/ai-provider.enum';
+import { AiAgent } from '../entities/ai-agent.entity.js';
+import { AiProvider } from '../entities/ai-provider.enum.js';
 
 export class AiAgentDto {
   id: string;

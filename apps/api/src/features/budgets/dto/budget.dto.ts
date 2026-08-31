@@ -1,4 +1,4 @@
-import { Budget } from '../entities/budget.entity';
+import { Budget } from '../entities/budget.entity.js';
 
 export class BudgetDto {
   id: string;

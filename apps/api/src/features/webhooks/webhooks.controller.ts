@@ -1,5 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
-import { WebhooksService } from './webhooks.service';
+import { WebhooksService } from './webhooks.service.js';
 
 @Controller('webhooks')
 export class WebhooksController {

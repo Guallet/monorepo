@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import {
   HealthCheckService,
   HealthIndicatorService,
   HttpHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { HEALTH_CHECK_QUEUE } from './health.constants';
+import { Queue } from 'bullmq';
+import { HEALTH_CHECK_QUEUE } from './health.constants.js';
 
 @Injectable()
 export class HealthService {

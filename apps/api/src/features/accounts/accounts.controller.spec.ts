@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountsController } from './accounts.controller';
-import { AccountsService } from './accounts.service';
-import { TransactionsService } from '../transactions/transactions.service';
-import { OpenbankingService } from '../openbanking/openbanking.service';
+import { AccountsController } from './accounts.controller.js';
+import { AccountsService } from './accounts.service.js';
+import { TransactionsService } from '../transactions/transactions.service.js';
+import { OpenbankingService } from '../openbanking/openbanking.service.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Account } from './entities/account.entity';
-import { AccountType } from './entities/accountType.model';
-import { AccountSource } from './entities/accountSource.model';
-import { CreateAccountRequest } from './dto/create-account-request.dto';
-import { UpdateAccountRequest } from './dto/update-account-request.dto';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Account } from './entities/account.entity.js';
+import { AccountType } from './entities/accountType.model.js';
+import { AccountSource } from './entities/accountSource.model.js';
+import { CreateAccountRequest } from './dto/create-account-request.dto.js';
+import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 
 describe('AccountsController', () => {
   let controller: AccountsController;

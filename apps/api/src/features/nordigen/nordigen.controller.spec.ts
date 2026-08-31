@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NordigenController } from './nordigen.controller';
-import { NordigenService } from './nordigen.service';
+import { NordigenController } from './nordigen.controller.js';
+import { NordigenService } from './nordigen.service.js';
 
 describe('NordigenController', () => {
   let controller: NordigenController;

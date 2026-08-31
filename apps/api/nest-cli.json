@@ -13,7 +13,8 @@
           "dtoFileNameSuffix": [
             ".dto.ts"
           ],
-          "introspectComments": true
+          "introspectComments": true,
+          "esmCompatible": true
         }
       }
     ],

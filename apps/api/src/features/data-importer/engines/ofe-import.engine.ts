@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { AccountsService } from '../../accounts/accounts.service';
-import { UsersService } from '../../users/users.service';
-import { Transaction } from '../../transactions/entities/transaction.entity';
-import { DataImportRequestDto } from '../dto/data-import-request.dto';
-import { DEFAULT_CURRENCY } from '../constants/import-defaults';
-import { AccountType } from 'src/features/accounts/entities/accountType.model';
-import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
-import { ImportEngine, ImportEngineResult } from './import-engine.interface';
+import { AccountsService } from '../../accounts/accounts.service.js';
+import { UsersService } from '../../users/users.service.js';
+import { Transaction } from '../../transactions/entities/transaction.entity.js';
+import { DataImportRequestDto } from '../dto/data-import-request.dto.js';
+import { DEFAULT_CURRENCY } from '../constants/import-defaults.js';
+import { AccountType } from '../../../features/accounts/entities/accountType.model.js';
+import { AccountSource } from '../../../features/accounts/entities/accountSource.model.js';
+import { ImportEngine, ImportEngineResult } from './import-engine.interface.js';
 
 interface ParsedOfeTransaction {
   date: Date;

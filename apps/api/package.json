@@ -1,48 +1,49 @@
 {
   "name": "api",
   "version": "0.1.0",
+  "type": "module",
   "description": "",
   "author": "",
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build && node scripts/fix-swagger-metadata.mjs",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:debug": "NODE_OPTIONS=--experimental-vm-modules node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --config ./test/jest-e2e.json",
     "db:init": "pnpm db:generate && pnpm db:migrate",
     "db:generate": "npx @better-auth/cli generate --config src/auth/better-auth.ts",
     "db:migrate": "npx @better-auth/cli migrate --config src/auth/better-auth.ts",
-    "script:set-role": "ts-node -r tsconfig-paths/register -r dotenv/config scripts/set-user-role.ts"
+    "script:set-role": "node --loader ts-node/esm scripts/set-user-role.ts"
   },
   "engines": {
     "node": ">=24.20 <25"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "2.0.48",
-    "@nestjs/axios": "4.0.1",
-    "@nestjs/bullmq": "11.0.4",
-    "@nestjs/common": "11.1.13",
-    "@nestjs/config": "4.0.3",
-    "@nestjs/core": "11.1.18",
-    "@nestjs/event-emitter": "3.0.1",
-    "@nestjs/platform-express": "11.1.13",
-    "@nestjs/schedule": "6.1.1",
-    "@nestjs/swagger": "11.2.7",
-    "@nestjs/terminus": "11.0.0",
+    "@nestjs/axios": "12.0.0",
+    "@nestjs/bullmq": "12.0.0",
+    "@nestjs/common": "12.0.1",
+    "@nestjs/config": "12.0.0",
+    "@nestjs/core": "12.0.1",
+    "@nestjs/event-emitter": "12.0.0",
+    "@nestjs/platform-express": "12.0.1",
+    "@nestjs/schedule": "12.0.1",
+    "@nestjs/swagger": "12.0.1",
     "@nestjs/throttler": "6.5.0",
-    "@nestjs/typeorm": "11.0.0",
-    "@thallesp/nestjs-better-auth": "2.4.0",
+    "@nestjs/terminus": "12.0.0",
+    "@nestjs/typeorm": "12.0.1",
+    "@thallesp/nestjs-better-auth": "2.7.0",
     "ai": "6.0.201",
     "axios": "1.16.0",
     "better-auth": "1.6.11",
@@ -67,11 +68,11 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
-    "@nestjs/cli": "11.0.16",
-    "@nestjs/schematics": "11.0.9",
-    "@nestjs/testing": "11.1.13",
-    "@swc/cli": "0.7.10",
-    "@swc/core": "1.15.11",
+    "@nestjs/cli": "12.0.0",
+    "@nestjs/schematics": "12.0.0",
+    "@nestjs/testing": "12.0.1",
+    "@swc/cli": "0.8.1",
+    "@swc/core": "1.16.1",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/node": "25.2.3",
@@ -90,10 +91,11 @@
     "ts-loader": "9.5.4",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
-    "typescript": "5.9.3",
+    "typescript": "6.0.3",
     "typescript-eslint": "8.53.0"
   },
   "jest": {
+    "preset": "ts-jest/presets/default-esm",
     "moduleFileExtensions": [
       "js",
       "json",
@@ -101,15 +103,19 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.cjs"
+    ],
     "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1",
       "^src/(.*)$": "<rootDir>/$1",
       "^@thallesp/nestjs-better-auth$": "<rootDir>/__mocks__/@thallesp/nestjs-better-auth/index.js"
     }

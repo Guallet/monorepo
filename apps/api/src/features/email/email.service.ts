@@ -2,10 +2,10 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
-import * as Handlebars from 'handlebars';
+import Handlebars from 'handlebars';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { AppConfig } from '../../configuration';
+import { AppConfig } from '../../configuration.js';
 
 interface SendEmailOptions {
   to: string;
@@ -20,7 +20,7 @@ interface SendEmailOptions {
 export class EmailService implements OnModuleInit {
   private readonly logger = new Logger(EmailService.name);
   private transporter: Transporter | null = null;
-  private readonly templatesDir = path.join(__dirname, 'templates');
+  private readonly templatesDir = path.join(import.meta.dirname, 'templates');
   private readonly compiledTemplates: Map<string, Handlebars.TemplateDelegate> =
     new Map();
   private defaultFrom: string;

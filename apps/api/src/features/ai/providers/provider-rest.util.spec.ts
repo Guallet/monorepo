@@ -1,5 +1,5 @@
-import { fetchProviderJson } from './provider-rest.util';
-import { ProviderModelListError } from './provider-model-list.error';
+import { fetchProviderJson } from './provider-rest.util.js';
+import { ProviderModelListError } from './provider-model-list.error.js';
 
 describe('fetchProviderJson', () => {
   const originalFetch = global.fetch;

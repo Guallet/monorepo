@@ -8,13 +8,13 @@ import {
   Delete,
   Logger,
 } from '@nestjs/common';
-import { RegularPaymentsService } from './regular-payments.service';
-import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
-import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
+import { RegularPaymentsService } from './regular-payments.service.js';
+import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto.js';
+import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto.js';
 import { ApiTags } from '@nestjs/swagger';
-import { RegularPaymentDto } from './dto/regular-payment.dto';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { RequestUser } from 'src/auth/request-user.decorator';
+import { RegularPaymentDto } from './dto/regular-payment.dto.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
 
 @ApiTags('Regular Payments')
 @Controller('regular-payments')

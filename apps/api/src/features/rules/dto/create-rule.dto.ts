@@ -10,7 +10,7 @@ import {
   ValidateNested,
   ArrayMaxSize,
 } from 'class-validator';
-import { MAX_CONDITIONS_PER_RULE } from '../constants';
+import { MAX_CONDITIONS_PER_RULE } from '../constants.js';
 
 export class CreateConditionDto {
   @ApiProperty({

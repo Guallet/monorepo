@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
-import { AiChatSession } from './entities/ai-chat-session.entity';
+import { AiChatSession } from './entities/ai-chat-session.entity.js';
 
 export const CHAT_RETENTION_DAYS = 30;
 

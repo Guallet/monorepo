@@ -1,27 +1,29 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { streamText } from 'ai';
-import { AiChatService } from './ai-chat.service';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
-import { AiFinancialContextService } from './ai-financial-context.service';
-import { AiAgent } from './entities/ai-agent.entity';
-import { AiChatMessage } from './entities/ai-chat-message.entity';
-import { AiChatSession } from './entities/ai-chat-session.entity';
-import { AiProvider } from './entities/ai-provider.enum';
+import type { AiChatService as AiChatServiceType } from './ai-chat.service.js';
+import { AiCredentialEncryptionService } from './ai-credential-encryption.service.js';
+import { AiFinancialContextService } from './ai-financial-context.service.js';
+import { AiAgent } from './entities/ai-agent.entity.js';
+import { AiChatMessage } from './entities/ai-chat-message.entity.js';
+import { AiChatSession } from './entities/ai-chat-session.entity.js';
+import { AiProvider } from './entities/ai-provider.enum.js';
 
-jest.mock('ai', () => ({
+jest.unstable_mockModule('ai', () => ({
   streamText: jest.fn(),
 }));
 
-jest.mock('@ai-sdk/openai-compatible', () => ({
+jest.unstable_mockModule('@ai-sdk/openai-compatible', () => ({
   createOpenAICompatible: jest.fn(() => ({
     chatModel: jest.fn((modelId: string) => ({ modelId })),
   })),
 }));
 
+const { streamText } = await import('ai');
+const { AiChatService } = await import('./ai-chat.service.js');
+
 describe('AiChatService', () => {
-  let service: AiChatService;
+  let service: AiChatServiceType;
 
   const mockSessionRepository = {
     find: jest.fn(),
@@ -102,7 +104,7 @@ describe('AiChatService', () => {
       ],
     }).compile();
 
-    service = module.get<AiChatService>(AiChatService);
+    service = module.get<AiChatServiceType>(AiChatService);
     jest.clearAllMocks();
     mockFinancialContext.buildSummary.mockResolvedValue('{"accounts":[]}');
     mockCredentialEncryption.decrypt.mockReturnValue('decrypted-token');

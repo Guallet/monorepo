@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsController } from './notifications.controller';
-import { NotificationsService } from './notifications.service';
+import { NotificationsController } from './notifications.controller.js';
+import { NotificationsService } from './notifications.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Notification, NotificationType } from './entities/notification.entity';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Notification, NotificationType } from './entities/notification.entity.js';
+import { UpdateNotificationDto } from './dto/update-notification.dto.js';
 
 describe('NotificationsController', () => {
   let controller: NotificationsController;

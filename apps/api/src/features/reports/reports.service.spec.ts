@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReportsService } from './reports.service';
+import { ReportsService } from './reports.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Category } from 'src/features/categories/entities/category.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { Category } from '../../features/categories/entities/category.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
 
 describe('ReportsService', () => {
   let service: ReportsService;

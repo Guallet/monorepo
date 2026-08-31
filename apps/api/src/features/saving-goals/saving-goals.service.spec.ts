@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SavingGoalsService } from './saving-goals.service';
+import { SavingGoalsService } from './saving-goals.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { SavingGoal } from './entities/saving-goal.entity';
+import { SavingGoal } from './entities/saving-goal.entity.js';
 import { NotFoundException } from '@nestjs/common';
 
 describe('SavingGoalsService', () => {

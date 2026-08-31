@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   CategorizationRule,
   RuleCondition,
-} from '../entities/categorization-rule.entity';
+} from '../entities/categorization-rule.entity.js';
 
 export class RuleConditionDto {
   @ApiProperty({ description: 'Condition ID' })

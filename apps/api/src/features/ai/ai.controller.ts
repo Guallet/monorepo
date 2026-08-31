@@ -12,16 +12,16 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { AiService } from './ai.service';
-import { AiAgentDto } from './dto/ai-agent.dto';
-import { AiModelDto } from './dto/ai-model.dto';
-import { AiProviderConnectionDto } from './dto/ai-provider-connection.dto';
-import { CreateAiAgentDto } from './dto/create-ai-agent.dto';
-import { CreateAiProviderConnectionDto } from './dto/create-ai-provider-connection.dto';
-import { UpdateAiAgentDto } from './dto/update-ai-agent.dto';
-import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connection.dto';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { AiService } from './ai.service.js';
+import { AiAgentDto } from './dto/ai-agent.dto.js';
+import { AiModelDto } from './dto/ai-model.dto.js';
+import { AiProviderConnectionDto } from './dto/ai-provider-connection.dto.js';
+import { CreateAiAgentDto } from './dto/create-ai-agent.dto.js';
+import { CreateAiProviderConnectionDto } from './dto/create-ai-provider-connection.dto.js';
+import { UpdateAiAgentDto } from './dto/update-ai-agent.dto.js';
+import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connection.dto.js';
 
 @Controller('ai')
 @ApiTags('AI')

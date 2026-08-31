@@ -11,9 +11,9 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { SavingGoalsService } from './saving-goals.service';
-import { CreateSavingGoalDto } from './dto/create-saving-goal.dto';
-import { UpdateSavingGoalDto } from './dto/update-saving-goal.dto';
+import { SavingGoalsService } from './saving-goals.service.js';
+import { CreateSavingGoalDto } from './dto/create-saving-goal.dto.js';
+import { UpdateSavingGoalDto } from './dto/update-saving-goal.dto.js';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -21,9 +21,9 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SavingGoalDto } from './dto/saving-goal.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { SavingGoalDto } from './dto/saving-goal.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 
 @ApiTags('Saving Goals')
 @Controller('saving-goals')

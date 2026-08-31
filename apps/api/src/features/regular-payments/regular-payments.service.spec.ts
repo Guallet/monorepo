@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegularPaymentsService } from './regular-payments.service';
+import { RegularPaymentsService } from './regular-payments.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Category } from '../categories/entities/category.entity';
+import { Category } from '../categories/entities/category.entity.js';
 import {
   RecurrenceCadence,
   RecurringPaymentType,
   RegularPayment,
-} from './entities/regular-payment.entity';
-import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
-import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
+} from './entities/regular-payment.entity.js';
+import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto.js';
+import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto.js';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('RegularPaymentsService', () => {

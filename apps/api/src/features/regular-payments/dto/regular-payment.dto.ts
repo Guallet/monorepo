@@ -3,7 +3,7 @@ import {
   RecurrenceCadence,
   RecurringPaymentType,
   RegularPayment,
-} from '../entities/regular-payment.entity';
+} from '../entities/regular-payment.entity.js';
 
 export class RegularPaymentDto {
   id: string;

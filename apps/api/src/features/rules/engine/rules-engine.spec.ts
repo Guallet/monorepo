@@ -4,15 +4,15 @@ import {
   evaluateRule,
   evaluateRules,
   validateRule,
-} from './rules-engine';
+} from './rules-engine.js';
 import {
   TransactionField,
   StringOperator,
   NumberOperator,
   AccountOperator,
-} from './field-types';
-import { CategorizationRule, ConditionLogic } from './rule-types';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+} from './field-types.js';
+import { CategorizationRule, ConditionLogic } from './rule-types.js';
+import { Transaction } from '../../../features/transactions/entities/transaction.entity.js';
 
 describe('Rules Engine', () => {
   const createTransaction = (

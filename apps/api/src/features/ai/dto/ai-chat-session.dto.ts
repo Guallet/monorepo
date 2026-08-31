@@ -1,4 +1,4 @@
-import { AiChatSession } from '../entities/ai-chat-session.entity';
+import { AiChatSession } from '../entities/ai-chat-session.entity.js';
 
 export class AiChatSessionDto {
   id: string;

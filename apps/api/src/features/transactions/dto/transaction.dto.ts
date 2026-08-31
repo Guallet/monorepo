@@ -1,5 +1,5 @@
-import { Transaction } from '../entities/transaction.entity';
-import { TransactionsQueryFilter } from './transaction.query';
+import { Transaction } from '../entities/transaction.entity.js';
+import type { TransactionsQueryFilter } from './transaction.query.js';
 
 export class TransactionDto {
   id: string;

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ObConnectionsController } from './ObConnections.controller';
-import { OpenbankingService } from './openbanking.service';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { ObConnectionsController } from './ObConnections.controller.js';
+import { OpenbankingService } from './openbanking.service.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { InstitutionsService } from '../../features/institutions/institutions.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import {
   InternalServerErrorException,
   NotFoundException,

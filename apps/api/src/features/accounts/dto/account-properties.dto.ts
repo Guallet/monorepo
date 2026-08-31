@@ -5,7 +5,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AccountType } from '../entities/accountType.model';
+import { AccountType } from '../entities/accountType.model.js';
 
 export class CurrentAccountDetailsDto {
   @IsString()

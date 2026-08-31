@@ -9,15 +9,15 @@ import {
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { DataExportRequestDto } from './dto/data-export-request.dto';
-import { DataExportResponseDto } from './dto/data-export-response.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { DataExportRequestDto } from './dto/data-export-request.dto.js';
+import { DataExportResponseDto } from './dto/data-export-response.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import {
   EXPORT_DATA_QUEUE,
   EXPORT_DATA_JOB,
   ExportJobData,
-} from './processors/export-data.processor';
+} from './processors/export-data.processor.js';
 
 @ApiTags('Data Import / Export')
 @Controller('data')

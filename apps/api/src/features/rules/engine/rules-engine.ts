@@ -1,10 +1,10 @@
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { Transaction } from '../../../features/transactions/entities/transaction.entity.js';
 import {
   evaluateAccountCondition,
   evaluateDateTimeCondition,
   evaluateNumberCondition,
   evaluateStringCondition,
-} from './condition-evaluators';
+} from './condition-evaluators.js';
 import {
   AccountOperatorType,
   DateTimeOperatorType,
@@ -15,15 +15,15 @@ import {
   StringOperatorType,
   TransactionField,
   TransactionFieldType,
-} from './field-types';
+} from './field-types.js';
 import {
   CategorizationRule,
   ConditionLogic,
   RuleCondition,
   RuleEvaluationResult,
-} from './rule-types';
+} from './rule-types.js';
 
-import { MAX_CONDITIONS_PER_RULE } from '../constants';
+import { MAX_CONDITIONS_PER_RULE } from '../constants.js';
 
 /**
  * Evaluate a single condition against a transaction

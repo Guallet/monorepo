@@ -6,9 +6,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { SyncService } from 'src/features/openbanking/sync.service';
+import { RequestUser } from '../auth/request-user.decorator.js';
+import { UserPrincipal } from '../auth/user-principal.js';
+import { SyncService } from '../features/openbanking/sync.service.js';
 
 @ApiTags('Admin Tasks')
 @Controller('admin')

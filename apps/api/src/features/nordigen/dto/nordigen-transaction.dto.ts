@@ -1,3 +1,5 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
 export class NordigenTransactionsDto {
   transactions: {
     booked: NordigenTransactionDto[];
@@ -9,14 +11,18 @@ export class NordigenTransactionDto {
   transactionId: string;
   bookingDate: Date;
   bookingDateTime: Date;
+  @ApiProperty({ type: Object })
   transactionAmount: TransactionAmountDto;
   proprietaryBankTransactionCode: string;
   remittanceInformationUnstructured: string;
 
+  @ApiPropertyOptional({ type: Object })
   debtorAccount?: ExternalAccountDto;
   debtorName?: string;
+  @ApiPropertyOptional({ type: Object })
   creditorAccount?: ExternalAccountDto;
   creditorName?: string;
+  @ApiPropertyOptional({ type: Object })
   currencyExchange?: CurrencyExchangeDto;
   entryReference?: string;
   valueDate?: string;

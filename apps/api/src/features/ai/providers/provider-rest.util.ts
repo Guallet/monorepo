@@ -1,4 +1,4 @@
-import { ProviderModelListError } from './provider-model-list.error';
+import { ProviderModelListError } from './provider-model-list.error.js';
 
 const REQUEST_TIMEOUT_MS = 10_000;
 

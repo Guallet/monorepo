@@ -4,13 +4,13 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { CreateTransactionDto } from './dto/create-transaction.dto.js';
+import { UpdateTransactionDto } from './dto/update-transaction.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, IsNull, Repository } from 'typeorm';
-import { Transaction } from './entities/transaction.entity';
-import { InboxTransaction } from './entities/inbox-transaction.model';
-import { AccountsService } from '../accounts/accounts.service';
+import { Transaction } from './entities/transaction.entity.js';
+import { InboxTransaction } from './entities/inbox-transaction.model.js';
+import { AccountsService } from '../accounts/accounts.service.js';
 
 @Injectable()
 export class TransactionsService {

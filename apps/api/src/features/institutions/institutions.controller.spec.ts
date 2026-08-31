@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { InstitutionsController } from './institutions.controller';
-import { InstitutionsService } from './institutions.service';
+import { InstitutionsController } from './institutions.controller.js';
+import { InstitutionsService } from './institutions.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Institution } from './entities/institution.entity';
-import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
-import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Institution } from './entities/institution.entity.js';
+import { CreateInstitutionRequest } from './dto/create-institution-request.dto.js';
+import { UpdateInstitutionRequest } from './dto/update-institution-request.dto.js';
 
 describe('InstitutionsController', () => {
   let controller: InstitutionsController;

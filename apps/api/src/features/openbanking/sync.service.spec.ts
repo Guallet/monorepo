@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SyncService } from './sync.service';
+import { SyncService } from './sync.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { NotificationsService } from '../notifications/notifications.service';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { InstitutionsService } from '../../features/institutions/institutions.service.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 describe('SyncService', () => {
   let service: SyncService;

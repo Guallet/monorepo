@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
-import { AuthConfig, DatabaseConfig } from 'src/configuration';
+import { AuthConfig, DatabaseConfig } from '../configuration.js';
 import { emailOTP, magicLink } from 'better-auth/plugins';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 

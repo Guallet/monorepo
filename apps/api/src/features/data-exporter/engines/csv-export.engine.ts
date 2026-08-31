@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ExportEngine, ExportEngineParams } from './export-engine.interface';
-import { normalizeAmount } from './normalize-amount.util';
+import { ExportEngine, ExportEngineParams } from './export-engine.interface.js';
+import { normalizeAmount } from './normalize-amount.util.js';
 
 @Injectable()
 export class CsvExportEngine implements ExportEngine {

@@ -11,19 +11,17 @@ import {
   Query,
   NotFoundException,
 } from '@nestjs/common';
-import { TransactionsService } from './transactions.service';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { TransactionsService } from './transactions.service.js';
+import { CreateTransactionDto } from './dto/create-transaction.dto.js';
+import { UpdateTransactionDto } from './dto/update-transaction.dto.js';
+import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import {
-  TransactionsQueryFilter,
-  transactionsQueryFilterSchema,
-} from './dto/transaction.query';
-import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
-import { InboxTransactionsResultDto } from './dto/inbox-transaction.dto';
+import { transactionsQueryFilterSchema } from './dto/transaction.query.js';
+import type { TransactionsQueryFilter } from './dto/transaction.query.js';
+import { ZodValidationPipe } from '../../pipes/zodvalidator.pipe.js';
+import { InboxTransactionsResultDto } from './dto/inbox-transaction.dto.js';
 
 @ApiTags('Transactions')
 @Controller('transactions')

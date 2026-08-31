@@ -5,18 +5,18 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { NordigenRequisitionDto } from 'src/features/nordigen/dto/nordigen-requisition.dto';
-import { ObConnection } from './entities/connection.entity';
+import { NordigenRequisitionDto } from '../../features/nordigen/dto/nordigen-requisition.dto.js';
+import { ObConnection } from './entities/connection.entity.js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { getBalanceAmountFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
-import { getAccountTypeFrom } from 'src/features/nordigen/dto/ExternalCashAccountType1Code.helper';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { supportedCountries } from './sync.service';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { getBalanceAmountFrom } from '../../features/nordigen/dto/nordigen-balances.helper.js';
+import { getAccountTypeFrom } from '../../features/nordigen/dto/ExternalCashAccountType1Code.helper.js';
+import { Institution } from '../../features/institutions/entities/institution.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { supportedCountries } from './sync.service.js';
 
 @Injectable()
 export class OpenbankingService {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserInitializationService } from './user-initialization.service';
-import { CategoriesService } from '../categories/categories.service';
+import { UserInitializationService } from './user-initialization.service.js';
+import { CategoriesService } from '../categories/categories.service.js';
 
 describe('UserInitializationService', () => {
   let service: UserInitializationService;

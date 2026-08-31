@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthService } from './health.service';
-import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { HealthCheck } from '@nestjs/terminus';
+import { HealthService } from './health.service.js';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @Controller('health')
 export class HealthController {

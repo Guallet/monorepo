@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ObAccountsController } from './ObAccounts.controller';
-import { OpenbankingService } from './openbanking.service';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { ObAccountsController } from './ObAccounts.controller.js';
+import { OpenbankingService } from './openbanking.service.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 
 describe('ObAccountsController', () => {
   let controller: ObAccountsController;

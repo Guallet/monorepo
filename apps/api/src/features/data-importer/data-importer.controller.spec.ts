@@ -3,16 +3,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
-import { DataImporterController } from './data-importer.controller';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { DataImportRequestDto } from './dto/data-import-request.dto';
+import { DataImporterController } from './data-importer.controller.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { DataImportRequestDto } from './dto/data-import-request.dto.js';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Queue, Job } from 'bullmq';
 import {
   IMPORT_DATA_QUEUE,
   IMPORT_DATA_JOB,
   SUPPORTED_IMPORT_FORMATS,
-} from './processors/import-data.processor';
+} from './processors/import-data.processor.js';
 
 describe('DataImporterController', () => {
   let controller: DataImporterController;

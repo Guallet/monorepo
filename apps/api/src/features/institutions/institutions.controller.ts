@@ -9,13 +9,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { InstitutionsService } from './institutions.service';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
-import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
+import { InstitutionsService } from './institutions.service.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { CreateInstitutionRequest } from './dto/create-institution-request.dto.js';
+import { UpdateInstitutionRequest } from './dto/update-institution-request.dto.js';
 import { ApiTags } from '@nestjs/swagger';
-import { InstitutionDto } from './dto/institution.dto';
+import { InstitutionDto } from './dto/institution.dto.js';
 
 @ApiTags('Bank institutions')
 @Controller('institutions')

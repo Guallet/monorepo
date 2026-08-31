@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { LessThan } from 'typeorm';
-import { AiChatRetentionService } from './ai-chat-retention.service';
-import { AiChatSession } from './entities/ai-chat-session.entity';
+import { AiChatRetentionService } from './ai-chat-retention.service.js';
+import { AiChatSession } from './entities/ai-chat-session.entity.js';
 
 describe('AiChatRetentionService', () => {
   let service: AiChatRetentionService;
