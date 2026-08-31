@@ -1,6 +1,6 @@
 
 # Base image
-FROM node:24-alpine AS base
+FROM node:24.20-alpine AS base
 
 RUN npm install -g pnpm@11.24.0
 
@@ -22,7 +22,7 @@ WORKDIR /app/apps/api
 RUN pnpm run build
 
 # Production stage
-FROM node:24-alpine AS production
+FROM node:24.20-alpine AS production
 
 RUN npm install -g pnpm@11.24.0
 RUN apk add --no-cache curl

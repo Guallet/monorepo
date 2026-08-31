@@ -1,5 +1,5 @@
 # Base image for building
-FROM node:24-alpine AS base
+FROM node:24.20-alpine AS base
 
 # Install pnpm globally
 RUN npm install -g pnpm@11.24.0 --ignore-scripts

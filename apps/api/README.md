@@ -13,7 +13,7 @@ Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScrip
 
 ## Quick start — run locally 🚀
 
-Prerequisites: Node 24.x, pnpm 11.24.0; Docker is recommended for DB/Redis.
+Prerequisites: Node 24.20.x, pnpm 11.24.0; Docker is recommended for DB/Redis.
 
 From repository root (recommended):
 
