@@ -1,8 +1,8 @@
 # Base image for building
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 # Install pnpm globally
-RUN npm install -g pnpm@10.14.0 --ignore-scripts
+RUN npm install -g pnpm@11.24.0 --ignore-scripts
 
 # Set working directory
 WORKDIR /app
