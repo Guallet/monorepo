@@ -2,7 +2,7 @@
 # Base image
 FROM node:24.20-alpine AS base
 
-RUN npm install -g pnpm@11.24.0
+RUN npm install -g pnpm@11.24.0 --ignore-scripts
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN pnpm run build
 # Production stage
 FROM node:24.20-alpine AS production
 
-RUN npm install -g pnpm@11.24.0
+RUN npm install -g pnpm@11.24.0 --ignore-scripts
 RUN apk add --no-cache curl
 
 # Create non-root user
