@@ -10,14 +10,25 @@ import {
   BadRequestException,
   Query,
   NotFoundException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service.js';
 import { CreateTransactionDto } from './dto/create-transaction.dto.js';
 import { UpdateTransactionDto } from './dto/update-transaction.dto.js';
-import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto.js';
+import {
+  TransactionDto,
+  TransactionsResultDto,
+} from './dto/transaction.dto.js';
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { transactionsQueryFilterSchema } from './dto/transaction.query.js';
 import type { TransactionsQueryFilter } from './dto/transaction.query.js';
 import { ZodValidationPipe } from '../../pipes/zodvalidator.pipe.js';
@@ -37,6 +48,26 @@ export class TransactionsController {
     description: 'The page to return. Default is 1',
     required: false,
   })
+  @ApiQuery({
+    name: 'categories',
+    type: String,
+    required: false,
+    description: 'Comma-separated category IDs',
+  })
+  @ApiQuery({
+    name: 'startDate',
+    type: String,
+    format: 'date-time',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'endDate',
+    type: String,
+    format: 'date-time',
+    required: false,
+  })
+  @ApiOperation({ summary: 'List the current user’s transactions' })
+  @ApiResponse({ status: 200, type: TransactionsResultDto })
   @ApiQuery({
     name: 'pageSize',
     type: Number,
@@ -115,6 +146,8 @@ export class TransactionsController {
     description: 'The number of items to return. Default is 50',
     required: false,
   })
+  @ApiOperation({ summary: 'List the current user’s inbox transactions' })
+  @ApiResponse({ status: 200, type: InboxTransactionsResultDto })
   @Get('/inbox')
   async getUserTransactionInbox(
     @RequestUser() user: UserPrincipal,
@@ -167,6 +200,9 @@ export class TransactionsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a transaction' })
+  @ApiBody({ type: CreateTransactionDto })
+  @ApiResponse({ status: 201, type: TransactionDto })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() createTransactionDto: CreateTransactionDto,
@@ -182,9 +218,12 @@ export class TransactionsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a transaction by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Transaction ID' })
+  @ApiResponse({ status: 200, type: TransactionDto })
   async findOne(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<TransactionDto> {
     const transaction = await this.transactionsService.findOne(id);
     if (transaction.account.user_id !== user.id) {
@@ -194,9 +233,13 @@ export class TransactionsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a transaction' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Transaction ID' })
+  @ApiBody({ type: UpdateTransactionDto })
+  @ApiResponse({ status: 200, type: TransactionDto })
   async async(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ): Promise<TransactionDto> {
     const transaction = await this.transactionsService.updateUserTransaction({
@@ -208,9 +251,12 @@ export class TransactionsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a transaction' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Transaction ID' })
+  @ApiResponse({ status: 200, type: TransactionDto })
   async remove(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<TransactionDto> {
     const transaction = await this.transactionsService.deleteUserTransaction({
       user_id: user.id,

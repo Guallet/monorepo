@@ -7,7 +7,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { DataImportRequestDto } from './dto/data-import-request.dto.js';
@@ -33,6 +33,8 @@ export class DataImporterController {
 
   @Post('import')
   @HttpCode(HttpStatus.ACCEPTED)
+  @ApiOperation({ summary: 'Queue a data import' })
+  @ApiBody({ type: DataImportRequestDto })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Import job has been queued for processing',

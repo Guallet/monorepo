@@ -32,7 +32,8 @@ export class SavingGoalsController {
 
   constructor(private readonly savingGoalsService: SavingGoalsService) {}
 
-  @ApiBody({ type: SavingGoalDto })
+  @ApiOperation({ summary: 'Create a saving goal' })
+  @ApiBody({ type: CreateSavingGoalDto })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
     type: SavingGoalDto,
@@ -55,6 +56,7 @@ export class SavingGoalsController {
     type: [SavingGoalDto],
   })
   @Get()
+  @ApiOperation({ summary: 'List the current user’s saving goals' })
   async findAll(@RequestUser() user: UserPrincipal): Promise<SavingGoalDto[]> {
     const goals = await this.savingGoalsService.findAllUserSavingGoals({
       userId: user.id,
@@ -71,6 +73,7 @@ export class SavingGoalsController {
     type: SavingGoalDto,
   })
   @Get(':id')
+  @ApiOperation({ summary: 'Get a saving goal by ID' })
   async findOne(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -89,6 +92,7 @@ export class SavingGoalsController {
   })
   @ApiBody({ type: UpdateSavingGoalDto })
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a saving goal' })
   async update(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -108,6 +112,7 @@ export class SavingGoalsController {
     type: SavingGoalDto,
   })
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a saving goal' })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,

@@ -16,8 +16,17 @@ import { UpdateUserDto } from './dto/update-user.dto.js';
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
 import { UserDto } from './dto/user.dto.js';
-import { ApiTags } from '@nestjs/swagger';
-import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto.js';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiNoContentResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  UserSettingsDto,
+  UserSettingsRequest,
+} from './dto/user-settings.dto.js';
 
 @ApiTags('Users')
 @Controller('users')
@@ -27,6 +36,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get the current user profile' })
+  @ApiResponse({ status: 200, type: UserDto })
   async findUserDetails(@RequestUser() user: UserPrincipal): Promise<UserDto> {
     const userProfile = await this.usersService.findUserData(user.id);
     if (userProfile) {
@@ -37,6 +48,9 @@ export class UsersController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create the current user profile' })
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({ status: 201, type: UserDto })
   async registerUser(
     @RequestUser() user: UserPrincipal,
     @Body() createUserDto: CreateUserDto,
@@ -49,6 +63,9 @@ export class UsersController {
   }
 
   @Patch()
+  @ApiOperation({ summary: 'Update the current user profile' })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiResponse({ status: 200, type: UserDto })
   async updateUser(
     @RequestUser() user: UserPrincipal,
     @Body() updateUserDto: UpdateUserDto,
@@ -61,6 +78,8 @@ export class UsersController {
   }
 
   @Delete()
+  @ApiOperation({ summary: 'Delete the current user account' })
+  @ApiNoContentResponse({ description: 'User account deleted' })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
     @RequestUser() user: UserPrincipal,
@@ -72,6 +91,8 @@ export class UsersController {
   }
 
   @Get('settings')
+  @ApiOperation({ summary: 'Get the current user settings' })
+  @ApiResponse({ status: 200, type: UserSettingsDto })
   async getUserSettings(
     @RequestUser() user: UserPrincipal,
   ): Promise<UserSettingsDto> {
@@ -83,6 +104,9 @@ export class UsersController {
   }
 
   @Patch('settings')
+  @ApiOperation({ summary: 'Update the current user settings' })
+  @ApiBody({ type: UserSettingsRequest })
+  @ApiResponse({ status: 200, type: UserSettingsDto })
   async updateUserSettings(
     @RequestUser() user: UserPrincipal,
     @Body() requestDto: UserSettingsRequest,

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import {
   CreditCardProperties,
   CurrentAccountProperties,
@@ -9,25 +9,44 @@ import {
 import { Account } from '../entities/account.entity.js';
 import { AccountType } from '../entities/accountType.model.js';
 import { AccountSource } from '../entities/accountSource.model.js';
+import {
+  CreditCardPropertiesDto,
+  CurrentAccountPropertiesDto,
+  LoanAccountPropertiesDto,
+  MortgageAccountPropertiesDto,
+  SavingAccountPropertiesDto,
+} from './account-properties.dto.js';
 export class BalanceDto {
+  @ApiProperty()
   amount: number;
+
+  @ApiProperty()
   currency: string;
 }
 
+@ApiExtraModels(
+  CurrentAccountPropertiesDto,
+  CreditCardPropertiesDto,
+  SavingAccountPropertiesDto,
+  MortgageAccountPropertiesDto,
+  LoanAccountPropertiesDto,
+)
 export class AccountDto {
   /**
    * The id of the account
    */
+  @ApiProperty({ description: 'The id of the account' })
   id: string;
 
   /**
    * The name of the account
    */
+  @ApiProperty({ description: 'The name of the account' })
   name: string;
 
   @ApiProperty({
     description: 'The balance of the account',
-    nullable: true,
+    type: () => BalanceDto,
   })
   balance: BalanceDto;
 
@@ -38,6 +57,7 @@ export class AccountDto {
   type: string;
 
   @ApiProperty({
+    required: false,
     description:
       'The institution id of the account, if it belongs to an institution',
     nullable: true,
@@ -45,6 +65,7 @@ export class AccountDto {
   institutionId?: string | null;
 
   @ApiProperty({
+    required: false,
     name: 'source',
     description: 'The tool used to create the account',
     enum: AccountSource,
@@ -52,15 +73,24 @@ export class AccountDto {
   source?: string;
 
   @ApiProperty({
+    required: false,
     description: 'The source name that created this account',
     nullable: true,
   })
   sourceName?: string;
 
   @ApiProperty({
+    required: false,
     description:
       'The extra properties of the account, depending on the account type',
     nullable: true,
+    oneOf: [
+      { $ref: getSchemaPath(CurrentAccountPropertiesDto) },
+      { $ref: getSchemaPath(CreditCardPropertiesDto) },
+      { $ref: getSchemaPath(SavingAccountPropertiesDto) },
+      { $ref: getSchemaPath(MortgageAccountPropertiesDto) },
+      { $ref: getSchemaPath(LoanAccountPropertiesDto) },
+    ],
   })
   properties?:
     | CurrentAccountProperties

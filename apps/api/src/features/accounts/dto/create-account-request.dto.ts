@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
@@ -15,9 +15,21 @@ import { AccountSource } from '../entities/accountSource.model.js';
 import { AccountType } from '../entities/accountType.model.js';
 import {
   AccountPropertiesDto,
+  CreditCardPropertiesDto,
+  CurrentAccountPropertiesDto,
+  LoanAccountPropertiesDto,
+  MortgageAccountPropertiesDto,
   PROPERTIES_DTO_MAP,
+  SavingAccountPropertiesDto,
 } from './account-properties.dto.js';
 
+@ApiExtraModels(
+  CurrentAccountPropertiesDto,
+  CreditCardPropertiesDto,
+  SavingAccountPropertiesDto,
+  MortgageAccountPropertiesDto,
+  LoanAccountPropertiesDto,
+)
 export class CreateAccountRequest {
   @ApiProperty({ description: 'The name of the account' })
   @IsString()
@@ -25,6 +37,7 @@ export class CreateAccountRequest {
   name: string;
 
   @ApiProperty({
+    required: false,
     description: 'The initial balance of the account',
     nullable: true,
   })
@@ -33,6 +46,7 @@ export class CreateAccountRequest {
   initial_balance?: number;
 
   @ApiProperty({
+    required: false,
     description:
       'If true, creates an initial transaction to reflect the starting balance when non-zero',
     nullable: true,
@@ -51,6 +65,7 @@ export class CreateAccountRequest {
   type: AccountType;
 
   @ApiProperty({
+    required: false,
     description: 'The account origin source',
     nullable: true,
     enum: AccountSource,
@@ -60,6 +75,7 @@ export class CreateAccountRequest {
   source?: AccountSource;
 
   @ApiProperty({
+    required: false,
     description: 'The account origin source name',
     nullable: true,
   })
@@ -67,7 +83,11 @@ export class CreateAccountRequest {
   @IsString()
   source_name?: string;
 
-  @ApiProperty({ description: 'The institution id', nullable: true })
+  @ApiProperty({
+    required: false,
+    description: 'The institution id',
+    nullable: true,
+  })
   @IsOptional()
   @IsUUID()
   institution_id?: string;
@@ -82,9 +102,17 @@ export class CreateAccountRequest {
   currency: string;
 
   @ApiProperty({
+    required: false,
     description:
       'Optional account-type specific properties (e.g. account numbers, rates, limits, terms)',
     nullable: true,
+    oneOf: [
+      { $ref: getSchemaPath(CurrentAccountPropertiesDto) },
+      { $ref: getSchemaPath(CreditCardPropertiesDto) },
+      { $ref: getSchemaPath(SavingAccountPropertiesDto) },
+      { $ref: getSchemaPath(MortgageAccountPropertiesDto) },
+      { $ref: getSchemaPath(LoanAccountPropertiesDto) },
+    ],
   })
   @IsOptional()
   @ValidateNested()

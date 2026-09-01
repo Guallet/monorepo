@@ -15,7 +15,16 @@ import {
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
 import { AccountsService } from './accounts.service.js';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto.js';
 import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
 import { AccountDto } from './dto/account.dto.js';
@@ -28,7 +37,11 @@ import {
 import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
 import { TransactionDto } from '../../features/transactions/dto/transaction.dto.js';
 import { OpenbankingService } from '../openbanking/openbanking.service.js';
-import { AccountSource, toAccountSource } from './entities/accountSource.model.js';
+import {
+  AccountSource,
+  toAccountSource,
+} from './entities/accountSource.model.js';
+import { NordigenAccountDto } from '../nordigen/dto/nordigen-account.dto.js';
 import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity.js';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
@@ -45,6 +58,7 @@ function parseDateParam(value: string | undefined, name: string): Date | null {
 }
 
 @ApiTags('Accounts')
+@ApiExtraModels(AccountDto, TransactionDto, NordigenAccountDto)
 @Controller('accounts')
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
@@ -56,6 +70,8 @@ export class AccountsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s accounts' })
+  @ApiResponse({ status: 200, type: [AccountDto] })
   async getUserAccounts(
     @RequestUser() user: UserPrincipal,
   ): Promise<AccountDto[]> {
@@ -64,6 +80,9 @@ export class AccountsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create an account' })
+  @ApiBody({ type: CreateAccountRequest })
+  @ApiResponse({ status: 201, type: AccountDto })
   async create(
     @Body() createAccountDto: CreateAccountRequest,
     @RequestUser() user: UserPrincipal,
@@ -76,6 +95,9 @@ export class AccountsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get an account by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({ status: 200, type: AccountDto })
   async getAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
@@ -88,6 +110,11 @@ export class AccountsController {
   }
 
   @Get(':id/transactions')
+  @ApiOperation({
+    summary: 'List an account’s transactions for the current month',
+  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({ status: 200, type: [TransactionDto] })
   // Get the transactions for the account in the current month
   async getAccountTransactions(
     @RequestUser() user: UserPrincipal,
@@ -113,6 +140,21 @@ export class AccountsController {
   }
 
   @Get(':id/charts')
+  @ApiOperation({ summary: 'Get account cash-flow and balance charts' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    type: String,
+    format: 'date-time',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    type: String,
+    format: 'date-time',
+  })
+  @ApiResponse({ status: 200, type: AccountChartsDto })
   async getAccountChart(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
@@ -251,6 +293,19 @@ export class AccountsController {
    * @returns {Promise<{connectedAccount: OpenBankingAccount}>} Object containing the connected Open Banking account details
    */
   @Get(':id/connection')
+  @ApiOperation({
+    summary: 'Get the Open Banking account linked to an account',
+  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        connectedAccount: { $ref: getSchemaPath(NordigenAccountDto) },
+      },
+    },
+  })
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
@@ -276,9 +331,13 @@ export class AccountsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update an account' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiBody({ type: UpdateAccountRequest })
+  @ApiResponse({ status: 200, type: AccountDto })
   async update(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateAccountRequest,
   ): Promise<AccountDto> {
     const updatedAccount = await this.accountsService.update({
@@ -290,6 +349,9 @@ export class AccountsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an account' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({ status: 200, type: AccountDto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,

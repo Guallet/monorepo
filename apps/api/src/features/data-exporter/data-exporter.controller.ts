@@ -6,7 +6,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { DataExportRequestDto } from './dto/data-export-request.dto.js';
@@ -31,6 +31,8 @@ export class DataExporterController {
 
   @Post('export')
   @HttpCode(HttpStatus.ACCEPTED)
+  @ApiOperation({ summary: 'Queue a data export' })
+  @ApiBody({ type: DataExportRequestDto })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Export job has been queued for processing',

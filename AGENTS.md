@@ -5,17 +5,17 @@
 
 ## Repo at a Glance
 
-| App / Package | Tech | Path |
-|---|---|---|
-| API | NestJS 11, TypeORM, Better Auth, BullMQ | `apps/api` |
-| Webapp | Vite 7, React 19, TanStack Router + Query, Mantine 8 | `apps/webapp` |
-| Mobile | Expo 54, React Native 0.81, Expo Router, Luna UI | `apps/mobile` |
-| API client types | TypeScript (no runtime, types + fetch wrappers) | `packages/guallet-api-client` |
-| React query hooks | TanStack Query wrappers over the API client | `packages/guallet-api-react` |
-| Design tokens | Platform-agnostic theme types and default values | `packages/guallet-theme` |
-| Shared React UI | Mantine-based components (web) | `packages/guallet-ui-react` |
-| React Native UI | Custom Luna UI component library | `packages/guallet-ui-react-native` |
-| Money / currency | Type-safe money library (80 % coverage threshold) | `packages/guallet-money` |
+| App / Package     | Tech                                                 | Path                               |
+| ----------------- | ---------------------------------------------------- | ---------------------------------- |
+| API               | NestJS 11, TypeORM, Better Auth, BullMQ              | `apps/api`                         |
+| Webapp            | Vite 7, React 19, TanStack Router + Query, Mantine 8 | `apps/webapp`                      |
+| Mobile            | Expo 54, React Native 0.81, Expo Router, Luna UI     | `apps/mobile`                      |
+| API client types  | TypeScript (no runtime, types + fetch wrappers)      | `packages/guallet-api-client`      |
+| React query hooks | TanStack Query wrappers over the API client          | `packages/guallet-api-react`       |
+| Design tokens     | Platform-agnostic theme types and default values     | `packages/guallet-theme`           |
+| Shared React UI   | Mantine-based components (web)                       | `packages/guallet-ui-react`        |
+| React Native UI   | Custom Luna UI component library                     | `packages/guallet-ui-react-native` |
+| Money / currency  | Type-safe money library (80 % coverage threshold)    | `packages/guallet-money`           |
 
 ## Common Commands
 
@@ -60,16 +60,17 @@ async myHandler(@RequestUser() user: UserPrincipal) {
 
 Load these on-demand with `/skill-name` when implementing the corresponding task:
 
-| Skill | When to use |
-|---|---|
-| `create-api-feature` | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
-| `add-api-client-domain` | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks |
-| `create-webapp-feature` | Add a new page/section to the web frontend (route + screen + components) |
-| `add-mobile-screen` | Add a new screen to the Expo mobile app |
+| Skill                   | When to use                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------- |
+| `create-api-feature`    | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
+| `add-api-client-domain` | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
+| `create-webapp-feature` | Add a new page/section to the web frontend (route + screen + components)        |
+| `add-mobile-screen`     | Add a new screen to the Expo mobile app                                         |
 
 ## Quick Pattern Index
 
 ### API feature files
+
 ```
 apps/api/src/features/{name}/
   {name}.module.ts
@@ -80,28 +81,34 @@ apps/api/src/features/{name}/
   dto/{name}.dto.ts
   entities/{name}.entity.ts
 ```
+
 Register in: `apps/api/src/app.module.ts` under `// APP MODULES`
 
 ### API client domain files
+
 ```
 packages/guallet-api-client/src/{domain}/
   {domain}.models.ts   – TS types only (Dto, CreateRequest, UpdateRequest)
   {domain}.api.ts      – class with getAll / get / create / update / delete
   index.ts             – re-exports
 ```
+
 Register in: `packages/guallet-api-client/src/GualletClient.ts` (interface + class property + constructor)
 Export from: `packages/guallet-api-client/src/index.ts`
 
 ### React query hooks
+
 ```
 packages/guallet-api-react/src/{domain}/
   use{Domain}.tsx           – useQuery hooks
   use{Domain}Mutations.tsx  – useMutation hooks
   index.ts                  – re-exports
 ```
+
 Export from: `packages/guallet-api-react/src/index.ts`
 
 ### Webapp feature files
+
 ```
 apps/webapp/src/routes/_app/{name}/index.tsx   – list route
 apps/webapp/src/routes/_app/{name}/$id.tsx     – detail route (if needed)
@@ -111,15 +118,18 @@ apps/webapp/src/features/{name}/
   models/    – local types (if needed)
   state/     – Zustand stores (only for complex multi-step UI)
 ```
+
 Import alias: `@/` → `apps/webapp/src/`
 Run `pnpm --filter webapp dev` after adding route files to regenerate `routeTree.gen.ts`.
 
 ### Mobile screen files
+
 ```
 apps/mobile/app/(tabs)/{name}.tsx    – new tab screen
 apps/mobile/app/{name}/index.tsx     – stack screen
 apps/mobile/app/{name}/[id].tsx      – detail screen with param
 ```
+
 Expo Router requires `export default function` (not named exports) for all route files.
 
 ## Code Style Reminders
@@ -128,3 +138,17 @@ Expo Router requires `export default function` (not named exports) for all route
 - Prettier: single quotes, trailing commas
 - Pre-commit hook (Husky) runs lint – fix lint errors before committing
 - Workspace dependencies: `"@guallet/api-client": "workspace:*"` protocol
+
+## NestJS OpenAPI / Swagger Rules
+
+The Nest CLI Swagger plugin is intentionally disabled in `apps/api/nest-cli.json`. Do not rely on inferred DTO properties, comments, or TypeScript return types for generated OpenAPI documentation; add the metadata explicitly.
+
+- Every DTO class property must use `@ApiProperty()`, using `@ApiProperty({ required: false })` for optional fields. Match `required` and `nullable` to the actual contract.
+- Explicitly describe arrays with `type: [String]` or `type: [DtoClass]`, nested DTOs with `type: () => DtoClass`, dates with `type: String, format: 'date-time'`, UUIDs with `format: 'uuid'`, enums with `enum`, and raw maps/unknown objects with `type: Object`.
+- Prefer classes over interfaces/type aliases for documented request and response models. If an interface or generic must remain, document the containing property/response with `@ApiProperty({ type: Object })` or an explicit `schema`.
+- Use Swagger mapped types from `@nestjs/swagger` (`PartialType`, `PickType`, `OmitType`, `IntersectionType`) so inherited property metadata is preserved. Use `PartialType` for update DTOs when fields are optional.
+- Document polymorphic fields with `oneOf`/`allOf`, `getSchemaPath`, and `@ApiExtraModels` for every referenced DTO.
+- Every controller must have `@ApiTags`. Every route must have an `@ApiOperation` summary and an explicit success response (`@ApiResponse`/`@ApiOkResponse`/`@ApiCreatedResponse`/`@ApiNoContentResponse`) with the correct DTO, array type, stream type, or raw schema. Add `@ApiBody` for request bodies, `@ApiParam` for route parameters, and `@ApiQuery` for query parameters when their type or shape is not unambiguous.
+- Return response DTOs rather than database entities, and never expose internal fields such as `user_id`, credentials, or `deleted_at`.
+
+Consult the official [OpenAPI introduction](https://docs.nestjs.com/openapi/introduction), [types and parameters](https://docs.nestjs.com/openapi/types-and-parameters), [operations](https://docs.nestjs.com/openapi/operations), [mapped types](https://docs.nestjs.com/openapi/mapped-types), and [decorators](https://docs.nestjs.com/openapi/decorators) documentation when adding a feature.

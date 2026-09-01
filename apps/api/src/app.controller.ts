@@ -1,11 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import {
-  OptionalAuth,
-  Session,
-} from '@thallesp/nestjs-better-auth';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OptionalAuth, Session } from '@thallesp/nestjs-better-auth';
 import type { UserSession } from '@thallesp/nestjs-better-auth';
 
 @Controller()
+@ApiTags('Application')
 export class AppController {
   /**
    * Returns the current user's session information, if authenticated.
@@ -14,6 +13,11 @@ export class AppController {
    */
   @Get('me')
   @OptionalAuth()
+  @ApiOperation({ summary: 'Get the current session, if authenticated' })
+  @ApiResponse({
+    status: 200,
+    schema: { type: 'object', properties: { session: { type: 'object' } } },
+  })
   getProfile(@Session() session: UserSession): { session: UserSession } {
     return {
       session: session,

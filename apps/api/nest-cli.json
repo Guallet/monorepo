@@ -6,20 +6,7 @@
     "deleteOutDir": true,
     "builder": "swc",
     "typeCheck": true,
-    "plugins": [
-      {
-        "name": "@nestjs/swagger",
-        "options": {
-          "dtoFileNameSuffix": [
-            ".dto.ts"
-          ],
-          "introspectComments": true,
-          "esmCompatible": true
-        }
-      }
-    ],
-    "assets": [
-      "**/*.hbs"
-    ]
+    "plugins": [],
+    "assets": ["**/*.hbs"]
   }
 }

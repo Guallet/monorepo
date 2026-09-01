@@ -18,13 +18,30 @@ import { UserPrincipal } from '../../auth/user-principal.js';
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto.js';
 import { InstitutionsService } from '../../features/institutions/institutions.service.js';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import {
   NordigenAccountDto,
   NordigenAccountMetadataDto,
 } from '../../features/nordigen/dto/nordigen-account.dto.js';
+import { NordigenInstitutionDto } from '../../features/nordigen/dto/nordigen-institution.dto.js';
+import { InstitutionDto } from '../../features/institutions/dto/institution.dto.js';
+import { NordigenRequisitionDto } from '../../features/nordigen/dto/nordigen-requisition.dto.js';
 
 @ApiTags('Open Banking')
+@ApiExtraModels(
+  NordigenAccountDto,
+  NordigenAccountMetadataDto,
+  NordigenRequisitionDto,
+)
 @Controller('openbanking')
 export class ObConnectionsController {
   private readonly logger = new Logger(ObConnectionsController.name);
@@ -36,17 +53,33 @@ export class ObConnectionsController {
   ) {}
 
   @Get('countries')
+  @ApiOperation({ summary: 'List supported Open Banking countries' })
+  @ApiQuery({ name: 'language', required: false, type: String, example: 'en' })
+  @ApiResponse({
+    status: 200,
+    schema: { type: 'array', items: { type: 'object' } },
+  })
   getCountries(@Query('language') language?: string) {
     return this.openbankingService.getAvailableCountries(language ?? 'en');
   }
 
   @Get(':country/institutions')
+  @ApiOperation({ summary: 'List Open Banking institutions for a country' })
+  @ApiParam({
+    name: 'country',
+    description: 'Two-letter country code',
+    example: 'GB',
+  })
+  @ApiResponse({ status: 200, type: [NordigenInstitutionDto] })
   getInstitutions(@Param('country') country: string) {
     // TODO: Cache this call in the DB? We should sync only once a day or less
     return this.nordigenService.getInstitutions(country);
   }
 
   @Get('institutions/:id')
+  @ApiOperation({ summary: 'Get a bank institution by Nordigen ID' })
+  @ApiParam({ name: 'id', description: 'Nordigen institution ID' })
+  @ApiResponse({ status: 200, type: InstitutionDto })
   async getInstitution(@Param('id') id: string) {
     const institution = await this.institutionService.findOneByNordigenId(id);
     if (institution === undefined || institution === null) {
@@ -57,6 +90,12 @@ export class ObConnectionsController {
   }
 
   @Get('connections/:id')
+  @ApiOperation({ summary: 'Get an Open Banking connection' })
+  @ApiParam({ name: 'id', description: 'Connection ID' })
+  @ApiResponse({
+    status: 200,
+    schema: { $ref: getSchemaPath(NordigenRequisitionDto) },
+  })
   async getConnectionDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -71,6 +110,9 @@ export class ObConnectionsController {
   }
 
   @Delete('connections/:id')
+  @ApiOperation({ summary: 'Delete an Open Banking connection' })
+  @ApiParam({ name: 'id', description: 'Connection ID' })
+  @ApiResponse({ status: 200, schema: { type: 'object' } })
   async deleteConnection(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -97,6 +139,27 @@ export class ObConnectionsController {
   }
 
   @Get('connections/:id/accounts')
+  @ApiOperation({
+    summary: 'Retrieve and synchronize accounts for a connection',
+  })
+  @ApiParam({ name: 'id', description: 'Connection or requisition ID' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          metadata: { $ref: getSchemaPath(NordigenAccountMetadataDto) },
+          details: {
+            allOf: [{ $ref: getSchemaPath(NordigenAccountDto) }],
+            nullable: true,
+          },
+        },
+      },
+    },
+  })
   async getObAccounts(
     @RequestUser() user: UserPrincipal,
     @Param('id') requisition_id: string,
@@ -163,11 +226,25 @@ export class ObConnectionsController {
   }
 
   @Get('connections')
+  @ApiOperation({ summary: 'List the current user’s Open Banking connections' })
+  @ApiResponse({ status: 200, type: [NordigenRequisitionDto] })
   async getConnections(@RequestUser() user: UserPrincipal) {
     return this.openbankingService.getConnections(user.id);
   }
 
   @Post('connections')
+  @ApiOperation({ summary: 'Start an Open Banking connection' })
+  @ApiBody({ type: ConnectBankInstitutionRequestDto })
+  @ApiResponse({
+    status: 201,
+    schema: {
+      type: 'object',
+      properties: {
+        link: { type: 'string' },
+        institution_id: { type: 'string' },
+      },
+    },
+  })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectBankInstitutionRequestDto,
@@ -186,6 +263,15 @@ export class ObConnectionsController {
   }
 
   @Post('connections/connect')
+  @ApiOperation({ summary: 'Connect selected Open Banking accounts' })
+  @ApiBody({ type: ConnectAccountsRequestDto })
+  @ApiResponse({
+    status: 201,
+    schema: {
+      type: 'object',
+      properties: { accounts_count: { type: 'number' } },
+    },
+  })
   async connectToAccount(
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectAccountsRequestDto,
@@ -209,6 +295,11 @@ export class ObConnectionsController {
   }
 
   @Get('connections/:id/sync')
+  @ApiOperation({
+    summary: 'Synchronize transactions for an Open Banking connection',
+  })
+  @ApiParam({ name: 'id', description: 'Connection ID' })
+  @ApiResponse({ status: 200, type: Object })
   async getObAccountTransactions(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,

@@ -14,7 +14,13 @@ import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto.js';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto.js';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { InstitutionDto } from './dto/institution.dto.js';
 
 @ApiTags('Bank institutions')
@@ -25,6 +31,8 @@ export class InstitutionsController {
   constructor(private readonly institutionsService: InstitutionsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s bank institutions' })
+  @ApiResponse({ status: 200, type: [InstitutionDto] })
   async getUserInstitutions(
     @RequestUser() user: UserPrincipal,
   ): Promise<InstitutionDto[]> {
@@ -35,6 +43,9 @@ export class InstitutionsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a bank institution by ID' })
+  @ApiParam({ name: 'id', description: 'Institution ID' })
+  @ApiResponse({ status: 200, type: InstitutionDto })
   async getInstitution(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -51,6 +62,9 @@ export class InstitutionsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a bank institution' })
+  @ApiBody({ type: CreateInstitutionRequest })
+  @ApiResponse({ status: 201, type: InstitutionDto })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: CreateInstitutionRequest,
@@ -63,6 +77,10 @@ export class InstitutionsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a bank institution' })
+  @ApiParam({ name: 'id', description: 'Institution ID' })
+  @ApiBody({ type: UpdateInstitutionRequest })
+  @ApiResponse({ status: 200, type: InstitutionDto })
   async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -77,6 +95,9 @@ export class InstitutionsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a bank institution' })
+  @ApiParam({ name: 'id', description: 'Institution ID' })
+  @ApiResponse({ status: 200, type: InstitutionDto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
