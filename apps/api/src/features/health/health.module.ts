@@ -1,12 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import {
-  HealthCheckService,
-  HealthIndicatorService,
-  HttpHealthIndicator,
-  TerminusModule,
-  TypeOrmHealthIndicator,
-} from '@nestjs/terminus';
+import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from './health.controller.js';
 import { HealthService } from './health.service.js';
 import { HEALTH_CHECK_QUEUE } from './health.constants.js';
@@ -19,12 +13,6 @@ import { HEALTH_CHECK_QUEUE } from './health.constants.js';
     }),
   ],
   controllers: [HealthController],
-  providers: [
-    HealthService,
-    HealthCheckService,
-    HealthIndicatorService,
-    HttpHealthIndicator,
-    TypeOrmHealthIndicator,
-  ],
+  providers: [HealthService],
 })
 export class HealthModule {}

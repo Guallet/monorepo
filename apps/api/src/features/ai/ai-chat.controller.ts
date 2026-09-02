@@ -95,7 +95,11 @@ export class AiChatController {
   @ApiResponse({
     status: 200,
     description: 'Plain-text response stream',
-    type: String,
+    content: {
+      'text/plain': {
+        schema: { type: 'string' },
+      },
+    },
   })
   @Throttle({ default: { ttl: 60_000, limit: 20 } })
   async sendMessage(

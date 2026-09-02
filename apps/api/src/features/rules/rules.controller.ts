@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
   Logger,
   NotFoundException,
   ParseUUIDPipe,
@@ -129,6 +131,7 @@ export class RulesController {
   }
 
   @Post('reorder')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reorder categorization rules' })
   @ApiBody({ type: ReorderRulesDto })
   @ApiResponse({ status: 200, type: [RuleDto] })
@@ -144,6 +147,7 @@ export class RulesController {
   }
 
   @Post(':id/conditions/reorder')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reorder conditions within a rule' })
   @ApiParam({ name: 'id', format: 'uuid', description: 'Rule ID' })
   @ApiBody({ type: ReorderConditionsDto })
