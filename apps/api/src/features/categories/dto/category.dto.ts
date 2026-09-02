@@ -8,10 +8,10 @@ export class CategoryDto {
   @ApiProperty({ description: 'The name of the category' })
   name: string;
 
-  @ApiProperty({ description: 'The icon of the category' })
+  @ApiProperty({ description: 'The icon of the category', nullable: true })
   icon: string | null;
 
-  @ApiProperty({ description: 'The color of the category' })
+  @ApiProperty({ description: 'The color of the category', nullable: true })
   colour: string | null;
 
   @ApiProperty({ description: 'The parent of the category', nullable: true })

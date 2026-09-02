@@ -38,7 +38,7 @@ export class RuleDto {
   @ApiProperty({ description: 'Rule name' })
   name: string;
 
-  @ApiProperty({ required: false, description: 'Rule description' })
+  @ApiProperty({ description: 'Rule description', nullable: true })
   description: string | null;
 
   @ApiProperty({ description: 'Category ID to assign on match' })
