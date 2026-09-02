@@ -41,10 +41,9 @@ jobs:
               working-directory: apps/api
               run: pnpm install --frozen-lockfile
 
-            # TODO: Re-enable this lint step once the repository has migrated to oxlint.
-            # - name: Run linter
-            #   working-directory: apps/api
-            #   run: pnpm lint
+            - name: Run linter
+              working-directory: apps/api
+              run: pnpm lint
 
             - name: Run type check
               working-directory: apps/api
