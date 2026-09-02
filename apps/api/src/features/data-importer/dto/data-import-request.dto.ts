@@ -56,7 +56,7 @@ export class DataImportRequestDto {
   @ApiProperty({
     required: false,
     description: 'Account mappings (required for format=csv)',
-    type: 'object',
+    type: Object,
     additionalProperties: { $ref: '#/components/schemas/AccountMappingDto' },
   })
   @IsOptional()
@@ -66,7 +66,7 @@ export class DataImportRequestDto {
   @ApiProperty({
     required: false,
     description: 'Category mappings (required for format=csv)',
-    type: 'object',
+    type: Object,
     additionalProperties: { $ref: '#/components/schemas/CategoryMappingDto' },
   })
   @IsOptional()

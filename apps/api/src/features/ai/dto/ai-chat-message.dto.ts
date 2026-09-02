@@ -1,4 +1,4 @@
-import {
+import type {
   AiChatMessage,
   AiChatMessageRole,
 } from '../entities/ai-chat-message.entity.js';

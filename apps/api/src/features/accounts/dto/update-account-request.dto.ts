@@ -1,4 +1,4 @@
-import { OmitType, PartialType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { CreateAccountRequest } from './create-account-request.dto.js';
 
 export class UpdateAccountRequest extends PartialType(

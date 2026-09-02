@@ -60,7 +60,18 @@ export class NordigenAccountBalancesDto {
 export class NordigenAccountBalanceDto {
   @ApiProperty({ type: () => NordigenBalanceDto })
   balanceAmount: NordigenBalanceDto;
-  @ApiProperty({ required: false, enum: BalanceTypeDto })
+  @ApiProperty({
+    required: false,
+    enum: [
+      'closingBooked',
+      'expected',
+      'forwardAvailable',
+      'interimAvailable',
+      'interimBooked',
+      'nonInvoiced',
+      'openingBooked',
+    ],
+  })
   balanceType?: BalanceTypeDto;
   @ApiProperty({ required: false, type: String, format: 'date-time' })
   referenceDate?: Date;
