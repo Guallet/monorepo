@@ -42,7 +42,6 @@ import {
   toAccountSource,
 } from './entities/accountSource.model.js';
 import { NordigenAccountDto } from '../nordigen/dto/nordigen-account.dto.js';
-import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity.js';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
   if (!value) {
@@ -290,7 +289,7 @@ export class AccountsController {
    * @param {string} accountId - UUID of the Guallet account
    * @throws {BadRequestException} When the account is not connected to Open Banking
    * @throws {NotFoundException} When the connected Open Banking account cannot be found
-   * @returns {Promise<{connectedAccount: OpenBankingAccount}>} Object containing the connected Open Banking account details
+   * @returns {Promise<{connectedAccount: NordigenAccountDto}>} Object containing the connected Open Banking account details
    */
   @Get(':id/connection')
   @ApiOperation({
@@ -309,7 +308,7 @@ export class AccountsController {
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ): Promise<{ connectedAccount: NordigenAccount }> {
+  ): Promise<{ connectedAccount: NordigenAccountDto }> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
@@ -327,7 +326,9 @@ export class AccountsController {
       throw new NotFoundException('Connected account not found');
     }
 
-    return { connectedAccount: obAccount };
+    return {
+      connectedAccount: NordigenAccountDto.fromEntity(obAccount),
+    };
   }
 
   @Patch(':id')

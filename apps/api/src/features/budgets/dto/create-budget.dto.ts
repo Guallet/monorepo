@@ -20,7 +20,7 @@ export class CreateBudgetDto {
   @IsNumber()
   amount: number;
 
-  @ApiProperty()
+  @ApiProperty({ minLength: 3, maxLength: 3 })
   @IsString()
   @IsNotEmpty()
   @Length(3, 3)
@@ -36,7 +36,11 @@ export class CreateBudgetDto {
   @IsString()
   icon?: string;
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty({
+    type: 'array',
+    minItems: 1,
+    items: { type: 'string', format: 'uuid' },
+  })
   @IsArray()
   @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })

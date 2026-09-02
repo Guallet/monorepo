@@ -11,6 +11,7 @@ import { AccountSource } from './entities/accountSource.model.js';
 import { CreateAccountRequest } from './dto/create-account-request.dto.js';
 import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
 import { Transaction } from '../transactions/entities/transaction.entity.js';
+import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity.js';
 
 describe('AccountsController', () => {
   let controller: AccountsController;
@@ -422,10 +423,17 @@ describe('AccountsController', () => {
         source: AccountSource.SYNCED,
       };
 
-      const mockConnectedAccount = {
+      const mockConnectedAccount: Partial<NordigenAccount> = {
         id: 'ob-account-1',
-        accountId: accountId,
-        nordigenAccountId: 'nordigen-123',
+        resource_id: 'resource-123',
+        iban: 'GB00TEST123',
+        currency: 'GBP',
+        owner_name: 'Test User',
+        name: 'Test Account',
+        bic: 'TESTBIC',
+        status: 'READY',
+        details: 'Current account',
+        linked_account_id: accountId,
       };
 
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
@@ -439,7 +447,19 @@ describe('AccountsController', () => {
       );
 
       expect(result).toBeDefined();
-      expect(result.connectedAccount).toEqual(mockConnectedAccount);
+      expect(result.connectedAccount).toEqual({
+        id: 'ob-account-1',
+        resourceId: 'resource-123',
+        iban: 'GB00TEST123',
+        currency: 'GBP',
+        ownerName: 'Test User',
+        name: 'Test Account',
+        bic: 'TESTBIC',
+        status: 'READY',
+        cashAccountType: undefined,
+        maskedPan: undefined,
+        details: 'Current account',
+      });
       expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
         mockUser.id,
         accountId,
