@@ -52,6 +52,13 @@ export type NordigenAccountStatus =
 // LN	LINKED	Account has been successfully linked to requisition	7
 // EX	EXPIRED Access to accounts has expired as set in End User Agreement 8
 
+export class NordigenBalanceDto {
+  @ApiProperty()
+  amount: string;
+  @ApiProperty()
+  currency: string;
+}
+
 export class NordigenAccountBalancesDto {
   @ApiProperty({ type: () => [NordigenAccountBalanceDto] })
   balances: NordigenAccountBalanceDto[];
@@ -75,12 +82,6 @@ export class NordigenAccountBalanceDto {
   balanceType?: BalanceTypeDto;
   @ApiProperty({ required: false, type: String, format: 'date-time' })
   referenceDate?: Date;
-}
-export class NordigenBalanceDto {
-  @ApiProperty()
-  amount: string;
-  @ApiProperty()
-  currency: string;
 }
 
 /**
@@ -144,11 +145,6 @@ export enum BalanceTypeDto {
    * It always equals the closing book balance from the previous report.
    */
   OPENING_BOOKED = 'openingBooked',
-}
-
-export class NordigenAccountDetailsDto {
-  @ApiProperty({ type: () => NordigenAccountDto })
-  account: NordigenAccountDto;
 }
 
 export class NordigenAccountDto {
@@ -222,4 +218,9 @@ export class NordigenAccountDto {
    */
   @ApiProperty()
   details: string;
+}
+
+export class NordigenAccountDetailsDto {
+  @ApiProperty({ type: () => NordigenAccountDto })
+  account: NordigenAccountDto;
 }
