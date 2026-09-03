@@ -78,6 +78,7 @@ export class DataImportRequestDto {
   @ApiProperty({
     required: false,
     description: 'Raw OFE/OFX file content (required for format=ofe)',
+    maxLength: 10 * 1024 * 1024,
   })
   @IsOptional()
   @IsString()
@@ -89,6 +90,7 @@ export class DataImportRequestDto {
   @ApiProperty({
     required: false,
     description: 'Raw JSON content string (required for format=json)',
+    maxLength: 10 * 1024 * 1024,
   })
   @IsOptional()
   @IsString()

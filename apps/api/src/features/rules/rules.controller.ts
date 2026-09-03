@@ -32,6 +32,7 @@ import {
 import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto.js';
 import { TransactionsService } from '../transactions/transactions.service.js';
 import { LimitsDto } from './dto/limits.dto.js';
+import { RuleFieldDefinitionsDto } from './dto/rule-field-definitions.dto.js';
 
 @ApiTags('Categorization Rules')
 @Controller('rules')
@@ -77,8 +78,8 @@ export class RulesController {
 
   @Get('fields')
   @ApiOperation({ summary: 'Get available fields and operators for rules' })
-  @ApiResponse({ status: 200, schema: { type: 'object' } })
-  getFieldDefinitions() {
+  @ApiResponse({ status: 200, type: RuleFieldDefinitionsDto })
+  getFieldDefinitions(): RuleFieldDefinitionsDto {
     return this.rulesService.getFieldDefinitions();
   }
 

@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   Logger,
   NotFoundException,
@@ -20,13 +22,11 @@ import { ConnectAccountsRequestDto } from './dto/connect-bank-request.dto.js';
 import { InstitutionsService } from '../../features/institutions/institutions.service.js';
 import {
   ApiBody,
-  ApiExtraModels,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger';
 import {
   NordigenAccountDto,
@@ -34,14 +34,17 @@ import {
 } from '../../features/nordigen/dto/nordigen-account.dto.js';
 import { NordigenInstitutionDto } from '../../features/nordigen/dto/nordigen-institution.dto.js';
 import { InstitutionDto } from '../../features/institutions/dto/institution.dto.js';
-import { NordigenRequisitionDto } from '../../features/nordigen/dto/nordigen-requisition.dto.js';
+import {
+  ConnectOpenBankingAccountsResponseDto,
+  CreateOpenBankingConnectionResponseDto,
+  DeleteOpenBankingConnectionResponseDto,
+  OpenBankingConnectionAccountDto,
+  OpenBankingConnectionDto,
+  OpenBankingCountryDto,
+  SyncOpenBankingAccountResponseDto,
+} from './dto/openbanking-response.dto.js';
 
 @ApiTags('Open Banking')
-@ApiExtraModels(
-  NordigenAccountDto,
-  NordigenAccountMetadataDto,
-  NordigenRequisitionDto,
-)
 @Controller('openbanking')
 export class ObConnectionsController {
   private readonly logger = new Logger(ObConnectionsController.name);
@@ -54,12 +57,16 @@ export class ObConnectionsController {
 
   @Get('countries')
   @ApiOperation({ summary: 'List supported Open Banking countries' })
-  @ApiQuery({ name: 'language', required: false, type: String, example: 'en' })
-  @ApiResponse({
-    status: 200,
-    schema: { type: 'array', items: { type: 'object' } },
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    type: String,
+    minLength: 2,
+    maxLength: 2,
+    example: 'en',
   })
-  getCountries(@Query('language') language?: string) {
+  @ApiResponse({ status: 200, type: [OpenBankingCountryDto] })
+  getCountries(@Query('language') language?: string): OpenBankingCountryDto[] {
     return this.openbankingService.getAvailableCountries(language ?? 'en');
   }
 
@@ -68,6 +75,7 @@ export class ObConnectionsController {
   @ApiParam({
     name: 'country',
     description: 'Two-letter country code',
+    schema: { type: 'string', minLength: 2, maxLength: 2 },
     example: 'GB',
   })
   @ApiResponse({ status: 200, type: [NordigenInstitutionDto] })
@@ -80,43 +88,37 @@ export class ObConnectionsController {
   @ApiOperation({ summary: 'Get a bank institution by Nordigen ID' })
   @ApiParam({ name: 'id', description: 'Nordigen institution ID' })
   @ApiResponse({ status: 200, type: InstitutionDto })
-  async getInstitution(@Param('id') id: string) {
+  async getInstitution(@Param('id') id: string): Promise<InstitutionDto> {
     const institution = await this.institutionService.findOneByNordigenId(id);
     if (institution === undefined || institution === null) {
       throw new NotFoundException();
     } else {
-      return institution;
+      return InstitutionDto.fromDomain(institution);
     }
   }
 
   @Get('connections/:id')
   @ApiOperation({ summary: 'Get an Open Banking connection' })
-  @ApiParam({ name: 'id', description: 'Connection ID' })
-  @ApiResponse({
-    status: 200,
-    schema: { $ref: getSchemaPath(NordigenRequisitionDto) },
-  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Connection ID' })
+  @ApiResponse({ status: 200, type: OpenBankingConnectionDto })
   async getConnectionDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    const connections = await this.openbankingService.getConnections(user.id);
-    const connection = connections.find((x) => x.id === id);
-    if (connection !== undefined && connection !== null) {
-      return connection;
-    } else {
-      throw new NotFoundException();
-    }
+  ): Promise<OpenBankingConnectionDto> {
+    const connection = await this.openbankingService.getConnection(user.id, id);
+    return OpenBankingConnectionDto.fromEntity(connection);
   }
 
   @Delete('connections/:id')
   @ApiOperation({ summary: 'Delete an Open Banking connection' })
-  @ApiParam({ name: 'id', description: 'Connection ID' })
-  @ApiResponse({ status: 200, schema: { type: 'object' } })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Connection ID' })
+  @ApiResponse({ status: 200, type: DeleteOpenBankingConnectionResponseDto })
   async deleteConnection(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  ): Promise<DeleteOpenBankingConnectionResponseDto> {
+    await this.openbankingService.getConnection(user.id, id);
+
     try {
       const remoteResponse = await this.nordigenService.deleteRequisition(id);
       this.logger.debug(
@@ -124,11 +126,6 @@ export class ObConnectionsController {
           remoteResponse,
         )}`,
       );
-      const deleteResult = await this.openbankingService.deleteConnection({
-        connection_id: id,
-        user_id: user.id,
-      });
-      return deleteResult;
     } catch (error) {
       this.logger.error(
         `Couldn't delete requisition ${id} from Nordigen`,
@@ -136,44 +133,32 @@ export class ObConnectionsController {
       );
       throw new InternalServerErrorException();
     }
+
+    return this.openbankingService.deleteConnection({
+      connection_id: id,
+      user_id: user.id,
+    });
   }
 
   @Get('connections/:id/accounts')
   @ApiOperation({
     summary: 'Retrieve and synchronize accounts for a connection',
   })
-  @ApiParam({ name: 'id', description: 'Connection or requisition ID' })
-  @ApiResponse({
-    status: 200,
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string' },
-          metadata: { $ref: getSchemaPath(NordigenAccountMetadataDto) },
-          details: {
-            allOf: [{ $ref: getSchemaPath(NordigenAccountDto) }],
-            nullable: true,
-          },
-        },
-      },
-    },
+  @ApiParam({
+    name: 'id',
+    format: 'uuid',
+    description: 'Connection or requisition ID',
   })
+  @ApiResponse({ status: 200, type: [OpenBankingConnectionAccountDto] })
   async getObAccounts(
     @RequestUser() user: UserPrincipal,
-    @Param('id') requisition_id: string,
-  ): Promise<
-    {
-      id: string;
-      metadata: NordigenAccountMetadataDto;
-      details: NordigenAccountDto | null;
-    }[]
-  > {
+    @Param('id', ParseUUIDPipe) requisition_id: string,
+  ): Promise<OpenBankingConnectionAccountDto[]> {
+    await this.openbankingService.getConnection(user.id, requisition_id);
     const requisition =
       await this.nordigenService.getRequisition(requisition_id);
 
-    await this.openbankingService.saveRequisition(user.id, requisition);
+    await this.openbankingService.updateRequisition(user.id, requisition);
 
     try {
       // Update the accounts info and Return the accounts
@@ -227,28 +212,22 @@ export class ObConnectionsController {
 
   @Get('connections')
   @ApiOperation({ summary: 'List the current user’s Open Banking connections' })
-  @ApiResponse({ status: 200, type: [NordigenRequisitionDto] })
-  async getConnections(@RequestUser() user: UserPrincipal) {
-    return this.openbankingService.getConnections(user.id);
+  @ApiResponse({ status: 200, type: [OpenBankingConnectionDto] })
+  async getConnections(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<OpenBankingConnectionDto[]> {
+    const connections = await this.openbankingService.getConnections(user.id);
+    return connections.map(OpenBankingConnectionDto.fromEntity);
   }
 
   @Post('connections')
   @ApiOperation({ summary: 'Start an Open Banking connection' })
   @ApiBody({ type: ConnectBankInstitutionRequestDto })
-  @ApiResponse({
-    status: 201,
-    schema: {
-      type: 'object',
-      properties: {
-        link: { type: 'string' },
-        institution_id: { type: 'string' },
-      },
-    },
-  })
+  @ApiResponse({ status: 201, type: CreateOpenBankingConnectionResponseDto })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectBankInstitutionRequestDto,
-  ) {
+  ): Promise<CreateOpenBankingConnectionResponseDto> {
     const requisition = await this.nordigenService.createRequisition(
       dto.institution_id,
       dto.redirect_to,
@@ -265,17 +244,11 @@ export class ObConnectionsController {
   @Post('connections/connect')
   @ApiOperation({ summary: 'Connect selected Open Banking accounts' })
   @ApiBody({ type: ConnectAccountsRequestDto })
-  @ApiResponse({
-    status: 201,
-    schema: {
-      type: 'object',
-      properties: { accounts_count: { type: 'number' } },
-    },
-  })
+  @ApiResponse({ status: 201, type: ConnectOpenBankingAccountsResponseDto })
   async connectToAccount(
     @RequestUser() user: UserPrincipal,
     @Body() dto: ConnectAccountsRequestDto,
-  ) {
+  ): Promise<ConnectOpenBankingAccountsResponseDto> {
     this.logger.debug(`Connecting to accounts: ${dto.account_ids.join(', ')}`);
     // Get Nordigen Account Metadata
     // Get Nordigen Account Details
@@ -294,20 +267,20 @@ export class ObConnectionsController {
     return openBankAccount;
   }
 
-  @Get('connections/:id/sync')
+  @Post('connections/:id/sync')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Synchronize transactions for an Open Banking connection',
   })
-  @ApiParam({ name: 'id', description: 'Connection ID' })
-  @ApiResponse({ status: 200, type: Object })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Connection ID' })
+  @ApiResponse({ status: 200, type: SyncOpenBankingAccountResponseDto })
   async getObAccountTransactions(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  ): Promise<SyncOpenBankingAccountResponseDto> {
     try {
-      const syncResult =
-        await this.openbankingService.syncAccountTransactions(id);
-      return syncResult;
+      await this.openbankingService.syncAccountTransactions(user.id, id);
+      return { account_id: id, synced: true };
     } catch (error) {
       this.logger.error("Couldn't get transactions");
       throw error;

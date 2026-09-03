@@ -15,14 +15,8 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
-import { UserDto } from './dto/user.dto.js';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiNoContentResponse,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { DeleteUserResponseDto, UserDto } from './dto/user.dto.js';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   UserSettingsDto,
   UserSettingsRequest,
@@ -79,11 +73,11 @@ export class UsersController {
 
   @Delete()
   @ApiOperation({ summary: 'Delete the current user account' })
-  @ApiNoContentResponse({ description: 'User account deleted' })
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({ status: 200, type: DeleteUserResponseDto })
+  @HttpCode(HttpStatus.OK)
   async deleteUser(
     @RequestUser() user: UserPrincipal,
-  ): Promise<{ message: string }> {
+  ): Promise<DeleteUserResponseDto> {
     await this.usersService.removeUser(user.id, {
       deleteFromAuthService: true,
     });

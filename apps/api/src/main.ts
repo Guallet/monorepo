@@ -17,6 +17,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    routeConflictPolicy: { duplicate: 'error', shadow: 'warn' },
+    routeResolutionStrategy: 'specificity',
     // Disable bodyParser because Better-Auth.
     // Don't worry, the library will automatically re-add the default body parsers.
     // bodyParser: false,

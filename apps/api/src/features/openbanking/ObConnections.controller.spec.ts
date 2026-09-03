@@ -15,8 +15,10 @@ describe('ObConnectionsController', () => {
   const mockOpenbankingService = {
     getAvailableCountries: jest.fn(),
     getConnections: jest.fn(),
+    getConnection: jest.fn(),
     deleteConnection: jest.fn(),
     saveRequisition: jest.fn(),
+    updateRequisition: jest.fn(),
     connectToAccounts: jest.fn(),
     syncAccountTransactions: jest.fn(),
   };
@@ -63,6 +65,21 @@ describe('ObConnectionsController', () => {
 
     // Clear all mocks before each test
     jest.clearAllMocks();
+    mockOpenbankingService.getConnection.mockResolvedValue({
+      id: 'conn-1',
+      created: new Date('2024-01-01'),
+      redirect: 'https://example.com/callback',
+      status: 'LN',
+      institution_id: 'inst-1',
+      agreement: 'agreement-1',
+      reference: 'reference-1',
+      accounts: [],
+      user_language: null,
+      link: 'https://example.com/connect',
+      account_selection: false,
+      redirect_immediate: false,
+      updated_at: new Date('2024-01-02'),
+    });
   });
 
   it('should be defined', () => {
@@ -144,25 +161,28 @@ describe('ObConnectionsController', () => {
   describe('getConnectionDetails', () => {
     it('should return connection details', async () => {
       const connectionId = 'conn-1';
-      const mockConnections = [
-        { id: connectionId, status: 'LN' },
-        { id: 'conn-2', status: 'CR' },
-      ];
-
-      mockOpenbankingService.getConnections.mockResolvedValue(mockConnections);
 
       const result = await controller.getConnectionDetails(
         mockUser,
         connectionId,
       );
 
-      expect(result).toEqual(mockConnections[0]);
+      expect(result).toEqual(
+        expect.objectContaining({ id: connectionId, status: 'LN' }),
+      );
+      expect(result).not.toHaveProperty('user_id');
+      expect(mockOpenbankingService.getConnection).toHaveBeenCalledWith(
+        mockUser.id,
+        connectionId,
+      );
     });
 
     it('should throw NotFoundException if connection not found', async () => {
       const connectionId = 'non-existent';
 
-      mockOpenbankingService.getConnections.mockResolvedValue([]);
+      mockOpenbankingService.getConnection.mockRejectedValue(
+        new NotFoundException(),
+      );
 
       await expect(
         controller.getConnectionDetails(mockUser, connectionId),
@@ -174,7 +194,10 @@ describe('ObConnectionsController', () => {
     it('should delete a connection', async () => {
       const connectionId = 'conn-1';
       const mockResponse = { summary: 'Requisition deleted' };
-      const mockDeleteResult = { connection: {}, accounts: [] };
+      const mockDeleteResult = {
+        connection_id: connectionId,
+        accounts: [],
+      };
 
       mockNordigenService.deleteRequisition.mockResolvedValue(mockResponse);
       mockOpenbankingService.deleteConnection.mockResolvedValue(
@@ -200,20 +223,46 @@ describe('ObConnectionsController', () => {
         controller.deleteConnection(mockUser, connectionId),
       ).rejects.toThrow(InternalServerErrorException);
     });
+
+    it('should not call Nordigen when the connection is not owned', async () => {
+      mockOpenbankingService.getConnection.mockRejectedValue(
+        new NotFoundException(),
+      );
+
+      await expect(
+        controller.deleteConnection(mockUser, 'conn-2'),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockNordigenService.deleteRequisition).not.toHaveBeenCalled();
+    });
   });
 
   describe('getConnections', () => {
     it('should return user connections', async () => {
       const mockConnections = [
-        { id: 'conn-1', status: 'LN' },
-        { id: 'conn-2', status: 'CR' },
+        {
+          id: 'conn-1',
+          created: new Date('2024-01-01'),
+          redirect: 'https://example.com/callback',
+          status: 'LN',
+          institution_id: 'inst-1',
+          agreement: 'agreement-1',
+          reference: 'reference-1',
+          accounts: [],
+          user_language: null,
+          link: 'https://example.com/connect',
+          account_selection: false,
+          redirect_immediate: false,
+          updated_at: new Date('2024-01-02'),
+          user_id: mockUser.id,
+        },
       ];
 
       mockOpenbankingService.getConnections.mockResolvedValue(mockConnections);
 
       const result = await controller.getConnections(mockUser);
 
-      expect(result).toEqual(mockConnections);
+      expect(result).toHaveLength(1);
+      expect(result[0]).not.toHaveProperty('user_id');
       expect(mockOpenbankingService.getConnections).toHaveBeenCalledWith(
         mockUser.id,
       );
@@ -252,8 +301,7 @@ describe('ObConnectionsController', () => {
       };
 
       const mockResult = {
-        connected: true,
-        accounts: connectDto.account_ids,
+        accounts_count: connectDto.account_ids.length,
       };
 
       mockOpenbankingService.connectToAccounts.mockResolvedValue(mockResult);
@@ -271,13 +319,8 @@ describe('ObConnectionsController', () => {
   describe('getObAccountTransactions', () => {
     it('should sync account transactions', async () => {
       const accountId = 'account-1';
-      const mockSyncResult = {
-        synced: true,
-        transactions_count: 10,
-      };
-
       mockOpenbankingService.syncAccountTransactions.mockResolvedValue(
-        mockSyncResult,
+        undefined,
       );
 
       const result = await controller.getObAccountTransactions(
@@ -285,7 +328,10 @@ describe('ObConnectionsController', () => {
         accountId,
       );
 
-      expect(result).toEqual(mockSyncResult);
+      expect(result).toEqual({ account_id: accountId, synced: true });
+      expect(
+        mockOpenbankingService.syncAccountTransactions,
+      ).toHaveBeenCalledWith(mockUser.id, accountId);
     });
 
     it('should throw error if sync fails', async () => {
@@ -320,7 +366,7 @@ describe('ObConnectionsController', () => {
       };
 
       mockNordigenService.getRequisition.mockResolvedValue(mockRequisition);
-      mockOpenbankingService.saveRequisition.mockResolvedValue(undefined);
+      mockOpenbankingService.updateRequisition.mockResolvedValue(undefined);
       mockNordigenService.getAccountMetadata.mockResolvedValue(
         mockAccountMetadata,
       );

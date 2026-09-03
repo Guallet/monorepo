@@ -87,6 +87,7 @@ export class CreateAccountRequest {
     required: false,
     description: 'The institution id',
     nullable: true,
+    format: 'uuid',
   })
   @IsOptional()
   @IsUUID()
@@ -95,6 +96,8 @@ export class CreateAccountRequest {
   @ApiProperty({
     description: 'The account currency (3 letters code)',
     nullable: false,
+    minLength: 3,
+    maxLength: 3,
   })
   @IsString()
   @IsNotEmpty()

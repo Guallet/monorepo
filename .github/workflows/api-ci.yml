@@ -7,11 +7,19 @@ on:
             - develop
         paths:
             - "apps/api/**"
+            - "package.json"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - ".github/workflows/api-ci.yml"
     pull_request:
         branches:
             - "*"
         paths:
             - "apps/api/**"
+            - "package.json"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - ".github/workflows/api-ci.yml"
 
 jobs:
     build:

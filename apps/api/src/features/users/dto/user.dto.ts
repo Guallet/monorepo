@@ -17,3 +17,8 @@ export class UserDto {
     };
   }
 }
+
+export class DeleteUserResponseDto {
+  @ApiProperty({ example: 'User deleted successfully' })
+  message: string;
+}

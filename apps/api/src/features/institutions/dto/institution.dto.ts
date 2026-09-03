@@ -6,7 +6,7 @@ export class InstitutionDto {
   id: string;
   @ApiProperty()
   name: string;
-  @ApiProperty({ required: false, nullable: true })
+  @ApiProperty({ required: false, nullable: true, format: 'uri' })
   image_src?: string;
   @ApiProperty({ required: false, nullable: true })
   nordigen_id?: string;

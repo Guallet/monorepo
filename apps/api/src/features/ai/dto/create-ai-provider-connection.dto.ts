@@ -7,13 +7,13 @@ export class CreateAiProviderConnectionDto {
   @IsEnum(AiProvider)
   provider: AiProvider;
 
-  @ApiProperty()
+  @ApiProperty({ maxLength: 100 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
   displayName: string;
 
-  @ApiProperty({ writeOnly: true })
+  @ApiProperty({ writeOnly: true, maxLength: 1024 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(1024)

@@ -3,6 +3,7 @@ import type { AxiosResponse } from 'axios';
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -242,9 +243,7 @@ export class NordigenService {
       this.logger.error(
         `Error making Nordigen GET request to ${path}. Error: ${typeof error_}}`,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.handleHttpStatusCodes(error_, true);
-      throw new InternalServerErrorException();
+      this.handleRequestError(error_);
     }
   }
 
@@ -268,6 +267,25 @@ export class NordigenService {
       });
       throw new InternalServerErrorException();
     }
+  }
+
+  private isAxiosResponse(value: unknown): value is AxiosResponse {
+    return (
+      typeof value === 'object' &&
+      value !== null &&
+      'status' in value &&
+      typeof value.status === 'number'
+    );
+  }
+
+  private handleRequestError(error: unknown): never {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+    if (this.isAxiosResponse(error)) {
+      this.handleHttpStatusCodes(error, true);
+    }
+    throw new InternalServerErrorException();
   }
 
   async makePostRequest<T>(path: string, payload: unknown): Promise<T> {
@@ -303,9 +321,7 @@ export class NordigenService {
           4,
         )}`,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.handleHttpStatusCodes(error_, true);
-      throw new InternalServerErrorException();
+      this.handleRequestError(error_);
     }
   }
 
@@ -336,9 +352,7 @@ export class NordigenService {
       return response.data;
     } catch (error_) {
       this.logger.error(`Error making Nordigen GET request to ${path}`);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.handleHttpStatusCodes(error_, true);
-      throw error_;
+      this.handleRequestError(error_);
     }
   }
   //#endregion

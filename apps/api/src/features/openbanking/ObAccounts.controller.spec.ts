@@ -1,15 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ObAccountsController } from './ObAccounts.controller.js';
 import { OpenbankingService } from './openbanking.service.js';
-import { NordigenService } from '../../features/nordigen/nordigen.service.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
 
 describe('ObAccountsController', () => {
   let controller: ObAccountsController;
 
-  const mockOpenbankingService = {};
-
-  const mockNordigenService = {
+  const mockOpenbankingService = {
+    getLinkedAccounts: jest.fn(),
     getAccountMetadata: jest.fn(),
   };
 
@@ -27,10 +25,6 @@ describe('ObAccountsController', () => {
           provide: OpenbankingService,
           useValue: mockOpenbankingService,
         },
-        {
-          provide: NordigenService,
-          useValue: mockNordigenService,
-        },
       ],
     }).compile();
 
@@ -45,8 +39,13 @@ describe('ObAccountsController', () => {
   });
 
   describe('getObAccounts', () => {
-    it('should return a list of account IDs', () => {
-      const result = controller.getObAccounts(mockUser);
+    it('should return a list of account IDs', async () => {
+      mockOpenbankingService.getLinkedAccounts.mockResolvedValue([
+        { id: '123456789' },
+        { id: '987654321' },
+      ]);
+
+      const result = await controller.getObAccounts(mockUser);
 
       expect(result).toEqual({
         accounts: ['123456789', '987654321'],
@@ -63,12 +62,13 @@ describe('ObAccountsController', () => {
         status: 'READY',
       };
 
-      mockNordigenService.getAccountMetadata.mockResolvedValue(mockMetadata);
+      mockOpenbankingService.getAccountMetadata.mockResolvedValue(mockMetadata);
 
       const result = await controller.getObAccount(mockUser, accountId);
 
       expect(result).toEqual(mockMetadata);
-      expect(mockNordigenService.getAccountMetadata).toHaveBeenCalledWith(
+      expect(mockOpenbankingService.getAccountMetadata).toHaveBeenCalledWith(
+        mockUser.id,
         accountId,
       );
     });

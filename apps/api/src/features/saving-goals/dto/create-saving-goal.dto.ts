@@ -27,7 +27,7 @@ export class CreateSavingGoalDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ description: 'The target amount to be saved' })
+  @ApiProperty({ description: 'The target amount to be saved', minimum: 0 })
   @IsNumber()
   @Min(0)
   targetAmount: number;
@@ -36,6 +36,8 @@ export class CreateSavingGoalDto {
     required: false,
     description: 'The target date for the saving goal',
     nullable: true,
+    type: String,
+    format: 'date-time',
   })
   @IsOptional()
   @IsDateString()
@@ -46,6 +48,7 @@ export class CreateSavingGoalDto {
     description:
       'The priority of the saving goal (higher number means higher priority)',
     nullable: true,
+    minimum: 0,
   })
   @IsOptional()
   @IsInt()
@@ -54,6 +57,9 @@ export class CreateSavingGoalDto {
 
   @ApiProperty({
     description: 'The account ids used as source for the saving goal',
+    type: 'array',
+    minItems: 1,
+    items: { type: 'string', format: 'uuid' },
   })
   @IsArray()
   @ArrayNotEmpty()

@@ -1,6 +1,7 @@
 import { GualletClientImpl } from './../GualletClient';
 import {
   ConnectObAccountsRequest,
+  ConnectObAccountsResponse,
   GualletInstitutionDto,
   ObAccountDto,
   ObConnection,
@@ -69,8 +70,13 @@ export class ConnectionsApi {
     });
   }
 
-  async linkObAccounts(accountIds: string[]): Promise<ObAccountDto[]> {
-    return await this.client.post<ObAccountDto[], ConnectObAccountsRequest>({
+  async linkObAccounts(
+    accountIds: string[],
+  ): Promise<ConnectObAccountsResponse> {
+    return await this.client.post<
+      ConnectObAccountsResponse,
+      ConnectObAccountsRequest
+    >({
       path: `${OPEN_BANKING_PATH}/connections/connect`,
       payload: {
         account_ids: accountIds,

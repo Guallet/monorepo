@@ -7,7 +7,9 @@ export class ConnectAccountsRequestDto {
    */
   @ApiProperty({
     description: 'Open Banking account IDs to connect',
-    type: [String],
+    type: 'array',
+    items: { type: 'string', format: 'uuid' },
+    minItems: 1,
   })
   @IsArray()
   @ArrayNotEmpty()

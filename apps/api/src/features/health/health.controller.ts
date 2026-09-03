@@ -3,6 +3,7 @@ import { HealthCheck } from '@nestjs/terminus';
 import { HealthService } from './health.service.js';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { HealthCheckResponseDto } from './dto/health-check-response.dto.js';
 
 @Controller('health')
 @ApiTags('Health')
@@ -13,8 +14,9 @@ export class HealthController {
   @Get()
   @HealthCheck()
   @ApiOperation({ summary: 'Check API and dependency health' })
-  @ApiOkResponse({ description: 'Health check result' })
-  check() {
-    return this.healthService.check();
+  @ApiOkResponse({ type: HealthCheckResponseDto })
+  async check(): Promise<HealthCheckResponseDto> {
+    const result = await this.healthService.check();
+    return HealthCheckResponseDto.fromResult(result);
   }
 }

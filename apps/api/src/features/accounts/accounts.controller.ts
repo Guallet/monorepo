@@ -23,7 +23,6 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto.js';
 import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
@@ -41,7 +40,10 @@ import {
   AccountSource,
   toAccountSource,
 } from './entities/accountSource.model.js';
-import { NordigenAccountDto } from '../nordigen/dto/nordigen-account.dto.js';
+import {
+  LinkedOpenBankingAccountDto,
+  LinkedOpenBankingAccountResponseDto,
+} from '../openbanking/dto/openbanking-response.dto.js';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
   if (!value) {
@@ -57,7 +59,7 @@ function parseDateParam(value: string | undefined, name: string): Date | null {
 }
 
 @ApiTags('Accounts')
-@ApiExtraModels(AccountDto, TransactionDto, NordigenAccountDto)
+@ApiExtraModels(AccountDto, TransactionDto, LinkedOpenBankingAccountDto)
 @Controller('accounts')
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
@@ -298,17 +300,12 @@ export class AccountsController {
   @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
   @ApiResponse({
     status: 200,
-    schema: {
-      type: 'object',
-      properties: {
-        connectedAccount: { $ref: getSchemaPath(NordigenAccountDto) },
-      },
-    },
+    type: LinkedOpenBankingAccountResponseDto,
   })
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ): Promise<{ connectedAccount: NordigenAccountDto }> {
+  ): Promise<LinkedOpenBankingAccountResponseDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
@@ -319,6 +316,7 @@ export class AccountsController {
     }
 
     const obAccount = await this.openBankingService.getLinkedAccount({
+      userId: user.id,
       accountId: account.id,
     });
 
@@ -327,7 +325,7 @@ export class AccountsController {
     }
 
     return {
-      connectedAccount: NordigenAccountDto.fromEntity(obAccount),
+      connectedAccount: LinkedOpenBankingAccountDto.fromEntity(obAccount),
     };
   }
 

@@ -465,6 +465,7 @@ describe('AccountsController', () => {
         accountId,
       );
       expect(mockOpenBankingService.getLinkedAccount).toHaveBeenCalledWith({
+        userId: mockUser.id,
         accountId: accountId,
       });
     });

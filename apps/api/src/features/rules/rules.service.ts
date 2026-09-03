@@ -30,6 +30,7 @@ import {
   TOO_MANY_CONDITIONS_MESSAGE,
   TOO_MANY_RULES_MESSAGE,
 } from './constants.js';
+import { RuleFieldDefinitionsDto } from './dto/rule-field-definitions.dto.js';
 
 @Injectable()
 export class RulesService {
@@ -372,7 +373,7 @@ export class RulesService {
   /**
    * Get field definitions with valid operators
    */
-  getFieldDefinitions() {
+  getFieldDefinitions(): RuleFieldDefinitionsDto {
     return {
       fields: [
         {

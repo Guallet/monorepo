@@ -197,7 +197,10 @@ export class SyncService {
       }
 
       // Get the linked guallet account in the DB
-      if (nordigenAccount.linked_account_id === null) {
+      if (
+        nordigenAccount.linked_account_id === null ||
+        nordigenAccount.linked_account_id === undefined
+      ) {
         this.logger.error(
           `Nordigen Account with id '${account_id}' has no linked account`,
         );

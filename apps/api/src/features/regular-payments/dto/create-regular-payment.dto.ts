@@ -21,7 +21,7 @@ export class CreateRegularPaymentDto {
   @IsString()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ minimum: 0, exclusiveMinimum: true })
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
@@ -31,11 +31,13 @@ export class CreateRegularPaymentDto {
   @IsISO4217CurrencyCode()
   currency: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, format: 'uri' })
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
   @ApiProperty({ required: false, format: 'uuid' })
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 

@@ -77,6 +77,7 @@ export class CreateRuleDto {
     description:
       'The conditions to evaluate; how many must match depends on conditionLogic ("and": all must match, "or": at least one must match)',
     type: [CreateConditionDto],
+    maxItems: MAX_CONDITIONS_PER_RULE,
   })
   @IsArray()
   @ArrayMaxSize(MAX_CONDITIONS_PER_RULE, {

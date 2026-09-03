@@ -14,7 +14,10 @@ export class ConnectBankInstitutionRequestDto {
    * The URL where the login will redirect after a bank connection.
    * Must be a valid URL to prevent open redirect attacks.
    */
-  @ApiProperty({ description: 'URL to redirect to after the bank connection' })
+  @ApiProperty({
+    description: 'URL to redirect to after the bank connection',
+    format: 'uri',
+  })
   @IsUrl({ require_tld: false })
   @IsNotEmpty()
   redirect_to: string;

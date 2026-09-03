@@ -1,6 +1,5 @@
 import { ExternalCashAccountType1Code } from './ExternalCashAccountType1Code.helper.js';
 import { ApiProperty } from '@nestjs/swagger';
-import type { NordigenAccount } from '../../openbanking/entities/nordigen-account.entity.js';
 
 export class NordigenAccountMetadataDto {
   @ApiProperty()
@@ -219,22 +218,6 @@ export class NordigenAccountDto {
    */
   @ApiProperty()
   details: string;
-
-  static fromEntity(entity: NordigenAccount): NordigenAccountDto {
-    return {
-      id: entity.id,
-      resourceId: entity.resource_id ?? '',
-      iban: entity.iban,
-      currency: entity.currency ?? '',
-      ownerName: entity.owner_name ?? '',
-      name: entity.name,
-      bic: entity.bic,
-      status: entity.status ?? '',
-      cashAccountType: entity.cashAccountType,
-      maskedPan: entity.maskedPan,
-      details: entity.details ?? '',
-    };
-  }
 }
 
 export class NordigenAccountDetailsDto {

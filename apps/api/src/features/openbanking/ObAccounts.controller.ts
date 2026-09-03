@@ -4,40 +4,38 @@ import { NordigenAccountMetadataDto } from '../../features/nordigen/dto/nordigen
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
 import { OpenbankingService } from './openbanking.service.js';
-import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { OpenBankingAccountIdsResponseDto } from './dto/openbanking-response.dto.js';
 
 @ApiTags('Open Banking')
 @Controller('openbanking/accounts')
 export class ObAccountsController {
   private readonly logger = new Logger(ObAccountsController.name);
 
-  constructor(
-    private readonly openbankingService: OpenbankingService,
-    private readonly nordigenService: NordigenService,
-  ) {}
+  constructor(private readonly openbankingService: OpenbankingService) {}
 
   @Get()
   @ApiOperation({ summary: 'List Open Banking accounts' })
-  @ApiResponse({
-    status: 200,
-    schema: {
-      type: 'object',
-      properties: { accounts: { type: 'array', items: { type: 'string' } } },
-    },
-  })
-  getObAccounts(@RequestUser() user: UserPrincipal) {
+  @ApiResponse({ status: 200, type: OpenBankingAccountIdsResponseDto })
+  async getObAccounts(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<OpenBankingAccountIdsResponseDto> {
     this.logger.debug(`Getting Open Banking accounts for user ${user.id}`);
-    return { accounts: ['123456789', '987654321'] };
+    const accounts = await this.openbankingService.getLinkedAccounts(user.id);
+    return { accounts: accounts.map((account) => account.id) };
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get Open Banking account metadata' })
-  @ApiParam({ name: 'id', description: 'Open Banking account ID' })
+  @ApiParam({
+    name: 'id',
+    format: 'uuid',
+    description: 'Open Banking account ID',
+  })
   @ApiResponse({ status: 200, type: NordigenAccountMetadataDto })
   async getObAccount(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return await this.nordigenService.getAccountMetadata(id);
+    return this.openbankingService.getAccountMetadata(user.id, id);
   }
 }
