@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
+import nodemailer from 'nodemailer';
+import type { SendMailOptions, Transporter } from 'nodemailer';
 import Handlebars from 'handlebars';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -13,7 +13,7 @@ interface SendEmailOptions {
   template: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: Record<string, any>;
-  attachments?: nodemailer.SendMailOptions['attachments'];
+  attachments?: SendMailOptions['attachments'];
 }
 
 @Injectable()
