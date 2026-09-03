@@ -8,14 +8,15 @@ import { AiAgent } from './entities/ai-agent.entity.js';
 import { AiChatMessage } from './entities/ai-chat-message.entity.js';
 import { AiChatSession } from './entities/ai-chat-session.entity.js';
 import { AiProvider } from './entities/ai-provider.enum.js';
+import { vi, type Mock } from 'vitest';
 
-jest.unstable_mockModule('ai', () => ({
-  streamText: jest.fn(),
+vi.mock('ai', () => ({
+  streamText: vi.fn(),
 }));
 
-jest.unstable_mockModule('@ai-sdk/openai-compatible', () => ({
-  createOpenAICompatible: jest.fn(() => ({
-    chatModel: jest.fn((modelId: string) => ({ modelId })),
+vi.mock('@ai-sdk/openai-compatible', () => ({
+  createOpenAICompatible: vi.fn(() => ({
+    chatModel: vi.fn((modelId: string) => ({ modelId })),
   })),
 }));
 
@@ -26,33 +27,33 @@ describe('AiChatService', () => {
   let service: AiChatServiceType;
 
   const mockSessionRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn((value: object) => value),
-    save: jest.fn(),
-    remove: jest.fn(),
-    update: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn((value: object) => value),
+    save: vi.fn(),
+    remove: vi.fn(),
+    update: vi.fn(),
   };
 
   const mockMessageRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    count: jest.fn(),
-    create: jest.fn((value: object) => value),
-    save: jest.fn(),
-    delete: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    count: vi.fn(),
+    create: vi.fn((value: object) => value),
+    save: vi.fn(),
+    delete: vi.fn(),
   };
 
   const mockAgentRepository = {
-    findOne: jest.fn(),
+    findOne: vi.fn(),
   };
 
   const mockCredentialEncryption = {
-    decrypt: jest.fn(() => 'decrypted-token'),
+    decrypt: vi.fn(() => 'decrypted-token'),
   };
 
   const mockFinancialContext = {
-    buildSummary: jest.fn(() => Promise.resolve('{"accounts":[]}')),
+    buildSummary: vi.fn(() => Promise.resolve('{"accounts":[]}')),
   };
 
   const userId = 'user-123';
@@ -105,7 +106,7 @@ describe('AiChatService', () => {
     }).compile();
 
     service = module.get<AiChatServiceType>(AiChatService);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockFinancialContext.buildSummary.mockResolvedValue('{"accounts":[]}');
     mockCredentialEncryption.decrypt.mockReturnValue('decrypted-token');
   });
@@ -179,8 +180,8 @@ describe('AiChatService', () => {
         created_at: now,
       },
     ]);
-    const streamResult = { pipeTextStreamToResponse: jest.fn() };
-    (streamText as jest.Mock).mockReturnValue(streamResult);
+    const streamResult = { pipeTextStreamToResponse: vi.fn() };
+    (streamText as Mock).mockReturnValue(streamResult);
 
     const result = await service.streamReply({
       userId,
@@ -203,7 +204,7 @@ describe('AiChatService', () => {
       'encrypted:token',
     );
 
-    const options = (streamText as jest.Mock).mock.calls[0][0];
+    const options = (streamText as Mock).mock.calls[0][0];
     expect(options.tools).toBeUndefined();
     expect(options.maxOutputTokens).toBe(1500);
     expect(options.system).toContain('<financial_data>');
@@ -216,7 +217,7 @@ describe('AiChatService', () => {
     mockSessionRepository.findOne.mockResolvedValue({ ...session });
     mockMessageRepository.count.mockResolvedValue(2);
     mockMessageRepository.find.mockResolvedValue([]);
-    (streamText as jest.Mock).mockReturnValue({});
+    (streamText as Mock).mockReturnValue({});
 
     await service.streamReply({
       userId,
@@ -229,7 +230,7 @@ describe('AiChatService', () => {
     );
     expect(assistantSaves).toHaveLength(0);
 
-    const options = (streamText as jest.Mock).mock.calls[0][0];
+    const options = (streamText as Mock).mock.calls[0][0];
     await options.onFinish({ text: 'You spent £200.' });
 
     expect(mockMessageRepository.save).toHaveBeenCalledWith(

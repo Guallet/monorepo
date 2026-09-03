@@ -6,7 +6,7 @@ describe('UserInitializationService', () => {
   let service: UserInitializationService;
 
   const mockCategoriesService = {
-    createDefaultCategoriesForUser: jest.fn(),
+    createDefaultCategoriesForUser: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('UserInitializationService', () => {
 
     service = module.get<UserInitializationService>(UserInitializationService);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

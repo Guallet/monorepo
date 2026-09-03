@@ -77,7 +77,8 @@ pnpm db:migrate     # apply migrations
 
 - Start (dev/watch): `pnpm --filter api dev` or `cd apps/api && pnpm dev`
 - Build: `pnpm --filter api build`
-- Tests: `pnpm --filter api test` / `pnpm --filter api test:e2e`
+- Unit tests: `pnpm --filter api test` (Vitest)
+- E2E tests: `pnpm --filter api test:e2e` (Jest; excluded from this migration)
 - DB tasks: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed`
 
 ---
@@ -143,7 +144,7 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ## Tests
 
 - Unit: `pnpm --filter api test`
-- E2E: `pnpm --filter api test:e2e`
+- E2E: `pnpm --filter api test:e2e` (currently remains on Jest)
 
 ---
 

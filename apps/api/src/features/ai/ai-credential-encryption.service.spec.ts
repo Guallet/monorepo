@@ -6,7 +6,7 @@ describe('AiCredentialEncryptionService', () => {
   it('encrypts and decrypts credentials without returning plaintext ciphertext', () => {
     const key = Buffer.alloc(32, 1).toString('base64');
     const configService = {
-      get: jest.fn().mockReturnValue(key),
+      get: vi.fn().mockReturnValue(key),
     } as unknown as ConfigService<AppConfig>;
     const service = new AiCredentialEncryptionService(configService);
 
@@ -18,7 +18,7 @@ describe('AiCredentialEncryptionService', () => {
 
   it('rejects keys that are not 32 bytes', () => {
     const configService = {
-      get: jest.fn().mockReturnValue('short-key'),
+      get: vi.fn().mockReturnValue('short-key'),
     } as unknown as ConfigService<AppConfig>;
 
     expect(() => new AiCredentialEncryptionService(configService)).toThrow(
@@ -28,7 +28,7 @@ describe('AiCredentialEncryptionService', () => {
 
   it('rejects raw 32-character strings that are not base64-encoded keys', () => {
     const configService = {
-      get: jest.fn().mockReturnValue('a'.repeat(32)),
+      get: vi.fn().mockReturnValue('a'.repeat(32)),
     } as unknown as ConfigService<AppConfig>;
 
     expect(() => new AiCredentialEncryptionService(configService)).toThrow(

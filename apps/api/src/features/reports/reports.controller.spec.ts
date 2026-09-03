@@ -7,7 +7,7 @@ describe('ReportsController', () => {
   let controller: ReportsController;
 
   const mockReportsService = {
-    getCashFlowReport: jest.fn(),
+    getCashFlowReport: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -30,7 +30,7 @@ describe('ReportsController', () => {
     controller = module.get<ReportsController>(ReportsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

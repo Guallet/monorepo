@@ -10,12 +10,12 @@ describe('CategoriesService', () => {
   let service: CategoriesService;
 
   const mockCategoryRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    findOneBy: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    findOneBy: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -32,7 +32,7 @@ describe('CategoriesService', () => {
     service = module.get<CategoriesService>(CategoriesService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

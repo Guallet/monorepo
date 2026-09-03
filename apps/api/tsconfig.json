@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "target": "ES2023",
-    "types": ["node", "jest"],
+    "types": ["node", "vitest/globals"],
     "isolatedModules": true,
     "sourceMap": true,
     "outDir": "./dist",

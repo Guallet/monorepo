@@ -1,11 +1,11 @@
 import { HealthService } from './health.service.js';
 
 describe('HealthService', () => {
-  const mockHealthCheckService = { check: jest.fn() };
-  const mockHealthIndicatorService = { check: jest.fn() };
-  const mockHttpIndicator = { pingCheck: jest.fn() };
-  const mockTypeOrmHealthIndicator = { pingCheck: jest.fn() };
-  const mockPing = jest.fn();
+  const mockHealthCheckService = { check: vi.fn() };
+  const mockHealthIndicatorService = { check: vi.fn() };
+  const mockHttpIndicator = { pingCheck: vi.fn() };
+  const mockTypeOrmHealthIndicator = { pingCheck: vi.fn() };
+  const mockPing = vi.fn();
   const mockQueue = {
     client: Promise.resolve({ ping: mockPing }),
   };
@@ -21,7 +21,7 @@ describe('HealthService', () => {
       mockQueue as never,
     );
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should execute database, redis and http health checks', async () => {
@@ -32,8 +32,8 @@ describe('HealthService', () => {
 
     const redisUpResult = { redis: { status: 'up' } };
     const redisSession = {
-      up: jest.fn().mockReturnValue(redisUpResult),
-      down: jest.fn(),
+      up: vi.fn().mockReturnValue(redisUpResult),
+      down: vi.fn(),
     };
     mockHealthIndicatorService.check.mockReturnValue(redisSession);
 
@@ -80,8 +80,8 @@ describe('HealthService', () => {
 
     const redisDownResult = { redis: { status: 'down' } };
     const redisSession = {
-      up: jest.fn(),
-      down: jest.fn().mockReturnValue(redisDownResult),
+      up: vi.fn(),
+      down: vi.fn().mockReturnValue(redisDownResult),
     };
     mockHealthIndicatorService.check.mockReturnValue(redisSession);
 

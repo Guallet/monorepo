@@ -79,7 +79,7 @@ export class NordigenAccountBalanceDto {
       'openingBooked',
     ],
   })
-  balanceType?: BalanceTypeDto;
+  balanceType?: string;
   @ApiProperty({ required: false, type: String, format: 'date-time' })
   referenceDate?: Date;
 }

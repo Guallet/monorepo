@@ -1,17 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailEventListener } from './email-event.listener.js';
 import { EmailService } from './email.service.js';
+import type { Mock } from 'vitest';
 
 describe('EmailEventListener', () => {
   let listener: EmailEventListener;
-  let mockSendPasswordResetEmail: jest.Mock;
-  let mockSendAuthOtpEmail: jest.Mock;
-  let mockSendAuthMagicLinkEmail: jest.Mock;
+  let mockSendPasswordResetEmail: Mock;
+  let mockSendAuthOtpEmail: Mock;
+  let mockSendAuthMagicLinkEmail: Mock;
 
   beforeEach(async () => {
-    mockSendPasswordResetEmail = jest.fn().mockResolvedValue(undefined);
-    mockSendAuthOtpEmail = jest.fn().mockResolvedValue(undefined);
-    mockSendAuthMagicLinkEmail = jest.fn().mockResolvedValue(undefined);
+    mockSendPasswordResetEmail = vi.fn().mockResolvedValue(undefined);
+    mockSendAuthOtpEmail = vi.fn().mockResolvedValue(undefined);
+    mockSendAuthMagicLinkEmail = vi.fn().mockResolvedValue(undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

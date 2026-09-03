@@ -17,34 +17,34 @@ describe('AiService', () => {
   let service: AiService;
 
   const mockConnectionRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockAgentRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    delete: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    delete: vi.fn(),
   };
 
   const mockCredentialEncryption = {
-    encrypt: jest.fn((value: string) => `encrypted:${value}`),
-    decrypt: jest.fn((value: string) => value.replace('encrypted:', '')),
+    encrypt: vi.fn((value: string) => `encrypted:${value}`),
+    decrypt: vi.fn((value: string) => value.replace('encrypted:', '')),
   };
 
   const mockAdapter = {
-    validateApiToken: jest.fn(),
-    listModels: jest.fn(),
+    validateApiToken: vi.fn(),
+    listModels: vi.fn(),
   };
 
   const mockProviderRegistry = {
-    getAdapter: jest.fn().mockReturnValue(mockAdapter),
+    getAdapter: vi.fn().mockReturnValue(mockAdapter),
   };
 
   const userId = 'user-123';
@@ -74,7 +74,7 @@ describe('AiService', () => {
     }).compile();
 
     service = module.get<AiService>(AiService);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockProviderRegistry.getAdapter.mockReturnValue(mockAdapter);
     mockAdapter.validateApiToken.mockResolvedValue(undefined);
   });

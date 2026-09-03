@@ -17,10 +17,10 @@
     "start:prod": "node dist/main.js",
     "lint": "oxlint --deny-warnings src test",
     "lint:fix": "oxlint --fix src test",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
-    "test:debug": "NODE_OPTIONS=--experimental-vm-modules node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "test:debug": "vitest --inspect-brk --run",
     "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --config ./test/jest-e2e.json",
     "db:init": "pnpm db:generate && pnpm db:migrate",
     "db:generate": "npx @better-auth/cli generate --config src/auth/better-auth.ts",
@@ -80,6 +80,7 @@
     "@types/nodemailer": "7.0.9",
     "@types/pg": "8.23.1",
     "@types/supertest": "6.0.3",
+    "@vitest/coverage-v8": "4.1.11",
     "dotenv": "16.6.1",
     "jest": "30.2.0",
     "oxlint": "1.80.0",
@@ -88,32 +89,7 @@
     "supertest": "7.2.2",
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
-    "typescript": "6.0.3"
-  },
-  "jest": {
-    "preset": "ts-jest/presets/default-esm",
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest.setup.cjs"
-    ],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1",
-      "^src/(.*)$": "<rootDir>/$1",
-      "^@thallesp/nestjs-better-auth$": "<rootDir>/__mocks__/@thallesp/nestjs-better-auth/index.js"
-    }
+    "typescript": "6.0.3",
+    "vitest": "4.1.11"
   }
 }

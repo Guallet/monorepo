@@ -17,20 +17,20 @@ describe('AccountsController', () => {
   let controller: AccountsController;
 
   const mockAccountsService = {
-    findAllUserAccounts: jest.fn(),
-    getUserAccount: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    removeUserAccount: jest.fn(),
+    findAllUserAccounts: vi.fn(),
+    getUserAccount: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    removeUserAccount: vi.fn(),
   };
 
   const mockTransactionsService = {
-    getAccountTransactions: jest.fn(),
-    getAccountTransactionsSum: jest.fn(),
+    getAccountTransactions: vi.fn(),
+    getAccountTransactionsSum: vi.fn(),
   };
 
   const mockOpenBankingService = {
-    getLinkedAccount: jest.fn(),
+    getLinkedAccount: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -61,7 +61,7 @@ describe('AccountsController', () => {
     controller = module.get<AccountsController>(AccountsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

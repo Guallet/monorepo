@@ -11,14 +11,14 @@ describe('TransactionsController', () => {
   let controller: TransactionsController;
 
   const mockTransactionsService = {
-    getUserTransactions: jest.fn(),
-    getUserTransactionsCount: jest.fn(),
-    getUserTransactionsInbox: jest.fn(),
-    getUserTransactionsInboxCount: jest.fn(),
-    create: jest.fn(),
-    findOne: jest.fn(),
-    updateUserTransaction: jest.fn(),
-    deleteUserTransaction: jest.fn(),
+    getUserTransactions: vi.fn(),
+    getUserTransactionsCount: vi.fn(),
+    getUserTransactionsInbox: vi.fn(),
+    getUserTransactionsInboxCount: vi.fn(),
+    create: vi.fn(),
+    findOne: vi.fn(),
+    updateUserTransaction: vi.fn(),
+    deleteUserTransaction: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -41,7 +41,7 @@ describe('TransactionsController', () => {
     controller = module.get<TransactionsController>(TransactionsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

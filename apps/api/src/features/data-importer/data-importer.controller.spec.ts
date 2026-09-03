@@ -13,10 +13,11 @@ import {
   IMPORT_DATA_JOB,
   SUPPORTED_IMPORT_FORMATS,
 } from './processors/import-data.processor.js';
+import type { Mocked } from 'vitest';
 
 describe('DataImporterController', () => {
   let controller: DataImporterController;
-  let importQueue: jest.Mocked<Queue>;
+  let importQueue: Mocked<Queue>;
 
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
@@ -26,7 +27,7 @@ describe('DataImporterController', () => {
 
   beforeEach(async () => {
     const mockQueue = {
-      add: jest.fn(),
+      add: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +43,7 @@ describe('DataImporterController', () => {
     controller = module.get<DataImporterController>(DataImporterController);
     importQueue = module.get(getQueueToken(IMPORT_DATA_QUEUE));
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

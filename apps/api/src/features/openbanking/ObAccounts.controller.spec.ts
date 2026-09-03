@@ -7,8 +7,8 @@ describe('ObAccountsController', () => {
   let controller: ObAccountsController;
 
   const mockOpenbankingService = {
-    getLinkedAccounts: jest.fn(),
-    getAccountMetadata: jest.fn(),
+    getLinkedAccounts: vi.fn(),
+    getAccountMetadata: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -31,7 +31,7 @@ describe('ObAccountsController', () => {
     controller = module.get<ObAccountsController>(ObAccountsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

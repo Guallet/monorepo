@@ -13,27 +13,27 @@ describe('ObConnectionsController', () => {
   let controller: ObConnectionsController;
 
   const mockOpenbankingService = {
-    getAvailableCountries: jest.fn(),
-    getConnections: jest.fn(),
-    getConnection: jest.fn(),
-    deleteConnection: jest.fn(),
-    saveRequisition: jest.fn(),
-    updateRequisition: jest.fn(),
-    connectToAccounts: jest.fn(),
-    syncAccountTransactions: jest.fn(),
+    getAvailableCountries: vi.fn(),
+    getConnections: vi.fn(),
+    getConnection: vi.fn(),
+    deleteConnection: vi.fn(),
+    saveRequisition: vi.fn(),
+    updateRequisition: vi.fn(),
+    connectToAccounts: vi.fn(),
+    syncAccountTransactions: vi.fn(),
   };
 
   const mockNordigenService = {
-    getInstitutions: jest.fn(),
-    getRequisition: jest.fn(),
-    deleteRequisition: jest.fn(),
-    createRequisition: jest.fn(),
-    getAccountMetadata: jest.fn(),
-    getAccountDetails: jest.fn(),
+    getInstitutions: vi.fn(),
+    getRequisition: vi.fn(),
+    deleteRequisition: vi.fn(),
+    createRequisition: vi.fn(),
+    getAccountMetadata: vi.fn(),
+    getAccountDetails: vi.fn(),
   };
 
   const mockInstitutionsService = {
-    findOneByNordigenId: jest.fn(),
+    findOneByNordigenId: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -64,7 +64,7 @@ describe('ObConnectionsController', () => {
     controller = module.get<ObConnectionsController>(ObConnectionsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockOpenbankingService.getConnection.mockResolvedValue({
       id: 'conn-1',
       created: new Date('2024-01-01'),

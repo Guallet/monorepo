@@ -10,11 +10,11 @@ import { AiFinancialContextService } from './ai-financial-context.service.js';
 describe('AiFinancialContextService', () => {
   let service: AiFinancialContextService;
 
-  const mockAccountRepository = { find: jest.fn() };
-  const mockTransactionRepository = { find: jest.fn() };
-  const mockBudgetRepository = { find: jest.fn() };
-  const mockSavingGoalRepository = { find: jest.fn() };
-  const mockRegularPaymentRepository = { find: jest.fn() };
+  const mockAccountRepository = { find: vi.fn() };
+  const mockTransactionRepository = { find: vi.fn() };
+  const mockBudgetRepository = { find: vi.fn() };
+  const mockSavingGoalRepository = { find: vi.fn() };
+  const mockRegularPaymentRepository = { find: vi.fn() };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,7 +44,7 @@ describe('AiFinancialContextService', () => {
     }).compile();
 
     service = module.get<AiFinancialContextService>(AiFinancialContextService);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockAccountRepository.find.mockResolvedValue([]);
     mockTransactionRepository.find.mockResolvedValue([]);
     mockBudgetRepository.find.mockResolvedValue([]);
