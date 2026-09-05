@@ -30,7 +30,6 @@ import { HealthModule } from './features/health/health.module.js';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/better-auth.js';
 import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller.js';
 
 @Module({
@@ -106,12 +105,6 @@ import { AppController } from './app.controller.js';
     }),
     // EVENTS
     EventEmitterModule.forRoot(),
-    // RATE LIMITING
-    // TODO(nestjs-12): Upgrade @nestjs/throttler when a release declares
-    // NestJS 12 peer support. Version 6.5.0 is currently the latest release.
-    // No APP_GUARD is registered: throttling is opt-in per controller via
-    // @UseGuards(ThrottlerGuard). This default applies where the guard is used.
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],

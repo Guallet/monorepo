@@ -9,7 +9,6 @@ import {
   Post,
   ParseUUIDPipe,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -18,7 +17,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { RequestUser } from '../../auth/request-user.decorator.js';
 import { UserPrincipal } from '../../auth/user-principal.js';
@@ -30,7 +28,6 @@ import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto.js';
 
 @Controller('ai/chat')
 @ApiTags('AI')
-@UseGuards(ThrottlerGuard)
 export class AiChatController {
   constructor(private readonly aiChatService: AiChatService) {}
 
@@ -87,7 +84,7 @@ export class AiChatController {
   }
 
   // Streams the assistant reply as plain text chunks. Each call makes an
-  // outbound request to the user's AI provider, hence the stricter limit.
+  // outbound request to the user's AI provider.
   @Post('sessions/:id/messages')
   @ApiOperation({ summary: 'Send a message and stream the AI response' })
   @ApiParam({ name: 'id', format: 'uuid', description: 'Chat session ID' })
@@ -101,7 +98,6 @@ export class AiChatController {
       },
     },
   })
-  @Throttle({ default: { ttl: 60_000, limit: 20 } })
   async sendMessage(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,

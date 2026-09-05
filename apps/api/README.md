@@ -119,7 +119,7 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
 - Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
-- AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools. AI endpoints are rate-limited per user via `@nestjs/throttler`.
+- AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools.
 - API docs: OpenAPI (Swagger) generated from decorators — visit `/docs`.
 
 ---
