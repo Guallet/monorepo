@@ -1,8 +1,12 @@
-import { User } from '../entities/user.entity';
+import { User } from '../entities/user.entity.js';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {
+  @ApiProperty()
   name: string;
+  @ApiProperty()
   email: string;
+  @ApiProperty()
   profile_src: string;
 
   static fromDomain(domain: User): UserDto {
@@ -12,4 +16,9 @@ export class UserDto {
       profile_src: domain.profile_image_url,
     };
   }
+}
+
+export class DeleteUserResponseDto {
+  @ApiProperty({ example: 'User deleted successfully' })
+  message: string;
 }

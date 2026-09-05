@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CategoriesService } from '../categories/categories.service';
+import { CategoriesService } from '../categories/categories.service.js';
 
 @Injectable()
 export class UserInitializationService {

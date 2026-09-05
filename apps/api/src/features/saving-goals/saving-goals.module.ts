@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { SavingGoalsService } from './saving-goals.service';
-import { SavingGoalsController } from './saving-goals.controller';
-import { SavingGoal } from './entities/saving-goal.entity';
+import { SavingGoalsService } from './saving-goals.service.js';
+import { SavingGoalsController } from './saving-goals.controller.js';
+import { SavingGoal } from './entities/saving-goal.entity.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Budget } from 'src/features/budgets/entities/budget.entity';
-import { RegularPayment } from 'src/features/regular-payments/entities/regular-payment.entity';
-import { SavingGoal } from 'src/features/saving-goals/entities/saving-goal.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Budget } from '../../features/budgets/entities/budget.entity.js';
+import { RegularPayment } from '../../features/regular-payments/entities/regular-payment.entity.js';
+import { SavingGoal } from '../../features/saving-goals/entities/saving-goal.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
 
 const SUMMARY_MONTHS = 24;
 

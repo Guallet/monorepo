@@ -9,13 +9,19 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { CategoryDto } from './dto/category.dto';
+import { CategoriesService } from './categories.service.js';
+import { CreateCategoryDto } from './dto/create-category.dto.js';
+import { UpdateCategoryDto } from './dto/update-category.dto.js';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { CategoryDto } from './dto/category.dto.js';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -25,6 +31,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s categories' })
+  @ApiResponse({ status: 200, type: [CategoryDto] })
   async findAll(@RequestUser() user: UserPrincipal): Promise<CategoryDto[]> {
     const categories = await this.categoriesService.findAllUserCategories(
       user.id,
@@ -34,6 +42,9 @@ export class CategoriesController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a category by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Category ID' })
+  @ApiResponse({ status: 200, type: CategoryDto })
   async findOne(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -50,6 +61,9 @@ export class CategoriesController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a category' })
+  @ApiBody({ type: CreateCategoryDto })
+  @ApiResponse({ status: 201, type: CategoryDto })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() createCategoryDto: CreateCategoryDto,
@@ -62,6 +76,10 @@ export class CategoriesController {
   }
 
   @Post('seed')
+  @ApiOperation({
+    summary: 'Create the default categories for the current user',
+  })
+  @ApiResponse({ status: 201, type: [CategoryDto] })
   async createDefaultCategoriesForUser(
     @RequestUser() user: UserPrincipal,
   ): Promise<CategoryDto[]> {
@@ -73,6 +91,10 @@ export class CategoriesController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a category' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Category ID' })
+  @ApiBody({ type: UpdateCategoryDto })
+  @ApiResponse({ status: 200, type: CategoryDto })
   async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -87,6 +109,9 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a category' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Category ID' })
+  @ApiResponse({ status: 200, type: CategoryDto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,

@@ -1,4 +1,4 @@
-import { Transaction } from './transaction.entity';
+import { Transaction } from './transaction.entity.js';
 
 export type InboxTransaction = {
   rule_id?: string;

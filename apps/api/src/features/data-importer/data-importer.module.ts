@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { DataImporterController } from './data-importer.controller';
+import { DataImporterController } from './data-importer.controller.js';
 import {
   ImportDataProcessor,
   IMPORT_DATA_QUEUE,
-} from './processors/import-data.processor';
-import { CsvImportEngine } from './engines/csv-import.engine';
-import { OfeImportEngine } from './engines/ofe-import.engine';
-import { JsonImportEngine } from './engines/json-import.engine';
-import { AccountsModule } from '../accounts/accounts.module';
-import { CategoriesModule } from '../categories/categories.module';
-import { TransactionsModule } from '../transactions/transactions.module';
-import { EmailModule } from '../email/email.module';
-import { UsersModule } from '../users/users.module';
-import { NotificationsModule } from '../notifications/notifications.module';
+} from './processors/import-data.processor.js';
+import { CsvImportEngine } from './engines/csv-import.engine.js';
+import { OfeImportEngine } from './engines/ofe-import.engine.js';
+import { JsonImportEngine } from './engines/json-import.engine.js';
+import { AccountsModule } from '../accounts/accounts.module.js';
+import { CategoriesModule } from '../categories/categories.module.js';
+import { TransactionsModule } from '../transactions/transactions.module.js';
+import { EmailModule } from '../email/email.module.js';
+import { UsersModule } from '../users/users.module.js';
+import { NotificationsModule } from '../notifications/notifications.module.js';
 
 @Module({
   imports: [

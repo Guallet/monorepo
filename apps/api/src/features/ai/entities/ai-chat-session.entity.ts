@@ -1,4 +1,4 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import {
   Column,
   Entity,
@@ -7,8 +7,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AiAgent } from './ai-agent.entity';
-import { AiChatMessage } from './ai-chat-message.entity';
+import { AiAgent } from './ai-agent.entity.js';
+import { AiChatMessage } from './ai-chat-message.entity.js';
+import type { Relation } from 'typeorm';
 
 @Entity('ai_chat_sessions')
 export class AiChatSession extends BaseDbEntity {
@@ -23,7 +24,7 @@ export class AiChatSession extends BaseDbEntity {
 
   @ManyToOne(() => AiAgent, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'agent_id' })
-  agent: AiAgent;
+  agent: Relation<AiAgent>;
 
   @Column({ type: 'text' })
   title: string;

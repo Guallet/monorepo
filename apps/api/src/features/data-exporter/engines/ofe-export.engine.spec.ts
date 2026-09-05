@@ -1,5 +1,5 @@
-import { OfeExportEngine } from './ofe-export.engine';
-import { ExportEngineParams } from './export-engine.interface';
+import { OfeExportEngine } from './ofe-export.engine.js';
+import { ExportEngineParams } from './export-engine.interface.js';
 
 describe('OfeExportEngine', () => {
   let engine: OfeExportEngine;

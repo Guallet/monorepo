@@ -1,4 +1,5 @@
-import { User } from '../entities/user.entity';
+import { User } from '../entities/user.entity.js';
+import { ApiProperty } from '@nestjs/swagger';
 
 /** Allowed date format values for user settings */
 export const ALLOWED_DATE_FORMATS = [
@@ -7,19 +8,38 @@ export const ALLOWED_DATE_FORMATS = [
   'YYYY/MM/DD',
 ] as const;
 
+export class UserCurrenciesRequest {
+  @ApiProperty({ required: false, description: 'The default currency code' })
+  default_currency?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Preferred currency codes',
+    type: [String],
+  })
+  preferred_currencies?: string[];
+}
+
 export class UserSettingsRequest {
-  currencies?: {
-    default_currency?: string;
-    preferred_currencies?: string[];
-  };
+  @ApiProperty({ required: false, type: () => UserCurrenciesRequest })
+  currencies?: UserCurrenciesRequest;
+
+  @ApiProperty({ required: false, enum: ALLOWED_DATE_FORMATS })
   date_format?: string;
 }
 
+export class UserCurrenciesDto {
+  @ApiProperty({ nullable: true })
+  default_currency: string | null;
+
+  @ApiProperty({ type: [String] })
+  preferred_currencies: string[];
+}
+
 export class UserSettingsDto {
-  currencies: {
-    default_currency: string | null;
-    preferred_currencies: string[];
-  };
+  @ApiProperty({ type: () => UserCurrenciesDto })
+  currencies: UserCurrenciesDto;
+  @ApiProperty({ required: false, nullable: true, enum: ALLOWED_DATE_FORMATS })
   date_format?: string | null;
 
   static fromDomain(domain: User): UserSettingsDto {

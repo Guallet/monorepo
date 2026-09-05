@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ObASyncController } from './ObSync.controller';
-import { SyncService } from './sync.service';
-import { UserPrincipal } from 'src/auth/user-principal';
+import { ObASyncController } from './ObSync.controller.js';
+import { SyncService } from './sync.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
 import { ForbiddenException } from '@nestjs/common';
 
 describe('ObASyncController', () => {
   let controller: ObASyncController;
 
   const mockSyncService = {
-    syncConnectedAccounts: jest.fn(),
+    syncConnectedAccounts: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -25,7 +25,7 @@ describe('ObASyncController', () => {
     controller = module.get<ObASyncController>(ObASyncController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -12,24 +12,38 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { AccountsService } from './accounts.service';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateAccountRequest } from './dto/create-account-request.dto';
-import { UpdateAccountRequest } from './dto/update-account-request.dto';
-import { AccountDto } from './dto/account.dto';
-import { TransactionsService } from 'src/features/transactions/transactions.service';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { AccountsService } from './accounts.service.js';
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CreateAccountRequest } from './dto/create-account-request.dto.js';
+import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
+import { AccountDto } from './dto/account.dto.js';
+import { TransactionsService } from '../../features/transactions/transactions.service.js';
 import {
   AccountChartsDto,
   BalanceHistoryPoint,
   ChartData,
-} from './dto/account-charts.dto';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
-import { OpenbankingService } from '../openbanking/openbanking.service';
-import { AccountSource, toAccountSource } from './entities/accountSource.model';
-import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
+} from './dto/account-charts.dto.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { TransactionDto } from '../../features/transactions/dto/transaction.dto.js';
+import { OpenbankingService } from '../openbanking/openbanking.service.js';
+import {
+  AccountSource,
+  toAccountSource,
+} from './entities/accountSource.model.js';
+import {
+  LinkedOpenBankingAccountDto,
+  LinkedOpenBankingAccountResponseDto,
+} from '../openbanking/dto/openbanking-response.dto.js';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
   if (!value) {
@@ -45,6 +59,7 @@ function parseDateParam(value: string | undefined, name: string): Date | null {
 }
 
 @ApiTags('Accounts')
+@ApiExtraModels(AccountDto, TransactionDto, LinkedOpenBankingAccountDto)
 @Controller('accounts')
 export class AccountsController {
   private readonly logger = new Logger(AccountsController.name);
@@ -56,6 +71,8 @@ export class AccountsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s accounts' })
+  @ApiResponse({ status: 200, type: [AccountDto] })
   async getUserAccounts(
     @RequestUser() user: UserPrincipal,
   ): Promise<AccountDto[]> {
@@ -64,6 +81,9 @@ export class AccountsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create an account' })
+  @ApiBody({ type: CreateAccountRequest })
+  @ApiResponse({ status: 201, type: AccountDto })
   async create(
     @Body() createAccountDto: CreateAccountRequest,
     @RequestUser() user: UserPrincipal,
@@ -76,6 +96,9 @@ export class AccountsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get an account by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({ status: 200, type: AccountDto })
   async getAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
@@ -88,6 +111,11 @@ export class AccountsController {
   }
 
   @Get(':id/transactions')
+  @ApiOperation({
+    summary: 'List an account’s transactions for the current month',
+  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({ status: 200, type: [TransactionDto] })
   // Get the transactions for the account in the current month
   async getAccountTransactions(
     @RequestUser() user: UserPrincipal,
@@ -113,6 +141,21 @@ export class AccountsController {
   }
 
   @Get(':id/charts')
+  @ApiOperation({ summary: 'Get account cash-flow and balance charts' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    type: String,
+    format: 'date-time',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    type: String,
+    format: 'date-time',
+  })
+  @ApiResponse({ status: 200, type: AccountChartsDto })
   async getAccountChart(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
@@ -248,13 +291,21 @@ export class AccountsController {
    * @param {string} accountId - UUID of the Guallet account
    * @throws {BadRequestException} When the account is not connected to Open Banking
    * @throws {NotFoundException} When the connected Open Banking account cannot be found
-   * @returns {Promise<{connectedAccount: OpenBankingAccount}>} Object containing the connected Open Banking account details
+   * @returns {Promise<{connectedAccount: NordigenAccountDto}>} Object containing the connected Open Banking account details
    */
   @Get(':id/connection')
+  @ApiOperation({
+    summary: 'Get the Open Banking account linked to an account',
+  })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({
+    status: 200,
+    type: LinkedOpenBankingAccountResponseDto,
+  })
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ): Promise<{ connectedAccount: NordigenAccount }> {
+  ): Promise<LinkedOpenBankingAccountResponseDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
@@ -265,6 +316,7 @@ export class AccountsController {
     }
 
     const obAccount = await this.openBankingService.getLinkedAccount({
+      userId: user.id,
       accountId: account.id,
     });
 
@@ -272,13 +324,19 @@ export class AccountsController {
       throw new NotFoundException('Connected account not found');
     }
 
-    return { connectedAccount: obAccount };
+    return {
+      connectedAccount: LinkedOpenBankingAccountDto.fromEntity(obAccount),
+    };
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update an account' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiBody({ type: UpdateAccountRequest })
+  @ApiResponse({ status: 200, type: AccountDto })
   async update(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateAccountRequest,
   ): Promise<AccountDto> {
     const updatedAccount = await this.accountsService.update({
@@ -290,6 +348,9 @@ export class AccountsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an account' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Account ID' })
+  @ApiResponse({ status: 200, type: AccountDto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,

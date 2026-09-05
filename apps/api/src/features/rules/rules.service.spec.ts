@@ -1,45 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
-import { RulesService } from './rules.service';
+import { RulesService } from './rules.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   CategorizationRule,
   RuleCondition,
-} from './entities/categorization-rule.entity';
-import { Transaction } from '../transactions/entities/transaction.entity';
+} from './entities/categorization-rule.entity.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 import { BadRequestException } from '@nestjs/common';
-import { CreateRuleDto } from './dto/create-rule.dto';
-import { UpdateRuleDto } from './dto/update-rule.dto';
+import { CreateRuleDto } from './dto/create-rule.dto.js';
+import { UpdateRuleDto } from './dto/update-rule.dto.js';
 
 describe('RulesService', () => {
   let service: RulesService;
 
   const mockRulesRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    count: jest.fn(),
-    createQueryBuilder: jest.fn(() => ({
-      select: jest.fn().mockReturnThis(),
-      where: jest.fn().mockReturnThis(),
-      getRawOne: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    count: vi.fn(),
+    createQueryBuilder: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      getRawOne: vi.fn(),
     })),
-    update: jest.fn(),
+    update: vi.fn(),
   };
 
   const mockConditionsRepository = {
-    find: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    delete: jest.fn(),
-    update: jest.fn(),
+    find: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    delete: vi.fn(),
+    update: vi.fn(),
   };
 
   const mockTransactionsRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -64,7 +64,7 @@ describe('RulesService', () => {
     service = module.get<RulesService>(RulesService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

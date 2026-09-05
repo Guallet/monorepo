@@ -1,23 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BudgetsController } from './budgets.controller';
-import { BudgetsService } from './budgets.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Budget } from './entities/budget.entity';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { BudgetsController } from './budgets.controller.js';
+import { BudgetsService } from './budgets.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Budget } from './entities/budget.entity.js';
+import { CreateBudgetDto } from './dto/create-budget.dto.js';
+import { UpdateBudgetDto } from './dto/update-budget.dto.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 
 describe('BudgetsController', () => {
   let controller: BudgetsController;
 
   const mockBudgetsService = {
-    findAllForUser: jest.fn(),
-    findOneForUser: jest.fn(),
-    getMonthlySpending: jest.fn(),
-    getBudgetTransactions: jest.fn(),
-    createBudgetForUser: jest.fn(),
-    updateBudgetForUser: jest.fn(),
-    deleteBudgetForUser: jest.fn(),
+    findAllForUser: vi.fn(),
+    findOneForUser: vi.fn(),
+    getMonthlySpending: vi.fn(),
+    getBudgetTransactions: vi.fn(),
+    createBudgetForUser: vi.fn(),
+    updateBudgetForUser: vi.fn(),
+    deleteBudgetForUser: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -40,7 +40,7 @@ describe('BudgetsController', () => {
     controller = module.get<BudgetsController>(BudgetsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

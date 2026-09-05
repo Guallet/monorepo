@@ -1,21 +1,21 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { EmailService } from '../../email/email.service';
-import { UsersService } from '../../users/users.service';
-import { NotificationsService } from '../../notifications/notifications.service';
-import { NotificationType } from '../../notifications/entities/notification.entity';
-import { DataFormat } from '../../data-formats';
-import { DataImportRequestDto } from '../dto/data-import-request.dto';
-import { ImportEngine } from '../engines/import-engine.interface';
-import { CsvImportEngine } from '../engines/csv-import.engine';
-import { OfeImportEngine } from '../engines/ofe-import.engine';
-import { JsonImportEngine } from '../engines/json-import.engine';
+import { EmailService } from '../../email/email.service.js';
+import { UsersService } from '../../users/users.service.js';
+import { NotificationsService } from '../../notifications/notifications.service.js';
+import { NotificationType } from '../../notifications/entities/notification.entity.js';
+import { DataFormat } from '../../data-formats.js';
+import { DataImportRequestDto } from '../dto/data-import-request.dto.js';
+import { ImportEngine } from '../engines/import-engine.interface.js';
+import { CsvImportEngine } from '../engines/csv-import.engine.js';
+import { OfeImportEngine } from '../engines/ofe-import.engine.js';
+import { JsonImportEngine } from '../engines/json-import.engine.js';
 
 export const IMPORT_DATA_QUEUE = 'import-data';
 export const IMPORT_DATA_JOB = 'process-import';
 
-export { SUPPORTED_DATA_FORMATS as SUPPORTED_IMPORT_FORMATS } from '../../data-formats';
+export { SUPPORTED_DATA_FORMATS as SUPPORTED_IMPORT_FORMATS } from '../../data-formats.js';
 
 export interface ImportJobData {
   userId: string;

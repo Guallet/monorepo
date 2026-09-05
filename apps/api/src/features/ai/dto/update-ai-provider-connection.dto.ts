@@ -1,15 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { PartialType, PickType } from '@nestjs/swagger';
+import { CreateAiProviderConnectionDto } from './create-ai-provider-connection.dto.js';
 
-export class UpdateAiProviderConnectionDto {
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  displayName?: string;
-
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(1024)
-  apiToken?: string;
-}
+export class UpdateAiProviderConnectionDto extends PartialType(
+  PickType(CreateAiProviderConnectionDto, ['displayName', 'apiToken'] as const),
+) {}

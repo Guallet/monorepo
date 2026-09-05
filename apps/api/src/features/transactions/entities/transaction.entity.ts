@@ -1,16 +1,16 @@
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Category } from 'src/features/categories/entities/category.entity';
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { NordigenTransactionDto } from 'src/features/nordigen/dto/nordigen-transaction.dto';
+import { Account } from '../../../features/accounts/entities/account.entity.js';
+import { Category } from '../../../features/categories/entities/category.entity.js';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
+import { NordigenTransactionDto } from '../../../features/nordigen/dto/nordigen-transaction.dto.js';
 import {
   Column,
   Entity,
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Relation,
 } from 'typeorm';
-import { TransactionMetadata } from './transaction-metadata.model';
+import type { Relation } from 'typeorm';
+import { TransactionMetadata } from './transaction-metadata.model.js';
 
 @Entity('transactions')
 export class Transaction extends BaseDbEntity {
@@ -51,7 +51,7 @@ export class Transaction extends BaseDbEntity {
   @ManyToOne(() => Category, (category) => category.transactions, {
     onDelete: 'SET NULL',
   })
-  category: Category;
+  category: Relation<Category>;
 
   @Column({ nullable: true })
   categoryId: string | null;

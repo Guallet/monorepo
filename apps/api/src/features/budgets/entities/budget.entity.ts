@@ -1,4 +1,4 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,7 +6,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Category } from 'src/features/categories/entities/category.entity';
+import { Category } from '../../../features/categories/entities/category.entity.js';
+import type { Relation } from 'typeorm';
 
 @Entity('budgets')
 export class Budget extends BaseDbEntity {
@@ -37,5 +38,5 @@ export class Budget extends BaseDbEntity {
     joinColumn: { name: 'budget_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
   })
-  categories: Category[];
+  categories: Relation<Category[]>;
 }

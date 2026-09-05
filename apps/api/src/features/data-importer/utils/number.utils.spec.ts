@@ -1,4 +1,4 @@
-import { parseNumber, isValidNumber } from './number.utils';
+import { parseNumber, isValidNumber } from './number.utils.js';
 
 describe('Number Utils', () => {
   describe('parseNumber', () => {

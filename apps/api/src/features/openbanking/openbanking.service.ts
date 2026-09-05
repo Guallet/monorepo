@@ -5,18 +5,19 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { NordigenRequisitionDto } from 'src/features/nordigen/dto/nordigen-requisition.dto';
-import { ObConnection } from './entities/connection.entity';
-import { Repository } from 'typeorm';
+import { NordigenRequisitionDto } from '../../features/nordigen/dto/nordigen-requisition.dto.js';
+import { ObConnection } from './entities/connection.entity.js';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { getBalanceAmountFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
-import { getAccountTypeFrom } from 'src/features/nordigen/dto/ExternalCashAccountType1Code.helper';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { supportedCountries } from './sync.service';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { getBalanceAmountFrom } from '../../features/nordigen/dto/nordigen-balances.helper.js';
+import { getAccountTypeFrom } from '../../features/nordigen/dto/ExternalCashAccountType1Code.helper.js';
+import { Institution } from '../../features/institutions/entities/institution.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { supportedCountries } from './sync.service.js';
+import { OpenBankingCountryDto } from './dto/openbanking-response.dto.js';
 
 @Injectable()
 export class OpenbankingService {
@@ -37,7 +38,7 @@ export class OpenbankingService {
     private readonly transactionsRepository: Repository<Transaction>,
   ) {}
 
-  getAvailableCountries(locale: string) {
+  getAvailableCountries(locale: string): OpenBankingCountryDto[] {
     return supportedCountries.map((code) => {
       const regionNames = new Intl.DisplayNames([locale], {
         type: 'region',
@@ -45,23 +46,29 @@ export class OpenbankingService {
 
       return {
         code: code,
-        name: regionNames.of(code),
+        name: regionNames.of(code) ?? code,
       };
     });
   }
 
-  async deleteConnection(args: { user_id: string; connection_id: string }) {
-    const { user_id, connection_id } = args;
+  async getConnection(userId: string, connectionId: string) {
     const connection = await this.repository.findOne({
       where: {
-        user_id: user_id,
-        id: connection_id,
+        user_id: userId,
+        id: connectionId,
       },
     });
 
     if (connection === null) {
-      throw new NotFoundException();
+      throw new NotFoundException('Open Banking connection not found');
     }
+
+    return connection;
+  }
+
+  async deleteConnection(args: { user_id: string; connection_id: string }) {
+    const { user_id, connection_id } = args;
+    const connection = await this.getConnection(user_id, connection_id);
 
     // TODO: Delete the OB accounts from the DB
     const accountsToDelete = connection.accounts;
@@ -73,16 +80,38 @@ export class OpenbankingService {
       deletedAccounts.push(accountId);
     }
 
-    const removed = await this.repository.remove(connection);
+    await this.repository.remove(connection);
 
     return {
-      connection: removed,
+      connection_id,
       accounts: deletedAccounts,
     };
   }
 
   async saveRequisition(user_id: string, dto: NordigenRequisitionDto) {
-    const connection = new ObConnection();
+    const existing = await this.repository.findOne({
+      where: { id: dto.id },
+    });
+    if (existing !== null && existing.user_id !== user_id) {
+      throw new NotFoundException('Open Banking connection not found');
+    }
+
+    const connection = existing ?? new ObConnection();
+    this.applyRequisition(connection, dto);
+    connection.user_id = user_id;
+    await this.repository.save(connection);
+  }
+
+  async updateRequisition(userId: string, dto: NordigenRequisitionDto) {
+    const connection = await this.getConnection(userId, dto.id);
+    this.applyRequisition(connection, dto);
+    await this.repository.save(connection);
+  }
+
+  private applyRequisition(
+    connection: ObConnection,
+    dto: NordigenRequisitionDto,
+  ): void {
     connection.id = dto.id;
     connection.created = dto.created;
     connection.redirect = dto.redirect;
@@ -90,14 +119,12 @@ export class OpenbankingService {
     connection.institution_id = dto.institution_id;
     connection.agreement = dto.agreement;
     connection.reference = dto.reference;
-    connection.user_id = user_id;
     connection.accounts = dto.accounts;
     connection.user_language = dto.user_language;
     connection.link = dto.link;
     connection.ssn = dto.ssn;
     connection.account_selection = dto.account_selection;
     connection.redirect_immediate = dto.redirect_immediate;
-    await this.repository.save(connection);
   }
 
   async getConnections(user_id: string) {
@@ -109,25 +136,57 @@ export class OpenbankingService {
   }
 
   async connectToAccounts(userId: string, accountIds: string[]) {
-    try {
-      for (const accountId of accountIds) {
-        this.logger.log(`Syncing nordigen account: ${accountId}`);
-        await this.connectToAccount(userId, accountId);
-        this.logger.log(`Nordigen account synced: ${accountId}`);
-      }
+    await this.assertAccountsBelongToUser(userId, accountIds);
 
-      return {
-        accounts_count: accountIds.length,
-      };
-    } catch (error) {
-      this.logger.error(`Error syncing accounts: ${error}`);
-      throw new InternalServerErrorException();
+    for (const accountId of accountIds) {
+      this.logger.log(`Syncing nordigen account: ${accountId}`);
+      await this.connectToAccount(userId, accountId);
+      this.logger.log(`Nordigen account synced: ${accountId}`);
+    }
+
+    return {
+      accounts_count: accountIds.length,
+    };
+  }
+
+  private async assertAccountsBelongToUser(
+    userId: string,
+    accountIds: string[],
+  ): Promise<void> {
+    const connections = await this.repository.find({
+      where: { user_id: userId },
+    });
+    const ownedAccountIds = new Set(
+      connections.flatMap((connection) => connection.accounts),
+    );
+    if (accountIds.some((accountId) => !ownedAccountIds.has(accountId))) {
+      throw new NotFoundException('Open Banking account not found');
     }
   }
 
   // Should this method just deal with the "Nordigen Accounts" and
   // leave the app accounts alone?
   async connectToAccount(user_id: string, nordigen_accountId: string) {
+    const existingNordigenAccount =
+      await this.nordigenAccountsRepository.findOne({
+        where: {
+          resource_id: nordigen_accountId,
+        },
+      });
+
+    let existingLinkedAccount: Account | null = null;
+    if (existingNordigenAccount?.linked_account_id) {
+      existingLinkedAccount = await this.accountRepository.findOne({
+        where: {
+          id: existingNordigenAccount.linked_account_id,
+          user_id,
+        },
+      });
+      if (existingLinkedAccount === null) {
+        throw new NotFoundException('Open Banking account not found');
+      }
+    }
+
     // Get nordigen account metadata
     // this.logger.debug(`Getting Account Metadata: ${nordigen_accountId}`);
     const metadata =
@@ -139,14 +198,6 @@ export class OpenbankingService {
     const details =
       await this.nordigenService.getAccountDetails(nordigen_accountId);
 
-    // If there is an existing account linked to this nordigen account, don't create it again
-    const existingNordigenAccount =
-      await this.nordigenAccountsRepository.findOne({
-        where: {
-          resource_id: nordigen_accountId,
-        },
-      });
-
     this.logger.debug(
       `Existing Nordigen Account: ${existingNordigenAccount?.id}`,
     );
@@ -155,9 +206,14 @@ export class OpenbankingService {
     account.user_id = user_id;
     account.id = nordigen_accountId;
 
+    if (existingLinkedAccount !== null) {
+      account = existingLinkedAccount;
+    }
+
     if (
       existingNordigenAccount === null ||
-      existingNordigenAccount.linked_account_id === null
+      existingNordigenAccount.linked_account_id === null ||
+      existingNordigenAccount.linked_account_id === undefined
     ) {
       // Creates the app account
       const tmpAccount = await this.accountRepository.findOne({
@@ -250,7 +306,7 @@ export class OpenbankingService {
   /**
    * @deprecated The method should not be used as is no longer maintained. Use 'SyncService.syncNordigenAccount()' instead.
    */
-  async syncAccountTransactions(accountId: string) {
+  async syncAccountTransactions(userId: string, accountId: string) {
     this.logger.log(`Syncing Nordigen account ${accountId}`);
     const nordigenAccount = await this.nordigenAccountsRepository.findOne({
       where: {
@@ -274,6 +330,7 @@ export class OpenbankingService {
     const gualletAccount = await this.accountRepository.findOne({
       where: {
         id: linked_account_id,
+        user_id: userId,
       },
     });
 
@@ -321,10 +378,19 @@ export class OpenbankingService {
   }
 
   async getLinkedAccount({
+    userId,
     accountId,
   }: {
+    userId: string;
     accountId: string;
   }): Promise<NordigenAccount> {
+    const account = await this.accountRepository.findOne({
+      where: { id: accountId, user_id: userId },
+    });
+    if (account === null) {
+      throw new NotFoundException('Account not found');
+    }
+
     const nordigenAccount = await this.nordigenAccountsRepository.findOne({
       where: {
         linked_account_id: accountId,
@@ -336,5 +402,36 @@ export class OpenbankingService {
     }
 
     return nordigenAccount;
+  }
+
+  async getLinkedAccounts(userId: string): Promise<NordigenAccount[]> {
+    const accounts = await this.accountRepository.find({
+      where: { user_id: userId },
+    });
+    if (accounts.length === 0) {
+      return [];
+    }
+
+    return this.nordigenAccountsRepository.find({
+      where: { linked_account_id: In(accounts.map((account) => account.id)) },
+    });
+  }
+
+  async getAccountMetadata(userId: string, accountId: string) {
+    const nordigenAccount = await this.nordigenAccountsRepository.findOne({
+      where: { id: accountId },
+    });
+    if (!nordigenAccount?.linked_account_id) {
+      throw new NotFoundException('Open Banking account not found');
+    }
+
+    const account = await this.accountRepository.findOne({
+      where: { id: nordigenAccount.linked_account_id, user_id: userId },
+    });
+    if (account === null) {
+      throw new NotFoundException('Open Banking account not found');
+    }
+
+    return this.nordigenService.getAccountMetadata(accountId);
   }
 }

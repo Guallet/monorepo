@@ -1,4 +1,4 @@
-import { NordigenTransactionDto } from 'src/features/nordigen/dto/nordigen-transaction.dto';
+import { NordigenTransactionDto } from '../../../features/nordigen/dto/nordigen-transaction.dto.js';
 
 export interface TransactionMetadata {
   provider: TransactionDataProvider;

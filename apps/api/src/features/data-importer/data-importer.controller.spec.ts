@@ -3,20 +3,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
-import { DataImporterController } from './data-importer.controller';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { DataImportRequestDto } from './dto/data-import-request.dto';
+import { DataImporterController } from './data-importer.controller.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { DataImportRequestDto } from './dto/data-import-request.dto.js';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Queue, Job } from 'bullmq';
 import {
   IMPORT_DATA_QUEUE,
   IMPORT_DATA_JOB,
   SUPPORTED_IMPORT_FORMATS,
-} from './processors/import-data.processor';
+} from './processors/import-data.processor.js';
+import type { Mocked } from 'vitest';
 
 describe('DataImporterController', () => {
   let controller: DataImporterController;
-  let importQueue: jest.Mocked<Queue>;
+  let importQueue: Mocked<Queue>;
 
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
@@ -26,7 +27,7 @@ describe('DataImporterController', () => {
 
   beforeEach(async () => {
     const mockQueue = {
-      add: jest.fn(),
+      add: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +43,7 @@ describe('DataImporterController', () => {
     controller = module.get<DataImporterController>(DataImporterController);
     importQueue = module.get(getQueueToken(IMPORT_DATA_QUEUE));
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

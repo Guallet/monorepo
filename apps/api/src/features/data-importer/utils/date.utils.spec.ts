@@ -1,4 +1,4 @@
-import { isDate, formatDate, parseDate } from './date.utils';
+import { isDate, formatDate, parseDate } from './date.utils.js';
 
 describe('Date Utils', () => {
   describe('isDate', () => {

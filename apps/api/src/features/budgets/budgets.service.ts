@@ -5,12 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Budget } from './entities/budget.entity';
+import { Budget } from './entities/budget.entity.js';
 import { Between, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Transaction } from '../transactions/entities/transaction.entity';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
+import { CreateBudgetDto } from './dto/create-budget.dto.js';
+import { UpdateBudgetDto } from './dto/update-budget.dto.js';
 
 @Injectable()
 export class BudgetsService {

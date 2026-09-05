@@ -1,8 +1,6 @@
-// It looks NestJS and TypeScript don't like ES6 imports for dayjs
-/* eslint-disable @typescript-eslint/no-require-imports */
-import dayjs = require('dayjs');
-import localizedFormat = require('dayjs/plugin/localizedFormat');
-import customParseFormat = require('dayjs/plugin/customParseFormat');
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat.js';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);

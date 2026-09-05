@@ -1,5 +1,5 @@
-import { SavingGoalDto } from './saving-goal.dto';
-import { SavingGoal } from '../entities/saving-goal.entity';
+import { SavingGoalDto } from './saving-goal.dto.js';
+import { SavingGoal } from '../entities/saving-goal.entity.js';
 
 function makeGoal(overrides: Partial<SavingGoal> = {}): SavingGoal {
   return {

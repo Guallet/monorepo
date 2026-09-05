@@ -7,27 +7,33 @@ import {
   HttpStatus,
   Param,
   Post,
+  ParseUUIDPipe,
   Res,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { Response } from 'express';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { AiChatService } from './ai-chat.service';
-import { AiChatMessageDto } from './dto/ai-chat-message.dto';
-import { AiChatSessionDto } from './dto/ai-chat-session.dto';
-import { CreateAiChatSessionDto } from './dto/create-ai-chat-session.dto';
-import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import type { Response } from 'express';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { AiChatService } from './ai-chat.service.js';
+import { AiChatMessageDto } from './dto/ai-chat-message.dto.js';
+import { AiChatSessionDto } from './dto/ai-chat-session.dto.js';
+import { CreateAiChatSessionDto } from './dto/create-ai-chat-session.dto.js';
+import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto.js';
 
 @Controller('ai/chat')
 @ApiTags('AI')
-@UseGuards(ThrottlerGuard)
 export class AiChatController {
   constructor(private readonly aiChatService: AiChatService) {}
 
   @Get('sessions')
+  @ApiOperation({ summary: 'List the current user’s AI chat sessions' })
+  @ApiResponse({ status: 200, type: [AiChatSessionDto] })
   async findSessions(
     @RequestUser() user: UserPrincipal,
   ): Promise<AiChatSessionDto[]> {
@@ -35,6 +41,9 @@ export class AiChatController {
   }
 
   @Post('sessions')
+  @ApiOperation({ summary: 'Create an AI chat session' })
+  @ApiBody({ type: CreateAiChatSessionDto })
+  @ApiResponse({ status: 201, type: AiChatSessionDto })
   @HttpCode(HttpStatus.CREATED)
   async createSession(
     @RequestUser() user: UserPrincipal,
@@ -47,9 +56,12 @@ export class AiChatController {
   }
 
   @Delete('sessions/:id')
+  @ApiOperation({ summary: 'Delete an AI chat session' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Chat session ID' })
+  @ApiResponse({ status: 200, type: AiChatSessionDto })
   async deleteSession(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<AiChatSessionDto> {
     return await this.aiChatService.deleteSession({
       userId: user.id,
@@ -58,9 +70,12 @@ export class AiChatController {
   }
 
   @Get('sessions/:id/messages')
+  @ApiOperation({ summary: 'List messages in an AI chat session' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Chat session ID' })
+  @ApiResponse({ status: 200, type: [AiChatMessageDto] })
   async findMessages(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<AiChatMessageDto[]> {
     return await this.aiChatService.findMessages({
       userId: user.id,
@@ -69,12 +84,23 @@ export class AiChatController {
   }
 
   // Streams the assistant reply as plain text chunks. Each call makes an
-  // outbound request to the user's AI provider, hence the stricter limit.
+  // outbound request to the user's AI provider.
   @Post('sessions/:id/messages')
-  @Throttle({ default: { ttl: 60_000, limit: 20 } })
+  @ApiOperation({ summary: 'Send a message and stream the AI response' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Chat session ID' })
+  @ApiBody({ type: SendAiChatMessageDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Plain-text response stream',
+    content: {
+      'text/plain': {
+        schema: { type: 'string' },
+      },
+    },
+  })
   async sendMessage(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: SendAiChatMessageDto,
     @Res() response: Response,
   ): Promise<void> {

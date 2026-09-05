@@ -1,14 +1,24 @@
-import { InboxTransaction } from '../entities/inbox-transaction.model';
+import { InboxTransaction } from '../entities/inbox-transaction.model.js';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class InboxTransactionDto {
+  @ApiProperty({ format: 'uuid' })
   id: string;
+  @ApiProperty({ format: 'uuid' })
   accountId: string;
+  @ApiProperty()
   description: string;
+  @ApiProperty({ required: false })
   notes?: string;
+  @ApiProperty()
   amount: number;
+  @ApiProperty()
   currency: string;
+  @ApiProperty({ type: String, format: 'date-time' })
   date: Date;
+  @ApiProperty({ required: false, format: 'uuid' })
   processedCategoryId?: string; // TODO: Processed category id based by rules
+  @ApiProperty({ required: false, format: 'uuid' })
   ruleId?: string; // TODO: Rule that processed this transaction
 
   static fromDomain(domain: InboxTransaction): InboxTransactionDto {
@@ -26,15 +36,21 @@ export class InboxTransactionDto {
   }
 }
 
-export type InboxTransactionsResultMetadataDto = {
+export class InboxTransactionsResultMetadataDto {
+  @ApiProperty()
   total: number;
+  @ApiProperty()
   page: number;
+  @ApiProperty()
   pageSize: number;
+  @ApiProperty()
   hasMore: boolean;
-};
+}
 
 export class InboxTransactionsResultDto {
+  @ApiProperty({ type: () => InboxTransactionsResultMetadataDto })
   meta: InboxTransactionsResultMetadataDto;
+  @ApiProperty({ type: () => [InboxTransactionDto] })
   transactions: InboxTransactionDto[];
 
   static fromDomain({

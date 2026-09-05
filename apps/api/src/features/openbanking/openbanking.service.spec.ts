@@ -1,50 +1,55 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OpenbankingService } from './openbanking.service';
+import { OpenbankingService } from './openbanking.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ObConnection } from './entities/connection.entity';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
+import { ObConnection } from './entities/connection.entity.js';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Institution } from '../../features/institutions/entities/institution.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto';
+import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto.js';
 
 describe('OpenbankingService', () => {
   let service: OpenbankingService;
 
   const mockObConnectionRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockNordigenAccountRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    delete: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    delete: vi.fn(),
   };
 
   const mockAccountRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockInstitutionRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
+    upsert: vi.fn(),
   };
 
   const mockNordigenService = {
-    getInstitutions: jest.fn(),
-    getAccountMetadata: jest.fn(),
-    getAccountDetails: jest.fn(),
+    getInstitutions: vi.fn(),
+    getAccountMetadata: vi.fn(),
+    getAccountDetails: vi.fn(),
+    getAccountBalance: vi.fn(),
+    getAccountTransactions: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -81,7 +86,8 @@ describe('OpenbankingService', () => {
     service = module.get<OpenbankingService>(OpenbankingService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    mockObConnectionRepository.findOne.mockResolvedValue(null);
   });
 
   it('should be defined', () => {
@@ -132,6 +138,7 @@ describe('OpenbankingService', () => {
       const result = await service.deleteConnection(args);
 
       expect(result).toBeDefined();
+      expect(result.connection_id).toBe(args.connection_id);
       expect(result.accounts).toEqual(['account-1', 'account-2']);
       expect(mockNordigenAccountRepository.delete).toHaveBeenCalledTimes(2);
       expect(mockObConnectionRepository.remove).toHaveBeenCalledWith(
@@ -177,6 +184,46 @@ describe('OpenbankingService', () => {
       await service.saveRequisition(userId, requisitionDto);
 
       expect(mockObConnectionRepository.save).toHaveBeenCalled();
+    });
+
+    it('should not overwrite a requisition owned by another user', async () => {
+      mockObConnectionRepository.findOne.mockResolvedValue({
+        id: 'req-1',
+        user_id: 'another-user',
+      });
+
+      await expect(
+        service.saveRequisition('user-123', {
+          id: 'req-1',
+        } as NordigenRequisitionDto),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockObConnectionRepository.save).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ownership checks', () => {
+    it('should reject account connection before remote calls when it is not owned', async () => {
+      mockObConnectionRepository.find.mockResolvedValue([
+        { user_id: 'user-123', accounts: ['owned-account'] },
+      ]);
+
+      await expect(
+        service.connectToAccounts('user-123', ['another-account']),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockNordigenService.getAccountMetadata).not.toHaveBeenCalled();
+    });
+
+    it('should reject account synchronization before remote calls when its linked account is not owned', async () => {
+      mockNordigenAccountRepository.findOne.mockResolvedValue({
+        id: 'ob-account',
+        linked_account_id: 'app-account',
+      });
+      mockAccountRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.syncAccountTransactions('user-123', 'ob-account'),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockNordigenService.getAccountMetadata).not.toHaveBeenCalled();
     });
   });
 });

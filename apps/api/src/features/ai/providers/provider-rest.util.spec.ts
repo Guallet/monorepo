@@ -1,18 +1,18 @@
-import { fetchProviderJson } from './provider-rest.util';
-import { ProviderModelListError } from './provider-model-list.error';
+import { fetchProviderJson } from './provider-rest.util.js';
+import { ProviderModelListError } from './provider-model-list.error.js';
 
 describe('fetchProviderJson', () => {
   const originalFetch = global.fetch;
 
   afterEach(() => {
     global.fetch = originalFetch;
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('adds bearer auth and returns JSON for successful provider responses', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
+    global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: jest.fn().mockResolvedValue({ data: [{ id: 'model-1' }] }),
+      json: vi.fn().mockResolvedValue({ data: [{ id: 'model-1' }] }),
     });
 
     const result = await fetchProviderJson<{ data: Array<{ id: string }> }>({
@@ -34,7 +34,7 @@ describe('fetchProviderJson', () => {
   });
 
   it('wraps network failures in a provider model-list error', async () => {
-    global.fetch = jest.fn().mockRejectedValue(new TypeError('fetch failed'));
+    global.fetch = vi.fn().mockRejectedValue(new TypeError('fetch failed'));
 
     await expect(
       fetchProviderJson({
@@ -45,7 +45,7 @@ describe('fetchProviderJson', () => {
   });
 
   it('throws a provider model-list error for non-2xx responses', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
+    global.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 401,
     });

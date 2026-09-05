@@ -1,1 +1,1 @@
-export * from './categorization-rule.entity';
+export * from './categorization-rule.entity.js';

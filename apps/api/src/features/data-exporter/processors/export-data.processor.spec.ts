@@ -3,27 +3,28 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Job } from 'bullmq';
-import { ExportDataProcessor, ExportJobData } from './export-data.processor';
-import { TransactionsService } from '../../transactions/transactions.service';
-import { AccountsService } from '../../accounts/accounts.service';
-import { CategoriesService } from '../../categories/categories.service';
-import { EmailService } from '../../email/email.service';
-import { UsersService } from '../../users/users.service';
-import { NotificationsService } from '../../notifications/notifications.service';
-import { CsvExportEngine } from '../engines/csv-export.engine';
-import { OfeExportEngine } from '../engines/ofe-export.engine';
-import { JsonExportEngine } from '../engines/json-export.engine';
-import { Account } from '../../accounts/entities/account.entity';
-import { Category } from '../../categories/entities/category.entity';
+import { ExportDataProcessor, ExportJobData } from './export-data.processor.js';
+import { TransactionsService } from '../../transactions/transactions.service.js';
+import { AccountsService } from '../../accounts/accounts.service.js';
+import { CategoriesService } from '../../categories/categories.service.js';
+import { EmailService } from '../../email/email.service.js';
+import { UsersService } from '../../users/users.service.js';
+import { NotificationsService } from '../../notifications/notifications.service.js';
+import { CsvExportEngine } from '../engines/csv-export.engine.js';
+import { OfeExportEngine } from '../engines/ofe-export.engine.js';
+import { JsonExportEngine } from '../engines/json-export.engine.js';
+import { Account } from '../../accounts/entities/account.entity.js';
+import { Category } from '../../categories/entities/category.entity.js';
+import type { Mocked } from 'vitest';
 
 describe('ExportDataProcessor', () => {
   let processor: ExportDataProcessor;
-  let transactionsService: jest.Mocked<TransactionsService>;
-  let accountsService: jest.Mocked<AccountsService>;
-  let categoriesService: jest.Mocked<CategoriesService>;
-  let emailService: jest.Mocked<EmailService>;
-  let usersService: jest.Mocked<UsersService>;
-  let notificationsService: jest.Mocked<NotificationsService>;
+  let transactionsService: Mocked<TransactionsService>;
+  let accountsService: Mocked<AccountsService>;
+  let categoriesService: Mocked<CategoriesService>;
+  let emailService: Mocked<EmailService>;
+  let usersService: Mocked<UsersService>;
+  let notificationsService: Mocked<NotificationsService>;
 
   const mockUserId = 'user-123';
   const mockUserEmail = 'test@example.com';
@@ -69,30 +70,30 @@ describe('ExportDataProcessor', () => {
         JsonExportEngine,
         {
           provide: TransactionsService,
-          useValue: { getAllUserTransactionsForExport: jest.fn() },
+          useValue: { getAllUserTransactionsForExport: vi.fn() },
         },
         {
           provide: AccountsService,
-          useValue: { findAllUserAccounts: jest.fn() },
+          useValue: { findAllUserAccounts: vi.fn() },
         },
         {
           provide: CategoriesService,
-          useValue: { findAllUserCategories: jest.fn() },
+          useValue: { findAllUserCategories: vi.fn() },
         },
         {
           provide: EmailService,
           useValue: {
-            sendExportCompletionEmail: jest.fn(),
-            sendExportErrorEmail: jest.fn(),
+            sendExportCompletionEmail: vi.fn(),
+            sendExportErrorEmail: vi.fn(),
           },
         },
         {
           provide: UsersService,
-          useValue: { findUserData: jest.fn() },
+          useValue: { findUserData: vi.fn() },
         },
         {
           provide: NotificationsService,
-          useValue: { createSystemNotification: jest.fn() },
+          useValue: { createSystemNotification: vi.fn() },
         },
       ],
     }).compile();
@@ -119,7 +120,7 @@ describe('ExportDataProcessor', () => {
     );
   });
 
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   // ── routing ────────────────────────────────────────────────────────────
 

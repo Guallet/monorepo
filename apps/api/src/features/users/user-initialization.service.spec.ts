@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserInitializationService } from './user-initialization.service';
-import { CategoriesService } from '../categories/categories.service';
+import { UserInitializationService } from './user-initialization.service.js';
+import { CategoriesService } from '../categories/categories.service.js';
 
 describe('UserInitializationService', () => {
   let service: UserInitializationService;
 
   const mockCategoriesService = {
-    createDefaultCategoriesForUser: jest.fn(),
+    createDefaultCategoriesForUser: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('UserInitializationService', () => {
 
     service = module.get<UserInitializationService>(UserInitializationService);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

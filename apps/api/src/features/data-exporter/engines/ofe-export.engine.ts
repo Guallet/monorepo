@@ -3,8 +3,8 @@ import {
   ExportEngine,
   ExportEngineParams,
   ExportTransaction,
-} from './export-engine.interface';
-import { normalizeAmount } from './normalize-amount.util';
+} from './export-engine.interface.js';
+import { normalizeAmount } from './normalize-amount.util.js';
 
 @Injectable()
 export class OfeExportEngine implements ExportEngine {

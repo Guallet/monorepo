@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Notification, NotificationType } from './entities/notification.entity';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { Notification, NotificationType } from './entities/notification.entity.js';
+import { UpdateNotificationDto } from './dto/update-notification.dto.js';
 
 @Injectable()
 export class NotificationsService {

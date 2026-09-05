@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { NordigenService } from './nordigen.service';
+import { NordigenService } from './nordigen.service.js';
 import { HttpService } from '@nestjs/axios';
-import { NordigenRepository } from './nordigen.repository';
+import { NordigenRepository } from './nordigen.repository.js';
 import { of } from 'rxjs';
 import { AxiosResponse } from 'axios';
 
@@ -11,15 +11,15 @@ describe('NordigenService', () => {
   let service: NordigenService;
 
   const mockHttpService = {
-    get: jest.fn(),
-    post: jest.fn(),
+    get: vi.fn(),
+    post: vi.fn(),
   };
 
   const mockNordigenRepository = {
-    getToken: jest.fn(),
-    createToken: jest.fn(),
-    updateToken: jest.fn(),
-    deleteToken: jest.fn(),
+    getToken: vi.fn(),
+    createToken: vi.fn(),
+    updateToken: vi.fn(),
+    deleteToken: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -29,7 +29,7 @@ describe('NordigenService', () => {
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn((key: string) => {
+            get: vi.fn((key: string) => {
               if (key === 'nordigen') {
                 return {
                   secretId: process.env.NORDIGEN_SECRET_ID,
@@ -54,7 +54,7 @@ describe('NordigenService', () => {
     service = module.get<NordigenService>(NordigenService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Set environment variables for testing
     process.env.NORDIGEN_SECRET_ID = 'test-secret-id';

@@ -1,10 +1,10 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserPrincipal } from './user-principal';
+import { UserPrincipal } from './user-principal.js';
 
 // Used to extract the user data from the request
 // More info: https://docs.nestjs.com/custom-decorators
 export const RequestUser = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
+  (data: 'id' | 'email' | 'roles' | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
     const user = request.session?.user;
@@ -15,7 +15,7 @@ export const RequestUser = createParamDecorator(
       const principal = new UserPrincipal(user.id, user.email);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return data ? principal[data] : principal;
+      return data === undefined ? principal : principal[data];
     } else {
       return null;
     }

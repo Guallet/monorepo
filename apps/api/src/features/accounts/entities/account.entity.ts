@@ -1,4 +1,4 @@
-import { AccountType } from './accountType.model';
+import { AccountType } from './accountType.model.js';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,17 +6,18 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { Institution } from '../../../features/institutions/entities/institution.entity.js';
+import { Transaction } from '../../../features/transactions/entities/transaction.entity.js';
+import type { Relation } from 'typeorm';
 import {
   CreditCardProperties,
   CurrentAccountProperties,
   LoanAccountProperties,
   MortgageAccountProperties,
   SavingAccountProperties,
-} from './account-properties.model';
-import { AccountSource } from './accountSource.model';
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+} from './account-properties.model.js';
+import { AccountSource } from './accountSource.model.js';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 
 @Entity('accounts')
 export class Account extends BaseDbEntity {
@@ -75,7 +76,7 @@ export class Account extends BaseDbEntity {
   transactions: Transaction[];
 
   @ManyToOne(() => Institution, (institution) => institution.accounts)
-  institution: Institution;
+  institution: Relation<Institution>;
 
   @Column({ nullable: true })
   institutionId: string | null;

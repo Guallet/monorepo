@@ -1,23 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReportsService } from './reports.service';
+import { ReportsService } from './reports.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Category } from 'src/features/categories/entities/category.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { Category } from '../../features/categories/entities/category.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
 
 describe('ReportsService', () => {
   let service: ReportsService;
 
   const mockCategoriesRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   const mockAccountsRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   const mockTransactionsRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -42,7 +42,7 @@ describe('ReportsService', () => {
     service = module.get<ReportsService>(ReportsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

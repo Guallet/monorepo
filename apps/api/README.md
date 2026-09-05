@@ -77,7 +77,8 @@ pnpm db:migrate     # apply migrations
 
 - Start (dev/watch): `pnpm --filter api dev` or `cd apps/api && pnpm dev`
 - Build: `pnpm --filter api build`
-- Tests: `pnpm --filter api test` / `pnpm --filter api test:e2e`
+- Unit tests: `pnpm --filter api test` (Vitest)
+- E2E tests: `pnpm --filter api test:e2e` (Vitest; requires a configured test database and Redis)
 - DB tasks: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed`
 
 ---
@@ -118,7 +119,7 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
 - Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
-- AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools. AI endpoints are rate-limited per user via `@nestjs/throttler`.
+- AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools.
 - API docs: OpenAPI (Swagger) generated from decorators — visit `/docs`.
 
 ---
@@ -143,10 +144,33 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ## Tests
 
 - Unit: `pnpm --filter api test`
-- E2E: `pnpm --filter api test:e2e`
+- E2E: `pnpm --filter api test:e2e` (Vitest; requires a configured test database and Redis)
 
 ---
 
 ## License
 
 This package is covered by the repository Apache-2.0 license — see the root `LICENSE`.
+
+## NestJS 12 configuration
+
+The build, TypeScript, Vitest, and oxlint configuration follows the generated
+`apps/api12` ESM project. Unit and e2e tests use separate Vitest configurations;
+SWC and Jest are no longer part of the API tooling. The base TypeScript config
+also covers tests and scripts, while the build config only emits `src` to `dist`.
+
+Application-specific differences from the starter are intentional:
+
+- The Nest CLI copies Handlebars email templates. Swagger uses explicit decorators
+  with no CLI plugin, and compilation uses the default TypeScript builder.
+- Bootstrap retains validation, CORS, security middleware, logging, Swagger,
+  route conflict diagnostics/specificity ordering, and port 5000 for existing clients.
+- Database/admin scripts, the monorepo `dev`/`typecheck` aliases, Node requirements,
+  and exact dependency versions remain in place.
+- Observe and Mau are optional hosted services, so the starter's placeholder
+  telemetry credentials and deployment integration are not added.
+- E2E tests boot the full application; run them only with an isolated test database,
+  Redis, and the required environment configuration. TypeORM schema synchronization
+  and background jobs are enabled when the application starts.
+
+Reference: [NestJS 12 migration guide](https://docs.nestjs.com/migration-guide).

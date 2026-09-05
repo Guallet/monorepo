@@ -1,4 +1,4 @@
-import { AiModelDto } from '../dto/ai-model.dto';
+import { AiModelDto } from '../dto/ai-model.dto.js';
 
 export interface AiProviderAdapter {
   validateApiToken(apiToken: string): Promise<void>;

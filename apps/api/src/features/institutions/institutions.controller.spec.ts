@@ -1,21 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { InstitutionsController } from './institutions.controller';
-import { InstitutionsService } from './institutions.service';
+import { InstitutionsController } from './institutions.controller.js';
+import { InstitutionsService } from './institutions.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Institution } from './entities/institution.entity';
-import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
-import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Institution } from './entities/institution.entity.js';
+import { CreateInstitutionRequest } from './dto/create-institution-request.dto.js';
+import { UpdateInstitutionRequest } from './dto/update-institution-request.dto.js';
 
 describe('InstitutionsController', () => {
   let controller: InstitutionsController;
 
   const mockInstitutionsService = {
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    findAll: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -38,7 +38,7 @@ describe('InstitutionsController', () => {
     controller = module.get<InstitutionsController>(InstitutionsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

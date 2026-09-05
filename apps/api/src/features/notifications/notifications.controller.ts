@@ -9,12 +9,18 @@ import {
   NotFoundException,
   Post,
 } from '@nestjs/common';
-import { NotificationsService } from './notifications.service';
-import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { NotificationDto } from './dto/notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { NotificationsService } from './notifications.service.js';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { NotificationDto } from './dto/notification.dto.js';
+import { UpdateNotificationDto } from './dto/update-notification.dto.js';
 
 @ApiTags('Notifications')
 @Controller('notifications')
@@ -24,6 +30,8 @@ export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s notifications' })
+  @ApiResponse({ status: 200, type: [NotificationDto] })
   async findAll(
     @RequestUser() user: UserPrincipal,
   ): Promise<NotificationDto[]> {
@@ -35,6 +43,8 @@ export class NotificationsController {
   }
 
   @Get('unread')
+  @ApiOperation({ summary: 'List the current user’s unread notifications' })
+  @ApiResponse({ status: 200, type: [NotificationDto] })
   async findUnread(
     @RequestUser() user: UserPrincipal,
   ): Promise<NotificationDto[]> {
@@ -46,6 +56,9 @@ export class NotificationsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a notification by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Notification ID' })
+  @ApiResponse({ status: 200, type: NotificationDto })
   async findOne(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -63,6 +76,10 @@ export class NotificationsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a notification' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Notification ID' })
+  @ApiBody({ type: UpdateNotificationDto })
+  @ApiResponse({ status: 200, type: NotificationDto })
   async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -77,11 +94,16 @@ export class NotificationsController {
   }
 
   @Post('mark-all-read')
+  @ApiOperation({ summary: 'Mark all notifications as read' })
+  @ApiResponse({ status: 201, description: 'Notifications marked as read' })
   async markAllAsRead(@RequestUser() user: UserPrincipal): Promise<void> {
     await this.notificationsService.markAllAsRead(user.id);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a notification' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Notification ID' })
+  @ApiResponse({ status: 200, type: NotificationDto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,

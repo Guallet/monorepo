@@ -1,45 +1,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SyncService } from './sync.service';
+import { SyncService } from './sync.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { NotificationsService } from '../notifications/notifications.service';
+import { NordigenAccount } from './entities/nordigen-account.entity.js';
+import { Account } from '../../features/accounts/entities/account.entity.js';
+import { Transaction } from '../../features/transactions/entities/transaction.entity.js';
+import { NordigenService } from '../../features/nordigen/nordigen.service.js';
+import { InstitutionsService } from '../../features/institutions/institutions.service.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 describe('SyncService', () => {
   let service: SyncService;
 
   const mockNordigenAccountRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockAccountRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockNordigenService = {
-    getInstitutions: jest.fn(),
-    getAccountMetadata: jest.fn(),
-    getAccountBalance: jest.fn(),
-    getAccountTransactions: jest.fn(),
+    getInstitutions: vi.fn(),
+    getAccountMetadata: vi.fn(),
+    getAccountBalance: vi.fn(),
+    getAccountTransactions: vi.fn(),
   };
 
   const mockInstitutionsService = {
-    createOrUpdate: jest.fn(),
-    saveAll: jest.fn(),
+    createOrUpdate: vi.fn(),
+    saveAll: vi.fn(),
   };
 
   const mockNotificationsService = {
-    createSystemNotification: jest.fn(),
+    createSystemNotification: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -76,7 +76,7 @@ describe('SyncService', () => {
     service = module.get<SyncService>(SyncService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -9,6 +9,7 @@ Guallet is a personal finance management platform built as a TypeScript monorepo
 ## Common Commands
 
 ### Monorepo-wide (run from root)
+
 ```bash
 pnpm dev           # Start all apps in dev mode
 pnpm build         # Build all packages/apps
@@ -18,6 +19,7 @@ pnpm format        # Prettier format all TS/TSX/MD files
 ```
 
 ### Docker (development environment)
+
 ```bash
 pnpm docker:compose:up     # Start PostgreSQL, Redis, pgAdmin
 pnpm docker:compose:down   # Stop services
@@ -25,6 +27,7 @@ pnpm docker:compose:reset  # Stop and remove volumes
 ```
 
 ### API (apps/api)
+
 ```bash
 pnpm --filter api dev          # Start with watch mode
 pnpm --filter api build        # Compile with nest build
@@ -38,6 +41,7 @@ pnpm --filter api db:migrate   # Run Better Auth migrations
 ```
 
 ### Webapp (apps/webapp)
+
 ```bash
 pnpm --filter webapp dev       # Vite dev server
 pnpm --filter webapp build     # tsc + vite build (runs i18n:extract first)
@@ -46,6 +50,7 @@ pnpm --filter webapp i18n:extract  # Extract i18n keys
 ```
 
 ### Mobile (apps/mobile)
+
 ```bash
 pnpm --filter mobile start     # Expo dev server
 pnpm --filter mobile ios       # Run on iOS simulator
@@ -54,6 +59,7 @@ pnpm --filter mobile test      # Jest watch mode
 ```
 
 ### Money package (packages/guallet-money)
+
 ```bash
 pnpm --filter guallet-money test      # Jest tests (80% coverage threshold enforced)
 pnpm --filter guallet-money test:cov  # With coverage report
@@ -99,6 +105,7 @@ Internal packages are referenced via `workspace:*` protocol. The API client type
 ## Environment Setup
 
 Copy the sample files before starting:
+
 ```bash
 cp database.env.sample .env
 cp api.env.sample apps/api/.env
@@ -119,11 +126,22 @@ Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrat
 
 Prettier config: single quotes, trailing commas. ESLint 9 with shared config from `packages/eslint-config-custom`. Pre-commit hook (Husky) runs lint. TypeScript strict mode is used across all packages.
 
+## NestJS OpenAPI / Swagger
+
+The Swagger CLI plugin is disabled for the API (`apps/api/nest-cli.json`). All OpenAPI metadata must therefore be authored explicitly.
+
+For every documented DTO, decorate every class property with `@ApiProperty()`, using `@ApiProperty({ required: false })` for optional fields. Use `type: [String]`/`type: [Dto]` for arrays, `type: () => Dto` for nested classes, `type: String` with `format: 'date-time'` for dates, `format: 'uuid'` for UUIDs, `enum` for enums, and `type: Object` or an explicit `schema` for maps, generics, interfaces, and unions. Keep `required` and `nullable` accurate. Use `PartialType`, `PickType`, `OmitType`, and `IntersectionType` from `@nestjs/swagger` for DTO variants so inherited metadata is retained; update DTOs should use `PartialType` when their fields are optional. For polymorphic fields, use `oneOf`/`allOf` with `getSchemaPath` and register referenced classes with `@ApiExtraModels`.
+
+Every controller needs `@ApiTags`, and every route needs an `@ApiOperation` summary plus an explicit success response decorator with the actual response DTO/schema. Add `@ApiBody`, `@ApiParam`, and `@ApiQuery` metadata where applicable. Do not rely on TypeScript return types, comments, or inferred array/nested types. Return response DTOs rather than entities and do not expose internal fields such as `user_id`, secrets, or `deleted_at`.
+
+Use the official NestJS guidance for [introduction](https://docs.nestjs.com/openapi/introduction), [types and parameters](https://docs.nestjs.com/openapi/types-and-parameters), [operations](https://docs.nestjs.com/openapi/operations), [mapped types](https://docs.nestjs.com/openapi/mapped-types), and [decorators](https://docs.nestjs.com/openapi/decorators).
+
 ## UI & Design System
 
 **Always consult [DESIGN.MD](./DESIGN.MD) before making any UI changes.** It is the single source of truth for colours, typography, spacing, radius, elevation, motion, and component rules.
 
 Key rules at a glance:
+
 - Use `useTheme()` from `@guallet/ui-react` for all design tokens — no hardcoded values
 - Cards: `radius="lg"`, `shadow="sm"`, `withBorder`, white background
 - Money: positive → `colors.support` (green), negative → `colors.error` (red), always `fontVariantNumeric: 'tabular-nums'`

@@ -1,14 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { EmailService } from './email.service';
-import { EmailConfig } from 'src/configuration';
+import { EmailService } from './email.service.js';
+import { EmailConfig } from '../../configuration.js';
+import { vi, type Mock } from 'vitest';
 
 describe('EmailService', () => {
   let service: EmailService;
-  let mockSendMail: jest.Mock;
+  let mockSendMail: Mock;
 
   const createMockConfigService = (smtpHost?: string) => ({
-    get: jest.fn(<T>(key: string, defaultValue?: T): T | undefined => {
+    get: vi.fn(<T>(key: string, defaultValue?: T): T | undefined => {
       if (key === 'email') {
         const emailConfig: EmailConfig = {
           from: 'Guallet <noreply@guallet.io>',
@@ -28,9 +29,7 @@ describe('EmailService', () => {
   });
 
   beforeEach(async () => {
-    mockSendMail = jest
-      .fn()
-      .mockResolvedValue({ messageId: 'test-message-id' });
+    mockSendMail = vi.fn().mockResolvedValue({ messageId: 'test-message-id' });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

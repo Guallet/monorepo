@@ -6,20 +6,33 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
   Logger,
   NotFoundException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
-import { RulesService } from './rules.service';
-import { CreateRuleDto } from './dto/create-rule.dto';
-import { UpdateRuleDto } from './dto/update-rule.dto';
-import { RuleDto } from './dto/rule.dto';
-import { ReorderRulesDto, ReorderConditionsDto } from './dto/reorder-rules.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto';
-import { TransactionsService } from '../transactions/transactions.service';
-import { LimitsDto } from './dto/limits.dto';
+import { RulesService } from './rules.service.js';
+import { CreateRuleDto } from './dto/create-rule.dto.js';
+import { UpdateRuleDto } from './dto/update-rule.dto.js';
+import { RuleDto } from './dto/rule.dto.js';
+import {
+  ReorderRulesDto,
+  ReorderConditionsDto,
+} from './dto/reorder-rules.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto.js';
+import { TransactionsService } from '../transactions/transactions.service.js';
+import { LimitsDto } from './dto/limits.dto.js';
+import { RuleFieldDefinitionsDto } from './dto/rule-field-definitions.dto.js';
 
 @ApiTags('Categorization Rules')
 @Controller('rules')
@@ -33,6 +46,7 @@ export class RulesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new categorization rule' })
+  @ApiBody({ type: CreateRuleDto })
   @ApiResponse({ status: 201, type: RuleDto })
   async create(
     @RequestUser() user: UserPrincipal,
@@ -64,7 +78,8 @@ export class RulesController {
 
   @Get('fields')
   @ApiOperation({ summary: 'Get available fields and operators for rules' })
-  getFieldDefinitions() {
+  @ApiResponse({ status: 200, type: RuleFieldDefinitionsDto })
+  getFieldDefinitions(): RuleFieldDefinitionsDto {
     return this.rulesService.getFieldDefinitions();
   }
 
@@ -77,10 +92,11 @@ export class RulesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific rule by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Rule ID' })
   @ApiResponse({ status: 200, type: RuleDto })
   async findOne(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<RuleDto> {
     const rule = await this.rulesService.findOne({ userId: user.id, id });
     return RuleDto.fromEntity(rule);
@@ -88,10 +104,12 @@ export class RulesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a categorization rule' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Rule ID' })
+  @ApiBody({ type: UpdateRuleDto })
   @ApiResponse({ status: 200, type: RuleDto })
   async update(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateRuleDto: UpdateRuleDto,
   ): Promise<RuleDto> {
     const rule = await this.rulesService.update(user.id, id, updateRuleDto);
@@ -100,9 +118,11 @@ export class RulesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a categorization rule' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Rule ID' })
+  @ApiResponse({ status: 200, type: RuleDto })
   async remove(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<RuleDto> {
     const deleted = await this.rulesService.remove(user.id, id);
     if (!deleted) {
@@ -112,7 +132,9 @@ export class RulesController {
   }
 
   @Post('reorder')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reorder categorization rules' })
+  @ApiBody({ type: ReorderRulesDto })
   @ApiResponse({ status: 200, type: [RuleDto] })
   async reorderRules(
     @RequestUser() user: UserPrincipal,
@@ -126,11 +148,14 @@ export class RulesController {
   }
 
   @Post(':id/conditions/reorder')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reorder conditions within a rule' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Rule ID' })
+  @ApiBody({ type: ReorderConditionsDto })
   @ApiResponse({ status: 200, type: RuleDto })
   async reorderConditions(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() reorderDto: ReorderConditionsDto,
   ): Promise<RuleDto> {
     const rule = await this.rulesService.reorderConditions(
@@ -143,10 +168,11 @@ export class RulesController {
 
   @Get('evaluate/:id')
   @ApiOperation({ summary: 'Evaluate a transaction by ID against all rules' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Transaction ID' })
   @ApiResponse({ status: 200, type: RuleEvaluationResultDto })
   async evaluateTransactionById(
     @RequestUser() user: UserPrincipal,
-    @Param('id') transactionId: string,
+    @Param('id', ParseUUIDPipe) transactionId: string,
   ): Promise<RuleEvaluationResultDto> {
     const transaction = await this.transactionsService.findUserTransaction({
       userId: user.id,

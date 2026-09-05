@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataExporterController } from './data-exporter.controller';
+import { DataExporterController } from './data-exporter.controller.js';
 import { getQueueToken } from '@nestjs/bullmq';
 import {
   EXPORT_DATA_QUEUE,
   EXPORT_DATA_JOB,
-} from './processors/export-data.processor';
+} from './processors/export-data.processor.js';
+import type { Mocked } from 'vitest';
 
 describe('DataExporterController', () => {
   let controller: DataExporterController;
-  let exportQueue: jest.Mocked<any>;
+  let exportQueue: Mocked<any>;
 
   beforeEach(async () => {
     exportQueue = {
-      add: jest.fn().mockResolvedValue({ id: 'test-job-id' }),
+      add: vi.fn().mockResolvedValue({ id: 'test-job-id' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({

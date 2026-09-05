@@ -5,10 +5,15 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { SyncService } from 'src/features/openbanking/sync.service';
+import {
+  ApiAcceptedResponse,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { RequestUser } from '../auth/request-user.decorator.js';
+import { UserPrincipal } from '../auth/user-principal.js';
+import { SyncService } from '../features/openbanking/sync.service.js';
 
 @ApiTags('Admin Tasks')
 @Controller('admin')
@@ -17,6 +22,11 @@ export class AdminController {
 
   @HttpCode(HttpStatus.ACCEPTED)
   @Get('sync/institutions')
+  @ApiOperation({ summary: 'Synchronize Open Banking institutions' })
+  @ApiAcceptedResponse({ description: 'Institution synchronization queued' })
+  @ApiForbiddenResponse({
+    description: 'The current user is not an administrator',
+  })
   async syncBanks(@RequestUser() user: UserPrincipal): Promise<void> {
     if (user.isAdmin()) {
       await this.syncService.syncOpenBankingInstitutions();

@@ -1,4 +1,4 @@
-import { DataImportRequestDto } from '../dto/data-import-request.dto';
+import { DataImportRequestDto } from '../dto/data-import-request.dto.js';
 
 /** Result returned by every import engine */
 export interface ImportEngineResult {

@@ -1,8 +1,8 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   CategorizationRule,
   RuleCondition,
-} from '../entities/categorization-rule.entity';
+} from '../entities/categorization-rule.entity.js';
 
 export class RuleConditionDto {
   @ApiProperty({ description: 'Condition ID' })
@@ -38,7 +38,7 @@ export class RuleDto {
   @ApiProperty({ description: 'Rule name' })
   name: string;
 
-  @ApiPropertyOptional({ description: 'Rule description' })
+  @ApiProperty({ description: 'Rule description', nullable: true })
   description: string | null;
 
   @ApiProperty({ description: 'Category ID to assign on match' })

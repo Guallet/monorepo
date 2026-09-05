@@ -1,21 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoriesService } from './categories.service';
+import { CategoriesService } from './categories.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Category } from './entities/category.entity';
+import { Category } from './entities/category.entity.js';
 import { NotFoundException } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryDto } from './dto/create-category.dto.js';
+import { UpdateCategoryDto } from './dto/update-category.dto.js';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
 
   const mockCategoryRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    findOneBy: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    findOneBy: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -32,7 +32,7 @@ describe('CategoriesService', () => {
     service = module.get<CategoriesService>(CategoriesService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

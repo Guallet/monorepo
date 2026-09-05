@@ -1,4 +1,4 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import {
   Column,
   Entity,
@@ -6,7 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AiProviderConnection } from './ai-provider-connection.entity';
+import { AiProviderConnection } from './ai-provider-connection.entity.js';
+import type { Relation } from 'typeorm';
 
 @Entity('ai_agents')
 export class AiAgent extends BaseDbEntity {
@@ -23,7 +24,7 @@ export class AiAgent extends BaseDbEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'connection_id' })
-  connection: AiProviderConnection;
+  connection: Relation<AiProviderConnection>;
 
   @Column({ type: 'text' })
   name: string;

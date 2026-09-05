@@ -1,31 +1,41 @@
 import { Controller, Get, Logger, Param, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { OpenbankingService } from './openbanking.service';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { NordigenAccountMetadataDto } from '../../features/nordigen/dto/nordigen-account.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { OpenbankingService } from './openbanking.service.js';
+import { OpenBankingAccountIdsResponseDto } from './dto/openbanking-response.dto.js';
 
 @ApiTags('Open Banking')
 @Controller('openbanking/accounts')
 export class ObAccountsController {
   private readonly logger = new Logger(ObAccountsController.name);
 
-  constructor(
-    private readonly openbankingService: OpenbankingService,
-    private readonly nordigenService: NordigenService,
-  ) {}
+  constructor(private readonly openbankingService: OpenbankingService) {}
 
   @Get()
-  getObAccounts(@RequestUser() user: UserPrincipal) {
+  @ApiOperation({ summary: 'List Open Banking accounts' })
+  @ApiResponse({ status: 200, type: OpenBankingAccountIdsResponseDto })
+  async getObAccounts(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<OpenBankingAccountIdsResponseDto> {
     this.logger.debug(`Getting Open Banking accounts for user ${user.id}`);
-    return { accounts: ['123456789', '987654321'] };
+    const accounts = await this.openbankingService.getLinkedAccounts(user.id);
+    return { accounts: accounts.map((account) => account.id) };
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get Open Banking account metadata' })
+  @ApiParam({
+    name: 'id',
+    format: 'uuid',
+    description: 'Open Banking account ID',
+  })
+  @ApiResponse({ status: 200, type: NordigenAccountMetadataDto })
   async getObAccount(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return await this.nordigenService.getAccountMetadata(id);
+    return this.openbankingService.getAccountMetadata(user.id, id);
   }
 }

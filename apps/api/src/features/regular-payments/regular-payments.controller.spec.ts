@@ -1,24 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegularPaymentsController } from './regular-payments.controller';
-import { RegularPaymentsService } from './regular-payments.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
-import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
+import { RegularPaymentsController } from './regular-payments.controller.js';
+import { RegularPaymentsService } from './regular-payments.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto.js';
+import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto.js';
 import {
   RecurrenceCadence,
   RecurringPaymentType,
   RegularPayment,
-} from './entities/regular-payment.entity';
+} from './entities/regular-payment.entity.js';
 
 describe('RegularPaymentsController', () => {
   let controller: RegularPaymentsController;
 
   const mockRegularPaymentsService = {
-    findUserRegularPayments: jest.fn(),
-    findUserRegularPayment: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    findUserRegularPayments: vi.fn(),
+    findUserRegularPayment: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -43,7 +43,7 @@ describe('RegularPaymentsController', () => {
     );
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

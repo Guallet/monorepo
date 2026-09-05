@@ -13,24 +13,31 @@ import {
 import {
   RecurrenceCadence,
   RecurringPaymentType,
-} from '../entities/regular-payment.entity';
+} from '../entities/regular-payment.entity.js';
 
 export class CreateRegularPaymentDto {
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty({ minimum: 0, exclusiveMinimum: true })
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   amount: number;
 
+  @ApiProperty({ minLength: 3, maxLength: 3 })
   @IsISO4217CurrencyCode()
   currency: string;
 
+  @ApiProperty({ required: false, format: 'uri' })
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
+  @ApiProperty({ required: false, format: 'uuid' })
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 
@@ -39,7 +46,7 @@ export class CreateRegularPaymentDto {
   @IsNotEmpty()
   cadence: RecurrenceCadence;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: String, format: 'date-time' })
   @IsOptional()
   @IsDateString()
   startDate?: string;

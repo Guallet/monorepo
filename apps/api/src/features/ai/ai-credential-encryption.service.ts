@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
-import { AppConfig } from 'src/configuration';
+import { AppConfig } from '../../configuration.js';
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 12;

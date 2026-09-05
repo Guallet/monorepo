@@ -8,13 +8,19 @@ import {
   Delete,
   Logger,
 } from '@nestjs/common';
-import { RegularPaymentsService } from './regular-payments.service';
-import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
-import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { RegularPaymentDto } from './dto/regular-payment.dto';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { RequestUser } from 'src/auth/request-user.decorator';
+import { RegularPaymentsService } from './regular-payments.service.js';
+import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto.js';
+import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto.js';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { RegularPaymentDto } from './dto/regular-payment.dto.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
 
 @ApiTags('Regular Payments')
 @Controller('regular-payments')
@@ -26,6 +32,8 @@ export class RegularPaymentsController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s regular payments' })
+  @ApiResponse({ status: 200, type: [RegularPaymentDto] })
   async findAll(
     @RequestUser() user: UserPrincipal,
   ): Promise<RegularPaymentDto[]> {
@@ -36,6 +44,9 @@ export class RegularPaymentsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a regular payment by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Regular payment ID' })
+  @ApiResponse({ status: 200, type: RegularPaymentDto })
   async findOne(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -48,6 +59,9 @@ export class RegularPaymentsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a regular payment' })
+  @ApiBody({ type: CreateRegularPaymentDto })
+  @ApiResponse({ status: 201, type: RegularPaymentDto })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() createRegularPaymentDto: CreateRegularPaymentDto,
@@ -61,6 +75,10 @@ export class RegularPaymentsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a regular payment' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Regular payment ID' })
+  @ApiBody({ type: UpdateRegularPaymentDto })
+  @ApiResponse({ status: 200, type: RegularPaymentDto })
   async update(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,
@@ -75,6 +93,9 @@ export class RegularPaymentsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a regular payment' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Regular payment ID' })
+  @ApiResponse({ status: 200, type: RegularPaymentDto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id') id: string,

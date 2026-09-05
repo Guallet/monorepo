@@ -1,12 +1,12 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { Category } from 'src/features/categories/entities/category.entity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
+import { Category } from '../../../features/categories/entities/category.entity.js';
 import {
   Column,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Relation,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 export enum RecurringPaymentType {
   SUBSCRIPTION = 'subscription',

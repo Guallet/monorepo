@@ -1,35 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountsController } from './accounts.controller';
-import { AccountsService } from './accounts.service';
-import { TransactionsService } from '../transactions/transactions.service';
-import { OpenbankingService } from '../openbanking/openbanking.service';
+import { AccountsController } from './accounts.controller.js';
+import { AccountsService } from './accounts.service.js';
+import { TransactionsService } from '../transactions/transactions.service.js';
+import { OpenbankingService } from '../openbanking/openbanking.service.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Account } from './entities/account.entity';
-import { AccountType } from './entities/accountType.model';
-import { AccountSource } from './entities/accountSource.model';
-import { CreateAccountRequest } from './dto/create-account-request.dto';
-import { UpdateAccountRequest } from './dto/update-account-request.dto';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Account } from './entities/account.entity.js';
+import { AccountType } from './entities/accountType.model.js';
+import { AccountSource } from './entities/accountSource.model.js';
+import { CreateAccountRequest } from './dto/create-account-request.dto.js';
+import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
+import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity.js';
 
 describe('AccountsController', () => {
   let controller: AccountsController;
 
   const mockAccountsService = {
-    findAllUserAccounts: jest.fn(),
-    getUserAccount: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    removeUserAccount: jest.fn(),
+    findAllUserAccounts: vi.fn(),
+    getUserAccount: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    removeUserAccount: vi.fn(),
   };
 
   const mockTransactionsService = {
-    getAccountTransactions: jest.fn(),
-    getAccountTransactionsSum: jest.fn(),
+    getAccountTransactions: vi.fn(),
+    getAccountTransactionsSum: vi.fn(),
   };
 
   const mockOpenBankingService = {
-    getLinkedAccount: jest.fn(),
+    getLinkedAccount: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -60,7 +61,7 @@ describe('AccountsController', () => {
     controller = module.get<AccountsController>(AccountsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -422,10 +423,17 @@ describe('AccountsController', () => {
         source: AccountSource.SYNCED,
       };
 
-      const mockConnectedAccount = {
+      const mockConnectedAccount: Partial<NordigenAccount> = {
         id: 'ob-account-1',
-        accountId: accountId,
-        nordigenAccountId: 'nordigen-123',
+        resource_id: 'resource-123',
+        iban: 'GB00TEST123',
+        currency: 'GBP',
+        owner_name: 'Test User',
+        name: 'Test Account',
+        bic: 'TESTBIC',
+        status: 'READY',
+        details: 'Current account',
+        linked_account_id: accountId,
       };
 
       mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
@@ -439,12 +447,25 @@ describe('AccountsController', () => {
       );
 
       expect(result).toBeDefined();
-      expect(result.connectedAccount).toEqual(mockConnectedAccount);
+      expect(result.connectedAccount).toEqual({
+        id: 'ob-account-1',
+        resourceId: 'resource-123',
+        iban: 'GB00TEST123',
+        currency: 'GBP',
+        ownerName: 'Test User',
+        name: 'Test Account',
+        bic: 'TESTBIC',
+        status: 'READY',
+        cashAccountType: undefined,
+        maskedPan: undefined,
+        details: 'Current account',
+      });
       expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
         mockUser.id,
         accountId,
       );
       expect(mockOpenBankingService.getLinkedAccount).toHaveBeenCalledWith({
+        userId: mockUser.id,
         accountId: accountId,
       });
     });

@@ -5,46 +5,46 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
-import { AiService } from './ai.service';
-import { AiAgent } from './entities/ai-agent.entity';
-import { AiProviderConnection } from './entities/ai-provider-connection.entity';
-import { AiProvider } from './entities/ai-provider.enum';
-import { AiProviderRegistryService } from './providers/ai-provider-registry.service';
-import { ProviderModelListError } from './providers/provider-model-list.error';
+import { AiCredentialEncryptionService } from './ai-credential-encryption.service.js';
+import { AiService } from './ai.service.js';
+import { AiAgent } from './entities/ai-agent.entity.js';
+import { AiProviderConnection } from './entities/ai-provider-connection.entity.js';
+import { AiProvider } from './entities/ai-provider.enum.js';
+import { AiProviderRegistryService } from './providers/ai-provider-registry.service.js';
+import { ProviderModelListError } from './providers/provider-model-list.error.js';
 
 describe('AiService', () => {
   let service: AiService;
 
   const mockConnectionRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockAgentRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    delete: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    delete: vi.fn(),
   };
 
   const mockCredentialEncryption = {
-    encrypt: jest.fn((value: string) => `encrypted:${value}`),
-    decrypt: jest.fn((value: string) => value.replace('encrypted:', '')),
+    encrypt: vi.fn((value: string) => `encrypted:${value}`),
+    decrypt: vi.fn((value: string) => value.replace('encrypted:', '')),
   };
 
   const mockAdapter = {
-    validateApiToken: jest.fn(),
-    listModels: jest.fn(),
+    validateApiToken: vi.fn(),
+    listModels: vi.fn(),
   };
 
   const mockProviderRegistry = {
-    getAdapter: jest.fn().mockReturnValue(mockAdapter),
+    getAdapter: vi.fn().mockReturnValue(mockAdapter),
   };
 
   const userId = 'user-123';
@@ -74,7 +74,7 @@ describe('AiService', () => {
     }).compile();
 
     service = module.get<AiService>(AiService);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockProviderRegistry.getAdapter.mockReturnValue(mockAdapter);
     mockAdapter.validateApiToken.mockResolvedValue(undefined);
   });

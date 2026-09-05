@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsService } from './notifications.service';
+import { NotificationsService } from './notifications.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Notification, NotificationType } from './entities/notification.entity';
+import { Notification, NotificationType } from './entities/notification.entity.js';
 import { NotFoundException } from '@nestjs/common';
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
 
   const mockNotificationRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    update: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    update: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -29,7 +29,7 @@ describe('NotificationsService', () => {
 
     service = module.get<NotificationsService>(NotificationsService);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

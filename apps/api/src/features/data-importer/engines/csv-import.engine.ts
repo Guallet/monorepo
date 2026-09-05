@@ -1,26 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Transaction } from '../../transactions/entities/transaction.entity';
-import { AccountsService } from '../../accounts/accounts.service';
-import { CategoriesService } from '../../categories/categories.service';
-import { UsersService } from '../../users/users.service';
-import {
+import { Transaction } from '../../transactions/entities/transaction.entity.js';
+import { AccountsService } from '../../accounts/accounts.service.js';
+import { CategoriesService } from '../../categories/categories.service.js';
+import { UsersService } from '../../users/users.service.js';
+import type {
   AccountMapping,
   CategoryMapping,
   CsvRowData,
   FieldMappings,
-} from '../dto/csv-import-request.dto';
-import { DataImportRequestDto } from '../dto/data-import-request.dto';
+} from '../dto/csv-import-request.dto.js';
+import { DataImportRequestDto } from '../dto/data-import-request.dto.js';
 import {
   DEFAULT_CURRENCY,
   DEFAULT_CATEGORY_ICON,
   DEFAULT_CATEGORY_COLOR,
-} from '../constants/import-defaults';
-import { parseNumber } from '../utils/number.utils';
-import { parseDate } from '../utils/date.utils';
-import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
-import { AccountType } from 'src/features/accounts/entities/accountType.model';
-import { ImportEngine, ImportEngineResult } from './import-engine.interface';
+} from '../constants/import-defaults.js';
+import { parseNumber } from '../utils/number.utils.js';
+import { parseDate } from '../utils/date.utils.js';
+import { AccountSource } from '../../../features/accounts/entities/accountSource.model.js';
+import { AccountType } from '../../../features/accounts/entities/accountType.model.js';
+import { ImportEngine, ImportEngineResult } from './import-engine.interface.js';
 
 const BATCH_SIZE = 150;
 

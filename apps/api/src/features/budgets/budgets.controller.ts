@@ -10,15 +10,23 @@ import {
   HttpCode,
   Delete,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
-import { BudgetsService } from './budgets.service';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
-import { RequestUser } from 'src/auth/request-user.decorator';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiTags } from '@nestjs/swagger';
-import { BudgetDto } from './dto/budget.dto';
-import { TransactionDto } from '../transactions/dto/transaction.dto';
+import { BudgetsService } from './budgets.service.js';
+import { CreateBudgetDto } from './dto/create-budget.dto.js';
+import { UpdateBudgetDto } from './dto/update-budget.dto.js';
+import { RequestUser } from '../../auth/request-user.decorator.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { BudgetDto } from './dto/budget.dto.js';
+import { TransactionDto } from '../transactions/dto/transaction.dto.js';
 
 @Controller('budgets')
 @ApiTags('Budgets')
@@ -38,6 +46,10 @@ export class BudgetsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'List the current user’s budgets' })
+  @ApiQuery({ name: 'month', required: false, type: Number })
+  @ApiQuery({ name: 'year', required: false, type: Number })
+  @ApiResponse({ status: 200, type: [BudgetDto] })
   async findAll(
     @RequestUser() user: UserPrincipal,
     @Query('month') month?: number,
@@ -62,8 +74,13 @@ export class BudgetsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a budget by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Budget ID' })
+  @ApiQuery({ name: 'month', required: false, type: Number })
+  @ApiQuery({ name: 'year', required: false, type: Number })
+  @ApiResponse({ status: 200, type: BudgetDto })
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @RequestUser() user: UserPrincipal,
     @Query('month') month?: number,
     @Query('year') year?: number,
@@ -84,9 +101,14 @@ export class BudgetsController {
   }
 
   @Get(':id/transactions')
+  @ApiOperation({ summary: 'List a budget’s transactions for a month' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Budget ID' })
+  @ApiQuery({ name: 'month', required: false, type: Number })
+  @ApiQuery({ name: 'year', required: false, type: Number })
+  @ApiResponse({ status: 200, type: [TransactionDto] })
   async getBudgetTransactions(
     @RequestUser() user: UserPrincipal,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<TransactionDto[]> {
@@ -103,6 +125,9 @@ export class BudgetsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a budget' })
+  @ApiBody({ type: CreateBudgetDto })
+  @ApiResponse({ status: 201, type: BudgetDto })
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createBudgetDto: CreateBudgetDto,
@@ -124,8 +149,12 @@ export class BudgetsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a budget' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Budget ID' })
+  @ApiBody({ type: UpdateBudgetDto })
+  @ApiResponse({ status: 200, type: BudgetDto })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateBudgetDto: UpdateBudgetDto,
     @RequestUser() user: UserPrincipal,
   ): Promise<BudgetDto> {
@@ -146,8 +175,11 @@ export class BudgetsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a budget' })
+  @ApiParam({ name: 'id', format: 'uuid', description: 'Budget ID' })
+  @ApiResponse({ status: 200, type: BudgetDto })
   async delete(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @RequestUser() user: UserPrincipal,
   ): Promise<BudgetDto> {
     const budget = await this.budgetsService.deleteBudgetForUser({

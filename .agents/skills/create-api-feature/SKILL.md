@@ -56,6 +56,7 @@ export class {Name} extends BaseDbEntity {
 ```
 
 **Column rules:**
+
 - Use snake_case for column names matching the DB (`user_id`, `created_at`).
 - Money/prices: `type: 'decimal'`.
 - Free-form text: `type: 'text'`.
@@ -67,6 +68,8 @@ export class {Name} extends BaseDbEntity {
 
 ## 2. Request DTOs
 
+The API Swagger CLI plugin is disabled. Every DTO property must be decorated explicitly; TypeScript types, comments, and inferred return types do not populate OpenAPI schemas.
+
 ### `dto/create-{name}.dto.ts`
 
 ```typescript
@@ -77,7 +80,7 @@ export class Create{Name}Dto {
   name: string;
 
   // Add other create fields here, e.g.:
-  // @ApiProperty({ description: '...', nullable: true })
+  // @ApiProperty({ required: false, description: '...', nullable: true })
   // notes?: string;
 
   constructor(props: Create{Name}Dto) {
@@ -92,7 +95,7 @@ export class Create{Name}Dto {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Update{Name}Dto {
-  @ApiProperty({ description: 'The name of the {name}', nullable: true })
+  @ApiProperty({ required: false, description: 'The name of the {name}', nullable: true })
   name?: string;
 
   // Add other updatable fields here (all optional).
@@ -112,13 +115,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { {Name} } from '../entities/{name}.entity';
 
 export class {Name}Dto {
-  @ApiProperty()
+  @ApiProperty({ format: 'uuid' })
   id: string;
 
   @ApiProperty()
   name: string;
 
-  // Mirror all fields from the entity that the client needs.
+  // Mirror all fields from the entity that the client needs. Decorate every
+  // field. Use type: [String]/type: [OtherDto] for arrays, type: () => Dto
+  // for nested DTOs, type: String + format: date-time for dates, enum for
+  // enums, and type: Object/schema for maps or interfaces.
 
   static fromDomain(domain: {Name}): {Name}Dto {
     return {
@@ -132,6 +138,7 @@ export class {Name}Dto {
 ```
 
 **Rules for `fromDomain`:**
+
 - Map DB snake_case to camelCase for JSON responses.
 - Flatten relations (e.g. `institutionId: domain.institution?.id ?? null`).
 - Never expose internal fields (`user_id`, `deleted_at`).
@@ -226,6 +233,7 @@ export class {Name}Service {
 ```
 
 **Service rules:**
+
 - All methods take an object argument `{ id, userId, dto }` – never positional parameters.
 - Always scope queries with `user_id: userId`.
 - Throw `NotFoundException` when the entity is missing or doesn't belong to the user.
@@ -249,7 +257,13 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { RequestUser } from 'src/auth/decorators/request-user.decorator';
 import { UserPrincipal } from 'src/auth/models/user-principal.model';
@@ -266,6 +280,8 @@ export class {Name}Controller {
   constructor(private readonly {name}Service: {Name}Service) {}
 
   @Get()
+  @ApiOperation({ summary: 'List {names}' })
+  @ApiResponse({ status: 200, type: [{Name}Dto] })
   async findAll(
     @RequestUser() user: UserPrincipal,
   ): Promise<{Name}Dto[]> {
@@ -274,6 +290,9 @@ export class {Name}Controller {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a {name} by ID' })
+  @ApiParam({ name: 'id', format: 'uuid', description: '{Name} ID' })
+  @ApiResponse({ status: 200, type: {Name}Dto })
   async findOne(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -283,6 +302,9 @@ export class {Name}Controller {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a {name}' })
+  @ApiBody({ type: Create{Name}Dto })
+  @ApiResponse({ status: 201, type: {Name}Dto })
   async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: Create{Name}Dto,
@@ -292,6 +314,10 @@ export class {Name}Controller {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a {name}' })
+  @ApiParam({ name: 'id', format: 'uuid', description: '{Name} ID' })
+  @ApiBody({ type: Update{Name}Dto })
+  @ApiResponse({ status: 200, type: {Name}Dto })
   async update(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -303,6 +329,9 @@ export class {Name}Controller {
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a {name}' })
+  @ApiParam({ name: 'id', format: 'uuid', description: '{Name} ID' })
+  @ApiResponse({ status: 200, type: {Name}Dto })
   async remove(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
@@ -314,7 +343,11 @@ export class {Name}Controller {
 ```
 
 **Controller rules:**
+
 - Always add `@ApiTags` for Swagger grouping.
+- Every route must have `@ApiOperation` and an explicit success response decorator with the actual response DTO or schema.
+- Add `@ApiBody` for request DTOs, `@ApiParam` for route parameters, and `@ApiQuery` for query parameters. Use explicit schemas for generic, interface, union, and stream responses.
+- Register referenced polymorphic DTOs with `@ApiExtraModels` and use `oneOf`/`allOf` with `getSchemaPath`.
 - Always use `@RequestUser()` to get the current user – never read from the request object directly.
 - Always use `ParseUUIDPipe` on `:id` route params.
 - Return response DTOs via `fromDomain()`, never raw entities.
@@ -341,6 +374,7 @@ export class {Name}Module {}
 ```
 
 If the feature needs services from other modules, add them to `imports` and import the other module:
+
 ```typescript
 imports: [TypeOrmModule.forFeature([{Name}]), AccountsModule],
 ```
@@ -368,4 +402,7 @@ import { {Name}Module } from './features/{name}/{name}.module';
 - [ ] Service methods use object-argument pattern `{ id, userId, dto }`
 - [ ] All service queries scoped by `userId`
 - [ ] Controller uses `@RequestUser()` and `ParseUUIDPipe`
+- [ ] Every DTO property has accurate `@ApiProperty` metadata, using `required: false` for optional fields
+- [ ] Arrays, nested DTOs, dates, UUIDs, enums, maps, unions, and response wrappers have explicit schemas
+- [ ] Every route has `@ApiOperation`, an explicit success response, and explicit body/param/query metadata where applicable
 - [ ] Module registered in `app.module.ts`

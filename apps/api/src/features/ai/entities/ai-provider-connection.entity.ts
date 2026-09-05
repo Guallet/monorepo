@@ -1,7 +1,7 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AiAgent } from './ai-agent.entity';
-import { AiProvider } from './ai-provider.enum';
+import { AiAgent } from './ai-agent.entity.js';
+import { AiProvider } from './ai-provider.enum.js';
 
 @Entity('ai_provider_connections')
 export class AiProviderConnection extends BaseDbEntity {

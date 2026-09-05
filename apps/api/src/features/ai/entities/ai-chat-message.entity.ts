@@ -1,4 +1,4 @@
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { BaseDbEntity } from '../../../database/BaseDbEntity.js';
 import {
   Column,
   Entity,
@@ -6,7 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AiChatSession } from './ai-chat-session.entity';
+import { AiChatSession } from './ai-chat-session.entity.js';
+import type { Relation } from 'typeorm';
 
 export type AiChatMessageRole = 'user' | 'assistant';
 
@@ -25,7 +26,7 @@ export class AiChatMessage extends BaseDbEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'session_id' })
-  session: AiChatSession;
+  session: Relation<AiChatSession>;
 
   @Column({ type: 'text' })
   role: AiChatMessageRole;

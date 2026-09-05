@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SavingGoalsController } from './saving-goals.controller';
-import { SavingGoalsService } from './saving-goals.service';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { SavingGoal } from './entities/saving-goal.entity';
+import { SavingGoalsController } from './saving-goals.controller.js';
+import { SavingGoalsService } from './saving-goals.service.js';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { SavingGoal } from './entities/saving-goal.entity.js';
 
 describe('SavingGoalsController', () => {
   let controller: SavingGoalsController;
 
   const mockSavingGoalsService = {
-    create: jest.fn(),
-    findAllUserSavingGoals: jest.fn(),
-    findByIdForUser: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    create: vi.fn(),
+    findAllUserSavingGoals: vi.fn(),
+    findByIdForUser: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -35,7 +35,7 @@ describe('SavingGoalsController', () => {
     controller = module.get<SavingGoalsController>(SavingGoalsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

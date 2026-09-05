@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { CreateSavingGoalDto } from './dto/create-saving-goal.dto';
-import { UpdateSavingGoalDto } from './dto/update-saving-goal.dto';
-import { SavingGoal } from './entities/saving-goal.entity';
+import { CreateSavingGoalDto } from './dto/create-saving-goal.dto.js';
+import { UpdateSavingGoalDto } from './dto/update-saving-goal.dto.js';
+import { SavingGoal } from './entities/saving-goal.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 

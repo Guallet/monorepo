@@ -1,29 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BudgetsService } from './budgets.service';
+import { BudgetsService } from './budgets.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Budget } from './entities/budget.entity';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { Budget } from './entities/budget.entity.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 import {
   BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { CreateBudgetDto } from './dto/create-budget.dto.js';
+import { UpdateBudgetDto } from './dto/update-budget.dto.js';
 
 describe('BudgetsService', () => {
   let service: BudgetsService;
 
   const mockBudgetRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -44,7 +44,7 @@ describe('BudgetsService', () => {
     service = module.get<BudgetsService>(BudgetsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

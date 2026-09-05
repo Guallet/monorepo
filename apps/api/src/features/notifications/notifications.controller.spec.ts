@@ -1,21 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsController } from './notifications.controller';
-import { NotificationsService } from './notifications.service';
+import { NotificationsController } from './notifications.controller.js';
+import { NotificationsService } from './notifications.service.js';
 import { NotFoundException } from '@nestjs/common';
-import { UserPrincipal } from 'src/auth/user-principal';
-import { Notification, NotificationType } from './entities/notification.entity';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { UserPrincipal } from '../../auth/user-principal.js';
+import { Notification, NotificationType } from './entities/notification.entity.js';
+import { UpdateNotificationDto } from './dto/update-notification.dto.js';
 
 describe('NotificationsController', () => {
   let controller: NotificationsController;
 
   const mockNotificationsService = {
-    findAllUserNotifications: jest.fn(),
-    findUnreadUserNotifications: jest.fn(),
-    findUserNotification: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-    markAllAsRead: jest.fn(),
+    findAllUserNotifications: vi.fn(),
+    findUnreadUserNotifications: vi.fn(),
+    findUserNotification: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
+    markAllAsRead: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -38,7 +38,7 @@ describe('NotificationsController', () => {
     controller = module.get<NotificationsController>(NotificationsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

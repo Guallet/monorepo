@@ -1,26 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountsService } from './accounts.service';
+import { AccountsService } from './accounts.service.js';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Account } from './entities/account.entity';
-import { Transaction } from '../transactions/entities/transaction.entity';
+import { Account } from './entities/account.entity.js';
+import { Transaction } from '../transactions/entities/transaction.entity.js';
 import { NotFoundException } from '@nestjs/common';
-import { AccountType } from './entities/accountType.model';
-import { AccountSource } from './entities/accountSource.model';
-import { CreateAccountRequest } from './dto/create-account-request.dto';
-import { UpdateAccountRequest } from './dto/update-account-request.dto';
+import { AccountType } from './entities/accountType.model.js';
+import { AccountSource } from './entities/accountSource.model.js';
+import { CreateAccountRequest } from './dto/create-account-request.dto.js';
+import { UpdateAccountRequest } from './dto/update-account-request.dto.js';
 
 describe('AccountsService', () => {
   let service: AccountsService;
 
   const mockAccountRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    save: jest.fn(),
+    save: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -41,7 +41,7 @@ describe('AccountsService', () => {
     service = module.get<AccountsService>(AccountsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

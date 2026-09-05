@@ -6,18 +6,18 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AiAgentDto } from './dto/ai-agent.dto';
-import { AiModelDto } from './dto/ai-model.dto';
-import { AiProviderConnectionDto } from './dto/ai-provider-connection.dto';
-import { CreateAiAgentDto } from './dto/create-ai-agent.dto';
-import { CreateAiProviderConnectionDto } from './dto/create-ai-provider-connection.dto';
-import { UpdateAiAgentDto } from './dto/update-ai-agent.dto';
-import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connection.dto';
-import { AiAgent } from './entities/ai-agent.entity';
-import { AiProviderConnection } from './entities/ai-provider-connection.entity';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
-import { AiProviderRegistryService } from './providers/ai-provider-registry.service';
-import { ProviderModelListError } from './providers/provider-model-list.error';
+import { AiAgentDto } from './dto/ai-agent.dto.js';
+import { AiModelDto } from './dto/ai-model.dto.js';
+import { AiProviderConnectionDto } from './dto/ai-provider-connection.dto.js';
+import { CreateAiAgentDto } from './dto/create-ai-agent.dto.js';
+import { CreateAiProviderConnectionDto } from './dto/create-ai-provider-connection.dto.js';
+import { UpdateAiAgentDto } from './dto/update-ai-agent.dto.js';
+import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connection.dto.js';
+import { AiAgent } from './entities/ai-agent.entity.js';
+import { AiProviderConnection } from './entities/ai-provider-connection.entity.js';
+import { AiCredentialEncryptionService } from './ai-credential-encryption.service.js';
+import { AiProviderRegistryService } from './providers/ai-provider-registry.service.js';
+import { ProviderModelListError } from './providers/provider-model-list.error.js';
 
 @Injectable()
 export class AiService {
