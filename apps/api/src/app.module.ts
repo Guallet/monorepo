@@ -113,8 +113,6 @@ import { AppController } from './app.controller.js';
     // @UseGuards(ThrottlerGuard). This default applies where the guard is used.
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 60 }]),
     // AUTHENTICATION VIA BETTER-AUTH
-    // TODO(nestjs-12): Upgrade @thallesp/nestjs-better-auth when a release
-    // declares NestJS 12 peer support. Version 2.7.0 is currently the latest.
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],
       inject: [ConfigService, EventEmitter2],
