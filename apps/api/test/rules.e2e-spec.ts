@@ -11,7 +11,7 @@ describe('Rules (e2e)', () => {
   let app: INestApplication;
 
   const mockRulesRepository = {
-    count: jest.fn().mockResolvedValue(1000),
+    count: vi.fn().mockResolvedValue(1000),
   };
 
   beforeEach(async () => {
@@ -62,7 +62,7 @@ describe('Rules (e2e)', () => {
   });
 
   afterEach(async () => {
-    await app.close();
-    jest.resetAllMocks();
+    await app?.close();
+    vi.resetAllMocks();
   });
 });

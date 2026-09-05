@@ -15,11 +15,15 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  afterEach(async () => {
+    await app?.close();
+  });
+
+  it('/me (GET)', () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return request(app.getHttpServer())
-      .get('/')
+      .get('/me')
       .expect(200)
-      .expect('Hello World!');
+      .expect({ session: null });
   });
 });
