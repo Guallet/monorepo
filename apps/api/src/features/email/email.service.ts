@@ -25,7 +25,9 @@ export class EmailService implements OnModuleInit {
     new Map();
   private defaultFrom: string;
 
-  constructor(private readonly configService: ConfigService<AppConfig>) {}
+  constructor(private readonly configService: ConfigService<AppConfig>) {
+    this.defaultFrom = this.configService.get('email', { infer: true })!.from;
+  }
 
   onModuleInit() {
     this.initializeTransport();

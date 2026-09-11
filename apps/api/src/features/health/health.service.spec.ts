@@ -7,7 +7,9 @@ describe('HealthService', () => {
   const mockTypeOrmHealthIndicator = { pingCheck: jest.fn() };
   const mockPing = jest.fn();
   const mockQueue = {
-    client: Promise.resolve({ ping: mockPing }),
+    getBackend: () => ({
+      client: Promise.resolve({ runCommand: mockPing }),
+    }),
   };
 
   let service: HealthService;

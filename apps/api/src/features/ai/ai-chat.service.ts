@@ -130,7 +130,7 @@ export class AiChatService {
     userId: string;
     sessionId: string;
     content: string;
-  }): Promise<StreamTextResult<ToolSet, never>> {
+  }): Promise<StreamTextResult<ToolSet, never, never>> {
     const session = await this.sessionRepository.findOne({
       relations: { agent: { connection: true } },
       where: { id: sessionId, user_id: userId },

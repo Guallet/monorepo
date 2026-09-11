@@ -39,8 +39,8 @@ export class HealthService {
     const indicator = this.healthIndicatorService.check('redis-health');
 
     try {
-      const redisClient = await this.healthCheckQueue.client;
-      await redisClient.ping();
+      const redisClient = await this.healthCheckQueue.getBackend().client;
+      await redisClient.runCommand('ping', []);
 
       return indicator.up({ latencyMs: Date.now() - start });
     } catch (error) {
