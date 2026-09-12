@@ -13,6 +13,10 @@ on:
     paths:
       - 'apps/api/**'
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   build:
     name: Build API
