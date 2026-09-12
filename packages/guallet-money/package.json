@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "oxlint .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -22,8 +22,6 @@
   "dependencies": {},
   "devDependencies": {
     "@vitest/coverage-v8": "workspace:*",
-    "eslint": "workspace:*",
-    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*",
     "vitest": "workspace:*"

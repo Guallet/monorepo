@@ -1,0 +1,131 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "react", "node"],
+  "jsPlugins": [
+    {
+      "name": "tanstack-query",
+      "specifier": "@tanstack/eslint-plugin-query"
+    }
+  ],
+  "categories": {
+    "correctness": "error"
+  },
+  "options": {
+    "denyWarnings": true
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/coverage/**",
+    "**/node_modules/**",
+    "packages/guallet-money/src/data/**"
+  ],
+  "rules": {
+    "eslint/no-unused-vars": "off",
+    "typescript/no-unused-vars": [
+      "error",
+      {
+        "args": "none"
+      }
+    ],
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["apps/api/**/*.ts"],
+      "env": {
+        "node": true,
+        "vitest": true
+      },
+      "rules": {
+        "typescript/no-explicit-any": "warn",
+        "typescript/no-floating-promises": "warn",
+        "typescript/no-misused-spread": "off",
+        "typescript/no-unsafe-argument": "warn",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-useless-default-assignment": "off"
+      }
+    },
+    {
+      "files": ["apps/webapp/**/*.{js,jsx,ts,tsx}"],
+      "env": {
+        "browser": true
+      },
+      "rules": {
+        "react/only-export-components": [
+          "warn",
+          {
+            "allowConstantExport": true,
+            "allowExportNames": ["DATE_RANGE_OPTIONS", "Route", "router"]
+          }
+        ],
+        "react/set-state-in-effect": "off",
+        "tanstack-query/exhaustive-deps": "error",
+        "tanstack-query/no-rest-destructuring": "warn",
+        "tanstack-query/stable-query-client": "error",
+        "tanstack-query/no-unstable-deps": "error",
+        "tanstack-query/infinite-query-property-order": "error",
+        "tanstack-query/no-void-query-fn": "error",
+        "tanstack-query/mutation-property-order": "error"
+      }
+    },
+    {
+      "files": ["apps/mobile/**/*.{js,jsx,ts,tsx}"],
+      "env": {
+        "browser": true,
+        "node": true
+      },
+      "rules": {
+        "react/set-state-in-effect": "off"
+      }
+    },
+    {
+      "files": ["apps/webapp/src/routes/**/*.{ts,tsx}"],
+      "rules": {
+        "react/only-export-components": "off"
+      }
+    },
+    {
+      "files": ["packages/guallet-money/**/*.ts"],
+      "env": {
+        "node": true,
+        "vitest": true
+      },
+      "rules": {
+        "typescript/no-explicit-any": "warn",
+        "typescript/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/guallet-ui-react-native/**/*.{ts,tsx}"],
+      "env": {
+        "node": true
+      },
+      "rules": {
+        "typescript/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_"
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "packages/guallet-api-react/**/*.{ts,tsx}",
+        "packages/guallet-ui-react/**/*.{ts,tsx}"
+      ],
+      "env": {
+        "browser": true
+      }
+    }
+  ]
+}

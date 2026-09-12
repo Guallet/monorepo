@@ -170,7 +170,7 @@ If you are unsure where to start, look for issues labeled `documentation` or sug
 
 To keep the codebase consistent and readable, please follow these guidelines:
 
-- **Code formatting:** Use [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/) (if applicable) to format and lint your code. Run `pnpm run lint` and `pnpm run format` before submitting.
+- **Code formatting:** Use [Prettier](https://prettier.io/) and [Oxlint](https://oxc.rs/docs/guide/usage/linter) to format and lint your code. Run `pnpm run lint` and `pnpm run format` before submitting.
 - **Naming conventions:** Use descriptive variable and function names. Follow the project's established naming patterns.
 - **Type annotations:** Use TypeScript types where applicable.
 - **Comments:** Write clear comments where necessary, but avoid obvious or redundant comments.

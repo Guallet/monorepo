@@ -6,7 +6,7 @@
   "types": "./index.tsx",
   "license": "Apache-2.0",
   "scripts": {
-    "lint": "eslint \"**/*.ts*\"",
+    "lint": "oxlint .",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
@@ -19,15 +19,10 @@
     "react-dom": "workspace:*"
   },
   "devDependencies": {
-    "@eslint/js": "workspace:*",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
-    "eslint": "workspace:*",
-    "eslint-plugin-react-hooks": "workspace:*",
-    "globals": "workspace:*",
     "react": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*",
-    "typescript-eslint": "workspace:*"
+    "typescript": "workspace:*"
   }
 }

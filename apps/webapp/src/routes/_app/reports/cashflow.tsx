@@ -67,7 +67,9 @@ interface CashFlowTableProps {
 function CashFlowTable({ reportData }: CashFlowTableProps) {
   const theme = useMantineTheme();
 
-  const rows = reportData.data.map((row) => <CashFlowRow row={row} />);
+  const rows = reportData.data.map((row) => (
+    <CashFlowRow key={row.categoryId} row={row} />
+  ));
 
   const rootCategoriesData = reportData.data.filter((x) => x.isParent);
   const totalRow = (

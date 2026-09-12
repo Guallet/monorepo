@@ -126,5 +126,5 @@ Expo Router requires `export default function` (not named exports) for all route
 
 - TypeScript strict mode everywhere; no `any` unless unavoidable
 - Prettier: single quotes, trailing commas
-- Pre-commit hook (Husky) runs lint – fix lint errors before committing
+- Run `pnpm lint` before committing; warnings fail the lint command
 - Workspace dependencies: `"@guallet/api-client": "workspace:*"` protocol
