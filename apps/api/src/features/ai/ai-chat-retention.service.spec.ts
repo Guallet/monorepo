@@ -8,7 +8,7 @@ describe('AiChatRetentionService', () => {
   let service: AiChatRetentionService;
 
   const mockSessionRepository = {
-    delete: jest.fn(),
+    delete: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -23,7 +23,7 @@ describe('AiChatRetentionService', () => {
     }).compile();
 
     service = module.get<AiChatRetentionService>(AiChatRetentionService);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('computes a cutoff 30 days in the past', () => {

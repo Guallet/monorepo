@@ -14,11 +14,11 @@ describe('RegularPaymentsController', () => {
   let controller: RegularPaymentsController;
 
   const mockRegularPaymentsService = {
-    findUserRegularPayments: jest.fn(),
-    findUserRegularPayment: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    findUserRegularPayments: vi.fn(),
+    findUserRegularPayment: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -43,7 +43,7 @@ describe('RegularPaymentsController', () => {
     );
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

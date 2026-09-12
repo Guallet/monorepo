@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { Job } from 'bullmq';
 import { ImportDataProcessor, ImportJobData } from './import-data.processor';
 import { EmailService } from '../../email/email.service';
@@ -14,12 +15,12 @@ import { DataImportRequestDto } from '../dto/data-import-request.dto';
 
 describe('ImportDataProcessor', () => {
   let processor: ImportDataProcessor;
-  let emailService: jest.Mocked<EmailService>;
-  let usersService: jest.Mocked<UsersService>;
-  let notificationsService: jest.Mocked<NotificationsService>;
-  let csvEngine: jest.Mocked<CsvImportEngine>;
-  let ofeEngine: jest.Mocked<OfeImportEngine>;
-  let jsonEngine: jest.Mocked<JsonImportEngine>;
+  let emailService: Mocked<EmailService>;
+  let usersService: Mocked<UsersService>;
+  let notificationsService: Mocked<NotificationsService>;
+  let csvEngine: Mocked<CsvImportEngine>;
+  let ofeEngine: Mocked<OfeImportEngine>;
+  let jsonEngine: Mocked<JsonImportEngine>;
 
   const mockUserId = 'user-123';
   const mockUserEmail = 'test@example.com';
@@ -31,41 +32,41 @@ describe('ImportDataProcessor', () => {
         {
           provide: EmailService,
           useValue: {
-            sendImportCompletionEmail: jest.fn(),
-            sendImportErrorEmail: jest.fn(),
+            sendImportCompletionEmail: vi.fn(),
+            sendImportErrorEmail: vi.fn(),
           },
         },
         {
           provide: UsersService,
           useValue: {
-            findUserData: jest.fn(),
+            findUserData: vi.fn(),
           },
         },
         {
           provide: NotificationsService,
           useValue: {
-            createSystemNotification: jest.fn(),
+            createSystemNotification: vi.fn(),
           },
         },
         {
           provide: CsvImportEngine,
           useValue: {
             formatLabel: 'CSV',
-            execute: jest.fn(),
+            execute: vi.fn(),
           },
         },
         {
           provide: OfeImportEngine,
           useValue: {
             formatLabel: 'OFE',
-            execute: jest.fn(),
+            execute: vi.fn(),
           },
         },
         {
           provide: JsonImportEngine,
           useValue: {
             formatLabel: 'JSON',
-            execute: jest.fn(),
+            execute: vi.fn(),
           },
         },
       ],
@@ -88,11 +89,11 @@ describe('ImportDataProcessor', () => {
 
     notificationsService.createSystemNotification.mockResolvedValue({} as any);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should be defined', () => {
@@ -130,7 +131,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-1',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       csvEngine.execute.mockResolvedValue({ processed: 1, failed: 0 });
@@ -155,7 +156,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-2',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       ofeEngine.execute.mockResolvedValue({ processed: 1, failed: 0 });
@@ -181,7 +182,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-3',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       jsonEngine.execute.mockResolvedValue({ processed: 1, failed: 0 });
@@ -202,7 +203,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-4',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       csvEngine.execute.mockResolvedValue({ processed: 0, failed: 0 });
@@ -218,7 +219,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-5',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       await expect(processor.process(job)).rejects.toThrow(
@@ -245,7 +246,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-6',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       csvEngine.execute.mockResolvedValue({ processed: 5, failed: 1 });
@@ -269,7 +270,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-7',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       ofeEngine.execute.mockRejectedValue(new Error('Parse error'));
@@ -292,7 +293,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-8',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       jsonEngine.execute.mockResolvedValue({ processed: 0, failed: 0 });
@@ -328,7 +329,7 @@ describe('ImportDataProcessor', () => {
       const job = {
         id: 'job-9',
         data: { userId: mockUserId, dto } as ImportJobData,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       } as unknown as Job<ImportJobData>;
 
       csvEngine.execute.mockRejectedValue(new Error('DB error'));

@@ -10,16 +10,16 @@ describe('TransactionsService', () => {
   let service: TransactionsService;
 
   const mockTransactionRepository = {
-    create: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    count: jest.fn(),
+    create: vi.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    count: vi.fn(),
   };
 
   const mockAccountsService = {
-    getUserAccount: jest.fn(),
+    getUserAccount: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -40,7 +40,7 @@ describe('TransactionsService', () => {
     service = module.get<TransactionsService>(TransactionsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockTransactionRepository.create.mockImplementation(
       (value: Partial<Transaction>) => value,
     );

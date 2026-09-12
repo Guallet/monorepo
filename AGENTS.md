@@ -27,8 +27,8 @@ pnpm check-types                  # TypeScript check all packages
 pnpm --filter api dev             # API watch mode
 pnpm --filter webapp dev          # Vite dev server (also regenerates TanStack Router routeTree)
 pnpm --filter mobile start        # Expo dev server
-pnpm --filter api test            # API Jest tests
-pnpm --filter guallet-money test  # money package tests (80 % threshold enforced)
+pnpm --filter api test            # API Vitest tests
+pnpm --filter @guallet/money test # money package tests (80 % threshold enforced)
 ```
 
 ## Data-Flow Contract

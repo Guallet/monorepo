@@ -11,11 +11,11 @@ describe('InstitutionsController', () => {
   let controller: InstitutionsController;
 
   const mockInstitutionsService = {
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+    findAll: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -38,7 +38,7 @@ describe('InstitutionsController', () => {
     controller = module.get<InstitutionsController>(InstitutionsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { DataExporterController } from './data-exporter.controller';
 import { getQueueToken } from '@nestjs/bullmq';
 import {
@@ -10,11 +11,11 @@ import {
 
 describe('DataExporterController', () => {
   let controller: DataExporterController;
-  let exportQueue: jest.Mocked<any>;
+  let exportQueue: Mocked<any>;
 
   beforeEach(async () => {
     exportQueue = {
-      add: jest.fn().mockResolvedValue({ id: 'test-job-id' }),
+      add: vi.fn().mockResolvedValue({ id: 'test-job-id' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({

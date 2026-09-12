@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Mocked } from 'vitest';
 import { BadRequestException } from '@nestjs/common';
 import { DataImporterController } from './data-importer.controller';
 import { UserPrincipal } from 'src/auth/user-principal';
@@ -16,7 +17,7 @@ import {
 
 describe('DataImporterController', () => {
   let controller: DataImporterController;
-  let importQueue: jest.Mocked<Queue>;
+  let importQueue: Mocked<Queue>;
 
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
@@ -26,7 +27,7 @@ describe('DataImporterController', () => {
 
   beforeEach(async () => {
     const mockQueue = {
-      add: jest.fn(),
+      add: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +43,7 @@ describe('DataImporterController', () => {
     controller = module.get<DataImporterController>(DataImporterController);
     importQueue = module.get(getQueueToken(IMPORT_DATA_QUEUE));
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
