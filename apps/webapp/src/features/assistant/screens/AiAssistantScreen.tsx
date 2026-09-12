@@ -263,7 +263,10 @@ export function AiAssistantScreen() {
                   <ChatMessageBubble role="user" content={pendingUserMessage} />
                 )}
                 {streamingReply !== '' && (
-                  <ChatMessageBubble role="assistant" content={streamingReply} />
+                  <ChatMessageBubble
+                    role="assistant"
+                    content={streamingReply}
+                  />
                 )}
                 {error && (
                   <Text size="xs" c="error">

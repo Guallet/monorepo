@@ -10,7 +10,7 @@ pnpm --filter api lint
 pnpm --filter webapp lint
 ```
 
-Warnings fail lint runs. Prettier remains the formatter and runs separately.
+Warnings fail lint runs. Oxfmt is the formatter and runs separately.
 
 ## Migration notes
 
@@ -35,5 +35,5 @@ Warnings fail lint runs. Prettier remains the formatter and runs separately.
   `typescript/no-useless-default-assignment` to remain disabled.
 - Expo's ESLint preset has no directly importable Oxlint equivalent. Mobile now
   receives the shared native TypeScript and React correctness rules.
-  Expo-specific preset-only stylistic rules are not carried over; Prettier
+  Expo-specific preset-only stylistic rules are not carried over; Oxfmt
   remains responsible for formatting.

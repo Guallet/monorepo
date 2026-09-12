@@ -21,7 +21,9 @@ export function ChatMessageBubble({
         maxWidth: '80%',
         padding: `${spacing.sm}px ${spacing.md}px`,
         borderRadius: borderRadius.lg,
-        backgroundColor: isUser ? colors.primary : 'var(--mantine-color-gray-0)',
+        backgroundColor: isUser
+          ? colors.primary
+          : 'var(--mantine-color-gray-0)',
         border: isUser ? 'none' : '1px solid var(--mantine-color-gray-2)',
       }}
     >

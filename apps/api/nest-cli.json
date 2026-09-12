@@ -6,8 +6,6 @@
     "deleteOutDir": true,
     "builder": "swc",
     "typeCheck": true,
-    "assets": [
-      "**/*.hbs"
-    ]
+    "assets": ["**/*.hbs"]
   }
 }

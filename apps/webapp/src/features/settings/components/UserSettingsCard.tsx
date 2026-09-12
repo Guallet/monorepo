@@ -1,6 +1,15 @@
 import { useUser } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
-import { Avatar, Box, Button, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Group,
+  Stack,
+  Text,
+  ThemeIcon,
+} from '@mantine/core';
 import { IconLogout, IconUserCircle } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
@@ -33,12 +42,12 @@ export function UserSettingsCard() {
         </Group>
 
         <Group gap={spacing.md} wrap="nowrap">
-        <Avatar
-          src={user?.profile_src}
-          alt={user?.name}
-          size={72}
-          radius="xl"
-        />
+          <Avatar
+            src={user?.profile_src}
+            alt={user?.name}
+            size={72}
+            radius="xl"
+          />
           <Box style={{ flex: 1, minWidth: 0 }}>
             <Text fw={700}>{user?.name}</Text>
             <Text size="sm" c="dimmed" truncate>

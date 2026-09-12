@@ -19,12 +19,12 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 
 ## Routing Decision Table
 
-| What you want | File to create | Notes |
-|---|---|---|
-| New bottom tab | `apps/mobile/app/(tabs)/{name}.tsx` | Also add `<Tabs.Screen>` in `_layout.tsx` |
-| Stack screen under a tab | `apps/mobile/app/{name}/index.tsx` | Navigate with `router.push('/{name}')` |
-| Detail screen with param | `apps/mobile/app/{name}/[id].tsx` | Read param with `useLocalSearchParams()` |
-| Modal screen | Create `apps/mobile/app/{name}.modal.tsx` or reuse `modal.tsx` | |
+| What you want            | File to create                                                 | Notes                                     |
+| ------------------------ | -------------------------------------------------------------- | ----------------------------------------- |
+| New bottom tab           | `apps/mobile/app/(tabs)/{name}.tsx`                            | Also add `<Tabs.Screen>` in `_layout.tsx` |
+| Stack screen under a tab | `apps/mobile/app/{name}/index.tsx`                             | Navigate with `router.push('/{name}')`    |
+| Detail screen with param | `apps/mobile/app/{name}/[id].tsx`                              | Read param with `useLocalSearchParams()`  |
+| Modal screen             | Create `apps/mobile/app/{name}.modal.tsx` or reuse `modal.tsx` |                                           |
 
 ---
 
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
 ```
 
 > `IconSymbol` uses SF Symbols on iOS and MaterialIcons on Android. Common names:
+>
 > - `house.fill` – home
 > - `list.bullet` – list
 > - `chart.pie.fill` – chart
@@ -179,20 +180,21 @@ const styles = StyleSheet.create({
 
 Import from `@luna-ui/react-native`.
 
-| Component | Category | Use for |
-|---|---|---|
-| `Stack` | Layout | Vertical container (VStack equivalent) |
-| `Group` | Layout | Horizontal container (HStack equivalent) |
-| `Divider` | Layout | Horizontal separator line |
-| `Title` | Typography | Bold page/section headings |
-| `Label` | Typography | Body text and descriptions |
-| `Button` | Buttons | Tappable buttons; `variant` = `"filled" \| "light" \| "outline" \| "subtle" \| "transparent"` |
-| `TextInput` | Inputs | Text input field |
-| `OtpInput` | Inputs | OTP/PIN entry |
-| `Visibility` | Utility | Conditionally show/hide children: `<Visibility isVisible={bool}>` |
-| `ModalLoaderOverlay` | Overlays | Full-screen loading overlay |
+| Component            | Category   | Use for                                                                                       |
+| -------------------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `Stack`              | Layout     | Vertical container (VStack equivalent)                                                        |
+| `Group`              | Layout     | Horizontal container (HStack equivalent)                                                      |
+| `Divider`            | Layout     | Horizontal separator line                                                                     |
+| `Title`              | Typography | Bold page/section headings                                                                    |
+| `Label`              | Typography | Body text and descriptions                                                                    |
+| `Button`             | Buttons    | Tappable buttons; `variant` = `"filled" \| "light" \| "outline" \| "subtle" \| "transparent"` |
+| `TextInput`          | Inputs     | Text input field                                                                              |
+| `OtpInput`           | Inputs     | OTP/PIN entry                                                                                 |
+| `Visibility`         | Utility    | Conditionally show/hide children: `<Visibility isVisible={bool}>`                             |
+| `ModalLoaderOverlay` | Overlays   | Full-screen loading overlay                                                                   |
 
 ### Theme hooks
+
 ```typescript
 import { useTheme } from '@luna-ui/react-native';
 const theme = useTheme(); // access theme.colors, theme.spacing, etc.
@@ -206,13 +208,14 @@ const theme = useTheme(); // access theme.colors, theme.spacing, etc.
 import { useRouter } from 'expo-router';
 const router = useRouter();
 
-router.push('/{name}');                // navigate forward
-router.push(`/{name}/${id}`);          // navigate to detail
-router.back();                         // go back
-router.replace('/login');              // replace current screen
+router.push('/{name}'); // navigate forward
+router.push(`/{name}/${id}`); // navigate to detail
+router.back(); // go back
+router.replace('/login'); // replace current screen
 ```
 
 For reading route params in `[id].tsx`:
+
 ```typescript
 import { useLocalSearchParams } from 'expo-router';
 const { id } = useLocalSearchParams<{ id: string }>();
@@ -247,6 +250,7 @@ create{Name}Mutation.mutate(
 ## Auth
 
 Auth is handled globally by the `(tabs)/_layout.tsx`:
+
 - It checks `useAuth()` from `@guallet/auth` and redirects to `/login` if not authenticated.
 - Individual screens **do not** need their own auth checks.
 

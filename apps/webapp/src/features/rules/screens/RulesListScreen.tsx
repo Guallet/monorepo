@@ -170,11 +170,7 @@ export function RulesListScreen() {
       return (
         <EmptyState
           illustration={
-            <IconListCheck
-              size={48}
-              strokeWidth={1.5}
-              color={colors.midGrey}
-            />
+            <IconListCheck size={48} strokeWidth={1.5} color={colors.midGrey} />
           }
           title={t(
             'screens.rules.list.emptyState.title',
@@ -265,9 +261,13 @@ export function RulesListScreen() {
                   <Group gap="xs">
                     <Text fw={500}>{rule.name}</Text>
                     <Badge size="sm" variant="light" color="gray">
-                      {t('screens.rules.list.rule.priority', 'Priority {{index}}', {
-                        index: index + 1,
-                      })}
+                      {t(
+                        'screens.rules.list.rule.priority',
+                        'Priority {{index}}',
+                        {
+                          index: index + 1,
+                        },
+                      )}
                     </Badge>
                     <Badge
                       size="sm"

@@ -1,6 +1,7 @@
 # @mantine/form Patterns
 
 ## Table of Contents
+
 - [Basic form with validation](#basic-form-with-validation)
 - [Nested object fields](#nested-object-fields)
 - [Array / list fields](#array--list-fields)
@@ -115,7 +116,9 @@ const fields = form.values.employees.map((_, index) => (
 return (
   <form onSubmit={form.onSubmit((values) => console.log(values))}>
     {fields}
-    <Button onClick={() => form.insertListItem('employees', { name: '', role: '' })}>
+    <Button
+      onClick={() => form.insertListItem('employees', { name: '', role: '' })}
+    >
       Add employee
     </Button>
     <Button type="submit">Submit</Button>
@@ -124,9 +127,10 @@ return (
 ```
 
 **List methods:**
+
 ```tsx
-form.insertListItem('employees', { name: '', role: '' });       // append
-form.insertListItem('employees', { name: '', role: '' }, 0);    // prepend
+form.insertListItem('employees', { name: '', role: '' }); // append
+form.insertListItem('employees', { name: '', role: '' }, 0); // prepend
 form.removeListItem('employees', index);
 form.reorderListItem('employees', { from: 2, to: 0 });
 form.replaceListItem('employees', index, { name: 'New', role: 'Dev' });
@@ -144,14 +148,16 @@ const form = useForm({
   validate: {
     username: async (value, _values, _path, signal) => {
       if (!value) return 'Username is required';
-      const response = await fetch(`/api/check-username?q=${value}`, { signal });
+      const response = await fetch(`/api/check-username?q=${value}`, {
+        signal,
+      });
       if (signal?.aborted) return null;
       const { taken } = await response.json();
       return taken ? 'Username is already taken' : null;
     },
   },
   validateInputOnChange: ['username'],
-  validateDebounce: 500,   // debounce async calls
+  validateDebounce: 500, // debounce async calls
 });
 ```
 
@@ -172,7 +178,8 @@ interface ProfileValues {
   website: string;
 }
 
-const [FormProvider, useFormContext, useProfileForm] = createFormContext<ProfileValues>();
+const [FormProvider, useFormContext, useProfileForm] =
+  createFormContext<ProfileValues>();
 
 // 2. Wrap your form tree with FormProvider
 function ProfileForm() {
@@ -215,7 +222,7 @@ Shape the values before they reach `onSubmit`. The transform is applied transpar
 ```tsx
 const form = useForm({
   initialValues: {
-    price: '',        // stored as string in input
+    price: '', // stored as string in input
     tags: 'a, b, c', // stored as comma-separated string
   },
   transformValues: (values) => ({
@@ -305,6 +312,8 @@ const handleSubmit = async (values: typeof form.values) => {
 <form onSubmit={form.onSubmit(handleSubmit)}>
   <TextInput {...form.getInputProps('email')} label="Email" />
   <PasswordInput {...form.getInputProps('password')} label="Password" />
-  <Button type="submit" loading={form.submitting}>Sign in</Button>
-</form>
+  <Button type="submit" loading={form.submitting}>
+    Sign in
+  </Button>
+</form>;
 ```

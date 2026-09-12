@@ -7,7 +7,9 @@ interface StepChooseMethodProps {
   onChoose: (method: 'ob' | 'manual') => void;
 }
 
-export function StepChooseMethod({ onChoose }: Readonly<StepChooseMethodProps>) {
+export function StepChooseMethod({
+  onChoose,
+}: Readonly<StepChooseMethodProps>) {
   const { t } = useTranslation();
 
   return (
@@ -17,18 +19,27 @@ export function StepChooseMethod({ onChoose }: Readonly<StepChooseMethodProps>) 
           {t('feature.accounts.add.chooseMethod.title', 'Add an account')}
         </Title>
         <Text size="sm" c="dimmed">
-          {t('feature.accounts.add.chooseMethod.subtitle', "Choose how you'd like to connect your account")}
+          {t(
+            'feature.accounts.add.chooseMethod.subtitle',
+            "Choose how you'd like to connect your account",
+          )}
         </Text>
       </Box>
 
       <Stack gap="sm">
         <MethodCard
-          title={t('feature.accounts.add.chooseMethod.openBanking.title', 'Connect via Open Banking')}
+          title={t(
+            'feature.accounts.add.chooseMethod.openBanking.title',
+            'Connect via Open Banking',
+          )}
           description={t(
             'feature.accounts.add.chooseMethod.openBanking.desc',
             'Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money.',
           )}
-          badge={t('feature.accounts.add.chooseMethod.recommended', 'Recommended')}
+          badge={t(
+            'feature.accounts.add.chooseMethod.recommended',
+            'Recommended',
+          )}
           onClick={() => onChoose('ob')}
           icon={
             <ThemeIcon size={44} radius="sm" variant="light" color="blue">
@@ -37,7 +48,10 @@ export function StepChooseMethod({ onChoose }: Readonly<StepChooseMethodProps>) 
           }
         />
         <MethodCard
-          title={t('feature.accounts.add.chooseMethod.manual.title', 'Add manually')}
+          title={t(
+            'feature.accounts.add.chooseMethod.manual.title',
+            'Add manually',
+          )}
           description={t(
             'feature.accounts.add.chooseMethod.manual.desc',
             'Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported.',

@@ -56,6 +56,7 @@ export class {Name} extends BaseDbEntity {
 ```
 
 **Column rules:**
+
 - Use snake_case for column names matching the DB (`user_id`, `created_at`).
 - Money/prices: `type: 'decimal'`.
 - Free-form text: `type: 'text'`.
@@ -132,6 +133,7 @@ export class {Name}Dto {
 ```
 
 **Rules for `fromDomain`:**
+
 - Map DB snake_case to camelCase for JSON responses.
 - Flatten relations (e.g. `institutionId: domain.institution?.id ?? null`).
 - Never expose internal fields (`user_id`, `deleted_at`).
@@ -226,6 +228,7 @@ export class {Name}Service {
 ```
 
 **Service rules:**
+
 - All methods take an object argument `{ id, userId, dto }` – never positional parameters.
 - Always scope queries with `user_id: userId`.
 - Throw `NotFoundException` when the entity is missing or doesn't belong to the user.
@@ -314,6 +317,7 @@ export class {Name}Controller {
 ```
 
 **Controller rules:**
+
 - Always add `@ApiTags` for Swagger grouping.
 - Always use `@RequestUser()` to get the current user – never read from the request object directly.
 - Always use `ParseUUIDPipe` on `:id` route params.
@@ -341,6 +345,7 @@ export class {Name}Module {}
 ```
 
 If the feature needs services from other modules, add them to `imports` and import the other module:
+
 ```typescript
 imports: [TypeOrmModule.forFeature([{Name}]), AccountsModule],
 ```

@@ -294,8 +294,14 @@ export function RuleForm({
                   <Divider
                     label={
                       conditionLogic === 'and'
-                        ? t('screens.rules.form.conditions.logic.allDivider', 'And')
-                        : t('screens.rules.form.conditions.logic.anyDivider', 'Or')
+                        ? t(
+                            'screens.rules.form.conditions.logic.allDivider',
+                            'And',
+                          )
+                        : t(
+                            'screens.rules.form.conditions.logic.anyDivider',
+                            'Or',
+                          )
                     }
                     labelPosition="center"
                     my={spacing.xs}
@@ -435,7 +441,10 @@ export function RuleForm({
               </ThemeIcon>
               <Box>
                 <Text fw={600}>
-                  {t('screens.rules.form.category.title', 'Then assign category')}
+                  {t(
+                    'screens.rules.form.category.title',
+                    'Then assign category',
+                  )}
                 </Text>
                 <Text size="sm" c="dimmed" mt={spacing.xs}>
                   {t(
@@ -495,7 +504,11 @@ export function RuleForm({
             <Button variant="subtle" onClick={onCancel} disabled={isSubmitting}>
               {t('screens.rules.form.buttons.cancel', 'Cancel')}
             </Button>
-            <Button type="submit" loading={isSubmitting} disabled={!isFormValid}>
+            <Button
+              type="submit"
+              loading={isSubmitting}
+              disabled={!isFormValid}
+            >
               {submitLabel}
             </Button>
           </Group>

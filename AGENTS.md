@@ -5,17 +5,17 @@
 
 ## Repo at a Glance
 
-| App / Package | Tech | Path |
-|---|---|---|
-| API | NestJS 11, TypeORM, Better Auth, BullMQ | `apps/api` |
-| Webapp | Vite 7, React 19, TanStack Router + Query, Mantine 8 | `apps/webapp` |
-| Mobile | Expo 54, React Native 0.81, Expo Router, Luna UI | `apps/mobile` |
-| API client types | TypeScript (no runtime, types + fetch wrappers) | `packages/guallet-api-client` |
-| React query hooks | TanStack Query wrappers over the API client | `packages/guallet-api-react` |
-| Design tokens | Platform-agnostic theme types and default values | `packages/guallet-theme` |
-| Shared React UI | Mantine-based components (web) | `packages/guallet-ui-react` |
-| React Native UI | Custom Luna UI component library | `packages/guallet-ui-react-native` |
-| Money / currency | Type-safe money library (80 % coverage threshold) | `packages/guallet-money` |
+| App / Package     | Tech                                                 | Path                               |
+| ----------------- | ---------------------------------------------------- | ---------------------------------- |
+| API               | NestJS 11, TypeORM, Better Auth, BullMQ              | `apps/api`                         |
+| Webapp            | Vite 7, React 19, TanStack Router + Query, Mantine 8 | `apps/webapp`                      |
+| Mobile            | Expo 54, React Native 0.81, Expo Router, Luna UI     | `apps/mobile`                      |
+| API client types  | TypeScript (no runtime, types + fetch wrappers)      | `packages/guallet-api-client`      |
+| React query hooks | TanStack Query wrappers over the API client          | `packages/guallet-api-react`       |
+| Design tokens     | Platform-agnostic theme types and default values     | `packages/guallet-theme`           |
+| Shared React UI   | Mantine-based components (web)                       | `packages/guallet-ui-react`        |
+| React Native UI   | Custom Luna UI component library                     | `packages/guallet-ui-react-native` |
+| Money / currency  | Type-safe money library (80 % coverage threshold)    | `packages/guallet-money`           |
 
 ## Common Commands
 
@@ -60,16 +60,17 @@ async myHandler(@RequestUser() user: UserPrincipal) {
 
 Load these on-demand with `/skill-name` when implementing the corresponding task:
 
-| Skill | When to use |
-|---|---|
-| `create-api-feature` | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
-| `add-api-client-domain` | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks |
-| `create-webapp-feature` | Add a new page/section to the web frontend (route + screen + components) |
-| `add-mobile-screen` | Add a new screen to the Expo mobile app |
+| Skill                   | When to use                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------- |
+| `create-api-feature`    | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
+| `add-api-client-domain` | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
+| `create-webapp-feature` | Add a new page/section to the web frontend (route + screen + components)        |
+| `add-mobile-screen`     | Add a new screen to the Expo mobile app                                         |
 
 ## Quick Pattern Index
 
 ### API feature files
+
 ```
 apps/api/src/features/{name}/
   {name}.module.ts
@@ -80,28 +81,34 @@ apps/api/src/features/{name}/
   dto/{name}.dto.ts
   entities/{name}.entity.ts
 ```
+
 Register in: `apps/api/src/app.module.ts` under `// APP MODULES`
 
 ### API client domain files
+
 ```
 packages/guallet-api-client/src/{domain}/
   {domain}.models.ts   – TS types only (Dto, CreateRequest, UpdateRequest)
   {domain}.api.ts      – class with getAll / get / create / update / delete
   index.ts             – re-exports
 ```
+
 Register in: `packages/guallet-api-client/src/GualletClient.ts` (interface + class property + constructor)
 Export from: `packages/guallet-api-client/src/index.ts`
 
 ### React query hooks
+
 ```
 packages/guallet-api-react/src/{domain}/
   use{Domain}.tsx           – useQuery hooks
   use{Domain}Mutations.tsx  – useMutation hooks
   index.ts                  – re-exports
 ```
+
 Export from: `packages/guallet-api-react/src/index.ts`
 
 ### Webapp feature files
+
 ```
 apps/webapp/src/routes/_app/{name}/index.tsx   – list route
 apps/webapp/src/routes/_app/{name}/$id.tsx     – detail route (if needed)
@@ -111,20 +118,23 @@ apps/webapp/src/features/{name}/
   models/    – local types (if needed)
   state/     – Zustand stores (only for complex multi-step UI)
 ```
+
 Import alias: `@/` → `apps/webapp/src/`
 Run `pnpm --filter webapp dev` after adding route files to regenerate `routeTree.gen.ts`.
 
 ### Mobile screen files
+
 ```
 apps/mobile/app/(tabs)/{name}.tsx    – new tab screen
 apps/mobile/app/{name}/index.tsx     – stack screen
 apps/mobile/app/{name}/[id].tsx      – detail screen with param
 ```
+
 Expo Router requires `export default function` (not named exports) for all route files.
 
 ## Code Style Reminders
 
 - TypeScript strict mode everywhere; no `any` unless unavoidable
-- Prettier: single quotes, trailing commas
+- Oxfmt: single quotes, trailing commas, and an 80-character print width
 - Run `pnpm lint` before committing; warnings fail the lint command
 - Workspace dependencies: `"@guallet/api-client": "workspace:*"` protocol

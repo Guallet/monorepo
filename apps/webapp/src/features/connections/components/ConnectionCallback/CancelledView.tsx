@@ -8,7 +8,10 @@ interface CancelledViewProps {
   onBack: () => void;
 }
 
-export function CancelledView({ onRetry, onBack }: Readonly<CancelledViewProps>) {
+export function CancelledView({
+  onRetry,
+  onBack,
+}: Readonly<CancelledViewProps>) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -28,7 +31,10 @@ export function CancelledView({ onRetry, onBack }: Readonly<CancelledViewProps>)
         </Center>
 
         <Title order={4} ta="center">
-          {t('screens.connections.callback.cancelled.title', 'Authorisation cancelled')}
+          {t(
+            'screens.connections.callback.cancelled.title',
+            'Authorisation cancelled',
+          )}
         </Title>
         <Text size="sm" c="dimmed" ta="center" maw={360}>
           {t(
@@ -39,10 +45,16 @@ export function CancelledView({ onRetry, onBack }: Readonly<CancelledViewProps>)
 
         <Stack gap="xs" w="100%" maw={380}>
           <Button fullWidth onClick={onRetry}>
-            {t('screens.connections.callback.cancelled.retry', 'Try connecting again')}
+            {t(
+              'screens.connections.callback.cancelled.retry',
+              'Try connecting again',
+            )}
           </Button>
           <Button fullWidth variant="outline" onClick={onBack}>
-            {t('screens.connections.callback.cancelled.manual', 'Add account manually')}
+            {t(
+              'screens.connections.callback.cancelled.manual',
+              'Add account manually',
+            )}
           </Button>
         </Stack>
       </Stack>

@@ -9,15 +9,17 @@ Guallet is a personal finance management platform built as a TypeScript monorepo
 ## Common Commands
 
 ### Monorepo-wide (run from root)
+
 ```bash
 pnpm dev           # Start all apps in dev mode
 pnpm build         # Build all packages/apps
 pnpm lint          # Lint all packages/apps
 pnpm check-types   # TypeScript type-check all packages/apps
-pnpm format        # Prettier format all TS/TSX/MD files
+pnpm format        # Oxfmt format all supported files
 ```
 
 ### Docker (development environment)
+
 ```bash
 pnpm docker:compose:up     # Start PostgreSQL, Redis, pgAdmin
 pnpm docker:compose:down   # Stop services
@@ -25,6 +27,7 @@ pnpm docker:compose:reset  # Stop and remove volumes
 ```
 
 ### API (apps/api)
+
 ```bash
 pnpm --filter api dev          # Start with watch mode
 pnpm --filter api build        # Compile with nest build
@@ -38,6 +41,7 @@ pnpm --filter api db:migrate   # Run Better Auth migrations
 ```
 
 ### Webapp (apps/webapp)
+
 ```bash
 pnpm --filter webapp dev       # Vite dev server
 pnpm --filter webapp build     # tsc + vite build (runs i18n:extract first)
@@ -46,6 +50,7 @@ pnpm --filter webapp i18n:extract  # Extract i18n keys
 ```
 
 ### Mobile (apps/mobile)
+
 ```bash
 pnpm --filter mobile start     # Expo dev server
 pnpm --filter mobile ios       # Run on iOS simulator
@@ -53,6 +58,7 @@ pnpm --filter mobile android   # Run on Android emulator
 ```
 
 ### Money package (packages/guallet-money)
+
 ```bash
 pnpm --filter @guallet/money test      # Vitest tests (80% coverage threshold enforced)
 pnpm --filter @guallet/money test:cov  # With coverage report
@@ -98,6 +104,7 @@ Internal packages are referenced via `workspace:*` protocol. The API client type
 ## Environment Setup
 
 Copy the sample files before starting:
+
 ```bash
 cp database.env.sample .env
 cp api.env.sample apps/api/.env
@@ -116,13 +123,14 @@ Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrat
 
 ## Code Style
 
-Prettier config: single quotes, trailing commas. Oxlint uses the shared root `.oxlintrc.json`; warnings fail CI. Run `pnpm lint` before committing. TypeScript strict mode is used across all packages.
+Oxfmt config: single quotes, trailing commas, and an 80-character print width. Oxlint uses the shared root `.oxlintrc.json`; warnings fail CI. Run `pnpm lint` before committing. TypeScript strict mode is used across all packages.
 
 ## UI & Design System
 
 **Always consult [DESIGN.MD](./DESIGN.MD) before making any UI changes.** It is the single source of truth for colours, typography, spacing, radius, elevation, motion, and component rules.
 
 Key rules at a glance:
+
 - Use `useTheme()` from `@guallet/ui-react` for all design tokens — no hardcoded values
 - Cards: `radius="lg"`, `shadow="sm"`, `withBorder`, white background
 - Money: positive → `colors.support` (green), negative → `colors.error` (red), always `fontVariantNumeric: 'tabular-nums'`

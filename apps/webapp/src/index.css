@@ -1,63 +1,66 @@
 /* Guallet design tokens — mirrors colors_and_type.css from the design system */
 :root {
   /* Brand */
-  --gu-primary:        #005EB8;
-  --gu-secondary:      #41B6E6;
+  --gu-primary: #005eb8;
+  --gu-secondary: #41b6e6;
 
   /* Semantic surfaces */
-  --gu-text:           #000000;
-  --gu-background:     #FFFFFF;
-  --gu-surface:        #F5F5F5;
-  --gu-page:           #F7FAFC;
+  --gu-text: #000000;
+  --gu-background: #ffffff;
+  --gu-surface: #f5f5f5;
+  --gu-page: #f7fafc;
 
   /* Accent — cool blue family */
-  --gu-accent-dark:    #003087;
-  --gu-accent-bright:  #0072CE;
-  --gu-accent-light:   #41B6E6;
-  --gu-accent-aqua:    #00A9CE;
+  --gu-accent-dark: #003087;
+  --gu-accent-bright: #0072ce;
+  --gu-accent-light: #41b6e6;
+  --gu-accent-aqua: #00a9ce;
 
   /* Support — green (income / positive) */
-  --gu-support-dark:   #006747;
-  --gu-support:        #009639;
-  --gu-support-light:  #78BE20;
-  --gu-support-aqua:   #00A499;
+  --gu-support-dark: #006747;
+  --gu-support: #009639;
+  --gu-support-light: #78be20;
+  --gu-support-aqua: #00a499;
 
   /* Neutrals */
-  --gu-black:          #231F20;
-  --gu-grey-dark:      #425563;
-  --gu-grey-mid:       #768692;
-  --gu-grey-pale:      #E8EDEE;
-  --gu-white:          #FFFFFF;
+  --gu-black: #231f20;
+  --gu-grey-dark: #425563;
+  --gu-grey-mid: #768692;
+  --gu-grey-pale: #e8edee;
+  --gu-white: #ffffff;
 
   /* Alerts */
-  --gu-error:          #DA291C;
-  --gu-success:        #78BE20;
-  --gu-warning:        #FAE100;
+  --gu-error: #da291c;
+  --gu-success: #78be20;
+  --gu-warning: #fae100;
 
   /* FG / BG shorthand */
-  --gu-fg-1:           var(--gu-black);
-  --gu-fg-2:           var(--gu-grey-dark);
-  --gu-fg-3:           var(--gu-grey-mid);
-  --gu-bg-1:           var(--gu-white);
-  --gu-bg-2:           var(--gu-page);
-  --gu-border:         #E5E7EB;
-  --gu-border-strong:  var(--gu-grey-pale);
+  --gu-fg-1: var(--gu-black);
+  --gu-fg-2: var(--gu-grey-dark);
+  --gu-fg-3: var(--gu-grey-mid);
+  --gu-bg-1: var(--gu-white);
+  --gu-bg-2: var(--gu-page);
+  --gu-border: #e5e7eb;
+  --gu-border-strong: var(--gu-grey-pale);
 
   /* Money semantics — apply to every amount display */
-  --gu-money-pos:      var(--gu-support);
-  --gu-money-neg:      var(--gu-error);
+  --gu-money-pos: var(--gu-support);
+  --gu-money-neg: var(--gu-error);
 
   /* Type */
-  --gu-font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --gu-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gu-font-sans:
+    'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+  --gu-font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Spacing */
-  --gu-space-0:   0;
-  --gu-space-xs:  4px;
-  --gu-space-sm:  8px;
-  --gu-space-md:  16px;
-  --gu-space-lg:  24px;
-  --gu-space-xl:  32px;
+  --gu-space-0: 0;
+  --gu-space-xs: 4px;
+  --gu-space-sm: 8px;
+  --gu-space-md: 16px;
+  --gu-space-lg: 24px;
+  --gu-space-xl: 32px;
   --gu-space-xxl: 40px;
 
   /* Radii */
@@ -71,11 +74,12 @@
   --gu-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
   --gu-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
   --gu-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
-  --gu-shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
-  --gu-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --gu-shadow-lg:
+    0 12px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --gu-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.04);
 
   /* Motion */
-  --gu-easing:        cubic-bezier(0.2, 0, 0, 1);
+  --gu-easing: cubic-bezier(0.2, 0, 0, 1);
   --gu-duration-fast: 150ms;
   --gu-duration-base: 200ms;
   --gu-duration-slow: 600ms;
@@ -86,8 +90,12 @@
   font-variant-numeric: tabular-nums;
   font-weight: 700;
 }
-.gu-money--pos { color: var(--gu-money-pos); }
-.gu-money--neg { color: var(--gu-money-neg); }
+.gu-money--pos {
+  color: var(--gu-money-pos);
+}
+.gu-money--neg {
+  color: var(--gu-money-neg);
+}
 
 #root {
   width: 100vw;

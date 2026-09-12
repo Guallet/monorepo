@@ -7,7 +7,10 @@ interface WizardProgressProps {
   current: number;
 }
 
-export function WizardProgress({ steps, current }: Readonly<WizardProgressProps>) {
+export function WizardProgress({
+  steps,
+  current,
+}: Readonly<WizardProgressProps>) {
   const { colors, spacing } = useTheme();
 
   return (
@@ -19,7 +22,10 @@ export function WizardProgress({ steps, current }: Readonly<WizardProgressProps>
           <Group
             key={i}
             gap={0}
-            style={{ flex: i < steps.length - 1 ? 1 : 'none', alignItems: 'flex-start' }}
+            style={{
+              flex: i < steps.length - 1 ? 1 : 'none',
+              alignItems: 'flex-start',
+            }}
           >
             <Stack gap={spacing.xs} align="center" style={{ minWidth: 48 }}>
               <Center

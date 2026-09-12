@@ -11,7 +11,12 @@ interface CountryRowProps {
   onClick: () => void;
 }
 
-export function CountryRow({ country, selected, last, onClick }: Readonly<CountryRowProps>) {
+export function CountryRow({
+  country,
+  selected,
+  last,
+  onClick,
+}: Readonly<CountryRowProps>) {
   const { colors, spacing } = useTheme();
 
   return (
