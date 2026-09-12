@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
-import * as Handlebars from 'handlebars';
+import Handlebars from 'handlebars';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { AppConfig } from '../../configuration';

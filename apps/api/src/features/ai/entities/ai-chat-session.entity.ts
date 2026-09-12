@@ -7,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { AiAgent } from './ai-agent.entity';
 import { AiChatMessage } from './ai-chat-message.entity';
 
@@ -23,11 +24,11 @@ export class AiChatSession extends BaseDbEntity {
 
   @ManyToOne(() => AiAgent, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'agent_id' })
-  agent: AiAgent;
+  agent: Relation<AiAgent>;
 
   @Column({ type: 'text' })
   title: string;
 
   @OneToMany(() => AiChatMessage, (message) => message.session)
-  messages: AiChatMessage[];
+  messages: Relation<AiChatMessage[]>;
 }

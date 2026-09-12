@@ -4,7 +4,7 @@ import { Transaction } from '../../transactions/entities/transaction.entity';
 import { AccountsService } from '../../accounts/accounts.service';
 import { CategoriesService } from '../../categories/categories.service';
 import { UsersService } from '../../users/users.service';
-import {
+import type {
   AccountMapping,
   CategoryMapping,
   CsvRowData,

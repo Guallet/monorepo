@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { Institution } from 'src/features/institutions/entities/institution.entity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import {
@@ -75,7 +76,7 @@ export class Account extends BaseDbEntity {
   transactions: Transaction[];
 
   @ManyToOne(() => Institution, (institution) => institution.accounts)
-  institution: Institution;
+  institution: Relation<Institution>;
 
   @Column({ nullable: true })
   institutionId: string | null;
