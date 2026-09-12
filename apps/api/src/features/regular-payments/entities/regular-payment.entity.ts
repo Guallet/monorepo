@@ -1,12 +1,7 @@
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { Category } from 'src/features/categories/entities/category.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Relation,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 export enum RecurringPaymentType {
   SUBSCRIPTION = 'subscription',

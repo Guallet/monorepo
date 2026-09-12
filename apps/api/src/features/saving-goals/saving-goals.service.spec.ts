@@ -8,12 +8,12 @@ describe('SavingGoalsService', () => {
   let service: SavingGoalsService;
 
   const mockSavingGoalRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
-    merge: jest.fn(),
-    remove: jest.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    merge: vi.fn(),
+    remove: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('SavingGoalsService', () => {
     service = module.get<SavingGoalsService>(SavingGoalsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

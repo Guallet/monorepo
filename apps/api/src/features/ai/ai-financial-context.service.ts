@@ -37,19 +37,19 @@ export class AiFinancialContextService {
       await Promise.all([
         this.accountRepository.find({ where: { user_id: userId } }),
         this.transactionRepository.find({
-          relations: ['category', 'account'],
+          relations: { category: true, account: true },
           where: {
             account: { user_id: userId },
             date: MoreThanOrEqual(since),
           },
         }),
         this.budgetRepository.find({
-          relations: ['categories'],
+          relations: { categories: true },
           where: { user_id: userId },
         }),
         this.savingGoalRepository.find({ where: { userId } }),
         this.regularPaymentRepository.find({
-          relations: ['category'],
+          relations: { category: true },
           where: { user_id: userId },
         }),
       ]);

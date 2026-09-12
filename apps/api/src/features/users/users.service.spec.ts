@@ -12,10 +12,10 @@ describe('UsersService', () => {
   let service: UsersService;
 
   const mockUserRepository = {
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    upsert: jest.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    upsert: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -32,7 +32,7 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -7,7 +7,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import {
+import type {
   CsvRowData,
   FieldMappings,
   AccountMapping,

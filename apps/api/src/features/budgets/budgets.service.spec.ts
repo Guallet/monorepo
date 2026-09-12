@@ -15,15 +15,15 @@ describe('BudgetsService', () => {
   let service: BudgetsService;
 
   const mockBudgetRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -44,7 +44,7 @@ describe('BudgetsService', () => {
     service = module.get<BudgetsService>(BudgetsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

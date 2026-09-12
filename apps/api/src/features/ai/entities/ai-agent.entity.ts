@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { AiProviderConnection } from './ai-provider-connection.entity';
 
 @Entity('ai_agents')
@@ -23,7 +24,7 @@ export class AiAgent extends BaseDbEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'connection_id' })
-  connection: AiProviderConnection;
+  connection: Relation<AiProviderConnection>;
 
   @Column({ type: 'text' })
   name: string;

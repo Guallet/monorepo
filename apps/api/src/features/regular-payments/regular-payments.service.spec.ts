@@ -15,14 +15,14 @@ describe('RegularPaymentsService', () => {
   let service: RegularPaymentsService;
 
   const mockRegularPaymentRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockCategoryRepository = {
-    findOne: jest.fn(),
+    findOne: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -43,7 +43,7 @@ describe('RegularPaymentsService', () => {
     service = module.get<RegularPaymentsService>(RegularPaymentsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

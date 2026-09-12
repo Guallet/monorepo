@@ -15,42 +15,17 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "workspace:*",
+    "@vitest/coverage-v8": "workspace:*",
     "eslint": "workspace:*",
     "eslint-config-custom": "workspace:*",
-    "jest": "workspace:*",
-    "ts-jest": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "testMatch": [
-      "**/*.spec.ts"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.ts",
-      "!src/**/*.spec.ts",
-      "!src/index.ts"
-    ],
-    "coverageDirectory": "coverage",
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    }
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
   }
 }

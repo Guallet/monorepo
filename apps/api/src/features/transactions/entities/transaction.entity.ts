@@ -8,8 +8,8 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Relation,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { TransactionMetadata } from './transaction-metadata.model';
 
 @Entity('transactions')
@@ -51,7 +51,7 @@ export class Transaction extends BaseDbEntity {
   @ManyToOne(() => Category, (category) => category.transactions, {
     onDelete: 'SET NULL',
   })
-  category: Category;
+  category: Relation<Category>;
 
   @Column({ nullable: true })
   categoryId: string | null;

@@ -13,25 +13,25 @@ describe('ObConnectionsController', () => {
   let controller: ObConnectionsController;
 
   const mockOpenbankingService = {
-    getAvailableCountries: jest.fn(),
-    getConnections: jest.fn(),
-    deleteConnection: jest.fn(),
-    saveRequisition: jest.fn(),
-    connectToAccounts: jest.fn(),
-    syncAccountTransactions: jest.fn(),
+    getAvailableCountries: vi.fn(),
+    getConnections: vi.fn(),
+    deleteConnection: vi.fn(),
+    saveRequisition: vi.fn(),
+    connectToAccounts: vi.fn(),
+    syncAccountTransactions: vi.fn(),
   };
 
   const mockNordigenService = {
-    getInstitutions: jest.fn(),
-    getRequisition: jest.fn(),
-    deleteRequisition: jest.fn(),
-    createRequisition: jest.fn(),
-    getAccountMetadata: jest.fn(),
-    getAccountDetails: jest.fn(),
+    getInstitutions: vi.fn(),
+    getRequisition: vi.fn(),
+    deleteRequisition: vi.fn(),
+    createRequisition: vi.fn(),
+    getAccountMetadata: vi.fn(),
+    getAccountDetails: vi.fn(),
   };
 
   const mockInstitutionsService = {
-    findOneByNordigenId: jest.fn(),
+    findOneByNordigenId: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -62,7 +62,7 @@ describe('ObConnectionsController', () => {
     controller = module.get<ObConnectionsController>(ObConnectionsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

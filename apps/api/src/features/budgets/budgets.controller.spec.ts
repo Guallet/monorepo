@@ -11,13 +11,13 @@ describe('BudgetsController', () => {
   let controller: BudgetsController;
 
   const mockBudgetsService = {
-    findAllForUser: jest.fn(),
-    findOneForUser: jest.fn(),
-    getMonthlySpending: jest.fn(),
-    getBudgetTransactions: jest.fn(),
-    createBudgetForUser: jest.fn(),
-    updateBudgetForUser: jest.fn(),
-    deleteBudgetForUser: jest.fn(),
+    findAllForUser: vi.fn(),
+    findOneForUser: vi.fn(),
+    getMonthlySpending: vi.fn(),
+    getBudgetTransactions: vi.fn(),
+    createBudgetForUser: vi.fn(),
+    updateBudgetForUser: vi.fn(),
+    deleteBudgetForUser: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -40,7 +40,7 @@ describe('BudgetsController', () => {
     controller = module.get<BudgetsController>(BudgetsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

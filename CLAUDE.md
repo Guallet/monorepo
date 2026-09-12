@@ -29,9 +29,9 @@ pnpm docker:compose:reset  # Stop and remove volumes
 pnpm --filter api dev          # Start with watch mode
 pnpm --filter api build        # Compile with nest build
 pnpm --filter api lint         # ESLint fix
-pnpm --filter api test         # Run Jest unit tests
-pnpm --filter api test:watch   # Jest watch mode
-pnpm --filter api test:cov     # Jest with coverage
+pnpm --filter api test         # Run Vitest unit tests
+pnpm --filter api test:watch   # Vitest watch mode
+pnpm --filter api test:cov     # Vitest with coverage
 pnpm --filter api db:init      # Generate + migrate auth schema (Better Auth)
 pnpm --filter api db:generate  # Generate Better Auth schema
 pnpm --filter api db:migrate   # Run Better Auth migrations
@@ -50,13 +50,12 @@ pnpm --filter webapp i18n:extract  # Extract i18n keys
 pnpm --filter mobile start     # Expo dev server
 pnpm --filter mobile ios       # Run on iOS simulator
 pnpm --filter mobile android   # Run on Android emulator
-pnpm --filter mobile test      # Jest watch mode
 ```
 
 ### Money package (packages/guallet-money)
 ```bash
-pnpm --filter guallet-money test      # Jest tests (80% coverage threshold enforced)
-pnpm --filter guallet-money test:cov  # With coverage report
+pnpm --filter @guallet/money test      # Vitest tests (80% coverage threshold enforced)
+pnpm --filter @guallet/money test:cov  # With coverage report
 ```
 
 ## Architecture
@@ -111,9 +110,9 @@ Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrat
 
 ## Testing
 
-- API tests use Jest with `ts-jest`. No e2e tests are currently wired up (jest-e2e config exists but the npm script is commented out).
+- API tests use Vitest with SWC. E2E tests use a separate Vitest configuration.
 - `guallet-money` enforces 80% coverage thresholds on branches, functions, lines, and statements.
-- Mobile tests run with `--watchAll` by default.
+- Mobile does not currently have a test suite configured.
 
 ## Code Style
 

@@ -1,31 +1,20 @@
 import { getDefaultLocale, getCurrencySymbol } from './localeUtils';
 
-interface MockedGlobalThis {
-  navigator?: {
-    language?: string;
-  };
-}
-
 describe('localeUtils', () => {
   describe('getDefaultLocale', () => {
-    const originalNavigator = (globalThis as unknown as MockedGlobalThis)
-      .navigator;
-
     afterEach(() => {
-      (globalThis as unknown as MockedGlobalThis).navigator = originalNavigator;
+      vi.unstubAllGlobals();
     });
 
     it('returns default when navigator is undefined', () => {
-      (globalThis as unknown as MockedGlobalThis).navigator = {
-        language: undefined,
-      };
+      vi.stubGlobal('navigator', undefined);
       expect(getDefaultLocale()).toBe('en-US');
     });
 
     it('returns navigator.language when present', () => {
-      (globalThis as unknown as MockedGlobalThis).navigator = {
+      vi.stubGlobal('navigator', {
         language: 'fr-FR',
-      };
+      });
       expect(getDefaultLocale()).toBe('fr-FR');
     });
   });
@@ -44,7 +33,7 @@ describe('localeUtils', () => {
     });
 
     it('falls back to code and logs a warning for invalid currency', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       expect(getCurrencySymbol('INVALID_CODE', 'en-US')).toBe('INVALID_CODE');
       expect(warnSpy).toHaveBeenCalled();
       warnSpy.mockRestore();

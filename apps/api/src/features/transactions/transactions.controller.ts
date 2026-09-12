@@ -18,10 +18,8 @@ import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import {
-  TransactionsQueryFilter,
-  transactionsQueryFilterSchema,
-} from './dto/transaction.query';
+import { transactionsQueryFilterSchema } from './dto/transaction.query';
+import type { TransactionsQueryFilter } from './dto/transaction.query';
 import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
 import { InboxTransactionsResultDto } from './dto/inbox-transaction.dto';
 

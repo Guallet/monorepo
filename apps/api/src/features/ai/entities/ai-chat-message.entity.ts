@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { AiChatSession } from './ai-chat-session.entity';
 
 export type AiChatMessageRole = 'user' | 'assistant';
@@ -25,7 +26,7 @@ export class AiChatMessage extends BaseDbEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'session_id' })
-  session: AiChatSession;
+  session: Relation<AiChatSession>;
 
   @Column({ type: 'text' })
   role: AiChatMessageRole;
