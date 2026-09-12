@@ -46,7 +46,7 @@
     "@thallesp/nestjs-better-auth": "2.8.0",
     "ai": "7.0.93",
     "axios": "1.20.0",
-    "better-auth": "1.7.3",
+    "better-auth": "1.6.22",
     "bullmq": "6.3.4",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
