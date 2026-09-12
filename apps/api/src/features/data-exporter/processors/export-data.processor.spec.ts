@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* oxlint-disable typescript/unbound-method */
+/* oxlint-disable typescript/no-explicit-any */
+/* oxlint-disable typescript/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Mocked } from 'vitest';
 import { Job } from 'bullmq';

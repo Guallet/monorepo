@@ -11,10 +11,10 @@ export const RequestUser = createParamDecorator(
 
     // TODO: Map the roles properly when User entity is fixed
     if (user) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      // oxlint-disable-next-line typescript/no-unsafe-argument
       const principal = new UserPrincipal(user.id, user.email);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line typescript/no-unsafe-return
       return data ? principal[data] : principal;
     } else {
       return null;

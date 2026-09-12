@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable typescript/no-unsafe-argument */
+/* oxlint-disable typescript/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Mocked } from 'vitest';
 import { DataExporterController } from './data-exporter.controller';

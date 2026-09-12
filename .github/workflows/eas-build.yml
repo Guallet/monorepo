@@ -71,7 +71,7 @@ jobs:
         working-directory: apps/mobile
         run: pnpm tsc
 
-      - name: 🧹 Run ESLint
+      - name: 🧹 Run Oxlint
         working-directory: apps/mobile
         run: pnpm lint
         continue-on-error: true

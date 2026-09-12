@@ -28,7 +28,7 @@ pnpm docker:compose:reset  # Stop and remove volumes
 ```bash
 pnpm --filter api dev          # Start with watch mode
 pnpm --filter api build        # Compile with nest build
-pnpm --filter api lint         # ESLint fix
+pnpm --filter api lint         # Oxlint (type-aware)
 pnpm --filter api test         # Run Vitest unit tests
 pnpm --filter api test:watch   # Vitest watch mode
 pnpm --filter api test:cov     # Vitest with coverage
@@ -41,7 +41,7 @@ pnpm --filter api db:migrate   # Run Better Auth migrations
 ```bash
 pnpm --filter webapp dev       # Vite dev server
 pnpm --filter webapp build     # tsc + vite build (runs i18n:extract first)
-pnpm --filter webapp lint      # ESLint fix
+pnpm --filter webapp lint      # Oxlint
 pnpm --filter webapp i18n:extract  # Extract i18n keys
 ```
 
@@ -116,7 +116,7 @@ Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrat
 
 ## Code Style
 
-Prettier config: single quotes, trailing commas. ESLint 9 with shared config from `packages/eslint-config-custom`. Pre-commit hook (Husky) runs lint. TypeScript strict mode is used across all packages.
+Prettier config: single quotes, trailing commas. Oxlint uses the shared root `.oxlintrc.json`; warnings fail CI. Run `pnpm lint` before committing. TypeScript strict mode is used across all packages.
 
 ## UI & Design System
 

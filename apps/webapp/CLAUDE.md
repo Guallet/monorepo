@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 pnpm --filter webapp dev          # Vite dev server on port 3000
 pnpm --filter webapp build        # tsc + vite build (runs i18n:extract first)
-pnpm --filter webapp lint         # ESLint fix
+pnpm --filter webapp lint         # Oxlint
 pnpm --filter webapp i18n:extract # Extract i18n keys from source
 ```
 

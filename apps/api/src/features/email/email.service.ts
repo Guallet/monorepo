@@ -11,7 +11,7 @@ interface SendEmailOptions {
   to: string;
   subject: string;
   template: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
   context: Record<string, any>;
   attachments?: nodemailer.SendMailOptions['attachments'];
 }
@@ -87,7 +87,9 @@ export class EmailService implements OnModuleInit {
           Handlebars.compile(templateContent),
         );
       } catch (error) {
-        this.logger.error(`Failed to load template ${templateFile}: ${error}`);
+        this.logger.error(
+          `Failed to load template ${templateFile}: ${String(error)}`,
+        );
       }
     }
     this.logger.log(`Loaded ${this.compiledTemplates.size} email templates`);
@@ -98,7 +100,7 @@ export class EmailService implements OnModuleInit {
    */
   private renderTemplate(
     templateName: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     data: Record<string, any>,
   ): string {
     const template = this.compiledTemplates.get(templateName);

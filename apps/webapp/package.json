@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
-    "lint": "eslint . --fix",
+    "lint": "oxlint .",
     "preview": "vite preview",
     "prebuild": "pnpm i18n:extract",
     "i18n:extract": "i18next 'src/**/*.{js,jsx,ts,tsx}'"
@@ -52,8 +52,6 @@
     "zustand": "5.0.11"
   },
   "devDependencies": {
-    "@eslint/js": "workspace:*",
-    "@tanstack/eslint-plugin-query": "5.81.2",
     "@tanstack/router-plugin": "1.131.27",
     "@types/papaparse": "5.3.16",
     "@types/react": "workspace:*",
@@ -61,17 +59,11 @@
     "@vitejs/plugin-react": "6.0.1",
     "babel-plugin-react-compiler": "1.0.0",
     "baseline-browser-mapping": "2.9.15",
-    "eslint": "workspace:*",
-    "eslint-plugin-react-compiler": "19.1.0-rc.2",
-    "eslint-plugin-react-hooks": "workspace:*",
-    "eslint-plugin-react-refresh": "workspace:*",
-    "globals": "workspace:*",
     "i18next-parser": "9.3.0",
     "postcss": "workspace:*",
     "postcss-preset-mantine": "workspace:*",
     "postcss-simple-vars": "workspace:*",
     "typescript": "workspace:*",
-    "typescript-eslint": "workspace:*",
     "vite": "workspace:*"
   }
 }

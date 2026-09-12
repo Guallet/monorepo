@@ -12,7 +12,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY .npmrc* ./
 
 # Copy all package.json files for dependency installation
-COPY packages/eslint-config-custom/package.json ./packages/eslint-config-custom/
 COPY packages/guallet-api-react/package.json ./packages/guallet-api-react/
 COPY packages/guallet-auth/package.json ./packages/guallet-auth/
 COPY packages/tsconfig/package.json ./packages/tsconfig/

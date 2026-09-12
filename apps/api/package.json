@@ -14,7 +14,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "oxlint . --type-aware --tsconfig ./tsconfig.oxlint.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
@@ -67,7 +67,6 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
-    "@eslint/js": "10.0.1",
     "@nestjs/cli": "^12.0.0",
     "@nestjs/schematics": "^12.0.0",
     "@nestjs/testing": "^12.0.0",
@@ -79,10 +78,6 @@
     "@types/supertest": "7.2.1",
     "@vitest/coverage-v8": "workspace:*",
     "dotenv": "17.4.2",
-    "eslint": "10.10.0",
-    "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-prettier": "5.5.6",
-    "globals": "17.12.0",
     "prettier": "3.9.6",
     "source-map-support": "0.5.21",
     "supertest": "7.2.2",
@@ -90,7 +85,6 @@
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
     "typescript": "^7.0.2",
-    "typescript-eslint": "8.69.0",
     "unplugin-swc": "workspace:*",
     "vitest": "workspace:*"
   }

@@ -84,6 +84,6 @@ export class AiChatController {
       content: dto.content,
     });
 
-    result.pipeTextStreamToResponse(response);
+    void result.pipeTextStreamToResponse(response);
   }
 }
