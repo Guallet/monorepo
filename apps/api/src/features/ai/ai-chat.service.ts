@@ -183,12 +183,10 @@ export class AiChatService {
         summary,
         customPrompt: session.agent.custom_prompt,
       }),
-      messages: history.reverse().map(
-        (message): ModelMessage => ({
-          role: message.role,
-          content: message.content,
-        }),
-      ),
+      messages: history.reverse().map((message): ModelMessage => ({
+        role: message.role,
+        content: message.content,
+      })),
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       // Guardrail: no `tools` are ever passed — the model cannot act.
       onFinish: async ({ text }) => {

@@ -22,7 +22,8 @@ export function ConnectionCallbackScreen({
   error,
   details,
 }: Readonly<ConnectionCallbackScreenProps>) {
-  const { accounts, isLoading } = useOpenBankingAccountsForConnection(connectionId);
+  const { accounts, isLoading } =
+    useOpenBankingAccountsForConnection(connectionId);
   const { linkObAccountsMutation } = useConnectionMutations();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -48,10 +49,17 @@ export function ConnectionCallbackScreen({
       {
         onSuccess: () => {
           notifications.show({
-            title: t('screens.connections.callback.success.notification', 'Accounts linked successfully'),
-            message: t('screens.connections.callback.success.notificationCount', '{{count}} accounts linked', {
-              count: accountIds.length,
-            }),
+            title: t(
+              'screens.connections.callback.success.notification',
+              'Accounts linked successfully',
+            ),
+            message: t(
+              'screens.connections.callback.success.notificationCount',
+              '{{count}} accounts linked',
+              {
+                count: accountIds.length,
+              },
+            ),
             color: 'green',
           });
           navigate({ to: '/accounts', replace: true });
@@ -60,7 +68,10 @@ export function ConnectionCallbackScreen({
           console.error('Error linking accounts:', mutationError);
           notifications.show({
             title: t('screens.connections.callback.error.title', 'Link failed'),
-            message: t('screens.connections.callback.error.message', 'Could not link accounts. Please try again.'),
+            message: t(
+              'screens.connections.callback.error.message',
+              'Could not link accounts. Please try again.',
+            ),
             color: 'red',
           });
         },
@@ -82,7 +93,10 @@ export function ConnectionCallbackScreen({
   if (linkObAccountsMutation.isError) {
     return (
       <ErrorView
-        error={linkObAccountsMutation.error?.message ?? t('screens.connections.callback.error.unknown', 'Unknown error')}
+        error={
+          linkObAccountsMutation.error?.message ??
+          t('screens.connections.callback.error.unknown', 'Unknown error')
+        }
         details={linkObAccountsMutation.error?.cause?.toString()}
         onRetry={() => navigate({ to: '/accounts/new', replace: true })}
         onBack={() => navigate({ to: '/accounts/new', replace: true })}
@@ -118,7 +132,9 @@ export function ConnectionCallbackScreen({
     <SuccessView
       accounts={accounts}
       selectedIds={effectiveSelectedIds}
-      onToggle={(id) => setSelectedIds((prev) => ({ ...prev, [id]: !prev[id] }))}
+      onToggle={(id) =>
+        setSelectedIds((prev) => ({ ...prev, [id]: !prev[id] }))
+      }
       onImport={handleImport}
       onBack={() => navigate({ to: '/accounts/new', replace: true })}
       isLoading={linkObAccountsMutation.isPending}

@@ -23,7 +23,10 @@ export function DefaultCurrencyRow() {
       {
         onSuccess: () => {
           notifications.show({
-            title: t('screens.settings.preferences.defaultCurrency.success.title', 'Success'),
+            title: t(
+              'screens.settings.preferences.defaultCurrency.success.title',
+              'Success',
+            ),
             message: t(
               'screens.settings.preferences.defaultCurrency.success.message',
               'Default currency updated successfully',
@@ -33,7 +36,10 @@ export function DefaultCurrencyRow() {
         },
         onError: () => {
           notifications.show({
-            title: t('screens.settings.preferences.defaultCurrency.error.title', 'Error'),
+            title: t(
+              'screens.settings.preferences.defaultCurrency.error.title',
+              'Error',
+            ),
             message: t(
               'screens.settings.preferences.defaultCurrency.error.message',
               'Failed to update default currency',

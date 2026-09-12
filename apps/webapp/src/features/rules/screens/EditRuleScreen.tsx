@@ -118,7 +118,10 @@ export function EditRuleScreen({ id }: Readonly<EditRuleScreenProps>) {
             onSubmit={handleSubmit}
             onCancel={handleCancel}
             isSubmitting={isSubmitting}
-            submitLabel={t('screens.rules.edit.submitButton.label', 'Update rule')}
+            submitLabel={t(
+              'screens.rules.edit.submitButton.label',
+              'Update rule',
+            )}
           />
         )}
         {!isRuleLoading && !rule && (

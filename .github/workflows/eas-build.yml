@@ -76,10 +76,9 @@ jobs:
         run: pnpm lint
         continue-on-error: true
 
-      - name: 🎨 Run Prettier check
+      - name: 🎨 Run Oxfmt check
         working-directory: apps/mobile
         run: pnpm format:check
-        continue-on-error: true
 
       - name: Build on EAS
         run: eas build --platform android --non-interactive --no-wait

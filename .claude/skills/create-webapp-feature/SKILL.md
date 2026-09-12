@@ -274,7 +274,9 @@ export function {Name}Row({
 ## Key Rules
 
 ### Import alias
+
 `@/` resolves to `apps/webapp/src/`. Always use it for internal imports:
+
 ```typescript
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { Something } from '@/features/something/...';
@@ -282,21 +284,23 @@ import { Something } from '@/features/something/...';
 
 ### Mantine quick reference
 
-| Component | Use for |
-|---|---|
-| `Stack` | Vertical layout (default gap="md") |
-| `Group` | Horizontal layout, `justify="space-between"` for spread |
-| `Button` | Actions; `variant="outline"` for secondary, `color="red"` for destructive |
-| `Text` | Body text; `fw={700}` for bold, `c="dimmed"` for muted, `ta="center"` to center |
-| `Card` | Bordered content containers; `withBorder shadow="sm"` |
-| `Modal` | Dialogs; use `useState<T | null>(null)` to control open state |
-| `ActionIcon` | Icon-only buttons |
-| `LoadingOverlay` | Full-screen loading; handled by `BaseScreen` via `isLoading` prop |
+| Component        | Use for                                                                         |
+| ---------------- | ------------------------------------------------------------------------------- |
+| `Stack`          | Vertical layout (default gap="md")                                              |
+| `Group`          | Horizontal layout, `justify="space-between"` for spread                         |
+| `Button`         | Actions; `variant="outline"` for secondary, `color="red"` for destructive       |
+| `Text`           | Body text; `fw={700}` for bold, `c="dimmed"` for muted, `ta="center"` to center |
+| `Card`           | Bordered content containers; `withBorder shadow="sm"`                           |
+| `Modal`          | Dialogs; use `useState<T                                                        | null>(null)` to control open state |
+| `ActionIcon`     | Icon-only buttons                                                               |
+| `LoadingOverlay` | Full-screen loading; handled by `BaseScreen` via `isLoading` prop               |
 
 Use `useState<T | null>(null)` for modal state (cleaner than `useDisclosure` when you need to track which item triggered the modal).
 
 ### i18n
+
 Wrap all user-visible strings in `t()`:
+
 ```typescript
 import { useTranslation } from 'react-i18next';
 const { t } = useTranslation();
@@ -305,14 +309,16 @@ const { t } = useTranslation();
 <Text>{t('{name}.title', '{Names}')}</Text>
 <Button>{t('common.delete', 'Delete')}</Button>
 ```
+
 Keys are auto-extracted at build time (`pnpm --filter webapp build`). Provide a fallback string as the second argument.
 
 ### Notifications
+
 ```typescript
 import { notifications } from '@mantine/notifications';
 
 notifications.show({ title: 'Success', message: '...', color: 'green' });
-notifications.show({ title: 'Error',   message: '...', color: 'red'   });
+notifications.show({ title: 'Error', message: '...', color: 'red' });
 ```
 
 ---

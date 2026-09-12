@@ -37,7 +37,8 @@ export function StepOBBank({
   onBack,
 }: Readonly<StepOBBankProps>) {
   const { t } = useTranslation();
-  const { institutions, isLoading } = useOpenBankingInstitutionsForCountry(countryCode);
+  const { institutions, isLoading } =
+    useOpenBankingInstitutionsForCountry(countryCode);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebouncedValue(search, 150);
   const { colors } = useTheme();
@@ -71,7 +72,10 @@ export function StepOBBank({
       </Text>
 
       <TextInput
-        placeholder={t('feature.accounts.add.obBank.searchPlaceholder', 'Search bank…')}
+        placeholder={t(
+          'feature.accounts.add.obBank.searchPlaceholder',
+          'Search bank…',
+        )}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         leftSection={<IconSearch size={16} />}
@@ -88,9 +92,13 @@ export function StepOBBank({
             <Center p="xl">
               <Text size="sm" c="dimmed">
                 {search
-                  ? t('feature.accounts.add.obBank.noResults', 'No banks found for "{{search}}"', {
-                      search,
-                    })
+                  ? t(
+                      'feature.accounts.add.obBank.noResults',
+                      'No banks found for "{{search}}"',
+                      {
+                        search,
+                      },
+                    )
                   : t(
                       'feature.accounts.add.obBank.noInstitutions',
                       'No institutions available for this country',
@@ -113,7 +121,11 @@ export function StepOBBank({
 
       <Card withBorder={false} p="md" radius="md" bg="gray.0" mt="xs">
         <Group gap="xs" align="flex-start">
-          <IconBuildingBank size={16} color={colors.primary} style={{ flexShrink: 0, marginTop: 1 }} />
+          <IconBuildingBank
+            size={16}
+            color={colors.primary}
+            style={{ flexShrink: 0, marginTop: 1 }}
+          />
           <Text size="xs" c="dimmed" style={{ lineHeight: 1.5 }}>
             {value
               ? t(
@@ -139,7 +151,10 @@ export function StepOBBank({
           ? t('feature.accounts.add.obBank.connectTo', 'Connect to {{bank}}', {
               bank: value.name,
             })
-          : t('feature.accounts.add.obBank.selectBank', 'Select a bank to continue')}
+          : t(
+              'feature.accounts.add.obBank.selectBank',
+              'Select a bank to continue',
+            )}
       </Button>
     </Stack>
   );

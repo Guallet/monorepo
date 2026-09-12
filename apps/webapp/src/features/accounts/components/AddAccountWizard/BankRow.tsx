@@ -10,7 +10,12 @@ interface BankRowProps {
   onClick: () => void;
 }
 
-export function BankRow({ bank, selected, last, onClick }: Readonly<BankRowProps>) {
+export function BankRow({
+  bank,
+  selected,
+  last,
+  onClick,
+}: Readonly<BankRowProps>) {
   const { colors, spacing } = useTheme();
 
   return (

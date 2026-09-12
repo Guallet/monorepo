@@ -1,6 +1,14 @@
 import { ObInstitutionDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/ui-react';
-import { Avatar, Button, Group, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import {
+  Avatar,
+  Button,
+  Group,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+} from '@mantine/core';
 import { IconArrowRight, IconBuildingBank } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { WizardProgress } from './WizardProgress';
@@ -35,8 +43,16 @@ export function StepOBRedirect({
           {institution.name.slice(0, 2).toUpperCase()}
         </Avatar>
         <Group gap="xs">
-          <IconArrowRight size={20} color={colors.primary} style={{ opacity: 0.3 }} />
-          <IconArrowRight size={20} color={colors.primary} style={{ opacity: 0.6 }} />
+          <IconArrowRight
+            size={20}
+            color={colors.primary}
+            style={{ opacity: 0.3 }}
+          />
+          <IconArrowRight
+            size={20}
+            color={colors.primary}
+            style={{ opacity: 0.6 }}
+          />
           <IconArrowRight size={20} color={colors.primary} />
         </Group>
         <ThemeIcon size={64} radius="sm" color="blue" variant="filled">

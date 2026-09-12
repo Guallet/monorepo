@@ -9,7 +9,10 @@ export function LanguageRow() {
 
   return (
     <BaseRow
-      label={t('screens.settings.preferences.language.label', 'Default language')}
+      label={t(
+        'screens.settings.preferences.language.label',
+        'Default language',
+      )}
       value={locale}
       onClick={() => {
         console.log('Default Language clicked');

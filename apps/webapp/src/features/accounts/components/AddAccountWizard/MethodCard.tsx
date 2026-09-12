@@ -35,7 +35,9 @@ export function MethodCard({
         p="lg"
         style={{
           border: `2px solid ${hovered ? colors.primary : colors.paleGrey}`,
-          boxShadow: hovered ? '0 4px 16px rgba(0,0,0,0.10)' : '0 1px 4px rgba(0,0,0,0.06)',
+          boxShadow: hovered
+            ? '0 4px 16px rgba(0,0,0,0.10)'
+            : '0 1px 4px rgba(0,0,0,0.06)',
           transform: hovered ? 'translateY(-2px)' : undefined,
           transition: 'all 150ms',
           cursor: 'pointer',

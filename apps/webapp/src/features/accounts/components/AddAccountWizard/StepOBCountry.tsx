@@ -1,5 +1,15 @@
 import { useOpenBankingSupportedCountries } from '@guallet/api-react';
-import { Button, Card, Center, Loader, ScrollArea, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Center,
+  Loader,
+  ScrollArea,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
@@ -30,7 +40,8 @@ export function StepOBCountry({
     if (!debouncedSearch.trim()) return countries;
     const q = debouncedSearch.toLowerCase();
     return countries.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q),
+      (c) =>
+        c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q),
     );
   }, [countries, debouncedSearch]);
 
@@ -52,11 +63,17 @@ export function StepOBCountry({
         {t('feature.accounts.add.obCountry.title', 'Where is your bank?')}
       </Title>
       <Text size="sm" c="dimmed" mb="md">
-        {t('feature.accounts.add.obCountry.subtitle', 'Select the country where your bank is based.')}
+        {t(
+          'feature.accounts.add.obCountry.subtitle',
+          'Select the country where your bank is based.',
+        )}
       </Text>
 
       <TextInput
-        placeholder={t('feature.accounts.add.obCountry.searchPlaceholder', 'Search country…')}
+        placeholder={t(
+          'feature.accounts.add.obCountry.searchPlaceholder',
+          'Search country…',
+        )}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         leftSection={<IconSearch size={16} />}
@@ -72,9 +89,13 @@ export function StepOBCountry({
           ) : filtered.length === 0 ? (
             <Center p="xl">
               <Text size="sm" c="dimmed">
-                {t('feature.accounts.add.obCountry.noResults', 'No results for "{{search}}"', {
-                  search,
-                })}
+                {t(
+                  'feature.accounts.add.obCountry.noResults',
+                  'No results for "{{search}}"',
+                  {
+                    search,
+                  },
+                )}
               </Text>
             </Center>
           ) : (
@@ -93,9 +114,13 @@ export function StepOBCountry({
 
       <Button fullWidth mt="md" onClick={onNext} disabled={!value}>
         {selectedCountry
-          ? t('feature.accounts.add.obCountry.continueWith', 'Continue with {{name}}', {
-              name: selectedCountry.name,
-            })
+          ? t(
+              'feature.accounts.add.obCountry.continueWith',
+              'Continue with {{name}}',
+              {
+                name: selectedCountry.name,
+              },
+            )
           : t('common.continue', 'Continue')}
       </Button>
     </Stack>

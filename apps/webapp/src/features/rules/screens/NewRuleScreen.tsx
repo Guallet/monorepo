@@ -73,7 +73,10 @@ export function NewRuleScreen() {
             </ThemeIcon>
             <Box>
               <Text fw={600}>
-                {t('screens.rules.create.intro.title', 'Automate categorisation')}
+                {t(
+                  'screens.rules.create.intro.title',
+                  'Automate categorisation',
+                )}
               </Text>
               <Text size="sm" c="dimmed" mt={spacing.xs}>
                 {t(

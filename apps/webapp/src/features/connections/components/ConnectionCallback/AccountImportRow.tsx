@@ -9,9 +9,18 @@ interface AccountImportRowProps {
   onToggle: () => void;
 }
 
-export function AccountImportRow({ account, selected, last, onToggle }: Readonly<AccountImportRowProps>) {
+export function AccountImportRow({
+  account,
+  selected,
+  last,
+  onToggle,
+}: Readonly<AccountImportRowProps>) {
   const { colors, spacing } = useTheme();
-  const displayName = account.details.name ?? account.details.ownerName ?? account.details.iban ?? account.id;
+  const displayName =
+    account.details.name ??
+    account.details.ownerName ??
+    account.details.iban ??
+    account.id;
 
   return (
     <Box
@@ -22,7 +31,9 @@ export function AccountImportRow({ account, selected, last, onToggle }: Readonly
         gap: spacing.md,
         padding: `${spacing.md}px ${spacing.md}px`,
         borderBottom: last ? 'none' : `1px solid ${colors.paleGrey}`,
-        background: selected ? `color-mix(in oklab, ${colors.primary} 5%, ${colors.white})` : colors.white,
+        background: selected
+          ? `color-mix(in oklab, ${colors.primary} 5%, ${colors.white})`
+          : colors.white,
         cursor: 'pointer',
         transition: 'background 100ms',
       }}

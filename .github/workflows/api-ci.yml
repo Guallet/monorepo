@@ -1,75 +1,79 @@
 name: API CI
 
 on:
-    push:
-        branches:
-            - main
-            - develop
-        paths:
-            - "apps/api/**"
-    pull_request:
-        branches:
-            - "*"
-        paths:
-            - "apps/api/**"
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'apps/api/**'
+  pull_request:
+    branches:
+      - '*'
+    paths:
+      - 'apps/api/**'
 
 jobs:
-    build:
-        name: Build API
-        runs-on: ubuntu-latest
+  build:
+    name: Build API
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [24.20.x]
+    strategy:
+      matrix:
+        node-version: [24.20.x]
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 11.24.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
 
-            - name: Setup Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: "pnpm"
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-            - name: Install dependencies
-              working-directory: apps/api
-              run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        working-directory: apps/api
+        run: pnpm install --frozen-lockfile
 
-            - name: Run linter
-              working-directory: apps/api
-              run: pnpm lint
+      - name: Run linter
+        working-directory: apps/api
+        run: pnpm lint
 
-            - name: Run type check
-              working-directory: apps/api
-              run: pnpm tsc --noEmit
+      - name: Check formatting
+        working-directory: apps/api
+        run: pnpm format:check
 
-            - name: Run unit tests
-              working-directory: apps/api
-              run: pnpm test
+      - name: Run type check
+        working-directory: apps/api
+        run: pnpm tsc --noEmit
 
-            # - name: Run E2E tests
-            #   working-directory: apps/api
-            #   run: pnpm test:e2e
-            #   env:
-            #       NODE_ENV: test
+      - name: Run unit tests
+        working-directory: apps/api
+        run: pnpm test
 
-            - name: Run tests coverage
-              working-directory: apps/api
-              run: pnpm test:cov
+      # - name: Run E2E tests
+      #   working-directory: apps/api
+      #   run: pnpm test:e2e
+      #   env:
+      #       NODE_ENV: test
 
-            - name: Build API
-              working-directory: apps/api
-              run: pnpm --filter api build
+      - name: Run tests coverage
+        working-directory: apps/api
+        run: pnpm test:cov
 
-            - name: Upload build artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                  name: api-dist
-                  path: apps/api/dist
-                  retention-days: 7
+      - name: Build API
+        working-directory: apps/api
+        run: pnpm --filter api build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-dist
+          path: apps/api/dist
+          retention-days: 7

@@ -16,9 +16,17 @@ description: >
 
 ```tsx
 import {
-  Box, BoxProps, createVarsResolver, ElementProps,
-  factory, Factory, getRadius, MantineRadius,
-  StylesApiProps, useProps, useStyles,
+  Box,
+  BoxProps,
+  createVarsResolver,
+  ElementProps,
+  factory,
+  Factory,
+  getRadius,
+  MantineRadius,
+  StylesApiProps,
+  useProps,
+  useStyles,
 } from '@mantine/core';
 import classes from './MyComponent.module.css';
 
@@ -41,17 +49,38 @@ export type MyComponentFactory = Factory<{
 
 const defaultProps = { radius: 'md' } satisfies Partial<MyComponentProps>;
 
-const varsResolver = createVarsResolver<MyComponentFactory>((_theme, { radius }) => ({
-  root: { '--my-radius': getRadius(radius) },
-}));
+const varsResolver = createVarsResolver<MyComponentFactory>(
+  (_theme, { radius }) => ({
+    root: { '--my-radius': getRadius(radius) },
+  }),
+);
 
 export const MyComponent = factory<MyComponentFactory>((_props) => {
   const props = useProps('MyComponent', defaultProps, _props);
-  const { classNames, className, style, styles, unstyled, vars, attributes, radius, ...others } = props;
+  const {
+    classNames,
+    className,
+    style,
+    styles,
+    unstyled,
+    vars,
+    attributes,
+    radius,
+    ...others
+  } = props;
 
   const getStyles = useStyles<MyComponentFactory>({
-    name: 'MyComponent', classes, props,
-    className, style, classNames, styles, unstyled, vars, attributes, varsResolver,
+    name: 'MyComponent',
+    classes,
+    props,
+    className,
+    style,
+    classNames,
+    styles,
+    unstyled,
+    vars,
+    attributes,
+    varsResolver,
   });
 
   return <Box {...getStyles('root')} {...others} />;
@@ -63,11 +92,11 @@ MyComponent.classes = classes;
 
 ## Factory variant — which to use
 
-| Scenario | Factory function | Type |
-|---|---|---|
-| Standard component | `factory()` | `Factory<{}>` |
-| Supports `component` prop (polymorphic) | `polymorphicFactory()` | `PolymorphicFactory<{}>` — add `defaultComponent` and `defaultRef` |
-| Props change based on a generic (e.g. `multiple`) | `genericFactory()` | `Factory<{ signature: ... }>` |
+| Scenario                                          | Factory function       | Type                                                               |
+| ------------------------------------------------- | ---------------------- | ------------------------------------------------------------------ |
+| Standard component                                | `factory()`            | `Factory<{}>`                                                      |
+| Supports `component` prop (polymorphic)           | `polymorphicFactory()` | `PolymorphicFactory<{}>` — add `defaultComponent` and `defaultRef` |
+| Props change based on a generic (e.g. `multiple`) | `genericFactory()`     | `Factory<{ signature: ... }>`                                      |
 
 Use `polymorphicFactory` sparingly — it adds TypeScript overhead and slows IDE autocomplete.
 
@@ -100,7 +129,9 @@ const theme = createTheme({
       defaultProps: { radius: 'xl' },
       classNames: { root: 'my-root' },
       styles: { root: { color: 'red' } },
-      vars: (_theme, props) => ({ root: { '--my-radius': getRadius(props.radius) } }),
+      vars: (_theme, props) => ({
+        root: { '--my-radius': getRadius(props.radius) },
+      }),
     }),
   },
 });

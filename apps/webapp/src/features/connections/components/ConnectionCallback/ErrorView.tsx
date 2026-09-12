@@ -19,7 +19,12 @@ interface ErrorViewProps {
   onBack: () => void;
 }
 
-export function ErrorView({ error, details, onRetry, onBack }: Readonly<ErrorViewProps>) {
+export function ErrorView({
+  error,
+  details,
+  onRetry,
+  onBack,
+}: Readonly<ErrorViewProps>) {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
@@ -39,7 +44,10 @@ export function ErrorView({ error, details, onRetry, onBack }: Readonly<ErrorVie
         </Center>
 
         <Title order={4} ta="center">
-          {t('screens.connections.callback.error.connectionFailed', 'Connection failed')}
+          {t(
+            'screens.connections.callback.error.connectionFailed',
+            'Connection failed',
+          )}
         </Title>
         <Text size="sm" c="dimmed" ta="center" maw={360}>
           {t(
@@ -62,15 +70,34 @@ export function ErrorView({ error, details, onRetry, onBack }: Readonly<ErrorVie
           </Stack>
         </Card>
 
-        <Card withBorder={false} bg="gray.0" radius="md" p="md" w="100%" maw={380}>
+        <Card
+          withBorder={false}
+          bg="gray.0"
+          radius="md"
+          p="md"
+          w="100%"
+          maw={380}
+        >
           <Text size="xs" fw={700} c="dimmed" mb="xs">
-            {t('screens.connections.callback.error.whatToTry', 'What to try next')}
+            {t(
+              'screens.connections.callback.error.whatToTry',
+              'What to try next',
+            )}
           </Text>
           <Stack gap="xs">
             {[
-              t('screens.connections.callback.error.tip1', 'Check your bank app for any pending authorisation requests'),
-              t('screens.connections.callback.error.tip2', 'Make sure you completed the login process before returning'),
-              t('screens.connections.callback.error.tip3', "Try again — the bank's service may now be available"),
+              t(
+                'screens.connections.callback.error.tip1',
+                'Check your bank app for any pending authorisation requests',
+              ),
+              t(
+                'screens.connections.callback.error.tip2',
+                'Make sure you completed the login process before returning',
+              ),
+              t(
+                'screens.connections.callback.error.tip3',
+                "Try again — the bank's service may now be available",
+              ),
             ].map((tip, i) => (
               <Group key={i} gap="xs" align="flex-start">
                 <Text size="xs" c="dimmed">
@@ -89,7 +116,10 @@ export function ErrorView({ error, details, onRetry, onBack }: Readonly<ErrorVie
             {t('screens.connections.callback.error.retry', 'Try again')}
           </Button>
           <Button fullWidth variant="outline" onClick={onBack}>
-            {t('screens.connections.callback.error.manual', 'Add account manually instead')}
+            {t(
+              'screens.connections.callback.error.manual',
+              'Add account manually instead',
+            )}
           </Button>
         </Stack>
       </Stack>

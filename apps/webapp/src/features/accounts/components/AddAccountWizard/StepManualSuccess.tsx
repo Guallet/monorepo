@@ -1,5 +1,15 @@
 import { useTheme } from '@guallet/ui-react';
-import { Avatar, Box, Button, Card, Center, Group, Stack, Text, Title } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Center,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import { IconCheck } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
@@ -56,9 +66,15 @@ export function StepManualSuccess({
         {t('feature.accounts.add.success.title', 'Account added!')}
       </Title>
       <Text size="sm" c="dimmed" ta="center">
-        {t('feature.accounts.add.success.subtitle', '"{{name}}" has been added to your Guallet.', {
-          name: form.values.name || t('feature.accounts.add.success.newAccount', 'New account'),
-        })}
+        {t(
+          'feature.accounts.add.success.subtitle',
+          '"{{name}}" has been added to your Guallet.',
+          {
+            name:
+              form.values.name ||
+              t('feature.accounts.add.success.newAccount', 'New account'),
+          },
+        )}
       </Text>
 
       <Card withBorder radius="lg" shadow="sm" p="md" w="100%">
@@ -68,7 +84,8 @@ export function StepManualSuccess({
           </Avatar>
           <Box style={{ flex: 1 }}>
             <Text fw={700}>
-              {form.values.name || t('feature.accounts.add.success.newAccount', 'New account')}
+              {form.values.name ||
+                t('feature.accounts.add.success.newAccount', 'New account')}
             </Text>
             <Text size="xs" c="dimmed" mt={spacing.xs / 2}>
               {typeMeta} · {form.values.currency || 'GBP'}
@@ -77,7 +94,10 @@ export function StepManualSuccess({
           <Text
             fw={700}
             size="lg"
-            style={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.01em' }}
+            style={{
+              fontVariantNumeric: 'tabular-nums',
+              letterSpacing: '-0.01em',
+            }}
             c={balance < 0 ? colors.error : undefined}
           >
             {balance < 0 ? '−' : ''}

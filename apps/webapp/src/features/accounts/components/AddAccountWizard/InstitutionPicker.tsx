@@ -1,5 +1,13 @@
 import { useTheme } from '@guallet/ui-react';
-import { Avatar, Box, Card, ScrollArea, Text, TextInput, UnstyledButton } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Card,
+  ScrollArea,
+  Text,
+  TextInput,
+  UnstyledButton,
+} from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCheck, IconChevronDown, IconSearch } from '@tabler/icons-react';
 import { useInstitutions } from '@guallet/api-react';
@@ -11,7 +19,10 @@ interface InstitutionPickerProps {
   onChange: (id: string | null) => void;
 }
 
-export function InstitutionPicker({ value, onChange }: Readonly<InstitutionPickerProps>) {
+export function InstitutionPicker({
+  value,
+  onChange,
+}: Readonly<InstitutionPickerProps>) {
   const { t } = useTranslation();
   const { institutions } = useInstitutions();
   const [open, setOpen] = useState(false);
@@ -22,7 +33,9 @@ export function InstitutionPicker({ value, onChange }: Readonly<InstitutionPicke
 
   const filtered = useMemo(() => {
     const q = debouncedSearch.toLowerCase();
-    return institutions.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 10);
+    return institutions
+      .filter((i) => i.name.toLowerCase().includes(q))
+      .slice(0, 10);
   }, [institutions, debouncedSearch]);
 
   const selected = value ? institutions.find((i) => i.id === value) : null;
@@ -55,7 +68,10 @@ export function InstitutionPicker({ value, onChange }: Readonly<InstitutionPicke
           </>
         ) : (
           <Text size="sm" c="dimmed" style={{ flex: 1 }}>
-            {t('feature.accounts.add.institutionPicker.placeholder', 'Search for a bank…')}
+            {t(
+              'feature.accounts.add.institutionPicker.placeholder',
+              'Search for a bank…',
+            )}
           </Text>
         )}
         <IconChevronDown
@@ -111,7 +127,10 @@ export function InstitutionPicker({ value, onChange }: Readonly<InstitutionPicke
               }}
             >
               <Text size="sm" c="dimmed" fs="italic">
-                {t('feature.accounts.add.institutionPicker.none', 'No institution')}
+                {t(
+                  'feature.accounts.add.institutionPicker.none',
+                  'No institution',
+                )}
               </Text>
             </UnstyledButton>
             {filtered.map((inst) => (
@@ -139,7 +158,9 @@ export function InstitutionPicker({ value, onChange }: Readonly<InstitutionPicke
                 <Text size="sm" style={{ flex: 1 }}>
                   {inst.name}
                 </Text>
-                {value === inst.id && <IconCheck size={14} color={colors.primary} />}
+                {value === inst.id && (
+                  <IconCheck size={14} color={colors.primary} />
+                )}
               </UnstyledButton>
             ))}
           </ScrollArea>

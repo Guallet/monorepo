@@ -110,12 +110,12 @@ export function MyComponent() {
 
 The available tokens are:
 
-| Token group   | Keys |
-|---------------|------|
-| `spacing`     | `none` · `xs` (4) · `sm` (8) · `md` (16) · `lg` (24) · `xl` (32) · `xxl` (40) |
-| `borderRadius`| `xs` · `sm` · `md` · `lg` · `xl` |
-| `colors`      | `primary` · `secondary` · `error` · `success` · `warning` · `pageBackground` · … |
-| `typography`  | `fontFamily` · `fontFamilyMono` · size/weight scales |
+| Token group    | Keys                                                                             |
+| -------------- | -------------------------------------------------------------------------------- |
+| `spacing`      | `none` · `xs` (4) · `sm` (8) · `md` (16) · `lg` (24) · `xl` (32) · `xxl` (40)    |
+| `borderRadius` | `xs` · `sm` · `md` · `lg` · `xl`                                                 |
+| `colors`       | `primary` · `secondary` · `error` · `success` · `warning` · `pageBackground` · … |
+| `typography`   | `fontFamily` · `fontFamilyMono` · size/weight scales                             |
 
 ### React Compiler
 
@@ -133,9 +133,7 @@ import { useTranslation } from 'react-i18next';
 export function MyComponent() {
   const { t } = useTranslation();
 
-  return (
-    <Text>{t('feature.myFeature.someLabel', 'My label')}</Text>
-  );
+  return <Text>{t('feature.myFeature.someLabel', 'My label')}</Text>;
 }
 ```
 
@@ -146,7 +144,7 @@ t('feature.accounts.list.header.accountCount', {
   count: accounts.length,
   defaultValue_one: '{{count}} account',
   defaultValue_other: '{{count}} accounts',
-})
+});
 ```
 
 Key naming convention: `<scope>.<feature>.<screen>.<element>` — e.g. `feature.accounts.list.title`, `screens.budgets.list.emptyState.description`.
