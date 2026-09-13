@@ -1,9 +1,15 @@
 import React, { useCallback } from 'react';
-import { supabase } from './supabase';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { BuildConfig } from '@/BuildConfig';
 import { setAnalyticsDeviceId } from '@/utils/analytics';
-import { AuthProvider as BaseAuthProvider } from '@guallet/auth';
+import {
+  AuthProvider as BaseAuthProvider,
+  createBetterAuthClient,
+} from '@guallet/auth';
+
+const authClient = createBetterAuthClient({
+  baseURL: BuildConfig.BASE_API_URL,
+});
 
 GoogleSignin.configure({
   scopes: ['https://www.googleapis.com/auth/drive.readonly'],
@@ -20,7 +26,7 @@ export function AuthProvider({ children }: Readonly<MobileAuthProviderProps>) {
   }, []);
 
   return (
-    <BaseAuthProvider supabaseClient={supabase} onUserChange={handleUserChange}>
+    <BaseAuthProvider authClient={authClient} onUserChange={handleUserChange}>
       {children}
     </BaseAuthProvider>
   );

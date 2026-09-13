@@ -12,7 +12,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './assets/images/icon.png',
   scheme: 'guallet',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
@@ -29,7 +28,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     //   backgroundImage: "./assets/images/android-icon-background.png",
     //   monochromeImage: "./assets/images/android-icon-monochrome.png",
     // },
-    edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
     googleServicesFile: './auth/firebase/google-services.json',
