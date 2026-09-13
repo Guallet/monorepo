@@ -11,7 +11,7 @@ export function Collapsible({
   title,
 }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const theme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const theme = useColorScheme() ;
 
   return (
     <ThemedView>

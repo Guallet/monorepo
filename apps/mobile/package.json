@@ -15,7 +15,7 @@
     "format:check": "oxfmt --check \"**/*.{ts,tsx,md}\"",
     "credentials": "eas credentials",
     "credentials:android": "cd android && ./gradlew signingReport",
-    "expo:prebuild": "npx expo prebuild --no-clean",
+    "expo:prebuild": "npx expo prebuild",
     "expo:prebuild:clean": "npx expo prebuild --clean",
     "expo:prebuild:ios": "npx expo prebuild --platform ios",
     "expo:prebuild:android": "npx expo prebuild --platform android",
