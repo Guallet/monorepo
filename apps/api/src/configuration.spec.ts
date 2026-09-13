@@ -47,6 +47,17 @@ describe('environment configuration', () => {
     expect(parsed.REDIS_PORT).toBe(6379);
   });
 
+  it('applies defaults to empty environment values', () => {
+    const parsed = parseEnvironment({
+      ...validEnvironment,
+      DATABASE_SSL_ENABLED: '',
+      REDIS_PORT: '',
+    });
+
+    expect(parsed.DATABASE_SSL_ENABLED).toBe(false);
+    expect(parsed.REDIS_PORT).toBe(6379);
+  });
+
   it('allows empty optional values', () => {
     const parsed = parseEnvironment(validEnvironment);
 

@@ -1,50 +1,50 @@
 import { version } from '../package.json';
 import { z } from 'zod';
 
-const requiredString = z.string().min(1);
-
-const numberFromEnvironment = z.preprocess(
-  (value) => (value === '' ? undefined : value),
-  z.coerce.number(),
-);
-
-const booleanFromEnvironment = z.preprocess((value) => {
-  if (value === 'true') {
-    return true;
-  }
-
-  if (value === 'false') {
-    return false;
-  }
-
-  return value;
-}, z.boolean());
-
 /**
  * Environment variables validated by ConfigModule before the configuration
  * factory runs. Unknown variables are intentionally preserved to support
  * variables consumed by modules outside this file.
  */
-export const environmentSchema = z.object({
-  ENVIRONMENT: z.enum(['development', 'production']).default('development'),
-  DATABASE_HOST: requiredString,
-  DATABASE_PORT: numberFromEnvironment,
-  DATABASE_USERNAME: requiredString,
-  DATABASE_PASSWORD: requiredString,
-  DATABASE_NAME: requiredString,
-  DATABASE_SSL_ENABLED: booleanFromEnvironment.default(false),
-  REDIS_HOST: requiredString,
-  REDIS_PORT: numberFromEnvironment.default(6379),
-  REDIS_PASSWORD: z.string().optional(),
-  BETTER_AUTH_SECRET: requiredString,
-  BETTER_AUTH_BASE_URL: requiredString,
-  NORDIGEN_SECRET_ID: requiredString,
-  NORDIGEN_SECRET_KEY: requiredString,
-  DATABASE_CREDENTIALS_ENCRYPTION_KEY: requiredString,
-  NESTJS_OBSERVE_APP_KEY: z.string().optional(),
-  NESTJS_OBSERVE_APP_SECRET: z.string().optional(),
-  NESTJS_OBSERVE_SERVICE_ID: z.string().optional(),
-});
+export const environmentSchema = z
+  .object({
+    ENVIRONMENT: z.enum(['development', 'production']).default('development'),
+    DATABASE_HOST: z.string().min(1).default('localhost'),
+    DATABASE_PORT: z.coerce.number().default(5432),
+    DATABASE_USERNAME: z.string().min(1),
+    DATABASE_PASSWORD: z.string().min(1),
+    DATABASE_NAME: z.string().min(1),
+    DATABASE_SSL_ENABLED: z.preprocess((value) => {
+      if (value === '') {
+        return undefined;
+      }
+
+      if (value === 'true') {
+        return true;
+      }
+
+      if (value === 'false') {
+        return false;
+      }
+
+      return value;
+    }, z.boolean().default(false)),
+    REDIS_HOST: z.string().min(1),
+    REDIS_PORT: z.preprocess(
+      (value) => (value === '' ? undefined : value),
+      z.coerce.number().default(6379),
+    ),
+    REDIS_PASSWORD: z.string().optional(),
+    BETTER_AUTH_SECRET: z.string().min(1),
+    BETTER_AUTH_BASE_URL: z.string().min(1),
+    NORDIGEN_SECRET_ID: z.string().min(1),
+    NORDIGEN_SECRET_KEY: z.string().min(1),
+    DATABASE_CREDENTIALS_ENCRYPTION_KEY: z.string().min(1),
+    NESTJS_OBSERVE_APP_KEY: z.string().optional(),
+    NESTJS_OBSERVE_APP_SECRET: z.string().optional(),
+    NESTJS_OBSERVE_SERVICE_ID: z.string().optional(),
+  })
+  .loose();
 
 export type EnvironmentConfig = z.output<typeof environmentSchema>;
 
