@@ -113,7 +113,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ## How it works — architecture overview 🧭
 
 - Entry point: `src/main.ts` — configures Express, CORS, middleware and Swagger (`/docs`).
-- Configuration: `src/configuration.ts` + `ConfigModule` with Joi validation.
+- Configuration: `src/configuration.ts` + `ConfigModule` with Zod validation.
+  Unknown environment variables are preserved for modules that consume them directly.
 - Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows and CLI migrations.
 - Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
