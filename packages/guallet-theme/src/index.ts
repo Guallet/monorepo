@@ -1,5 +1,5 @@
-export type { Colors } from './colors';
-export { defaultColors } from './colors';
+export type { Colors, TabBarColors } from './colors';
+export { defaultColors, defaultDarkColors } from './colors';
 export type { Spacing } from './spacing';
 export { defaultSpacing } from './spacing';
 export type { Typography } from './typography';

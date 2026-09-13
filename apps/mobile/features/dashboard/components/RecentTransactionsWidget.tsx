@@ -20,7 +20,7 @@ export function RecentTransactionsWidget({
       <View
         style={[
           styles.skeleton,
-          { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+          { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
         ]}
       />
     );
@@ -35,7 +35,7 @@ export function RecentTransactionsWidget({
         {
           backgroundColor: colors.background,
           borderRadius: borderRadius.lg,
-          borderColor: colors.paleGrey,
+          borderColor: colors.border,
           padding: spacing.md,
         },
       ]}
@@ -45,7 +45,7 @@ export function RecentTransactionsWidget({
         <Text
           style={[
             styles.title,
-            { color: colors.black, fontSize: typography.sizes.lg },
+            { color: colors.text, fontSize: typography.sizes.lg },
           ]}
         >
           Recent
@@ -68,7 +68,7 @@ export function RecentTransactionsWidget({
         <Text
           style={[
             styles.emptyText,
-            { color: colors.midGrey, fontSize: typography.sizes.sm },
+            { color: colors.textSecondary, fontSize: typography.sizes.sm },
           ]}
         >
           No transactions yet
@@ -78,7 +78,7 @@ export function RecentTransactionsWidget({
           <View key={transaction.id}>
             {index > 0 && (
               <View
-                style={[styles.divider, { backgroundColor: colors.paleGrey }]}
+                style={[styles.divider, { backgroundColor: colors.border }]}
               />
             )}
             <TransactionListItem transaction={transaction} />

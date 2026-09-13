@@ -10,19 +10,20 @@ interface DividerProps extends React.ComponentProps<typeof View> {
 }
 
 export function Divider({
-  color = 'black',
+  color,
   width = 1,
   label,
   style,
 }: Readonly<DividerProps>) {
-  const { spacing } = useTheme();
+  const { spacing, colors } = useTheme();
+  const dividerColor = color ?? colors.border;
 
   if (!label) {
     return (
       <View
         style={[
           {
-            borderBottomColor: color,
+            borderBottomColor: dividerColor,
             borderBottomWidth: width,
           },
           style,
@@ -37,7 +38,7 @@ export function Divider({
         style={[
           {
             flexGrow: 1,
-            borderBottomColor: color,
+            borderBottomColor: dividerColor,
             borderBottomWidth: width,
           },
           style,
@@ -48,7 +49,7 @@ export function Divider({
         style={[
           {
             flexGrow: 1,
-            borderBottomColor: color,
+            borderBottomColor: dividerColor,
             borderBottomWidth: width,
           },
           style,

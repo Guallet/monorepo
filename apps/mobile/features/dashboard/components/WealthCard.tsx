@@ -61,7 +61,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <View
         style={[
           styles.skeleton,
-          { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+          { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
         ]}
       />
     );
@@ -83,7 +83,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.label,
-          { color: 'rgba(255,255,255,0.75)', fontSize: typography.sizes.xs },
+          { color: colors.onPrimaryMuted, fontSize: typography.sizes.xs },
         ]}
       >
         TOTAL WEALTH
@@ -92,7 +92,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.amount,
-          { color: '#FFFFFF', fontSize: typography.sizes.xxl },
+          { color: colors.onPrimary, fontSize: typography.sizes.xxl },
         ]}
       >
         {formatCurrency(totalWealth, displayCurrency)}
@@ -102,7 +102,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
         <Text
           style={[
             styles.delta,
-            { color: 'rgba(255,255,255,0.85)', fontSize: typography.sizes.sm },
+            { color: colors.onPrimaryMuted, fontSize: typography.sizes.sm },
           ]}
         >
           {isDeltaPositive ? '↑' : '↓'} {isDeltaPositive ? '+' : ''}
@@ -119,8 +119,8 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
               {
                 height: Math.max(4, bar.ratio * 36),
                 backgroundColor: bar.isLast
-                  ? '#FFFFFF'
-                  : 'rgba(255,255,255,0.30)',
+                  ? colors.onPrimary
+                  : colors.onPrimaryMuted,
                 borderRadius: borderRadius.xs,
               },
             ]}

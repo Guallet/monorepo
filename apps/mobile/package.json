@@ -43,6 +43,7 @@
     "@react-navigation/elements": "2.6.4",
     "@react-navigation/native": "7.1.17",
     "@sentry/react-native": "7.8.0",
+    "@supabase/supabase-js": "2.116.0",
     "@tanstack/react-query": "5.90.2",
     "aes-js": "3.1.2",
     "expo": "54.0.12",

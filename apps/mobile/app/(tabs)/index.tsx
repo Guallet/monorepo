@@ -56,7 +56,7 @@ export default function DashboardScreen() {
           <Text
             style={[
               styles.greetingTitle,
-              { color: colors.black, fontSize: typography.sizes.xxl },
+              { color: colors.text, fontSize: typography.sizes.xxl },
             ]}
           >
             Hi, {firstName}
@@ -64,7 +64,7 @@ export default function DashboardScreen() {
           <Text
             style={[
               styles.greetingDate,
-              { color: colors.midGrey, fontSize: typography.sizes.sm },
+              { color: colors.textSecondary, fontSize: typography.sizes.sm },
             ]}
           >
             {formatGreetingDate(today)}

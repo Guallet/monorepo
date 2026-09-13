@@ -52,13 +52,13 @@ export function CashflowSummaryRow({
         <View
           style={[
             styles.skeletonCard,
-            { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+            { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
           ]}
         />
         <View
           style={[
             styles.skeletonCard,
-            { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+            { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
           ]}
         />
       </View>
@@ -74,7 +74,7 @@ export function CashflowSummaryRow({
           {
             backgroundColor: colors.background,
             borderRadius: borderRadius.lg,
-            borderColor: colors.paleGrey,
+            borderColor: colors.border,
             padding: spacing.md,
           },
         ]}
@@ -82,7 +82,7 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardLabel,
-            { color: colors.midGrey, fontSize: typography.sizes.xs },
+            { color: colors.textSecondary, fontSize: typography.sizes.xs },
           ]}
         >
           INCOME · 30D
@@ -105,7 +105,7 @@ export function CashflowSummaryRow({
           {
             backgroundColor: colors.background,
             borderRadius: borderRadius.lg,
-            borderColor: colors.paleGrey,
+            borderColor: colors.border,
             padding: spacing.md,
           },
         ]}
@@ -113,7 +113,7 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardLabel,
-            { color: colors.midGrey, fontSize: typography.sizes.xs },
+            { color: colors.textSecondary, fontSize: typography.sizes.xs },
           ]}
         >
           EXPENSE · 30D

@@ -3,19 +3,22 @@ import { TransactionDto } from '@guallet/api-client';
 import { useCategory } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react-native';
 
-const AVATAR_COLORS = [
-  '#005EB8',
-  '#009639',
-  '#41B6E6',
-  '#DA291C',
-  '#003087',
-  '#00A9CE',
-  '#006747',
-  '#768692',
-];
+function getAvatarColor(
+  text: string,
+  colors: ReturnType<typeof useTheme>['colors'],
+): string {
+  const avatarColors = [
+    colors.primary,
+    colors.support,
+    colors.secondary,
+    colors.error,
+    colors.darkAccent,
+    colors.aquaAccent,
+    colors.darkSupport,
+    colors.midGrey,
+  ];
 
-function getAvatarColor(text: string): string {
-  return AVATAR_COLORS[text.charCodeAt(0) % AVATAR_COLORS.length];
+  return avatarColors[text.charCodeAt(0) % avatarColors.length];
 }
 
 function formatCurrency(amount: number, currency: string): string {
@@ -35,24 +38,31 @@ interface TransactionListItemProps {
 }
 
 function CategoryLabel({ categoryId }: { categoryId: string | null }) {
+  const { colors } = useTheme();
   const { category } = useCategory(categoryId);
-  return category ? <Text style={styles.metaText}>{category.name}</Text> : null;
+  return category ? (
+    <Text style={[styles.metaText, { color: colors.textSecondary }]}>
+      {category.name}
+    </Text>
+  ) : null;
 }
 
 export function TransactionListItem({ transaction }: TransactionListItemProps) {
   const { colors, spacing, typography } = useTheme();
   const isIncome = transaction.amount > 0;
   const initial = (transaction.description ?? '?')[0].toUpperCase();
-  const avatarBg = getAvatarColor(transaction.description ?? '');
+  const avatarBg = getAvatarColor(transaction.description ?? '', colors);
 
   return (
     <View style={[styles.row, { paddingVertical: spacing.sm }]}>
       {/* Avatar */}
       <View style={[styles.avatar, { backgroundColor: avatarBg }]}>
         {isIncome ? (
-          <Text style={styles.avatarIcon}>↑</Text>
+          <Text style={[styles.avatarIcon, { color: colors.white }]}>↑</Text>
         ) : (
-          <Text style={styles.avatarLetter}>{initial}</Text>
+          <Text style={[styles.avatarLetter, { color: colors.white }]}>
+            {initial}
+          </Text>
         )}
       </View>
 
@@ -61,7 +71,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
         <Text
           style={[
             styles.description,
-            { color: colors.black, fontSize: typography.sizes.sm },
+            { color: colors.text, fontSize: typography.sizes.sm },
           ]}
           numberOfLines={1}
         >
@@ -70,14 +80,14 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
         <View style={styles.metaRow}>
           <CategoryLabel categoryId={transaction.categoryId} />
           {transaction.categoryId && (
-            <Text style={[styles.metaText, { color: colors.midGrey }]}>
+            <Text style={[styles.metaText, { color: colors.textSecondary }]}>
               {' · '}
             </Text>
           )}
           <Text
             style={[
               styles.metaText,
-              { color: colors.midGrey, fontSize: typography.sizes.xs },
+              { color: colors.textSecondary, fontSize: typography.sizes.xs },
             ]}
           >
             {formatDate(transaction.date)}
@@ -117,12 +127,10 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   avatarLetter: {
-    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
   },
   avatarIcon: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
   },

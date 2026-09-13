@@ -22,13 +22,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    // TODO: enable once we have the icons
-    // adaptiveIcon: {
-    //   backgroundColor: "#E6F4FE",
-    //   foregroundImage: "./assets/images/android-icon-foreground.png",
-    //   backgroundImage: "./assets/images/android-icon-background.png",
-    //   monochromeImage: "./assets/images/android-icon-monochrome.png",
-    // },
+    // TODO: enable once we have the icons.
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
@@ -46,6 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         image: './assets/images/splash-icon.png',
         imageWidth: 200,
         resizeMode: 'contain',
+        // Native splash fallback colors are outside the runtime theme.
         backgroundColor: '#ffffff',
         dark: {
           backgroundColor: '#000000',

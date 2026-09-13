@@ -1,5 +1,6 @@
 import { ActivityIndicator, Modal, View } from 'react-native';
 import { Label } from './../../src/components/typography';
+import { useTheme } from '../theme';
 
 interface OverlayLoaderProps extends React.ComponentProps<typeof Modal> {
   isVisible: boolean;
@@ -11,6 +12,8 @@ export function ModalLoaderOverlay({
   loadingMessage,
   ...props
 }: Readonly<OverlayLoaderProps>) {
+  const { colors, borderRadius, spacing, typography } = useTheme();
+
   return (
     <Modal
       transparent={true}
@@ -31,22 +34,23 @@ export function ModalLoaderOverlay({
           bottom: 0,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: 'rgba(100, 100, 100, 0.6)',
+          backgroundColor: colors.overlay,
         }}
       >
         <View
           style={{
-            backgroundColor: 'white',
-            padding: 40,
-            borderRadius: 20,
+            backgroundColor: colors.surface,
+            padding: spacing.xl,
+            borderRadius: borderRadius.xl,
           }}
         >
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color={colors.primary} />
           {loadingMessage && (
             <Label
               style={{
-                fontSize: 18,
-                marginTop: 12,
+                color: colors.text,
+                fontSize: typography.sizes.md,
+                marginTop: spacing.sm,
               }}
             >
               {loadingMessage}

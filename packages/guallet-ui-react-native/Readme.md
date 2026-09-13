@@ -91,33 +91,39 @@ import { Input } from '@luna-ui/react-native';
 
 ## Theming
 
-Luna UI supports custom theming to match your brand.
+`@guallet/theme` is the single source of truth for the typed design-token
+contract and its default light/dark values. This package owns appearance
+selection: `LunaProvider` follows the system appearance and `useTheme()` always
+returns the active theme. Navigation tokens are available at
+`colors.tabBar.tint`, `colors.tabBar.inactiveTint`, `colors.tabBar.background`,
+and `colors.tabBar.border`.
+
+Custom themes can be supplied per appearance:
 
 ```typescript
-import { ThemeProvider } from '@luna-ui/react-native';
+import {
+  DefaultTheme,
+  DarkTheme,
+  LunaProvider,
+} from '@guallet/ui-react-native';
 
-const customTheme = {
+const customLightTheme = {
+  ...DefaultTheme,
   colors: {
+    ...DefaultTheme.colors,
     primary: '#007AFF',
-    secondary: '#5856D6',
-    background: '#FFFFFF',
-    surface: '#F2F2F7',
-    text: '#000000',
-  },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
+    tabBar: {
+      ...DefaultTheme.colors.tabBar,
+      tint: '#007AFF',
+    },
   },
 };
 
 export default function App() {
   return (
-    <ThemeProvider theme={customTheme}>
+    <LunaProvider lightTheme={customLightTheme} darkTheme={DarkTheme}>
       {/* Your app content */}
-    </ThemeProvider>
+    </LunaProvider>
   );
 }
 ```

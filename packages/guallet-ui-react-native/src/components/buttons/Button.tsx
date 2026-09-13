@@ -6,6 +6,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
+import { useTheme } from '../../theme';
 
 type ButtonVariant = 'filled' | 'light' | 'outline' | 'subtle' | 'transparent';
 
@@ -24,67 +25,93 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   disabled = false,
 }) => {
+  const { colors, spacing, typography, borderRadius } = useTheme();
+
   const getVariantStyles = (): ViewStyle => {
     if (disabled) {
       switch (variant) {
         case 'filled':
-          return styles.filledDisabled;
+          return { backgroundColor: colors.disabled };
         case 'light':
-          return styles.lightDisabled;
+          return { backgroundColor: colors.disabled };
         case 'outline':
-          return styles.outlineDisabled;
+          return {
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderColor: colors.disabled,
+          };
         case 'subtle':
-          return styles.subtleDisabled;
+          return { backgroundColor: colors.disabled };
         case 'transparent':
-          return styles.transparentDisabled;
+          return { backgroundColor: 'transparent' };
         default:
-          return styles.filledDisabled;
+          return { backgroundColor: colors.disabled };
       }
     }
 
     switch (variant) {
       case 'filled':
-        return styles.filled;
+        return { backgroundColor: colors.primary };
       case 'light':
-        return styles.light;
+        return { backgroundColor: colors.primarySubtle };
       case 'outline':
-        return styles.outline;
+        return {
+          backgroundColor: 'transparent',
+          borderWidth: 1,
+          borderColor: colors.primary,
+        };
       case 'subtle':
-        return styles.subtle;
+        return { backgroundColor: colors.surface };
       case 'transparent':
-        return styles.transparent;
+        return { backgroundColor: 'transparent' };
       default:
-        return styles.filled;
+        return { backgroundColor: colors.primary };
     }
   };
 
   const getTextStyles = (): TextStyle => {
     if (disabled) {
-      return styles.disabledText;
+      return { color: colors.disabledText };
     }
 
     switch (variant) {
       case 'filled':
-        return styles.filledText;
+        return { color: colors.onPrimary };
       case 'light':
       case 'outline':
       case 'subtle':
       case 'transparent':
-        return styles.variantText;
+        return { color: colors.primary };
       default:
-        return styles.filledText;
+        return { color: colors.onPrimary };
     }
   };
 
   return (
     <TouchableOpacity
-      style={[styles.button, getVariantStyles(), style]}
+      style={[
+        styles.button,
+        {
+          borderRadius: borderRadius.md,
+          height: typography.sizes.md + spacing.md * 2,
+        },
+        getVariantStyles(),
+        style,
+      ]}
       onPress={onClick}
       disabled={disabled}
       activeOpacity={disabled ? 1 : 0.7}
     >
       {typeof children === 'string' ? (
-        <Text style={[styles.text, getTextStyles()]}>{children}</Text>
+        <Text
+          style={[
+            styles.text,
+            { fontSize: typography.sizes.md },
+            getTextStyles(),
+          ]}
+        >
+          {children}
+        </Text>
       ) : (
         children
       )}
@@ -102,49 +129,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: '600',
-  },
-  filled: {
-    backgroundColor: '#007AFF',
-  },
-  filledDisabled: {
-    backgroundColor: '#D1D5DB',
-  },
-  filledText: {
-    color: '#FFFFFF',
-  },
-  light: {
-    backgroundColor: '#E1F0FF',
-  },
-  lightDisabled: {
-    backgroundColor: '#F3F4F6',
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#007AFF',
-  },
-  outlineDisabled: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-  },
-  subtle: {
-    backgroundColor: '#F5F5F5',
-  },
-  subtleDisabled: {
-    backgroundColor: '#F9FAFB',
-  },
-  transparent: {
-    backgroundColor: 'transparent',
-  },
-  transparentDisabled: {
-    backgroundColor: 'transparent',
-  },
-  disabledText: {
-    color: '#9CA3AF',
-  },
-  variantText: {
-    color: '#007AFF',
   },
 });
 

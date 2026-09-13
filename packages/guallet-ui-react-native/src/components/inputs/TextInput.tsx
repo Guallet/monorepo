@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput as RNTextInput, StyleSheet } from 'react-native';
+import { useTheme } from '../../theme';
 
 export interface TextInputProps extends React.ComponentProps<
   typeof RNTextInput
@@ -20,78 +21,102 @@ export function TextInput({
   style,
   ...props
 }: Readonly<TextInputProps>) {
+  const { colors, spacing, typography, borderRadius } = useTheme();
   const hasError = error != null;
 
   return (
-    <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={[styles.container, { marginBottom: spacing.md }]}>
+      {label && (
+        <Text
+          style={[
+            styles.label,
+            {
+              color: colors.text,
+              fontSize: typography.sizes.md,
+              marginBottom: spacing.xs,
+            },
+          ]}
+        >
+          {label}
+        </Text>
+      )}
 
       <View
         style={[
           styles.inputContainer,
-          hasError && styles.inputContainerError,
-          disabled && styles.inputContainerDisabled,
+          {
+            backgroundColor: colors.inputBackground,
+            borderColor: hasError ? colors.error : colors.inputBorder,
+            borderRadius: borderRadius.lg,
+            paddingHorizontal: spacing.md,
+            paddingVertical: spacing.sm,
+          },
+          hasError && { backgroundColor: colors.errorBackground },
+          disabled && {
+            backgroundColor: colors.disabled,
+            opacity: 0.6,
+          },
         ]}
       >
         <RNTextInput
-          style={[styles.input, style]}
+          style={[
+            styles.input,
+            { color: colors.text, fontSize: typography.sizes.md },
+            style,
+          ]}
           placeholder={placeholder}
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={colors.placeholder}
           editable={!disabled}
           {...props}
         />
       </View>
 
       {description && !hasError && (
-        <Text style={styles.description}>{description}</Text>
+        <Text
+          style={[
+            styles.description,
+            {
+              color: colors.textSecondary,
+              fontSize: typography.sizes.sm,
+              marginTop: spacing.xs,
+            },
+          ]}
+        >
+          {description}
+        </Text>
       )}
 
-      {hasError && <Text style={styles.error}>{error}</Text>}
+      {hasError && (
+        <Text
+          style={[
+            styles.error,
+            {
+              color: colors.error,
+              fontSize: typography.sizes.sm,
+              marginTop: spacing.xs,
+            },
+          ]}
+        >
+          {error}
+        </Text>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16,
-  },
+  container: {},
   label: {
-    fontSize: 16,
     fontWeight: '500',
-    color: '#374151',
-    marginBottom: 8,
   },
   inputContainer: {
-    backgroundColor: '#F0F9FF',
-    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
     minHeight: 56,
   },
-  inputContainerError: {
-    borderColor: '#EF4444',
-    backgroundColor: '#FEF2F2',
-  },
-  inputContainerDisabled: {
-    backgroundColor: '#F9FAFB',
-    opacity: 0.6,
-  },
   input: {
-    fontSize: 16,
-    color: '#374151',
     flex: 1,
     padding: 0,
   },
-  description: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 6,
-  },
-  error: {
-    fontSize: 14,
-    color: '#EF4444',
-    marginTop: 6,
-  },
+  description: {},
+  error: {},
 });

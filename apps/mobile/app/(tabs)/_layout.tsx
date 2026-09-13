@@ -4,12 +4,11 @@ import { Text } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@guallet/auth';
+import { useTheme } from '@guallet/ui-react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colors } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
@@ -28,7 +27,12 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: colors.tabBar.tint,
+        tabBarInactiveTintColor: colors.tabBar.inactiveTint,
+        tabBarStyle: {
+          backgroundColor: colors.tabBar.background,
+          borderTopColor: colors.tabBar.border,
+        },
         headerShown: false,
         tabBarButton: HapticTab,
       }}

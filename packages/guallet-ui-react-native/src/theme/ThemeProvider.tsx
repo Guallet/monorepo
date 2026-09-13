@@ -1,16 +1,50 @@
-import { createContext, PropsWithChildren } from 'react';
+import { createContext, PropsWithChildren, useContext } from 'react';
 import { GualletTheme } from '@guallet/theme';
+import { useColorScheme } from 'react-native';
 import { DefaultTheme } from './DefaultTheme';
+import { resolveTheme } from './resolveTheme';
 
 export const ThemeContext = createContext<GualletTheme>(DefaultTheme);
+export const ThemeModeContext = createContext<ThemeMode>('light');
+
+export type ThemeMode = 'light' | 'dark';
+
+export interface LunaProviderProps {
+  /** A custom theme used for both appearances when no appearance override is supplied. */
+  theme?: GualletTheme;
+  /** Custom theme for the light system appearance. */
+  lightTheme?: GualletTheme;
+  /** Custom theme for the dark system appearance. */
+  darkTheme?: GualletTheme;
+  /** Override the system appearance. Useful for previews and tests. */
+  colorScheme?: ThemeMode;
+}
 
 export function LunaProvider({
   children,
   theme,
-}: PropsWithChildren<{ theme?: GualletTheme }>) {
+  lightTheme,
+  darkTheme,
+  colorScheme,
+}: PropsWithChildren<LunaProviderProps>) {
+  const systemColorScheme = useColorScheme();
+  const mode = colorScheme ?? (systemColorScheme === 'dark' ? 'dark' : 'light');
+  const activeTheme = resolveTheme({
+    mode,
+    theme,
+    lightTheme,
+    darkTheme,
+  });
+
   return (
-    <ThemeContext.Provider value={theme ?? DefaultTheme}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeModeContext.Provider value={mode}>
+      <ThemeContext.Provider value={activeTheme}>
+        {children}
+      </ThemeContext.Provider>
+    </ThemeModeContext.Provider>
   );
+}
+
+export function useThemeMode(): ThemeMode {
+  return useContext(ThemeModeContext);
 }

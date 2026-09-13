@@ -20,6 +20,7 @@ config.resolver.disableHierarchicalLookup = true;
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'packages/guallet-ui-react-native/node_modules'),
 ];
 
 // Use turborepo to restore the cache when possible

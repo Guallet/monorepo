@@ -1,9 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '@guallet/ui-react-native';
 
 export default function BudgetsScreen() {
+  const { colors, typography } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Budgets</Text>
+    <View
+      style={[styles.container, { backgroundColor: colors.pageBackground }]}
+    >
+      <Text
+        style={[
+          styles.title,
+          { color: colors.text, fontSize: typography.sizes.lg },
+        ]}
+      >
+        Budgets
+      </Text>
     </View>
   );
 }
@@ -15,7 +27,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
   },
 });
