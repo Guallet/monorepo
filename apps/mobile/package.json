@@ -31,7 +31,7 @@
     "eas:env:pull": "eas env:pull --environment development"
   },
   "dependencies": {
-    "@better-auth/expo": "1.4.18",
+    "@better-auth/expo": "1.7.4",
     "@expo/vector-icons": "15.0.2",
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
