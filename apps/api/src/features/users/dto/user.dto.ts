@@ -6,8 +6,8 @@ export class UserDto {
   name: string;
   @ApiProperty()
   email: string;
-  @ApiProperty()
-  profile_src: string;
+  @ApiProperty({ nullable: true })
+  profile_src: string | null;
 
   static fromDomain(domain: User): UserDto {
     return {

@@ -61,7 +61,6 @@ export class NordigenAccountBalanceDto {
   @ApiProperty({ type: () => NordigenBalanceDto })
   balanceAmount: NordigenBalanceSchema;
   @ApiProperty({
-    required: false,
     enum: [
       'closingBooked',
       'expected',
@@ -72,7 +71,7 @@ export class NordigenAccountBalanceDto {
       'openingBooked',
     ],
   })
-  balanceType?: BalanceTypeDto;
+  balanceType: BalanceTypeDto;
   @ApiProperty({ required: false, type: String, format: 'date-time' })
   referenceDate?: Date;
 }
@@ -162,8 +161,8 @@ export class NordigenAccountDto {
    * Inner Nordigen Account Resource ID
    * This is NOT the account ID
    */
-  @ApiProperty()
-  resourceId: string;
+  @ApiProperty({ required: false })
+  resourceId?: string;
 
   /**
    * The account iban
@@ -186,8 +185,8 @@ export class NordigenAccountDto {
   /**
    * The account owner name
    */
-  @ApiProperty()
-  ownerName: string;
+  @ApiProperty({ required: false })
+  ownerName?: string;
 
   /**
    * The account name
@@ -204,8 +203,8 @@ export class NordigenAccountDto {
   /**
    * The Account Status
    */
-  @ApiProperty()
-  status: string;
+  @ApiProperty({ required: false })
+  status?: string;
 
   /**
    * The account type
@@ -251,6 +250,6 @@ export class NordigenAccountDto {
   /**
    * The account details
    */
-  @ApiProperty()
-  details: string;
+  @ApiProperty({ required: false })
+  details?: string;
 }

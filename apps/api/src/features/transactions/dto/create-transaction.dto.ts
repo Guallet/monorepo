@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 
 export class CreateTransactionDto {
-  @ApiProperty()
+  @ApiProperty({ format: 'uuid' })
   @IsUUID()
   @IsNotEmpty()
   accountId: string;
@@ -39,7 +39,7 @@ export class CreateTransactionDto {
   @IsDateString()
   date: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, format: 'uuid' })
   @IsOptional()
   @IsUUID()
   categoryId?: string;

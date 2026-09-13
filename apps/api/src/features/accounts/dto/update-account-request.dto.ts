@@ -73,6 +73,7 @@ export class UpdateAccountRequest {
   @ApiProperty({
     required: false,
     description: 'The new balance of the account',
+    nullable: true,
   })
   @IsOptional()
   @IsNumber()
@@ -82,6 +83,7 @@ export class UpdateAccountRequest {
     required: false,
     description: 'Whether to create a transaction for the balance change',
     default: false,
+    nullable: true,
   })
   @IsOptional()
   @IsBoolean()

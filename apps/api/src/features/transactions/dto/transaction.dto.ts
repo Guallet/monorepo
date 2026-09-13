@@ -28,7 +28,7 @@ export class TransactionDto {
     return {
       id: domain.id,
       accountId: domain.accountId,
-      amount: domain.amount,
+      amount: Number(domain.amount),
       currency: domain.currency,
       date: domain.date,
       description: domain.description,

@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEnum,
   IsISO4217CurrencyCode,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -18,6 +19,7 @@ export class UpdateRegularPaymentDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   name?: string;
 
   @ApiProperty({ required: false })
@@ -46,7 +48,7 @@ export class UpdateRegularPaymentDto {
   @IsEnum(RecurrenceCadence)
   cadence?: RecurrenceCadence;
 
-  @ApiProperty({ required: false, format: 'date-time' })
+  @ApiProperty({ required: false, format: 'date' })
   @IsOptional()
   @IsDateString()
   startDate?: string;

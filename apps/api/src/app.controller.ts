@@ -18,11 +18,11 @@ export class AppController {
   @ApiOkResponse({
     schema: {
       type: 'object',
-      required: ['session'],
       properties: {
         session: {
           type: 'object',
           description: 'Better Auth session and user data',
+          nullable: true,
           additionalProperties: true,
         },
       },

@@ -5,6 +5,7 @@ export type ExportFormat = 'csv' | 'ofe' | 'json';
 export class DataExportRequestDto {
   @ApiProperty({
     required: false,
+    format: 'date-time',
     description: 'Start date for filtering transactions (ISO 8601 format)',
     example: '2024-01-01T00:00:00.000Z',
   })
@@ -12,6 +13,7 @@ export class DataExportRequestDto {
 
   @ApiProperty({
     required: false,
+    format: 'date-time',
     description: 'End date for filtering transactions (ISO 8601 format)',
     example: '2024-12-31T23:59:59.999Z',
   })

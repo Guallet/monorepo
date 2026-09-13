@@ -4,9 +4,12 @@ import {
   ArrayMaxSize,
   IsArray,
   IsBoolean,
+  IsIn,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   ValidateNested,
 } from 'class-validator';
 import { MAX_CONDITIONS_PER_RULE } from '../constants';
@@ -16,6 +19,7 @@ export class UpdateRuleDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   name?: string;
 
   @ApiProperty({ required: false })
@@ -26,6 +30,8 @@ export class UpdateRuleDto {
   @ApiProperty({ required: false, format: 'uuid' })
   @IsOptional()
   @IsString()
+  @IsUUID()
+  @IsNotEmpty()
   resultCategoryId?: string;
 
   @ApiProperty({ required: false, type: () => [CreateConditionDto] })
@@ -39,6 +45,7 @@ export class UpdateRuleDto {
   @ApiProperty({ required: false, enum: ['and', 'or'] })
   @IsOptional()
   @IsString()
+  @IsIn(['and', 'or'])
   conditionLogic?: 'and' | 'or';
 
   @ApiProperty({ required: false })

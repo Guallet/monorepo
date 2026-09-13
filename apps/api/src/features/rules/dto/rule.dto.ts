@@ -39,7 +39,6 @@ export class RuleDto {
   name: string;
 
   @ApiProperty({
-    required: false,
     nullable: true,
     description: 'Rule description',
   })

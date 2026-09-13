@@ -36,8 +36,11 @@ export class DataImportRequestDto {
     items: {
       type: 'object',
       additionalProperties: {
-        oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }],
-        nullable: true,
+        oneOf: [
+          { type: 'string', nullable: true },
+          { type: 'number' },
+          { type: 'boolean' },
+        ],
       },
     },
     description: 'Rows of parsed CSV data (required for format=csv)',

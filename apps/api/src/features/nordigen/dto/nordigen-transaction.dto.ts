@@ -18,17 +18,17 @@ export class NordigenTransactionGroupsDto {
 }
 
 export class NordigenTransactionDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   transactionId: string;
-  @ApiProperty({ type: String, format: 'date-time' })
+  @ApiProperty({ required: false, type: String, format: 'date' })
   bookingDate: Date;
-  @ApiProperty({ type: String, format: 'date-time' })
+  @ApiProperty({ required: false, type: String, format: 'date-time' })
   bookingDateTime: Date;
   @ApiProperty({ type: () => TransactionAmountDto })
   transactionAmount: TransactionAmountSchema;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   proprietaryBankTransactionCode: string;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   remittanceInformationUnstructured: string;
 
   @ApiProperty({ required: false, type: () => ExternalAccountDto })
@@ -46,8 +46,8 @@ export class NordigenTransactionDto {
   @ApiProperty({ required: false })
   valueDate?: string;
 
-  @ApiProperty({ nullable: true })
-  additionalInformation: string | null;
+  @ApiProperty({ required: false, nullable: true })
+  additionalInformation?: string | null;
 }
 
 export class ExternalAccountDto {

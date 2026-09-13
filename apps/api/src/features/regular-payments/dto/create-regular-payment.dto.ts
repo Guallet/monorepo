@@ -32,10 +32,12 @@ export class CreateRegularPaymentDto {
   currency: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 

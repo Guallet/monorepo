@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  ArrayNotEmpty,
   IsDateString,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -11,9 +13,10 @@ import {
 } from 'class-validator';
 
 export class UpdateSavingGoalDto {
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, nullable: true })
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   name?: string;
 
   @ApiProperty({ required: false })
@@ -27,12 +30,12 @@ export class UpdateSavingGoalDto {
   @Min(0)
   targetAmount?: number;
 
-  @ApiProperty({ required: false, format: 'date-time' })
+  @ApiProperty({ required: false, format: 'date-time', nullable: true })
   @IsOptional()
   @IsDateString()
   targetDate?: string;
 
-  @ApiProperty({ required: false, minimum: 0 })
+  @ApiProperty({ required: false, minimum: 0, nullable: true })
   @IsOptional()
   @IsInt()
   @Min(0)
@@ -45,6 +48,7 @@ export class UpdateSavingGoalDto {
   })
   @IsOptional()
   @IsArray()
+  @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })
   accounts?: string[];
 }

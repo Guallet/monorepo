@@ -134,8 +134,8 @@ export class AccountsController {
   @ApiOperation({ summary: 'getAccountChart' })
   @ApiOkResponse({ type: () => AccountChartsDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiQuery({ name: 'startDate', type: String })
-  @ApiQuery({ name: 'endDate', type: String })
+  @ApiQuery({ name: 'startDate', type: String, required: false })
+  @ApiQuery({ name: 'endDate', type: String, required: false })
   @Get(':id/charts')
   async getAccountChart(
     @RequestUser() user: UserPrincipal,

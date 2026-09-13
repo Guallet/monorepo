@@ -89,7 +89,14 @@ export class AiChatController {
   // Streams the assistant reply as plain text chunks. Each call makes an
   // outbound request to the user's AI provider, hence the stricter limit.
   @ApiOperation({ summary: 'sendMessage' })
-  @ApiCreatedResponse({ description: 'Request completed successfully' })
+  @ApiOkResponse({
+    description: 'Streamed assistant response',
+    content: {
+      'text/plain': {
+        schema: { type: 'string' },
+      },
+    },
+  })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiBody({ type: () => SendAiChatMessageDto })
   @Post('sessions/:id/messages')

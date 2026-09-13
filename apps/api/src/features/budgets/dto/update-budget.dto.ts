@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  ArrayNotEmpty,
   IsNumber,
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
@@ -12,6 +14,7 @@ export class UpdateBudgetDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   name?: string;
 
   @ApiProperty({ required: false })
@@ -42,6 +45,7 @@ export class UpdateBudgetDto {
   })
   @IsOptional()
   @IsArray()
+  @ArrayNotEmpty()
   @IsUUID(undefined, { each: true })
   categories?: string[];
 }

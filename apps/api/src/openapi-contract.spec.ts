@@ -25,12 +25,30 @@ function decoratorName(
 function decoratorsOf(
   node: ts.HasDecorators,
   sourceFile: ts.SourceFile,
-): Map<string, string> {
+): Map<string, ts.Decorator> {
   return new Map(
     (ts.getDecorators(node) ?? []).map((decorator) => [
       decoratorName(decorator, sourceFile),
-      decorator.expression.getText(sourceFile),
+      decorator,
     ]),
+  );
+}
+
+function decoratorOptionKeys(
+  decorator: ts.Decorator,
+  sourceFile: ts.SourceFile,
+): Set<string> {
+  const expression = decorator.expression;
+  if (!ts.isCallExpression(expression) || expression.arguments.length === 0) {
+    return new Set();
+  }
+  const options = expression.arguments[0];
+  if (!ts.isObjectLiteralExpression(options)) return new Set();
+  return new Set(
+    options.properties.flatMap((property) => {
+      if (!ts.isPropertyAssignment(property)) return [];
+      return [property.name.getText(sourceFile)];
+    }),
   );
 }
 
@@ -87,7 +105,9 @@ describe('explicit OpenAPI contracts', () => {
             : false;
           if (
             !isPrimitive &&
-            !/\b(type|enum|oneOf|allOf|schema)\s*:/.test(apiProperty)
+            ![...decoratorOptionKeys(apiProperty, sourceFile)].some((key) =>
+              ['type', 'enum', 'oneOf', 'allOf', 'schema'].includes(key),
+            )
           ) {
             failures.push(
               `${file}: ${propertyName} relies on reflected type metadata`,
@@ -95,7 +115,11 @@ describe('explicit OpenAPI contracts', () => {
           }
           if (
             isPrimitive &&
-            /\btype\s*:\s*(String|Number|Boolean)\b/.test(apiProperty)
+            decoratorOptionKeys(apiProperty, sourceFile).has('type') &&
+            ts.isCallExpression(apiProperty.expression) &&
+            apiProperty.expression.arguments[0]
+              ?.getText(sourceFile)
+              .match(/type\s*:\s*(String|Number|Boolean)\b/)
           ) {
             failures.push(
               `${file}: ${propertyName} redundantly declares a primitive type`,
@@ -103,7 +127,7 @@ describe('explicit OpenAPI contracts', () => {
           }
           if (
             member.questionToken &&
-            !/\brequired\s*:\s*false\b/.test(apiProperty)
+            !decoratorOptionKeys(apiProperty, sourceFile).has('required')
           ) {
             failures.push(
               `${file}: ${propertyName} is optional but documented as required`,
@@ -149,6 +173,28 @@ describe('explicit OpenAPI contracts', () => {
             ![...decorators.keys()].some((name) => /^Api.*Response$/.test(name))
           ) {
             failures.push(`${file}: ${operation} has no explicit response`);
+          } else if (
+            member.type &&
+            !member.type.getText(sourceFile).includes('void') &&
+            [...decorators.entries()].filter(
+              ([name]) =>
+                /^Api.*Response$/.test(name) && name !== 'ApiNoContentResponse',
+            ).length > 0 &&
+            ![...decorators.entries()]
+              .filter(
+                ([name]) =>
+                  /^Api.*Response$/.test(name) &&
+                  name !== 'ApiNoContentResponse',
+              )
+              .some(([, decorator]) =>
+                [...decoratorOptionKeys(decorator, sourceFile)].some((key) =>
+                  ['type', 'schema', 'content'].includes(key),
+                ),
+              )
+          ) {
+            failures.push(
+              `${file}: ${operation} has no explicit response schema`,
+            );
           }
 
           for (const parameter of member.parameters) {

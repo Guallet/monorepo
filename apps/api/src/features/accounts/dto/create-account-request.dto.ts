@@ -85,6 +85,7 @@ export class CreateAccountRequest {
 
   @ApiProperty({
     required: false,
+    format: 'uuid',
     description: 'The institution id',
     nullable: true,
   })

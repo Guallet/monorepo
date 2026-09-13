@@ -2,7 +2,6 @@ import { Controller, Get, Logger, Query, ParseIntPipe } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { RequestUser } from 'src/auth/request-user.decorator';
-import { ReportQueryFilter } from './dto/report-query-filter';
 import {
   ApiTags,
   ApiOperation,
@@ -20,13 +19,11 @@ export class ReportsController {
 
   @ApiOperation({ summary: 'getCashflowReport' })
   @ApiOkResponse({ type: () => CashflowDataDto })
-  @ApiQuery({ type: () => ReportQueryFilter })
-  @ApiQuery({ name: 'year', type: Number })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get('cashflow')
   async getCashflowReport(
     @RequestUser() user: UserPrincipal,
-    @Query() query: ReportQueryFilter,
-    @Query('year', new ParseIntPipe({ optional: true })) year: number,
+    @Query('year', new ParseIntPipe({ optional: true })) year?: number,
   ): Promise<CashflowDataDto> {
     return this.reportsService.getCashFlowReport({
       user_id: user.id,

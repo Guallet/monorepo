@@ -1,11 +1,5 @@
-import {
-  Controller,
-  ForbiddenException,
-  Get,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
+import { Controller, ForbiddenException, Get } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { SyncService } from 'src/features/openbanking/sync.service';
@@ -17,7 +11,6 @@ export class AdminController {
 
   @ApiOperation({ summary: 'syncBanks' })
   @ApiOkResponse({ description: 'Request completed successfully' })
-  @HttpCode(HttpStatus.ACCEPTED)
   @Get('sync/institutions')
   async syncBanks(@RequestUser() user: UserPrincipal): Promise<void> {
     if (user.isAdmin()) {

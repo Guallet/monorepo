@@ -8,8 +8,11 @@ export class CsvImportRequestDto {
     items: {
       type: 'object',
       additionalProperties: {
-        oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }],
-        nullable: true,
+        oneOf: [
+          { type: 'string', nullable: true },
+          { type: 'number' },
+          { type: 'boolean' },
+        ],
       },
     },
   })

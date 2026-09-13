@@ -47,8 +47,8 @@ export class BudgetsController {
 
   @ApiOperation({ summary: 'findAll' })
   @ApiOkResponse({ type: () => BudgetDto, isArray: true })
-  @ApiQuery({ name: 'month', type: Number })
-  @ApiQuery({ name: 'year', type: Number })
+  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get()
   async findAll(
     @RequestUser() user: UserPrincipal,
@@ -76,8 +76,8 @@ export class BudgetsController {
   @ApiOperation({ summary: 'findOne' })
   @ApiOkResponse({ type: () => BudgetDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiQuery({ name: 'month', type: Number })
-  @ApiQuery({ name: 'year', type: Number })
+  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -103,8 +103,8 @@ export class BudgetsController {
   @ApiOperation({ summary: 'getBudgetTransactions' })
   @ApiOkResponse({ type: () => TransactionDto, isArray: true })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiQuery({ name: 'month', type: Number })
-  @ApiQuery({ name: 'year', type: Number })
+  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id/transactions')
   async getBudgetTransactions(
     @RequestUser() user: UserPrincipal,

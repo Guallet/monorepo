@@ -55,7 +55,7 @@ export class ObConnectionsController {
 
   @ApiOperation({ summary: 'getCountries' })
   @ApiOkResponse({ type: CountryDto, isArray: true })
-  @ApiQuery({ name: 'language', type: String })
+  @ApiQuery({ name: 'language', type: String, required: false })
   @Get('countries')
   getCountries(@Query('language') language?: string): CountryDto[] {
     return this.openbankingService.getAvailableCountries(language ?? 'en');
@@ -74,7 +74,7 @@ export class ObConnectionsController {
 
   @ApiOperation({ summary: 'getInstitution' })
   @ApiOkResponse({ type: InstitutionDto })
-  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiParam({ name: 'id', type: String })
   @Get('institutions/:id')
   async getInstitution(@Param('id') id: string): Promise<InstitutionDto> {
     const institution = await this.institutionService.findOneByNordigenId(id);
