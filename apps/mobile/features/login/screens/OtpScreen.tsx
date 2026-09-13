@@ -49,10 +49,10 @@ export function OtpScreen() {
     }
 
     setIsLoading(true);
-    const success = await getOtpCode(email);
+    const result = await getOtpCode(email);
     setIsLoading(false);
 
-    if (success) {
+    if (result.success) {
       setError(null);
       alert('A new code has been sent to your email.');
     } else {
