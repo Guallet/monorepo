@@ -1,20 +1,7 @@
 import React, { useCallback } from 'react';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { BuildConfig } from '@/BuildConfig';
 import { setAnalyticsDeviceId } from '@/utils/analytics';
-import {
-  AuthProvider as BaseAuthProvider,
-  createBetterAuthClient,
-} from '@guallet/auth';
-
-const authClient = createBetterAuthClient({
-  baseURL: BuildConfig.BASE_API_URL,
-});
-
-GoogleSignin.configure({
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
-});
+import { AuthProvider as BaseAuthProvider } from '@guallet/auth';
+import { authClient } from './auth';
 
 interface MobileAuthProviderProps {
   children: React.ReactNode;
