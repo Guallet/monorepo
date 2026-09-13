@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "3.0.44",
+    "@better-auth/expo": "1.4.18",
     "@nestjs/axios": "12.0.0",
     "@nestjs/bullmq": "12.0.0",
     "@nestjs/common": "^12.0.0",

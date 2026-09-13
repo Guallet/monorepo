@@ -12,14 +12,13 @@ import {
 } from '@guallet/ui-react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BuildConfig } from '@/BuildConfig';
 import { Image } from 'expo-image';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useAuth } from '@/auth/useAuth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type LoginMethod = 'password' | 'magic-link';
+type LoginMethod = 'password' | 'email-code';
 
 export function LoginScreen() {
   const { spacing, colors } = useTheme();
@@ -63,17 +62,7 @@ export function LoginScreen() {
     }
   };
 
-  const onLoginWithMagicLink = async () => {
-    if (BuildConfig.IS_DEV) {
-      // If we are in dev mode, skip email validation and go to OTP screen directly
-      // to facilitate testing.
-      router.navigate({
-        pathname: '/login/otp',
-        params: { email },
-      });
-      return;
-    }
-
+  const onLoginWithEmailCode = async () => {
     if (!isValidEmail) {
       setEmailError('Please enter a valid email');
       return;
@@ -90,7 +79,7 @@ export function LoginScreen() {
         params: { email },
       });
     } else {
-      alert('Failed to send magic link. Please try again.');
+      alert('Failed to send email code. Please try again.');
     }
   };
 
@@ -121,7 +110,7 @@ export function LoginScreen() {
   };
 
   const toggleLoginMethod = () => {
-    setLoginMethod(loginMethod === 'password' ? 'magic-link' : 'password');
+    setLoginMethod(loginMethod === 'password' ? 'email-code' : 'password');
     setPasswordError(null);
   };
 
@@ -197,16 +186,16 @@ export function LoginScreen() {
             </>
           )}
 
-          {loginMethod === 'magic-link' && (
-            <Button onClick={onLoginWithMagicLink} disabled={!isValidEmail}>
-              Send magic link
+          {loginMethod === 'email-code' && (
+            <Button onClick={onLoginWithEmailCode} disabled={!isValidEmail}>
+              Send email code
             </Button>
           )}
 
           <TouchableOpacity onPress={toggleLoginMethod}>
             <Text style={[styles.toggleLink, { color: colors.primary }]}>
               {loginMethod === 'password'
-                ? 'Use magic link instead'
+                ? 'Use email code instead'
                 : 'Use password instead'}
             </Text>
           </TouchableOpacity>

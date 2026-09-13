@@ -16,4 +16,4 @@ export * from './rules';
 export * from './ai';
 
 export { ApiError, createClient } from './GualletClient';
-export type { GualletClient, TokenHelper } from './GualletClient';
+export type { CookieHelper, GualletClient } from './GualletClient';

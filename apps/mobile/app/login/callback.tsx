@@ -1,10 +1,8 @@
 import { useAuth } from '@guallet/auth';
-import { Button } from '@guallet/ui-react-native';
-import { Redirect, useRouter } from 'expo-router';
+import { Redirect } from 'expo-router';
 import { View, Text, ActivityIndicator } from 'react-native';
 
 export default function Screen() {
-  const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
@@ -19,13 +17,7 @@ export default function Screen() {
 
   if (isAuthenticated === false) {
     return <Redirect href="/login" />;
-  } else {
-    return (
-      <View>
-        <Button onClick={() => router.replace('/login')}>
-          Go back to login screen
-        </Button>
-      </View>
-    );
   }
+
+  return <Redirect href="/(tabs)" />;
 }

@@ -4,10 +4,7 @@ import { createClient } from '@guallet/api-client';
 
 export const gualletClient = createClient({
   baseUrl: BuildConfig.BASE_API_URL,
-  tokenHelper: {
-    getAccessToken: async () => {
-      const { data } = await authClient.getSession();
-      return data?.session?.id ?? null;
-    },
+  cookieHelper: {
+    getCookie: () => authClient.getCookie(),
   },
 });

@@ -15,7 +15,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
-    googleServicesFile: './auth/firebase/GoogleService-Info.plist',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
@@ -30,7 +29,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // },
     predictiveBackGestureEnabled: false,
     package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
-    googleServicesFile: './auth/firebase/google-services.json',
   },
   web: {
     output: 'static',
