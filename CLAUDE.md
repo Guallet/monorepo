@@ -111,7 +111,7 @@ cp api.env.sample apps/api/.env
 cp webapp.env.sample apps/webapp/.env
 ```
 
-Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrations (Nordigen for open banking, Resend for email, Sentry, Apitally) can be left blank.
+Required services (start with Docker): PostgreSQL 18, Redis 8. Optional integrations (Nordigen for open banking, Resend for email, Sentry, NestJS Observe) can be left blank.
 
 `DATABASE_CREDENTIALS_ENCRYPTION_KEY` is required by the API (validated at boot, must be base64 decoding to 32 bytes) — generate one with `openssl rand -base64 32`. It encrypts stored AI provider API tokens.
 

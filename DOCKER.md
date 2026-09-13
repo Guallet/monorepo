@@ -124,9 +124,10 @@ All environment variables can be configured in the `.env` file:
 - `EMAIL_FROM`: Email sender address
 - `VITE_SENTRY_ENABLED`: Enable Sentry error tracking (true/false)
 - `VITE_SENTRY_DSN`: Sentry DSN
-- `APITALLY_ENABLED`: Enable API monitoring (true/false)
-- `APITALLY_CLIENT_ID`: Apitally client ID
-- `APITALLY_ENV`: Environment (dev/prod)
+- `NESTJS_OBSERVE_APP_KEY`: NestJS Observe application key
+- `NESTJS_OBSERVE_APP_SECRET`: NestJS Observe application secret
+- `NESTJS_OBSERVE_SERVICE_ID`: Service identifier shown in Observe
+- `NESTJS_OBSERVE_ENDPOINT`: Optional custom Observe collector URL
 
 ## Docker Commands
 

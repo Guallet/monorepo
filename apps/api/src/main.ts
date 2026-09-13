@@ -7,12 +7,14 @@ import { Logger } from 'nestjs-pino';
 import { version } from './../package.json';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import express from 'express';
+import { ObserveInstrument } from './observe';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    instrument: ObserveInstrument,
     // Disable bodyParser because Better-Auth.
     // Don't worry, the library will automatically re-add the default body parsers.
     // bodyParser: false,
