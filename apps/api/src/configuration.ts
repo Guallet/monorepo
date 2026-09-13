@@ -1,4 +1,56 @@
-import { version } from "../package.json";
+import { version } from '../package.json';
+import { z } from 'zod';
+
+/**
+ * Environment variables validated by ConfigModule before the configuration
+ * factory runs. Unknown variables are intentionally preserved to support
+ * variables consumed by modules outside this file.
+ */
+export const environmentSchema = z
+  .object({
+    ENVIRONMENT: z.enum(['development', 'production']).default('development'),
+    DATABASE_HOST: z.string().min(1).default('localhost'),
+    DATABASE_PORT: z.coerce.number().default(5432),
+    DATABASE_USERNAME: z.string().min(1),
+    DATABASE_PASSWORD: z.string().min(1),
+    DATABASE_NAME: z.string().min(1),
+    DATABASE_SSL_ENABLED: z.preprocess((value) => {
+      if (value === '') {
+        return undefined;
+      }
+
+      if (value === 'true') {
+        return true;
+      }
+
+      if (value === 'false') {
+        return false;
+      }
+
+      return value;
+    }, z.boolean().default(false)),
+    REDIS_HOST: z.string().min(1),
+    REDIS_PORT: z.preprocess(
+      (value) => (value === '' ? undefined : value),
+      z.coerce.number().default(6379),
+    ),
+    REDIS_PASSWORD: z.string().optional(),
+    BETTER_AUTH_SECRET: z.string().min(1),
+    BETTER_AUTH_BASE_URL: z.string().min(1),
+    NORDIGEN_SECRET_ID: z.string().min(1),
+    NORDIGEN_SECRET_KEY: z.string().min(1),
+    DATABASE_CREDENTIALS_ENCRYPTION_KEY: z.string().min(1),
+    NESTJS_OBSERVE_APP_KEY: z.string().optional(),
+    NESTJS_OBSERVE_APP_SECRET: z.string().optional(),
+    NESTJS_OBSERVE_SERVICE_ID: z.string().optional(),
+  })
+  .loose();
+
+export type EnvironmentConfig = z.output<typeof environmentSchema>;
+
+export const parseEnvironment = (
+  environment: NodeJS.ProcessEnv,
+): EnvironmentConfig => environmentSchema.parse(environment);
 
 export interface DatabaseConfig {
   host: string;
@@ -72,58 +124,61 @@ export interface AppConfig {
   observe: NestObserveConfig;
 }
 
-const configuration = (): AppConfig => ({
-  environment: process.env.ENVIRONMENT || process.env.NODE_ENV || "production",
-  database: {
-    host: process.env.DATABASE_HOST || "",
-    port: Number.parseInt(process.env.DATABASE_PORT || "5432"),
-    username: process.env.DATABASE_USERNAME || "",
-    password: process.env.DATABASE_PASSWORD || "",
-    database: process.env.DATABASE_NAME || "",
-    ssl: process.env.DATABASE_SSL_ENABLED === "true",
-  },
-  logging: {
-    level: process.env.NODE_ENV !== "production" ? "debug" : "info",
-  },
-  auth: {
-    secret: process.env.BETTER_AUTH_SECRET || "",
-    baseUrl: process.env.BETTER_AUTH_BASE_URL || "",
-    allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? "").split(","),
-    socialProviders: {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID || "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+const configuration = (): AppConfig => {
+  const environment = parseEnvironment(process.env);
+
+  return {
+    environment: environment.ENVIRONMENT,
+    database: {
+      host: environment.DATABASE_HOST,
+      port: environment.DATABASE_PORT,
+      username: environment.DATABASE_USERNAME,
+      password: environment.DATABASE_PASSWORD,
+      database: environment.DATABASE_NAME,
+      ssl: environment.DATABASE_SSL_ENABLED,
+    },
+    logging: {
+      level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+    },
+    auth: {
+      secret: environment.BETTER_AUTH_SECRET,
+      baseUrl: environment.BETTER_AUTH_BASE_URL,
+      allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
+      socialProviders: {
+        google: {
+          clientId: process.env.GOOGLE_CLIENT_ID || '',
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+        },
       },
     },
-  },
-  nordigen: {
-    secretId: process.env.NORDIGEN_SECRET_ID || "",
-    secretKey: process.env.NORDIGEN_SECRET_KEY || "",
-  },
-  redis: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: Number.parseInt(process.env.REDIS_PORT || "6379"),
-    password: process.env.REDIS_PASSWORD || undefined,
-  },
-  email: {
-    from: process.env.EMAIL_FROM || "Guallet <noreply@guallet.io>",
-    smtp: {
-      host: process.env.SMTP_HOST || "",
-      port: Number.parseInt(process.env.SMTP_PORT || "465"),
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-      secure: process.env.SMTP_SECURE !== "false",
+    nordigen: {
+      secretId: environment.NORDIGEN_SECRET_ID,
+      secretKey: environment.NORDIGEN_SECRET_KEY,
     },
-  },
-  ai: {
-    credentialsEncryptionKey:
-      process.env.DATABASE_CREDENTIALS_ENCRYPTION_KEY || "",
-  },
-  observe: {
-    appKey: process.env.NESTJS_OBSERVE_APP_KEY || "",
-    appSecret: process.env.NESTJS_OBSERVE_APP_SECRET || "",
-    serviceId: process.env.NESTJS_OBSERVE_SERVICE_ID || "guallet-api",
-    serviceVersion: version,
-  },
-});
+    redis: {
+      host: environment.REDIS_HOST,
+      port: environment.REDIS_PORT,
+      password: environment.REDIS_PASSWORD || undefined,
+    },
+    email: {
+      from: process.env.EMAIL_FROM || 'Guallet <noreply@guallet.io>',
+      smtp: {
+        host: process.env.SMTP_HOST || '',
+        port: Number.parseInt(process.env.SMTP_PORT || '465'),
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+        secure: process.env.SMTP_SECURE !== 'false',
+      },
+    },
+    ai: {
+      credentialsEncryptionKey: environment.DATABASE_CREDENTIALS_ENCRYPTION_KEY,
+    },
+    observe: {
+      appKey: environment.NESTJS_OBSERVE_APP_KEY ?? '',
+      appSecret: environment.NESTJS_OBSERVE_APP_SECRET ?? '',
+      serviceId: environment.NESTJS_OBSERVE_SERVICE_ID || 'guallet-api',
+      serviceVersion: version,
+    },
+  };
+};
 export default configuration;
