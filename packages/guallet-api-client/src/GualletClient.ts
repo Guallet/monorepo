@@ -192,12 +192,12 @@ export class GualletClientImpl implements GualletClient {
   }
 
   async getRawResponse({ path }: { path: string }): Promise<Response> {
-    const headers = await this.getAuthHeaders();
+    const { headers, credentials } = await this.getAuthHeaders();
     return await fetch(`${this.baseUrl}/${path}`, {
       method: 'GET',
       mode: 'cors',
       headers,
-      credentials: 'include',
+      credentials,
     });
   }
 
@@ -212,12 +212,12 @@ export class GualletClientImpl implements GualletClient {
     payload: TPayload;
     signal?: AbortSignal;
   }): Promise<Response> {
-    const headers = await this.getAuthHeaders();
+    const { headers, credentials } = await this.getAuthHeaders();
     const response = await fetch(`${this.baseUrl}/${path}`, {
       method: 'POST',
       mode: 'cors',
       headers,
-      credentials: 'include',
+      credentials,
       body: JSON.stringify(payload),
       signal,
     });
@@ -236,14 +236,16 @@ export class GualletClientImpl implements GualletClient {
     payload?: TRequest;
     options?: RequestInit;
   }): Promise<TDto> {
-    const headers = await this.getAuthHeaders(options?.headers);
+    const { headers, credentials } = await this.getAuthHeaders(
+      options?.headers,
+    );
 
     const requestOptions: RequestInit = {
       ...options,
       method: method,
       mode: 'cors',
       headers,
-      credentials: 'include',
+      credentials,
     };
 
     if (payload) {
@@ -256,17 +258,22 @@ export class GualletClientImpl implements GualletClient {
     return json as TDto;
   }
 
-  private async getAuthHeaders(requestHeaders?: HeadersInit): Promise<Headers> {
+  private async getAuthHeaders(requestHeaders?: HeadersInit): Promise<{
+    headers: Headers;
+    credentials: 'include' | 'omit';
+  }> {
     const headers = new Headers(requestHeaders);
     headers.set('Content-Type', 'application/json');
 
     const cookie = await this.cookieHelper?.getCookie();
     if (cookie) {
       headers.set('cookie', cookie);
-      return headers;
     }
 
-    return headers;
+    return {
+      headers,
+      credentials: cookie ? 'omit' : 'include',
+    };
   }
 
   private handleHttpErrors(response: Response) {

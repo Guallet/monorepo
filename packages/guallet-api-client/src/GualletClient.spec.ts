@@ -27,6 +27,20 @@ describe('GualletClientImpl authentication', () => {
       'better-auth.session_token=session-token',
     );
     expect(headers.get('authorization')).toBeNull();
+    expect(requestInit.credentials).toBe('omit');
+  });
+
+  it('uses browser-managed credentials when no session cookie is available', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }));
+    const client = new GualletClientImpl({
+      baseUrl: 'https://api.example.test',
+    });
+
+    await client.accounts.getAll();
+
+    const [, requestInit] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(requestInit.credentials).toBe('include');
   });
 });
