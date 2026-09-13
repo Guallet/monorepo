@@ -5,7 +5,7 @@ import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
-} from '@react-navigation/native';
+} from 'expo-router/react-navigation';
 import {
   focusManager,
   QueryClient,
