@@ -21,7 +21,6 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ];
-
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
   new FileStore({
