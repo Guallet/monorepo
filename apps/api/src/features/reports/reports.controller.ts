@@ -3,7 +3,12 @@ import { ReportsService } from './reports.service';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { ReportQueryFilter } from './dto/report-query-filter';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { CashflowDataDto } from './cashflow/cashflowData.dto';
 
 @ApiTags('Reports')
@@ -13,6 +18,10 @@ export class ReportsController {
 
   constructor(private readonly reportsService: ReportsService) {}
 
+  @ApiOperation({ summary: 'getCashflowReport' })
+  @ApiOkResponse({ type: () => CashflowDataDto })
+  @ApiQuery({ type: () => ReportQueryFilter })
+  @ApiQuery({ name: 'year', type: Number })
   @Get('cashflow')
   async getCashflowReport(
     @RequestUser() user: UserPrincipal,

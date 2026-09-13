@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   BalanceTypeDto,
   NordigenAccountBalanceDto,
@@ -5,7 +6,9 @@ import {
 
 // TODO: Use "@guallet/money" instead of this
 export class Money {
+  @ApiProperty()
   amount: number;
+  @ApiProperty()
   currency: string;
 
   constructor(amount: number, currency: string) {

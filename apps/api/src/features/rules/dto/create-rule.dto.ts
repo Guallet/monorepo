@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -37,7 +37,8 @@ export class CreateConditionDto {
   @IsNotEmpty()
   value: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description: 'The order of the condition within the rule',
     example: 0,
   })
@@ -55,7 +56,8 @@ export class CreateRuleDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description: 'A description of what the rule does',
     example: 'Categorize grocery store transactions',
   })
@@ -84,7 +86,8 @@ export class CreateRuleDto {
   @Type(() => CreateConditionDto)
   conditions: CreateConditionDto[];
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description:
       'Logic for combining conditions: "and" (all must match) or "or" (at least one must match)',
     example: 'and',
@@ -95,7 +98,8 @@ export class CreateRuleDto {
   @IsOptional()
   conditionLogic?: 'and' | 'or';
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description: 'The order of the rule (lower numbers are evaluated first)',
     example: 0,
   })
@@ -103,7 +107,8 @@ export class CreateRuleDto {
   @IsOptional()
   order?: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description: 'Whether the rule is active',
     example: true,
     default: true,

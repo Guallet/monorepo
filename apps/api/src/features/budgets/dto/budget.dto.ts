@@ -1,13 +1,22 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Budget } from '../entities/budget.entity';
 
 export class BudgetDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   name: string;
+  @ApiProperty()
   amount: number;
+  @ApiProperty()
   currency: string;
+  @ApiProperty()
   spent: number;
+  @ApiProperty({ required: false })
   colour?: string;
+  @ApiProperty({ required: false })
   icon?: string;
+  @ApiProperty({ type: [String] })
   categories: string[];
 
   static fromDomain(domain: Budget, spent: number): BudgetDto {

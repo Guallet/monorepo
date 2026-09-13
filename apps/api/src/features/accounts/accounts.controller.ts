@@ -15,7 +15,15 @@ import {
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { AccountsService } from './accounts.service';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { AccountDto } from './dto/account.dto';
@@ -29,7 +37,7 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
 import { OpenbankingService } from '../openbanking/openbanking.service';
 import { AccountSource, toAccountSource } from './entities/accountSource.model';
-import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
+import { LinkedOpenBankingAccountResponseDto } from '../openbanking/dto/openbanking-response.dto';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
   if (!value) {
@@ -55,6 +63,8 @@ export class AccountsController {
     private readonly openBankingService: OpenbankingService,
   ) {}
 
+  @ApiOperation({ summary: 'getUserAccounts' })
+  @ApiOkResponse({ type: () => AccountDto, isArray: true })
   @Get()
   async getUserAccounts(
     @RequestUser() user: UserPrincipal,
@@ -63,6 +73,9 @@ export class AccountsController {
     return accounts.map((a) => AccountDto.fromDomain(a));
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => AccountDto })
+  @ApiBody({ type: () => CreateAccountRequest })
   @Post()
   async create(
     @Body() createAccountDto: CreateAccountRequest,
@@ -75,6 +88,9 @@ export class AccountsController {
     return AccountDto.fromDomain(entity);
   }
 
+  @ApiOperation({ summary: 'getAccountDetails' })
+  @ApiOkResponse({ type: () => AccountDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async getAccountDetails(
     @RequestUser() user: UserPrincipal,
@@ -87,6 +103,9 @@ export class AccountsController {
     return AccountDto.fromDomain(account);
   }
 
+  @ApiOperation({ summary: 'getAccountTransactions' })
+  @ApiOkResponse({ type: () => TransactionDto, isArray: true })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id/transactions')
   // Get the transactions for the account in the current month
   async getAccountTransactions(
@@ -112,6 +131,11 @@ export class AccountsController {
     return transactions.map((x) => TransactionDto.fromDomain(x));
   }
 
+  @ApiOperation({ summary: 'getAccountChart' })
+  @ApiOkResponse({ type: () => AccountChartsDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiQuery({ name: 'startDate', type: String })
+  @ApiQuery({ name: 'endDate', type: String })
   @Get(':id/charts')
   async getAccountChart(
     @RequestUser() user: UserPrincipal,
@@ -250,11 +274,14 @@ export class AccountsController {
    * @throws {NotFoundException} When the connected Open Banking account cannot be found
    * @returns {Promise<{connectedAccount: OpenBankingAccount}>} Object containing the connected Open Banking account details
    */
+  @ApiOperation({ summary: 'getConnectedAccountDetails' })
+  @ApiOkResponse({ type: LinkedOpenBankingAccountResponseDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id/connection')
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ): Promise<{ connectedAccount: NordigenAccount }> {
+  ): Promise<LinkedOpenBankingAccountResponseDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
@@ -275,6 +302,10 @@ export class AccountsController {
     return { connectedAccount: obAccount };
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => AccountDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateAccountRequest })
   @Patch(':id')
   async update(
     @RequestUser() user: UserPrincipal,
@@ -289,6 +320,9 @@ export class AccountsController {
     return AccountDto.fromDomain(updatedAccount);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => AccountDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

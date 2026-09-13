@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
   IsOptional,
@@ -7,7 +7,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import type {
+import {
   CsvRowData,
   FieldMappings,
   AccountMapping,
@@ -18,6 +18,7 @@ import { DataFormat } from '../../data-formats';
 /** All formats the import pipeline accepts. Alias of {@link DataFormat}. */
 export type ImportFormat = DataFormat;
 
+@ApiExtraModels(FieldMappings, AccountMapping, CategoryMapping)
 export class DataImportRequestDto {
   @ApiProperty({
     description: 'Import format',
@@ -29,28 +30,45 @@ export class DataImportRequestDto {
 
   // ── CSV-specific fields ─────────────────────────────────────────────
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: {
+        oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }],
+        nullable: true,
+      },
+    },
     description: 'Rows of parsed CSV data (required for format=csv)',
   })
   @IsOptional()
   @IsArray()
   csvData?: CsvRowData[];
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
+    type: () => FieldMappings,
     description: 'Field mappings for CSV columns (required for format=csv)',
   })
   @IsOptional()
   @IsObject()
   fieldMappings?: FieldMappings;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
+    type: Object,
+    additionalProperties: { $ref: '#/components/schemas/AccountMapping' },
     description: 'Account mappings (required for format=csv)',
   })
   @IsOptional()
   @IsObject()
   accountMappings?: Record<string, AccountMapping>;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
+    type: Object,
+    additionalProperties: { $ref: '#/components/schemas/CategoryMapping' },
     description: 'Category mappings (required for format=csv)',
   })
   @IsOptional()
@@ -59,7 +77,8 @@ export class DataImportRequestDto {
 
   // ── OFE-specific fields ─────────────────────────────────────────────
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description: 'Raw OFE/OFX file content (required for format=ofe)',
   })
   @IsOptional()
@@ -69,7 +88,8 @@ export class DataImportRequestDto {
 
   // ── JSON-specific fields ────────────────────────────────────────────
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    required: false,
     description: 'Raw JSON content string (required for format=json)',
   })
   @IsOptional()

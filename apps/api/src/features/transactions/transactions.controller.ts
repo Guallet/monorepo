@@ -17,7 +17,15 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiQuery,
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { transactionsQueryFilterSchema } from './dto/transaction.query';
 import type { TransactionsQueryFilter } from './dto/transaction.query';
 import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
@@ -30,6 +38,8 @@ export class TransactionsController {
 
   constructor(private readonly transactionsService: TransactionsService) {}
 
+  @ApiOperation({ summary: 'getTransactions' })
+  @ApiOkResponse({ type: () => TransactionsResultDto })
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -101,6 +111,8 @@ export class TransactionsController {
     });
   }
 
+  @ApiOperation({ summary: 'getUserTransactionInbox' })
+  @ApiOkResponse({ type: () => InboxTransactionsResultDto })
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -166,6 +178,9 @@ export class TransactionsController {
     });
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => TransactionDto })
+  @ApiBody({ type: () => CreateTransactionDto })
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
@@ -181,6 +196,9 @@ export class TransactionsController {
     return TransactionDto.fromDomain(transaction);
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => TransactionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async findOne(
     @RequestUser() user: UserPrincipal,
@@ -193,6 +211,10 @@ export class TransactionsController {
     return TransactionDto.fromDomain(transaction);
   }
 
+  @ApiOperation({ summary: 'async' })
+  @ApiOkResponse({ type: () => TransactionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateTransactionDto })
   @Patch(':id')
   async async(
     @RequestUser() user: UserPrincipal,
@@ -207,6 +229,9 @@ export class TransactionsController {
     return TransactionDto.fromDomain(transaction);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => TransactionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

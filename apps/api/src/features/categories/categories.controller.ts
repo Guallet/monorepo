@@ -12,7 +12,14 @@ import {
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiParam,
+  ApiCreatedResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { CategoryDto } from './dto/category.dto';
@@ -24,6 +31,8 @@ export class CategoriesController {
 
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @ApiOperation({ summary: 'findAll' })
+  @ApiOkResponse({ type: () => CategoryDto, isArray: true })
   @Get()
   async findAll(@RequestUser() user: UserPrincipal): Promise<CategoryDto[]> {
     const categories = await this.categoriesService.findAllUserCategories(
@@ -33,6 +42,9 @@ export class CategoriesController {
     return categories.map((category) => CategoryDto.fromDomain(category));
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => CategoryDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async findOne(
     @RequestUser() user: UserPrincipal,
@@ -49,6 +61,9 @@ export class CategoriesController {
     return CategoryDto.fromDomain(category);
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => CategoryDto })
+  @ApiBody({ type: () => CreateCategoryDto })
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
@@ -61,6 +76,8 @@ export class CategoriesController {
     return CategoryDto.fromDomain(category);
   }
 
+  @ApiOperation({ summary: 'createDefaultCategoriesForUser' })
+  @ApiCreatedResponse({ type: () => CategoryDto, isArray: true })
   @Post('seed')
   async createDefaultCategoriesForUser(
     @RequestUser() user: UserPrincipal,
@@ -72,6 +89,10 @@ export class CategoriesController {
     );
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => CategoryDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateCategoryDto })
   @Patch(':id')
   async update(
     @RequestUser() user: UserPrincipal,
@@ -86,6 +107,9 @@ export class CategoriesController {
     return CategoryDto.fromDomain(updatedCategory);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => CategoryDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

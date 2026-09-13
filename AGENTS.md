@@ -56,6 +56,21 @@ async myHandler(@RequestUser() user: UserPrincipal) {
 - `@RequestUser()` reads from `request.session.user` (Better Auth session-based, not JWT)
 - **Every service query must be scoped by `user_id`** – never return cross-user data
 
+## OpenAPI Contracts
+
+- Swagger compiler autodocumentation is intentionally disabled. Never add the
+  `@nestjs/swagger` compiler plugin or generated metadata files.
+- Every DTO property must use `@ApiProperty`. Primitive `string`, `number`, and
+  `boolean` properties may omit `type` because Nest can reflect those basic
+  types; use `required: false` for optional properties. Add explicit schema
+  options whenever reflection is insufficient, including array element types,
+  enums, formats, nullability, and nested DTOs.
+- Every controller operation must explicitly declare its operation and response.
+  Document request bodies, path parameters, and query parameters with Swagger
+  decorators when the route actually defines them.
+- Do not use Swagger mapped types such as `PartialType` or `OmitType`; define
+  update DTO fields explicitly so validation and OpenAPI contracts stay visible.
+
 ## Available Skills
 
 Load these on-demand with `/skill-name` when implementing the corresponding task:

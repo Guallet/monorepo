@@ -10,7 +10,14 @@ import {
   Post,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiParam,
+  ApiBody,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { NotificationDto } from './dto/notification.dto';
@@ -23,6 +30,8 @@ export class NotificationsController {
 
   constructor(private readonly notificationsService: NotificationsService) {}
 
+  @ApiOperation({ summary: 'findAll' })
+  @ApiOkResponse({ type: () => NotificationDto, isArray: true })
   @Get()
   async findAll(
     @RequestUser() user: UserPrincipal,
@@ -34,6 +43,8 @@ export class NotificationsController {
     );
   }
 
+  @ApiOperation({ summary: 'findUnread' })
+  @ApiOkResponse({ type: () => NotificationDto, isArray: true })
   @Get('unread')
   async findUnread(
     @RequestUser() user: UserPrincipal,
@@ -45,6 +56,9 @@ export class NotificationsController {
     );
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => NotificationDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async findOne(
     @RequestUser() user: UserPrincipal,
@@ -62,6 +76,10 @@ export class NotificationsController {
     return NotificationDto.fromDomain(notification);
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => NotificationDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateNotificationDto })
   @Patch(':id')
   async update(
     @RequestUser() user: UserPrincipal,
@@ -76,11 +94,16 @@ export class NotificationsController {
     return NotificationDto.fromDomain(updatedNotification);
   }
 
+  @ApiOperation({ summary: 'markAllAsRead' })
+  @ApiCreatedResponse({ description: 'Request completed successfully' })
   @Post('mark-all-read')
   async markAllAsRead(@RequestUser() user: UserPrincipal): Promise<void> {
     await this.notificationsService.markAllAsRead(user.id);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => NotificationDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,
