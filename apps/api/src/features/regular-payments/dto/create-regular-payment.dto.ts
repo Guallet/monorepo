@@ -16,21 +16,28 @@ import {
 } from '../entities/regular-payment.entity';
 
 export class CreateRegularPaymentDto {
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   amount: number;
 
+  @ApiProperty()
   @IsISO4217CurrencyCode()
   currency: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 

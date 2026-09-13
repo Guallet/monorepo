@@ -1,21 +1,34 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transaction } from '../entities/transaction.entity';
 import { TransactionsQueryFilter } from './transaction.query';
 
 export class TransactionDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   accountId: string;
+  @ApiProperty()
   description: string;
+  @ApiProperty({ required: false })
   notes?: string;
+  @ApiProperty()
   amount: number;
+  @ApiProperty()
   currency: string;
+  @ApiProperty({ type: String, format: 'date-time' })
   date: Date;
+  @ApiProperty({
+    required: false,
+    format: 'uuid',
+    nullable: true,
+  })
   categoryId?: string | null;
 
   static fromDomain(domain: Transaction): TransactionDto {
     return {
       id: domain.id,
       accountId: domain.accountId,
-      amount: domain.amount,
+      amount: Number(domain.amount),
       currency: domain.currency,
       date: domain.date,
       description: domain.description,
@@ -25,16 +38,27 @@ export class TransactionDto {
   }
 }
 
-export type TransactionsResultMetadataDto = {
+export class TransactionsResultMetadataDto {
+  @ApiProperty()
   total: number;
+  @ApiProperty()
   page: number;
+  @ApiProperty()
   pageSize: number;
+  @ApiProperty()
   hasMore: boolean;
+  @ApiProperty({
+    type: Object,
+    additionalProperties: true,
+    description: 'Normalized transaction query filters',
+  })
   query: TransactionsQueryFilter;
-};
+}
 
 export class TransactionsResultDto {
+  @ApiProperty({ type: () => TransactionsResultMetadataDto })
   meta: TransactionsResultMetadataDto;
+  @ApiProperty({ type: () => [TransactionDto] })
   transactions: TransactionDto[];
 
   static fromDomain({

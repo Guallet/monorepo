@@ -4,6 +4,7 @@
     "moduleResolution": "NodeNext",
     "declaration": true,
     "removeComments": true,
+    // Required by Nest dependency injection, not by Swagger schema generation.
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,

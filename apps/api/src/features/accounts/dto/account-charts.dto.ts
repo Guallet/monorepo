@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BalanceHistoryPoint {
+  @ApiProperty()
   date: string;
+  @ApiProperty()
   balance: number;
 
   constructor(date: string, balance: number) {
@@ -11,13 +13,23 @@ export class BalanceHistoryPoint {
 }
 
 export class AccountChartsDto {
-  @ApiProperty({ description: 'The start date of the chart' })
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    description: 'The start date of the chart',
+  })
   startDate: Date;
 
-  @ApiProperty({ description: 'The end date of the chart' })
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    description: 'The end date of the chart',
+  })
   endDate: Date;
 
+  @ApiProperty({ type: () => [ChartData] })
   chart: ChartData[];
+  @ApiProperty({ type: () => [BalanceHistoryPoint] })
   balanceHistory: BalanceHistoryPoint[];
 
   static fromDomain(
@@ -36,9 +48,13 @@ export class AccountChartsDto {
 }
 
 export class ChartData {
+  @ApiProperty()
   month: number;
+  @ApiProperty()
   year: number;
+  @ApiProperty()
   total_in: number;
+  @ApiProperty()
   total_out: number;
 
   constructor(

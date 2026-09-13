@@ -20,6 +20,7 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { SavingGoalDto } from './dto/saving-goal.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
@@ -32,7 +33,8 @@ export class SavingGoalsController {
 
   constructor(private readonly savingGoalsService: SavingGoalsService) {}
 
-  @ApiBody({ type: SavingGoalDto })
+  @ApiOperation({ summary: 'create' })
+  @ApiBody({ type: CreateSavingGoalDto })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
     type: SavingGoalDto,
@@ -50,6 +52,7 @@ export class SavingGoalsController {
     return SavingGoalDto.fromDomain(savingGoal);
   }
 
+  @ApiOperation({ summary: 'findAll' })
   @ApiResponse({
     description: 'A list of saving goals for the user',
     type: [SavingGoalDto],
@@ -62,8 +65,11 @@ export class SavingGoalsController {
     return goals.map((x) => SavingGoalDto.fromDomain(x));
   }
 
+  @ApiOperation({ summary: 'findOne' })
   @ApiParam({
     name: 'id',
+    type: String,
+    format: 'uuid',
     description: 'The ID of the saving goal to retrieve',
   })
   @ApiResponse({
@@ -82,7 +88,13 @@ export class SavingGoalsController {
     return SavingGoalDto.fromDomain(goal);
   }
 
-  @ApiParam({ name: 'id', description: 'The ID of the saving goal to update' })
+  @ApiOperation({ summary: 'update' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    format: 'uuid',
+    description: 'The ID of the saving goal to update',
+  })
   @ApiResponse({
     description: 'The Updated saving goal',
     type: SavingGoalDto,
@@ -102,7 +114,13 @@ export class SavingGoalsController {
     return SavingGoalDto.fromDomain(goal);
   }
 
-  @ApiParam({ name: 'id', description: 'The ID of the saving goal to delete' })
+  @ApiOperation({ summary: 'remove' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    format: 'uuid',
+    description: 'The ID of the saving goal to delete',
+  })
   @ApiResponse({
     description: 'The deleted saving goal',
     type: SavingGoalDto,

@@ -7,7 +7,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { DataImportRequestDto } from './dto/data-import-request.dto';
@@ -31,6 +31,8 @@ export class DataImporterController {
     private readonly importQueue: Queue<ImportJobData>,
   ) {}
 
+  @ApiOperation({ summary: 'importData' })
+  @ApiBody({ type: () => DataImportRequestDto })
   @Post('import')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({

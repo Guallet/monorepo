@@ -1,9 +1,13 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
 
 export class UserDto {
+  @ApiProperty()
   name: string;
+  @ApiProperty()
   email: string;
-  profile_src: string;
+  @ApiProperty({ nullable: true })
+  profile_src: string | null;
 
   static fromDomain(domain: User): UserDto {
     return {

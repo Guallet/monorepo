@@ -10,7 +10,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
@@ -29,6 +36,8 @@ import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connecti
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
+  @ApiOperation({ summary: 'findProviderConnections' })
+  @ApiOkResponse({ type: () => AiProviderConnectionDto, isArray: true })
   @Get('provider-connections')
   async findProviderConnections(
     @RequestUser() user: UserPrincipal,
@@ -38,6 +47,9 @@ export class AiController {
 
   // Stricter limit: this endpoint relays the submitted token to the external
   // provider for validation, so it could be abused as a token-validation oracle.
+  @ApiOperation({ summary: 'createProviderConnection' })
+  @ApiCreatedResponse({ type: () => AiProviderConnectionDto })
+  @ApiBody({ type: () => CreateAiProviderConnectionDto })
   @Post('provider-connections')
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
@@ -53,6 +65,10 @@ export class AiController {
 
   // Stricter limit: replacement tokens are validated against the external
   // provider, same token-validation-oracle concern as the create endpoint.
+  @ApiOperation({ summary: 'updateProviderConnection' })
+  @ApiOkResponse({ type: () => AiProviderConnectionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateAiProviderConnectionDto })
   @Patch('provider-connections/:id')
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
   async updateProviderConnection(
@@ -67,6 +83,9 @@ export class AiController {
     });
   }
 
+  @ApiOperation({ summary: 'deleteProviderConnection' })
+  @ApiOkResponse({ type: () => AiProviderConnectionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete('provider-connections/:id')
   async deleteProviderConnection(
     @RequestUser() user: UserPrincipal,
@@ -79,6 +98,9 @@ export class AiController {
   }
 
   // Each call makes an outbound request to the external provider.
+  @ApiOperation({ summary: 'listModels' })
+  @ApiOkResponse({ type: () => AiModelDto, isArray: true })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get('provider-connections/:id/models')
   @Throttle({ default: { ttl: 60_000, limit: 30 } })
   async listModels(
@@ -91,11 +113,16 @@ export class AiController {
     });
   }
 
+  @ApiOperation({ summary: 'findAgents' })
+  @ApiOkResponse({ type: () => AiAgentDto, isArray: true })
   @Get('agents')
   async findAgents(@RequestUser() user: UserPrincipal): Promise<AiAgentDto[]> {
     return await this.aiService.findAgents(user.id);
   }
 
+  @ApiOperation({ summary: 'createAgent' })
+  @ApiCreatedResponse({ type: () => AiAgentDto })
+  @ApiBody({ type: () => CreateAiAgentDto })
   @Post('agents')
   @HttpCode(HttpStatus.CREATED)
   async createAgent(
@@ -105,6 +132,10 @@ export class AiController {
     return await this.aiService.createAgent({ userId: user.id, dto });
   }
 
+  @ApiOperation({ summary: 'updateAgent' })
+  @ApiOkResponse({ type: () => AiAgentDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateAiAgentDto })
   @Patch('agents/:id')
   async updateAgent(
     @RequestUser() user: UserPrincipal,
@@ -118,6 +149,9 @@ export class AiController {
     });
   }
 
+  @ApiOperation({ summary: 'deleteAgent' })
+  @ApiOkResponse({ type: () => AiAgentDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete('agents/:id')
   async deleteAgent(
     @RequestUser() user: UserPrincipal,

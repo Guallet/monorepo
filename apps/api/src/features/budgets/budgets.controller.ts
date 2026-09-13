@@ -16,7 +16,15 @@ import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiQuery,
+  ApiParam,
+  ApiCreatedResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 import { BudgetDto } from './dto/budget.dto';
 import { TransactionDto } from '../transactions/dto/transaction.dto';
 
@@ -37,6 +45,10 @@ export class BudgetsController {
     this.defaultYear = today.getFullYear();
   }
 
+  @ApiOperation({ summary: 'findAll' })
+  @ApiOkResponse({ type: () => BudgetDto, isArray: true })
+  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get()
   async findAll(
     @RequestUser() user: UserPrincipal,
@@ -61,6 +73,11 @@ export class BudgetsController {
     return result;
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => BudgetDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -83,6 +100,11 @@ export class BudgetsController {
     return BudgetDto.fromDomain(budget, spent);
   }
 
+  @ApiOperation({ summary: 'getBudgetTransactions' })
+  @ApiOkResponse({ type: () => TransactionDto, isArray: true })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id/transactions')
   async getBudgetTransactions(
     @RequestUser() user: UserPrincipal,
@@ -102,6 +124,9 @@ export class BudgetsController {
     return transactions.map((x) => TransactionDto.fromDomain(x));
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => BudgetDto })
+  @ApiBody({ type: () => CreateBudgetDto })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -123,6 +148,10 @@ export class BudgetsController {
     return BudgetDto.fromDomain(budget, spent);
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => BudgetDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateBudgetDto })
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -145,6 +174,9 @@ export class BudgetsController {
     return BudgetDto.fromDomain(budget, spent);
   }
 
+  @ApiOperation({ summary: 'delete' })
+  @ApiOkResponse({ type: () => BudgetDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async delete(
     @Param('id') id: string,

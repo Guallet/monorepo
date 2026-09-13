@@ -89,6 +89,16 @@ The `ai` module also powers the AI Assistant chat (`/ai/chat/*`, streamed via th
 
 Auth lives in `apps/api/src/auth/` using Better Auth. Database configuration in `apps/api/src/database/`. Background jobs via BullMQ + Redis.
 
+OpenAPI is an explicit contract: the Swagger compiler plugin and generated
+metadata are not used. Add `@ApiProperty` to every DTO property. For primitive
+`string`, `number`, and `boolean` properties, omit the redundant `type` option;
+Nest reflects those basic types. Add explicit schema options where reflection
+is insufficient or a detail must be declared, such as array element types,
+enums, formats, nullability, and nested DTOs. Use `required: false` for
+optional fields. Every controller operation and response must be documented;
+add body, parameter, and query decorators when applicable. Do not use Swagger
+mapped types such as `PartialType` or `OmitType`.
+
 ### Web Frontend Architecture
 
 Routing is file-system based via TanStack Router in `apps/webapp/src/routes/`. Server state managed by TanStack Query (via `packages/guallet-api-react` hooks). Client state via Zustand. The React Compiler is enabled in the Vite config for automatic memoization.

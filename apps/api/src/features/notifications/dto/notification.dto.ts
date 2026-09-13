@@ -11,7 +11,10 @@ export class NotificationDto {
   @ApiProperty({ description: 'The message of the notification' })
   message: string;
 
-  @ApiProperty({ description: 'The icon of the notification', nullable: true })
+  @ApiProperty({
+    description: 'The icon of the notification',
+    nullable: true,
+  })
   icon: string | null;
 
   @ApiProperty({
@@ -26,10 +29,16 @@ export class NotificationDto {
   })
   action: string | null;
 
-  @ApiProperty({ description: 'Whether the notification has been read' })
+  @ApiProperty({
+    description: 'Whether the notification has been read',
+  })
   isRead: boolean;
 
-  @ApiProperty({ description: 'The date the notification was created' })
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    description: 'The date the notification was created',
+  })
   createdAt: Date;
 
   static fromDomain(domain: Notification): NotificationDto {

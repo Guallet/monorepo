@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNumber,
   IsOptional,
@@ -8,63 +9,79 @@ import { Type } from 'class-transformer';
 import { AccountType } from '../entities/accountType.model';
 
 export class CurrentAccountDetailsDto {
+  @ApiProperty()
   @IsString()
   accountNumber: string;
 
+  @ApiProperty()
   @IsString()
   sortCode: string;
 }
 
 export class CurrentAccountPropertiesDto {
+  @ApiProperty({ type: () => CurrentAccountDetailsDto })
   @ValidateNested()
   @Type(() => CurrentAccountDetailsDto)
   details: CurrentAccountDetailsDto;
 
+  @ApiProperty({ nullable: true })
   @IsNumber()
   @IsOptional()
   overdraft: number | null;
 }
 
 export class CreditCardPropertiesDto {
+  @ApiProperty()
   @IsString()
   accountNumber: string;
 
+  @ApiProperty()
   @IsNumber()
   interestRate: number;
 
+  @ApiProperty()
   @IsNumber()
   creditLimit: number;
 
+  @ApiProperty()
   @IsNumber()
   cycleDay: number;
 }
 
 export class SavingAccountPropertiesDto {
+  @ApiProperty()
   @IsNumber()
   interestRate: number;
 }
 
 export class MortgageAccountPropertiesDto {
+  @ApiProperty()
   @IsNumber()
   propertyValue: number;
 
+  @ApiProperty()
   @IsNumber()
   mortgageAmount: number;
 
+  @ApiProperty()
   @IsNumber()
   interestRate: number;
 
+  @ApiProperty()
   @IsNumber()
   termLength: number;
 }
 
 export class LoanAccountPropertiesDto {
+  @ApiProperty()
   @IsNumber()
   loanAmount: number;
 
+  @ApiProperty()
   @IsNumber()
   interestRate: number;
 
+  @ApiProperty()
   @IsNumber()
   termLength: number;
 }

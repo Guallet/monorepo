@@ -2,15 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { SavingGoal } from '../entities/saving-goal.entity';
 
 export class SavingGoalDto {
-  @ApiProperty({
-    description: 'The id for the saving goal',
-  })
+  @ApiProperty({ description: 'The id for the saving goal' })
   id: string;
 
   @ApiProperty({ description: 'The name of the saving goal' })
   name: string;
 
   @ApiProperty({
+    required: false,
     description: 'The description of the saving goal',
     nullable: true,
   })
@@ -20,6 +19,7 @@ export class SavingGoalDto {
   targetAmount: number;
 
   @ApiProperty({
+    required: false,
     description: 'The target date for the saving goal',
     type: String,
     format: 'date-time',
@@ -43,7 +43,9 @@ export class SavingGoalDto {
   })
   progressPercentage: number;
 
-  @ApiProperty({ description: 'Whether the goal has been reached' })
+  @ApiProperty({
+    description: 'Whether the goal has been reached',
+  })
   isCompleted: boolean;
 
   @ApiProperty({
@@ -52,7 +54,9 @@ export class SavingGoalDto {
   })
   isOverdue: boolean;
 
-  @ApiProperty({ description: 'Amount still needed to reach the target' })
+  @ApiProperty({
+    description: 'Amount still needed to reach the target',
+  })
   remainingAmount: number;
 
   @ApiProperty({

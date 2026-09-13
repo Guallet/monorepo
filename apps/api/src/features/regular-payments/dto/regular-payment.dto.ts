@@ -6,23 +6,30 @@ import {
 } from '../entities/regular-payment.entity';
 
 export class RegularPaymentDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   user_id: string;
 
   @ApiProperty({ enum: RecurringPaymentType })
   type: RecurringPaymentType;
 
+  @ApiProperty()
   name: string;
+  @ApiProperty()
   amount: number;
+  @ApiProperty()
   currency: string;
 
   @ApiProperty({ enum: RecurrenceCadence })
   cadence: RecurrenceCadence;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, type: String, format: 'date-time' })
   startDate?: Date;
 
+  @ApiProperty({ required: false })
   imageUrl?: string;
+  @ApiProperty({ required: false })
   categoryId?: string;
 
   static fromDomain(entity: RegularPayment): RegularPaymentDto {

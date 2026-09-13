@@ -10,7 +10,14 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Response } from 'express';
 import { RequestUser } from 'src/auth/request-user.decorator';
@@ -27,6 +34,8 @@ import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto';
 export class AiChatController {
   constructor(private readonly aiChatService: AiChatService) {}
 
+  @ApiOperation({ summary: 'findSessions' })
+  @ApiOkResponse({ type: () => AiChatSessionDto, isArray: true })
   @Get('sessions')
   async findSessions(
     @RequestUser() user: UserPrincipal,
@@ -34,6 +43,9 @@ export class AiChatController {
     return await this.aiChatService.findSessions(user.id);
   }
 
+  @ApiOperation({ summary: 'createSession' })
+  @ApiCreatedResponse({ type: () => AiChatSessionDto })
+  @ApiBody({ type: () => CreateAiChatSessionDto })
   @Post('sessions')
   @HttpCode(HttpStatus.CREATED)
   async createSession(
@@ -46,6 +58,9 @@ export class AiChatController {
     });
   }
 
+  @ApiOperation({ summary: 'deleteSession' })
+  @ApiOkResponse({ type: () => AiChatSessionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete('sessions/:id')
   async deleteSession(
     @RequestUser() user: UserPrincipal,
@@ -57,6 +72,9 @@ export class AiChatController {
     });
   }
 
+  @ApiOperation({ summary: 'findMessages' })
+  @ApiOkResponse({ type: () => AiChatMessageDto, isArray: true })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get('sessions/:id/messages')
   async findMessages(
     @RequestUser() user: UserPrincipal,
@@ -70,6 +88,17 @@ export class AiChatController {
 
   // Streams the assistant reply as plain text chunks. Each call makes an
   // outbound request to the user's AI provider, hence the stricter limit.
+  @ApiOperation({ summary: 'sendMessage' })
+  @ApiOkResponse({
+    description: 'Streamed assistant response',
+    content: {
+      'text/plain': {
+        schema: { type: 'string' },
+      },
+    },
+  })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => SendAiChatMessageDto })
   @Post('sessions/:id/messages')
   @Throttle({ default: { ttl: 60_000, limit: 20 } })
   async sendMessage(
