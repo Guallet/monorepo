@@ -1,19 +1,19 @@
-import { version } from "../package.json";
-import { z } from "zod";
+import { version } from '../package.json';
+import { z } from 'zod';
 
 const requiredString = z.string().min(1);
 
 const numberFromEnvironment = z.preprocess(
-  (value) => (value === "" ? undefined : value),
+  (value) => (value === '' ? undefined : value),
   z.coerce.number(),
 );
 
 const booleanFromEnvironment = z.preprocess((value) => {
-  if (value === "true") {
+  if (value === 'true') {
     return true;
   }
 
-  if (value === "false") {
+  if (value === 'false') {
     return false;
   }
 
@@ -26,7 +26,7 @@ const booleanFromEnvironment = z.preprocess((value) => {
  * variables consumed by modules outside this file.
  */
 export const environmentSchema = z.object({
-  ENVIRONMENT: z.enum(["development", "production"]).default("development"),
+  ENVIRONMENT: z.enum(['development', 'production']).default('development'),
   DATABASE_HOST: requiredString,
   DATABASE_PORT: numberFromEnvironment,
   DATABASE_USERNAME: requiredString,
@@ -138,16 +138,16 @@ const configuration = (): AppConfig => {
       ssl: environment.DATABASE_SSL_ENABLED,
     },
     logging: {
-      level: process.env.NODE_ENV !== "production" ? "debug" : "info",
+      level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
     },
     auth: {
       secret: environment.BETTER_AUTH_SECRET,
       baseUrl: environment.BETTER_AUTH_BASE_URL,
-      allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? "").split(","),
+      allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
       socialProviders: {
         google: {
-          clientId: process.env.GOOGLE_CLIENT_ID || "",
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+          clientId: process.env.GOOGLE_CLIENT_ID || '',
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
         },
       },
     },
@@ -161,22 +161,22 @@ const configuration = (): AppConfig => {
       password: environment.REDIS_PASSWORD || undefined,
     },
     email: {
-      from: process.env.EMAIL_FROM || "Guallet <noreply@guallet.io>",
+      from: process.env.EMAIL_FROM || 'Guallet <noreply@guallet.io>',
       smtp: {
-        host: process.env.SMTP_HOST || "",
-        port: Number.parseInt(process.env.SMTP_PORT || "465"),
+        host: process.env.SMTP_HOST || '',
+        port: Number.parseInt(process.env.SMTP_PORT || '465'),
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
-        secure: process.env.SMTP_SECURE !== "false",
+        secure: process.env.SMTP_SECURE !== 'false',
       },
     },
     ai: {
       credentialsEncryptionKey: environment.DATABASE_CREDENTIALS_ENCRYPTION_KEY,
     },
     observe: {
-      appKey: environment.NESTJS_OBSERVE_APP_KEY ?? "",
-      appSecret: environment.NESTJS_OBSERVE_APP_SECRET ?? "",
-      serviceId: environment.NESTJS_OBSERVE_SERVICE_ID || "guallet-api",
+      appKey: environment.NESTJS_OBSERVE_APP_KEY ?? '',
+      appSecret: environment.NESTJS_OBSERVE_APP_SECRET ?? '',
+      serviceId: environment.NESTJS_OBSERVE_SERVICE_ID || 'guallet-api',
       serviceVersion: version,
     },
   };

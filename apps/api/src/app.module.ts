@@ -1,37 +1,37 @@
-import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
-import { ScheduleModule } from "@nestjs/schedule";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { LoggerModule } from "nestjs-pino";
-import { AccountsModule } from "./features/accounts/accounts.module";
-import { InstitutionsModule } from "./features/institutions/institutions.module";
-import { HttpLoggerMiddleware } from "./middleware/http-logger.middleware";
-import { CategoriesModule } from "./features/categories/categories.module";
-import { TransactionsModule } from "./features/transactions/transactions.module";
-import { RulesModule } from "./features/rules/rules.module";
-import { ReportsModule } from "./features/reports/reports.module";
-import { OpenbankingModule } from "./features/openbanking/openbanking.module";
-import { NordigenModule } from "./features/nordigen/nordigen.module";
-import { AdminModule } from "./admin/admin.module";
-import { UsersModule } from "./features/users/users.module";
-import configuration, { AppConfig, environmentSchema } from "./configuration";
-import { BudgetsModule } from "./features/budgets/budgets.module";
-import { WebhooksModule } from "./features/webhooks/webhooks.module";
-import { SavingGoalsModule } from "./features/saving-goals/saving-goals.module";
-import { RegularPaymentsModule } from "./features/regular-payments/regular-payments.module";
-import { DataImporterModule } from "./features/data-importer/data-importer.module";
-import { DataExporterModule } from "./features/data-exporter/data-exporter.module";
-import { EmailModule } from "./features/email/email.module";
-import { NotificationsModule } from "./features/notifications/notifications.module";
-import { AiModule } from "./features/ai/ai.module";
-import { BullModule } from "@nestjs/bullmq";
-import { HealthModule } from "./features/health/health.module";
-import { AuthModule } from "@thallesp/nestjs-better-auth";
-import { createAuth } from "./auth/better-auth";
-import { EventEmitterModule, EventEmitter2 } from "@nestjs/event-emitter";
-import { ThrottlerModule } from "@nestjs/throttler";
-import { AppController } from "./app.controller";
-import { ObserveModule } from "./observe";
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
+import { AccountsModule } from './features/accounts/accounts.module';
+import { InstitutionsModule } from './features/institutions/institutions.module';
+import { HttpLoggerMiddleware } from './middleware/http-logger.middleware';
+import { CategoriesModule } from './features/categories/categories.module';
+import { TransactionsModule } from './features/transactions/transactions.module';
+import { RulesModule } from './features/rules/rules.module';
+import { ReportsModule } from './features/reports/reports.module';
+import { OpenbankingModule } from './features/openbanking/openbanking.module';
+import { NordigenModule } from './features/nordigen/nordigen.module';
+import { AdminModule } from './admin/admin.module';
+import { UsersModule } from './features/users/users.module';
+import configuration, { AppConfig, environmentSchema } from './configuration';
+import { BudgetsModule } from './features/budgets/budgets.module';
+import { WebhooksModule } from './features/webhooks/webhooks.module';
+import { SavingGoalsModule } from './features/saving-goals/saving-goals.module';
+import { RegularPaymentsModule } from './features/regular-payments/regular-payments.module';
+import { DataImporterModule } from './features/data-importer/data-importer.module';
+import { DataExporterModule } from './features/data-exporter/data-exporter.module';
+import { EmailModule } from './features/email/email.module';
+import { NotificationsModule } from './features/notifications/notifications.module';
+import { AiModule } from './features/ai/ai.module';
+import { BullModule } from '@nestjs/bullmq';
+import { HealthModule } from './features/health/health.module';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { createAuth } from './auth/better-auth';
+import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { AppController } from './app.controller';
+import { ObserveModule } from './observe';
 
 @Module({
   imports: [
@@ -49,15 +49,15 @@ import { ObserveModule } from "./observe";
       inject: [ConfigService],
       useFactory: (config: ConfigService<AppConfig>) => {
         return {
-          exclude: [{ method: RequestMethod.POST, path: "/graphql" }],
+          exclude: [{ method: RequestMethod.POST, path: '/graphql' }],
           pinoHttp: {
             autoLogging: false,
-            level: config.get("logging", { infer: true })?.level,
-            redact: ["req.headers.authorization", "req.headers.cookie"],
+            level: config.get('logging', { infer: true })?.level,
+            redact: ['req.headers.authorization', 'req.headers.cookie'],
             transport: {
               targets: [
                 {
-                  target: "pino-pretty",
+                  target: 'pino-pretty',
                 },
               ],
             },
@@ -70,9 +70,9 @@ import { ObserveModule } from "./observe";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AppConfig>) => {
-        const dbConfig = configService.get("database", { infer: true })!;
+        const dbConfig = configService.get('database', { infer: true })!;
         return {
-          type: "postgres",
+          type: 'postgres',
           host: dbConfig.host,
           port: dbConfig.port,
           username: dbConfig.username,
@@ -96,7 +96,7 @@ import { ObserveModule } from "./observe";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AppConfig>) => {
-        const observeConfig = configService.getOrThrow("observe");
+        const observeConfig = configService.getOrThrow('observe');
 
         return {
           appKey: observeConfig.appKey,
@@ -114,8 +114,8 @@ import { ObserveModule } from "./observe";
         configService: ConfigService<AppConfig>,
         eventEmitter: EventEmitter2,
       ) => {
-        const database = configService.get("database", { infer: true })!;
-        const authConfig = configService.get("auth", { infer: true })!;
+        const database = configService.get('database', { infer: true })!;
+        const authConfig = configService.get('auth', { infer: true })!;
 
         return {
           auth: createAuth({
@@ -133,7 +133,7 @@ import { ObserveModule } from "./observe";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AppConfig>) => {
-        const redisConfig = configService.get("redis", { infer: true })!;
+        const redisConfig = configService.get('redis', { infer: true })!;
         return {
           connection: {
             host: redisConfig.host,
@@ -172,7 +172,7 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(HttpLoggerMiddleware)
-      .exclude({ path: "/graphql", method: RequestMethod.POST })
-      .forRoutes("*");
+      .exclude({ path: '/graphql', method: RequestMethod.POST })
+      .forRoutes('*');
   }
 }
