@@ -60,8 +60,8 @@
     "categoryPicker": {
       "input": {
         "valueAll": "All categories selected",
-        "value_one": "",
-        "value_other": "",
+        "value_one": "{{count}} category selected",
+        "value_other": "{{count}} categories selected",
         "placeholderSingle": "Select category",
         "placeholderMultiple": "Select categories"
       },
