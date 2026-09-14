@@ -133,6 +133,9 @@ export function AuthProvider({
           };
         } else {
           console.log('OAuth login initiated', { provider, data });
+          // The Expo client resolves only after the browser callback has
+          // returned and the native Better Auth cookie has been persisted.
+          await refetch();
           return { success: true, error: null };
         }
       } catch (error: any) {
@@ -145,7 +148,7 @@ export function AuthProvider({
         };
       }
     },
-    [authClient],
+    [authClient, refetch],
   );
 
   const getOtpCode = useCallback(

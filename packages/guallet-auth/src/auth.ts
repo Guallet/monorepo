@@ -1,5 +1,5 @@
 import { createAuthClient } from 'better-auth/react';
-import { emailOTPClient, magicLinkClient } from 'better-auth/client/plugins';
+import { emailOTPClient } from 'better-auth/client/plugins';
 
 export interface CreateAuthClientOptions {
   baseURL: string;
@@ -25,6 +25,6 @@ export function createGualletAuthClient(options: CreateAuthClientOptions) {
     fetchOptions: {
       credentials: 'include',
     },
-    plugins: [emailOTPClient(), magicLinkClient()],
+    plugins: [emailOTPClient()],
   });
 }

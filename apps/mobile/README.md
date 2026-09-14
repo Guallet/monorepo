@@ -22,18 +22,12 @@ touch .env
 
 Use the `.env.sample` file to see the required variables the app requires.
 
-### Configure Firebase files
+### Configure Better Auth
 
-The app uses [React Native Google Sign In](https://react-native-google-signin.github.io/) to use native Login Signin functionality. Please read their documentation to configure the login using Firebase.
-
-Once this is ready, you will have two Firebase config files:
-
-- google-services.json (for Android)
-- GoogleService-Info.plist (for iOS)
-
-Download the files and place them in the following directory
-
-> app/mobile/auth/firebase
+Mobile authentication uses the Better Auth Expo client. Set
+`EXPO_PUBLIC_API_URL` to the API base URL; the client persists the Better Auth
+session cookie in `expo-secure-store` and uses the `guallet` deep-link scheme
+for OAuth callbacks.
 
 ## Github Actions and CI/EAS
 
