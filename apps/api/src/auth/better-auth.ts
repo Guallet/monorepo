@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 import { emailOTP, magicLink } from 'better-auth/plugins';
+import { expo } from '@better-auth/expo';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export const createAuth = ({
@@ -24,7 +25,9 @@ export const createAuth = ({
 
   return betterAuth({
     appName: 'Guallet',
-    trustedOrigins: [...authConfig.allowedOrigins],
+    // Native Expo requests use this origin while the Expo plugin proxies OAuth
+    // callbacks back to the app's custom URL scheme.
+    trustedOrigins: [...new Set([...authConfig.allowedOrigins, 'guallet://'])],
     basePath: '/auth',
     baseURL: authConfig.baseUrl,
     // DATABASE CONFIG
@@ -108,6 +111,7 @@ export const createAuth = ({
     },
     // PLUGINS
     plugins: [
+      expo(),
       emailOTP({
         // OTP will expire after 5 minutes
         expiresIn: 60 * 5,

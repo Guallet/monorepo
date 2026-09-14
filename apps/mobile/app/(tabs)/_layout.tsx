@@ -1,15 +1,13 @@
 import { Redirect, Tabs } from 'expo-router';
-import React from 'react';
-import { Text } from 'react-native';
+import { Text, useColorScheme } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@guallet/auth';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
   const { isAuthenticated, isLoading } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
@@ -28,7 +26,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme].tint,
         headerShown: false,
         tabBarButton: HapticTab,
       }}

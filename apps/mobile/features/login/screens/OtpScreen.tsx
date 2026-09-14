@@ -49,10 +49,10 @@ export function OtpScreen() {
     }
 
     setIsLoading(true);
-    const success = await getOtpCode(email);
+    const result = await getOtpCode(email);
     setIsLoading(false);
 
-    if (success) {
+    if (result.success) {
       setError(null);
       alert('A new code has been sent to your email.');
     } else {
@@ -78,10 +78,7 @@ export function OtpScreen() {
           )}
           . Enter the code below to sign in.
         </Label>
-        <Label style={{ marginTop: 8 }}>
-          The email also contains a magic link you can click to sign in
-          automatically.
-        </Label>
+        <Label style={{ marginTop: 8 }}>This code expires in 5 minutes.</Label>
 
         {/* Code Input */}
         <OtpInput

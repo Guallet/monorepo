@@ -1,13 +1,10 @@
-import { supabase } from '@/auth/supabase';
 import { BuildConfig } from '@/BuildConfig';
+import { authClient } from '@/auth/auth';
 import { createClient } from '@guallet/api-client';
 
 export const gualletClient = createClient({
   baseUrl: BuildConfig.BASE_API_URL,
-  tokenHelper: {
-    getAccessToken: async () => {
-      const { data } = await supabase.auth.getSession();
-      return data.session?.access_token ?? null;
-    },
+  cookieHelper: {
+    getCookie: () => authClient.getCookie(),
   },
 });

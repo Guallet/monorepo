@@ -34,8 +34,8 @@ export interface GualletClient {
   ai: AiApi;
 }
 
-export interface TokenHelper {
-  getAccessToken(): Promise<string | null>;
+export interface CookieHelper {
+  getCookie(): Promise<string | null> | string | null;
 }
 /**
  * Creates an instance of GualletClient.
@@ -45,28 +45,27 @@ export interface TokenHelper {
  *
  * @param args - The configuration object for the client.
  * @param args.baseUrl - The base URL for the API.
- * @param args.storage - The storage mechanism for tokens.
- * @param args.tokenHelper - The helper for managing tokens.
+ * @param args.cookieHelper - The helper for reading a stored session cookie.
  *
  * @returns A new instance of GualletClient.
  *
  */
 export function createClient({
   baseUrl,
-  tokenHelper,
+  cookieHelper,
 }: {
   baseUrl: string;
-  tokenHelper: TokenHelper;
+  cookieHelper?: CookieHelper;
 }): GualletClient {
   return new GualletClientImpl({
     baseUrl: baseUrl,
-    tokenHelper: tokenHelper,
+    cookieHelper: cookieHelper,
   });
 }
 
 export class GualletClientImpl implements GualletClient {
   private readonly baseUrl: string;
-  private readonly tokenHelper: TokenHelper;
+  private readonly cookieHelper?: CookieHelper;
 
   admin: AdminApi;
   accounts: AccountsApi;
@@ -87,13 +86,13 @@ export class GualletClientImpl implements GualletClient {
 
   constructor({
     baseUrl,
-    tokenHelper,
+    cookieHelper,
   }: {
     baseUrl: string;
-    tokenHelper: TokenHelper;
+    cookieHelper?: CookieHelper;
   }) {
     this.baseUrl = baseUrl;
-    this.tokenHelper = tokenHelper;
+    this.cookieHelper = cookieHelper;
 
     this.admin = new AdminApi(this);
     this.accounts = new AccountsApi(this);
@@ -193,16 +192,12 @@ export class GualletClientImpl implements GualletClient {
   }
 
   async getRawResponse({ path }: { path: string }): Promise<Response> {
-    const access_token = await this.tokenHelper.getAccessToken();
+    const { headers, credentials } = await this.getAuthHeaders();
     return await fetch(`${this.baseUrl}/${path}`, {
       method: 'GET',
       mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        ...(access_token && { Authorization: `Bearer ${access_token}` }),
-      },
-      ...(access_token && { credentials: 'include' }),
+      headers,
+      credentials,
     });
   }
 
@@ -217,15 +212,12 @@ export class GualletClientImpl implements GualletClient {
     payload: TPayload;
     signal?: AbortSignal;
   }): Promise<Response> {
-    const access_token = await this.tokenHelper.getAccessToken();
+    const { headers, credentials } = await this.getAuthHeaders();
     const response = await fetch(`${this.baseUrl}/${path}`, {
       method: 'POST',
       mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(access_token && { Authorization: `Bearer ${access_token}` }),
-      },
-      ...(access_token && { credentials: 'include' }),
+      headers,
+      credentials,
       body: JSON.stringify(payload),
       signal,
     });
@@ -244,17 +236,16 @@ export class GualletClientImpl implements GualletClient {
     payload?: TRequest;
     options?: RequestInit;
   }): Promise<TDto> {
-    const access_token = await this.tokenHelper.getAccessToken();
+    const { headers, credentials } = await this.getAuthHeaders(
+      options?.headers,
+    );
 
     const requestOptions: RequestInit = {
       ...options,
       method: method,
       mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(access_token && { Authorization: `Bearer ${access_token}` }),
-      },
-      ...(access_token && { credentials: 'include' }),
+      headers,
+      credentials,
     };
 
     if (payload) {
@@ -265,6 +256,24 @@ export class GualletClientImpl implements GualletClient {
     this.handleHttpErrors(response);
     const json = await response.json();
     return json as TDto;
+  }
+
+  private async getAuthHeaders(requestHeaders?: HeadersInit): Promise<{
+    headers: Headers;
+    credentials: 'include' | 'omit';
+  }> {
+    const headers = new Headers(requestHeaders);
+    headers.set('Content-Type', 'application/json');
+
+    const cookie = await this.cookieHelper?.getCookie();
+    if (cookie) {
+      headers.set('cookie', cookie);
+    }
+
+    return {
+      headers,
+      credentials: cookie ? 'omit' : 'include',
+    };
   }
 
   private handleHttpErrors(response: Response) {
