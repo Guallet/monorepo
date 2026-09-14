@@ -50,8 +50,9 @@ function CategoryLabel({ categoryId }: { categoryId: string | null }) {
 export function TransactionListItem({ transaction }: TransactionListItemProps) {
   const { colors, spacing, typography } = useTheme();
   const isIncome = transaction.amount > 0;
-  const initial = (transaction.description ?? '?')[0].toUpperCase();
-  const avatarBg = getAvatarColor(transaction.description ?? '', colors);
+  const description = transaction.description?.trim() || 'Unknown transaction';
+  const initial = description[0].toUpperCase();
+  const avatarBg = getAvatarColor(description, colors);
 
   return (
     <View style={[styles.row, { paddingVertical: spacing.sm }]}>
@@ -75,7 +76,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
           ]}
           numberOfLines={1}
         >
-          {transaction.description}
+          {description}
         </Text>
         <View style={styles.metaRow}>
           <CategoryLabel categoryId={transaction.categoryId} />

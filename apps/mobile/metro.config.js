@@ -9,7 +9,6 @@ const {
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
-
 const config = getSentryExpoConfig(projectRoot);
 
 // #1 - Watch all files in the monorepo
@@ -22,7 +21,6 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'packages/guallet-ui-react-native/node_modules'),
 ];
-
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
   new FileStore({

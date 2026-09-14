@@ -1,6 +1,5 @@
 import { View } from 'react-native';
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { Stack } from 'expo-router';
+import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import { ModalLoaderOverlay, useTheme } from '@guallet/ui-react-native';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {

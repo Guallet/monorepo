@@ -224,7 +224,11 @@ describe('AiChatService', () => {
     });
 
     const assistantSaves = mockMessageRepository.save.mock.calls.filter(
-      ([message]: [{ role: string }]) => message.role === 'assistant',
+      ([message]) =>
+        typeof message === 'object' &&
+        message !== null &&
+        'role' in message &&
+        message.role === 'assistant',
     );
     expect(assistantSaves).toHaveLength(0);
 

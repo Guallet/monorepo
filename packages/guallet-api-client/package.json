@@ -8,11 +8,13 @@
   "types": "./src/index.ts",
   "scripts": {
     "lint": "oxlint .",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {},
   "devDependencies": {
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*"
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
   }
 }

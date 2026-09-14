@@ -104,6 +104,7 @@ export const defaultColors: Colors = {
 
 /** The default dark appearance for React Native consumers. */
 export const defaultDarkColors: Colors = {
+  ...defaultColors,
   primary: '#41B6E6',
   secondary: '#00A9CE',
 
@@ -124,29 +125,17 @@ export const defaultDarkColors: Colors = {
   onPrimary: '#07141C',
   onPrimaryMuted: 'rgba(7, 20, 28, 0.75)',
   tabBar: {
+    ...defaultColors.tabBar,
     tint: '#41B6E6',
     inactiveTint: '#9BA1A6',
     background: '#121820',
     border: '#425563',
   },
-
-  darkAccent: '#003087',
-  brightAccent: '#0072CE',
-  lightAccent: '#41B6E6',
-  aquaAccent: '#00A9CE',
-
-  darkSupport: '#006747',
   support: '#78BE20',
-  lightSupport: '#78BE20',
-  aquaSupport: '#00A499',
-
   black: '#F4F7F8',
   darkGrey: '#B5C0C7',
   midGrey: '#9BA1A6',
   paleGrey: '#2C3740',
-  white: '#FFFFFF',
-
   error: '#FF8178',
   success: '#A6D65B',
-  warning: '#FAE100',
 };

@@ -12,21 +12,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './assets/images/icon.png',
   scheme: 'guallet',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
-    googleServicesFile: './auth/firebase/GoogleService-Info.plist',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
   },
   android: {
-    // TODO: enable once we have the icons.
-    edgeToEdgeEnabled: true,
+    // TODO: enable once we have the icons
+    // adaptiveIcon: {
+    //   backgroundColor: "#E6F4FE",
+    //   foregroundImage: "./assets/images/android-icon-foreground.png",
+    //   backgroundImage: "./assets/images/android-icon-background.png",
+    //   monochromeImage: "./assets/images/android-icon-monochrome.png",
+    // },
     predictiveBackGestureEnabled: false,
     package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
-    googleServicesFile: './auth/firebase/google-services.json',
   },
   web: {
     output: 'static',
@@ -48,7 +50,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'react-native-email-link',
-    '@react-native-google-signin/google-signin',
     [
       '@sentry/react-native/expo',
       {

@@ -17,6 +17,10 @@
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    // DTOs and TypeORM entities are populated by Nest and TypeORM at runtime.
+    // The targeted migration to strict initialization is tracked in #205.
+    "strictPropertyInitialization": false,
+    "useUnknownInCatchVariables": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,

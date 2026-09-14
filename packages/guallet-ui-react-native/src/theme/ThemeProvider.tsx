@@ -1,6 +1,12 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { GualletTheme } from '@guallet/theme';
-import { useColorScheme } from 'react-native';
+import { Platform, useColorScheme } from 'react-native';
 import { DefaultTheme } from './DefaultTheme';
 import { resolveTheme } from './resolveTheme';
 
@@ -28,7 +34,15 @@ export function LunaProvider({
   colorScheme,
 }: PropsWithChildren<LunaProviderProps>) {
   const systemColorScheme = useColorScheme();
-  const mode = colorScheme ?? (systemColorScheme === 'dark' ? 'dark' : 'light');
+  const [isHydrated, setIsHydrated] = useState(Platform.OS !== 'web');
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const mode =
+    colorScheme ??
+    (isHydrated && systemColorScheme === 'dark' ? 'dark' : 'light');
   const activeTheme = resolveTheme({
     mode,
     theme,

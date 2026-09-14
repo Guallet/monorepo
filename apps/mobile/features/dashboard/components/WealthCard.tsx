@@ -25,11 +25,12 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
     d.setFullYear(d.getFullYear() - 1);
     return d;
   }, []);
+  const chartEndDate = useMemo(() => new Date(), []);
 
   const { data: chartData } = useAccountCharts(
     firstAccountId,
     chartStartDate,
-    new Date(),
+    chartEndDate,
   );
 
   const totalWealth = useMemo(

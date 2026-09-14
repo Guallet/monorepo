@@ -2,7 +2,7 @@
 FROM node:24.20-alpine AS base
 
 # Install pnpm globally
-RUN npm install -g pnpm@11.24.0 --ignore-scripts
+RUN npm install -g pnpm@12.4.1 --ignore-scripts
 
 # Set working directory
 WORKDIR /app

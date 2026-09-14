@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react-native';
@@ -27,12 +27,13 @@ export function CashflowSummaryRow({
     d.setDate(d.getDate() - 30);
     return d;
   }, []);
+  const endDate = useMemo(() => new Date(), []);
 
   const { transactions, isLoading } = useTransactionsWithFilter({
     page: 1,
     pageSize: 500,
     startDate,
-    endDate: new Date(),
+    endDate,
   });
 
   const { income, expense } = useMemo(() => {
@@ -42,9 +43,12 @@ export function CashflowSummaryRow({
       if (t.amount > 0) inc += t.amount;
       else exp += Math.abs(t.amount);
     }
-    if (onMonthDeltaChange) onMonthDeltaChange(inc - exp);
     return { income: inc, expense: exp };
-  }, [transactions, onMonthDeltaChange]);
+  }, [transactions]);
+
+  useEffect(() => {
+    onMonthDeltaChange?.(income - expense);
+  }, [expense, income, onMonthDeltaChange]);
 
   if (isLoading) {
     return (

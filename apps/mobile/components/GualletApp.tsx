@@ -4,7 +4,7 @@ import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
-} from '@react-navigation/native';
+} from 'expo-router/react-navigation';
 import {
   focusManager,
   QueryClient,
