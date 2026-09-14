@@ -26,7 +26,7 @@ Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
 In order to compile/run the project locally, you will need:
 
 - Node 24.20.x
-- PNPM 11.24.0
+- PNPM 12.4.1
 - Postgres database
 - Redis
 
