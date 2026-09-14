@@ -57,25 +57,27 @@
       "placeholder": "Selecciona una cuenta",
       "nothingFoundMessage": "No se encontraron cuentas"
     },
-    "categoryMultiSelect": {
+    "categoryPicker": {
       "input": {
-        "valueAll": "Todas las categorías seleccionadas",
-        "value_one": "{{count}} categoría seleccionada",
-        "value_many": "{{count}} categorías seleccionadas",
-        "value_other": "{{count}} categorías seleccionadas",
-        "placeholder": "Selecciona categorías"
+        "valueAll": "All categories selected",
+        "value_one": "",
+        "value_many": "",
+        "value_other": "",
+        "placeholderSingle": "Select category",
+        "placeholderMultiple": "Select categories"
       },
       "modal": {
-        "title": "Seleccionar categorías",
+        "title": "Seleccionar categoría",
+        "titleMultiple": "Select Categories",
         "searchBox": {
           "placeholder": "Buscar categorías",
           "emptyResults": "No se encontraron categorías"
         },
         "checkAllButton": {
-          "label": "Seleccionar todo"
+          "label": "Check all"
         },
         "uncheckAllButton": {
-          "label": "Deseleccionar todo"
+          "label": "Uncheck all"
         },
         "expandAllButton": {
           "label": "Expandir todo"
@@ -84,25 +86,7 @@
           "label": "Colapsar todo"
         },
         "selectButton": {
-          "label": "Seleccionar categorías"
-        }
-      }
-    },
-    "categoryPicker": {
-      "input": {
-        "placeholder": "Selecciona una categoría"
-      },
-      "modal": {
-        "title": "Seleccionar categoría",
-        "searchBox": {
-          "placeholder": "Buscar categorías",
-          "emptyResults": "No se encontraron categorías"
-        },
-        "expandAllButton": {
-          "label": "Expandir todo"
-        },
-        "collapseAllButton": {
-          "label": "Colapsar todo"
+          "label": "Select categories"
         }
       }
     },
@@ -239,12 +223,6 @@
           "currencyCount_many": "",
           "currencyCount_other": "{{count}} currencies"
         },
-        "addCta": {
-          "title": "Missing an account?",
-          "description": "Connect via open banking, or add a manual account for cash, crypto or anything else.",
-          "addManually": "Add manually",
-          "connectBank": "Connect a bank"
-        },
         "summary": {
           "netWorth": "Net worth",
           "coverage_one": "Across {{accountCount}} account in {{currencyCount}} currencies",
@@ -262,33 +240,37 @@
           "clearSearch": "Clear search"
         }
       },
-      "accountType": {
-        "currentAccounts": "Cuentas corrientes",
-        "creditCards": "Tarjetas de crédito",
-        "investmentAccounts": "Cuentas de inversión",
-        "loans": "Préstamos",
-        "mortgages": "Hipotecas",
-        "pensions": "Pensiones",
-        "savingsAccounts": "Cuentas de ahorro",
-        "unknown": "Otro",
-        "currentAccount": "Cuenta corriente",
-        "creditCard": "Tarjeta de crédito",
-        "investment": "Cuenta de inversiones",
-        "loan": "Préstamo",
-        "mortgage": "Hipoteca",
-        "pension": "Pensión",
-        "savingsAccount": "Cuenta de ahorro"
-      },
       "add": {
-        "typeDesc": {
-          "current": "Everyday spending & income",
-          "savings": "Pots, ISAs, easy-access",
-          "credit": "Revolving credit balance",
-          "investment": "ISA, broker, pension",
-          "pension": "Retirement pots & pensions",
-          "mortgage": "Property-secured loan",
-          "loan": "Personal, student, car",
-          "other": "Cash, crypto, or anything else"
+        "errors": {
+          "currencyRequired": {
+            "title": "Currency required",
+            "message": "Please select a currency for the account."
+          },
+          "validation": {
+            "title": "Check your entries",
+            "message": "Please correct the highlighted fields before continuing."
+          }
+        },
+        "notifications": {
+          "success": "{{name}} created successfully.",
+          "error": {
+            "title": "Could not create account",
+            "message": "A network or server error occurred. Please try again."
+          }
+        },
+        "obRedirect": {
+          "error": {
+            "title": "Connection failed",
+            "message": "Could not start the bank connection. Please try again."
+          },
+          "title": "Connecting to {{bank}}",
+          "subtitle": "You'll be redirected to your bank's secure login page. Return to Guallet when done.",
+          "goToBank": "Go to {{bank}}"
+        },
+        "institutionPicker": {
+          "placeholder": "Search for a bank…",
+          "searchPlaceholder": "Type to search…",
+          "none": "No institution"
         },
         "chooseMethod": {
           "title": "Add an account",
@@ -301,30 +283,6 @@
           "manual": {
             "title": "Add manually",
             "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
-          }
-        },
-        "steps": {
-          "type": "Type",
-          "details": "Details",
-          "done": "Done"
-        },
-        "typeStep": {
-          "title": "What type of account?",
-          "subtitle": "This helps Guallet categorise balances and transactions correctly."
-        },
-        "institutionPicker": {
-          "placeholder": "Search for a bank…",
-          "searchPlaceholder": "Type to search…",
-          "none": "No institution"
-        },
-        "errors": {
-          "validation": {
-            "title": "Check your entries",
-            "message": "Please correct the highlighted fields before continuing."
-          },
-          "currencyRequired": {
-            "title": "Currency required",
-            "message": "Please select a currency for the account."
           }
         },
         "fields": {
@@ -376,6 +334,11 @@
             "description": "Records the initial balance as the first transaction"
           }
         },
+        "steps": {
+          "type": "Type",
+          "details": "Details",
+          "done": "Done"
+        },
         "detailsStep": {
           "title": "Account details",
           "subtitle": "Setting up a {{type}}"
@@ -391,17 +354,14 @@
           "goToAccounts": "Go to Accounts",
           "addAnother": "Add another account"
         },
+        "typeStep": {
+          "title": "What type of account?",
+          "subtitle": "This helps Guallet categorise balances and transactions correctly."
+        },
         "obSteps": {
           "country": "Country",
           "bank": "Bank",
           "connecting": "Connecting"
-        },
-        "obCountry": {
-          "title": "Where is your bank?",
-          "subtitle": "Select the country where your bank is based.",
-          "searchPlaceholder": "Search country…",
-          "noResults": "No results for \"{{search}}\"",
-          "continueWith": "Continue with {{name}}"
         },
         "obBank": {
           "title": "Select your bank",
@@ -414,23 +374,41 @@
           "connectTo": "Connect to {{bank}}",
           "selectBank": "Select a bank to continue"
         },
-        "obRedirect": {
-          "title": "Connecting to {{bank}}",
-          "subtitle": "You'll be redirected to your bank's secure login page. Return to Guallet when done.",
-          "goToBank": "Go to {{bank}}",
-          "error": {
-            "title": "Connection failed",
-            "message": "Could not start the bank connection. Please try again."
-          }
+        "obCountry": {
+          "title": "Where is your bank?",
+          "subtitle": "Select the country where your bank is based.",
+          "searchPlaceholder": "Search country…",
+          "noResults": "No results for \"{{search}}\"",
+          "continueWith": "Continue with {{name}}"
         },
-        "notifications": {
-          "success": "{{name}} created successfully.",
-          "error": {
-            "title": "Could not create account",
-            "message": "A network or server error occurred. Please try again."
-          }
+        "typeDesc": {
+          "current": "Everyday spending & income",
+          "savings": "Pots, ISAs, easy-access",
+          "credit": "Revolving credit balance",
+          "investment": "ISA, broker, pension",
+          "pension": "Retirement pots & pensions",
+          "mortgage": "Property-secured loan",
+          "loan": "Personal, student, car",
+          "other": "Cash, crypto, or anything else"
         },
         "title": "New account"
+      },
+      "accountType": {
+        "currentAccounts": "Cuentas corrientes",
+        "creditCards": "Tarjetas de crédito",
+        "investmentAccounts": "Cuentas de inversión",
+        "loans": "Préstamos",
+        "mortgages": "Hipotecas",
+        "pensions": "Pensiones",
+        "savingsAccounts": "Cuentas de ahorro",
+        "unknown": "Otro",
+        "currentAccount": "Cuenta corriente",
+        "creditCard": "Tarjeta de crédito",
+        "investment": "Cuenta de inversiones",
+        "loan": "Préstamo",
+        "mortgage": "Hipoteca",
+        "pension": "Pensión",
+        "savingsAccount": "Cuenta de ahorro"
       },
       "edit": {
         "notifications": {
@@ -465,24 +443,40 @@
   },
   "common": {
     "back": "Back",
-    "continue": "Continue",
     "optional": "Optional",
+    "continue": "Continue",
     "startOver": "Start over"
   },
-  "auth": {
-    "layout": {
-      "headline": {
-        "line1": "Your finances,",
-        "line2": "under control."
-      },
-      "description": "Track every account, card and saving goal in one place — without giving anyone access to your money.",
-      "feature1": "Open Banking sync — read-only",
-      "feature2": "Multi-currency, multi-account",
-      "feature3": "Self-host or secure cloud",
-      "license": "Open source · Apache 2.0"
-    }
-  },
   "screens": {
+    "assistant": {
+      "composer": {
+        "placeholder": "Ask about your finances...",
+        "stopButton": "Stop",
+        "sendButton": "Send"
+      },
+      "sessions": {
+        "deleteButton": "Delete chat",
+        "newChatButton": "New chat",
+        "empty": "Your chats from the last 30 days will appear here."
+      },
+      "error": {
+        "title": "Error",
+        "sendMessage": "Failed to send the message.",
+        "deleteSession": "Failed to delete the chat.",
+        "stream": "The assistant could not reply. Please try again."
+      },
+      "title": "AI Assistant",
+      "empty": {
+        "title": "No agents yet",
+        "description": "Create an AI agent in Settings before starting a chat.",
+        "createAgent": "Create agent"
+      },
+      "newChat": {
+        "title": "New chat",
+        "agentLabel": "Agent",
+        "hint": "Ask anything about your finances — for example, \"Which category did I spend the most on last year?\""
+      }
+    },
     "forgotPassword": {
       "backButton": {
         "label": "Volver a iniciar sesión"
@@ -806,11 +800,27 @@
     },
     "connections": {
       "callback": {
+        "cancelled": {
+          "title": "Authorisation cancelled",
+          "description": "No accounts were connected. You cancelled the authorisation. You can try again or add an account manually.",
+          "retry": "Try connecting again",
+          "manual": "Add account manually"
+        },
+        "error": {
+          "connectionFailed": "Connection failed",
+          "description": "Your bank rejected the connection request. This can happen if the session expired or the bank's Open Banking service is temporarily unavailable.",
+          "details": "Error details",
+          "whatToTry": "What to try next",
+          "tip1": "Check your bank app for any pending authorisation requests",
+          "tip2": "Make sure you completed the login process before returning",
+          "tip3": "Try again — the bank's service may now be available",
+          "retry": "Try again",
+          "manual": "Add account manually instead",
+          "title": "Link failed",
+          "message": "Could not link accounts. Please try again.",
+          "unknown": "Unknown error"
+        },
         "success": {
-          "notification": "Accounts linked successfully",
-          "notificationCount_one": "{{count}} accounts linked",
-          "notificationCount_many": "{{count}} accounts linked",
-          "notificationCount_other": "{{count}} accounts linked",
           "title": "Accounts found!",
           "subtitle_one": "Found {{count}} accounts. Choose which to import.",
           "subtitle_many": "Found {{count}} accounts. Choose which to import.",
@@ -819,29 +829,14 @@
           "import_one": "Import {{count}} account",
           "import_many": "Import {{count}} account",
           "import_other": "Import {{count}} accounts",
-          "importNone": "Select accounts to import"
-        },
-        "error": {
-          "title": "Link failed",
-          "message": "Could not link accounts. Please try again.",
-          "unknown": "Unknown error",
-          "connectionFailed": "Connection failed",
-          "description": "Your bank rejected the connection request. This can happen if the session expired or the bank's Open Banking service is temporarily unavailable.",
-          "whatToTry": "What to try next",
-          "tip1": "Check your bank app for any pending authorisation requests",
-          "tip2": "Make sure you completed the login process before returning",
-          "tip3": "Try again — the bank's service may now be available",
-          "retry": "Try again",
-          "manual": "Add account manually instead"
+          "importNone": "Select accounts to import",
+          "notification": "Accounts linked successfully",
+          "notificationCount_one": "{{count}} accounts linked",
+          "notificationCount_many": "{{count}} accounts linked",
+          "notificationCount_other": "{{count}} accounts linked"
         },
         "linking": "Linking accounts…",
-        "loading": "Loading accounts…",
-        "cancelled": {
-          "title": "Authorisation cancelled",
-          "description": "No accounts were connected. You cancelled the authorisation. You can try again or add an account manually.",
-          "retry": "Try connecting again",
-          "manual": "Add account manually"
-        }
+        "loading": "Loading accounts…"
       },
       "create": {
         "title": "Connect a bank"
@@ -1157,6 +1152,10 @@
     },
     "rules": {
       "form": {
+        "details": {
+          "title": "Rule details",
+          "description": "Name the rule and choose whether it should run now."
+        },
         "name": {
           "label": "Nombre de la regla",
           "placeholder": "ej. Tiendas de comestibles"
@@ -1170,9 +1169,17 @@
         },
         "conditions": {
           "title": "Condiciones",
+          "description": "Choose what a transaction must match before the category is assigned.",
           "logic": {
             "all": "Coincidir con TODAS",
-            "any": "Coincidir con CUALQUIERA"
+            "any": "Coincidir con CUALQUIERA",
+            "allDivider": "And",
+            "anyDivider": "Or"
+          },
+          "dragHandle": "Drag condition",
+          "itemTitle": "Condition {{index}}",
+          "removeButton": {
+            "label": "Remove condition"
           },
           "field": {
             "label": "Campo",
@@ -1192,12 +1199,14 @@
         },
         "category": {
           "title": "Luego asignar categoría",
+          "description": "Matching transactions will be moved into this category.",
           "label": "Categoría",
           "placeholder": "Seleccionar categoría a asignar"
         },
         "buttons": {
           "cancel": "Cancelar"
-        }
+        },
+        "footerHint": "Rules apply to new matching transactions."
       },
       "edit": {
         "notifications": {
@@ -1211,10 +1220,34 @@
           }
         },
         "title": "Editar regla",
+        "intro": {
+          "title": "Review rule behaviour",
+          "description": "Changes apply to future matching transactions. Existing transactions are not recategorised automatically."
+        },
         "submitButton": {
           "label": "Actualizar regla"
         },
         "notFound": "Regla no encontrada."
+      },
+      "create": {
+        "notifications": {
+          "success": {
+            "title": "Éxito",
+            "message": "Regla creada exitosamente"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Error al crear regla"
+          }
+        },
+        "title": "Crear nueva regla",
+        "intro": {
+          "title": "Automate categorisation",
+          "description": "Define the transaction details to match, then choose the category Guallet should assign."
+        },
+        "submitButton": {
+          "label": "Crear regla"
+        }
       },
       "list": {
         "notifications": {
@@ -1259,15 +1292,33 @@
               "all": "TODAS"
             }
           },
+          "dragHandle": "Drag to reorder",
+          "priority": "Priority {{index}}",
+          "active": "Active",
           "disabled": "Deshabilitada"
         },
         "emptyState": {
           "title": "Aún no se han creado reglas.",
+          "description": "Create a rule to automatically categorise matching transactions.",
           "createButton": {
             "label": "Crear tu primera regla"
+          },
+          "trait1": {
+            "title": "Match transactions",
+            "body": "Choose fields such as merchant, amount, or account."
+          },
+          "trait2": {
+            "title": "Assign a category",
+            "body": "Send every match to the category you select."
+          },
+          "trait3": {
+            "title": "Control priority",
+            "body": "Rules run from top to bottom, so order matters."
           }
         },
         "actions": {
+          "toggleActive": "Toggle rule active state",
+          "openMenu": "Open rule actions",
           "edit": "Editar",
           "delete": "Eliminar"
         },
@@ -1275,22 +1326,14 @@
         "createButton": {
           "label": "Crear regla"
         },
-        "description": "Las reglas se evalúan de arriba hacia abajo. Arrastra y suelta para reordenar. La primera regla que coincida se aplicará para categorizar las transacciones."
-      },
-      "create": {
-        "notifications": {
-          "success": {
-            "title": "Éxito",
-            "message": "Regla creada exitosamente"
-          },
-          "error": {
-            "title": "Error",
-            "message": "Error al crear regla"
-          }
+        "intro": {
+          "title": "Rule order matters"
         },
-        "title": "Crear nueva regla",
-        "submitButton": {
-          "label": "Crear regla"
+        "description": "Las reglas se evalúan de arriba hacia abajo. Arrastra y suelta para reordenar. La primera regla que coincida se aplicará para categorizar las transacciones.",
+        "summary": {
+          "total": "Total rules",
+          "active": "Active",
+          "inactive": "Inactive"
         }
       }
     },
@@ -1346,7 +1389,232 @@
       }
     },
     "settings": {
-      "title": "Settings"
+      "closeAccountModal": {
+        "title": "Close account",
+        "subtitle": "This action is permanent and cannot be undone",
+        "warning": {
+          "strong": "All your data will be permanently deleted.",
+          "body": "This includes all accounts, transactions, budgets, and goals. There is no recovery option."
+        },
+        "confirmation": {
+          "prefix": "Type",
+          "suffix": "to continue"
+        },
+        "keepAccountButton": {
+          "label": "Keep my account"
+        },
+        "closeAccountButton": {
+          "label": "Close account"
+        },
+        "error": {
+          "title": "Account could not be closed",
+          "message": "Please try again in a moment."
+        }
+      },
+      "preferences": {
+        "dateFormat": {
+          "success": {
+            "title": "Success",
+            "message": "Date format updated"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to update date format"
+          },
+          "modal": {
+            "title": "Select date format"
+          },
+          "placeholder": "Select date format",
+          "cancelButton": "Cancel",
+          "label": "Date format"
+        },
+        "defaultCurrency": {
+          "success": {
+            "title": "Success",
+            "message": "Default currency updated successfully"
+          },
+          "error": {
+            "title": "Error",
+            "message": "Failed to update default currency"
+          },
+          "modal": {
+            "title": "Select default currency"
+          },
+          "label": "Default currency"
+        },
+        "language": {
+          "label": "Default language"
+        },
+        "title": "User preferences",
+        "description": "Set regional preferences for currencies, language, and dates."
+      },
+      "profile": {
+        "title": "User information",
+        "description": "Review your signed-in profile and account session.",
+        "logoutButton": {
+          "label": "Log out"
+        }
+      },
+      "ai": {
+        "agents": {
+          "form": {
+            "provider": {
+              "error": "AI provider is required",
+              "label": "AI provider"
+            },
+            "name": {
+              "error": "Name is required",
+              "label": "Agent name",
+              "placeholder": "Transaction helper"
+            },
+            "model": {
+              "error": "Model is required",
+              "label": "Model",
+              "placeholder": "Select model"
+            },
+            "success": "Agent saved.",
+            "error": "Failed to save agent.",
+            "customPrompt": {
+              "label": "Custom prompt"
+            }
+          },
+          "savedTitle": "Saved agents",
+          "count_one": "{{count}} agent",
+          "count_many": "",
+          "count_other": "{{count}} agents",
+          "empty": {
+            "title": "No agents",
+            "description": "Create an agent by choosing an AI provider, model, and prompt."
+          },
+          "emptyQuery": {
+            "title": "No matching agents",
+            "description": "Try a different search term or clear the current filter to see all your agents.",
+            "clearSearch": "Clear search"
+          },
+          "addButton": "Add agent"
+        },
+        "error": {
+          "title": "Error"
+        },
+        "agent": {
+          "title": "Agent",
+          "configTitle": "Agent configuration",
+          "configDescription": "Edit the provider, model, name, and prompt for this agent."
+        },
+        "backButton": "AI",
+        "cancelButton": "Cancel",
+        "saveButton": "Save",
+        "providers": {
+          "form": {
+            "displayName": {
+              "error": "Name is required",
+              "label": "Provider name",
+              "placeholder": "OpenAI personal key"
+            },
+            "success": "AI provider saved.",
+            "apiToken": {
+              "invalid": "API token is not valid",
+              "replaceLabel": "Replace API token",
+              "replacePlaceholder": "Leave blank to keep the existing token",
+              "currentHint": "Current token: {{hint}}",
+              "error": "API token is required",
+              "label": "API token",
+              "placeholder": "Paste API token"
+            },
+            "error": "Failed to save AI provider.",
+            "provider": {
+              "label": "Provider"
+            }
+          },
+          "delete": {
+            "success": "AI provider deleted.",
+            "error": "Failed to delete AI provider.",
+            "title": "Delete AI provider",
+            "description_one": "Deleting this AI provider also deletes {{count}} linked agents.",
+            "description_many": "Deleting this AI provider also deletes {{count}} linked agents.",
+            "description_other": "Deleting this AI provider also deletes {{count}} linked agents.",
+            "confirmButton": "Delete AI provider",
+            "button": "Delete AI provider"
+          },
+          "detail": {
+            "title": "AI provider",
+            "description": "Rename this AI provider or replace its API token."
+          },
+          "backButton": "AI providers",
+          "configTitle": "Provider configuration",
+          "savedTitle": "Saved providers",
+          "count_one": "{{count}} AI provider",
+          "count_many": "",
+          "count_other": "{{count}} AI providers",
+          "title": "AI providers",
+          "searchPlaceholder": "Search AI providers...",
+          "addButton": "Add provider",
+          "empty": {
+            "title": "No AI providers",
+            "description": "Create an AI provider before adding agents."
+          },
+          "emptyQuery": {
+            "title": "No matching AI providers",
+            "description": "Try a different search term or clear the current filter to see all your AI providers.",
+            "clearSearch": "Clear search"
+          },
+          "manageButton": "AI providers",
+          "tokenConfigured": "Token configured",
+          "modal": {
+            "title": "Add AI provider"
+          },
+          "new": {
+            "title": "New AI provider",
+            "description": "Choose a provider and add an API token that can list models."
+          },
+          "manageRow": {
+            "label": "Manage AI providers"
+          }
+        },
+        "title": "AI",
+        "searchPlaceholder": "Search agents...",
+        "addAgentButton": "Add agent",
+        "new": {
+          "title": "New agent",
+          "providers": {
+            "title": "Choose provider",
+            "description": "Select the AI provider this agent will use."
+          },
+          "details": {
+            "title": "Agent details",
+            "description": "Choose a model and write the prompt this agent should follow."
+          }
+        },
+        "description": "Manage AI providers and agents.",
+        "manageRow": {
+          "label": "Manage AI"
+        }
+      },
+      "title": "Settings",
+      "institutions": {
+        "title": "Institutions",
+        "description": "Manage banks and institutions used to organise your accounts.",
+        "manageRow": {
+          "label": "Manage institutions"
+        }
+      },
+      "data": {
+        "title": "Import and export data",
+        "description": "Move your financial data in or out of Guallet.",
+        "exportRow": {
+          "label": "Export data"
+        },
+        "importRow": {
+          "label": "Import data"
+        }
+      },
+      "danger": {
+        "title": "Danger zone",
+        "description": "Permanent account actions live here.",
+        "closeAccountButton": {
+          "label": "Close account"
+        }
+      }
     },
     "subscriptions": {
       "create": {
@@ -1629,6 +1897,19 @@
         "submitButton": "Save changes",
         "cancelButton": "Cancel"
       }
+    }
+  },
+  "auth": {
+    "layout": {
+      "headline": {
+        "line1": "Your finances,",
+        "line2": "under control."
+      },
+      "description": "Track every account, card and saving goal in one place — without giving anyone access to your money.",
+      "feature1": "Open Banking sync — read-only",
+      "feature2": "Multi-currency, multi-account",
+      "feature3": "Self-host or secure cloud",
+      "license": "Open source · Apache 2.0"
     }
   },
   "landing": {
