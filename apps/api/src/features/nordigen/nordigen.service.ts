@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import { isAxiosError, type AxiosResponse } from 'axios';
 import {
   BadRequestException,
   ForbiddenException,
@@ -227,8 +227,8 @@ export class NordigenService {
             },
           })
           .pipe(
-            catchError((e) => {
-              throw e.response;
+            catchError((error: unknown) => {
+              throw isAxiosError(error) ? error.response : error;
             }),
           ),
       );
@@ -248,26 +248,38 @@ export class NordigenService {
     }
   }
 
-  private handleHttpStatusCodes(response: AxiosResponse, forceHandle = false) {
-    switch (response.status) {
-      case 400:
-        throw new BadRequestException();
-      case 401:
-        throw new UnauthorizedException();
-      case 403:
-        throw new ForbiddenException();
-      case 404:
-        throw new NotFoundException();
+  private handleHttpStatusCodes(response: unknown, forceHandle = false) {
+    if (this.isAxiosResponse(response)) {
+      switch (response.status) {
+        case 400:
+          throw new BadRequestException();
+        case 401:
+          throw new UnauthorizedException();
+        case 403:
+          throw new ForbiddenException();
+        case 404:
+          throw new NotFoundException();
+      }
     }
 
     // If forceHandle true, then throw an exception since this has to be handled here
     if (forceHandle) {
       this.logger.error(`Error making request to Nordigen`, {
-        status: response.status,
-        error: response.data,
+        status: this.isAxiosResponse(response) ? response.status : undefined,
+        error: this.isAxiosResponse(response) ? response.data : response,
       });
       throw new InternalServerErrorException();
     }
+  }
+
+  private isAxiosResponse(response: unknown): response is AxiosResponse {
+    return (
+      typeof response === 'object' &&
+      response !== null &&
+      'status' in response &&
+      typeof response.status === 'number' &&
+      'data' in response
+    );
   }
 
   async makePostRequest<T>(path: string, payload: unknown): Promise<T> {
@@ -285,8 +297,8 @@ export class NordigenService {
             },
           })
           .pipe(
-            catchError((e) => {
-              throw e.response;
+            catchError((error: unknown) => {
+              throw isAxiosError(error) ? error.response : error;
             }),
           ),
       );
@@ -323,8 +335,8 @@ export class NordigenService {
             },
           })
           .pipe(
-            catchError((e) => {
-              throw e.response;
+            catchError((error: unknown) => {
+              throw isAxiosError(error) ? error.response : error;
             }),
           ),
       );
