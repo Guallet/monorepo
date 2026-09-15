@@ -30,10 +30,10 @@ export function AccountImportRow({
         alignItems: 'center',
         gap: spacing.md,
         padding: `${spacing.md}px ${spacing.md}px`,
-        borderBottom: last ? 'none' : `1px solid ${colors.paleGrey}`,
+        borderBottom: last ? 'none' : `1px solid ${colors.neutral.paleGrey}`,
         background: selected
-          ? `color-mix(in oklab, ${colors.primary} 5%, ${colors.white})`
-          : colors.white,
+          ? `color-mix(in oklab, ${colors.accent.primary} 5%, ${colors.neutral.white})`
+          : colors.neutral.white,
         cursor: 'pointer',
         transition: 'background 100ms',
       }}

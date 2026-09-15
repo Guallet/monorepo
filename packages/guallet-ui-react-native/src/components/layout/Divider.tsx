@@ -16,7 +16,7 @@ export function Divider({
   style,
 }: Readonly<DividerProps>) {
   const { spacing, colors } = useTheme();
-  const dividerColor = color ?? colors.border;
+  const dividerColor = color ?? colors.surface.border.primary;
 
   if (!label) {
     return (

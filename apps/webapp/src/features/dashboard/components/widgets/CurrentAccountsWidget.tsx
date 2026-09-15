@@ -42,7 +42,7 @@ export function CurrentAccountsWidget() {
           size="sm"
           fw={500}
           style={{
-            color: colors.primary,
+            color: colors.accent.primary,
             cursor: 'pointer',
             textDecoration: 'none',
             display: 'block',
@@ -68,7 +68,9 @@ export function CurrentAccountsWidget() {
               });
               const isPositive = balance.amount >= 0;
               const isCreditCard = account.type === AccountTypeDto.CREDIT_CARD;
-              const moneyColor = isPositive ? colors.support : colors.error;
+              const moneyColor = isPositive
+                ? colors.support.primary
+                : colors.status.error;
 
               return (
                 <Box
@@ -76,8 +78,8 @@ export function CurrentAccountsWidget() {
                   p="sm"
                   style={{
                     borderRadius: '8px',
-                    backgroundColor: colors.surface,
-                    border: `1px solid ${colors.paleGrey}`,
+                    backgroundColor: colors.surface.background.secondary,
+                    border: `1px solid ${colors.neutral.paleGrey}`,
                   }}
                 >
                   <Group justify="space-between" mb="xs">
@@ -85,12 +87,12 @@ export function CurrentAccountsWidget() {
                       {isCreditCard ? (
                         <IconCreditCard
                           size={16}
-                          style={{ color: colors.primary }}
+                          style={{ color: colors.accent.primary }}
                         />
                       ) : (
                         <IconBuildingBank
                           size={16}
-                          style={{ color: colors.primary }}
+                          style={{ color: colors.accent.primary }}
                         />
                       )}
                       <Text fw={600} size="sm">
@@ -127,7 +129,10 @@ export function CurrentAccountsWidget() {
       ) : (
         <Center h={150}>
           <Stack gap="xs" align="center">
-            <IconBuildingBank size={48} style={{ color: colors.paleGrey }} />
+            <IconBuildingBank
+              size={48}
+              style={{ color: colors.neutral.paleGrey }}
+            />
             <Text size="sm" c="dimmed" ta="center">
               No current accounts found.
             </Text>

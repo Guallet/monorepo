@@ -98,6 +98,34 @@ returns the active theme. Navigation tokens are available at
 `colors.tabBar.tint`, `colors.tabBar.inactiveTint`, `colors.tabBar.background`,
 and `colors.tabBar.border`.
 
+Color tokens are grouped by purpose so components can use the appropriate
+semantic level:
+
+```typescript
+const { colors } = useTheme();
+
+colors.text.primary;
+colors.surface.background.primary;
+colors.button.primary;
+colors.button.disabled;
+colors.status.error;
+```
+
+When overriding one token, spread its group to preserve the other defaults:
+
+```typescript
+const customTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    text: {
+      ...DefaultTheme.colors.text,
+      primary: '#111827',
+    },
+  },
+};
+```
+
 Custom themes can be supplied per appearance:
 
 ```typescript
@@ -111,7 +139,10 @@ const customLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#007AFF',
+    accent: {
+      ...DefaultTheme.colors.accent,
+      primary: '#007AFF',
+    },
     tabBar: {
       ...DefaultTheme.colors.tabBar,
       tint: '#007AFF',

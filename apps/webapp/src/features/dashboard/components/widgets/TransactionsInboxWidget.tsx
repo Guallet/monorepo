@@ -35,8 +35,8 @@ function TransactionRow({
       mb="xs"
       style={{
         borderRadius: '8px',
-        backgroundColor: colors.surface,
-        border: `1px solid ${colors.paleGrey}`,
+        backgroundColor: colors.surface.background.secondary,
+        border: `1px solid ${colors.neutral.paleGrey}`,
       }}
     >
       <Group justify="space-between" align="flex-start">
@@ -60,7 +60,7 @@ function TransactionRow({
           size="sm"
           fw={700}
           style={{
-            color: isIncome ? colors.support : colors.error,
+            color: isIncome ? colors.support.primary : colors.status.error,
             whiteSpace: 'nowrap',
             marginLeft: 8,
           }}
@@ -93,7 +93,7 @@ export function TransactionsInboxWidget() {
           size="sm"
           fw={500}
           style={{
-            color: colors.primary,
+            color: colors.accent.primary,
             cursor: 'pointer',
             textDecoration: 'none',
             display: 'block',
@@ -115,8 +115,8 @@ export function TransactionsInboxWidget() {
             p="sm"
             style={{
               borderRadius: '8px',
-              backgroundColor: `${colors.primary}12`,
-              border: `1px solid ${colors.primary}40`,
+              backgroundColor: `${colors.accent.primary}12`,
+              border: `1px solid ${colors.accent.primary}40`,
             }}
           >
             <Text size="sm" ta="center">

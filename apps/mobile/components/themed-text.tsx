@@ -18,8 +18,10 @@ export function ThemedText({
   const { colors, typography } = useTheme();
   const mode = useThemeMode();
   const color =
-    mode === 'dark' ? (darkColor ?? colors.text) : (lightColor ?? colors.text);
-  const textColor = type === 'link' ? colors.primary : color;
+    mode === 'dark'
+      ? (darkColor ?? colors.text.primary)
+      : (lightColor ?? colors.text.primary);
+  const textColor = type === 'link' ? colors.accent.primary : color;
 
   return (
     <Text

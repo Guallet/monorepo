@@ -20,7 +20,10 @@ export function SavingGoalsWidget({
       <View
         style={[
           styles.skeleton,
-          { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
+          {
+            borderRadius: borderRadius.lg,
+            backgroundColor: colors.surface.background.secondary,
+          },
         ]}
       />
     );
@@ -33,9 +36,9 @@ export function SavingGoalsWidget({
       style={[
         styles.card,
         {
-          backgroundColor: colors.background,
+          backgroundColor: colors.surface.background.primary,
           borderRadius: borderRadius.lg,
-          borderColor: colors.border,
+          borderColor: colors.surface.border.primary,
           padding: spacing.md,
           gap: spacing.sm,
         },
@@ -44,7 +47,7 @@ export function SavingGoalsWidget({
       <Text
         style={[
           styles.title,
-          { color: colors.text, fontSize: typography.sizes.lg },
+          { color: colors.text.primary, fontSize: typography.sizes.lg },
         ]}
       >
         Saving goals
@@ -54,7 +57,7 @@ export function SavingGoalsWidget({
         <Text
           style={[
             styles.emptyText,
-            { color: colors.textSecondary, fontSize: typography.sizes.sm },
+            { color: colors.text.secondary, fontSize: typography.sizes.sm },
           ]}
         >
           No saving goals yet

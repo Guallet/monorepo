@@ -105,13 +105,13 @@ export function DateRangeButton({
         <Button
           variant="outline"
           leftSection={
-            <IconCalendar size={15} style={{ color: colors.midGrey }} />
+            <IconCalendar size={15} style={{ color: colors.neutral.midGrey }} />
           }
           rightSection={
             <IconChevronDown
               size={12}
               style={{
-                color: colors.midGrey,
+                color: colors.neutral.midGrey,
                 transform: opened ? 'rotate(180deg)' : 'none',
                 transition: 'transform 200ms',
               }}
@@ -119,9 +119,9 @@ export function DateRangeButton({
           }
           styles={{
             root: {
-              borderColor: opened ? colors.primary : undefined,
+              borderColor: opened ? colors.accent.primary : undefined,
               boxShadow: opened
-                ? `0 0 0 2px ${alpha(colors.primary, 0.18)}`
+                ? `0 0 0 2px ${alpha(colors.accent.primary, 0.18)}`
                 : undefined,
               fontWeight: 500,
               paddingLeft: spacing.sm,
@@ -131,7 +131,7 @@ export function DateRangeButton({
           }}
           onClick={() => (opened ? setOpened(false) : openPopup())}
         >
-          <Text fz="sm" fw={600} c={colors.black}>
+          <Text fz="sm" fw={600} c={colors.neutral.black}>
             {getTriggerLabel()}
           </Text>
         </Button>
@@ -143,7 +143,7 @@ export function DateRangeButton({
           minWidth: 580,
           borderRadius: borderRadius.lg,
           overflow: 'hidden',
-          border: `1px solid ${colors.paleGrey}`,
+          border: `1px solid ${colors.neutral.paleGrey}`,
           boxShadow: '0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.10)',
         }}
       >
@@ -154,7 +154,7 @@ export function DateRangeButton({
             style={{
               width: 160,
               flexShrink: 0,
-              borderRight: `1px solid ${colors.surface}`,
+              borderRight: `1px solid ${colors.surface.background.secondary}`,
             }}
           >
             <Box p={spacing.xs}>
@@ -180,7 +180,7 @@ export function DateRangeButton({
           </Box>
         </Group>
 
-        <Divider color={colors.surface} />
+        <Divider color={colors.surface.background.secondary} />
 
         {/* Footer */}
         <Group
@@ -193,7 +193,10 @@ export function DateRangeButton({
             size="sm"
             onClick={handleCancel}
             styles={{
-              root: { borderColor: colors.primary, color: colors.primary },
+              root: {
+                borderColor: colors.accent.primary,
+                color: colors.accent.primary,
+              },
             }}
           >
             {t('components.dateRangePicker.cancel', 'Cancel')}

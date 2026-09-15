@@ -17,8 +17,8 @@ export function ThemedView({
   const mode = useThemeMode();
   const backgroundColor =
     mode === 'dark'
-      ? (darkColor ?? colors.background)
-      : (lightColor ?? colors.background);
+      ? (darkColor ?? colors.surface.background.primary)
+      : (lightColor ?? colors.surface.background.primary);
 
   return <View style={[{ backgroundColor }, style]} {...otherProps} />;
 }

@@ -25,9 +25,9 @@ export function AppScreen({
     ...(headerTitle && headerTitle !== '' && { title: headerTitle }),
     headerShown: isHeaderVisible,
     headerShadowVisible: false,
-    headerStyle: { backgroundColor: colors.background },
-    headerTintColor: colors.text,
-    headerTitleStyle: { color: colors.text },
+    headerStyle: { backgroundColor: colors.surface.background.primary },
+    headerTintColor: colors.text.primary,
+    headerTitleStyle: { color: colors.text.primary },
     ...headerOptions,
   };
 
@@ -36,7 +36,7 @@ export function AppScreen({
       style={[
         {
           flex: 1,
-          backgroundColor: colors.pageBackground,
+          backgroundColor: colors.surface.background.page,
         },
         props.style,
       ]}

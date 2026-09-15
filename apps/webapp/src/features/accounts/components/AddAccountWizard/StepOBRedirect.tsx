@@ -45,15 +45,15 @@ export function StepOBRedirect({
         <Group gap="xs">
           <IconArrowRight
             size={20}
-            color={colors.primary}
+            color={colors.accent.primary}
             style={{ opacity: 0.3 }}
           />
           <IconArrowRight
             size={20}
-            color={colors.primary}
+            color={colors.accent.primary}
             style={{ opacity: 0.6 }}
           />
-          <IconArrowRight size={20} color={colors.primary} />
+          <IconArrowRight size={20} color={colors.accent.primary} />
         </Group>
         <ThemeIcon size={64} radius="sm" color="blue" variant="filled">
           <IconBuildingBank size={32} />

@@ -9,7 +9,7 @@ describe('resolveTheme', () => {
 
     expect(theme).toBe(DefaultTheme);
     expect(theme.colors.tabBar).toEqual(defaultColors.tabBar);
-    expect(theme.colors.tabBar.tint).toBe(defaultColors.primary);
+    expect(theme.colors.tabBar.tint).toBe(defaultColors.accent.primary);
   });
 
   it('uses semantic dark navigation colors for dark appearance', () => {
@@ -17,8 +17,12 @@ describe('resolveTheme', () => {
 
     expect(theme).toBe(DarkTheme);
     expect(theme.colors.tabBar).toEqual(defaultDarkColors.tabBar);
-    expect(theme.colors.tabBar.background).toBe(defaultDarkColors.background);
-    expect(theme.colors.tabBar.border).toBe(defaultDarkColors.border);
+    expect(theme.colors.tabBar.background).toBe(
+      defaultDarkColors.surface.background.primary,
+    );
+    expect(theme.colors.tabBar.border).toBe(
+      defaultDarkColors.surface.border.primary,
+    );
   });
 
   it('supports separate custom themes for each appearance', () => {

@@ -40,7 +40,10 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView
-      style={[styles.safeArea, { backgroundColor: colors.pageBackground }]}
+      style={[
+        styles.safeArea,
+        { backgroundColor: colors.surface.background.page },
+      ]}
       edges={['top']}
     >
       <Stack.Screen options={{ headerShown: false }} />
@@ -56,7 +59,7 @@ export default function DashboardScreen() {
           <Text
             style={[
               styles.greetingTitle,
-              { color: colors.text, fontSize: typography.sizes.xxl },
+              { color: colors.text.primary, fontSize: typography.sizes.xxl },
             ]}
           >
             Hi, {firstName}
@@ -64,7 +67,7 @@ export default function DashboardScreen() {
           <Text
             style={[
               styles.greetingDate,
-              { color: colors.textSecondary, fontSize: typography.sizes.sm },
+              { color: colors.text.secondary, fontSize: typography.sizes.sm },
             ]}
           >
             {formatGreetingDate(today)}

@@ -22,10 +22,10 @@ export function OtpNumberInput({
       style={[
         styles.codeInput,
         {
-          backgroundColor: colors.inputBackground,
-          borderColor: colors.inputBorder,
+          backgroundColor: colors.surface.background.input,
+          borderColor: colors.surface.border.input,
           borderRadius: borderRadius.lg,
-          color: colors.text,
+          color: colors.text.primary,
           fontSize: typography.sizes.xl,
         },
       ]}

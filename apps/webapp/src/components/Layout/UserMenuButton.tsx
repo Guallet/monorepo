@@ -49,8 +49,8 @@ export function UserMenuButton() {
           styles={{
             root: {
               '&:hover, &[data-expanded]': {
-                background: colors.surface,
-                borderColor: colors.paleGrey,
+                background: colors.surface.background.secondary,
+                borderColor: colors.neutral.paleGrey,
               },
             },
           }}
@@ -66,7 +66,7 @@ export function UserMenuButton() {
           >
             {firstName}
           </Text>
-          <IconChevronDown size={12} color={colors.midGrey} />
+          <IconChevronDown size={12} color={colors.neutral.midGrey} />
         </UnstyledButton>
       </Menu.Target>
 

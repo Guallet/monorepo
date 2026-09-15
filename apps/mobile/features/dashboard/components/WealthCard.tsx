@@ -62,7 +62,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <View
         style={[
           styles.skeleton,
-          { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
+          {
+            borderRadius: borderRadius.lg,
+            backgroundColor: colors.surface.background.secondary,
+          },
         ]}
       />
     );
@@ -75,7 +78,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       style={[
         styles.card,
         {
-          backgroundColor: colors.primary,
+          backgroundColor: colors.accent.primary,
           borderRadius: borderRadius.lg,
           padding: spacing.lg,
         },
@@ -84,7 +87,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.label,
-          { color: colors.onPrimaryMuted, fontSize: typography.sizes.xs },
+          {
+            color: colors.button.onPrimaryMuted,
+            fontSize: typography.sizes.xs,
+          },
         ]}
       >
         TOTAL WEALTH
@@ -93,7 +99,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.amount,
-          { color: colors.onPrimary, fontSize: typography.sizes.xxl },
+          { color: colors.button.onPrimary, fontSize: typography.sizes.xxl },
         ]}
       >
         {formatCurrency(totalWealth, displayCurrency)}
@@ -103,7 +109,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
         <Text
           style={[
             styles.delta,
-            { color: colors.onPrimaryMuted, fontSize: typography.sizes.sm },
+            {
+              color: colors.button.onPrimaryMuted,
+              fontSize: typography.sizes.sm,
+            },
           ]}
         >
           {isDeltaPositive ? '↑' : '↓'} {isDeltaPositive ? '+' : ''}
@@ -120,8 +129,8 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
               {
                 height: Math.max(4, bar.ratio * 36),
                 backgroundColor: bar.isLast
-                  ? colors.onPrimary
-                  : colors.onPrimaryMuted,
+                  ? colors.button.onPrimary
+                  : colors.button.onPrimaryMuted,
                 borderRadius: borderRadius.xs,
               },
             ]}

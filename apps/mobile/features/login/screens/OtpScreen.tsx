@@ -103,7 +103,7 @@ export function OtpScreen() {
             style={[
               styles.errorText,
               {
-                color: colors.error,
+                color: colors.status.error,
                 fontSize: typography.sizes.sm,
                 marginBottom: spacing.md,
               },
@@ -123,7 +123,7 @@ export function OtpScreen() {
             style={[
               styles.resendText,
               {
-                color: colors.textSecondary,
+                color: colors.text.secondary,
                 fontSize: typography.sizes.md,
                 marginBottom: spacing.sm,
               },
@@ -135,7 +135,7 @@ export function OtpScreen() {
             <Text
               style={[
                 styles.resendButton,
-                { color: colors.primary, fontSize: typography.sizes.md },
+                { color: colors.accent.primary, fontSize: typography.sizes.md },
               ]}
             >
               Resend code

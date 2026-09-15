@@ -143,5 +143,5 @@ Key rules at a glance:
 
 - Use `useTheme()` from `@guallet/ui-react` for all design tokens — no hardcoded values
 - Cards: `radius="lg"`, `shadow="sm"`, `withBorder`, white background
-- Money: positive → `colors.support` (green), negative → `colors.error` (red), always `fontVariantNumeric: 'tabular-nums'`
+- Money: positive → `colors.support.primary` (green), negative → `colors.status.error` (red), always `fontVariantNumeric: 'tabular-nums'`
 - Every user-visible string must go through `t()` from `react-i18next`

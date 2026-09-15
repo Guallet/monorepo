@@ -171,7 +171,10 @@ export function LoginScreen() {
 
               <TouchableOpacity onPress={handleForgotPassword}>
                 <Text
-                  style={[styles.forgotPasswordLink, { color: colors.primary }]}
+                  style={[
+                    styles.forgotPasswordLink,
+                    { color: colors.accent.primary },
+                  ]}
                 >
                   Forgot password?
                 </Text>
@@ -193,7 +196,7 @@ export function LoginScreen() {
           )}
 
           <TouchableOpacity onPress={toggleLoginMethod}>
-            <Text style={[styles.toggleLink, { color: colors.primary }]}>
+            <Text style={[styles.toggleLink, { color: colors.accent.primary }]}>
               {loginMethod === 'password'
                 ? 'Use email code instead'
                 : 'Use password instead'}

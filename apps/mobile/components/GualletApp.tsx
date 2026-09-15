@@ -37,12 +37,12 @@ function AppNavigation() {
     dark: mode === 'dark',
     colors: {
       ...NavigationDefaultTheme.colors,
-      primary: colors.primary,
-      background: colors.pageBackground,
+      primary: colors.accent.primary,
+      background: colors.surface.background.page,
       card: colors.tabBar.background,
-      text: colors.text,
+      text: colors.text.primary,
       border: colors.tabBar.border,
-      notification: colors.error,
+      notification: colors.status.error,
     },
   };
 
@@ -54,10 +54,14 @@ function AppNavigation() {
             <GualletClientProvider client={gualletClient}>
               <Stack
                 screenOptions={{
-                  contentStyle: { backgroundColor: colors.pageBackground },
-                  headerStyle: { backgroundColor: colors.background },
-                  headerTintColor: colors.text,
-                  headerTitleStyle: { color: colors.text },
+                  contentStyle: {
+                    backgroundColor: colors.surface.background.page,
+                  },
+                  headerStyle: {
+                    backgroundColor: colors.surface.background.primary,
+                  },
+                  headerTintColor: colors.text.primary,
+                  headerTitleStyle: { color: colors.text.primary },
                 }}
               >
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

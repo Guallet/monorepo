@@ -73,7 +73,7 @@ export function MonthlyInAndOutWidget({
       ) : data.length > 0 ? (
         <Box
           style={{
-            backgroundColor: colors.surface,
+            backgroundColor: colors.surface.background.secondary,
             borderRadius: borderRadius.md,
             padding: 16,
           }}

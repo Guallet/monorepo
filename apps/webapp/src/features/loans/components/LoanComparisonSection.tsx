@@ -47,7 +47,7 @@ function CompareMetricRow({
           fw={winnerSide === 'a' ? 700 : 400}
           style={{
             fontVariantNumeric: 'tabular-nums',
-            color: winnerSide === 'a' ? colors.success : undefined,
+            color: winnerSide === 'a' ? colors.status.success : undefined,
           }}
         >
           {valueA}
@@ -69,7 +69,7 @@ function CompareMetricRow({
           ta="right"
           style={{
             fontVariantNumeric: 'tabular-nums',
-            color: winnerSide === 'b' ? colors.success : undefined,
+            color: winnerSide === 'b' ? colors.status.success : undefined,
           }}
         >
           {valueB}

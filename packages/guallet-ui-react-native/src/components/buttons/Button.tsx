@@ -31,59 +31,59 @@ export const Button: React.FC<ButtonProps> = ({
     if (disabled) {
       switch (variant) {
         case 'filled':
-          return { backgroundColor: colors.disabled };
+          return { backgroundColor: colors.button.disabled };
         case 'light':
-          return { backgroundColor: colors.disabled };
+          return { backgroundColor: colors.button.disabled };
         case 'outline':
           return {
-            backgroundColor: 'transparent',
+            backgroundColor: colors.button.transparent,
             borderWidth: 1,
-            borderColor: colors.disabled,
+            borderColor: colors.surface.border.disabled,
           };
         case 'subtle':
-          return { backgroundColor: colors.disabled };
+          return { backgroundColor: colors.button.disabled };
         case 'transparent':
-          return { backgroundColor: 'transparent' };
+          return { backgroundColor: colors.button.transparent };
         default:
-          return { backgroundColor: colors.disabled };
+          return { backgroundColor: colors.button.disabled };
       }
     }
 
     switch (variant) {
       case 'filled':
-        return { backgroundColor: colors.primary };
+        return { backgroundColor: colors.button.primary };
       case 'light':
-        return { backgroundColor: colors.primarySubtle };
+        return { backgroundColor: colors.button.secondary };
       case 'outline':
         return {
-          backgroundColor: 'transparent',
+          backgroundColor: colors.button.transparent,
           borderWidth: 1,
-          borderColor: colors.primary,
+          borderColor: colors.button.outline,
         };
       case 'subtle':
-        return { backgroundColor: colors.surface };
+        return { backgroundColor: colors.button.subtle };
       case 'transparent':
-        return { backgroundColor: 'transparent' };
+        return { backgroundColor: colors.button.transparent };
       default:
-        return { backgroundColor: colors.primary };
+        return { backgroundColor: colors.button.primary };
     }
   };
 
   const getTextStyles = (): TextStyle => {
     if (disabled) {
-      return { color: colors.disabledText };
+      return { color: colors.text.disabled };
     }
 
     switch (variant) {
       case 'filled':
-        return { color: colors.onPrimary };
+        return { color: colors.button.onPrimary };
       case 'light':
       case 'outline':
       case 'subtle':
       case 'transparent':
-        return { color: colors.primary };
+        return { color: colors.button.outline };
       default:
-        return { color: colors.onPrimary };
+        return { color: colors.button.onPrimary };
     }
   };
 

@@ -27,7 +27,7 @@ export function AuthLayout({ children }: Readonly<AuthLayoutProps>) {
           align="center"
           justify="center"
           style={{
-            background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.darkAccent} 100%)`,
+            background: `linear-gradient(135deg, ${colors.accent.primary} 0%, ${colors.accent.dark} 100%)`,
             flexShrink: 0,
           }}
         >
@@ -43,7 +43,7 @@ export function AuthLayout({ children }: Readonly<AuthLayoutProps>) {
           style={{
             width: 440,
             flexShrink: 0,
-            background: `linear-gradient(160deg, ${colors.primary} 0%, ${colors.darkAccent} 100%)`,
+            background: `linear-gradient(160deg, ${colors.accent.primary} 0%, ${colors.accent.dark} 100%)`,
             display: 'flex',
             flexDirection: 'column',
             padding: `${spacing.xxl}px ${spacing.xl}px`,

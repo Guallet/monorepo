@@ -99,11 +99,11 @@ export function TypeTile({ type, selected, onClick }: Readonly<TypeTileProps>) {
       onClick={onClick}
       style={{
         padding: spacing.md,
-        border: `2px solid ${selected ? colors.primary : colors.paleGrey}`,
+        border: `2px solid ${selected ? colors.accent.primary : colors.neutral.paleGrey}`,
         borderRadius: borderRadius.md,
         background: selected
-          ? `color-mix(in oklab, ${colors.primary} 7%, ${colors.white})`
-          : colors.white,
+          ? `color-mix(in oklab, ${colors.accent.primary} 7%, ${colors.neutral.white})`
+          : colors.neutral.white,
         cursor: 'pointer',
         transition: 'all 150ms',
         display: 'flex',
@@ -122,7 +122,11 @@ export function TypeTile({ type, selected, onClick }: Readonly<TypeTileProps>) {
         {getAccountTypeIcon(type)}
       </ThemeIcon>
       <Box>
-        <Text size="sm" fw={700} c={selected ? colors.primary : undefined}>
+        <Text
+          size="sm"
+          fw={700}
+          c={selected ? colors.accent.primary : undefined}
+        >
           {getAccountTypeTitleSingular(type)}
         </Text>
         <Text size="xs" c="dimmed" mt={spacing.xs / 2}>
@@ -138,10 +142,10 @@ export function TypeTile({ type, selected, onClick }: Readonly<TypeTileProps>) {
             width: 18,
             height: 18,
             borderRadius: '50%',
-            background: colors.primary,
+            background: colors.accent.primary,
           }}
         >
-          <IconCheck size={10} color={colors.white} />
+          <IconCheck size={10} color={colors.neutral.white} />
         </Center>
       )}
     </UnstyledButton>

@@ -28,9 +28,9 @@ export function CountryRow({
         alignItems: 'center',
         gap: spacing.sm,
         padding: `${spacing.sm}px ${spacing.md}px`,
-        borderBottom: last ? 'none' : `1px solid ${colors.paleGrey}`,
+        borderBottom: last ? 'none' : `1px solid ${colors.neutral.paleGrey}`,
         background: selected
-          ? `color-mix(in oklab, ${colors.primary} 7%, ${colors.white})`
+          ? `color-mix(in oklab, ${colors.accent.primary} 7%, ${colors.neutral.white})`
           : undefined,
         transition: 'background 100ms',
       }}
@@ -39,12 +39,12 @@ export function CountryRow({
       <Text
         size="sm"
         fw={selected ? 600 : 400}
-        c={selected ? colors.primary : undefined}
+        c={selected ? colors.accent.primary : undefined}
         style={{ flex: 1 }}
       >
         {country.name}
       </Text>
-      {selected && <IconCheck size={16} color={colors.primary} />}
+      {selected && <IconCheck size={16} color={colors.accent.primary} />}
     </UnstyledButton>
   );
 }

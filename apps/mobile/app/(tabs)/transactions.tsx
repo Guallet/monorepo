@@ -6,12 +6,15 @@ export default function TransactionsScreen() {
 
   return (
     <View
-      style={[styles.container, { backgroundColor: colors.pageBackground }]}
+      style={[
+        styles.container,
+        { backgroundColor: colors.surface.background.page },
+      ]}
     >
       <Text
         style={[
           styles.title,
-          { color: colors.text, fontSize: typography.sizes.lg },
+          { color: colors.text.primary, fontSize: typography.sizes.lg },
         ]}
       >
         Transactions

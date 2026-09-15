@@ -70,7 +70,7 @@ export function SavingGoalsWidget() {
             size="sm"
             fw={500}
             style={{
-              color: colors.primary,
+              color: colors.accent.primary,
               cursor: 'pointer',
               textDecoration: 'none',
               display: 'block',
@@ -99,9 +99,9 @@ export function SavingGoalsWidget() {
                   style={{
                     borderRadius: '8px',
                     backgroundColor: isComplete
-                      ? `${colors.support}12`
-                      : colors.surface,
-                    border: `1px solid ${isComplete ? `${colors.support}40` : colors.paleGrey}`,
+                      ? `${colors.support.primary}12`
+                      : colors.surface.background.secondary,
+                    border: `1px solid ${isComplete ? `${colors.support.primary}40` : colors.neutral.paleGrey}`,
                   }}
                 >
                   <Group justify="space-between" mb="xs">
@@ -109,7 +109,9 @@ export function SavingGoalsWidget() {
                       <IconFlag
                         size={14}
                         style={{
-                          color: isComplete ? colors.support : colors.primary,
+                          color: isComplete
+                            ? colors.support.primary
+                            : colors.accent.primary,
                         }}
                       />
                       <Text fw={600} size="sm">
@@ -119,7 +121,9 @@ export function SavingGoalsWidget() {
                     <Text
                       size="xs"
                       fw={500}
-                      style={{ color: isComplete ? colors.support : undefined }}
+                      style={{
+                        color: isComplete ? colors.support.primary : undefined,
+                      }}
                       c={isComplete ? undefined : 'dimmed'}
                     >
                       {goal.progressPercentage.toFixed(0)}%
@@ -146,7 +150,9 @@ export function SavingGoalsWidget() {
                       size="xs"
                       fw={600}
                       style={{
-                        color: isComplete ? colors.support : colors.primary,
+                        color: isComplete
+                          ? colors.support.primary
+                          : colors.accent.primary,
                       }}
                     >
                       {Money.fromCurrencyCode({
@@ -169,7 +175,10 @@ export function SavingGoalsWidget() {
       ) : (
         <Center h={150}>
           <Stack gap="xs" align="center">
-            <IconPigMoney size={48} style={{ color: colors.paleGrey }} />
+            <IconPigMoney
+              size={48}
+              style={{ color: colors.neutral.paleGrey }}
+            />
             <Text size="sm" c="dimmed" ta="center">
               No saving goals found.
             </Text>

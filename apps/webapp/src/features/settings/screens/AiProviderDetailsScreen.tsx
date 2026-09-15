@@ -285,8 +285,8 @@ export function AiProviderDetailsScreen({
             icon={<IconAlertTriangle size={20} strokeWidth={1.5} />}
             styles={{
               root: {
-                backgroundColor: `color-mix(in oklab, ${colors.error} 8%, ${colors.white})`,
-                border: `1px solid color-mix(in oklab, ${colors.error} 28%, ${colors.white})`,
+                backgroundColor: `color-mix(in oklab, ${colors.status.error} 8%, ${colors.neutral.white})`,
+                border: `1px solid color-mix(in oklab, ${colors.status.error} 28%, ${colors.neutral.white})`,
               },
             }}
           >

@@ -8,14 +8,14 @@ function getAvatarColor(
   colors: ReturnType<typeof useTheme>['colors'],
 ): string {
   const avatarColors = [
-    colors.primary,
-    colors.support,
-    colors.secondary,
-    colors.error,
-    colors.darkAccent,
-    colors.aquaAccent,
-    colors.darkSupport,
-    colors.midGrey,
+    colors.accent.primary,
+    colors.support.primary,
+    colors.accent.secondary,
+    colors.status.error,
+    colors.accent.dark,
+    colors.accent.aqua,
+    colors.support.dark,
+    colors.neutral.midGrey,
   ];
 
   return avatarColors[text.charCodeAt(0) % avatarColors.length];
@@ -41,7 +41,7 @@ function CategoryLabel({ categoryId }: { categoryId: string | null }) {
   const { colors } = useTheme();
   const { category } = useCategory(categoryId);
   return category ? (
-    <Text style={[styles.metaText, { color: colors.textSecondary }]}>
+    <Text style={[styles.metaText, { color: colors.text.secondary }]}>
       {category.name}
     </Text>
   ) : null;
@@ -59,9 +59,11 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
       {/* Avatar */}
       <View style={[styles.avatar, { backgroundColor: avatarBg }]}>
         {isIncome ? (
-          <Text style={[styles.avatarIcon, { color: colors.white }]}>↑</Text>
+          <Text style={[styles.avatarIcon, { color: colors.neutral.white }]}>
+            ↑
+          </Text>
         ) : (
-          <Text style={[styles.avatarLetter, { color: colors.white }]}>
+          <Text style={[styles.avatarLetter, { color: colors.neutral.white }]}>
             {initial}
           </Text>
         )}
@@ -72,7 +74,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
         <Text
           style={[
             styles.description,
-            { color: colors.text, fontSize: typography.sizes.sm },
+            { color: colors.text.primary, fontSize: typography.sizes.sm },
           ]}
           numberOfLines={1}
         >
@@ -81,14 +83,14 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
         <View style={styles.metaRow}>
           <CategoryLabel categoryId={transaction.categoryId} />
           {transaction.categoryId && (
-            <Text style={[styles.metaText, { color: colors.textSecondary }]}>
+            <Text style={[styles.metaText, { color: colors.text.secondary }]}>
               {' · '}
             </Text>
           )}
           <Text
             style={[
               styles.metaText,
-              { color: colors.textSecondary, fontSize: typography.sizes.xs },
+              { color: colors.text.secondary, fontSize: typography.sizes.xs },
             ]}
           >
             {formatDate(transaction.date)}
@@ -101,7 +103,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
         style={[
           styles.amount,
           {
-            color: isIncome ? colors.support : colors.error,
+            color: isIncome ? colors.support.primary : colors.status.error,
             fontSize: typography.sizes.sm,
           },
         ]}

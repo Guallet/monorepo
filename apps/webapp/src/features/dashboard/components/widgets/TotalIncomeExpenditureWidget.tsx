@@ -95,17 +95,24 @@ export function TotalIncomeExpenditureWidget({
               p="md"
               style={{
                 borderRadius: '8px',
-                backgroundColor: `${colors.support}12`,
-                border: `1px solid ${colors.support}40`,
+                backgroundColor: `${colors.support.primary}12`,
+                border: `1px solid ${colors.support.primary}40`,
               }}
             >
               <Group gap="xs" mb="xs">
-                <IconArrowUp size={20} style={{ color: colors.support }} />
+                <IconArrowUp
+                  size={20}
+                  style={{ color: colors.support.primary }}
+                />
                 <Text size="xs" c="dimmed" fw={600} tt="uppercase">
                   Income
                 </Text>
               </Group>
-              <Text size="xl" fw={700} style={{ color: colors.support }}>
+              <Text
+                size="xl"
+                fw={700}
+                style={{ color: colors.support.primary }}
+              >
                 {Money.fromCurrencyCode({
                   amount: income,
                   currencyCode: currencyCode,
@@ -117,17 +124,20 @@ export function TotalIncomeExpenditureWidget({
               p="md"
               style={{
                 borderRadius: '8px',
-                backgroundColor: `${colors.error}12`,
-                border: `1px solid ${colors.error}40`,
+                backgroundColor: `${colors.status.error}12`,
+                border: `1px solid ${colors.status.error}40`,
               }}
             >
               <Group gap="xs" mb="xs">
-                <IconArrowDown size={20} style={{ color: colors.error }} />
+                <IconArrowDown
+                  size={20}
+                  style={{ color: colors.status.error }}
+                />
                 <Text size="xs" c="dimmed" fw={600} tt="uppercase">
                   Expenditure
                 </Text>
               </Group>
-              <Text size="xl" fw={700} style={{ color: colors.error }}>
+              <Text size="xl" fw={700} style={{ color: colors.status.error }}>
                 {Money.fromCurrencyCode({
                   amount: expenditure,
                   currencyCode: currencyCode,

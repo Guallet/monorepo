@@ -31,7 +31,7 @@ export function TextInput({
           style={[
             styles.label,
             {
-              color: colors.text,
+              color: colors.text.primary,
               fontSize: typography.sizes.md,
               marginBottom: spacing.xs,
             },
@@ -45,15 +45,17 @@ export function TextInput({
         style={[
           styles.inputContainer,
           {
-            backgroundColor: colors.inputBackground,
-            borderColor: hasError ? colors.error : colors.inputBorder,
+            backgroundColor: colors.surface.background.input,
+            borderColor: hasError
+              ? colors.status.error
+              : colors.surface.border.input,
             borderRadius: borderRadius.lg,
             paddingHorizontal: spacing.md,
             paddingVertical: spacing.sm,
           },
-          hasError && { backgroundColor: colors.errorBackground },
+          hasError && { backgroundColor: colors.surface.background.error },
           disabled && {
-            backgroundColor: colors.disabled,
+            backgroundColor: colors.surface.background.disabled,
             opacity: 0.6,
           },
         ]}
@@ -61,11 +63,11 @@ export function TextInput({
         <RNTextInput
           style={[
             styles.input,
-            { color: colors.text, fontSize: typography.sizes.md },
+            { color: colors.text.primary, fontSize: typography.sizes.md },
             style,
           ]}
           placeholder={placeholder}
-          placeholderTextColor={colors.placeholder}
+          placeholderTextColor={colors.text.placeholder}
           editable={!disabled}
           {...props}
         />
@@ -76,7 +78,7 @@ export function TextInput({
           style={[
             styles.description,
             {
-              color: colors.textSecondary,
+              color: colors.text.secondary,
               fontSize: typography.sizes.sm,
               marginTop: spacing.xs,
             },
@@ -91,7 +93,7 @@ export function TextInput({
           style={[
             styles.error,
             {
-              color: colors.error,
+              color: colors.status.error,
               fontSize: typography.sizes.sm,
               marginTop: spacing.xs,
             },

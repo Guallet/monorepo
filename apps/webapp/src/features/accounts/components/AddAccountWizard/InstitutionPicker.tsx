@@ -46,11 +46,11 @@ export function InstitutionPicker({
         style={{
           width: '100%',
           padding: `${spacing.sm}px ${spacing.md}px`,
-          border: `1.5px solid ${open ? colors.primary : colors.midGrey}`,
+          border: `1.5px solid ${open ? colors.accent.primary : colors.neutral.midGrey}`,
           borderRadius: borderRadius.sm,
-          background: colors.white,
+          background: colors.neutral.white,
           boxShadow: open
-            ? `0 0 0 3px color-mix(in oklab, ${colors.primary} 14%, ${colors.white})`
+            ? `0 0 0 3px color-mix(in oklab, ${colors.accent.primary} 14%, ${colors.neutral.white})`
             : undefined,
           display: 'flex',
           alignItems: 'center',
@@ -76,7 +76,7 @@ export function InstitutionPicker({
         )}
         <IconChevronDown
           size={14}
-          color={colors.midGrey}
+          color={colors.neutral.midGrey}
           style={{
             transform: open ? 'rotate(180deg)' : undefined,
             transition: 'transform 200ms',
@@ -95,11 +95,14 @@ export function InstitutionPicker({
             left: 0,
             right: 0,
             zIndex: 200,
-            border: `1.5px solid ${colors.paleGrey}`,
+            border: `1.5px solid ${colors.neutral.paleGrey}`,
             overflow: 'hidden',
           }}
         >
-          <Box p="xs" style={{ borderBottom: `1px solid ${colors.paleGrey}` }}>
+          <Box
+            p="xs"
+            style={{ borderBottom: `1px solid ${colors.neutral.paleGrey}` }}
+          >
             <TextInput
               autoFocus
               placeholder={t(
@@ -144,9 +147,9 @@ export function InstitutionPicker({
                   gap: spacing.sm,
                   background:
                     value === inst.id
-                      ? `color-mix(in oklab, ${colors.primary} 7%, ${colors.white})`
+                      ? `color-mix(in oklab, ${colors.accent.primary} 7%, ${colors.neutral.white})`
                       : undefined,
-                  borderTop: `1px solid ${colors.paleGrey}`,
+                  borderTop: `1px solid ${colors.neutral.paleGrey}`,
                 }}
                 onClick={() => {
                   onChange(inst.id);
@@ -159,7 +162,7 @@ export function InstitutionPicker({
                   {inst.name}
                 </Text>
                 {value === inst.id && (
-                  <IconCheck size={14} color={colors.primary} />
+                  <IconCheck size={14} color={colors.accent.primary} />
                 )}
               </UnstyledButton>
             ))}

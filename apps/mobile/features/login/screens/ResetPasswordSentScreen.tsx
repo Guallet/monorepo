@@ -30,7 +30,11 @@ export function ResetPasswordSentScreen() {
       <Stack style={{ flex: 1, padding: spacing.md }} gap={spacing.lg}>
         <View style={styles.content}>
           <View style={styles.iconContainer}>
-            <Ionicons name="mail-outline" size={64} color={colors.primary} />
+            <Ionicons
+              name="mail-outline"
+              size={64}
+              color={colors.accent.primary}
+            />
           </View>
 
           <Title center>Check your email</Title>

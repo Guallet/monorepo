@@ -314,10 +314,10 @@ export function RuleForm({
                   onDrop={(e) => handleDrop(e, condition)}
                   style={{
                     cursor: 'grab',
-                    border: `1px solid ${colors.paleGrey}`,
+                    border: `1px solid ${colors.neutral.paleGrey}`,
                     borderRadius: borderRadius.lg,
                     padding: spacing.md,
-                    backgroundColor: colors.white,
+                    backgroundColor: colors.neutral.white,
                     opacity: draggedCondition?.id === condition.id ? 0.5 : 1,
                   }}
                 >
@@ -491,7 +491,7 @@ export function RuleForm({
           </Button>
         </Stack>
         <Group justify="space-between" gap={spacing.xs} visibleFrom="sm">
-          <Group gap={spacing.xs} style={{ color: colors.midGrey }}>
+          <Group gap={spacing.xs} style={{ color: colors.neutral.midGrey }}>
             <IconArrowRight size={16} strokeWidth={1.5} />
             <Text size="sm">
               {t(

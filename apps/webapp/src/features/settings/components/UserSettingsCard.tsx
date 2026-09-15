@@ -61,8 +61,8 @@ export function UserSettingsCard() {
           color="red"
           leftSection={<IconLogout size={16} strokeWidth={1.5} />}
           style={{
-            borderColor: colors.error,
-            color: colors.error,
+            borderColor: colors.status.error,
+            color: colors.status.error,
             alignSelf: 'flex-start',
           }}
           onClick={() => {

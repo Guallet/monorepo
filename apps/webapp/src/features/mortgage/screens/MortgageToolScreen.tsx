@@ -110,7 +110,7 @@ function MetricCard({
           size="xl"
           style={{
             fontVariantNumeric: 'tabular-nums',
-            color: tone === 'positive' ? colors.support : undefined,
+            color: tone === 'positive' ? colors.support.primary : undefined,
           }}
         >
           {value}

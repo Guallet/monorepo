@@ -27,9 +27,9 @@ export function BankRow({
         alignItems: 'center',
         gap: spacing.md,
         padding: `${spacing.md}px`,
-        borderBottom: last ? 'none' : `1px solid ${colors.paleGrey}`,
+        borderBottom: last ? 'none' : `1px solid ${colors.neutral.paleGrey}`,
         background: selected
-          ? `color-mix(in oklab, ${colors.primary} 7%, ${colors.white})`
+          ? `color-mix(in oklab, ${colors.accent.primary} 7%, ${colors.neutral.white})`
           : undefined,
         transition: 'background 100ms',
       }}
@@ -40,12 +40,12 @@ export function BankRow({
       <Text
         size="sm"
         fw={selected ? 700 : 500}
-        c={selected ? colors.primary : undefined}
+        c={selected ? colors.accent.primary : undefined}
         style={{ flex: 1 }}
       >
         {bank.name}
       </Text>
-      {selected && <IconCheck size={18} color={colors.primary} />}
+      {selected && <IconCheck size={18} color={colors.accent.primary} />}
     </UnstyledButton>
   );
 }

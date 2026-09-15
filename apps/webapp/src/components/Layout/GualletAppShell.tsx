@@ -13,7 +13,7 @@ export default function GualletAppShell() {
     <AppShell
       header={{ height: 60 }}
       navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      bg={colors.pageBackground}
+      bg={colors.surface.background.page}
       padding="md"
     >
       <AppShell.Header>

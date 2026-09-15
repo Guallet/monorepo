@@ -65,7 +65,7 @@ export function CloseAccountModal({
       closeButtonProps={{}}
       styles={{
         header: {
-          borderBottom: `1px solid ${colors.paleGrey}`,
+          borderBottom: `1px solid ${colors.neutral.paleGrey}`,
           padding: spacing.lg,
         },
         body: {
@@ -80,10 +80,10 @@ export function CloseAccountModal({
           wrap="nowrap"
           p={spacing.lg}
           style={{
-            backgroundColor: `color-mix(in oklab, ${colors.error} 8%, ${colors.white})`,
-            border: `1px solid color-mix(in oklab, ${colors.error} 28%, ${colors.white})`,
+            backgroundColor: `color-mix(in oklab, ${colors.status.error} 8%, ${colors.neutral.white})`,
+            border: `1px solid color-mix(in oklab, ${colors.status.error} 28%, ${colors.neutral.white})`,
             borderRadius: borderRadius.md,
-            color: colors.error,
+            color: colors.status.error,
           }}
         >
           <IconAlertTriangle size={28} strokeWidth={1.5} />
@@ -113,7 +113,7 @@ export function CloseAccountModal({
               fw={700}
               px={spacing.xs}
               style={{
-                backgroundColor: colors.paleGrey,
+                backgroundColor: colors.neutral.paleGrey,
                 borderRadius: borderRadius.sm,
                 fontFamily: typography.fontFamilyMono,
               }}

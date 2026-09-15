@@ -56,13 +56,19 @@ export function CashflowSummaryRow({
         <View
           style={[
             styles.skeletonCard,
-            { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
+            {
+              borderRadius: borderRadius.lg,
+              backgroundColor: colors.surface.background.secondary,
+            },
           ]}
         />
         <View
           style={[
             styles.skeletonCard,
-            { borderRadius: borderRadius.lg, backgroundColor: colors.surface },
+            {
+              borderRadius: borderRadius.lg,
+              backgroundColor: colors.surface.background.secondary,
+            },
           ]}
         />
       </View>
@@ -76,9 +82,9 @@ export function CashflowSummaryRow({
         style={[
           styles.card,
           {
-            backgroundColor: colors.background,
+            backgroundColor: colors.surface.background.primary,
             borderRadius: borderRadius.lg,
-            borderColor: colors.border,
+            borderColor: colors.surface.border.primary,
             padding: spacing.md,
           },
         ]}
@@ -86,7 +92,7 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardLabel,
-            { color: colors.textSecondary, fontSize: typography.sizes.xs },
+            { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
           INCOME · 30D
@@ -94,12 +100,17 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardAmount,
-            { color: colors.support, fontSize: typography.sizes.xl },
+            { color: colors.support.primary, fontSize: typography.sizes.xl },
           ]}
         >
           +{formatCurrency(income, currency)}
         </Text>
-        <View style={[styles.indicator, { backgroundColor: colors.support }]} />
+        <View
+          style={[
+            styles.indicator,
+            { backgroundColor: colors.support.primary },
+          ]}
+        />
       </View>
 
       {/* Expense card */}
@@ -107,9 +118,9 @@ export function CashflowSummaryRow({
         style={[
           styles.card,
           {
-            backgroundColor: colors.background,
+            backgroundColor: colors.surface.background.primary,
             borderRadius: borderRadius.lg,
-            borderColor: colors.border,
+            borderColor: colors.surface.border.primary,
             padding: spacing.md,
           },
         ]}
@@ -117,7 +128,7 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardLabel,
-            { color: colors.textSecondary, fontSize: typography.sizes.xs },
+            { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
           EXPENSE · 30D
@@ -125,12 +136,14 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardAmount,
-            { color: colors.error, fontSize: typography.sizes.xl },
+            { color: colors.status.error, fontSize: typography.sizes.xl },
           ]}
         >
           -{formatCurrency(expense, currency)}
         </Text>
-        <View style={[styles.indicator, { backgroundColor: colors.error }]} />
+        <View
+          style={[styles.indicator, { backgroundColor: colors.status.error }]}
+        />
       </View>
     </View>
   );

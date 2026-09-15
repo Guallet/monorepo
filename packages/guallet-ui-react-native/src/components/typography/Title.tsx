@@ -41,7 +41,7 @@ export function Title({
   const titleStyle = [
     styles.base,
     {
-      color: colors.text,
+      color: colors.text.primary,
       fontSize,
       fontFamily: typography.fontFamily,
       fontWeight: (order <= 2 ? 'bold' : order <= 4 ? '600' : '500') as

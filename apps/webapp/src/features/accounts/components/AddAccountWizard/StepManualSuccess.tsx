@@ -55,11 +55,11 @@ export function StepManualSuccess({
           width: 72,
           height: 72,
           borderRadius: '50%',
-          background: `color-mix(in oklab, ${colors.success} 14%, ${colors.white})`,
-          border: `2px solid color-mix(in oklab, ${colors.success} 30%, ${colors.white})`,
+          background: `color-mix(in oklab, ${colors.status.success} 14%, ${colors.neutral.white})`,
+          border: `2px solid color-mix(in oklab, ${colors.status.success} 30%, ${colors.neutral.white})`,
         }}
       >
-        <IconCheck size={36} color={colors.success} />
+        <IconCheck size={36} color={colors.status.success} />
       </Center>
 
       <Title order={3} ta="center">
@@ -98,7 +98,7 @@ export function StepManualSuccess({
               fontVariantNumeric: 'tabular-nums',
               letterSpacing: '-0.01em',
             }}
-            c={balance < 0 ? colors.error : undefined}
+            c={balance < 0 ? colors.status.error : undefined}
           >
             {balance < 0 ? '−' : ''}
             {currency?.symbol}

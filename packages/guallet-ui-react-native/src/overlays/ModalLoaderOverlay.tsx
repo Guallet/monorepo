@@ -34,21 +34,21 @@ export function ModalLoaderOverlay({
           bottom: 0,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: colors.overlay,
+          backgroundColor: colors.surface.overlay,
         }}
       >
         <View
           style={{
-            backgroundColor: colors.surface,
+            backgroundColor: colors.surface.background.secondary,
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
           }}
         >
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={colors.accent.primary} />
           {loadingMessage && (
             <Label
               style={{
-                color: colors.text,
+                color: colors.text.primary,
                 fontSize: typography.sizes.md,
                 marginTop: spacing.sm,
               }}
