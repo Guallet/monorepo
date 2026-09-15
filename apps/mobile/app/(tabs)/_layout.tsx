@@ -1,8 +1,10 @@
 import { Redirect, Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@guallet/auth';
 import { useTheme } from '@guallet/ui-react-native';
 
@@ -12,7 +14,11 @@ export default function TabLayout() {
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <ThemedView style={styles.loading}>
+        <ThemedText>Loading...</ThemedText>
+      </ThemedView>
+    );
   }
 
   // Only require authentication within the (app) group's layout as users
@@ -75,3 +81,11 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

@@ -17,11 +17,10 @@ export function ThemedText({
 }: ThemedTextProps) {
   const { colors, typography } = useTheme();
   const mode = useThemeMode();
-  const color =
-    mode === 'dark'
-      ? (darkColor ?? colors.text.primary)
-      : (lightColor ?? colors.text.primary);
-  const textColor = type === 'link' ? colors.accent.primary : color;
+  const appearanceColor = mode === 'dark' ? darkColor : lightColor;
+  const textColor =
+    appearanceColor ??
+    (type === 'link' ? colors.accent.primary : colors.text.primary);
   let fontSize = typography.sizes.md;
   if (type === 'title') {
     fontSize = typography.sizes.xxl;
@@ -34,7 +33,6 @@ export function ThemedText({
       style={[
         {
           color: textColor,
-          fontFamily: typography.fontFamily,
           fontSize,
         },
         type === 'default' ? styles.default : undefined,

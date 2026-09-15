@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react-native';
+import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -22,12 +23,7 @@ export function CashflowSummaryRow({
 }: CashflowSummaryRowProps) {
   const { colors, borderRadius, spacing, typography } = useTheme();
 
-  const startDate = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 30);
-    return d;
-  }, []);
-  const endDate = useMemo(() => new Date(), []);
+  const { startDate, endDate } = useDashboardDateRange({ daysAgo: 30 });
 
   const { transactions, isLoading } = useTransactionsWithFilter({
     page: 1,

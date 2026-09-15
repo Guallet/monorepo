@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAccounts, useAccountCharts } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react-native';
+import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -20,12 +21,8 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
   const { accounts, isLoading } = useAccounts();
 
   const firstAccountId = accounts[0]?.id ?? '';
-  const chartStartDate = useMemo(() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - 1);
-    return d;
-  }, []);
-  const chartEndDate = useMemo(() => new Date(), []);
+  const { startDate: chartStartDate, endDate: chartEndDate } =
+    useDashboardDateRange({ yearsAgo: 1 });
 
   const { data: chartData } = useAccountCharts(
     firstAccountId,

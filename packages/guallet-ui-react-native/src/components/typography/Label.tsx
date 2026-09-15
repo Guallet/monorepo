@@ -33,7 +33,6 @@ export function Label({
   const labelStyles = [
     {
       color: color ?? colors.text.primary,
-      fontFamily: typography.fontFamily,
       fontSize: typeof _size === 'number' ? _size : typography.sizes[_size],
     },
     props.style,
