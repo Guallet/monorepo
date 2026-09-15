@@ -42,6 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         image: './assets/images/splash-icon.png',
         imageWidth: 200,
         resizeMode: 'contain',
+        // Native splash fallback colors are outside the runtime theme.
         backgroundColor: '#ffffff',
         dark: {
           backgroundColor: '#000000',

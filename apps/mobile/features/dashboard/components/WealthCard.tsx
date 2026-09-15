@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAccounts, useAccountCharts } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react-native';
+import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -20,16 +21,13 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
   const { accounts, isLoading } = useAccounts();
 
   const firstAccountId = accounts[0]?.id ?? '';
-  const chartStartDate = useMemo(() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - 1);
-    return d;
-  }, []);
+  const { startDate: chartStartDate, endDate: chartEndDate } =
+    useDashboardDateRange({ yearsAgo: 1 });
 
   const { data: chartData } = useAccountCharts(
     firstAccountId,
     chartStartDate,
-    new Date(),
+    chartEndDate,
   );
 
   const totalWealth = useMemo(
@@ -61,7 +59,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <View
         style={[
           styles.skeleton,
-          { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+          {
+            borderRadius: borderRadius.lg,
+            backgroundColor: colors.surface.background.secondary,
+          },
         ]}
       />
     );
@@ -74,7 +75,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       style={[
         styles.card,
         {
-          backgroundColor: colors.primary,
+          backgroundColor: colors.accent.primary,
           borderRadius: borderRadius.lg,
           padding: spacing.lg,
         },
@@ -83,7 +84,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.label,
-          { color: 'rgba(255,255,255,0.75)', fontSize: typography.sizes.xs },
+          {
+            color: colors.button.onPrimaryMuted,
+            fontSize: typography.sizes.xs,
+          },
         ]}
       >
         TOTAL WEALTH
@@ -92,7 +96,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.amount,
-          { color: '#FFFFFF', fontSize: typography.sizes.xxl },
+          { color: colors.button.onPrimary, fontSize: typography.sizes.xxl },
         ]}
       >
         {formatCurrency(totalWealth, displayCurrency)}
@@ -102,7 +106,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
         <Text
           style={[
             styles.delta,
-            { color: 'rgba(255,255,255,0.85)', fontSize: typography.sizes.sm },
+            {
+              color: colors.button.onPrimaryMuted,
+              fontSize: typography.sizes.sm,
+            },
           ]}
         >
           {isDeltaPositive ? '↑' : '↓'} {isDeltaPositive ? '+' : ''}
@@ -119,8 +126,8 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
               {
                 height: Math.max(4, bar.ratio * 36),
                 backgroundColor: bar.isLast
-                  ? '#FFFFFF'
-                  : 'rgba(255,255,255,0.30)',
+                  ? colors.button.onPrimary
+                  : colors.button.onPrimaryMuted,
                 borderRadius: borderRadius.xs,
               },
             ]}

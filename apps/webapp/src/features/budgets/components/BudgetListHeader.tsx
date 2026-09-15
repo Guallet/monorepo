@@ -48,9 +48,9 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
     }, [budgets]);
 
   const getProgressColor = (percent: number): string => {
-    if (percent >= 100) return colors.error;
-    if (percent >= 80) return colors.warning;
-    return colors.support;
+    if (percent >= 100) return colors.status.error;
+    if (percent >= 80) return colors.status.warning;
+    return colors.support.primary;
   };
 
   const progressColor = getProgressColor(overallPercent);
@@ -125,7 +125,7 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
             fw={700}
             style={{
               fontVariantNumeric: 'tabular-nums',
-              color: colors.error,
+              color: colors.status.error,
             }}
           >
             {formatAmount(totalSpent)}
@@ -140,7 +140,8 @@ export function BudgetListHeader({ budgets }: Readonly<BudgetListHeaderProps>) {
             fw={700}
             style={{
               fontVariantNumeric: 'tabular-nums',
-              color: remaining >= 0 ? colors.support : colors.error,
+              color:
+                remaining >= 0 ? colors.support.primary : colors.status.error,
             }}
           >
             {formatAmount(Math.abs(remaining))}

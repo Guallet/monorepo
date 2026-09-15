@@ -44,7 +44,9 @@ export function TotalWealthWidget() {
         <Stack gap={spacing.md} align="center" justify="center" h="100%">
           {balances.map((balance) => {
             const isPositive = balance.amount >= 0;
-            const moneyColor = isPositive ? colors.support : colors.error;
+            const moneyColor = isPositive
+              ? colors.support.primary
+              : colors.status.error;
             return (
               <Box
                 key={balance.currency.code}

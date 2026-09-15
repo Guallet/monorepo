@@ -33,18 +33,27 @@ export function WizardProgress({
                   width: 28,
                   height: 28,
                   borderRadius: '50%',
-                  background: done || active ? colors.primary : colors.paleGrey,
-                  border: active ? `2px solid ${colors.primary}` : 'none',
+                  background:
+                    done || active
+                      ? colors.accent.primary
+                      : colors.neutral.paleGrey,
+                  border: active
+                    ? `2px solid ${colors.accent.primary}`
+                    : 'none',
                   boxShadow: active
-                    ? `0 0 0 4px color-mix(in oklab, ${colors.primary} 18%, ${colors.white})`
+                    ? `0 0 0 4px color-mix(in oklab, ${colors.accent.primary} 18%, ${colors.neutral.white})`
                     : undefined,
                   transition: 'all 200ms',
                 }}
               >
                 {done ? (
-                  <IconCheck size={12} color={colors.white} />
+                  <IconCheck size={12} color={colors.neutral.white} />
                 ) : (
-                  <Text size="xs" fw={700} c={active ? colors.white : 'dimmed'}>
+                  <Text
+                    size="xs"
+                    fw={700}
+                    c={active ? colors.neutral.white : 'dimmed'}
+                  >
                     {i + 1}
                   </Text>
                 )}
@@ -52,7 +61,7 @@ export function WizardProgress({
               <Text
                 size="xs"
                 fw={active ? 600 : 400}
-                c={active ? colors.primary : 'dimmed'}
+                c={active ? colors.accent.primary : 'dimmed'}
                 style={{ whiteSpace: 'nowrap' }}
               >
                 {label}
@@ -64,7 +73,9 @@ export function WizardProgress({
                   flex: 1,
                   height: 2,
                   margin: `${spacing.md - 2}px ${spacing.xs}px 0`,
-                  background: done ? colors.primary : colors.paleGrey,
+                  background: done
+                    ? colors.accent.primary
+                    : colors.neutral.paleGrey,
                   minWidth: 16,
                   transition: 'background 300ms',
                 }}

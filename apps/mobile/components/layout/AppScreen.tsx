@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
-import { ModalLoaderOverlay } from '@guallet/ui-react-native';
+import { ModalLoaderOverlay, useTheme } from '@guallet/ui-react-native';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {
   isLoading?: boolean;
@@ -19,11 +19,15 @@ export function AppScreen({
   isHeaderVisible = true,
   ...props
 }: Readonly<AppScreenProps>) {
+  const { colors } = useTheme();
   const combinedHeaderOptions: NativeStackNavigationOptions = {
     headerTitleAlign: 'center',
     ...(headerTitle && headerTitle !== '' && { title: headerTitle }),
     headerShown: isHeaderVisible,
     headerShadowVisible: false,
+    headerStyle: { backgroundColor: colors.surface.background.primary },
+    headerTintColor: colors.text.primary,
+    headerTitleStyle: { color: colors.text.primary },
     ...headerOptions,
   };
 
@@ -32,6 +36,7 @@ export function AppScreen({
       style={[
         {
           flex: 1,
+          backgroundColor: colors.surface.background.page,
         },
         props.style,
       ]}

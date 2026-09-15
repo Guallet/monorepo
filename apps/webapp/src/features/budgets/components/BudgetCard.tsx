@@ -25,9 +25,9 @@ function spendingColor(
   percent: number,
   colors: ReturnType<typeof useTheme>['colors'],
 ): string {
-  if (percent >= 100) return colors.error;
-  if (percent >= 80) return colors.warning;
-  return colors.support;
+  if (percent >= 100) return colors.status.error;
+  if (percent >= 80) return colors.status.warning;
+  return colors.support.primary;
 }
 
 export function BudgetCard({
@@ -89,7 +89,7 @@ export function BudgetCard({
             width: 40,
             height: 40,
             borderRadius: 10,
-            backgroundColor: budget.colour ?? colors.primary,
+            backgroundColor: budget.colour ?? colors.accent.primary,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

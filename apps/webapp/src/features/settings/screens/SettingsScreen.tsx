@@ -209,8 +209,8 @@ export function SettingsScreen() {
                 leftSection={<IconTrash size={16} strokeWidth={1.5} />}
                 onClick={closeAccountModal.open}
                 style={{
-                  borderColor: colors.error,
-                  color: colors.error,
+                  borderColor: colors.status.error,
+                  color: colors.status.error,
                   alignSelf: 'flex-start',
                 }}
               >

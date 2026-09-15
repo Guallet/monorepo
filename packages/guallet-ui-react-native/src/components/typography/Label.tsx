@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { LunaFontSize } from './../../theme/typography';
+import { useTheme } from '../../theme';
 
 interface LabelProps extends React.ComponentProps<typeof Text> {
   color?: string;
@@ -28,21 +29,19 @@ export function Label({
   children,
   ...props
 }: Readonly<LabelProps>) {
-  if (color) {
-    const baseStyles = Array.isArray(props.style) ? props.style : [props.style];
-    (props as unknown as React.ComponentProps<typeof Text>).style = [
-      { color },
-      ...baseStyles,
-    ];
-  }
+  const { colors, typography } = useTheme();
+  const labelStyles = [
+    {
+      color: color ?? colors.text.primary,
+      fontSize: typeof _size === 'number' ? _size : typography.sizes[_size],
+    },
+    props.style,
+    center && { textAlign: 'center' as const },
+  ];
 
-  if (center) {
-    const baseStyles = Array.isArray(props.style) ? props.style : [props.style];
-    (props as unknown as React.ComponentProps<typeof Text>).style = [
-      { textAlign: 'center' },
-      ...baseStyles,
-    ];
-  }
-
-  return <Text {...props}>{children}</Text>;
+  return (
+    <Text {...props} style={labelStyles}>
+      {children}
+    </Text>
+  );
 }

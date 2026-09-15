@@ -41,15 +41,16 @@ function NotificationRow({
 }: Readonly<{ notification: NotificationDto }>) {
   const { colors } = useTheme();
   const IconComponent = NOTIFICATION_ICONS[notification.type] ?? IconInfoCircle;
-  const iconColor = NOTIFICATION_COLORS[notification.type] ?? colors.primary;
+  const iconColor =
+    NOTIFICATION_COLORS[notification.type] ?? colors.accent.primary;
 
   return (
     <Box
       p="sm"
       style={{
         borderRadius: '8px',
-        backgroundColor: colors.surface,
-        border: `1px solid ${colors.paleGrey}`,
+        backgroundColor: colors.surface.background.secondary,
+        border: `1px solid ${colors.neutral.paleGrey}`,
         opacity: notification.isRead ? 0.6 : 1,
       }}
     >
@@ -103,7 +104,7 @@ export function NotificationsWidget() {
           size="sm"
           fw={500}
           style={{
-            color: colors.primary,
+            color: colors.accent.primary,
             cursor: 'pointer',
             textDecoration: 'none',
             display: 'block',
@@ -126,12 +127,12 @@ export function NotificationsWidget() {
               p="sm"
               style={{
                 borderRadius: '8px',
-                backgroundColor: `${colors.primary}12`,
-                border: `1px solid ${colors.primary}40`,
+                backgroundColor: `${colors.accent.primary}12`,
+                border: `1px solid ${colors.accent.primary}40`,
                 textAlign: 'center',
               }}
             >
-              <Text size="sm" fw={600} style={{ color: colors.primary }}>
+              <Text size="sm" fw={600} style={{ color: colors.accent.primary }}>
                 {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
               </Text>
             </Box>
@@ -157,7 +158,7 @@ export function NotificationsWidget() {
       ) : (
         <Center h={150}>
           <Stack gap="xs" align="center">
-            <IconBell size={48} style={{ color: colors.paleGrey }} />
+            <IconBell size={48} style={{ color: colors.neutral.paleGrey }} />
             <Text size="sm" c="dimmed" ta="center">
               No new notifications.
             </Text>

@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react-native';
+import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -22,17 +23,13 @@ export function CashflowSummaryRow({
 }: CashflowSummaryRowProps) {
   const { colors, borderRadius, spacing, typography } = useTheme();
 
-  const startDate = useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 30);
-    return d;
-  }, []);
+  const { startDate, endDate } = useDashboardDateRange({ daysAgo: 30 });
 
   const { transactions, isLoading } = useTransactionsWithFilter({
     page: 1,
     pageSize: 500,
     startDate,
-    endDate: new Date(),
+    endDate,
   });
 
   const { income, expense } = useMemo(() => {
@@ -42,9 +39,12 @@ export function CashflowSummaryRow({
       if (t.amount > 0) inc += t.amount;
       else exp += Math.abs(t.amount);
     }
-    if (onMonthDeltaChange) onMonthDeltaChange(inc - exp);
     return { income: inc, expense: exp };
-  }, [transactions, onMonthDeltaChange]);
+  }, [transactions]);
+
+  useEffect(() => {
+    onMonthDeltaChange?.(income - expense);
+  }, [expense, income, onMonthDeltaChange]);
 
   if (isLoading) {
     return (
@@ -52,13 +52,19 @@ export function CashflowSummaryRow({
         <View
           style={[
             styles.skeletonCard,
-            { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+            {
+              borderRadius: borderRadius.lg,
+              backgroundColor: colors.surface.background.secondary,
+            },
           ]}
         />
         <View
           style={[
             styles.skeletonCard,
-            { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+            {
+              borderRadius: borderRadius.lg,
+              backgroundColor: colors.surface.background.secondary,
+            },
           ]}
         />
       </View>
@@ -72,9 +78,9 @@ export function CashflowSummaryRow({
         style={[
           styles.card,
           {
-            backgroundColor: colors.background,
+            backgroundColor: colors.surface.background.primary,
             borderRadius: borderRadius.lg,
-            borderColor: colors.paleGrey,
+            borderColor: colors.surface.border.primary,
             padding: spacing.md,
           },
         ]}
@@ -82,7 +88,7 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardLabel,
-            { color: colors.midGrey, fontSize: typography.sizes.xs },
+            { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
           INCOME · 30D
@@ -90,12 +96,17 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardAmount,
-            { color: colors.support, fontSize: typography.sizes.xl },
+            { color: colors.support.primary, fontSize: typography.sizes.xl },
           ]}
         >
           +{formatCurrency(income, currency)}
         </Text>
-        <View style={[styles.indicator, { backgroundColor: colors.support }]} />
+        <View
+          style={[
+            styles.indicator,
+            { backgroundColor: colors.support.primary },
+          ]}
+        />
       </View>
 
       {/* Expense card */}
@@ -103,9 +114,9 @@ export function CashflowSummaryRow({
         style={[
           styles.card,
           {
-            backgroundColor: colors.background,
+            backgroundColor: colors.surface.background.primary,
             borderRadius: borderRadius.lg,
-            borderColor: colors.paleGrey,
+            borderColor: colors.surface.border.primary,
             padding: spacing.md,
           },
         ]}
@@ -113,7 +124,7 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardLabel,
-            { color: colors.midGrey, fontSize: typography.sizes.xs },
+            { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
           EXPENSE · 30D
@@ -121,12 +132,14 @@ export function CashflowSummaryRow({
         <Text
           style={[
             styles.cardAmount,
-            { color: colors.error, fontSize: typography.sizes.xl },
+            { color: colors.status.error, fontSize: typography.sizes.xl },
           ]}
         >
           -{formatCurrency(expense, currency)}
         </Text>
-        <View style={[styles.indicator, { backgroundColor: colors.error }]} />
+        <View
+          style={[styles.indicator, { backgroundColor: colors.status.error }]}
+        />
       </View>
     </View>
   );

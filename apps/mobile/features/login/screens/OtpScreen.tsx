@@ -14,7 +14,7 @@ import { useAuth } from '@/auth/useAuth';
 
 export function OtpScreen() {
   const router = useRouter();
-  const { colors } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const { verifyOtpCode, getOtpCode } = useAuth();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? '';
@@ -67,7 +67,7 @@ export function OtpScreen() {
   return (
     <AppScreen headerTitle="Enter code" isLoading={isLoading}>
       {/* Content */}
-      <View style={{ flex: 1, padding: 16 }}>
+      <View style={{ flex: 1, padding: spacing.md }}>
         <Title>Check your email</Title>
         <Label>
           We&apos;ve sent a 6-digit code to{' '}
@@ -78,13 +78,19 @@ export function OtpScreen() {
           )}
           . Enter the code below to sign in.
         </Label>
-        <Label style={{ marginTop: 8 }}>This code expires in 5 minutes.</Label>
+        <Label style={{ marginTop: spacing.sm }}>
+          The email also contains a magic link you can click to sign in
+          automatically.
+        </Label>
+        <Label style={{ marginTop: spacing.sm }}>
+          This code expires in 5 minutes.
+        </Label>
 
         {/* Code Input */}
         <OtpInput
           length={6}
           style={{
-            marginVertical: 24,
+            marginVertical: spacing.lg,
           }}
           onCodeChanged={(newCode) => {
             setCode(newCode);
@@ -92,17 +98,46 @@ export function OtpScreen() {
           }}
         />
 
-        {error && <Text style={styles.errorText}>{error}</Text>}
+        {error && (
+          <Text
+            style={[
+              styles.errorText,
+              {
+                color: colors.status.error,
+                fontSize: typography.sizes.sm,
+                marginBottom: spacing.md,
+              },
+            ]}
+          >
+            {error}
+          </Text>
+        )}
 
         <Button onClick={handleVerifyCode} disabled={!isCodeComplete}>
           Verify code
         </Button>
 
         {/* Resend Code */}
-        <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Didn&apos;t receive the code?</Text>
+        <View style={[styles.resendContainer, { marginTop: spacing.lg }]}>
+          <Text
+            style={[
+              styles.resendText,
+              {
+                color: colors.text.secondary,
+                fontSize: typography.sizes.md,
+                marginBottom: spacing.sm,
+              },
+            ]}
+          >
+            Didn&apos;t receive the code?
+          </Text>
           <TouchableOpacity onPress={handleResendCode}>
-            <Text style={[styles.resendButton, { color: colors.primary }]}>
+            <Text
+              style={[
+                styles.resendButton,
+                { color: colors.accent.primary, fontSize: typography.sizes.md },
+              ]}
+            >
               Resend code
             </Text>
           </TouchableOpacity>
@@ -110,11 +145,7 @@ export function OtpScreen() {
       </View>
 
       {/* Bottom Button */}
-      <View
-        style={{
-          padding: 24,
-        }}
-      >
+      <View style={{ padding: spacing.lg }}>
         <Button variant="outline" onClick={handleOpenEmailApp}>
           Open email app
         </Button>
@@ -126,22 +157,13 @@ export function OtpScreen() {
 const styles = StyleSheet.create({
   resendContainer: {
     alignItems: 'center',
-    marginTop: 24,
   },
-  resendText: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
-  },
+  resendText: {},
   resendButton: {
-    fontSize: 16,
     fontWeight: '500',
     textDecorationLine: 'underline',
   },
   errorText: {
-    fontSize: 14,
-    color: '#EF4444',
     textAlign: 'center',
-    marginBottom: 16,
   },
 });

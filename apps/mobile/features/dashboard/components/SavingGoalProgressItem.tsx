@@ -29,7 +29,7 @@ export function SavingGoalProgressItem({
         <Text
           style={[
             styles.name,
-            { color: colors.black, fontSize: typography.sizes.sm },
+            { color: colors.text.primary, fontSize: typography.sizes.sm },
           ]}
           numberOfLines={1}
         >
@@ -38,7 +38,7 @@ export function SavingGoalProgressItem({
         <Text
           style={[
             styles.amounts,
-            { color: colors.midGrey, fontSize: typography.sizes.xs },
+            { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
           {formatCurrency(goal.currentAmount, currency)} /{' '}
@@ -46,15 +46,20 @@ export function SavingGoalProgressItem({
         </Text>
       </View>
 
-      <View style={[styles.track, { backgroundColor: colors.paleGrey }]}>
+      <View
+        style={[
+          styles.track,
+          { backgroundColor: colors.surface.border.primary },
+        ]}
+      >
         <View
           style={[
             styles.fill,
             {
               width: `${progressPct}%`,
               backgroundColor: goal.isCompleted
-                ? colors.success
-                : colors.support,
+                ? colors.status.success
+                : colors.support.primary,
             },
           ]}
         />

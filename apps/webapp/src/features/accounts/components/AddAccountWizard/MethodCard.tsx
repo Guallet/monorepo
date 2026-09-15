@@ -34,7 +34,7 @@ export function MethodCard({
         radius="lg"
         p="lg"
         style={{
-          border: `2px solid ${hovered ? colors.primary : colors.paleGrey}`,
+          border: `2px solid ${hovered ? colors.accent.primary : colors.neutral.paleGrey}`,
           boxShadow: hovered
             ? '0 4px 16px rgba(0,0,0,0.10)'
             : '0 1px 4px rgba(0,0,0,0.06)',
@@ -57,8 +57,8 @@ export function MethodCard({
                   style={{
                     padding: `${spacing.xs / 2}px ${spacing.sm}px`,
                     borderRadius: borderRadius.xl,
-                    background: `color-mix(in oklab, ${colors.support} 14%, ${colors.white})`,
-                    color: colors.darkSupport,
+                    background: `color-mix(in oklab, ${colors.support.primary} 14%, ${colors.neutral.white})`,
+                    color: colors.support.dark,
                     letterSpacing: '0.03em',
                   }}
                 >
@@ -72,7 +72,7 @@ export function MethodCard({
           </Box>
           <IconChevronRight
             size={20}
-            color={hovered ? colors.primary : colors.midGrey}
+            color={hovered ? colors.accent.primary : colors.neutral.midGrey}
             style={{ flexShrink: 0, transition: 'color 150ms' }}
           />
         </Group>

@@ -170,7 +170,11 @@ export function RulesListScreen() {
       return (
         <EmptyState
           illustration={
-            <IconListCheck size={48} strokeWidth={1.5} color={colors.midGrey} />
+            <IconListCheck
+              size={48}
+              strokeWidth={1.5}
+              color={colors.neutral.midGrey}
+            />
           }
           title={t(
             'screens.rules.list.emptyState.title',
@@ -238,7 +242,7 @@ export function RulesListScreen() {
             style={{
               cursor: 'grab',
               opacity: draggedItem?.id === rule.id ? 0.5 : 1,
-              backgroundColor: colors.white,
+              backgroundColor: colors.neutral.white,
             }}
           >
             <Group justify="space-between" wrap="nowrap">
@@ -294,7 +298,7 @@ export function RulesListScreen() {
                     <IconArrowRight
                       size={16}
                       strokeWidth={1.5}
-                      color={colors.midGrey}
+                      color={colors.neutral.midGrey}
                     />
                     <Badge size="xs" variant="light">
                       {getCategoryName(rule.resultCategoryId)}
@@ -406,7 +410,7 @@ export function RulesListScreen() {
               <Text size="xs" tt="uppercase" fw={600} c="dimmed">
                 {t('screens.rules.list.summary.active', 'Active')}
               </Text>
-              <Text fz={24} fw={700} mt={spacing.xs} c={colors.support}>
+              <Text fz={24} fw={700} mt={spacing.xs} c={colors.support.primary}>
                 {activeRules}
               </Text>
             </Card>
@@ -414,7 +418,7 @@ export function RulesListScreen() {
               <Text size="xs" tt="uppercase" fw={600} c="dimmed">
                 {t('screens.rules.list.summary.inactive', 'Inactive')}
               </Text>
-              <Text fz={24} fw={700} mt={spacing.xs} c={colors.midGrey}>
+              <Text fz={24} fw={700} mt={spacing.xs} c={colors.neutral.midGrey}>
                 {inactiveRules}
               </Text>
             </Card>

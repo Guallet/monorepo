@@ -76,7 +76,7 @@ export function RecurringPaymentsWidget() {
             size="sm"
             fw={500}
             style={{
-              color: colors.primary,
+              color: colors.accent.primary,
               cursor: 'pointer',
               textDecoration: 'none',
               display: 'block',
@@ -99,15 +99,15 @@ export function RecurringPaymentsWidget() {
             p="sm"
             style={{
               borderRadius: '8px',
-              backgroundColor: `${colors.error}12`,
-              border: `1px solid ${colors.error}40`,
+              backgroundColor: `${colors.status.error}12`,
+              border: `1px solid ${colors.status.error}40`,
               textAlign: 'center',
             }}
           >
             <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
               Monthly outgoing
             </Text>
-            <Text size="xl" fw={700} style={{ color: colors.error }}>
+            <Text size="xl" fw={700} style={{ color: colors.status.error }}>
               {Money.fromCurrencyCode({
                 amount: totalMonthly,
                 currencyCode: recurringPayments[0]?.currency || 'GBP',
@@ -125,8 +125,8 @@ export function RecurringPaymentsWidget() {
                     p="sm"
                     style={{
                       borderRadius: '8px',
-                      backgroundColor: colors.surface,
-                      border: `1px solid ${colors.paleGrey}`,
+                      backgroundColor: colors.surface.background.secondary,
+                      border: `1px solid ${colors.neutral.paleGrey}`,
                     }}
                   >
                     <Group justify="space-between">
@@ -142,7 +142,7 @@ export function RecurringPaymentsWidget() {
                         <Text
                           fw={700}
                           size="sm"
-                          style={{ color: colors.error }}
+                          style={{ color: colors.status.error }}
                         >
                           {Money.fromCurrencyCode({
                             amount: monthly,
@@ -168,7 +168,7 @@ export function RecurringPaymentsWidget() {
       ) : (
         <Center h={100}>
           <Stack gap="xs" align="center">
-            <IconReceipt size={48} style={{ color: colors.paleGrey }} />
+            <IconReceipt size={48} style={{ color: colors.neutral.paleGrey }} />
             <Text size="sm" c="dimmed" ta="center">
               No recurring payments found.
             </Text>

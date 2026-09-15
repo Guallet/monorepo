@@ -11,6 +11,7 @@ export function useAccountCharts(
   const gualletClient = useGualletClient();
 
   const query = useQuery({
+    enabled: !!accountId,
     queryKey: [
       ACCOUNT_CHARTS_QUERY_KEY,
       accountId,
@@ -18,6 +19,7 @@ export function useAccountCharts(
       endDate?.toISOString(),
     ],
     queryFn: async () => {
+      if (!accountId) return null;
       return await gualletClient.accounts.getAccountChartData(
         accountId,
         startDate,

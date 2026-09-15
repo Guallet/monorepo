@@ -23,11 +23,11 @@ export function CancelledView({
             width: 72,
             height: 72,
             borderRadius: '50%',
-            background: colors.paleGrey,
-            border: `2px solid ${colors.midGrey}`,
+            background: colors.neutral.paleGrey,
+            border: `2px solid ${colors.neutral.midGrey}`,
           }}
         >
-          <IconX size={36} color={colors.midGrey} />
+          <IconX size={36} color={colors.neutral.midGrey} />
         </Center>
 
         <Title order={4} ta="center">

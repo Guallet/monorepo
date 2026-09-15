@@ -1,8 +1,13 @@
 import React from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
+import { useTheme } from '../../theme';
+import {
+  titleOrderToSize,
+  type TitleOrder,
+  type TitleSize,
+} from './titleOrderToSize';
 
-export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
-export type TitleSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+export type { TitleOrder, TitleSize } from './titleOrderToSize';
 
 export interface TitleProps extends TextProps {
   lineClamp?: number;
@@ -12,24 +17,6 @@ export interface TitleProps extends TextProps {
   children: React.ReactNode;
   center?: boolean;
 }
-
-const orderToFontSize: Record<TitleOrder, number> = {
-  1: 32,
-  2: 28,
-  3: 24,
-  4: 20,
-  5: 18,
-  6: 16,
-};
-
-const sizeToFontSize: Record<TitleSize, number> = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 20,
-  xl: 24,
-  xxl: 28,
-};
 
 export function Title({
   lineClamp,
@@ -41,11 +28,15 @@ export function Title({
   center = false,
   ...rest
 }: Readonly<TitleProps>) {
-  const fontSize = size ? sizeToFontSize[size] : orderToFontSize[order];
+  const { colors, typography } = useTheme();
+  const fontSize = size
+    ? typography.sizes[size]
+    : typography.sizes[titleOrderToSize[order]];
 
   const titleStyle = [
     styles.base,
     {
+      color: colors.text.primary,
       fontSize,
       fontWeight: (order <= 2 ? 'bold' : order <= 4 ? '600' : '500') as
         | 'bold'
@@ -70,7 +61,6 @@ export function Title({
 
 const styles = StyleSheet.create({
   base: {
-    color: '#000',
     lineHeight: 1.2,
   },
   nowrap: {

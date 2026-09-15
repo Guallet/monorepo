@@ -53,7 +53,7 @@ export function WidgetCard({
     >
       <Group justify="space-between" mb="md">
         <Group gap="xs">
-          {icon && <Box style={{ color: colors.primary }}>{icon}</Box>}
+          {icon && <Box style={{ color: colors.accent.primary }}>{icon}</Box>}
           <Text size="sm" fw={600} tt="uppercase" c="dimmed">
             {title}
           </Text>
@@ -67,7 +67,7 @@ export function WidgetCard({
         <Box
           mt="md"
           pt="sm"
-          style={{ borderTop: `1px solid ${colors.paleGrey}` }}
+          style={{ borderTop: `1px solid ${colors.neutral.paleGrey}` }}
         >
           {footer}
         </Box>

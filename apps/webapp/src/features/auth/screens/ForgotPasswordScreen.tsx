@@ -86,8 +86,8 @@ export function ForgotPasswordScreen({
           width: 52,
           height: 52,
           borderRadius: borderRadius.lg,
-          background: `color-mix(in oklab, ${colors.primary} 12%, white)`,
-          color: colors.primary,
+          background: `color-mix(in oklab, ${colors.accent.primary} 12%, white)`,
+          color: colors.accent.primary,
           display: 'grid',
           placeItems: 'center',
           marginBottom: spacing.md,
@@ -205,14 +205,14 @@ export function ForgotPasswordSentScreen({
             width: 72,
             height: 72,
             borderRadius: '50%',
-            background: `color-mix(in oklab, ${colors.support} 12%, white)`,
-            border: `2px solid color-mix(in oklab, ${colors.support} 28%, white)`,
+            background: `color-mix(in oklab, ${colors.support.primary} 12%, white)`,
+            border: `2px solid color-mix(in oklab, ${colors.support.primary} 28%, white)`,
             display: 'grid',
             placeItems: 'center',
             margin: `0 auto ${spacing.lg}px`,
           }}
         >
-          <IconMailCheck size={36} color={colors.support} />
+          <IconMailCheck size={36} color={colors.support.primary} />
         </Box>
 
         <Text

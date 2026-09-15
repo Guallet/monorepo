@@ -20,7 +20,10 @@ export function RecentTransactionsWidget({
       <View
         style={[
           styles.skeleton,
-          { borderRadius: borderRadius.lg, backgroundColor: colors.paleGrey },
+          {
+            borderRadius: borderRadius.lg,
+            backgroundColor: colors.surface.background.secondary,
+          },
         ]}
       />
     );
@@ -33,9 +36,9 @@ export function RecentTransactionsWidget({
       style={[
         styles.card,
         {
-          backgroundColor: colors.background,
+          backgroundColor: colors.surface.background.primary,
           borderRadius: borderRadius.lg,
-          borderColor: colors.paleGrey,
+          borderColor: colors.surface.border.primary,
           padding: spacing.md,
         },
       ]}
@@ -45,7 +48,7 @@ export function RecentTransactionsWidget({
         <Text
           style={[
             styles.title,
-            { color: colors.black, fontSize: typography.sizes.lg },
+            { color: colors.text.primary, fontSize: typography.sizes.lg },
           ]}
         >
           Recent
@@ -55,7 +58,7 @@ export function RecentTransactionsWidget({
             <Text
               style={[
                 styles.seeAll,
-                { color: colors.primary, fontSize: typography.sizes.sm },
+                { color: colors.accent.primary, fontSize: typography.sizes.sm },
               ]}
             >
               See all
@@ -68,7 +71,7 @@ export function RecentTransactionsWidget({
         <Text
           style={[
             styles.emptyText,
-            { color: colors.midGrey, fontSize: typography.sizes.sm },
+            { color: colors.text.secondary, fontSize: typography.sizes.sm },
           ]}
         >
           No transactions yet
@@ -78,7 +81,10 @@ export function RecentTransactionsWidget({
           <View key={transaction.id}>
             {index > 0 && (
               <View
-                style={[styles.divider, { backgroundColor: colors.paleGrey }]}
+                style={[
+                  styles.divider,
+                  { backgroundColor: colors.surface.border.primary },
+                ]}
               />
             )}
             <TransactionListItem transaction={transaction} />

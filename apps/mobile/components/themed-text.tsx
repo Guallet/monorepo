@@ -1,6 +1,6 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { useTheme, useThemeMode } from '@guallet/ui-react-native';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -15,12 +15,26 @@ export function ThemedText({
   type = 'default',
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const { colors, typography } = useTheme();
+  const mode = useThemeMode();
+  const appearanceColor = mode === 'dark' ? darkColor : lightColor;
+  const textColor =
+    appearanceColor ??
+    (type === 'link' ? colors.accent.primary : colors.text.primary);
+  let fontSize = typography.sizes.md;
+  if (type === 'title') {
+    fontSize = typography.sizes.xxl;
+  } else if (type === 'subtitle') {
+    fontSize = typography.sizes.lg;
+  }
 
   return (
     <Text
       style={[
-        { color },
+        {
+          color: textColor,
+          fontSize,
+        },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
@@ -34,27 +48,15 @@ export function ThemedText({
 }
 
 const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
+  default: {},
   defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
     fontWeight: '600',
   },
   title: {
-    fontSize: 32,
     fontWeight: 'bold',
-    lineHeight: 32,
   },
   subtitle: {
-    fontSize: 20,
     fontWeight: 'bold',
   },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
+  link: {},
 });

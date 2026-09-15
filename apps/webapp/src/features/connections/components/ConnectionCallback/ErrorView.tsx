@@ -36,11 +36,11 @@ export function ErrorView({
             width: 72,
             height: 72,
             borderRadius: '50%',
-            background: `color-mix(in oklab, ${colors.error} 10%, ${colors.white})`,
-            border: `2px solid color-mix(in oklab, ${colors.error} 25%, ${colors.white})`,
+            background: `color-mix(in oklab, ${colors.status.error} 10%, ${colors.neutral.white})`,
+            border: `2px solid color-mix(in oklab, ${colors.status.error} 25%, ${colors.neutral.white})`,
           }}
         >
-          <IconX size={36} color={colors.error} />
+          <IconX size={36} color={colors.status.error} />
         </Center>
 
         <Title order={4} ta="center">

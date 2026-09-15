@@ -2,8 +2,7 @@ import { AuthProvider } from '@/auth/MobileAuthProvider';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {
-  DarkTheme,
-  DefaultTheme,
+  DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
 } from 'expo-router/react-navigation';
 import {
@@ -12,12 +11,12 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
-import { AppStateStatus, Platform, useColorScheme } from 'react-native';
+import { AppStateStatus, Platform } from 'react-native';
 import { GualletClientProvider } from '@guallet/api-react';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { LunaProvider } from '@guallet/ui-react-native';
+import { LunaProvider, useTheme, useThemeMode } from '@guallet/ui-react-native';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -29,38 +28,64 @@ function onAppStateChange(status: AppStateStatus) {
   }
 }
 
+function AppNavigation() {
+  const { colors } = useTheme();
+  const mode = useThemeMode();
+
+  const navigationTheme = {
+    ...NavigationDefaultTheme,
+    dark: mode === 'dark',
+    colors: {
+      ...NavigationDefaultTheme.colors,
+      primary: colors.accent.primary,
+      background: colors.surface.background.page,
+      card: colors.tabBar.background,
+      text: colors.text.primary,
+      border: colors.tabBar.border,
+      notification: colors.status.error,
+    },
+  };
+
+  return (
+    <ThemeProvider value={navigationTheme}>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <GualletClientProvider client={gualletClient}>
+              <Stack
+                screenOptions={{
+                  contentStyle: {
+                    backgroundColor: colors.surface.background.page,
+                  },
+                  headerStyle: {
+                    backgroundColor: colors.surface.background.primary,
+                  },
+                  headerTintColor: colors.text.primary,
+                  headerTitleStyle: { color: colors.text.primary },
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: 'modal', title: 'Modal' }}
+                />
+              </Stack>
+              <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+            </GualletClientProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </ThemeProvider>
+  );
+}
+
 export function GualletApp() {
-  const colorScheme = useColorScheme();
   useOnlineManager();
   useAppState(onAppStateChange);
 
   return (
     <LunaProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <SafeAreaProvider>
-          <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <GualletClientProvider client={gualletClient}>
-                <Stack
-                  screenOptions={{
-                    contentStyle: { backgroundColor: 'white' },
-                  }}
-                >
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="modal"
-                    options={{ presentation: 'modal', title: 'Modal' }}
-                  />
-                </Stack>
-                <StatusBar style="auto" />
-              </GualletClientProvider>
-            </AuthProvider>
-          </QueryClientProvider>
-        </SafeAreaProvider>
-      </ThemeProvider>
+      <AppNavigation />
     </LunaProvider>
   );
 }

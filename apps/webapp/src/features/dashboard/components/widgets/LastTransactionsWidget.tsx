@@ -46,7 +46,7 @@ export function LastTransactionsWidget() {
           size="sm"
           fw={500}
           style={{
-            color: colors.primary,
+            color: colors.accent.primary,
             cursor: 'pointer',
             textDecoration: 'none',
             display: 'block',
@@ -85,8 +85,8 @@ export function LastTransactionsWidget() {
                   p="sm"
                   style={{
                     borderRadius: '8px',
-                    backgroundColor: colors.surface,
-                    border: `1px solid ${colors.paleGrey}`,
+                    backgroundColor: colors.surface.background.secondary,
+                    border: `1px solid ${colors.neutral.paleGrey}`,
                   }}
                 >
                   <Group justify="space-between">
@@ -94,12 +94,15 @@ export function LastTransactionsWidget() {
                       {isIncome ? (
                         <IconArrowUp
                           size={14}
-                          style={{ color: colors.support, flexShrink: 0 }}
+                          style={{
+                            color: colors.support.primary,
+                            flexShrink: 0,
+                          }}
                         />
                       ) : (
                         <IconArrowDown
                           size={14}
-                          style={{ color: colors.error, flexShrink: 0 }}
+                          style={{ color: colors.status.error, flexShrink: 0 }}
                         />
                       )}
                       <Text
@@ -118,7 +121,9 @@ export function LastTransactionsWidget() {
                       fw={700}
                       size="sm"
                       style={{
-                        color: isIncome ? colors.support : colors.error,
+                        color: isIncome
+                          ? colors.support.primary
+                          : colors.status.error,
                         whiteSpace: 'nowrap',
                         marginLeft: 8,
                       }}
@@ -140,8 +145,9 @@ export function LastTransactionsWidget() {
                           size="xs"
                           variant="light"
                           style={{
-                            backgroundColor: category.colour || colors.paleGrey,
-                            color: colors.white,
+                            backgroundColor:
+                              category.colour || colors.neutral.paleGrey,
+                            color: colors.neutral.white,
                           }}
                         >
                           {category.name}
@@ -166,7 +172,7 @@ export function LastTransactionsWidget() {
       ) : (
         <Center h={280}>
           <Stack gap="xs" align="center">
-            <IconReceipt size={48} style={{ color: colors.paleGrey }} />
+            <IconReceipt size={48} style={{ color: colors.neutral.paleGrey }} />
             <Text size="sm" c="dimmed" ta="center">
               No transactions found.
             </Text>

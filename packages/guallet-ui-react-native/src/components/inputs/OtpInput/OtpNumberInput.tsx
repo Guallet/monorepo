@@ -1,4 +1,5 @@
 import { TextInput, StyleSheet } from 'react-native';
+import { useTheme } from '../../../theme';
 
 interface OtpNumberInputProps {
   value: string;
@@ -9,6 +10,8 @@ export function OtpNumberInput({
   value,
   onChange,
 }: Readonly<OtpNumberInputProps>) {
+  const { colors, borderRadius, typography } = useTheme();
+
   return (
     <TextInput
       value={value}
@@ -16,7 +19,16 @@ export function OtpNumberInput({
       keyboardType="numeric"
       maxLength={1}
       textAlign="center"
-      style={styles.codeInput}
+      style={[
+        styles.codeInput,
+        {
+          backgroundColor: colors.surface.background.input,
+          borderColor: colors.surface.border.input,
+          borderRadius: borderRadius.lg,
+          color: colors.text.primary,
+          fontSize: typography.sizes.xl,
+        },
+      ]}
     />
   );
 }
@@ -25,10 +37,7 @@ const styles = StyleSheet.create({
   codeInput: {
     width: 48,
     height: 56,
-    borderRadius: 12,
-    backgroundColor: '#f0f0f0',
-    fontSize: 24,
     fontWeight: '600',
-    color: '#000',
+    borderWidth: 1,
   },
 });

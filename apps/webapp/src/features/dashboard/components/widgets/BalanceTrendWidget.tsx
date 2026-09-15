@@ -100,7 +100,7 @@ export function BalanceTrendWidget({
           curveType="natural"
           connectNulls
           strokeWidth={3}
-          dotProps={{ r: 4, strokeWidth: 2, fill: colors.white }}
+          dotProps={{ r: 4, strokeWidth: 2, fill: colors.neutral.white }}
           activeDotProps={{ r: 6, strokeWidth: 2 }}
           gridAxis="xy"
           withLegend={false}
@@ -110,7 +110,7 @@ export function BalanceTrendWidget({
             domain: ['dataMin - 100', 'dataMax + 100'],
           }}
           style={{
-            backgroundColor: colors.surface,
+            backgroundColor: colors.surface.background.secondary,
             borderRadius: borderRadius.md,
             padding: '12px',
           }}
@@ -122,7 +122,7 @@ export function BalanceTrendWidget({
     ) : (
       <Center h={280}>
         <Stack gap="xs" align="center">
-          <IconChartLine size={48} style={{ color: colors.paleGrey }} />
+          <IconChartLine size={48} style={{ color: colors.neutral.paleGrey }} />
           <Text size="sm" c="dimmed" ta="center">
             No transaction data available.
           </Text>

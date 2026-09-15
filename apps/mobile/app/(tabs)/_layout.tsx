@@ -1,18 +1,24 @@
 import { Redirect, Tabs } from 'expo-router';
-import { Text, useColorScheme } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@guallet/auth';
+import { useTheme } from '@guallet/ui-react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  const { colors } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <ThemedView style={styles.loading}>
+        <ThemedText>Loading...</ThemedText>
+      </ThemedView>
+    );
   }
 
   // Only require authentication within the (app) group's layout as users
@@ -26,7 +32,12 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: colors.tabBar.tint,
+        tabBarInactiveTintColor: colors.tabBar.inactiveTint,
+        tabBarStyle: {
+          backgroundColor: colors.tabBar.background,
+          borderTopColor: colors.tabBar.border,
+        },
         headerShown: false,
         tabBarButton: HapticTab,
       }}
@@ -70,3 +81,11 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

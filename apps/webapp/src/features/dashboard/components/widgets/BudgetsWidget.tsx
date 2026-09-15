@@ -59,7 +59,7 @@ export function BudgetsWidget() {
             size="sm"
             fw={500}
             style={{
-              color: colors.primary,
+              color: colors.accent.primary,
               cursor: 'pointer',
               textDecoration: 'none',
               display: 'block',
@@ -80,12 +80,12 @@ export function BudgetsWidget() {
         <ScrollArea.Autosize mah={280}>
           <Stack gap="sm">
             {displayBudgets.map((budget) => {
-              const overBudgetBg = `${colors.error}15`;
-              const nearLimitBg = `${colors.warning}30`;
-              const normalBg = colors.surface;
-              const overBudgetBorder = `${colors.error}40`;
-              const nearLimitBorder = `${colors.warning}60`;
-              const normalBorder = colors.paleGrey;
+              const overBudgetBg = `${colors.status.error}15`;
+              const nearLimitBg = `${colors.status.warning}30`;
+              const normalBg = colors.surface.background.secondary;
+              const overBudgetBorder = `${colors.status.error}40`;
+              const nearLimitBorder = `${colors.status.warning}60`;
+              const normalBorder = colors.neutral.paleGrey;
 
               const bgColor = budget.isOverBudget
                 ? overBudgetBg
@@ -103,10 +103,10 @@ export function BudgetsWidget() {
                   ? 'yellow'
                   : 'teal';
               const textColor = budget.isOverBudget
-                ? colors.error
+                ? colors.status.error
                 : budget.isNearLimit
-                  ? colors.warning
-                  : colors.primary;
+                  ? colors.status.warning
+                  : colors.accent.primary;
 
               return (
                 <Box
@@ -143,7 +143,9 @@ export function BudgetsWidget() {
                       fw={500}
                       style={{
                         color:
-                          budget.remaining < 0 ? colors.error : colors.support,
+                          budget.remaining < 0
+                            ? colors.status.error
+                            : colors.support.primary,
                       }}
                     >
                       {budget.remaining.toFixed(0)}

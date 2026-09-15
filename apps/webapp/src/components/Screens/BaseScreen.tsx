@@ -27,7 +27,7 @@ export function BaseScreen({
   return (
     <Box
       style={{
-        backgroundColor: colors.pageBackground,
+        backgroundColor: colors.surface.background.page,
         height: fullScreen ? '100dvh' : undefined,
         width: fullScreen ? '100dvw' : undefined,
       }}

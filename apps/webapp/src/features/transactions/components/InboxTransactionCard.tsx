@@ -126,7 +126,7 @@ export function InboxTransactionCard({
               fw={700}
               style={{
                 fontVariantNumeric: 'tabular-nums',
-                color: isExpense ? colors.error : colors.support,
+                color: isExpense ? colors.status.error : colors.support.primary,
                 flexShrink: 0,
                 marginLeft: spacing.md,
               }}

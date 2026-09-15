@@ -123,7 +123,7 @@ export function StepOBBank({
         <Group gap="xs" align="flex-start">
           <IconBuildingBank
             size={16}
-            color={colors.primary}
+            color={colors.accent.primary}
             style={{ flexShrink: 0, marginTop: 1 }}
           />
           <Text size="xs" c="dimmed" style={{ lineHeight: 1.5 }}>

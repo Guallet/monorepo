@@ -185,8 +185,10 @@ export function DateListPicker({ value, onItemSelected }: Readonly<IProps>) {
               width: '100%',
               padding: `${spacing.sm}px ${spacing.md}px`,
               borderRadius: borderRadius.sm,
-              background: isActive ? alpha(colors.primary, 0.1) : 'transparent',
-              color: isActive ? colors.primary : colors.black,
+              background: isActive
+                ? alpha(colors.accent.primary, 0.1)
+                : 'transparent',
+              color: isActive ? colors.accent.primary : colors.neutral.black,
               fontWeight: isActive
                 ? typography.weights.semibold
                 : typography.weights.medium,
@@ -197,7 +199,7 @@ export function DateListPicker({ value, onItemSelected }: Readonly<IProps>) {
             onMouseEnter={(e) => {
               if (!isActive) {
                 (e.currentTarget as HTMLButtonElement).style.background =
-                  colors.pageBackground;
+                  colors.surface.background.page;
               }
             }}
             onMouseLeave={(e) => {

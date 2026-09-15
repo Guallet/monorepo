@@ -54,18 +54,18 @@ export function ExpenditureByCategoryWidget({
         id: categoryId,
         name: category?.name || 'Unknown',
         amount,
-        color: category?.colour || colors.primary,
+        color: category?.colour || colors.accent.primary,
       };
     });
 
   const totalSpending = topCategories.reduce((sum, cat) => sum + cat.amount, 0);
 
   const categoryColors = [
-    colors.primary,
-    colors.aquaAccent,
-    colors.darkSupport,
-    colors.brightAccent,
-    colors.secondary,
+    colors.accent.primary,
+    colors.accent.aqua,
+    colors.support.dark,
+    colors.accent.bright,
+    colors.accent.secondary,
   ];
 
   return (
@@ -121,15 +121,15 @@ export function ExpenditureByCategoryWidget({
             mt="xs"
             style={{
               borderRadius: '8px',
-              backgroundColor: colors.surface,
-              border: `1px solid ${colors.paleGrey}`,
+              backgroundColor: colors.surface.background.secondary,
+              border: `1px solid ${colors.neutral.paleGrey}`,
             }}
           >
             <Group justify="space-between">
               <Text size="sm" fw={600}>
                 Total (Top 5)
               </Text>
-              <Text size="lg" fw={700} style={{ color: colors.error }}>
+              <Text size="lg" fw={700} style={{ color: colors.status.error }}>
                 {totalSpending.toFixed(0)}
               </Text>
             </Group>
@@ -138,7 +138,10 @@ export function ExpenditureByCategoryWidget({
       ) : (
         <Center h={200}>
           <Stack gap="xs" align="center">
-            <IconCategory size={48} style={{ color: colors.paleGrey }} />
+            <IconCategory
+              size={48}
+              style={{ color: colors.neutral.paleGrey }}
+            />
             <Text size="sm" c="dimmed" ta="center">
               No categorized transactions found.
             </Text>
