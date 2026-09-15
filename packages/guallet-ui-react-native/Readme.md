@@ -111,15 +111,14 @@ colors.button.disabled;
 colors.status.error;
 ```
 
-When overriding one token, spread its group to preserve the other defaults:
+`LunaProvider` accepts partial nested overrides. Unspecified tokens retain the
+active light or dark defaults, so you only need to provide the tokens you want
+to change:
 
 ```typescript
-const customTheme = {
-  ...DefaultTheme,
+const theme = {
   colors: {
-    ...DefaultTheme.colors,
     text: {
-      ...DefaultTheme.colors.text,
       primary: '#111827',
     },
   },
@@ -129,35 +128,44 @@ const customTheme = {
 Custom themes can be supplied per appearance:
 
 ```typescript
-import {
-  DefaultTheme,
-  DarkTheme,
-  LunaProvider,
-} from '@guallet/ui-react-native';
+import { LunaProvider } from '@guallet/ui-react-native';
 
-const customLightTheme = {
-  ...DefaultTheme,
+const sharedTheme = {
   colors: {
-    ...DefaultTheme.colors,
     accent: {
-      ...DefaultTheme.colors.accent,
       primary: '#007AFF',
     },
-    tabBar: {
-      ...DefaultTheme.colors.tabBar,
-      tint: '#007AFF',
-    },
+  },
+};
+
+const lightTheme = {
+  colors: {
+    text: { primary: '#111827' },
+  },
+};
+
+const darkTheme = {
+  colors: {
+    text: { primary: '#F9FAFB' },
   },
 };
 
 export default function App() {
   return (
-    <LunaProvider lightTheme={customLightTheme} darkTheme={DarkTheme}>
-      {/* Your app content */}
-    </LunaProvider>
+    <LunaProvider
+      theme={sharedTheme}
+      lightTheme={lightTheme}
+      darkTheme={darkTheme}
+    />
   );
 }
 ```
+
+The generic `theme` override is applied to both appearances first, followed by
+the matching `lightTheme` or `darkTheme` override. Appearance-specific values
+therefore take precedence over shared values. The reusable
+`GualletThemeOverrides` type and `mergeTheme` utility are exported from
+`@guallet/theme`.
 
 ## Development
 

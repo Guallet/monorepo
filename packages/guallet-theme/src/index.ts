@@ -20,4 +20,9 @@ export type { BorderRadius } from './borderRadius';
 export { defaultBorderRadius } from './borderRadius';
 export type { Breakpoints } from './breakpoints';
 export { defaultBreakpoints } from './breakpoints';
-export type { DeepPartial, GualletTheme } from './theme';
+export {
+  mergeTheme,
+  type DeepPartial,
+  type GualletTheme,
+  type GualletThemeOverrides,
+} from './theme';
