@@ -1,12 +1,16 @@
-import type { GualletTheme } from '@guallet/theme';
+import {
+  mergeTheme,
+  type GualletTheme,
+  type GualletThemeOverrides,
+} from '@guallet/theme';
 import { DarkTheme, DefaultTheme } from './DefaultTheme';
 import type { ThemeMode } from './ThemeProvider';
 
 export interface ThemeSelection {
   mode: ThemeMode;
-  theme?: GualletTheme;
-  lightTheme?: GualletTheme;
-  darkTheme?: GualletTheme;
+  theme?: GualletThemeOverrides;
+  lightTheme?: GualletThemeOverrides;
+  darkTheme?: GualletThemeOverrides;
 }
 
 export function resolveTheme({
@@ -15,9 +19,9 @@ export function resolveTheme({
   lightTheme,
   darkTheme,
 }: ThemeSelection): GualletTheme {
-  if (mode === 'dark') {
-    return darkTheme ?? theme ?? DarkTheme;
-  }
+  const baseTheme = mode === 'dark' ? DarkTheme : DefaultTheme;
+  const sharedTheme = mergeTheme(baseTheme, theme);
+  const appearanceTheme = mode === 'dark' ? darkTheme : lightTheme;
 
-  return lightTheme ?? theme ?? DefaultTheme;
+  return mergeTheme(sharedTheme, appearanceTheme);
 }
