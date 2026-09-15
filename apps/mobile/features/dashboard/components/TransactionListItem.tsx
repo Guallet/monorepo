@@ -18,7 +18,8 @@ function getAvatarColor(
     colors.neutral.midGrey,
   ];
 
-  return avatarColors[text.charCodeAt(0) % avatarColors.length];
+  const codePoint = text.codePointAt(0) ?? 0;
+  return avatarColors[codePoint % avatarColors.length];
 }
 
 function formatCurrency(amount: number, currency: string): string {

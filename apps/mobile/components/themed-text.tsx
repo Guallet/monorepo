@@ -22,6 +22,12 @@ export function ThemedText({
       ? (darkColor ?? colors.text.primary)
       : (lightColor ?? colors.text.primary);
   const textColor = type === 'link' ? colors.accent.primary : color;
+  let fontSize = typography.sizes.md;
+  if (type === 'title') {
+    fontSize = typography.sizes.xxl;
+  } else if (type === 'subtitle') {
+    fontSize = typography.sizes.lg;
+  }
 
   return (
     <Text
@@ -29,12 +35,7 @@ export function ThemedText({
         {
           color: textColor,
           fontFamily: typography.fontFamily,
-          fontSize:
-            type === 'title'
-              ? typography.sizes.xxl
-              : type === 'subtitle'
-                ? typography.sizes.lg
-                : typography.sizes.md,
+          fontSize,
         },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
