@@ -10,6 +10,7 @@ export interface TextInputProps extends React.ComponentProps<
   //   placeholder?: string;
   disabled?: boolean;
   error?: string | null;
+  rightSection?: React.ReactNode;
 }
 
 export function TextInput({
@@ -18,6 +19,7 @@ export function TextInput({
   placeholder,
   disabled = false,
   error,
+  rightSection,
   style,
   ...props
 }: Readonly<TextInputProps>) {
@@ -71,6 +73,9 @@ export function TextInput({
           editable={!disabled}
           {...props}
         />
+        {rightSection ? (
+          <View style={styles.rightSection}>{rightSection}</View>
+        ) : null}
       </View>
 
       {description && !hasError && (
@@ -112,12 +117,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   inputContainer: {
+    alignItems: 'center',
     borderWidth: 1,
+    flexDirection: 'row',
     minHeight: 56,
   },
   input: {
     flex: 1,
     padding: 0,
+  },
+  rightSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
   description: {},
   error: {},

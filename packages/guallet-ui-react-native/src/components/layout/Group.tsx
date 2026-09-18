@@ -21,7 +21,7 @@ interface GroupProps extends React.ComponentProps<typeof View> {
   wrap?: FlexWrap;
 }
 
-const Group: React.FC<GroupProps> = ({
+export const Group: React.FC<GroupProps> = ({
   align = 'center',
   gap = 'md',
   grow = false,

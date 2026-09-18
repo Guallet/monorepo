@@ -1,8 +1,6 @@
-import { Button, useTheme } from '@guallet/ui-react-native';
+import { Button, Group, Label, useTheme } from '@guallet/ui-react-native';
 import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Label } from '@guallet/ui-react-native/src/components/typography';
-import Group from '@guallet/ui-react-native/src/components/layout/Group';
 
 interface GoogleButtonProps {
   onPress: () => void;
@@ -18,7 +16,7 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
   return (
     <Button variant="outline" onClick={onPress} disabled={disabled}>
       <Group align="center" gap="sm">
-        <Ionicons name="logo-google" size={32} color={colors.accent.primary} />
+        <Ionicons name="logo-google" size={20} color={colors.accent.primary} />
         <Label color={colors.accent.primary}>Continue with Google</Label>
       </Group>
     </Button>

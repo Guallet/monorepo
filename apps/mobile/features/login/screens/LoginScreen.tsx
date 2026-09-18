@@ -1,242 +1,165 @@
-import { AppScreen } from '@/components/layout/AppScreen';
-import { GoogleButton } from '../components/GoogleButton';
-import { useState } from 'react';
-import {
-  Label,
-  Button,
-  Stack,
-  Divider,
-  useTheme,
-  TextInput,
-  Title,
-} from '@guallet/ui-react-native';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useAuth } from '@/auth/useAuth';
+import {
+  AuthIntro,
+  AuthLink,
+  AuthNotice,
+  AuthScreen,
+} from '@/features/login/components/AuthLayout';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Button, Stack, TextInput, useTheme } from '@guallet/ui-react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type LoginMethod = 'password' | 'email-code';
-
 export function LoginScreen() {
-  const { spacing, colors } = useTheme();
-  const { getOtpCode, loginWithProvider, login } = useAuth();
-
   const router = useRouter();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const params = useLocalSearchParams<{ email?: string }>();
+  const { login } = useAuth();
+  const { colors, spacing } = useTheme();
+  const [email, setEmail] = useState(params.email ?? '');
+  const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<LoginMethod>('password');
 
-  const isValidEmail = emailRegex.test(email);
-  const isValidPassword = password.length >= 6;
+  const handleLogin = async () => {
+    const nextEmailError = emailRegex.test(email.trim())
+      ? null
+      : 'Enter a valid email address.';
+    const nextPasswordError =
+      password.length >= 6 ? null : 'Password must be at least 6 characters.';
 
-  const onLoginWithPassword = async () => {
-    if (!isValidEmail) {
-      setEmailError('Please enter a valid email');
+    setEmailError(nextEmailError);
+    setPasswordError(nextPasswordError);
+    setFormError(null);
+
+    if (nextEmailError || nextPasswordError) {
       return;
     }
 
-    if (!isValidPassword) {
-      setPasswordError('Password must be at least 6 characters');
-      return;
-    }
-
-    setEmailError(null);
-    setPasswordError(null);
     setIsLoading(true);
-
-    const result = await login(email, password);
+    const result = await login(email.trim(), password);
     setIsLoading(false);
 
     if (result.success) {
       router.replace('/(tabs)');
-    } else {
-      setPasswordError(
-        result.error?.message ?? 'Login failed. Please try again.',
-      );
-    }
-  };
-
-  const onLoginWithEmailCode = async () => {
-    if (!isValidEmail) {
-      setEmailError('Please enter a valid email');
       return;
     }
 
-    setEmailError(null);
-    setIsLoading(true);
-    const result = await getOtpCode(email);
-    setIsLoading(false);
-
-    if (result.success) {
-      router.navigate({
-        pathname: '/login/otp',
-        params: { email },
-      });
-    } else {
-      alert('Failed to send email code. Please try again.');
-    }
-  };
-
-  const loginWithGoogle = async () => {
-    try {
-      setIsLoading(true);
-      const result = await loginWithProvider(
-        'google',
-        'guallet://login/callback',
-      );
-      setIsLoading(false);
-      if (!result.success) {
-        alert('Failed to login with Google. Please try again.');
-      } else {
-        router.replace('/(tabs)');
-      }
-    } catch {
-      setIsLoading(false);
-      alert('Failed to login with Google. Please try again.');
-    }
-  };
-
-  const handleForgotPassword = () => {
-    router.navigate({
-      pathname: '/login/forgot-password',
-      params: { email },
-    });
-  };
-
-  const toggleLoginMethod = () => {
-    setLoginMethod(loginMethod === 'password' ? 'email-code' : 'password');
-    setPasswordError(null);
+    setFormError(
+      result.error?.message ??
+        'We could not sign you in. Check your details and try again.',
+    );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <AppScreen
-        headerTitle="Login"
-        isHeaderVisible={false}
-        isLoading={isLoading}
-      >
-        <Stack style={{ flex: 1, padding: spacing.md }} gap={spacing.lg}>
-          <View
-            style={{
-              flex: 1,
-              maxHeight: 200,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Image
-              style={{ flex: 1, width: '100%' }}
-              source={require('@/assets/images/icon.png')}
-              contentFit="scale-down"
-            />
-          </View>
+    <AuthScreen headerTitle="Sign in" isLoading={isLoading}>
+      <AuthIntro
+        description="Use the email and password linked to your Guallet account."
+        eyebrow="Welcome back"
+        title="Sign in to Guallet"
+      />
 
-          <Title center>Login or sign up</Title>
+      {formError ? <AuthNotice tone="error">{formError}</AuthNotice> : null}
 
-          <TextInput
-            label="Email"
-            onChangeText={(input) => {
-              setEmail(input);
-              setEmailError(null);
-            }}
-            value={email}
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            error={emailError}
-          />
-
-          {loginMethod === 'password' && (
-            <>
-              <TextInput
-                label="Password"
-                onChangeText={(input) => {
-                  setPassword(input);
-                  setPasswordError(null);
-                }}
-                value={password}
-                placeholder="Enter your password"
-                secureTextEntry
-                autoCapitalize="none"
-                autoCorrect={false}
-                error={passwordError}
+      <Stack gap={spacing.xs}>
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="email"
+          autoCorrect={false}
+          error={emailError}
+          keyboardType="email-address"
+          label="Email address"
+          onChangeText={(value) => {
+            setEmail(value);
+            setEmailError(null);
+            setFormError(null);
+          }}
+          placeholder="you@example.com"
+          returnKeyType="next"
+          textContentType="emailAddress"
+          value={email}
+        />
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="current-password"
+          autoCorrect={false}
+          error={passwordError}
+          label="Password"
+          onChangeText={(value) => {
+            setPassword(value);
+            setPasswordError(null);
+            setFormError(null);
+          }}
+          onSubmitEditing={handleLogin}
+          placeholder="Enter your password"
+          returnKeyType="done"
+          rightSection={
+            <Pressable
+              accessibilityLabel={
+                isPasswordVisible ? 'Hide password' : 'Show password'
+              }
+              accessibilityRole="button"
+              hitSlop={10}
+              onPress={() => setIsPasswordVisible((visible) => !visible)}
+              style={styles.visibilityButton}
+            >
+              <Ionicons
+                color={colors.text.secondary}
+                name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+                size={21}
               />
+            </Pressable>
+          }
+          secureTextEntry={!isPasswordVisible}
+          textContentType="password"
+          value={password}
+        />
+        <View style={styles.forgotPassword}>
+          <AuthLink
+            onPress={() =>
+              router.push({
+                pathname: '/login/forgot-password',
+                params: { email: email.trim() },
+              })
+            }
+          >
+            Forgot password?
+          </AuthLink>
+        </View>
+      </Stack>
 
-              <TouchableOpacity onPress={handleForgotPassword}>
-                <Text
-                  style={[
-                    styles.forgotPasswordLink,
-                    { color: colors.accent.primary },
-                  ]}
-                >
-                  Forgot password?
-                </Text>
-              </TouchableOpacity>
+      <Button disabled={!email.trim() || !password} onClick={handleLogin}>
+        Sign in
+      </Button>
 
-              <Button
-                onClick={onLoginWithPassword}
-                disabled={!isValidEmail || !isValidPassword}
-              >
-                Sign in
-              </Button>
-            </>
-          )}
-
-          {loginMethod === 'email-code' && (
-            <Button onClick={onLoginWithEmailCode} disabled={!isValidEmail}>
-              Send email code
-            </Button>
-          )}
-
-          <TouchableOpacity onPress={toggleLoginMethod}>
-            <Text style={[styles.toggleLink, { color: colors.accent.primary }]}>
-              {loginMethod === 'password'
-                ? 'Use email code instead'
-                : 'Use password instead'}
-            </Text>
-          </TouchableOpacity>
-
-          <Divider label="or continue with" />
-
-          <GoogleButton
-            onPress={() => {
-              loginWithGoogle();
-            }}
-          />
-        </Stack>
-
-        <Stack
-          gap={spacing.sm}
-          style={{ padding: spacing.md }}
-          justify="center"
-        >
-          <Label center>Don&apos;t have an account?</Label>
-          <Button>Sign Up</Button>
-          <Label>
-            By signing up, you agree to our Terms of Service and Privacy Policy.
-          </Label>
-        </Stack>
-      </AppScreen>
-    </SafeAreaView>
+      <AuthLink
+        onPress={() =>
+          router.replace({
+            pathname: '/login/email-code',
+            params: { email: email.trim() },
+          })
+        }
+      >
+        Sign in with a one-time code
+      </AuthLink>
+    </AuthScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  forgotPasswordLink: {
-    fontSize: 14,
-    textAlign: 'right',
-    marginTop: -8,
+  visibilityButton: {
+    alignItems: 'center',
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
   },
-  toggleLink: {
-    fontSize: 14,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
+  forgotPassword: {
+    alignItems: 'flex-end',
+    marginTop: -12,
   },
 });
