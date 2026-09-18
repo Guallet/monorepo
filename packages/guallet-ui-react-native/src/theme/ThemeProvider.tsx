@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { GualletTheme } from '@guallet/theme';
+import { type GualletTheme, type GualletThemeOverrides } from '@guallet/theme';
 import { Platform, useColorScheme } from 'react-native';
 import { DefaultTheme } from './DefaultTheme';
 import { resolveTheme } from './resolveTheme';
@@ -16,12 +16,12 @@ export const ThemeModeContext = createContext<ThemeMode>('light');
 export type ThemeMode = 'light' | 'dark';
 
 export interface LunaProviderProps {
-  /** A custom theme used for both appearances when no appearance override is supplied. */
-  theme?: GualletTheme;
-  /** Custom theme for the light system appearance. */
-  lightTheme?: GualletTheme;
-  /** Custom theme for the dark system appearance. */
-  darkTheme?: GualletTheme;
+  /** Nested overrides applied to both appearances before appearance overrides. */
+  theme?: GualletThemeOverrides;
+  /** Nested overrides for the light system appearance. */
+  lightTheme?: GualletThemeOverrides;
+  /** Nested overrides for the dark system appearance. */
+  darkTheme?: GualletThemeOverrides;
   /** Override the system appearance. Useful for previews and tests. */
   colorScheme?: ThemeMode;
 }
