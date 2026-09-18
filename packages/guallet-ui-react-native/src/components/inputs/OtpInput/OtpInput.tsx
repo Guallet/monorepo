@@ -81,7 +81,6 @@ export function OtpInput({
         caretHidden
         contextMenuHidden={false}
         keyboardType="number-pad"
-        maxLength={length}
         onChangeText={handleChange}
         style={styles.hiddenInput}
         textContentType="oneTimeCode"
@@ -104,10 +103,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     aspectRatio: 0.86,
     borderWidth: 1,
-    flex: 1,
+    flexBasis: 0,
+    flexGrow: 1,
     justifyContent: 'center',
     maxWidth: 56,
-    minWidth: 40,
+    minHeight: 48,
   },
   hiddenInput: {
     bottom: 0,

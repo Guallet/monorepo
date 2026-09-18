@@ -14,7 +14,7 @@ import {
 } from '@guallet/ui-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
 
 const RESEND_DELAY_SECONDS = 30;
@@ -28,20 +28,33 @@ export function OtpScreen() {
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [resendAvailableAt, setResendAvailableAt] = useState(
+    () => Date.now() + RESEND_DELAY_SECONDS * 1000,
+  );
   const [resendSeconds, setResendSeconds] = useState(RESEND_DELAY_SECONDS);
 
   useEffect(() => {
-    if (resendSeconds <= 0) {
-      return;
-    }
+    const updateRemainingTime = () => {
+      const remainingSeconds = Math.max(
+        0,
+        Math.ceil((resendAvailableAt - Date.now()) / 1000),
+      );
+      setResendSeconds(remainingSeconds);
+    };
 
-    const timer = setTimeout(
-      () => setResendSeconds((seconds) => Math.max(0, seconds - 1)),
-      1000,
-    );
+    updateRemainingTime();
+    const timer = setInterval(updateRemainingTime, 1000);
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active') {
+        updateRemainingTime();
+      }
+    });
 
-    return () => clearTimeout(timer);
-  }, [resendSeconds]);
+    return () => {
+      clearInterval(timer);
+      subscription.remove();
+    };
+  }, [resendAvailableAt]);
 
   const handleVerifyCode = async () => {
     if (code.length !== 6 || !email) {
@@ -73,7 +86,7 @@ export function OtpScreen() {
 
     if (result.success) {
       setCode('');
-      setResendSeconds(RESEND_DELAY_SECONDS);
+      setResendAvailableAt(Date.now() + RESEND_DELAY_SECONDS * 1000);
       Alert.alert('New code sent', `Check ${email} for your new code.`);
       return;
     }

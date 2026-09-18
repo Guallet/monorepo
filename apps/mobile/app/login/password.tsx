@@ -1,5 +1,5 @@
-import { LoginScreen } from '@/features/login/screens/LoginScreen';
+import { PasswordLoginScreen } from '@/features/login/screens/PasswordLoginScreen';
 
 export default function Screen() {
-  return <LoginScreen />;
+  return <PasswordLoginScreen />;
 }

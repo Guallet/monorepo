@@ -1,48 +1,32 @@
 import { useAuth } from '@/auth/useAuth';
-import {
-  AuthIntro,
-  AuthLink,
-  AuthNotice,
-  AuthScreen,
-} from '@/features/login/components/AuthLayout';
+import { AuthIntro, AuthScreen } from '@/features/login/components/AuthLayout';
+import { GoogleButton } from '@/features/login/components/GoogleButton';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Button, Stack, TextInput, useTheme } from '@guallet/ui-react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import {
+  Button,
+  Divider,
+  Group,
+  Label,
+  Stack,
+  useTheme,
+} from '@guallet/ui-react-native';
+import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { Alert, StyleSheet, View } from 'react-native';
 
 export function LoginScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ email?: string }>();
-  const { login } = useAuth();
-  const { colors, spacing } = useTheme();
-  const [email, setEmail] = useState(params.email ?? '');
-  const [password, setPassword] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
+  const { loginWithProvider } = useAuth();
+  const { borderRadius, colors, spacing, typography } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async () => {
-    const nextEmailError = emailRegex.test(email.trim())
-      ? null
-      : 'Enter a valid email address.';
-    const nextPasswordError =
-      password.length >= 6 ? null : 'Password must be at least 6 characters.';
-
-    setEmailError(nextEmailError);
-    setPasswordError(nextPasswordError);
-    setFormError(null);
-
-    if (nextEmailError || nextPasswordError) {
-      return;
-    }
-
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-    const result = await login(email.trim(), password);
+    const result = await loginWithProvider(
+      'google',
+      'guallet://login/callback',
+    );
     setIsLoading(false);
 
     if (result.success) {
@@ -50,116 +34,184 @@ export function LoginScreen() {
       return;
     }
 
-    setFormError(
-      result.error?.message ??
-        'We could not sign you in. Check your details and try again.',
+    Alert.alert(
+      'Could not sign in',
+      result.error?.message ?? 'Please try again in a moment.',
     );
   };
 
   return (
-    <AuthScreen headerTitle="Sign in" isLoading={isLoading}>
+    <AuthScreen
+      contentStyle={styles.content}
+      footer={
+        <Label
+          center
+          color={colors.text.secondary}
+          size="xs"
+          style={{ lineHeight: typography.sizes.xs * 1.5 }}
+        >
+          By continuing, you agree to Guallet&apos;s Terms of Service and
+          Privacy Policy.
+        </Label>
+      }
+      isHeaderVisible={false}
+      isLoading={isLoading}
+    >
+      <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        style={[
+          styles.hero,
+          {
+            backgroundColor: colors.button.secondary,
+            borderColor: colors.surface.border.primary,
+            borderRadius: borderRadius.xl,
+            padding: spacing.lg,
+          },
+        ]}
+      >
+        <View
+          style={[
+            styles.orb,
+            styles.orbTop,
+            { backgroundColor: colors.accent.light },
+          ]}
+        />
+        <View
+          style={[
+            styles.orb,
+            styles.orbBottom,
+            { backgroundColor: colors.support.light },
+          ]}
+        />
+        <View
+          style={[
+            styles.logoContainer,
+            {
+              backgroundColor: colors.surface.background.primary,
+              borderRadius: borderRadius.xl,
+            },
+          ]}
+        >
+          <Image
+            contentFit="contain"
+            source={require('@/assets/images/icon.png')}
+            style={styles.logo}
+          />
+        </View>
+        <View
+          style={[
+            styles.insightPill,
+            {
+              backgroundColor: colors.surface.background.primary,
+              borderColor: colors.surface.border.primary,
+              borderRadius: borderRadius.xl,
+            },
+          ]}
+        >
+          <Ionicons
+            color={colors.status.success}
+            name="trending-up"
+            size={18}
+          />
+          <Label size="sm" style={{ fontWeight: '600' }}>
+            Your plan is on track
+          </Label>
+        </View>
+      </View>
+
       <AuthIntro
-        description="Use the email and password linked to your Guallet account."
-        eyebrow="Welcome back"
-        title="Sign in to Guallet"
+        align="center"
+        description="See where your money goes, plan with confidence, and make every goal feel closer."
+        eyebrow="Your money, made clear"
+        title="A better view of your financial life"
       />
 
-      {formError ? <AuthNotice tone="error">{formError}</AuthNotice> : null}
-
-      <Stack gap={spacing.xs}>
-        <TextInput
-          autoCapitalize="none"
-          autoComplete="email"
-          autoCorrect={false}
-          error={emailError}
-          keyboardType="email-address"
-          label="Email address"
-          onChangeText={(value) => {
-            setEmail(value);
-            setEmailError(null);
-            setFormError(null);
-          }}
-          placeholder="you@example.com"
-          returnKeyType="next"
-          textContentType="emailAddress"
-          value={email}
-        />
-        <TextInput
-          autoCapitalize="none"
-          autoComplete="current-password"
-          autoCorrect={false}
-          error={passwordError}
-          label="Password"
-          onChangeText={(value) => {
-            setPassword(value);
-            setPasswordError(null);
-            setFormError(null);
-          }}
-          onSubmitEditing={handleLogin}
-          placeholder="Enter your password"
-          returnKeyType="done"
-          rightSection={
-            <Pressable
-              accessibilityLabel={
-                isPasswordVisible ? 'Hide password' : 'Show password'
-              }
-              accessibilityRole="button"
-              hitSlop={10}
-              onPress={() => setIsPasswordVisible((visible) => !visible)}
-              style={styles.visibilityButton}
-            >
-              <Ionicons
-                color={colors.text.secondary}
-                name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
-                size={21}
-              />
-            </Pressable>
-          }
-          secureTextEntry={!isPasswordVisible}
-          textContentType="password"
-          value={password}
-        />
-        <View style={styles.forgotPassword}>
-          <AuthLink
-            onPress={() =>
-              router.push({
-                pathname: '/login/forgot-password',
-                params: { email: email.trim() },
-              })
-            }
-          >
-            Forgot password?
-          </AuthLink>
-        </View>
+      <Stack gap={spacing.sm}>
+        <Button onClick={() => router.push('/login/password')}>
+          Continue with email
+        </Button>
+        <Button
+          onClick={() => router.push('/login/email-code')}
+          variant="outline"
+        >
+          Use a one-time code
+        </Button>
       </Stack>
 
-      <Button disabled={!email.trim() || !password} onClick={handleLogin}>
-        Sign in
-      </Button>
+      <Divider label="or" />
+      <GoogleButton disabled={isLoading} onPress={handleGoogleLogin} />
 
-      <AuthLink
-        onPress={() =>
-          router.replace({
-            pathname: '/login/email-code',
-            params: { email: email.trim() },
-          })
-        }
-      >
-        Sign in with a one-time code
-      </AuthLink>
+      <Group gap="xs" justify="center">
+        <Ionicons
+          color={colors.text.secondary}
+          name="lock-closed-outline"
+          size={14}
+        />
+        <Label color={colors.text.secondary} size="xs">
+          Secure sign-in. Your data stays private.
+        </Label>
+      </Group>
     </AuthScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  visibilityButton: {
-    alignItems: 'center',
-    height: 44,
+  content: {
     justifyContent: 'center',
-    width: 44,
   },
-  forgotPassword: {
-    alignItems: 'flex-end',
-    marginTop: -12,
+  hero: {
+    alignItems: 'center',
+    borderWidth: 1,
+    height: 226,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    height: 116,
+    justifyContent: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    width: 116,
+  },
+  logo: {
+    height: 82,
+    width: 82,
+  },
+  orb: {
+    borderRadius: 999,
+    opacity: 0.22,
+    position: 'absolute',
+  },
+  orbTop: {
+    height: 180,
+    right: -54,
+    top: -92,
+    width: 180,
+  },
+  orbBottom: {
+    bottom: -80,
+    height: 160,
+    left: -40,
+    width: 160,
+  },
+  insightPill: {
+    alignItems: 'center',
+    borderWidth: 1,
+    bottom: 18,
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    position: 'absolute',
+    right: 18,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
   },
 });
