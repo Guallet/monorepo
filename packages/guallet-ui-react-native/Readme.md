@@ -117,9 +117,7 @@ colors.status.error;
 
 Button intents expose the same state shape across light and dark themes:
 `default`, `hover`, `pressed`, `focus`, `selected`, and `disabled`. Native
-buttons consume `pressed`, `focus`, `selected`, and `disabled` directly. The
-web Mantine theme consumes the states supported by the browser, and web
-buttons can opt into the selected state with `data-selected="true"`.
+buttons consume `pressed`, `focus`, `selected`, and `disabled` directly.
 
 `LunaProvider` accepts partial nested overrides. Unspecified tokens retain the
 active light or dark defaults, so you only need to provide the tokens you want
