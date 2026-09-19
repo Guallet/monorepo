@@ -85,7 +85,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
         style={[
           styles.label,
           {
-            color: colors.button.onPrimaryMuted,
+            color: colors.button.onPrimaryMuted.default,
             fontSize: typography.sizes.xs,
           },
         ]}
@@ -96,7 +96,10 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
       <Text
         style={[
           styles.amount,
-          { color: colors.button.onPrimary, fontSize: typography.sizes.xxl },
+          {
+            color: colors.button.onPrimary.default,
+            fontSize: typography.sizes.xxl,
+          },
         ]}
       >
         {formatCurrency(totalWealth, displayCurrency)}
@@ -107,7 +110,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
           style={[
             styles.delta,
             {
-              color: colors.button.onPrimaryMuted,
+              color: colors.button.onPrimaryMuted.default,
               fontSize: typography.sizes.sm,
             },
           ]}
@@ -126,8 +129,8 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
               {
                 height: Math.max(4, bar.ratio * 36),
                 backgroundColor: bar.isLast
-                  ? colors.button.onPrimary
-                  : colors.button.onPrimaryMuted,
+                  ? colors.button.onPrimary.default
+                  : colors.button.onPrimaryMuted.default,
                 borderRadius: borderRadius.xs,
               },
             ]}
