@@ -34,15 +34,24 @@ export type SurfaceColors = {
   overlay: string;
 };
 
-export type ButtonColors = {
-  primary: string;
-  secondary: string;
+export type ButtonInteractionColors = {
+  default: string;
+  hover: string;
+  pressed: string;
+  focus: string;
+  selected: string;
   disabled: string;
-  outline: string;
-  subtle: string;
-  transparent: string;
-  onPrimary: string;
-  onPrimaryMuted: string;
+};
+
+export type ButtonColors = {
+  primary: ButtonInteractionColors;
+  secondary: ButtonInteractionColors;
+  disabled: ButtonInteractionColors;
+  outline: ButtonInteractionColors;
+  subtle: ButtonInteractionColors;
+  transparent: ButtonInteractionColors;
+  onPrimary: ButtonInteractionColors;
+  onPrimaryMuted: ButtonInteractionColors;
 };
 
 export type AccentColors = {
@@ -90,7 +99,7 @@ export const defaultColors: Colors = {
   text: {
     primary: '#000000',
     secondary: '#768692',
-    disabled: '#9CA3AF',
+    disabled: '#4B5563',
     placeholder: '#6B7280',
     inverse: '#FFFFFF',
   },
@@ -111,14 +120,70 @@ export const defaultColors: Colors = {
     overlay: 'rgba(100, 100, 100, 0.6)',
   },
   button: {
-    primary: '#005EB8',
-    secondary: '#E1F0FF',
-    disabled: '#F3F4F6',
-    outline: '#005EB8',
-    subtle: '#F5F5F5',
-    transparent: 'transparent',
-    onPrimary: '#FFFFFF',
-    onPrimaryMuted: 'rgba(255, 255, 255, 0.8)',
+    primary: {
+      default: '#005EB8',
+      hover: '#003087',
+      pressed: '#003087',
+      focus: '#0072CE',
+      selected: '#003087',
+      disabled: '#F3F4F6',
+    },
+    secondary: {
+      default: '#E1F0FF',
+      hover: '#C7E3FF',
+      pressed: '#B0D9FF',
+      focus: '#C7E3FF',
+      selected: '#C7E3FF',
+      disabled: '#F3F4F6',
+    },
+    disabled: {
+      default: '#F3F4F6',
+      hover: '#E5E7EB',
+      pressed: '#D1D5DB',
+      focus: '#005EB8',
+      selected: '#E5E7EB',
+      disabled: '#F3F4F6',
+    },
+    outline: {
+      default: '#005EB8',
+      hover: '#003087',
+      pressed: '#003087',
+      focus: '#0072CE',
+      selected: '#003087',
+      disabled: '#6B7280',
+    },
+    subtle: {
+      default: '#F5F5F5',
+      hover: '#E5E7EB',
+      pressed: '#D1D5DB',
+      focus: '#E5E7EB',
+      selected: '#E5E7EB',
+      disabled: '#F3F4F6',
+    },
+    transparent: {
+      default: 'transparent',
+      hover: '#F5F5F5',
+      pressed: '#E5E7EB',
+      focus: '#F5F5F5',
+      selected: '#F5F5F5',
+      disabled: 'transparent',
+    },
+    onPrimary: {
+      default: '#FFFFFF',
+      hover: '#FFFFFF',
+      pressed: '#FFFFFF',
+      focus: '#FFFFFF',
+      selected: '#FFFFFF',
+      disabled: '#4B5563',
+    },
+    onPrimaryMuted: {
+      default: 'rgba(255, 255, 255, 0.8)',
+      hover: 'rgba(255, 255, 255, 0.9)',
+      pressed: 'rgba(255, 255, 255, 0.95)',
+      focus: 'rgba(255, 255, 255, 0.9)',
+      selected: 'rgba(255, 255, 255, 0.9)',
+      disabled: 'rgba(75, 85, 99, 0.8)',
+    },
   },
   accent: {
     primary: '#005EB8',
@@ -161,7 +226,7 @@ export const defaultDarkColors: Colors = {
     ...defaultColors.text,
     primary: '#F4F7F8',
     secondary: '#B5C0C7',
-    disabled: '#9BA1A6',
+    disabled: '#B5C0C7',
     placeholder: '#9BA1A6',
     inverse: '#07141C',
   },
@@ -186,13 +251,70 @@ export const defaultDarkColors: Colors = {
   },
   button: {
     ...defaultColors.button,
-    primary: '#41B6E6',
-    secondary: '#163C52',
-    disabled: '#2C3740',
-    outline: '#41B6E6',
-    subtle: '#1C252D',
-    onPrimary: '#07141C',
-    onPrimaryMuted: 'rgba(7, 20, 28, 0.75)',
+    primary: {
+      default: '#41B6E6',
+      hover: '#00A9CE',
+      pressed: '#0072CE',
+      focus: '#41B6E6',
+      selected: '#00A9CE',
+      disabled: '#2C3740',
+    },
+    secondary: {
+      default: '#163C52',
+      hover: '#1B4B63',
+      pressed: '#245E79',
+      focus: '#1B4B63',
+      selected: '#1B4B63',
+      disabled: '#2C3740',
+    },
+    disabled: {
+      default: '#2C3740',
+      hover: '#425563',
+      pressed: '#425563',
+      focus: '#41B6E6',
+      selected: '#425563',
+      disabled: '#2C3740',
+    },
+    outline: {
+      default: '#41B6E6',
+      hover: '#00A9CE',
+      pressed: '#0072CE',
+      focus: '#41B6E6',
+      selected: '#00A9CE',
+      disabled: '#B5C0C7',
+    },
+    subtle: {
+      default: '#1C252D',
+      hover: '#2C3740',
+      pressed: '#425563',
+      focus: '#2C3740',
+      selected: '#2C3740',
+      disabled: '#2C3740',
+    },
+    transparent: {
+      default: 'transparent',
+      hover: '#1C252D',
+      pressed: '#2C3740',
+      focus: '#1C252D',
+      selected: '#1C252D',
+      disabled: 'transparent',
+    },
+    onPrimary: {
+      default: '#07141C',
+      hover: '#07141C',
+      pressed: '#07141C',
+      focus: '#07141C',
+      selected: '#07141C',
+      disabled: '#B5C0C7',
+    },
+    onPrimaryMuted: {
+      default: 'rgba(7, 20, 28, 0.75)',
+      hover: 'rgba(7, 20, 28, 0.85)',
+      pressed: 'rgba(7, 20, 28, 0.9)',
+      focus: 'rgba(7, 20, 28, 0.85)',
+      selected: 'rgba(7, 20, 28, 0.85)',
+      disabled: 'rgba(181, 192, 199, 0.8)',
+    },
   },
   accent: {
     ...defaultColors.accent,

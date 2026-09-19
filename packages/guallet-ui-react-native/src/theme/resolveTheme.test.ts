@@ -4,6 +4,31 @@ import { DarkTheme, DefaultTheme } from './DefaultTheme';
 import { resolveTheme } from './resolveTheme';
 
 describe('resolveTheme', () => {
+  it('provides every button interaction state in both appearances', () => {
+    const states = [
+      'default',
+      'hover',
+      'pressed',
+      'focus',
+      'selected',
+      'disabled',
+    ];
+
+    for (const colors of [defaultColors, defaultDarkColors]) {
+      for (const buttonColors of Object.values(colors.button)) {
+        expect(Object.keys(buttonColors)).toEqual(states);
+      }
+    }
+    expect(defaultColors.button.primary.default).toBe('#005EB8');
+    expect(defaultDarkColors.button.primary.default).toBe('#41B6E6');
+    expect(defaultColors.button.disabled.default).toBe(
+      defaultColors.surface.background.disabled,
+    );
+    expect(defaultDarkColors.button.disabled.default).toBe(
+      defaultDarkColors.surface.background.disabled,
+    );
+  });
+
   it('uses semantic light navigation colors by default', () => {
     const theme = resolveTheme({ mode: 'light' });
 

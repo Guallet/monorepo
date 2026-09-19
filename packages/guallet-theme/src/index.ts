@@ -1,6 +1,7 @@
 export type {
   AccentColors,
   ButtonColors,
+  ButtonInteractionColors,
   Colors,
   NeutralColors,
   StatusColors,

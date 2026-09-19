@@ -1,21 +1,19 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '../../theme';
+import {
+  getButtonInteractionState,
+  getButtonStyles,
+  type ButtonVariant,
+} from './buttonStyles';
 
-type ButtonVariant = 'filled' | 'light' | 'outline' | 'subtle' | 'transparent';
-
-interface ButtonProps {
+export interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: ButtonVariant;
   style?: ViewStyle;
   disabled?: boolean;
+  selected?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -24,90 +22,62 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'filled',
   style,
   disabled = false,
+  selected = false,
 }) => {
   const { colors, spacing, typography, borderRadius } = useTheme();
 
-  const getVariantStyles = (): ViewStyle => {
-    if (disabled) {
-      switch (variant) {
-        case 'filled':
-          return { backgroundColor: colors.button.disabled };
-        case 'light':
-          return { backgroundColor: colors.button.disabled };
-        case 'outline':
-          return {
-            backgroundColor: colors.button.transparent,
-            borderWidth: 1,
-            borderColor: colors.surface.border.disabled,
-          };
-        case 'subtle':
-          return { backgroundColor: colors.button.disabled };
-        case 'transparent':
-          return { backgroundColor: colors.button.transparent };
-        default:
-          return { backgroundColor: colors.button.disabled };
-      }
-    }
-
-    switch (variant) {
-      case 'filled':
-        return { backgroundColor: colors.button.primary };
-      case 'light':
-        return { backgroundColor: colors.button.secondary };
-      case 'outline':
-        return {
-          backgroundColor: colors.button.transparent,
-          borderWidth: 1,
-          borderColor: colors.button.outline,
-        };
-      case 'subtle':
-        return { backgroundColor: colors.button.subtle };
-      case 'transparent':
-        return { backgroundColor: colors.button.transparent };
-      default:
-        return { backgroundColor: colors.button.primary };
-    }
-  };
-
-  const getTextStyles = (): TextStyle => {
-    if (disabled) {
-      return { color: colors.text.disabled };
-    }
-
-    switch (variant) {
-      case 'filled':
-        return { color: colors.button.onPrimary };
-      case 'light':
-      case 'outline':
-      case 'subtle':
-      case 'transparent':
-        return { color: colors.button.outline };
-      default:
-        return { color: colors.button.onPrimary };
-    }
-  };
+  const [focused, setFocused] = React.useState(false);
+  const [pressed, setPressed] = React.useState(false);
+  const textState = getButtonInteractionState({
+    disabled,
+    focused,
+    pressed,
+    selected,
+  });
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.button,
-        {
-          borderRadius: borderRadius.md,
-          height: typography.sizes.md + spacing.md * 2,
-        },
-        getVariantStyles(),
-        style,
-      ]}
+    <Pressable
+      style={() => {
+        const buttonStyles = getButtonStyles(
+          colors,
+          variant,
+          getButtonInteractionState({
+            disabled,
+            focused,
+            pressed,
+            selected,
+          }),
+        );
+
+        return [
+          styles.button,
+          {
+            borderRadius: borderRadius.md,
+            height: typography.sizes.md + spacing.md * 2,
+            backgroundColor: buttonStyles.backgroundColor,
+            borderColor: buttonStyles.borderColor,
+            borderWidth: buttonStyles.borderWidth,
+          },
+          style,
+        ];
+      }}
       onPress={onClick}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       disabled={disabled}
-      activeOpacity={disabled ? 1 : 0.7}
+      accessibilityRole="button"
+      accessibilityState={{ disabled, selected }}
     >
       {typeof children === 'string' ? (
         <Text
           style={[
             styles.text,
             { fontSize: typography.sizes.md },
-            getTextStyles(),
+            {
+              color: getButtonStyles(colors, variant, textState).textColor,
+            },
           ]}
         >
           {children}
@@ -115,7 +85,7 @@ export const Button: React.FC<ButtonProps> = ({
       ) : (
         children
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
