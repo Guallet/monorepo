@@ -1,6 +1,6 @@
+import { useIsFocused } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
 
 interface DashboardDateRangeOptions {
   daysAgo?: number;
