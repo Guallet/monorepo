@@ -1,16 +1,7 @@
-import { Icon, IconQuestionMark } from '@tabler/icons-react';
-import * as TablerIcons from '@tabler/icons-react';
+import type { Icon } from '@tabler/icons-react';
+import { gualletIconRegistry, isGualletIconName } from './gualletIconRegistry';
 
-export type GualletIconName = keyof typeof TablerIcons;
-
-const validIconNames = Object.keys(TablerIcons).filter(
-  (name) => name.startsWith('Icon') && name !== 'Icon',
-);
-
-function isValidIcon(iconName?: string): boolean {
-  if (!iconName) return false;
-  return validIconNames.includes(iconName);
-}
+export type { GualletIconName } from './gualletIconRegistry';
 
 interface GualletIconProps extends React.ComponentPropsWithoutRef<Icon> {
   iconName?: string;
@@ -23,11 +14,12 @@ export function GualletIcon({
   size = 24,
   ...props
 }: Readonly<GualletIconProps>) {
-  if (isValidIcon(iconName)) {
-    const IconComponent = TablerIcons[iconName as GualletIconName] as Icon;
+  if (isGualletIconName(iconName)) {
+    const IconComponent = gualletIconRegistry[iconName];
     return <IconComponent color={iconColor} size={size} {...props} />;
   } else {
     console.error(`Invalid category icon name ${iconName}`);
-    return <IconQuestionMark color={iconColor} size={size} {...props} />;
+    const FallbackIcon = gualletIconRegistry.IconQuestionMark;
+    return <FallbackIcon color={iconColor} size={size} {...props} />;
   }
 }
