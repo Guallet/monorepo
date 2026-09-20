@@ -1,6 +1,6 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
-import { useTheme, useThemeMode } from '@guallet/ui-react-native';
+import { useTheme, useThemeMode } from '@guallet/luna-ui';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;

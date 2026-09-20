@@ -1,8 +1,6 @@
-import { Button, useTheme } from '@guallet/ui-react-native';
+import { Button, Group, Label, useTheme } from '@guallet/luna-ui';
 import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Label } from '@guallet/ui-react-native/src/components/typography';
-import Group from '@guallet/ui-react-native/src/components/layout/Group';
 
 interface GoogleButtonProps {
   onPress: () => void;

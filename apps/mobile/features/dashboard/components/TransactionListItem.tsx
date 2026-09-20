@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { TransactionDto } from '@guallet/api-client';
 import { useCategory } from '@guallet/api-react';
-import { useTheme } from '@guallet/ui-react-native';
+import { useTheme } from '@guallet/luna-ui';
 
 function getAvatarColor(
   text: string,

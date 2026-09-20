@@ -11,7 +11,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@guallet/theme": "workspace:*"
+  },
   "devDependencies": {
     "tsconfig": "workspace:*",
     "typescript": "workspace:*",

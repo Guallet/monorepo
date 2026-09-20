@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTransactions } from '@guallet/api-react';
-import { useTheme } from '@guallet/ui-react-native';
+import { useTheme } from '@guallet/luna-ui';
 import { TransactionListItem } from './TransactionListItem';
 
 const MAX_TRANSACTIONS = 5;

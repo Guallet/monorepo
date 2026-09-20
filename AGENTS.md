@@ -14,7 +14,7 @@
 | React query hooks | TanStack Query wrappers over the API client          | `packages/guallet-api-react`       |
 | Design tokens     | Platform-agnostic theme types and default values     | `packages/guallet-theme`           |
 | Shared React UI   | Mantine-based components (web)                       | `packages/guallet-ui-react`        |
-| React Native UI   | Custom Luna UI component library                     | `packages/guallet-ui-react-native` |
+| Luna UI           | Cross-platform components and controlled icon set    | `packages/guallet-ui-react-native` |
 | Money / currency  | Type-safe money library (80 % coverage threshold)    | `packages/guallet-money`           |
 
 ## Common Commands

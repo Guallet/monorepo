@@ -8,16 +8,22 @@
   "types": "./src/index.ts",
   "scripts": {
     "lint": "oxlint .",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./category-icons": {
+      "types": "./src/categoryIcons.ts",
+      "default": "./src/categoryIcons.ts"
     }
   },
   "devDependencies": {
     "tsconfig": "workspace:*",
-    "typescript": "workspace:*"
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
   }
 }

@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
-import { useTheme } from '@guallet/ui-react-native';
+import { useTheme } from '@guallet/luna-ui';
 import { WealthCard } from '@/features/dashboard/components/WealthCard';
 import { CashflowSummaryRow } from '@/features/dashboard/components/CashflowSummaryRow';
 import { RecentTransactionsWidget } from '@/features/dashboard/components/RecentTransactionsWidget';

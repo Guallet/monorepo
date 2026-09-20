@@ -1,6 +1,8 @@
 import { ActionIcon, Button, Group, Stack } from '@mantine/core';
-import { GualletIcon } from '../GualletIcon/GualletIcon';
-import { selectableGualletIconNames } from '../GualletIcon/gualletIconRegistry';
+import {
+  CategoryIcon,
+  selectableCategoryIconNames,
+} from '@guallet/luna-ui/icons';
 
 interface IconPickerModalProps {
   onIconSelected: (icon: string | undefined) => void;
@@ -14,7 +16,7 @@ export function IconPickerModal({
   return (
     <Stack>
       <Group wrap="wrap">
-        {selectableGualletIconNames.map((iconName) => (
+        {selectableCategoryIconNames.map((iconName) => (
           <ActionIcon
             key={iconName}
             variant="outline"
@@ -22,7 +24,7 @@ export function IconPickerModal({
             size={50}
             onClick={() => onIconSelected(iconName)}
           >
-            <GualletIcon iconName={iconName} />
+            <CategoryIcon name={iconName} />
           </ActionIcon>
         ))}
       </Group>

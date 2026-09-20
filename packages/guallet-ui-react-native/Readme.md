@@ -1,13 +1,14 @@
-# Luna UI - React Native Components
+# Luna UI
 
-A collection of beautiful, customizable React Native UI components for building modern mobile applications.
+Guallet's React Native component library and controlled cross-platform icon
+set.
 
 ## Installation
 
 ```bash
-npm install @luna-ui/react-native
+npm install @guallet/luna-ui
 # or
-yarn add @luna-ui/react-native
+yarn add @guallet/luna-ui
 ```
 
 ## Quick Start
@@ -15,7 +16,7 @@ yarn add @luna-ui/react-native
 ```typescript
 import React from 'react';
 import { View } from 'react-native';
-import { Button, Text, Card } from '@luna-ui/react-native';
+import { Button, Text, Card } from '@guallet/luna-ui';
 
 export default function App() {
   return (
@@ -33,6 +34,27 @@ export default function App() {
 }
 ```
 
+## Icons
+
+Luna UI exposes the same category icon API on web and React Native. Use named
+icons for static UI and `CategoryIcon` for icon names loaded from the API:
+
+```typescript
+import {
+  CategoryIcon,
+  MoneyIcon,
+  type CategoryIconName,
+} from '@guallet/luna-ui/icons';
+
+const savedIcon: CategoryIconName = 'IconCash';
+
+<MoneyIcon />;
+<CategoryIcon name={savedIcon} />;
+```
+
+Unknown legacy values fall back to `QuestionMarkIcon`. New category and budget
+writes are limited to the exported `categoryIconNames` contract.
+
 ## Components
 
 ### Button
@@ -40,7 +62,7 @@ export default function App() {
 Customizable button component with multiple variants.
 
 ```typescript
-import { Button } from '@luna-ui/react-native';
+import { Button } from '@guallet/luna-ui';
 
 <Button
   title="Primary Button"
@@ -55,7 +77,7 @@ import { Button } from '@luna-ui/react-native';
 Typography component with consistent styling.
 
 ```typescript
-import { Text } from '@luna-ui/react-native';
+import { Text } from '@guallet/luna-ui';
 
 <Text variant="heading">Heading Text</Text>
 <Text variant="body">Body text content</Text>
@@ -67,7 +89,7 @@ import { Text } from '@luna-ui/react-native';
 Container component with elevation and rounded corners.
 
 ```typescript
-import { Card } from '@luna-ui/react-native';
+import { Card } from '@guallet/luna-ui';
 
 <Card elevation={2} padding={16}>
   {/* Your content here */}
@@ -79,7 +101,7 @@ import { Card } from '@luna-ui/react-native';
 Form input component with validation support.
 
 ```typescript
-import { Input } from '@luna-ui/react-native';
+import { Input } from '@guallet/luna-ui';
 
 <Input
   placeholder="Enter your email"
@@ -136,7 +158,7 @@ const theme = {
 Custom themes can be supplied per appearance:
 
 ```typescript
-import { LunaProvider } from '@guallet/ui-react-native';
+import { LunaProvider } from '@guallet/luna-ui';
 
 const sharedTheme = {
   colors: {

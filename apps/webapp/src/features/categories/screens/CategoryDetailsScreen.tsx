@@ -1,8 +1,8 @@
 import { DeleteButton } from '@/components/Buttons/DeleteButton';
 import { AppSection } from '@/components/Cards/AppSection';
-import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useGroupedCategory, useCategoryMutations } from '@guallet/api-react';
+import { CategoryIcon } from '@guallet/luna-ui/icons';
 import { Stack, Button, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
@@ -69,9 +69,9 @@ export function CategoriesScreen({
       <Stack>
         <AppSection>
           <Stack align="center">
-            <GualletIcon
-              iconName={category?.icon ?? 'question'}
-              iconColor={category?.colour ?? 'black'}
+            <CategoryIcon
+              name={category?.icon}
+              color={category?.colour ?? 'black'}
             />
             <Text>{category?.name}</Text>
           </Stack>

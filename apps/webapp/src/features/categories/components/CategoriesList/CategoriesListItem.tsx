@@ -13,7 +13,7 @@ import {
 import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { AppCategory } from '../../models/Category';
-import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
+import { CategoryIcon } from '@guallet/luna-ui/icons';
 import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
 
 interface HeaderProps {
@@ -38,7 +38,7 @@ function ItemHeader({
       <Accordion.Control>
         <Group>
           <Avatar color="blue" radius="sm">
-            <GualletIcon iconName={iconName} iconColor={iconColour} />
+            <CategoryIcon name={iconName} color={iconColour} />
           </Avatar>
           <Text>{title}</Text>
         </Group>
