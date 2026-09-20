@@ -8,7 +8,9 @@ const {
 } = require('react-native-reanimated/metro-config');
 
 const projectRoot = __dirname;
-const config = getSentryExpoConfig(projectRoot);
+const config = getSentryExpoConfig(projectRoot, {
+  autoWrapExpoRouterErrorBoundary: true,
+});
 
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
