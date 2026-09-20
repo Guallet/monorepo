@@ -4,16 +4,18 @@
   "description": "Guallet UI components for React Native",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "imports": {
+    "#tabler/*": {
+      "react-native": "@tabler/icons-react-native/*",
+      "default": "@tabler/icons-react/dist/esm/icons/*.mjs"
+    }
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
     "./icons": {
-      "react-native": {
-        "types": "./src/icons/index.native.ts",
-        "default": "./src/icons/index.native.ts"
-      },
       "types": "./src/icons/index.ts",
       "default": "./src/icons/index.ts"
     }
