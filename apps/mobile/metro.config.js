@@ -8,17 +8,10 @@ const {
 } = require('react-native-reanimated/metro-config');
 
 const projectRoot = __dirname;
-const workspaceRoot = path.resolve(projectRoot, '../..');
-const config = getSentryExpoConfig(projectRoot);
+const config = getSentryExpoConfig(projectRoot, {
+  autoWrapExpoRouterErrorBoundary: true,
+});
 
-// #1 - Watch all files in the monorepo
-config.watchFolders = [workspaceRoot];
-// Try resolving with project modules first, then workspace modules.
-config.resolver.nodeModulesPaths = [
-  path.resolve(projectRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'packages/guallet-luna-mobile/node_modules'),
-];
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
   new FileStore({
