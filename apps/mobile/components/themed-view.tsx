@@ -1,6 +1,6 @@
 import { View, type ViewProps } from 'react-native';
 
-import { useTheme, useThemeMode } from '@guallet/ui-react-native';
+import { useTheme, useThemeMode } from '@guallet/luna-mobile';
 
 export type ThemedViewProps = ViewProps & {
   lightColor?: string;

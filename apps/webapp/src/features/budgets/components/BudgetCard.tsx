@@ -1,5 +1,5 @@
-import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
 import { useBudget } from '@guallet/api-react';
+import { CategoryIcon } from '@guallet/luna/icons';
 import { Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import {
@@ -97,9 +97,9 @@ export function BudgetCard({
           }}
         >
           {budget.icon ? (
-            <GualletIcon
-              iconName={budget.icon}
-              iconColor="#ffffff"
+            <CategoryIcon
+              name={budget.icon}
+              color="#ffffff"
               size={20}
               strokeWidth={1.5}
             />
