@@ -23,10 +23,7 @@ export default function App() {
       <Card>
         <Text variant="heading">Welcome to Luna UI</Text>
         <Text variant="body">Beautiful components for React Native</Text>
-        <Button
-          title="Get Started"
-          onPress={() => console.log('Pressed!')}
-        />
+        <Button onClick={() => console.log('Pressed!')}>Get Started</Button>
       </Card>
     </View>
   );
@@ -63,12 +60,9 @@ Customizable button component with multiple variants.
 ```typescript
 import { Button } from '@guallet/luna-mobile';
 
-<Button
-  title="Primary Button"
-  variant="primary"
-  size="medium"
-  onPress={() => {}}
-/>
+<Button variant="primary" onClick={() => {}}>
+  Primary Button
+</Button>
 ```
 
 ### Text
