@@ -16,7 +16,7 @@ export const GoogleButton: React.FC<GoogleButtonProps> = ({
   return (
     <Button variant="outline" onClick={onPress} disabled={disabled}>
       <Group align="center" gap="sm">
-        <Ionicons name="logo-google" size={32} color={colors.accent.primary} />
+        <Ionicons name="logo-google" size={20} color={colors.accent.primary} />
         <Label color={colors.accent.primary}>Continue with Google</Label>
       </Group>
     </Button>

@@ -1,77 +1,49 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { AppScreen } from '@/components/layout/AppScreen';
+import {
+  AuthIntro,
+  AuthLink,
+  AuthNotice,
+  AuthScreen,
+} from '@/features/login/components/AuthLayout';
+import { Button } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, Title, Stack, useTheme } from '@guallet/luna-mobile';
+import { Alert } from 'react-native';
 import { openInbox } from 'react-native-email-link';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export function ResetPasswordSentScreen() {
   const router = useRouter();
-  const { spacing, colors } = useTheme();
   const params = useLocalSearchParams<{ email?: string }>();
+  const email = params.email ?? 'your email address';
 
   const handleOpenEmailApp = async () => {
-    await openInbox();
-  };
-
-  const handleBackToLogin = () => {
-    router.replace('/login');
+    try {
+      await openInbox();
+    } catch {
+      Alert.alert(
+        'Could not open your inbox',
+        'Open your email app and look for a message from Guallet.',
+      );
+    }
   };
 
   return (
-    <AppScreen headerTitle="Check your email">
-      <Stack style={{ flex: 1, padding: spacing.md }} gap={spacing.lg}>
-        <View style={styles.content}>
-          <View style={styles.iconContainer}>
-            <Ionicons
-              name="mail-outline"
-              size={64}
-              color={colors.accent.primary}
-            />
-          </View>
+    <AuthScreen headerTitle="Check your email">
+      <AuthIntro
+        align="center"
+        description={`We sent a password reset link to ${email}.`}
+        icon="mail-open-outline"
+        title="Check your inbox"
+      />
 
-          <Title center>Check your email</Title>
+      <AuthNotice>
+        The link expires for your security. If you don&apos;t see the email,
+        check your spam or junk folder.
+      </AuthNotice>
 
-          <Label center>
-            We&apos;ve sent a password reset link to{' '}
-            {params.email ? (
-              <Label style={{ fontWeight: 'bold' }}>{params.email}</Label>
-            ) : (
-              'your email'
-            )}
-            .
-          </Label>
+      <Button onClick={handleOpenEmailApp}>Open email app</Button>
 
-          <Label center>
-            Click the link in the email to reset your password. If you
-            don&apos;t see it, check your spam folder.
-          </Label>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <Button onClick={handleOpenEmailApp}>Open email app</Button>
-          <Button variant="outline" onClick={handleBackToLogin}>
-            Back to login
-          </Button>
-        </View>
-      </Stack>
-    </AppScreen>
+      <AuthLink onPress={() => router.replace('/login/password')}>
+        Back to sign in
+      </AuthLink>
+    </AuthScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    gap: 16,
-    justifyContent: 'center',
-  },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  buttonContainer: {
-    gap: 12,
-    paddingBottom: 24,
-  },
-});

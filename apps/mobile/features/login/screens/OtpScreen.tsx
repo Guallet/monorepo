@@ -1,163 +1,182 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { AppScreen } from '@/components/layout/AppScreen';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, OtpInput, Title, useTheme } from '@guallet/luna-mobile';
-import { openInbox } from 'react-native-email-link';
 import { useAuth } from '@/auth/useAuth';
+import {
+  AuthIntro,
+  AuthLink,
+  AuthNotice,
+  AuthScreen,
+} from '@/features/login/components/AuthLayout';
+import {
+  Button,
+  Label,
+  OtpInput,
+  Stack,
+  useTheme,
+} from '@guallet/luna-mobile';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Alert, AppState, StyleSheet, View } from 'react-native';
+import { openInbox } from 'react-native-email-link';
+
+const RESEND_DELAY_SECONDS = 30;
 
 export function OtpScreen() {
   const router = useRouter();
-  const { colors, spacing, typography } = useTheme();
-  const { verifyOtpCode, getOtpCode } = useAuth();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? '';
-
+  const { getOtpCode, verifyOtpCode } = useAuth();
+  const { colors, spacing } = useTheme();
   const [code, setCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [resendAvailableAt, setResendAvailableAt] = useState(
+    () => Date.now() + RESEND_DELAY_SECONDS * 1000,
+  );
+  const [resendSeconds, setResendSeconds] = useState(RESEND_DELAY_SECONDS);
 
-  const isCodeComplete = code.length === 6;
+  useEffect(() => {
+    const updateRemainingTime = () => {
+      const remainingSeconds = Math.max(
+        0,
+        Math.ceil((resendAvailableAt - Date.now()) / 1000),
+      );
+      setResendSeconds(remainingSeconds);
+    };
+
+    updateRemainingTime();
+    const timer = setInterval(updateRemainingTime, 1000);
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active') {
+        updateRemainingTime();
+      }
+    });
+
+    return () => {
+      clearInterval(timer);
+      subscription.remove();
+    };
+  }, [resendAvailableAt]);
 
   const handleVerifyCode = async () => {
-    if (!isCodeComplete || !email) {
+    if (code.length !== 6 || !email) {
       return;
     }
 
     setError(null);
     setIsLoading(true);
-
     const result = await verifyOtpCode(email, code);
     setIsLoading(false);
 
     if (result.success) {
       router.replace('/(tabs)');
-    } else {
-      setError(result.error?.message ?? 'Invalid code. Please try again.');
-    }
-  };
-
-  const handleResendCode = async () => {
-    if (!email) {
       return;
     }
 
+    setError(result.error?.message ?? 'That code is not valid. Try again.');
+  };
+
+  const handleResendCode = async () => {
+    if (!email || resendSeconds > 0) {
+      return;
+    }
+
+    setError(null);
     setIsLoading(true);
     const result = await getOtpCode(email);
     setIsLoading(false);
 
     if (result.success) {
-      setError(null);
-      alert('A new code has been sent to your email.');
-    } else {
-      setError('Failed to resend code. Please try again.');
+      setCode('');
+      setResendAvailableAt(Date.now() + RESEND_DELAY_SECONDS * 1000);
+      Alert.alert('New code sent', `Check ${email} for your new code.`);
+      return;
     }
+
+    setError(result.error?.message ?? 'We could not resend the code.');
   };
 
   const handleOpenEmailApp = async () => {
-    await openInbox();
+    try {
+      await openInbox();
+    } catch {
+      Alert.alert('Could not open your inbox', `Check ${email} for your code.`);
+    }
   };
 
-  return (
-    <AppScreen headerTitle="Enter code" isLoading={isLoading}>
-      {/* Content */}
-      <View style={{ flex: 1, padding: spacing.md }}>
-        <Title>Check your email</Title>
-        <Label>
-          We&apos;ve sent a 6-digit code to{' '}
-          {email ? (
-            <Label style={{ fontWeight: 'bold' }}>{email}</Label>
-          ) : (
-            'your email'
-          )}
-          . Enter the code below to sign in.
-        </Label>
-        <Label style={{ marginTop: spacing.sm }}>
-          The email also contains a magic link you can click to sign in
-          automatically.
-        </Label>
-        <Label style={{ marginTop: spacing.sm }}>
-          This code expires in 5 minutes.
-        </Label>
+  if (!email) {
+    return (
+      <AuthScreen headerTitle="Enter code">
+        <AuthIntro
+          description="Return to the previous step so we know where to send your code."
+          icon="alert-circle-outline"
+          title="Email address missing"
+        />
+        <Button onClick={() => router.replace('/login/email-code')}>
+          Enter email address
+        </Button>
+      </AuthScreen>
+    );
+  }
 
-        {/* Code Input */}
+  return (
+    <AuthScreen headerTitle="Enter code" isLoading={isLoading}>
+      <AuthIntro
+        align="center"
+        description={`We sent a 6-digit code to ${email}`}
+        icon="shield-checkmark-outline"
+        title="Enter your code"
+      />
+
+      <Stack gap={spacing.sm}>
         <OtpInput
+          autoFocus
+          hasError={Boolean(error)}
           length={6}
-          style={{
-            marginVertical: spacing.lg,
-          }}
-          onCodeChanged={(newCode) => {
-            setCode(newCode);
+          onCodeChanged={(value) => {
+            setCode(value);
             setError(null);
           }}
+          value={code}
         />
+        {error ? <AuthNotice tone="error">{error}</AuthNotice> : null}
+      </Stack>
 
-        {error && (
-          <Text
-            style={[
-              styles.errorText,
-              {
-                color: colors.status.error,
-                fontSize: typography.sizes.sm,
-                marginBottom: spacing.md,
-              },
-            ]}
-          >
-            {error}
-          </Text>
-        )}
+      <Button disabled={code.length !== 6} onClick={handleVerifyCode}>
+        Verify and sign in
+      </Button>
 
-        <Button onClick={handleVerifyCode} disabled={!isCodeComplete}>
-          Verify code
-        </Button>
-
-        {/* Resend Code */}
-        <View style={[styles.resendContainer, { marginTop: spacing.lg }]}>
-          <Text
-            style={[
-              styles.resendText,
-              {
-                color: colors.text.secondary,
-                fontSize: typography.sizes.md,
-                marginBottom: spacing.sm,
-              },
-            ]}
-          >
-            Didn&apos;t receive the code?
-          </Text>
-          <TouchableOpacity onPress={handleResendCode}>
-            <Text
-              style={[
-                styles.resendButton,
-                { color: colors.accent.primary, fontSize: typography.sizes.md },
-              ]}
-            >
-              Resend code
-            </Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.resendRow}>
+        <Label color={colors.text.secondary} size="sm">
+          Didn&apos;t receive it?
+        </Label>
+        <AuthLink disabled={resendSeconds > 0} onPress={handleResendCode}>
+          {resendSeconds > 0
+            ? `Resend in 0:${String(resendSeconds).padStart(2, '0')}`
+            : 'Resend code'}
+        </AuthLink>
       </View>
 
-      {/* Bottom Button */}
-      <View style={{ padding: spacing.lg }}>
-        <Button variant="outline" onClick={handleOpenEmailApp}>
-          Open email app
-        </Button>
-      </View>
-    </AppScreen>
+      <Button onClick={handleOpenEmailApp} variant="outline">
+        Open email app
+      </Button>
+
+      <AuthLink
+        onPress={() =>
+          router.replace({
+            pathname: '/login/email-code',
+            params: { email },
+          })
+        }
+      >
+        Use a different email
+      </AuthLink>
+    </AuthScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  resendContainer: {
+  resendRow: {
     alignItems: 'center',
-  },
-  resendText: {},
-  resendButton: {
-    fontWeight: '500',
-    textDecorationLine: 'underline',
-  },
-  errorText: {
-    textAlign: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });
