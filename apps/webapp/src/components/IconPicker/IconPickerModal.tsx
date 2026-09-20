@@ -1,8 +1,5 @@
 import { ActionIcon, Button, Group, Stack } from '@mantine/core';
-import {
-  CategoryIcon,
-  selectableCategoryIconNames,
-} from '@guallet/luna/icons';
+import { CategoryIcon, selectableCategoryIconNames } from '@guallet/luna/icons';
 
 interface IconPickerModalProps {
   onIconSelected: (icon: string | undefined) => void;
