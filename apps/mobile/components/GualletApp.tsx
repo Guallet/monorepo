@@ -60,6 +60,7 @@ function AppNavigation() {
                   headerStyle: {
                     backgroundColor: colors.surface.background.primary,
                   },
+                  headerBackButtonDisplayMode: 'minimal',
                   headerTintColor: colors.text.primary,
                   headerTitleStyle: { color: colors.text.primary },
                 }}
