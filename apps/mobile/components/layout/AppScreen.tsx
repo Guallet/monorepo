@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
-import { ModalLoaderOverlay, useTheme } from '@guallet/ui-react-native';
+import { ModalLoaderOverlay, useTheme } from '@guallet/luna-mobile';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {
   isLoading?: boolean;

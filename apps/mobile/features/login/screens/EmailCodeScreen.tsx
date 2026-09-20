@@ -11,7 +11,7 @@ import {
   Stack,
   TextInput,
   useTheme,
-} from '@guallet/ui-react-native';
+} from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 

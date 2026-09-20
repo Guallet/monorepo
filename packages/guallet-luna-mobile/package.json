@@ -1,9 +1,19 @@
 {
-  "name": "@guallet/ui-react-native",
+  "name": "@guallet/luna-mobile",
   "version": "0.1.0",
-  "description": "Guallet UI components for React Native",
+  "description": "Luna UI components and category icons for React Native",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./icons": {
+      "types": "./src/icons/index.ts",
+      "default": "./src/icons/index.ts"
+    }
+  },
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
@@ -15,10 +25,10 @@
   "author": "cjgaliana",
   "dependencies": {
     "@guallet/theme": "workspace:*",
-    "@expo/vector-icons": "15.1.1",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "react-native": "0.86.3"
+    "@tabler/icons-react-native": "3.46.0",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-svg": "15.15.4"
   },
   "devDependencies": {
     "@types/react": "workspace:*",

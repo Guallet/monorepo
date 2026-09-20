@@ -9,7 +9,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IconPickerModal } from './IconPickerModal';
 import { IconSelect } from '@tabler/icons-react';
-import { GualletIcon } from '../GualletIcon/GualletIcon';
+import { CategoryIcon } from '@guallet/luna/icons';
 
 interface IconPickerProps extends InputWrapperProps {
   value: string | null;
@@ -56,7 +56,7 @@ export function IconPicker({
           {value && value?.length > 0 ? (
             <Group>
               <ThemeIcon variant="white">
-                <GualletIcon iconName={value} />
+                <CategoryIcon name={value} />
               </ThemeIcon>
               <Text>{value}</Text>
             </Group>

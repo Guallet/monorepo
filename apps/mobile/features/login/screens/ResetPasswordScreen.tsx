@@ -6,7 +6,7 @@ import {
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Button, Stack, TextInput, useTheme } from '@guallet/ui-react-native';
+import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';

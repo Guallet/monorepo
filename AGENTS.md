@@ -5,17 +5,18 @@
 
 ## Repo at a Glance
 
-| App / Package     | Tech                                                 | Path                               |
-| ----------------- | ---------------------------------------------------- | ---------------------------------- |
-| API               | NestJS 11, TypeORM, Better Auth, BullMQ              | `apps/api`                         |
-| Webapp            | Vite 7, React 19, TanStack Router + Query, Mantine 8 | `apps/webapp`                      |
-| Mobile            | Expo 54, React Native 0.81, Expo Router, Luna UI     | `apps/mobile`                      |
-| API client types  | TypeScript (no runtime, types + fetch wrappers)      | `packages/guallet-api-client`      |
-| React query hooks | TanStack Query wrappers over the API client          | `packages/guallet-api-react`       |
-| Design tokens     | Platform-agnostic theme types and default values     | `packages/guallet-theme`           |
-| Shared React UI   | Mantine-based components (web)                       | `packages/guallet-ui-react`        |
-| React Native UI   | Custom Luna UI component library                     | `packages/guallet-ui-react-native` |
-| Money / currency  | Type-safe money library (80 % coverage threshold)    | `packages/guallet-money`           |
+| App / Package     | Tech                                                 | Path                           |
+| ----------------- | ---------------------------------------------------- | ------------------------------ |
+| API               | NestJS 11, TypeORM, Better Auth, BullMQ              | `apps/api`                     |
+| Webapp            | Vite 7, React 19, TanStack Router + Query, Mantine 8 | `apps/webapp`                  |
+| Mobile            | Expo 54, React Native 0.81, Expo Router, Luna UI     | `apps/mobile`                  |
+| API client types  | TypeScript (no runtime, types + fetch wrappers)      | `packages/guallet-api-client`  |
+| React query hooks | TanStack Query wrappers over the API client          | `packages/guallet-api-react`   |
+| Design tokens     | Platform-agnostic theme types and default values     | `packages/guallet-theme`       |
+| Shared React UI   | Mantine-based components (web)                       | `packages/guallet-ui-react`    |
+| Luna UI (web)     | Web design-system icons                              | `packages/guallet-luna`        |
+| Luna UI (native)  | React Native components and icons                    | `packages/guallet-luna-mobile` |
+| Money / currency  | Type-safe money library (80 % coverage threshold)    | `packages/guallet-money`       |
 
 ## Common Commands
 

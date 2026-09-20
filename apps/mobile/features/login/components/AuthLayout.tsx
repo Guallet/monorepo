@@ -1,6 +1,6 @@
 import { AppScreen } from '@/components/layout/AppScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Label, Stack, Title, useTheme } from '@guallet/ui-react-native';
+import { Label, Stack, Title, useTheme } from '@guallet/luna-mobile';
 import React from 'react';
 import {
   KeyboardAvoidingView,

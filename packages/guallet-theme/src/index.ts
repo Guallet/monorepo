@@ -27,3 +27,10 @@ export {
   type GualletTheme,
   type GualletThemeOverrides,
 } from './theme';
+export {
+  categoryIconFallbackName,
+  categoryIconNames,
+  isCategoryIconName,
+  selectableCategoryIconNames,
+  type CategoryIconName,
+} from './categoryIcons';

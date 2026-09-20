@@ -11,7 +11,7 @@ import {
   OtpInput,
   Stack,
   useTheme,
-} from '@guallet/ui-react-native';
+} from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, AppState, StyleSheet, View } from 'react-native';

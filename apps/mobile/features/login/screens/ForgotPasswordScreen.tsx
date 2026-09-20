@@ -5,7 +5,7 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Button, TextInput } from '@guallet/ui-react-native';
+import { Button, TextInput } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 

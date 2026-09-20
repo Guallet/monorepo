@@ -17,7 +17,7 @@ config.watchFolders = [workspaceRoot];
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'packages/guallet-ui-react-native/node_modules'),
+  path.resolve(workspaceRoot, 'packages/guallet-luna-mobile/node_modules'),
 ];
 // Use turborepo to restore the cache when possible
 config.cacheStores = [

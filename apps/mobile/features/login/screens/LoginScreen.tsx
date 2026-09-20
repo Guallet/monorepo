@@ -9,7 +9,7 @@ import {
   Label,
   Stack,
   useTheme,
-} from '@guallet/ui-react-native';
+} from '@guallet/luna-mobile';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';

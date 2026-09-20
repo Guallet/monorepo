@@ -18,6 +18,7 @@
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
     "@guallet/auth": "workspace:*",
+    "@guallet/luna": "workspace:*",
     "@guallet/money": "workspace:*",
     "@guallet/theme": "workspace:*",
     "@guallet/ui-react": "workspace:*",

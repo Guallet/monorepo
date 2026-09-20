@@ -4,7 +4,7 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Button } from '@guallet/ui-react-native';
+import { Button } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 import { openInbox } from 'react-native-email-link';
