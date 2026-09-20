@@ -13,7 +13,7 @@ import {
 import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { AppCategory } from '../../models/Category';
-import { CategoryIcon } from '@guallet/luna-ui/icons';
+import { CategoryIcon } from '@guallet/luna/icons';
 import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
 
 interface HeaderProps {

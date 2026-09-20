@@ -1,5 +1,5 @@
 import { useBudget } from '@guallet/api-react';
-import { CategoryIcon } from '@guallet/luna-ui/icons';
+import { CategoryIcon } from '@guallet/luna/icons';
 import { Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import {

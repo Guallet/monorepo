@@ -1,110 +1,99 @@
-import TablerActivityIcon from '#tabler/IconActivity';
-import TablerAlertTriangleIcon from '#tabler/IconAlertTriangle';
-import TablerArrowBackUpIcon from '#tabler/IconArrowBackUp';
-import TablerArrowRightIcon from '#tabler/IconArrowRight';
-import TablerArrowsLeftRightIcon from '#tabler/IconArrowsLeftRight';
-import TablerBabyCarriageIcon from '#tabler/IconBabyCarriage';
-import TablerBallFootballIcon from '#tabler/IconBallFootball';
-import TablerBalloonIcon from '#tabler/IconBalloon';
-import TablerBarbellIcon from '#tabler/IconBarbell';
-import TablerBasketIcon from '#tabler/IconBasket';
-import TablerBedIcon from '#tabler/IconBed';
-import TablerBikeIcon from '#tabler/IconBike';
-import TablerBoltIcon from '#tabler/IconBolt';
-import TablerBookIcon from '#tabler/IconBook';
-import TablerBriefcaseIcon from '#tabler/IconBriefcase';
-import TablerBuildingIcon from '#tabler/IconBuilding';
-import TablerBuildingBankIcon from '#tabler/IconBuildingBank';
-import TablerBuildingStoreIcon from '#tabler/IconBuildingStore';
-import TablerBusIcon from '#tabler/IconBus';
-import TablerCameraIcon from '#tabler/IconCamera';
-import TablerCarIcon from '#tabler/IconCar';
-import TablerCashIcon from '#tabler/IconCash';
-import TablerChartBarIcon from '#tabler/IconChartBar';
-import TablerClockIcon from '#tabler/IconClock';
-import TablerCoffeeIcon from '#tabler/IconCoffee';
-import TablerConfettiIcon from '#tabler/IconConfetti';
-import TablerCreditCardIcon from '#tabler/IconCreditCard';
-import TablerCupIcon from '#tabler/IconCup';
-import TablerDeviceGamepad2Icon from '#tabler/IconDeviceGamepad2';
-import TablerDeviceLaptopIcon from '#tabler/IconDeviceLaptop';
-import TablerDeviceMobileIcon from '#tabler/IconDeviceMobile';
-import TablerDeviceTvIcon from '#tabler/IconDeviceTv';
-import TablerDiamondIcon from '#tabler/IconDiamond';
-import TablerDiceIcon from '#tabler/IconDice';
-import TablerDotsIcon from '#tabler/IconDots';
-import TablerDropletIcon from '#tabler/IconDroplet';
-import TablerEyeIcon from '#tabler/IconEye';
-import TablerFlowerIcon from '#tabler/IconFlower';
-import TablerGasStationIcon from '#tabler/IconGasStation';
-import TablerGiftIcon from '#tabler/IconGift';
-import TablerGuitarIcon from '#tabler/IconGuitarPick';
-import TablerHammerIcon from '#tabler/IconHammer';
-import TablerHeartIcon from '#tabler/IconHeart';
-import TablerHeartHandshakeIcon from '#tabler/IconHeartHandshake';
-import TablerHomeIcon from '#tabler/IconHome';
-import TablerLegoIcon from '#tabler/IconLego';
-import TablerMapIcon from '#tabler/IconMap';
-import TablerMapPinIcon from '#tabler/IconMapPin';
-import TablerMovieIcon from '#tabler/IconMovie';
-import TablerMusicIcon from '#tabler/IconMusic';
-import TablerPackageIcon from '#tabler/IconPackage';
-import TablerPaletteIcon from '#tabler/IconPalette';
-import TablerParkingIcon from '#tabler/IconParking';
-import TablerPawIcon from '#tabler/IconPaw';
-import TablerPencilIcon from '#tabler/IconPencil';
-import TablerPercentageIcon from '#tabler/IconPercentage';
-import TablerPhoneIcon from '#tabler/IconPhone';
-import TablerPigMoneyIcon from '#tabler/IconPigMoney';
-import TablerPillIcon from '#tabler/IconPill';
-import TablerPlaneIcon from '#tabler/IconPlane';
-import TablerPlugIcon from '#tabler/IconPlug';
-import TablerQuestionMarkIcon from '#tabler/IconQuestionMark';
-import TablerReceiptIcon from '#tabler/IconReceipt';
-import TablerRunIcon from '#tabler/IconRun';
-import TablerSchoolIcon from '#tabler/IconSchool';
-import TablerScissorsIcon from '#tabler/IconScissors';
-import TablerShieldIcon from '#tabler/IconShield';
-import TablerShirtIcon from '#tabler/IconShirt';
-import TablerShoppingCartIcon from '#tabler/IconShoppingCart';
-import TablerSofaIcon from '#tabler/IconSofa';
-import TablerSparklesIcon from '#tabler/IconSparkles';
-import TablerStarIcon from '#tabler/IconStar';
-import TablerStethoscopeIcon from '#tabler/IconStethoscope';
-import TablerTagIcon from '#tabler/IconTag';
-import TablerToolsIcon from '#tabler/IconTools';
-import TablerToolsKitchen2Icon from '#tabler/IconToolsKitchen2';
-import TablerToolsKitchen3Icon from '#tabler/IconToolsKitchen3';
-import TablerTreeIcon from '#tabler/IconTree';
-import TablerTrendingUpIcon from '#tabler/IconTrendingUp';
-import TablerTrophyIcon from '#tabler/IconTrophy';
-import TablerUsersIcon from '#tabler/IconUsers';
-import TablerWalkIcon from '#tabler/IconWalk';
-import TablerWifiIcon from '#tabler/IconWifi';
+import TablerActivityIcon from '@tabler/icons-react-native/IconActivity';
+import TablerAlertTriangleIcon from '@tabler/icons-react-native/IconAlertTriangle';
+import TablerArrowBackUpIcon from '@tabler/icons-react-native/IconArrowBackUp';
+import TablerArrowRightIcon from '@tabler/icons-react-native/IconArrowRight';
+import TablerArrowsLeftRightIcon from '@tabler/icons-react-native/IconArrowsLeftRight';
+import TablerBabyCarriageIcon from '@tabler/icons-react-native/IconBabyCarriage';
+import TablerBallFootballIcon from '@tabler/icons-react-native/IconBallFootball';
+import TablerBalloonIcon from '@tabler/icons-react-native/IconBalloon';
+import TablerBarbellIcon from '@tabler/icons-react-native/IconBarbell';
+import TablerBasketIcon from '@tabler/icons-react-native/IconBasket';
+import TablerBedIcon from '@tabler/icons-react-native/IconBed';
+import TablerBikeIcon from '@tabler/icons-react-native/IconBike';
+import TablerBoltIcon from '@tabler/icons-react-native/IconBolt';
+import TablerBookIcon from '@tabler/icons-react-native/IconBook';
+import TablerBriefcaseIcon from '@tabler/icons-react-native/IconBriefcase';
+import TablerBuildingIcon from '@tabler/icons-react-native/IconBuilding';
+import TablerBuildingBankIcon from '@tabler/icons-react-native/IconBuildingBank';
+import TablerBuildingStoreIcon from '@tabler/icons-react-native/IconBuildingStore';
+import TablerBusIcon from '@tabler/icons-react-native/IconBus';
+import TablerCameraIcon from '@tabler/icons-react-native/IconCamera';
+import TablerCarIcon from '@tabler/icons-react-native/IconCar';
+import TablerCashIcon from '@tabler/icons-react-native/IconCash';
+import TablerChartBarIcon from '@tabler/icons-react-native/IconChartBar';
+import TablerClockIcon from '@tabler/icons-react-native/IconClock';
+import TablerCoffeeIcon from '@tabler/icons-react-native/IconCoffee';
+import TablerConfettiIcon from '@tabler/icons-react-native/IconConfetti';
+import TablerCreditCardIcon from '@tabler/icons-react-native/IconCreditCard';
+import TablerCupIcon from '@tabler/icons-react-native/IconCup';
+import TablerDeviceGamepad2Icon from '@tabler/icons-react-native/IconDeviceGamepad2';
+import TablerDeviceLaptopIcon from '@tabler/icons-react-native/IconDeviceLaptop';
+import TablerDeviceMobileIcon from '@tabler/icons-react-native/IconDeviceMobile';
+import TablerDeviceTvIcon from '@tabler/icons-react-native/IconDeviceTv';
+import TablerDiamondIcon from '@tabler/icons-react-native/IconDiamond';
+import TablerDiceIcon from '@tabler/icons-react-native/IconDice';
+import TablerDotsIcon from '@tabler/icons-react-native/IconDots';
+import TablerDropletIcon from '@tabler/icons-react-native/IconDroplet';
+import TablerEyeIcon from '@tabler/icons-react-native/IconEye';
+import TablerFlowerIcon from '@tabler/icons-react-native/IconFlower';
+import TablerGasStationIcon from '@tabler/icons-react-native/IconGasStation';
+import TablerGiftIcon from '@tabler/icons-react-native/IconGift';
+import TablerGuitarIcon from '@tabler/icons-react-native/IconGuitarPick';
+import TablerHammerIcon from '@tabler/icons-react-native/IconHammer';
+import TablerHeartIcon from '@tabler/icons-react-native/IconHeart';
+import TablerHeartHandshakeIcon from '@tabler/icons-react-native/IconHeartHandshake';
+import TablerHomeIcon from '@tabler/icons-react-native/IconHome';
+import TablerLegoIcon from '@tabler/icons-react-native/IconLego';
+import TablerMapIcon from '@tabler/icons-react-native/IconMap';
+import TablerMapPinIcon from '@tabler/icons-react-native/IconMapPin';
+import TablerMovieIcon from '@tabler/icons-react-native/IconMovie';
+import TablerMusicIcon from '@tabler/icons-react-native/IconMusic';
+import TablerPackageIcon from '@tabler/icons-react-native/IconPackage';
+import TablerPaletteIcon from '@tabler/icons-react-native/IconPalette';
+import TablerParkingIcon from '@tabler/icons-react-native/IconParking';
+import TablerPawIcon from '@tabler/icons-react-native/IconPaw';
+import TablerPencilIcon from '@tabler/icons-react-native/IconPencil';
+import TablerPercentageIcon from '@tabler/icons-react-native/IconPercentage';
+import TablerPhoneIcon from '@tabler/icons-react-native/IconPhone';
+import TablerPigMoneyIcon from '@tabler/icons-react-native/IconPigMoney';
+import TablerPillIcon from '@tabler/icons-react-native/IconPill';
+import TablerPlaneIcon from '@tabler/icons-react-native/IconPlane';
+import TablerPlugIcon from '@tabler/icons-react-native/IconPlug';
+import TablerQuestionMarkIcon from '@tabler/icons-react-native/IconQuestionMark';
+import TablerReceiptIcon from '@tabler/icons-react-native/IconReceipt';
+import TablerRunIcon from '@tabler/icons-react-native/IconRun';
+import TablerSchoolIcon from '@tabler/icons-react-native/IconSchool';
+import TablerScissorsIcon from '@tabler/icons-react-native/IconScissors';
+import TablerShieldIcon from '@tabler/icons-react-native/IconShield';
+import TablerShirtIcon from '@tabler/icons-react-native/IconShirt';
+import TablerShoppingCartIcon from '@tabler/icons-react-native/IconShoppingCart';
+import TablerSofaIcon from '@tabler/icons-react-native/IconSofa';
+import TablerSparklesIcon from '@tabler/icons-react-native/IconSparkles';
+import TablerStarIcon from '@tabler/icons-react-native/IconStar';
+import TablerStethoscopeIcon from '@tabler/icons-react-native/IconStethoscope';
+import TablerTagIcon from '@tabler/icons-react-native/IconTag';
+import TablerToolsIcon from '@tabler/icons-react-native/IconTools';
+import TablerToolsKitchen2Icon from '@tabler/icons-react-native/IconToolsKitchen2';
+import TablerToolsKitchen3Icon from '@tabler/icons-react-native/IconToolsKitchen3';
+import TablerTreeIcon from '@tabler/icons-react-native/IconTree';
+import TablerTrendingUpIcon from '@tabler/icons-react-native/IconTrendingUp';
+import TablerTrophyIcon from '@tabler/icons-react-native/IconTrophy';
+import TablerUsersIcon from '@tabler/icons-react-native/IconUsers';
+import TablerWalkIcon from '@tabler/icons-react-native/IconWalk';
+import TablerWifiIcon from '@tabler/icons-react-native/IconWifi';
 import {
   categoryIconFallbackName,
   isCategoryIconName,
   type CategoryIconName,
 } from '@guallet/theme';
+import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
-export interface LunaIconProps {
-  size?: string | number;
-  color?: string;
-  strokeWidth?: string | number;
-  title?: string;
-  className?: string;
-  style?: unknown;
-  accessibilityLabel?: string;
-  testID?: string;
-  'aria-label'?: string;
-}
-
 function createLunaIcon(
-  IconComponent: ComponentType<LunaIconProps>,
+  IconComponent: ComponentType<IconProps>,
   displayName: string,
-): FC<LunaIconProps> {
-  const LunaIcon: FC<LunaIconProps> = (props) => (
+): FC<IconProps> {
+  const LunaIcon: FC<IconProps> = (props) => (
     <IconComponent strokeWidth={1.5} {...props} />
   );
   LunaIcon.displayName = displayName;
@@ -264,7 +253,7 @@ export const WifiIcon = createLunaIcon(TablerWifiIcon, 'WifiIcon');
 export const MoneyIcon = CashIcon;
 export const UnknownCategoryIcon = QuestionMarkIcon;
 
-const categoryIconRegistry: Record<CategoryIconName, FC<LunaIconProps>> = {
+const categoryIconRegistry: Record<CategoryIconName, FC<IconProps>> = {
   IconActivity: ActivityIcon,
   IconAlertTriangle: AlertTriangleIcon,
   IconArrowBackUp: ArrowBackUpIcon,
@@ -350,7 +339,7 @@ const categoryIconRegistry: Record<CategoryIconName, FC<LunaIconProps>> = {
   IconWifi: WifiIcon,
 };
 
-export interface CategoryIconProps extends LunaIconProps {
+export interface CategoryIconProps extends Omit<IconProps, 'name'> {
   name?: string | null;
 }
 

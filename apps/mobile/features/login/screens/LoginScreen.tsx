@@ -9,7 +9,7 @@ import {
   useTheme,
   TextInput,
   Title,
-} from '@guallet/luna-ui';
+} from '@guallet/luna';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';

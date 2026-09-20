@@ -1,14 +1,12 @@
-import type { CategoryIconName } from '@guallet/theme';
-
 class Category {
   name: string;
-  icon: CategoryIconName;
+  icon: string;
   color: string;
   subcategories: SubCategory[];
 
   constructor(args: {
     name: string;
-    icon: CategoryIconName;
+    icon: string;
     color: string;
     subcategories: SubCategory[];
   }) {
@@ -21,10 +19,10 @@ class Category {
 
 class SubCategory {
   name: string;
-  icon: CategoryIconName;
+  icon: string;
   color: string;
 
-  constructor(args: { name: string; icon: CategoryIconName; color: string }) {
+  constructor(args: { name: string; icon: string; color: string }) {
     this.name = args.name;
     this.icon = args.icon;
     this.color = args.color;

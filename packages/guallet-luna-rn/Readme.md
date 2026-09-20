@@ -1,14 +1,13 @@
 # Luna UI
 
-Guallet's React Native component library and controlled cross-platform icon
-set.
+Guallet's React Native component library and controlled category icon set.
 
 ## Installation
 
 ```bash
-npm install @guallet/luna-ui
+npm install @guallet/luna
 # or
-yarn add @guallet/luna-ui
+yarn add @guallet/luna
 ```
 
 ## Quick Start
@@ -16,7 +15,7 @@ yarn add @guallet/luna-ui
 ```typescript
 import React from 'react';
 import { View } from 'react-native';
-import { Button, Text, Card } from '@guallet/luna-ui';
+import { Button, Text, Card } from '@guallet/luna';
 
 export default function App() {
   return (
@@ -37,14 +36,14 @@ export default function App() {
 ## Icons
 
 Luna UI exposes the same category icon API on web and React Native. Use named
-icons for static UI and `CategoryIcon` for icon names loaded from the API:
+icons for static UI and `CategoryIcon` for persisted icon names:
 
 ```typescript
 import {
   CategoryIcon,
   MoneyIcon,
   type CategoryIconName,
-} from '@guallet/luna-ui/icons';
+} from '@guallet/luna/icons';
 
 const savedIcon: CategoryIconName = 'IconCash';
 
@@ -52,8 +51,8 @@ const savedIcon: CategoryIconName = 'IconCash';
 <CategoryIcon name={savedIcon} />;
 ```
 
-Unknown legacy values fall back to `QuestionMarkIcon`. New category and budget
-writes are limited to the exported `categoryIconNames` contract.
+Unknown values fall back to `QuestionMarkIcon`. The supported names are
+exported as the `categoryIconNames` contract.
 
 ## Components
 
@@ -62,7 +61,7 @@ writes are limited to the exported `categoryIconNames` contract.
 Customizable button component with multiple variants.
 
 ```typescript
-import { Button } from '@guallet/luna-ui';
+import { Button } from '@guallet/luna';
 
 <Button
   title="Primary Button"
@@ -77,7 +76,7 @@ import { Button } from '@guallet/luna-ui';
 Typography component with consistent styling.
 
 ```typescript
-import { Text } from '@guallet/luna-ui';
+import { Text } from '@guallet/luna';
 
 <Text variant="heading">Heading Text</Text>
 <Text variant="body">Body text content</Text>
@@ -89,7 +88,7 @@ import { Text } from '@guallet/luna-ui';
 Container component with elevation and rounded corners.
 
 ```typescript
-import { Card } from '@guallet/luna-ui';
+import { Card } from '@guallet/luna';
 
 <Card elevation={2} padding={16}>
   {/* Your content here */}
@@ -101,7 +100,7 @@ import { Card } from '@guallet/luna-ui';
 Form input component with validation support.
 
 ```typescript
-import { Input } from '@guallet/luna-ui';
+import { Input } from '@guallet/luna';
 
 <Input
   placeholder="Enter your email"
@@ -158,7 +157,7 @@ const theme = {
 Custom themes can be supplied per appearance:
 
 ```typescript
-import { LunaProvider } from '@guallet/luna-ui';
+import { LunaProvider } from '@guallet/luna';
 
 const sharedTheme = {
   colors: {

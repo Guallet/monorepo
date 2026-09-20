@@ -2,7 +2,7 @@ import { useCategory } from '@guallet/api-react';
 import {
   CategoryIcon as LunaCategoryIcon,
   categoryIconFallbackName,
-} from '@guallet/luna-ui/icons';
+} from '@guallet/luna/icons';
 
 interface CategoryIconProps {
   categoryId: string | null;

@@ -2,7 +2,7 @@ import { DeleteButton } from '@/components/Buttons/DeleteButton';
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useGroupedCategory, useCategoryMutations } from '@guallet/api-react';
-import { CategoryIcon } from '@guallet/luna-ui/icons';
+import { CategoryIcon } from '@guallet/luna/icons';
 import { Stack, Button, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';

@@ -1,6 +1,5 @@
-import { categoryIconNames, type CategoryIconName } from '@guallet/theme';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateCategoryDto {
   @ApiProperty({ required: false })
@@ -8,10 +7,10 @@ export class UpdateCategoryDto {
   @IsString()
   name?: string;
 
-  @ApiProperty({ required: false, enum: categoryIconNames })
+  @ApiProperty({ required: false })
   @IsOptional()
-  @IsIn(categoryIconNames)
-  icon?: CategoryIconName;
+  @IsString()
+  icon?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

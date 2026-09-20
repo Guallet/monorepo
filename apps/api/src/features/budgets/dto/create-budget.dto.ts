@@ -1,4 +1,3 @@
-import { categoryIconNames, type CategoryIconName } from '@guallet/theme';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
@@ -9,7 +8,6 @@ import {
   IsUUID,
   Length,
   ArrayNotEmpty,
-  IsIn,
 } from 'class-validator';
 
 export class CreateBudgetDto {
@@ -33,10 +31,10 @@ export class CreateBudgetDto {
   @IsString()
   colour?: string;
 
-  @ApiProperty({ required: false, enum: categoryIconNames })
+  @ApiProperty({ required: false })
   @IsOptional()
-  @IsIn(categoryIconNames)
-  icon?: CategoryIconName;
+  @IsString()
+  icon?: string;
 
   @ApiProperty({ type: 'array', items: { type: 'string', format: 'uuid' } })
   @IsArray()

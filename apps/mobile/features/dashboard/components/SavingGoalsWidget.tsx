@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useSavingGoals } from '@guallet/api-react';
-import { useTheme } from '@guallet/luna-ui';
+import { useTheme } from '@guallet/luna';
 import { SavingGoalProgressItem } from './SavingGoalProgressItem';
 
 const MAX_GOALS = 3;

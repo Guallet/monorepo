@@ -44,7 +44,7 @@ describe('CategoriesService', () => {
       const userId = 'user-123';
       const dto: CreateCategoryDto = {
         name: 'Food',
-        icon: 'IconToolsKitchen2',
+        icon: '🍔',
         colour: '#FF5733',
         parentId: null,
       };
@@ -77,7 +77,7 @@ describe('CategoriesService', () => {
       const userId = 'user-123';
       const dto: CreateCategoryDto = {
         name: 'Groceries',
-        icon: 'IconShoppingCart',
+        icon: '🛒',
         colour: '#FF33A1',
         parentId: 'parent-cat-1',
       };
@@ -291,7 +291,7 @@ describe('CategoriesService', () => {
       const categoryId = 'cat-1';
       const dto: UpdateCategoryDto = {
         name: 'Updated Food',
-        icon: 'IconToolsKitchen2',
+        icon: '🍕',
       };
 
       const existingCategory = {

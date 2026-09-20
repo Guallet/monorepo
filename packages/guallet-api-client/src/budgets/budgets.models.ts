@@ -1,5 +1,3 @@
-import type { CategoryIconName } from '@guallet/theme';
-
 export type BudgetDto = {
   id: string;
   name: string;
@@ -16,7 +14,7 @@ export type CreateBudgetRequest = {
   amount: number;
   currency: string;
   colour?: string;
-  icon?: CategoryIconName;
+  icon?: string;
   categories: string[];
 };
 
@@ -25,6 +23,6 @@ export type UpdateBudgetRequest = {
   amount?: number;
   currency?: string;
   colour?: string;
-  icon?: CategoryIconName;
+  icon?: string;
   categories?: string[];
 };

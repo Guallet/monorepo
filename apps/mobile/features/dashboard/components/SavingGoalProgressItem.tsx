@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { SavingGoalDto } from '@guallet/api-client';
-import { useTheme } from '@guallet/luna-ui';
+import { useTheme } from '@guallet/luna';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {

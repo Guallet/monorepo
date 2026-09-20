@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '@guallet/luna-ui';
+import { useTheme } from '@guallet/luna';
 
 export default function BudgetsScreen() {
   const { colors, typography } = useTheme();

@@ -6,7 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@guallet/auth';
-import { useTheme } from '@guallet/luna-ui';
+import { useTheme } from '@guallet/luna';
 
 export default function TabLayout() {
   const { colors } = useTheme();

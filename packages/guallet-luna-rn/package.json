@@ -1,15 +1,9 @@
 {
-  "name": "@guallet/luna-ui",
+  "name": "@guallet/luna-rn",
   "version": "0.1.0",
-  "description": "Guallet UI components for React Native",
+  "description": "Luna UI components and category icons for React Native",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
-  "imports": {
-    "#tabler/*": {
-      "react-native": "@tabler/icons-react-native/*",
-      "default": "@tabler/icons-react/dist/esm/icons/*.mjs"
-    }
-  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -31,10 +25,8 @@
   "author": "cjgaliana",
   "dependencies": {
     "@guallet/theme": "workspace:*",
-    "@tabler/icons-react": "3.46.0",
     "@tabler/icons-react-native": "3.46.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
     "react-native": "0.86.3",
     "react-native-svg": "15.15.4"
   },

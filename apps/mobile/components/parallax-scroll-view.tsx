@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/themed-view';
-import { useTheme, useThemeMode } from '@guallet/luna-ui';
+import { useTheme, useThemeMode } from '@guallet/luna';
 
 const HEADER_HEIGHT = 250;
 

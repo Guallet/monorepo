@@ -26,9 +26,9 @@ is implemented in `packages/guallet-theme/` and wired into Mantine via
    headings (`-0.02em` h1 → `-0.01em` h3).
 5. **No emoji** in chrome. No AI/Smart/Magic copy. No purple, pink, or warm
    orange in the brand palette.
-6. **Icons** — Tabler Icons, `1.5` stroke, `24 px`. Shared category icons are
-   imported from `@guallet/luna-ui/icons` so persisted icon names work on web
-   and React Native.
+6. **Icons** — Tabler Icons, `1.5` stroke, `24 px`. Web and React Native keep
+   separate Luna UI implementations with the same `@guallet/luna/icons`
+   consumer API.
 7. **No hardcoded values** — always pull spacing, colour, and radius from
    `useTheme()` (from `@guallet/ui-react`), not raw numbers/strings.
 8. **Sentence case** for all UI labels and buttons. UPPERCASE only for eyebrow
@@ -244,12 +244,13 @@ Never use a coloured left-border stripe as an accent.
 ## Iconography
 
 - **Set**: Tabler Icons — outline, `strokeWidth={1.5}`, default size 24 px
-- **Package**: `@guallet/luna-ui/icons`, backed by `@tabler/icons-react` on web
-  and `@tabler/icons-react-native` on mobile
+- **Package**: `@guallet/luna/icons`; the web workspace package uses
+  `@tabler/icons-react` and the native workspace package uses
+  `@tabler/icons-react-native`
 - **Wrapper**: `<CategoryIcon name="IconBuildingBank">` accepts the controlled
   persisted-name contract and falls back to `IconQuestionMark`
 - **Named icons**: import semantic components such as `MoneyIcon` from
-  `@guallet/luna-ui/icons`
+  `@guallet/luna/icons`
 - **No emoji** in chrome (emoji only in user-generated content like category names)
 - **No Unicode glyph substitutions** for currency — use `Intl.NumberFormat`
 

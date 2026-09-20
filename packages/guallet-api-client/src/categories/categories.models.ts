@@ -1,5 +1,3 @@
-import type { CategoryIconName } from '@guallet/theme';
-
 export type CategoryDto = {
   id: string;
   name: string;
@@ -10,14 +8,14 @@ export type CategoryDto = {
 
 export type CreateCategoryRequest = {
   name: string;
-  icon: CategoryIconName;
+  icon: string;
   colour: string;
   parentId?: string;
 };
 
 export type UpdateCategoryRequest = {
   name: string;
-  icon: CategoryIconName;
+  icon: string;
   colour: string;
   parentId?: string | null;
 };

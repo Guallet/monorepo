@@ -9,7 +9,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IconPickerModal } from './IconPickerModal';
 import { IconSelect } from '@tabler/icons-react';
-import { CategoryIcon } from '@guallet/luna-ui/icons';
+import { CategoryIcon } from '@guallet/luna/icons';
 
 interface IconPickerProps extends InputWrapperProps {
   value: string | null;

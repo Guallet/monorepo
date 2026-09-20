@@ -1,6 +1,6 @@
 import { useAuth } from '@guallet/auth';
 import { StyleSheet, Text, View } from 'react-native';
-import { Button, useTheme } from '@guallet/luna-ui';
+import { Button, useTheme } from '@guallet/luna';
 
 export default function SettingsScreen() {
   const { colors, typography } = useTheme();

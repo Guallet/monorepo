@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAccounts, useAccountCharts } from '@guallet/api-react';
-import { useTheme } from '@guallet/luna-ui';
+import { useTheme } from '@guallet/luna';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 
 function formatCurrency(amount: number, currency: string): string {

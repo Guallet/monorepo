@@ -9,7 +9,7 @@ import {
   Title,
   Stack,
   useTheme,
-} from '@guallet/luna-ui';
+} from '@guallet/luna';
 import { useAuth } from '@/auth/useAuth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

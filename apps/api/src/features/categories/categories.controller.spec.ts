@@ -123,7 +123,7 @@ describe('CategoriesController', () => {
     it('should create a new category', async () => {
       const createDto: CreateCategoryDto = {
         name: 'Shopping',
-        icon: 'IconShoppingCart',
+        icon: '🛍️',
         colour: '#3357FF',
         parentId: null,
       };
@@ -150,7 +150,7 @@ describe('CategoriesController', () => {
     it('should create a category with parent', async () => {
       const createDto: CreateCategoryDto = {
         name: 'Groceries',
-        icon: 'IconShoppingCart',
+        icon: '🛒',
         colour: '#FF33A1',
         parentId: 'parent-cat-1',
       };
@@ -214,7 +214,7 @@ describe('CategoriesController', () => {
       const categoryId = 'cat-1';
       const updateDto: UpdateCategoryDto = {
         name: 'Updated Food',
-        icon: 'IconToolsKitchen2',
+        icon: '🍕',
       };
 
       const mockUpdatedCategory: Partial<Category> = {

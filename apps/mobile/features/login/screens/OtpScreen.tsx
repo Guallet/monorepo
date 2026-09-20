@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, OtpInput, Title, useTheme } from '@guallet/luna-ui';
+import { Button, Label, OtpInput, Title, useTheme } from '@guallet/luna';
 import { openInbox } from 'react-native-email-link';
 import { useAuth } from '@/auth/useAuth';
 
