@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, Title, Stack, useTheme } from '@guallet/luna';
+import { Button, Label, Title, Stack, useTheme } from '@guallet/luna-mobile';
 import { openInbox } from 'react-native-email-link';
 import Ionicons from '@expo/vector-icons/Ionicons';
 

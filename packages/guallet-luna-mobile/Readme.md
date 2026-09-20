@@ -5,9 +5,9 @@ Guallet's React Native component library and controlled category icon set.
 ## Installation
 
 ```bash
-npm install @guallet/luna
+npm install @guallet/luna-mobile
 # or
-yarn add @guallet/luna
+yarn add @guallet/luna-mobile
 ```
 
 ## Quick Start
@@ -15,7 +15,7 @@ yarn add @guallet/luna
 ```typescript
 import React from 'react';
 import { View } from 'react-native';
-import { Button, Text, Card } from '@guallet/luna';
+import { Button, Text, Card } from '@guallet/luna-mobile';
 
 export default function App() {
   return (
@@ -43,7 +43,7 @@ import {
   CategoryIcon,
   MoneyIcon,
   type CategoryIconName,
-} from '@guallet/luna/icons';
+} from '@guallet/luna-mobile/icons';
 
 const savedIcon: CategoryIconName = 'IconCash';
 
@@ -61,7 +61,7 @@ exported as the `categoryIconNames` contract.
 Customizable button component with multiple variants.
 
 ```typescript
-import { Button } from '@guallet/luna';
+import { Button } from '@guallet/luna-mobile';
 
 <Button
   title="Primary Button"
@@ -76,7 +76,7 @@ import { Button } from '@guallet/luna';
 Typography component with consistent styling.
 
 ```typescript
-import { Text } from '@guallet/luna';
+import { Text } from '@guallet/luna-mobile';
 
 <Text variant="heading">Heading Text</Text>
 <Text variant="body">Body text content</Text>
@@ -88,7 +88,7 @@ import { Text } from '@guallet/luna';
 Container component with elevation and rounded corners.
 
 ```typescript
-import { Card } from '@guallet/luna';
+import { Card } from '@guallet/luna-mobile';
 
 <Card elevation={2} padding={16}>
   {/* Your content here */}
@@ -100,7 +100,7 @@ import { Card } from '@guallet/luna';
 Form input component with validation support.
 
 ```typescript
-import { Input } from '@guallet/luna';
+import { Input } from '@guallet/luna-mobile';
 
 <Input
   placeholder="Enter your email"
@@ -157,7 +157,7 @@ const theme = {
 Custom themes can be supplied per appearance:
 
 ```typescript
-import { LunaProvider } from '@guallet/luna';
+import { LunaProvider } from '@guallet/luna-mobile';
 
 const sharedTheme = {
   colors: {

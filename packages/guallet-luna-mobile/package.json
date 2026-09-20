@@ -1,5 +1,5 @@
 {
-  "name": "@guallet/luna-rn",
+  "name": "@guallet/luna-mobile",
   "version": "0.1.0",
   "description": "Luna UI components and category icons for React Native",
   "main": "./src/index.ts",

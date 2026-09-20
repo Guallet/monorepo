@@ -36,7 +36,7 @@
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
     "@guallet/auth": "workspace:*",
-    "@guallet/luna": "workspace:@guallet/luna-rn@*",
+    "@guallet/luna-mobile": "workspace:*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/netinfo": "12.0.1",
     "@sentry/react-native": "7.11.0",

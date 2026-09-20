@@ -78,7 +78,7 @@ pnpm --filter @guallet/money test:cov  # With coverage report
 - `packages/guallet-theme` — Platform-agnostic design token types and default values
 - `packages/guallet-ui-react` — Shared Mantine-based React components (web)
 - `packages/guallet-luna` — Luna UI web icon package
-- `packages/guallet-luna-rn` — Luna UI React Native component library
+- `packages/guallet-luna-mobile` — Luna UI React Native component library
 
 ### API Architecture (NestJS)
 

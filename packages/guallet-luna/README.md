@@ -10,5 +10,5 @@ import { CategoryIcon, MoneyIcon } from '@guallet/luna/icons';
 <CategoryIcon name="IconCash" />;
 ```
 
-The React Native implementation lives in `packages/guallet-luna-rn` and is
-aliased to the same `@guallet/luna` consumer import in the mobile app.
+The React Native implementation lives in `packages/guallet-luna-mobile` and is
+available as `@guallet/luna-mobile`.

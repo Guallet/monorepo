@@ -1,4 +1,4 @@
-import { Button, Group, Label, useTheme } from '@guallet/luna';
+import { Button, Group, Label, useTheme } from '@guallet/luna-mobile';
 import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 

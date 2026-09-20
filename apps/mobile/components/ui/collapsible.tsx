@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useTheme } from '@guallet/luna';
+import { useTheme } from '@guallet/luna-mobile';
 
 export function Collapsible({
   children,

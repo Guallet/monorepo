@@ -3,7 +3,7 @@ import { Redirect } from 'expo-router';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useTheme } from '@guallet/luna';
+import { useTheme } from '@guallet/luna-mobile';
 
 export default function Screen() {
   const { isAuthenticated, isLoading } = useAuth();
