@@ -3,6 +3,7 @@ export {
   onlineManager,
   QueryClient,
   QueryClientProvider,
+  useQueryClient,
 } from '@tanstack/react-query';
 export * from './GualletClientProvider';
 export * from './accounts';
