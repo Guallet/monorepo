@@ -8,11 +8,13 @@ describe('EmailEventListener', () => {
   let mockSendPasswordResetEmail: Mock;
   let mockSendAuthOtpEmail: Mock;
   let mockSendAuthMagicLinkEmail: Mock;
+  let mockSendWelcomeEmail: Mock;
 
   beforeEach(async () => {
     mockSendPasswordResetEmail = vi.fn().mockResolvedValue(undefined);
     mockSendAuthOtpEmail = vi.fn().mockResolvedValue(undefined);
     mockSendAuthMagicLinkEmail = vi.fn().mockResolvedValue(undefined);
+    mockSendWelcomeEmail = vi.fn().mockResolvedValue(undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -23,6 +25,7 @@ describe('EmailEventListener', () => {
             sendPasswordResetEmail: mockSendPasswordResetEmail,
             sendAuthOtpEmail: mockSendAuthOtpEmail,
             sendAuthMagicLinkEmail: mockSendAuthMagicLinkEmail,
+            sendWelcomeEmail: mockSendWelcomeEmail,
           },
         },
       ],
@@ -78,6 +81,35 @@ describe('EmailEventListener', () => {
       await listener.handleMagicLink(payload);
 
       expect(mockSendAuthMagicLinkEmail).toHaveBeenCalledWith(payload);
+    });
+  });
+
+  describe('handleUserCreated', () => {
+    it('should send a welcome email using the event payload', async () => {
+      const payload = {
+        userId: 'user-123',
+        email: 'user@example.com',
+        userName: 'Alice',
+      };
+
+      await listener.handleUserCreated(payload);
+
+      expect(mockSendWelcomeEmail).toHaveBeenCalledWith({
+        to: payload.email,
+        userName: payload.userName,
+      });
+    });
+
+    it('should use a fallback name when the event has no name', async () => {
+      await listener.handleUserCreated({
+        userId: 'user-123',
+        email: 'user@example.com',
+      });
+
+      expect(mockSendWelcomeEmail).toHaveBeenCalledWith({
+        to: 'user@example.com',
+        userName: 'there',
+      });
     });
   });
 });
