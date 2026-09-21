@@ -24,4 +24,16 @@ export class EmailEventListener {
   async handleMagicLink(payload: { to: string; url: string }) {
     await this.emailService.sendAuthMagicLinkEmail(payload);
   }
+
+  @OnEvent('user.created')
+  async handleUserCreated(payload: {
+    userId: string;
+    email: string;
+    userName?: string;
+  }) {
+    await this.emailService.sendWelcomeEmail({
+      to: payload.email,
+      userName: payload.userName || 'there',
+    });
+  }
 }
