@@ -30,6 +30,7 @@ export type CreateTransactionRequest = {
 };
 
 export type UpdateTransactionRequest = {
+  accountId?: string;
   description: string | null;
   notes: string | null;
   amount: number | null;

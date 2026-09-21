@@ -81,6 +81,30 @@ describe('TransactionsController', () => {
       ).toHaveBeenCalled();
     });
 
+    it('should forward category filters to list and count queries', async () => {
+      const query = {
+        page: 1,
+        pageSize: 50,
+        categories: ['category-1'],
+      };
+
+      mockTransactionsService.getUserTransactions.mockResolvedValue([]);
+      mockTransactionsService.getUserTransactionsCount.mockResolvedValue(0);
+
+      await controller.getTransactions(mockUser, query);
+
+      expect(mockTransactionsService.getUserTransactions).toHaveBeenCalledWith(
+        expect.objectContaining({ categories: ['category-1'] }),
+      );
+      expect(
+        mockTransactionsService.getUserTransactionsCount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          filters: expect.objectContaining({ categories: ['category-1'] }),
+        }),
+      );
+    });
+
     it('should throw BadRequestException for invalid query', async () => {
       await expect(
         controller.getTransactions(mockUser, null as any),

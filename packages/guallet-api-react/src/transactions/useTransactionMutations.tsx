@@ -33,7 +33,8 @@ export function useTransactionMutations() {
         notes,
       });
     },
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
       queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
@@ -79,7 +80,8 @@ export function useTransactionMutations() {
         request,
       });
     },
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
       queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });

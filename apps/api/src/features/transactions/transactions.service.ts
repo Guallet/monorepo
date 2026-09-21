@@ -243,8 +243,13 @@ export class TransactionsService {
       throw new NotFoundException();
     }
 
+    if (dto.accountId && dto.accountId !== dbEntity.accountId) {
+      await this.accountService.getUserAccount(user_id, dto.accountId);
+    }
+
     const updatedEntity = {
       ...dbEntity,
+      accountId: dto.accountId ?? dbEntity.accountId,
       amount: dto.amount ?? dbEntity.amount,
       description: dto.description ?? dbEntity.description,
       notes: dto.notes ?? dbEntity.notes,
