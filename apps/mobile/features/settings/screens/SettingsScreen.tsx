@@ -226,7 +226,8 @@ export default function SettingsScreen() {
         {isLoading && !user ? (
           <View
             style={[
-              styles.profileCard,
+              styles.profileStatusCard,
+              styles.profileLoadingCard,
               {
                 backgroundColor: colors.surface.background.primary,
                 borderColor: colors.surface.border.primary,
@@ -252,7 +253,8 @@ export default function SettingsScreen() {
         ) : isError && !user ? (
           <View
             style={[
-              styles.profileCard,
+              styles.profileStatusCard,
+              styles.profileErrorCard,
               {
                 backgroundColor: colors.surface.background.primary,
                 borderColor: colors.surface.border.primary,
@@ -400,6 +402,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     flexDirection: 'row',
+  },
+  profileStatusCard: {
+    borderWidth: 1,
+    flexDirection: 'column',
+  },
+  profileLoadingCard: {
+    alignItems: 'center',
+  },
+  profileErrorCard: {
+    alignItems: 'stretch',
   },
   avatar: {
     alignItems: 'center',
