@@ -4,13 +4,7 @@ import {
 } from '@expo/ui';
 import { useTheme } from '@guallet/luna-mobile';
 
-export type BottomSheetProps = Omit<
-  ExpoBottomSheetProps,
-  'containerColor' | 'isPresented' | 'onDismiss'
-> & {
-  visible: boolean;
-  onClose: () => void;
-};
+export type BottomSheetProps = ExpoBottomSheetProps;
 
 /**
  * Theme-aware wrapper for Expo's universal bottom sheet.
@@ -20,9 +14,7 @@ export type BottomSheetProps = Omit<
  * platform-specific Expo UI details to feature code.
  */
 export function BottomSheet({
-  visible,
-  onClose,
-  children,
+  containerColor,
   ...props
 }: Readonly<BottomSheetProps>) {
   const { colors } = useTheme();
@@ -30,11 +22,7 @@ export function BottomSheet({
   return (
     <ExpoBottomSheet
       {...props}
-      isPresented={visible}
-      onDismiss={onClose}
-      containerColor={colors.surface.background.primary}
-    >
-      {children}
-    </ExpoBottomSheet>
+      containerColor={containerColor ?? colors.surface.background.primary}
+    />
   );
 }
