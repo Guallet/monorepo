@@ -4,7 +4,7 @@ import {
 } from '@expo/ui';
 import { useTheme } from '@guallet/luna-mobile';
 
-export type NativeBottomSheetProps = Omit<
+export type BottomSheetProps = Omit<
   ExpoBottomSheetProps,
   'containerColor' | 'isPresented' | 'onDismiss'
 > & {
@@ -19,12 +19,12 @@ export type NativeBottomSheetProps = Omit<
  * straightforward to migrate existing `Modal`-based sheets without exposing
  * platform-specific Expo UI details to feature code.
  */
-export function NativeBottomSheet({
+export function BottomSheet({
   visible,
   onClose,
   children,
   ...props
-}: Readonly<NativeBottomSheetProps>) {
+}: Readonly<BottomSheetProps>) {
   const { colors } = useTheme();
 
   return (
