@@ -2,17 +2,17 @@ import { AuthProvider } from '@/auth/MobileAuthProvider';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {
+  focusManager,
+  GualletClientProvider,
+  QueryClient,
+  QueryClientProvider,
+} from '@guallet/api-react';
+import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
 } from 'expo-router/react-navigation';
-import {
-  focusManager,
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { AppStateStatus, Platform } from 'react-native';
-import { GualletClientProvider } from '@guallet/api-react';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
