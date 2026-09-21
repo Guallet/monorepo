@@ -1,35 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '@guallet/luna-mobile';
+import BudgetsTabContent from '@/features/budgets/screens/BudgetsScreen';
 
 export default function BudgetsScreen() {
-  const { colors, typography } = useTheme();
-
-  return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: colors.surface.background.page },
-      ]}
-    >
-      <Text
-        style={[
-          styles.title,
-          { color: colors.text.primary, fontSize: typography.sizes.lg },
-        ]}
-      >
-        Budgets
-      </Text>
-    </View>
-  );
+  return <BudgetsTabContent />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontWeight: 'bold',
-  },
-});

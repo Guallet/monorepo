@@ -237,7 +237,32 @@ describe('BudgetsService', () => {
         dateRange,
       });
 
-      expect(result).toBe(-100);
+      expect(result).toBe(100);
+    });
+
+    it('counts only negative transaction amounts as spending', async () => {
+      const userId = 'user-123';
+      const budgetId = 'budget-1';
+      const dateRange = { month: 5, year: 2024 };
+
+      mockBudgetRepository.findOne.mockResolvedValue({
+        id: budgetId,
+        user_id: userId,
+        categories: [{ id: 'cat-1' }],
+      });
+      mockTransactionRepository.find.mockResolvedValue([
+        { id: 'expense', amount: -50 },
+        { id: 'income', amount: 25 },
+        { id: 'zero', amount: 0 },
+      ]);
+
+      const result = await service.getMonthlySpending({
+        userId,
+        budgetId,
+        dateRange,
+      });
+
+      expect(result).toBe(50);
     });
 
     it('should return 0 when no transactions found', async () => {
@@ -261,6 +286,31 @@ describe('BudgetsService', () => {
       });
 
       expect(result).toBe(0);
+    });
+
+    it('uses one-based months when building the transaction date range', async () => {
+      const userId = 'user-123';
+      const budgetId = 'budget-1';
+      const dateRange = { month: 1, year: 2024 };
+
+      mockBudgetRepository.findOne.mockResolvedValue({
+        id: budgetId,
+        user_id: userId,
+        categories: [{ id: 'cat-1' }],
+      });
+      mockTransactionRepository.find.mockResolvedValue([]);
+
+      await service.getBudgetTransactions({
+        userId,
+        budgetId,
+        dateRange,
+      });
+
+      const findOptions = mockTransactionRepository.find.mock.calls[0][0];
+      expect(findOptions.where.created_at.value).toEqual([
+        new Date(2024, 0, 1),
+        new Date(2024, 1, 0),
+      ]);
     });
   });
 

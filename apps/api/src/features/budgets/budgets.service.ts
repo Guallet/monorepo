@@ -73,9 +73,10 @@ export class BudgetsService {
       throw new InternalServerErrorException('Budget has no categories');
     }
 
-    // Calculate the date range for the transactions. Remember, only monthly budgets are supported
-    const from = new Date(dateRange.year, dateRange.month, 1);
-    const to = new Date(dateRange.year, dateRange.month + 1, 0); // Last day of the month
+    // Calculate the date range for the transactions. The public API uses
+    // one-based months, while JavaScript Date uses zero-based months.
+    const from = new Date(dateRange.year, dateRange.month - 1, 1);
+    const to = new Date(dateRange.year, dateRange.month, 0); // Last day of the month
 
     const transactions = await this.transactionRepository.find({
       relations: {
@@ -111,7 +112,7 @@ export class BudgetsService {
     });
 
     return transactions.reduce(
-      (acc, transaction) => acc + Number(transaction.amount),
+      (acc, transaction) => acc + Math.max(0, -Number(transaction.amount)),
       0,
     );
   }

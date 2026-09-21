@@ -33,21 +33,26 @@ import { TransactionDto } from '../transactions/dto/transaction.dto';
 export class BudgetsController {
   private readonly logger = new Logger(BudgetsController.name);
 
-  // Budgets only works on the assumptions of monthly budgets, so the dates only make sense to be
-  // from months, not specific dates
+  // Budgets only work with monthly ranges. The public API uses one-based
+  // months (January = 1), while JavaScript Date uses zero-based months.
   private readonly defaultMonth: number;
   private readonly defaultYear: number;
 
   constructor(private readonly budgetsService: BudgetsService) {
     // By default, the dates are just the current month
     const today = new Date();
-    this.defaultMonth = today.getMonth();
+    this.defaultMonth = today.getMonth() + 1;
     this.defaultYear = today.getFullYear();
   }
 
   @ApiOperation({ summary: 'findAll' })
   @ApiOkResponse({ type: () => BudgetDto, isArray: true })
-  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({
+    description: 'One-based month number (January = 1)',
+    name: 'month',
+    type: Number,
+    required: false,
+  })
   @ApiQuery({ name: 'year', type: Number, required: false })
   @Get()
   async findAll(
@@ -76,7 +81,12 @@ export class BudgetsController {
   @ApiOperation({ summary: 'findOne' })
   @ApiOkResponse({ type: () => BudgetDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({
+    description: 'One-based month number (January = 1)',
+    name: 'month',
+    type: Number,
+    required: false,
+  })
   @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id')
   async findOne(
@@ -103,7 +113,12 @@ export class BudgetsController {
   @ApiOperation({ summary: 'getBudgetTransactions' })
   @ApiOkResponse({ type: () => TransactionDto, isArray: true })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiQuery({ name: 'month', type: Number, required: false })
+  @ApiQuery({
+    description: 'One-based month number (January = 1)',
+    name: 'month',
+    type: Number,
+    required: false,
+  })
   @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id/transactions')
   async getBudgetTransactions(
