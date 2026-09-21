@@ -68,7 +68,12 @@ function AppNavigation() {
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen
                   name="modal"
-                  options={{ presentation: 'modal', title: 'Modal' }}
+                  options={{
+                    presentation: 'transparentModal',
+                    animation: 'none',
+                    headerShown: false,
+                    contentStyle: { backgroundColor: 'transparent' },
+                  }}
                 />
               </Stack>
               <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />

@@ -1,29 +1,64 @@
-import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { NativeBottomSheet } from '@/components/ui/native-bottom-sheet';
+import { useTheme } from '@guallet/luna-mobile';
 
 export default function ModalScreen() {
+  const { colors, spacing, typography } = useTheme();
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
-      <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
-      </Link>
-    </ThemedView>
+    <NativeBottomSheet
+      visible
+      onClose={() => router.back()}
+      snapPoints={['half']}
+      testID="modal-bottom-sheet"
+    >
+      <View style={[styles.container, { padding: spacing.lg }]}>
+        <Text
+          style={{
+            color: colors.text.primary,
+            fontSize: typography.sizes.xl,
+            fontWeight: '700',
+          }}
+        >
+          This is a bottom sheet
+        </Text>
+        <Pressable
+          onPress={() => router.back()}
+          style={[
+            styles.closeButton,
+            {
+              backgroundColor: colors.accent.primary,
+              borderRadius: 12,
+              marginTop: spacing.lg,
+              paddingHorizontal: spacing.lg,
+              paddingVertical: spacing.md,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              color: colors.button.onPrimary.default,
+              fontSize: typography.sizes.md,
+              fontWeight: '600',
+            }}
+          >
+            Close
+          </Text>
+        </Pressable>
+      </View>
+    </NativeBottomSheet>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    width: '100%',
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  closeButton: {
+    alignItems: 'center',
+    width: '100%',
   },
 });
