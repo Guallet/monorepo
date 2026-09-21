@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@better-auth/expo": "1.7.5",
+    "@expo/ui": "57.0.19",
     "@expo/vector-icons": "15.1.1",
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
