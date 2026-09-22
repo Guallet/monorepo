@@ -32,6 +32,7 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
+import { McpModule } from './features/mcp/mcp.module';
 
 @Module({
   imports: [
@@ -164,6 +165,7 @@ import { ObserveModule } from './observe';
     RegularPaymentsModule,
     AiModule,
     HealthModule,
+    McpModule,
   ],
   controllers: [AppController],
   providers: [],

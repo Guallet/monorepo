@@ -17,6 +17,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as McpAuthorizeRouteImport } from './routes/mcp/authorize'
 import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp'
 import { Route as LoginResetPasswordSentRouteImport } from './routes/login/reset-password-sent'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
@@ -122,6 +123,11 @@ const IndexLazyRoute = IndexLazyRouteImport.update({
 const LoginIndexRoute = LoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpAuthorizeRoute = McpAuthorizeRouteImport.update({
+  id: '/mcp/authorize',
+  path: '/mcp/authorize',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginValidateotpRoute = LoginValidateotpRouteImport.update({
@@ -452,6 +458,7 @@ export interface FileRoutesByFullPath {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
+  '/mcp/authorize': typeof McpAuthorizeRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -521,6 +528,7 @@ export interface FileRoutesByTo {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
+  '/mcp/authorize': typeof McpAuthorizeRoute
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
@@ -592,6 +600,7 @@ export interface FileRoutesById {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
+  '/mcp/authorize': typeof McpAuthorizeRoute
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
@@ -663,6 +672,7 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
+    | '/mcp/authorize'
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
@@ -732,6 +742,7 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
+    | '/mcp/authorize'
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
@@ -802,6 +813,7 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
+    | '/mcp/authorize'
     | '/login/'
     | '/_app/accounts/$id'
     | '/_app/accounts/new'
@@ -872,6 +884,7 @@ export interface RootRouteChildren {
   LoginForgotPasswordRoute: typeof LoginForgotPasswordRoute
   LoginResetPasswordSentRoute: typeof LoginResetPasswordSentRoute
   LoginValidateotpRoute: typeof LoginValidateotpRoute
+  McpAuthorizeRoute: typeof McpAuthorizeRoute
   LoginIndexRoute: typeof LoginIndexRoute
 }
 
@@ -931,6 +944,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp/authorize': {
+      id: '/mcp/authorize'
+      path: '/mcp/authorize'
+      fullPath: '/mcp/authorize'
+      preLoaderRoute: typeof McpAuthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/validateotp': {
@@ -1488,6 +1508,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginForgotPasswordRoute: LoginForgotPasswordRoute,
   LoginResetPasswordSentRoute: LoginResetPasswordSentRoute,
   LoginValidateotpRoute: LoginValidateotpRoute,
+  McpAuthorizeRoute: McpAuthorizeRoute,
   LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -16,6 +16,7 @@ This Turborepo includes the following packages/apps:
 ### Apps and Packages
 
 - `api`: a [NestJS](https://nestjs.com/) app, providing a REST API (GraphQL API might be available in the future)
+- `mcp-server`: a read-only, OAuth-protected MCP Streamable HTTP server
 - `webapp`: a Vite+React app
 - `mobile`: an Expo app for iOS and Android
 
@@ -40,6 +41,7 @@ Quick start with Docker (using npm scripts):
 # Initialize the repository and generate env files
 cp database.env.sample database.env
 cp api.env.sample api.env
+cp mcp.env.sample mcp.env
 cp webapp.env.sample webapp.env
 
 # Edit .env files with your configuration (API keys, etc.)
@@ -59,6 +61,7 @@ This will start:
 - PostgreSQL database (internal network only)
 - Redis for background jobs (internal network only)
 - API server on http://localhost:5000
+- MCP server on http://localhost:5100
 - Web app on http://localhost:3000
 - pgAdmin for database management on http://localhost:5050
 
