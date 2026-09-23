@@ -82,6 +82,7 @@ Load these on-demand with `/skill-name` when implementing the corresponding task
 | `add-api-client-domain` | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
 | `create-webapp-feature` | Add a new page/section to the web frontend (route + screen + components)        |
 | `add-mobile-screen`     | Add a new screen to the Expo mobile app                                         |
+| `create-react-native-component` | Add or adapt a component in the Luna React Native package              |
 
 ## Quick Pattern Index
 
