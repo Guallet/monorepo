@@ -73,8 +73,11 @@ export function TransactionDetailsScreen({
   useEffect(() => {
     if (!transaction || initializedId.current === transaction.id) return;
 
+    let transactionType: FormState['type'] = 'expense';
+    if (transaction.amount >= 0) transactionType = 'income';
+
     const nextForm: FormState = {
-      type: transaction.amount >= 0 ? 'income' : 'expense',
+      type: transactionType,
       accountId: transaction.accountId,
       description: transaction.description,
       notes: transaction.notes ?? '',
@@ -105,7 +108,10 @@ export function TransactionDetailsScreen({
   });
 
   function updateForm(values: Partial<FormState>) {
-    setForm((current) => (current ? { ...current, ...values } : current));
+    setForm((current) => {
+      if (!current) return current;
+      return { ...current, ...values };
+    });
     setError(null);
   }
 
@@ -140,11 +146,14 @@ export function TransactionDetailsScreen({
       return;
     }
 
+    let signedAmount = -amount;
+    if (form.type === 'income') signedAmount = amount;
+
     const request: UpdateTransactionRequest = {
       accountId: form.accountId,
       description: form.description.trim(),
       notes: form.notes.trim() || null,
-      amount: form.type === 'income' ? amount : -amount,
+      amount: signedAmount,
       currency,
       date: form.date,
       categoryId: form.categoryId,
@@ -195,14 +204,16 @@ export function TransactionDetailsScreen({
   const categoryName =
     categories.find((category) => category.id === form?.categoryId)?.name ??
     'Uncategorised';
+  let loadingMessage: string | undefined;
+  if (updateTransactionMutation.isPending) loadingMessage = 'Saving…';
+  let keyboardBehavior: 'padding' | undefined;
+  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   return (
     <AppScreen
       headerTitle="Edit transaction"
       isLoading={isLoading || updateTransactionMutation.isPending}
-      loadingMessage={
-        updateTransactionMutation.isPending ? 'Saving…' : undefined
-      }
+      loadingMessage={loadingMessage}
       headerOptions={{
         headerBackVisible: false,
         headerLeft: () => (
@@ -213,10 +224,7 @@ export function TransactionDetailsScreen({
       }}
     >
       {form && (
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
+        <KeyboardAvoidingView style={styles.flex} behavior={keyboardBehavior}>
           <ScrollView
             contentContainerStyle={{
               padding: spacing.md,
@@ -410,9 +418,12 @@ function TypeButton({
   selected: boolean;
   onPress: () => void;
 }>) {
+  let variant: 'filled' | 'outline' = 'outline';
+  if (selected) variant = 'filled';
+
   return (
     <Button
-      variant={selected ? 'filled' : 'outline'}
+      variant={variant}
       selected={selected}
       onClick={onPress}
       style={styles.typeButton}
@@ -447,16 +458,21 @@ function FieldButton({
       </Text>
       <Pressable
         onPress={onPress}
-        style={({ pressed }) => [
-          styles.field,
-          {
-            backgroundColor: colors.surface.background.input,
-            borderColor: colors.surface.border.input,
-            borderRadius: borderRadius.lg,
-            opacity: pressed ? 0.7 : 1,
-            paddingHorizontal: spacing.md,
-          },
-        ]}
+        style={({ pressed }) => {
+          let opacity = 1;
+          if (pressed) opacity = 0.7;
+
+          return [
+            styles.field,
+            {
+              backgroundColor: colors.surface.background.input,
+              borderColor: colors.surface.border.input,
+              borderRadius: borderRadius.lg,
+              opacity,
+              paddingHorizontal: spacing.md,
+            },
+          ];
+        }}
       >
         <Text
           style={{ color: colors.text.primary, fontSize: typography.sizes.md }}

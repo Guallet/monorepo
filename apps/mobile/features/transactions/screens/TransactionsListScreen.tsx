@@ -6,7 +6,7 @@ import {
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -45,9 +45,131 @@ export function TransactionsListScreen() {
   );
 
   const activeFilterCount =
-    (filters.accounts?.length ? 1 : 0) +
-    (filters.categories?.length ? 1 : 0) +
-    (filters.startDate && filters.endDate ? 1 : 0);
+    Number(Boolean(filters.accounts?.length)) +
+    Number(Boolean(filters.categories?.length)) +
+    Number(Boolean(filters.startDate && filters.endDate));
+
+  let transactionsContent: ReactNode;
+  if (query.isLoading) {
+    transactionsContent = (
+      <View style={styles.centerState}>
+        <ActivityIndicator color={colors.accent.primary} />
+        <Text
+          style={{
+            color: colors.text.secondary,
+            fontSize: typography.sizes.sm,
+          }}
+        >
+          Loading transactions…
+        </Text>
+      </View>
+    );
+  } else if (query.isError) {
+    transactionsContent = (
+      <View style={styles.centerState}>
+        <Text
+          style={{
+            color: colors.text.primary,
+            fontSize: typography.sizes.md,
+          }}
+        >
+          We couldn’t load your transactions.
+        </Text>
+        <Pressable onPress={() => query.refetch()}>
+          <Text
+            style={{
+              color: colors.accent.primary,
+              fontSize: typography.sizes.sm,
+            }}
+          >
+            Try again
+          </Text>
+        </Pressable>
+      </View>
+    );
+  } else {
+    let listFooter: ReactNode = null;
+    if (query.isFetchingNextPage) {
+      listFooter = (
+        <ActivityIndicator
+          style={{ paddingVertical: spacing.lg }}
+          color={colors.accent.primary}
+        />
+      );
+    }
+
+    transactionsContent = (
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id}
+        renderSectionHeader={({ section }) => (
+          <Text
+            style={[
+              styles.sectionTitle,
+              {
+                backgroundColor: colors.surface.background.page,
+                color: colors.text.secondary,
+                fontSize: typography.sizes.xs,
+                paddingHorizontal: spacing.md,
+                paddingTop: spacing.md,
+                paddingBottom: spacing.xs,
+              },
+            ]}
+          >
+            {section.title}
+          </Text>
+        )}
+        renderItem={({ item }) => (
+          <TransactionRow
+            transaction={item}
+            accountName={accountNames.get(item.accountId)}
+            categoryName={getCategoryName(item.categoryId, categoryNames)}
+            onPress={() => router.push(`/transactions/${item.id}`)}
+          />
+        )}
+        contentContainerStyle={[
+          styles.listContent,
+          sections.length === 0 && styles.emptyListContent,
+          { paddingBottom: spacing.xl },
+        ]}
+        stickySectionHeadersEnabled={false}
+        onEndReached={() => {
+          if (query.hasNextPage && !query.isFetchingNextPage) {
+            query.fetchNextPage();
+          }
+        }}
+        onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl
+            refreshing={query.isRefetching && !query.isFetchingNextPage}
+            onRefresh={() => query.refetch()}
+            tintColor={colors.accent.primary}
+          />
+        }
+        ListEmptyComponent={
+          <View style={styles.centerState}>
+            <Text
+              style={{
+                color: colors.text.primary,
+                fontSize: typography.sizes.md,
+              }}
+            >
+              No transactions found
+            </Text>
+            <Text
+              style={{
+                color: colors.text.secondary,
+                fontSize: typography.sizes.sm,
+              }}
+            >
+              Try changing or resetting your filters.
+            </Text>
+          </View>
+        }
+        ListFooterComponent={listFooter}
+      />
+    );
+  }
 
   return (
     <SafeAreaView
@@ -78,15 +200,20 @@ export function TransactionsListScreen() {
         </View>
         <Pressable
           onPress={() => setFiltersVisible(true)}
-          style={({ pressed }) => [
-            styles.filterButton,
-            {
-              backgroundColor: colors.surface.background.primary,
-              borderColor: colors.surface.border.primary,
-              borderRadius: borderRadius.md,
-              opacity: pressed ? 0.7 : 1,
-            },
-          ]}
+          style={({ pressed }) => {
+            let opacity = 1;
+            if (pressed) opacity = 0.7;
+
+            return [
+              styles.filterButton,
+              {
+                backgroundColor: colors.surface.background.primary,
+                borderColor: colors.surface.border.primary,
+                borderRadius: borderRadius.md,
+                opacity,
+              },
+            ];
+          }}
           accessibilityRole="button"
           accessibilityLabel="Filter transactions"
         >
@@ -135,119 +262,7 @@ export function TransactionsListScreen() {
         />
       </View>
 
-      {query.isLoading ? (
-        <View style={styles.centerState}>
-          <ActivityIndicator color={colors.accent.primary} />
-          <Text
-            style={{
-              color: colors.text.secondary,
-              fontSize: typography.sizes.sm,
-            }}
-          >
-            Loading transactions…
-          </Text>
-        </View>
-      ) : query.isError ? (
-        <View style={styles.centerState}>
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.md,
-            }}
-          >
-            We couldn’t load your transactions.
-          </Text>
-          <Pressable onPress={() => query.refetch()}>
-            <Text
-              style={{
-                color: colors.accent.primary,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              Try again
-            </Text>
-          </Pressable>
-        </View>
-      ) : (
-        <SectionList
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          renderSectionHeader={({ section }) => (
-            <Text
-              style={[
-                styles.sectionTitle,
-                {
-                  backgroundColor: colors.surface.background.page,
-                  color: colors.text.secondary,
-                  fontSize: typography.sizes.xs,
-                  paddingHorizontal: spacing.md,
-                  paddingTop: spacing.md,
-                  paddingBottom: spacing.xs,
-                },
-              ]}
-            >
-              {section.title}
-            </Text>
-          )}
-          renderItem={({ item }) => (
-            <TransactionRow
-              transaction={item}
-              accountName={accountNames.get(item.accountId)}
-              categoryName={
-                item.categoryId ? categoryNames.get(item.categoryId) : undefined
-              }
-              onPress={() => router.push(`/transactions/${item.id}`)}
-            />
-          )}
-          contentContainerStyle={[
-            styles.listContent,
-            sections.length === 0 && styles.emptyListContent,
-            { paddingBottom: spacing.xl },
-          ]}
-          stickySectionHeadersEnabled={false}
-          onEndReached={() => {
-            if (query.hasNextPage && !query.isFetchingNextPage) {
-              query.fetchNextPage();
-            }
-          }}
-          onEndReachedThreshold={0.5}
-          refreshControl={
-            <RefreshControl
-              refreshing={query.isRefetching && !query.isFetchingNextPage}
-              onRefresh={() => query.refetch()}
-              tintColor={colors.accent.primary}
-            />
-          }
-          ListEmptyComponent={
-            <View style={styles.centerState}>
-              <Text
-                style={{
-                  color: colors.text.primary,
-                  fontSize: typography.sizes.md,
-                }}
-              >
-                No transactions found
-              </Text>
-              <Text
-                style={{
-                  color: colors.text.secondary,
-                  fontSize: typography.sizes.sm,
-                }}
-              >
-                Try changing or resetting your filters.
-              </Text>
-            </View>
-          }
-          ListFooterComponent={
-            query.isFetchingNextPage ? (
-              <ActivityIndicator
-                style={{ paddingVertical: spacing.lg }}
-                color={colors.accent.primary}
-              />
-            ) : null
-          }
-        />
-      )}
+      {transactionsContent}
 
       <TransactionFiltersSheet
         visible={filtersVisible}
@@ -274,27 +289,36 @@ function FilterChip({
   onPress: () => void;
 }>) {
   const { colors, borderRadius, typography } = useTheme();
+  let backgroundColor = colors.surface.background.primary;
+  let borderColor = colors.surface.border.primary;
+  let textColor = colors.text.primary;
+  if (active) {
+    backgroundColor = colors.accent.primary;
+    borderColor = colors.accent.primary;
+    textColor = colors.button.onPrimary.default;
+  }
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        {
-          backgroundColor: active
-            ? colors.accent.primary
-            : colors.surface.background.primary,
-          borderColor: active
-            ? colors.accent.primary
-            : colors.surface.border.primary,
-          borderRadius: borderRadius.md,
-          opacity: pressed ? 0.7 : 1,
-        },
-      ]}
+      style={({ pressed }) => {
+        let opacity = 1;
+        if (pressed) opacity = 0.7;
+
+        return [
+          styles.chip,
+          {
+            backgroundColor,
+            borderColor,
+            borderRadius: borderRadius.md,
+            opacity,
+          },
+        ];
+      }}
     >
       <Text
         style={{
-          color: active ? colors.button.onPrimary.default : colors.text.primary,
+          color: textColor,
           fontSize: typography.sizes.xs,
           fontWeight: '600',
         }}
@@ -321,6 +345,14 @@ function getSelectionChipLabel(
 ): string {
   if (!selected?.length || selected.length === total) return `All ${name}`;
   return `${selected.length} ${name.toLowerCase()}`;
+}
+
+function getCategoryName(
+  categoryId: string | null,
+  categoryNames: Map<string, string>,
+): string | undefined {
+  if (!categoryId) return undefined;
+  return categoryNames.get(categoryId);
 }
 
 const styles = StyleSheet.create({

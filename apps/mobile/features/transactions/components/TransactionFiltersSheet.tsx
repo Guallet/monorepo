@@ -24,12 +24,15 @@ interface TransactionFiltersSheetProps {
 }
 
 function createDraft(filters: TransactionListFilters): TransactionFilterDraft {
+  let datePreset: DateRangePreset = 'all';
+  if (filters.startDate) datePreset = 'custom';
+
   return {
     accountIds: filters.accounts ?? [],
     categoryIds: filters.categories ?? [],
     startDate: filters.startDate ?? null,
     endDate: filters.endDate ?? null,
-    datePreset: filters.startDate ? 'custom' : 'all',
+    datePreset,
   };
 }
 
@@ -58,6 +61,12 @@ export function TransactionFiltersSheet({
 
   const selectedAccountCount = draft.accountIds.length;
   const selectedCategoryCount = draft.categoryIds.length;
+  let datePickerValue = draft.startDate ?? new Date();
+  let minimumDate: Date | undefined;
+  if (datePickerTarget === 'end') {
+    datePickerValue = draft.endDate ?? draft.startDate ?? new Date();
+    minimumDate = draft.startDate ?? undefined;
+  }
 
   function setPreset(preset: DateRangePreset) {
     if (preset === 'all') {
@@ -93,26 +102,33 @@ export function TransactionFiltersSheet({
 
     if (datePickerTarget === 'start') {
       const nextStart = startOfDay(date);
-      setDraft((current) => ({
-        ...current,
-        datePreset: 'custom',
-        startDate: nextStart,
-        endDate:
-          current.endDate && current.endDate >= nextStart
-            ? current.endDate
-            : endOfDay(nextStart),
-      }));
+      setDraft((current) => {
+        let nextEndDate = endOfDay(nextStart);
+        if (current.endDate && current.endDate >= nextStart) {
+          nextEndDate = current.endDate;
+        }
+
+        return {
+          ...current,
+          datePreset: 'custom',
+          startDate: nextStart,
+          endDate: nextEndDate,
+        };
+      });
       setDatePickerTarget('end');
     } else {
-      setDraft((current) => ({
-        ...current,
-        datePreset: 'custom',
-        endDate: endOfDay(
-          current.startDate && date < current.startDate
-            ? current.startDate
-            : date,
-        ),
-      }));
+      setDraft((current) => {
+        let nextEndDate = date;
+        if (current.startDate && date < current.startDate) {
+          nextEndDate = current.startDate;
+        }
+
+        return {
+          ...current,
+          datePreset: 'custom',
+          endDate: endOfDay(nextEndDate),
+        };
+      });
       setDatePickerTarget(null);
     }
   }
@@ -120,16 +136,21 @@ export function TransactionFiltersSheet({
   function toggleAccount(id: string) {
     setDraft((current) => {
       const allIds = accounts.map((account) => account.id);
-      const selected =
-        current.accountIds.length === 0
-          ? allIds.filter((accountId) => accountId !== id)
-          : current.accountIds.includes(id)
-            ? current.accountIds.filter((accountId) => accountId !== id)
-            : [...current.accountIds, id];
+      let selected: string[];
+      if (current.accountIds.length === 0) {
+        selected = allIds.filter((accountId) => accountId !== id);
+      } else if (current.accountIds.includes(id)) {
+        selected = current.accountIds.filter((accountId) => accountId !== id);
+      } else {
+        selected = [...current.accountIds, id];
+      }
+
+      let accountIds = selected;
+      if (selected.length === allIds.length) accountIds = [];
 
       return {
         ...current,
-        accountIds: selected.length === allIds.length ? [] : selected,
+        accountIds,
       };
     });
   }
@@ -137,28 +158,38 @@ export function TransactionFiltersSheet({
   function toggleCategory(id: string) {
     setDraft((current) => {
       const allIds = categories.map((category) => category.id);
-      const selected =
-        current.categoryIds.length === 0
-          ? allIds.filter((categoryId) => categoryId !== id)
-          : current.categoryIds.includes(id)
-            ? current.categoryIds.filter((categoryId) => categoryId !== id)
-            : [...current.categoryIds, id];
+      let selected: string[];
+      if (current.categoryIds.length === 0) {
+        selected = allIds.filter((categoryId) => categoryId !== id);
+      } else if (current.categoryIds.includes(id)) {
+        selected = current.categoryIds.filter(
+          (categoryId) => categoryId !== id,
+        );
+      } else {
+        selected = [...current.categoryIds, id];
+      }
+
+      let categoryIds = selected;
+      if (selected.length === allIds.length) categoryIds = [];
 
       return {
         ...current,
-        categoryIds: selected.length === allIds.length ? [] : selected,
+        categoryIds,
       };
     });
   }
 
   function apply() {
-    onApply({
-      ...(draft.accountIds.length > 0 && { accounts: draft.accountIds }),
-      ...(draft.categoryIds.length > 0 && { categories: draft.categoryIds }),
-      ...(draft.startDate && draft.endDate
-        ? { startDate: draft.startDate, endDate: draft.endDate }
-        : {}),
-    });
+    const nextFilters: TransactionListFilters = {};
+    if (draft.accountIds.length > 0) nextFilters.accounts = draft.accountIds;
+    if (draft.categoryIds.length > 0) {
+      nextFilters.categories = draft.categoryIds;
+    }
+    if (draft.startDate && draft.endDate) {
+      nextFilters.startDate = draft.startDate;
+      nextFilters.endDate = draft.endDate;
+    }
+    onApply(nextFilters);
   }
 
   return (
@@ -266,11 +297,7 @@ export function TransactionFiltersSheet({
 
           <FilterSection
             title="Accounts"
-            summary={
-              selectedAccountCount === 0
-                ? 'All accounts'
-                : `${selectedAccountCount} selected`
-            }
+            summary={getSelectionSummary(selectedAccountCount, 'accounts')}
           >
             <SelectionList
               options={accounts.map((account) => ({
@@ -288,11 +315,7 @@ export function TransactionFiltersSheet({
 
           <FilterSection
             title="Categories"
-            summary={
-              selectedCategoryCount === 0
-                ? 'All categories'
-                : `${selectedCategoryCount} selected`
-            }
+            summary={getSelectionSummary(selectedCategoryCount, 'categories')}
           >
             <SelectionList
               options={categories.map((category) => ({
@@ -348,18 +371,10 @@ export function TransactionFiltersSheet({
         </View>
         {datePickerTarget && (
           <DateTimePicker
-            value={
-              datePickerTarget === 'start'
-                ? (draft.startDate ?? new Date())
-                : (draft.endDate ?? draft.startDate ?? new Date())
-            }
+            value={datePickerValue}
             mode="date"
             maximumDate={new Date()}
-            minimumDate={
-              datePickerTarget === 'end'
-                ? (draft.startDate ?? undefined)
-                : undefined
-            }
+            minimumDate={minimumDate}
             onChange={handleDateChange}
           />
         )}
@@ -406,6 +421,11 @@ function FilterSection({
   );
 }
 
+function getSelectionSummary(count: number, name: string): string {
+  if (count === 0) return `All ${name}`;
+  return `${count} selected`;
+}
+
 function PresetButton({
   label,
   selected,
@@ -416,6 +436,14 @@ function PresetButton({
   onPress: () => void;
 }>) {
   const { colors, borderRadius, typography } = useTheme();
+  let backgroundColor = colors.surface.background.secondary;
+  let borderColor = colors.surface.border.primary;
+  let textColor = colors.text.primary;
+  if (selected) {
+    backgroundColor = colors.accent.primary;
+    borderColor = colors.accent.primary;
+    textColor = colors.button.onPrimary.default;
+  }
 
   return (
     <Pressable
@@ -423,21 +451,15 @@ function PresetButton({
       style={[
         styles.preset,
         {
-          backgroundColor: selected
-            ? colors.accent.primary
-            : colors.surface.background.secondary,
-          borderColor: selected
-            ? colors.accent.primary
-            : colors.surface.border.primary,
+          backgroundColor,
+          borderColor,
           borderRadius: borderRadius.md,
         },
       ]}
     >
       <Text
         style={{
-          color: selected
-            ? colors.button.onPrimary.default
-            : colors.text.primary,
+          color: textColor,
           fontSize: typography.sizes.sm,
           fontWeight: '600',
         }}
