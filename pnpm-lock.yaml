@@ -750,6 +750,9 @@ importers:
 
   packages/guallet-luna-mobile:
     dependencies:
+      '@guallet/money':
+        specifier: workspace:*
+        version: link:../guallet-money
       '@guallet/theme':
         specifier: workspace:*
         version: link:../guallet-theme

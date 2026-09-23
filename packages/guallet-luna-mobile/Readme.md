@@ -104,6 +104,23 @@ import { Input } from '@guallet/luna-mobile';
 />
 ```
 
+### AmountInput
+
+`AmountInput` accepts a numeric value and displays the selected currency's
+symbol and decimal precision. Clearing the field calls `onChange(null)`.
+
+```tsx
+import { Currency } from '@guallet/money';
+import { AmountInput } from '@guallet/luna-mobile';
+
+<AmountInput
+  label="Amount"
+  value={amount}
+  currency={Currency.fromISOCode('EUR')}
+  onChange={setAmount}
+/>;
+```
+
 ## Theming
 
 `@guallet/theme` is the single source of truth for the typed design-token
