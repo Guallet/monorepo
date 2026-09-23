@@ -122,7 +122,7 @@ export class AccountsService {
       throw new NotFoundException();
     }
 
-    if (dto.balance && dto.create_balance_transaction) {
+    if (typeof dto.balance === 'number' && dto.create_balance_transaction) {
       // Create a new transaction if the balance is being updated
       this.logger.debug(
         `Creating balance transaction for account ${accountId} due to balance update`,

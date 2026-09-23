@@ -1,3 +1,5 @@
+/* oxlint-disable typescript/no-unsafe-argument */
+
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import ts from 'typescript';
