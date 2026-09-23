@@ -17,12 +17,12 @@ import {
   useTheme,
 } from '@guallet/luna-mobile';
 import { useRouter } from 'expo-router';
+import { useNavigation, usePreventRemove } from '@react-navigation/native';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -31,6 +31,7 @@ import {
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { SelectionSheet } from '../components/SelectionSheet';
 import { formatTransactionDate } from '../utils';
 
@@ -54,6 +55,7 @@ export function TransactionDetailsScreen({
 }: Readonly<TransactionDetailsScreenProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const router = useRouter();
+  const navigation = useNavigation();
   const { transaction, isLoading, isError, refetch } =
     useTransaction(transactionId);
   const { accounts } = useAccounts();
@@ -91,17 +93,16 @@ export function TransactionDetailsScreen({
     initialForm !== null &&
     JSON.stringify(form) !== JSON.stringify(initialForm);
 
-  function goBack() {
-    if (!isDirty) {
-      router.back();
-      return;
-    }
-
+  usePreventRemove(isDirty, ({ data }) => {
     Alert.alert('Discard changes?', 'Your unsaved changes will be lost.', [
       { text: 'Keep editing', style: 'cancel' },
-      { text: 'Discard', style: 'destructive', onPress: () => router.back() },
+      {
+        text: 'Discard',
+        style: 'destructive',
+        onPress: () => navigation.dispatch(data.action),
+      },
     ]);
-  }
+  });
 
   function updateForm(values: Partial<FormState>) {
     setForm((current) => (current ? { ...current, ...values } : current));
@@ -118,7 +119,8 @@ export function TransactionDetailsScreen({
   async function save() {
     if (!form) return;
 
-    const amount = Number(form.amount);
+    const amountInput = form.amount.trim();
+    const amount = Number(amountInput);
     const currency = form.currency.trim().toUpperCase();
 
     if (!form.description.trim()) {
@@ -129,7 +131,7 @@ export function TransactionDetailsScreen({
       setError('Select an account.');
       return;
     }
-    if (!Number.isFinite(amount) || amount < 0) {
+    if (!amountInput || !Number.isFinite(amount) || amount <= 0) {
       setError('Enter a valid amount.');
       return;
     }
@@ -204,7 +206,7 @@ export function TransactionDetailsScreen({
       headerOptions={{
         headerBackVisible: false,
         headerLeft: () => (
-          <Pressable onPress={goBack} hitSlop={12}>
+          <Pressable onPress={() => router.back()} hitSlop={12}>
             <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
           </Pressable>
         ),
@@ -334,7 +336,7 @@ export function TransactionDetailsScreen({
               >
                 Save changes
               </Button>
-              <Button variant="outline" onClick={goBack}>
+              <Button variant="outline" onClick={() => router.back()}>
                 Cancel
               </Button>
             </Stack>
@@ -368,49 +370,33 @@ export function TransactionDetailsScreen({
         onClose={() => setSelection(null)}
         onSelect={(categoryId) => updateForm({ categoryId })}
       />
-      <Modal
-        visible={showDatePicker}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowDatePicker(false)}
+      <BottomSheet
+        contentPadding={0}
+        isPresented={showDatePicker}
+        onDismiss={() => setShowDatePicker(false)}
+        snapPoints={['full']}
       >
-        <View style={styles.dateModalBackdrop}>
-          <Pressable
-            style={styles.dismissArea}
-            onPress={() => setShowDatePicker(false)}
-          />
-          <View
-            style={[
-              styles.dateModal,
-              {
-                backgroundColor: colors.surface.background.primary,
-                borderTopLeftRadius: borderRadius.xl,
-                borderTopRightRadius: borderRadius.xl,
-                padding: spacing.lg,
-              },
-            ]}
+        <View style={[styles.dateModal, { padding: spacing.lg }]}>
+          <Text
+            style={{
+              color: colors.text.primary,
+              fontSize: typography.sizes.lg,
+              fontWeight: '700',
+            }}
           >
-            <Text
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.lg,
-                fontWeight: '700',
-              }}
-            >
-              Select date
-            </Text>
-            <DateTimePicker
-              value={form?.date ?? new Date()}
-              mode="date"
-              maximumDate={new Date()}
-              onChange={handleDateChange}
-            />
-            <Button variant="subtle" onClick={() => setShowDatePicker(false)}>
-              Done
-            </Button>
-          </View>
+            Select date
+          </Text>
+          <DateTimePicker
+            value={form?.date ?? new Date()}
+            mode="date"
+            maximumDate={new Date()}
+            onChange={handleDateChange}
+          />
+          <Button variant="subtle" onClick={() => setShowDatePicker(false)}>
+            Done
+          </Button>
         </View>
-      </Modal>
+      </BottomSheet>
     </AppScreen>
   );
 }
@@ -522,14 +508,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
     padding: 24,
-  },
-  dateModalBackdrop: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-  },
-  dismissArea: {
-    flex: 1,
   },
   dateModal: {
     gap: 12,

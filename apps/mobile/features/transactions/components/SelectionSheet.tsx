@@ -1,12 +1,6 @@
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 
 export type SelectionOption = {
   id: string;
@@ -34,7 +28,7 @@ export function SelectionSheet({
   onClose,
   onSelect,
 }: Readonly<SelectionSheetProps>) {
-  const { colors, borderRadius, spacing, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
 
   function handleSelect(id: string | null) {
     onSelect(id);
@@ -42,66 +36,61 @@ export function SelectionSheet({
   }
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
+    <BottomSheet
+      contentPadding={0}
+      isPresented={visible}
+      onDismiss={onClose}
+      snapPoints={['full']}
     >
-      <View style={styles.backdrop}>
-        <Pressable style={styles.dismissArea} onPress={onClose} />
-        <View
-          style={[
-            styles.sheet,
-            {
-              backgroundColor: colors.surface.background.primary,
-              borderTopLeftRadius: borderRadius.xl,
-              borderTopRightRadius: borderRadius.xl,
-              padding: spacing.lg,
-            },
-          ]}
-        >
-          <View style={styles.header}>
+      <View
+        style={[
+          styles.sheet,
+          {
+            backgroundColor: colors.surface.background.primary,
+            padding: spacing.lg,
+          },
+        ]}
+      >
+        <View style={styles.header}>
+          <Text
+            style={[
+              styles.title,
+              { color: colors.text.primary, fontSize: typography.sizes.lg },
+            ]}
+          >
+            {title}
+          </Text>
+          <Pressable onPress={onClose} hitSlop={12}>
             <Text
-              style={[
-                styles.title,
-                { color: colors.text.primary, fontSize: typography.sizes.lg },
-              ]}
+              style={{
+                color: colors.accent.primary,
+                fontSize: typography.sizes.sm,
+              }}
             >
-              {title}
+              Done
             </Text>
-            <Pressable onPress={onClose} hitSlop={12}>
-              <Text
-                style={{
-                  color: colors.accent.primary,
-                  fontSize: typography.sizes.sm,
-                }}
-              >
-                Done
-              </Text>
-            </Pressable>
-          </View>
-
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {allowNone && (
-              <OptionRow
-                label={noneLabel}
-                selected={selectedId === null}
-                onPress={() => handleSelect(null)}
-              />
-            )}
-            {options.map((option) => (
-              <OptionRow
-                key={option.id}
-                label={option.label}
-                selected={selectedId === option.id}
-                onPress={() => handleSelect(option.id)}
-              />
-            ))}
-          </ScrollView>
+          </Pressable>
         </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {allowNone && (
+            <OptionRow
+              label={noneLabel}
+              selected={selectedId === null}
+              onPress={() => handleSelect(null)}
+            />
+          )}
+          {options.map((option) => (
+            <OptionRow
+              key={option.id}
+              label={option.label}
+              selected={selectedId === option.id}
+              onPress={() => handleSelect(option.id)}
+            />
+          ))}
+        </ScrollView>
       </View>
-    </Modal>
+    </BottomSheet>
   );
 }
 
@@ -149,16 +138,8 @@ function OptionRow({
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-  },
-  dismissArea: {
-    flex: 1,
-  },
   sheet: {
-    maxHeight: '80%',
+    flex: 1,
   },
   header: {
     flexDirection: 'row',

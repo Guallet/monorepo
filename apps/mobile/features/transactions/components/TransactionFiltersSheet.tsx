@@ -3,16 +3,10 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import { AccountDto, CategoryDto } from '@guallet/api-client';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from '@guallet/luna-mobile';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import {
   DateRangePreset,
   TransactionFilterDraft,
@@ -47,7 +41,7 @@ export function TransactionFiltersSheet({
   onClose,
   onApply,
 }: Readonly<TransactionFiltersSheetProps>) {
-  const { colors, borderRadius, spacing, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const [draft, setDraft] = useState(() => createDraft(filters));
   const [datePickerTarget, setDatePickerTarget] = useState<
     'start' | 'end' | null
@@ -113,7 +107,11 @@ export function TransactionFiltersSheet({
       setDraft((current) => ({
         ...current,
         datePreset: 'custom',
-        endDate: endOfDay(date),
+        endDate: endOfDay(
+          current.startDate && date < current.startDate
+            ? current.startDate
+            : date,
+        ),
       }));
       setDatePickerTarget(null);
     }
@@ -164,210 +162,209 @@ export function TransactionFiltersSheet({
   }
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
+    <BottomSheet
+      contentPadding={0}
+      isPresented={visible}
+      onDismiss={onClose}
+      snapPoints={['full']}
     >
-      <View style={styles.backdrop}>
-        <Pressable style={styles.dismissArea} onPress={onClose} />
-        <View
-          style={[
-            styles.sheet,
-            {
-              backgroundColor: colors.surface.background.primary,
-              borderTopLeftRadius: borderRadius.xl,
-              borderTopRightRadius: borderRadius.xl,
-              padding: spacing.lg,
-            },
-          ]}
-        >
-          <View style={styles.header}>
-            <View>
-              <Text
-                style={[
-                  styles.title,
-                  { color: colors.text.primary, fontSize: typography.sizes.lg },
-                ]}
-              >
-                Filter transactions
-              </Text>
-              <Text
-                style={{
-                  color: colors.text.secondary,
-                  fontSize: typography.sizes.xs,
-                }}
-              >
-                Choose one or more filters
-              </Text>
-            </View>
-            <Pressable onPress={onClose} hitSlop={12}>
-              <Ionicons name="close" size={24} color={colors.text.secondary} />
-            </Pressable>
-          </View>
-
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              gap: spacing.lg,
-              paddingBottom: spacing.md,
-            }}
-          >
-            <FilterSection title="Date range">
-              <View style={styles.presetGrid}>
-                <PresetButton
-                  label="Any date"
-                  selected={draft.datePreset === 'all'}
-                  onPress={() => setPreset('all')}
-                />
-                <PresetButton
-                  label="Today"
-                  selected={draft.datePreset === 'today'}
-                  onPress={() => setPreset('today')}
-                />
-                <PresetButton
-                  label="This month"
-                  selected={draft.datePreset === 'this-month'}
-                  onPress={() => setPreset('this-month')}
-                />
-                <PresetButton
-                  label="Last 30 days"
-                  selected={draft.datePreset === 'last-30-days'}
-                  onPress={() => setPreset('last-30-days')}
-                />
-              </View>
-              <Pressable
-                onPress={() => setPreset('custom')}
-                style={[
-                  styles.fieldButton,
-                  { borderColor: colors.surface.border.input },
-                ]}
-              >
-                <View>
-                  <Text
-                    style={{
-                      color: colors.text.secondary,
-                      fontSize: typography.sizes.xs,
-                    }}
-                  >
-                    Custom range
-                  </Text>
-                  <Text
-                    style={{
-                      color: colors.text.primary,
-                      fontSize: typography.sizes.md,
-                    }}
-                  >
-                    {dateLabel}
-                  </Text>
-                </View>
-                <Ionicons
-                  name="calendar-outline"
-                  size={20}
-                  color={colors.text.secondary}
-                />
-              </Pressable>
-            </FilterSection>
-
-            <FilterSection
-              title="Accounts"
-              summary={
-                selectedAccountCount === 0
-                  ? 'All accounts'
-                  : `${selectedAccountCount} selected`
-              }
-            >
-              <SelectionList
-                options={accounts.map((account) => ({
-                  id: account.id,
-                  label: account.name,
-                }))}
-                selectedIds={draft.accountIds}
-                allSelected={selectedAccountCount === 0}
-                onToggle={toggleAccount}
-                onSelectAll={() =>
-                  setDraft((current) => ({ ...current, accountIds: [] }))
-                }
-              />
-            </FilterSection>
-
-            <FilterSection
-              title="Categories"
-              summary={
-                selectedCategoryCount === 0
-                  ? 'All categories'
-                  : `${selectedCategoryCount} selected`
-              }
-            >
-              <SelectionList
-                options={categories.map((category) => ({
-                  id: category.id,
-                  label: category.name,
-                }))}
-                selectedIds={draft.categoryIds}
-                allSelected={selectedCategoryCount === 0}
-                onToggle={toggleCategory}
-                onSelectAll={() =>
-                  setDraft((current) => ({ ...current, categoryIds: [] }))
-                }
-              />
-            </FilterSection>
-          </ScrollView>
-
-          <View style={[styles.actions, { gap: spacing.sm }]}>
-            <Pressable
-              onPress={() => {
-                setDraft(createDraft({}));
-              }}
+      <View
+        style={[
+          styles.sheet,
+          {
+            backgroundColor: colors.surface.background.primary,
+            padding: spacing.lg,
+          },
+        ]}
+      >
+        <View style={styles.header}>
+          <View>
+            <Text
               style={[
-                styles.actionButton,
+                styles.title,
+                { color: colors.text.primary, fontSize: typography.sizes.lg },
+              ]}
+            >
+              Filter transactions
+            </Text>
+            <Text
+              style={{
+                color: colors.text.secondary,
+                fontSize: typography.sizes.xs,
+              }}
+            >
+              Choose one or more filters
+            </Text>
+          </View>
+          <Pressable onPress={onClose} hitSlop={12}>
+            <Ionicons name="close" size={24} color={colors.text.secondary} />
+          </Pressable>
+        </View>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            gap: spacing.lg,
+            paddingBottom: spacing.md,
+          }}
+        >
+          <FilterSection title="Date range">
+            <View style={styles.presetGrid}>
+              <PresetButton
+                label="Any date"
+                selected={draft.datePreset === 'all'}
+                onPress={() => setPreset('all')}
+              />
+              <PresetButton
+                label="Today"
+                selected={draft.datePreset === 'today'}
+                onPress={() => setPreset('today')}
+              />
+              <PresetButton
+                label="This month"
+                selected={draft.datePreset === 'this-month'}
+                onPress={() => setPreset('this-month')}
+              />
+              <PresetButton
+                label="Last 30 days"
+                selected={draft.datePreset === 'last-30-days'}
+                onPress={() => setPreset('last-30-days')}
+              />
+            </View>
+            <Pressable
+              onPress={() => setPreset('custom')}
+              style={[
+                styles.fieldButton,
                 { borderColor: colors.surface.border.input },
               ]}
             >
-              <Text
-                style={{
-                  color: colors.text.primary,
-                  fontSize: typography.sizes.md,
-                }}
-              >
-                Reset
-              </Text>
+              <View>
+                <Text
+                  style={{
+                    color: colors.text.secondary,
+                    fontSize: typography.sizes.xs,
+                  }}
+                >
+                  Custom range
+                </Text>
+                <Text
+                  style={{
+                    color: colors.text.primary,
+                    fontSize: typography.sizes.md,
+                  }}
+                >
+                  {dateLabel}
+                </Text>
+              </View>
+              <Ionicons
+                name="calendar-outline"
+                size={20}
+                color={colors.text.secondary}
+              />
             </Pressable>
-            <Pressable
-              onPress={apply}
-              style={[
-                styles.actionButton,
-                styles.primaryAction,
-                { backgroundColor: colors.accent.primary },
-              ]}
-            >
-              <Text
-                style={{
-                  color: colors.button.onPrimary.default,
-                  fontSize: typography.sizes.md,
-                }}
-              >
-                Apply filters
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>
+          </FilterSection>
 
-      {datePickerTarget && (
-        <DateTimePicker
-          value={
-            datePickerTarget === 'start'
-              ? (draft.startDate ?? new Date())
-              : (draft.endDate ?? draft.startDate ?? new Date())
-          }
-          mode="date"
-          maximumDate={new Date()}
-          onChange={handleDateChange}
-        />
-      )}
-    </Modal>
+          <FilterSection
+            title="Accounts"
+            summary={
+              selectedAccountCount === 0
+                ? 'All accounts'
+                : `${selectedAccountCount} selected`
+            }
+          >
+            <SelectionList
+              options={accounts.map((account) => ({
+                id: account.id,
+                label: account.name,
+              }))}
+              selectedIds={draft.accountIds}
+              allSelected={selectedAccountCount === 0}
+              onToggle={toggleAccount}
+              onSelectAll={() =>
+                setDraft((current) => ({ ...current, accountIds: [] }))
+              }
+            />
+          </FilterSection>
+
+          <FilterSection
+            title="Categories"
+            summary={
+              selectedCategoryCount === 0
+                ? 'All categories'
+                : `${selectedCategoryCount} selected`
+            }
+          >
+            <SelectionList
+              options={categories.map((category) => ({
+                id: category.id,
+                label: category.name,
+              }))}
+              selectedIds={draft.categoryIds}
+              allSelected={selectedCategoryCount === 0}
+              onToggle={toggleCategory}
+              onSelectAll={() =>
+                setDraft((current) => ({ ...current, categoryIds: [] }))
+              }
+            />
+          </FilterSection>
+        </ScrollView>
+
+        <View style={[styles.actions, { gap: spacing.sm }]}>
+          <Pressable
+            onPress={() => {
+              setDraft(createDraft({}));
+            }}
+            style={[
+              styles.actionButton,
+              { borderColor: colors.surface.border.input },
+            ]}
+          >
+            <Text
+              style={{
+                color: colors.text.primary,
+                fontSize: typography.sizes.md,
+              }}
+            >
+              Reset
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={apply}
+            style={[
+              styles.actionButton,
+              styles.primaryAction,
+              { backgroundColor: colors.accent.primary },
+            ]}
+          >
+            <Text
+              style={{
+                color: colors.button.onPrimary.default,
+                fontSize: typography.sizes.md,
+              }}
+            >
+              Apply filters
+            </Text>
+          </Pressable>
+        </View>
+        {datePickerTarget && (
+          <DateTimePicker
+            value={
+              datePickerTarget === 'start'
+                ? (draft.startDate ?? new Date())
+                : (draft.endDate ?? draft.startDate ?? new Date())
+            }
+            mode="date"
+            maximumDate={new Date()}
+            minimumDate={
+              datePickerTarget === 'end'
+                ? (draft.startDate ?? undefined)
+                : undefined
+            }
+            onChange={handleDateChange}
+          />
+        )}
+      </View>
+    </BottomSheet>
   );
 }
 
@@ -518,16 +515,8 @@ function SelectionList({
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-  },
-  dismissArea: {
-    flex: 1,
-  },
   sheet: {
-    maxHeight: '90%',
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
