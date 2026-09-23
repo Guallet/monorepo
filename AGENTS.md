@@ -12,6 +12,7 @@ files under `.agents/skills/` contain detailed, task-specific workflows.
 | Mobile            | Expo 54, React Native 0.81, Expo Router, Luna UI     | `apps/mobile`                  |
 | API client types  | TypeScript (no runtime, types + fetch wrappers)      | `packages/guallet-api-client`  |
 | React query hooks | TanStack Query wrappers over the API client          | `packages/guallet-api-react`   |
+| Authentication    | Better Auth configuration shared across apps         | `packages/guallet-auth`        |
 | Design tokens     | Platform-agnostic theme types and default values     | `packages/guallet-theme`       |
 | Shared React UI   | Mantine-based components (web)                       | `packages/guallet-ui-react`    |
 | Luna UI (web)     | Web design-system icons                              | `packages/guallet-luna`        |
@@ -55,21 +56,21 @@ pnpm --filter @guallet/money test:cov # money package coverage
 
 ### API
 
-API features live under `apps/api/src/features/`. Current feature areas include
-accounts, AI, budgets, categories, transactions, institutions, reports, rules,
-saving goals, subscriptions, regular payments, data import/export, open banking,
-webhooks, notifications, email, and users. Authentication uses Better Auth;
-database configuration is in `apps/api/src/database/`, and background jobs use
-BullMQ with Redis.
+API features live under `apps/api/src/features/`: `accounts`, `ai`, `budgets`,
+`categories`, `transactions`, `institutions`, `reports`, `rules`,
+`saving-goals`, `subscriptions`, `regular-payments`, `data-importer`,
+`data-exporter`, `openbanking`, `nordigen`, `webhooks`, `notifications`,
+`email`, and `users`. Authentication uses Better Auth; database configuration
+is in `apps/api/src/database/`, and background jobs use BullMQ with Redis.
 
-The AI feature manages user-owned connections for OpenAI, OpenRouter, and Vercel
-AI Gateway. Provider credentials are encrypted at rest with
+The AI feature manages user-owned connections and agents for OpenAI, OpenRouter,
+and Vercel AI Gateway. Provider credentials are encrypted at rest with
 `DATABASE_CREDENTIALS_ENCRYPTION_KEY`; API responses expose only a token hint.
-The AI assistant chat streams through the Vercel AI SDK. It receives an
-aggregate summary of the user's finances, not raw transactions, and no tools.
-Chat sessions are user-scoped and purged after 30 days. AI endpoints use
-controller-level rate limiting where configured; there is no global throttle
-guard.
+The AI assistant chat streams through the Vercel AI SDK. It receives a
+server-built aggregate summary of the user's finances, not raw transactions,
+and a server-owned policy prompt; no tools are passed. Chat sessions are
+user-scoped and purged after 30 days. AI endpoints use controller-level rate
+limiting where configured; there is no global throttle guard.
 
 ### Webapp
 
