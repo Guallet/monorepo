@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BudgetsController } from './budgets.controller';
 import { BudgetsService } from './budgets.service';
@@ -104,6 +105,13 @@ describe('BudgetsController', () => {
         dateRange: { month: 5, year: 2024 },
       });
     });
+
+    it('should reject a month outside the one-based range', async () => {
+      await expect(controller.findAll(mockUser, 13, 2024)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(mockBudgetsService.findAllForUser).not.toHaveBeenCalled();
+    });
   });
 
   describe('findOne', () => {
@@ -153,6 +161,13 @@ describe('BudgetsController', () => {
         dateRange: { month: 5, year: 2024 },
       });
     });
+
+    it('should reject a zero month', async () => {
+      await expect(
+        controller.findOne('budget-1', mockUser, 0, 2024),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockBudgetsService.findOneForUser).not.toHaveBeenCalled();
+    });
   });
 
   describe('getBudgetTransactions', () => {
@@ -195,6 +210,13 @@ describe('BudgetsController', () => {
         budgetId: budgetId,
         dateRange: { month: 5, year: 2024 },
       });
+    });
+
+    it('should reject a non-integer month', async () => {
+      await expect(
+        controller.getBudgetTransactions(mockUser, 'budget-1', 1.5, 2024),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockBudgetsService.getBudgetTransactions).not.toHaveBeenCalled();
     });
   });
 

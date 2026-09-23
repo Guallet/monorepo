@@ -60,11 +60,12 @@ export function CategorySelectionSheet({
   });
 
   function toggleCategory(id: string) {
-    setDraftIds((current) =>
-      current.includes(id)
-        ? current.filter((categoryId) => categoryId !== id)
-        : [...current, id],
-    );
+    setDraftIds((current) => {
+      if (current.includes(id)) {
+        return current.filter((categoryId) => categoryId !== id);
+      }
+      return [...current, id];
+    });
   }
 
   return (
@@ -205,6 +206,14 @@ function CategoryOption({
   onPress: () => void;
 }>) {
   const { colors, spacing, typography } = useTheme();
+  let paddingLeft = spacing.sm;
+  if (indent) paddingLeft = spacing.xl;
+  let selectedColor = colors.text.secondary;
+  let selectedMark = '○';
+  if (selected) {
+    selectedColor = colors.accent.primary;
+    selectedMark = '✓';
+  }
 
   return (
     <Pressable
@@ -215,8 +224,8 @@ function CategoryOption({
         styles.option,
         {
           borderBottomColor: colors.surface.border.primary,
-          opacity: pressed ? 0.7 : 1,
-          paddingLeft: indent ? spacing.xl : spacing.sm,
+          opacity: getPressedOpacity(pressed),
+          paddingLeft,
           paddingVertical: spacing.sm,
         },
       ]}
@@ -246,14 +255,19 @@ function CategoryOption({
       </View>
       <Text
         style={{
-          color: selected ? colors.accent.primary : colors.text.secondary,
+          color: selectedColor,
           fontSize: typography.sizes.lg,
         }}
       >
-        {selected ? '✓' : '○'}
+        {selectedMark}
       </Text>
     </Pressable>
   );
+}
+
+function getPressedOpacity(pressed: boolean): number {
+  if (pressed) return 0.7;
+  return 1;
 }
 
 const styles = StyleSheet.create({

@@ -16,6 +16,8 @@ export function BudgetTransactionRow({
   const { colors, spacing, typography } = useTheme();
   const amount = Number(transaction.amount);
   const isIncome = amount >= 0;
+  let amountColor = colors.status.error;
+  if (isIncome) amountColor = colors.support.primary;
 
   return (
     <View
@@ -70,12 +72,12 @@ export function BudgetTransactionRow({
       </View>
       <Text
         style={{
-          color: isIncome ? colors.support.primary : colors.status.error,
+          color: amountColor,
           fontSize: typography.sizes.sm,
           fontWeight: '700',
         }}
       >
-        {isIncome ? '+' : ''}
+        {isIncome && '+'}
         {formatBudgetCurrency(amount, transaction.currency)}
       </Text>
     </View>

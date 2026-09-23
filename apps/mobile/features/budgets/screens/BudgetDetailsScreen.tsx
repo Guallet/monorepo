@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -75,6 +75,68 @@ export default function BudgetDetailsScreen() {
         },
       ],
     );
+  }
+
+  let transactionContent: ReactNode;
+  if (isTransactionsLoading) {
+    transactionContent = (
+      <View style={styles.transactionLoading}>
+        <ActivityIndicator color={colors.accent.primary} />
+      </View>
+    );
+  } else if (isTransactionsError) {
+    transactionContent = (
+      <View style={{ paddingVertical: spacing.lg }}>
+        <Text
+          style={{
+            color: colors.text.secondary,
+            fontSize: typography.sizes.sm,
+          }}
+        >
+          Couldn’t load transactions for this month.
+        </Text>
+        <Pressable
+          onPress={() => void refetchTransactions()}
+          style={{ marginTop: spacing.sm }}
+        >
+          <Text
+            style={{
+              color: colors.accent.primary,
+              fontSize: typography.sizes.sm,
+              fontWeight: '600',
+            }}
+          >
+            Try again
+          </Text>
+        </Pressable>
+      </View>
+    );
+  } else if (transactions.length === 0) {
+    transactionContent = (
+      <Text
+        style={{
+          color: colors.text.secondary,
+          fontSize: typography.sizes.sm,
+          paddingVertical: spacing.lg,
+        }}
+      >
+        No transactions found for this month.
+      </Text>
+    );
+  } else {
+    transactionContent = transactions.map((transaction) => {
+      let categoryName: string | undefined;
+      if (transaction.categoryId) {
+        categoryName = categoryNames.get(transaction.categoryId);
+      }
+      return (
+        <BudgetTransactionRow
+          key={transaction.id}
+          categoryName={categoryName}
+          transaction={transaction}
+        />
+      );
+    });
   }
 
   if (isLoading) {
@@ -211,58 +273,7 @@ export default function BudgetDetailsScreen() {
             },
           ]}
         >
-          {isTransactionsLoading ? (
-            <View style={styles.transactionLoading}>
-              <ActivityIndicator color={colors.accent.primary} />
-            </View>
-          ) : isTransactionsError ? (
-            <View style={{ paddingVertical: spacing.lg }}>
-              <Text
-                style={{
-                  color: colors.text.secondary,
-                  fontSize: typography.sizes.sm,
-                }}
-              >
-                Couldn’t load transactions for this month.
-              </Text>
-              <Pressable
-                onPress={() => void refetchTransactions()}
-                style={{ marginTop: spacing.sm }}
-              >
-                <Text
-                  style={{
-                    color: colors.accent.primary,
-                    fontSize: typography.sizes.sm,
-                    fontWeight: '600',
-                  }}
-                >
-                  Try again
-                </Text>
-              </Pressable>
-            </View>
-          ) : transactions.length === 0 ? (
-            <Text
-              style={{
-                color: colors.text.secondary,
-                fontSize: typography.sizes.sm,
-                paddingVertical: spacing.lg,
-              }}
-            >
-              No transactions found for this month.
-            </Text>
-          ) : (
-            transactions.map((transaction) => (
-              <BudgetTransactionRow
-                key={transaction.id}
-                categoryName={
-                  transaction.categoryId
-                    ? categoryNames.get(transaction.categoryId)
-                    : undefined
-                }
-                transaction={transaction}
-              />
-            ))
-          )}
+          {transactionContent}
         </View>
         <View style={styles.bottomPad} />
       </ScrollView>

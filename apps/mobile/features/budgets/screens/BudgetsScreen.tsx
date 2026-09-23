@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -18,7 +18,7 @@ import { BudgetSummaryCard } from '../components/BudgetSummaryCard';
 import { getBudgetMonth, getBudgetMetrics, getMonthStart } from '../models';
 
 export default function BudgetsScreen() {
-  const { borderRadius, colors, spacing, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(() =>
     getMonthStart(new Date()),
@@ -35,15 +35,48 @@ export default function BudgetsScreen() {
         const leftMetrics = getBudgetMetrics(left);
         const rightMetrics = getBudgetMetrics(right);
         if (leftMetrics.isOverBudget !== rightMetrics.isOverBudget) {
-          return leftMetrics.isOverBudget ? -1 : 1;
+          if (leftMetrics.isOverBudget) return -1;
+          return 1;
         }
         if (leftMetrics.isNearLimit !== rightMetrics.isNearLimit) {
-          return leftMetrics.isNearLimit ? -1 : 1;
+          if (leftMetrics.isNearLimit) return -1;
+          return 1;
         }
         return rightMetrics.percent - leftMetrics.percent;
       }),
     [budgets],
   );
+
+  let budgetContent: ReactNode;
+  if (isLoading) {
+    budgetContent = <LoadingState />;
+  } else if (isError) {
+    budgetContent = (
+      <MessageCard
+        title="Couldn’t load budgets"
+        body="Check your connection and try again."
+        actionLabel="Try again"
+        onAction={() => void refetch()}
+      />
+    );
+  } else if (budgets.length === 0) {
+    budgetContent = <EmptyState onCreate={() => router.push('/budgets/new')} />;
+  } else {
+    budgetContent = (
+      <>
+        <BudgetSummaryCard budgets={budgets} />
+        <View style={{ gap: spacing.sm }}>
+          {sortedBudgets.map((budget) => (
+            <BudgetCard
+              key={budget.id}
+              budget={budget}
+              onPress={() => router.push(`/budgets/${budget.id}`)}
+            />
+          ))}
+        </View>
+      </>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -97,31 +130,7 @@ export default function BudgetsScreen() {
 
         <BudgetMonthSelector date={selectedDate} onChange={setSelectedDate} />
 
-        {isLoading ? (
-          <LoadingState />
-        ) : isError ? (
-          <MessageCard
-            title="Couldn’t load budgets"
-            body="Check your connection and try again."
-            actionLabel="Try again"
-            onAction={() => void refetch()}
-          />
-        ) : budgets.length === 0 ? (
-          <EmptyState onCreate={() => router.push('/budgets/new')} />
-        ) : (
-          <>
-            <BudgetSummaryCard budgets={budgets} />
-            <View style={{ gap: spacing.sm }}>
-              {sortedBudgets.map((budget) => (
-                <BudgetCard
-                  key={budget.id}
-                  budget={budget}
-                  onPress={() => router.push(`/budgets/${budget.id}`)}
-                />
-              ))}
-            </View>
-          </>
-        )}
+        {budgetContent}
 
         <View style={styles.bottomPad} />
       </ScrollView>
@@ -134,16 +143,20 @@ function LoadingState() {
 
   return (
     <View style={{ gap: spacing.sm }}>
-      {[1, 2, 3].map((item) => (
-        <View
-          key={item}
-          style={{
-            backgroundColor: colors.surface.background.secondary,
-            borderRadius: borderRadius.lg,
-            height: item === 1 ? 190 : 130,
-          }}
-        />
-      ))}
+      {[1, 2, 3].map((item) => {
+        let height = 130;
+        if (item === 1) height = 190;
+        return (
+          <View
+            key={item}
+            style={{
+              backgroundColor: colors.surface.background.secondary,
+              borderRadius: borderRadius.lg,
+              height,
+            }}
+          />
+        );
+      })}
       <ActivityIndicator color={colors.accent.primary} style={styles.loader} />
     </View>
   );

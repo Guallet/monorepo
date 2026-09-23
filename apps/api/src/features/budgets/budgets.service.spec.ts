@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { And, LessThan, MoreThanOrEqual } from 'typeorm';
 
 describe('BudgetsService', () => {
   let service: BudgetsService;
@@ -307,10 +308,12 @@ describe('BudgetsService', () => {
       });
 
       const findOptions = mockTransactionRepository.find.mock.calls[0][0];
-      expect(findOptions.where.created_at.value).toEqual([
-        new Date(2024, 0, 1),
-        new Date(2024, 1, 0),
-      ]);
+      expect(findOptions.where.created_at).toEqual(
+        And(
+          MoreThanOrEqual(new Date(2024, 0, 1)),
+          LessThan(new Date(2024, 1, 1)),
+        ),
+      );
     });
   });
 
@@ -397,7 +400,7 @@ describe('BudgetsService', () => {
       expect(mockBudgetRepository.findOne).toHaveBeenCalledWith({
         where: { id: budgetId, user_id: userId },
       });
-      expect(mockBudgetRepository.save).toHaveBeenCalled();
+      expect(mockBudgetRepository.save).toHaveBeenCalledWith(updatedBudget);
     });
 
     it('should throw NotFoundException when budget not found', async () => {

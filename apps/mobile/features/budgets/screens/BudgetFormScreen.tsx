@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -12,13 +12,13 @@ import {
 import { useRouter } from 'expo-router';
 import type { BudgetDto } from '@guallet/api-client';
 import {
-  useAccounts,
   useBudgetMutations,
   useCategories,
   useUserSettings,
 } from '@guallet/api-react';
 import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
+import { CurrencyInput } from '@/components/CurrencyInput';
 import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
 import { IconSelectionSheet } from '../components/IconSelectionSheet';
 
@@ -52,13 +52,13 @@ export default function BudgetFormScreen({
 }: Readonly<BudgetFormScreenProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
   const router = useRouter();
-  const { accounts } = useAccounts();
   const { categories } = useCategories();
   const { settings } = useUserSettings();
   const { createBudgetMutation, updateBudgetMutation } = useBudgetMutations();
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('GBP');
+  const hasSelectedCurrency = useRef(false);
   const [colour, setColour] = useState(COLOR_SWATCHES[0]);
   const [icon, setIcon] = useState('');
   const [categoryIds, setCategoryIds] = useState<string[]>([]);
@@ -79,18 +79,10 @@ export default function BudgetFormScreen({
 
   useEffect(() => {
     const defaultCurrency = settings?.currencies.default_currency;
-    if (!budget && defaultCurrency && currency === 'GBP') {
+    if (!budget && defaultCurrency && !hasSelectedCurrency.current) {
       setCurrency(defaultCurrency);
     }
-  }, [budget, currency, settings?.currencies.default_currency]);
-
-  const currencyOptions = useMemo(() => {
-    const values = [
-      settings?.currencies.default_currency,
-      ...accounts.map((account) => account.currency),
-    ].filter((value): value is string => Boolean(value));
-    return [...new Set(values.map((value) => value.toUpperCase()))];
-  }, [accounts, settings?.currencies.default_currency]);
+  }, [budget, settings?.currencies.default_currency]);
 
   const selectedCategoryNames = useMemo(
     () =>
@@ -155,9 +147,9 @@ export default function BudgetFormScreen({
       // lets it refetch the month the user was viewing.
       router.replace('/budgets');
     } catch {
-      setError(
-        `Couldn’t ${budget ? 'update' : 'create'} this budget. Please try again.`,
-      );
+      let action = 'create';
+      if (budget) action = 'update';
+      setError(`Couldn’t ${action} this budget. Please try again.`);
     }
   }
 
@@ -198,12 +190,21 @@ export default function BudgetFormScreen({
     );
   }
 
+  let screenTitle = 'New budget';
+  if (budget) screenTitle = 'Edit budget';
+  let keyboardBehavior: 'padding' | undefined;
+  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
+  let categorySelectionLabel = 'Select categories';
+  if (selectedCategoryNames.length > 0) {
+    categorySelectionLabel = `${selectedCategoryNames.length} selected`;
+  }
+  let saveButtonLabel = 'Create budget';
+  if (budget) saveButtonLabel = 'Save changes';
+  if (isPending) saveButtonLabel = 'Saving…';
+
   return (
-    <AppScreen headerTitle={budget ? 'Edit budget' : 'New budget'}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}
-      >
+    <AppScreen headerTitle={screenTitle}>
+      <KeyboardAvoidingView behavior={keyboardBehavior} style={styles.flex}>
         <ScrollView
           contentContainerStyle={[
             styles.content,
@@ -237,56 +238,17 @@ export default function BudgetFormScreen({
               placeholder="0.00"
               value={amount}
             />
-            <TextInput
-              autoCapitalize="characters"
-              autoCorrect={false}
-              label="Currency"
-              maxLength={3}
-              onChangeText={setCurrency}
-              placeholder="GBP"
+            <CurrencyInput
+              onValueChanged={(selectedCurrency) => {
+                hasSelectedCurrency.current = true;
+                setCurrency(selectedCurrency ?? '');
+              }}
               value={currency}
             />
-            {currencyOptions.length > 0 && (
-              <View style={[styles.chips, { gap: spacing.xs }]}>
-                {currencyOptions.map((option) => (
-                  <Pressable
-                    key={option}
-                    onPress={() => setCurrency(option)}
-                    style={[
-                      styles.chip,
-                      {
-                        backgroundColor:
-                          currency === option
-                            ? colors.button.secondary.default
-                            : colors.surface.background.secondary,
-                        borderColor:
-                          currency === option
-                            ? colors.accent.primary
-                            : colors.surface.border.primary,
-                        borderRadius: borderRadius.md,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        color: colors.text.primary,
-                        fontSize: typography.sizes.xs,
-                      }}
-                    >
-                      {option}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
 
             <FieldButton
               label="Categories"
-              value={
-                selectedCategoryNames.length > 0
-                  ? `${selectedCategoryNames.length} selected`
-                  : 'Select categories'
-              }
+              value={categorySelectionLabel}
               onPress={() => setShowCategories(true)}
             />
 
@@ -301,26 +263,31 @@ export default function BudgetFormScreen({
               Color
             </Text>
             <View style={[styles.colorGrid, { gap: spacing.sm }]}>
-              {COLOR_SWATCHES.map((swatch) => (
-                <Pressable
-                  key={swatch}
-                  accessibilityLabel={`Choose color ${swatch}`}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: colour === swatch }}
-                  onPress={() => setColour(swatch)}
-                  style={[
-                    styles.colorSwatch,
-                    {
-                      backgroundColor: swatch,
-                      borderColor:
-                        colour === swatch
-                          ? colors.text.primary
-                          : colors.surface.border.primary,
-                      borderWidth: colour === swatch ? 3 : 1,
-                    },
-                  ]}
-                />
-              ))}
+              {COLOR_SWATCHES.map((swatch) => {
+                let borderColor = colors.surface.border.primary;
+                let borderWidth = 1;
+                if (colour === swatch) {
+                  borderColor = colors.text.primary;
+                  borderWidth = 3;
+                }
+                return (
+                  <Pressable
+                    key={swatch}
+                    accessibilityLabel={`Choose color ${swatch}`}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: colour === swatch }}
+                    onPress={() => setColour(swatch)}
+                    style={[
+                      styles.colorSwatch,
+                      {
+                        backgroundColor: swatch,
+                        borderColor,
+                        borderWidth,
+                      },
+                    ]}
+                  />
+                );
+              })}
             </View>
 
             <FieldButton
@@ -355,11 +322,7 @@ export default function BudgetFormScreen({
               onClick={() => void submit()}
               style={styles.actionButton}
             >
-              {isPending
-                ? 'Saving…'
-                : budget
-                  ? 'Save changes'
-                  : 'Create budget'}
+              {saveButtonLabel}
             </Button>
           </View>
         </ScrollView>
@@ -413,7 +376,7 @@ function FieldButton({
             backgroundColor: colors.surface.background.input,
             borderColor: colors.surface.border.input,
             borderRadius: borderRadius.lg,
-            opacity: pressed ? 0.7 : 1,
+            opacity: getPressedOpacity(pressed),
             paddingHorizontal: spacing.md,
             paddingVertical: spacing.md,
           },
@@ -437,6 +400,11 @@ function FieldButton({
   );
 }
 
+function getPressedOpacity(pressed: boolean): number {
+  if (pressed) return 0.7;
+  return 1;
+}
+
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
@@ -447,16 +415,6 @@ const styles = StyleSheet.create({
   },
   formCard: {
     borderWidth: 1,
-  },
-  chips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 12,
-  },
-  chip: {
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
   },
   colorGrid: {
     flexDirection: 'row',

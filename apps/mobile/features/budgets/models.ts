@@ -51,7 +51,12 @@ export function getBudgetMetrics(budget: BudgetDto): BudgetMetrics {
   const amount = Math.max(0, Number(budget.amount ?? 0));
   const spent = Math.abs(Number(budget.spent ?? 0));
   const remaining = amount - spent;
-  const percent = amount > 0 ? (spent / amount) * 100 : spent > 0 ? 100 : 0;
+  let percent = 0;
+  if (amount > 0) {
+    percent = (spent / amount) * 100;
+  } else if (spent > 0) {
+    percent = 100;
+  }
 
   return {
     amount,

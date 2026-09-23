@@ -63,6 +63,12 @@ export function IconSelectionSheet({
         >
           {selectableCategoryIconNames.map((iconName) => {
             const selected = draftIcon === iconName;
+            let backgroundColor = colors.surface.background.primary;
+            let borderColor = colors.surface.border.primary;
+            if (selected) {
+              backgroundColor = colors.button.secondary.default;
+              borderColor = colors.accent.primary;
+            }
             return (
               <Pressable
                 key={iconName}
@@ -77,13 +83,9 @@ export function IconSelectionSheet({
                 style={({ pressed }) => [
                   styles.iconButton,
                   {
-                    backgroundColor: selected
-                      ? colors.button.secondary.default
-                      : colors.surface.background.primary,
-                    borderColor: selected
-                      ? colors.accent.primary
-                      : colors.surface.border.primary,
-                    opacity: pressed ? 0.7 : 1,
+                    backgroundColor,
+                    borderColor,
+                    opacity: getPressedOpacity(pressed),
                   },
                 ]}
               >
@@ -99,6 +101,11 @@ export function IconSelectionSheet({
       </View>
     </BottomSheet>
   );
+}
+
+function getPressedOpacity(pressed: boolean): number {
+  if (pressed) return 0.7;
+  return 1;
 }
 
 const styles = StyleSheet.create({

@@ -40,16 +40,16 @@ export function BudgetSummaryCard({
   }, [budgets]);
 
   const hasSingleCurrency = summaries.length === 1;
-  const totalBudgeted = hasSingleCurrency ? (summaries[0]?.budgeted ?? 0) : 0;
-  const totalSpent = hasSingleCurrency ? (summaries[0]?.spent ?? 0) : 0;
-  const overallPercent =
-    totalBudgeted > 0 ? (totalSpent / totalBudgeted) * 100 : 0;
-  const progressColor =
-    overallPercent >= 100
-      ? colors.status.error
-      : overallPercent >= 80
-        ? colors.status.warning
-        : colors.support.primary;
+  let totalBudgeted = 0;
+  let totalSpent = 0;
+  if (hasSingleCurrency) {
+    const summary = summaries[0];
+    totalBudgeted = summary?.budgeted ?? 0;
+    totalSpent = summary?.spent ?? 0;
+  }
+  let overallPercent = 0;
+  if (totalBudgeted > 0) overallPercent = (totalSpent / totalBudgeted) * 100;
+  const progressColor = getSummaryProgressColor(overallPercent, colors);
 
   return (
     <View
@@ -72,7 +72,7 @@ export function BudgetSummaryCard({
         BUDGET OVERVIEW
       </Text>
 
-      {hasSingleCurrency ? (
+      {hasSingleCurrency && (
         <>
           <View
             style={[
@@ -103,7 +103,7 @@ export function BudgetSummaryCard({
                 fontSize: typography.sizes.xs,
               }}
             >
-              {budgets.length} {budgets.length === 1 ? 'budget' : 'budgets'}
+              {budgets.length} {getBudgetLabel(budgets.length)}
             </Text>
             <Text
               style={{
@@ -116,7 +116,8 @@ export function BudgetSummaryCard({
             </Text>
           </View>
         </>
-      ) : (
+      )}
+      {!hasSingleCurrency && (
         <Text
           style={{
             color: colors.text.secondary,
@@ -165,12 +166,8 @@ export function BudgetSummaryCard({
             />
             <SummaryStat
               align="right"
-              color={
-                summary.remaining >= 0
-                  ? colors.support.primary
-                  : colors.status.error
-              }
-              label="Remaining"
+              color={getRemainingColor(summary.remaining, colors)}
+              label={getRemainingLabel(summary.remaining)}
               value={formatBudgetCurrency(
                 Math.abs(summary.remaining),
                 summary.currency,
@@ -181,6 +178,33 @@ export function BudgetSummaryCard({
       ))}
     </View>
   );
+}
+
+function getSummaryProgressColor(
+  percent: number,
+  colors: ReturnType<typeof useTheme>['colors'],
+): string {
+  if (percent >= 100) return colors.status.error;
+  if (percent >= 80) return colors.status.warning;
+  return colors.support.primary;
+}
+
+function getBudgetLabel(count: number): string {
+  if (count === 1) return 'budget';
+  return 'budgets';
+}
+
+function getRemainingColor(
+  remaining: number,
+  colors: ReturnType<typeof useTheme>['colors'],
+): string {
+  if (remaining >= 0) return colors.support.primary;
+  return colors.status.error;
+}
+
+function getRemainingLabel(remaining: number): string {
+  if (remaining < 0) return 'Over budget';
+  return 'Remaining';
 }
 
 function SummaryStat({

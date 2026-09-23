@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Param,
@@ -45,6 +46,20 @@ export class BudgetsController {
     this.defaultYear = today.getFullYear();
   }
 
+  private resolveDateRange(month?: number, year?: number) {
+    if (
+      month !== undefined &&
+      (!Number.isInteger(month) || month < 1 || month > 12)
+    ) {
+      throw new BadRequestException('month must be an integer from 1 to 12');
+    }
+
+    return {
+      month: month ?? this.defaultMonth,
+      year: year ?? this.defaultYear,
+    };
+  }
+
   @ApiOperation({ summary: 'findAll' })
   @ApiOkResponse({ type: () => BudgetDto, isArray: true })
   @ApiQuery({
@@ -60,6 +75,7 @@ export class BudgetsController {
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<BudgetDto[]> {
+    const dateRange = this.resolveDateRange(month, year);
     const budgets = await this.budgetsService.findAllForUser(user.id);
 
     this.logger.debug(`Found ${budgets.length} budgets for user ${user.id}`);
@@ -68,10 +84,7 @@ export class BudgetsController {
       const spent = await this.budgetsService.getMonthlySpending({
         userId: user.id,
         budgetId: budget.id,
-        dateRange: {
-          month: month ?? this.defaultMonth,
-          year: year ?? this.defaultYear,
-        },
+        dateRange,
       });
       result.push(BudgetDto.fromDomain(budget, spent));
     }
@@ -95,6 +108,7 @@ export class BudgetsController {
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<BudgetDto> {
+    const dateRange = this.resolveDateRange(month, year);
     const budget = await this.budgetsService.findOneForUser({
       id: id,
       userId: user.id,
@@ -102,10 +116,7 @@ export class BudgetsController {
     const spent = await this.budgetsService.getMonthlySpending({
       userId: user.id,
       budgetId: id,
-      dateRange: {
-        month: month ?? this.defaultMonth,
-        year: year ?? this.defaultYear,
-      },
+      dateRange,
     });
     return BudgetDto.fromDomain(budget, spent);
   }
@@ -127,13 +138,11 @@ export class BudgetsController {
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<TransactionDto[]> {
+    const dateRange = this.resolveDateRange(month, year);
     const transactions = await this.budgetsService.getBudgetTransactions({
       userId: user.id,
       budgetId: id,
-      dateRange: {
-        month: month ?? this.defaultMonth,
-        year: year ?? this.defaultYear,
-      },
+      dateRange,
     });
 
     return transactions.map((x) => TransactionDto.fromDomain(x));

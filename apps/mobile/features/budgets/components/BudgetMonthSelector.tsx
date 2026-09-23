@@ -35,7 +35,7 @@ export function BudgetMonthSelector({
             backgroundColor: colors.surface.background.primary,
             borderColor: colors.surface.border.primary,
             borderRadius: borderRadius.md,
-            opacity: previousDisabled ? 0.4 : pressed ? 0.65 : 1,
+            opacity: getArrowOpacity(previousDisabled, pressed),
           },
         ]}
       >
@@ -77,7 +77,7 @@ export function BudgetMonthSelector({
             backgroundColor: colors.surface.background.primary,
             borderColor: colors.surface.border.primary,
             borderRadius: borderRadius.md,
-            opacity: nextDisabled ? 0.4 : pressed ? 0.65 : 1,
+            opacity: getArrowOpacity(nextDisabled, pressed),
           },
         ]}
       >
@@ -89,6 +89,12 @@ export function BudgetMonthSelector({
       </Pressable>
     </View>
   );
+}
+
+function getArrowOpacity(disabled: boolean, pressed: boolean): number {
+  if (disabled) return 0.4;
+  if (pressed) return 0.65;
+  return 1;
 }
 
 const styles = StyleSheet.create({

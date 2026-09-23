@@ -19,7 +19,8 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
   const metrics = getBudgetMetrics(budget);
   const progressColor = getProgressColor(metrics, colors);
   const progress = Math.min(metrics.percent, 100);
-  const remainingLabel = metrics.isOverBudget ? 'over budget' : 'left';
+  let remainingLabel = 'left';
+  if (metrics.isOverBudget) remainingLabel = 'over budget';
   const remainingAmount = formatBudgetCurrency(
     Math.abs(metrics.remaining),
     budget.currency,
@@ -27,8 +28,7 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
 
   return (
     <Pressable
-      accessibilityLabel={`Open ${budget.name} budget`}
-      accessibilityRole="button"
+      {...getAccessibilityProps(budget.name, onPress)}
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
@@ -36,7 +36,7 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
           backgroundColor: colors.surface.background.primary,
           borderColor: colors.surface.border.primary,
           borderRadius: borderRadius.lg,
-          opacity: pressed && onPress ? 0.7 : 1,
+          opacity: getPressedOpacity(pressed, Boolean(onPress)),
           padding: spacing.md,
         },
       ]}
@@ -51,15 +51,14 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
             },
           ]}
         >
-          {budget.icon ? (
+          {budget.icon && (
             <CategoryIcon
               color={colors.neutral.white}
               name={budget.icon}
               size={22}
             />
-          ) : (
-            <CashIcon color={colors.neutral.white} size={22} />
           )}
+          {!budget.icon && <CashIcon color={colors.neutral.white} size={22} />}
         </View>
 
         <View style={styles.nameBlock}>
@@ -79,7 +78,7 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
             }}
           >
             {budget.categories.length}{' '}
-            {budget.categories.length === 1 ? 'category' : 'categories'}
+            {getCategoryLabel(budget.categories.length)}
           </Text>
         </View>
 
@@ -161,6 +160,30 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
       )}
     </Pressable>
   );
+}
+
+function getAccessibilityProps(
+  budgetName: string,
+  onPress: BudgetCardProps['onPress'],
+): {
+  accessibilityLabel?: string;
+  accessibilityRole?: 'button';
+} {
+  if (!onPress) return {};
+  return {
+    accessibilityLabel: `Open ${budgetName} budget`,
+    accessibilityRole: 'button',
+  };
+}
+
+function getPressedOpacity(pressed: boolean, enabled: boolean): number {
+  if (pressed && enabled) return 0.7;
+  return 1;
+}
+
+function getCategoryLabel(count: number): string {
+  if (count === 1) return 'category';
+  return 'categories';
 }
 
 const styles = StyleSheet.create({

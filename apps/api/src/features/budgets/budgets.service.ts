@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Budget } from './entities/budget.entity';
-import { Between, In, Repository } from 'typeorm';
+import { And, In, LessThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from '../transactions/entities/transaction.entity';
 import { CreateBudgetDto } from './dto/create-budget.dto';
@@ -76,7 +76,7 @@ export class BudgetsService {
     // Calculate the date range for the transactions. The public API uses
     // one-based months, while JavaScript Date uses zero-based months.
     const from = new Date(dateRange.year, dateRange.month - 1, 1);
-    const to = new Date(dateRange.year, dateRange.month, 0); // Last day of the month
+    const to = new Date(dateRange.year, dateRange.month, 1);
 
     const transactions = await this.transactionRepository.find({
       relations: {
@@ -86,7 +86,7 @@ export class BudgetsService {
       where: {
         account: { user_id: userId },
         categoryId: In(budget.categories.map((category) => category.id)),
-        created_at: Between(from, to),
+        created_at: And(MoreThanOrEqual(from), LessThan(to)),
       },
     });
 
@@ -154,6 +154,7 @@ export class BudgetsService {
     }
 
     return await this.repository.save({
+      ...existingBudget,
       name: updateBudgetDto.name ?? existingBudget.name,
       amount: updateBudgetDto.amount ?? existingBudget.amount,
       currency: updateBudgetDto.currency ?? existingBudget.currency,
