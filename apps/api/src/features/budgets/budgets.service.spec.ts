@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { And, LessThan, MoreThanOrEqual } from 'typeorm';
 
 describe('BudgetsService', () => {
   let service: BudgetsService;
@@ -237,7 +238,32 @@ describe('BudgetsService', () => {
         dateRange,
       });
 
-      expect(result).toBe(-100);
+      expect(result).toBe(100);
+    });
+
+    it('counts only negative transaction amounts as spending', async () => {
+      const userId = 'user-123';
+      const budgetId = 'budget-1';
+      const dateRange = { month: 5, year: 2024 };
+
+      mockBudgetRepository.findOne.mockResolvedValue({
+        id: budgetId,
+        user_id: userId,
+        categories: [{ id: 'cat-1' }],
+      });
+      mockTransactionRepository.find.mockResolvedValue([
+        { id: 'expense', amount: -50 },
+        { id: 'income', amount: 25 },
+        { id: 'zero', amount: 0 },
+      ]);
+
+      const result = await service.getMonthlySpending({
+        userId,
+        budgetId,
+        dateRange,
+      });
+
+      expect(result).toBe(50);
     });
 
     it('should return 0 when no transactions found', async () => {
@@ -261,6 +287,33 @@ describe('BudgetsService', () => {
       });
 
       expect(result).toBe(0);
+    });
+
+    it('uses one-based months when building the transaction date range', async () => {
+      const userId = 'user-123';
+      const budgetId = 'budget-1';
+      const dateRange = { month: 1, year: 2024 };
+
+      mockBudgetRepository.findOne.mockResolvedValue({
+        id: budgetId,
+        user_id: userId,
+        categories: [{ id: 'cat-1' }],
+      });
+      mockTransactionRepository.find.mockResolvedValue([]);
+
+      await service.getBudgetTransactions({
+        userId,
+        budgetId,
+        dateRange,
+      });
+
+      const findOptions = mockTransactionRepository.find.mock.calls[0][0];
+      expect(findOptions.where.created_at).toEqual(
+        And(
+          MoreThanOrEqual(new Date(2024, 0, 1)),
+          LessThan(new Date(2024, 1, 1)),
+        ),
+      );
     });
   });
 
@@ -347,7 +400,7 @@ describe('BudgetsService', () => {
       expect(mockBudgetRepository.findOne).toHaveBeenCalledWith({
         where: { id: budgetId, user_id: userId },
       });
-      expect(mockBudgetRepository.save).toHaveBeenCalled();
+      expect(mockBudgetRepository.save).toHaveBeenCalledWith(updatedBudget);
     });
 
     it('should throw NotFoundException when budget not found', async () => {
