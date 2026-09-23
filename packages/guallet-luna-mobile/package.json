@@ -24,7 +24,6 @@
   "keywords": [],
   "author": "cjgaliana",
   "dependencies": {
-    "@guallet/money": "workspace:*",
     "@guallet/theme": "workspace:*",
     "@tabler/icons-react-native": "3.46.0",
     "expo-image": "57.0.5",

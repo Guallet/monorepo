@@ -1,3 +1,5 @@
+import { Money, type Currency } from '@guallet/money';
+
 export function isValidAmountText(
   text: string,
   decimalPlaces: number,
@@ -27,15 +29,20 @@ export function parseAmountText(text: string): number | null | undefined {
 
 export function formatAmount(
   value: number | null,
-  decimalPlaces: number,
+  currency: Currency,
   padDecimals: boolean,
 ): string {
   if (value === null || !Number.isFinite(value)) {
     return '';
   }
 
-  const fixed = value.toFixed(decimalPlaces);
-  if (padDecimals || decimalPlaces === 0) {
+  // A fixed decimal separator keeps the displayed value compatible with the
+  // input parser. Money supplies the currency's fraction digits and rounding.
+  const fixed = Money.from({ amount: value, currency })
+    .format({ locale: 'en-US', useGrouping: false, useSymbol: false })
+    .replace(currency.code, '')
+    .replaceAll(/\s/g, '');
+  if (padDecimals || currency.decimalPlaces === 0) {
     return fixed;
   }
 

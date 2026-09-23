@@ -1,4 +1,5 @@
 import type { Currency } from '@guallet/money';
+import { useTheme } from '@guallet/luna-mobile';
 import { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
@@ -9,7 +10,6 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { useTheme } from '../../theme';
 import {
   formatAmount,
   isValidAmountText,
@@ -40,9 +40,7 @@ export function AmountInput({
   currencySymbolStyle,
 }: Readonly<AmountInputProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
-  const [text, setText] = useState(() =>
-    formatAmount(value, currency.decimalPlaces, true),
-  );
+  const [text, setText] = useState(() => formatAmount(value, currency, true));
   const focused = useRef(false);
   const lastEmittedValue = useRef(value);
   const currencyKey = `${currency.code}:${currency.decimalPlaces}`;
@@ -60,12 +58,12 @@ export function AmountInput({
       previousCurrencyKey.current !== currencyKey ||
       !Object.is(lastEmittedValue.current, value)
     ) {
-      setText(formatAmount(value, currency.decimalPlaces, !focused.current));
+      setText(formatAmount(value, currency, !focused.current));
     }
 
     lastEmittedValue.current = value;
     previousCurrencyKey.current = currencyKey;
-  }, [currencyKey, currency.decimalPlaces, value]);
+  }, [currency, currencyKey, value]);
 
   function handleChangeText(nextText: string): void {
     if (!isValidAmountText(nextText, currency.decimalPlaces)) {
@@ -90,7 +88,7 @@ export function AmountInput({
       return;
     }
 
-    setText(formatAmount(parsed, currency.decimalPlaces, true));
+    setText(formatAmount(parsed, currency, true));
   }
 
   return (
@@ -152,7 +150,7 @@ export function AmountInput({
           onChangeText={handleChangeText}
           onFocus={() => {
             focused.current = true;
-            setText(formatAmount(value, currency.decimalPlaces, false));
+            setText(formatAmount(value, currency, false));
           }}
           style={[
             styles.input,
