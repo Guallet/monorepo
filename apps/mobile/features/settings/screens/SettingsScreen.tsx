@@ -2,13 +2,13 @@ import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Image,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@guallet/auth';
 import { useUser } from '@guallet/api-react';
@@ -35,6 +35,9 @@ export default function SettingsScreen() {
   const { logout } = useAuth();
   const { user, isLoading, isError, isRefetching, refetch } = useUser();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [failedProfileImage, setFailedProfileImage] = useState<string | null>(
+    null,
+  );
 
   const handleSignOut = useCallback(async () => {
     setIsSigningOut(true);
@@ -71,6 +74,8 @@ export default function SettingsScreen() {
   const profileName = user?.name?.trim() || 'Your profile';
   const profileEmail = user?.email?.trim() || 'Profile details unavailable';
   const profileImage = user?.profile_src?.trim();
+  const showProfileImage =
+    Boolean(profileImage) && failedProfileImage !== profileImage;
   const showLoading = isLoading && !user;
   const showError = !showLoading && isError && !user;
   const showProfile = !showLoading && !showError;
@@ -207,9 +212,10 @@ export default function SettingsScreen() {
                 },
               ]}
             >
-              {profileImage && (
+              {showProfileImage && (
                 <Image
                   accessibilityLabel={`${profileName} profile picture`}
+                  onError={() => setFailedProfileImage(profileImage ?? null)}
                   source={{ uri: profileImage }}
                   style={[
                     styles.avatarImage,
@@ -217,7 +223,7 @@ export default function SettingsScreen() {
                   ]}
                 />
               )}
-              {!profileImage && (
+              {!showProfileImage && (
                 <Text
                   style={[
                     styles.avatarInitials,
