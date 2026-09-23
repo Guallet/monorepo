@@ -117,7 +117,7 @@ export class AccountsController {
       accountId,
     );
 
-    // Get the transactions for the account in the last 6 months
+    // Get the transactions for the account in the current month
     const startDate = new Date();
     startDate.setDate(1); // set the day to the first day of the month
     startDate.setHours(0, 0, 0, 0); // set the time to 00:00:00.000

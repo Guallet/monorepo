@@ -38,6 +38,7 @@
     "@guallet/api-react": "workspace:*",
     "@guallet/auth": "workspace:*",
     "@guallet/luna-mobile": "workspace:*",
+    "@guallet/money": "workspace:*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/netinfo": "12.0.1",
     "@sentry/react-native": "^8.27.0",

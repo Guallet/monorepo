@@ -256,6 +256,22 @@ describe('EmailService', () => {
       );
     });
 
+    it('should send a welcome email', async () => {
+      await service.sendWelcomeEmail({
+        to: 'new-user@example.com',
+        userName: 'New User',
+      });
+
+      expect(mockSendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: 'Guallet <noreply@guallet.io>',
+          to: 'new-user@example.com',
+          subject: 'Welcome to Guallet',
+          html: expect.stringContaining('New User'),
+        }),
+      );
+    });
+
     it('should handle SMTP errors gracefully', async () => {
       mockSendMail.mockRejectedValueOnce(new Error('SMTP Error'));
 
