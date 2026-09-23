@@ -1,6 +1,6 @@
 import React from 'react';
+import { Image } from 'expo-image';
 import {
-  Image,
   type ImageSourcePropType,
   type ImageStyle,
   StyleSheet,
@@ -45,15 +45,6 @@ const sizeValues: Record<AvatarSize, number> = {
   xl: 56,
 };
 
-const radiusValues: Record<AvatarRadius, number | 'full'> = {
-  xs: 2,
-  sm: 4,
-  md: 8,
-  lg: 16,
-  xl: 32,
-  full: 'full',
-};
-
 function resolveSource(
   src: AvatarSource | undefined,
 ): ImageSourcePropType | null {
@@ -63,11 +54,20 @@ function resolveSource(
   return src ?? null;
 }
 
+function getSourceKey(source: ImageSourcePropType | null): string | null {
+  if (source == null) return null;
+  return JSON.stringify(source) ?? null;
+}
+
 function getInitials(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return '';
-  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
-  return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+  if (words.length === 1) {
+    return Array.from(words[0]).slice(0, 2).join('').toUpperCase();
+  }
+  const firstInitial = Array.from(words[0])[0];
+  const lastInitial = Array.from(words[words.length - 1])[0];
+  return `${firstInitial}${lastInitial}`.toUpperCase();
 }
 
 function hashName(name: string): number {
@@ -133,15 +133,21 @@ function AvatarComponent({
 }: Readonly<AvatarProps>) {
   const { colors, borderRadius } = useTheme();
   const resolvedSource = resolveSource(src);
-  const [imageFailed, setImageFailed] = React.useState(false);
-
-  React.useEffect(() => {
-    setImageFailed(false);
-  }, [src]);
+  const sourceKey = getSourceKey(resolvedSource);
+  const [failedSourceKey, setFailedSourceKey] = React.useState<string | null>(
+    null,
+  );
+  const [displayedSourceKey, setDisplayedSourceKey] = React.useState<
+    string | null
+  >(null);
 
   const dimension = typeof size === 'number' ? size : sizeValues[size];
   const configuredRadius =
-    typeof radius === 'number' ? radius : radiusValues[radius];
+    typeof radius === 'number'
+      ? radius
+      : radius === 'full'
+        ? 'full'
+        : borderRadius[radius];
   const cornerRadius =
     configuredRadius === 'full'
       ? dimension / 2
@@ -176,7 +182,9 @@ function AvatarComponent({
   const placeholderColor =
     variant === 'filled' ? foregroundColor : (resolvedColor ?? foregroundColor);
   const initials = name ? getInitials(name) : '';
+  const imageFailed = sourceKey !== null && failedSourceKey === sourceKey;
   const imageSource = imageFailed ? null : resolvedSource;
+  const imageDisplayed = sourceKey !== null && displayedSourceKey === sourceKey;
 
   return (
     <View
@@ -193,7 +201,10 @@ function AvatarComponent({
         },
         style,
       ]}
-      accessible={viewProps.accessible ?? Boolean(alt ?? name)}
+      accessible={
+        viewProps.accessible ??
+        Boolean(viewProps.accessibilityLabel ?? alt ?? name)
+      }
       accessibilityLabel={viewProps.accessibilityLabel ?? alt ?? name}
       accessibilityRole={viewProps.accessibilityRole ?? 'image'}
     >
@@ -201,11 +212,17 @@ function AvatarComponent({
         <Image
           source={imageSource}
           accessible={false}
-          resizeMode="cover"
-          onError={() => setImageFailed(true)}
+          contentFit="cover"
+          onDisplay={() => setDisplayedSourceKey(sourceKey)}
+          onError={() => setFailedSourceKey(sourceKey)}
           style={[
             StyleSheet.absoluteFill,
-            { borderRadius: cornerRadius },
+            {
+              borderRadius: cornerRadius,
+              backgroundColor: imageDisplayed
+                ? 'transparent'
+                : colors.accent.primary,
+            },
             imageStyle,
           ]}
         />
@@ -258,11 +275,10 @@ export function AvatarGroup({
           key={
             React.isValidElement(child) && child.key != null ? child.key : index
           }
-          style={
-            index === 0
-              ? undefined
-              : { marginLeft: spacing, zIndex: items.length - index }
-          }
+          style={{
+            ...(index === 0 ? {} : { marginLeft: spacing }),
+            zIndex: items.length - index,
+          }}
         >
           {child}
         </View>
