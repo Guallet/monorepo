@@ -62,6 +62,13 @@ export class TransactionsController {
       'The id of the accounts to filter by. Is empty or null, use all accounts. Default is null',
     required: false,
   })
+  @ApiQuery({
+    name: 'categories',
+    type: String,
+    example: 'id1,id2,id3',
+    description: 'The category ids to filter by, separated by commas',
+    required: false,
+  })
   @Get()
   async getTransactions(
     @RequestUser() user: UserPrincipal,
@@ -71,7 +78,14 @@ export class TransactionsController {
     if (!query) {
       throw new BadRequestException('Query Params are not valid');
     }
-    const { page = 1, pageSize = 50, startDate, endDate, accounts } = query;
+    const {
+      page = 1,
+      pageSize = 50,
+      startDate,
+      endDate,
+      accounts,
+      categories,
+    } = query;
 
     this.logger.log(`Transaction Query: ${JSON.stringify(query)}`);
 
@@ -94,12 +108,18 @@ export class TransactionsController {
         page: page,
         pageSize: pageSize,
         accounts: accounts,
+        categories: categories,
         startDate: startDate,
         endDate: endDate,
       }),
       this.transactionsService.getUserTransactionsCount({
         userId: user.id,
-        filters: { accounts: accounts, startDate: startDate, endDate: endDate },
+        filters: {
+          accounts: accounts,
+          categories: categories,
+          startDate: startDate,
+          endDate: endDate,
+        },
       }),
     ]);
 

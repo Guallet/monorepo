@@ -34,22 +34,36 @@ export function useTransactions() {
   };
 }
 
-export function useInfiniteTransactions() {
+export type TransactionFilters = {
+  accounts?: string[] | null;
+  categories?: string[] | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
+};
+
+export function useInfiniteTransactions(filters: TransactionFilters = {}) {
   const gualletClient = useGualletClient();
 
+  const queryKey = [
+    TRANSACTIONS_QUERY_KEY,
+    '-infinite',
+    filters.accounts?.join(',') ?? null,
+    filters.categories?.join(',') ?? null,
+    filters.startDate?.toISOString() ?? null,
+    filters.endDate?.toISOString() ?? null,
+  ];
+
   const query = useInfiniteQuery({
-    queryKey: [TRANSACTIONS_QUERY_KEY, '-infinite'],
+    queryKey,
     queryFn: async ({ pageParam }) => {
-      console.log('queryFn', pageParam);
       return await gualletClient.transactions.loadTransactions({
         page: pageParam,
         pageSize: TRANSACTIONS_DEFAULT_PAGE_SIZE,
+        ...filters,
       });
     },
     initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => {
-      console.log('getNextPageParam', lastPage);
-      console.log('getNextPageParam: pages', pages);
+    getNextPageParam: (lastPage) => {
       if (lastPage === undefined) return undefined;
       const { meta } = lastPage;
       if (meta.hasMore) {

@@ -21,7 +21,7 @@ export class Transaction extends BaseDbEntity {
   description: string;
 
   @Column({ nullable: true })
-  notes: string;
+  notes: string | null;
 
   @Column({ type: 'decimal' })
   amount: number;

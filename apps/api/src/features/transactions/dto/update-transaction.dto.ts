@@ -21,10 +21,10 @@ export class UpdateTransactionDto {
   @IsNotEmpty()
   description?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, nullable: true })
   @IsOptional()
   @IsString()
-  notes?: string;
+  notes?: string | null;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -42,8 +42,8 @@ export class UpdateTransactionDto {
   @IsDateString()
   date?: string;
 
-  @ApiProperty({ required: false, format: 'uuid' })
+  @ApiProperty({ required: false, format: 'uuid', nullable: true })
   @IsOptional()
   @IsUUID()
-  categoryId?: string;
+  categoryId?: string | null;
 }

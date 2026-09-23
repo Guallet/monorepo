@@ -6,7 +6,7 @@ export interface ExportTransaction {
   id: string;
   accountId: string;
   description: string;
-  notes?: string;
+  notes?: string | null;
   amount: number | string;
   currency: string;
   date: Date;

@@ -47,7 +47,7 @@ export default function TabLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={28} name="house.fill" color={String(color)} />
           ),
         }}
       />
@@ -65,7 +65,7 @@ export default function TabLayout() {
         options={{
           title: 'Transactions',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="list.bullet" color={color} />
+            <IconSymbol size={28} name="list.bullet" color={String(color)} />
           ),
         }}
       />
@@ -74,7 +74,7 @@ export default function TabLayout() {
         options={{
           title: 'Budgets',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="chart.pie.fill" color={color} />
+            <IconSymbol size={28} name="chart.pie.fill" color={String(color)} />
           ),
         }}
       />
@@ -83,7 +83,7 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="gearshape.fill" color={color} />
+            <IconSymbol size={28} name="gearshape.fill" color={String(color)} />
           ),
         }}
       />
