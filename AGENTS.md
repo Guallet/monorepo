@@ -1,7 +1,7 @@
 # Guallet Monorepo – Agent Reference
 
-> Companion to `CLAUDE.md`. This file is the quick-orientation layer for coding agents.
-> Full code templates live in the skills listed below.
+Use this file as the canonical repository guidance for all coding agents. Skill
+files under `.agents/skills/` contain detailed, task-specific workflows.
 
 ## Repo at a Glance
 
@@ -20,17 +20,73 @@
 
 ## Common Commands
 
+Run commands from the monorepo root unless a command specifies a package.
+
 ```bash
 pnpm dev                          # start all apps
 pnpm build                        # build everything
 pnpm lint                         # lint all packages
 pnpm check-types                  # TypeScript check all packages
+pnpm format                       # format supported files with Oxfmt
+pnpm docker:compose:up            # start PostgreSQL, Redis, and pgAdmin
+pnpm docker:compose:down          # stop development services
+pnpm docker:compose:reset         # stop services and remove volumes
 pnpm --filter api dev             # API watch mode
-pnpm --filter webapp dev          # Vite dev server (also regenerates TanStack Router routeTree)
-pnpm --filter mobile start        # Expo dev server
+pnpm --filter api build           # compile API
+pnpm --filter api lint            # type-aware Oxlint
 pnpm --filter api test            # API Vitest tests
-pnpm --filter @guallet/money test # money package tests (80 % threshold enforced)
+pnpm --filter api test:watch      # API Vitest watch mode
+pnpm --filter api test:cov        # API coverage
+pnpm --filter api db:init         # initialize Better Auth schema
+pnpm --filter api db:generate     # generate Better Auth schema
+pnpm --filter api db:migrate      # run Better Auth migrations
+pnpm --filter webapp dev          # Vite dev server; regenerates the route tree
+pnpm --filter webapp build        # i18n extraction, TypeScript, and Vite build
+pnpm --filter webapp lint         # Oxlint
+pnpm --filter webapp i18n:extract # extract translation keys
+pnpm --filter mobile start        # Expo dev server
+pnpm --filter mobile ios          # run on the iOS simulator
+pnpm --filter mobile android      # run on the Android emulator
+pnpm --filter @guallet/money test # money package tests (80% coverage enforced)
+pnpm --filter @guallet/money test:cov # money package coverage
 ```
+
+## Architecture
+
+### API
+
+API features live under `apps/api/src/features/`. Current feature areas include
+accounts, AI, budgets, categories, transactions, institutions, reports, rules,
+saving goals, subscriptions, regular payments, data import/export, open banking,
+webhooks, notifications, email, and users. Authentication uses Better Auth;
+database configuration is in `apps/api/src/database/`, and background jobs use
+BullMQ with Redis.
+
+The AI feature manages user-owned connections for OpenAI, OpenRouter, and Vercel
+AI Gateway. Provider credentials are encrypted at rest with
+`DATABASE_CREDENTIALS_ENCRYPTION_KEY`; API responses expose only a token hint.
+The AI assistant chat streams through the Vercel AI SDK. It receives an
+aggregate summary of the user's finances, not raw transactions, and no tools.
+Chat sessions are user-scoped and purged after 30 days. AI endpoints use
+controller-level rate limiting where configured; there is no global throttle
+guard.
+
+### Webapp
+
+The webapp uses TanStack Router for file-based routes, TanStack Query for server
+state, and Zustand for client state. Generic components live in
+`apps/webapp/src/components/`; feature-specific screens and components live in
+`apps/webapp/src/features/`. Its AI chat uses a raw streaming `fetch` hook for
+streamed messages and TanStack Query for session and message CRUD.
+
+See [apps/webapp/AGENTS.md](apps/webapp/AGENTS.md) for web-specific routing,
+Mantine, forms, localization, and component conventions.
+
+### Internal packages
+
+Workspace packages use the `workspace:*` protocol. API types flow from
+`guallet-api-client` to `guallet-api-react` hooks and then to the web or mobile
+app. Update API client types before consuming a changed API contract.
 
 ## Data-Flow Contract
 
@@ -72,17 +128,43 @@ async myHandler(@RequestUser() user: UserPrincipal) {
 - Do not use Swagger mapped types such as `PartialType` or `OmitType`; define
   update DTO fields explicitly so validation and OpenAPI contracts stay visible.
 
+## Environment Setup
+
+Copy the sample files before starting:
+
+```bash
+cp database.env.sample .env
+cp api.env.sample apps/api/.env
+cp webapp.env.sample apps/webapp/.env
+```
+
+Local development uses PostgreSQL 18 and Redis 8 via Docker. Optional
+integrations such as open banking, email, Sentry, and NestJS Observe can remain
+unconfigured.
+The API requires `DATABASE_CREDENTIALS_ENCRYPTION_KEY`; generate a 32-byte
+base64 key with `openssl rand -base64 32`.
+
+## Testing
+
+- API unit tests use Vitest with SWC; end-to-end tests use a separate Vitest
+  configuration.
+- `guallet-money` enforces 80% coverage for branches, functions, lines, and
+  statements.
+- The mobile app does not currently have a configured test suite.
+
 ## Available Skills
 
-Load these on-demand with `/skill-name` when implementing the corresponding task:
+Load the matching skill from `.agents/skills/` when implementing its task. Other
+task-specific guidance is available there for authentication, Mantine, planning,
+architecture, and skill authoring:
 
-| Skill                   | When to use                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------- |
-| `create-api-feature`    | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
-| `add-api-client-domain` | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
-| `create-webapp-feature` | Add a new page/section to the web frontend (route + screen + components)        |
-| `add-mobile-screen`     | Add a new screen to the Expo mobile app                                         |
-| `create-react-native-component` | Add or adapt a component in the Luna React Native package              |
+| Skill                            | When to use                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------- |
+| `create-api-feature`             | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
+| `add-api-client-domain`          | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
+| `create-webapp-feature`          | Add a new page/section to the web frontend (route + screen + components)        |
+| `add-mobile-screen`              | Add a new screen to the Expo mobile app                                         |
+| `create-react-native-component`  | Add or adapt a component in the Luna React Native package                      |
 
 ## Quick Pattern Index
 
@@ -162,5 +244,13 @@ Expo Router requires `export default function` (not named exports) for all route
 
 - TypeScript strict mode everywhere; no `any` unless unavoidable
 - Oxfmt: single quotes, trailing commas, and an 80-character print width
-- Run `pnpm lint` before committing; warnings fail the lint command
+- Oxlint uses the shared root config; warnings fail CI. Run `pnpm lint` before
+  committing.
 - Workspace dependencies: `"@guallet/api-client": "workspace:*"` protocol
+
+## UI & Design System
+
+Consult [DESIGN.MD](DESIGN.MD) before UI changes. Use the platform's theme hook
+for design tokens: `@guallet/ui-react` on web and the Luna mobile theme on
+React Native. Keep money colors semantically consistent (positive is green,
+negative is red) and use tabular numerals for amounts.
