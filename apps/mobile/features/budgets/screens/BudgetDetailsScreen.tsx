@@ -195,40 +195,11 @@ export default function BudgetDetailsScreen() {
       headerTitle={budget.name}
       headerOptions={{
         headerRight: () => (
-          <View style={styles.headerActions}>
-            <Pressable
-              accessibilityLabel="Edit budget"
-              accessibilityRole="button"
-              disabled={deleteBudgetMutation.isPending}
-              onPress={() => router.push(`/budgets/${id}/edit`)}
-              style={styles.headerButton}
-            >
-              <Text
-                style={{
-                  color: colors.accent.primary,
-                  fontSize: typography.sizes.sm,
-                }}
-              >
-                Edit
-              </Text>
-            </Pressable>
-            <Pressable
-              accessibilityLabel="Delete budget"
-              accessibilityRole="button"
-              disabled={deleteBudgetMutation.isPending}
-              onPress={confirmDelete}
-              style={styles.headerButton}
-            >
-              <Text
-                style={{
-                  color: colors.status.error,
-                  fontSize: typography.sizes.sm,
-                }}
-              >
-                Delete
-              </Text>
-            </Pressable>
-          </View>
+          <BudgetDetailsHeaderActions
+            disabled={deleteBudgetMutation.isPending}
+            onDelete={confirmDelete}
+            onEdit={() => router.push(`/budgets/${id}/edit`)}
+          />
         ),
       }}
     >
@@ -278,6 +249,57 @@ export default function BudgetDetailsScreen() {
         <View style={styles.bottomPad} />
       </ScrollView>
     </AppScreen>
+  );
+}
+
+interface BudgetDetailsHeaderActionsProps {
+  disabled: boolean;
+  onDelete: () => void;
+  onEdit: () => void;
+}
+
+function BudgetDetailsHeaderActions({
+  disabled,
+  onDelete,
+  onEdit,
+}: BudgetDetailsHeaderActionsProps) {
+  const { colors, typography } = useTheme();
+
+  return (
+    <View style={styles.headerActions}>
+      <Pressable
+        accessibilityLabel="Edit budget"
+        accessibilityRole="button"
+        disabled={disabled}
+        onPress={onEdit}
+        style={styles.headerButton}
+      >
+        <Text
+          style={{
+            color: colors.accent.primary,
+            fontSize: typography.sizes.sm,
+          }}
+        >
+          Edit
+        </Text>
+      </Pressable>
+      <Pressable
+        accessibilityLabel="Delete budget"
+        accessibilityRole="button"
+        disabled={disabled}
+        onPress={onDelete}
+        style={styles.headerButton}
+      >
+        <Text
+          style={{
+            color: colors.status.error,
+            fontSize: typography.sizes.sm,
+          }}
+        >
+          Delete
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 
