@@ -1,9 +1,8 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Image,
-  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -15,20 +14,8 @@ import { useAuth } from '@guallet/auth';
 import { useUser } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-
-interface SettingsSectionProps {
-  title: string;
-  children: ReactNode;
-}
-
-interface SettingsRowProps {
-  icon: ReactNode;
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  isLoading?: boolean;
-  destructive?: boolean;
-}
+import { SettingsRow } from '../components/SettingsRow';
+import { SettingsSection } from '../components/SettingsSection';
 
 function getInitials(name: string): string {
   const initials = name
@@ -41,103 +28,6 @@ function getInitials(name: string): string {
     .toUpperCase();
 
   return initials || '?';
-}
-
-function SettingsSection({ title, children }: Readonly<SettingsSectionProps>) {
-  const { borderRadius, colors, spacing, typography } = useTheme();
-
-  return (
-    <View style={styles.section}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: colors.text.secondary,
-            fontSize: typography.sizes.sm,
-            marginBottom: spacing.xs,
-          },
-        ]}
-      >
-        {title.toUpperCase()}
-      </Text>
-      <View
-        style={[
-          styles.sectionCard,
-          {
-            backgroundColor: colors.surface.background.primary,
-            borderColor: colors.surface.border.primary,
-            borderRadius: borderRadius.lg,
-          },
-        ]}
-      >
-        {children}
-      </View>
-    </View>
-  );
-}
-
-function SettingsRow({
-  icon,
-  label,
-  onPress,
-  disabled = false,
-  isLoading = false,
-  destructive = false,
-}: Readonly<SettingsRowProps>) {
-  const { borderRadius, colors, spacing, typography } = useTheme();
-  const rowColor = destructive ? colors.status.error : colors.text.primary;
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ busy: isLoading, disabled }}
-      accessibilityLabel={label}
-      disabled={disabled}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.row,
-        {
-          minHeight: 64,
-          paddingHorizontal: spacing.md,
-          paddingVertical: spacing.sm,
-        },
-        pressed &&
-          !disabled && {
-            backgroundColor: colors.surface.background.secondary,
-          },
-        disabled && styles.disabledRow,
-      ]}
-    >
-      <View
-        style={[
-          styles.rowIcon,
-          {
-            backgroundColor: destructive
-              ? colors.surface.background.error
-              : colors.button.secondary.default,
-            borderRadius: borderRadius.md,
-          },
-        ]}
-      >
-        {icon}
-      </View>
-      <Text
-        style={[
-          styles.rowLabel,
-          {
-            color: rowColor,
-            fontSize: typography.sizes.md,
-            marginLeft: spacing.md,
-          },
-        ]}
-      >
-        {label}
-      </Text>
-      <View style={styles.rowAccessory}>
-        {isLoading && <ActivityIndicator color={colors.status.error} />}
-      </View>
-    </Pressable>
-  );
 }
 
 export default function SettingsScreen() {
@@ -181,6 +71,9 @@ export default function SettingsScreen() {
   const profileName = user?.name?.trim() || 'Your profile';
   const profileEmail = user?.email?.trim() || 'Profile details unavailable';
   const profileImage = user?.profile_src?.trim();
+  const showLoading = isLoading && !user;
+  const showError = !showLoading && isError && !user;
+  const showProfile = !showLoading && !showError;
 
   return (
     <SafeAreaView
@@ -223,7 +116,7 @@ export default function SettingsScreen() {
           </Text>
         </View>
 
-        {isLoading && !user ? (
+        {showLoading && (
           <View
             style={[
               styles.profileStatusCard,
@@ -250,7 +143,8 @@ export default function SettingsScreen() {
               Loading your profile…
             </Text>
           </View>
-        ) : isError && !user ? (
+        )}
+        {showError && (
           <View
             style={[
               styles.profileStatusCard,
@@ -291,7 +185,8 @@ export default function SettingsScreen() {
               Try again
             </Button>
           </View>
-        ) : (
+        )}
+        {showProfile && (
           <View
             style={[
               styles.profileCard,
@@ -312,7 +207,7 @@ export default function SettingsScreen() {
                 },
               ]}
             >
-              {profileImage ? (
+              {profileImage && (
                 <Image
                   accessibilityLabel={`${profileName} profile picture`}
                   source={{ uri: profileImage }}
@@ -321,7 +216,8 @@ export default function SettingsScreen() {
                     { borderRadius: borderRadius.xl },
                   ]}
                 />
-              ) : (
+              )}
+              {!profileImage && (
                 <Text
                   style={[
                     styles.avatarInitials,
@@ -445,35 +341,5 @@ const styles = StyleSheet.create({
   },
   profileErrorBody: {
     lineHeight: 20,
-  },
-  section: {
-    width: '100%',
-  },
-  sectionTitle: {
-    fontWeight: '600',
-    letterSpacing: 0.5,
-  },
-  sectionCard: {
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  rowIcon: {
-    alignItems: 'center',
-    height: 36,
-    justifyContent: 'center',
-    width: 36,
-  },
-  rowLabel: {
-    fontWeight: '600',
-  },
-  rowAccessory: {
-    marginLeft: 'auto',
-  },
-  disabledRow: {
-    opacity: 0.7,
   },
 });
