@@ -8,7 +8,6 @@ describe('UserInitializationService', () => {
   const mockCategoriesService = {
     createDefaultCategoriesForUser: vi.fn(),
   };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [

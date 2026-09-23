@@ -15,6 +15,15 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 - Route file name becomes the URL segment: `budgets.tsx` → `/budgets`.
 - `[id].tsx` creates a dynamic segment: `/budgets/abc123`.
 
+## Images
+
+- Use `Image` from `expo-image` for every image rendered in the mobile app; do
+  not import `Image` from `react-native`.
+- Remote images must handle `onError` and provide a visible fallback, such as
+  initials or a placeholder, so an unreachable URL never leaves a blank state.
+- Track the failed image URL when the fallback depends on the current source;
+  this allows a changed URL to be tried independently.
+
 ---
 
 ## Routing Decision Table
@@ -265,3 +274,4 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 - [ ] Navigation uses `useRouter()` from `expo-router`, not `react-navigation` directly
 - [ ] Params read with `useLocalSearchParams()` for `[id]` route files
 - [ ] No auth logic in the screen — layout handles it
+- [ ] Images use `expo-image` and remote image failures have a visible fallback

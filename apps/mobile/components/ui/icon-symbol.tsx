@@ -19,6 +19,7 @@ const MAPPING = {
   'chart.pie.fill': 'pie-chart',
   'wallet.pass.fill': 'account-balance-wallet',
   'gearshape.fill': 'settings',
+  'rectangle.portrait.and.arrow.right': 'logout',
 } satisfies Record<string, ComponentProps<typeof MaterialIcons>['name']>;
 
 type IconSymbolName = keyof typeof MAPPING;
