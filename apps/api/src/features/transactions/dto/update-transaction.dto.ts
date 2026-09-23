@@ -24,7 +24,7 @@ export class UpdateTransactionDto {
   @ApiProperty({ required: false, nullable: true })
   @IsOptional()
   @IsString()
-  notes: string | null;
+  notes?: string | null;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -45,5 +45,5 @@ export class UpdateTransactionDto {
   @ApiProperty({ required: false, format: 'uuid', nullable: true })
   @IsOptional()
   @IsUUID()
-  categoryId: string | null;
+  categoryId?: string | null;
 }
