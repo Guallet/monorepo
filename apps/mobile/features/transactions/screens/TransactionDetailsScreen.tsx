@@ -17,7 +17,7 @@ import {
   useTheme,
 } from '@guallet/luna-mobile';
 import { useRouter } from 'expo-router';
-import { useNavigation, usePreventRemove } from '@react-navigation/native';
+import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
