@@ -148,6 +148,15 @@ apps/mobile/app/{name}/[id].tsx      – detail screen with param
 
 Expo Router requires `export default function` (not named exports) for all route files.
 
+### Mobile bottom sheets
+
+- Use `BottomSheet` from `apps/mobile/components/ui/BottomSheet.tsx` for every
+  mobile bottom sheet.
+- Do not import `BottomSheet` directly from `@expo/ui` or use another bottom
+  sheet implementation in the mobile app.
+- `apps/mobile/components/ui/BottomSheet.tsx` is the only file allowed to use
+  Expo's `BottomSheet`; it owns the Expo UI integration and theme mapping.
+
 ## Code Style Reminders
 
 - TypeScript strict mode everywhere; no `any` unless unavoidable

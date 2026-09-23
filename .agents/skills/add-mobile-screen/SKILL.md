@@ -14,6 +14,18 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 - **Route files MUST use `export default function`** — named exports are silently ignored by Expo Router.
 - Route file name becomes the URL segment: `budgets.tsx` → `/budgets`.
 - `[id].tsx` creates a dynamic segment: `/budgets/abc123`.
+- Do not use ternary expressions in screen components. Use early returns for
+  distinct screen states, `&&` for optional elements, and named variables or
+  helper functions with `if` statements for derived values.
+
+## Images
+
+- Use `Image` from `expo-image` for every image rendered in the mobile app; do
+  not import `Image` from `react-native`.
+- Remote images must handle `onError` and provide a visible fallback, such as
+  initials or a placeholder, so an unreachable URL never leaves a blank state.
+- Track the failed image URL when the fallback depends on the current source;
+  this allows a changed URL to be tried independently.
 
 ---
 
@@ -145,7 +157,15 @@ export default function {Name}DetailScreen() {
   const router = useRouter();
   const { {domain}, isLoading } = use{Name}(id);
 
-  if (!isLoading && !{domain}) {
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Label>Loading...</Label>
+      </View>
+    );
+  }
+
+  if (!{domain}) {
     return (
       <View style={styles.container}>
         <Label>Not found.</Label>
@@ -156,15 +176,11 @@ export default function {Name}DetailScreen() {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <Label>Loading...</Label>
-      ) : (
-        <Stack>
-          <Title>{domain}?.name}</Title>
-          {/* Add detail fields here */}
-          <Button onClick={() => router.back()}>Back</Button>
-        </Stack>
-      )}
+      <Stack>
+        <Title>{domain}?.name</Title>
+        {/* Add detail fields here */}
+        <Button onClick={() => router.back()}>Back</Button>
+      </Stack>
     </View>
   );
 }
@@ -265,3 +281,6 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 - [ ] Navigation uses `useRouter()` from `expo-router`, not `react-navigation` directly
 - [ ] Params read with `useLocalSearchParams()` for `[id]` route files
 - [ ] No auth logic in the screen — layout handles it
+- [ ] No ternary expressions in screens; use early returns, `&&`, or named
+      conditional values instead
+- [ ] Images use `expo-image` and remote image failures have a visible fallback

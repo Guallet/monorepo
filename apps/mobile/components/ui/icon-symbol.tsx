@@ -17,7 +17,11 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'list.bullet': 'list',
   'chart.pie.fill': 'pie-chart',
+  'wallet.pass.fill': 'account-balance-wallet',
   'gearshape.fill': 'settings',
+  'rectangle.portrait.and.arrow.right': 'logout',
+  magnifyingglass: 'search',
+  xmark: 'close',
 } satisfies Record<string, ComponentProps<typeof MaterialIcons>['name']>;
 
 type IconSymbolName = keyof typeof MAPPING;

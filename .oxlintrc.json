@@ -78,7 +78,25 @@
         "node": true
       },
       "rules": {
-        "react/set-state-in-effect": "off"
+        "react/set-state-in-effect": "off",
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@expo/ui",
+                "importNames": ["BottomSheet"],
+                "message": "Use BottomSheet from components/ui/BottomSheet instead."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["apps/mobile/components/ui/BottomSheet.tsx"],
+      "rules": {
+        "eslint/no-restricted-imports": "off"
       }
     },
     {
