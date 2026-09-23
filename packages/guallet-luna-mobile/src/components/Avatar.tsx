@@ -319,7 +319,6 @@ function AvatarComponent({
         imageDisplayed={imageDisplayed}
         onImageDisplay={() => setDisplayedSourceKey(sourceKey)}
         onImageError={() => setFailedSourceKey(sourceKey)}
-        children={children}
         initials={initials}
         dimension={dimension}
         cornerRadius={cornerRadius}
@@ -328,7 +327,9 @@ function AvatarComponent({
         textStyle={textStyle}
         placeholderColor={avatarColors.placeholder}
         initialsColor={avatarColors.initials}
-      />
+      >
+        {children}
+      </AvatarContent>
     </View>
   );
 }
