@@ -9,6 +9,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "oxlint .",
     "format": "oxfmt \"**/*.{ts,tsx,md}\"",
@@ -77,7 +78,8 @@
   "devDependencies": {
     "@types/aes-js": "3.1.4",
     "@types/react": "19.2.18",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "vitest": "workspace:*"
   },
   "private": true
 }

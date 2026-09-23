@@ -11,7 +11,6 @@ import {
 import { UpdateTransactionRequest } from '@guallet/api-client';
 import {
   Button,
-  CategoryPicker,
   Label,
   Stack,
   TextInput,
@@ -32,6 +31,7 @@ import {
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
+import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { SelectionSheet } from '../components/SelectionSheet';
 import { formatTransactionDate } from '../utils';

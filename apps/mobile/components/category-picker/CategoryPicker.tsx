@@ -16,8 +16,8 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { CategoryIcon } from '../../icons/CategoryIcon';
-import { useTheme } from '../../theme';
+import { CategoryIcon } from '@guallet/luna-mobile/icons';
+import { useTheme } from '@guallet/luna-mobile';
 import {
   buildCategoryPickerTree,
   toggleCategorySelection,
