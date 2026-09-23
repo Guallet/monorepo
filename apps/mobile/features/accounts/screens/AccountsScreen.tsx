@@ -278,7 +278,7 @@ function AccountGroup({
   for (const account of group.accounts) {
     totals.set(
       account.currency,
-      (totals.get(account.currency) ?? 0) + account.balance.amount,
+      (totals.get(account.currency) ?? 0) + Number(account.balance.amount),
     );
   }
 

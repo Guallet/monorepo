@@ -157,7 +157,9 @@ export function AccountForm({
             value={currency}
           />
           <TextInput
-            keyboardType="decimal-pad"
+            keyboardType={
+              Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'decimal-pad'
+            }
             label="Current balance"
             onChangeText={setBalance}
             placeholder="0.00"

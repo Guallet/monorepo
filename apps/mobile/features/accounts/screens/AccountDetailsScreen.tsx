@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { AccountTypeDto } from '@guallet/api-client';
+import { ApiError } from '@guallet/api-client';
 import {
   useAccount,
   useAccountCharts,
@@ -30,7 +30,7 @@ export default function AccountDetailsScreen() {
   const id = getId(rawId);
   const router = useRouter();
   const { colors, borderRadius, spacing, typography } = useTheme();
-  const { account, isLoading } = useAccount(id);
+  const { account, error, isError, isLoading, refetch } = useAccount(id);
   const { data: chartData, isLoading: isChartLoading } = useAccountCharts(id);
   const { transactions } = useAccountTransactions(id);
   const { deleteAccountMutation } = useAccountMutations();
@@ -68,6 +68,38 @@ export default function AccountDetailsScreen() {
           },
         },
       ],
+    );
+  }
+
+  if (
+    !isLoading &&
+    isError &&
+    !(error instanceof ApiError && error.status === 404)
+  ) {
+    return (
+      <AppScreen headerTitle="Account">
+        <View style={styles.notFound}>
+          <Text
+            style={[
+              styles.notFoundTitle,
+              { color: colors.text.primary, fontSize: typography.sizes.lg },
+            ]}
+          >
+            Couldn’t load account
+          </Text>
+          <Text
+            style={[
+              styles.notFoundBody,
+              { color: colors.text.secondary, fontSize: typography.sizes.sm },
+            ]}
+          >
+            Check your connection and try again.
+          </Text>
+          <Button onClick={() => void refetch()} variant="outline">
+            Try again
+          </Button>
+        </View>
+      </AppScreen>
     );
   }
 
@@ -243,7 +275,7 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                Last 6 months
+                Current month
               </Text>
             </View>
             {isChartLoading ? (
@@ -299,9 +331,13 @@ export default function AccountDetailsScreen() {
                         },
                       ]}
                     >
-                      {new Date(point.date).toLocaleDateString('en-GB', {
-                        month: 'short',
-                      })}
+                      {new Date(`${point.date}T12:00:00`).toLocaleDateString(
+                        'en-GB',
+                        {
+                          day: 'numeric',
+                          month: 'short',
+                        },
+                      )}
                     </Text>
                   </View>
                 ))}
@@ -327,7 +363,7 @@ export default function AccountDetailsScreen() {
                   { color: colors.text.primary, fontSize: typography.sizes.lg },
                 ]}
               >
-                Recent transactions
+                Transactions this month
               </Text>
               <Text
                 style={[
@@ -351,7 +387,7 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                No transactions for this account yet.
+                No transactions this month.
               </Text>
             ) : (
               recentTransactions.map((transaction) => {

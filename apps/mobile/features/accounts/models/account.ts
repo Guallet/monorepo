@@ -1,4 +1,5 @@
 import { AccountTypeDto } from '@guallet/api-client';
+import { Money, type MoneyFormatOptions } from '@guallet/money';
 
 export const ACCOUNT_TYPE_OPTIONS: Array<{
   type: AccountTypeDto;
@@ -35,16 +36,13 @@ export function getAccountTypeLabel(type: AccountTypeDto): string {
 export function formatAccountCurrency(
   amount: number,
   currency: string,
-  options?: Intl.NumberFormatOptions,
+  options?: MoneyFormatOptions,
 ): string {
   try {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+    return Money.fromCurrencyCode({ amount, currencyCode: currency }).format({
+      locale: 'en-GB',
       ...options,
-    }).format(amount);
+    });
   } catch {
     return `${currency} ${amount.toFixed(2)}`;
   }
