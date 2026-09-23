@@ -403,6 +403,9 @@ importers:
       '@guallet/luna-mobile':
         specifier: workspace:*
         version: link:../../packages/guallet-luna-mobile
+      '@guallet/money':
+        specifier: workspace:*
+        version: link:../../packages/guallet-money
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))

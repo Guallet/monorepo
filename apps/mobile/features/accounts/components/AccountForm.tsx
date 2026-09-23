@@ -12,6 +12,7 @@ import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountTypeIcon } from './AccountTypeIcon';
+import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
 
 interface AccountFormProps {
@@ -148,13 +149,11 @@ export function AccountForm({
             placeholder="e.g. Everyday current account"
             value={name}
           />
-          <TextInput
-            autoCapitalize="characters"
-            autoCorrect={false}
-            label="Currency"
-            maxLength={3}
-            onChangeText={setCurrency}
-            placeholder="GBP"
+          <CurrencyInput
+            onValueChanged={(selectedCurrency) =>
+              setCurrency(selectedCurrency ?? '')
+            }
+            placeholder="Select a currency"
             value={currency}
           />
           <TextInput
