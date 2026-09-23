@@ -66,7 +66,7 @@ function getInitials(name: string): string {
     return Array.from(words[0]).slice(0, 2).join('').toUpperCase();
   }
   const firstInitial = Array.from(words[0])[0];
-  const lastInitial = Array.from(words[words.length - 1])[0];
+  const lastInitial = Array.from(words.at(-1) ?? '')[0];
   return `${firstInitial}${lastInitial}`.toUpperCase();
 }
 
@@ -78,13 +78,77 @@ function hashName(name: string): number {
   return Math.abs(hash);
 }
 
-function DefaultPlaceholder({
-  size,
-  color,
-}: {
+type AvatarColors = ReturnType<typeof useTheme>['colors'];
+type AvatarBorderRadius = ReturnType<typeof useTheme>['borderRadius'];
+
+function getCornerRadius(
+  radius: AvatarRadius | number,
+  dimension: number,
+  borderRadius: AvatarBorderRadius,
+): number {
+  if (typeof radius === 'number') return radius;
+  if (radius === 'full') return dimension / 2;
+  return borderRadius[radius];
+}
+
+function getInitialsColor(name: string | undefined, colors: AvatarColors) {
+  if (!name) return colors.accent.primary;
+  const palette = [
+    colors.accent.primary,
+    colors.accent.dark,
+    colors.accent.secondary,
+    colors.support.primary,
+    colors.support.dark,
+  ];
+  return palette[hashName(name) % palette.length];
+}
+
+function getAvatarColors(
+  variant: AvatarVariant,
+  resolvedColor: ColorValue | undefined,
+  colors: AvatarColors,
+) {
+  const foreground = resolvedColor
+    ? colors.text.inverse
+    : colors.text.secondary;
+  let background: ColorValue | 'transparent';
+  let border: ColorValue | 'transparent' = 'transparent';
+  let placeholder = resolvedColor ?? foreground;
+
+  switch (variant) {
+    case 'filled':
+      background = resolvedColor ?? colors.surface.background.secondary;
+      placeholder = foreground;
+      break;
+    case 'light':
+      background = colors.surface.background.secondary;
+      break;
+    case 'outline':
+      background = 'transparent';
+      border = resolvedColor ?? colors.surface.border.primary;
+      break;
+    case 'transparent':
+      background = 'transparent';
+      break;
+  }
+
+  return {
+    background,
+    border,
+    borderWidth: variant === 'outline' ? StyleSheet.hairlineWidth : 0,
+    foreground,
+    placeholder,
+    initials:
+      variant === 'light'
+        ? (resolvedColor ?? colors.text.primary)
+        : foreground,
+  };
+}
+
+function DefaultPlaceholder({ size, color }: Readonly<{
   size: number;
   color: ColorValue;
-}) {
+}>) {
   return (
     <View
       style={[styles.placeholder, { width: size * 0.52, height: size * 0.62 }]}
@@ -117,6 +181,83 @@ function DefaultPlaceholder({
   );
 }
 
+interface AvatarContentProps {
+  source: ImageSourcePropType | null;
+  imageDisplayed: boolean;
+  onImageDisplay: () => void;
+  onImageError: () => void;
+  children?: React.ReactNode;
+  initials: string;
+  dimension: number;
+  cornerRadius: number;
+  colors: AvatarColors;
+  imageStyle?: StyleProp<ImageStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  placeholderColor: ColorValue;
+  initialsColor: ColorValue;
+}
+
+function AvatarContent({
+  source,
+  imageDisplayed,
+  onImageDisplay,
+  onImageError,
+  children,
+  initials,
+  dimension,
+  cornerRadius,
+  colors,
+  imageStyle,
+  textStyle,
+  placeholderColor,
+  initialsColor,
+}: Readonly<AvatarContentProps>) {
+  if (source) {
+    return (
+      <Image
+        source={source}
+        accessible={false}
+        contentFit="cover"
+        onDisplay={onImageDisplay}
+        onError={onImageError}
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            borderRadius: cornerRadius,
+            backgroundColor: imageDisplayed
+              ? 'transparent'
+              : colors.accent.primary,
+          },
+          imageStyle,
+        ]}
+      />
+    );
+  }
+
+  if (children != null) return <>{children}</>;
+
+  if (initials.length > 0) {
+    return (
+      <Text
+        numberOfLines={1}
+        style={[
+          styles.initials,
+          {
+            color: initialsColor,
+            fontSize: Math.max(10, dimension * 0.38),
+            lineHeight: dimension * 0.48,
+          },
+          textStyle,
+        ]}
+      >
+        {initials}
+      </Text>
+    );
+  }
+
+  return <DefaultPlaceholder size={dimension} color={placeholderColor} />;
+}
+
 function AvatarComponent({
   src,
   alt,
@@ -142,45 +283,10 @@ function AvatarComponent({
   >(null);
 
   const dimension = typeof size === 'number' ? size : sizeValues[size];
-  const configuredRadius =
-    typeof radius === 'number'
-      ? radius
-      : radius === 'full'
-        ? 'full'
-        : borderRadius[radius];
-  const cornerRadius =
-    configuredRadius === 'full'
-      ? dimension / 2
-      : (configuredRadius ?? borderRadius.md);
-
-  const initialsColors = [
-    colors.accent.primary,
-    colors.accent.dark,
-    colors.accent.secondary,
-    colors.support.primary,
-    colors.support.dark,
-  ];
-  const initialsColor = name
-    ? initialsColors[hashName(name) % initialsColors.length]
-    : colors.accent.primary;
+  const cornerRadius = getCornerRadius(radius, dimension, borderRadius);
+  const initialsColor = getInitialsColor(name, colors);
   const resolvedColor = color === 'initials' ? initialsColor : color;
-  const foregroundColor = resolvedColor
-    ? colors.text.inverse
-    : colors.text.secondary;
-  const filledBackground = resolvedColor ?? colors.surface.background.secondary;
-
-  const containerBackground =
-    variant === 'filled'
-      ? filledBackground
-      : variant === 'light'
-        ? colors.surface.background.secondary
-        : 'transparent';
-  const containerBorderColor =
-    variant === 'outline'
-      ? (resolvedColor ?? colors.surface.border.primary)
-      : 'transparent';
-  const placeholderColor =
-    variant === 'filled' ? foregroundColor : (resolvedColor ?? foregroundColor);
+  const avatarColors = getAvatarColors(variant, resolvedColor, colors);
   const initials = name ? getInitials(name) : '';
   const imageFailed = sourceKey !== null && failedSourceKey === sourceKey;
   const imageSource = imageFailed ? null : resolvedSource;
@@ -195,9 +301,9 @@ function AvatarComponent({
           width: dimension,
           height: dimension,
           borderRadius: cornerRadius,
-          backgroundColor: containerBackground,
-          borderColor: containerBorderColor,
-          borderWidth: variant === 'outline' ? StyleSheet.hairlineWidth : 0,
+          backgroundColor: avatarColors.background,
+          borderColor: avatarColors.border,
+          borderWidth: avatarColors.borderWidth,
         },
         style,
       ]}
@@ -208,47 +314,21 @@ function AvatarComponent({
       accessibilityLabel={viewProps.accessibilityLabel ?? alt ?? name}
       accessibilityRole={viewProps.accessibilityRole ?? 'image'}
     >
-      {imageSource ? (
-        <Image
-          source={imageSource}
-          accessible={false}
-          contentFit="cover"
-          onDisplay={() => setDisplayedSourceKey(sourceKey)}
-          onError={() => setFailedSourceKey(sourceKey)}
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              borderRadius: cornerRadius,
-              backgroundColor: imageDisplayed
-                ? 'transparent'
-                : colors.accent.primary,
-            },
-            imageStyle,
-          ]}
-        />
-      ) : children != null ? (
-        children
-      ) : initials.length > 0 ? (
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.initials,
-            {
-              color:
-                variant === 'light'
-                  ? (resolvedColor ?? colors.text.primary)
-                  : foregroundColor,
-              fontSize: Math.max(10, dimension * 0.38),
-              lineHeight: dimension * 0.48,
-            },
-            textStyle,
-          ]}
-        >
-          {initials}
-        </Text>
-      ) : (
-        <DefaultPlaceholder size={dimension} color={placeholderColor} />
-      )}
+      <AvatarContent
+        source={imageSource}
+        imageDisplayed={imageDisplayed}
+        onImageDisplay={() => setDisplayedSourceKey(sourceKey)}
+        onImageError={() => setFailedSourceKey(sourceKey)}
+        children={children}
+        initials={initials}
+        dimension={dimension}
+        cornerRadius={cornerRadius}
+        colors={colors}
+        imageStyle={imageStyle}
+        textStyle={textStyle}
+        placeholderColor={avatarColors.placeholder}
+        initialsColor={avatarColors.initials}
+      />
     </View>
   );
 }
@@ -258,6 +338,11 @@ export interface AvatarGroupProps extends Omit<ViewProps, 'style'> {
   /** Horizontal offset between avatars. Negative values create an overlap. */
   spacing?: number;
   style?: StyleProp<ViewStyle>;
+}
+
+function getAvatarGroupKey(child: React.ReactNode, index: number): React.Key {
+  if (!React.isValidElement(child)) return index;
+  return child.key ?? index;
 }
 
 export function AvatarGroup({
@@ -272,9 +357,7 @@ export function AvatarGroup({
     <View {...viewProps} style={[styles.group, style]}>
       {items.map((child, index) => (
         <View
-          key={
-            React.isValidElement(child) && child.key != null ? child.key : index
-          }
+          key={getAvatarGroupKey(child, index)}
           style={{
             ...(index === 0 ? {} : { marginLeft: spacing }),
             zIndex: items.length - index,
