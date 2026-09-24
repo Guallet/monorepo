@@ -31,6 +31,7 @@ import {
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
+import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { SelectionSheet } from '../components/SelectionSheet';
 import { formatTransactionDate } from '../utils';
@@ -65,9 +66,7 @@ export function TransactionDetailsScreen({
   const [form, setForm] = useState<FormState | null>(null);
   const [initialForm, setInitialForm] = useState<FormState | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selection, setSelection] = useState<'account' | 'category' | null>(
-    null,
-  );
+  const [selection, setSelection] = useState<'account' | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
@@ -201,9 +200,6 @@ export function TransactionDetailsScreen({
   const accountName =
     accounts.find((account) => account.id === form?.accountId)?.name ??
     'Select an account';
-  const categoryName =
-    categories.find((category) => category.id === form?.categoryId)?.name ??
-    'Uncategorised';
   let loadingMessage: string | undefined;
   if (updateTransactionMutation.isPending) loadingMessage = 'Saving…';
   let keyboardBehavior: 'padding' | undefined;
@@ -311,11 +307,36 @@ export function TransactionDetailsScreen({
                 value={formatTransactionDate(form.date)}
                 onPress={() => setShowDatePicker(true)}
               />
-              <FieldButton
-                label="Category"
-                value={categoryName}
-                onPress={() => setSelection('category')}
-              />
+              <View>
+                <Text
+                  style={{
+                    color: colors.text.primary,
+                    fontSize: typography.sizes.md,
+                    fontWeight: '500',
+                    marginBottom: spacing.xs,
+                  }}
+                >
+                  Category
+                </Text>
+                <CategoryPicker
+                  allowClear
+                  categories={categories}
+                  clearLabel="Uncategorised"
+                  onChange={(categoryId) => updateForm({ categoryId })}
+                  placeholder="Uncategorised"
+                  selectionMode="single"
+                  style={[
+                    styles.field,
+                    {
+                      backgroundColor: colors.surface.background.input,
+                      borderColor: colors.surface.border.input,
+                      borderRadius: borderRadius.lg,
+                      paddingHorizontal: spacing.md,
+                    },
+                  ]}
+                  value={form.categoryId}
+                />
+              </View>
               <TextInput
                 label="Notes"
                 value={form.notes}
@@ -364,19 +385,6 @@ export function TransactionDetailsScreen({
         onSelect={(accountId) => {
           if (accountId) updateForm({ accountId });
         }}
-      />
-      <SelectionSheet
-        visible={selection === 'category'}
-        title="Select category"
-        options={categories.map((category) => ({
-          id: category.id,
-          label: category.name,
-        }))}
-        selectedId={form?.categoryId ?? null}
-        allowNone
-        noneLabel="Uncategorised"
-        onClose={() => setSelection(null)}
-        onSelect={(categoryId) => updateForm({ categoryId })}
       />
       <BottomSheet
         contentPadding={0}
