@@ -40,6 +40,7 @@ webapp.env
 # vercel
 .vercel
 apps/api/database/seed.js
+scripts/nordigen-importer/output/
 
 # package manager lock files
 package-lock.json
