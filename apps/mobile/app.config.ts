@@ -1,6 +1,7 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
 const IS_DEV = process.env.APP_VARIANT === 'development';
+const GOOGLE_SERVICES_FILE = process.env.GOOGLE_SERVICES_JSON;
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -29,6 +30,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // },
     predictiveBackGestureEnabled: false,
     package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
+    ...(GOOGLE_SERVICES_FILE
+      ? { googleServicesFile: GOOGLE_SERVICES_FILE }
+      : {}),
   },
   web: {
     output: 'static',
