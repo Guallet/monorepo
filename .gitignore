@@ -36,6 +36,7 @@ webapp.env
 
 # turbo
 .turbo
+dist/
 
 # vercel
 .vercel
