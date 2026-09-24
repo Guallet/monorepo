@@ -11,6 +11,7 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "oxlint .",
+    "test": "vitest run",
     "format": "oxfmt \"**/*.{ts,tsx,md}\"",
     "format:check": "oxfmt --check \"**/*.{ts,tsx,md}\"",
     "credentials": "eas credentials",
@@ -77,7 +78,8 @@
   "devDependencies": {
     "@types/aes-js": "3.1.4",
     "@types/react": "19.2.18",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "vitest": "5.0.1"
   },
   "private": true
 }
