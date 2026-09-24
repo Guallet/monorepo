@@ -3,6 +3,7 @@ import { CategoryIcon } from '@guallet/luna-mobile/icons';
 import { useTheme } from '@guallet/luna-mobile';
 import { StyleSheet, Text, View } from 'react-native';
 import { formatBudgetCurrency, formatTransactionDate } from '../models';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 interface BudgetTransactionRowProps {
   categoryName?: string;
@@ -14,6 +15,7 @@ export function BudgetTransactionRow({
   transaction,
 }: Readonly<BudgetTransactionRowProps>) {
   const { colors, spacing, typography } = useTheme();
+  const { dateFormat } = useMobileUserPreferences();
   const amount = Number(transaction.amount);
   const isIncome = amount >= 0;
   let amountColor = colors.status.error;
@@ -64,7 +66,7 @@ export function BudgetTransactionRow({
         >
           {[
             categoryName ?? 'Uncategorised',
-            formatTransactionDate(transaction.date),
+            formatTransactionDate(transaction.date, dateFormat),
           ]
             .filter(Boolean)
             .join(' · ')}

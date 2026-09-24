@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -18,10 +19,12 @@ interface CashflowSummaryRowProps {
 }
 
 export function CashflowSummaryRow({
-  currency = 'GBP',
+  currency: currencyOverride,
   onMonthDeltaChange,
 }: CashflowSummaryRowProps) {
   const { colors, borderRadius, spacing, typography } = useTheme();
+  const { defaultCurrency } = useMobileUserPreferences();
+  const currency = currencyOverride ?? defaultCurrency;
 
   const { startDate, endDate } = useDashboardDateRange({ daysAgo: 30 });
 

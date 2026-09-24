@@ -1,4 +1,3 @@
-import { useUserSettings } from '@guallet/api-react';
 import { Currency, ISO4217Currencies } from '@guallet/money';
 import { useTheme } from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 const availableCurrencies = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -35,7 +35,7 @@ export function CurrencyInput({
   disabled = false,
 }: Readonly<CurrencyInputProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
-  const { settings } = useUserSettings();
+  const { defaultCurrency, preferredCurrencies } = useMobileUserPreferences();
   const [isPresented, setIsPresented] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -58,10 +58,7 @@ export function CurrencyInput({
           ),
         )
       : availableCurrencies;
-    const prioritizedCodes = [
-      settings?.currencies.default_currency,
-      ...(settings?.currencies.preferred_currencies ?? []),
-    ]
+    const prioritizedCodes = [defaultCurrency, ...preferredCurrencies]
       .filter((code): code is string => Boolean(code))
       .map((code) => code.toUpperCase())
       .filter((code, index, codes) => codes.indexOf(code) === index);
@@ -78,11 +75,7 @@ export function CurrencyInput({
         (currency) => !prioritizedCodeSet.has(currency.code),
       ),
     };
-  }, [
-    query,
-    settings?.currencies.default_currency,
-    settings?.currencies.preferred_currencies,
-  ]);
+  }, [query, defaultCurrency, preferredCurrencies]);
 
   const openPicker = () => {
     if (disabled) return;

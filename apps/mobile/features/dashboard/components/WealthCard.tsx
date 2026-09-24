@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useAccounts, useAccountCharts } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -18,6 +19,7 @@ interface WealthCardProps {
 
 export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
+  const { defaultCurrency } = useMobileUserPreferences();
   const { accounts, isLoading } = useAccounts();
 
   const firstAccountId = accounts[0]?.id ?? '';
@@ -35,7 +37,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
     [accounts],
   );
 
-  const displayCurrency = accounts[0]?.currency ?? 'GBP';
+  const displayCurrency = defaultCurrency;
 
   const sparklineBars = useMemo(() => {
     const raw = chartData?.chart ?? [];

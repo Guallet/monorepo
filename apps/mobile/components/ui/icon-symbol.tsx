@@ -20,6 +20,9 @@ const MAPPING = {
   'wallet.pass.fill': 'account-balance-wallet',
   'gearshape.fill': 'settings',
   'rectangle.portrait.and.arrow.right': 'logout',
+  'dollarsign.circle.fill': 'attach-money',
+  'banknote.fill': 'currency-exchange',
+  calendar: 'calendar-today',
   magnifyingglass: 'search',
   xmark: 'close',
 } satisfies Record<string, ComponentProps<typeof MaterialIcons>['name']>;
