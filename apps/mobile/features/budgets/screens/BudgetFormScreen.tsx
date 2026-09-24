@@ -11,16 +11,13 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import type { BudgetDto } from '@guallet/api-client';
-import {
-  useBudgetMutations,
-  useCategories,
-  useUserSettings,
-} from '@guallet/api-react';
+import { useBudgetMutations, useCategories } from '@guallet/api-react';
 import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
 import { IconSelectionSheet } from '../components/IconSelectionSheet';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 const COLOR_SWATCHES = [
   '#4c6ef5',
@@ -53,11 +50,11 @@ export default function BudgetFormScreen({
   const { borderRadius, colors, spacing, typography } = useTheme();
   const router = useRouter();
   const { categories } = useCategories();
-  const { settings } = useUserSettings();
+  const { defaultCurrency } = useMobileUserPreferences();
   const { createBudgetMutation, updateBudgetMutation } = useBudgetMutations();
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('GBP');
+  const [currency, setCurrency] = useState(defaultCurrency);
   const hasSelectedCurrency = useRef(false);
   const [colour, setColour] = useState(COLOR_SWATCHES[0]);
   const [icon, setIcon] = useState('');
@@ -78,11 +75,10 @@ export default function BudgetFormScreen({
   }, [budget]);
 
   useEffect(() => {
-    const defaultCurrency = settings?.currencies.default_currency;
     if (!budget && defaultCurrency && !hasSelectedCurrency.current) {
       setCurrency(defaultCurrency);
     }
-  }, [budget, settings?.currencies.default_currency]);
+  }, [budget, defaultCurrency]);
 
   const selectedCategoryNames = useMemo(
     () =>

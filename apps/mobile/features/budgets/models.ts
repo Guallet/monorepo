@@ -1,4 +1,6 @@
 import type { BudgetDto } from '@guallet/api-client';
+import type { DateFormat } from '@guallet/api-client';
+import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
 export const MIN_BUDGET_YEAR = 2000;
 
@@ -92,10 +94,9 @@ export function formatBudgetCurrency(amount: number, currency: string): string {
   }
 }
 
-export function formatTransactionDate(value: Date | string): string {
-  return new Date(value).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+export function formatTransactionDate(
+  value: Date | string,
+  dateFormat: DateFormat,
+): string {
+  return formatPreferenceDate(value, dateFormat);
 }

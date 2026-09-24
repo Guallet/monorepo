@@ -21,6 +21,8 @@ import { TransactionFiltersSheet } from '../components/TransactionFiltersSheet';
 import { TransactionRow } from '../components/TransactionRow';
 import { TransactionListFilters } from '../models';
 import { groupTransactionsByDate } from '../utils';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
 export function TransactionsListScreen() {
   const { colors, spacing, typography, borderRadius } = useTheme();
@@ -29,6 +31,7 @@ export function TransactionsListScreen() {
   const [filtersVisible, setFiltersVisible] = useState(false);
   const { accounts } = useAccounts();
   const { categories } = useCategories();
+  const { dateFormat } = useMobileUserPreferences();
   const query = useInfiniteTransactions(filters);
 
   const accountNames = useMemo(
@@ -40,8 +43,8 @@ export function TransactionsListScreen() {
     [categories],
   );
   const sections = useMemo(
-    () => groupTransactionsByDate(query.transactions),
-    [query.transactions],
+    () => groupTransactionsByDate(query.transactions, dateFormat),
+    [dateFormat, query.transactions],
   );
 
   const activeFilterCount =
@@ -238,7 +241,7 @@ export function TransactionsListScreen() {
 
       <View style={[styles.chips, { paddingHorizontal: spacing.md }]}>
         <FilterChip
-          label={getDateChipLabel(filters)}
+          label={getDateChipLabel(filters, dateFormat)}
           active={Boolean(filters.startDate && filters.endDate)}
           onPress={() => setFiltersVisible(true)}
         />
@@ -330,12 +333,12 @@ function FilterChip({
   );
 }
 
-function getDateChipLabel(filters: TransactionListFilters): string {
+function getDateChipLabel(
+  filters: TransactionListFilters,
+  dateFormat: ReturnType<typeof useMobileUserPreferences>['dateFormat'],
+): string {
   if (!filters.startDate || !filters.endDate) return 'Any date';
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-  }).format(filters.startDate);
+  return `${formatPreferenceDate(filters.startDate, dateFormat)} – ${formatPreferenceDate(filters.endDate, dateFormat)}`;
 }
 
 function getSelectionChipLabel(

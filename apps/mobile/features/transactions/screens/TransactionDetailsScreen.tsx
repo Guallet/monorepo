@@ -32,8 +32,9 @@ import {
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { SelectionSheet } from '../components/SelectionSheet';
+import { SelectionSheet } from '@/components/ui/SelectionSheet';
 import { formatTransactionDate } from '../utils';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 type FormState = {
   type: 'expense' | 'income';
@@ -60,6 +61,7 @@ export function TransactionDetailsScreen({
     useTransaction(transactionId);
   const { accounts } = useAccounts();
   const { categories } = useCategories();
+  const { dateFormat } = useMobileUserPreferences();
   const { updateTransactionMutation } = useTransactionMutations();
   const initializedId = useRef<string | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
@@ -251,7 +253,7 @@ export function TransactionDetailsScreen({
                     fontSize: typography.sizes.xs,
                   }}
                 >
-                  {formatTransactionDate(form.date)}
+                  {formatTransactionDate(form.date, dateFormat)}
                 </Text>
                 <Text
                   style={{
@@ -308,7 +310,7 @@ export function TransactionDetailsScreen({
               />
               <FieldButton
                 label="Date"
-                value={formatTransactionDate(form.date)}
+                value={formatTransactionDate(form.date, dateFormat)}
                 onPress={() => setShowDatePicker(true)}
               />
               <FieldButton

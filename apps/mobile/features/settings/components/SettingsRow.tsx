@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export interface SettingsRowProps {
   icon: ReactNode;
@@ -15,6 +16,7 @@ export interface SettingsRowProps {
   disabled?: boolean;
   isLoading?: boolean;
   destructive?: boolean;
+  value?: string;
 }
 
 export function SettingsRow({
@@ -24,6 +26,7 @@ export function SettingsRow({
   disabled = false,
   isLoading = false,
   destructive = false,
+  value,
 }: Readonly<SettingsRowProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
 
@@ -32,6 +35,7 @@ export function SettingsRow({
       accessibilityRole="button"
       accessibilityState={{ busy: isLoading, disabled }}
       accessibilityLabel={label}
+      accessibilityValue={value ? { text: value } : undefined}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
@@ -76,7 +80,30 @@ export function SettingsRow({
         {label}
       </Text>
       <View style={styles.rowAccessory}>
-        {isLoading && <ActivityIndicator color={colors.status.error} />}
+        {isLoading ? (
+          <ActivityIndicator color={colors.accent.primary} />
+        ) : value !== undefined ? (
+          <>
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.rowValue,
+                {
+                  color: colors.text.secondary,
+                  fontSize: typography.sizes.sm,
+                  marginRight: spacing.xs,
+                },
+              ]}
+            >
+              {value}
+            </Text>
+            <IconSymbol
+              color={colors.text.secondary}
+              name="chevron.right"
+              size={20}
+            />
+          </>
+        ) : null}
       </View>
     </Pressable>
   );
@@ -94,10 +121,16 @@ const styles = StyleSheet.create({
     width: 36,
   },
   rowLabel: {
+    flexShrink: 1,
     fontWeight: '600',
   },
   rowAccessory: {
+    alignItems: 'center',
+    flexDirection: 'row',
     marginLeft: 'auto',
+  },
+  rowValue: {
+    maxWidth: 128,
   },
   disabledRow: {
     opacity: 0.7,

@@ -20,6 +20,8 @@ import { AppScreen } from '@/components/layout/AppScreen';
 import { AccountAvatar } from '../components/AccountAvatar';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
 import { formatAccountCurrency, getAccountTypeLabel } from '../models/account';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
 function getId(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? '') : (value ?? '');
@@ -30,6 +32,7 @@ export default function AccountDetailsScreen() {
   const id = getId(rawId);
   const router = useRouter();
   const { colors, borderRadius, spacing, typography } = useTheme();
+  const { dateFormat } = useMobileUserPreferences();
   const { account, error, isError, isLoading, refetch } = useAccount(id);
   const { data: chartData, isLoading: isChartLoading } = useAccountCharts(id);
   const { transactions } = useAccountTransactions(id);
@@ -331,12 +334,9 @@ export default function AccountDetailsScreen() {
                         },
                       ]}
                     >
-                      {new Date(`${point.date}T12:00:00`).toLocaleDateString(
-                        'en-GB',
-                        {
-                          day: 'numeric',
-                          month: 'short',
-                        },
+                      {formatPreferenceDate(
+                        `${point.date}T12:00:00`,
+                        dateFormat,
                       )}
                     </Text>
                   </View>
@@ -422,10 +422,7 @@ export default function AccountDetailsScreen() {
                           },
                         ]}
                       >
-                        {new Date(transaction.date).toLocaleDateString(
-                          'en-GB',
-                          { day: 'numeric', month: 'short' },
-                        )}
+                        {formatPreferenceDate(transaction.date, dateFormat)}
                       </Text>
                     </View>
                     <Text
