@@ -17,7 +17,7 @@ import {
 } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { AccountAvatar } from '../components/AccountAvatar';
+import { InstitutionAvatar } from '../components/InstitutionAvatar';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
 import { formatAccountCurrency, getAccountTypeLabel } from '../models/account';
 
@@ -168,7 +168,11 @@ export default function AccountDetailsScreen() {
             ]}
           >
             <View style={styles.heroHeader}>
-              <AccountAvatar account={account} size={58} />
+              <InstitutionAvatar
+                fallbackName={account.name}
+                institutionId={account.institutionId}
+                size={58}
+              />
               <View style={styles.heroDetails}>
                 <Text
                   style={[
