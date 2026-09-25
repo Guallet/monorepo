@@ -1,0 +1,21 @@
+meta {
+  name: List transactions
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/transactions?page=1&pageSize=50
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  pageSize: 50
+}
+
+docs {
+  Optional filters: accounts (comma-separated account ids), startDate
+  and endDate (ISO dates).
+}
