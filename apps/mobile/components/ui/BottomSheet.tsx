@@ -2,7 +2,12 @@ import {
   BottomSheet as ExpoBottomSheet,
   type BottomSheetProps as ExpoBottomSheetProps,
 } from '@expo/ui';
-import { useTheme } from '@guallet/luna-mobile';
+import {
+  DateRangeSheetProvider,
+  useTheme,
+  type DateRangeSheetProps,
+} from '@guallet/luna-mobile';
+import type { ReactNode } from 'react';
 
 export type BottomSheetProps = ExpoBottomSheetProps;
 
@@ -24,5 +29,37 @@ export function BottomSheet({
       {...props}
       containerColor={containerColor ?? colors.surface.background.primary}
     />
+  );
+}
+
+function DateRangeBottomSheet({
+  visible,
+  onDismiss,
+  children,
+}: Readonly<DateRangeSheetProps>) {
+  return (
+    <BottomSheet
+      isPresented={visible}
+      onDismiss={onDismiss}
+      snapPoints={['full']}
+      contentPadding={0}
+    >
+      {children}
+    </BottomSheet>
+  );
+}
+
+function renderDateRangeBottomSheet(props: DateRangeSheetProps) {
+  return <DateRangeBottomSheet {...props} />;
+}
+
+/** Keeps Luna's reusable picker on the app's single Expo sheet integration. */
+export function LunaBottomSheetProvider({
+  children,
+}: Readonly<{ children: ReactNode }>) {
+  return (
+    <DateRangeSheetProvider sheet={renderDateRangeBottomSheet}>
+      {children}
+    </DateRangeSheetProvider>
   );
 }
