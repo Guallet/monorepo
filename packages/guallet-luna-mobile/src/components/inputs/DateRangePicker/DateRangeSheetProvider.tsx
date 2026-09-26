@@ -23,6 +23,7 @@ export function DateRangeSheetProvider({
   );
 }
 
+/** Read the app-supplied sheet renderer used by the reusable picker. */
 export function useDateRangeSheet() {
   return useContext(SheetContext);
 }

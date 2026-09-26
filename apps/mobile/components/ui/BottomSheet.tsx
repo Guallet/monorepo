@@ -32,6 +32,7 @@ export function BottomSheet({
   );
 }
 
+/** Translate the picker's generic visibility contract to Expo's sheet props. */
 function DateRangeBottomSheet({
   visible,
   onDismiss,
@@ -49,6 +50,7 @@ function DateRangeBottomSheet({
   );
 }
 
+/** Mount the adapter as a component so it may safely use hooks later. */
 function renderDateRangeBottomSheet(props: DateRangeSheetProps) {
   return <DateRangeBottomSheet {...props} />;
 }

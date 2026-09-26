@@ -45,6 +45,7 @@ export interface DateRangePickerProps {
 
 type Endpoint = 'from' | 'to';
 
+/** Format one endpoint for the control and From/To rows. */
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat(undefined, {
     day: 'numeric',
@@ -53,6 +54,7 @@ function formatDate(date: Date): string {
   }).format(date);
 }
 
+/** Prefer a recognizable preset label for a controlled range. */
 function rangeLabel(
   value: DateRange | null,
   presets: DateRangePreset[],
@@ -63,7 +65,10 @@ function rangeLabel(
   return `${formatDate(value.startDate)} – ${formatDate(value.endDate)}`;
 }
 
-/** A Monzo-style range control. The host app supplies its native sheet via DateRangeSheetProvider. */
+/**
+ * Pick a complete range in a Monzo-style sheet without committing draft taps.
+ * The host app supplies its native sheet through DateRangeSheetProvider.
+ */
 export function DateRangePicker({
   value,
   onApply,
@@ -76,6 +81,9 @@ export function DateRangePicker({
 }: Readonly<DateRangePickerProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const renderSheet = useDateRangeSheet();
+  if (!renderSheet) {
+    throw new Error('DateRangePicker requires DateRangeSheetProvider.');
+  }
   const openRef = useRef(false);
   const [visible, setVisible] = useState(false);
   const [draft, setDraft] = useState<DraftDateRange>({
@@ -101,10 +109,8 @@ export function DateRangePicker({
     compareCalendarDays(draft.startDate, draft.endDate) <= 0,
   );
 
+  /** Reset transient state from the controlled value whenever the sheet opens. */
   function open() {
-    if (!renderSheet) {
-      throw new Error('DateRangePicker requires DateRangeSheetProvider.');
-    }
     const today = new Date();
     setDraft({
       startDate: value?.startDate ?? null,
@@ -124,6 +130,7 @@ export function DateRangePicker({
     setVisible(true);
   }
 
+  /** Discard the draft and notify once, including gesture dismissals. */
   function cancel() {
     if (!openRef.current) return;
     openRef.current = false;
@@ -131,6 +138,7 @@ export function DateRangePicker({
     onCancel?.();
   }
 
+  /** Emit only a complete range normalized to inclusive local days. */
   function apply() {
     if (!draft.startDate || !draft.endDate || !canApply) return;
     openRef.current = false;
@@ -141,6 +149,7 @@ export function DateRangePicker({
     });
   }
 
+  /** Fill the draft from a preset or open the calendar for Custom range. */
   function choosePreset(preset: DateRangePreset) {
     const next = preset.getRange(new Date());
     if (!next) {
@@ -160,6 +169,7 @@ export function DateRangePicker({
     setShowAll(false);
   }
 
+  /** Update the selected endpoint without changing the committed value. */
   function chooseDate(date: Date) {
     if (!activeEndpoint) return;
     setDraft((current) => selectDraftDate(current, activeEndpoint, date));
@@ -172,6 +182,7 @@ export function DateRangePicker({
     setSelectedPresetId(null);
   }
 
+  /** Expand one endpoint calendar and center it on the relevant month. */
   function toggleEndpoint(endpoint: Endpoint) {
     const date =
       endpoint === 'from'
@@ -227,223 +238,224 @@ export function DateRangePicker({
           {triggerLabel}
         </Text>
         <IconChevronDown
-          size={20}
+          size={24}
           strokeWidth={1.5}
           color={colors.accent.primary}
         />
       </Pressable>
-      {renderSheet && (
-        <DateRangeSheetFrame
-          renderSheet={renderSheet}
-          visible={visible}
-          onDismiss={cancel}
+      <DateRangeSheetFrame
+        renderSheet={renderSheet}
+        visible={visible}
+        onDismiss={cancel}
+      >
+        <View
+          style={[
+            styles.sheet,
+            { backgroundColor: colors.surface.background.page },
+            bottomSheetStyle,
+          ]}
         >
-          <View
-            style={[
-              styles.sheet,
-              { backgroundColor: colors.surface.background.page },
-              bottomSheetStyle,
-            ]}
+          <View style={[styles.header, { paddingHorizontal: spacing.md }]}>
+            <Pressable
+              style={styles.back}
+              onPress={cancel}
+              accessibilityRole="button"
+              accessibilityLabel="Cancel date range selection"
+            >
+              <IconChevronLeft
+                size={24}
+                strokeWidth={1.5}
+                color={colors.accent.primary}
+              />
+            </Pressable>
+            <Text
+              style={{
+                color: colors.text.primary,
+                fontSize: typography.sizes.lg,
+                fontWeight: '600',
+              }}
+            >
+              Date range
+            </Text>
+            <View style={styles.back} />
+          </View>
+          <ScrollView
+            style={styles.content}
+            contentContainerStyle={{ padding: spacing.md }}
           >
-            <View style={[styles.header, { paddingHorizontal: spacing.md }]}>
-              <Pressable
-                style={styles.back}
-                onPress={cancel}
-                accessibilityRole="button"
-                accessibilityLabel="Cancel date range selection"
-              >
-                <IconChevronLeft size={24} color={colors.accent.primary} />
-              </Pressable>
+            <View
+              style={{
+                backgroundColor: colors.surface.background.primary,
+                borderColor: colors.surface.border.input,
+                borderWidth: 1,
+                borderRadius: borderRadius.lg,
+                overflow: 'hidden',
+              }}
+            >
+              <EndpointRow
+                label="From"
+                value={draft.startDate}
+                active={activeEndpoint === 'from'}
+                onPress={() => toggleEndpoint('from')}
+              />
+              {activeEndpoint === 'from' && (
+                <RangeCalendar
+                  month={month}
+                  range={draft}
+                  onMonthChange={setMonth}
+                  onDatePress={chooseDate}
+                  style={calendarStyle}
+                />
+              )}
+              <EndpointRow
+                label="To"
+                value={draft.endDate}
+                active={activeEndpoint === 'to'}
+                onPress={() => toggleEndpoint('to')}
+              />
+              {activeEndpoint === 'to' && (
+                <RangeCalendar
+                  month={month}
+                  range={draft}
+                  onMonthChange={setMonth}
+                  onDatePress={chooseDate}
+                  style={calendarStyle}
+                />
+              )}
+            </View>
+            <View style={[styles.railHeader, { marginTop: spacing.md }]}>
               <Text
                 style={{
-                  color: colors.text.primary,
-                  fontSize: typography.sizes.lg,
-                  fontWeight: '600',
+                  color: colors.text.secondary,
+                  fontSize: typography.sizes.sm,
                 }}
               >
-                Date range
+                Quick ranges
               </Text>
-              <View style={styles.back} />
-            </View>
-            <ScrollView
-              style={styles.content}
-              contentContainerStyle={{ padding: spacing.md }}
-            >
-              <View
-                style={{
-                  backgroundColor: colors.surface.background.primary,
-                  borderColor: colors.surface.border.input,
-                  borderWidth: 1,
-                  borderRadius: borderRadius.lg,
-                  overflow: 'hidden',
-                }}
+              <Pressable
+                onPress={() => setShowAll((current) => !current)}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  showAll ? 'Hide all presets' : 'See all presets'
+                }
               >
-                <EndpointRow
-                  label="From"
-                  value={draft.startDate}
-                  active={activeEndpoint === 'from'}
-                  onPress={() => toggleEndpoint('from')}
-                />
-                {activeEndpoint === 'from' && (
-                  <RangeCalendar
-                    month={month}
-                    range={draft}
-                    onMonthChange={setMonth}
-                    onDatePress={chooseDate}
-                    style={calendarStyle}
-                  />
-                )}
-                <EndpointRow
-                  label="To"
-                  value={draft.endDate}
-                  active={activeEndpoint === 'to'}
-                  onPress={() => toggleEndpoint('to')}
-                />
-                {activeEndpoint === 'to' && (
-                  <RangeCalendar
-                    month={month}
-                    range={draft}
-                    onMonthChange={setMonth}
-                    onDatePress={chooseDate}
-                    style={calendarStyle}
-                  />
-                )}
-              </View>
-              <View style={[styles.railHeader, { marginTop: spacing.md }]}>
                 <Text
                   style={{
-                    color: colors.text.secondary,
+                    color: colors.accent.primary,
                     fontSize: typography.sizes.sm,
                   }}
                 >
-                  Quick ranges
-                </Text>
-                <Pressable
-                  onPress={() => setShowAll((current) => !current)}
-                  accessibilityRole="button"
-                  accessibilityLabel={
-                    showAll ? 'Hide all presets' : 'See all presets'
-                  }
-                >
-                  <Text
-                    style={{
-                      color: colors.accent.primary,
-                      fontSize: typography.sizes.sm,
-                    }}
-                  >
-                    {showAll ? 'Hide all' : 'See all'}
-                  </Text>
-                </Pressable>
-              </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{
-                  gap: spacing.sm,
-                  paddingVertical: spacing.sm,
-                }}
-              >
-                {displayedQuickPresets.map((preset) => (
-                  <PresetChip
-                    key={preset.id}
-                    preset={preset}
-                    selected={selectedPresetId === preset.id}
-                    onPress={() => choosePreset(preset)}
-                  />
-                ))}
-              </ScrollView>
-              {showAll && (
-                <View
-                  style={[
-                    styles.allPresets,
-                    {
-                      backgroundColor: colors.surface.background.primary,
-                      borderColor: colors.surface.border.input,
-                      borderRadius: borderRadius.lg,
-                      marginTop: spacing.sm,
-                    },
-                  ]}
-                >
-                  {presets.map((preset) => (
-                    <Pressable
-                      key={preset.id}
-                      style={[
-                        styles.presetRow,
-                        {
-                          borderBottomColor: colors.surface.border.primary,
-                          paddingHorizontal: spacing.md,
-                        },
-                      ]}
-                      onPress={() => choosePreset(preset)}
-                      accessibilityRole="button"
-                      accessibilityLabel={preset.label}
-                      accessibilityState={{
-                        selected: selectedPresetId === preset.id,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color:
-                            selectedPresetId === preset.id
-                              ? colors.accent.primary
-                              : colors.text.primary,
-                          fontSize: typography.sizes.sm,
-                        }}
-                      >
-                        {preset.label}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-            </ScrollView>
-            <View
-              style={[
-                styles.footer,
-                {
-                  paddingHorizontal: spacing.md,
-                  paddingTop: spacing.sm,
-                  paddingBottom: spacing.xl,
-                  borderTopColor: colors.surface.border.primary,
-                },
-              ]}
-            >
-              <Pressable
-                style={[
-                  styles.done,
-                  {
-                    backgroundColor: canApply
-                      ? colors.button.primary.default
-                      : colors.button.primary.disabled,
-                    borderRadius: borderRadius.xl,
-                  },
-                ]}
-                onPress={apply}
-                disabled={!canApply}
-                accessibilityRole="button"
-                accessibilityLabel="Done"
-                accessibilityState={{ disabled: !canApply }}
-              >
-                <Text
-                  style={{
-                    color: canApply
-                      ? colors.text.inverse
-                      : colors.text.disabled,
-                    fontSize: typography.sizes.md,
-                    fontWeight: '600',
-                  }}
-                >
-                  Done
+                  {showAll ? 'Hide all' : 'See all'}
                 </Text>
               </Pressable>
             </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                gap: spacing.sm,
+                paddingVertical: spacing.sm,
+              }}
+            >
+              {displayedQuickPresets.map((preset) => (
+                <PresetChip
+                  key={preset.id}
+                  preset={preset}
+                  selected={selectedPresetId === preset.id}
+                  onPress={() => choosePreset(preset)}
+                />
+              ))}
+            </ScrollView>
+            {showAll && (
+              <View
+                style={[
+                  styles.allPresets,
+                  {
+                    backgroundColor: colors.surface.background.primary,
+                    borderColor: colors.surface.border.input,
+                    borderRadius: borderRadius.lg,
+                    marginTop: spacing.sm,
+                  },
+                ]}
+              >
+                {presets.map((preset) => (
+                  <Pressable
+                    key={preset.id}
+                    style={[
+                      styles.presetRow,
+                      {
+                        borderBottomColor: colors.surface.border.primary,
+                        paddingHorizontal: spacing.md,
+                      },
+                    ]}
+                    onPress={() => choosePreset(preset)}
+                    accessibilityRole="button"
+                    accessibilityLabel={preset.label}
+                    accessibilityState={{
+                      selected: selectedPresetId === preset.id,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color:
+                          selectedPresetId === preset.id
+                            ? colors.accent.primary
+                            : colors.text.primary,
+                        fontSize: typography.sizes.sm,
+                      }}
+                    >
+                      {preset.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+          </ScrollView>
+          <View
+            style={[
+              styles.footer,
+              {
+                paddingHorizontal: spacing.md,
+                paddingTop: spacing.sm,
+                paddingBottom: spacing.xl,
+                borderTopColor: colors.surface.border.primary,
+              },
+            ]}
+          >
+            <Pressable
+              style={[
+                styles.done,
+                {
+                  backgroundColor: canApply
+                    ? colors.button.primary.default
+                    : colors.button.primary.disabled,
+                  borderRadius: borderRadius.xl,
+                },
+              ]}
+              onPress={apply}
+              disabled={!canApply}
+              accessibilityRole="button"
+              accessibilityLabel="Done"
+              accessibilityState={{ disabled: !canApply }}
+            >
+              <Text
+                style={{
+                  color: canApply ? colors.text.inverse : colors.text.disabled,
+                  fontSize: typography.sizes.md,
+                  fontWeight: '600',
+                }}
+              >
+                Done
+              </Text>
+            </Pressable>
           </View>
-        </DateRangeSheetFrame>
-      )}
+        </View>
+      </DateRangeSheetFrame>
     </>
   );
 }
 
+/** Invoke the app's sheet renderer without treating it as an unstable component. */
 function DateRangeSheetFrame({
   renderSheet,
   visible,
@@ -458,6 +470,7 @@ function DateRangeSheetFrame({
   return renderSheet({ visible, onDismiss, children });
 }
 
+/** Keep each endpoint's value and expansion state accessible as one control. */
 function EndpointRow({
   label,
   value,
@@ -505,6 +518,7 @@ function EndpointRow({
   );
 }
 
+/** Present a quick preset with its selected state for touch and screen readers. */
 function PresetChip({
   preset,
   selected,

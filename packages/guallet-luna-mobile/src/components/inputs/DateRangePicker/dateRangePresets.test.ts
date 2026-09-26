@@ -8,6 +8,7 @@ import {
 
 const today = new Date(2026, 8, 26, 15);
 
+/** Resolve a fixed default preset for date-boundary assertions. */
 function preset(id: string) {
   const found = DEFAULT_DATE_RANGE_PRESETS.find((item) => item.id === id);
   if (!found) throw new Error(`Missing preset ${id}`);

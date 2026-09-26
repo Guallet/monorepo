@@ -14,10 +14,12 @@ export type DraftDateRange = {
   endDate: Date | null;
 };
 
+/** Strip the time using the device's local calendar rather than UTC. */
 export function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+/** Include the final millisecond of a local calendar day in a range. */
 export function endOfDay(date: Date): Date {
   return new Date(
     date.getFullYear(),
@@ -30,12 +32,14 @@ export function endOfDay(date: Date): Date {
   );
 }
 
+/** Move by calendar days so rolling presets remain correct across DST. */
 function daysBefore(today: Date, days: number): Date {
   const date = startOfDay(today);
   date.setDate(date.getDate() - days);
   return date;
 }
 
+/** Normalize preset boundaries to whole inclusive local days. */
 function range(start: Date, end: Date): DateRange {
   return { startDate: startOfDay(start), endDate: endOfDay(end) };
 }
@@ -118,6 +122,7 @@ export const DEFAULT_DATE_RANGE_PRESETS: DateRangePreset[] = [
   { id: 'custom', label: 'Custom range', getRange: () => null },
 ];
 
+/** Compare dates without requiring their times to match. */
 export function sameCalendarDay(a: Date, b: Date): boolean {
   return (
     a.getFullYear() === b.getFullYear() &&
@@ -126,10 +131,12 @@ export function sameCalendarDay(a: Date, b: Date): boolean {
   );
 }
 
+/** Order dates by local calendar day, ignoring their time of day. */
 export function compareCalendarDays(a: Date, b: Date): number {
   return startOfDay(a).getTime() - startOfDay(b).getTime();
 }
 
+/** Selecting From resets To; an early To selection starts a new range. */
 export function selectDraftDate(
   draft: DraftDateRange,
   endpoint: 'from' | 'to',
@@ -144,6 +151,7 @@ export function selectDraftDate(
   return { startDate: draft.startDate, endDate: endOfDay(date) };
 }
 
+/** Recover the current preset label from a controlled date-only value. */
 export function matchingPreset(
   value: DateRange | null,
   presets: DateRangePreset[],

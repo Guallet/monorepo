@@ -24,6 +24,7 @@ const weekdayNames = Array.from({ length: 7 }, (_, index) =>
   ),
 );
 
+/** Build a stable six-week grid with Monday as the first weekday. */
 function calendarDays(month: Date): Date[] {
   const first = new Date(month.getFullYear(), month.getMonth(), 1);
   const daysBeforeMonday = (first.getDay() + 6) % 7;
@@ -38,6 +39,7 @@ function calendarDays(month: Date): Date[] {
   );
 }
 
+/** Classify a day against the draft's inclusive highlighted range. */
 function selectedState(
   date: Date,
   range: { startDate: Date | null; endDate: Date | null },
@@ -58,6 +60,7 @@ function selectedState(
   return null;
 }
 
+/** Add spoken range context to a full date's accessibility label. */
 function selectionDescription(state: ReturnType<typeof selectedState>): string {
   switch (state) {
     case 'start':
@@ -73,6 +76,7 @@ function selectionDescription(state: ReturnType<typeof selectedState>): string {
   }
 }
 
+/** Show one navigable month inside the active From or To row. */
 export function RangeCalendar({
   month,
   range,
@@ -93,6 +97,7 @@ export function RangeCalendar({
   });
   const days = calendarDays(month);
 
+  /** Navigate months without changing the selected dates. */
   function moveMonth(offset: number) {
     onMonthChange(new Date(month.getFullYear(), month.getMonth() + offset, 1));
   }
@@ -125,7 +130,11 @@ export function RangeCalendar({
             accessibilityRole="button"
             accessibilityLabel="Previous month"
           >
-            <IconChevronLeft size={20} color={colors.accent.primary} />
+            <IconChevronLeft
+              size={24}
+              strokeWidth={1.5}
+              color={colors.accent.primary}
+            />
           </Pressable>
           <Pressable
             style={styles.monthAction}
@@ -133,7 +142,11 @@ export function RangeCalendar({
             accessibilityRole="button"
             accessibilityLabel="Next month"
           >
-            <IconChevronRight size={20} color={colors.accent.primary} />
+            <IconChevronRight
+              size={24}
+              strokeWidth={1.5}
+              color={colors.accent.primary}
+            />
           </Pressable>
         </View>
       </View>
