@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guallet mobile · DateRangePicker concepts</title>
+    <style>
+      :root {
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #231f20;
+        background: #edf3f8;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      .board { max-width: 920px; margin: auto; padding: 42px 24px 64px; }
+      .eyebrow { margin: 0 0 8px; color: #425563; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+      h1 { margin: 0; color: #003087; font-size: 38px; letter-spacing: -.02em; }
+      .intro { max-width: 830px; margin: 10px 0 30px; color: #425563; font-size: 16px; line-height: 1.5; }
+      .section-heading { display: flex; align-items: center; gap: 12px; margin: 28px 0 18px; }
+      .section-heading h2 { margin: 0; color: #003087; font-size: 22px; letter-spacing: -.01em; }
+      .tag { padding: 5px 9px; border-radius: 6px; color: #005eb8; background: #dcefff; font-size: 12px; font-weight: 700; }
+      .grid { display: grid; grid-template-columns: repeat(2, 390px); gap: 28px; justify-content: center; }
+      .design { min-width: 0; }
+      .design h3 { margin: 0 0 7px; color: #003087; font-size: 18px; }
+      .design > p { min-height: 42px; margin: 0 0 12px; color: #425563; font-size: 14px; line-height: 1.4; }
+      .phone { position: relative; width: 390px; height: 844px; overflow: hidden; border: 6px solid #231f20; border-radius: 38px; background: #f7fafc; box-shadow: 0 14px 30px rgba(0,48,135,.13); }
+      .status { display: flex; height: 39px; align-items: center; justify-content: space-between; padding: 4px 22px 0; background: #fff; font-size: 13px; font-weight: 700; }
+      .camera { position: absolute; top: 10px; left: 50%; width: 84px; height: 20px; transform: translateX(-50%); border-radius: 14px; background: #231f20; }
+      .nav { display: flex; height: 58px; align-items: center; justify-content: space-between; padding: 0 20px; background: #fff; border-bottom: 1px solid #e8edee; }
+      .nav strong { color: #231f20; font-size: 20px; letter-spacing: -.01em; }
+      .nav .more { color: #005eb8; font-size: 28px; letter-spacing: 2px; line-height: 1; }
+      .app { padding: 24px 20px; }
+      .app h4 { margin: 0 0 17px; font-size: 27px; letter-spacing: -.02em; }
+      .filter-label { display: block; margin-bottom: 6px; color: #425563; font-size: 14px; font-weight: 600; }
+      .trigger { display: flex; height: 56px; align-items: center; gap: 10px; padding: 0 15px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f0f9ff; color: #425563; font-size: 16px; }
+      .trigger.selected { color: #231f20; }
+      .trigger .chevron { margin-left: auto; color: #005eb8; font-size: 22px; }
+      .icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 24px; height: 24px; color: #005eb8; }
+      .icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+      .summary { display: flex; justify-content: space-between; align-items: center; margin: 28px 0 13px; }
+      .summary strong { font-size: 18px; }
+      .summary span { color: #768692; font-size: 13px; }
+      .tx { display: flex; align-items: center; gap: 11px; padding: 14px 0; border-bottom: 1px solid #e8edee; }
+      .tx-icon { display: grid; width: 42px; height: 42px; flex: none; place-items: center; border-radius: 14px; background: #e8edee; color: #425563; font-size: 19px; }
+      .tx-copy { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+      .tx-copy strong { font-size: 15px; }
+      .tx-copy small { color: #768692; font-size: 12px; }
+      .amount { color: #231f20; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .amount.negative { color: #da291c; }
+      .amount.positive { color: #009639; }
+      .scrim { position: absolute; inset: 39px 0 0; background: rgba(10, 27, 43, .43); }
+      .sheet { position: absolute; right: 0; bottom: 0; left: 0; height: 702px; border-radius: 24px 24px 0 0; background: #fff; box-shadow: 0 -8px 32px rgba(0,0,0,.12); }
+      .handle { width: 36px; height: 4px; margin: 10px auto 0; border-radius: 4px; background: #c3cdd4; }
+      .sheet-head { display: flex; align-items: center; justify-content: space-between; height: 63px; padding: 0 22px; border-bottom: 1px solid #e8edee; }
+      .sheet-head strong { font-size: 20px; letter-spacing: -.01em; }
+      .head-action { color: #005eb8; font-size: 15px; font-weight: 600; }
+      .sheet-scroll { height: 520px; overflow: hidden; padding: 0 22px; }
+      .section-title { margin: 20px 0 8px; color: #768692; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+      .preset { display: flex; align-items: center; height: 50px; gap: 12px; border-bottom: 1px solid #e8edee; color: #231f20; font-size: 16px; }
+      .preset.active { color: #005eb8; font-weight: 600; }
+      .preset .radio { width: 20px; height: 20px; margin-left: auto; border: 1.5px solid #a6b3bd; border-radius: 50%; }
+      .preset.active .radio { border: 6px solid #005eb8; }
+      .preset .arrow { margin-left: auto; color: #005eb8; font-size: 25px; }
+      .hint { margin: 10px 0 0; color: #768692; font-size: 13px; line-height: 1.4; }
+      .sheet-footer { position: absolute; right: 0; bottom: 0; left: 0; display: flex; align-items: center; gap: 12px; height: 100px; padding: 12px 22px 30px; border-top: 1px solid #e8edee; background: #fff; }
+      .button { display: grid; height: 52px; flex: 1; place-items: center; border-radius: 8px; font-size: 16px; font-weight: 600; }
+      .button.secondary { border: 1px solid #005eb8; color: #005eb8; }
+      .button.primary { background: #005eb8; color: #fff; }
+      .button.disabled { background: #d9e2e8; color: #768692; }
+      .home { position: absolute; bottom: 7px; left: 50%; width: 108px; height: 5px; transform: translateX(-50%); border-radius: 5px; background: #231f20; }
+      .sheet .home { z-index: 2; }
+      .custom-content { padding: 18px 22px 0; }
+      .date-summary { display: flex; gap: 10px; }
+      .date-box { flex: 1; min-width: 0; height: 74px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f7fafc; }
+      .date-box.active { border: 1.5px solid #005eb8; background: #f0f9ff; }
+      .date-box small { display: block; margin-bottom: 7px; color: #768692; font-size: 12px; font-weight: 600; }
+      .date-box strong { color: #231f20; font-size: 15px; font-weight: 600; }
+      .date-box .empty { color: #768692; font-weight: 400; }
+      .instruction { height: 49px; padding-top: 18px; color: #425563; font-size: 14px; }
+      .month { display: flex; align-items: center; justify-content: space-between; height: 46px; font-size: 17px; font-weight: 700; }
+      .month-nav { display: flex; gap: 22px; color: #005eb8; font-size: 25px; font-weight: 400; }
+      .calendar { display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 45px; align-items: center; text-align: center; }
+      .day { display: grid; height: 38px; place-items: center; font-size: 15px; font-variant-numeric: tabular-nums; }
+      .day.weekday { color: #768692; font-size: 12px; font-weight: 700; }
+      .day.muted { color: #b3bdc4; }
+      .day.today { text-decoration: underline; text-underline-offset: 4px; }
+      .day.range { background: #e2f2ff; color: #003087; }
+      .day.start { border-radius: 22px 0 0 22px; background: #005eb8; color: #fff; font-weight: 700; }
+      .day.end { border-radius: 0 22px 22px 0; background: #005eb8; color: #fff; font-weight: 700; }
+      .day.solo { border-radius: 22px; background: #005eb8; color: #fff; font-weight: 700; }
+      .custom-note { margin: 15px 0 0; color: #768692; font-size: 13px; line-height: 1.35; }
+      .compact .sheet-scroll { padding-top: 18px; }
+      .compact-subtitle { margin: 0 0 16px; color: #425563; font-size: 14px; }
+      .chip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .chip { display: grid; height: 52px; place-items: center; border: 1px solid #e5e7eb; border-radius: 10px; color: #231f20; font-size: 15px; font-weight: 500; }
+      .chip.active { border-color: #005eb8; background: #e2f2ff; color: #005eb8; font-weight: 700; }
+      .more-row { display: flex; align-items: center; justify-content: space-between; margin-top: 21px; padding: 18px 0; border-top: 1px solid #e8edee; border-bottom: 1px solid #e8edee; color: #005eb8; font-size: 16px; font-weight: 600; }
+      .concept-note { margin: 20px 0 0; padding: 14px 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f7fafc; color: #425563; font-size: 13px; line-height: 1.45; }
+      .notes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 29px; }
+      .notes span { padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 18px; background: #fff; color: #425563; font-size: 13px; }
+      footer { margin-top: 25px; color: #425563; font-size: 13px; line-height: 1.5; }
+      footer a { color: #005eb8; }
+      @media (max-width: 840px) { .board { padding: 26px 12px 45px; } h1 { font-size: 30px; } .grid { grid-template-columns: 390px; } }
+      @media (max-width: 410px) { .grid { grid-template-columns: minmax(0, 1fr); } .phone { width: 100%; } }
+    </style>
+  </head>
+  <body>
+    <main class="board">
+      <p class="eyebrow">Guallet · Luna Mobile · Issue 266</p>
+      <h1>DateRangePicker concepts</h1>
+      <p class="intro">Five 390 × 844 mobile views. Concept A keeps every web preset one scroll away and gives the custom calendar a focused second view. Concept B prioritises common presets but adds a second step to reach the rest.</p>
+      <div class="section-heading"><h2>Concept A · Preset list and calendar</h2><span class="tag">Recommended</span></div>
+      <div class="grid">
+        <section class="design"><h3>01 · Closed control</h3><p>The committed value is visible in context; opening the control starts a draft.</p><div class="phone">
+          <div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><strong>Transactions</strong><span class="more">⋯</span></div>
+          <div class="app"><h4>Activity</h4><span class="filter-label">Date range</span><div class="trigger selected"><span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></span><span>Last 30 days</span><span class="chevron">⌄</span></div><div class="summary"><strong>Recent transactions</strong><span>28 Aug–26 Sep</span></div><div class="tx"><span class="tx-icon">▣</span><span class="tx-copy"><strong>Groceries</strong><small>Today · Shopping</small></span><span class="amount negative">−£42.50</span></div><div class="tx"><span class="tx-icon">◫</span><span class="tx-copy"><strong>Coffee shop</strong><small>Yesterday · Food &amp; drink</small></span><span class="amount negative">−£4.80</span></div><div class="tx"><span class="tx-icon">◉</span><span class="tx-copy"><strong>Salary</strong><small>24 Sep · Income</small></span><span class="amount positive">£2,850.00</span></div></div><div class="home"></div>
+        </div></section>
+        <section class="design"><h3>02 · Choose a preset</h3><p>All 12 fixed presets are grouped in one scrolling list; Apply commits the draft.</p><div class="phone">
+          <div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><strong>Transactions</strong><span class="more">⋯</span></div><div class="app"><h4>Activity</h4><span class="filter-label">Date range</span><div class="trigger selected">Last 30 days</div></div><div class="scrim"></div>
+          <div class="sheet"><div class="handle"></div><div class="sheet-head"><strong>Select date range</strong></div><div class="sheet-scroll"><div class="section-title">Recent</div><div class="preset">Today<span class="radio"></span></div><div class="preset">Yesterday<span class="radio"></span></div><div class="preset">Last 7 days<span class="radio"></span></div><div class="preset active">Last 30 days<span class="radio"></span></div><div class="preset">Last 365 days<span class="radio"></span></div><div class="section-title">This period</div><div class="preset">Week to date<span class="radio"></span></div><div class="preset">Month to date<span class="radio"></span></div><div class="preset">Quarter to date<span class="radio"></span></div><div class="preset">Year to date<span class="radio"></span></div><div class="section-title">Previous periods</div><div class="preset">Last month<span class="radio"></span></div><div class="preset">Last 12 months<span class="radio"></span></div><div class="preset">Last year<span class="radio"></span></div><div class="section-title">Choose dates</div><div class="preset">Custom range<span class="arrow">›</span></div></div><div class="sheet-footer"><span class="button secondary">Cancel</span><span class="button primary">Apply</span></div><div class="home"></div></div>
+        </div></section>
+        <section class="design"><h3>03 · Custom, first date</h3><p>One selected date leaves the range incomplete and Apply unavailable.</p><div class="phone">
+          <div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><strong>Transactions</strong><span class="more">⋯</span></div><div class="app"><h4>Activity</h4><span class="filter-label">Date range</span><div class="trigger selected">Last 30 days</div></div><div class="scrim"></div>
+          <div class="sheet"><div class="handle"></div><div class="sheet-head"><span class="head-action">‹ Presets</span><strong>Custom range</strong><span style="width: 58px"></span></div><div class="custom-content"><div class="date-summary"><div class="date-box"><small>From</small><strong>7 Sep 2026</strong></div><div class="date-box active"><small>To</small><strong class="empty">Select end date</strong></div></div><div class="instruction">Select an end date</div><div class="month"><span>September 2026</span><span class="month-nav"><span>‹</span><span>›</span></span></div><div class="calendar" data-range="partial"></div><p class="custom-note">The blue circle marks your start date. Choose the same day or a later day to complete the range.</p></div><div class="sheet-footer"><span class="button secondary">Cancel</span><span class="button disabled">Apply</span></div><div class="home"></div></div>
+        </div></section>
+        <section class="design"><h3>04 · Custom, complete</h3><p>Both endpoints and the inclusive range are clear before applying.</p><div class="phone">
+          <div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><strong>Transactions</strong><span class="more">⋯</span></div><div class="app"><h4>Activity</h4><span class="filter-label">Date range</span><div class="trigger selected">Last 30 days</div></div><div class="scrim"></div>
+          <div class="sheet"><div class="handle"></div><div class="sheet-head"><span class="head-action">‹ Presets</span><strong>Custom range</strong><span style="width: 58px"></span></div><div class="custom-content"><div class="date-summary"><div class="date-box"><small>From</small><strong>7 Sep 2026</strong></div><div class="date-box"><small>To</small><strong>23 Sep 2026</strong></div></div><div class="instruction">7–23 Sep 2026 · 17 days</div><div class="month"><span>September 2026</span><span class="month-nav"><span>‹</span><span>›</span></span></div><div class="calendar" data-range="complete"></div><p class="custom-note">Tap a new day to start a different range. Swipe or use arrows to move between months.</p></div><div class="sheet-footer"><span class="button secondary">Cancel</span><span class="button primary">Apply</span></div><div class="home"></div></div>
+        </div></section>
+      </div>
+      <div class="section-heading"><h2>Concept B · Quick-pick grid</h2><span class="tag">Alternative</span></div>
+      <div class="grid">
+        <section class="design"><h3>05 · Compact first step</h3><p>Four common presets lead, but the full set requires a “More presets” view.</p><div class="phone">
+          <div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><strong>Transactions</strong><span class="more">⋯</span></div><div class="app"><h4>Activity</h4><span class="filter-label">Date range</span><div class="trigger selected">Last 30 days</div></div><div class="scrim"></div>
+          <div class="sheet compact"><div class="handle"></div><div class="sheet-head"><strong>Select date range</strong></div><div class="sheet-scroll"><p class="compact-subtitle">Choose a common range or set your own dates.</p><div class="chip-grid"><span class="chip">Today</span><span class="chip">Last 7 days</span><span class="chip active">Last 30 days</span><span class="chip">Month to date</span></div><div class="more-row"><span>More presets</span><span>›</span></div><div class="more-row"><span>Custom range</span><span>›</span></div><div class="concept-note">This version has a lighter opening view. It makes eight fixed presets harder to discover, so Concept A is the stronger default for a reusable control.</div></div><div class="sheet-footer"><span class="button secondary">Cancel</span><span class="button primary">Apply</span></div><div class="home"></div></div>
+        </div></section>
+      </div>
+      <div class="notes"><span>390 × 844 px phone frames</span><span>13 web presets preserved</span><span>Draft until Apply</span><span>One calendar day minimum</span><span>Luna light theme</span></div>
+      <footer>Original designs for <a href="https://github.com/Guallet/monorepo/issues/266">issue #266</a>, informed by <a href="https://mobbin.com/screens/59fe2496-7f9b-42b2-99b5-68fead2aed8a">Klarna</a>, <a href="https://mobbin.com/screens/17676b62-d546-474e-9bd8-0b52e6a83d9c">Monzo</a>, and <a href="https://mobbin.com/screens/884f331a-261f-4138-addd-013c62020550">StubHub</a>. Screen content and labels are illustrative; the reusable component inherits the host app's context and Luna theme.</footer>
+    </main>
+    <script>
+      const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      for (const calendar of document.querySelectorAll('.calendar')) {
+        const complete = calendar.dataset.range === 'complete';
+        for (const name of weekdays) {
+          const day = document.createElement('span');
+          day.className = 'day weekday';
+          day.textContent = name;
+          calendar.append(day);
+        }
+        const blank = document.createElement('span');
+        blank.className = 'day';
+        calendar.append(blank);
+        for (let date = 1; date <= 30; date++) {
+          const day = document.createElement('span');
+          day.className = 'day';
+          if (date === 7) day.classList.add(complete ? 'start' : 'solo');
+          if (complete && date > 7 && date < 23) day.classList.add('range');
+          if (complete && date === 23) day.classList.add('end');
+          if (date === 26) day.classList.add('today');
+          day.textContent = String(date);
+          calendar.append(day);
+        }
+      }
+    </script>
+  </body>
+</html>
