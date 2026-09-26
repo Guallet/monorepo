@@ -1,59 +1,36 @@
 # Native DateRangePicker design — issue #266
 
-The [mobile design board](./issue-266-date-range-picker-mobile.html) shows two concepts in 390 × 844 frames. [Concept A](./issue-266-date-range-picker-mobile.png) is recommended: a full preset list followed by a focused custom calendar. The date examples use 26 September 2026 as the illustrative current day.
+The chosen direction follows [Monzo's date range sheet](https://mobbin.com/screens/17676b62-d546-474e-9bd8-0b52e6a83d9c) and its [expanded calendar state](https://mobbin.com/screens/edac9b84-fcd9-4683-a625-7b9c1dd3648f). See the [Monzo direction board](./issue-266-date-range-picker-monzo.html) and [PNG preview](./issue-266-date-range-picker-monzo.png). The earlier [concept comparison](./issue-266-date-range-picker-mobile.html) is retained as exploration, not the implementation target.
 
-## Mobbin findings
+## Layout
 
-| Reference | Observed pattern | Applied here |
-| --- | --- | --- |
-| [Klarna filter sheet](https://mobbin.com/screens/59fe2496-7f9b-42b2-99b5-68fead2aed8a) | Radio-style date options in a sheet with fixed actions | Scannable preset rows and fixed Cancel / Apply footer |
-| [Monzo date range](https://mobbin.com/screens/17676b62-d546-474e-9bd8-0b52e6a83d9c) | Clear From / To summary and quick ranges | Two explicit endpoint boxes above the calendar |
-| [StubHub range calendar](https://mobbin.com/screens/884f331a-261f-4138-addd-013c62020550) | Selected endpoints and a continuous in-between highlight | Blue endpoint circles and pale blue included dates |
-| [Expedia date range](https://mobbin.com/screens/86a978a2-30bc-4865-8d89-e0b5370ef1f3) | Navigable calendar with persistent confirmation | Month navigation and Apply anchored below scrollable content |
+- The closed 56 px control displays the committed preset label when identifiable, otherwise the formatted date range. An empty value reads “Select range”.
+- A native bottom sheet contains a title, a single From / To card, a horizontal quick-range rail, and a fixed Done button. The user can dismiss with Back or a sheet gesture; that discards the draft.
+- Tapping From or To expands a month calendar _within that row's card_, as in Monzo. Both endpoints stay visible as the user edits. Selected endpoints use Luna's primary blue; days between them use a pale blue fill. The active row has the Luna input focus tint.
+- Four common presets are immediately visible in the rail: Today, Last 7 days, Last 30 days, and Month to date. “See all” expands a scrollable list of all 13 web choices, including Custom range, in the same sheet. The rail itself scrolls horizontally; the visible set is a convenience, not a replacement for the full set.
+- Done stays fixed above the safe area. It is disabled while either date is missing. “Done” invokes the issue's `onApply(range)` event and closes the sheet.
 
-These are interaction references. Colors, spacing, type, and surfaces follow `DESIGN.MD` and Luna Mobile tokens.
+The board uses 26 September 2026 as an illustrative current day. Production uses localized month and date labels and Luna theme tokens. The calendar starts on Monday, matching the web week-to-date preset.
 
-## Concepts
+## Interaction
 
-**A · Preset list and calendar (recommended).** The closed control shows the committed label or formatted range. Opening it reveals all 12 fixed presets, grouped as Recent, This period, and Previous periods, plus Custom range. The list scrolls under a fixed footer. Choosing Custom range opens the calendar within the same sheet. This keeps the entire web choice set discoverable and provides room for a legible calendar.
+| Action                           | Draft state                                               | Committed value       |
+| -------------------------------- | --------------------------------------------------------- | --------------------- |
+| Open sheet                       | Copy `value`                                              | Unchanged             |
+| Tap a preset                     | Set both dates; close expanded calendar                   | Unchanged             |
+| Tap From, then a day             | Set start and clear end; To remains available below       | Unchanged             |
+| Tap To, then a day               | Set end if on/after start; earlier tap starts a new range | Unchanged             |
+| Tap Done                         | Emit complete range and close                             | Parent receives range |
+| Back, swipe dismiss, system back | Discard draft; call optional `onCancel`                   | Unchanged             |
 
-**B · Quick-pick grid (alternative).** Four frequent presets are shown first; More presets reveals the remaining eight fixed presets. Custom range remains visible. This makes the first sheet lighter but adds a step and hides most of the required fixed options. It should only be chosen if usage data shows that a small set dominates.
+Same-day ranges are valid. The calendar does not impose a future-date limit because [issue #266](https://github.com/Guallet/monorepo/issues/266) does not define one. The default choices match the [web preset set](../../apps/webapp/src/components/DateRangeButton/DateListPicker.tsx): Today, Yesterday, Last 7 days, Last 30 days, Last 365 days, Last month, Last 12 months, Last year, Week to date, Month to date, Quarter to date, Year to date, and Custom range. Custom range opens the From calendar; tapping either endpoint also opens the calendar directly.
 
-The board depicts five states: committed control, preset draft, incomplete custom range, complete custom range, and the compact alternative. Its transaction screen is context for the reusable component, not a proposed transaction-screen redesign.
+Monzo also shows “All time” and Clear. Those controls are omitted here because this component's `onApply` accepts only a complete range; it has no `null` result. A future contract change would be needed to support clearing a date filter.
 
-## Component anatomy
+## Component contract and access
 
-| Part | Design |
-| --- | --- |
-| Closed control | Full-width, 56 px high, 16 px radius, calendar icon, value, and chevron; Luna input surface/border tokens |
-| Sheet | Native bottom sheet, white/light surface, top handle, title, Cancel, scrollable content, and fixed action footer |
-| Preset row | At least 50 px high, sentence-case label, radio indicator, clear active color |
-| Calendar | Monday-first seven-column grid, 38–45 px day cells, month controls, visible From and To summaries |
-| Selection | Primary blue endpoint fill; light blue dates between endpoints; today underlined only when not selected |
-| Footer | Cancel secondary action and Apply primary action; Apply disabled until two dates are chosen for custom range |
+Keep the issue's props: `value`, `onApply`, optional `presets` and `onCancel`, and `style`, `bottomSheetStyle`, `calendarStyle`, and `textStyle`. All style props apply to their named surfaces while preserving minimum touch targets.
 
-Use Luna theme tokens for colors, spacing, typography, and borders in production. The board's static hex values illustrate the light token values; dark mode should resolve from Luna's theme. Date and month labels should use the device locale and accessible date formatting. The examples use UK English.
+The trigger announces its label and committed value. Endpoint rows announce their date or “not selected” and whether their calendar is expanded. Day cells announce full dates plus selection state. Preset chips and list items announce selected state. Month navigation, See all, Back, and Done have distinct labels and accessible focus order. From / To text makes the selection understandable without color alone.
 
-## Presets and state
-
-The default choices exactly cover the [web control's preset set](../../apps/webapp/src/components/DateRangeButton/DateListPicker.tsx): Today, Yesterday, Last 7 days, Last 30 days, Last 365 days, Last month, Last 12 months, Last year, Week to date, Month to date, Quarter to date, Year to date, and Custom range. The groups are visual only; they do not change the public preset identifiers or date calculations.
-
-1. The closed control reflects the committed `value`. On open, copy that value into a draft. A `null` value displays “Select range”. If the committed dates match a known preset, show its label; otherwise, show the formatted dates.
-2. Tapping a fixed preset updates only the draft and marks its radio row. Apply emits its complete range once and closes the sheet. Cancel, swipe dismissal, and system back discard the draft and call `onCancel` when provided.
-3. Tapping Custom range switches to the calendar. The first tap sets the start and clears the end. The second tap on the same or a later date sets the end. A tap before the current start begins a new range from that day. After a complete range, a new tap begins a new selection.
-4. Apply stays disabled while custom selection has only one endpoint. The From / To boxes announce which date is expected. A same-day range is valid, matching the web calendar's single-day support.
-5. Date ranges use local calendar days, inclusive. Fixed presets retain the web control's start-of-day / end-of-day semantics. The visual calendar does not impose a future-date limit because the public contract in [issue #266](https://github.com/Guallet/monorepo/issues/266) defines none.
-6. `style`, `bottomSheetStyle`, `calendarStyle`, and `textStyle` affect the surfaces named in the issue without changing the event contract or minimum touch-target geometry.
-
-## Accessibility and implementation handoff
-
-- The closed control exposes a button role and announces “Date range, [value]”. Each preset announces its label and selected state. Calendar days announce full localized dates plus “start”, “end”, or “in selected range” where relevant.
-- Month navigation, Cancel, Back to presets, and Apply need distinct labels and reachable focus order. The selected dates must remain understandable without color alone through the From / To summary.
-- The sheet footer remains visible with large text and on shorter screens; list/calendar content scrolls. The sheet may expand to full height on small devices.
-- The app currently requires mobile sheets to go through `apps/mobile/components/ui/BottomSheet.tsx`, while the issue places the reusable component in `packages/guallet-luna-mobile`. That dependency boundary needs an implementation decision before coding. A package-level presentation adapter or a shared wrapper that the app re-exports could preserve a single theme-aware sheet integration without coupling Luna to the app. The visual and event design does not depend on which adapter is chosen.
-
-## Review points
-
-- Choose Concept A or B; A is recommended for discoverability of all 13 choices.
-- Confirm the two-stage custom flow and whether the closed control should display a recognized preset label or always display dates.
-- Confirm that same-day ranges and future dates should follow the web behavior described above.
+The repository's app-local `BottomSheet` wrapper is the only allowed Expo UI sheet integration, while the issue places this reusable component in `packages/guallet-luna-mobile`. `DateRangeSheetProvider` connects the package control to that app wrapper; the package does not import Expo UI or app code.

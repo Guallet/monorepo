@@ -17,6 +17,7 @@ import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
+import { LunaBottomSheetProvider } from '@/components/ui/BottomSheet';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -82,7 +83,9 @@ export function GualletApp() {
 
   return (
     <LunaProvider>
-      <AppNavigation />
+      <LunaBottomSheetProvider>
+        <AppNavigation />
+      </LunaBottomSheetProvider>
     </LunaProvider>
   );
 }

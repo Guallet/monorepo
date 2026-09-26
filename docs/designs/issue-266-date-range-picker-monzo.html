@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guallet DateRangePicker · Monzo direction</title>
+  <style>
+    :root { font-family: Inter, system-ui, sans-serif; color: #231f20; background: #edf3f8; }
+    * { box-sizing: border-box; } body { margin: 0; }
+    main { max-width: 930px; margin: auto; padding: 40px 24px 64px; }
+    .eyebrow { margin: 0 0 7px; color: #425563; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    h1 { margin: 0; color: #003087; font-size: 36px; letter-spacing: -.02em; }
+    .intro { max-width: 800px; margin: 10px 0 28px; color: #425563; font-size: 16px; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(2, 390px); gap: 28px; justify-content: center; }
+    article h2 { margin: 0 0 6px; color: #003087; font-size: 18px; }
+    article > p { min-height: 40px; margin: 0 0 12px; color: #425563; font-size: 14px; line-height: 1.4; }
+    .phone { position: relative; width: 390px; height: 844px; overflow: hidden; border: 6px solid #231f20; border-radius: 38px; background: #f7fafc; box-shadow: 0 14px 30px rgba(0,48,135,.13); }
+    .status { display: flex; height: 39px; align-items: center; justify-content: space-between; padding: 4px 22px 0; background: #fff; font-size: 13px; font-weight: 700; }
+    .camera { position: absolute; top: 10px; left: 50%; width: 84px; height: 20px; transform: translateX(-50%); border-radius: 14px; background: #231f20; }
+    .nav { display: flex; height: 58px; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #e8edee; background: #fff; font-size: 20px; font-weight: 700; }
+    .app { padding: 24px 20px; } .app h3 { margin: 0 0 17px; font-size: 27px; }
+    .label { display: block; margin-bottom: 6px; color: #425563; font-size: 14px; font-weight: 600; }
+    .trigger { display: flex; height: 56px; align-items: center; gap: 10px; padding: 0 15px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f0f9ff; font-size: 16px; }
+    .trigger svg { width: 23px; height: 23px; fill: none; stroke: #005eb8; stroke-width: 1.5; }
+    .trigger b { margin-left: auto; color: #005eb8; font-size: 22px; }
+    .tx-title { display: flex; justify-content: space-between; margin: 28px 0 13px; } .tx-title span { color: #768692; font-size: 13px; }
+    .tx { display: flex; gap: 11px; align-items: center; padding: 14px 0; border-bottom: 1px solid #e8edee; }
+    .tx i { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px; background: #e8edee; font-style: normal; }
+    .tx div { flex: 1; } .tx small { display: block; margin-top: 3px; color: #768692; }
+    .money { color: #da291c; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; } .money.positive { color: #009639; }
+    .scrim { position: absolute; inset: 39px 0 0; background: rgba(10,27,43,.43); }
+    .sheet { position: absolute; right: 0; bottom: 0; left: 0; height: 702px; overflow: hidden; border-radius: 24px 24px 0 0; background: #f7fafc; box-shadow: 0 -8px 32px rgba(0,0,0,.12); }
+    .handle { width: 36px; height: 4px; margin: 10px auto 0; border-radius: 4px; background: #c3cdd4; }
+    .sheet-head { display: flex; height: 62px; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 18px; }
+    .back { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: #fff; color: #005eb8; font-size: 25px; }
+    .spacer { width: 34px; } .sheet-content { height: 515px; overflow: hidden; padding: 0 16px; }
+    .card { overflow: hidden; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; }
+    .date-row { display: flex; min-height: 58px; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; font-size: 16px; }
+    .date-row + .date-row, .calendar-wrap + .date-row { border-top: 1px solid #e8edee; }
+    .date-row.active { background: #f0f9ff; } .value { color: #005eb8; font-size: 15px; font-weight: 600; } .value.empty { color: #768692; font-weight: 400; }
+    .calendar-wrap { padding: 9px 12px 13px; border-top: 1px solid #e8edee; }
+    .month { display: flex; height: 42px; align-items: center; justify-content: space-between; padding: 0 3px; font-size: 16px; font-weight: 700; }
+    .arrows { display: flex; gap: 22px; color: #005eb8; font-size: 25px; font-weight: 400; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 42px; text-align: center; }
+    .day { display: grid; height: 36px; place-items: center; font-size: 14px; font-variant-numeric: tabular-nums; }
+    .day.weekday { color: #768692; font-size: 11px; font-weight: 700; } .day.today { text-decoration: underline; text-underline-offset: 4px; }
+    .day.range { background: #e2f2ff; color: #003087; } .day.start { border-radius: 20px 0 0 20px; background: #005eb8; color: #fff; font-weight: 700; }
+    .day.end { border-radius: 0 20px 20px 0; background: #005eb8; color: #fff; font-weight: 700; } .day.solo { border-radius: 20px; background: #005eb8; color: #fff; font-weight: 700; }
+    .rail-head { display: flex; justify-content: space-between; margin: 18px 2px 8px; color: #425563; font-size: 13px; font-weight: 600; } .link { color: #005eb8; }
+    .rail { display: flex; gap: 8px; overflow: hidden; margin-right: -16px; white-space: nowrap; }
+    .chip { display: grid; height: 38px; flex: none; place-items: center; padding: 0 12px; border: 1px solid #e5e7eb; border-radius: 20px; background: #fff; color: #425563; font-size: 13px; font-weight: 600; }
+    .chip.active { border-color: #005eb8; background: #e2f2ff; color: #005eb8; }
+    .help { margin: 18px 2px 0; color: #768692; font-size: 13px; line-height: 1.4; }
+    .all { margin-top: 14px; padding: 13px 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; }
+    .all h4 { margin: 0 0 9px; font-size: 16px; } .presets { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10px; }
+    .preset { display: flex; min-height: 37px; align-items: center; border-top: 1px solid #e8edee; font-size: 12px; } .preset.active { color: #005eb8; font-weight: 700; }
+    .footer { position: absolute; right: 0; bottom: 0; left: 0; height: 89px; padding: 9px 16px 30px; border-top: 1px solid #e8edee; background: #f7fafc; }
+    .done { display: grid; height: 50px; place-items: center; border-radius: 25px; background: #005eb8; color: #fff; font-size: 16px; font-weight: 700; }
+    .done.disabled { background: #d9e2e8; color: #768692; } .home { position: absolute; bottom: 7px; left: 50%; width: 108px; height: 5px; transform: translateX(-50%); border-radius: 5px; background: #231f20; z-index: 2; }
+    footer { margin-top: 26px; color: #425563; font-size: 13px; line-height: 1.5; } footer a { color: #005eb8; }
+    @media (max-width: 840px) { main { padding: 26px 12px 45px; } h1 { font-size: 30px; } .grid { grid-template-columns: 390px; } }
+    @media (max-width: 410px) { .grid { grid-template-columns: minmax(0, 1fr); } .phone { width: 100%; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Guallet · Luna Mobile · Issue 266</p>
+    <h1>DateRangePicker · Monzo direction</h1>
+    <p class="intro">From and To live in one card. Tapping either row expands its calendar in place. Preset chips stay below, the full web set is available through “See all”, and Done stays anchored.</p>
+    <div class="grid" id="grid"></div>
+    <footer>Original Guallet adaptation for <a href="https://github.com/Guallet/monorepo/issues/266">issue #266</a>, based on the <a href="https://mobbin.com/screens/17676b62-d546-474e-9bd8-0b52e6a83d9c">Monzo date range sheet</a> and <a href="https://mobbin.com/screens/edac9b84-fcd9-4683-a625-7b9c1dd3648f">Monzo expanded calendar</a>. All time and Clear are omitted because the issue allows applying only a complete range.</footer>
+  </main>
+  <script>
+    const calendar = (complete) => {
+      const days = ['M','T','W','T','F','S','S'].map(d => `<span class="day weekday">${d}</span>`);
+      days.push('<span class="day"></span>');
+      for (let d = 1; d <= 30; d++) {
+        const state = d === 7 ? (complete ? 'start' : 'solo') : complete && d === 23 ? 'end' : complete && d > 7 && d < 23 ? 'range' : d === 26 ? 'today' : '';
+        days.push(`<span class="day ${state}">${d}</span>`);
+      }
+      return `<div class="calendar-wrap"><div class="month">September 2026 <span class="arrows">‹　›</span></div><div class="calendar">${days.join('')}</div></div>`;
+    };
+    const rail = (active = '') => `<div class="rail-head"><span>Quick ranges</span><span class="link">See all</span></div><div class="rail">${['Today','Last 7 days','Last 30 days','Month to date'].map(x => `<span class="chip ${x === active ? 'active' : ''}">${x}</span>`).join('')}</div>`;
+    const row = (label, value, active = false) => `<div class="date-row ${active ? 'active' : ''}"><span>${label}</span><span class="value ${value.startsWith('Select') ? 'empty' : ''}">${value}</span></div>`;
+    const presetNames = ['Today','Yesterday','Last 7 days','Last 30 days','Last 365 days','Last month','Last 12 months','Last year','Week to date','Month to date','Quarter to date','Year to date','Custom range'];
+    const all = `<div class="all"><h4>All ranges</h4><div class="presets">${presetNames.map(x => `<span class="preset ${x === 'Last 30 days' ? 'active' : ''}">${x}${x === 'Last 30 days' ? ' ✓' : ''}</span>`).join('')}</div></div>`;
+    const shell = (body, disabled = false) => `<div class="scrim"></div><div class="sheet"><div class="handle"></div><div class="sheet-head"><span class="back">‹</span><strong>Date range</strong><span class="spacer"></span></div><div class="sheet-content">${body}</div><div class="footer"><span class="done ${disabled ? 'disabled' : ''}">Done</span></div><div class="home"></div></div>`;
+    const app = `<div class="app"><h3>Activity</h3><span class="label">Date range</span><div class="trigger"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>Last 30 days<b>⌄</b></div><div class="tx-title"><strong>Recent transactions</strong><span>28 Aug–26 Sep</span></div><div class="tx"><i>▣</i><div><strong>Groceries</strong><small>Today · Shopping</small></div><span class="money">−£42.50</span></div><div class="tx"><i>◫</i><div><strong>Coffee shop</strong><small>Yesterday · Food & drink</small></div><span class="money">−£4.80</span></div><div class="tx"><i>◉</i><div><strong>Salary</strong><small>24 Sep · Income</small></div><span class="money positive">£2,850.00</span></div></div>`;
+    const views = [
+      { title:'01 · Committed range', note:'The trigger shows the current value; opening it starts a draft.', body:'' },
+      { title:'02 · Quick range draft', note:'The chip fills both dates; Done commits only when pressed.', body:`<div class="card">${row('From','20 Sep 2026')}${row('To','26 Sep 2026')}</div>${rail('Last 7 days')}<p class="help">Tap From or To to choose dates. The current filter stays unchanged until Done.</p>` },
+      { title:'03 · Pick a start date', note:'The From calendar expands in place. Done waits for an end date.', body:`<div class="card">${row('From','7 Sep 2026',true)}${calendar(false)}${row('To','Select end date')}</div>${rail()}`, disabled:true },
+      { title:'04 · Complete custom range', note:'The To calendar shows both endpoints and the included days.', body:`<div class="card">${row('From','7 Sep 2026')}${row('To','23 Sep 2026',true)}${calendar(true)}</div>${rail()}` },
+      { title:'05 · Every web preset', note:'See all expands all 13 web choices within the same sheet.', body:`<div class="card">${row('From','28 Aug 2026')}${row('To','26 Sep 2026')}</div>${rail('Last 30 days')}${all}` },
+    ];
+    document.getElementById('grid').innerHTML = views.map(v => `<article><h2>${v.title}</h2><p>${v.note}</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav">Transactions<span style="color:#005eb8">⋯</span></div>${app}${v.body ? shell(v.body,v.disabled) : '<div class="home"></div>'}</div></article>`).join('');
+  </script>
+</body>
+</html>
