@@ -56,7 +56,11 @@ export default function TabLayout() {
         options={{
           title: 'Accounts',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="wallet.pass.fill" color={color} />
+            <IconSymbol
+              size={28}
+              name="wallet.pass.fill"
+              color={String(color)}
+            />
           ),
         }}
       />

@@ -63,7 +63,7 @@ export function LoginScreen() {
         style={[
           styles.hero,
           {
-            backgroundColor: colors.button.secondary,
+            backgroundColor: colors.button.secondary.default,
             borderColor: colors.surface.border.primary,
             borderRadius: borderRadius.xl,
             padding: spacing.lg,
