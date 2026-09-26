@@ -56,7 +56,7 @@
     .preset { display: flex; min-height: 37px; align-items: center; border-top: 1px solid #e8edee; font-size: 12px; } .preset.active { color: #005eb8; font-weight: 700; }
     .footer { position: absolute; right: 0; bottom: 0; left: 0; height: 89px; padding: 9px 16px 30px; border-top: 1px solid #e8edee; background: #f7fafc; }
     .done { display: grid; height: 50px; place-items: center; border-radius: 25px; background: #005eb8; color: #fff; font-size: 16px; font-weight: 700; }
-    .done.disabled { background: #d9e2e8; color: #768692; } .home { position: absolute; bottom: 7px; left: 50%; width: 108px; height: 5px; transform: translateX(-50%); border-radius: 5px; background: #231f20; z-index: 2; }
+    .done.disabled { background: #d9e2e8; color: #425563; } .home { position: absolute; bottom: 7px; left: 50%; width: 108px; height: 5px; transform: translateX(-50%); border-radius: 5px; background: #231f20; z-index: 2; }
     footer { margin-top: 26px; color: #425563; font-size: 13px; line-height: 1.5; } footer a { color: #005eb8; }
     @media (max-width: 840px) { main { padding: 26px 12px 45px; } h1 { font-size: 30px; } .grid { grid-template-columns: 390px; } }
     @media (max-width: 410px) { .grid { grid-template-columns: minmax(0, 1fr); } .phone { width: 100%; } }
@@ -71,19 +71,36 @@
     <footer>Original Guallet adaptation for <a href="https://github.com/Guallet/monorepo/issues/266">issue #266</a>, based on the <a href="https://mobbin.com/screens/17676b62-d546-474e-9bd8-0b52e6a83d9c">Monzo date range sheet</a> and <a href="https://mobbin.com/screens/edac9b84-fcd9-4683-a625-7b9c1dd3648f">Monzo expanded calendar</a>. All time and Clear are omitted because the issue allows applying only a complete range.</footer>
   </main>
   <script>
+    const dayState = (day, complete) => {
+      if (day === 7) return complete ? 'start' : 'solo';
+      if (complete && day === 23) return 'end';
+      if (complete && day > 7 && day < 23) return 'range';
+      if (day === 26) return 'today';
+      return '';
+    };
     const calendar = (complete) => {
       const days = ['M','T','W','T','F','S','S'].map(d => `<span class="day weekday">${d}</span>`);
       days.push('<span class="day"></span>');
       for (let d = 1; d <= 30; d++) {
-        const state = d === 7 ? (complete ? 'start' : 'solo') : complete && d === 23 ? 'end' : complete && d > 7 && d < 23 ? 'range' : d === 26 ? 'today' : '';
+        const state = dayState(d, complete);
         days.push(`<span class="day ${state}">${d}</span>`);
       }
       return `<div class="calendar-wrap"><div class="month">September 2026 <span class="arrows">‹　›</span></div><div class="calendar">${days.join('')}</div></div>`;
     };
-    const rail = (active = '') => `<div class="rail-head"><span>Quick ranges</span><span class="link">See all</span></div><div class="rail">${['Today','Last 7 days','Last 30 days','Month to date'].map(x => `<span class="chip ${x === active ? 'active' : ''}">${x}</span>`).join('')}</div>`;
+    const rail = (active = '') => {
+      const chips = ['Today','Last 7 days','Last 30 days','Month to date'].map(x => {
+        const selected = x === active ? 'active' : '';
+        return `<span class="chip ${selected}">${x}</span>`;
+      }).join('');
+      return `<div class="rail-head"><span>Quick ranges</span><span class="link">See all</span></div><div class="rail">${chips}</div>`;
+    };
     const row = (label, value, active = false) => `<div class="date-row ${active ? 'active' : ''}"><span>${label}</span><span class="value ${value.startsWith('Select') ? 'empty' : ''}">${value}</span></div>`;
     const presetNames = ['Today','Yesterday','Last 7 days','Last 30 days','Last 365 days','Last month','Last 12 months','Last year','Week to date','Month to date','Quarter to date','Year to date','Custom range'];
-    const all = `<div class="all"><h4>All ranges</h4><div class="presets">${presetNames.map(x => `<span class="preset ${x === 'Last 30 days' ? 'active' : ''}">${x}${x === 'Last 30 days' ? ' ✓' : ''}</span>`).join('')}</div></div>`;
+    const presetRows = presetNames.map(x => {
+      const selected = x === 'Last 30 days';
+      return `<span class="preset ${selected ? 'active' : ''}">${x}${selected ? ' ✓' : ''}</span>`;
+    }).join('');
+    const all = `<div class="all"><h4>All ranges</h4><div class="presets">${presetRows}</div></div>`;
     const shell = (body, disabled = false) => `<div class="scrim"></div><div class="sheet"><div class="handle"></div><div class="sheet-head"><span class="back">‹</span><strong>Date range</strong><span class="spacer"></span></div><div class="sheet-content">${body}</div><div class="footer"><span class="done ${disabled ? 'disabled' : ''}">Done</span></div><div class="home"></div></div>`;
     const app = `<div class="app"><h3>Activity</h3><span class="label">Date range</span><div class="trigger"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>Last 30 days<b>⌄</b></div><div class="tx-title"><strong>Recent transactions</strong><span>28 Aug–26 Sep</span></div><div class="tx"><i>▣</i><div><strong>Groceries</strong><small>Today · Shopping</small></div><span class="money">−£42.50</span></div><div class="tx"><i>◫</i><div><strong>Coffee shop</strong><small>Yesterday · Food & drink</small></div><span class="money">−£4.80</span></div><div class="tx"><i>◉</i><div><strong>Salary</strong><small>24 Sep · Income</small></div><span class="money positive">£2,850.00</span></div></div>`;
     const views = [
