@@ -49,12 +49,16 @@ function DateRangeBottomSheet({
   );
 }
 
+function renderDateRangeBottomSheet(props: DateRangeSheetProps) {
+  return <DateRangeBottomSheet {...props} />;
+}
+
 /** Keeps Luna's reusable picker on the app's single Expo sheet integration. */
 export function LunaBottomSheetProvider({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <DateRangeSheetProvider sheet={DateRangeBottomSheet}>
+    <DateRangeSheetProvider sheet={renderDateRangeBottomSheet}>
       {children}
     </DateRangeSheetProvider>
   );
