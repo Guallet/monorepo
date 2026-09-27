@@ -277,7 +277,9 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
             }}
           >
             {groups.length === 0 ? (
-              <View style={[styles.empty, { padding: spacing.lg }]}>
+              <View
+                style={[styles.empty, { gap: spacing.sm, padding: spacing.lg }]}
+              >
                 <SearchIcon size={32} color={colors.text.secondary} />
                 <Text
                   style={{
@@ -529,7 +531,6 @@ const styles = StyleSheet.create({
   results: { flex: 1 },
   empty: {
     alignItems: 'center',
-    gap: 8,
     justifyContent: 'center',
     minHeight: 180,
   },
