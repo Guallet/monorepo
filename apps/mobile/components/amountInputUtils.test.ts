@@ -2,6 +2,7 @@ import { Currency } from '@guallet/money';
 import { describe, expect, it } from 'vitest';
 import {
   formatAmount,
+  getAmountDecimalPlaces,
   isValidAmountText,
   normalizeAmount,
   parseAmountText,
@@ -11,6 +12,8 @@ describe('AmountInput text handling', () => {
   const eur = Currency.fromISOCode('EUR');
   const jpy = Currency.fromISOCode('JPY');
   const bhd = Currency.fromISOCode('BHD');
+  const iqd = Currency.fromISOCode('IQD');
+  const xdr = Currency.fromISOCode('XDR');
 
   it('parses numeric amounts and clears empty input', () => {
     expect(parseAmountText('')).toBeNull();
@@ -33,6 +36,18 @@ describe('AmountInput text handling', () => {
     expect(isValidAmountText('12.345', 3)).toBe(true);
     expect(isValidAmountText('12.3.4', 3)).toBe(false);
     expect(isValidAmountText('1e3', 3)).toBe(false);
+  });
+
+  it('uses the same Intl precision for input and display', () => {
+    expect(getAmountDecimalPlaces(iqd)).toBe(0);
+    expect(getAmountDecimalPlaces(xdr)).toBe(2);
+    expect(iqd.decimalPlaces).not.toBe(getAmountDecimalPlaces(iqd));
+    expect(xdr.decimalPlaces).not.toBe(getAmountDecimalPlaces(xdr));
+    expect(isValidAmountText('1.234', getAmountDecimalPlaces(iqd))).toBe(false);
+    expect(isValidAmountText('1.23', getAmountDecimalPlaces(xdr))).toBe(true);
+    expect(isValidAmountText('1.234', getAmountDecimalPlaces(xdr))).toBe(false);
+    expect(formatAmount(1.234, iqd, true)).toBe('1');
+    expect(formatAmount(1.234, xdr, true)).toBe('1.23');
   });
 
   it('pads on blur and trims trailing zeros for editing', () => {

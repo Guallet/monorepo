@@ -1,5 +1,5 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@guallet/luna-mobile';
+import { ChevronDownIcon } from '@guallet/luna-mobile/icons';
 import type { Currency } from '@guallet/money';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -16,6 +16,7 @@ import {
 import { CurrencyPickerSheet } from './CurrencyPickerSheet';
 import {
   formatAmount,
+  getAmountDecimalPlaces,
   isValidAmountText,
   normalizeAmount,
   parseAmountText,
@@ -52,7 +53,9 @@ export function AmountInput({
   const [focused, setFocused] = useState(false);
   const [pickerPresented, setPickerPresented] = useState(false);
   const lastEmittedValue = useRef(value);
-  const currencyKey = `${currency.code}:${currency.decimalPlaces}`;
+  const decimalPlaces = getAmountDecimalPlaces(currency);
+  const currencyKey = `${currency.code}:${decimalPlaces}`;
+  const accessibleLabel = label.trim() || 'Amount';
   const previousCurrencyKey = useRef(currencyKey);
   const lastNormalization = useRef<string | null>(null);
   const hasError = error != null;
@@ -87,7 +90,7 @@ export function AmountInput({
   }, [currency, currencyKey, focused, onChange, value]);
 
   function handleChangeText(nextText: string): void {
-    if (!isValidAmountText(nextText, currency.decimalPlaces)) return;
+    if (!isValidAmountText(nextText, decimalPlaces)) return;
 
     setText(nextText);
     const parsed = parseAmountText(nextText);
@@ -125,7 +128,7 @@ export function AmountInput({
 
   return (
     <View style={[{ marginBottom: spacing.md }, containerStyle]}>
-      {label && (
+      {label ? (
         <Text
           style={{
             color: colors.text.primary,
@@ -136,7 +139,7 @@ export function AmountInput({
         >
           {label}
         </Text>
-      )}
+      ) : null}
       <View
         style={[
           styles.inputContainer,
@@ -162,7 +165,7 @@ export function AmountInput({
           {currency.symbol}
         </Text>
         <RNTextInput
-          accessibilityLabel={`${label} (${currency.code})`}
+          accessibilityLabel={`${accessibleLabel} (${currency.code})`}
           accessibilityHint={error ?? undefined}
           accessibilityState={{ disabled }}
           editable={!disabled}
@@ -205,9 +208,9 @@ export function AmountInput({
           >
             {currency.code}
           </Text>
-          <MaterialIcons
+          <ChevronDownIcon
+            accessible={false}
             color={colors.text.secondary}
-            name="keyboard-arrow-down"
             size={20}
           />
         </Pressable>

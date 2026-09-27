@@ -1,4 +1,5 @@
 import { useTheme } from '@guallet/luna-mobile';
+import { CloseIcon, SearchIcon } from '@guallet/luna-mobile/icons';
 import { Currency, ISO4217Currencies } from '@guallet/money';
 import { useMemo, useState } from 'react';
 import {
@@ -10,8 +11,8 @@ import {
   View,
 } from 'react-native';
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { getAmountDecimalPlaces } from './amountInputUtils';
 
 const availableCurrencies = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -158,7 +159,8 @@ export function CurrencyPickerSheet({
                       fontSize: typography.sizes.sm,
                     }}
                   >
-                    {currency.code} · {currency.decimalPlaces} decimals
+                    {currency.code} · {getAmountDecimalPlaces(currency)}{' '}
+                    decimals
                   </Text>
                 </View>
                 <View
@@ -229,7 +231,11 @@ export function CurrencyPickerSheet({
               },
             ]}
           >
-            <IconSymbol color={colors.text.primary} name="xmark" size={22} />
+            <CloseIcon
+              accessible={false}
+              color={colors.text.primary}
+              size={22}
+            />
           </Pressable>
         </View>
         <View
@@ -243,9 +249,9 @@ export function CurrencyPickerSheet({
             },
           ]}
         >
-          <IconSymbol
+          <SearchIcon
+            accessible={false}
             color={colors.text.secondary}
-            name="magnifyingglass"
             size={24}
           />
           <TextInput

@@ -1,4 +1,5 @@
 import { useTheme } from '@guallet/luna-mobile';
+import { ChevronDownIcon } from '@guallet/luna-mobile/icons';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { CurrencyPickerSheet, findCurrency } from './CurrencyPickerSheet';
@@ -26,7 +27,7 @@ export function CurrencyInput({
 
   return (
     <View style={{ marginBottom: spacing.md }}>
-      {label && (
+      {label ? (
         <Text
           style={{
             color: colors.text.primary,
@@ -37,9 +38,9 @@ export function CurrencyInput({
         >
           {label}
         </Text>
-      )}
+      ) : null}
       <Pressable
-        accessibilityLabel={label}
+        accessibilityLabel={label.trim() || 'Currency'}
         accessibilityRole="button"
         accessibilityState={{ disabled }}
         accessibilityValue={{ text: selectedCurrency?.code ?? placeholder }}
@@ -74,14 +75,11 @@ export function CurrencyInput({
             ? `${selectedCurrency.symbol} - ${selectedCurrency.name} - ${selectedCurrency.code}`
             : placeholder}
         </Text>
-        <Text
-          style={{
-            color: colors.text.secondary,
-            fontSize: typography.sizes.lg,
-          }}
-        >
-          ⌄
-        </Text>
+        <ChevronDownIcon
+          accessible={false}
+          color={colors.text.secondary}
+          size={20}
+        />
       </Pressable>
       {description && (
         <Text
