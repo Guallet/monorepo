@@ -29,6 +29,33 @@ export function SettingsRow({
   value,
 }: Readonly<SettingsRowProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
+  let accessory: ReactNode = null;
+  if (isLoading) {
+    accessory = <ActivityIndicator color={colors.accent.primary} />;
+  } else if (value !== undefined) {
+    accessory = (
+      <>
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.rowValue,
+            {
+              color: colors.text.secondary,
+              fontSize: typography.sizes.sm,
+              marginRight: spacing.xs,
+            },
+          ]}
+        >
+          {value}
+        </Text>
+        <IconSymbol
+          color={colors.text.secondary}
+          name="chevron.right"
+          size={20}
+        />
+      </>
+    );
+  }
 
   return (
     <Pressable
@@ -79,32 +106,7 @@ export function SettingsRow({
       >
         {label}
       </Text>
-      <View style={styles.rowAccessory}>
-        {isLoading ? (
-          <ActivityIndicator color={colors.accent.primary} />
-        ) : value !== undefined ? (
-          <>
-            <Text
-              numberOfLines={1}
-              style={[
-                styles.rowValue,
-                {
-                  color: colors.text.secondary,
-                  fontSize: typography.sizes.sm,
-                  marginRight: spacing.xs,
-                },
-              ]}
-            >
-              {value}
-            </Text>
-            <IconSymbol
-              color={colors.text.secondary}
-              name="chevron.right"
-              size={20}
-            />
-          </>
-        ) : null}
-      </View>
+      <View style={styles.rowAccessory}>{accessory}</View>
     </Pressable>
   );
 }

@@ -18,7 +18,9 @@ interface SavingGoalProgressItemProps {
   goal: SavingGoalDto;
 }
 
-export function SavingGoalProgressItem({ goal }: SavingGoalProgressItemProps) {
+export function SavingGoalProgressItem({
+  goal,
+}: Readonly<SavingGoalProgressItemProps>) {
   const { colors, spacing, typography } = useTheme();
   const progressPct = Math.min(100, Math.max(0, goal.progressPercentage));
 
