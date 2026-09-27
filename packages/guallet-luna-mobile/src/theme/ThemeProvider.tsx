@@ -2,8 +2,7 @@ import {
   createContext,
   PropsWithChildren,
   useContext,
-  useEffect,
-  useState,
+  useSyncExternalStore,
 } from 'react';
 import { type GualletTheme, type GualletThemeOverrides } from '@guallet/theme';
 import { Platform, useColorScheme } from 'react-native';
@@ -14,6 +13,10 @@ export const ThemeContext = createContext<GualletTheme>(DefaultTheme);
 export const ThemeModeContext = createContext<ThemeMode>('light');
 
 export type ThemeMode = 'light' | 'dark';
+
+const subscribeToHydration = () => () => {};
+const getClientHydration = () => true;
+const getServerHydration = () => Platform.OS !== 'web';
 
 export interface LunaProviderProps {
   /** Nested overrides applied to both appearances before appearance overrides. */
@@ -34,11 +37,11 @@ export function LunaProvider({
   colorScheme,
 }: PropsWithChildren<LunaProviderProps>) {
   const systemColorScheme = useColorScheme();
-  const [isHydrated, setIsHydrated] = useState(Platform.OS !== 'web');
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydration,
+    getServerHydration,
+  );
 
   const mode =
     colorScheme ??
