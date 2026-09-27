@@ -6,6 +6,7 @@ export interface CategoryAvatarProps extends Omit<AvatarProps, 'children'> {
   categoryId: string | null;
 }
 
+/** Renders a category icon with its colour and an accessible fallback label. */
 export function CategoryAvatar({
   categoryId,
   size = 'sm',
@@ -24,7 +25,10 @@ export function CategoryAvatar({
       radius={radius}
       variant={variant}
       accessibilityLabel={
-        accessibilityLabel ?? category?.name ?? 'Unknown category'
+        accessibilityLabel ??
+        avatarProps.alt ??
+        category?.name ??
+        'Unknown category'
       }
       style={style}
     >
