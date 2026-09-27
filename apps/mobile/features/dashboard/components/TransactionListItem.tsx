@@ -2,6 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TransactionDto } from '@guallet/api-client';
 import { useCategory } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
 function getAvatarColor(
   text: string,
@@ -30,10 +32,6 @@ function formatCurrency(amount: number, currency: string): string {
   }).format(Math.abs(amount));
 }
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
-
 interface TransactionListItemProps {
   transaction: TransactionDto & { date: Date };
 }
@@ -50,6 +48,7 @@ function CategoryLabel({ categoryId }: { categoryId: string | null }) {
 
 export function TransactionListItem({ transaction }: TransactionListItemProps) {
   const { colors, spacing, typography } = useTheme();
+  const { dateFormat } = useMobileUserPreferences();
   const isIncome = transaction.amount > 0;
   const description = transaction.description?.trim() || 'Unknown transaction';
   const initial = description[0].toUpperCase();
@@ -94,7 +93,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
               { color: colors.text.secondary, fontSize: typography.sizes.xs },
             ]}
           >
-            {formatDate(transaction.date)}
+            {formatPreferenceDate(transaction.date, dateFormat)}
           </Text>
         </View>
       </View>

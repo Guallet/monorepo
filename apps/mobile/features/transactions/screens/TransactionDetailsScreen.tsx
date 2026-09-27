@@ -29,8 +29,9 @@ import {
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { SelectionSheet } from '../components/SelectionSheet';
+import { SelectionSheet } from '@/components/ui/SelectionSheet';
 import { formatTransactionDate } from '../utils';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 type FormState = {
   type: 'expense' | 'income';
@@ -57,6 +58,7 @@ export function TransactionDetailsScreen({
     useTransaction(transactionId);
   const { accounts } = useAccounts();
   const { categories } = useCategories();
+  const { dateFormat } = useMobileUserPreferences();
   const { updateTransactionMutation } = useTransactionMutations();
   const initializedId = useRef<string | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
@@ -244,7 +246,9 @@ export function TransactionDetailsScreen({
                     fontSize: typography.sizes.xs,
                   }}
                 >
-                  {form.date ? formatTransactionDate(form.date) : 'Select date'}
+                  {form.date
+                    ? formatTransactionDate(form.date, dateFormat)
+                    : 'Select date'}
                 </Text>
                 <Text
                   style={{
@@ -304,6 +308,7 @@ export function TransactionDetailsScreen({
                 value={form.date}
                 maxDate={new Date()}
                 onChange={(date) => updateForm({ date })}
+                formatValue={(date) => formatTransactionDate(date, dateFormat)}
                 error={form.date ? undefined : 'Select a transaction date.'}
               />
               <FieldButton

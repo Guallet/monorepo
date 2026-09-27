@@ -24,6 +24,7 @@ export interface DateInputProps {
   placeholder?: string;
   disabled?: boolean;
   error?: string | null;
+  formatValue?: (value: Date) => string;
   onFocus?: () => void;
   onBlur?: () => void;
   style?: StyleProp<ViewStyle>;
@@ -40,6 +41,7 @@ export function DateInput({
   placeholder = 'Select date',
   disabled = false,
   error,
+  formatValue,
   onFocus,
   onBlur,
   style,
@@ -53,11 +55,12 @@ export function DateInput({
   const activeRef = useRef(false);
   const hasError = Boolean(error);
   const displayValue = value
-    ? new Intl.DateTimeFormat(undefined, {
+    ? (formatValue?.(value) ??
+      new Intl.DateTimeFormat(undefined, {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
-      }).format(value)
+      }).format(value))
     : placeholder;
 
   function endInteraction() {

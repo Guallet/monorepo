@@ -7,6 +7,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from '@guallet/luna-mobile';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import {
   DateRangePreset,
   TransactionFilterDraft,
@@ -45,6 +46,7 @@ export function TransactionFiltersSheet({
   onApply,
 }: Readonly<TransactionFiltersSheetProps>) {
   const { colors, spacing, typography } = useTheme();
+  const { dateFormat } = useMobileUserPreferences();
   const [draft, setDraft] = useState(() => createDraft(filters));
   const [datePickerTarget, setDatePickerTarget] = useState<
     'start' | 'end' | null
@@ -57,7 +59,7 @@ export function TransactionFiltersSheet({
     }
   }, [filters, visible]);
 
-  const dateLabel = formatDateRange(draft.startDate, draft.endDate);
+  const dateLabel = formatDateRange(draft.startDate, draft.endDate, dateFormat);
 
   const selectedAccountCount = draft.accountIds.length;
   const selectedCategoryCount = draft.categoryIds.length;

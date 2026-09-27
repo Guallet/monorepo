@@ -2,6 +2,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SavingGoalDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 
+// The goal API has no currency; retain the existing display convention.
+const GOAL_CURRENCY = 'GBP';
+
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
@@ -13,13 +16,11 @@ function formatCurrency(amount: number, currency: string): string {
 
 interface SavingGoalProgressItemProps {
   goal: SavingGoalDto;
-  currency?: string;
 }
 
 export function SavingGoalProgressItem({
   goal,
-  currency = 'GBP',
-}: SavingGoalProgressItemProps) {
+}: Readonly<SavingGoalProgressItemProps>) {
   const { colors, spacing, typography } = useTheme();
   const progressPct = Math.min(100, Math.max(0, goal.progressPercentage));
 
@@ -41,8 +42,8 @@ export function SavingGoalProgressItem({
             { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
-          {formatCurrency(goal.currentAmount, currency)} /{' '}
-          {formatCurrency(goal.targetAmount, currency)}
+          {formatCurrency(goal.currentAmount, GOAL_CURRENCY)} /{' '}
+          {formatCurrency(goal.targetAmount, GOAL_CURRENCY)}
         </Text>
       </View>
 

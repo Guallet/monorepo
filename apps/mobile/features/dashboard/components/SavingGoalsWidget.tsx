@@ -5,13 +5,7 @@ import { SavingGoalProgressItem } from './SavingGoalProgressItem';
 
 const MAX_GOALS = 3;
 
-interface SavingGoalsWidgetProps {
-  currency?: string;
-}
-
-export function SavingGoalsWidget({
-  currency = 'GBP',
-}: SavingGoalsWidgetProps) {
+export function SavingGoalsWidget() {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { savingGoals, isLoading } = useSavingGoals();
 
@@ -64,11 +58,7 @@ export function SavingGoalsWidget({
         </Text>
       ) : (
         goals.map((goal) => (
-          <SavingGoalProgressItem
-            key={goal.id}
-            goal={goal}
-            currency={currency}
-          />
+          <SavingGoalProgressItem key={goal.id} goal={goal} />
         ))
       )}
     </View>
