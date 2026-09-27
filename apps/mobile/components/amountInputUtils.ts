@@ -48,3 +48,15 @@ export function formatAmount(
 
   return fixed.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
 }
+
+/** Keep the controlled number equal to the currency-precision display. */
+export function normalizeAmount(
+  value: number | null,
+  currency: Currency,
+): number | null {
+  if (value === null || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return Number(formatAmount(value, currency, true));
+}

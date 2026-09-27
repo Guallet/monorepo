@@ -1,7 +1,10 @@
-import type { Currency } from '@guallet/money';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '@guallet/luna-mobile';
+import type { Currency } from '@guallet/money';
 import { useEffect, useRef, useState } from 'react';
 import {
+  Keyboard,
+  Pressable,
   StyleSheet,
   Text,
   TextInput as RNTextInput,
@@ -10,9 +13,11 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
+import { CurrencyPickerSheet } from './CurrencyPickerSheet';
 import {
   formatAmount,
   isValidAmountText,
+  normalizeAmount,
   parseAmountText,
 } from './amountInputUtils';
 
@@ -20,6 +25,8 @@ export interface AmountInputProps {
   value: number | null;
   currency: Currency;
   onChange: (value: number | null) => void;
+  /** The parent owns the selected currency and updates the currency prop. */
+  onCurrencyChange: (currency: Currency) => void;
   disabled?: boolean;
   error?: string | null;
   label?: string;
@@ -32,43 +39,55 @@ export function AmountInput({
   value,
   currency,
   onChange,
+  onCurrencyChange,
   disabled = false,
   error,
-  label,
+  label = 'Amount',
   containerStyle,
   inputStyle,
   currencySymbolStyle,
 }: Readonly<AmountInputProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const [text, setText] = useState(() => formatAmount(value, currency, true));
-  const focused = useRef(false);
+  const [focused, setFocused] = useState(false);
+  const [pickerPresented, setPickerPresented] = useState(false);
   const lastEmittedValue = useRef(value);
   const currencyKey = `${currency.code}:${currency.decimalPlaces}`;
   const previousCurrencyKey = useRef(currencyKey);
+  const lastNormalization = useRef<string | null>(null);
   const hasError = error != null;
-  let amountColor = colors.text.primary;
-  if (value !== null && value < 0) {
-    amountColor = colors.status.error;
-  } else if (value !== null && value > 0) {
-    amountColor = colors.support.primary;
-  }
+  let backgroundColor = colors.surface.background.input;
+  if (disabled) backgroundColor = colors.surface.background.disabled;
+  else if (hasError) backgroundColor = colors.surface.background.error;
+  let borderColor = colors.surface.border.input;
+  if (hasError) borderColor = colors.status.error;
+  else if (focused || pickerPresented) borderColor = colors.accent.primary;
 
   useEffect(() => {
+    const normalized = normalizeAmount(value, currency);
+    if (!Object.is(value, normalized)) {
+      const normalizationKey = `${currencyKey}:${value}`;
+      if (lastNormalization.current !== normalizationKey) {
+        lastNormalization.current = normalizationKey;
+        onChange(normalized);
+      }
+    } else {
+      lastNormalization.current = null;
+    }
+
     if (
       previousCurrencyKey.current !== currencyKey ||
       !Object.is(lastEmittedValue.current, value)
     ) {
-      setText(formatAmount(value, currency, !focused.current));
+      setText(formatAmount(normalized, currency, !focused));
     }
 
-    lastEmittedValue.current = value;
+    lastEmittedValue.current = normalized;
     previousCurrencyKey.current = currencyKey;
-  }, [currency, currencyKey, value]);
+  }, [currency, currencyKey, focused, onChange, value]);
 
   function handleChangeText(nextText: string): void {
-    if (!isValidAmountText(nextText, currency.decimalPlaces)) {
-      return;
-    }
+    if (!isValidAmountText(nextText, currency.decimalPlaces)) return;
 
     setText(nextText);
     const parsed = parseAmountText(nextText);
@@ -79,54 +98,52 @@ export function AmountInput({
   }
 
   function handleBlur(): void {
-    focused.current = false;
+    setFocused(false);
     const parsed = parseAmountText(text);
-    if (parsed === undefined) {
-      setText('');
-      lastEmittedValue.current = null;
-      onChange(null);
-      return;
+    const normalized =
+      parsed === undefined ? null : normalizeAmount(parsed, currency);
+    setText(formatAmount(normalized, currency, true));
+    if (!Object.is(lastEmittedValue.current, normalized)) {
+      lastEmittedValue.current = normalized;
+      onChange(normalized);
     }
+  }
 
-    setText(formatAmount(parsed, currency, true));
+  function openCurrencyPicker(): void {
+    Keyboard.dismiss();
+    setPickerPresented(true);
+  }
+
+  function handleCurrencyChange(selectedCurrency: Currency): void {
+    const normalized = normalizeAmount(value, selectedCurrency);
+    if (!Object.is(normalized, value)) {
+      lastEmittedValue.current = normalized;
+      onChange(normalized);
+    }
+    onCurrencyChange(selectedCurrency);
   }
 
   return (
-    <View
-      style={[styles.container, { marginBottom: spacing.md }, containerStyle]}
-    >
-      {label ? (
+    <View style={[{ marginBottom: spacing.md }, containerStyle]}>
+      {label && (
         <Text
-          style={[
-            styles.label,
-            {
-              color: colors.text.primary,
-              fontSize: typography.sizes.md,
-              marginBottom: spacing.xs,
-            },
-          ]}
+          style={{
+            color: colors.text.primary,
+            fontSize: typography.sizes.md,
+            fontWeight: '500',
+            marginBottom: spacing.xs,
+          }}
         >
           {label}
         </Text>
-      ) : null}
-
+      )}
       <View
         style={[
           styles.inputContainer,
           {
-            backgroundColor: hasError
-              ? colors.surface.background.error
-              : colors.surface.background.input,
-            borderColor: hasError
-              ? colors.status.error
-              : colors.surface.border.input,
+            backgroundColor,
+            borderColor,
             borderRadius: borderRadius.lg,
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.sm,
-          },
-          disabled && {
-            backgroundColor: colors.surface.background.disabled,
-            opacity: 0.6,
           },
         ]}
       >
@@ -134,14 +151,18 @@ export function AmountInput({
           accessible={false}
           style={[
             styles.symbol,
-            { color: amountColor, fontSize: typography.sizes.md },
+            {
+              color: colors.text.primary,
+              fontSize: typography.sizes.md,
+              marginLeft: spacing.md,
+            },
             currencySymbolStyle,
           ]}
         >
           {currency.symbol}
         </Text>
         <RNTextInput
-          accessibilityLabel={`${label ?? 'Amount'} (${currency.code})`}
+          accessibilityLabel={`${label} (${currency.code})`}
           accessibilityHint={error ?? undefined}
           accessibilityState={{ disabled }}
           editable={!disabled}
@@ -149,51 +170,92 @@ export function AmountInput({
           onBlur={handleBlur}
           onChangeText={handleChangeText}
           onFocus={() => {
-            focused.current = true;
-            setText(formatAmount(value, currency, false));
+            setFocused(true);
+            setText(
+              formatAmount(normalizeAmount(value, currency), currency, false),
+            );
           }}
           style={[
             styles.input,
-            { color: amountColor, fontSize: typography.sizes.md },
+            { color: colors.text.primary, fontSize: typography.sizes.md },
             inputStyle,
           ]}
           value={text}
         />
-      </View>
-
-      {hasError ? (
-        <Text
+        <Pressable
+          accessibilityLabel={`Choose currency, ${currency.code}`}
+          accessibilityHint="Opens the currency picker"
+          accessibilityRole="button"
+          accessibilityState={{ disabled, expanded: pickerPresented }}
+          disabled={disabled}
+          onPress={openCurrencyPicker}
           style={[
-            styles.error,
+            styles.currencyButton,
             {
-              color: colors.status.error,
-              fontSize: typography.sizes.sm,
-              marginTop: spacing.xs,
+              borderLeftColor: colors.surface.border.input,
+              paddingHorizontal: spacing.md,
             },
           ]}
         >
+          <Text
+            style={{
+              color: colors.text.primary,
+              fontSize: typography.sizes.md,
+            }}
+          >
+            {currency.code}
+          </Text>
+          <MaterialIcons
+            color={colors.text.secondary}
+            name="keyboard-arrow-down"
+            size={20}
+          />
+        </Pressable>
+      </View>
+      {hasError && (
+        <Text
+          style={{
+            color: colors.status.error,
+            fontSize: typography.sizes.sm,
+            marginTop: spacing.xs,
+          }}
+        >
           {error}
         </Text>
-      ) : null}
+      )}
+      <CurrencyPickerSheet
+        isPresented={pickerPresented}
+        onDismiss={() => setPickerPresented(false)}
+        onSelect={handleCurrencyChange}
+        selectedCurrency={currency}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  label: { fontWeight: '500' },
   inputContainer: {
     alignItems: 'center',
     borderWidth: 1,
     flexDirection: 'row',
     minHeight: 56,
+    overflow: 'hidden',
   },
-  symbol: { fontVariant: ['tabular-nums'], fontWeight: '700' },
+  symbol: { fontVariant: ['tabular-nums'], fontWeight: '500' },
   input: {
     flex: 1,
     fontVariant: ['tabular-nums'],
-    fontWeight: '700',
+    fontWeight: '500',
+    minWidth: 0,
     padding: 0,
   },
-  error: {},
+  currencyButton: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    borderLeftWidth: 1,
+    flexDirection: 'row',
+    gap: 4,
+    justifyContent: 'center',
+    minWidth: 96,
+  },
 });

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   formatAmount,
   isValidAmountText,
+  normalizeAmount,
   parseAmountText,
 } from './amountInputUtils';
 
@@ -42,5 +43,12 @@ describe('AmountInput text handling', () => {
     expect(formatAmount(1.005, eur, true)).toBe('1.01');
     expect(formatAmount(-2.5, bhd, true)).toBe('-2.500');
     expect(formatAmount(-2.5, bhd, false)).toBe('-2.5');
+  });
+
+  it('normalizes the stored value to the selected currency precision', () => {
+    expect(normalizeAmount(1.5, jpy)).toBe(2);
+    expect(normalizeAmount(1.005, eur)).toBe(1.01);
+    expect(normalizeAmount(-2.5, bhd)).toBe(-2.5);
+    expect(normalizeAmount(null, eur)).toBeNull();
   });
 });
