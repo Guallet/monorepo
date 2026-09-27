@@ -27,6 +27,20 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 - Track the failed image URL when the fallback depends on the current source;
   this allows a changed URL to be tried independently.
 
+## Accessibility and icons
+
+- Every screen and component must work with VoiceOver and TalkBack. Give each
+  interactive control a meaningful accessible name, role, and relevant state or
+  value, even if its visible label is hidden or empty. Label icon-only actions.
+- Keep text readable at larger font sizes and touch targets easy to reach. Make
+  loading, empty, error, and disabled states understandable to a screen reader;
+  expose field errors as accessible hints or text. Hide decorative icons from
+  the accessibility tree, and check focus and keyboard behavior.
+- Use icons from `@guallet/luna-mobile/icons`, including tab icons. When an
+  icon is missing, add a named Luna export in
+  `packages/guallet-luna-mobile/src/icons/` first. Avoid direct imports from
+  icon libraries, `IconSymbol`, emoji, or Unicode glyphs for new UI icons.
+
 ---
 
 ## Routing Decision Table
@@ -44,7 +58,7 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 
 ```typescript
 import { StyleSheet, View } from 'react-native';
-import { Stack, Title, Label } from '@luna-ui/react-native';
+import { Stack, Title, Label } from '@guallet/luna-mobile';
 import { use{Name}s } from '@guallet/api-react';
 
 export default function {Name}sScreen() {
@@ -78,26 +92,18 @@ const styles = StyleSheet.create({
 ### Register the new tab in `app/(tabs)/_layout.tsx`
 
 ```typescript
+import { HomeIcon } from '@guallet/luna-mobile/icons';
+
 <Tabs.Screen
   name="{name}"
   options={{
     title: '{Names}',
-    tabBarIcon: ({ color }) => (
-      <IconSymbol size={28} name="LIST_ICON_NAME.fill" color={color} />
-    ),
+    tabBarIcon: ({ color }) => <HomeIcon size={28} color={color} />,
   }}
 />
 ```
 
-> `IconSymbol` uses SF Symbols on iOS and MaterialIcons on Android. Common names:
->
-> - `house.fill` – home
-> - `list.bullet` – list
-> - `chart.pie.fill` – chart
-> - `gearshape.fill` – settings
-> - `plus.circle.fill` – add
-> - `person.fill` – profile
-> - `dollarsign.circle.fill` – finance
+Choose a Luna icon that matches the destination; `HomeIcon` is only an example.
 
 ---
 
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
 ```typescript
 import { View, StyleSheet, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Stack, Title, Button } from '@luna-ui/react-native';
+import { Stack, Title, Button } from '@guallet/luna-mobile';
 import { use{Name}s } from '@guallet/api-react';
 
 export default function {Name}ListScreen() {
@@ -149,7 +155,7 @@ const styles = StyleSheet.create({
 ```typescript
 import { View, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Stack, Title, Label, Button } from '@luna-ui/react-native';
+import { Stack, Title, Label, Button } from '@guallet/luna-mobile';
 import { use{Name} } from '@guallet/api-react';
 
 export default function {Name}DetailScreen() {
@@ -194,7 +200,7 @@ const styles = StyleSheet.create({
 
 ## Luna UI Component Reference
 
-Import from `@luna-ui/react-native`.
+Import from `@guallet/luna-mobile`.
 
 | Component            | Category   | Use for                                                                                       |
 | -------------------- | ---------- | --------------------------------------------------------------------------------------------- |
@@ -212,7 +218,7 @@ Import from `@luna-ui/react-native`.
 ### Theme hooks
 
 ```typescript
-import { useTheme } from '@luna-ui/react-native';
+import { useTheme } from '@guallet/luna-mobile';
 const theme = useTheme(); // access theme.colors, theme.spacing, etc.
 ```
 
@@ -284,3 +290,6 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 - [ ] No ternary expressions in screens; use early returns, `&&`, or named
       conditional values instead
 - [ ] Images use `expo-image` and remote image failures have a visible fallback
+- [ ] Controls, screen states, and navigation are accessible with VoiceOver and
+      TalkBack, including empty labels, errors, and icon-only actions
+- [ ] Icons use `@guallet/luna-mobile/icons`; missing icons are added to Luna

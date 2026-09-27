@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildCategoryPickerTree,
+  selectedCategoryParentIds,
   toggleCategorySelection,
   type CategoryPickerItem,
 } from './categoryPicker.utils';
@@ -31,6 +32,15 @@ describe('buildCategoryPickerTree', () => {
     expect(buildCategoryPickerTree(categories, 'food')).toEqual([
       { category: categories[0], children: [categories[1], categories[2]] },
     ]);
+  });
+});
+
+describe('selectedCategoryParentIds', () => {
+  it('expands the parents of selected children without expanding selected parents', () => {
+    expect(
+      selectedCategoryParentIds(categories, ['groceries', 'rent', 'food']),
+    ).toEqual(['food', 'home']);
+    expect(selectedCategoryParentIds(categories, ['food'])).toEqual([]);
   });
 });
 

@@ -25,6 +25,7 @@
   "author": "cjgaliana",
   "dependencies": {
     "@guallet/theme": "workspace:*",
+    "@react-native-community/datetimepicker": "9.2.1",
     "@tabler/icons-react-native": "3.46.0",
     "expo-image": "57.0.5",
     "react": "19.2.3",

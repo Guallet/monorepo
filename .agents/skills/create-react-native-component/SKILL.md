@@ -46,8 +46,18 @@ existing Luna, React Native, Expo, and accessibility patterns.
   identity, so inline `{ uri }` props do not reset error/loading state on each
   render. In Expo components, use `expo-image` where appropriate and show a
   theme-colored placeholder until the image is displayed.
-- Preserve accessibility: labels should make controls discoverable by default;
-  honor explicitly supplied `accessible`, role, state, and label props.
+- Every interactive control needs a meaningful accessible name, including when
+  its visible label is empty or omitted. Preserve explicit `accessible`,
+  `accessibilityLabel`, `accessibilityRole`, `accessibilityState`, and
+  `accessibilityValue` props. Give icon-only controls an action label.
+- Expose errors and instructions through accessible hints or text. Keep touch
+  targets large enough to use, preserve keyboard and focus behavior, and hide
+  purely decorative icons from the accessibility tree. Check loading, empty,
+  disabled, and error states with a screen reader when possible.
+- Import icons from `@guallet/luna-mobile/icons`. If a needed icon is missing,
+  add a named export in `packages/guallet-luna-mobile/src/icons/` using Luna's
+  1.5 stroke style, then import that export. Do not import an icon library
+  directly into app components or use a text glyph as an icon.
 - For overlapping or ordered children, assign a consistent stacking order to
   every item, including the first.
 
@@ -55,6 +65,9 @@ existing Luna, React Native, Expo, and accessibility patterns.
 
 - [ ] Props, events, defaults, children, style overrides, and accessibility are
       explicit and typed.
+- [ ] Every control has a spoken name, role, and relevant state/value; errors,
+      empty states, and icon-only actions remain understandable with a screen reader.
+- [ ] Icons come from Luna's mobile icon exports; missing icons were added there.
 - [ ] Component uses theme tokens and native controls appropriately.
 - [ ] Children are nested between component tags, not passed as a prop.
 - [ ] No nested ternaries, avoidable complexity, hardcoded theme values, or

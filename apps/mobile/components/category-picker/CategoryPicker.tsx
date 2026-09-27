@@ -1,9 +1,9 @@
-import { BottomSheet } from '@expo/ui';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import {
-  IconChevronDown,
-  IconChevronRight,
-  IconSearch,
-} from '@tabler/icons-react-native';
+  ChevronDownIcon,
+  ChevronRightIcon,
+  SearchIcon,
+} from '@guallet/luna-mobile/icons';
 import { useMemo, useRef, useState } from 'react';
 import {
   Pressable,
@@ -21,6 +21,7 @@ import { useTheme } from '@guallet/luna-mobile';
 import {
   buildCategoryPickerTree,
   toggleCategorySelection,
+  selectedCategoryParentIds,
   type CategoryPickerItem,
 } from './categoryPicker.utils';
 
@@ -106,7 +107,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   function openSheet() {
     setQuery('');
     setDraftIds(selectedIds);
-    setExpandedIds([]);
+    setExpandedIds(selectedCategoryParentIds(categories, selectedIds));
     setIsPresented(true);
   }
 
@@ -182,7 +183,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
         >
           {triggerLabel}
         </Text>
-        <IconChevronDown color={colors.text.secondary} size={18} />
+        <ChevronDownIcon color={colors.text.secondary} size={18} />
       </Pressable>
 
       <BottomSheet
@@ -226,7 +227,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
               },
             ]}
           >
-            <IconSearch color={colors.text.secondary} size={18} />
+            <SearchIcon color={colors.text.secondary} size={18} />
             <TextInput
               accessibilityLabel="Search categories"
               autoCapitalize="none"
@@ -257,6 +258,8 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
                     key={category.id}
                     category={category}
                     onPress={() => toggleSelection(category.id)}
+                    selected={selectionIncludes(category.id)}
+                    selectionMode={props.selectionMode}
                   />
                 ))}
               </ScrollView>
@@ -314,6 +317,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
                     onExpand={() => toggleExpanded(category.id)}
                     onSelect={() => toggleSelection(category.id)}
                     selected={selectionIncludes(category.id)}
+                    selectionMode={props.selectionMode}
                     rowStyle={categoryRowStyle}
                   />
                   {expanded &&
@@ -324,6 +328,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
                         indented
                         onSelect={() => toggleSelection(child.id)}
                         selected={selectionIncludes(child.id)}
+                        selectionMode={props.selectionMode}
                         rowStyle={categoryRowStyle}
                       />
                     ))}
@@ -372,223 +377,238 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
       ? props.value === id
       : draftIds.includes(id);
   }
+}
 
-  function SectionLabel({ children }: Readonly<{ children: string }>) {
-    return (
+function SectionLabel({ children }: Readonly<{ children: string }>) {
+  const { colors, spacing, typography } = useTheme();
+  return (
+    <Text
+      style={{
+        color: colors.text.secondary,
+        fontSize: typography.sizes.xs,
+        fontWeight: '700',
+        letterSpacing: 0.7,
+        marginBottom: spacing.xs,
+        textTransform: 'uppercase',
+      }}
+    >
+      {children}
+    </Text>
+  );
+}
+
+function RecentCategory({
+  category,
+  onPress,
+  selected,
+  selectionMode,
+}: Readonly<{
+  category: CategoryPickerItem;
+  onPress: () => void;
+  selected: boolean;
+  selectionMode: 'single' | 'multiple';
+}>) {
+  const { colors, spacing, typography, borderRadius } = useTheme();
+  return (
+    <Pressable
+      accessibilityRole={selectionMode === 'single' ? 'radio' : 'checkbox'}
+      accessibilityLabel={category.name}
+      accessibilityState={{ checked: selected }}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.recent,
+        {
+          borderColor: colors.surface.border.primary,
+          borderRadius: borderRadius.md,
+          opacity: pressed ? 0.72 : 1,
+          padding: spacing.sm,
+        },
+      ]}
+    >
+      <CategoryIcon
+        name={category.icon}
+        color={colors.text.primary}
+        size={20}
+      />
       <Text
-        style={{
-          color: colors.text.secondary,
-          fontSize: typography.sizes.xs,
-          fontWeight: '700',
-          letterSpacing: 0.7,
-          marginBottom: spacing.xs,
-          textTransform: 'uppercase',
-        }}
+        numberOfLines={1}
+        style={{ color: colors.text.primary, fontSize: typography.sizes.sm }}
       >
-        {children}
+        {category.name}
       </Text>
-    );
-  }
+    </Pressable>
+  );
+}
 
-  function RecentCategory({
-    category,
-    onPress,
-  }: Readonly<{ category: CategoryPickerItem; onPress: () => void }>) {
-    return (
+function CategoryRow({
+  category,
+  selected,
+  onSelect,
+  hasChildren = false,
+  expanded = false,
+  onExpand,
+  indented = false,
+  rowStyle,
+  selectionMode,
+}: Readonly<{
+  category: CategoryPickerItem;
+  selected: boolean;
+  onSelect: () => void;
+  hasChildren?: boolean;
+  expanded?: boolean;
+  onExpand?: () => void;
+  indented?: boolean;
+  rowStyle?: StyleProp<ViewStyle>;
+  selectionMode: 'single' | 'multiple';
+}>) {
+  const { colors, spacing, typography, borderRadius } = useTheme();
+  return (
+    <View
+      style={[
+        styles.row,
+        {
+          backgroundColor: selected
+            ? colors.button.secondary.default
+            : colors.surface.background.primary,
+          borderColor: selected
+            ? colors.accent.primary
+            : colors.surface.border.primary,
+          borderRadius: borderRadius.md,
+          marginLeft: indented ? spacing.lg : 0,
+          minHeight: 54,
+          paddingLeft: spacing.sm,
+        },
+        rowStyle,
+      ]}
+    >
       <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`Select ${category.name}`}
-        onPress={onPress}
+        accessibilityRole={selectionMode === 'single' ? 'radio' : 'checkbox'}
+        accessibilityLabel={category.name}
+        accessibilityState={{ checked: selected }}
+        onPress={onSelect}
         style={({ pressed }) => [
-          styles.recent,
-          {
-            borderColor: colors.surface.border.primary,
-            borderRadius: borderRadius.md,
-            opacity: pressed ? 0.72 : 1,
-            padding: spacing.sm,
-          },
+          styles.rowSelect,
+          { opacity: pressed ? 0.72 : 1 },
         ]}
       >
-        <CategoryIcon
-          name={category.icon}
-          color={colors.text.primary}
-          size={20}
-        />
+        <View
+          style={[
+            styles.iconBubble,
+            {
+              backgroundColor:
+                category.colour || colors.button.secondary.default,
+              borderRadius: borderRadius.lg,
+            },
+          ]}
+        >
+          <CategoryIcon
+            name={category.icon}
+            color={colors.text.primary}
+            size={18}
+          />
+        </View>
         <Text
           numberOfLines={1}
-          style={{ color: colors.text.primary, fontSize: typography.sizes.sm }}
+          style={{
+            color: colors.text.primary,
+            flex: 1,
+            fontSize: typography.sizes.md,
+          }}
         >
           {category.name}
         </Text>
+        <SelectionMark selected={selected} />
       </Pressable>
-    );
-  }
-
-  function CategoryRow({
-    category,
-    selected,
-    onSelect,
-    hasChildren = false,
-    expanded = false,
-    onExpand,
-    indented = false,
-    rowStyle,
-  }: Readonly<{
-    category: CategoryPickerItem;
-    selected: boolean;
-    onSelect: () => void;
-    hasChildren?: boolean;
-    expanded?: boolean;
-    onExpand?: () => void;
-    indented?: boolean;
-    rowStyle?: StyleProp<ViewStyle>;
-  }>) {
-    return (
-      <View
-        style={[
-          styles.row,
-          {
-            backgroundColor: selected
-              ? colors.button.secondary.default
-              : colors.surface.background.primary,
-            borderColor: selected
-              ? colors.accent.primary
-              : colors.surface.border.primary,
-            borderRadius: borderRadius.md,
-            marginLeft: indented ? spacing.lg : 0,
-            minHeight: 54,
-            paddingLeft: spacing.sm,
-          },
-          rowStyle,
-        ]}
-      >
+      {hasChildren && onExpand && (
         <Pressable
-          accessibilityRole="checkbox"
-          accessibilityLabel={category.name}
-          accessibilityState={{ checked: selected }}
-          onPress={onSelect}
-          style={({ pressed }) => [
-            styles.rowSelect,
-            { opacity: pressed ? 0.72 : 1 },
-          ]}
+          accessibilityRole="button"
+          accessibilityLabel={`${expanded ? 'Collapse' : 'Expand'} ${category.name}`}
+          accessibilityState={{ expanded }}
+          hitSlop={6}
+          onPress={onExpand}
+          style={styles.expandButton}
         >
-          <View
-            style={[
-              styles.iconBubble,
-              {
-                backgroundColor:
-                  category.colour || colors.button.secondary.default,
-                borderRadius: borderRadius.lg,
-              },
-            ]}
-          >
-            <CategoryIcon
-              name={category.icon}
-              color={colors.text.primary}
-              size={18}
-            />
-          </View>
-          <Text
-            numberOfLines={1}
-            style={{
-              color: colors.text.primary,
-              flex: 1,
-              fontSize: typography.sizes.md,
-            }}
-          >
-            {category.name}
-          </Text>
-          <SelectionMark selected={selected} />
+          {expanded ? (
+            <ChevronDownIcon color={colors.text.secondary} size={18} />
+          ) : (
+            <ChevronRightIcon color={colors.text.secondary} size={18} />
+          )}
         </Pressable>
-        {hasChildren && onExpand && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`${expanded ? 'Collapse' : 'Expand'} ${category.name}`}
-            accessibilityState={{ expanded }}
-            hitSlop={6}
-            onPress={onExpand}
-            style={styles.expandButton}
-          >
-            {expanded ? (
-              <IconChevronDown color={colors.text.secondary} size={18} />
-            ) : (
-              <IconChevronRight color={colors.text.secondary} size={18} />
-            )}
-          </Pressable>
-        )}
-      </View>
-    );
-  }
+      )}
+    </View>
+  );
+}
 
-  function SelectionMark({ selected }: Readonly<{ selected: boolean }>) {
-    return (
-      <View
-        accessibilityElementsHidden
-        style={[
-          styles.selectionMark,
-          {
-            backgroundColor: selected
-              ? colors.accent.primary
-              : colors.surface.background.primary,
-            borderColor: selected
-              ? colors.accent.primary
-              : colors.surface.border.primary,
-            borderRadius: borderRadius.lg,
-          },
-        ]}
-      >
-        {selected && (
-          <Text
-            style={{
-              color: colors.button.onPrimary.default,
-              fontSize: typography.sizes.xs,
-              fontWeight: '700',
-            }}
-          >
-            ✓
-          </Text>
-        )}
-      </View>
-    );
-  }
-
-  function ActionButton({
-    label,
-    onPress,
-    secondary,
-  }: Readonly<{ label: string; onPress: () => void; secondary: boolean }>) {
-    return (
-      <Pressable
-        accessibilityRole="button"
-        onPress={onPress}
-        style={({ pressed }) => [
-          styles.action,
-          {
-            backgroundColor: secondary
-              ? colors.surface.background.primary
-              : colors.accent.primary,
-            borderColor: secondary
-              ? colors.surface.border.primary
-              : colors.accent.primary,
-            borderRadius: borderRadius.md,
-            opacity: pressed ? 0.72 : 1,
-          },
-        ]}
-      >
+function SelectionMark({ selected }: Readonly<{ selected: boolean }>) {
+  const { colors, typography, borderRadius } = useTheme();
+  return (
+    <View
+      accessibilityElementsHidden
+      style={[
+        styles.selectionMark,
+        {
+          backgroundColor: selected
+            ? colors.accent.primary
+            : colors.surface.background.primary,
+          borderColor: selected
+            ? colors.accent.primary
+            : colors.surface.border.primary,
+          borderRadius: borderRadius.lg,
+        },
+      ]}
+    >
+      {selected && (
         <Text
           style={{
-            color: secondary
-              ? colors.text.primary
-              : colors.button.onPrimary.default,
-            fontSize: typography.sizes.md,
-            fontWeight: '600',
+            color: colors.button.onPrimary.default,
+            fontSize: typography.sizes.xs,
+            fontWeight: '700',
           }}
         >
-          {label}
+          ✓
         </Text>
-      </Pressable>
-    );
-  }
+      )}
+    </View>
+  );
+}
+
+function ActionButton({
+  label,
+  onPress,
+  secondary,
+}: Readonly<{ label: string; onPress: () => void; secondary: boolean }>) {
+  const { colors, typography, borderRadius } = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.action,
+        {
+          backgroundColor: secondary
+            ? colors.surface.background.primary
+            : colors.accent.primary,
+          borderColor: secondary
+            ? colors.surface.border.primary
+            : colors.accent.primary,
+          borderRadius: borderRadius.md,
+          opacity: pressed ? 0.72 : 1,
+        },
+      ]}
+    >
+      <Text
+        style={{
+          color: secondary
+            ? colors.text.primary
+            : colors.button.onPrimary.default,
+          fontSize: typography.sizes.md,
+          fontWeight: '600',
+        }}
+      >
+        {label}
+      </Text>
+    </Pressable>
+  );
 }
 
 const styles = StyleSheet.create({

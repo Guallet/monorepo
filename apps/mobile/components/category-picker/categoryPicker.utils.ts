@@ -11,6 +11,23 @@ export type CategoryPickerTree = {
   children: CategoryPickerItem[];
 };
 
+/** Reveal selected child categories when the sheet opens. */
+export function selectedCategoryParentIds(
+  categories: readonly CategoryPickerItem[],
+  selectedIds: readonly string[],
+): string[] {
+  const selected = new Set(selectedIds);
+  return [
+    ...new Set(
+      categories.flatMap((category) =>
+        selected.has(category.id) && category.parentId
+          ? [category.parentId]
+          : [],
+      ),
+    ),
+  ];
+}
+
 export function buildCategoryPickerTree(
   categories: readonly CategoryPickerItem[],
   query = '',

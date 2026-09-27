@@ -17,10 +17,12 @@ import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
+import { LunaBottomSheetProvider } from '@/components/ui/BottomSheet';
 
 // Create a client
 const queryClient = new QueryClient();
 
+/** Mirror native foreground state into TanStack Query's focus manager. */
 function onAppStateChange(status: AppStateStatus) {
   // React Query already supports in web browser refetch on window focus by default
   if (Platform.OS !== 'web') {
@@ -28,6 +30,7 @@ function onAppStateChange(status: AppStateStatus) {
   }
 }
 
+/** Compose navigation and data providers within Luna's theme. */
 function AppNavigation() {
   const { colors } = useTheme();
   const mode = useThemeMode();
@@ -76,13 +79,16 @@ function AppNavigation() {
   );
 }
 
+/** Install the Luna sheet adapter once for all mobile navigation screens. */
 export function GualletApp() {
   useOnlineManager();
   useAppState(onAppStateChange);
 
   return (
     <LunaProvider>
-      <AppNavigation />
+      <LunaBottomSheetProvider>
+        <AppNavigation />
+      </LunaBottomSheetProvider>
     </LunaProvider>
   );
 }
