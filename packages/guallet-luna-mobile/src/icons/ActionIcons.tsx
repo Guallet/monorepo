@@ -1,4 +1,5 @@
 import TablerChevronDownIcon from '@tabler/icons-react-native/IconChevronDown';
+import TablerChevronLeftIcon from '@tabler/icons-react-native/IconChevronLeft';
 import TablerChevronRightIcon from '@tabler/icons-react-native/IconChevronRight';
 import TablerSearchIcon from '@tabler/icons-react-native/IconSearch';
 import TablerXIcon from '@tabler/icons-react-native/IconX';
@@ -23,6 +24,10 @@ export const ChevronDownIcon = createLunaIcon(
 export const ChevronRightIcon = createLunaIcon(
   TablerChevronRightIcon,
   'ChevronRightIcon',
+);
+export const ChevronLeftIcon = createLunaIcon(
+  TablerChevronLeftIcon,
+  'ChevronLeftIcon',
 );
 export const CloseIcon = createLunaIcon(TablerXIcon, 'CloseIcon');
 export const SearchIcon = createLunaIcon(TablerSearchIcon, 'SearchIcon');
