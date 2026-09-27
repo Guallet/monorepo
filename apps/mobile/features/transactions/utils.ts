@@ -1,5 +1,7 @@
 import { TransactionDto } from '@guallet/api-client';
+import type { DateFormat } from '@guallet/api-client';
 import { DateRangePreset } from './models';
+import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
 export type MobileTransaction = TransactionDto & { date: Date };
 
@@ -40,24 +42,17 @@ export function getDateRange(
 export function formatDateRange(
   startDate: Date | null,
   endDate: Date | null,
+  dateFormat: DateFormat,
 ): string {
   if (!startDate || !endDate) return 'Date';
-
-  const format = new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-  });
-
-  return `${format.format(startDate)} – ${format.format(endDate)}`;
+  return `${formatPreferenceDate(startDate, dateFormat)} – ${formatPreferenceDate(endDate, dateFormat)}`;
 }
 
-export function formatTransactionDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
+export function formatTransactionDate(
+  date: Date,
+  dateFormat: DateFormat,
+): string {
+  return formatPreferenceDate(date, dateFormat);
 }
 
 export function formatCurrency(amount: number, currency: string): string {
@@ -74,6 +69,7 @@ export function formatCurrency(amount: number, currency: string): string {
 
 export function groupTransactionsByDate(
   transactions: MobileTransaction[],
+  dateFormat: DateFormat,
 ): Array<{ title: string; data: MobileTransaction[] }> {
   const grouped = new Map<string, MobileTransaction[]>();
 
@@ -95,6 +91,7 @@ export function groupTransactionsByDate(
         Number(key.split('-')[1]),
         Number(key.split('-')[2]),
       ),
+      dateFormat,
     ),
     data,
   }));

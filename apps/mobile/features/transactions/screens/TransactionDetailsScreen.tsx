@@ -1,6 +1,3 @@
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import {
   useAccounts,
@@ -11,6 +8,7 @@ import {
 import { UpdateTransactionRequest } from '@guallet/api-client';
 import {
   Button,
+  DateInput,
   Label,
   Stack,
   TextInput,
@@ -31,9 +29,9 @@ import {
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { BottomSheet } from '@/components/ui/BottomSheet';
-import { SelectionSheet } from '../components/SelectionSheet';
+import { SelectionSheet } from '@/components/ui/SelectionSheet';
 import { formatTransactionDate } from '../utils';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 type FormState = {
   type: 'expense' | 'income';
@@ -42,7 +40,7 @@ type FormState = {
   notes: string;
   amount: string;
   currency: string;
-  date: Date;
+  date: Date | null;
   categoryId: string | null;
 };
 
@@ -60,6 +58,7 @@ export function TransactionDetailsScreen({
     useTransaction(transactionId);
   const { accounts } = useAccounts();
   const { categories } = useCategories();
+  const { dateFormat } = useMobileUserPreferences();
   const { updateTransactionMutation } = useTransactionMutations();
   const initializedId = useRef<string | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
@@ -68,7 +67,6 @@ export function TransactionDetailsScreen({
   const [selection, setSelection] = useState<'account' | 'category' | null>(
     null,
   );
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (!transaction || initializedId.current === transaction.id) return;
@@ -115,13 +113,6 @@ export function TransactionDetailsScreen({
     setError(null);
   }
 
-  function handleDateChange(event: DateTimePickerEvent, date?: Date) {
-    setShowDatePicker(false);
-    if (event.type === 'set' && date) {
-      updateForm({ date });
-    }
-  }
-
   async function save() {
     if (!form) return;
 
@@ -143,6 +134,10 @@ export function TransactionDetailsScreen({
     }
     if (!/^[A-Z]{3}$/.test(currency)) {
       setError('Currency must be a three-letter code, such as GBP.');
+      return;
+    }
+    if (!form.date) {
+      setError('Select a transaction date.');
       return;
     }
 
@@ -251,7 +246,9 @@ export function TransactionDetailsScreen({
                     fontSize: typography.sizes.xs,
                   }}
                 >
-                  {formatTransactionDate(form.date)}
+                  {form.date
+                    ? formatTransactionDate(form.date, dateFormat)
+                    : 'Select date'}
                 </Text>
                 <Text
                   style={{
@@ -306,10 +303,13 @@ export function TransactionDetailsScreen({
                 autoCapitalize="characters"
                 maxLength={3}
               />
-              <FieldButton
+              <DateInput
                 label="Date"
-                value={formatTransactionDate(form.date)}
-                onPress={() => setShowDatePicker(true)}
+                value={form.date}
+                maxDate={new Date()}
+                onChange={(date) => updateForm({ date })}
+                formatValue={(date) => formatTransactionDate(date, dateFormat)}
+                error={form.date ? undefined : 'Select a transaction date.'}
               />
               <FieldButton
                 label="Category"
@@ -378,33 +378,6 @@ export function TransactionDetailsScreen({
         onClose={() => setSelection(null)}
         onSelect={(categoryId) => updateForm({ categoryId })}
       />
-      <BottomSheet
-        contentPadding={0}
-        isPresented={showDatePicker}
-        onDismiss={() => setShowDatePicker(false)}
-        snapPoints={['full']}
-      >
-        <View style={[styles.dateModal, { padding: spacing.lg }]}>
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.lg,
-              fontWeight: '700',
-            }}
-          >
-            Select date
-          </Text>
-          <DateTimePicker
-            value={form?.date ?? new Date()}
-            mode="date"
-            maximumDate={new Date()}
-            onChange={handleDateChange}
-          />
-          <Button variant="subtle" onClick={() => setShowDatePicker(false)}>
-            Done
-          </Button>
-        </View>
-      </BottomSheet>
     </AppScreen>
   );
 }
@@ -524,8 +497,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
     padding: 24,
-  },
-  dateModal: {
-    gap: 12,
   },
 });

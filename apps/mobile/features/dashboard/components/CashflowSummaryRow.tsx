@@ -3,6 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import {
+  groupCashflowByCurrency,
+  type CurrencyAmount,
+} from '../utils/currencyTotals';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -13,15 +18,14 @@ function formatCurrency(amount: number, currency: string): string {
 }
 
 interface CashflowSummaryRowProps {
-  currency?: string;
-  onMonthDeltaChange?: (delta: number) => void;
+  onMonthDeltaChange?: (deltas: CurrencyAmount[] | null) => void;
 }
 
 export function CashflowSummaryRow({
-  currency = 'GBP',
   onMonthDeltaChange,
 }: CashflowSummaryRowProps) {
   const { colors, borderRadius, spacing, typography } = useTheme();
+  const { defaultCurrency } = useMobileUserPreferences();
 
   const { startDate, endDate } = useDashboardDateRange({ daysAgo: 30 });
 
@@ -32,19 +36,21 @@ export function CashflowSummaryRow({
     endDate,
   });
 
-  const { income, expense } = useMemo(() => {
-    let inc = 0;
-    let exp = 0;
-    for (const t of transactions) {
-      if (t.amount > 0) inc += t.amount;
-      else exp += Math.abs(t.amount);
-    }
-    return { income: inc, expense: exp };
-  }, [transactions]);
+  const cashflow = useMemo(
+    () => groupCashflowByCurrency(transactions, defaultCurrency),
+    [defaultCurrency, transactions],
+  );
 
   useEffect(() => {
-    onMonthDeltaChange?.(income - expense);
-  }, [expense, income, onMonthDeltaChange]);
+    onMonthDeltaChange?.(
+      isLoading
+        ? null
+        : cashflow.map(({ currency, income, expense }) => ({
+            currency,
+            amount: income - expense,
+          })),
+    );
+  }, [cashflow, isLoading, onMonthDeltaChange]);
 
   if (isLoading) {
     return (
@@ -93,14 +99,20 @@ export function CashflowSummaryRow({
         >
           INCOME · 30D
         </Text>
-        <Text
-          style={[
-            styles.cardAmount,
-            { color: colors.support.primary, fontSize: typography.sizes.xl },
-          ]}
-        >
-          +{formatCurrency(income, currency)}
-        </Text>
+        {cashflow.map(({ currency, income }) => (
+          <Text
+            key={currency}
+            style={[
+              styles.cardAmount,
+              {
+                color: colors.support.primary,
+                fontSize: typography.sizes.xl,
+              },
+            ]}
+          >
+            +{formatCurrency(income, currency)}
+          </Text>
+        ))}
         <View
           style={[
             styles.indicator,
@@ -129,14 +141,20 @@ export function CashflowSummaryRow({
         >
           EXPENSE · 30D
         </Text>
-        <Text
-          style={[
-            styles.cardAmount,
-            { color: colors.status.error, fontSize: typography.sizes.xl },
-          ]}
-        >
-          -{formatCurrency(expense, currency)}
-        </Text>
+        {cashflow.map(({ currency, expense }) => (
+          <Text
+            key={currency}
+            style={[
+              styles.cardAmount,
+              {
+                color: colors.status.error,
+                fontSize: typography.sizes.xl,
+              },
+            ]}
+          >
+            -{formatCurrency(expense, currency)}
+          </Text>
+        ))}
         <View
           style={[styles.indicator, { backgroundColor: colors.status.error }]}
         />

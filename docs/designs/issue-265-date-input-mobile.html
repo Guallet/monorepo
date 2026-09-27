@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guallet mobile · DateInput component</title>
+    <style>
+      :root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: #231f20; background: #eaf1f6; }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      button { font: inherit; }
+      .board { max-width: 1350px; margin: auto; padding: 44px 24px 64px; }
+      .eyebrow { margin: 0 0 8px; color: #425563; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+      h1 { margin: 0; color: #003087; font-size: 38px; letter-spacing: -.02em; }
+      .intro { max-width: 780px; margin: 10px 0 32px; color: #425563; font-size: 16px; line-height: 1.5; }
+      .grid { display: grid; grid-template-columns: repeat(3, 390px); gap: 28px; justify-content: center; }
+      .design { min-width: 0; }
+      .design h2 { margin: 0 0 8px; color: #003087; font-size: 18px; }
+      .design > p { min-height: 42px; margin: 0 0 12px; color: #425563; font-size: 14px; line-height: 1.4; }
+      .phone { position: relative; width: 390px; height: 844px; overflow: hidden; border: 6px solid #231f20; border-radius: 38px; background: #f7fafc; box-shadow: 0 12px 30px rgba(0,48,135,.12); }
+      .status { display: flex; height: 39px; align-items: center; justify-content: space-between; padding: 4px 22px 0; background: #fff; font-size: 13px; font-weight: 700; }
+      .camera { position: absolute; top: 10px; left: 50%; width: 84px; height: 20px; transform: translateX(-50%); border-radius: 14px; background: #231f20; }
+      .nav { display: flex; height: 58px; align-items: center; gap: 13px; padding: 0 20px; background: #fff; border-bottom: 1px solid #e8edee; font-size: 19px; font-weight: 700; }
+      .nav .back { color: #005eb8; font-size: 30px; font-weight: 400; line-height: 1; }
+      .form { padding: 25px 20px; }
+      .type { display: flex; height: 44px; margin-bottom: 24px; border: 1px solid #005eb8; border-radius: 8px; overflow: hidden; }
+      .type span { display: grid; width: 50%; place-items: center; color: #005eb8; font-size: 14px; font-weight: 600; }
+      .type span:first-child { background: #005eb8; color: #fff; }
+      .label { display: block; margin-bottom: 4px; font-size: 16px; font-weight: 500; }
+      .input { display: flex; height: 56px; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 19px; padding: 0 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f0f9ff; color: #000; font-size: 16px; }
+      .input.placeholder { color: #6b7280; }
+      .input svg { flex: none; width: 21px; height: 21px; stroke: #425563; stroke-width: 1.5; fill: none; }
+      .input.invalid { margin-bottom: 0; border-color: #da291c; background: #fef2f2; }
+      .input.disabled { border-color: #f3f4f6; background: #f3f4f6; color: #4b5563; }
+      .input.focus { border: 2px solid #0072ce; padding: 0 15px; }
+      .input .value { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+      .input .action { display: grid; width: 32px; height: 32px; place-items: center; margin-right: -4px; color: #425563; font-size: 25px; font-weight: 300; }
+      .error { margin: 5px 0 17px; color: #da291c; font-size: 14px; }
+      .save { display: grid; height: 49px; place-items: center; margin-top: 28px; border-radius: 8px; background: #005eb8; color: #fff; font-size: 16px; font-weight: 600; }
+      .home { position: absolute; bottom: 8px; left: 50%; width: 124px; height: 5px; transform: translateX(-50%); border-radius: 6px; background: #231f20; z-index: 5; }
+      .scrim { position: absolute; inset: 39px 0 0; background: rgba(35,31,32,.42); }
+      .sheet { position: absolute; top: 50%; left: 50%; width: 328px; transform: translate(-50%, -50%); padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 16px 40px rgba(0,0,0,.18); }
+      .handle { display: none; }
+      .sheet-top { display: flex; align-items: center; justify-content: space-between; font-size: 20px; font-weight: 700; }
+      .link { color: #005eb8; font-size: 16px; font-weight: 600; }
+      .wheel { position: relative; display: flex; height: 205px; align-items: center; justify-content: center; gap: 28px; overflow: hidden; margin: 17px 0; text-align: center; }
+      .wheel::before, .wheel::after { position: absolute; right: 0; left: 0; height: 59px; content: ""; z-index: 2; }
+      .wheel::before { top: 0; background: linear-gradient(#fff, rgba(255,255,255,0)); }
+      .wheel::after { bottom: 0; background: linear-gradient(rgba(255,255,255,0), #fff); }
+      .wheel-band { position: absolute; top: 78px; right: 0; left: 0; height: 49px; border-top: 1px solid #d4dce1; border-bottom: 1px solid #d4dce1; background: #f7fafc; }
+      .wheel-col { position: relative; z-index: 1; display: grid; gap: 20px; min-width: 44px; color: #768692; font-size: 18px; }
+      .wheel-col strong { color: #231f20; font-weight: 600; }
+      .done { display: grid; height: 49px; place-items: center; border-radius: 8px; background: #005eb8; color: #fff; font-size: 16px; font-weight: 600; }
+      .dialog { position: absolute; top: 49%; left: 50%; width: 328px; transform: translate(-50%, -50%); overflow: hidden; border-radius: 18px; background: #fff; box-shadow: 0 16px 40px rgba(0,0,0,.19); }
+      .dialog-head { padding: 18px 22px; background: #005eb8; color: #fff; }
+      .dialog-head small { font-size: 13px; opacity: .85; }
+      .dialog-head strong { display: block; margin-top: 7px; font-size: 25px; }
+      .month { display: flex; justify-content: space-between; padding: 20px 21px 13px; font-size: 14px; font-weight: 600; }
+      .month span:last-child { color: #425563; letter-spacing: .3em; }
+      .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 14px; text-align: center; }
+      .calendar span { display: grid; height: 34px; place-items: center; font-size: 13px; }
+      .calendar .weekday { color: #768692; font-size: 11px; }
+      .calendar .muted { color: #b7c2c8; }
+      .calendar .selected { border-radius: 50%; background: #005eb8; color: #fff; font-weight: 700; }
+      .dialog-actions { display: flex; justify-content: flex-end; gap: 20px; padding: 18px 23px 20px; color: #005eb8; font-size: 14px; font-weight: 700; }
+      .notes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+      .notes span { padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 18px; background: #fff; color: #425563; font-size: 13px; }
+      footer { margin-top: 26px; color: #425563; font-size: 13px; line-height: 1.5; }
+      footer a { color: #005eb8; }
+      @media (max-width: 1320px) { .grid { grid-template-columns: repeat(2, 390px); } }
+      @media (max-width: 850px) { .board { padding: 28px 12px 48px; } h1 { font-size: 30px; } .grid { grid-template-columns: 390px; } }
+      @media (max-width: 410px) { .grid { grid-template-columns: minmax(0, 1fr); } .phone { width: 100%; } }
+    </style>
+  </head>
+  <body>
+    <main class="board">
+      <p class="eyebrow">Guallet · Luna Mobile · Issue 265</p>
+      <h1>DateInput component</h1>
+      <p class="intro">Six phone-sized views show the reusable field in a transaction form. The component keeps Luna's 56 px input geometry; iOS and Android own the picker control.</p>
+      <div class="grid">
+        <section class="design"><h2>01 · Empty</h2><p>Tap anywhere in the date field to choose a date.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span>Edit transaction</div><div class="form"><div class="type"><span>Expense</span><span>Income</span></div><span class="label">Description</span><div class="input">Groceries</div><span class="label">Amount</span><div class="input">£42.50</div><span class="label">Account</span><div class="input">Current account</div><span class="label">Date</span><div class="input placeholder"><span class="value">Select date</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div><span class="label">Category</span><div class="input">Food &amp; drink</div><div class="save">Save changes</div></div><div class="home"></div></div></section>
+        <section class="design"><h2>02 · Selected</h2><p>The date is readable; clear has its own target.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span>Edit transaction</div><div class="form"><div class="type"><span>Expense</span><span>Income</span></div><span class="label">Description</span><div class="input">Groceries</div><span class="label">Amount</span><div class="input">£42.50</div><span class="label">Account</span><div class="input">Current account</div><span class="label">Date</span><div class="input"><span class="value">23 Sep 2026</span><span class="action" aria-label="Clear date">×</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div><span class="label">Category</span><div class="input">Food &amp; drink</div><div class="save">Save changes</div></div><div class="home"></div></div></section>
+        <section class="design"><h2>03 · Error</h2><p>The supplied validation message stays with the field.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span>Edit transaction</div><div class="form"><div class="type"><span>Expense</span><span>Income</span></div><span class="label">Description</span><div class="input">Groceries</div><span class="label">Amount</span><div class="input">£42.50</div><span class="label">Account</span><div class="input">Current account</div><span class="label">Date</span><div class="input placeholder invalid"><span class="value">Select date</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div><p class="error">Select a transaction date.</p><span class="label">Category</span><div class="input">Food &amp; drink</div><div class="save">Save changes</div></div><div class="home"></div></div></section>
+        <section class="design"><h2>04 · Disabled</h2><p>Show the stored value while disabling all field actions.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span>Edit transaction</div><div class="form"><div class="type"><span>Expense</span><span>Income</span></div><span class="label">Description</span><div class="input">Groceries</div><span class="label">Amount</span><div class="input">£42.50</div><span class="label">Account</span><div class="input">Current account</div><span class="label">Date</span><div class="input disabled"><span class="value">23 Sep 2026</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div><span class="label">Category</span><div class="input">Food &amp; drink</div><div class="save">Save changes</div></div><div class="home"></div></div></section>
+        <section class="design"><h2>05 · iOS picker</h2><p>Use the native wheel inside a themed modal.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span>Edit transaction</div><div class="form"><div class="type"><span>Expense</span><span>Income</span></div><span class="label">Description</span><div class="input">Groceries</div><span class="label">Amount</span><div class="input">£42.50</div><span class="label">Account</span><div class="input">Current account</div><span class="label">Date</span><div class="input focus"><span class="value">23 Sep 2026</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div></div><div class="scrim"></div><div class="sheet"><div class="handle"></div><div class="sheet-top"><span>Select date</span><span class="link">Cancel</span></div><div class="wheel"><div class="wheel-band"></div><div class="wheel-col"><span>Aug</span><strong>Sep</strong><span>Oct</span></div><div class="wheel-col"><span>22</span><strong>23</strong><span>24</span></div><div class="wheel-col"><span>2025</span><strong>2026</strong><span>2027</span></div></div><div class="done">Done</div></div><div class="home"></div></div></section>
+        <section class="design"><h2>06 · Android picker</h2><p>Use the system dialog and pass its inclusive date bounds.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span>Edit transaction</div><div class="form"><div class="type"><span>Expense</span><span>Income</span></div><span class="label">Description</span><div class="input">Groceries</div><span class="label">Amount</span><div class="input">£42.50</div><span class="label">Account</span><div class="input">Current account</div><span class="label">Date</span><div class="input focus"><span class="value">23 Sep 2026</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></div></div><div class="scrim"></div><div class="dialog"><div class="dialog-head"><small>SELECT DATE</small><strong>Wed, 23 Sep</strong></div><div class="month"><span>September 2026</span><span>‹ ›</span></div><div class="calendar"><span class="weekday">M</span><span class="weekday">T</span><span class="weekday">W</span><span class="weekday">T</span><span class="weekday">F</span><span class="weekday">S</span><span class="weekday">S</span><span class="muted">31</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span class="selected">23</span><span>24</span><span>25</span><span>26</span><span class="muted">27</span><span class="muted">28</span><span class="muted">29</span><span class="muted">30</span><span class="muted">1</span><span class="muted">2</span><span class="muted">3</span><span class="muted">4</span></div><div class="dialog-actions"><span>Cancel</span><span>OK</span></div></div><div class="home"></div></div></section>
+      </div>
+      <div class="notes"><span>390 × 844 px phone frames</span><span>56 px DateInput</span><span>Luna light tokens</span><span>OS-owned picker</span><span>Clear emits null</span></div>
+      <footer>Original mobile component design based on the <a href="https://github.com/Guallet/monorepo/issues/265">issue contract</a> and Luna theme. Interaction references: <a href="https://mobbin.com/screens/d29cd54b-b9cd-4629-94de-a526d556b26d">Commons</a> and <a href="https://mobbin.com/screens/b38143ae-2b9d-4400-aaa8-3f6619ec09ed">Wise</a>. Picker pixels are illustrative; production uses the platform control.</footer>
+    </main>
+  </body>
+</html>

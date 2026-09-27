@@ -90,7 +90,7 @@ export function AuthIntro({
           style={[
             styles.iconContainer,
             {
-              backgroundColor: colors.button.secondary,
+              backgroundColor: colors.button.secondary.default,
               borderRadius: borderRadius.xl,
               marginBottom: spacing.sm,
             },
@@ -141,7 +141,7 @@ export function AuthLink({
   accessibilityLabel,
   disabled = false,
 }: Readonly<AuthLinkProps>) {
-  const { colors, typography } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Pressable

@@ -1,4 +1,3 @@
-import { useUserSettings } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { Currency, ISO4217Currencies } from '@guallet/money';
 import { useMemo, useState } from 'react';
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 const availableCurrencies = Object.values(ISO4217Currencies)
   .sort((a, b) => a.code.localeCompare(b.code))
@@ -38,7 +38,7 @@ export function CurrencyPickerSheet({
   onDismiss,
 }: Readonly<CurrencyPickerSheetProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
-  const { settings } = useUserSettings();
+  const { defaultCurrency, preferredCurrencies } = useMobileUserPreferences();
   const [query, setQuery] = useState('');
 
   const { popular, other } = useMemo(() => {
@@ -52,8 +52,8 @@ export function CurrencyPickerSheet({
     );
     const preferredCodes = [
       selectedCurrency?.code,
-      settings?.currencies.default_currency,
-      ...(settings?.currencies.preferred_currencies ?? []),
+      defaultCurrency,
+      ...preferredCurrencies,
     ]
       .filter((code): code is string => Boolean(code))
       .map((code) => code.toUpperCase())
@@ -66,12 +66,7 @@ export function CurrencyPickerSheet({
         .filter((currency): currency is Currency => currency !== undefined),
       other: matches.filter((currency) => !preferredSet.has(currency.code)),
     };
-  }, [
-    query,
-    selectedCurrency?.code,
-    settings?.currencies.default_currency,
-    settings?.currencies.preferred_currencies,
-  ]);
+  }, [query, selectedCurrency?.code, defaultCurrency, preferredCurrencies]);
 
   function close(): void {
     setQuery('');

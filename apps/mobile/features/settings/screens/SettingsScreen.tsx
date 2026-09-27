@@ -16,6 +16,8 @@ import { Button, useTheme } from '@guallet/luna-mobile';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsSection } from '../components/SettingsSection';
+import { PreferencesSection } from '../components/PreferencesSection';
+import { useMobileUserPreferences } from '../useMobileUserPreferences';
 
 function getInitials(name: string): string {
   const initials = name
@@ -34,6 +36,8 @@ export default function SettingsScreen() {
   const { borderRadius, colors, spacing, typography } = useTheme();
   const { logout } = useAuth();
   const { user, isLoading, isError, isRefetching, refetch } = useUser();
+  const { isRefetching: isSettingsRefetching, refetch: refetchSettings } =
+    useMobileUserPreferences();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [failedProfileImage, setFailedProfileImage] = useState<string | null>(
     null,
@@ -79,6 +83,9 @@ export default function SettingsScreen() {
   const showLoading = isLoading && !user;
   const showError = !showLoading && isError && !user;
   const showProfile = !showLoading && !showError;
+  const refreshSettings = useCallback(() => {
+    void Promise.all([refetch(), refetchSettings()]);
+  }, [refetch, refetchSettings]);
 
   return (
     <SafeAreaView
@@ -95,8 +102,8 @@ export default function SettingsScreen() {
         ]}
         refreshControl={
           <RefreshControl
-            onRefresh={() => void refetch()}
-            refreshing={isRefetching}
+            onRefresh={refreshSettings}
+            refreshing={isRefetching || isSettingsRefetching}
             tintColor={colors.accent.primary}
           />
         }
@@ -117,7 +124,7 @@ export default function SettingsScreen() {
               { color: colors.text.secondary, fontSize: typography.sizes.sm },
             ]}
           >
-            Manage your account and session
+            Manage your account, preferences, and session
           </Text>
         </View>
 
@@ -262,6 +269,8 @@ export default function SettingsScreen() {
             </View>
           </View>
         )}
+
+        <PreferencesSection />
 
         <SettingsSection title="Session">
           <SettingsRow

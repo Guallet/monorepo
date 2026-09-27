@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +14,7 @@ import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountTypeIcon } from './AccountTypeIcon';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 interface AccountFormProps {
   account?: AccountDto | null;
@@ -27,13 +28,17 @@ export function AccountForm({
   onSaved,
 }: Readonly<AccountFormProps>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
+  const { defaultCurrency } = useMobileUserPreferences();
   const { createAccountMutation, updateAccountMutation } =
     useAccountMutations();
   const [name, setName] = useState(account?.name ?? '');
   const [type, setType] = useState<AccountTypeDto>(
     account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
   );
-  const [currency, setCurrency] = useState(account?.currency ?? 'GBP');
+  const [currency, setCurrency] = useState(
+    account?.currency ?? defaultCurrency,
+  );
+  const hasSelectedCurrency = useRef(Boolean(account));
   const [balance, setBalance] = useState(
     account ? String(account.balance.amount) : '0',
   );
@@ -46,6 +51,12 @@ export function AccountForm({
     setCurrency(account.currency);
     setBalance(String(account.balance.amount));
   }, [account]);
+
+  useEffect(() => {
+    if (!account && !hasSelectedCurrency.current) {
+      setCurrency(defaultCurrency);
+    }
+  }, [account, defaultCurrency]);
 
   const isPending =
     createAccountMutation.isPending || updateAccountMutation.isPending;
@@ -150,9 +161,10 @@ export function AccountForm({
             value={name}
           />
           <CurrencyInput
-            onValueChanged={(selectedCurrency) =>
-              setCurrency(selectedCurrency ?? '')
-            }
+            onValueChanged={(selectedCurrency) => {
+              hasSelectedCurrency.current = true;
+              setCurrency(selectedCurrency ?? '');
+            }}
             placeholder="Select a currency"
             value={currency}
           />
