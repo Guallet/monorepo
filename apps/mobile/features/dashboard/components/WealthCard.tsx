@@ -4,6 +4,10 @@ import { useAccounts, useAccountCharts } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import {
+  groupBalancesByCurrency,
+  type CurrencyAmount,
+} from '../utils/currencyTotals';
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-GB', {
@@ -14,10 +18,10 @@ function formatCurrency(amount: number, currency: string): string {
 }
 
 interface WealthCardProps {
-  monthDelta?: number;
+  monthDeltas: CurrencyAmount[] | null;
 }
 
-export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
+export function WealthCard({ monthDeltas }: Readonly<WealthCardProps>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
   const { accounts, isLoading } = useAccounts();
@@ -32,12 +36,16 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
     chartEndDate,
   );
 
-  const totalWealth = useMemo(
-    () => accounts.reduce((sum, a) => sum + a.balance.amount, 0),
-    [accounts],
+  const balances = useMemo(
+    () => groupBalancesByCurrency(accounts, defaultCurrency),
+    [accounts, defaultCurrency],
   );
-
-  const displayCurrency = defaultCurrency;
+  const singleCurrencyDelta =
+    balances.length === 1 &&
+    monthDeltas?.length === 1 &&
+    balances[0].currency === monthDeltas[0].currency
+      ? monthDeltas[0]
+      : null;
 
   const sparklineBars = useMemo(() => {
     const raw = chartData?.chart ?? [];
@@ -70,7 +78,7 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
     );
   }
 
-  const isDeltaPositive = (monthDelta ?? 0) >= 0;
+  const isDeltaPositive = (singleCurrencyDelta?.amount ?? 0) >= 0;
 
   return (
     <View
@@ -92,22 +100,25 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
           },
         ]}
       >
-        TOTAL WEALTH
+        {balances.length === 1 ? 'TOTAL WEALTH' : 'BALANCES BY CURRENCY'}
       </Text>
 
-      <Text
-        style={[
-          styles.amount,
-          {
-            color: colors.button.onPrimary.default,
-            fontSize: typography.sizes.xxl,
-          },
-        ]}
-      >
-        {formatCurrency(totalWealth, displayCurrency)}
-      </Text>
+      {balances.map(({ currency, amount }) => (
+        <Text
+          key={currency}
+          style={[
+            styles.amount,
+            {
+              color: colors.button.onPrimary.default,
+              fontSize: typography.sizes.xxl,
+            },
+          ]}
+        >
+          {formatCurrency(amount, currency)}
+        </Text>
+      ))}
 
-      {monthDelta !== undefined && (
+      {singleCurrencyDelta && (
         <Text
           style={[
             styles.delta,
@@ -118,7 +129,11 @@ export function WealthCard({ monthDelta }: Readonly<WealthCardProps>) {
           ]}
         >
           {isDeltaPositive ? '↑' : '↓'} {isDeltaPositive ? '+' : ''}
-          {formatCurrency(monthDelta, displayCurrency)} vs last month
+          {formatCurrency(
+            singleCurrencyDelta.amount,
+            singleCurrencyDelta.currency,
+          )}
+          {' net cashflow · 30D'}
         </Text>
       )}
 

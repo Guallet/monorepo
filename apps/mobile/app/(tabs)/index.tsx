@@ -10,6 +10,7 @@ import { RecentTransactionsWidget } from '@/features/dashboard/components/Recent
 import { SavingGoalsWidget } from '@/features/dashboard/components/SavingGoalsWidget';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import type { CurrencyAmount } from '@/features/dashboard/utils/currencyTotals';
 
 function formatGreetingDate(
   date: Date,
@@ -26,16 +27,36 @@ function getFirstName(fullName: string): string {
   return fullName.split(' ')[0] ?? fullName;
 }
 
+function sameCurrencyAmounts(
+  first: CurrencyAmount[] | null,
+  second: CurrencyAmount[] | null,
+): boolean {
+  if (first === null || second === null) return first === second;
+  return (
+    first.length === second.length &&
+    first.every(
+      (amount, index) =>
+        amount.currency === second[index].currency &&
+        amount.amount === second[index].amount,
+    )
+  );
+}
+
 export default function DashboardScreen() {
   const { colors, spacing, typography } = useTheme();
   const { user } = useUser();
   const { languageTag, dateFormat } = useMobileUserPreferences();
   const router = useRouter();
-  const [monthDelta, setMonthDelta] = useState<number | undefined>(undefined);
+  const [monthDeltas, setMonthDeltas] = useState<CurrencyAmount[] | null>(null);
 
-  const handleMonthDeltaChange = useCallback((delta: number) => {
-    setMonthDelta(delta);
-  }, []);
+  const handleMonthDeltaChange = useCallback(
+    (deltas: CurrencyAmount[] | null) => {
+      setMonthDeltas((current) =>
+        sameCurrencyAmounts(current, deltas) ? current : deltas,
+      );
+    },
+    [],
+  );
 
   const handleSeeAllTransactions = useCallback(() => {
     router.navigate('/(tabs)/transactions');
@@ -81,7 +102,7 @@ export default function DashboardScreen() {
         </View>
 
         {/* Total Wealth */}
-        <WealthCard monthDelta={monthDelta} />
+        <WealthCard monthDeltas={monthDeltas} />
 
         {/* Income / Expense 30-day summary */}
         <CashflowSummaryRow onMonthDeltaChange={handleMonthDeltaChange} />

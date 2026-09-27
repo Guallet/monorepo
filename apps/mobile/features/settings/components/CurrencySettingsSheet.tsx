@@ -1,6 +1,6 @@
 import { useTheme } from '@guallet/luna-mobile';
 import { Currency, ISO4217Currencies } from '@guallet/money';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -40,12 +40,14 @@ export function CurrencySettingsSheet({
   const { borderRadius, colors, spacing, typography } = useTheme();
   const [query, setQuery] = useState('');
   const [draftCodes, setDraftCodes] = useState(selectedCodes);
+  const wasVisible = useRef(false);
 
   useEffect(() => {
-    if (visible) {
+    if (visible && !wasVisible.current) {
       setQuery('');
       setDraftCodes(selectedCodes);
     }
+    wasVisible.current = visible;
   }, [selectedCodes, visible]);
 
   const currencies = useMemo(() => {

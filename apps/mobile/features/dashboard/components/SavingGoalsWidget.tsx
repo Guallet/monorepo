@@ -2,20 +2,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSavingGoals } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { SavingGoalProgressItem } from './SavingGoalProgressItem';
-import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 const MAX_GOALS = 3;
 
-interface SavingGoalsWidgetProps {
-  currency?: string;
-}
-
-export function SavingGoalsWidget({
-  currency: currencyOverride,
-}: SavingGoalsWidgetProps) {
+export function SavingGoalsWidget() {
   const { colors, borderRadius, spacing, typography } = useTheme();
-  const { defaultCurrency } = useMobileUserPreferences();
-  const currency = currencyOverride ?? defaultCurrency;
   const { savingGoals, isLoading } = useSavingGoals();
 
   if (isLoading) {
@@ -67,11 +58,7 @@ export function SavingGoalsWidget({
         </Text>
       ) : (
         goals.map((goal) => (
-          <SavingGoalProgressItem
-            key={goal.id}
-            goal={goal}
-            currency={currency}
-          />
+          <SavingGoalProgressItem key={goal.id} goal={goal} />
         ))
       )}
     </View>

@@ -6,6 +6,7 @@ import type { DateFormat } from '@guallet/api-client';
 
 export const DEFAULT_CURRENCY = 'GBP';
 export const DEFAULT_DATE_FORMAT: DateFormat = 'DD/MM/YYYY';
+const EMPTY_PREFERRED_CURRENCIES: string[] = [];
 
 function getDateFormatFromLocale(languageTag?: string | null): DateFormat {
   if (!languageTag) return DEFAULT_DATE_FORMAT;
@@ -53,7 +54,8 @@ export function useMobileUserPreferences() {
     settings,
     defaultCurrency:
       settings?.currencies.default_currency ?? localeDefaults.defaultCurrency,
-    preferredCurrencies: settings?.currencies.preferred_currencies ?? [],
+    preferredCurrencies:
+      settings?.currencies.preferred_currencies ?? EMPTY_PREFERRED_CURRENCIES,
     dateFormat: settings?.date_format ?? localeDefaults.dateFormat,
     languageTag: localeDefaults.languageTag,
     ...settingsQuery,
