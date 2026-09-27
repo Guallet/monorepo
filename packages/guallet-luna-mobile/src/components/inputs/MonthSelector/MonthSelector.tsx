@@ -17,6 +17,7 @@ import { useTheme } from '../../../theme';
 import { useDateRangeSheet } from '../DateRangePicker/DateRangeSheetProvider';
 import {
   adjacentMonth,
+  clampYearToBounds,
   isMonthInBounds,
   yearHasSelectableMonth,
 } from './monthDates';
@@ -55,7 +56,8 @@ export function MonthSelector({
     throw new Error('MonthSelector requires DateRangeSheetProvider.');
   }
   const [visible, setVisible] = useState(false);
-  const [displayYear, setDisplayYear] = useState(value.getFullYear());
+  const [requestedYear, setRequestedYear] = useState(value.getFullYear());
+  const displayYear = clampYearToBounds(requestedYear, minDate, maxDate);
   const label = new Intl.DateTimeFormat(undefined, {
     month: 'long',
     year: 'numeric',
@@ -65,11 +67,13 @@ export function MonthSelector({
   const previousDisabled = !isMonthInBounds(previousMonth, minDate, maxDate);
   const nextDisabled = !isMonthInBounds(nextMonth, minDate, maxDate);
 
+  /** Recenter the sheet when the controlled value or bounds have changed. */
   function open() {
-    setDisplayYear(value.getFullYear());
+    setRequestedYear(clampYearToBounds(value.getFullYear(), minDate, maxDate));
     setVisible(true);
   }
 
+  /** Commit only a month that remains valid under the latest bounds. */
   function choose(month: number) {
     const selected = new Date(displayYear, month, 1);
     if (!isMonthInBounds(selected, minDate, maxDate)) return;
@@ -77,6 +81,7 @@ export function MonthSelector({
     onChange(selected);
   }
 
+  /** Guard arrow presses as well as their disabled presentation. */
   function move(offset: number) {
     const selected = adjacentMonth(value, offset);
     if (isMonthInBounds(selected, minDate, maxDate)) onChange(selected);
@@ -124,7 +129,7 @@ export function MonthSelector({
         </View>
         <View style={styles.yearRow}>
           <Pressable
-            onPress={() => setDisplayYear((year) => year - 1)}
+            onPress={() => setRequestedYear(displayYear - 1)}
             disabled={
               !yearHasSelectableMonth(displayYear - 1, minDate, maxDate)
             }
@@ -158,7 +163,7 @@ export function MonthSelector({
             {displayYear}
           </Text>
           <Pressable
-            onPress={() => setDisplayYear((year) => year + 1)}
+            onPress={() => setRequestedYear(displayYear + 1)}
             disabled={
               !yearHasSelectableMonth(displayYear + 1, minDate, maxDate)
             }
@@ -189,9 +194,12 @@ export function MonthSelector({
             const disabled = !isMonthInBounds(date, minDate, maxDate);
             const selected =
               displayYear === value.getFullYear() && month === value.getMonth();
+            let textColor = colors.text.primary;
+            if (disabled) textColor = colors.text.disabled;
+            else if (selected) textColor = colors.text.inverse;
             return (
               <Pressable
-                key={month}
+                key={date.toISOString()}
                 onPress={() => choose(month)}
                 disabled={disabled}
                 accessibilityRole="button"
@@ -212,11 +220,7 @@ export function MonthSelector({
               >
                 <Text
                   style={{
-                    color: disabled
-                      ? colors.text.disabled
-                      : selected
-                        ? colors.text.inverse
-                        : colors.text.primary,
+                    color: textColor,
                     fontSize: typography.sizes.sm,
                     fontWeight: selected ? '600' : '400',
                   }}

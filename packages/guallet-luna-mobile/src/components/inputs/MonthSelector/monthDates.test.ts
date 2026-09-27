@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   adjacentMonth,
+  clampYearToBounds,
   isMonthInBounds,
   yearHasSelectableMonth,
 } from './monthDates';
@@ -31,5 +32,16 @@ describe('month bounds', () => {
     expect(yearHasSelectableMonth(2024, min, max)).toBe(true);
     expect(yearHasSelectableMonth(2026, min, max)).toBe(true);
     expect(yearHasSelectableMonth(2027, min, max)).toBe(false);
+  });
+
+  it('starts in a selectable year after bounds move past the selected value', () => {
+    const min = new Date(2025, 6, 31);
+    const max = new Date(2027, 1, 1);
+    expect(clampYearToBounds(2020, min, max)).toBe(2025);
+    expect(clampYearToBounds(2030, min, max)).toBe(2027);
+    expect(clampYearToBounds(2026, min, max)).toBe(2026);
+    expect(
+      yearHasSelectableMonth(clampYearToBounds(2020, min, max), min, max),
+    ).toBe(true);
   });
 });
