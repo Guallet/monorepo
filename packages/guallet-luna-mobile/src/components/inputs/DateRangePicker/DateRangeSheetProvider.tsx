@@ -4,6 +4,7 @@ export interface DateRangeSheetProps {
   visible: boolean;
   onDismiss: () => void;
   children: ReactNode;
+  snapPoints?: ('half' | 'full')[];
 }
 
 export type DateRangeSheetRenderer = (props: DateRangeSheetProps) => ReactNode;
