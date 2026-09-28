@@ -20,7 +20,7 @@ export function ImportJobMonitor() {
       checking = true;
       void (async () => {
         try {
-          for (const jobId of [...pendingJobs]) {
+          for (const jobId of pendingJobs) {
             try {
               const result = await client.dataImporter.getStatus(jobId);
               if (result.status === 'completed' || result.status === 'failed') {

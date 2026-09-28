@@ -133,12 +133,12 @@
             <h2>Match your columns</h2><p class="subtitle">Tell Guallet what each column means. Examples from your file are shown below.</p>
             <div class="banner"><span>ⓘ</span><span>We found 124 rows and six columns. Date, amount and description are required.</span></div>
             <div class="card">
-              <div class="field"><label>Date <span>Required</span></label><select><option>Transaction date</option><option>Date</option></select><p class="sample">Example: 21/09/2026</p></div>
-              <div class="field"><label>Amount <span>Required</span></label><select><option>Value</option><option>Amount</option></select><p class="sample">Example: −24.50</p></div>
-              <div class="field"><label>Description <span>Required</span></label><select><option>Merchant</option><option>Description</option></select><p class="sample">Example: Corner Coffee</p></div>
-              <div class="field"><label>Account <span>Optional</span></label><select><option>Account name</option><option>Don't map</option></select></div>
-              <div class="field"><label>Category <span>Optional</span></label><select><option>Category</option><option>Don't map</option></select></div>
-              <div class="field" style="margin-bottom:0"><label>Notes <span>Optional</span></label><select><option>Don't map</option><option>Memo</option></select></div>
+              <div class="field"><label for="csv-date">Date <span>Required</span></label><select id="csv-date"><option>Transaction date</option><option>Date</option></select><p class="sample">Example: 21/09/2026</p></div>
+              <div class="field"><label for="csv-amount">Amount <span>Required</span></label><select id="csv-amount"><option>Value</option><option>Amount</option></select><p class="sample">Example: −24.50</p></div>
+              <div class="field"><label for="csv-description">Description <span>Required</span></label><select id="csv-description"><option>Merchant</option><option>Description</option></select><p class="sample">Example: Corner Coffee</p></div>
+              <div class="field"><label for="csv-account">Account <span>Optional</span></label><select id="csv-account"><option>Account name</option><option>Don't map</option></select></div>
+              <div class="field"><label for="csv-category">Category <span>Optional</span></label><select id="csv-category"><option>Category</option><option>Don't map</option></select></div>
+              <div class="field" style="margin-bottom:0"><label for="csv-notes">Notes <span>Optional</span></label><select id="csv-notes"><option>Don't map</option><option>Memo</option></select></div>
             </div>
           </div>
           <div class="footer"><button class="primary" onclick="go('accounts')">Continue to accounts</button><div class="home-indicator"></div></div>
@@ -229,7 +229,8 @@
         const iconElement = document.getElementById('resultIcon');
         iconElement.textContent = icon;
         iconElement.style.color = color;
-        iconElement.style.background = state === 'error' ? '#fff0ee' : state === 'success' ? '#eaf8ed' : state === 'partial' ? '#fff9d8' : '#eaf4fc';
+        const resultBackgrounds = { error: '#fff0ee', success: '#eaf8ed', partial: '#fff9d8', queued: '#eaf4fc' };
+        iconElement.style.background = resultBackgrounds[state] || resultBackgrounds.queued;
         document.getElementById('resultTitle').textContent = title;
         document.getElementById('resultSubtitle').textContent = subtitle;
         document.getElementById('resultDetails').textContent = details;

@@ -86,10 +86,9 @@ export function accountKeys(draft: CsvDraft) {
 
 function validDate(raw: string): boolean {
   const value = raw.trim();
-  const match =
-    /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})?)?$/.exec(
-      value,
-    );
+  const dateOnly = value.split('T')[0];
+  const match = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/.exec(dateOnly);
+  if (value.includes('T') && Number.isNaN(Date.parse(value))) return false;
   const local = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/.exec(value);
   if (!match && !local) return false;
   if (match) {
@@ -102,18 +101,15 @@ function validDate(raw: string): boolean {
     );
   }
   const [, first, second, year] = local!;
-  const day =
-    Number(first) > 12
-      ? Number(first)
-      : Number(second) > 12
-        ? Number(second)
-        : Number(first);
-  const month =
-    Number(first) > 12
-      ? Number(second)
-      : Number(second) > 12
-        ? Number(first)
-        : Number(second);
+  let day = Number(first);
+  let month = Number(second);
+  if (Number(first) > 12) {
+    day = Number(first);
+    month = Number(second);
+  } else if (Number(second) > 12) {
+    day = Number(second);
+    month = Number(first);
+  }
   const date = new Date(Number(year), month - 1, day);
   return (
     date.getFullYear() === Number(year) &&

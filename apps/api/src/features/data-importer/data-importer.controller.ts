@@ -97,7 +97,10 @@ export class DataImporterController {
     @Param('jobId') jobId: string,
   ): Promise<DataImportStatusDto> {
     const job = await this.importQueue.getJob(jobId);
-    if (!job || job.data.userId !== user.id) {
+    if (!job) {
+      throw new NotFoundException('Import job not found');
+    }
+    if (job.data.userId !== user.id) {
       throw new NotFoundException('Import job not found');
     }
 

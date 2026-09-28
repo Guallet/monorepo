@@ -318,19 +318,19 @@ export function MapAccountsScreen() {
               options={options}
               onChange={(selected) => {
                 const account = accounts.find((item) => item.id === selected);
-                const mapped: AccountMapping | undefined =
-                  selected === 'create'
-                    ? {
-                        name: key === 'default' ? 'Imported account' : key,
-                        shouldCreate: true,
-                      }
-                    : account
-                      ? {
-                          id: account.id,
-                          name: account.name,
-                          shouldCreate: false,
-                        }
-                      : undefined;
+                let mapped: AccountMapping | undefined;
+                if (selected === 'create') {
+                  mapped = {
+                    name: key === 'default' ? 'Imported account' : key,
+                    shouldCreate: true,
+                  };
+                } else if (account) {
+                  mapped = {
+                    id: account.id,
+                    name: account.name,
+                    shouldCreate: false,
+                  };
+                }
                 updateDraft((current) => {
                   const nextAccounts = { ...current.accounts };
                   if (mapped) nextAccounts[key] = mapped;
@@ -395,16 +395,16 @@ export function MapCategoriesScreen() {
                 const category = categories.find(
                   (item) => item.id === selected,
                 );
-                const mapped: CategoryMapping | null =
-                  selected === 'create'
-                    ? { name: key, shouldCreate: true }
-                    : category
-                      ? {
-                          id: category.id,
-                          name: category.name,
-                          shouldCreate: false,
-                        }
-                      : null;
+                let mapped: CategoryMapping | null = null;
+                if (selected === 'create') {
+                  mapped = { name: key, shouldCreate: true };
+                } else if (category) {
+                  mapped = {
+                    id: category.id,
+                    name: category.name,
+                    shouldCreate: false,
+                  };
+                }
                 updateDraft((current) => ({
                   ...current,
                   categories: { ...current.categories, [key]: mapped },
@@ -494,9 +494,13 @@ export function PreviewImportScreen() {
             .filter((entry) => entry.errors.length > 0)
             .slice(0, 20)
             .map((entry) => (
-              <TextLine key={entry.rowNumber}>{`CSV row ${entry.rowNumber}: ${entry.errors.join(', ')}`}</TextLine>
+              <TextLine
+                key={entry.rowNumber}
+              >{`CSV row ${entry.rowNumber}: ${entry.errors.join(', ')}`}</TextLine>
             ))}
-          {invalid > 20 && <TextLine>{`Showing 20 of ${invalid} affected rows`}</TextLine>}
+          {invalid > 20 && (
+            <TextLine>{`Showing 20 of ${invalid} affected rows`}</TextLine>
+          )}
         </ImportCard>
       )}
       <ErrorText message={error} />
@@ -522,11 +526,12 @@ export function PreviewImportScreen() {
       </ImportCard>
       <ImportCard>
         <TextLine strong>Destination accounts</TextLine>
-        {Object.entries(draft.accounts).map(([key, mapping]) => (
-          <TextLine
-            key={key}
-          >{`${key}: ${mapping.shouldCreate ? `Create ${mapping.name}` : mapping.name}`}</TextLine>
-        ))}
+        {Object.entries(draft.accounts).map(([key, mapping]) => {
+          const target = mapping.shouldCreate
+            ? `Create ${mapping.name}`
+            : mapping.name;
+          return <TextLine key={key}>{`${key}: ${target}`}</TextLine>;
+        })}
       </ImportCard>
     </FlowScreen>
   );
