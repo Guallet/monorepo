@@ -1,11 +1,11 @@
 import type { DateFormat } from '@guallet/api-client';
 import { useUserSettingsMutations } from '@guallet/api-react';
-import { useTheme } from '@guallet/luna-mobile';
+import { CurrencyPicker, useTheme } from '@guallet/luna-mobile';
 import { Alert, View } from 'react-native';
 import { useState } from 'react';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SelectionSheet } from '@/components/ui/SelectionSheet';
-import { CurrencySettingsSheet } from './CurrencySettingsSheet';
+import { availableCurrencies } from '@/components/currencyPickerData';
 import { SettingsRow } from './SettingsRow';
 import { SettingsSection } from './SettingsSection';
 import { useMobileUserPreferences } from '../useMobileUserPreferences';
@@ -21,9 +21,6 @@ export function PreferencesSection() {
   const { defaultCurrency, preferredCurrencies, dateFormat } =
     useMobileUserPreferences();
   const { updateUserSettingsMutation } = useUserSettingsMutations();
-  const [currencyPicker, setCurrencyPicker] = useState<
-    'default' | 'preferred' | null
-  >(null);
   const [isDateFormatPickerVisible, setIsDateFormatPickerVisible] =
     useState(false);
 
@@ -32,7 +29,6 @@ export function PreferencesSection() {
       await updateUserSettingsMutation.mutateAsync({
         currencies: { default_currency: currencyCode },
       });
-      setCurrencyPicker(null);
     } catch {
       Alert.alert('Couldn’t update currency', 'Please try again in a moment.');
     }
@@ -43,7 +39,6 @@ export function PreferencesSection() {
       await updateUserSettingsMutation.mutateAsync({
         currencies: { preferred_currencies: currencyCodes },
       });
-      setCurrencyPicker(null);
     } catch {
       Alert.alert(
         'Couldn’t update preferred currencies',
@@ -71,33 +66,57 @@ export function PreferencesSection() {
   return (
     <View style={{ gap: spacing.lg }}>
       <SettingsSection title="Preferences">
-        <SettingsRow
-          disabled={updateUserSettingsMutation.isPending}
-          icon={
-            <IconSymbol
-              color={colors.accent.primary}
-              name="dollarsign.circle.fill"
-              size={21}
-            />
-          }
-          isLoading={updateUserSettingsMutation.isPending}
-          label="Default currency"
-          onPress={() => setCurrencyPicker('default')}
+        <CurrencyPicker
+          selectionMode="single"
           value={defaultCurrency}
-        />
-        <SettingsRow
+          currencies={availableCurrencies}
+          preferredCurrencyCodes={preferredCurrencies}
+          showDefaultCurrency={false}
+          onChange={(code) => void saveDefaultCurrency(code)}
+          title="Default currency"
           disabled={updateUserSettingsMutation.isPending}
-          icon={
-            <IconSymbol
-              color={colors.accent.primary}
-              name="banknote.fill"
-              size={21}
+          renderTrigger={({ open }) => (
+            <SettingsRow
+              disabled={updateUserSettingsMutation.isPending}
+              icon={
+                <IconSymbol
+                  color={colors.accent.primary}
+                  name="dollarsign.circle.fill"
+                  size={21}
+                />
+              }
+              isLoading={updateUserSettingsMutation.isPending}
+              label="Default currency"
+              onPress={open}
+              value={defaultCurrency}
             />
-          }
-          isLoading={updateUserSettingsMutation.isPending}
-          label="Preferred currencies"
-          onPress={() => setCurrencyPicker('preferred')}
-          value={`${preferredCurrencies.length} ${preferredCurrencies.length === 1 ? 'currency' : 'currencies'}`}
+          )}
+        />
+        <CurrencyPicker
+          selectionMode="multiple"
+          value={preferredCurrencies}
+          currencies={availableCurrencies}
+          defaultCurrencyCode={defaultCurrency}
+          showPreferredCurrencies={false}
+          onConfirm={(codes) => void savePreferredCurrencies(codes)}
+          title="Preferred currencies"
+          disabled={updateUserSettingsMutation.isPending}
+          renderTrigger={({ open }) => (
+            <SettingsRow
+              disabled={updateUserSettingsMutation.isPending}
+              icon={
+                <IconSymbol
+                  color={colors.accent.primary}
+                  name="banknote.fill"
+                  size={21}
+                />
+              }
+              isLoading={updateUserSettingsMutation.isPending}
+              label="Preferred currencies"
+              onPress={open}
+              value={`${preferredCurrencies.length} ${preferredCurrencies.length === 1 ? 'currency' : 'currencies'}`}
+            />
+          )}
         />
         <SettingsRow
           disabled={updateUserSettingsMutation.isPending}
@@ -114,23 +133,6 @@ export function PreferencesSection() {
           value={dateFormat}
         />
       </SettingsSection>
-
-      <CurrencySettingsSheet
-        onClose={() => setCurrencyPicker(null)}
-        onDone={(codes) => void savePreferredCurrencies(codes)}
-        disabled={updateUserSettingsMutation.isPending}
-        selectedCodes={
-          currencyPicker === 'default' ? [defaultCurrency] : preferredCurrencies
-        }
-        selectionMode={currencyPicker === 'preferred' ? 'multiple' : 'single'}
-        title={
-          currencyPicker === 'preferred'
-            ? 'Preferred currencies'
-            : 'Default currency'
-        }
-        visible={currencyPicker !== null}
-        onSelect={(code) => void saveDefaultCurrency(code)}
-      />
 
       <SelectionSheet
         onClose={() => setIsDateFormatPickerVisible(false)}

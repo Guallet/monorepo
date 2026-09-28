@@ -1,4 +1,4 @@
-import { useTheme } from '@guallet/luna-mobile';
+import { CurrencyPicker, useTheme } from '@guallet/luna-mobile';
 import { ChevronDownIcon } from '@guallet/luna-mobile/icons';
 import type { Currency } from '@guallet/money';
 import { useEffect, useRef, useState } from 'react';
@@ -13,7 +13,8 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { CurrencyPickerSheet } from './CurrencyPickerSheet';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { availableCurrencies, findCurrency } from './currencyPickerData';
 import {
   formatAmount,
   getAmountDecimalPlaces,
@@ -49,6 +50,7 @@ export function AmountInput({
   currencySymbolStyle,
 }: Readonly<AmountInputProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
+  const { defaultCurrency, preferredCurrencies } = useMobileUserPreferences();
   const [text, setText] = useState(() => formatAmount(value, currency, true));
   const [focused, setFocused] = useState(false);
   const [pickerPresented, setPickerPresented] = useState(false);
@@ -112,12 +114,10 @@ export function AmountInput({
     }
   }
 
-  function openCurrencyPicker(): void {
-    Keyboard.dismiss();
-    setPickerPresented(true);
-  }
-
-  function handleCurrencyChange(selectedCurrency: Currency): void {
+  function handleCurrencyChange(code: string): void {
+    const selectedCurrency = findCurrency(code);
+    if (!selectedCurrency) return;
+    setPickerPresented(false);
     const normalized = normalizeAmount(value, selectedCurrency);
     if (!Object.is(normalized, value)) {
       lastEmittedValue.current = normalized;
@@ -185,35 +185,51 @@ export function AmountInput({
           ]}
           value={text}
         />
-        <Pressable
-          accessibilityLabel={`Choose currency, ${currency.code}`}
-          accessibilityHint="Opens the currency picker"
-          accessibilityRole="button"
-          accessibilityState={{ disabled, expanded: pickerPresented }}
+        <CurrencyPicker
+          selectionMode="single"
+          value={currency.code}
+          currencies={availableCurrencies}
+          defaultCurrencyCode={defaultCurrency}
+          preferredCurrencyCodes={preferredCurrencies}
+          onChange={handleCurrencyChange}
           disabled={disabled}
-          onPress={openCurrencyPicker}
-          style={[
-            styles.currencyButton,
-            {
-              borderLeftColor: colors.surface.border.input,
-              paddingHorizontal: spacing.md,
-            },
-          ]}
-        >
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.md,
-            }}
-          >
-            {currency.code}
-          </Text>
-          <ChevronDownIcon
-            accessible={false}
-            color={colors.text.secondary}
-            size={20}
-          />
-        </Pressable>
+          renderTrigger={({ open, visible }) => (
+            <Pressable
+              accessibilityLabel={`Choose currency, ${currency.code}`}
+              accessibilityHint="Opens the currency picker"
+              accessibilityRole="button"
+              accessibilityState={{ disabled, expanded: visible }}
+              disabled={disabled}
+              onPress={() => {
+                Keyboard.dismiss();
+                setPickerPresented(true);
+                open();
+              }}
+              style={[
+                styles.currencyButton,
+                {
+                  borderLeftColor: colors.surface.border.input,
+                  paddingHorizontal: spacing.md,
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  color: colors.text.primary,
+                  fontSize: typography.sizes.md,
+                }}
+              >
+                {currency.code}
+              </Text>
+              <ChevronDownIcon
+                accessible={false}
+                color={colors.text.secondary}
+                size={20}
+              />
+            </Pressable>
+          )}
+          onCancel={() => setPickerPresented(false)}
+        />
       </View>
       {hasError && (
         <Text
@@ -226,12 +242,6 @@ export function AmountInput({
           {error}
         </Text>
       )}
-      <CurrencyPickerSheet
-        isPresented={pickerPresented}
-        onDismiss={() => setPickerPresented(false)}
-        onSelect={handleCurrencyChange}
-        selectedCurrency={currency}
-      />
     </View>
   );
 }

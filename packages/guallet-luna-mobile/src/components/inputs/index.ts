@@ -5,4 +5,4 @@ export * from './DateRangePicker';
 export * from './MonthSelector';
 export * from './AccountInput';
 export * from './ColorPicker';
-export * from './IconPicker';
+export * from './CurrencyPicker';

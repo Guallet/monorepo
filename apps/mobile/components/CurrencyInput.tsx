@@ -1,8 +1,7 @@
-import { useTheme } from '@guallet/luna-mobile';
-import { ChevronDownIcon } from '@guallet/luna-mobile/icons';
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { CurrencyPickerSheet, findCurrency } from './CurrencyPickerSheet';
+import { CurrencyPicker, useTheme } from '@guallet/luna-mobile';
+import { Text, View } from 'react-native';
+import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { availableCurrencies } from './currencyPickerData';
 
 export interface CurrencyInputProps {
   value: string | null;
@@ -21,9 +20,8 @@ export function CurrencyInput({
   placeholder = 'Select a currency',
   disabled = false,
 }: Readonly<CurrencyInputProps>) {
-  const { borderRadius, colors, spacing, typography } = useTheme();
-  const [isPresented, setIsPresented] = useState(false);
-  const selectedCurrency = findCurrency(value);
+  const { colors, spacing, typography } = useTheme();
+  const { defaultCurrency, preferredCurrencies } = useMobileUserPreferences();
 
   return (
     <View style={{ marginBottom: spacing.md }}>
@@ -39,48 +37,16 @@ export function CurrencyInput({
           {label}
         </Text>
       ) : null}
-      <Pressable
-        accessibilityLabel={label.trim() || 'Currency'}
-        accessibilityRole="button"
-        accessibilityState={{ disabled }}
-        accessibilityValue={{ text: selectedCurrency?.code ?? placeholder }}
+      <CurrencyPicker
+        selectionMode="single"
+        value={value}
+        currencies={availableCurrencies}
+        defaultCurrencyCode={defaultCurrency}
+        preferredCurrencyCodes={preferredCurrencies}
+        onChange={onValueChanged}
+        placeholder={placeholder}
         disabled={disabled}
-        onPress={() => setIsPresented(true)}
-        style={[
-          styles.input,
-          {
-            backgroundColor: disabled
-              ? colors.surface.background.disabled
-              : colors.surface.background.input,
-            borderColor: colors.surface.border.input,
-            borderRadius: borderRadius.lg,
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.sm,
-          },
-        ]}
-      >
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.value,
-            {
-              color: selectedCurrency
-                ? colors.text.primary
-                : colors.text.placeholder,
-              fontSize: typography.sizes.md,
-            },
-          ]}
-        >
-          {selectedCurrency
-            ? `${selectedCurrency.symbol} - ${selectedCurrency.name} - ${selectedCurrency.code}`
-            : placeholder}
-        </Text>
-        <ChevronDownIcon
-          accessible={false}
-          color={colors.text.secondary}
-          size={20}
-        />
-      </Pressable>
+      />
       {description && (
         <Text
           style={{
@@ -92,22 +58,6 @@ export function CurrencyInput({
           {description}
         </Text>
       )}
-      <CurrencyPickerSheet
-        isPresented={isPresented}
-        onDismiss={() => setIsPresented(false)}
-        onSelect={(currency) => onValueChanged(currency.code)}
-        selectedCurrency={selectedCurrency}
-      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    alignItems: 'center',
-    borderWidth: 1,
-    flexDirection: 'row',
-    minHeight: 56,
-  },
-  value: { flex: 1 },
-});
