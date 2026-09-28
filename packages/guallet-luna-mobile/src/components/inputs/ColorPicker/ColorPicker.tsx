@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  processColor,
   type StyleProp,
   type TextStyle,
   type ViewStyle,
@@ -15,6 +16,7 @@ import {
   usePickerSheet,
   type DateRangeSheetRenderer,
 } from '../DateRangePicker/DateRangeSheetProvider';
+import { shouldUseDarkCheck } from './colorContrast';
 
 /** Matches the web GualletColorPicker presets, including repeated entries. */
 export const DEFAULT_COLOR_SWATCHES = [
@@ -69,6 +71,7 @@ export function ColorPicker({
   const selectedIndex = palette.findIndex(
     (color) => color.toLowerCase() === value?.toLowerCase(),
   );
+  const touchSize = spacing.xxl + spacing.xs;
 
   function open() {
     if (openRef.current) return;
@@ -106,6 +109,7 @@ export function ColorPicker({
             borderColor: colors.surface.border.input,
             borderRadius: borderRadius.md,
             gap: spacing.sm,
+            minHeight: spacing.xl + spacing.lg,
             paddingHorizontal: spacing.md,
           },
           style,
@@ -119,6 +123,8 @@ export function ColorPicker({
               backgroundColor: value ?? colors.surface.background.secondary,
               borderColor: colors.surface.border.input,
               borderRadius: borderRadius.xl,
+              height: spacing.lg,
+              width: spacing.lg,
             },
           ]}
         />
@@ -136,7 +142,7 @@ export function ColorPicker({
           {label}
         </Text>
         <ChevronDownIcon
-          size={20}
+          size={spacing.lg}
           color={colors.text.secondary}
           accessibilityElementsHidden
           importantForAccessibility="no"
@@ -157,7 +163,7 @@ export function ColorPicker({
             bottomSheetStyle,
           ]}
         >
-          <View style={styles.header}>
+          <View style={[styles.header, { minHeight: touchSize }]}>
             <Text
               accessibilityRole="header"
               style={{
@@ -172,10 +178,13 @@ export function ColorPicker({
               accessibilityRole="button"
               accessibilityLabel="Close colour picker"
               onPress={cancel}
-              style={styles.closeButton}
+              style={[
+                styles.closeButton,
+                { minHeight: touchSize, minWidth: touchSize },
+              ]}
             >
               <CloseIcon
-                size={20}
+                size={spacing.lg}
                 color={colors.text.secondary}
                 accessibilityElementsHidden
                 importantForAccessibility="no"
@@ -214,7 +223,10 @@ export function ColorPicker({
                       onPress={() => select(color)}
                       style={[
                         styles.swatchButton,
-                        { marginBottom: spacing.sm },
+                        {
+                          marginBottom: spacing.sm,
+                          minHeight: spacing.xl + spacing.md,
+                        },
                       ]}
                     >
                       <View
@@ -223,6 +235,8 @@ export function ColorPicker({
                           {
                             backgroundColor: color,
                             borderRadius: borderRadius.xl,
+                            height: spacing.xxl,
+                            width: spacing.xxl,
                           },
                           swatchStyle,
                           selected && {
@@ -233,12 +247,13 @@ export function ColorPicker({
                       >
                         {selected && (
                           <CheckIcon
-                            size={20}
-                            color={
-                              isLightColor(color)
-                                ? colors.text.primary
-                                : colors.text.inverse
-                            }
+                            size={spacing.md}
+                            color={checkmarkColor(
+                              color,
+                              colors.surface.background.primary,
+                              colors.accent.dark,
+                              colors.neutral.white,
+                            )}
                             accessibilityElementsHidden
                             importantForAccessibility="no"
                           />
@@ -270,19 +285,20 @@ function ColorSheetFrame({
   return renderSheet({ visible, onDismiss, children, snapPoints: ['half'] });
 }
 
-/** Keep the selected check visible on light and dark custom swatches. */
-function isLightColor(color: string): boolean {
-  const rawHex = color.replace('#', '');
-  const hex =
-    rawHex.length === 3
-      ? Array.from(rawHex, (character) => character.repeat(2)).join('')
-      : rawHex;
-  const channels = [0, 2, 4].map((offset) =>
-    Number.parseInt(hex.slice(offset, offset + 2), 16),
-  );
-  const brightness =
-    (channels[0] * 299 + channels[1] * 587 + channels[2] * 114) / 1000;
-  return brightness > 160;
+function checkmarkColor(
+  swatch: string,
+  backdrop: string,
+  darkInk: string,
+  lightInk: string,
+): string {
+  return shouldUseDarkCheck(
+    processColor(swatch),
+    processColor(backdrop),
+    processColor(darkInk),
+    processColor(lightInk),
+  )
+    ? darkInk
+    : lightInk;
 }
 
 const styles = StyleSheet.create({
@@ -290,35 +306,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     flexDirection: 'row',
-    minHeight: 56,
   },
-  triggerSwatch: { borderWidth: 1, height: 24, width: 24 },
+  triggerSwatch: { borderWidth: 1 },
   triggerText: { flex: 1 },
   sheet: { flex: 1, width: '100%' },
   header: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    minHeight: 44,
   },
   closeButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 44,
-    minWidth: 44,
   },
   divider: { height: 1 },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   swatchButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
     width: '16.666667%',
   },
   swatch: {
     alignItems: 'center',
-    height: 40,
     justifyContent: 'center',
-    width: 40,
   },
 });
