@@ -250,6 +250,10 @@ export class CsvImportEngine implements ImportEngine {
 
     for (const [key, mapping] of Object.entries(accountMappings)) {
       if (mapping.id) {
+        const account = await this.accountsService.findOneById(mapping.id);
+        if (account.user_id !== userId) {
+          throw new Error(`Account mapping for "${key}" is not available`);
+        }
         accountIdMap.set(key, mapping.id);
       } else if (mapping.shouldCreate) {
         try {
@@ -260,7 +264,7 @@ export class CsvImportEngine implements ImportEngine {
               currency: defaultCurrency,
               type: AccountType.CURRENT_ACCOUNT,
               source: AccountSource.IMPORTED,
-              source_name: `CSV Import - Webapp`,
+              source_name: 'CSV Import',
             },
           });
           accountIdMap.set(key, account.id);
@@ -286,6 +290,13 @@ export class CsvImportEngine implements ImportEngine {
 
     for (const [key, mapping] of Object.entries(categoryMappings)) {
       if (mapping.id) {
+        const category = await this.categoriesService.findUserCategory({
+          user_id: userId,
+          id: mapping.id,
+        });
+        if (!category) {
+          throw new Error(`Category mapping for "${key}" is not available`);
+        }
         categoryIdMap.set(key, mapping.id);
       } else if (mapping.shouldCreate) {
         try {
