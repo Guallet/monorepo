@@ -28,3 +28,7 @@ export function DateRangeSheetProvider({
 export function useDateRangeSheet() {
   return useContext(SheetContext);
 }
+
+/** Generic name for pickers sharing the host app's native sheet adapter. */
+export const usePickerSheet = useDateRangeSheet;
+export const PickerSheetProvider = DateRangeSheetProvider;
