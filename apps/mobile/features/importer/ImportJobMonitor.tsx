@@ -39,9 +39,9 @@ export function ImportJobMonitor() {
             try {
               const result = await client.dataImporter.getStatus(jobId);
               if (!active) break;
+              jobsWithStatusErrors.delete(jobId);
               if (result.status === 'completed' || result.status === 'failed') {
                 pendingJobs.delete(jobId);
-                jobsWithStatusErrors.delete(jobId);
                 await queryClient.invalidateQueries();
               }
             } catch (error) {

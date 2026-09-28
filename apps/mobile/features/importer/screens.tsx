@@ -571,10 +571,12 @@ export function ImportResultsScreen({
   useEffect(() => {
     let live = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let invalidatedAfterError = false;
     async function refresh() {
       try {
         const result = await client.dataImporter.getStatus(jobId);
         if (!live) return;
+        invalidatedAfterError = false;
         setStatus(result);
         setError(null);
         if (result.status === 'completed' || result.status === 'failed') {
@@ -593,7 +595,10 @@ export function ImportResultsScreen({
         }
         setError('Could not check this import. Retrying…');
         timer = setTimeout(() => void refresh(), 2000);
-        await queryClient.invalidateQueries();
+        if (!invalidatedAfterError) {
+          invalidatedAfterError = true;
+          await queryClient.invalidateQueries();
+        }
       }
     }
     void refresh();
