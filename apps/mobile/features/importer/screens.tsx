@@ -24,6 +24,7 @@ import type {
 } from '@guallet/api-client';
 import { useImportDraft } from './ImportDraftProvider';
 import { watchImportJob } from './ImportJobMonitor';
+import { isPermanentImportStatusError } from './importStatusError';
 import { getImportResultCopy } from './resultState';
 import {
   accountKeys,
@@ -567,8 +568,15 @@ export function ImportResultsScreen({
         } else {
           timer = setTimeout(() => void refresh(), 2000);
         }
-      } catch {
+      } catch (cause) {
         if (!live) return;
+        if (isPermanentImportStatusError(cause)) {
+          setError(
+            'This import status is no longer available. Check your transactions.',
+          );
+          await queryClient.invalidateQueries();
+          return;
+        }
         setError('Could not check this import. Retrying…');
         timer = setTimeout(() => void refresh(), 2000);
         await queryClient.invalidateQueries();
