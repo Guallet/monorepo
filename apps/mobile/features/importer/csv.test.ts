@@ -4,6 +4,7 @@ import {
   buildImportRequest,
   parseCsv,
   rowErrors,
+  validateImportRequestSize,
   validateFields,
 } from './csv';
 
@@ -55,9 +56,7 @@ describe('CSV import mapping', () => {
     const request = buildImportRequest(draft);
     expect(request.csvData).toHaveLength(1);
     expect(request.accountMappings?.Everyday.id).toBe('account-1');
-    expect(request.categoryMappings).toEqual({
-      Travel: { id: 'category-1', name: 'Travel', shouldCreate: false },
-    });
+    expect(request.categoryMappings).toEqual({});
   });
 
   it('uses the same trimmed account and category keys in preview and submission', () => {
@@ -82,5 +81,41 @@ describe('CSV import mapping', () => {
       expect(rowErrors(draft, draft.rows[0])).toEqual([]);
       expect(buildImportRequest(draft).csvData).toHaveLength(1);
     }
+  });
+
+  it('submits the trimmed date that passed preview validation', () => {
+    const draft = mappedDraft();
+    draft.rows[0].Date = ' 21/09/2026 ';
+    expect(rowErrors(draft, draft.rows[0])).toEqual([]);
+    expect(buildImportRequest(draft).csvData?.[0].Date).toBe('21/09/2026');
+    expect(draft.rows[0].Date).toBe(' 21/09/2026 ');
+  });
+
+  it('omits create mappings used only by skipped rows', () => {
+    const draft = mappedDraft();
+    draft.rows[1].Account = 'Unused account';
+    draft.rows[1].Category = 'Unused category';
+    draft.accounts['Unused account'] = {
+      name: 'Unused account',
+      shouldCreate: true,
+    };
+    draft.categories['Unused category'] = {
+      name: 'Unused category',
+      shouldCreate: true,
+    };
+    const request = buildImportRequest(draft);
+    expect(request.accountMappings).toEqual({
+      Everyday: draft.accounts.Everyday,
+    });
+    expect(request.categoryMappings).toEqual({});
+  });
+
+  it('rejects a serialized request larger than the API body limit', () => {
+    const request = buildImportRequest(mappedDraft());
+    expect(() => validateImportRequestSize(request)).not.toThrow();
+    request.csvData![0].Description = 'a'.repeat(10 * 1024 * 1024);
+    expect(() => validateImportRequestSize(request)).toThrow(
+      'Split the CSV into smaller files.',
+    );
   });
 });

@@ -250,10 +250,7 @@ export class CsvImportEngine implements ImportEngine {
 
     for (const [key, mapping] of Object.entries(accountMappings)) {
       if (mapping.id) {
-        const account = await this.accountsService.findOneById(mapping.id);
-        if (account.user_id !== userId) {
-          throw new Error(`Account mapping for "${key}" is not available`);
-        }
+        await this.accountsService.getUserAccount(userId, mapping.id);
         accountIdMap.set(key, mapping.id);
       } else if (mapping.shouldCreate) {
         try {

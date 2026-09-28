@@ -32,6 +32,7 @@ import {
   distinctValues,
   parseCsv,
   rowErrors,
+  validateImportRequestSize,
   validateFields,
 } from './csv';
 import { ChoiceField, type Choice } from './components/ChoiceField';
@@ -435,16 +436,29 @@ export function PreviewImportScreen() {
       draft?.rows.map((row) => ({ row, errors: rowErrors(draft, row) })) ?? [],
     [draft],
   );
+  const prepared = useMemo(() => {
+    if (!draft) return { request: null, error: null };
+    try {
+      const request = buildImportRequest(draft);
+      validateImportRequestSize(request);
+      return { request, error: null };
+    } catch (cause) {
+      return {
+        request: null,
+        error:
+          cause instanceof Error ? cause.message : 'Could not review import.',
+      };
+    }
+  }, [draft]);
   if (!draft) return <MissingDraft />;
   const valid = rows.filter((entry) => entry.errors.length === 0);
   const invalid = rows.length - valid.length;
   async function submit() {
+    if (!prepared.request) return;
     try {
       setBusy(true);
       setError(null);
-      const response = await client.dataImporter.importData(
-        buildImportRequest(draft!),
-      );
+      const response = await client.dataImporter.importData(prepared.request);
       watchImportJob(response.jobId);
       await queryClient.invalidateQueries();
       router.replace({
@@ -474,7 +488,7 @@ export function PreviewImportScreen() {
       action={`Import ${valid.length} valid rows`}
       onAction={() => void submit()}
       onBack={() => router.back()}
-      disabled={valid.length === 0}
+      disabled={!prepared.request}
       busy={busy}
     >
       <ImportCard>
@@ -504,7 +518,7 @@ export function PreviewImportScreen() {
           )}
         </ImportCard>
       )}
-      <ErrorText message={error} />
+      <ErrorText message={prepared.error ?? error} />
       <ImportCard>
         <TextLine strong>Sample transactions</TextLine>
         {rows.slice(0, 10).map(({ row, errors }, index) => {

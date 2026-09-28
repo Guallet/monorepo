@@ -133,6 +133,9 @@ export function buildImportRequest(draft: CsvDraft): DataImportRequest {
     .filter((row) => rowErrors(draft, row).length === 0)
     .map((row) => {
       const normalized = { ...row };
+      normalized[draft.fields.date] = String(
+        row[draft.fields.date] ?? '',
+      ).trim();
       if (draft.fields.account) {
         normalized[draft.fields.account] = String(
           row[draft.fields.account] ?? '',
@@ -146,15 +149,52 @@ export function buildImportRequest(draft: CsvDraft): DataImportRequest {
       return normalized;
     });
   if (rows.length === 0) throw new Error('No valid rows to import.');
+  const usedAccounts = new Set(
+    rows.map((row) => String(row[draft.fields.account] ?? '') || 'default'),
+  );
+  const accountMappings: Record<string, AccountMapping> = {};
+  for (const key of usedAccounts) {
+    accountMappings[key] = draft.accounts[key];
+  }
+  const usedCategories = new Set(
+    rows.map((row) => String(row[draft.fields.category] ?? '')).filter(Boolean),
+  );
   const categoryMappings: Record<string, CategoryMapping> = {};
   for (const [key, mapping] of Object.entries(draft.categories)) {
-    if (mapping) categoryMappings[key] = mapping;
+    if (mapping && usedCategories.has(key)) categoryMappings[key] = mapping;
   }
   return {
     format: 'csv',
     csvData: rows,
     fieldMappings: draft.fields,
-    accountMappings: draft.accounts,
+    accountMappings,
     categoryMappings,
   };
+}
+
+const MAX_IMPORT_REQUEST_BYTES = 10 * 1024 * 1024;
+
+export function validateImportRequestSize(request: DataImportRequest): void {
+  const body = JSON.stringify(request);
+  let bytes = 0;
+  for (let index = 0; index < body.length; index++) {
+    const code = body.charCodeAt(index);
+    if (code <= 0x7f) bytes++;
+    else if (code <= 0x7ff) bytes += 2;
+    else if (
+      code >= 0xd800 &&
+      code <= 0xdbff &&
+      index + 1 < body.length &&
+      body.charCodeAt(index + 1) >= 0xdc00 &&
+      body.charCodeAt(index + 1) <= 0xdfff
+    ) {
+      bytes += 4;
+      index++;
+    } else bytes += 3;
+    if (bytes > MAX_IMPORT_REQUEST_BYTES) {
+      throw new Error(
+        'This import is too large to submit. Split the CSV into smaller files.',
+      );
+    }
+  }
 }
