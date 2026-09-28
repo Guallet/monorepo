@@ -38,7 +38,7 @@ function iconLabel(name: string): string {
   return name
     .replace(/^Icon/, '')
     .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/([a-z])([0-9])/g, '$1 $2');
+    .replace(/([a-z])(\d)/g, '$1 $2');
 }
 
 /** A controlled category icon picker using the host app's native BottomSheet. */
