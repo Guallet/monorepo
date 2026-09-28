@@ -569,8 +569,9 @@ export function ImportResultsScreen({
         }
       } catch {
         if (!live) return;
+        setError('Could not check this import. Retrying…');
+        timer = setTimeout(() => void refresh(), 2000);
         await queryClient.invalidateQueries();
-        setError('Could not check this import. Try again later.');
       }
     }
     void refresh();

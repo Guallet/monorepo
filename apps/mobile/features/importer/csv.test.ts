@@ -59,4 +59,28 @@ describe('CSV import mapping', () => {
       Travel: { id: 'category-1', name: 'Travel', shouldCreate: false },
     });
   });
+
+  it('uses the same trimmed account and category keys in preview and submission', () => {
+    const draft = mappedDraft();
+    draft.rows[0].Account = ' Everyday ';
+    draft.rows[0].Category = ' Food ';
+    expect(rowErrors(draft, draft.rows[0])).toEqual([]);
+    const request = buildImportRequest(draft);
+    expect(request.csvData?.[0].Account).toBe('Everyday');
+    expect(request.csvData?.[0].Category).toBe('Food');
+    expect(draft.rows[0].Account).toBe(' Everyday ');
+  });
+
+  it('accepts timestamp formats supported by the API importer', () => {
+    const draft = mappedDraft();
+    for (const date of [
+      '2026-09-21T14:30:00.000Z',
+      '2026-09-21 14:30:00',
+      '21/09/2026',
+    ]) {
+      draft.rows[0].Date = date;
+      expect(rowErrors(draft, draft.rows[0])).toEqual([]);
+      expect(buildImportRequest(draft).csvData).toHaveLength(1);
+    }
+  });
 });

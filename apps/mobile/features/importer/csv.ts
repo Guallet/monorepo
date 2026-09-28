@@ -1,4 +1,6 @@
 import Papa from 'papaparse';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import type {
   AccountMapping,
   CategoryMapping,
@@ -6,6 +8,20 @@ import type {
   DataImportRequest,
   FieldMappings,
 } from '@guallet/api-client';
+
+dayjs.extend(customParseFormat);
+
+// Keep this list aligned with the API importer's date parser.
+const SUPPORTED_DATE_FORMATS = [
+  'YYYY-MM-DD',
+  'YYYY-MM-DDTHH:mm:ss',
+  'YYYY-MM-DDTHH:mm:ssZ',
+  'DD/MM/YYYY',
+  'MM/DD/YYYY',
+  'DD-MM-YYYY',
+  'YYYY/MM/DD',
+  'DD.MM.YYYY',
+];
 
 export const EMPTY_FIELDS: FieldMappings = {
   account: '',
@@ -86,36 +102,9 @@ export function accountKeys(draft: CsvDraft) {
 
 function validDate(raw: string): boolean {
   const value = raw.trim();
-  const dateOnly = value.split('T')[0];
-  const match = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/.exec(dateOnly);
-  if (value.includes('T') && Number.isNaN(Date.parse(value))) return false;
-  const local = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/.exec(value);
-  if (!match && !local) return false;
-  if (match) {
-    const [, year, month, day] = match;
-    const date = new Date(Number(year), Number(month) - 1, Number(day));
-    return (
-      date.getFullYear() === Number(year) &&
-      date.getMonth() === Number(month) - 1 &&
-      date.getDate() === Number(day)
-    );
-  }
-  const [, first, second, year] = local!;
-  let day = Number(first);
-  let month = Number(second);
-  if (Number(first) > 12) {
-    day = Number(first);
-    month = Number(second);
-  } else if (Number(second) > 12) {
-    day = Number(second);
-    month = Number(first);
-  }
-  const date = new Date(Number(year), month - 1, day);
-  return (
-    date.getFullYear() === Number(year) &&
-    date.getMonth() === month - 1 &&
-    date.getDate() === day
-  );
+  if (!value) return false;
+  if (dayjs(value, SUPPORTED_DATE_FORMATS, true).isValid()) return true;
+  return dayjs(value).isValid();
 }
 
 export function rowErrors(draft: CsvDraft, row: CsvRowData): string[] {
@@ -140,7 +129,22 @@ export function buildImportRequest(draft: CsvDraft): DataImportRequest {
   for (const key of accountKeys(draft)) {
     if (!draft.accounts[key]) throw new Error(`Map account “${key}” first.`);
   }
-  const rows = draft.rows.filter((row) => rowErrors(draft, row).length === 0);
+  const rows = draft.rows
+    .filter((row) => rowErrors(draft, row).length === 0)
+    .map((row) => {
+      const normalized = { ...row };
+      if (draft.fields.account) {
+        normalized[draft.fields.account] = String(
+          row[draft.fields.account] ?? '',
+        ).trim();
+      }
+      if (draft.fields.category) {
+        normalized[draft.fields.category] = String(
+          row[draft.fields.category] ?? '',
+        ).trim();
+      }
+      return normalized;
+    });
   if (rows.length === 0) throw new Error('No valid rows to import.');
   const categoryMappings: Record<string, CategoryMapping> = {};
   for (const [key, mapping] of Object.entries(draft.categories)) {
