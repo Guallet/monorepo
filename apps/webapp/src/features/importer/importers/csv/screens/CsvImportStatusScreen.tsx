@@ -83,7 +83,13 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
             )}
             {status?.status === 'running' && (
               <>
-                <Progress value={Math.max(0, Math.min(100, status.progress))} />
+                <Progress
+                  value={Math.max(0, Math.min(100, status.progress))}
+                  aria-label={t(
+                    'screens.importer.status.progressLabel',
+                    'Import progress',
+                  )}
+                />
                 <Text>{`${status.progress}%`}</Text>
               </>
             )}

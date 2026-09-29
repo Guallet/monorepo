@@ -863,6 +863,7 @@
         "csvTitle": "CSV import",
         "background": "Your import is processing in the background. You can continue using Guallet while it runs.",
         "waiting": "Waiting to start",
+        "progressLabel": "Import progress",
         "result": "{{processed}} transactions imported; {{failed}} rows failed.",
         "failure": "The import could not be completed. Check your transactions before trying again.",
         "unavailable": "Import status is unavailable right now. Check your transactions or try again.",
