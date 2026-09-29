@@ -115,12 +115,13 @@ function validDate(raw: string): boolean {
   const timestamp = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})/.exec(value);
   if (!timestamp) return false;
   const suffix = value.slice(timestamp[0].length);
-  if (!/^(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?$/.test(suffix)) {
+  const seconds = /^:(\d{2})(?:\.\d{1,3})?/.exec(suffix);
+  const timezone = suffix.slice(seconds?.[0].length ?? 0);
+  if (timezone && !/^(?:Z|[+-]\d{2}:?\d{2})$/.test(timezone)) {
     return false;
   }
   if (!dayjs(timestamp[1], 'YYYY-MM-DD', true).isValid()) return false;
   if (Number(timestamp[2]) > 23 || Number(timestamp[3]) > 59) return false;
-  const seconds = /^:(\d{2})/.exec(suffix);
   if (seconds && Number(seconds[1]) > 59) return false;
   return dayjs(value).isValid();
 }
