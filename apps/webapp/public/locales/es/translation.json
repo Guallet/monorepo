@@ -864,6 +864,33 @@
         }
       }
     },
+    "importer": {
+      "status": {
+        "processing": "Procesando",
+        "queued": "En cola",
+        "partial": "Completada con errores",
+        "completed": "Completada",
+        "failed": "Fallida",
+        "statusUnavailable": "No disponible",
+        "background": "Tu importación se está procesando en segundo plano. Puedes seguir usando Guallet mientras se completa.",
+        "noLongerAvailable": "Ya no podemos consultar esta importación. Revisa tus transacciones para ver el resultado.",
+        "finished": "Tu importación ha terminado. Revisa los resultados a continuación.",
+        "stopped": "Tu importación se detuvo antes de terminar. Revisa tus transacciones antes de intentarlo de nuevo.",
+        "title": "Progreso de la importación",
+        "csvTitle": "Importación de CSV",
+        "waiting": "Esperando para empezar",
+        "progressLabel": "Progreso de la importación",
+        "result": "{{processed}} transacciones importadas; {{failed}} filas fallidas.",
+        "failure": "No se pudo completar la importación. Revisa tus transacciones antes de intentarlo de nuevo.",
+        "unavailable": "El estado de la importación no está disponible en este momento. Revisa tus transacciones o inténtalo de nuevo.",
+        "retry": "Reintentar",
+        "email": "Te enviaremos los resultados por correo electrónico cuando termine el procesamiento.",
+        "dashboard": "Ir al panel"
+      },
+      "home": {
+        "title": "Importar datos"
+      }
+    },
     "dataExport": {
       "modal": {
         "title": "¡Exportación Iniciada Exitosamente!",
@@ -903,11 +930,6 @@
         "step4": "Puedes continuar usando la aplicación mientras se procesa la exportación"
       },
       "exportButton": "Exportar Transacciones"
-    },
-    "importer": {
-      "home": {
-        "title": "Import data"
-      }
     },
     "tools": {
       "loan": {

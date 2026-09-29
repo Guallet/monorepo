@@ -17,6 +17,9 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 - Do not use ternary expressions in screen components. Use early returns for
   distinct screen states, `&&` for optional elements, and named variables or
   helper functions with `if` statements for derived values.
+- Prefer `String#codePointAt()` over `String#charCodeAt()` when reading Unicode
+  characters. Iterate strings with `for...of` or `Array.from()` so characters
+  outside the basic multilingual plane remain intact.
 
 ## Images
 

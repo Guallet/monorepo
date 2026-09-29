@@ -11,8 +11,10 @@ import {
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@guallet/auth';
+import { useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
+import { FileImportIcon } from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsSection } from '../components/SettingsSection';
@@ -33,6 +35,7 @@ function getInitials(name: string): string {
 }
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const { logout } = useAuth();
   const { user, isLoading, isError, isRefetching, refetch } = useUser();
@@ -271,6 +274,14 @@ export default function SettingsScreen() {
         )}
 
         <PreferencesSection />
+
+        <SettingsSection title="Data">
+          <SettingsRow
+            icon={<FileImportIcon size={22} color={colors.accent.primary} />}
+            label="Import transactions from CSV"
+            onPress={() => router.push('/importer/csv')}
+          />
+        </SettingsSection>
 
         <SettingsSection title="Session">
           <SettingsRow
