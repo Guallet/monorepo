@@ -118,4 +118,12 @@ describe('CSV import mapping', () => {
       'Split the CSV into smaller files.',
     );
   });
+
+  it('counts Unicode code points in the serialized request size', () => {
+    const request = buildImportRequest(mappedDraft());
+    request.csvData![0].Description = '😀'.repeat(2_621_500);
+    expect(() => validateImportRequestSize(request)).toThrow(
+      'Split the CSV into smaller files.',
+    );
+  });
 });

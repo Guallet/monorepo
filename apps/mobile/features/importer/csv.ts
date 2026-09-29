@@ -177,20 +177,12 @@ const MAX_IMPORT_REQUEST_BYTES = 10 * 1024 * 1024;
 export function validateImportRequestSize(request: DataImportRequest): void {
   const body = JSON.stringify(request);
   let bytes = 0;
-  for (let index = 0; index < body.length; index++) {
-    const code = body.charCodeAt(index);
-    if (code <= 0x7f) bytes++;
-    else if (code <= 0x7ff) bytes += 2;
-    else if (
-      code >= 0xd800 &&
-      code <= 0xdbff &&
-      index + 1 < body.length &&
-      body.charCodeAt(index + 1) >= 0xdc00 &&
-      body.charCodeAt(index + 1) <= 0xdfff
-    ) {
-      bytes += 4;
-      index++;
-    } else bytes += 3;
+  for (const character of body) {
+    const codePoint = character.codePointAt(0)!;
+    if (codePoint <= 0x7f) bytes++;
+    else if (codePoint <= 0x7ff) bytes += 2;
+    else if (codePoint <= 0xffff) bytes += 3;
+    else bytes += 4;
     if (bytes > MAX_IMPORT_REQUEST_BYTES) {
       throw new Error(
         'This import is too large to submit. Split the CSV into smaller files.',
