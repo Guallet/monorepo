@@ -34,6 +34,16 @@ interface PreparedTransaction {
   categoryId: string | null;
 }
 
+async function mapSequentially<T, R>(
+  items: T[],
+  mapper: (item: T) => Promise<R>,
+  results: R[] = [],
+): Promise<R[]> {
+  if (results.length >= items.length) return results;
+  results.push(await mapper(items[results.length]));
+  return mapSequentially(items, mapper, results);
+}
+
 @Injectable()
 export class CsvImportEngine implements ImportEngine {
   readonly formatLabel = 'CSV';
@@ -254,33 +264,32 @@ export class CsvImportEngine implements ImportEngine {
     accountMappings: Record<string, AccountMapping>,
     defaultCurrency: string,
   ): Promise<Map<string, string>> {
-    const entries = await Promise.all(
-      Object.entries(accountMappings).map(
-        async ([key, mapping]): Promise<readonly [string, string]> => {
-          if (mapping.id) return [key, mapping.id];
-          if (!mapping.shouldCreate) {
-            throw new Error(
-              `Account mapping for key "${key}" is missing an ID and shouldCreate is false`,
-            );
-          }
-          try {
-            const account = await this.accountsService.create({
-              user_id: userId,
-              dto: {
-                name: mapping.name,
-                currency: defaultCurrency,
-                type: AccountType.CURRENT_ACCOUNT,
-                source: AccountSource.IMPORTED,
-                source_name: 'CSV Import',
-              },
-            });
-            return [key, account.id];
-          } catch (error) {
-            this.logger.error(`Error creating account ${mapping.name}`, error);
-            throw error;
-          }
-        },
-      ),
+    const entries = await mapSequentially(
+      Object.entries(accountMappings),
+      async ([key, mapping]): Promise<readonly [string, string]> => {
+        if (mapping.id) return [key, mapping.id];
+        if (!mapping.shouldCreate) {
+          throw new Error(
+            `Account mapping for key "${key}" is missing an ID and shouldCreate is false`,
+          );
+        }
+        try {
+          const account = await this.accountsService.create({
+            user_id: userId,
+            dto: {
+              name: mapping.name,
+              currency: defaultCurrency,
+              type: AccountType.CURRENT_ACCOUNT,
+              source: AccountSource.IMPORTED,
+              source_name: 'CSV Import',
+            },
+          });
+          return [key, account.id];
+        } catch (error) {
+          this.logger.error(`Error creating account ${mapping.name}`, error);
+          throw error;
+        }
+      },
     );
     return new Map(entries);
   }
@@ -289,28 +298,27 @@ export class CsvImportEngine implements ImportEngine {
     userId: string,
     categoryMappings: Record<string, CategoryMapping>,
   ): Promise<Map<string, string>> {
-    const entries = await Promise.all(
-      Object.entries(categoryMappings).map(
-        async ([key, mapping]): Promise<readonly [string, string] | null> => {
-          if (mapping.id) return [key, mapping.id];
-          if (!mapping.shouldCreate) return null;
-          try {
-            const category = await this.categoriesService.create({
-              user_id: userId,
-              dto: {
-                name: mapping.name,
-                icon: DEFAULT_CATEGORY_ICON,
-                colour: DEFAULT_CATEGORY_COLOR,
-                parentId: null,
-              },
-            });
-            return [key, category.id];
-          } catch (error) {
-            this.logger.error(`Error creating category ${mapping.name}`, error);
-            return null;
-          }
-        },
-      ),
+    const entries = await mapSequentially(
+      Object.entries(categoryMappings),
+      async ([key, mapping]): Promise<readonly [string, string] | null> => {
+        if (mapping.id) return [key, mapping.id];
+        if (!mapping.shouldCreate) return null;
+        try {
+          const category = await this.categoriesService.create({
+            user_id: userId,
+            dto: {
+              name: mapping.name,
+              icon: DEFAULT_CATEGORY_ICON,
+              colour: DEFAULT_CATEGORY_COLOR,
+              parentId: null,
+            },
+          });
+          return [key, category.id];
+        } catch (error) {
+          this.logger.error(`Error creating category ${mapping.name}`, error);
+          return null;
+        }
+      },
     );
     return new Map(
       entries.filter(
