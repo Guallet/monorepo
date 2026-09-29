@@ -267,7 +267,10 @@ export class CsvImportEngine implements ImportEngine {
     const entries = await mapSequentially(
       Object.entries(accountMappings),
       async ([key, mapping]): Promise<readonly [string, string]> => {
-        if (mapping.id) return [key, mapping.id];
+        if (mapping.id) {
+          await this.accountsService.getUserAccount(userId, mapping.id);
+          return [key, mapping.id];
+        }
         if (!mapping.shouldCreate) {
           throw new Error(
             `Account mapping for key "${key}" is missing an ID and shouldCreate is false`,
@@ -301,7 +304,16 @@ export class CsvImportEngine implements ImportEngine {
     const entries = await mapSequentially(
       Object.entries(categoryMappings),
       async ([key, mapping]): Promise<readonly [string, string] | null> => {
-        if (mapping.id) return [key, mapping.id];
+        if (mapping.id) {
+          const category = await this.categoriesService.findUserCategory({
+            user_id: userId,
+            id: mapping.id,
+          });
+          if (!category) {
+            throw new Error(`Category mapping for "${key}" is not available`);
+          }
+          return [key, mapping.id];
+        }
         if (!mapping.shouldCreate) return null;
         try {
           const category = await this.categoriesService.create({

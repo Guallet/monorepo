@@ -852,6 +852,33 @@
         }
       }
     },
+    "importer": {
+      "status": {
+        "processing": "Processing",
+        "queued": "Queued",
+        "partial": "Completed with errors",
+        "completed": "Completed",
+        "failed": "Failed",
+        "statusUnavailable": "Unavailable",
+        "background": "Your import is processing in the background. You can continue using Guallet while it runs.",
+        "noLongerAvailable": "We can no longer check this import. Review your transactions for the result.",
+        "finished": "Your import has finished. Review the results below.",
+        "stopped": "Your import stopped before it could finish. Review your transactions before trying again.",
+        "title": "Import progress",
+        "csvTitle": "CSV import",
+        "waiting": "Waiting to start",
+        "progressLabel": "Import progress",
+        "result": "{{processed}} transactions imported; {{failed}} rows failed.",
+        "failure": "The import could not be completed. Check your transactions before trying again.",
+        "unavailable": "Import status is unavailable right now. Check your transactions or try again.",
+        "retry": "Retry",
+        "email": "We’ll email you the results when processing finishes.",
+        "dashboard": "Go to dashboard"
+      },
+      "home": {
+        "title": "Import data"
+      }
+    },
     "dataExport": {
       "modal": {
         "title": "Export Started Successfully!",
@@ -891,11 +918,6 @@
         "step4": "You can continue using the app while the export is processed"
       },
       "exportButton": "Export Transactions"
-    },
-    "importer": {
-      "home": {
-        "title": "Import data"
-      }
     },
     "tools": {
       "loan": {
