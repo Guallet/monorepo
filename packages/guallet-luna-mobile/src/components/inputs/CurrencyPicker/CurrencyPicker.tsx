@@ -48,14 +48,16 @@ interface BaseCurrencyPickerProps {
 interface SingleCurrencyPickerProps extends BaseCurrencyPickerProps {
   selectionMode: 'single';
   value: string | null;
-  onChange: (value: string) => void;
+  /** Return false after a failed save to keep the selection sheet open. */
+  onChange: (value: string) => void | boolean | Promise<void | boolean>;
   onConfirm?: never;
 }
 
 interface MultipleCurrencyPickerProps extends BaseCurrencyPickerProps {
   selectionMode: 'multiple';
   value: string[] | null;
-  onConfirm: (values: string[]) => void;
+  /** Return false after a failed save to retain the staged selection. */
+  onConfirm: (values: string[]) => void | boolean | Promise<void | boolean>;
   onChange?: never;
 }
 
@@ -73,7 +75,9 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
   const [draftCodes, setDraftCodes] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
   const openRef = useRef(false);
+  const savingRef = useRef(false);
   const selectedCode = props.selectionMode === 'single' ? props.value : null;
   const selectedCodes =
     props.selectionMode === 'multiple'
@@ -115,19 +119,30 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
   }
 
   function cancel() {
-    if (!openRef.current) return;
+    if (!openRef.current || savingRef.current) return;
     openRef.current = false;
     setVisible(false);
     setQuery('');
     props.onCancel?.();
   }
 
-  function select(code: string) {
+  async function select(code: string) {
     if (props.selectionMode === 'single') {
-      openRef.current = false;
-      setVisible(false);
-      setQuery('');
-      props.onChange(code);
+      if (savingRef.current) return;
+      savingRef.current = true;
+      setSaving(true);
+      try {
+        if ((await props.onChange(code)) !== false) {
+          openRef.current = false;
+          setVisible(false);
+          setQuery('');
+        }
+      } catch {
+        // Keep the sheet open if the caller's save rejects.
+      } finally {
+        savingRef.current = false;
+        setSaving(false);
+      }
       return;
     }
     setDraftCodes((current) =>
@@ -137,12 +152,22 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
     );
   }
 
-  function confirm() {
-    if (props.selectionMode !== 'multiple') return;
-    openRef.current = false;
-    setVisible(false);
-    setQuery('');
-    props.onConfirm(draftCodes);
+  async function confirm() {
+    if (props.selectionMode !== 'multiple' || savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    try {
+      if ((await props.onConfirm(draftCodes)) !== false) {
+        openRef.current = false;
+        setVisible(false);
+        setQuery('');
+      }
+    } catch {
+      // Retain the staged selection so the user can retry.
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
+    }
   }
 
   return (
@@ -224,6 +249,8 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Cancel currency selection"
+              accessibilityState={{ disabled: saving }}
+              disabled={saving}
               onPress={cancel}
               style={styles.close}
             >
@@ -256,6 +283,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
               accessibilityLabel="Search currencies"
               autoCapitalize="none"
               autoCorrect={false}
+              editable={!saving}
               onChangeText={setQuery}
               placeholder="Search name, code or symbol"
               placeholderTextColor={colors.text.placeholder}
@@ -270,6 +298,8 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Clear currency search"
+                accessibilityState={{ disabled: saving }}
+                disabled={saving}
                 onPress={() => setQuery('')}
                 hitSlop={spacing.sm}
               >
@@ -322,7 +352,8 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
                 currency={item}
                 selected={selectedSet.has(item.code)}
                 multiple={props.selectionMode === 'multiple'}
-                onPress={() => select(item.code)}
+                disabled={saving}
+                onPress={() => void select(item.code)}
               />
             )}
           />
@@ -339,7 +370,9 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={`Confirm ${draftCodes.length} currencies`}
-                onPress={confirm}
+                accessibilityState={{ disabled: saving }}
+                disabled={saving}
+                onPress={() => void confirm()}
                 style={[
                   styles.confirm,
                   {
@@ -368,11 +401,13 @@ function CurrencyRow({
   currency,
   selected,
   multiple,
+  disabled,
   onPress,
 }: Readonly<{
   currency: CurrencyPickerCurrency;
   selected: boolean;
   multiple: boolean;
+  disabled: boolean;
   onPress: () => void;
 }>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
@@ -382,8 +417,10 @@ function CurrencyRow({
       accessibilityLabel={`${currency.name}, ${currency.code}`}
       accessibilityState={{
         checked: multiple ? selected : undefined,
+        disabled,
         selected,
       }}
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.row,

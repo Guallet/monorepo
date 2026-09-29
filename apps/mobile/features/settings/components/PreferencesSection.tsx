@@ -29,8 +29,10 @@ export function PreferencesSection() {
       await updateUserSettingsMutation.mutateAsync({
         currencies: { default_currency: currencyCode },
       });
+      return true;
     } catch {
       Alert.alert('Couldn’t update currency', 'Please try again in a moment.');
+      return false;
     }
   }
 
@@ -39,11 +41,13 @@ export function PreferencesSection() {
       await updateUserSettingsMutation.mutateAsync({
         currencies: { preferred_currencies: currencyCodes },
       });
+      return true;
     } catch {
       Alert.alert(
         'Couldn’t update preferred currencies',
         'Please try again in a moment.',
       );
+      return false;
     }
   }
 
@@ -72,7 +76,7 @@ export function PreferencesSection() {
           currencies={availableCurrencies}
           preferredCurrencyCodes={preferredCurrencies}
           showDefaultCurrency={false}
-          onChange={(code) => void saveDefaultCurrency(code)}
+          onChange={saveDefaultCurrency}
           title="Default currency"
           disabled={updateUserSettingsMutation.isPending}
           renderTrigger={({ open }) => (
@@ -98,7 +102,7 @@ export function PreferencesSection() {
           currencies={availableCurrencies}
           defaultCurrencyCode={defaultCurrency}
           showPreferredCurrencies={false}
-          onConfirm={(codes) => void savePreferredCurrencies(codes)}
+          onConfirm={savePreferredCurrencies}
           title="Preferred currencies"
           disabled={updateUserSettingsMutation.isPending}
           renderTrigger={({ open }) => (
