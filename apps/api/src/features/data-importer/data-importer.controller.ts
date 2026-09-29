@@ -2,26 +2,16 @@ import {
   BadRequestException,
   Controller,
   Post,
-  Get,
-  Param,
-  NotFoundException,
   Body,
   Logger,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiOperation,
-  ApiBody,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { DataImportRequestDto } from './dto/data-import-request.dto';
 import { DataImportResponseDto } from './dto/data-import-response.dto';
-import { DataImportStatusDto } from './dto/data-import-status.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import {
@@ -80,47 +70,9 @@ export class DataImporterController {
     );
 
     return {
-      jobId: String(job.id),
       message: `${format.toUpperCase()} import started. You will receive an email when the import is complete.`,
       processedCount: 0,
       failedCount: 0,
-    };
-  }
-
-  @Get('import/:jobId')
-  @ApiOperation({ summary: 'Get import job status' })
-  @ApiParam({ name: 'jobId', type: String })
-  @ApiResponse({ status: 200, type: DataImportStatusDto })
-  @ApiResponse({ status: 404, description: 'Import job not found' })
-  async getImportStatus(
-    @RequestUser() user: UserPrincipal,
-    @Param('jobId') jobId: string,
-  ): Promise<DataImportStatusDto> {
-    const job = await this.importQueue.getJob(jobId);
-    if (!job) {
-      throw new NotFoundException('Import job not found');
-    }
-    if (job.data.userId !== user.id) {
-      throw new NotFoundException('Import job not found');
-    }
-
-    const state = await job.getState();
-    const result = job.returnvalue as
-      | { processed?: number; failed?: number }
-      | undefined;
-    let status: DataImportStatusDto['status'] = 'queued';
-    if (state === 'active') status = 'running';
-    if (state === 'completed') status = 'completed';
-    if (state === 'failed') status = 'failed';
-
-    return {
-      status,
-      progress: typeof job.progress === 'number' ? job.progress : 0,
-      processedCount: result?.processed ?? 0,
-      failedCount: result?.failed ?? 0,
-      ...(status === 'failed' && job.failedReason
-        ? { error: 'The import could not be completed.' }
-        : {}),
     };
   }
 }

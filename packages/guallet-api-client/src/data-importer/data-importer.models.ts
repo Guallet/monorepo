@@ -17,18 +17,9 @@ export interface DataImportRequest {
 }
 
 export interface DataImportResponse {
-  jobId: string;
   message: string;
   processedCount: number;
   failedCount: number;
-}
-
-export interface DataImportStatus {
-  status: 'queued' | 'running' | 'completed' | 'failed';
-  progress: number;
-  processedCount: number;
-  failedCount: number;
-  error?: string;
 }
 
 // Keep these supporting interfaces for CSV import
