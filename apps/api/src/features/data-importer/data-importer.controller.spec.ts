@@ -105,11 +105,9 @@ describe('DataImporterController', () => {
           removeOnFail: 50,
         },
       );
-      expect(redis.hset).toHaveBeenCalledWith(
-        'bull:import-data:job-123',
-        'ownerId',
-        mockUser.id,
-      );
+      expect(redis.hset).toHaveBeenCalledWith('bull:import-data:job-123', {
+        ownerId: mockUser.id,
+      });
       expect(result).toEqual({
         jobId: 'job-123',
         message:

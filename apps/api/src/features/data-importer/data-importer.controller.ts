@@ -75,11 +75,9 @@ export class DataImporterController {
       },
     );
     const redis = await this.importQueue.getBackend().client;
-    await redis.hset(
-      this.importQueue.toKey(String(job.id)),
-      'ownerId',
-      user.id,
-    );
+    await redis.hset(this.importQueue.toKey(String(job.id)), {
+      ownerId: user.id,
+    });
 
     this.logger.log(
       `${format.toUpperCase()} import job ${job.id} queued for user ${user.id}`,
