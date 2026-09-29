@@ -9,11 +9,11 @@ export function isPermanentImportStatusError(error: unknown): boolean {
   );
 }
 
-export function useImportStatus(jobId: string) {
+export function useImportStatus(jobId: string, userId: string | null) {
   const client = useGualletClient();
   return useQuery({
-    queryKey: ['data-importer', 'status', jobId],
-    enabled: Boolean(jobId),
+    queryKey: ['data-importer', 'status', userId, jobId],
+    enabled: Boolean(jobId && userId),
     queryFn: () => client.dataImporter.getStatus(jobId),
     retry: (failures, error) =>
       !isPermanentImportStatusError(error) && failures < 2,

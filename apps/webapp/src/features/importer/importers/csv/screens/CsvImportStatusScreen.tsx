@@ -13,6 +13,8 @@ import {
   Text,
 } from '@mantine/core';
 import { useImportStatus } from '@guallet/api-react';
+import { isPermanentImportStatusError } from '@guallet/api-react';
+import { useAuth } from '@guallet/auth';
 import { useTheme } from '@guallet/ui-react';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { watchImportJob } from '@/features/importer/pendingImportJobs';
@@ -25,7 +27,9 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { colors, spacing, borderRadius } = useTheme();
-  const { data: status, error, refetch } = useImportStatus(jobId);
+  const { userId } = useAuth();
+  const { data: status, error, refetch } = useImportStatus(jobId, userId);
+  const unavailable = isPermanentImportStatusError(error);
 
   useEffect(() => {
     watchImportJob(jobId);
@@ -52,6 +56,21 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
     statusLabel = t('screens.importer.status.failed', 'Failed');
     statusColor = colors.status.error;
   }
+  if (unavailable) {
+    statusLabel = t('screens.importer.status.statusUnavailable', 'Unavailable');
+    statusColor = colors.status.warning;
+  }
+
+  let description = t(
+    'screens.importer.status.background',
+    'Your import is processing in the background. You can continue using Guallet while it runs.',
+  );
+  if (unavailable) {
+    description = t(
+      'screens.importer.status.noLongerAvailable',
+      'We can no longer check this import. Review your transactions for the result.',
+    );
+  }
 
   return (
     <BaseScreen title={t('screens.importer.status.title', 'Import progress')}>
@@ -70,18 +89,13 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
               </Text>
               <Badge color={statusColor}>{statusLabel}</Badge>
             </Group>
-            <Text c="dimmed">
-              {t(
-                'screens.importer.status.background',
-                'Your import is processing in the background. You can continue using Guallet while it runs.',
-              )}
-            </Text>
-            {status?.status === 'queued' && (
+            <Text c="dimmed">{description}</Text>
+            {!unavailable && status?.status === 'queued' && (
               <Text>
                 {t('screens.importer.status.waiting', 'Waiting to start')}
               </Text>
             )}
-            {status?.status === 'running' && (
+            {!unavailable && status?.status === 'running' && (
               <>
                 <Progress
                   value={Math.max(0, Math.min(100, status.progress))}
@@ -93,7 +107,7 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
                 <Text>{`${status.progress}%`}</Text>
               </>
             )}
-            {status?.status === 'completed' && (
+            {!unavailable && status?.status === 'completed' && (
               <Alert
                 color={
                   status.failedCount > 0
@@ -109,7 +123,7 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
                 })}
               </Alert>
             )}
-            {status?.status === 'failed' && (
+            {!unavailable && status?.status === 'failed' && (
               <Alert color={colors.status.error}>
                 {t(
                   'screens.importer.status.failure',

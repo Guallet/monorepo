@@ -42,4 +42,19 @@ describe('import submission states', () => {
       }).title,
     ).toBe('Import failed');
   });
+
+  it('shows unavailable instead of processing after a permanent status error', () => {
+    expect(getImportResultCopy(null, true).title).toBe('Status unavailable');
+    expect(
+      getImportResultCopy(
+        {
+          status: 'running',
+          progress: 40,
+          processedCount: 0,
+          failedCount: 0,
+        },
+        true,
+      ).title,
+    ).toBe('Status unavailable');
+  });
 });

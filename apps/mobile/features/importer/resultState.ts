@@ -1,6 +1,16 @@
 import type { DataImportStatus } from '@guallet/api-client';
 
-export function getImportResultCopy(status: DataImportStatus | null) {
+export function getImportResultCopy(
+  status: DataImportStatus | null,
+  statusUnavailable = false,
+) {
+  if (statusUnavailable) {
+    return {
+      title: 'Status unavailable',
+      description:
+        'We can no longer check this import. Review your transactions for the result.',
+    };
+  }
   if (status?.status === 'completed') {
     if (status.failedCount > 0) {
       return {

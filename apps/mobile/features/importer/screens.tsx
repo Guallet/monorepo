@@ -568,6 +568,7 @@ export function ImportResultsScreen({
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<DataImportStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isStatusUnavailable, setIsStatusUnavailable] = useState(false);
   useEffect(() => {
     let live = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -577,6 +578,7 @@ export function ImportResultsScreen({
         const result = await client.dataImporter.getStatus(jobId);
         if (!live) return;
         invalidatedAfterError = false;
+        setIsStatusUnavailable(false);
         setStatus(result);
         setError(null);
         if (result.status === 'completed' || result.status === 'failed') {
@@ -587,6 +589,7 @@ export function ImportResultsScreen({
       } catch (cause) {
         if (!live) return;
         if (isPermanentImportStatusError(cause)) {
+          setIsStatusUnavailable(true);
           setError(
             'This import status is no longer available. Check your transactions.',
           );
@@ -607,7 +610,10 @@ export function ImportResultsScreen({
       if (timer) clearTimeout(timer);
     };
   }, [client, jobId, queryClient]);
-  const { title, description } = getImportResultCopy(status);
+  const { title, description } = getImportResultCopy(
+    status,
+    isStatusUnavailable,
+  );
   return (
     <FlowScreen
       navigationTitle="Import status"
@@ -618,19 +624,20 @@ export function ImportResultsScreen({
       onBack={() => router.replace('/(tabs)/settings')}
     >
       <ErrorText message={error} />
-      {(status?.status === 'queued' ||
-        status?.status === 'running' ||
-        !status) && (
-        <ImportCard>
-          <TextLine strong>Processing transactions</TextLine>
-          <TextLine>
-            {status?.status === 'queued'
-              ? 'Waiting to start'
-              : `${status?.progress ?? 0}% complete`}
-          </TextLine>
-          <ActivityIndicator accessibilityLabel="Import in progress" />
-        </ImportCard>
-      )}
+      {!isStatusUnavailable &&
+        (status?.status === 'queued' ||
+          status?.status === 'running' ||
+          !status) && (
+          <ImportCard>
+            <TextLine strong>Processing transactions</TextLine>
+            <TextLine>
+              {status?.status === 'queued'
+                ? 'Waiting to start'
+                : `${status?.progress ?? 0}% complete`}
+            </TextLine>
+            <ActivityIndicator accessibilityLabel="Import in progress" />
+          </ImportCard>
+        )}
       <ImportCard>
         <TextLine strong>{fileName ?? 'CSV import'}</TextLine>
         <TextLine>{`${submitted ?? '—'} valid rows submitted · ${skipped ?? '0'} skipped during validation`}</TextLine>
