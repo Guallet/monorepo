@@ -464,7 +464,11 @@ export function PreviewImportScreen() {
   const [busy, setBusy] = useState(false);
   const rows = useMemo(
     () =>
-      draft?.rows.map((row) => ({ row, errors: rowErrors(draft, row) })) ?? [],
+      draft?.rows.map((row, index) => ({
+        row,
+        rowNumber: index + 2,
+        errors: rowErrors(draft, row),
+      })) ?? [],
     [draft],
   );
   const prepared = useMemo(() => {
@@ -534,7 +538,6 @@ export function PreviewImportScreen() {
         <ImportCard>
           <TextLine strong>Rows needing attention</TextLine>
           {rows
-            .map((entry, index) => ({ ...entry, rowNumber: index + 2 }))
             .filter((entry) => entry.errors.length > 0)
             .slice(0, 20)
             .map((entry) => (
@@ -550,14 +553,14 @@ export function PreviewImportScreen() {
       <ErrorText message={prepared.error ?? error} />
       <ImportCard>
         <TextLine strong>Sample transactions</TextLine>
-        {rows.slice(0, 10).map(({ row, errors }, index) => {
+        {rows.slice(0, 10).map(({ row, rowNumber, errors }) => {
           const description = String(
             row[draft.fields.description] ?? 'Unnamed transaction',
           );
           const amount = String(row[draft.fields.amount] ?? '');
           const date = String(row[draft.fields.date] ?? '');
           return (
-            <View key={index} style={styles.previewRow}>
+            <View key={rowNumber} style={styles.previewRow}>
               <View style={styles.previewDescription}>
                 <TextLine strong>{description}</TextLine>
                 <TextLine>{errors.length ? errors.join(', ') : date}</TextLine>

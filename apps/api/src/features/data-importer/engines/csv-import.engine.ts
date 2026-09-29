@@ -112,34 +112,40 @@ export class CsvImportEngine implements ImportEngine {
     preparedTransactions: PreparedTransaction[];
     failedCount: number;
   }> {
-    const preparedTransactions: PreparedTransaction[] = [];
-    let failedCount = 0;
-
-    for (const row of csvData) {
-      const result = await this.processRow(
+    const accountIds = [...new Set(accountIdMap.values())];
+    const accounts = await Promise.all(
+      accountIds.map((id) => this.accountsService.findOneById(id)),
+    );
+    const currencies = new Map(
+      accountIds.map(
+        (id, index) =>
+          [id, accounts[index]?.currency || defaultCurrency] as const,
+      ),
+    );
+    const results = csvData.map((row) =>
+      this.processRow(
         row,
         fieldMappings,
         accountIdMap,
         categoryIdMap,
-        defaultCurrency,
-      );
-      if (result) {
-        preparedTransactions.push(result);
-      } else {
-        failedCount++;
-      }
-    }
-
-    return { preparedTransactions, failedCount };
+        currencies,
+      ),
+    );
+    return {
+      preparedTransactions: results.filter(
+        (result): result is PreparedTransaction => result !== null,
+      ),
+      failedCount: results.filter((result) => result === null).length,
+    };
   }
 
-  private async processRow(
+  private processRow(
     row: CsvRowData,
     fieldMappings: FieldMappings,
     accountIdMap: Map<string, string>,
     categoryIdMap: Map<string, string>,
-    defaultCurrency: string,
-  ): Promise<PreparedTransaction | null> {
+    currencies: Map<string, string>,
+  ): PreparedTransaction | null {
     const accountKey = (row[fieldMappings.account] as string) || 'default';
     const categoryKey = row[fieldMappings.category] as string | undefined;
 
@@ -165,14 +171,12 @@ export class CsvImportEngine implements ImportEngine {
       return null;
     }
 
-    const account = await this.accountsService.findOneById(accountId);
-
     return {
       accountId,
       description: (row[fieldMappings.description] as string) || '',
       notes: (row[fieldMappings.notes] as string) || undefined,
       amount: parsedAmount,
-      currency: account?.currency || defaultCurrency,
+      currency: currencies.get(accountId)!,
       date: parsedDate,
       categoryId: categoryId || null,
     };
@@ -197,8 +201,9 @@ export class CsvImportEngine implements ImportEngine {
       const transactionRepository =
         queryRunner.manager.getRepository(Transaction);
 
-      for (let i = 0; i < preparedTransactions.length; i += BATCH_SIZE) {
-        const batch = preparedTransactions.slice(i, i + BATCH_SIZE);
+      const saveBatch = async (start: number): Promise<void> => {
+        if (start >= preparedTransactions.length) return;
+        const batch = preparedTransactions.slice(start, start + BATCH_SIZE);
         const entities = batch.map((txData) => {
           const entity = new Transaction();
           entity.accountId = txData.accountId;
@@ -216,11 +221,14 @@ export class CsvImportEngine implements ImportEngine {
 
         if (onProgress) {
           const progress = Math.round(
-            ((i + batch.length) / preparedTransactions.length) * 100,
+            ((start + batch.length) / preparedTransactions.length) * 100,
           );
           await onProgress(progress);
         }
-      }
+        await saveBatch(start + BATCH_SIZE);
+      };
+
+      await saveBatch(0);
 
       await queryRunner.commitTransaction();
     } catch (insertError) {
@@ -246,66 +254,69 @@ export class CsvImportEngine implements ImportEngine {
     accountMappings: Record<string, AccountMapping>,
     defaultCurrency: string,
   ): Promise<Map<string, string>> {
-    const accountIdMap = new Map<string, string>();
-
-    for (const [key, mapping] of Object.entries(accountMappings)) {
-      if (mapping.id) {
-        accountIdMap.set(key, mapping.id);
-      } else if (mapping.shouldCreate) {
-        try {
-          const account = await this.accountsService.create({
-            user_id: userId,
-            dto: {
-              name: mapping.name,
-              currency: defaultCurrency,
-              type: AccountType.CURRENT_ACCOUNT,
-              source: AccountSource.IMPORTED,
-              source_name: 'CSV Import',
-            },
-          });
-          accountIdMap.set(key, account.id);
-        } catch (error) {
-          this.logger.error(`Error creating account ${mapping.name}`, error);
-          throw error;
-        }
-      } else {
-        throw new Error(
-          `Account mapping for key "${key}" is missing an ID and shouldCreate is false`,
-        );
-      }
-    }
-
-    return accountIdMap;
+    const entries = await Promise.all(
+      Object.entries(accountMappings).map(
+        async ([key, mapping]): Promise<readonly [string, string]> => {
+          if (mapping.id) return [key, mapping.id];
+          if (!mapping.shouldCreate) {
+            throw new Error(
+              `Account mapping for key "${key}" is missing an ID and shouldCreate is false`,
+            );
+          }
+          try {
+            const account = await this.accountsService.create({
+              user_id: userId,
+              dto: {
+                name: mapping.name,
+                currency: defaultCurrency,
+                type: AccountType.CURRENT_ACCOUNT,
+                source: AccountSource.IMPORTED,
+                source_name: 'CSV Import',
+              },
+            });
+            return [key, account.id];
+          } catch (error) {
+            this.logger.error(`Error creating account ${mapping.name}`, error);
+            throw error;
+          }
+        },
+      ),
+    );
+    return new Map(entries);
   }
 
   private async createCategories(
     userId: string,
     categoryMappings: Record<string, CategoryMapping>,
   ): Promise<Map<string, string>> {
-    const categoryIdMap = new Map<string, string>();
-
-    for (const [key, mapping] of Object.entries(categoryMappings)) {
-      if (mapping.id) {
-        categoryIdMap.set(key, mapping.id);
-      } else if (mapping.shouldCreate) {
-        try {
-          const category = await this.categoriesService.create({
-            user_id: userId,
-            dto: {
-              name: mapping.name,
-              icon: DEFAULT_CATEGORY_ICON,
-              colour: DEFAULT_CATEGORY_COLOR,
-              parentId: null,
-            },
-          });
-          categoryIdMap.set(key, category.id);
-        } catch (error) {
-          this.logger.error(`Error creating category ${mapping.name}`, error);
-        }
-      }
-    }
-
-    return categoryIdMap;
+    const entries = await Promise.all(
+      Object.entries(categoryMappings).map(
+        async ([key, mapping]): Promise<readonly [string, string] | null> => {
+          if (mapping.id) return [key, mapping.id];
+          if (!mapping.shouldCreate) return null;
+          try {
+            const category = await this.categoriesService.create({
+              user_id: userId,
+              dto: {
+                name: mapping.name,
+                icon: DEFAULT_CATEGORY_ICON,
+                colour: DEFAULT_CATEGORY_COLOR,
+                parentId: null,
+              },
+            });
+            return [key, category.id];
+          } catch (error) {
+            this.logger.error(`Error creating category ${mapping.name}`, error);
+            return null;
+          }
+        },
+      ),
+    );
+    return new Map(
+      entries.filter(
+        (entry): entry is readonly [string, string] => entry !== null,
+      ),
+    );
   }
 
   private async getUserDefaultCurrency(userId: string): Promise<string> {
