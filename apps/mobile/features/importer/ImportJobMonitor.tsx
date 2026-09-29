@@ -1,18 +1,49 @@
 import { useEffect, useRef } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useGualletClient, useQueryClient } from '@guallet/api-react';
 import { useAuth } from '@guallet/auth';
 import { isPermanentImportStatusError } from './importStatusError';
 
 const pendingJobs = new Set<string>();
 const jobsWithStatusErrors = new Set<string>();
+let storageWrite = Promise.resolve();
 
-export function watchImportJob(jobId: string) {
+function storageKey(userId: string) {
+  return `guallet:pending-import-jobs:${userId}`;
+}
+
+function savePendingJobs(userId: string) {
+  const snapshot = JSON.stringify([...pendingJobs]);
+  storageWrite = storageWrite
+    .then(() => AsyncStorage.setItem(storageKey(userId), snapshot))
+    .catch(() => {});
+  return storageWrite;
+}
+
+async function restorePendingJobs(userId: string, isActive: () => boolean) {
+  try {
+    await storageWrite;
+    const saved = JSON.parse(
+      (await AsyncStorage.getItem(storageKey(userId))) ?? '[]',
+    );
+    if (!isActive() || !Array.isArray(saved)) return;
+    for (const jobId of saved) {
+      if (typeof jobId === 'string') pendingJobs.add(jobId);
+    }
+  } catch {
+    // Monitoring continues in memory when storage is unavailable.
+  }
+}
+
+export async function watchImportJob(jobId: string, userId?: string | null) {
   pendingJobs.add(jobId);
+  if (userId) await savePendingJobs(userId);
 }
 
 async function refreshPendingJobs(
   client: ReturnType<typeof useGualletClient>,
   queryClient: ReturnType<typeof useQueryClient>,
+  userId: string,
   isActive: () => boolean,
 ) {
   const jobIds = [...pendingJobs];
@@ -21,6 +52,7 @@ async function refreshPendingJobs(
   );
   if (!isActive()) return;
   let shouldInvalidate = false;
+  let shouldPersist = false;
   outcomes.forEach((outcome, index) => {
     const jobId = jobIds[index];
     if (outcome.status === 'fulfilled') {
@@ -31,6 +63,7 @@ async function refreshPendingJobs(
       ) {
         pendingJobs.delete(jobId);
         shouldInvalidate = true;
+        shouldPersist = true;
       }
       return;
     }
@@ -38,6 +71,7 @@ async function refreshPendingJobs(
       pendingJobs.delete(jobId);
       jobsWithStatusErrors.delete(jobId);
       shouldInvalidate = true;
+      shouldPersist = true;
       return;
     }
     if (!jobsWithStatusErrors.has(jobId)) {
@@ -45,6 +79,7 @@ async function refreshPendingJobs(
       shouldInvalidate = true;
     }
   });
+  if (shouldPersist) await savePendingJobs(userId);
   if (shouldInvalidate) await queryClient.invalidateQueries();
 }
 
@@ -68,10 +103,16 @@ export function ImportJobMonitor() {
     if (isLoading || !userId) return;
     let checking = false;
     let active = true;
+    void restorePendingJobs(userId, () => active);
     const timer = setInterval(() => {
       if (checking || pendingJobs.size === 0) return;
       checking = true;
-      void refreshPendingJobs(client, queryClient, () => active).finally(() => {
+      void refreshPendingJobs(
+        client,
+        queryClient,
+        userId,
+        () => active,
+      ).finally(() => {
         checking = false;
       });
     }, 3000);

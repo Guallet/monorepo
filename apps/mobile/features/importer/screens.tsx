@@ -16,6 +16,7 @@ import {
   useQueryClient,
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
+import { useAuth } from '@guallet/auth';
 import type {
   AccountMapping,
   CategoryMapping,
@@ -463,6 +464,7 @@ export function MapCategoriesScreen() {
 
 export function PreviewImportScreen() {
   const router = useRouter();
+  const { userId } = useAuth();
   const { draft, setDraft } = useImportDraft();
   const client = useGualletClient();
   const queryClient = useQueryClient();
@@ -500,7 +502,7 @@ export function PreviewImportScreen() {
       setBusy(true);
       setError(null);
       const response = await client.dataImporter.importData(prepared.request);
-      watchImportJob(response.jobId);
+      await watchImportJob(response.jobId, userId);
       await queryClient.invalidateQueries();
       setDraft(null);
       router.dismissAll();
@@ -606,13 +608,14 @@ export function ImportResultsScreen({
   skipped?: string;
 }>) {
   const router = useRouter();
+  const { userId } = useAuth();
   const client = useGualletClient();
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<DataImportStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isStatusUnavailable, setIsStatusUnavailable] = useState(false);
   useEffect(() => {
-    watchImportJob(jobId);
+    void watchImportJob(jobId, userId);
     let live = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let invalidatedAfterError = false;
@@ -652,7 +655,7 @@ export function ImportResultsScreen({
       live = false;
       if (timer) clearTimeout(timer);
     };
-  }, [client, jobId, queryClient]);
+  }, [client, jobId, queryClient, userId]);
   const { title, description } = getImportResultCopy(
     status,
     isStatusUnavailable,
@@ -688,7 +691,11 @@ export function ImportResultsScreen({
           <TextLine>{`${status.processedCount} imported · ${status.failedCount} failed`}</TextLine>
         )}
       </ImportCard>
-      <Notice>We’ll send you an email when processing finishes.</Notice>
+      {!isStatusUnavailable &&
+        status?.status !== 'completed' &&
+        status?.status !== 'failed' && (
+          <Notice>We’ll send you an email when processing finishes.</Notice>
+        )}
     </FlowScreen>
   );
 }
