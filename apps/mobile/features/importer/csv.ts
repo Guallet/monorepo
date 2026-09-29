@@ -61,8 +61,8 @@ export function parseCsv(content: string, fileName: string): CsvDraft {
     rows: parsed.data,
     columns,
     fields: { ...EMPTY_FIELDS },
-    accounts: {},
-    categories: {},
+    accounts: Object.create(null),
+    categories: Object.create(null),
   };
 }
 
