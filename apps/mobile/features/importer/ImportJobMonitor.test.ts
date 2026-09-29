@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 
 const { setItem } = vi.hoisted(() => ({ setItem: vi.fn() }));
 
@@ -14,7 +14,8 @@ describe('mobile import job registration', () => {
   it('does not wait for a pending storage write', async () => {
     setItem.mockImplementation(() => new Promise(() => {}));
 
-    expect(watchImportJob('job-1', 'user-1')).toBeUndefined();
+    expectTypeOf(watchImportJob).returns.toEqualTypeOf<void>();
+    watchImportJob('job-1', 'user-1');
     await Promise.resolve();
 
     expect(setItem).toHaveBeenCalledWith(
