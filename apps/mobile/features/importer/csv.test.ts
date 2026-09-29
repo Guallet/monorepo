@@ -83,6 +83,52 @@ describe('CSV import mapping', () => {
     }
   });
 
+  it('rejects calendar overflows and invalid timestamp hours', () => {
+    const draft = mappedDraft();
+    for (const date of [
+      '2026-02-30',
+      '2026-02-30T14:30:00Z',
+      '2026-09-21 25:30:00',
+    ]) {
+      draft.rows[0].Date = date;
+      expect(rowErrors(draft, draft.rows[0])).toContain('Invalid date');
+    }
+  });
+
+  it('rejects blank accounts mixed with the literal default name', () => {
+    const draft = mappedDraft();
+    draft.rows[0].Account = '';
+    draft.rows[1].Account = 'default';
+    expect(validateFields(draft)).toContain('both blank values and “default”');
+    expect(() => buildImportRequest(draft)).toThrow(
+      'both blank values and “default”',
+    );
+  });
+
+  it('does not treat inherited object keys as account mappings', () => {
+    const draft = mappedDraft();
+    draft.rows[0].Account = 'toString';
+    expect(rowErrors(draft, draft.rows[0])).toContain('Account not mapped');
+    expect(() => buildImportRequest(draft)).toThrow(
+      'Map account “toString” first.',
+    );
+  });
+
+  it('preserves an account named __proto__ in the request', () => {
+    const draft = mappedDraft();
+    draft.rows[0].Account = '__proto__';
+    draft.accounts = {
+      ...draft.accounts,
+      ['__proto__']: {
+        id: 'account-2',
+        name: '__proto__',
+        shouldCreate: false,
+      },
+    };
+    const request = buildImportRequest(draft);
+    expect(JSON.stringify(request.accountMappings)).toContain('"__proto__"');
+  });
+
   it('submits the trimmed date that passed preview validation', () => {
     const draft = mappedDraft();
     draft.rows[0].Date = ' 21/09/2026 ';

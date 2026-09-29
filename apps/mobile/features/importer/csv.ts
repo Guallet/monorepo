@@ -78,6 +78,14 @@ export function validateFields(draft: CsvDraft): string | null {
   if (chosen.some((column) => !columns.includes(column))) {
     return 'A mapped column is missing from the CSV.';
   }
+  if (fields.account) {
+    const values = draft.rows.map((row) =>
+      String(row[fields.account] ?? '').trim(),
+    );
+    if (values.includes('') && values.includes('default')) {
+      return 'The account column contains both blank values and “default”. Rename one of them in the CSV before importing.';
+    }
+  }
   return null;
 }
 
@@ -104,6 +112,14 @@ function validDate(raw: string): boolean {
   const value = raw.trim();
   if (!value) return false;
   if (dayjs(value, SUPPORTED_DATE_FORMATS, true).isValid()) return true;
+  const timestamp =
+    /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?$/.exec(
+      value,
+    );
+  if (!timestamp) return false;
+  if (!dayjs(timestamp[1], 'YYYY-MM-DD', true).isValid()) return false;
+  if (Number(timestamp[2]) > 23 || Number(timestamp[3]) > 59) return false;
+  if (timestamp[4] && Number(timestamp[4]) > 59) return false;
   return dayjs(value).isValid();
 }
 
@@ -119,7 +135,9 @@ export function rowErrors(draft: CsvDraft, row: CsvRowData): string[] {
     errors.push('Missing description');
   }
   const account = String(row[fields.account] ?? '').trim() || 'default';
-  if (!draft.accounts[account]) errors.push('Account not mapped');
+  if (!Object.hasOwn(draft.accounts, account)) {
+    errors.push('Account not mapped');
+  }
   return errors;
 }
 
@@ -127,7 +145,9 @@ export function buildImportRequest(draft: CsvDraft): DataImportRequest {
   const fieldError = validateFields(draft);
   if (fieldError) throw new Error(fieldError);
   for (const key of accountKeys(draft)) {
-    if (!draft.accounts[key]) throw new Error(`Map account “${key}” first.`);
+    if (!Object.hasOwn(draft.accounts, key)) {
+      throw new Error(`Map account “${key}” first.`);
+    }
   }
   const rows = draft.rows
     .filter((row) => rowErrors(draft, row).length === 0)
@@ -152,14 +172,17 @@ export function buildImportRequest(draft: CsvDraft): DataImportRequest {
   const usedAccounts = new Set(
     rows.map((row) => String(row[draft.fields.account] ?? '') || 'default'),
   );
-  const accountMappings: Record<string, AccountMapping> = {};
+  const accountMappings = Object.create(null) as Record<string, AccountMapping>;
   for (const key of usedAccounts) {
     accountMappings[key] = draft.accounts[key];
   }
   const usedCategories = new Set(
     rows.map((row) => String(row[draft.fields.category] ?? '')).filter(Boolean),
   );
-  const categoryMappings: Record<string, CategoryMapping> = {};
+  const categoryMappings = Object.create(null) as Record<
+    string,
+    CategoryMapping
+  >;
   for (const [key, mapping] of Object.entries(draft.categories)) {
     if (mapping && usedCategories.has(key)) categoryMappings[key] = mapping;
   }

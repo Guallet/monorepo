@@ -259,7 +259,7 @@ export function MapAccountsScreen() {
     { value: 'create', label: 'Create new account' },
   ];
   function next() {
-    const missing = keys.find((key) => !draft.accounts[key]);
+    const missing = keys.find((key) => !Object.hasOwn(draft.accounts, key));
     if (missing) {
       setError(`Choose an account for “${missing}”.`);
       return;
@@ -301,13 +301,25 @@ export function MapAccountsScreen() {
             (String(row[draft.fields.account] ?? '').trim() || 'default') ===
             key,
         ).length;
-        const mapping = draft.accounts[key];
+        const mapping = Object.hasOwn(draft.accounts, key)
+          ? draft.accounts[key]
+          : undefined;
         const value = mapping?.shouldCreate ? 'create' : (mapping?.id ?? '');
+        const isDefault =
+          key === 'default' &&
+          (!draft.fields.account ||
+            draft.rows.some(
+              (row) => !String(row[draft.fields.account] ?? '').trim(),
+            ));
+        let label = key;
+        if (isDefault) {
+          label = draft.fields.account
+            ? 'Rows without an account'
+            : 'All transactions';
+        }
         return (
           <ImportCard key={key}>
-            <TextLine strong>
-              {key === 'default' ? 'All transactions' : key}
-            </TextLine>
+            <TextLine strong>{label}</TextLine>
             <TextLine>{`${count} rows from CSV`}</TextLine>
             <ChoiceField
               label="Map to account"
@@ -318,7 +330,7 @@ export function MapAccountsScreen() {
                 let mapped: AccountMapping | undefined;
                 if (selected === 'create') {
                   mapped = {
-                    name: key === 'default' ? 'Imported account' : key,
+                    name: isDefault ? 'Imported account' : key,
                     shouldCreate: true,
                   };
                 } else if (account) {
