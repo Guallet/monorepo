@@ -13,6 +13,45 @@ import {
 
 const jobsWithStatusErrors = new Set<string>();
 
+async function refreshPendingJobs(
+  client: ReturnType<typeof useGualletClient>,
+  queryClient: ReturnType<typeof useQueryClient>,
+  userId: string,
+  isActive: () => boolean,
+) {
+  const jobIds = [...pendingImportJobs];
+  const outcomes = await Promise.allSettled(
+    jobIds.map((jobId) => client.dataImporter.getStatus(jobId)),
+  );
+  if (!isActive()) return;
+  let shouldInvalidate = false;
+  outcomes.forEach((outcome, index) => {
+    const jobId = jobIds[index];
+    if (outcome.status === 'fulfilled') {
+      jobsWithStatusErrors.delete(jobId);
+      if (
+        outcome.value.status === 'completed' ||
+        outcome.value.status === 'failed'
+      ) {
+        unwatchImportJob(jobId, userId);
+        shouldInvalidate = true;
+      }
+      return;
+    }
+    if (isPermanentImportStatusError(outcome.reason)) {
+      unwatchImportJob(jobId, userId);
+      jobsWithStatusErrors.delete(jobId);
+      shouldInvalidate = true;
+      return;
+    }
+    if (!jobsWithStatusErrors.has(jobId)) {
+      jobsWithStatusErrors.add(jobId);
+      shouldInvalidate = true;
+    }
+  });
+  if (shouldInvalidate) await queryClient.invalidateQueries();
+}
+
 export function ImportJobMonitor() {
   const { userId } = useAuth();
   const client = useGualletClient();
@@ -26,35 +65,14 @@ export function ImportJobMonitor() {
     const timer = setInterval(() => {
       if (checking || pendingImportJobs.size === 0) return;
       checking = true;
-      void (async () => {
-        try {
-          for (const jobId of pendingImportJobs) {
-            try {
-              const result = await client.dataImporter.getStatus(jobId);
-              if (!active) break;
-              jobsWithStatusErrors.delete(jobId);
-              if (result.status === 'completed' || result.status === 'failed') {
-                unwatchImportJob(jobId, userId);
-                await queryClient.invalidateQueries();
-              }
-            } catch (error) {
-              if (!active) break;
-              if (isPermanentImportStatusError(error)) {
-                unwatchImportJob(jobId, userId);
-                jobsWithStatusErrors.delete(jobId);
-                await queryClient.invalidateQueries();
-                continue;
-              }
-              if (!jobsWithStatusErrors.has(jobId)) {
-                jobsWithStatusErrors.add(jobId);
-                await queryClient.invalidateQueries();
-              }
-            }
-          }
-        } finally {
-          checking = false;
-        }
-      })();
+      void refreshPendingJobs(
+        client,
+        queryClient,
+        userId,
+        () => active,
+      ).finally(() => {
+        checking = false;
+      });
     }, 3000);
     return () => {
       active = false;

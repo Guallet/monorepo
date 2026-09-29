@@ -12,8 +12,10 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { useImportStatus } from '@guallet/api-react';
-import { isPermanentImportStatusError } from '@guallet/api-react';
+import {
+  isPermanentImportStatusError,
+  useImportStatus,
+} from '@guallet/api-react';
 import { useAuth } from '@guallet/auth';
 import { useTheme } from '@guallet/ui-react';
 import { BaseScreen } from '@/components/Screens/BaseScreen';

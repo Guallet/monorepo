@@ -10,6 +10,44 @@ export function watchImportJob(jobId: string) {
   pendingJobs.add(jobId);
 }
 
+async function refreshPendingJobs(
+  client: ReturnType<typeof useGualletClient>,
+  queryClient: ReturnType<typeof useQueryClient>,
+  isActive: () => boolean,
+) {
+  const jobIds = [...pendingJobs];
+  const outcomes = await Promise.allSettled(
+    jobIds.map((jobId) => client.dataImporter.getStatus(jobId)),
+  );
+  if (!isActive()) return;
+  let shouldInvalidate = false;
+  outcomes.forEach((outcome, index) => {
+    const jobId = jobIds[index];
+    if (outcome.status === 'fulfilled') {
+      jobsWithStatusErrors.delete(jobId);
+      if (
+        outcome.value.status === 'completed' ||
+        outcome.value.status === 'failed'
+      ) {
+        pendingJobs.delete(jobId);
+        shouldInvalidate = true;
+      }
+      return;
+    }
+    if (isPermanentImportStatusError(outcome.reason)) {
+      pendingJobs.delete(jobId);
+      jobsWithStatusErrors.delete(jobId);
+      shouldInvalidate = true;
+      return;
+    }
+    if (!jobsWithStatusErrors.has(jobId)) {
+      jobsWithStatusErrors.add(jobId);
+      shouldInvalidate = true;
+    }
+  });
+  if (shouldInvalidate) await queryClient.invalidateQueries();
+}
+
 /** Keep financial queries fresh even when the user leaves the result screen. */
 export function ImportJobMonitor() {
   const client = useGualletClient();
@@ -33,37 +71,9 @@ export function ImportJobMonitor() {
     const timer = setInterval(() => {
       if (checking || pendingJobs.size === 0) return;
       checking = true;
-      void (async () => {
-        try {
-          for (const jobId of pendingJobs) {
-            try {
-              const result = await client.dataImporter.getStatus(jobId);
-              if (!active) break;
-              jobsWithStatusErrors.delete(jobId);
-              if (result.status === 'completed' || result.status === 'failed') {
-                pendingJobs.delete(jobId);
-                await queryClient.invalidateQueries();
-              }
-            } catch (error) {
-              if (!active) break;
-              if (isPermanentImportStatusError(error)) {
-                pendingJobs.delete(jobId);
-                jobsWithStatusErrors.delete(jobId);
-                await queryClient.invalidateQueries();
-                continue;
-              }
-              // Keep checking after a transient network error. Invalidate once
-              // in case the job finished while its status was unavailable.
-              if (!jobsWithStatusErrors.has(jobId)) {
-                jobsWithStatusErrors.add(jobId);
-                await queryClient.invalidateQueries();
-              }
-            }
-          }
-        } finally {
-          checking = false;
-        }
-      })();
+      void refreshPendingJobs(client, queryClient, () => active).finally(() => {
+        checking = false;
+      });
     }, 3000);
     return () => {
       active = false;
