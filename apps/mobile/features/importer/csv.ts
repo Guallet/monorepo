@@ -79,10 +79,10 @@ export function validateFields(draft: CsvDraft): string | null {
     return 'A mapped column is missing from the CSV.';
   }
   if (fields.account) {
-    const values = draft.rows.map((row) =>
-      String(row[fields.account] ?? '').trim(),
+    const values = new Set(
+      draft.rows.map((row) => String(row[fields.account] ?? '').trim()),
     );
-    if (values.includes('') && values.includes('default')) {
+    if (values.has('') && values.has('default')) {
       return 'The account column contains both blank values and “default”. Rename one of them in the CSV before importing.';
     }
   }
@@ -112,14 +112,16 @@ function validDate(raw: string): boolean {
   const value = raw.trim();
   if (!value) return false;
   if (dayjs(value, SUPPORTED_DATE_FORMATS, true).isValid()) return true;
-  const timestamp =
-    /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?$/.exec(
-      value,
-    );
+  const timestamp = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})/.exec(value);
   if (!timestamp) return false;
+  const suffix = value.slice(timestamp[0].length);
+  if (!/^(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?$/.test(suffix)) {
+    return false;
+  }
   if (!dayjs(timestamp[1], 'YYYY-MM-DD', true).isValid()) return false;
   if (Number(timestamp[2]) > 23 || Number(timestamp[3]) > 59) return false;
-  if (timestamp[4] && Number(timestamp[4]) > 59) return false;
+  const seconds = /^:(\d{2})/.exec(suffix);
+  if (seconds && Number(seconds[1]) > 59) return false;
   return dayjs(value).isValid();
 }
 
