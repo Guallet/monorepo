@@ -73,7 +73,17 @@ jobs:
 
       - name: Build API
         working-directory: apps/api
-        run: pnpm --filter api build
+        # Nest CLI needs the TypeScript compiler API, which TypeScript 7.0 does
+        # not expose. Type checking is already performed in the step above.
+        run: >-
+          pnpm exec swc src --out-dir dist --delete-dir-on-start
+          --strip-leading-paths --copy-files --ignore '**/*.spec.ts'
+          --extensions '.ts,.js' -C jsc.parser.syntax=typescript
+          -C jsc.parser.decorators=true -C jsc.transform.legacyDecorator=true
+          -C jsc.transform.decoratorMetadata=true
+          -C jsc.transform.useDefineForClassFields=false
+          -C jsc.keepClassNames=true -C jsc.target=es2021
+          -C module.type=commonjs
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

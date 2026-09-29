@@ -862,6 +862,8 @@
         "statusUnavailable": "Unavailable",
         "background": "Your import is processing in the background. You can continue using Guallet while it runs.",
         "noLongerAvailable": "We can no longer check this import. Review your transactions for the result.",
+        "finished": "Your import has finished. Review the results below.",
+        "stopped": "Your import stopped before it could finish. Review your transactions before trying again.",
         "title": "Import progress",
         "csvTitle": "CSV import",
         "waiting": "Waiting to start",

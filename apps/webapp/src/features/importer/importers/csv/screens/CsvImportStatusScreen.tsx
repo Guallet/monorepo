@@ -156,14 +156,16 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
                 </Button>
               </Alert>
             )}
-            {status?.status !== 'completed' && status?.status !== 'failed' && (
-              <Text size="sm" c="dimmed">
-                {t(
-                  'screens.importer.status.email',
-                  'We’ll email you the results when processing finishes.',
-                )}
-              </Text>
-            )}
+            {!unavailable &&
+              status?.status !== 'completed' &&
+              status?.status !== 'failed' && (
+                <Text size="sm" c="dimmed">
+                  {t(
+                    'screens.importer.status.email',
+                    'We’ll email you the results when processing finishes.',
+                  )}
+                </Text>
+              )}
             <Button onClick={() => void navigate({ to: '/dashboard' })}>
               {t('screens.importer.status.dashboard', 'Go to dashboard')}
             </Button>

@@ -35,9 +35,9 @@ async function restorePendingJobs(userId: string, isActive: () => boolean) {
   }
 }
 
-export async function watchImportJob(jobId: string, userId?: string | null) {
+export function watchImportJob(jobId: string, userId?: string | null) {
   pendingJobs.add(jobId);
-  if (userId) await savePendingJobs(userId);
+  if (userId) void savePendingJobs(userId);
 }
 
 async function refreshPendingJobs(

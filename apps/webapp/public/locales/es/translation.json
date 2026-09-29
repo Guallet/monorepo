@@ -866,27 +866,29 @@
     },
     "importer": {
       "status": {
-        "processing": "Processing",
-        "queued": "Queued",
-        "partial": "Completed with errors",
-        "completed": "Completed",
-        "failed": "Failed",
-        "statusUnavailable": "Unavailable",
-        "background": "Your import is processing in the background. You can continue using Guallet while it runs.",
-        "noLongerAvailable": "We can no longer check this import. Review your transactions for the result.",
-        "title": "Import progress",
-        "csvTitle": "CSV import",
-        "waiting": "Waiting to start",
-        "progressLabel": "Import progress",
-        "result": "{{processed}} transactions imported; {{failed}} rows failed.",
-        "failure": "The import could not be completed. Check your transactions before trying again.",
-        "unavailable": "Import status is unavailable right now. Check your transactions or try again.",
-        "retry": "Retry",
-        "email": "We’ll email you the results when processing finishes.",
-        "dashboard": "Go to dashboard"
+        "processing": "Procesando",
+        "queued": "En cola",
+        "partial": "Completada con errores",
+        "completed": "Completada",
+        "failed": "Fallida",
+        "statusUnavailable": "No disponible",
+        "background": "Tu importación se está procesando en segundo plano. Puedes seguir usando Guallet mientras se completa.",
+        "noLongerAvailable": "Ya no podemos consultar esta importación. Revisa tus transacciones para ver el resultado.",
+        "finished": "Tu importación ha terminado. Revisa los resultados a continuación.",
+        "stopped": "Tu importación se detuvo antes de terminar. Revisa tus transacciones antes de intentarlo de nuevo.",
+        "title": "Progreso de la importación",
+        "csvTitle": "Importación de CSV",
+        "waiting": "Esperando para empezar",
+        "progressLabel": "Progreso de la importación",
+        "result": "{{processed}} transacciones importadas; {{failed}} filas fallidas.",
+        "failure": "No se pudo completar la importación. Revisa tus transacciones antes de intentarlo de nuevo.",
+        "unavailable": "El estado de la importación no está disponible en este momento. Revisa tus transacciones o inténtalo de nuevo.",
+        "retry": "Reintentar",
+        "email": "Te enviaremos los resultados por correo electrónico cuando termine el procesamiento.",
+        "dashboard": "Ir al panel"
       },
       "home": {
-        "title": "Import data"
+        "title": "Importar datos"
       }
     },
     "dataExport": {

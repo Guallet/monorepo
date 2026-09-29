@@ -16,7 +16,6 @@ function savePendingJobs(userId: string) {
 }
 
 export function restorePendingImportJobs(userId: string) {
-  pendingImportJobs.clear();
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey(userId)) ?? '[]');
     if (Array.isArray(saved)) {

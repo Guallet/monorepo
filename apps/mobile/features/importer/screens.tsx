@@ -502,7 +502,7 @@ export function PreviewImportScreen() {
       setBusy(true);
       setError(null);
       const response = await client.dataImporter.importData(prepared.request);
-      await watchImportJob(response.jobId, userId);
+      watchImportJob(response.jobId, userId);
       await queryClient.invalidateQueries();
       setDraft(null);
       router.dismissAll();
@@ -615,7 +615,7 @@ export function ImportResultsScreen({
   const [error, setError] = useState<string | null>(null);
   const [isStatusUnavailable, setIsStatusUnavailable] = useState(false);
   useEffect(() => {
-    void watchImportJob(jobId, userId);
+    watchImportJob(jobId, userId);
     let live = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let invalidatedAfterError = false;
