@@ -260,7 +260,7 @@ export class CsvImportEngine implements ImportEngine {
               currency: defaultCurrency,
               type: AccountType.CURRENT_ACCOUNT,
               source: AccountSource.IMPORTED,
-              source_name: `CSV Import - Webapp`,
+              source_name: 'CSV Import',
             },
           });
           accountIdMap.set(key, account.id);

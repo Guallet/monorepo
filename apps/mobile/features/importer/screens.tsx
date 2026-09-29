@@ -108,6 +108,7 @@ export function SelectFileScreen() {
         copyToCacheDirectory: true,
       });
       if (picked.canceled) return;
+      setDraft(null);
       const asset = picked.assets[0];
       if (!asset.name.toLowerCase().endsWith('.csv'))
         throw new Error('Choose a .csv file.');
@@ -236,8 +237,8 @@ export function MapColumnsScreen() {
               updateDraft((current) => ({
                 ...current,
                 fields: { ...current.fields, [key]: value },
-                accounts: {},
-                categories: {},
+                accounts: Object.create(null),
+                categories: Object.create(null),
               }))
             }
           />
@@ -252,6 +253,17 @@ export function MapAccountsScreen() {
   const { draft, updateDraft } = useImportDraft();
   const { accounts, isLoading, isError } = useAccounts();
   const [error, setError] = useState<string | null>(null);
+  const rows = draft?.rows;
+  const accountColumn = draft?.fields.account;
+  const counts = useMemo(() => {
+    const result = Object.create(null) as Record<string, number>;
+    if (!rows) return result;
+    for (const row of rows) {
+      const key = String(row[accountColumn ?? ''] ?? '').trim() || 'default';
+      result[key] = (result[key] ?? 0) + 1;
+    }
+    return result;
+  }, [rows, accountColumn]);
   if (!draft) return <MissingDraft />;
   const keys = accountKeys(draft);
   const options: Choice[] = [
@@ -296,11 +308,6 @@ export function MapAccountsScreen() {
       )}
       <ErrorText message={error} />
       {keys.map((key) => {
-        const count = draft.rows.filter(
-          (row) =>
-            (String(row[draft.fields.account] ?? '').trim() || 'default') ===
-            key,
-        ).length;
         const mapping = Object.hasOwn(draft.accounts, key)
           ? draft.accounts[key]
           : undefined;
@@ -320,7 +327,7 @@ export function MapAccountsScreen() {
         return (
           <ImportCard key={key}>
             <TextLine strong>{label}</TextLine>
-            <TextLine>{`${count} rows from CSV`}</TextLine>
+            <TextLine>{`${counts[key] ?? 0} rows from CSV`}</TextLine>
             <ChoiceField
               label="Map to account"
               value={value}
@@ -341,7 +348,10 @@ export function MapAccountsScreen() {
                   };
                 }
                 updateDraft((current) => {
-                  const nextAccounts = { ...current.accounts };
+                  const nextAccounts = Object.assign(
+                    Object.create(null) as Record<string, AccountMapping>,
+                    current.accounts,
+                  );
                   if (mapped) nextAccounts[key] = mapped;
                   else delete nextAccounts[key];
                   return { ...current, accounts: nextAccounts };
@@ -359,6 +369,17 @@ export function MapCategoriesScreen() {
   const router = useRouter();
   const { draft, updateDraft } = useImportDraft();
   const { categories, isLoading, isError } = useCategories();
+  const rows = draft?.rows;
+  const categoryColumn = draft?.fields.category;
+  const counts = useMemo(() => {
+    const result = Object.create(null) as Record<string, number>;
+    if (!rows || !categoryColumn) return result;
+    for (const row of rows) {
+      const key = String(row[categoryColumn] ?? '').trim();
+      if (key) result[key] = (result[key] ?? 0) + 1;
+    }
+    return result;
+  }, [rows, categoryColumn]);
   if (!draft) return <MissingDraft />;
   const keys = distinctValues(draft, 'category');
   const options: Choice[] = [
@@ -389,13 +410,10 @@ export function MapCategoriesScreen() {
       {keys.map((key) => {
         const mapping = draft.categories[key];
         const value = mapping?.shouldCreate ? 'create' : (mapping?.id ?? '');
-        const count = draft.rows.filter(
-          (row) => String(row[draft.fields.category] ?? '').trim() === key,
-        ).length;
         return (
           <ImportCard key={key}>
             <TextLine strong>{key}</TextLine>
-            <TextLine>{`${count} rows from CSV`}</TextLine>
+            <TextLine>{`${counts[key] ?? 0} rows from CSV`}</TextLine>
             <ChoiceField
               label="Map to category"
               value={value}
@@ -414,10 +432,17 @@ export function MapCategoriesScreen() {
                     shouldCreate: false,
                   };
                 }
-                updateDraft((current) => ({
-                  ...current,
-                  categories: { ...current.categories, [key]: mapped },
-                }));
+                updateDraft((current) => {
+                  const nextCategories = Object.assign(
+                    Object.create(null) as Record<
+                      string,
+                      CategoryMapping | null
+                    >,
+                    current.categories,
+                  );
+                  nextCategories[key] = mapped;
+                  return { ...current, categories: nextCategories };
+                });
               }}
             />
           </ImportCard>
@@ -433,7 +458,7 @@ export function MapCategoriesScreen() {
 
 export function PreviewImportScreen() {
   const router = useRouter();
-  const { draft } = useImportDraft();
+  const { draft, setDraft } = useImportDraft();
   const client = useGualletClient();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -465,6 +490,8 @@ export function PreviewImportScreen() {
       setBusy(true);
       setError(null);
       await client.dataImporter.importData(prepared.request);
+      setDraft(null);
+      router.dismissAll();
       router.replace({
         pathname: '/importer/csv/submitted',
         params: {
