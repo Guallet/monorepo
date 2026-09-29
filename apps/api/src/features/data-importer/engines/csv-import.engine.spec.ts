@@ -6,6 +6,41 @@ import type { UsersService } from '../../users/users.service';
 import { CsvImportEngine } from './csv-import.engine';
 
 describe('CsvImportEngine', () => {
+  it('stops creating accounts after a mapping fails', async () => {
+    const create = vi
+      .fn()
+      .mockRejectedValue(new Error('Account creation failed'));
+    const engine = new CsvImportEngine(
+      {} as DataSource,
+      { create } as unknown as AccountsService,
+      {} as CategoriesService,
+      {
+        findUserData: vi.fn().mockResolvedValue(null),
+      } as unknown as UsersService,
+    );
+
+    await expect(
+      engine.execute('user-1', {
+        format: 'csv',
+        csvData: [],
+        fieldMappings: {
+          account: 'Account',
+          date: 'Date',
+          amount: 'Amount',
+          description: 'Description',
+          notes: '',
+          category: '',
+        },
+        accountMappings: {
+          First: { name: 'First', shouldCreate: true },
+          Second: { name: 'Second', shouldCreate: true },
+        },
+        categoryMappings: {},
+      }),
+    ).rejects.toThrow('Account creation failed');
+    expect(create).toHaveBeenCalledTimes(1);
+  });
+
   it('looks up account currency once and saves batches in order', async () => {
     const events: string[] = [];
     const save = vi.fn().mockImplementation(async (entities: unknown[]) => {
