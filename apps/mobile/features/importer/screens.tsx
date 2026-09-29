@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -13,14 +13,19 @@ import {
   useAccounts,
   useCategories,
   useGualletClient,
+  useQueryClient,
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import type {
   AccountMapping,
   CategoryMapping,
+  DataImportStatus,
   FieldMappings,
 } from '@guallet/api-client';
 import { useImportDraft } from './ImportDraftProvider';
+import { watchImportJob } from './ImportJobMonitor';
+import { isPermanentImportStatusError } from './importStatusError';
+import { getImportResultCopy } from './resultState';
 import {
   accountKeys,
   buildImportRequest,
@@ -423,6 +428,7 @@ export function PreviewImportScreen() {
   const router = useRouter();
   const { draft } = useImportDraft();
   const client = useGualletClient();
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const rows = useMemo(
@@ -452,16 +458,20 @@ export function PreviewImportScreen() {
     try {
       setBusy(true);
       setError(null);
-      await client.dataImporter.importData(prepared.request);
+      const response = await client.dataImporter.importData(prepared.request);
+      watchImportJob(response.jobId);
+      await queryClient.invalidateQueries();
       router.replace({
-        pathname: '/importer/csv/submitted',
+        pathname: '/importer/csv/results/[jobId]',
         params: {
+          jobId: response.jobId,
           fileName: draft!.fileName,
           submitted: String(valid.length),
           skipped: String(invalid),
         },
       });
     } catch (cause) {
+      await queryClient.invalidateQueries();
       setError(
         cause instanceof Error ? cause.message : 'Could not start the import.',
       );
@@ -542,30 +552,93 @@ export function PreviewImportScreen() {
   );
 }
 
-export function ImportSubmittedScreen({
+export function ImportResultsScreen({
+  jobId,
   fileName,
   submitted,
   skipped,
 }: Readonly<{
+  jobId: string;
   fileName?: string;
   submitted?: string;
   skipped?: string;
 }>) {
   const router = useRouter();
+  const client = useGualletClient();
+  const queryClient = useQueryClient();
+  const [status, setStatus] = useState<DataImportStatus | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let invalidatedAfterError = false;
+    async function refresh() {
+      try {
+        const result = await client.dataImporter.getStatus(jobId);
+        if (!live) return;
+        invalidatedAfterError = false;
+        setStatus(result);
+        setError(null);
+        if (result.status === 'completed' || result.status === 'failed') {
+          await queryClient.invalidateQueries();
+        } else {
+          timer = setTimeout(() => void refresh(), 2000);
+        }
+      } catch (cause) {
+        if (!live) return;
+        if (isPermanentImportStatusError(cause)) {
+          setError(
+            'This import status is no longer available. Check your transactions.',
+          );
+          await queryClient.invalidateQueries();
+          return;
+        }
+        setError('Could not check this import. Retrying…');
+        timer = setTimeout(() => void refresh(), 2000);
+        if (!invalidatedAfterError) {
+          invalidatedAfterError = true;
+          await queryClient.invalidateQueries();
+        }
+      }
+    }
+    void refresh();
+    return () => {
+      live = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, [client, jobId, queryClient]);
+  const { title, description } = getImportResultCopy(status);
   return (
     <FlowScreen
-      navigationTitle="Import submitted"
-      title="Import started"
-      description="Your CSV import is being processed in the background. You can continue using Guallet while it runs."
+      navigationTitle="Import status"
+      title={title}
+      description={description}
       action="Go to transactions"
       onAction={() => router.replace('/(tabs)/transactions')}
       onBack={() => router.replace('/(tabs)/settings')}
     >
+      <ErrorText message={error} />
+      {(status?.status === 'queued' ||
+        status?.status === 'running' ||
+        !status) && (
+        <ImportCard>
+          <TextLine strong>Processing transactions</TextLine>
+          <TextLine>
+            {status?.status === 'queued'
+              ? 'Waiting to start'
+              : `${status?.progress ?? 0}% complete`}
+          </TextLine>
+          <ActivityIndicator accessibilityLabel="Import in progress" />
+        </ImportCard>
+      )}
       <ImportCard>
         <TextLine strong>{fileName ?? 'CSV import'}</TextLine>
         <TextLine>{`${submitted ?? '—'} valid rows submitted · ${skipped ?? '0'} skipped during validation`}</TextLine>
+        {status?.status === 'completed' && (
+          <TextLine>{`${status.processedCount} imported · ${status.failedCount} failed`}</TextLine>
+        )}
       </ImportCard>
-      <Notice>We’ll email you the results when processing finishes.</Notice>
+      <Notice>We’ll send you an email when processing finishes.</Notice>
     </FlowScreen>
   );
 }

@@ -72,6 +72,7 @@ import { Route as AppCategoriesIdEditRouteImport } from './routes/_app/categorie
 import { Route as AppAccountsIdEditRouteImport } from './routes/_app/accounts/$id_.edit'
 import { Route as AppSettingsAiProvidersNewRouteImport } from './routes/_app/settings/ai_.providers_.new'
 import { Route as AppSettingsAiProvidersIdRouteImport } from './routes/_app/settings/ai_.providers_.$id'
+import { Route as AppImporterCsvStatusJobIdRouteImport } from './routes/_app/importer/csv/status/$jobId'
 import { Route as AppCategoriesRulesIdEditRouteImport } from './routes/_app/categories/rules/$id_.edit'
 
 const UserdeletedLazyRouteImport = createFileRoute('/userdeleted')()
@@ -433,6 +434,12 @@ const AppSettingsAiProvidersIdRoute =
     path: '/settings/ai/providers/$id',
     getParentRoute: () => AppRoute,
   } as any)
+const AppImporterCsvStatusJobIdRoute =
+  AppImporterCsvStatusJobIdRouteImport.update({
+    id: '/importer/csv/status/$jobId',
+    path: '/importer/csv/status/$jobId',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppCategoriesRulesIdEditRoute =
   AppCategoriesRulesIdEditRouteImport.update({
     id: '/categories/rules/$id_/edit',
@@ -506,6 +513,7 @@ export interface FileRoutesByFullPath {
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
+  '/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
   '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
   '/settings/ai/providers/new': typeof AppSettingsAiProvidersNewRoute
 }
@@ -575,6 +583,7 @@ export interface FileRoutesByTo {
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
+  '/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
   '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
   '/settings/ai/providers/new': typeof AppSettingsAiProvidersNewRoute
 }
@@ -646,6 +655,7 @@ export interface FileRoutesById {
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
   '/_app/categories/rules/$id_/edit': typeof AppCategoriesRulesIdEditRoute
+  '/_app/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
   '/_app/settings/ai_/providers_/$id': typeof AppSettingsAiProvidersIdRoute
   '/_app/settings/ai_/providers_/new': typeof AppSettingsAiProvidersNewRoute
 }
@@ -717,6 +727,7 @@ export interface FileRouteTypes {
     | '/connections/connect'
     | '/importer/csv'
     | '/categories/rules/$id/edit'
+    | '/importer/csv/status/$jobId'
     | '/settings/ai/providers/$id'
     | '/settings/ai/providers/new'
   fileRoutesByTo: FileRoutesByTo
@@ -786,6 +797,7 @@ export interface FileRouteTypes {
     | '/connections/connect'
     | '/importer/csv'
     | '/categories/rules/$id/edit'
+    | '/importer/csv/status/$jobId'
     | '/settings/ai/providers/$id'
     | '/settings/ai/providers/new'
   id:
@@ -856,6 +868,7 @@ export interface FileRouteTypes {
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
     | '/_app/categories/rules/$id_/edit'
+    | '/_app/importer/csv/status/$jobId'
     | '/_app/settings/ai_/providers_/$id'
     | '/_app/settings/ai_/providers_/new'
   fileRoutesById: FileRoutesById
@@ -1346,6 +1359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsAiProvidersIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/importer/csv/status/$jobId': {
+      id: '/_app/importer/csv/status/$jobId'
+      path: '/importer/csv/status/$jobId'
+      fullPath: '/importer/csv/status/$jobId'
+      preLoaderRoute: typeof AppImporterCsvStatusJobIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/categories/rules/$id_/edit': {
       id: '/_app/categories/rules/$id_/edit'
       path: '/categories/rules/$id/edit'
@@ -1411,6 +1431,7 @@ interface AppRouteChildren {
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
   AppCategoriesRulesIdEditRoute: typeof AppCategoriesRulesIdEditRoute
+  AppImporterCsvStatusJobIdRoute: typeof AppImporterCsvStatusJobIdRoute
   AppSettingsAiProvidersIdRoute: typeof AppSettingsAiProvidersIdRoute
   AppSettingsAiProvidersNewRoute: typeof AppSettingsAiProvidersNewRoute
 }
@@ -1470,6 +1491,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
   AppCategoriesRulesIdEditRoute: AppCategoriesRulesIdEditRoute,
+  AppImporterCsvStatusJobIdRoute: AppImporterCsvStatusJobIdRoute,
   AppSettingsAiProvidersIdRoute: AppSettingsAiProvidersIdRoute,
   AppSettingsAiProvidersNewRoute: AppSettingsAiProvidersNewRoute,
 }

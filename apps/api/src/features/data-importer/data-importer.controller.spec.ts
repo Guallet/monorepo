@@ -3,7 +3,7 @@
 /* oxlint-disable typescript/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Mocked } from 'vitest';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DataImporterController } from './data-importer.controller';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { DataImportRequestDto } from './dto/data-import-request.dto';
@@ -28,6 +28,7 @@ describe('DataImporterController', () => {
   beforeEach(async () => {
     const mockQueue = {
       add: vi.fn(),
+      getJob: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -95,6 +96,7 @@ describe('DataImporterController', () => {
         },
       );
       expect(result).toEqual({
+        jobId: 'job-123',
         message:
           'CSV import started. You will receive an email when the import is complete.',
         processedCount: 0,
@@ -123,6 +125,7 @@ describe('DataImporterController', () => {
         },
       );
       expect(result).toEqual({
+        jobId: 'job-234',
         message:
           'OFE import started. You will receive an email when the import is complete.',
         processedCount: 0,
@@ -152,6 +155,7 @@ describe('DataImporterController', () => {
         },
       );
       expect(result).toEqual({
+        jobId: 'job-345',
         message:
           'JSON import started. You will receive an email when the import is complete.',
         processedCount: 0,
@@ -216,6 +220,53 @@ describe('DataImporterController', () => {
         `Unsupported import format "xml". Supported formats: ${SUPPORTED_IMPORT_FORMATS.join(', ')}`,
       );
       expect(importQueue.add).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getImportStatus', () => {
+    it('returns progress and result for the owner', async () => {
+      const job = {
+        data: { userId: mockUser.id },
+        getState: vi.fn().mockResolvedValue('completed'),
+        progress: 100,
+        returnvalue: { processed: 9, failed: 1 },
+      };
+      importQueue.getJob.mockResolvedValue(job as any);
+      await expect(
+        controller.getImportStatus(mockUser, 'job-123'),
+      ).resolves.toEqual({
+        status: 'completed',
+        progress: 100,
+        processedCount: 9,
+        failedCount: 1,
+      });
+    });
+
+    it('hides another user’s job', async () => {
+      importQueue.getJob.mockResolvedValue({
+        data: { userId: 'other-user' },
+      } as any);
+      await expect(
+        controller.getImportStatus(mockUser, 'job-123'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('reports a failed job without exposing its internal error', async () => {
+      importQueue.getJob.mockResolvedValue({
+        data: { userId: mockUser.id },
+        getState: vi.fn().mockResolvedValue('failed'),
+        progress: 40,
+        failedReason: 'database password was rejected',
+      } as any);
+      await expect(
+        controller.getImportStatus(mockUser, 'job-123'),
+      ).resolves.toEqual({
+        status: 'failed',
+        progress: 40,
+        processedCount: 0,
+        failedCount: 0,
+        error: 'The import could not be completed.',
+      });
     });
   });
 });

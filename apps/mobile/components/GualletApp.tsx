@@ -18,6 +18,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
 import { LunaBottomSheetProvider } from '@/components/ui/BottomSheet';
+import { ImportJobMonitor } from '@/features/importer/ImportJobMonitor';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ function AppNavigation() {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <GualletClientProvider client={gualletClient}>
+              <ImportJobMonitor />
               <Stack
                 screenOptions={{
                   contentStyle: {

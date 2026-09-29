@@ -10,7 +10,6 @@ import { DEFAULT_ACCOUNT_NAME } from './CsvAccountsScreen';
 import { formatDate, parseDate } from '@/utils/dateUtils';
 import { parseNumber } from '@/utils/numberUtils';
 import {
-  Modal,
   Stack,
   Title,
   Button,
@@ -41,8 +40,8 @@ import {
   useCategories,
   useGualletClient,
 } from '@guallet/api-react';
-import { IconCheck, IconMail } from '@tabler/icons-react';
 import { CsvStepper } from '../components/CsvStepper';
+import { watchImportJob } from '@/features/importer/pendingImportJobs';
 
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
@@ -63,7 +62,6 @@ export function CsvSummaryScreen() {
 
   const [error, setError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
-  const [isModalOpened, setIsModalOpened] = useState(false);
 
   const importData = async () => {
     try {
@@ -105,7 +103,7 @@ export function CsvSummaryScreen() {
       }
 
       // Call the new bulk import API
-      await gualletClient.dataImporter.importData({
+      const response = await gualletClient.dataImporter.importData({
         format: 'csv',
         csvData: csvData.data as CsvRowData[],
         fieldMappings,
@@ -113,13 +111,15 @@ export function CsvSummaryScreen() {
         categoryMappings: apiCategoryMappings,
       });
 
+      watchImportJob(response.jobId);
       reset();
-      setIsBusy(false);
-      setIsModalOpened(true);
+      await navigate({
+        to: '/importer/csv/status/$jobId',
+        params: { jobId: response.jobId },
+      });
     } catch (e) {
       console.error(e);
       setError(`${e}`);
-      setIsModalOpened(false);
     } finally {
       setIsBusy(false);
     }
@@ -127,68 +127,6 @@ export function CsvSummaryScreen() {
 
   return (
     <>
-      <Modal
-        opened={isModalOpened}
-        onClose={() => {
-          setIsModalOpened(false);
-          navigate({
-            to: '/dashboard',
-          });
-        }}
-        closeOnClickOutside
-        closeOnEscape
-        withCloseButton={false}
-        centered
-        size="md"
-      >
-        <Stack align="center" gap="lg" py="md">
-          <div
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: '50%',
-              backgroundColor: 'var(--mantine-color-green-1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <IconCheck size={48} color="var(--mantine-color-green-6)" />
-          </div>
-
-          <Stack align="center" gap="xs">
-            <Title order={2}>Import Started Successfully!</Title>
-            <Text c="dimmed" ta="center">
-              Your CSV import is now being processed in the background.
-            </Text>
-          </Stack>
-
-          <Alert icon={<IconMail size={16} />} color="blue" w="100%">
-            <Stack gap="xs">
-              <Text fw={500} size="sm">
-                You'll receive an email notification
-              </Text>
-              <Text size="sm">
-                We'll send you an email with the import results, including the
-                number of transactions successfully processed.
-              </Text>
-            </Stack>
-          </Alert>
-
-          <Button
-            fullWidth
-            size="md"
-            onClick={() => {
-              navigate({
-                to: '/',
-              });
-            }}
-          >
-            Go to Dashboard
-          </Button>
-        </Stack>
-      </Modal>
-
       <LoadingOverlay
         visible={isBusy}
         zIndex={1000}
