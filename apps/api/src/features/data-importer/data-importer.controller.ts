@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
+import { randomUUID } from 'node:crypto';
 import { DataImportRequestDto } from './dto/data-import-request.dto';
 import { DataImportResponseDto } from './dto/data-import-response.dto';
 import { DataImportStatusDto } from './dto/data-import-status.dto';
@@ -70,14 +71,11 @@ export class DataImporterController {
       IMPORT_DATA_JOB,
       { userId: user.id, dto },
       {
+        jobId: `${user.id}_${randomUUID()}`,
         removeOnComplete: 100,
         removeOnFail: 50,
       },
     );
-    const redis = await this.importQueue.getBackend().client;
-    await redis.hset(this.importQueue.toKey(String(job.id)), {
-      ownerId: user.id,
-    });
 
     this.logger.log(
       `${format.toUpperCase()} import job ${job.id} queued for user ${user.id}`,
@@ -100,13 +98,12 @@ export class DataImporterController {
     @RequestUser() user: UserPrincipal,
     @Param('jobId') jobId: string,
   ): Promise<DataImportStatusDto> {
-    const redis = await this.importQueue.getBackend().client;
-    const key = this.importQueue.toKey(jobId);
-    const ownerId = await redis.hget(key, 'ownerId');
-    if (ownerId !== user.id) {
+    if (!jobId.startsWith(`${user.id}_`)) {
       throw new NotFoundException('Import job not found');
     }
 
+    const redis = await this.importQueue.getBackend().client;
+    const key = this.importQueue.toKey(jobId);
     const state = await this.importQueue.getJobState(jobId);
     if (state === 'unknown') {
       throw new NotFoundException('Import job not found');
