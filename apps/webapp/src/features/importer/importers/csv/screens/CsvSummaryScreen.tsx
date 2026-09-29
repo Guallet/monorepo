@@ -25,6 +25,7 @@ import {
   List,
 } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
+import { useAuth } from '@guallet/auth';
 import { useMemo, useState } from 'react';
 import {
   useCsvInfo,
@@ -45,6 +46,7 @@ import { watchImportJob } from '@/features/importer/pendingImportJobs';
 
 export function CsvSummaryScreen() {
   const navigate = useNavigate();
+  const { userId } = useAuth();
   const gualletClient = useGualletClient();
   const { reset } = useCsvActions();
 
@@ -111,7 +113,7 @@ export function CsvSummaryScreen() {
         categoryMappings: apiCategoryMappings,
       });
 
-      watchImportJob(response.jobId);
+      watchImportJob(response.jobId, userId);
       reset();
       await navigate({
         to: '/importer/csv/status/$jobId',

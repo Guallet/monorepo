@@ -32,8 +32,8 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
   const unavailable = isPermanentImportStatusError(error);
 
   useEffect(() => {
-    watchImportJob(jobId);
-  }, [jobId]);
+    watchImportJob(jobId, userId);
+  }, [jobId, userId]);
 
   let statusLabel = t('screens.importer.status.processing', 'Processing');
   let statusColor = colors.accent.primary;
@@ -69,6 +69,18 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
     description = t(
       'screens.importer.status.noLongerAvailable',
       'We can no longer check this import. Review your transactions for the result.',
+    );
+  }
+  if (!unavailable && status?.status === 'completed') {
+    description = t(
+      'screens.importer.status.finished',
+      'Your import has finished. Review the results below.',
+    );
+  }
+  if (!unavailable && status?.status === 'failed') {
+    description = t(
+      'screens.importer.status.stopped',
+      'Your import stopped before it could finish. Review your transactions before trying again.',
     );
   }
 
@@ -142,12 +154,14 @@ export function CsvImportStatusScreen({ jobId }: Readonly<Props>) {
                 </Button>
               </Alert>
             )}
-            <Text size="sm" c="dimmed">
-              {t(
-                'screens.importer.status.email',
-                'We’ll email you the results when processing finishes.',
-              )}
-            </Text>
+            {status?.status !== 'completed' && status?.status !== 'failed' && (
+              <Text size="sm" c="dimmed">
+                {t(
+                  'screens.importer.status.email',
+                  'We’ll email you the results when processing finishes.',
+                )}
+              </Text>
+            )}
             <Button onClick={() => void navigate({ to: '/dashboard' })}>
               {t('screens.importer.status.dashboard', 'Go to dashboard')}
             </Button>

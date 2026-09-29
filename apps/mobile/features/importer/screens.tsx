@@ -609,6 +609,7 @@ export function ImportResultsScreen({
   const [error, setError] = useState<string | null>(null);
   const [isStatusUnavailable, setIsStatusUnavailable] = useState(false);
   useEffect(() => {
+    watchImportJob(jobId);
     let live = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let invalidatedAfterError = false;

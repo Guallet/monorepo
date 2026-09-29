@@ -18,6 +18,11 @@ import {
 describe('DataImporterController', () => {
   let controller: DataImporterController;
   let importQueue: Mocked<Queue>;
+  const redis = {
+    hset: vi.fn(),
+    hget: vi.fn(),
+    hmget: vi.fn(),
+  };
 
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
@@ -28,7 +33,9 @@ describe('DataImporterController', () => {
   beforeEach(async () => {
     const mockQueue = {
       add: vi.fn(),
-      getJob: vi.fn(),
+      getBackend: vi.fn().mockReturnValue({ client: Promise.resolve(redis) }),
+      toKey: vi.fn((id: string) => `bull:import-data:${id}`),
+      getJobState: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +52,9 @@ describe('DataImporterController', () => {
     importQueue = module.get(getQueueToken(IMPORT_DATA_QUEUE));
 
     vi.clearAllMocks();
+    redis.hset.mockResolvedValue(1);
+    redis.hget.mockResolvedValue(mockUser.id);
+    redis.hmget.mockResolvedValue([null, null, null]);
   });
 
   it('should be defined', () => {
@@ -94,6 +104,11 @@ describe('DataImporterController', () => {
           removeOnComplete: 100,
           removeOnFail: 50,
         },
+      );
+      expect(redis.hset).toHaveBeenCalledWith(
+        'bull:import-data:job-123',
+        'ownerId',
+        mockUser.id,
       );
       expect(result).toEqual({
         jobId: 'job-123',
@@ -225,13 +240,12 @@ describe('DataImporterController', () => {
 
   describe('getImportStatus', () => {
     it('returns progress and result for the owner', async () => {
-      const job = {
-        data: { userId: mockUser.id },
-        getState: vi.fn().mockResolvedValue('completed'),
-        progress: 100,
-        returnvalue: { processed: 9, failed: 1 },
-      };
-      importQueue.getJob.mockResolvedValue(job as any);
+      importQueue.getJobState.mockResolvedValue('completed');
+      redis.hmget.mockResolvedValue([
+        '100',
+        JSON.stringify({ processed: 9, failed: 1 }),
+        null,
+      ]);
       await expect(
         controller.getImportStatus(mockUser, 'job-123'),
       ).resolves.toEqual({
@@ -243,21 +257,20 @@ describe('DataImporterController', () => {
     });
 
     it('hides another user’s job', async () => {
-      importQueue.getJob.mockResolvedValue({
-        data: { userId: 'other-user' },
-      } as any);
+      redis.hget.mockResolvedValue('other-user');
       await expect(
         controller.getImportStatus(mockUser, 'job-123'),
       ).rejects.toThrow(NotFoundException);
+      expect(importQueue.getJobState).not.toHaveBeenCalled();
     });
 
     it('reports a failed job without exposing its internal error', async () => {
-      importQueue.getJob.mockResolvedValue({
-        data: { userId: mockUser.id },
-        getState: vi.fn().mockResolvedValue('failed'),
-        progress: 40,
-        failedReason: 'database password was rejected',
-      } as any);
+      importQueue.getJobState.mockResolvedValue('failed');
+      redis.hmget.mockResolvedValue([
+        '40',
+        null,
+        'database password was rejected',
+      ]);
       await expect(
         controller.getImportStatus(mockUser, 'job-123'),
       ).resolves.toEqual({
@@ -267,6 +280,24 @@ describe('DataImporterController', () => {
         failedCount: 0,
         error: 'The import could not be completed.',
       });
+    });
+
+    it('does not hydrate the import payload while checking status', async () => {
+      importQueue.getJobState.mockResolvedValue('active');
+      redis.hmget.mockResolvedValue(['25', null, null]);
+      await expect(
+        controller.getImportStatus(mockUser, 'job-123'),
+      ).resolves.toMatchObject({ status: 'running', progress: 25 });
+      expect(redis.hget).toHaveBeenCalledWith(
+        'bull:import-data:job-123',
+        'ownerId',
+      );
+      expect(redis.hmget).toHaveBeenCalledWith(
+        'bull:import-data:job-123',
+        'progress',
+        'returnvalue',
+        'failedReason',
+      );
     });
   });
 });

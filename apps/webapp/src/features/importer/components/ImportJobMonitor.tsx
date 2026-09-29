@@ -5,7 +5,11 @@ import {
   useGualletClient,
   useQueryClient,
 } from '@guallet/api-react';
-import { pendingImportJobs } from '../pendingImportJobs';
+import {
+  pendingImportJobs,
+  restorePendingImportJobs,
+  unwatchImportJob,
+} from '../pendingImportJobs';
 
 const jobsWithStatusErrors = new Set<string>();
 
@@ -16,6 +20,7 @@ export function ImportJobMonitor() {
 
   useEffect(() => {
     if (!userId) return;
+    restorePendingImportJobs(userId);
     let active = true;
     let checking = false;
     const timer = setInterval(() => {
@@ -29,13 +34,13 @@ export function ImportJobMonitor() {
               if (!active) break;
               jobsWithStatusErrors.delete(jobId);
               if (result.status === 'completed' || result.status === 'failed') {
-                pendingImportJobs.delete(jobId);
+                unwatchImportJob(jobId, userId);
                 await queryClient.invalidateQueries();
               }
             } catch (error) {
               if (!active) break;
               if (isPermanentImportStatusError(error)) {
-                pendingImportJobs.delete(jobId);
+                unwatchImportJob(jobId, userId);
                 jobsWithStatusErrors.delete(jobId);
                 await queryClient.invalidateQueries();
                 continue;

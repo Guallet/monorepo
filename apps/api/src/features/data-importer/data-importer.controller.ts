@@ -74,6 +74,12 @@ export class DataImporterController {
         removeOnFail: 50,
       },
     );
+    const redis = await this.importQueue.getBackend().client;
+    await redis.hset(
+      this.importQueue.toKey(String(job.id)),
+      'ownerId',
+      user.id,
+    );
 
     this.logger.log(
       `${format.toUpperCase()} import job ${job.id} queued for user ${user.id}`,
@@ -96,18 +102,27 @@ export class DataImporterController {
     @RequestUser() user: UserPrincipal,
     @Param('jobId') jobId: string,
   ): Promise<DataImportStatusDto> {
-    const job = await this.importQueue.getJob(jobId);
-    if (!job) {
-      throw new NotFoundException('Import job not found');
-    }
-    if (job.data.userId !== user.id) {
+    const redis = await this.importQueue.getBackend().client;
+    const key = this.importQueue.toKey(jobId);
+    const ownerId = await redis.hget(key, 'ownerId');
+    if (ownerId !== user.id) {
       throw new NotFoundException('Import job not found');
     }
 
-    const state = await job.getState();
-    const result = job.returnvalue as
-      | { processed?: number; failed?: number }
-      | undefined;
+    const state = await this.importQueue.getJobState(jobId);
+    if (state === 'unknown') {
+      throw new NotFoundException('Import job not found');
+    }
+    const [rawProgress, rawResult, failedReason] = await redis.hmget(
+      key,
+      'progress',
+      'returnvalue',
+      'failedReason',
+    );
+    const progress = rawProgress ? Number(rawProgress) : 0;
+    const result = rawResult
+      ? (JSON.parse(rawResult) as { processed?: number; failed?: number })
+      : undefined;
     let status: DataImportStatusDto['status'] = 'queued';
     if (state === 'active') status = 'running';
     if (state === 'completed') status = 'completed';
@@ -115,10 +130,10 @@ export class DataImporterController {
 
     return {
       status,
-      progress: typeof job.progress === 'number' ? job.progress : 0,
+      progress: Number.isFinite(progress) ? progress : 0,
       processedCount: result?.processed ?? 0,
       failedCount: result?.failed ?? 0,
-      ...(status === 'failed' && job.failedReason
+      ...(status === 'failed' && failedReason
         ? { error: 'The import could not be completed.' }
         : {}),
     };
