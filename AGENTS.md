@@ -159,13 +159,13 @@ Load the matching skill from `.agents/skills/` when implementing its task. Other
 task-specific guidance is available there for authentication, Mantine, planning,
 architecture, and skill authoring:
 
-| Skill                            | When to use                                                                     |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| `create-api-feature`             | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
-| `add-api-client-domain`          | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
-| `create-webapp-feature`          | Add a new page/section to the web frontend (route + screen + components)        |
-| `add-mobile-screen`              | Add a new screen to the Expo mobile app                                         |
-| `create-react-native-component`  | Add or adapt a component in the Luna React Native package                      |
+| Skill                           | When to use                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| `create-api-feature`            | Add a new NestJS feature module (entity + DTOs + service + controller + module) |
+| `add-api-client-domain`         | Add a new domain to `guallet-api-client` + `guallet-api-react` hooks            |
+| `create-webapp-feature`         | Add a new page/section to the web frontend (route + screen + components)        |
+| `add-mobile-screen`             | Add a new screen to the Expo mobile app                                         |
+| `create-react-native-component` | Add or adapt a component in the Luna React Native package                       |
 
 ## Quick Pattern Index
 
@@ -255,3 +255,9 @@ Consult [DESIGN.MD](DESIGN.MD) before UI changes. Use the platform's theme hook
 for design tokens: `@guallet/ui-react` on web and the Luna mobile theme on
 React Native. Keep money colors semantically consistent (positive is green,
 negative is red) and use tabular numerals for amounts.
+
+## Documentation
+
+Always write documentation in Markdown (`.md`). Never add documentation as
+`.html` or `.htm`, including design mockups. Link images from Markdown when a
+visual is needed.
