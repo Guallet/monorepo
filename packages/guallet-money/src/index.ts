@@ -1,17 +1,6 @@
 // Explicit named exports (avoid barrel exports)
 export { Currency } from './models/Currency';
 export { Money } from './models/Money';
-export {
-  calculateLoanSchedule,
-  calculateMonthlyPayment,
-  normalizeLoanValues,
-} from './loan';
-export type {
-  LoanCalculatorValues,
-  LoanPaymentRow,
-  LoanScenarioResult,
-  LoanSummary,
-} from './loan';
 export type { MoneyFormatOptions, RoundingMode } from './models/Money';
 export {
   CURRENCIES as ISO4217Currencies,

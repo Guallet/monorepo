@@ -1,7 +1,7 @@
 import {
   calculateMonthlyPayment,
   type LoanCalculatorValues,
-} from '@guallet/money';
+} from '@guallet/calculators';
 
 export type LoanField = keyof LoanCalculatorValues;
 export type LoanInput = Record<LoanField, string>;
