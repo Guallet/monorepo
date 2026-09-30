@@ -23,17 +23,17 @@ const BUYER_OPTIONS: {
   {
     value: 'standard',
     label: 'Standard',
-    hint: 'Your main home or a replacement home',
+    hint: 'Your only property, or you are replacing your main home',
   },
   {
     value: 'firstTimeBuyer',
     label: 'First-time buyer',
-    hint: 'Everyone buying is a first-time buyer',
+    hint: 'All buyers are first-time buyers and intend to live here as their main home',
   },
   {
     value: 'additionalProperty',
     label: 'Additional property',
-    hint: 'A second home or buy-to-let property',
+    hint: 'You will own another home and are not replacing your main home',
   },
 ];
 
@@ -142,7 +142,7 @@ export default function StampDutyCalculatorScreen() {
                   accessibilityRole="radio"
                   accessibilityLabel={option.label}
                   accessibilityHint={option.hint}
-                  accessibilityState={{ selected }}
+                  accessibilityState={{ checked: selected }}
                   onPress={() => setBuyerType(option.value)}
                   style={[
                     styles.option,

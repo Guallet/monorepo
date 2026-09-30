@@ -44,9 +44,22 @@ describe('stamp duty calculations shared by web and mobile', () => {
       propertyPrice: 500_001,
       buyerType: 'firstTimeBuyer',
     });
-    expect(overCap.totalDue).toBe(15_000.05);
+    expect(overCap.totalDue).toBe(15_000);
+    expect(overCap.bands.reduce((sum, band) => sum + band.taxDue, 0)).toBe(
+      overCap.totalDue,
+    );
     expect(overCap.ftbReliefUnavailable).toBe(true);
     expect(overCap.ftbReliefApplied).toBe(false);
+  });
+
+  it('rounds the total SDLT down to whole pounds', () => {
+    const result = calculateStampDuty({
+      propertyPrice: 500_019,
+      buyerType: 'standard',
+    });
+
+    expect(result.totalDue).toBe(15_000);
+    expect(result.bands[2].taxDue).toBe(12_500);
   });
 
   it('applies the additional-property surcharge from £40,000', () => {

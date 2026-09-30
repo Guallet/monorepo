@@ -70,7 +70,8 @@ function applyBands(price: number, bands: Band[]): StampDutyBandResult[] {
   return bands.map((band) => {
     const bandMax = band.max ?? Infinity;
     const taxableAmount = Math.max(0, Math.min(price, bandMax) - band.min);
-    const taxDue = roundCurrency((taxableAmount * band.rate) / 100);
+    // Full bands produce whole-pound tax; round the final occupied band down.
+    const taxDue = Math.floor((taxableAmount * band.rate) / 100);
     return {
       label: formatBandLabel(band.min, band.max),
       rate: band.rate,
@@ -110,9 +111,7 @@ export function calculateStampDuty(values: StampDutyValues): StampDutyResult {
   }
 
   const bandResults = applyBands(propertyPrice, bands);
-  const totalDue = roundCurrency(
-    bandResults.reduce((sum, b) => sum + b.taxDue, 0),
-  );
+  const totalDue = bandResults.reduce((sum, band) => sum + band.taxDue, 0);
   const effectiveRate =
     propertyPrice > 0 ? roundCurrency((totalDue / propertyPrice) * 100) : 0;
 
