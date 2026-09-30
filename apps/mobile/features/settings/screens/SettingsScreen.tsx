@@ -14,7 +14,11 @@ import { useAuth } from '@guallet/auth';
 import { useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
-import { CalculatorIcon, FileImportIcon } from '@guallet/luna-mobile/icons';
+import {
+  CalculatorIcon,
+  FileImportIcon,
+  HomeIcon,
+} from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsSection } from '../components/SettingsSection';
@@ -289,6 +293,12 @@ export default function SettingsScreen() {
             label="Loan calculator"
             onPress={() => router.push('/tools/loan')}
             value="Calculate and compare loans"
+          />
+          <SettingsRow
+            icon={<HomeIcon size={22} color={colors.accent.primary} />}
+            label="Stamp duty calculator"
+            onPress={() => router.push('/tools/stamp-duty')}
+            value="Estimate property tax"
           />
         </SettingsSection>
 
