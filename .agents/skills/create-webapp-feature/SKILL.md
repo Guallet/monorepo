@@ -5,6 +5,10 @@ description: Scaffold a complete webapp feature in apps/webapp including TanStac
 
 # create-webapp-feature
 
+For money amounts, use `@guallet/money` and `Money.format()` for display.
+Derive input and calculation precision from `Currency.decimalPlaces`; never
+hardcode two decimal places or create a local currency formatter.
+
 Creates a new feature page in the webapp with TanStack Router routes, a screen container, and presentational components.
 
 > **Placeholders:** Replace `{Name}` with PascalCase (e.g. `Budget`), `{name}` with kebab-case (e.g. `budget`), `{names}` with plural kebab-case (e.g. `budgets`), `{domain}` with camelCase (e.g. `budget`), `{domains}` with plural camelCase (e.g. `budgets`).

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { Currency } from '@guallet/money';
 import {
   buildBalanceComparison,
   buildYearlyBreakdown,
@@ -88,6 +89,44 @@ describe('mortgage calculations shared by web and mobile', () => {
       scenario.summary.scheduledMonthlyPayment,
       0,
     );
+  });
+
+  it('settles a one-cent final balance on a small mortgage', () => {
+    const scenario = calculateMortgageScenario({
+      ...values,
+      principal: 10,
+      annualInterestRate: 8,
+      termYears: 1,
+      monthlyOverpayment: 0,
+    });
+
+    expect(scenario.summary.payoffMonths).toBe(12);
+    expect(scenario.schedule.at(-1)?.remainingBalance).toBe(0);
+  });
+
+  it('uses the selected currency minor unit throughout the schedule', () => {
+    const inputs = {
+      ...values,
+      principal: 12,
+      annualInterestRate: 0,
+      termYears: 1,
+      monthlyOverpayment: 0,
+    };
+    const jpy = calculateMortgageScenario(
+      inputs,
+      undefined,
+      Currency.fromISOCode('JPY'),
+    );
+    const kwd = calculateMortgageScenario(
+      { ...inputs, principal: 12.006 },
+      undefined,
+      Currency.fromISOCode('KWD'),
+    );
+
+    expect(jpy.summary.scheduledMonthlyPayment).toBe(1);
+    expect(jpy.schedule[0].totalPaid).toBe(1);
+    expect(kwd.summary.scheduledMonthlyPayment).toBe(1.001);
+    expect(kwd.schedule[0].totalPaid).toBe(1.001);
   });
 
   it('keeps chart and annual totals aligned with the schedule', () => {

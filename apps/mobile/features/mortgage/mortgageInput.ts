@@ -2,6 +2,7 @@ import {
   calculateMortgageScenario,
   type MortgageCalculatorValues,
 } from '@guallet/calculators';
+import { Currency } from '@guallet/money';
 
 export type MortgageField = keyof MortgageCalculatorValues;
 export type MortgageInput = Record<MortgageField, string>;
@@ -33,20 +34,25 @@ function parseNumber(text: string, places: number): number {
   return Number(trimmed.replaceAll(',', ''));
 }
 
-export function parseMortgageInput(input: MortgageInput): {
+export function parseMortgageInput(
+  input: MortgageInput,
+  currencyCode = 'GBP',
+): {
   values: MortgageCalculatorValues | null;
   errors: Partial<Record<MortgageField, string>>;
 } {
   const errors: Partial<Record<MortgageField, string>> = {};
-  const principal = parseNumber(input.principal, 2);
+  const currency = Currency.fromISOCode(currencyCode);
+  const places = currency.decimalPlaces;
+  const principal = parseNumber(input.principal, places);
   const propertyValue =
     input.propertyValue.trim() === ''
       ? null
-      : parseNumber(input.propertyValue, 2);
+      : parseNumber(input.propertyValue, places);
   const annualInterestRate = parseNumber(input.annualInterestRate, 3);
   const termYears = parseNumber(input.termYears, 0);
-  const monthlyOverpayment = parseNumber(input.monthlyOverpayment, 2);
-  const oneOffOverpayment = parseNumber(input.oneOffOverpayment, 2);
+  const monthlyOverpayment = parseNumber(input.monthlyOverpayment, places);
+  const oneOffOverpayment = parseNumber(input.oneOffOverpayment, places);
   const oneOffOverpaymentMonth =
     input.oneOffOverpaymentMonth.trim() === ''
       ? null
@@ -112,11 +118,15 @@ export function parseMortgageInput(input: MortgageInput): {
     oneOffOverpayment,
     oneOffOverpaymentMonth,
   };
-  const baseline = calculateMortgageScenario(values, {
-    monthlyOverpayment: 0,
-    oneOffOverpayment: 0,
-    oneOffOverpaymentMonth: null,
-  });
+  const baseline = calculateMortgageScenario(
+    values,
+    {
+      monthlyOverpayment: 0,
+      oneOffOverpayment: 0,
+      oneOffOverpaymentMonth: null,
+    },
+    currency,
+  );
   if (
     baseline.schedule.at(-1)?.remainingBalance !== 0 ||
     baseline.summary.payoffMonths > termYears * 12

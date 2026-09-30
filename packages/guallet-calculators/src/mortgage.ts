@@ -1,3 +1,7 @@
+import { Currency, Money } from '@guallet/money';
+
+const DEFAULT_CURRENCY = Currency.fromISOCode('GBP');
+
 export interface MortgageCalculatorValues {
   principal: number;
   propertyValue: number | null;
@@ -53,8 +57,8 @@ interface ScenarioOverrides {
   oneOffOverpaymentMonth?: number | null;
 }
 
-function roundCurrency(value: number): number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
+function roundCurrency(value: number, currency: Currency): number {
+  return Money.from({ amount: value, currency }).round().amount;
 }
 
 function sanitizePositiveNumber(value: number | null | undefined): number {
@@ -93,38 +97,47 @@ function calculateScheduledPayment(
   principal: number,
   monthlyInterestRate: number,
   totalMonths: number,
+  currency: Currency,
 ): number {
   if (principal <= 0 || totalMonths <= 0) {
     return 0;
   }
 
   if (monthlyInterestRate === 0) {
-    return Math.ceil((principal / totalMonths) * 100) / 100;
+    return Money.from({ amount: principal / totalMonths, currency }).round(
+      undefined,
+      'UP',
+    ).amount;
   }
 
   const numerator = principal * monthlyInterestRate;
   const denominator = 1 - Math.pow(1 + monthlyInterestRate, -totalMonths);
 
-  // A penny rounded down can leave a balance after the requested term.
-  return Math.ceil((numerator / denominator) * 100) / 100;
+  // Rounding down one minor unit can leave a balance after the requested term.
+  return Money.from({ amount: numerator / denominator, currency }).round(
+    undefined,
+    'UP',
+  ).amount;
 }
 
 function getBalanceAtMonth(
   schedule: MortgagePaymentRow[],
   month: number,
   startingBalance: number,
+  currency: Currency,
 ): number {
   if (month <= 0) {
-    return roundCurrency(startingBalance);
+    return roundCurrency(startingBalance, currency);
   }
 
   const row = schedule[Math.min(month, schedule.length) - 1];
-  return roundCurrency(row?.remainingBalance ?? 0);
+  return roundCurrency(row?.remainingBalance ?? 0, currency);
 }
 
 export function calculateMortgageScenario(
   values: MortgageCalculatorValues,
   overrides?: ScenarioOverrides,
+  currency: Currency = DEFAULT_CURRENCY,
 ): MortgageScenarioResult {
   const normalized = normalizeMortgageValues(values);
   const principal = normalized.principal;
@@ -143,6 +156,7 @@ export function calculateMortgageScenario(
     principal,
     monthlyInterestRate,
     totalMonths,
+    currency,
   );
 
   if (principal <= 0 || totalMonths <= 0) {
@@ -161,11 +175,12 @@ export function calculateMortgageScenario(
   let cumulativeInterest = 0;
   let cumulativePrincipal = 0;
   const schedule: MortgagePaymentRow[] = [];
-  // Allow at most one cent of accumulated interest rounding per month,
+  // Allow at most one minor unit of accumulated interest rounding per month,
   // capped at 1% of the scheduled payment to avoid a large final payment.
-  const roundingTolerance = Math.min(
-    totalMonths / 100,
-    scheduledPayment * 0.01,
+  const minorUnit = 10 ** -currency.decimalPlaces;
+  const roundingTolerance = Math.max(
+    minorUnit,
+    Math.min(totalMonths * minorUnit, scheduledPayment * 0.01),
   );
 
   for (
@@ -177,37 +192,51 @@ export function calculateMortgageScenario(
       break;
     }
 
-    const interestPaid = roundCurrency(balance * monthlyInterestRate);
+    const interestPaid = roundCurrency(balance * monthlyInterestRate, currency);
     const scheduledPrincipalTarget = Math.max(
       0,
       scheduledPayment - interestPaid,
     );
     let principalPaid = Math.min(
       balance,
-      roundCurrency(scheduledPrincipalTarget),
+      roundCurrency(scheduledPrincipalTarget, currency),
     );
     // Absorb only the rounding residue at the end of the selected term.
     if (
       monthNumber === totalMonths &&
-      balance - principalPaid <= roundingTolerance
+      roundCurrency(balance - principalPaid, currency) <= roundingTolerance
     ) {
       principalPaid = balance;
     }
     const extraRequested = roundCurrency(
       monthlyOverpayment +
         (oneOffOverpaymentMonth === monthNumber ? oneOffOverpayment : 0),
+      currency,
     );
     const extraPaid = Math.min(
-      roundCurrency(balance - principalPaid),
+      roundCurrency(balance - principalPaid, currency),
       extraRequested,
     );
-    const totalPrincipalPaid = roundCurrency(principalPaid + extraPaid);
-    const totalPaid = roundCurrency(interestPaid + totalPrincipalPaid);
+    const totalPrincipalPaid = roundCurrency(
+      principalPaid + extraPaid,
+      currency,
+    );
+    const totalPaid = roundCurrency(
+      interestPaid + totalPrincipalPaid,
+      currency,
+    );
 
-    balance = roundCurrency(Math.max(0, balance - totalPrincipalPaid));
-    cumulativeInterest = roundCurrency(cumulativeInterest + interestPaid);
+    balance = roundCurrency(
+      Math.max(0, balance - totalPrincipalPaid),
+      currency,
+    );
+    cumulativeInterest = roundCurrency(
+      cumulativeInterest + interestPaid,
+      currency,
+    );
     cumulativePrincipal = roundCurrency(
       cumulativePrincipal + totalPrincipalPaid,
+      currency,
     );
 
     schedule.push({
@@ -224,7 +253,10 @@ export function calculateMortgageScenario(
     });
   }
 
-  const totalPaid = roundCurrency(cumulativeInterest + cumulativePrincipal);
+  const totalPaid = roundCurrency(
+    cumulativeInterest + cumulativePrincipal,
+    currency,
+  );
 
   return {
     schedule,
@@ -239,6 +271,7 @@ export function calculateMortgageScenario(
 
 export function buildYearlyBreakdown(
   schedule: MortgagePaymentRow[],
+  currency: Currency = DEFAULT_CURRENCY,
 ): MortgageYearlyBreakdownRow[] {
   const grouped = new Map<number, MortgageYearlyBreakdownRow>();
 
@@ -246,11 +279,15 @@ export function buildYearlyBreakdown(
     const existing = grouped.get(row.yearNumber);
 
     if (existing) {
-      existing.interest = roundCurrency(existing.interest + row.interestPaid);
+      existing.interest = roundCurrency(
+        existing.interest + row.interestPaid,
+        currency,
+      );
       existing.principal = roundCurrency(
         existing.principal + row.principalPaid,
+        currency,
       );
-      existing.extra = roundCurrency(existing.extra + row.extraPaid);
+      existing.extra = roundCurrency(existing.extra + row.extraPaid, currency);
       existing.remainingBalance = row.remainingBalance;
       continue;
     }
@@ -271,6 +308,7 @@ export function buildBalanceComparison(
   baseline: MortgageScenarioResult,
   repayment: MortgageScenarioResult,
   principal: number,
+  currency: Currency = DEFAULT_CURRENCY,
 ): MortgageBalanceComparisonRow[] {
   const maxMonths = Math.max(
     baseline.summary.payoffMonths,
@@ -280,8 +318,8 @@ export function buildBalanceComparison(
   const data: MortgageBalanceComparisonRow[] = [
     {
       period: 'Start',
-      baseline: roundCurrency(principal),
-      repayment: roundCurrency(principal),
+      baseline: roundCurrency(principal, currency),
+      repayment: roundCurrency(principal, currency),
     },
   ];
 
@@ -289,8 +327,18 @@ export function buildBalanceComparison(
     const month = year * 12;
     data.push({
       period: `Year ${year}`,
-      baseline: getBalanceAtMonth(baseline.schedule, month, principal),
-      repayment: getBalanceAtMonth(repayment.schedule, month, principal),
+      baseline: getBalanceAtMonth(
+        baseline.schedule,
+        month,
+        principal,
+        currency,
+      ),
+      repayment: getBalanceAtMonth(
+        repayment.schedule,
+        month,
+        principal,
+        currency,
+      ),
     });
   }
 

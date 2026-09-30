@@ -1,5 +1,6 @@
 import { Card, Grid, NumberInput, Stack, Text } from '@mantine/core';
 import { useTheme } from '@guallet/ui-react';
+import { Currency } from '@guallet/money';
 import { useTranslation } from 'react-i18next';
 import { MortgageCalculatorValues } from '../models/mortgage';
 
@@ -19,6 +20,7 @@ export function MortgageCalculatorForm({
 }: Readonly<MortgageCalculatorFormProps>) {
   const { t } = useTranslation();
   const { spacing } = useTheme();
+  const decimalPlaces = Currency.fromISOCode(currency).decimalPlaces;
   const alignedFieldStyles = {
     root: { height: '100%' },
     description: { minHeight: spacing.xl },
@@ -48,7 +50,7 @@ export function MortgageCalculatorForm({
                 min={0}
                 step={1000}
                 thousandSeparator=","
-                decimalScale={2}
+                decimalScale={decimalPlaces}
                 leftSection={currency}
                 styles={alignedFieldStyles}
               />
@@ -74,7 +76,7 @@ export function MortgageCalculatorForm({
                 min={0}
                 step={1000}
                 thousandSeparator=","
-                decimalScale={2}
+                decimalScale={decimalPlaces}
                 leftSection={currency}
                 styles={alignedFieldStyles}
               />
@@ -148,7 +150,7 @@ export function MortgageCalculatorForm({
                 min={0}
                 step={50}
                 thousandSeparator=","
-                decimalScale={2}
+                decimalScale={decimalPlaces}
                 leftSection={currency}
                 styles={alignedFieldStyles}
               />
@@ -171,7 +173,7 @@ export function MortgageCalculatorForm({
                 min={0}
                 step={500}
                 thousandSeparator=","
-                decimalScale={2}
+                decimalScale={decimalPlaces}
                 leftSection={currency}
                 styles={alignedFieldStyles}
               />

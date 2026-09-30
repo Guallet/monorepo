@@ -1,18 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
-
-export function formatMortgageMoney(value: number, currency: string): string {
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency,
-      maximumFractionDigits: 2,
-    }).format(value);
-  } catch {
-    return `${value.toFixed(2)} ${currency}`;
-  }
-}
+export { formatMortgageMoney } from './mortgageCurrency';
 
 export function formatMortgageDuration(months: number): string {
   const years = Math.floor(months / 12);

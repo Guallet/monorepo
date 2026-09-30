@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Svg, { Line, Polyline } from 'react-native-svg';
 import { useTheme } from '@guallet/luna-mobile';
+import { Currency } from '@guallet/money';
 import {
   buildBalanceComparison,
   calculateMortgageScenario,
@@ -139,9 +140,9 @@ export default function MortgageResultsScreen() {
   const params =
     useLocalSearchParams<Partial<Record<MortgageField, string | string[]>>>();
   const input = mortgageInputFromParams(params);
-  const parsed = parseMortgageInput(input);
   const { borderRadius, colors, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
+  const parsed = parseMortgageInput(input, defaultCurrency);
 
   if (!parsed.values) {
     return (
@@ -166,12 +167,17 @@ export default function MortgageResultsScreen() {
   }
 
   const values = parsed.values;
-  const baseline = calculateMortgageScenario(values, {
-    monthlyOverpayment: 0,
-    oneOffOverpayment: 0,
-    oneOffOverpaymentMonth: null,
-  });
-  const plan = calculateMortgageScenario(values);
+  const currency = Currency.fromISOCode(defaultCurrency);
+  const baseline = calculateMortgageScenario(
+    values,
+    {
+      monthlyOverpayment: 0,
+      oneOffOverpayment: 0,
+      oneOffOverpaymentMonth: null,
+    },
+    currency,
+  );
+  const plan = calculateMortgageScenario(values, undefined, currency);
   const money = (value: number) => formatMortgageMoney(value, defaultCurrency);
   const monthsSaved = Math.max(
     0,
@@ -183,7 +189,12 @@ export default function MortgageResultsScreen() {
   );
   const hasOverpayment =
     values.monthlyOverpayment > 0 || values.oneOffOverpayment > 0;
-  const balanceRows = buildBalanceComparison(baseline, plan, values.principal);
+  const balanceRows = buildBalanceComparison(
+    baseline,
+    plan,
+    values.principal,
+    currency,
+  );
   const loanToValue =
     values.propertyValue === null
       ? null

@@ -32,6 +32,10 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 
 ## Accessibility and icons
 
+- For money amounts, use `@guallet/money` and `Money.format()` for display.
+  Derive input and calculation precision from `Currency.decimalPlaces`; never
+  hardcode two decimal places or create a local currency formatter.
+
 - Every screen and component must work with VoiceOver and TalkBack. Give each
   interactive control a meaningful accessible name, role, and relevant state or
   value, even if its visible label is hidden or empty. Label icon-only actions.

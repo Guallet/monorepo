@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '@guallet/luna-mobile';
+import { Currency } from '@guallet/money';
 import {
   buildYearlyBreakdown,
   calculateMortgageScenario,
@@ -129,10 +130,13 @@ export default function MortgageScheduleScreen() {
   const router = useRouter();
   const params =
     useLocalSearchParams<Partial<Record<MortgageField, string | string[]>>>();
-  const parsed = parseMortgageInput(mortgageInputFromParams(params));
   const [mode, setMode] = useState<ScheduleMode>('yearly');
   const { borderRadius, colors, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
+  const parsed = parseMortgageInput(
+    mortgageInputFromParams(params),
+    defaultCurrency,
+  );
 
   if (!parsed.values) {
     return (
@@ -156,8 +160,13 @@ export default function MortgageScheduleScreen() {
     );
   }
 
-  const scenario = calculateMortgageScenario(parsed.values);
-  const yearlyRows = buildYearlyBreakdown(scenario.schedule);
+  const currency = Currency.fromISOCode(defaultCurrency);
+  const scenario = calculateMortgageScenario(
+    parsed.values,
+    undefined,
+    currency,
+  );
+  const yearlyRows = buildYearlyBreakdown(scenario.schedule, currency);
   const data: (MortgageYearlyBreakdownRow | MortgagePaymentRow)[] =
     mode === 'yearly' ? yearlyRows : scenario.schedule;
   const money = (value: number) => formatMortgageMoney(value, defaultCurrency);

@@ -80,4 +80,27 @@ describe('mobile mortgage inputs', () => {
       'This balance and rate cannot be repaid within the term.',
     );
   });
+
+  it('validates amount precision for JPY and KWD', () => {
+    const input = { ...DEFAULT_MORTGAGE_INPUT, principal: '100.001' };
+    expect(parseMortgageInput(input, 'KWD').values?.principal).toBe(100.001);
+    expect(parseMortgageInput(input, 'JPY').errors.principal).toBeTruthy();
+    expect(
+      parseMortgageInput({ ...input, principal: '100' }, 'JPY').values
+        ?.principal,
+    ).toBe(100);
+  });
+
+  it('accepts a small balance with a one-cent final adjustment', () => {
+    const parsed = parseMortgageInput({
+      ...DEFAULT_MORTGAGE_INPUT,
+      principal: '10',
+      annualInterestRate: '8',
+      termYears: '1',
+      monthlyOverpayment: '0',
+    });
+
+    expect(parsed.values?.principal).toBe(10);
+    expect(parsed.errors).toEqual({});
+  });
 });

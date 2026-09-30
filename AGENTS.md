@@ -256,6 +256,11 @@ for design tokens: `@guallet/ui-react` on web and the Luna mobile theme on
 React Native. Keep money colors semantically consistent (positive is green,
 negative is red) and use tabular numerals for amounts.
 
+**Always use `@guallet/money` for money amounts.** Format displayed amounts
+with `Money.format()` instead of ad hoc `Intl.NumberFormat`, `toFixed`, or
+string concatenation. Get minor-unit precision from `Currency.decimalPlaces`
+when validating inputs or rounding calculations; do not assume two decimals.
+
 ## Documentation
 
 Always write documentation in Markdown (`.md`). Never add documentation as

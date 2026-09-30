@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { TextInput, useTheme } from '@guallet/luna-mobile';
 import { calculateMortgageScenario } from '@guallet/calculators';
+import { Currency } from '@guallet/money';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import {
@@ -50,19 +51,30 @@ export default function MortgageCalculatorScreen() {
   const router = useRouter();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
+  const currency = useMemo(
+    () => Currency.fromISOCode(defaultCurrency),
+    [defaultCurrency],
+  );
   const [input, setInput] = useState<MortgageInput>(DEFAULT_MORTGAGE_INPUT);
-  const parsed = useMemo(() => parseMortgageInput(input), [input]);
+  const parsed = useMemo(
+    () => parseMortgageInput(input, defaultCurrency),
+    [input, defaultCurrency],
+  );
   const scenarios = useMemo(() => {
     if (!parsed.values) return null;
     return {
-      baseline: calculateMortgageScenario(parsed.values, {
-        monthlyOverpayment: 0,
-        oneOffOverpayment: 0,
-        oneOffOverpaymentMonth: null,
-      }),
-      plan: calculateMortgageScenario(parsed.values),
+      baseline: calculateMortgageScenario(
+        parsed.values,
+        {
+          monthlyOverpayment: 0,
+          oneOffOverpayment: 0,
+          oneOffOverpaymentMonth: null,
+        },
+        currency,
+      ),
+      plan: calculateMortgageScenario(parsed.values, undefined, currency),
     };
-  }, [parsed.values]);
+  }, [parsed.values, currency]);
   const hasOverpayment =
     parsed.values !== null &&
     (parsed.values.monthlyOverpayment > 0 ||

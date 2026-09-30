@@ -23,6 +23,10 @@ existing Luna, React Native, Expo, and accessibility patterns.
 
 ## Component rules
 
+- For money amounts, use `@guallet/money` and `Money.format()` for display.
+  Derive precision from `Currency.decimalPlaces`; never hardcode two decimal
+  places or create a local currency formatter.
+
 - Use `Readonly<Props>` for component props. Document non-obvious props and
   callbacks. Use React Native event names and types (`onPress`, `onChangeText`,
   and so on) consistently with the native control.
