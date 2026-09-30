@@ -1,0 +1,25 @@
+meta {
+  name: Sign in with OTP
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/sign-in/email-otp
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "you@example.com",
+    "otp": "123456"
+  }
+}
+
+docs {
+  Exchanges the emailed code for a session. The response sets the
+  better-auth session cookie, which Bruno stores in its cookie jar and
+  sends with every following request in this collection.
+}
+

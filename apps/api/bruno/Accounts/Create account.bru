@@ -1,0 +1,29 @@
+meta {
+  name: Create account
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/accounts
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Everyday account",
+    "type": "current-account",
+    "currency": "EUR",
+    "initial_balance": 0,
+    "create_balance_transaction": false
+  }
+}
+
+docs {
+  type is one of: current-account, credit-card, savings-account,
+  investment, mortgage, loan, pension, unknown.
+  Copy the returned id into the accountId environment variable to use
+  the requests that take an account id.
+}
+
