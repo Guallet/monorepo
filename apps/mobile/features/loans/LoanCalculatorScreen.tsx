@@ -513,28 +513,28 @@ export default function LoanCalculatorScreen() {
           gestureEnabled: false,
         }}
       >
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Back to loan calculator"
+          hitSlop={spacing.sm}
+          onPress={() => setMode(returnMode)}
+          style={{
+            alignSelf: 'flex-start',
+            padding: spacing.md,
+          }}
+        >
+          <ChevronLeftIcon
+            size={typography.sizes.xl}
+            color={colors.text.primary}
+          />
+        </Pressable>
         <FlatList
+          style={styles.flex}
           data={scheduleResult?.schedule ?? []}
           keyExtractor={(row) => String(row.monthNumber)}
           contentContainerStyle={{ padding: spacing.md }}
           ListHeaderComponent={
             <>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Back to loan calculator"
-                hitSlop={spacing.sm}
-                onPress={() => setMode(returnMode)}
-                style={{
-                  alignSelf: 'flex-start',
-                  paddingVertical: spacing.sm,
-                  marginBottom: spacing.sm,
-                }}
-              >
-                <ChevronLeftIcon
-                  size={typography.sizes.xl}
-                  color={colors.text.primary}
-                />
-              </Pressable>
               <Segment
                 options={[
                   { value: 'a', label: 'Loan A' },

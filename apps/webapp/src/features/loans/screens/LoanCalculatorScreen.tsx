@@ -1,7 +1,16 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTheme } from '@guallet/ui-react';
-import { Badge, Card, Grid, Group, Stack, Tabs, Text } from '@mantine/core';
+import {
+  Alert,
+  Badge,
+  Card,
+  Grid,
+  Group,
+  Stack,
+  Tabs,
+  Text,
+} from '@mantine/core';
 import {
   IconCalculator,
   IconCoin,
@@ -17,7 +26,19 @@ import { LoanComparisonSection } from '../components/LoanComparisonSection';
 import {
   calculateLoanSchedule,
   type LoanCalculatorValues,
+  type LoanScenarioResult,
 } from '../models/loan';
+
+function tryCalculateLoanSchedule(
+  values: LoanCalculatorValues,
+): LoanScenarioResult | null {
+  try {
+    return calculateLoanSchedule(values);
+  } catch (error) {
+    if (error instanceof RangeError) return null;
+    throw error;
+  }
+}
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat(undefined, {
@@ -101,8 +122,8 @@ export function LoanCalculatorScreen() {
   const [loanA, setLoanA] = useState<LoanCalculatorValues>(DEFAULT_LOAN_A);
   const [loanB, setLoanB] = useState<LoanCalculatorValues>(DEFAULT_LOAN_B);
 
-  const resultA = calculateLoanSchedule(loanA);
-  const resultB = calculateLoanSchedule(loanB);
+  const resultA = tryCalculateLoanSchedule(loanA);
+  const resultB = tryCalculateLoanSchedule(loanB);
 
   const handleLoanAChange = <K extends keyof LoanCalculatorValues>(
     field: K,
@@ -141,86 +162,99 @@ export function LoanCalculatorScreen() {
                 onChange={handleLoanAChange}
               />
 
-              <Grid gap="md">
-                <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
-                  <MetricCard
-                    icon={<IconCoin size={20} />}
-                    label={t(
-                      'screens.tools.loan.metrics.monthlyPayment',
-                      'Monthly payment',
+              {!resultA && (
+                <Alert color="blue">
+                  {t(
+                    'screens.tools.loan.errors.nonAmortizing',
+                    'Increase the loan amount or shorten the term so each payment reduces the balance.',
+                  )}
+                </Alert>
+              )}
+
+              {resultA && (
+                <>
+                  <Grid gap="md">
+                    <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
+                      <MetricCard
+                        icon={<IconCoin size={20} />}
+                        label={t(
+                          'screens.tools.loan.metrics.monthlyPayment',
+                          'Monthly payment',
+                        )}
+                        value={formatCurrency(
+                          resultA.summary.monthlyPayment,
+                          defaultCurrency,
+                        )}
+                      />
+                    </Grid.Col>
+
+                    <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
+                      <MetricCard
+                        icon={<IconCurrencyDollar size={20} />}
+                        label={t(
+                          'screens.tools.loan.metrics.totalRepayable',
+                          'Total repayable',
+                        )}
+                        value={formatCurrency(
+                          resultA.summary.totalPaid,
+                          defaultCurrency,
+                        )}
+                      />
+                    </Grid.Col>
+
+                    <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
+                      <MetricCard
+                        icon={<IconCoin size={20} />}
+                        label={t(
+                          'screens.tools.loan.metrics.totalInterest',
+                          'Total interest',
+                        )}
+                        value={formatCurrency(
+                          resultA.summary.totalInterest,
+                          defaultCurrency,
+                        )}
+                      />
+                    </Grid.Col>
+
+                    {loanA.arrangementFee > 0 && (
+                      <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
+                        <MetricCard
+                          icon={<IconCurrencyDollar size={20} />}
+                          label={t(
+                            'screens.tools.loan.metrics.totalCost',
+                            'Total cost (inc. fee)',
+                          )}
+                          value={formatCurrency(
+                            resultA.summary.totalCost,
+                            defaultCurrency,
+                          )}
+                        />
+                      </Grid.Col>
                     )}
-                    value={formatCurrency(
-                      resultA.summary.monthlyPayment,
-                      defaultCurrency,
-                    )}
+                  </Grid>
+
+                  <Card withBorder shadow="sm" radius="lg" p="lg">
+                    <Group justify="space-between" wrap="wrap">
+                      <Text size="sm" c="dimmed">
+                        {t(
+                          'screens.tools.loan.overview.costBreakdown',
+                          'Interest as % of loan',
+                        )}
+                      </Text>
+                      <Badge variant="light">
+                        {loanA.amount > 0
+                          ? `${((resultA.summary.totalInterest / loanA.amount) * 100).toFixed(1)}%`
+                          : '—'}
+                      </Badge>
+                    </Group>
+                  </Card>
+
+                  <LoanAmortizationTable
+                    rows={resultA.schedule}
+                    currency={defaultCurrency}
                   />
-                </Grid.Col>
-
-                <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
-                  <MetricCard
-                    icon={<IconCurrencyDollar size={20} />}
-                    label={t(
-                      'screens.tools.loan.metrics.totalRepayable',
-                      'Total repayable',
-                    )}
-                    value={formatCurrency(
-                      resultA.summary.totalPaid,
-                      defaultCurrency,
-                    )}
-                  />
-                </Grid.Col>
-
-                <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
-                  <MetricCard
-                    icon={<IconCoin size={20} />}
-                    label={t(
-                      'screens.tools.loan.metrics.totalInterest',
-                      'Total interest',
-                    )}
-                    value={formatCurrency(
-                      resultA.summary.totalInterest,
-                      defaultCurrency,
-                    )}
-                  />
-                </Grid.Col>
-
-                {loanA.arrangementFee > 0 && (
-                  <Grid.Col span={{ base: 12, sm: 6, xl: 3 }}>
-                    <MetricCard
-                      icon={<IconCurrencyDollar size={20} />}
-                      label={t(
-                        'screens.tools.loan.metrics.totalCost',
-                        'Total cost (inc. fee)',
-                      )}
-                      value={formatCurrency(
-                        resultA.summary.totalCost,
-                        defaultCurrency,
-                      )}
-                    />
-                  </Grid.Col>
-                )}
-              </Grid>
-
-              <Card withBorder shadow="sm" radius="lg" p="lg">
-                <Group justify="space-between" wrap="wrap">
-                  <Text size="sm" c="dimmed">
-                    {t(
-                      'screens.tools.loan.overview.costBreakdown',
-                      'Interest as % of loan',
-                    )}
-                  </Text>
-                  <Badge variant="light">
-                    {loanA.amount > 0
-                      ? `${((resultA.summary.totalInterest / loanA.amount) * 100).toFixed(1)}%`
-                      : '—'}
-                  </Badge>
-                </Group>
-              </Card>
-
-              <LoanAmortizationTable
-                rows={resultA.schedule}
-                currency={defaultCurrency}
-              />
+                </>
+              )}
             </Stack>
           </Tabs.Panel>
 
@@ -245,13 +279,22 @@ export function LoanCalculatorScreen() {
                 </Grid.Col>
               </Grid>
 
-              <LoanComparisonSection
-                loanA={resultA}
-                loanB={resultB}
-                currency={defaultCurrency}
-                labelA={t('screens.tools.loan.compare.loanA', 'Loan A')}
-                labelB={t('screens.tools.loan.compare.loanB', 'Loan B')}
-              />
+              {resultA && resultB ? (
+                <LoanComparisonSection
+                  loanA={resultA}
+                  loanB={resultB}
+                  currency={defaultCurrency}
+                  labelA={t('screens.tools.loan.compare.loanA', 'Loan A')}
+                  labelB={t('screens.tools.loan.compare.loanB', 'Loan B')}
+                />
+              ) : (
+                <Alert color="blue">
+                  {t(
+                    'screens.tools.loan.errors.nonAmortizing',
+                    'Increase the loan amount or shorten the term so each payment reduces the balance.',
+                  )}
+                </Alert>
+              )}
             </Stack>
           </Tabs.Panel>
         </Tabs>

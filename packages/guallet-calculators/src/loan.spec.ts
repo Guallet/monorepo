@@ -64,6 +64,29 @@ describe('loan calculations shared by web and mobile', () => {
     expect(result.schedule.at(-1)?.remainingBalance).toBe(0);
   });
 
+  it('rounds decimal ties before building the schedule', () => {
+    expect(calculateMonthlyPayment(2.01, 0, 2)).toBe(1.01);
+    const result = calculateLoanSchedule({
+      amount: 2.01,
+      annualInterestRate: 0,
+      termMonths: 2,
+      arrangementFee: 0,
+    });
+    expect(result.schedule.map((row) => row.payment)).toEqual([1.01, 1]);
+    expect(result.summary.totalPaid).toBe(2.01);
+  });
+
+  it('rejects a rounded payment that cannot reduce principal', () => {
+    expect(() =>
+      calculateLoanSchedule({
+        amount: 100,
+        annualInterestRate: 100,
+        termMonths: 600,
+        arrangementFee: 0,
+      }),
+    ).toThrow(RangeError);
+  });
+
   it('uses the selected currency precision throughout the schedule', () => {
     const yen = calculateLoanSchedule(
       {

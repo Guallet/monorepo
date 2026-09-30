@@ -1,6 +1,7 @@
 export {
   calculateLoanSchedule,
   calculateMonthlyPayment,
+  isLoanAmortizing,
   normalizeLoanValues,
 } from './loan';
 export type {

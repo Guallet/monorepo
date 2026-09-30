@@ -1,5 +1,5 @@
 import {
-  calculateMonthlyPayment,
+  isLoanAmortizing,
   type LoanCalculatorValues,
 } from '@guallet/calculators';
 
@@ -70,30 +70,10 @@ export function parseLoanInput(
     !errors.amount &&
     !errors.annualInterestRate &&
     !errors.termMonths &&
-    calculateMonthlyPayment(
-      amount,
-      annualInterestRate,
-      termMonths,
-      decimalPlaces,
-    ) === 0
+    !isLoanAmortizing(amount, annualInterestRate, termMonths, decimalPlaces)
   ) {
     errors.amount =
-      'Increase the amount or shorten the term to produce a monthly payment.';
-  }
-  if (!errors.amount && !errors.annualInterestRate && !errors.termMonths) {
-    const payment = calculateMonthlyPayment(
-      amount,
-      annualInterestRate,
-      termMonths,
-      decimalPlaces,
-    );
-    const scale = 10 ** decimalPlaces;
-    const firstMonthInterest =
-      Math.round((amount * annualInterestRate * scale) / 1200) / scale;
-    if (payment <= firstMonthInterest) {
-      errors.amount =
-        'Increase the amount or shorten the term so the balance can fall.';
-    }
+      'Increase the amount or shorten the term so the balance can fall.';
   }
   if (Object.keys(errors).length > 0) return { values: null, errors };
   return {

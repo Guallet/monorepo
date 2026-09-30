@@ -26,9 +26,16 @@ export interface LoanScenarioResult {
   schedule: LoanPaymentRow[];
 }
 
+function shiftDecimal(value: number, places: number): number {
+  const [mantissa, exponent = '0'] = String(value).split('e');
+  return Number(`${mantissa}e${Number(exponent) + places}`);
+}
+
 function roundCurrency(value: number, decimalPlaces: number): number {
-  const scale = 10 ** decimalPlaces;
-  return Math.round(value * scale) / scale;
+  return shiftDecimal(
+    Math.round(shiftDecimal(value, decimalPlaces)),
+    -decimalPlaces,
+  );
 }
 
 export function normalizeLoanValues(
@@ -59,6 +66,26 @@ export function calculateMonthlyPayment(
   return roundCurrency(payment, decimalPlaces);
 }
 
+export function isLoanAmortizing(
+  amount: number,
+  annualInterestRate: number,
+  termMonths: number,
+  decimalPlaces = 2,
+): boolean {
+  if (amount <= 0 || termMonths <= 0) return false;
+  const monthlyPayment = calculateMonthlyPayment(
+    amount,
+    annualInterestRate,
+    termMonths,
+    decimalPlaces,
+  );
+  const firstMonthInterest = roundCurrency(
+    (amount * annualInterestRate) / 1200,
+    decimalPlaces,
+  );
+  return monthlyPayment > firstMonthInterest;
+}
+
 export function calculateLoanSchedule(
   values: LoanCalculatorValues,
   decimalPlaces = 2,
@@ -85,6 +112,13 @@ export function calculateLoanSchedule(
     termMonths,
     decimalPlaces,
   );
+  if (
+    !isLoanAmortizing(amount, annualInterestRate, termMonths, decimalPlaces)
+  ) {
+    throw new RangeError(
+      'The rounded monthly payment does not reduce the loan balance.',
+    );
+  }
   const monthlyRate = annualInterestRate / 100 / 12;
 
   const schedule: LoanPaymentRow[] = [];
