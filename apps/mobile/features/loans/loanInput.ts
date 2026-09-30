@@ -31,14 +31,13 @@ export function parseLoanInput(
   const raw = (field: LoanField) => input[field].trim().replace(',', '.');
   const parse = (field: LoanField) => {
     const value = raw(field);
-    const places =
-      field === 'annualInterestRate'
-        ? 2
-        : field === 'termMonths'
-          ? 0
-          : decimalPlaces;
+    let places = decimalPlaces;
+    if (field === 'annualInterestRate') places = 2;
+    if (field === 'termMonths') places = 0;
     const pattern =
-      places === 0 ? /^\d+$/ : new RegExp(`^\\d+(\\.\\d{1,${places}})?$`);
+      places === 0
+        ? /^\d+$/
+        : new RegExp(String.raw`^\d+(\.\d{1,${places}})?$`);
     if (!pattern.test(value)) return Number.NaN;
     return Number(value);
   };
