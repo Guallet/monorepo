@@ -5,6 +5,7 @@ import TablerSearchIcon from '@tabler/icons-react-native/IconSearch';
 import TablerCheckIcon from '@tabler/icons-react-native/IconCheck';
 import TablerXIcon from '@tabler/icons-react-native/IconX';
 import TablerFileImportIcon from '@tabler/icons-react-native/IconFileImport';
+import TablerCalculatorIcon from '@tabler/icons-react-native/IconCalculator';
 import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
@@ -37,4 +38,9 @@ export const CheckIcon = createLunaIcon(TablerCheckIcon, 'CheckIcon');
 export const FileImportIcon = createLunaIcon(
   TablerFileImportIcon,
   'FileImportIcon',
+);
+
+export const CalculatorIcon = createLunaIcon(
+  TablerCalculatorIcon,
+  'CalculatorIcon',
 );
