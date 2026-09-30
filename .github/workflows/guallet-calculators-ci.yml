@@ -49,7 +49,7 @@ jobs:
         run: pnpm lint
 
       - name: Check formatting
-        run: pnpm format:check
+        run: pnpm exec oxfmt --check packages/guallet-calculators .github/workflows/guallet-calculators-ci.yml
 
       - name: Run type check
         working-directory: packages/guallet-calculators
