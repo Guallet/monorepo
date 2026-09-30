@@ -1,11 +1,12 @@
 export {
   calculateLoanSchedule,
   calculateMonthlyPayment,
+  isLoanAmortizing,
   normalizeLoanValues,
-} from '@guallet/calculators';
+} from './loan';
 export type {
   LoanCalculatorValues,
   LoanPaymentRow,
   LoanScenarioResult,
   LoanSummary,
-} from '@guallet/calculators';
+} from './loan';

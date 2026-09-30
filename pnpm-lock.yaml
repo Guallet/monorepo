@@ -400,6 +400,9 @@ importers:
       '@guallet/auth':
         specifier: workspace:*
         version: link:../../packages/guallet-auth
+      '@guallet/calculators':
+        specifier: workspace:*
+        version: link:../../packages/guallet-calculators
       '@guallet/luna-mobile':
         specifier: workspace:*
         version: link:../../packages/guallet-luna-mobile
@@ -554,6 +557,9 @@ importers:
       '@guallet/auth':
         specifier: workspace:*
         version: link:../../packages/guallet-auth
+      '@guallet/calculators':
+        specifier: workspace:*
+        version: link:../../packages/guallet-calculators
       '@guallet/luna':
         specifier: workspace:*
         version: link:../../packages/guallet-luna
@@ -796,6 +802,21 @@ importers:
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
+      vitest:
+        specifier: 5.0.1
+        version: 5.0.1(@types/node@26.4.1)(@vitest/coverage-v8@5.0.1)(vite@8.1.2(@types/node@26.4.1)(esbuild@0.27.2)(sugarss@5.0.0(postcss@8.5.28))(terser@5.51.2)(tsx@4.21.0)(yaml@2.8.1))
+
+  packages/guallet-calculators:
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 5.0.1
+        version: 5.0.1(vitest@5.0.1)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
