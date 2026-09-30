@@ -466,7 +466,7 @@ export default function LoanCalculatorScreen() {
   );
   const [editing, setEditing] = useState<Side>('a');
   const [scheduleSide, setScheduleSide] = useState<Side>('a');
-  const currency = defaultCurrency || 'GBP';
+  const currency = defaultCurrency;
   const decimalPlaces = getLoanCurrencyDecimalPlaces(currency);
   const parsedA = parseLoanInput(loanA, decimalPlaces);
   const parsedB = parseLoanInput(loanB, decimalPlaces);

@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useTheme } from '@guallet/ui-react';
 import { Alert, Badge, Card, Grid, Group, Stack, Text } from '@mantine/core';
@@ -16,12 +18,11 @@ import { calculateStampDuty, type StampDutyValues } from '../models/stampDuty';
 
 const CURRENCY = 'GBP';
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: CURRENCY,
-    maximumFractionDigits: 2,
-  }).format(amount);
+function formatCurrency(amount: number, options?: MoneyFormatOptions): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: CURRENCY }).format({
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 interface MetricCardProps {

@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { StyleSheet, Text, View } from 'react-native';
 import { TransactionDto } from '@guallet/api-client';
 import { useCategory } from '@guallet/api-react';
@@ -24,12 +26,16 @@ function getAvatarColor(
   return avatarColors[codePoint % avatarColors.length];
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-  }).format(Math.abs(amount));
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return formatMoney(Math.abs(amount), currency, {
+    locale: 'en-GB',
+    useSymbol: false,
+    ...options,
+  });
 }
 
 interface TransactionListItemProps {

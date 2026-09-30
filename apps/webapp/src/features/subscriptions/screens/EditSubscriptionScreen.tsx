@@ -35,7 +35,7 @@ interface EditSubscriptionScreenProps {
 const editSubscriptionFormDataSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   amount: z.number().min(0, { message: 'Amount must be positive' }),
-  currency: z.string().default('GBP'),
+  currency: z.string().min(1),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
   startDate: z.date({ required_error: 'Start date is required' }),

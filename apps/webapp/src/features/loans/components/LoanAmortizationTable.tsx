@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { Card, ScrollArea, Stack, Table, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import type { LoanPaymentRow } from '../models/loan';
@@ -7,12 +9,14 @@ interface LoanAmortizationTableProps {
   currency: string;
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format(
+    options,
+  );
 }
 
 export function LoanAmortizationTable({

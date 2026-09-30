@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import { BarChart } from '@mantine/charts';
 import { Alert, Badge, Card, Grid, Group, Stack, Text } from '@mantine/core';
@@ -13,12 +15,14 @@ interface LoanComparisonSectionProps {
   labelB?: string;
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format(
+    options,
+  );
 }
 
 interface CompareMetricRowProps {

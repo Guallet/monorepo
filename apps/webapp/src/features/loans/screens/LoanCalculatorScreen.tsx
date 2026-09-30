@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Currency, Money } from '@guallet/money';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTheme } from '@guallet/ui-react';
@@ -40,24 +42,18 @@ function tryCalculateLoanSchedule(
   }
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format(
+    options,
+  );
 }
 
 function getCurrencySymbol(currency: string): string {
-  const formatted = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    currencyDisplay: 'narrowSymbol',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).formatToParts(0);
-
-  return formatted.find((part) => part.type === 'currency')?.value ?? currency;
+  return Currency.fromISOCode(currency).symbol;
 }
 
 interface MetricCardProps {

@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { TransactionDto } from '@guallet/api-client';
 import type { DateFormat } from '@guallet/api-client';
 import { DateRangePreset } from './models';
@@ -55,16 +57,15 @@ export function formatTransactionDate(
   return formatPreferenceDate(date, dateFormat);
 }
 
-export function formatCurrency(amount: number, currency: string): string {
-  try {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 2,
-    }).format(Math.abs(amount));
-  } catch {
-    return `${Math.abs(amount).toFixed(2)} ${currency}`;
-  }
+export function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return formatMoney(Math.abs(amount), currency, {
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 export function groupTransactionsByDate(

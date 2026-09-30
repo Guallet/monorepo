@@ -14,6 +14,7 @@ import { IconReceipt, IconRepeat } from '@tabler/icons-react';
 import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
 import { useTheme } from '@guallet/ui-react';
 import { useRouter } from '@tanstack/react-router';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 const MAX_ITEMS = 3;
 
@@ -44,6 +45,7 @@ export function RecurringPaymentsWidget() {
   const { subscriptions, isLoading } = useSubscriptions();
   const { colors } = useTheme();
   const router = useRouter();
+  const defaultCurrency = useDefaultCurrency();
 
   const recurringPayments = subscriptions
     .filter(
@@ -110,7 +112,7 @@ export function RecurringPaymentsWidget() {
             <Text size="xl" fw={700} style={{ color: colors.status.error }}>
               {Money.fromCurrencyCode({
                 amount: totalMonthly,
-                currencyCode: recurringPayments[0]?.currency || 'GBP',
+                currencyCode: recurringPayments[0]?.currency || defaultCurrency,
               }).format()}
             </Text>
           </Box>

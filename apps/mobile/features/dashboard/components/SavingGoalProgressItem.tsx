@@ -1,25 +1,25 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { StyleSheet, Text, View } from 'react-native';
 import { SavingGoalDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 
-// The goal API has no currency; retain the existing display convention.
-const GOAL_CURRENCY = 'GBP';
-
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return formatMoney(amount, currency, { locale: 'en-GB', ...options });
 }
 
 interface SavingGoalProgressItemProps {
   goal: SavingGoalDto;
+  currency: string;
 }
 
 export function SavingGoalProgressItem({
   goal,
+  currency,
 }: Readonly<SavingGoalProgressItemProps>) {
   const { colors, spacing, typography } = useTheme();
   const progressPct = Math.min(100, Math.max(0, goal.progressPercentage));
@@ -42,8 +42,8 @@ export function SavingGoalProgressItem({
             { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
-          {formatCurrency(goal.currentAmount, GOAL_CURRENCY)} /{' '}
-          {formatCurrency(goal.targetAmount, GOAL_CURRENCY)}
+          {formatCurrency(goal.currentAmount, currency)} /{' '}
+          {formatCurrency(goal.targetAmount, currency)}
         </Text>
       </View>
 

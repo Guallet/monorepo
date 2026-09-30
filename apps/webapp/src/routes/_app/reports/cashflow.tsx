@@ -1,3 +1,5 @@
+import { Money } from '@guallet/money';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { Stack, Table, Text, useMantineTheme } from '@mantine/core';
 import { YearPickerInput } from '@mantine/dates';
 import { useState } from 'react';
@@ -66,6 +68,7 @@ interface CashFlowTableProps {
 
 function CashFlowTable({ reportData }: CashFlowTableProps) {
   const theme = useMantineTheme();
+  const currency = useDefaultCurrency();
 
   const rows = reportData.data.map((row) => (
     <CashFlowRow key={row.categoryId} row={row} />
@@ -83,40 +86,76 @@ function CashFlowTable({ reportData }: CashFlowTableProps) {
     >
       <Table.Td>Total</Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[0]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[0]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[1]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[1]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[2]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[2]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[3]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[3]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[4]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[4]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[5]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[5]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[6]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[6]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[7]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[7]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[8]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[8]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[9]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[9]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[10]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[10]),
+          currency,
+        )}
       </Table.Td>
       <Table.Td>
-        {getArraySum(rootCategoriesData.map((x) => x.values[11]))}
+        {getArraySum(
+          rootCategoriesData.map((x) => x.values[11]),
+          currency,
+        )}
       </Table.Td>
     </Table.Tr>
   );
@@ -131,12 +170,15 @@ function CashFlowTable({ reportData }: CashFlowTableProps) {
   );
 }
 
-function getArraySum(array: string[]): string {
+function getArraySum(array: string[], currency: string): string {
   let sum = 0;
   for (let i = 0; i < array.length; i++) {
     sum += Number(array[i]);
   }
-  return sum.toFixed(2);
+  return Money.fromCurrencyCode({
+    amount: sum,
+    currencyCode: currency,
+  }).format();
 }
 
 function CashFlowHeadRow() {

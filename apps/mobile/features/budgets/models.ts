@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import type { BudgetDto, DateFormat } from '@guallet/api-client';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
@@ -81,16 +83,15 @@ export function getProgressColor(
   return colors.support.primary;
 }
 
-export function formatBudgetCurrency(amount: number, currency: string): string {
-  try {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: currency.toUpperCase(),
-      currencyDisplay: 'narrowSymbol',
-    }).format(amount);
-  } catch {
-    return `${currency.toUpperCase()} ${amount.toFixed(2)}`;
-  }
+export function formatBudgetCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return formatMoney(amount, currency, {
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 export function formatTransactionDate(

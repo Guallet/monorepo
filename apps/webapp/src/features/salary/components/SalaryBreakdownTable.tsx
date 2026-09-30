@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { Card, ScrollArea, Stack, Table, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import type { SalaryResult } from '../models/salary';
@@ -7,12 +9,11 @@ interface SalaryBreakdownTableProps {
   showTaxBands: boolean;
 }
 
-function fmtCurrency(value: number): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-    maximumFractionDigits: 2,
-  }).format(value);
+function fmtCurrency(value: number, options?: MoneyFormatOptions): string {
+  return Money.fromCurrencyCode({ amount: value, currencyCode: 'GBP' }).format({
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 interface BreakdownRow {

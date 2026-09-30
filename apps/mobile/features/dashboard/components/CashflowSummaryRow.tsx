@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
@@ -9,12 +11,16 @@ import {
   type CurrencyAmount,
 } from '../utils/currencyTotals';
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return formatMoney(amount, currency, {
+    locale: 'en-GB',
+    useSymbol: false,
+    ...options,
+  });
 }
 
 interface CashflowSummaryRowProps {

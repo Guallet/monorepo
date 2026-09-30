@@ -31,7 +31,7 @@ interface EditAccountScreenProps {
 
 const editAccountFormDataSchema = z.object({
   name: z.string().min(1, { message: 'Account name is required' }),
-  currency: z.string().default('GBP'),
+  currency: z.string().min(1),
   account_type: z.enum(AccountTypeDto).default(AccountTypeDto.UNKNOWN),
   balance: z.number().default(0),
   balanceTransactionCheck: z.boolean().default(true),
