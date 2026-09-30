@@ -1,6 +1,10 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
-import { useSavingGoalMutations, useSavingGoals } from '@guallet/api-react';
+import {
+  useAccounts,
+  useSavingGoalMutations,
+  useSavingGoals,
+} from '@guallet/api-react';
 import { Stack, Button, Text, Group, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -9,11 +13,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SavingGoalRow } from '../components/SavingGoalRow';
 import { IconPlus, IconPigMoney } from '@tabler/icons-react';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 export function SavingGoalsListScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const defaultCurrency = useDefaultCurrency();
   const { savingGoals, isLoading } = useSavingGoals();
+  const { accounts } = useAccounts();
   const [
     deleteModalOpened,
     { open: openDeleteModal, close: closeDeleteModal },
@@ -102,6 +109,10 @@ export function SavingGoalsListScreen() {
               <SavingGoalRow
                 key={goal.id}
                 savingGoal={goal}
+                currency={
+                  accounts.find((account) => goal.accounts.includes(account.id))
+                    ?.currency ?? defaultCurrency
+                }
                 onClick={() => handleGoalClick(goal)}
                 onEdit={() => handleEdit(goal)}
                 onDelete={() => handleDelete(goal)}

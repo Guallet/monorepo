@@ -1,3 +1,4 @@
+import type { MoneyFormatOptions } from '@guallet/money';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTheme } from '@guallet/ui-react';
@@ -37,8 +38,14 @@ import {
   normalizeMortgageValues,
 } from '../models/mortgage';
 
-function formatCurrency(amount: number, currency: string): string {
-  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format();
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format(
+    options,
+  );
 }
 
 function getCurrencySymbol(currency: string): string {

@@ -1,3 +1,4 @@
+import { Money } from '@guallet/money';
 import {
   AccountDto,
   AccountTypeDto,
@@ -108,7 +109,10 @@ function buildPropertyRows(
               'feature.accounts.details.properties.overdraft',
               'Overdraft limit',
             )}
-            value={`${currency} ${p.overdraft}`}
+            value={Money.fromCurrencyCode({
+              amount: p.overdraft,
+              currencyCode: currency,
+            }).format()}
           />
         ),
       ].filter(Boolean) as React.ReactNode[];
@@ -144,7 +148,10 @@ function buildPropertyRows(
               'feature.accounts.details.properties.creditLimit',
               'Credit limit',
             )}
-            value={`${currency} ${p.creditLimit}`}
+            value={Money.fromCurrencyCode({
+              amount: p.creditLimit,
+              currencyCode: currency,
+            }).format()}
           />
         ),
         p?.cycleDay != null && (
@@ -186,7 +193,10 @@ function buildPropertyRows(
               'feature.accounts.details.properties.propertyValue',
               'Property value',
             )}
-            value={`${currency} ${p.propertyValue}`}
+            value={Money.fromCurrencyCode({
+              amount: p.propertyValue,
+              currencyCode: currency,
+            }).format()}
           />
         ),
         p?.mortgageAmount != null && (
@@ -196,7 +206,10 @@ function buildPropertyRows(
               'feature.accounts.details.properties.mortgageAmount',
               'Mortgage amount',
             )}
-            value={`${currency} ${p.mortgageAmount}`}
+            value={Money.fromCurrencyCode({
+              amount: p.mortgageAmount,
+              currencyCode: currency,
+            }).format()}
           />
         ),
         p?.interestRate != null && (
@@ -236,7 +249,10 @@ function buildPropertyRows(
               'feature.accounts.details.properties.loanAmount',
               'Loan amount',
             )}
-            value={`${currency} ${p.loanAmount}`}
+            value={Money.fromCurrencyCode({
+              amount: p.loanAmount,
+              currencyCode: currency,
+            }).format()}
           />
         ),
         p?.interestRate != null && (

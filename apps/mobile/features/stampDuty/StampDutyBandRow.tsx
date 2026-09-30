@@ -1,14 +1,17 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 import type { StampDutyBandResult } from '@guallet/calculators';
 
-export function formatStampDutyMoney(value: number): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(value);
+export function formatStampDutyMoney(
+  value: number,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount: value, currencyCode: 'GBP' }).format({
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 export function StampDutyBandRow({

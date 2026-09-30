@@ -1,3 +1,5 @@
+import { Money } from '@guallet/money';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { WidgetCard } from './WidgetCard';
 import { useTransactionsWithFilter, useCategories } from '@guallet/api-react';
 import {
@@ -31,6 +33,7 @@ export function ExpenditureByCategoryWidget({
 
   const { categories, isLoading: categoriesLoading } = useCategories();
   const { colors } = useTheme();
+  const currency = useDefaultCurrency();
 
   const isLoading = transactionsLoading || categoriesLoading;
 
@@ -101,7 +104,10 @@ export function ExpenditureByCategoryWidget({
                     </Text>
                   </Group>
                   <Text size="sm" fw={500} c="dimmed">
-                    {category.amount.toFixed(0)}
+                    {Money.fromCurrencyCode({
+                      amount: category.amount,
+                      currencyCode: currency,
+                    }).format()}
                   </Text>
                 </Group>
                 <Progress
@@ -130,7 +136,10 @@ export function ExpenditureByCategoryWidget({
                 Total (Top 5)
               </Text>
               <Text size="lg" fw={700} style={{ color: colors.status.error }}>
-                {totalSpending.toFixed(0)}
+                {Money.fromCurrencyCode({
+                  amount: totalSpending,
+                  currencyCode: currency,
+                }).format()}
               </Text>
             </Group>
           </Box>

@@ -1,3 +1,6 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
+
 export function getLoanCurrencyDecimalPlaces(currency: string): number {
   try {
     const digits = new Intl.NumberFormat(undefined, {
@@ -10,13 +13,13 @@ export function getLoanCurrencyDecimalPlaces(currency: string): number {
   }
 }
 
-export function formatLoanMoney(value: number, currency: string): string {
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency,
-    }).format(value);
-  } catch {
-    return `${value.toFixed(2)} ${currency}`;
-  }
+export function formatLoanMoney(
+  value: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({
+    amount: value,
+    currencyCode: currency,
+  }).format(options);
 }

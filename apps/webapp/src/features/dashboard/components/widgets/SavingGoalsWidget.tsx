@@ -14,6 +14,7 @@ import {
 import { IconPigMoney, IconFlag } from '@tabler/icons-react';
 import { useTheme } from '@guallet/ui-react';
 import { useRouter } from '@tanstack/react-router';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 const MAX_ITEMS = 5;
 
@@ -22,6 +23,7 @@ export function SavingGoalsWidget() {
   const { accounts, isLoading: accountsLoading } = useAccounts();
   const { colors } = useTheme();
   const router = useRouter();
+  const defaultCurrency = useDefaultCurrency();
 
   const isLoading = goalsLoading || accountsLoading;
 
@@ -36,7 +38,7 @@ export function SavingGoalsWidget() {
         0,
       );
 
-      const currency = goalAccounts[0]?.currency || 'GBP';
+      const currency = goalAccounts[0]?.currency || defaultCurrency;
 
       return {
         ...goal,

@@ -13,7 +13,8 @@ import {
 import { UseFormReturnType } from '@mantine/form';
 import { IconCheck } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
-import { Currency } from '@guallet/money';
+import { Currency, Money } from '@guallet/money';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTranslation } from 'react-i18next';
 import { getAccountTypeTitleSingular } from '../../models/Account';
 import { AddAccountFormData } from '../../screens/addAccountFormSchema';
@@ -34,6 +35,7 @@ export function StepManualSuccess({
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const navigate = useNavigate();
+  const defaultCurrency = useDefaultCurrency();
 
   const currencyValue = form.values.currency;
   const currency = currencyValue ? Currency.fromISOCode(currencyValue) : null;
@@ -88,7 +90,7 @@ export function StepManualSuccess({
                 t('feature.accounts.add.success.newAccount', 'New account')}
             </Text>
             <Text size="xs" c="dimmed" mt={spacing.xs / 2}>
-              {typeMeta} · {form.values.currency || 'GBP'}
+              {typeMeta} · {form.values.currency || defaultCurrency}
             </Text>
           </Box>
           <Text
@@ -100,9 +102,10 @@ export function StepManualSuccess({
             }}
             c={balance < 0 ? colors.status.error : undefined}
           >
-            {balance < 0 ? '−' : ''}
-            {currency?.symbol}
-            {Math.abs(balance).toFixed(2)}
+            {Money.from({
+              amount: balance,
+              currency: currency ?? Currency.fromISOCode(defaultCurrency),
+            }).format()}
           </Text>
         </Group>
       </Card>

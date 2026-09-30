@@ -6,6 +6,7 @@ import { Box, Button, Stack } from '@mantine/core';
 import { notFound, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { AccountDetailsHeader } from '../components/AccountDetailsHeader';
 import { AccountPropertiesCard } from '../components/AccountDetails/AccountPropertiesCard';
 import { BalanceTrendChart } from '../components/AccountDetails/BalanceTrendChart';
@@ -32,6 +33,7 @@ export function AccountDetailsScreen({
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const navigate = useNavigate();
+  const defaultCurrency = useDefaultCurrency();
   const { account, isLoading } = useAccount(accountId);
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
 
@@ -74,13 +76,13 @@ export function AccountDetailsScreen({
 
           <BalanceTrendChart
             balanceHistory={chartData?.balanceHistory ?? []}
-            currency={account?.currency ?? ''}
+            currency={account?.currency ?? defaultCurrency}
             isLoading={isChartLoading}
           />
 
           <MonthlyInOutChart
             chart={chartData?.chart ?? []}
-            currency={account?.currency ?? ''}
+            currency={account?.currency ?? defaultCurrency}
             isLoading={isChartLoading}
           />
 

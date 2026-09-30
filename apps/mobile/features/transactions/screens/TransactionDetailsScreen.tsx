@@ -59,7 +59,7 @@ export function TransactionDetailsScreen({
     useTransaction(transactionId);
   const { accounts } = useAccounts();
   const { categories } = useCategories();
-  const { dateFormat } = useMobileUserPreferences();
+  const { dateFormat, defaultCurrency } = useMobileUserPreferences();
   const { updateTransactionMutation } = useTransactionMutations();
   const initializedId = useRef<string | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
@@ -79,14 +79,14 @@ export function TransactionDetailsScreen({
       description: transaction.description,
       notes: transaction.notes ?? '',
       amount: Math.abs(transaction.amount).toString(),
-      currency: transaction.currency,
+      currency: transaction.currency || defaultCurrency,
       date: new Date(transaction.date),
       categoryId: transaction.categoryId,
     };
     setForm(nextForm);
     setInitialForm(nextForm);
     initializedId.current = transaction.id;
-  }, [transaction]);
+  }, [transaction, defaultCurrency]);
 
   const isDirty =
     form !== null &&
@@ -295,7 +295,7 @@ export function TransactionDetailsScreen({
                 label="Currency"
                 value={form.currency}
                 onChangeText={(currency) => updateForm({ currency })}
-                placeholder="GBP"
+                placeholder={defaultCurrency}
                 autoCapitalize="characters"
                 maxLength={3}
               />

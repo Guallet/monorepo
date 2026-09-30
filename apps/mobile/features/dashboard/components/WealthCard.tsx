@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAccounts, useAccountCharts } from '@guallet/api-react';
@@ -9,12 +11,15 @@ import {
   type CurrencyAmount,
 } from '../utils/currencyTotals';
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({
+    amount: amount,
+    currencyCode: currency,
+  }).format({ locale: 'en-GB', ...options });
 }
 
 interface WealthCardProps {

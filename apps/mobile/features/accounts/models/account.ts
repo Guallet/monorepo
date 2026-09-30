@@ -38,14 +38,10 @@ export function formatAccountCurrency(
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  try {
-    return Money.fromCurrencyCode({ amount, currencyCode: currency }).format({
-      locale: 'en-GB',
-      ...options,
-    });
-  } catch {
-    return `${currency} ${amount.toFixed(2)}`;
-  }
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format({
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 export function getAccountInitials(name: string): string {

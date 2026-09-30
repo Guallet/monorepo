@@ -19,6 +19,7 @@ function getProgressColor(isCompleted: boolean, isOverdue: boolean): string {
 
 interface SavingGoalRowProps {
   savingGoal: SavingGoalDto;
+  currency: string;
   onClick: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -26,6 +27,7 @@ interface SavingGoalRowProps {
 
 export function SavingGoalRow({
   savingGoal,
+  currency,
   onClick,
   onEdit,
   onDelete,
@@ -119,12 +121,12 @@ export function SavingGoalRow({
           <Text size="sm" fw={500}>
             {Money.fromCurrencyCode({
               amount: currentAmount,
-              currencyCode: 'GBP',
+              currencyCode: currency,
             }).format()}{' '}
             /{' '}
             {Money.fromCurrencyCode({
               amount: targetAmount,
-              currencyCode: 'GBP',
+              currencyCode: currency,
             }).format()}
           </Text>
         </Group>

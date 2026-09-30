@@ -1,3 +1,5 @@
+import { Money } from '@guallet/money';
+
 export type BuyerType = 'standard' | 'firstTimeBuyer' | 'additionalProperty';
 
 export interface StampDutyValues {
@@ -21,7 +23,8 @@ export interface StampDutyResult {
 }
 
 function roundCurrency(value: number): number {
-  return Math.round(value * 100) / 100;
+  return Money.fromCurrencyCode({ amount: value, currencyCode: 'GBP' }).round()
+    .amount;
 }
 
 interface Band {
@@ -32,11 +35,9 @@ interface Band {
 
 function formatBandLabel(min: number, max: number | null): string {
   const fmt = (n: number) =>
-    new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'GBP',
-      maximumFractionDigits: 0,
-    }).format(n);
+    Money.fromCurrencyCode({ amount: n, currencyCode: 'GBP' }).format({
+      locale: 'en-GB',
+    });
   return max === null ? `Over ${fmt(min)}` : `${fmt(min)} – ${fmt(max)}`;
 }
 
