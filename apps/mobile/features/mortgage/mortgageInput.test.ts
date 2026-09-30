@@ -56,5 +56,28 @@ describe('mobile mortgage inputs', () => {
         oneOffOverpaymentMonth: '301',
       }).errors.oneOffOverpaymentMonth,
     ).toBeTruthy();
+    expect(
+      parseMortgageInput({
+        ...DEFAULT_MORTGAGE_INPUT,
+        termYears: '10',
+        oneOffOverpayment: '0',
+        oneOffOverpaymentMonth: '300',
+      }).errors.oneOffOverpaymentMonth,
+    ).toBeUndefined();
+  });
+
+  it('rejects a baseline that pays off after the selected term', () => {
+    const parsed = parseMortgageInput({
+      ...DEFAULT_MORTGAGE_INPUT,
+      principal: '6.18',
+      annualInterestRate: '7.403',
+      termYears: '20',
+      monthlyOverpayment: '0',
+    });
+
+    expect(parsed.values).toBeNull();
+    expect(parsed.errors.principal).toBe(
+      'This balance and rate cannot be repaid within the term.',
+    );
   });
 });

@@ -90,6 +90,7 @@ export function parseMortgageInput(input: MortgageInput): {
     errors.oneOffOverpayment = 'Enter zero or a positive one-off amount.';
   }
   if (
+    oneOffOverpayment > 0 &&
     oneOffOverpaymentMonth !== null &&
     (!Number.isSafeInteger(oneOffOverpaymentMonth) ||
       oneOffOverpaymentMonth < 1 ||
@@ -116,7 +117,10 @@ export function parseMortgageInput(input: MortgageInput): {
     oneOffOverpayment: 0,
     oneOffOverpaymentMonth: null,
   });
-  if (baseline.schedule.at(-1)?.remainingBalance !== 0) {
+  if (
+    baseline.schedule.at(-1)?.remainingBalance !== 0 ||
+    baseline.summary.payoffMonths > termYears * 12
+  ) {
     errors.principal =
       'This balance and rate cannot be repaid within the term.';
     return { values: null, errors };

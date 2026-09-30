@@ -74,6 +74,22 @@ describe('mortgage calculations shared by web and mobile', () => {
     ).toBe(0);
   });
 
+  it('absorbs a rounding residue in the final scheduled month', () => {
+    const scenario = calculateMortgageScenario({
+      ...values,
+      annualInterestRate: 4.01,
+      termYears: 30,
+      monthlyOverpayment: 0,
+    });
+
+    expect(scenario.summary.payoffMonths).toBe(360);
+    expect(scenario.schedule.at(-1)?.remainingBalance).toBe(0);
+    expect(scenario.schedule.at(-1)?.totalPaid).toBeCloseTo(
+      scenario.summary.scheduledMonthlyPayment,
+      0,
+    );
+  });
+
   it('keeps chart and annual totals aligned with the schedule', () => {
     const base = baseline();
     const extra = calculateMortgageScenario(values);

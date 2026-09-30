@@ -161,6 +161,12 @@ export function calculateMortgageScenario(
   let cumulativeInterest = 0;
   let cumulativePrincipal = 0;
   const schedule: MortgagePaymentRow[] = [];
+  // Allow at most one cent of accumulated interest rounding per month,
+  // capped at 1% of the scheduled payment to avoid a large final payment.
+  const roundingTolerance = Math.min(
+    totalMonths / 100,
+    scheduledPayment * 0.01,
+  );
 
   for (
     let monthNumber = 1;
@@ -176,10 +182,17 @@ export function calculateMortgageScenario(
       0,
       scheduledPayment - interestPaid,
     );
-    const principalPaid = Math.min(
+    let principalPaid = Math.min(
       balance,
       roundCurrency(scheduledPrincipalTarget),
     );
+    // Absorb only the rounding residue at the end of the selected term.
+    if (
+      monthNumber === totalMonths &&
+      balance - principalPaid <= roundingTolerance
+    ) {
+      principalPaid = balance;
+    }
     const extraRequested = roundCurrency(
       monthlyOverpayment +
         (oneOffOverpaymentMonth === monthNumber ? oneOffOverpayment : 0),
