@@ -15,6 +15,7 @@ import { useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
 import {
+  BuildingBankIcon,
   CalculatorIcon,
   FileImportIcon,
   HomeIcon,
@@ -288,6 +289,12 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         <SettingsSection title="Tools">
+          <SettingsRow
+            icon={<BuildingBankIcon size={22} color={colors.accent.primary} />}
+            label="Mortgage calculator"
+            onPress={() => router.push('/tools/mortgage')}
+            value="Compare repayments and overpayments"
+          />
           <SettingsRow
             icon={<CalculatorIcon size={22} color={colors.accent.primary} />}
             label="Loan calculator"
