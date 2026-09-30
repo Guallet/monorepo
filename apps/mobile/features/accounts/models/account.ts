@@ -1,5 +1,6 @@
 import { AccountTypeDto } from '@guallet/api-client';
-import { Money, type MoneyFormatOptions } from '@guallet/money';
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 
 export const ACCOUNT_TYPE_OPTIONS: Array<{
   type: AccountTypeDto;
@@ -38,7 +39,7 @@ export function formatAccountCurrency(
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format({
+  return formatMoney(amount, currency, {
     locale: 'en-GB',
     ...options,
   });

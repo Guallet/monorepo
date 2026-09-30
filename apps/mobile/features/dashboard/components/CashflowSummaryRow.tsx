@@ -1,5 +1,5 @@
 import type { MoneyFormatOptions } from '@guallet/money';
-import { Money } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTransactionsWithFilter } from '@guallet/api-react';
@@ -16,10 +16,11 @@ function formatCurrency(
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  return Money.fromCurrencyCode({
-    amount: amount,
-    currencyCode: currency,
-  }).format({ locale: 'en-GB', ...options });
+  return formatMoney(amount, currency, {
+    locale: 'en-GB',
+    useSymbol: false,
+    ...options,
+  });
 }
 
 interface CashflowSummaryRowProps {

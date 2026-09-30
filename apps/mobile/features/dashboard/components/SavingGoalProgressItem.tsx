@@ -1,5 +1,5 @@
 import type { MoneyFormatOptions } from '@guallet/money';
-import { Money } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { StyleSheet, Text, View } from 'react-native';
 import { SavingGoalDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
@@ -9,10 +9,7 @@ function formatCurrency(
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  return Money.fromCurrencyCode({
-    amount: amount,
-    currencyCode: currency,
-  }).format({ locale: 'en-GB', ...options });
+  return formatMoney(amount, currency, { locale: 'en-GB', ...options });
 }
 
 interface SavingGoalProgressItemProps {

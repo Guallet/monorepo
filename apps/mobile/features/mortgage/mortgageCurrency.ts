@@ -1,13 +1,10 @@
 import type { MoneyFormatOptions } from '@guallet/money';
-import { Money } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 
 export function formatMortgageMoney(
   value: number,
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  return Money.fromCurrencyCode({
-    amount: value,
-    currencyCode: currency,
-  }).format(options);
+  return formatMoney(value, currency, options);
 }

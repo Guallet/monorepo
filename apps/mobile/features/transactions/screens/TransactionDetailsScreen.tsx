@@ -6,6 +6,7 @@ import {
   useTransactionMutations,
 } from '@guallet/api-react';
 import { UpdateTransactionRequest } from '@guallet/api-client';
+import { ISO4217Currencies } from '@guallet/money';
 import {
   Button,
   DateInput,
@@ -131,8 +132,8 @@ export function TransactionDetailsScreen({
       setError('Enter a valid amount.');
       return;
     }
-    if (!/^[A-Z]{3}$/.test(currency)) {
-      setError('Currency must be a three-letter code, such as GBP.');
+    if (!ISO4217Currencies[currency]) {
+      setError('Choose a supported currency code, such as GBP.');
       return;
     }
     if (!form.date) {

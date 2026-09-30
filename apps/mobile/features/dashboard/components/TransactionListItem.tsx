@@ -1,5 +1,5 @@
 import type { MoneyFormatOptions } from '@guallet/money';
-import { Money } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 import { StyleSheet, Text, View } from 'react-native';
 import { TransactionDto } from '@guallet/api-client';
 import { useCategory } from '@guallet/api-react';
@@ -31,10 +31,11 @@ function formatCurrency(
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  return Money.fromCurrencyCode({
-    amount: Math.abs(amount),
-    currencyCode: currency,
-  }).format({ locale: 'en-GB', ...options });
+  return formatMoney(Math.abs(amount), currency, {
+    locale: 'en-GB',
+    useSymbol: false,
+    ...options,
+  });
 }
 
 interface TransactionListItemProps {
