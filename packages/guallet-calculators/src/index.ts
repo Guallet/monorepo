@@ -10,3 +10,10 @@ export type {
   LoanScenarioResult,
   LoanSummary,
 } from './loan';
+export { calculateStampDuty, normalizeStampDutyValues } from './stampDuty';
+export type {
+  BuyerType,
+  StampDutyBandResult,
+  StampDutyResult,
+  StampDutyValues,
+} from './stampDuty';
