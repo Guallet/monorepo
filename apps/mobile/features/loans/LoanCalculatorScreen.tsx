@@ -26,17 +26,13 @@ import {
   type LoanField,
   type LoanInput,
 } from './loanInput';
+import {
+  formatLoanMoney as money,
+  getLoanCurrencyDecimalPlaces,
+} from './loanCurrency';
 
 type Mode = 'calculator' | 'compare' | 'schedule';
 type Side = 'a' | 'b';
-
-function money(value: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
 
 function Card({ children }: Readonly<{ children: React.ReactNode }>) {
   const { colors, spacing, borderRadius } = useTheme();
@@ -87,6 +83,7 @@ function MetricRow({
         {
           borderBottomColor: colors.surface.border.primary,
           paddingVertical: spacing.sm,
+          gap: spacing.sm,
         },
       ]}
     >
@@ -141,7 +138,11 @@ function Segment({
           onPress={() => onChange(option.value)}
           style={[
             styles.segmentButton,
-            { borderRadius: borderRadius.md, paddingVertical: spacing.sm },
+            {
+              borderRadius: borderRadius.md,
+              paddingVertical: spacing.sm,
+              minHeight: spacing.xxl + spacing.xs,
+            },
             value === option.value && {
               backgroundColor: colors.surface.background.primary,
             },
@@ -170,14 +171,16 @@ function LoanFields({
   onChange,
   title,
   currency,
+  decimalPlaces,
 }: Readonly<{
   input: LoanInput;
   onChange: (field: LoanField, text: string) => void;
   title: string;
   currency: string;
+  decimalPlaces: number;
 }>) {
   const { colors, typography } = useTheme();
-  const { errors } = parseLoanInput(input);
+  const { errors } = parseLoanInput(input, decimalPlaces);
   const fields: {
     key: LoanField;
     label: string;
@@ -320,15 +323,12 @@ function Comparison({
   return (
     <>
       <View
-        style={[
-          styles.verdict,
-          {
-            backgroundColor: colors.surface.background.input,
-            borderRadius: borderRadius.lg,
-            padding: spacing.md,
-            marginBottom: spacing.md,
-          },
-        ]}
+        style={{
+          backgroundColor: colors.surface.background.input,
+          borderRadius: borderRadius.lg,
+          padding: spacing.md,
+          marginBottom: spacing.md,
+        }}
       >
         <Text
           style={{
@@ -342,10 +342,26 @@ function Comparison({
       </View>
       <Card>
         <SectionTitle>Compare results</SectionTitle>
-        <View style={styles.comparisonRow}>
-          <Text style={styles.compareValue}>Loan A</Text>
-          <Text style={styles.compareLabel}>Metric</Text>
-          <Text style={[styles.compareValue, styles.alignRight]}>Loan B</Text>
+        <View style={[styles.comparisonRow, { gap: spacing.xs }]}>
+          <Text
+            style={[styles.compareValue, { fontSize: typography.sizes.xs }]}
+          >
+            Loan A
+          </Text>
+          <Text
+            style={[styles.compareLabel, { fontSize: typography.sizes.xs }]}
+          >
+            Metric
+          </Text>
+          <Text
+            style={[
+              styles.compareValue,
+              styles.alignRight,
+              { fontSize: typography.sizes.xs },
+            ]}
+          >
+            Loan B
+          </Text>
         </View>
         {metrics.map(([label, valueA, valueB]) => (
           <View
@@ -353,8 +369,9 @@ function Comparison({
             style={[
               styles.comparisonRow,
               {
+                gap: spacing.xs,
                 borderTopColor: colors.surface.border.primary,
-                borderTopWidth: 1,
+                borderTopWidth: StyleSheet.hairlineWidth,
                 paddingVertical: spacing.md,
               },
             ]}
@@ -366,13 +383,17 @@ function Comparison({
                   color:
                     valueA < valueB ? colors.support.dark : colors.text.primary,
                   fontVariant: ['tabular-nums'],
+                  fontSize: typography.sizes.xs,
                 },
               ]}
             >
               {money(valueA, currency)}
             </Text>
             <Text
-              style={[styles.compareLabel, { color: colors.text.secondary }]}
+              style={[
+                styles.compareLabel,
+                { color: colors.text.secondary, fontSize: typography.sizes.xs },
+              ]}
             >
               {label}
             </Text>
@@ -384,6 +405,7 @@ function Comparison({
                   color:
                     valueB < valueA ? colors.support.dark : colors.text.primary,
                   fontVariant: ['tabular-nums'],
+                  fontSize: typography.sizes.xs,
                 },
               ]}
             >
@@ -396,22 +418,33 @@ function Comparison({
             styles.comparisonRow,
             {
               borderTopColor: colors.surface.border.primary,
-              borderTopWidth: 1,
+              borderTopWidth: StyleSheet.hairlineWidth,
               paddingTop: spacing.md,
+              gap: spacing.xs,
             },
           ]}
         >
-          <Text style={[styles.compareValue, { color: colors.text.primary }]}>
+          <Text
+            style={[
+              styles.compareValue,
+              { color: colors.text.primary, fontSize: typography.sizes.xs },
+            ]}
+          >
             {a.summary.payoffMonths} mo
           </Text>
-          <Text style={[styles.compareLabel, { color: colors.text.secondary }]}>
+          <Text
+            style={[
+              styles.compareLabel,
+              { color: colors.text.secondary, fontSize: typography.sizes.xs },
+            ]}
+          >
             Term
           </Text>
           <Text
             style={[
               styles.compareValue,
               styles.alignRight,
-              { color: colors.text.primary },
+              { color: colors.text.primary, fontSize: typography.sizes.xs },
             ]}
           >
             {b.summary.payoffMonths} mo
@@ -433,15 +466,18 @@ export default function LoanCalculatorScreen() {
   );
   const [editing, setEditing] = useState<Side>('a');
   const [scheduleSide, setScheduleSide] = useState<Side>('a');
-  const parsedA = parseLoanInput(loanA);
-  const parsedB = parseLoanInput(loanB);
+  const currency = defaultCurrency || 'GBP';
+  const decimalPlaces = getLoanCurrencyDecimalPlaces(currency);
+  const parsedA = parseLoanInput(loanA, decimalPlaces);
+  const parsedB = parseLoanInput(loanB, decimalPlaces);
   let resultA: LoanScenarioResult | null = null;
   let resultB: LoanScenarioResult | null = null;
-  if (parsedA.values) resultA = calculateLoanSchedule(parsedA.values);
-  if (parsedB.values) resultB = calculateLoanSchedule(parsedB.values);
+  if (parsedA.values)
+    resultA = calculateLoanSchedule(parsedA.values, decimalPlaces);
+  if (parsedB.values)
+    resultB = calculateLoanSchedule(parsedB.values, decimalPlaces);
   let scheduleResult = resultA;
   if (scheduleSide === 'b') scheduleResult = resultB;
-  const currency = defaultCurrency || 'GBP';
   let keyboardBehavior: 'padding' | undefined;
   if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
@@ -475,16 +511,6 @@ export default function LoanCalculatorScreen() {
         headerOptions={{
           headerBackVisible: false,
           gestureEnabled: false,
-          headerLeft: () => (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Back to loan calculator"
-              hitSlop={12}
-              onPress={() => setMode(returnMode)}
-            >
-              <ChevronLeftIcon size={24} color={colors.text.primary} />
-            </Pressable>
-          ),
         }}
       >
         <FlatList
@@ -493,6 +519,22 @@ export default function LoanCalculatorScreen() {
           contentContainerStyle={{ padding: spacing.md }}
           ListHeaderComponent={
             <>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Back to loan calculator"
+                hitSlop={spacing.sm}
+                onPress={() => setMode(returnMode)}
+                style={{
+                  alignSelf: 'flex-start',
+                  paddingVertical: spacing.sm,
+                  marginBottom: spacing.sm,
+                }}
+              >
+                <ChevronLeftIcon
+                  size={typography.sizes.xl}
+                  color={colors.text.primary}
+                />
+              </Pressable>
               <Segment
                 options={[
                   { value: 'a', label: 'Loan A' },
@@ -558,7 +600,10 @@ export default function LoanCalculatorScreen() {
   }
 
   return (
-    <AppScreen headerTitle="Loan calculator">
+    <AppScreen
+      headerTitle="Loan calculator"
+      headerOptions={{ headerBackVisible: true, gestureEnabled: true }}
+    >
       <KeyboardAvoidingView behavior={keyboardBehavior} style={styles.flex}>
         <ScrollView
           contentContainerStyle={{ padding: spacing.md }}
@@ -611,6 +656,7 @@ export default function LoanCalculatorScreen() {
                 onChange={changeA}
                 title="Your loan"
                 currency={currency}
+                decimalPlaces={decimalPlaces}
               />
               {resultA && (
                 <Card>
@@ -690,6 +736,7 @@ export default function LoanCalculatorScreen() {
                 onChange={activeChange}
                 title={activeTitle}
                 currency={currency}
+                decimalPlaces={decimalPlaces}
               />
               <Pressable
                 accessibilityRole="button"
@@ -720,25 +767,22 @@ export default function LoanCalculatorScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  card: { borderWidth: 1, elevation: 1 },
+  card: { borderWidth: StyleSheet.hairlineWidth, elevation: 1 },
   metricRow: {
     alignItems: 'center',
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8,
   },
   segment: { flexDirection: 'row' },
   segmentButton: {
     alignItems: 'center',
     flex: 1,
-    minHeight: 42,
     justifyContent: 'center',
   },
-  verdict: {},
-  comparisonRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
-  compareValue: { flex: 1, fontSize: 12, fontWeight: '700' },
-  compareLabel: { flex: 1, fontSize: 11, textAlign: 'center' },
+  comparisonRow: { alignItems: 'center', flexDirection: 'row' },
+  compareValue: { flex: 1, fontWeight: '700' },
+  compareLabel: { flex: 1, textAlign: 'center' },
   alignRight: { textAlign: 'right' },
-  scheduleRow: { borderBottomWidth: 1 },
+  scheduleRow: { borderBottomWidth: StyleSheet.hairlineWidth },
 });

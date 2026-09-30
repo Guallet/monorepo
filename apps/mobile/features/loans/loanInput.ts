@@ -20,7 +20,10 @@ export const DEFAULT_LOAN_B: LoanInput = {
   arrangementFee: '150',
 };
 
-export function parseLoanInput(input: LoanInput): {
+export function parseLoanInput(
+  input: LoanInput,
+  decimalPlaces = 2,
+): {
   values: LoanCalculatorValues | null;
   errors: Partial<Record<LoanField, string>>;
 } {
@@ -28,7 +31,15 @@ export function parseLoanInput(input: LoanInput): {
   const raw = (field: LoanField) => input[field].trim().replace(',', '.');
   const parse = (field: LoanField) => {
     const value = raw(field);
-    if (value === '' || !/^\d+(\.\d{1,2})?$/.test(value)) return NaN;
+    const places =
+      field === 'annualInterestRate'
+        ? 2
+        : field === 'termMonths'
+          ? 0
+          : decimalPlaces;
+    const pattern =
+      places === 0 ? /^\d+$/ : new RegExp(`^\\d+(\\.\\d{1,${places}})?$`);
+    if (!pattern.test(value)) return Number.NaN;
     return Number(value);
   };
   const amount = parse('amount');
@@ -60,7 +71,12 @@ export function parseLoanInput(input: LoanInput): {
     !errors.amount &&
     !errors.annualInterestRate &&
     !errors.termMonths &&
-    calculateMonthlyPayment(amount, annualInterestRate, termMonths) === 0
+    calculateMonthlyPayment(
+      amount,
+      annualInterestRate,
+      termMonths,
+      decimalPlaces,
+    ) === 0
   ) {
     errors.amount =
       'Increase the amount or shorten the term to produce a monthly payment.';
@@ -70,9 +86,11 @@ export function parseLoanInput(input: LoanInput): {
       amount,
       annualInterestRate,
       termMonths,
+      decimalPlaces,
     );
+    const scale = 10 ** decimalPlaces;
     const firstMonthInterest =
-      Math.round((amount * annualInterestRate * 100) / 1200) / 100;
+      Math.round((amount * annualInterestRate * scale) / 1200) / scale;
     if (payment <= firstMonthInterest) {
       errors.amount =
         'Increase the amount or shorten the term so the balance can fall.';

@@ -54,4 +54,21 @@ describe('loan input validation', () => {
       }).errors.amount,
     ).toBeDefined();
   });
+
+  it('validates amounts using the selected currency precision', () => {
+    expect(
+      parseLoanInput({ ...DEFAULT_LOAN_A, amount: '10000.5' }, 0).errors.amount,
+    ).toBeDefined();
+    expect(
+      parseLoanInput(
+        { ...DEFAULT_LOAN_A, amount: '10000.123', arrangementFee: '0.001' },
+        3,
+      ).values,
+    ).toEqual({
+      amount: 10000.123,
+      annualInterestRate: 6.9,
+      termMonths: 60,
+      arrangementFee: 0.001,
+    });
+  });
 });

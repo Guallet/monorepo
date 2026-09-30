@@ -64,6 +64,44 @@ describe('loan calculations shared by web and mobile', () => {
     expect(result.schedule.at(-1)?.remainingBalance).toBe(0);
   });
 
+  it('uses the selected currency precision throughout the schedule', () => {
+    const yen = calculateLoanSchedule(
+      {
+        amount: 10000,
+        annualInterestRate: 6.9,
+        termMonths: 60,
+        arrangementFee: 50,
+      },
+      0,
+    );
+    expect(yen.schedule.at(-1)?.remainingBalance).toBe(0);
+    expect(
+      yen.schedule.every((row) =>
+        [
+          row.payment,
+          row.interestPaid,
+          row.principalPaid,
+          row.remainingBalance,
+        ].every(Number.isInteger),
+      ),
+    ).toBe(true);
+    expect(Number.isInteger(yen.summary.totalCost)).toBe(true);
+
+    const dinars = calculateLoanSchedule(
+      {
+        amount: 1200.123,
+        annualInterestRate: 0,
+        termMonths: 12,
+        arrangementFee: 0.001,
+      },
+      3,
+    );
+    expect(dinars.summary.monthlyPayment).toBe(100.01);
+    expect(dinars.summary.totalCost).toBe(1200.124);
+    expect(dinars.schedule.at(-1)?.remainingBalance).toBe(0);
+    expect(dinars.schedule.at(-1)?.payment).toBe(100.013);
+  });
+
   it('normalizes lower bounds consistently with the web behaviour', () => {
     expect(
       normalizeLoanValues({
