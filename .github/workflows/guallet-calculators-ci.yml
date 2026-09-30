@@ -1,0 +1,60 @@
+name: CI - guallet-calculators
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/guallet-calculators/**'
+      - '.github/workflows/guallet-calculators-ci.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'packages/guallet-calculators/**'
+      - '.github/workflows/guallet-calculators-ci.yml'
+
+jobs:
+  test-and-lint:
+    name: Test & Lint @guallet/calculators
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [24.20.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.1
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        working-directory: packages/guallet-calculators
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint @guallet/calculators
+        working-directory: packages/guallet-calculators
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Run type check
+        working-directory: packages/guallet-calculators
+        run: pnpm typecheck
+
+      - name: Run unit tests (@guallet/calculators)
+        working-directory: packages/guallet-calculators
+        run: pnpm test
