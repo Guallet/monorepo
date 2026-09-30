@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guallet mobile · Institution avatars</title>
+    <style>
+      * { box-sizing: border-box; }
+      :root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: #231f20; background: #edf3f7; }
+      body { margin: 0; }
+      .board { max-width: 1370px; margin: auto; padding: 42px 28px 60px; }
+      .eyebrow { margin: 0 0 8px; color: #425563; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+      h1 { margin: 0; color: #003087; font-size: 38px; letter-spacing: -.02em; }
+      .intro { max-width: 850px; margin: 10px 0 30px; color: #425563; font-size: 16px; line-height: 1.5; }
+      .grid { display: grid; grid-template-columns: repeat(3, 390px); gap: 28px; justify-content: center; }
+      .design h2 { margin: 0 0 8px; color: #003087; font-size: 18px; }
+      .design > p { min-height: 42px; margin: 0 0 12px; color: #425563; font-size: 14px; line-height: 1.4; }
+      .phone { position: relative; width: 390px; height: 844px; overflow: hidden; border: 6px solid #231f20; border-radius: 38px; background: #f7fafc; color: #000; box-shadow: 0 12px 30px rgba(0,48,135,.12); }
+      .status { display: flex; justify-content: space-between; align-items: center; height: 43px; padding: 6px 23px 0; font-size: 13px; font-weight: 700; }
+      .camera { position: absolute; top: 10px; left: 50%; width: 83px; height: 19px; transform: translateX(-50%); border-radius: 12px; background: #231f20; }
+      .screen { height: 747px; padding: 15px 16px 24px; overflow: hidden; }
+      .top { display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px; }
+      .top h3 { margin: 0 0 4px; font-size: 32px; letter-spacing: -.02em; }
+      .top p { margin: 0; color: #768692; font-size: 14px; }
+      .add { display: grid; min-width: 75px; height: 38px; place-items: center; margin-top: 2px; border-radius: 8px; background: #005eb8; color: #fff; font-size: 14px; font-weight: 600; }
+      .summary { padding: 23px 24px 19px; border-radius: 16px; background: #005eb8; color: #fff; }
+      .summary small { display: block; color: rgba(255,255,255,.8); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+      .summary strong { display: block; margin: 7px 0 2px; font-size: 30px; font-variant-numeric: tabular-nums; }
+      .summary p { margin: 0 0 16px; color: rgba(255,255,255,.8); font-size: 12px; }
+      .summary-foot { display: flex; justify-content: space-between; padding-top: 13px; border-top: 1px solid rgba(255,255,255,.25); font-size: 12px; }
+      .search-label { display: block; margin: 15px 0 5px; font-size: 14px; font-weight: 600; }
+      .search { display: flex; align-items: center; height: 50px; padding: 0 14px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f0f9ff; color: #768692; font-size: 14px; }
+      .search svg { width: 19px; height: 19px; margin-right: 9px; fill: none; stroke: #768692; stroke-width: 1.7; }
+      .group { overflow: hidden; margin-top: 16px; border: 1px solid #e8edee; border-radius: 16px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+      .group-head { display: flex; align-items: center; gap: 11px; min-height: 63px; padding: 12px 16px; border-bottom: 1px solid #e8edee; }
+      .group-icon { display: grid; flex: none; width: 38px; height: 38px; place-items: center; border-radius: 8px; background: #e1f0ff; color: #005eb8; font-size: 19px; }
+      .group-title { flex: 1; }
+      .group-title b { display: block; font-size: 15px; }
+      .group-title small { color: #768692; font-size: 12px; }
+      .group-total { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .row { display: flex; align-items: center; gap: 12px; min-height: 66px; padding: 8px 16px; border-bottom: 1px solid #e8edee; }
+      .row:last-child { border-bottom: 0; }
+      .avatar { display: grid; flex: none; width: 42px; height: 42px; place-items: center; overflow: hidden; border: 1px solid #e8edee; border-radius: 50%; background: #fff; }
+      .avatar.large { width: 58px; height: 58px; }
+      .avatar svg { width: 72%; height: 72%; }
+      .avatar.initials { border-color: #90b6cf; background: #e2f0f9; color: #255673; font-size: 13px; font-weight: 700; letter-spacing: -.03em; }
+      .avatar.initials.large { font-size: 17px; }
+      .account { flex: 1; min-width: 0; }
+      .account b { display: block; overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+      .account small { display: block; margin-top: 4px; overflow: hidden; color: #768692; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+      .balance { flex: none; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .balance.negative { color: #da291c; }
+      .chevron { margin-left: -5px; color: #768692; font-size: 23px; }
+      .nav { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 18px; background: #fff; }
+      .nav .back { color: #005eb8; font-size: 31px; line-height: 1; }
+      .nav b { font-size: 16px; }
+      .nav .edit { color: #005eb8; font-size: 16px; font-weight: 600; }
+      .detail-screen { height: 745px; padding: 16px; overflow: hidden; }
+      .hero, .panel { border: 1px solid #e8edee; border-radius: 16px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+      .hero { padding: 24px; }
+      .hero-head { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+      .hero-head b { display: block; font-size: 20px; }
+      .hero-head small { display: block; margin-top: 4px; color: #768692; font-size: 14px; }
+      .hero label { color: #768692; font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+      .hero .hero-balance { display: block; margin: 7px 0 3px; font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .hero .source { color: #768692; font-size: 12px; }
+      .panel { margin-top: 16px; padding: 17px 16px; }
+      .panel-head { display: flex; justify-content: space-between; align-items: baseline; }
+      .panel-head b { font-size: 20px; }
+      .panel-head small { color: #768692; font-size: 12px; }
+      .chart { display: flex; align-items: end; gap: 8px; height: 143px; margin-top: 14px; }
+      .chart div { flex: 1; height: 116px; display: flex; align-items: end; border-radius: 4px; background: #f5f5f5; }
+      .chart i { display: block; width: 100%; height: var(--h); border-radius: 3px; background: #005eb8; }
+      .panel .activity { display: flex; justify-content: space-between; padding-top: 15px; margin-top: 15px; border-top: 1px solid #e8edee; font-size: 14px; }
+      .activity strong { font-variant-numeric: tabular-nums; }
+      .activity strong.negative { color: #da291c; }
+      .activity small { display: block; margin-top: 4px; color: #768692; font-size: 12px; }
+      .tabs { position: absolute; right: 0; bottom: 0; left: 0; display: flex; height: 66px; justify-content: space-around; padding-top: 9px; border-top: 1px solid #e8edee; background: #fff; }
+      .tab { display: grid; min-width: 55px; gap: 1px; justify-items: center; color: #768692; font-size: 10px; }
+      .tab svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+      .tab.active { color: #005eb8; font-weight: 700; }
+      .home { position: absolute; bottom: 5px; left: 50%; width: 118px; height: 4px; transform: translateX(-50%); border-radius: 4px; background: #231f20; }
+      .callout { margin: 16px 0 0; padding: 14px 16px; border: 1px solid #dce5eb; border-radius: 12px; background: #fff; color: #425563; font-size: 13px; line-height: 1.45; }
+      .callout b { color: #003087; }
+      footer { max-width: 980px; margin-top: 26px; color: #425563; font-size: 13px; line-height: 1.5; }
+      footer a { color: #005eb8; }
+      @media (max-width: 1320px) { .grid { grid-template-columns: repeat(2, 390px); } }
+      @media (max-width: 850px) { .board { padding: 28px 12px 48px; } h1 { font-size: 30px; } .grid { grid-template-columns: 390px; } }
+      @media (max-width: 410px) { .grid { grid-template-columns: minmax(0, 1fr); } .phone { width: 100%; } }
+    </style>
+  </head>
+  <body>
+    <main class="board">
+      <p class="eyebrow">Guallet · Mobile accounts · PR #284</p>
+      <h1>Institution avatars</h1>
+      <p class="intro">Institution marks identify linked accounts in the list and detail view. When a mark is unavailable or fails to load, the avatar uses the account’s initials in the same circular frame.</p>
+      <div class="grid">
+        <section class="design">
+          <h2>01 · Accounts list</h2>
+          <p>Logo and initials avatars share 42 px geometry, so names and balances stay aligned.</p>
+          <div class="phone"><div class="status">9:41 <span>▰▰▰ ◔ ▰</span></div><div class="camera"></div><div class="screen"><div class="top"><div><h3>Accounts</h3><p>Everything you own, in one place</p></div><span class="add">+ Add</span></div><div class="summary"><small>NET WORTH</small><strong>£24,682.40</strong><p>3 accounts · 1 currency</p><div class="summary-foot"><span>GBP</span><span>Assets £25,322.40</span><span>Liabilities £640.00</span></div></div><label class="search-label">Search accounts</label><div class="search"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg>Search by account name</div><div class="group"><div class="group-head"><span class="group-icon">▣</span><span class="group-title"><b>Current accounts</b><small>2 accounts</small></span><strong class="group-total">£5,702.40</strong></div><div class="row"><span class="avatar"><svg viewBox="0 0 40 40" aria-label="North Bank logo"><circle cx="20" cy="20" r="18" fill="#005eb8"/><path d="M12 28V12l16 16V12" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></span><span class="account"><b>Everyday account</b><small>North Bank · GBP</small></span><strong class="balance">£6,342.40</strong><span class="chevron">›</span></div><div class="row"><span class="avatar initials">HC</span><span class="account"><b>Household card</b><small>Credit card · GBP</small></span><strong class="balance negative">−£640.00</strong><span class="chevron">›</span></div></div><div class="group"><div class="group-head"><span class="group-icon">◇</span><span class="group-title"><b>Savings accounts</b><small>1 account</small></span><strong class="group-total">£18,980.00</strong></div><div class="row"><span class="avatar"><svg viewBox="0 0 40 40" aria-label="Harbour logo"><circle cx="20" cy="20" r="18" fill="#006747"/><path d="M11 26V13m0 7h18m0-7v13M12 27h17" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></svg></span><span class="account"><b>Rainy day savings</b><small>Harbour · GBP</small></span><strong class="balance">£18,980.00</strong><span class="chevron">›</span></div></div></div><div class="tabs"><div class="tab"><svg viewBox="0 0 24 24"><path d="m3 11 9-7 9 7v9H3z"/></svg>Dashboard</div><div class="tab active"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Accounts</div><div class="tab"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Transactions</div><div class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12V3M12 12l7 5"/></svg>Budgets</div><div class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Settings</div></div><div class="home"></div></div>
+          <div class="callout"><b>List rule:</b> use the institution image when available; keep the account name and balance as the main text.</div>
+        </section>
+        <section class="design">
+          <h2>02 · Account detail with logo</h2>
+          <p>The same institution mark grows to 58 px in the account hero.</p>
+          <div class="phone"><div class="status">9:41 <span>▰▰▰ ◔ ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span><b>Everyday account</b><span class="edit">Edit</span></div><div class="detail-screen"><div class="hero"><div class="hero-head"><span class="avatar large"><svg viewBox="0 0 40 40" aria-label="North Bank logo"><circle cx="20" cy="20" r="18" fill="#005eb8"/><path d="M12 28V12l16 16V12" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></span><span><b>Everyday account</b><small>Current account · GBP</small></span></div><label>CURRENT BALANCE</label><strong class="hero-balance">£6,342.40</strong><span class="source">Synced with North Bank</span></div><div class="panel"><div class="panel-head"><b>Balance history</b><small>Current month</small></div><div class="chart"><div><i style="--h:44%"></i></div><div><i style="--h:58%"></i></div><div><i style="--h:55%"></i></div><div><i style="--h:72%"></i></div><div><i style="--h:67%"></i></div><div><i style="--h:86%"></i></div></div></div><div class="panel"><div class="panel-head"><b>Transactions this month</b><small>3 shown</small></div><div class="activity"><span>Supermarket<small>24 Sep 2026</small></span><strong class="negative">−£42.50</strong></div><div class="activity"><span>Payday<small>20 Sep 2026</small></span><strong>+£3,200.00</strong></div><div class="activity"><span>Coffee shop<small>18 Sep 2026</small></span><strong class="negative">−£4.80</strong></div></div></div><div class="home"></div></div>
+          <div class="callout"><b>Logo treatment:</b> centre the full image inside a white circle with a subtle border; preserve its proportions.</div>
+        </section>
+        <section class="design">
+          <h2>03 · Fallback on detail</h2>
+          <p>A missing or failed image resolves to initials from the account name, without an accent dot.</p>
+          <div class="phone"><div class="status">9:41 <span>▰▰▰ ◔ ▰</span></div><div class="camera"></div><div class="nav"><span class="back">‹</span><b>Household card</b><span class="edit">Edit</span></div><div class="detail-screen"><div class="hero"><div class="hero-head"><span class="avatar initials large">HC</span><span><b>Household card</b><small>Credit card · GBP</small></span></div><label>CURRENT BALANCE</label><strong class="hero-balance" style="color:#da291c">−£640.00</strong><span class="source">Manual account</span></div><div class="panel"><div class="panel-head"><b>Balance history</b><small>Current month</small></div><div class="chart"><div><i style="--h:61%"></i></div><div><i style="--h:55%"></i></div><div><i style="--h:63%"></i></div><div><i style="--h:71%"></i></div><div><i style="--h:75%"></i></div><div><i style="--h:87%"></i></div></div></div><div class="panel"><div class="panel-head"><b>Transactions this month</b><small>2 shown</small></div><div class="activity"><span>Energy bill<small>22 Sep 2026</small></span><strong class="negative">−£92.00</strong></div><div class="activity"><span>Train tickets<small>16 Sep 2026</small></span><strong class="negative">−£36.40</strong></div></div></div><div class="home"></div></div>
+          <div class="callout"><b>Fallback rule:</b> use account initials for an absent image and for a logo that fails to load. The avatar still announces the institution name when known.</div>
+        </section>
+      </div>
+      <footer>Design for <a href="https://github.com/Guallet/monorepo/pull/284">PR #284</a>. Illustrative institution marks and account data; no third-party logos are embedded. Interaction references: <a href="https://mobbin.com/screens/98d4c05d-94ce-4341-9657-f0751abb1447">Origin account grouping</a>, <a href="https://mobbin.com/screens/5ebdad55-b1da-40f1-b909-7dec83a0759c">Wealthfront account rows</a>, and <a href="https://mobbin.com/screens/eaee74da-3681-412e-85aa-8ed276364d4f">Oportun account detail</a>. Screen structure follows the current Guallet mobile account screens.</footer>
+    </main>
+  </body>
+</html>

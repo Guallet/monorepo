@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guallet · CSV import mobile flow · V1</title>
+    <style>
+      :root {
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #231f20;
+        background: #edf2f6;
+        --blue: #005eb8;
+        --deep-blue: #003087;
+        --page: #f7fafc;
+        --line: #e5e7eb;
+        --muted: #425563;
+        --green: #009639;
+        --red: #da291c;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      button, select { font: inherit; }
+      button { cursor: pointer; }
+      .intro { max-width: 1110px; margin: 42px auto 28px; padding: 0 22px; }
+      .eyebrow { margin: 0 0 9px; color: var(--blue); font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+      h1 { margin: 0; font-size: 30px; letter-spacing: -.025em; }
+      .intro p:last-child { color: var(--muted); margin-bottom: 0; line-height: 1.5; }
+      .gallery { max-width: 1110px; margin: 0 auto 60px; padding: 0 22px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 24px; }
+      .frame-title { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin: 0 2px 10px; }
+      .frame-title strong { font-size: 15px; }
+      .frame-title code { color: #667784; font-size: 11px; }
+      .phone { height: 694px; background: var(--page); border: 8px solid #192d3d; border-radius: 39px; overflow: hidden; box-shadow: 0 18px 38px #1e354622, 0 2px 5px #1e35462b; display: flex; flex-direction: column; position: relative; }
+      .status { height: 30px; padding: 8px 22px 0; flex: none; display: flex; justify-content: space-between; font-weight: 700; font-size: 11px; background: white; }
+      .status-icons { letter-spacing: 1px; }
+      .topbar { height: 46px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex: none; border-bottom: 1px solid #f0f2f4; }
+      .back, .close { color: var(--deep-blue); border: 0; background: none; font-size: 23px; line-height: 1; width: 30px; padding: 0; }
+      .topbar-title { font-size: 14px; font-weight: 700; }
+      .topbar-spacer { width: 30px; }
+      .scroll { flex: 1; overflow-y: auto; padding: 20px 16px 18px; scrollbar-width: thin; }
+      .step { color: var(--blue); font-size: 12px; font-weight: 700; }
+      .progress { display: flex; gap: 4px; margin: 10px 0 22px; }
+      .progress span { height: 4px; border-radius: 4px; background: #d7e3ee; flex: 1; }
+      .progress span.on { background: var(--blue); }
+      h2 { margin: 0 0 7px; font-size: 25px; letter-spacing: -.025em; line-height: 1.16; }
+      .subtitle { color: var(--muted); line-height: 1.42; font-size: 13px; margin: 0 0 20px; }
+      .card { background: white; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 1px 3px #0000000d; padding: 15px; margin-bottom: 12px; }
+      .card-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+      .small { color: var(--muted); font-size: 11px; line-height: 1.45; }
+      .file-hero { border: 2px dashed #a8c4dc; border-radius: 16px; background: #f3f8fd; text-align: center; padding: 24px 12px; margin-bottom: 12px; }
+      .file-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 10px; border-radius: 15px; color: var(--blue); background: white; font-size: 25px; box-shadow: 0 1px 3px #00000010; }
+      .file-hero strong { display: block; font-size: 15px; margin-bottom: 5px; }
+      .file-pill { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--line); border-radius: 12px; padding: 11px; margin-bottom: 12px; }
+      .file-pill .file-icon { flex: none; width: 37px; height: 37px; margin: 0; background: #e9f3fb; border-radius: 10px; font-size: 18px; }
+      .file-pill strong { font-size: 12px; display: block; }
+      .file-pill span { font-size: 11px; color: var(--muted); }
+      .checkline { display: flex; gap: 8px; font-size: 12px; margin-top: 10px; line-height: 1.4; }
+      .tick { color: var(--green); font-weight: 800; }
+      .field { margin: 0 0 13px; }
+      .field label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 700; margin-bottom: 7px; }
+      .field label span { color: #6b7881; font-size: 11px; font-weight: 400; }
+      .field select { width: 100%; appearance: none; background: #fff; border: 1px solid #cdd7df; border-radius: 9px; padding: 10px 30px 10px 10px; color: #263641; font-size: 12px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23425563' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+      .sample { color: #5e6e78; font-size: 11px; margin: 6px 0 0; }
+      .banner { display: flex; gap: 9px; background: #eaf4fc; color: #154d78; border-radius: 10px; padding: 10px 11px; font-size: 11px; line-height: 1.4; margin-bottom: 13px; }
+      .banner.warning { color: #6a5800; background: #fff9d8; }
+      .mapping-card { padding: 13px; }
+      .mapping-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 10px; }
+      .mapping-top strong { font-size: 13px; }
+      .badge { color: var(--blue); background: #e9f3fb; border-radius: 20px; padding: 4px 7px; font-size: 10px; white-space: nowrap; }
+      .source { color: #61717b; font-size: 11px; margin-bottom: 6px; }
+      .destination { border: 1px solid #cdd7df; background: white; border-radius: 9px; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; }
+      .destination em { font-style: normal; color: var(--muted); font-weight: 400; }
+      .row { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 11px 0; border-bottom: 1px solid #eef1f3; }
+      .row:last-child { border-bottom: none; }
+      .row strong { font-size: 12px; }
+      .row small { display: block; color: #667884; font-size: 10px; margin-top: 3px; }
+      .amount { font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .negative { color: var(--red); }
+      .positive { color: var(--green); }
+      .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; margin-bottom: 14px; }
+      .summary-box { border: 1px solid var(--line); background: white; border-radius: 12px; text-align: center; padding: 10px 3px; }
+      .summary-box strong { display: block; font-size: 17px; color: var(--deep-blue); }
+      .summary-box span { display: block; font-size: 9px; color: var(--muted); margin-top: 3px; }
+      .footer { flex: none; background: white; padding: 11px 16px 14px; border-top: 1px solid var(--line); }
+      .primary { width: 100%; background: var(--blue); color: white; border: 0; border-radius: 9px; height: 43px; font-size: 13px; font-weight: 700; }
+      .primary:active { background: var(--deep-blue); }
+      .secondary { width: 100%; border: 1px solid #b9cad7; color: var(--blue); background: white; border-radius: 9px; height: 38px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+      .home-indicator { height: 4px; width: 95px; margin: 11px auto 0; border-radius: 5px; background: #17232d; }
+      .result-icon { height: 66px; width: 66px; margin: 5px auto 14px; display: grid; place-items: center; background: #eaf4fc; color: var(--blue); border-radius: 50%; font-size: 29px; font-weight: 700; }
+      .result-copy { text-align: center; }
+      .result-copy h2 { font-size: 23px; }
+      .result-copy .subtitle { margin-bottom: 16px; }
+      .meter { height: 8px; background: #e4edf4; border-radius: 8px; overflow: hidden; margin: 13px 0 8px; }
+      .meter span { display: block; width: 38%; height: 100%; background: var(--blue); border-radius: inherit; }
+      .state-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 12px; }
+      .state-tabs button { font-size: 10px; border: 1px solid #bfd0dd; background: white; color: var(--muted); border-radius: 20px; padding: 5px 8px; }
+      .state-tabs button.selected { border-color: var(--blue); background: #eaf4fc; color: var(--blue); font-weight: 700; }
+      .state-details { font-size: 12px; line-height: 1.45; color: var(--muted); }
+      .reference { max-width: 1110px; margin: 0 auto 60px; padding: 0 22px; color: #566b78; font-size: 12px; line-height: 1.55; }
+      .reference a { color: var(--blue); }
+      @media (max-width: 1010px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 740px; } .intro, .reference { max-width: 740px; } }
+      @media (max-width: 680px) { .gallery { grid-template-columns: 1fr; max-width: 380px; } .intro, .reference { max-width: 380px; } h1 { font-size: 25px; } }
+    </style>
+  </head>
+  <body>
+    <header class="intro">
+      <p class="eyebrow">Guallet mobile · Design exploration 01</p>
+      <h1>Import transactions from CSV</h1>
+      <p>Six screens, one guided journey. Tap the buttons to follow the flow. The result screen also previews queued, success, partial success, and error states.</p>
+    </header>
+    <main class="gallery">
+      <section id="select">
+        <div class="frame-title"><strong>01 · Select file</strong><code>/importer/csv</code></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="status-icons">▮▮◖ ▰</span></div>
+          <div class="topbar"><button class="back" aria-label="Back">‹</button><span class="topbar-title">Import transactions</span><span class="topbar-spacer"></span></div>
+          <div class="scroll">
+            <div class="step">Step 1 of 5</div><div class="progress"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+            <h2>Bring your transactions in</h2><p class="subtitle">Choose a CSV file from your device. You can check everything before importing.</p>
+            <div class="file-hero"><div class="file-icon">▤</div><strong>Choose a CSV file</strong><div class="small">Browse files on your device</div></div>
+            <div class="file-pill"><div class="file-icon">▤</div><div><strong>transactions-september.csv</strong><span>124 rows · 48 KB · Ready to map</span></div><span class="tick" style="margin-left:auto">✓</span></div>
+            <div class="card"><div class="card-title">Before you start</div><div class="checkline"><span class="tick">✓</span><span>First row contains column names</span></div><div class="checkline"><span class="tick">✓</span><span>Includes date, amount and description</span></div><div class="checkline"><span class="tick">✓</span><span>CSV file, up to 5 MB</span></div></div>
+          </div>
+          <div class="footer"><button class="primary" onclick="go('properties')">Continue to columns</button><div class="home-indicator"></div></div>
+        </div>
+      </section>
+      <section id="properties">
+        <div class="frame-title"><strong>02 · Map columns</strong><code>/importer/csv/properties</code></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="status-icons">▮▮◖ ▰</span></div>
+          <div class="topbar"><button class="back" onclick="go('select')" aria-label="Back">‹</button><span class="topbar-title">Map columns</span><span class="topbar-spacer"></span></div>
+          <div class="scroll">
+            <div class="step">Step 2 of 5</div><div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
+            <h2>Match your columns</h2><p class="subtitle">Tell Guallet what each column means. Examples from your file are shown below.</p>
+            <div class="banner"><span>ⓘ</span><span>We found 124 rows and six columns. Date, amount and description are required.</span></div>
+            <div class="card">
+              <div class="field"><label>Date <span>Required</span></label><select><option>Transaction date</option><option>Date</option></select><p class="sample">Example: 21/09/2026</p></div>
+              <div class="field"><label>Amount <span>Required</span></label><select><option>Value</option><option>Amount</option></select><p class="sample">Example: −24.50</p></div>
+              <div class="field"><label>Description <span>Required</span></label><select><option>Merchant</option><option>Description</option></select><p class="sample">Example: Corner Coffee</p></div>
+              <div class="field"><label>Account <span>Optional</span></label><select><option>Account name</option><option>Don't map</option></select></div>
+              <div class="field"><label>Category <span>Optional</span></label><select><option>Category</option><option>Don't map</option></select></div>
+              <div class="field" style="margin-bottom:0"><label>Notes <span>Optional</span></label><select><option>Don't map</option><option>Memo</option></select></div>
+            </div>
+          </div>
+          <div class="footer"><button class="primary" onclick="go('accounts')">Continue to accounts</button><div class="home-indicator"></div></div>
+        </div>
+      </section>
+      <section id="accounts">
+        <div class="frame-title"><strong>03 · Map accounts</strong><code>/importer/csv/accounts</code></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="status-icons">▮▮◖ ▰</span></div>
+          <div class="topbar"><button class="back" onclick="go('properties')" aria-label="Back">‹</button><span class="topbar-title">Map accounts</span><span class="topbar-spacer"></span></div>
+          <div class="scroll">
+            <div class="step">Step 3 of 5</div><div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+            <h2>Where should these go?</h2><p class="subtitle">Match each account name in your CSV to one in Guallet.</p>
+            <div class="banner"><span>ⓘ</span><span>Every transaction needs a destination account. You can create a new account during import.</span></div>
+            <div class="card mapping-card"><div class="mapping-top"><strong>Everyday Current</strong><span class="badge">91 rows</span></div><div class="source">From CSV: Everyday Current</div><div class="destination">Everyday account <em>⌄</em></div></div>
+            <div class="card mapping-card"><div class="mapping-top"><strong>Travel Card</strong><span class="badge">33 rows</span></div><div class="source">From CSV: Travel Card</div><div class="destination">Create “Travel Card” <em>⌄</em></div></div>
+            <p class="small">No account column? Choose one account for all rows here.</p>
+          </div>
+          <div class="footer"><button class="primary" onclick="go('categories')">Continue to categories</button><div class="home-indicator"></div></div>
+        </div>
+      </section>
+      <section id="categories">
+        <div class="frame-title"><strong>04 · Map categories</strong><code>/importer/csv/categories</code></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="status-icons">▮▮◖ ▰</span></div>
+          <div class="topbar"><button class="back" onclick="go('accounts')" aria-label="Back">‹</button><span class="topbar-title">Map categories</span><span class="topbar-spacer"></span></div>
+          <div class="scroll">
+            <div class="step">Step 4 of 5</div><div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+            <h2>Organise your spending</h2><p class="subtitle">Choose where the categories from your file belong. You can leave rows uncategorised.</p>
+            <div class="card mapping-card"><div class="mapping-top"><strong>Food & drink</strong><span class="badge">42 rows</span></div><div class="source">From CSV: Food & drink</div><div class="destination">Food and drink <em>⌄</em></div></div>
+            <div class="card mapping-card"><div class="mapping-top"><strong>Travel</strong><span class="badge">28 rows</span></div><div class="source">From CSV: Travel</div><div class="destination">Transport <em>⌄</em></div></div>
+            <div class="card mapping-card"><div class="mapping-top"><strong>Misc</strong><span class="badge">12 rows</span></div><div class="source">From CSV: Misc</div><div class="destination">Leave uncategorised <em>⌄</em></div></div>
+            <div class="banner"><span>ⓘ</span><span>Rows without a category will stay uncategorised. You can edit them later.</span></div>
+          </div>
+          <div class="footer"><button class="primary" onclick="go('preview')">Review import</button><div class="home-indicator"></div></div>
+        </div>
+      </section>
+      <section id="preview">
+        <div class="frame-title"><strong>05 · Preview and submit</strong><code>/importer/csv/preview</code></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="status-icons">▮▮◖ ▰</span></div>
+          <div class="topbar"><button class="back" onclick="go('categories')" aria-label="Back">‹</button><span class="topbar-title">Review import</span><span class="topbar-spacer"></span></div>
+          <div class="scroll">
+            <div class="step">Step 5 of 5</div><div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+            <h2>Check before importing</h2><p class="subtitle">Here’s how your transactions will appear. Nothing has been imported yet.</p>
+            <div class="summary-grid"><div class="summary-box"><strong>124</strong><span>Rows found</span></div><div class="summary-box"><strong>122</strong><span>Ready</span></div><div class="summary-box"><strong style="color:#786500">2</strong><span>Need attention</span></div></div>
+            <div class="banner warning"><span>⚠</span><span>Two rows have invalid dates. Fix the CSV or import the valid rows.</span></div>
+            <div class="card"><div class="card-title">Sample transactions</div>
+              <div class="row"><div><strong>Corner Coffee</strong><small>21 Sep · Food and drink · Everyday</small></div><span class="amount negative">−£4.80</span></div>
+              <div class="row"><div><strong>Monthly salary</strong><small>20 Sep · Everyday account</small></div><span class="amount positive">+£2,850.00</span></div>
+              <div class="row"><div><strong>Trainline</strong><small>19 Sep · Transport · Travel Card</small></div><span class="amount negative">−£24.50</span></div>
+              <div class="small" style="padding-top:11px">Showing three of 124 rows</div>
+            </div>
+            <div class="card"><div class="card-title">Destination</div><div class="small">Everyday account · 91 rows<br>Travel Card · 33 rows</div></div>
+          </div>
+          <div class="footer"><button class="primary" onclick="go('results')">Import 122 valid rows</button><div class="home-indicator"></div></div>
+        </div>
+      </section>
+      <section id="results">
+        <div class="frame-title"><strong>06 · Progress and results</strong><code>/importer/csv/results/:jobId</code></div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span class="status-icons">▮▮◖ ▰</span></div>
+          <div class="topbar"><span class="topbar-spacer"></span><span class="topbar-title">Import status</span><button class="close" aria-label="Close">×</button></div>
+          <div class="scroll">
+            <div class="state-tabs" aria-label="Preview result state"><button class="selected" onclick="setResult('queued',this)">In progress</button><button onclick="setResult('success',this)">Success</button><button onclick="setResult('partial',this)">Partial</button><button onclick="setResult('error',this)">Error</button></div>
+            <div class="result-icon" id="resultIcon">↻</div>
+            <div class="result-copy"><h2 id="resultTitle">Import in progress</h2><p class="subtitle" id="resultSubtitle">Your transactions are being added. You can leave this screen and check back later.</p></div>
+            <div class="card" id="progressCard"><strong style="font-size:12px">Processing transactions</strong><div class="meter"><span></span></div><div class="small">46 of 122 rows processed</div></div>
+            <div class="card"><div class="card-title">transactions-september.csv</div><div class="small" id="resultDetails">122 valid rows submitted · 2 rows skipped during validation</div></div>
+            <div class="banner"><span>ⓘ</span><span>We’ll send you an email when processing finishes.</span></div>
+          </div>
+          <div class="footer"><button class="primary">Go to transactions</button><div class="home-indicator"></div></div>
+        </div>
+      </section>
+    </main>
+    <footer class="reference">Design references: <a href="https://mobbin.com/flows/0c73a300-77c0-4d14-b72c-e6c98f79e160">Expensify spreadsheet import</a> for the field-mapping layout, <a href="https://mobbin.com/flows/02e73e3c-6caf-4fee-998a-a1df5b8e1e9e">Copilot Money import entry</a> for the settings entry point, and <a href="https://mobbin.com/screens/fd12c9b6-0768-44c8-9540-090ec43c167e">Rocket Money review</a> for the separate transaction preview. Layout, copy and colours follow Guallet’s design system.</footer>
+    <script>
+      function go(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      function setResult(state, button) {
+        document.querySelectorAll('.state-tabs button').forEach((item) => item.classList.toggle('selected', item === button));
+        const variants = {
+          queued: ['↻', 'Import in progress', 'Your transactions are being added. You can leave this screen and check back later.', '122 valid rows submitted · 2 rows skipped during validation', '#005eb8', true],
+          success: ['✓', 'Import complete', '122 transactions were added to Guallet.', '122 imported · 0 failed · 2 skipped during validation', '#009639', false],
+          partial: ['!', 'Some rows need attention', '119 transactions were added. Three rows could not be imported.', '119 imported · 3 failed · 2 skipped during validation', '#786500', false],
+          error: ['×', 'Import failed', 'We could not finish this import. Your existing transactions are safe.', '0 imported · Import stopped during processing', '#da291c', false],
+        };
+        const [icon, title, subtitle, details, color, showProgress] = variants[state];
+        const iconElement = document.getElementById('resultIcon');
+        iconElement.textContent = icon;
+        iconElement.style.color = color;
+        iconElement.style.background = state === 'error' ? '#fff0ee' : state === 'success' ? '#eaf8ed' : state === 'partial' ? '#fff9d8' : '#eaf4fc';
+        document.getElementById('resultTitle').textContent = title;
+        document.getElementById('resultSubtitle').textContent = subtitle;
+        document.getElementById('resultDetails').textContent = details;
+        document.getElementById('progressCard').style.display = showProgress ? 'block' : 'none';
+      }
+    </script>
+  </body>
+</html>

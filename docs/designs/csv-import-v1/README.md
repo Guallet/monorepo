@@ -5,6 +5,8 @@ screen confirms that processing has started in the background.
 
 ![Initial CSV import mobile mockups](overview.png)
 
+[Open the editable HTML mockup](index.html).
+
 The image captures the initial design exploration. Its sixth screen shows a
 live progress concept; the current import flow uses the submission screen
 described below. Live job tracking is covered by [issue #294](https://github.com/Guallet/monorepo/issues/294).

@@ -2,6 +2,8 @@
 
 ![Approved mobile icon picker mockups](./issue-268-icon-picker.png)
 
+[Open the HTML design source](./issue-268-icon-picker.html).
+
 ## States
 
 1. **Empty control:** Show “Choose an icon” until a category icon is selected.
