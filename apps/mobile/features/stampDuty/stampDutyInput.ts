@@ -8,7 +8,12 @@ const MAX_PROPERTY_PRICE = 1_000_000_000_000;
 export function formatStampDutyPriceText(text: string): string {
   if (!/^[\d,]*$/.test(text)) return text;
   const digits = text.replaceAll(',', '');
-  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const firstGroupLength = digits.length % 3 || 3;
+  let grouped = digits.slice(0, firstGroupLength);
+  for (let index = firstGroupLength; index < digits.length; index += 3) {
+    grouped += `,${digits.slice(index, index + 3)}`;
+  }
+  return grouped;
 }
 
 export function parseStampDutyPrice(text: string): ParsedStampDutyPrice {
@@ -17,7 +22,10 @@ export function parseStampDutyPrice(text: string): ParsedStampDutyPrice {
     return { price: null, error: 'Enter a property price.' };
   }
 
-  if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(value)) {
+  if (
+    !/^[\d,]+$/.test(value) ||
+    (value.includes(',') && formatStampDutyPriceText(value) !== value)
+  ) {
     return {
       price: null,
       error: 'Enter a whole-pound amount, such as £350,000.',
