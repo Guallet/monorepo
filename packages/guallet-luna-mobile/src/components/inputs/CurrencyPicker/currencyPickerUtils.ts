@@ -10,6 +10,24 @@ export interface CurrencySection {
   data: CurrencyPickerCurrency[];
 }
 
+function addPrioritySection(
+  sections: CurrencySection[],
+  remaining: Map<string, CurrencyPickerCurrency>,
+  title: string,
+  codes: string[],
+) {
+  const data: CurrencyPickerCurrency[] = [];
+  for (const code of codes) {
+    const normalized = code.trim().toUpperCase();
+    const currency = remaining.get(normalized);
+    if (currency) {
+      data.push(currency);
+      remaining.delete(normalized);
+    }
+  }
+  if (data.length) sections.push({ title, data });
+}
+
 /** Keep a code in only one section, even when it is both default and preferred. */
 export function getCurrencySections(
   currencies: CurrencyPickerCurrency[],
@@ -32,30 +50,22 @@ export function getCurrencySections(
     return matching.length ? [{ title: 'Results', data: matching }] : [];
 
   const remaining = new Map(
-    matching.map((currency) => [currency.code, currency]),
+    matching.map((currency) => [currency.code.toUpperCase(), currency]),
   );
   const sections: CurrencySection[] = [];
-  const defaultCode = defaultCurrencyCode?.trim().toUpperCase();
-  if (showDefaultCurrency && defaultCode) {
-    const currency = remaining.get(defaultCode);
-    if (currency) {
-      sections.push({ title: 'Default currency', data: [currency] });
-      remaining.delete(defaultCode);
-    }
+  if (showDefaultCurrency && defaultCurrencyCode) {
+    addPrioritySection(sections, remaining, 'Default currency', [
+      defaultCurrencyCode,
+    ]);
   }
 
   if (showPreferredCurrencies) {
-    const preferred: CurrencyPickerCurrency[] = [];
-    for (const code of preferredCurrencyCodes) {
-      const normalized = code.trim().toUpperCase();
-      const currency = remaining.get(normalized);
-      if (currency) {
-        preferred.push(currency);
-        remaining.delete(normalized);
-      }
-    }
-    if (preferred.length)
-      sections.push({ title: 'Preferred', data: preferred });
+    addPrioritySection(
+      sections,
+      remaining,
+      'Preferred',
+      preferredCurrencyCodes,
+    );
   }
 
   if (remaining.size) {

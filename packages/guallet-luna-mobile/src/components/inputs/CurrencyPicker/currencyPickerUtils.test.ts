@@ -49,6 +49,20 @@ describe('getCurrencySections', () => {
     ]);
   });
 
+  it('groups currency codes regardless of the option code casing', () => {
+    const sections = getCurrencySections(
+      [{ code: 'gbp', name: 'British Pound', symbol: '£' }],
+      '',
+      'GBP',
+    );
+    expect(sections).toEqual([
+      {
+        title: 'Default currency',
+        data: [{ code: 'gbp', name: 'British Pound', symbol: '£' }],
+      },
+    ]);
+  });
+
   it('searches name, code, and symbol across all currencies', () => {
     expect(getCurrencySections(currencies, ' yen ')[0].data[0].code).toBe(
       'JPY',

@@ -65,6 +65,27 @@ export type CurrencyPickerProps =
   | SingleCurrencyPickerProps
   | MultipleCurrencyPickerProps;
 
+function getSelectedCodes(props: CurrencyPickerProps, draftCodes: string[]) {
+  if (props.selectionMode === 'multiple') return draftCodes;
+  return props.value ? [props.value] : [];
+}
+
+function getTriggerLabel(props: CurrencyPickerProps) {
+  if (props.selectionMode === 'multiple') {
+    return props.value?.length
+      ? `${props.value.length} currencies selected`
+      : (props.placeholder ?? 'Select currencies');
+  }
+
+  const selectedCurrency = props.currencies.find(
+    (currency) => currency.code.toUpperCase() === props.value?.toUpperCase(),
+  );
+  if (selectedCurrency) {
+    return `${selectedCurrency.symbol} · ${selectedCurrency.name} · ${selectedCurrency.code}`;
+  }
+  return props.placeholder ?? 'Select a currency';
+}
+
 /** Searchable currency picker backed by the host app's native bottom sheet. */
 export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
@@ -78,13 +99,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
   const [saving, setSaving] = useState(false);
   const openRef = useRef(false);
   const savingRef = useRef(false);
-  const selectedCode = props.selectionMode === 'single' ? props.value : null;
-  const selectedCodes =
-    props.selectionMode === 'multiple'
-      ? draftCodes
-      : selectedCode
-        ? [selectedCode]
-        : [];
+  const selectedCodes = getSelectedCodes(props, draftCodes);
   const selectedSet = new Set(selectedCodes.map((code) => code.toUpperCase()));
   const sections = getCurrencySections(
     props.currencies,
@@ -94,18 +109,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
     props.showDefaultCurrency,
     props.showPreferredCurrencies,
   );
-  const selectedCurrency = props.currencies.find(
-    (currency) => currency.code === selectedCode,
-  );
-  const placeholder = props.placeholder ?? 'Select a currency';
-  const label =
-    props.selectionMode === 'single'
-      ? selectedCurrency
-        ? `${selectedCurrency.symbol} · ${selectedCurrency.name} · ${selectedCurrency.code}`
-        : placeholder
-      : props.value?.length
-        ? `${props.value.length} currencies selected`
-        : (props.placeholder ?? 'Select currencies');
+  const label = getTriggerLabel(props);
   const CustomTrigger = props.renderTrigger;
 
   function open() {
@@ -350,7 +354,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
             renderItem={({ item }) => (
               <CurrencyRow
                 currency={item}
-                selected={selectedSet.has(item.code)}
+                selected={selectedSet.has(item.code.toUpperCase())}
                 multiple={props.selectionMode === 'multiple'}
                 disabled={saving}
                 onPress={() => void select(item.code)}
@@ -411,6 +415,33 @@ function CurrencyRow({
   onPress: () => void;
 }>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
+  let selectionIndicator: ReactNode = null;
+  if (multiple) {
+    selectionIndicator = (
+      <View
+        style={[
+          styles.checkbox,
+          {
+            backgroundColor: selected
+              ? colors.accent.primary
+              : colors.surface.background.primary,
+            borderColor: selected
+              ? colors.accent.primary
+              : colors.text.secondary,
+            borderRadius: borderRadius.sm,
+          },
+        ]}
+      >
+        {selected && (
+          <CheckIcon accessible={false} color={colors.text.inverse} size={16} />
+        )}
+      </View>
+    );
+  } else if (selected) {
+    selectionIndicator = (
+      <CheckIcon accessible={false} color={colors.accent.primary} size={24} />
+    );
+  }
   return (
     <Pressable
       accessibilityRole={multiple ? 'checkbox' : 'button'}
@@ -482,32 +513,7 @@ function CurrencyRow({
           {currency.code}
         </Text>
       </View>
-      {multiple ? (
-        <View
-          style={[
-            styles.checkbox,
-            {
-              backgroundColor: selected
-                ? colors.accent.primary
-                : colors.surface.background.primary,
-              borderColor: selected
-                ? colors.accent.primary
-                : colors.text.secondary,
-              borderRadius: borderRadius.sm,
-            },
-          ]}
-        >
-          {selected && (
-            <CheckIcon
-              accessible={false}
-              color={colors.text.inverse}
-              size={16}
-            />
-          )}
-        </View>
-      ) : selected ? (
-        <CheckIcon accessible={false} color={colors.accent.primary} size={24} />
-      ) : null}
+      {selectionIndicator}
     </Pressable>
   );
 }
