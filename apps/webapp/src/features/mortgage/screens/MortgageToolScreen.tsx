@@ -1,6 +1,7 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useTheme } from '@guallet/ui-react';
+import { Currency, Money } from '@guallet/money';
 import {
   Alert,
   Badge,
@@ -37,23 +38,11 @@ import {
 } from '../models/mortgage';
 
 function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format();
 }
 
 function getCurrencySymbol(currency: string): string {
-  const formatted = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency,
-    currencyDisplay: 'narrowSymbol',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).formatToParts(0);
-
-  return formatted.find((part) => part.type === 'currency')?.value ?? currency;
+  return Currency.fromISOCode(currency).symbol;
 }
 
 function formatMonths(months: number, t: TFunction): string {
@@ -200,6 +189,7 @@ export function MortgageToolScreen() {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const defaultCurrency = useDefaultCurrency();
+  const currency = Currency.fromISOCode(defaultCurrency);
   const currencySymbol = getCurrencySymbol(defaultCurrency);
   const [values, setValues] = useState<MortgageCalculatorValues>({
     principal: 250000,
@@ -212,19 +202,29 @@ export function MortgageToolScreen() {
   });
 
   const normalizedValues = normalizeMortgageValues(values);
-  const baselineScenario = calculateMortgageScenario(normalizedValues, {
-    monthlyOverpayment: 0,
-    oneOffOverpayment: 0,
-    oneOffOverpaymentMonth: null,
-  });
-  const repaymentScenario = calculateMortgageScenario(normalizedValues);
+  const baselineScenario = calculateMortgageScenario(
+    normalizedValues,
+    {
+      monthlyOverpayment: 0,
+      oneOffOverpayment: 0,
+      oneOffOverpaymentMonth: null,
+    },
+    currency,
+  );
+  const repaymentScenario = calculateMortgageScenario(
+    normalizedValues,
+    undefined,
+    currency,
+  );
   const balanceComparison = buildBalanceComparison(
     baselineScenario,
     repaymentScenario,
     normalizedValues.principal,
+    currency,
   );
   const yearlyBreakdown = buildYearlyBreakdown(
     repaymentScenario.schedule,
+    currency,
   ).slice(0, 10);
   const hasRepaymentPlan =
     normalizedValues.monthlyOverpayment > 0 ||

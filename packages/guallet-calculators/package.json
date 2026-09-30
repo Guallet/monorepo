@@ -19,6 +19,9 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage"
   },
+  "dependencies": {
+    "@guallet/money": "workspace:*"
+  },
   "devDependencies": {
     "@vitest/coverage-v8": "workspace:*",
     "tsconfig": "workspace:*",

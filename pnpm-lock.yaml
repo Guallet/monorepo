@@ -813,6 +813,10 @@ importers:
         version: 5.0.1(@types/node@26.4.1)(@vitest/coverage-v8@5.0.1)(vite@8.1.2(@types/node@26.4.1)(esbuild@0.27.2)(sugarss@5.0.0(postcss@8.5.28))(terser@5.51.2)(tsx@4.21.0)(yaml@2.8.1))
 
   packages/guallet-calculators:
+    dependencies:
+      '@guallet/money':
+        specifier: workspace:*
+        version: link:../guallet-money
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 5.0.1

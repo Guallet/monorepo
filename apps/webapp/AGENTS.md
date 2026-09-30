@@ -123,6 +123,10 @@ The available tokens are:
 
 ### i18n
 
+For money amounts, use `@guallet/money` and `Money.format()`. Use
+`Currency.decimalPlaces` for input and calculation precision; never hardcode
+two decimal places or create a local money formatter.
+
 English (default) and Spanish. Translation JSON files live in `public/locales/<lng>/translation.json`. Keys are extracted automatically (`prebuild` script) — use `useTranslation` + `t('key')` and let the extractor handle `en` keys. Don't hand-edit the generated JSON.
 
 **No hardcoded user-visible strings.** Every string rendered to the UI must go through `t()`. Always provide a sensible English default as the second argument so the app works before translations are extracted:
