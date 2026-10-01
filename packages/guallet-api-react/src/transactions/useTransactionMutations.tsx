@@ -11,15 +11,23 @@ export function useTransactionMutations() {
   const gualletClient = useGualletClient();
   const queryClient = useQueryClient();
 
+  const refreshBalances = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['accounts'] }),
+      queryClient.invalidateQueries({ queryKey: ['savingGoals'] }),
+    ]);
+  };
+
   const createTransactionMutation = useMutation({
     mutationFn: async (request: CreateTransactionRequest) => {
       return await gualletClient.transactions.create({
         request,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       // Add the new transaction to the cache
       queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
+      await refreshBalances();
     },
     onError: async (error, variables, context) => {
       console.error(error);
@@ -85,6 +93,7 @@ export function useTransactionMutations() {
       queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
+      await refreshBalances();
     },
     onError: async (error, variables, context) => {
       console.error(error);
@@ -99,6 +108,7 @@ export function useTransactionMutations() {
       queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
+      await refreshBalances();
     },
     onError: async (error, variables, context) => {
       console.error(error);

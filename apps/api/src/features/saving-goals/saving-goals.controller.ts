@@ -49,7 +49,7 @@ export class SavingGoalsController {
       userId: user.id,
       request: createSavingGoalDto,
     });
-    return SavingGoalDto.fromDomain(savingGoal);
+    return await this.savingGoalsService.toDto(savingGoal, user.id);
   }
 
   @ApiOperation({ summary: 'findAll' })
@@ -62,7 +62,9 @@ export class SavingGoalsController {
     const goals = await this.savingGoalsService.findAllUserSavingGoals({
       userId: user.id,
     });
-    return goals.map((x) => SavingGoalDto.fromDomain(x));
+    return await Promise.all(
+      goals.map((goal) => this.savingGoalsService.toDto(goal, user.id)),
+    );
   }
 
   @ApiOperation({ summary: 'findOne' })
@@ -85,7 +87,7 @@ export class SavingGoalsController {
       id: id,
       userId: user.id,
     });
-    return SavingGoalDto.fromDomain(goal);
+    return await this.savingGoalsService.toDto(goal, user.id);
   }
 
   @ApiOperation({ summary: 'update' })
@@ -111,7 +113,7 @@ export class SavingGoalsController {
       savingGoalId: id,
       request: updateSavingGoalDto,
     });
-    return SavingGoalDto.fromDomain(goal);
+    return await this.savingGoalsService.toDto(goal, user.id);
   }
 
   @ApiOperation({ summary: 'remove' })
@@ -134,6 +136,6 @@ export class SavingGoalsController {
       userId: user.id,
       id,
     });
-    return SavingGoalDto.fromDomain(goal);
+    return await this.savingGoalsService.toDto(goal, user.id);
   }
 }

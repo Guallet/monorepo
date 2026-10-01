@@ -11,15 +11,18 @@ export function useAccountMutations() {
   const queryClient = useQueryClient();
   const gualletClient = useGualletClient();
 
+  const invalidateAccountAndGoalData = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: [ACCOUNTS_QUERY_KEY] }),
+      queryClient.invalidateQueries({ queryKey: ['savingGoals'] }),
+    ]);
+  };
+
   const createAccountMutation = useMutation({
     mutationFn: async ({ request }: { request: CreateAccountRequest }) => {
       return await gualletClient.accounts.create(request);
     },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [ACCOUNTS_QUERY_KEY],
-      });
-    },
+    onSuccess: invalidateAccountAndGoalData,
     onError: async (error, variables, context) => {
       console.error(error);
     },
@@ -35,11 +38,7 @@ export function useAccountMutations() {
     }) => {
       return await gualletClient.accounts.update(id, request);
     },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [ACCOUNTS_QUERY_KEY],
-      });
-    },
+    onSuccess: invalidateAccountAndGoalData,
     onError: async (error, variables, context) => {
       console.error(error);
     },
@@ -49,11 +48,7 @@ export function useAccountMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.accounts.delete(id);
     },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [ACCOUNTS_QUERY_KEY],
-      });
-    },
+    onSuccess: invalidateAccountAndGoalData,
     onError: async (error, variables, context) => {
       console.error(error);
     },

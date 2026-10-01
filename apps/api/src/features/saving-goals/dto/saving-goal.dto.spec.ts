@@ -17,9 +17,10 @@ function makeGoal(overrides: Partial<SavingGoal> = {}): SavingGoal {
 
 describe('SavingGoalDto.fromDomain', () => {
   describe('currentAmount', () => {
-    it('is 0 until linked account balances are computed', () => {
-      const dto = SavingGoalDto.fromDomain(makeGoal());
-      expect(dto.currentAmount).toBe(0);
+    it('uses the linked account balance and currency', () => {
+      const dto = SavingGoalDto.fromDomain(makeGoal(), 250, 'GBP');
+      expect(dto.currentAmount).toBe(250);
+      expect(dto.currency).toBe('GBP');
     });
   });
 
@@ -32,6 +33,25 @@ describe('SavingGoalDto.fromDomain', () => {
     it('is 0 when currentAmount is 0 and targetAmount > 0', () => {
       const dto = SavingGoalDto.fromDomain(makeGoal({ target_amount: 1000 }));
       expect(dto.progressPercentage).toBe(0);
+    });
+    it('caps progress at 100 when balances exceed the target', () => {
+      const dto = SavingGoalDto.fromDomain(
+        makeGoal({ target_amount: 1000 }),
+        1200,
+        'GBP',
+      );
+      expect(dto.progressPercentage).toBe(100);
+      expect(dto.isCompleted).toBe(true);
+      expect(dto.remainingAmount).toBe(0);
+    });
+    it('does not show negative progress for an overdrawn linked account', () => {
+      const dto = SavingGoalDto.fromDomain(
+        makeGoal({ target_amount: 1000 }),
+        -50,
+        'GBP',
+      );
+      expect(dto.progressPercentage).toBe(0);
+      expect(dto.remainingAmount).toBe(1050);
     });
   });
 
