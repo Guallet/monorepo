@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { buildExportRequest, submitExportRequest } from './exportRequest';
+import {
+  buildExportRequest,
+  snapshotExportSelection,
+  submitExportRequest,
+} from './exportRequest';
 
 describe('mobile data export request', () => {
   it('omits optional filters when all accounts and dates are selected', () => {
@@ -86,5 +90,24 @@ describe('mobile data export request', () => {
       { accountIds: ['account-1'], dateRange: null, format: 'csv' },
     );
     expect(result).toEqual({ status: 'failed', error: failure });
+  });
+
+  it('keeps a submitted snapshot when the form selection later changes', () => {
+    const accountIds = ['account-1'];
+    const startDate = new Date('2026-09-01T00:00:00.000Z');
+    const submitted = snapshotExportSelection({
+      accountIds,
+      dateRange: { startDate, endDate: new Date('2026-09-30T23:59:59.999Z') },
+      format: 'csv',
+    });
+
+    accountIds.push('account-2');
+    startDate.setUTCDate(2);
+
+    expect(submitted.accountIds).toEqual(['account-1']);
+    expect(submitted.dateRange?.startDate.toISOString()).toBe(
+      '2026-09-01T00:00:00.000Z',
+    );
+    expect(submitted.format).toBe('csv');
   });
 });

@@ -12,6 +12,22 @@ export interface ExportSelection {
   format: ExportFormat;
 }
 
+/** Copy submitted values so later picker edits cannot change the summary. */
+export function snapshotExportSelection(
+  selection: ExportSelection,
+): ExportSelection {
+  return {
+    accountIds: [...selection.accountIds],
+    dateRange: selection.dateRange
+      ? {
+          startDate: new Date(selection.dateRange.startDate),
+          endDate: new Date(selection.dateRange.endDate),
+        }
+      : null,
+    format: selection.format,
+  };
+}
+
 export function buildExportRequest(
   selection: ExportSelection,
 ): DataExportRequest {

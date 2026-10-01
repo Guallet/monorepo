@@ -12,7 +12,7 @@ import {
   MailIcon,
 } from '@guallet/luna-mobile/icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
@@ -24,7 +24,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { submitExportRequest, type ExportFormat } from './exportRequest';
+import {
+  submitExportRequest,
+  snapshotExportSelection,
+  type ExportFormat,
+  type ExportSelection,
+} from './exportRequest';
 
 const formats: { value: ExportFormat; label: string; description: string }[] = [
   { value: 'csv', label: 'CSV', description: 'Spreadsheet' },
@@ -49,25 +54,37 @@ export default function DataExportScreen() {
   const [format, setFormat] = useState<ExportFormat>('csv');
   const [phase, setPhase] = useState<Phase>('form');
   const [errorMessage, setErrorMessage] = useState('');
+  const [submittedSelection, setSubmittedSelection] =
+    useState<ExportSelection | null>(null);
+  const submittingRef = useRef(false);
 
-  const accountSummary = accountIds.length
+  const displayedSelection =
+    phase === 'form' || !submittedSelection
+      ? { accountIds, dateRange, format }
+      : submittedSelection;
+
+  const accountSummary = displayedSelection.accountIds.length
     ? accounts
-        .filter((account) => accountIds.includes(account.id))
+        .filter((account) => displayedSelection.accountIds.includes(account.id))
         .map((account) => account.name)
-        .join(', ') || `${accountIds.length} accounts`
+        .join(', ') || `${displayedSelection.accountIds.length} accounts`
     : 'All accounts';
-  const dateSummary = dateRange
-    ? `${formatDate(dateRange.startDate)} – ${formatDate(dateRange.endDate)}`
+  const dateSummary = displayedSelection.dateRange
+    ? `${formatDate(displayedSelection.dateRange.startDate)} – ${formatDate(displayedSelection.dateRange.endDate)}`
     : 'All dates';
 
-  async function submit() {
-    if (exportMutation.isPending) return;
+  async function submit(selection?: ExportSelection) {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    const requestSelection = snapshotExportSelection(
+      selection ?? { accountIds, dateRange, format },
+    );
+    setSubmittedSelection(requestSelection);
     setErrorMessage('');
-    const result = await submitExportRequest(exportMutation.mutateAsync, {
-      accountIds,
-      dateRange,
-      format,
-    });
+    const result = await submitExportRequest(
+      exportMutation.mutateAsync,
+      requestSelection,
+    );
     if (result.status === 'accepted') {
       setPhase('accepted');
       AccessibilityInfo.announceForAccessibility(
@@ -75,6 +92,7 @@ export default function DataExportScreen() {
       );
       return;
     }
+    submittingRef.current = false;
     setPhase('failed');
     const message =
       result.error instanceof Error &&
@@ -88,6 +106,11 @@ export default function DataExportScreen() {
   }
 
   function editSelection() {
+    if (submittedSelection) {
+      setAccountIds([...submittedSelection.accountIds]);
+      setDateRange(submittedSelection.dateRange);
+      setFormat(submittedSelection.format);
+    }
     exportMutation.reset();
     setPhase('form');
   }
@@ -201,7 +224,11 @@ export default function DataExportScreen() {
               <View style={[styles.card, cardStyle]}>
                 <SummaryRow label="Accounts" value={accountSummary} />
                 <SummaryRow label="Date range" value={dateSummary} />
-                <SummaryRow label="Format" value={format.toUpperCase()} last />
+                <SummaryRow
+                  label="Format"
+                  value={displayedSelection.format.toUpperCase()}
+                  last
+                />
               </View>
             </View>
             {accepted && (
@@ -232,7 +259,7 @@ export default function DataExportScreen() {
               <>
                 <Button
                   disabled={exportMutation.isPending}
-                  onClick={() => void submit()}
+                  onClick={() => void submit(submittedSelection ?? undefined)}
                 >
                   {exportMutation.isPending
                     ? 'Submitting export…'
@@ -262,6 +289,7 @@ export default function DataExportScreen() {
             paddingBottom: spacing.xl,
           }}
           keyboardShouldPersistTaps="handled"
+          pointerEvents={exportMutation.isPending ? 'none' : 'auto'}
         >
           <Text
             accessibilityRole="header"
