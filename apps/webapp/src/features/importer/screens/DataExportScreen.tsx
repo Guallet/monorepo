@@ -1,5 +1,5 @@
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { useAccounts, useGualletClient } from '@guallet/api-react';
+import { useAccounts, useDataExportMutation } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
 import {
   Alert,
@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 export function DataExportScreen() {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const gualletClient = useGualletClient();
+  const exportMutation = useDataExportMutation();
   const { accounts } = useAccounts();
 
   const [dateRange, setDateRange] = useState<[string | null, string | null]>([
@@ -34,7 +34,6 @@ export function DataExportScreen() {
   const [exportFormat, setExportFormat] = useState<'csv' | 'ofe' | 'json'>(
     'csv',
   );
-  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,8 +45,7 @@ export function DataExportScreen() {
   const handleExport = async () => {
     try {
       setError(null);
-      setIsLoading(true);
-      await gualletClient.dataExporter.exportData({
+      await exportMutation.mutateAsync({
         startDate: dateRange[0]
           ? new Date(dateRange[0]).toISOString()
           : undefined,
@@ -62,8 +60,6 @@ export function DataExportScreen() {
     } catch (e) {
       console.error(e);
       setError(`${e}`);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -220,13 +216,17 @@ export function DataExportScreen() {
                 fullWidth
                 size="md"
                 onClick={handleExport}
-                loading={isLoading}
+                loading={exportMutation.isPending}
               >
                 {t('screens.dataExport.exportButton')}
               </Button>
             </Stack>
             <Group justify="flex-end" visibleFrom="sm">
-              <Button size="md" onClick={handleExport} loading={isLoading}>
+              <Button
+                size="md"
+                onClick={handleExport}
+                loading={exportMutation.isPending}
+              >
                 {t('screens.dataExport.exportButton')}
               </Button>
             </Group>
