@@ -8,7 +8,7 @@ describe('mobile data export request', () => {
     ).toEqual({ format: 'csv' });
   });
 
-  it('passes selected accounts, inclusive date range and format', () => {
+  it('passes selected accounts, exact date boundaries and format', () => {
     expect(
       buildExportRequest({
         accountIds: ['account-1', 'account-2'],
@@ -22,8 +22,34 @@ describe('mobile data export request', () => {
       accounts: ['account-1', 'account-2'],
       startDate: '2026-09-01T00:00:00.000Z',
       endDate: '2026-09-30T23:59:59.999Z',
+      preserveDateTime: true,
       format: 'json',
     });
+  });
+
+  it('preserves local day boundaries when UTC falls on another day', () => {
+    const previousZone = process.env.TZ;
+    try {
+      process.env.TZ = 'Australia/Sydney';
+      const startDate = new Date(2026, 8, 1);
+      const endDate = new Date(2026, 8, 30, 23, 59, 59, 999);
+      expect(startDate.toISOString()).toContain('2026-08-31');
+      expect(
+        buildExportRequest({
+          accountIds: [],
+          dateRange: { startDate, endDate },
+          format: 'csv',
+        }),
+      ).toEqual({
+        startDate: '2026-08-31T14:00:00.000Z',
+        endDate: '2026-09-30T13:59:59.999Z',
+        preserveDateTime: true,
+        format: 'csv',
+      });
+    } finally {
+      if (previousZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousZone;
+    }
   });
 
   it('rejects invalid dates before submitting', async () => {

@@ -22,6 +22,14 @@ export class DataExportRequestDto {
   @ApiProperty({
     required: false,
     description:
+      'Preserve the supplied start and end instants instead of normalizing them to the server calendar day',
+    example: true,
+  })
+  preserveDateTime?: boolean;
+
+  @ApiProperty({
+    required: false,
+    description:
       'List of account IDs to include. If empty, all accounts are included.',
     example: ['account-id-1', 'account-id-2'],
     type: [String],

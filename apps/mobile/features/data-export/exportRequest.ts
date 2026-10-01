@@ -30,6 +30,7 @@ export function buildExportRequest(
     ...(dateRange && {
       startDate: dateRange.startDate.toISOString(),
       endDate: dateRange.endDate.toISOString(),
+      preserveDateTime: true,
     }),
     format,
   };
