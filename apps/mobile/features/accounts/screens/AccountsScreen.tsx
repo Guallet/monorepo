@@ -9,22 +9,17 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { AccountTypeDto } from '@guallet/api-client';
 import { useAccounts } from '@guallet/api-react';
 import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountRow } from '../components/AccountRow';
 import { AccountsSummary } from '../components/AccountsSummary';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
+import { formatAccountCurrency, getAccountTypeLabel } from '../models/account';
 import {
-  ACCOUNT_TYPE_ORDER,
-  formatAccountCurrency,
-  getAccountTypeLabel,
-} from '../models/account';
-
-type AccountGroup = {
-  type: AccountTypeDto;
-  accounts: AccountDto[];
-};
+  groupAccounts,
+  type AccountGroup as AccountGroupModel,
+} from '../models/accountFlow';
 
 export default function AccountsScreen() {
   const { colors, borderRadius, spacing, typography } = useTheme();
@@ -32,20 +27,10 @@ export default function AccountsScreen() {
   const { accounts, isLoading, isError, isRefetching, refetch } = useAccounts();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredAccounts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return accounts;
-    return accounts.filter((account) =>
-      account.name.toLowerCase().includes(query),
-    );
-  }, [accounts, searchQuery]);
-
-  const groups = useMemo<AccountGroup[]>(() => {
-    return ACCOUNT_TYPE_ORDER.map((type) => ({
-      type,
-      accounts: filteredAccounts.filter((account) => account.type === type),
-    })).filter((group) => group.accounts.length > 0);
-  }, [filteredAccounts]);
+  const groups = useMemo(
+    () => groupAccounts(accounts, searchQuery),
+    [accounts, searchQuery],
+  );
 
   return (
     <SafeAreaView
@@ -272,7 +257,10 @@ export default function AccountsScreen() {
 function AccountGroup({
   group,
   onAccountPress,
-}: Readonly<{ group: AccountGroup; onAccountPress: (id: string) => void }>) {
+}: Readonly<{
+  group: AccountGroupModel;
+  onAccountPress: (id: string) => void;
+}>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const totals = new Map<string, number>();
   for (const account of group.accounts) {

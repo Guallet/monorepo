@@ -1,18 +1,24 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AccountTypeDto } from '@guallet/api-client';
-import type { ComponentProps } from 'react';
+import {
+  BankIcon,
+  AccountCreditCardIcon,
+  InvestmentIcon,
+  LoanIcon,
+  MortgageIcon,
+  OtherAccountIcon,
+  PensionIcon,
+  SavingsIcon,
+} from '@guallet/luna-mobile/icons';
 
-type MaterialIconName = ComponentProps<typeof MaterialIcons>['name'];
-
-const ICONS: Record<AccountTypeDto, MaterialIconName> = {
-  [AccountTypeDto.CURRENT_ACCOUNT]: 'account-balance',
-  [AccountTypeDto.SAVINGS]: 'savings',
-  [AccountTypeDto.CREDIT_CARD]: 'credit-card',
-  [AccountTypeDto.INVESTMENT]: 'insert-chart',
-  [AccountTypeDto.MORTGAGE]: 'home',
-  [AccountTypeDto.LOAN]: 'receipt-long',
-  [AccountTypeDto.PENSION]: 'work',
-  [AccountTypeDto.UNKNOWN]: 'help-outline',
+const ICONS = {
+  [AccountTypeDto.CURRENT_ACCOUNT]: BankIcon,
+  [AccountTypeDto.SAVINGS]: SavingsIcon,
+  [AccountTypeDto.CREDIT_CARD]: AccountCreditCardIcon,
+  [AccountTypeDto.INVESTMENT]: InvestmentIcon,
+  [AccountTypeDto.MORTGAGE]: MortgageIcon,
+  [AccountTypeDto.LOAN]: LoanIcon,
+  [AccountTypeDto.PENSION]: PensionIcon,
+  [AccountTypeDto.UNKNOWN]: OtherAccountIcon,
 };
 
 export function AccountTypeIcon({
@@ -24,11 +30,6 @@ export function AccountTypeIcon({
   color?: string;
   size?: number;
 }>) {
-  return (
-    <MaterialIcons
-      color={color}
-      name={ICONS[type] ?? 'help-outline'}
-      size={size}
-    />
-  );
+  const Icon = ICONS[type] ?? OtherAccountIcon;
+  return <Icon color={color} size={size} />;
 }

@@ -16,17 +16,6 @@ export const ACCOUNT_TYPE_OPTIONS: Array<{
   { type: AccountTypeDto.UNKNOWN, label: 'Other' },
 ];
 
-export const ACCOUNT_TYPE_ORDER: AccountTypeDto[] = [
-  AccountTypeDto.CURRENT_ACCOUNT,
-  AccountTypeDto.SAVINGS,
-  AccountTypeDto.CREDIT_CARD,
-  AccountTypeDto.INVESTMENT,
-  AccountTypeDto.MORTGAGE,
-  AccountTypeDto.LOAN,
-  AccountTypeDto.PENSION,
-  AccountTypeDto.UNKNOWN,
-];
-
 export function getAccountTypeLabel(type: AccountTypeDto): string {
   return (
     ACCOUNT_TYPE_OPTIONS.find((option) => option.type === type)?.label ??

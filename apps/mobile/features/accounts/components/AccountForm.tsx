@@ -14,7 +14,13 @@ import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountTypeIcon } from './AccountTypeIcon';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
+import {
+  getPropertyValues,
+  parseAccountProperties,
+  PROPERTY_FIELDS,
+} from '../models/accountProperties';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { validateAccountForm } from '../models/accountFlow';
 
 interface AccountFormProps {
   account?: AccountDto | null;
@@ -43,6 +49,9 @@ export function AccountForm({
     account ? String(account.balance.amount) : '0',
   );
   const [error, setError] = useState<string | null>(null);
+  const [propertyValues, setPropertyValues] = useState(() =>
+    getPropertyValues(account),
+  );
 
   useEffect(() => {
     if (!account) return;
@@ -50,6 +59,7 @@ export function AccountForm({
     setType(account.type);
     setCurrency(account.currency);
     setBalance(String(account.balance.amount));
+    setPropertyValues(getPropertyValues(account));
   }, [account]);
 
   useEffect(() => {
@@ -62,20 +72,19 @@ export function AccountForm({
     createAccountMutation.isPending || updateAccountMutation.isPending;
 
   async function handleSubmit() {
-    const normalizedName = name.trim();
-    const normalizedCurrency = currency.trim().toUpperCase();
-    const parsedBalance = Number(balance.replace(',', '.'));
-
-    if (!normalizedName) {
-      setError('Enter an account name.');
+    const validated = validateAccountForm({ name, currency, balance });
+    if ('error' in validated) {
+      setError(validated.error);
       return;
     }
-    if (!/^[A-Z]{3}$/.test(normalizedCurrency)) {
-      setError('Use a three-letter currency code, such as GBP or EUR.');
-      return;
-    }
-    if (!Number.isFinite(parsedBalance)) {
-      setError('Enter a valid balance.');
+    const {
+      name: normalizedName,
+      currency: normalizedCurrency,
+      balance: parsedBalance,
+    } = validated.values;
+    const parsedProperties = parseAccountProperties(type, propertyValues);
+    if (parsedProperties.error) {
+      setError(parsedProperties.error);
       return;
     }
 
@@ -90,6 +99,7 @@ export function AccountForm({
               currency: normalizedCurrency,
               balance: parsedBalance,
               create_balance_transaction: true,
+              properties: parsedProperties.properties,
             },
           })
         : await createAccountMutation.mutateAsync({
@@ -99,6 +109,7 @@ export function AccountForm({
               currency: normalizedCurrency,
               initial_balance: parsedBalance,
               create_balance_transaction: true,
+              properties: parsedProperties.properties,
             },
           });
       onSaved(savedAccount);
@@ -239,8 +250,44 @@ export function AccountForm({
           </View>
         </View>
 
+        {(PROPERTY_FIELDS[type]?.length ?? 0) > 0 && (
+          <View style={{ gap: spacing.sm }}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { color: colors.text.primary, fontSize: typography.sizes.lg },
+              ]}
+            >
+              Account details
+            </Text>
+            <Text
+              style={{
+                color: colors.text.secondary,
+                fontSize: typography.sizes.sm,
+              }}
+            >
+              Optional details for this account type.
+            </Text>
+            {PROPERTY_FIELDS[type]?.map((field) => (
+              <TextInput
+                key={field.key}
+                label={field.label}
+                keyboardType={field.numeric ? 'decimal-pad' : 'default'}
+                onChangeText={(value) =>
+                  setPropertyValues((current) => ({
+                    ...current,
+                    [field.key]: value,
+                  }))
+                }
+                value={propertyValues[field.key]}
+              />
+            ))}
+          </View>
+        )}
+
         {error && (
           <Text
+            accessibilityRole="alert"
             style={[
               styles.error,
               { color: colors.status.error, fontSize: typography.sizes.sm },

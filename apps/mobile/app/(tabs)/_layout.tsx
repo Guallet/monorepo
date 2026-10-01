@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@guallet/auth';
 import { useTheme } from '@guallet/luna-mobile';
+import { AccountsIcon } from '@guallet/luna-mobile/icons';
 
 export default function TabLayout() {
   const { colors } = useTheme();
@@ -56,11 +57,7 @@ export default function TabLayout() {
         options={{
           title: 'Accounts',
           tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name="wallet.pass.fill"
-              color={String(color)}
-            />
+            <AccountsIcon size={28} color={String(color)} />
           ),
         }}
       />

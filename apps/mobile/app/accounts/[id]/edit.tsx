@@ -5,6 +5,7 @@ import { ApiError } from '@guallet/api-client';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { AccountForm } from '@/features/accounts/components/AccountForm';
 import { useAccount } from '@guallet/api-react';
+import { isManualAccount } from '@/features/accounts/models/accountFlow';
 
 export default function EditAccountScreen() {
   const { id: rawId } = useLocalSearchParams<{ id: string | string[] }>();
@@ -43,6 +44,33 @@ export default function EditAccountScreen() {
           </Text>
           <Button onClick={() => void refetch()} variant="outline">
             Try again
+          </Button>
+        </View>
+      </AppScreen>
+    );
+  }
+
+  if (account && !isManualAccount(account)) {
+    return (
+      <AppScreen headerTitle="Edit account">
+        <View
+          style={{
+            alignItems: 'center',
+            flex: 1,
+            justifyContent: 'center',
+            padding: 24,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.text.primary,
+              fontSize: typography.sizes.lg,
+            }}
+          >
+            This account is managed by its connection.
+          </Text>
+          <Button onClick={() => router.back()} variant="outline">
+            Go back
           </Button>
         </View>
       </AppScreen>
