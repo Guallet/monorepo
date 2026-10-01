@@ -1,8 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsISO8601,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export type ExportFormat = 'csv' | 'ofe' | 'json';
 
 export class DataExportRequestDto {
+  @IsOptional()
+  @IsISO8601()
   @ApiProperty({
     required: false,
     format: 'date-time',
@@ -11,6 +21,8 @@ export class DataExportRequestDto {
   })
   startDate?: string;
 
+  @IsOptional()
+  @IsISO8601()
   @ApiProperty({
     required: false,
     format: 'date-time',
@@ -19,6 +31,8 @@ export class DataExportRequestDto {
   })
   endDate?: string;
 
+  @IsOptional()
+  @IsBoolean()
   @ApiProperty({
     required: false,
     description:
@@ -27,6 +41,9 @@ export class DataExportRequestDto {
   })
   preserveDateTime?: boolean;
 
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   @ApiProperty({
     required: false,
     description:
@@ -36,6 +53,8 @@ export class DataExportRequestDto {
   })
   accounts?: string[];
 
+  @IsOptional()
+  @IsIn(['csv', 'ofe', 'json'])
   @ApiProperty({
     required: false,
     description: 'Export format. Defaults to csv',
