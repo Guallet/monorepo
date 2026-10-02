@@ -9,7 +9,7 @@ import { initAnalytics } from '@/utils/analytics';
 initAnalytics();
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: 'welcome',
 };
 
 function RootLayout() {

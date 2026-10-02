@@ -15,6 +15,7 @@ import TablerReceiptIcon from '@tabler/icons-react-native/IconReceipt';
 import TablerBriefcaseIcon from '@tabler/icons-react-native/IconBriefcase';
 import TablerHelpIcon from '@tabler/icons-react-native/IconHelp';
 import TablerWalletIcon from '@tabler/icons-react-native/IconWallet';
+import TablerMailIcon from '@tabler/icons-react-native/IconMail';
 import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
@@ -71,3 +72,4 @@ export const OtherAccountIcon = createLunaIcon(
   'OtherAccountIcon',
 );
 export const AccountsIcon = createLunaIcon(TablerWalletIcon, 'AccountsIcon');
+export const MailIcon = createLunaIcon(TablerMailIcon, 'MailIcon');

@@ -19,6 +19,7 @@ import {
   CalculatorIcon,
   FileImportIcon,
   HomeIcon,
+  MailIcon,
 } from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SettingsRow } from '../components/SettingsRow';
@@ -285,6 +286,12 @@ export default function SettingsScreen() {
             icon={<FileImportIcon size={22} color={colors.accent.primary} />}
             label="Import transactions from CSV"
             onPress={() => router.push('/importer/csv')}
+          />
+          <SettingsRow
+            icon={<MailIcon size={22} color={colors.accent.primary} />}
+            label="Export data"
+            onPress={() => router.push('/export')}
+            value="Receive by email"
           />
         </SettingsSection>
 

@@ -59,7 +59,7 @@ export default function DashboardScreen() {
   );
 
   const handleSeeAllTransactions = useCallback(() => {
-    router.navigate('/(tabs)/transactions');
+    router.navigate('/(protected)/(tabs)/transactions');
   }, [router]);
 
   const today = new Date();
