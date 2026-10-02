@@ -30,7 +30,6 @@ export function LoginScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
       return;
     }
 

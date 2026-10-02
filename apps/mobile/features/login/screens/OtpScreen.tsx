@@ -5,13 +5,7 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import {
-  Button,
-  Label,
-  OtpInput,
-  Stack,
-  useTheme,
-} from '@guallet/luna-mobile';
+import { Button, Label, OtpInput, Stack, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, AppState, StyleSheet, View } from 'react-native';
@@ -67,7 +61,6 @@ export function OtpScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
       return;
     }
 
