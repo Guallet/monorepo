@@ -46,6 +46,18 @@ describe('saving goal view model', () => {
     ).toBe(true);
   });
 
+  it('reports unsupported currencies without throwing', () => {
+    expect(
+      validateGoal({
+        name: 'Trip',
+        targetAmount: '10',
+        accountIds: ['a'],
+        currency: 'ZZZ',
+        targetDate: null,
+      }).errors.accountIds,
+    ).toContain('supported currency');
+  });
+
   it('drops deleted accounts from an edited goal selection', () => {
     expect(
       availableGoalAccountIds(['deleted', 'current'], [{ id: 'current' }]),

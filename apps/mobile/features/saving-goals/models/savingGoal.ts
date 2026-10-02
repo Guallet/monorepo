@@ -49,7 +49,13 @@ export function validateGoal(values: GoalFormValues) {
   ) {
     errors.targetAmount = 'Enter an amount above zero.';
   } else if (values.currency) {
-    const decimalPlaces = Currency.fromISOCode(values.currency).decimalPlaces;
+    let decimalPlaces: number;
+    try {
+      decimalPlaces = Currency.fromISOCode(values.currency).decimalPlaces;
+    } catch {
+      errors.accountIds = 'Select accounts with a supported currency.';
+      return { amount, errors, valid: false };
+    }
     const fractionDigits = amountText.split('.')[1]?.length ?? 0;
     if (fractionDigits > decimalPlaces) {
       errors.targetAmount = `Enter no more than ${decimalPlaces} decimal places for ${values.currency}.`;

@@ -124,6 +124,7 @@ describe('SavingGoalsService', () => {
       accounts: ['a'],
     } as SavingGoal;
     goalRepository.findOne.mockResolvedValue(goal);
+    accountRepository.find.mockResolvedValue([{ id: 'a', currency: 'GBP' }]);
     await service.update({
       userId: 'user-1',
       savingGoalId: 'g',
@@ -136,5 +137,107 @@ describe('SavingGoalsService', () => {
         target_date: null,
       }),
     );
+  });
+  it.each([
+    ['JPY', 1.5],
+    ['GBP', 1.234],
+  ])(
+    'rejects excess %s precision on create and update',
+    async (currency, amount) => {
+      accountRepository.find.mockResolvedValue([{ id: 'a', currency }]);
+      goalRepository.findOne.mockResolvedValue({
+        id: 'g',
+        accounts: ['a'],
+        target_amount: 100,
+      });
+      await expect(
+        service.create({
+          userId: 'user-1',
+          request: { name: 'Trip', targetAmount: amount, accounts: ['a'] },
+        }),
+      ).rejects.toThrow('decimal places');
+      await expect(
+        service.update({
+          userId: 'user-1',
+          savingGoalId: 'g',
+          request: { targetAmount: amount },
+        }),
+      ).rejects.toThrow('decimal places');
+      expect(goalRepository.save).not.toHaveBeenCalled();
+    },
+  );
+
+  it('revalidates the existing target when changing linked currency', async () => {
+    accountRepository.find.mockResolvedValue([{ id: 'b', currency: 'JPY' }]);
+    goalRepository.findOne.mockResolvedValue({
+      id: 'g',
+      accounts: ['a'],
+      target_amount: 1.5,
+    });
+    await expect(
+      service.update({
+        userId: 'user-1',
+        savingGoalId: 'g',
+        request: { accounts: ['b'] },
+      }),
+    ).rejects.toThrow('decimal places');
+    expect(goalRepository.save).not.toHaveBeenCalled();
+  });
+
+  it('accepts three-decimal currencies and legacy currency codes', async () => {
+    accountRepository.find.mockResolvedValue([{ id: 'a', currency: 'BHD' }]);
+    await expect(
+      service.create({
+        userId: 'user-1',
+        request: { name: 'Trip', targetAmount: 1.234, accounts: ['a'] },
+      }),
+    ).resolves.toMatchObject({ target_amount: 1.234 });
+    accountRepository.find.mockResolvedValue([{ id: 'a', currency: 'ZZZ' }]);
+    await expect(
+      service.create({
+        userId: 'user-1',
+        request: { name: 'Trip', targetAmount: 100, accounts: ['a'] },
+      }),
+    ).resolves.toMatchObject({ target_amount: 100 });
+  });
+
+  it('rejects mixed currencies after a linked account edit instead of dropping balances', async () => {
+    accountRepository.find.mockResolvedValue([
+      { id: 'a', currency: 'GBP', balance: 1 },
+      { id: 'b', currency: 'EUR', balance: 1 },
+    ]);
+    await expect(
+      service.toDto(
+        { accounts: ['a', 'b'], target_amount: 10 } as SavingGoal,
+        'user-1',
+      ),
+    ).rejects.toThrow('same currency');
+  });
+
+  it('batches account reads and rounds totals and remaining amounts', async () => {
+    accountRepository.find.mockResolvedValue([
+      { id: 'a', currency: 'GBP', balance: 0.1 },
+      { id: 'b', currency: 'GBP', balance: 0.7 },
+    ]);
+    const goals = [
+      { accounts: ['a', 'b'], target_amount: 0.8 },
+      { accounts: ['b'], target_amount: 0.8 },
+    ] as SavingGoal[];
+    const dtos = await service.toDtos(goals, 'user-1');
+    expect(accountRepository.find).toHaveBeenCalledTimes(1);
+    expect(accountRepository.find).toHaveBeenCalledWith({
+      where: { user_id: 'user-1', id: expect.anything() },
+    });
+    expect(dtos[0]).toMatchObject({
+      currentAmount: 0.8,
+      isCompleted: true,
+      remainingAmount: 0,
+    });
+    expect(dtos[1].remainingAmount).toBe(0.1);
+  });
+
+  it('skips account queries for an empty goal list', async () => {
+    expect(await service.toDtos([], 'user-1')).toEqual([]);
+    expect(accountRepository.find).not.toHaveBeenCalled();
   });
 });

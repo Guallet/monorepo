@@ -62,9 +62,7 @@ export class SavingGoalsController {
     const goals = await this.savingGoalsService.findAllUserSavingGoals({
       userId: user.id,
     });
-    return await Promise.all(
-      goals.map((goal) => this.savingGoalsService.toDto(goal, user.id)),
-    );
+    return await this.savingGoalsService.toDtos(goals, user.id);
   }
 
   @ApiOperation({ summary: 'findOne' })

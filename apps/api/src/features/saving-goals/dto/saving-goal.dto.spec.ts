@@ -103,6 +103,26 @@ describe('SavingGoalDto.fromDomain', () => {
   });
 
   describe('isOverdue', () => {
+    it('keeps a date-only deadline active throughout its calendar day', () => {
+      vi.useFakeTimers();
+      try {
+        vi.setSystemTime(new Date('2030-01-02T18:00:00Z'));
+        const goal = makeGoal({
+          target_date: new Date('2030-01-02T00:00:00Z'),
+        });
+        expect(SavingGoalDto.fromDomain(goal)).toMatchObject({
+          isOverdue: false,
+          daysRemaining: 0,
+        });
+        vi.setSystemTime(new Date('2030-01-03T00:00:00Z'));
+        expect(SavingGoalDto.fromDomain(goal)).toMatchObject({
+          isOverdue: true,
+          daysRemaining: -1,
+        });
+      } finally {
+        vi.useRealTimers();
+      }
+    });
     it('is false when no target date is set', () => {
       const dto = SavingGoalDto.fromDomain(
         makeGoal({ target_date: undefined }),

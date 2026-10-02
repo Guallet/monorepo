@@ -35,6 +35,7 @@ export class SavingGoalDto {
 
   @ApiProperty({
     description: 'Currency of the linked accounts',
+    type: String,
     required: false,
     nullable: true,
   })
@@ -70,6 +71,7 @@ export class SavingGoalDto {
     description:
       'Days remaining until the target date, negative if overdue, null if no target date',
     nullable: true,
+    type: Number,
   })
   daysRemaining: number | null;
 
@@ -87,12 +89,23 @@ export class SavingGoalDto {
 
     const now = new Date();
     const targetDate = domain.target_date ?? null;
-    const isOverdue = targetDate !== null && targetDate < now && !isCompleted;
-    const daysRemaining = targetDate
-      ? Math.ceil(
-          (targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+    // Deadlines are calendar dates in the API's UTC date representation.
+    const today = Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+    );
+    const targetDay = targetDate
+      ? Date.UTC(
+          targetDate.getUTCFullYear(),
+          targetDate.getUTCMonth(),
+          targetDate.getUTCDate(),
         )
       : null;
+    const daysRemaining =
+      targetDay === null ? null : (targetDay - today) / (1000 * 60 * 60 * 24);
+    const isOverdue =
+      daysRemaining !== null && daysRemaining < 0 && !isCompleted;
 
     return {
       id: domain.id,

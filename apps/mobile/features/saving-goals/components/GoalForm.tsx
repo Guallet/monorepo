@@ -16,7 +16,11 @@ import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
 import { GoalAccountsSheet } from './GoalAccountsSheet';
 import { availableGoalAccountIds, validateGoal } from '../models/savingGoal';
-import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import {
+  formatPreferenceDate,
+  parsePreferenceDate,
+  endOfPreferenceDay,
+} from '@/utils/formatPreferenceDate';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 type Props = {
@@ -42,6 +46,9 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   const [accountIds, setAccountIds] = useState<string[]>(goal?.accounts ?? []);
   const [targetDate, setTargetDate] = useState<Date | null>(
     goal?.targetDate ? new Date(goal.targetDate) : null,
+  );
+  const [targetDateText, setTargetDateText] = useState<string | null>(
+    goal?.targetDate ?? null,
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showAccounts, setShowAccounts] = useState(false);
@@ -219,7 +226,10 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             >
               <Text style={{ color: colors.text.primary }}>
                 {targetDate
-                  ? formatPreferenceDate(targetDate, dateFormat)
+                  ? formatPreferenceDate(
+                      targetDateText ?? targetDate,
+                      dateFormat,
+                    )
                   : 'Select a date'}
               </Text>
             </Pressable>
@@ -227,7 +237,10 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Clear target date"
-                onPress={() => setTargetDate(null)}
+                onPress={() => {
+                  setTargetDate(null);
+                  setTargetDateText(null);
+                }}
                 style={styles.clear}
               >
                 <Text style={{ color: colors.accent.primary }}>Clear date</Text>
@@ -235,12 +248,19 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             )}
             {showDatePicker && (
               <DateTimePicker
-                value={targetDate ?? new Date()}
+                value={
+                  targetDateText
+                    ? parsePreferenceDate(targetDateText)
+                    : (targetDate ?? new Date())
+                }
                 mode="date"
                 display="default"
                 onChange={(event, date) => {
                   setShowDatePicker(false);
-                  if (event.type === 'set' && date) setTargetDate(date);
+                  if (event.type === 'set' && date) {
+                    setTargetDate(endOfPreferenceDay(date));
+                    setTargetDateText(null);
+                  }
                 }}
               />
             )}
