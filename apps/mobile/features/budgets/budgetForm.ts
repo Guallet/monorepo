@@ -17,6 +17,17 @@ export type BudgetFormErrors = Partial<
   >
 >;
 
+export function getAllowedBudgetCurrencies(
+  accountCurrencies: string[],
+  existingBudgetCurrency?: string,
+): string[] {
+  const currencies = accountCurrencies.map((code) => code.toUpperCase());
+  if (existingBudgetCurrency) {
+    currencies.push(existingBudgetCurrency.toUpperCase());
+  }
+  return [...new Set(currencies)];
+}
+
 export function validateBudgetForm(
   values: BudgetFormValues,
   accountCurrencies: string[],

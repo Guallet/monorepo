@@ -28,7 +28,11 @@ import { AppScreen } from '@/components/layout/AppScreen';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { availableCurrencies } from '@/components/currencyPickerData';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
-import { validateBudgetForm, type BudgetFormErrors } from '../budgetForm';
+import {
+  getAllowedBudgetCurrencies,
+  validateBudgetForm,
+  type BudgetFormErrors,
+} from '../budgetForm';
 import { BudgetStateCard } from '../components/BudgetStateCard';
 import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
 
@@ -80,12 +84,16 @@ export default function BudgetFormScreen({
     ],
     [accounts],
   );
+  const allowedCurrencies = useMemo(
+    () => getAllowedBudgetCurrencies(accountCurrencies, budget?.currency),
+    [accountCurrencies, budget?.currency],
+  );
   const currencyChoices = useMemo(
     () =>
       availableCurrencies.filter((item) =>
-        accountCurrencies.includes(item.code),
+        allowedCurrencies.includes(item.code),
       ),
-    [accountCurrencies],
+    [allowedCurrencies],
   );
   const colourChoices = [
     colors.accent.primary,
@@ -143,7 +151,7 @@ export default function BudgetFormScreen({
     if (isPending || !isReady) return;
     const result = validateBudgetForm(
       { name, currency, amount, colour, icon, categoryIds },
-      accountCurrencies,
+      allowedCurrencies,
     );
     setErrors(result.errors);
     if (!result.request) return;
@@ -155,7 +163,11 @@ export default function BudgetFormScreen({
           id: budget.id,
           request: result.request,
         });
-        router.replace(`/budgets/${budget.id}`);
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace(`/budgets/${budget.id}`);
+        }
       } else {
         await createBudgetMutation.mutateAsync({ request: result.request });
         router.replace('/budgets');

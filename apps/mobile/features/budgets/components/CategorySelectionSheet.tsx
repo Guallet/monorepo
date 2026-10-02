@@ -23,6 +23,9 @@ export function CategorySelectionSheet({
   const { colors, spacing, typography } = useTheme();
   const [draftIds, setDraftIds] = useState<string[]>(selectedIds);
   const [query, setQuery] = useState('');
+  let categoryLabel = 'categories';
+  if (draftIds.length === 1) categoryLabel = 'category';
+  const applyLabel = `Apply ${draftIds.length} ${categoryLabel}`;
 
   useEffect(() => {
     if (visible) {
@@ -179,7 +182,7 @@ export function CategorySelectionSheet({
             </Text>
           </Pressable>
           <Pressable
-            accessibilityLabel={`Apply ${draftIds.length} categories`}
+            accessibilityLabel={applyLabel}
             accessibilityRole="button"
             onPress={() => {
               onApply(draftIds);
@@ -194,7 +197,7 @@ export function CategorySelectionSheet({
                 fontWeight: '600',
               }}
             >
-              Apply {draftIds.length} categories
+              {applyLabel}
             </Text>
           </Pressable>
         </View>

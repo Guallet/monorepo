@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { validateBudgetForm, type BudgetFormValues } from './budgetForm';
+import {
+  getAllowedBudgetCurrencies,
+  validateBudgetForm,
+  type BudgetFormValues,
+} from './budgetForm';
 
 const validValues: BudgetFormValues = {
   name: ' Groceries ',
@@ -57,5 +61,15 @@ describe('budget form validation', () => {
         ['BHD'],
       ).request?.amount,
     ).toBe(400.125);
+  });
+
+  it('allows an existing budget currency when its last account was removed', () => {
+    expect(getAllowedBudgetCurrencies([], 'GBP')).toEqual(['GBP']);
+    expect(
+      validateBudgetForm(validValues, getAllowedBudgetCurrencies([], 'GBP'))
+        .request?.currency,
+    ).toBe('GBP');
+    expect(getAllowedBudgetCurrencies([])).toEqual([]);
+    expect(validateBudgetForm(validValues, []).errors.currency).toBeDefined();
   });
 });
