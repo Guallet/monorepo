@@ -1,4 +1,5 @@
 import { CurrencyPicker, useTheme } from '@guallet/luna-mobile';
+import type { Currency } from '@guallet/money';
 import { Text, View } from 'react-native';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { availableCurrencies } from './currencyPickerData';
@@ -10,6 +11,7 @@ export interface CurrencyInputProps {
   description?: string;
   placeholder?: string;
   disabled?: boolean;
+  currencies?: Currency[];
 }
 
 export function CurrencyInput({
@@ -19,6 +21,7 @@ export function CurrencyInput({
   description,
   placeholder = 'Select a currency',
   disabled = false,
+  currencies,
 }: Readonly<CurrencyInputProps>) {
   const { colors, spacing, typography } = useTheme();
   const { defaultCurrency, preferredCurrencies } = useMobileUserPreferences();
@@ -40,7 +43,7 @@ export function CurrencyInput({
       <CurrencyPicker
         selectionMode="single"
         value={value}
-        currencies={availableCurrencies}
+        currencies={currencies ?? availableCurrencies}
         defaultCurrencyCode={defaultCurrency}
         preferredCurrencyCodes={preferredCurrencies}
         onChange={onValueChanged}

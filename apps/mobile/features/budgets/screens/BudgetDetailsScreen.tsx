@@ -1,6 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   Pressable,
   RefreshControl,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
+  useAccounts,
   useBudget,
   useBudgetMutations,
   useBudgetTransactions,
@@ -18,18 +18,18 @@ import {
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { BudgetCard } from '../components/BudgetCard';
+import { useBudgetMonth } from '../BudgetMonthContext';
 import { BudgetMonthSelector } from '../components/BudgetMonthSelector';
+import { BudgetProgressCard } from '../components/BudgetProgressCard';
+import { BudgetStateCard } from '../components/BudgetStateCard';
 import { BudgetTransactionRow } from '../components/BudgetTransactionRow';
-import { getBudgetMonth, getMonthStart } from '../models';
+import { getBudgetMonth } from '../models';
 
 export default function BudgetDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { colors, spacing, typography } = useTheme();
-  const [selectedDate, setSelectedDate] = useState(() =>
-    getMonthStart(new Date()),
-  );
+  const { borderRadius, colors, spacing, typography } = useTheme();
+  const { selectedDate, selectMonth } = useBudgetMonth();
   const { month, year } = getBudgetMonth(selectedDate);
   const { budget, isError, isLoading, isRefetching, refetch } = useBudget(id, {
     month,
@@ -41,35 +41,43 @@ export default function BudgetDetailsScreen() {
     isLoading: isTransactionsLoading,
     refetch: refetchTransactions,
     transactions,
-  } = useBudgetTransactions({
-    args: { month, year },
-    budgetId: id,
-  });
+  } = useBudgetTransactions({ args: { month, year }, budgetId: id });
   const { categories } = useCategories();
+  const { accounts } = useAccounts();
   const { deleteBudgetMutation } = useBudgetMutations();
+  const [deleteError, setDeleteError] = useState(false);
 
-  const categoryNames = useMemo(
-    () => new Map(categories.map((category) => [category.id, category.name])),
+  const categoryMap = useMemo(
+    () => new Map(categories.map((category) => [category.id, category])),
     [categories],
+  );
+  const accountNames = useMemo(
+    () => new Map(accounts.map((account) => [account.id, account.name])),
+    [accounts],
+  );
+  const budgetCategoryNames = useMemo(
+    () =>
+      budget?.categories
+        .map((categoryId) => categoryMap.get(categoryId)?.name)
+        .filter((name): name is string => Boolean(name)) ?? [],
+    [budget?.categories, categoryMap],
   );
 
   function confirmDelete() {
+    if (!budget) return;
     Alert.alert(
-      'Delete budget?',
-      'This removes the budget but does not delete its transactions.',
+      `Delete “${budget.name}”?`,
+      'This budget and its progress will be removed. Its transactions will stay in your account.',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'Keep budget', style: 'cancel' },
         {
-          text: 'Delete',
+          text: 'Delete budget',
           style: 'destructive',
           onPress: () => {
+            setDeleteError(false);
             void deleteBudgetMutation.mutateAsync(id).then(
               () => router.replace('/budgets'),
-              () =>
-                Alert.alert(
-                  'Couldn’t delete budget',
-                  'Please try again in a moment.',
-                ),
+              () => setDeleteError(true),
             );
           },
         },
@@ -80,71 +88,86 @@ export default function BudgetDetailsScreen() {
   let transactionContent: ReactNode;
   if (isTransactionsLoading) {
     transactionContent = (
-      <View style={styles.transactionLoading}>
-        <ActivityIndicator color={colors.accent.primary} />
+      <View
+        accessibilityLabel="Loading transactions"
+        style={styles.transactionLoading}
+      >
+        {[1, 2, 3].map((item) => (
+          <View
+            key={item}
+            style={{
+              backgroundColor: colors.surface.background.secondary,
+              borderRadius: borderRadius.md,
+              height: 42,
+              marginVertical: spacing.xs,
+            }}
+          />
+        ))}
       </View>
     );
   } else if (isTransactionsError) {
     transactionContent = (
-      <View style={{ paddingVertical: spacing.lg }}>
-        <Text
-          style={{
-            color: colors.text.secondary,
-            fontSize: typography.sizes.sm,
-          }}
-        >
-          Couldn’t load transactions for this month.
-        </Text>
-        <Pressable
-          onPress={() => void refetchTransactions()}
-          style={{ marginTop: spacing.sm }}
-        >
-          <Text
-            style={{
-              color: colors.accent.primary,
-              fontSize: typography.sizes.sm,
-              fontWeight: '600',
-            }}
-          >
-            Try again
-          </Text>
-        </Pressable>
-      </View>
+      <BudgetStateCard
+        actionLabel="Try again"
+        body="Budget progress is still available. Try loading the transactions again."
+        onAction={() => void refetchTransactions()}
+        title="Couldn’t load transactions"
+        variant="error"
+      />
     );
   } else if (transactions.length === 0) {
     transactionContent = (
-      <Text
-        style={{
-          color: colors.text.secondary,
-          fontSize: typography.sizes.sm,
-          paddingVertical: spacing.lg,
-        }}
-      >
-        No transactions found for this month.
-      </Text>
+      <BudgetStateCard
+        body="Transactions in the selected categories will appear here."
+        title="No transactions yet"
+      />
     );
   } else {
-    transactionContent = transactions.map((transaction) => {
-      let categoryName: string | undefined;
-      if (transaction.categoryId) {
-        categoryName = categoryNames.get(transaction.categoryId);
-      }
-      return (
-        <BudgetTransactionRow
-          key={transaction.id}
-          categoryName={categoryName}
-          transaction={transaction}
-        />
-      );
-    });
+    transactionContent = (
+      <View
+        style={[
+          styles.transactionCard,
+          {
+            backgroundColor: colors.surface.background.primary,
+            borderColor: colors.surface.border.primary,
+            borderRadius: borderRadius.lg,
+            paddingHorizontal: spacing.md,
+          },
+        ]}
+      >
+        {transactions.map((transaction) => {
+          let category;
+          if (transaction.categoryId) {
+            category = categoryMap.get(transaction.categoryId);
+          }
+          return (
+            <BudgetTransactionRow
+              key={transaction.id}
+              accountName={accountNames.get(transaction.accountId)}
+              category={category}
+              onPress={() => router.push(`/transactions/${transaction.id}`)}
+              transaction={transaction}
+            />
+          );
+        })}
+      </View>
+    );
   }
 
   if (isLoading) {
     return (
       <AppScreen headerTitle="Budget">
-        <View style={styles.centered}>
-          <ActivityIndicator color={colors.accent.primary} />
-        </View>
+        <View
+          accessibilityLabel="Loading budget"
+          style={[
+            styles.loadingCard,
+            {
+              backgroundColor: colors.surface.background.secondary,
+              borderRadius: borderRadius.lg,
+              margin: spacing.md,
+            },
+          ]}
+        />
       </AppScreen>
     );
   }
@@ -152,28 +175,36 @@ export default function BudgetDetailsScreen() {
   if (isError || !budget) {
     return (
       <AppScreen headerTitle="Budget">
-        <View style={[styles.centered, { padding: spacing.lg }]}>
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.lg,
-              fontWeight: '700',
-            }}
-          >
-            Couldn’t load this budget
-          </Text>
-          <Text
-            style={{
-              color: colors.text.secondary,
-              fontSize: typography.sizes.sm,
-              marginTop: spacing.xs,
-            }}
-          >
-            The budget may have been deleted or is temporarily unavailable.
-          </Text>
+        <View style={{ padding: spacing.md }}>
+          <BudgetMonthSelector date={selectedDate} onChange={selectMonth} />
+          <View style={{ marginTop: spacing.lg }}>
+            <BudgetStateCard
+              actionLabel="Try again"
+              body="The budget may have been deleted or is temporarily unavailable."
+              onAction={() => void refetch()}
+              title="Couldn’t load this budget"
+              variant="error"
+            />
+          </View>
+        </View>
+      </AppScreen>
+    );
+  }
+
+  let deleteLabel = 'Delete budget';
+  if (deleteBudgetMutation.isPending) deleteLabel = 'Deleting…';
+
+  return (
+    <AppScreen
+      headerTitle={budget.name}
+      headerOptions={{
+        headerRight: () => (
           <Pressable
-            onPress={() => void refetch()}
-            style={{ marginTop: spacing.md }}
+            accessibilityLabel={`Edit ${budget.name} budget`}
+            accessibilityRole="button"
+            disabled={deleteBudgetMutation.isPending}
+            onPress={() => router.push(`/budgets/${id}/edit`)}
+            style={styles.editButton}
           >
             <Text
               style={{
@@ -182,24 +213,9 @@ export default function BudgetDetailsScreen() {
                 fontWeight: '600',
               }}
             >
-              Try again
+              Edit
             </Text>
           </Pressable>
-        </View>
-      </AppScreen>
-    );
-  }
-
-  return (
-    <AppScreen
-      headerTitle={budget.name}
-      headerOptions={{
-        headerRight: () => (
-          <BudgetDetailsHeaderActions
-            disabled={deleteBudgetMutation.isPending}
-            onDelete={confirmDelete}
-            onEdit={() => router.push(`/budgets/${id}/edit`)}
-          />
         ),
       }}
     >
@@ -220,115 +236,87 @@ export default function BudgetDetailsScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        <BudgetMonthSelector date={selectedDate} onChange={setSelectedDate} />
-        <BudgetCard budget={budget} />
-
+        {deleteError && (
+          <Text
+            accessibilityRole="alert"
+            style={{
+              backgroundColor: colors.surface.background.secondary,
+              color: colors.status.error,
+              fontSize: typography.sizes.sm,
+              padding: spacing.sm,
+            }}
+          >
+            Couldn’t delete “{budget.name}”. Please try again.
+          </Text>
+        )}
+        <BudgetMonthSelector date={selectedDate} onChange={selectMonth} />
+        <BudgetProgressCard
+          budget={budget}
+          categoryNames={budgetCategoryNames}
+        />
         <Text
+          accessibilityRole="header"
           style={{
-            color: colors.text.primary,
-            fontSize: typography.sizes.lg,
+            color: colors.text.secondary,
+            fontSize: typography.sizes.xs,
             fontWeight: '700',
+            letterSpacing: 0.6,
+            marginTop: spacing.xs,
           }}
         >
-          Transactions
+          TRANSACTIONS THIS MONTH
         </Text>
-
-        <View
+        {transactionContent}
+        <Text
+          accessibilityRole="header"
+          style={{
+            color: colors.text.secondary,
+            fontSize: typography.sizes.xs,
+            fontWeight: '700',
+            letterSpacing: 0.6,
+            marginTop: spacing.xs,
+          }}
+        >
+          MANAGE
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Delete ${budget.name} budget`}
+          accessibilityState={{ disabled: deleteBudgetMutation.isPending }}
+          disabled={deleteBudgetMutation.isPending}
+          onPress={confirmDelete}
           style={[
-            styles.transactionCard,
+            styles.deleteRow,
             {
               backgroundColor: colors.surface.background.primary,
               borderColor: colors.surface.border.primary,
-              borderRadius: 16,
-              paddingHorizontal: spacing.md,
+              borderRadius: borderRadius.lg,
+              padding: spacing.md,
             },
           ]}
         >
-          {transactionContent}
-        </View>
+          <Text
+            style={{
+              color: colors.status.error,
+              fontSize: typography.sizes.sm,
+              fontWeight: '600',
+            }}
+          >
+            {deleteLabel}
+          </Text>
+        </Pressable>
         <View style={styles.bottomPad} />
       </ScrollView>
     </AppScreen>
   );
 }
 
-interface BudgetDetailsHeaderActionsProps {
-  disabled: boolean;
-  onDelete: () => void;
-  onEdit: () => void;
-}
-
-function BudgetDetailsHeaderActions({
-  disabled,
-  onDelete,
-  onEdit,
-}: BudgetDetailsHeaderActionsProps) {
-  const { colors, typography } = useTheme();
-
-  return (
-    <View style={styles.headerActions}>
-      <Pressable
-        accessibilityLabel="Edit budget"
-        accessibilityRole="button"
-        disabled={disabled}
-        onPress={onEdit}
-        style={styles.headerButton}
-      >
-        <Text
-          style={{
-            color: colors.accent.primary,
-            fontSize: typography.sizes.sm,
-          }}
-        >
-          Edit
-        </Text>
-      </Pressable>
-      <Pressable
-        accessibilityLabel="Delete budget"
-        accessibilityRole="button"
-        disabled={disabled}
-        onPress={onDelete}
-        style={styles.headerButton}
-      >
-        <Text
-          style={{
-            color: colors.status.error,
-            fontSize: typography.sizes.sm,
-          }}
-        >
-          Delete
-        </Text>
-      </Pressable>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  content: {
-    flexGrow: 1,
-  },
-  centered: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  headerActions: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 12,
-  },
-  headerButton: {
-    paddingVertical: 6,
-  },
-  transactionCard: {
-    borderWidth: 1,
-  },
-  transactionLoading: {
-    minHeight: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bottomPad: {
-    height: 16,
-  },
+  content: { flexGrow: 1 },
+  editButton: { justifyContent: 'center', minHeight: 44, paddingHorizontal: 8 },
+  transactionCard: { borderWidth: 1, elevation: 1 },
+  transactionLoading: { minHeight: 170 },
+  loadingCard: { height: 260 },
+  deleteRow: { borderWidth: 1, minHeight: 56, justifyContent: 'center' },
+  bottomPad: { height: 16 },
 });

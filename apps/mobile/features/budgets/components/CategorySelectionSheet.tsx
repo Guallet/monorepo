@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { CategoryDto } from '@guallet/api-client';
 import { TextInput, useTheme } from '@guallet/luna-mobile';
-import { CategoryIcon } from '@guallet/luna-mobile/icons';
+import { CategoryIcon, CheckIcon } from '@guallet/luna-mobile/icons';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 
 interface CategorySelectionSheetProps {
@@ -96,7 +96,12 @@ export function CategorySelectionSheet({
               Choose the categories this budget should track.
             </Text>
           </View>
-          <Pressable accessibilityRole="button" onPress={onDismiss}>
+          <Pressable
+            accessibilityLabel="Close category picker"
+            accessibilityRole="button"
+            onPress={onDismiss}
+            style={styles.closeButton}
+          >
             <Text
               style={{
                 color: colors.accent.primary,
@@ -156,6 +161,8 @@ export function CategorySelectionSheet({
           style={[styles.actions, { gap: spacing.sm, marginTop: spacing.sm }]}
         >
           <Pressable
+            accessibilityLabel="Cancel category selection"
+            accessibilityRole="button"
             onPress={onDismiss}
             style={[
               styles.action,
@@ -172,6 +179,8 @@ export function CategorySelectionSheet({
             </Text>
           </Pressable>
           <Pressable
+            accessibilityLabel={`Apply ${draftIds.length} categories`}
+            accessibilityRole="button"
             onPress={() => {
               onApply(draftIds);
               onDismiss();
@@ -185,7 +194,7 @@ export function CategorySelectionSheet({
                 fontWeight: '600',
               }}
             >
-              Done ({draftIds.length})
+              Apply {draftIds.length} categories
             </Text>
           </Pressable>
         </View>
@@ -208,15 +217,9 @@ function CategoryOption({
   const { colors, spacing, typography } = useTheme();
   let paddingLeft = spacing.sm;
   if (indent) paddingLeft = spacing.xl;
-  let selectedColor = colors.text.secondary;
-  let selectedMark = '○';
-  if (selected) {
-    selectedColor = colors.accent.primary;
-    selectedMark = '✓';
-  }
-
   return (
     <Pressable
+      accessibilityLabel={category.name}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: selected }}
       onPress={onPress}
@@ -253,14 +256,22 @@ function CategoryOption({
           {category.name}
         </Text>
       </View>
-      <Text
-        style={{
-          color: selectedColor,
-          fontSize: typography.sizes.lg,
-        }}
+      <View
+        accessible={false}
+        style={[
+          styles.checkbox,
+          {
+            backgroundColor: selected
+              ? colors.accent.primary
+              : colors.surface.background.primary,
+            borderColor: selected
+              ? colors.accent.primary
+              : colors.surface.border.input,
+          },
+        ]}
       >
-        {selectedMark}
-      </Text>
+        {selected && <CheckIcon color={colors.neutral.white} size={16} />}
+      </View>
     </Pressable>
   );
 }
@@ -283,11 +294,13 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 2,
   },
+  closeButton: { minHeight: 44, justifyContent: 'center' },
   option: {
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    minHeight: 52,
   },
   optionCopy: {
     alignItems: 'center',
@@ -298,6 +311,14 @@ const styles = StyleSheet.create({
     height: 32,
     justifyContent: 'center',
     width: 32,
+  },
+  checkbox: {
+    alignItems: 'center',
+    borderRadius: 5,
+    borderWidth: 1.5,
+    height: 22,
+    justifyContent: 'center',
+    width: 22,
   },
   actions: {
     flexDirection: 'row',
