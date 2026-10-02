@@ -20,21 +20,19 @@ describe('DataExportRequestDto', () => {
       validate({
         startDate: '2026-08-31T14:00:00.000Z',
         endDate: '2026-09-30T13:59:59.999Z',
-        preserveDateTime: true,
         accounts: ['account-1'],
         format: 'csv',
       }),
     ).resolves.toMatchObject({
       startDate: '2026-08-31T14:00:00.000Z',
       endDate: '2026-09-30T13:59:59.999Z',
-      preserveDateTime: true,
       accounts: ['account-1'],
       format: 'csv',
     });
   });
 
-  it('rejects unknown fields and non-boolean preservation values', async () => {
+  it('rejects unknown fields and invalid dates', async () => {
     await expect(validate({ unexpected: true })).rejects.toThrow();
-    await expect(validate({ preserveDateTime: 'true' })).rejects.toThrow();
+    await expect(validate({ startDate: 'not-a-date' })).rejects.toThrow();
   });
 });

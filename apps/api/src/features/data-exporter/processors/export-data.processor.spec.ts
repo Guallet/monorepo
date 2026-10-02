@@ -191,38 +191,6 @@ describe('ExportDataProcessor', () => {
     expect(callArgs.endDate?.getHours()).toBe(23);
   });
 
-  it('preserves exact device day boundaries across server time zones', async () => {
-    const previousZone = process.env.TZ;
-    try {
-      process.env.TZ = 'America/Los_Angeles';
-      transactionsService.getAllUserTransactionsForExport.mockResolvedValue([]);
-      const job: Partial<Job<ExportJobData>> = {
-        id: 'job-calendar-days',
-        data: {
-          userId: mockUserId,
-          dto: {
-            format: 'csv',
-            startDate: '2026-08-31T14:00:00.000Z',
-            endDate: '2026-09-30T13:59:59.999Z',
-            preserveDateTime: true,
-          },
-        },
-      };
-
-      await processor.process(job as Job<ExportJobData>);
-
-      const callArgs =
-        transactionsService.getAllUserTransactionsForExport.mock.calls[0][0];
-      expect(callArgs.startDate?.toISOString()).toBe(
-        '2026-08-31T14:00:00.000Z',
-      );
-      expect(callArgs.endDate?.toISOString()).toBe('2026-09-30T13:59:59.999Z');
-    } finally {
-      if (previousZone === undefined) delete process.env.TZ;
-      else process.env.TZ = previousZone;
-    }
-  });
-
   // ── CSV content ────────────────────────────────────────────────────────
 
   it('generates correct CSV content', async () => {

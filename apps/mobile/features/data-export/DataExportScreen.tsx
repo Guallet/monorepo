@@ -31,10 +31,16 @@ import {
   type ExportSelection,
 } from './exportRequest';
 
-const formats: { value: ExportFormat; label: string; description: string }[] = [
-  { value: 'csv', label: 'CSV', description: 'Spreadsheet' },
-  { value: 'json', label: 'JSON', description: 'Full data' },
-  { value: 'ofe', label: 'OFE', description: 'Finance software' },
+const formatLabels: Record<ExportFormat, string> = {
+  csv: 'CSV',
+  json: 'JSON',
+  ofe: 'OFX',
+};
+
+const formats: { value: ExportFormat; description: string }[] = [
+  { value: 'csv', description: 'Spreadsheet' },
+  { value: 'json', description: 'Full data' },
+  { value: 'ofe', description: 'Finance software' },
 ];
 
 type Phase = 'form' | 'accepted' | 'failed';
@@ -226,7 +232,7 @@ export default function DataExportScreen() {
                 <SummaryRow label="Date range" value={dateSummary} />
                 <SummaryRow
                   label="Format"
-                  value={displayedSelection.format.toUpperCase()}
+                  value={formatLabels[displayedSelection.format]}
                   last
                 />
               </View>
@@ -412,7 +418,7 @@ export default function DataExportScreen() {
                 <Pressable
                   key={option.value}
                   accessibilityRole="radio"
-                  accessibilityLabel={`${option.label}, ${option.description}`}
+                  accessibilityLabel={`${formatLabels[option.value]}, ${option.description}`}
                   accessibilityState={{ selected: format === option.value }}
                   onPress={() => setFormat(option.value)}
                   style={[
@@ -434,7 +440,7 @@ export default function DataExportScreen() {
                       fontWeight: '600',
                     }}
                   >
-                    {option.label}
+                    {formatLabels[option.value]}
                   </Text>
                   <Text
                     style={{

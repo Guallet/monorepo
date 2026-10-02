@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
-  IsBoolean,
   IsIn,
   IsISO8601,
   IsOptional,
@@ -30,16 +29,6 @@ export class DataExportRequestDto {
     example: '2024-12-31T23:59:59.999Z',
   })
   endDate?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  @ApiProperty({
-    required: false,
-    description:
-      'Preserve the supplied start and end instants instead of normalizing them to the server calendar day',
-    example: true,
-  })
-  preserveDateTime?: boolean;
 
   @IsOptional()
   @IsArray()
