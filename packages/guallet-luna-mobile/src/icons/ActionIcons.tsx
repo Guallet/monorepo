@@ -7,6 +7,7 @@ import TablerXIcon from '@tabler/icons-react-native/IconX';
 import TablerFileImportIcon from '@tabler/icons-react-native/IconFileImport';
 import TablerCalculatorIcon from '@tabler/icons-react-native/IconCalculator';
 import TablerPigMoneyIcon from '@tabler/icons-react-native/IconPigMoney';
+import TablerMailIcon from '@tabler/icons-react-native/IconMail';
 import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
@@ -46,3 +47,4 @@ export const CalculatorIcon = createLunaIcon(
   'CalculatorIcon',
 );
 export const SavingsIcon = createLunaIcon(TablerPigMoneyIcon, 'SavingsIcon');
+export const MailIcon = createLunaIcon(TablerMailIcon, 'MailIcon');
