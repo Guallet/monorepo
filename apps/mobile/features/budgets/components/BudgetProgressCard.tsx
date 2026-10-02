@@ -23,7 +23,6 @@ export function BudgetProgressCard({
   if (overBudget) status = 'Over budget';
 
   let amountLabel = 'remaining this month';
-  if (atLimit) amountLabel = 'remaining this month';
   if (overBudget) amountLabel = 'over the monthly limit';
 
   return (
