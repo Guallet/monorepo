@@ -10,8 +10,10 @@ import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export function ResetPasswordScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ token?: string }>();
   const token = params.token ?? '';
@@ -59,18 +61,16 @@ export function ResetPasswordScreen() {
 
   if (isComplete) {
     return (
-      <AuthScreen headerTitle="Password updated">
+      <AuthScreen headerTitle={t('copy_1sd5pzr')}>
         <AuthIntro
           align="center"
-          description="Your new password is ready. You can now use it to sign in."
+          description={t('copy_2p7450')}
           icon="checkmark-circle-outline"
-          title="Password updated"
+          title={t('copy_1sd5pzr')}
         />
-        <AuthNotice tone="success">
-          Your account is protected with your new password.
-        </AuthNotice>
+        <AuthNotice tone="success">{t('copy_1vevt4l')}</AuthNotice>
         <Button onClick={() => router.replace('/login/password')}>
-          Continue to sign in
+          {t('copy_1711vg1')}
         </Button>
       </AuthScreen>
     );
@@ -78,29 +78,29 @@ export function ResetPasswordScreen() {
 
   if (!token) {
     return (
-      <AuthScreen headerTitle="Reset password">
+      <AuthScreen headerTitle={t('copy_squy21')}>
         <AuthIntro
-          description="This link is incomplete or has expired. Request a new reset email to continue."
+          description={t('copy_dqdakm')}
           icon="time-outline"
-          title="Request a new link"
+          title={t('copy_1gsqfs1')}
         />
         <Button onClick={() => router.replace('/login/forgot-password')}>
-          Send a new reset link
+          {t('copy_igsw9j')}
         </Button>
         <AuthLink onPress={() => router.replace('/login/password')}>
-          Back to sign in
+          {t('copy_pdsptb')}
         </AuthLink>
       </AuthScreen>
     );
   }
 
   return (
-    <AuthScreen headerTitle="Reset password" isLoading={isLoading}>
+    <AuthScreen headerTitle={t('copy_squy21')} isLoading={isLoading}>
       <AuthIntro
-        description="Choose a strong password you haven’t used for this account before."
-        eyebrow="Secure your account"
+        description={t('copy_2jxogj')}
+        eyebrow={t('copy_1t0i8xc')}
         icon="lock-closed-outline"
-        title="Create a new password"
+        title={t('copy_1owuo7d')}
       />
 
       {requestError ? (
@@ -112,13 +112,13 @@ export function ResetPasswordScreen() {
           autoCapitalize="none"
           autoComplete="new-password"
           error={passwordError}
-          label="New password"
+          label={t('copy_th3d82')}
           onChangeText={(value) => {
             setPassword(value);
             setPasswordError(null);
             setRequestError(null);
           }}
-          placeholder="At least 8 characters"
+          placeholder={t('copy_4nuljv')}
           rightSection={
             <Pressable
               accessibilityLabel={
@@ -144,14 +144,14 @@ export function ResetPasswordScreen() {
           autoCapitalize="none"
           autoComplete="new-password"
           error={confirmationError}
-          label="Confirm new password"
+          label={t('copy_1f7shm2')}
           onChangeText={(value) => {
             setConfirmation(value);
             setConfirmationError(null);
             setRequestError(null);
           }}
           onSubmitEditing={handleReset}
-          placeholder="Enter it again"
+          placeholder={t('copy_1oblt9i')}
           returnKeyType="done"
           secureTextEntry={!isPasswordVisible}
           textContentType="newPassword"
@@ -160,7 +160,7 @@ export function ResetPasswordScreen() {
       </Stack>
 
       <Button disabled={!password || !confirmation} onClick={handleReset}>
-        Update password
+        {t('copy_10vguct')}
       </Button>
     </AuthScreen>
   );

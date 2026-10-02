@@ -14,8 +14,10 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export function LoginScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { loginWithProvider } = useAuth();
   const { borderRadius, colors, spacing, typography } = useTheme();
@@ -30,13 +32,12 @@ export function LoginScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
       return;
     }
 
     Alert.alert(
-      'Could not sign in',
-      result.error?.message ?? 'Please try again in a moment.',
+      t('Could not sign in'),
+      result.error?.message ?? t('Please try again in a moment.'),
     );
   };
 
@@ -50,8 +51,7 @@ export function LoginScreen() {
           size="xs"
           style={{ lineHeight: typography.sizes.xs * 1.5 }}
         >
-          By continuing, you agree to Guallet&apos;s Terms of Service and
-          Privacy Policy.
+          {t('copy_1ooxw1k')}
         </Label>
       }
       isHeaderVisible={false}
@@ -115,31 +115,31 @@ export function LoginScreen() {
             size={18}
           />
           <Label size="sm" style={{ fontWeight: '600' }}>
-            Your plan is on track
+            {t('copy_mx8doj')}
           </Label>
         </View>
       </View>
 
       <AuthIntro
         align="center"
-        description="See where your money goes, plan with confidence, and make every goal feel closer."
-        eyebrow="Your money, made clear"
-        title="A better view of your financial life"
+        description={t('copy_1hd0a1w')}
+        eyebrow={t('copy_1u5qbd6')}
+        title={t('copy_g6vm3y')}
       />
 
       <Stack gap={spacing.sm}>
         <Button onClick={() => router.push('/login/password')}>
-          Continue with email
+          {t('copy_k5s3pg')}
         </Button>
         <Button
           onClick={() => router.push('/login/email-code')}
           variant="outline"
         >
-          Use a one-time code
+          {t('copy_yy20z0')}
         </Button>
       </Stack>
 
-      <Divider label="or" />
+      <Divider label={t('copy_puzibo')} />
       <GoogleButton disabled={isLoading} onPress={handleGoogleLogin} />
 
       <Group gap="xs" justify="center">
@@ -149,7 +149,7 @@ export function LoginScreen() {
           size={14}
         />
         <Label color={colors.text.secondary} size="xs">
-          Secure sign-in. Your data stays private.
+          {t('copy_so9ob')}
         </Label>
       </Group>
     </AuthScreen>

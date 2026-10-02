@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guallet · mobile loan calculator concepts</title>
+    <style>
+      :root { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #231f20; background: #e8edee; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 30px; }
+      h1 { font-size: 24px; margin: 0 0 6px; }
+      .intro { color: #425563; margin: 0 0 24px; font-size: 14px; }
+      .gallery { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+      .concept { width: 344px; }
+      .caption { margin: 0 0 10px; font-size: 14px; font-weight: 700; }
+      .phone { width: 344px; height: 734px; border: 6px solid #231f20; border-radius: 34px; overflow: hidden; background: #f7fafc; box-shadow: 0 12px 28px rgba(0,0,0,.14); position: relative; }
+      .status { height: 38px; background: white; display: flex; justify-content: space-between; padding: 12px 24px 0; font-size: 12px; font-weight: 700; }
+      .top { background: white; height: 55px; display: flex; align-items: center; gap: 18px; padding: 0 16px; border-bottom: 1px solid #e8edee; font-size: 17px; font-weight: 700; }
+      .back { font-size: 25px; font-weight: 400; line-height: 1; }
+      .screen { padding: 16px; height: 629px; overflow: hidden; }
+      .tabs { display: flex; background: #e8edee; border-radius: 9px; padding: 3px; margin-bottom: 14px; }
+      .tab { flex: 1; text-align: center; padding: 9px 4px; color: #425563; font-size: 13px; font-weight: 600; }
+      .tab.active { background: white; border-radius: 7px; color: #005eb8; box-shadow: 0 1px 3px #0001; }
+      .card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 16px; margin-bottom: 12px; }
+      .eyebrow { text-transform: uppercase; letter-spacing: .04em; color: #768692; font-size: 11px; font-weight: 700; margin-bottom: 9px; }
+      .hero { font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.03em; line-height: 1.1; }
+      .muted { color: #768692; font-size: 12px; }
+      .label { color: #425563; font-size: 12px; font-weight: 600; margin: 0 0 6px; }
+      .field { height: 41px; border: 1px solid #d1d9df; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; font-size: 15px; font-variant-numeric: tabular-nums; margin-bottom: 12px; }
+      .field:last-child { margin-bottom: 0; }
+      .suffix { color: #768692; font-size: 12px; }
+      .row { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; font-size: 13px; border-bottom: 1px solid #e8edee; }
+      .row:last-child { border-bottom: 0; }
+      .row strong { font-variant-numeric: tabular-nums; }
+      .section { font-size: 15px; font-weight: 700; margin: 4px 0 10px; }
+      .link { color: #005eb8; font-size: 13px; font-weight: 600; }
+      .action { background: #005eb8; color: white; border-radius: 9px; padding: 12px; text-align: center; font-weight: 700; font-size: 13px; }
+      .pills { display: flex; gap: 8px; margin: 9px 0 12px; }
+      .pill { flex: 1; border: 1px solid #e5e7eb; border-radius: 9px; background: white; padding: 9px; font-size: 12px; }
+      .pill.selected { border-color: #005eb8; background: #f0f9ff; }
+      .pill b { display: block; margin-bottom: 4px; }
+      .saving { background: #edf8f0; border: 1px solid #b4dec0; border-radius: 12px; padding: 12px; color: #006747; margin-bottom: 12px; font-size: 12px; }
+      .saving b { display: block; font-size: 15px; margin-bottom: 2px; }
+      .comparison-head, .comparison-row { display: grid; grid-template-columns: 1fr 86px 1fr; align-items: center; gap: 4px; text-align: center; }
+      .comparison-head { color: #425563; font-size: 12px; font-weight: 700; padding-bottom: 8px; }
+      .comparison-row { border-top: 1px solid #e8edee; padding: 12px 0; font-size: 12px; }
+      .comparison-row .metric { color: #768692; font-size: 11px; }
+      .comparison-row b { font-variant-numeric: tabular-nums; }
+      .good { color: #006747; }
+      .summary-grid { display: flex; gap: 10px; margin-bottom: 12px; }
+      .mini { flex: 1; background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+      .mini b { display: block; margin-top: 5px; font-size: 16px; font-variant-numeric: tabular-nums; }
+      .month { padding: 12px 0; border-top: 1px solid #e8edee; }
+      .month:first-child { border: 0; }
+      .month-title { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+      .month-meta { display: flex; justify-content: space-between; color: #425563; font-size: 11px; line-height: 1.6; }
+      .error { color: #da291c; font-size: 11px; margin: -7px 0 10px; }
+      .invalid { border-color: #da291c; background: #fef2f2; }
+      .empty { padding: 22px 15px; border: 2px dashed #d1d5db; border-radius: 12px; color: #425563; text-align: center; font-size: 12px; }
+      .empty b { display: block; color: #231f20; font-size: 14px; margin-bottom: 5px; }
+      .bottom { position: absolute; bottom: 0; left: 0; right: 0; height: 50px; background: white; border-top: 1px solid #e8edee; display: flex; justify-content: space-around; align-items: center; color: #768692; font-size: 10px; }
+      .bottom span { text-align: center; }
+      .bottom i { display: block; font-style: normal; font-size: 18px; margin-bottom: 2px; }
+      .bottom .active { color: #005eb8; font-weight: 700; }
+      @media (max-width: 750px) { body { padding: 16px; } .gallery { justify-content: center; } }
+    </style>
+  </head>
+  <body>
+    <h1>Loan calculator · mobile concepts</h1>
+    <p class="intro">Issue #251 · Guallet visual direction · four key states at phone width</p>
+    <div class="gallery">
+      <div class="concept"><div class="caption">1 · Calculate</div><div class="phone">
+        <div class="status"><span>9:41</span><span>●●●  ▰</span></div><div class="top"><span class="back">‹</span>Loan calculator</div>
+        <div class="screen"><div class="tabs"><div class="tab active">Calculator</div><div class="tab">Compare</div></div>
+          <div class="card"><div class="eyebrow">Estimated monthly payment</div><div class="hero">£197.54</div><div class="muted">Based on 60 monthly payments</div></div>
+          <div class="card"><div class="section">Your loan</div><div class="label">Loan amount</div><div class="field"><span>£10,000</span><span class="suffix">GBP</span></div><div class="label">Annual interest rate</div><div class="field"><span>6.9</span><span class="suffix">%</span></div><div class="label">Term</div><div class="field"><span>60 months</span><span class="suffix">⌄</span></div><div class="label">Arrangement fee <span class="muted">· paid upfront</span></div><div class="field"><span>£0</span><span class="suffix">GBP</span></div></div>
+          <div class="card"><div class="row"><span>Total interest</span><strong>£1,852.46</strong></div><div class="row"><span>Total repayable</span><strong>£11,852.46</strong></div><div class="row"><span>Total cost incl. fee</span><strong>£11,852.46</strong></div><div class="row"><span class="link">View monthly schedule →</span></div></div>
+        </div>
+      </div></div>
+      <div class="concept"><div class="caption">2 · Compare</div><div class="phone">
+        <div class="status"><span>9:41</span><span>●●●  ▰</span></div><div class="top"><span class="back">‹</span>Loan calculator</div>
+        <div class="screen"><div class="tabs"><div class="tab">Calculator</div><div class="tab active">Compare</div></div>
+          <div class="saving"><b>Loan A costs £128.72 less overall</b>Loan B has a higher monthly payment and a £150 fee.</div>
+          <div class="eyebrow">Edit scenarios</div><div class="pills"><div class="pill selected"><b>Loan A · Edit</b>£10,000 · 6.9% · 60 mo<br />£0 fee</div><div class="pill"><b>Loan B · Edit</b>£10,000 · 8.5% · 48 mo<br />£150 fee</div></div>
+          <div class="card"><div class="comparison-head"><span>Loan A</span><span>Metric</span><span>Loan B</span></div><div class="comparison-row"><b class="good">£197.54</b><span class="metric">Monthly</span><b>£246.48</b></div><div class="comparison-row"><b>£1,852.46</b><span class="metric">Interest</span><b class="good">£1,831.18</b></div><div class="comparison-row"><b class="good">£11,852.46</b><span class="metric">Total cost</span><b>£11,981.18</b></div><div class="comparison-row"><b>60 mo</b><span class="metric">Term</span><b class="good">48 mo</b></div></div>
+          <div class="card"><div class="section">What changes?</div><div class="row"><span>Pay less each month with A</span><strong>£48.94</strong></div><div class="row"><span>Finish sooner with B</span><strong>12 months</strong></div><div class="row"><span>Lowest total cost</span><strong class="good">Loan A</strong></div></div>
+          <div class="action">Edit Loan B</div>
+        </div>
+      </div></div>
+      <div class="concept"><div class="caption">3 · Repayment schedule</div><div class="phone">
+        <div class="status"><span>9:41</span><span>●●●  ▰</span></div><div class="top"><span class="back">‹</span>Monthly schedule</div>
+        <div class="screen"><div class="tabs"><div class="tab active">Loan A</div><div class="tab">Loan B</div></div>
+          <div class="summary-grid"><div class="mini"><span class="muted">Monthly payment</span><b>£197.54</b></div><div class="mini"><span class="muted">Total interest</span><b>£1,852.46</b></div></div>
+          <div class="card"><div class="section">Payment breakdown</div><div class="row"><span>Borrowed</span><strong>£10,000.00</strong></div><div class="row"><span>Interest</span><strong>£1,852.46</strong></div><div class="row"><span>Upfront fee</span><strong>£0.00</strong></div><div class="row"><span>Total cost</span><strong>£11,852.46</strong></div></div>
+          <div class="card"><div class="section">Monthly payments</div><div class="month"><div class="month-title"><span>Month 1</span><span>£197.54</span></div><div class="month-meta"><span>Principal £140.04 · Interest £57.50</span></div><div class="month-meta"><span>Balance after payment</span><b>£9,859.96</b></div></div><div class="month"><div class="month-title"><span>Month 2</span><span>£197.54</span></div><div class="month-meta"><span>Principal £140.85 · Interest £56.69</span></div><div class="month-meta"><span>Balance after payment</span><b>£9,719.11</b></div></div><div class="month"><div class="month-title"><span>Month 3</span><span>£197.54</span></div><div class="month-meta"><span>Principal £141.66 · Interest £55.88</span></div><div class="month-meta"><span>Balance after payment</span><b>£9,577.45</b></div></div></div>
+        </div>
+      </div></div>
+      <div class="concept"><div class="caption">4 · Validation</div><div class="phone">
+        <div class="status"><span>9:41</span><span>●●●  ▰</span></div><div class="top"><span class="back">‹</span>Loan calculator</div>
+        <div class="screen"><div class="tabs"><div class="tab active">Calculator</div><div class="tab">Compare</div></div>
+          <div class="card"><div class="section">Your loan</div><div class="label">Loan amount</div><div class="field invalid"><span>£0</span><span class="suffix">GBP</span></div><div class="error">Enter an amount greater than £0.</div><div class="label">Annual interest rate</div><div class="field invalid"><span>105</span><span class="suffix">%</span></div><div class="error">Use a rate between 0% and 100%.</div><div class="label">Term</div><div class="field invalid"><span>0 months</span><span class="suffix">⌄</span></div><div class="error">Choose 1 to 600 months.</div><div class="label">Arrangement fee <span class="muted">· paid upfront</span></div><div class="field"><span>£0</span><span class="suffix">GBP</span></div></div>
+          <div class="empty"><b>Check your loan details</b>Results will appear when every field has a valid value.</div>
+        </div>
+      </div></div>
+    </div>
+  </body>
+</html>

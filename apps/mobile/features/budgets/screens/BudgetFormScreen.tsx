@@ -18,6 +18,7 @@ import { CurrencyInput } from '@/components/CurrencyInput';
 import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
 import { IconSelectionSheet } from '../components/IconSelectionSheet';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { useTranslation } from 'react-i18next';
 
 const COLOR_SWATCHES = [
   '#4c6ef5',
@@ -47,6 +48,7 @@ export default function BudgetFormScreen({
   isError = false,
   isLoading = false,
 }: Readonly<BudgetFormScreenProps>) {
+  const { t } = useTranslation();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const router = useRouter();
   const { categories } = useCategories();
@@ -97,19 +99,19 @@ export default function BudgetFormScreen({
     const parsedAmount = Number(amount.replace(',', '.'));
 
     if (normalizedName.length < 2) {
-      setError('Enter a budget name with at least two characters.');
+      setError(t('Enter a budget name with at least two characters.'));
       return;
     }
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-      setError('Enter a positive budget amount.');
+      setError(t('Enter a positive budget amount.'));
       return;
     }
     if (!/^[A-Z]{3}$/.test(normalizedCurrency)) {
-      setError('Use a three-letter currency code, such as GBP or EUR.');
+      setError(t('Use a three-letter currency code, such as GBP or EUR.'));
       return;
     }
     if (categoryIds.length === 0) {
-      setError('Select at least one category.');
+      setError(t('Select at least one category.'));
       return;
     }
 
@@ -145,13 +147,17 @@ export default function BudgetFormScreen({
     } catch {
       let action = 'create';
       if (budget) action = 'update';
-      setError(`Couldn’t ${action} this budget. Please try again.`);
+      setError(
+        t('Couldn’t {{action}} this budget. Please try again.', {
+          action: t(action),
+        }),
+      );
     }
   }
 
   if (isLoading) {
     return (
-      <AppScreen headerTitle="Edit budget">
+      <AppScreen headerTitle={t('copy_j0xlla')}>
         <View style={styles.centered}>
           <ActivityIndicator color={colors.accent.primary} />
         </View>
@@ -161,7 +167,7 @@ export default function BudgetFormScreen({
 
   if (isError) {
     return (
-      <AppScreen headerTitle="Budget">
+      <AppScreen headerTitle={t('copy_auevmw')}>
         <View style={[styles.centered, { padding: spacing.lg }]}>
           <Text
             style={{
@@ -170,7 +176,7 @@ export default function BudgetFormScreen({
               fontWeight: '700',
             }}
           >
-            Couldn’t load this budget
+            {t('copy_1br31ae')}
           </Text>
           <Text
             style={{
@@ -179,7 +185,7 @@ export default function BudgetFormScreen({
               marginTop: spacing.xs,
             }}
           >
-            Please go back and try again.
+            {t('copy_afmdfg')}
           </Text>
         </View>
       </AppScreen>
@@ -222,14 +228,14 @@ export default function BudgetFormScreen({
           >
             <TextInput
               autoCapitalize="words"
-              label="Name"
+              label={t('copy_4el6o6')}
               onChangeText={setName}
-              placeholder="e.g. Groceries"
+              placeholder={t('copy_106ulgo')}
               value={name}
             />
             <TextInput
               keyboardType="decimal-pad"
-              label="Monthly amount"
+              label={t('copy_brg7qm')}
               onChangeText={setAmount}
               placeholder="0.00"
               value={amount}
@@ -243,7 +249,7 @@ export default function BudgetFormScreen({
             />
 
             <FieldButton
-              label="Categories"
+              label={t('copy_1upw6fh')}
               value={categorySelectionLabel}
               onPress={() => setShowCategories(true)}
             />
@@ -256,7 +262,7 @@ export default function BudgetFormScreen({
                 marginBottom: spacing.xs,
               }}
             >
-              Color
+              {t('copy_1rqg6wo')}
             </Text>
             <View style={[styles.colorGrid, { gap: spacing.sm }]}>
               {COLOR_SWATCHES.map((swatch) => {
@@ -269,7 +275,9 @@ export default function BudgetFormScreen({
                 return (
                   <Pressable
                     key={swatch}
-                    accessibilityLabel={`Choose color ${swatch}`}
+                    accessibilityLabel={t('Choose color {{color}}', {
+                      color: swatch,
+                    })}
                     accessibilityRole="radio"
                     accessibilityState={{ selected: colour === swatch }}
                     onPress={() => setColour(swatch)}
@@ -287,7 +295,7 @@ export default function BudgetFormScreen({
             </View>
 
             <FieldButton
-              label="Icon"
+              label={t('copy_t3tyj4')}
               value={icon || 'Choose an icon'}
               onPress={() => setShowIcons(true)}
             />
@@ -311,7 +319,7 @@ export default function BudgetFormScreen({
               variant="outline"
               style={styles.actionButton}
             >
-              Cancel
+              {t('copy_ew9em3')}
             </Button>
             <Button
               disabled={isPending}

@@ -14,7 +14,14 @@ import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountTypeIcon } from './AccountTypeIcon';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
+import {
+  getPropertyValues,
+  parseAccountProperties,
+  PROPERTY_FIELDS,
+} from '../models/accountProperties';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { validateAccountForm } from '../models/accountFlow';
+import { useTranslation } from 'react-i18next';
 
 interface AccountFormProps {
   account?: AccountDto | null;
@@ -27,6 +34,7 @@ export function AccountForm({
   onCancel,
   onSaved,
 }: Readonly<AccountFormProps>) {
+  const { t } = useTranslation();
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
   const { createAccountMutation, updateAccountMutation } =
@@ -43,6 +51,9 @@ export function AccountForm({
     account ? String(account.balance.amount) : '0',
   );
   const [error, setError] = useState<string | null>(null);
+  const [propertyValues, setPropertyValues] = useState(() =>
+    getPropertyValues(account),
+  );
 
   useEffect(() => {
     if (!account) return;
@@ -50,6 +61,7 @@ export function AccountForm({
     setType(account.type);
     setCurrency(account.currency);
     setBalance(String(account.balance.amount));
+    setPropertyValues(getPropertyValues(account));
   }, [account]);
 
   useEffect(() => {
@@ -62,20 +74,39 @@ export function AccountForm({
     createAccountMutation.isPending || updateAccountMutation.isPending;
 
   async function handleSubmit() {
-    const normalizedName = name.trim();
-    const normalizedCurrency = currency.trim().toUpperCase();
-    const parsedBalance = Number(balance.replace(',', '.'));
-
-    if (!normalizedName) {
-      setError('Enter an account name.');
+    const validated = validateAccountForm({ name, currency, balance });
+    if ('error' in validated) {
+      setError(
+        validated.error
+          ? t(validated.error)
+          : t('Check your account details and try again.'),
+      );
       return;
     }
-    if (!/^[A-Z]{3}$/.test(normalizedCurrency)) {
-      setError('Use a three-letter currency code, such as GBP or EUR.');
-      return;
-    }
-    if (!Number.isFinite(parsedBalance)) {
-      setError('Enter a valid balance.');
+    const {
+      name: normalizedName,
+      currency: normalizedCurrency,
+      balance: parsedBalance,
+    } = validated.values;
+    const parsedProperties = parseAccountProperties(type, propertyValues);
+    if (parsedProperties.error) {
+      const requiredField = parsedProperties.error.match(
+        /^Enter (.+) to save these account details\.$/,
+      );
+      const invalidField = parsedProperties.error.match(
+        /^Enter a valid (.+)\.$/,
+      );
+      if (requiredField) {
+        setError(
+          t('Enter {{field}} to save these account details.', {
+            field: t(requiredField[1]),
+          }),
+        );
+      } else if (invalidField) {
+        setError(t('Enter a valid {{field}}.', { field: t(invalidField[1]) }));
+      } else {
+        setError(t(parsedProperties.error));
+      }
       return;
     }
 
@@ -90,6 +121,7 @@ export function AccountForm({
               currency: normalizedCurrency,
               balance: parsedBalance,
               create_balance_transaction: true,
+              properties: parsedProperties.properties,
             },
           })
         : await createAccountMutation.mutateAsync({
@@ -99,12 +131,17 @@ export function AccountForm({
               currency: normalizedCurrency,
               initial_balance: parsedBalance,
               create_balance_transaction: true,
+              properties: parsedProperties.properties,
             },
           });
       onSaved(savedAccount);
     } catch {
       setError(
-        `Couldn’t ${account ? 'update' : 'create'} this account. Please try again.`,
+        t(
+          account
+            ? 'Couldn’t update this account. Please try again.'
+            : 'Couldn’t create this account. Please try again.',
+        ),
       );
     }
   }
@@ -137,8 +174,7 @@ export function AccountForm({
               { color: colors.text.secondary, fontSize: typography.sizes.sm },
             ]}
           >
-            Keep your balance and account details up to date. You can edit these
-            later.
+            {t('copy_1439rjj')}
           </Text>
         </View>
 
@@ -155,9 +191,9 @@ export function AccountForm({
         >
           <TextInput
             autoCapitalize="words"
-            label="Account name"
+            label={t('copy_69n973')}
             onChangeText={setName}
-            placeholder="e.g. Everyday current account"
+            placeholder={t('copy_1setuek')}
             value={name}
           />
           <CurrencyInput
@@ -165,18 +201,18 @@ export function AccountForm({
               hasSelectedCurrency.current = true;
               setCurrency(selectedCurrency ?? '');
             }}
-            placeholder="Select a currency"
+            placeholder={t('copy_x1abp9')}
             value={currency}
           />
           <TextInput
             keyboardType={
               Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'decimal-pad'
             }
-            label="Current balance"
+            label={t('copy_mh2laa')}
             onChangeText={setBalance}
             placeholder="0.00"
             value={balance}
-            description="Use a negative value for money you owe."
+            description={t('copy_zteykc')}
           />
         </View>
 
@@ -187,7 +223,7 @@ export function AccountForm({
               { color: colors.text.primary, fontSize: typography.sizes.lg },
             ]}
           >
-            Account type
+            {t('copy_btx0vw')}
           </Text>
           <View style={[styles.typeGrid, { gap: spacing.sm }]}>
             {ACCOUNT_TYPE_OPTIONS.map((option) => {
@@ -239,8 +275,44 @@ export function AccountForm({
           </View>
         </View>
 
+        {(PROPERTY_FIELDS[type]?.length ?? 0) > 0 && (
+          <View style={{ gap: spacing.sm }}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                { color: colors.text.primary, fontSize: typography.sizes.lg },
+              ]}
+            >
+              {t('copy_fq47pe')}
+            </Text>
+            <Text
+              style={{
+                color: colors.text.secondary,
+                fontSize: typography.sizes.sm,
+              }}
+            >
+              {t('copy_1wipsux')}
+            </Text>
+            {PROPERTY_FIELDS[type]?.map((field) => (
+              <TextInput
+                key={field.key}
+                label={t(field.label)}
+                keyboardType={field.numeric ? 'decimal-pad' : 'default'}
+                onChangeText={(value) =>
+                  setPropertyValues((current) => ({
+                    ...current,
+                    [field.key]: value,
+                  }))
+                }
+                value={propertyValues[field.key]}
+              />
+            ))}
+          </View>
+        )}
+
         {error && (
           <Text
+            accessibilityRole="alert"
             style={[
               styles.error,
               { color: colors.status.error, fontSize: typography.sizes.sm },
@@ -257,7 +329,7 @@ export function AccountForm({
             variant="outline"
             style={styles.actionButton}
           >
-            Cancel
+            {t('copy_ew9em3')}
           </Button>
           <Button
             disabled={isPending}

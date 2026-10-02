@@ -10,10 +10,12 @@ import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function PasswordLoginScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const { login } = useAuth();
@@ -46,7 +48,6 @@ export function PasswordLoginScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
       return;
     }
 
@@ -57,11 +58,11 @@ export function PasswordLoginScreen() {
   };
 
   return (
-    <AuthScreen headerTitle="Sign in" isLoading={isLoading}>
+    <AuthScreen headerTitle={t('copy_w9nig3')} isLoading={isLoading}>
       <AuthIntro
-        description="Use the email and password linked to your Guallet account."
-        eyebrow="Welcome back"
-        title="Sign in to Guallet"
+        description={t('copy_1u17k19')}
+        eyebrow={t('copy_k7z2ue')}
+        title={t('copy_17oz2u2')}
       />
 
       {formError ? <AuthNotice tone="error">{formError}</AuthNotice> : null}
@@ -73,13 +74,13 @@ export function PasswordLoginScreen() {
           autoCorrect={false}
           error={emailError}
           keyboardType="email-address"
-          label="Email address"
+          label={t('copy_1cdit03')}
           onChangeText={(value) => {
             setEmail(value);
             setEmailError(null);
             setFormError(null);
           }}
-          placeholder="you@example.com"
+          placeholder={t('copy_1f9hkpt')}
           returnKeyType="next"
           textContentType="emailAddress"
           value={email}
@@ -89,14 +90,14 @@ export function PasswordLoginScreen() {
           autoComplete="current-password"
           autoCorrect={false}
           error={passwordError}
-          label="Password"
+          label={t('copy_cf437c')}
           onChangeText={(value) => {
             setPassword(value);
             setPasswordError(null);
             setFormError(null);
           }}
           onSubmitEditing={handleLogin}
-          placeholder="Enter your password"
+          placeholder={t('copy_y81xq5')}
           returnKeyType="done"
           rightSection={
             <Pressable
@@ -128,13 +129,13 @@ export function PasswordLoginScreen() {
               })
             }
           >
-            Forgot password?
+            {t('copy_1qt9b3c')}
           </AuthLink>
         </View>
       </Stack>
 
       <Button disabled={!email.trim() || !password} onClick={handleLogin}>
-        Sign in
+        {t('copy_w9nig3')}
       </Button>
 
       <AuthLink
@@ -145,7 +146,7 @@ export function PasswordLoginScreen() {
           })
         }
       >
-        Sign in with a one-time code
+        {t('copy_1qyfr1h')}
       </AuthLink>
     </AuthScreen>
   );

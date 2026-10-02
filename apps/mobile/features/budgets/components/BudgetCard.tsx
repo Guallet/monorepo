@@ -8,6 +8,7 @@ import {
   getBudgetMetrics,
   getProgressColor,
 } from '../models';
+import { useTranslation } from 'react-i18next';
 
 interface BudgetCardProps {
   budget: BudgetDto;
@@ -15,6 +16,7 @@ interface BudgetCardProps {
 }
 
 export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
+  const { t } = useTranslation();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const metrics = getBudgetMetrics(budget);
   const progressColor = getProgressColor(metrics, colors);
@@ -106,7 +108,9 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
       </View>
 
       <View
-        accessibilityLabel={`${progress.toFixed(0)} percent used`}
+        accessibilityLabel={t('{{progress}} percent used', {
+          progress: progress.toFixed(0),
+        })}
         style={[
           styles.progressTrack,
           {
@@ -135,8 +139,10 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
             fontSize: typography.sizes.xs,
           }}
         >
-          {formatBudgetCurrency(metrics.spent, budget.currency)} of{' '}
-          {formatBudgetCurrency(metrics.amount, budget.currency)} spent
+          {formatBudgetCurrency(metrics.spent, budget.currency)}
+          {' ' + t('copy_t6uqnc')}{' '}
+          {formatBudgetCurrency(metrics.amount, budget.currency)}
+          {t('copy_139015v')}
         </Text>
         <Text
           style={{
@@ -151,7 +157,7 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
 
       {metrics.isOverBudget && (
         <Ionicons
-          accessibilityLabel="Over budget"
+          accessibilityLabel={t('copy_sel34')}
           color={colors.status.error}
           name="warning-outline"
           size={18}

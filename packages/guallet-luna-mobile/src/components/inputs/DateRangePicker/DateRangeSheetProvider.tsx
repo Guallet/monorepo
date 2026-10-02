@@ -4,6 +4,7 @@ export interface DateRangeSheetProps {
   visible: boolean;
   onDismiss: () => void;
   children: ReactNode;
+  snapPoints?: ('half' | 'full')[];
 }
 
 export type DateRangeSheetRenderer = (props: DateRangeSheetProps) => ReactNode;
@@ -27,3 +28,7 @@ export function DateRangeSheetProvider({
 export function useDateRangeSheet() {
   return useContext(SheetContext);
 }
+
+/** Generic name for pickers sharing the host app's native sheet adapter. */
+export const usePickerSheet = useDateRangeSheet;
+export const PickerSheetProvider = DateRangeSheetProvider;

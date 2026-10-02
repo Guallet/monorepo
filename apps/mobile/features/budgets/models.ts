@@ -1,5 +1,6 @@
 import type { BudgetDto, DateFormat } from '@guallet/api-client';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import { getCurrentAppLocale } from '@/i18n/i18n';
 
 export const MIN_BUDGET_YEAR = 2000;
 
@@ -83,7 +84,7 @@ export function getProgressColor(
 
 export function formatBudgetCurrency(amount: number, currency: string): string {
   try {
-    return new Intl.NumberFormat('en-GB', {
+    return new Intl.NumberFormat(getCurrentAppLocale(), {
       style: 'currency',
       currency: currency.toUpperCase(),
       currencyDisplay: 'narrowSymbol',

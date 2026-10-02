@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guallet · Mobile data export concept</title>
+  <style>
+    :root { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:#231f20; background:#edf3f8; }
+    * { box-sizing:border-box; }
+    body { margin:0; }
+    main { max-width:1500px; margin:auto; padding:42px 28px 72px; }
+    h1 { margin:4px 0 8px; color:#003087; font-size:38px; letter-spacing:-.025em; }
+    .kicker { color:#005eb8; font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .intro { margin:0 0 30px; max-width:900px; color:#425563; line-height:1.5; }
+    .grid { display:grid; grid-template-columns:repeat(3, 390px); justify-content:center; gap:30px; }
+    .panel h2 { margin:0 0 5px; color:#003087; font-size:19px; }
+    .panel p { height:42px; margin:0 0 12px; color:#425563; font-size:14px; line-height:1.4; }
+    .phone { position:relative; width:390px; height:820px; overflow:hidden; border:6px solid #231f20; border-radius:39px; background:#f7fafc; box-shadow:0 15px 32px rgba(0,48,135,.13); }
+    .status { display:flex; height:42px; align-items:center; justify-content:space-between; padding:5px 25px 0; background:#fff; font-size:13px; font-weight:700; }
+    .island { position:absolute; top:9px; left:50%; width:84px; height:20px; transform:translateX(-50%); border-radius:15px; background:#231f20; }
+    .nav { display:flex; height:58px; align-items:center; gap:13px; padding:0 20px; border-bottom:1px solid #e8edee; background:#fff; font-size:19px; font-weight:700; }
+    .back { color:#005eb8; font-size:26px; font-weight:400; line-height:1; }
+    .content { padding:22px 20px 112px; }
+    .title { margin:0 0 7px; font-size:27px; letter-spacing:-.02em; }
+    .sub { margin:0 0 22px; color:#425563; font-size:14px; line-height:1.45; }
+    .label { margin:18px 0 8px; color:#425563; font-size:13px; font-weight:700; }
+    .card { overflow:hidden; border:1px solid #e5e7eb; border-radius:16px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+    .row { display:flex; min-height:57px; align-items:center; justify-content:space-between; gap:12px; padding:12px 15px; border-bottom:1px solid #e8edee; font-size:15px; }
+    .row:last-child { border-bottom:0; }
+    .row small { display:block; margin-top:3px; color:#768692; font-size:12px; }
+    .value { color:#425563; font-size:14px; text-align:right; }
+    .chev { color:#768692; font-size:22px; }
+    .row-left { display:flex; align-items:center; gap:11px; }
+    .icon { display:grid; width:33px; height:33px; flex:none; place-items:center; border-radius:10px; background:#e2f2ff; color:#005eb8; font-size:19px; font-weight:600; }
+    .note { margin:18px 0 0; color:#768692; font-size:12px; line-height:1.45; }
+    .footer { position:absolute; right:0; bottom:0; left:0; padding:12px 20px 32px; border-top:1px solid #e8edee; background:#fff; }
+    .button { display:grid; width:100%; min-height:52px; place-items:center; border-radius:8px; background:#005eb8; color:#fff; font-size:16px; font-weight:700; }
+    .button.outline { border:1px solid #005eb8; background:#fff; color:#005eb8; }
+    .button + .button { margin-top:10px; }
+    .home { position:absolute; bottom:8px; left:50%; width:106px; height:5px; transform:translateX(-50%); border-radius:6px; background:#231f20; }
+    .choice { display:flex; align-items:center; gap:11px; padding:15px; border-bottom:1px solid #e8edee; font-size:15px; }
+    .choice:last-child { border:0; }
+    .radio { width:21px; height:21px; margin-left:auto; border:1.5px solid #768692; border-radius:50%; }
+    .radio.active { border:6px solid #005eb8; }
+    .chip-row { display:flex; gap:8px; margin:15px 0 0; }
+    .chip { padding:9px 11px; border:1px solid #e5e7eb; border-radius:18px; background:#fff; color:#425563; font-size:12px; }
+    .chip.active { border-color:#005eb8; background:#e2f2ff; color:#005eb8; font-weight:700; }
+    .scrim { position:absolute; inset:42px 0 0; background:rgba(10,27,43,.45); }
+    .sheet { position:absolute; right:0; bottom:0; left:0; height:545px; border-radius:24px 24px 0 0; background:#fff; box-shadow:0 -8px 30px rgba(0,0,0,.12); }
+    .handle { width:36px; height:4px; margin:10px auto 0; border-radius:3px; background:#c3cdd4; }
+    .sheet-head { display:flex; justify-content:space-between; align-items:center; padding:18px 21px; border-bottom:1px solid #e8edee; font-size:19px; font-weight:700; }
+    .action { color:#005eb8; font-size:14px; font-weight:600; }
+    .sheet .row { min-height:68px; padding:14px 22px; }
+    .check { display:grid; width:22px; height:22px; place-items:center; border:1.5px solid #005eb8; border-radius:6px; background:#005eb8; color:#fff; font-size:14px; }
+    .sheet .footer { border-top:1px solid #e8edee; }
+    .progress-card { padding:22px 18px; text-align:center; }
+    .big-icon { display:grid; width:56px; height:56px; margin:0 auto 15px; place-items:center; border-radius:18px; background:#e2f2ff; color:#005eb8; font-size:27px; }
+    .big-icon.good { background:#e5f5e9; color:#009639; }
+    .big-icon.bad { background:#fbe9e7; color:#da291c; }
+    .progress-card strong { display:block; margin-bottom:7px; font-size:19px; }
+    .progress-card span { display:block; color:#425563; font-size:14px; line-height:1.45; }
+    .file { display:flex; align-items:center; gap:12px; padding:17px; }
+    .file strong { display:block; font-size:14px; }
+    .file small { display:block; margin-top:4px; color:#768692; font-size:12px; }
+    .callout { margin-top:26px; padding:17px 20px; border:1px solid #d4e6f5; border-radius:16px; background:#fff; color:#425563; line-height:1.5; }
+    .callout strong { color:#003087; }
+    @media(max-width:1300px) { .grid { grid-template-columns:repeat(2,390px); } }
+    @media(max-width:850px) { .grid { grid-template-columns:390px; } main { padding:28px 12px; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="kicker">Issue #248 · Design for approval</div>
+  <h1>Take your data with you</h1>
+  <p class="intro">A settings entry leads to one export form. Native sheets handle account and date selection. After the API accepts the request, the app confirms that the file will arrive by email.</p>
+  <div class="grid">
+    <section class="panel"><h2>1 · Entry point</h2><p>Keep export under Settings → Your data, close to the account it belongs to.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="island"></div><div class="nav">Settings</div><div class="content"><h3 class="title">Settings</h3><div class="sub">Manage your account and preferences</div><div class="label">YOUR DATA</div><div class="card"><div class="row"><div class="row-left"><div class="icon">↧</div><div><strong>Export data</strong><small>Receive your data by email</small></div></div><span class="chev">›</span></div></div><div class="label">TOOLS</div><div class="card"><div class="row"><div class="row-left"><div class="icon">⌁</div><div>Loan calculator</div></div><span class="chev">›</span></div></div></div><div class="home"></div></div></section>
+    <section class="panel"><h2>2 · Configure export</h2><p>All supported filters are visible before submitting; CSV is the default.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="island"></div><div class="nav"><span class="back">‹</span> Export data</div><div class="content"><h3 class="title">Export data</h3><div class="sub">Choose what to include. We’ll email the file to you when it’s ready.</div><div class="label">ACCOUNTS</div><div class="card"><div class="row"><div>All accounts</div><span class="chev">›</span></div></div><div class="label">DATE RANGE</div><div class="card"><div class="row"><div>All dates</div><span class="chev">›</span></div></div><div class="label">FILE FORMAT</div><div class="card"><div class="choice">CSV <span class="value">Spreadsheet</span><span class="radio active"></span></div><div class="choice">JSON <span class="value">Full data</span><span class="radio"></span></div><div class="choice">OFE <span class="value">Finance software</span><span class="radio"></span></div></div><div class="note">Leave accounts and dates as All to export every transaction.</div></div><div class="footer"><div class="button">Create export</div></div><div class="home"></div></div></section>
+    <section class="panel"><h2>3 · Select accounts</h2><p>A sheet supports all accounts and individual selection, with a fixed Apply action.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="island"></div><div class="nav"><span class="back">‹</span> Export data</div><div class="content"><h3 class="title">Export data</h3><div class="sub">Choose what to include.</div><div class="label">ACCOUNTS</div><div class="card"><div class="row">All accounts <span class="chev">›</span></div></div></div><div class="scrim"></div><div class="sheet"><div class="handle"></div><div class="sheet-head">Choose accounts <span class="action">Cancel</span></div><div class="row"><div>All accounts</div><span class="check">✓</span></div><div class="row"><div><strong>Everyday account</strong><small>Current account</small></div><span class="check">✓</span></div><div class="row"><div><strong>Savings</strong><small>Savings account</small></div><span class="check">✓</span></div><div class="row"><div><strong>Holiday fund</strong><small>Savings account</small></div><span class="check">✓</span></div><div class="footer"><div class="button">Apply accounts</div></div></div><div class="home"></div></div></section>
+    <section class="panel"><h2>4 · Request in progress</h2><p>The button shows progress only while the app submits the request to the API.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="island"></div><div class="nav"><span class="back">‹</span> Export data</div><div class="content"><h3 class="title">Export data</h3><div class="sub">Choose what to include. We’ll email the file to you when it’s ready.</div><div class="label">ACCOUNTS</div><div class="card"><div class="row">Everyday, Savings <span class="chev">›</span></div></div><div class="label">DATE RANGE</div><div class="card"><div class="row">All dates <span class="chev">›</span></div></div><div class="label">FILE FORMAT</div><div class="card"><div class="row">CSV <span class="chev">›</span></div></div></div><div class="footer"><div class="button">Submitting export…</div></div><div class="home"></div></div></section>
+    <section class="panel"><h2>5 · Export started</h2><p>After the API accepts the job, confirm background processing and email delivery.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="island"></div><div class="nav"><span class="back">‹</span> Export data</div><div class="content"><div class="card progress-card"><div class="big-icon good">✓</div><strong>Export started</strong><span>Your export is being processed in the background.</span></div><div class="label">DELIVERY</div><div class="card"><div class="row"><div class="row-left"><div class="icon">✉</div><div><strong>We’ll email your file</strong><small>Sent to the email on your account when ready</small></div></div></div></div><div class="label">YOUR REQUEST</div><div class="card"><div class="row">Accounts <span class="value">Everyday, Savings</span></div><div class="row">Date range <span class="value">All dates</span></div><div class="row">Format <span class="value">CSV</span></div></div><div class="note">You can continue using Guallet while the export runs.</div></div><div class="footer"><div class="button">Got it</div></div><div class="home"></div></div></section>
+    <section class="panel"><h2>6 · Request failed</h2><p>If submission fails, keep the filters and offer a direct retry.</p><div class="phone"><div class="status">9:41 <span>●●● ▰</span></div><div class="island"></div><div class="nav"><span class="back">‹</span> Export data</div><div class="content"><div class="card progress-card"><div class="big-icon bad">!</div><strong>Couldn’t start export</strong><span>Check your connection and try again. Your choices are saved.</span></div><div class="label">YOUR REQUEST</div><div class="card"><div class="row">Accounts <span class="value">Everyday, Savings</span></div><div class="row">Date range <span class="value">All dates</span></div><div class="row">Format <span class="value">CSV</span></div></div></div><div class="footer"><div class="button">Try again</div><div class="button outline">Edit selection</div></div><div class="home"></div></div></section>
+  </div>
+  <div class="callout"><strong>API behaviour:</strong> POST /data/export queues the job and returns when accepted. The API emails the file after processing. The mobile confirmation follows the webapp and does not claim that the export has finished.</div>
+</main>
+</body>
+</html>

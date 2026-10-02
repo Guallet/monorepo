@@ -3,6 +3,7 @@ import { TransactionDto } from '@guallet/api-client';
 import { useCategory } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { getCurrentAppLocale } from '@/i18n/i18n';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 
 function getAvatarColor(
@@ -25,7 +26,7 @@ function getAvatarColor(
 }
 
 function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
+  return new Intl.NumberFormat(getCurrentAppLocale(), {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,

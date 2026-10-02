@@ -5,8 +5,8 @@ import {
   useCategories,
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
-import { useRouter } from 'expo-router';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -23,11 +23,20 @@ import { TransactionListFilters } from '../models';
 import { groupTransactionsByDate } from '../utils';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import { useTranslation } from 'react-i18next';
 
 export function TransactionsListScreen() {
+  const { t } = useTranslation();
   const { colors, spacing, typography, borderRadius } = useTheme();
   const router = useRouter();
-  const [filters, setFilters] = useState<TransactionListFilters>({});
+  const { accountId } = useLocalSearchParams<{ accountId?: string }>();
+  const [filters, setFilters] = useState<TransactionListFilters>(() => ({
+    accounts: accountId ? [accountId] : undefined,
+  }));
+  useEffect(() => {
+    if (accountId)
+      setFilters((current) => ({ ...current, accounts: [accountId] }));
+  }, [accountId]);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const { accounts } = useAccounts();
   const { categories } = useCategories();
@@ -63,7 +72,7 @@ export function TransactionsListScreen() {
             fontSize: typography.sizes.sm,
           }}
         >
-          Loading transactions…
+          {t('copy_1uajv76')}
         </Text>
       </View>
     );
@@ -76,7 +85,7 @@ export function TransactionsListScreen() {
             fontSize: typography.sizes.md,
           }}
         >
-          We couldn’t load your transactions.
+          {t('copy_1gu6345')}
         </Text>
         <Pressable onPress={() => query.refetch()}>
           <Text
@@ -85,7 +94,7 @@ export function TransactionsListScreen() {
               fontSize: typography.sizes.sm,
             }}
           >
-            Try again
+            {t('copy_982hh6')}
           </Text>
         </Pressable>
       </View>
@@ -157,7 +166,7 @@ export function TransactionsListScreen() {
                 fontSize: typography.sizes.md,
               }}
             >
-              No transactions found
+              {t('copy_179wt2z')}
             </Text>
             <Text
               style={{
@@ -165,7 +174,7 @@ export function TransactionsListScreen() {
                 fontSize: typography.sizes.sm,
               }}
             >
-              Try changing or resetting your filters.
+              {t('copy_1ii5wi7')}
             </Text>
           </View>
         }
@@ -190,7 +199,7 @@ export function TransactionsListScreen() {
               { color: colors.text.primary, fontSize: typography.sizes.xxl },
             ]}
           >
-            Transactions
+            {t('copy_14dfqxc')}
           </Text>
           <Text
             style={{
@@ -198,7 +207,7 @@ export function TransactionsListScreen() {
               fontSize: typography.sizes.sm,
             }}
           >
-            Your spending and income
+            {t('copy_1q1rnf6')}
           </Text>
         </View>
         <Pressable
@@ -218,7 +227,7 @@ export function TransactionsListScreen() {
             ];
           }}
           accessibilityRole="button"
-          accessibilityLabel="Filter transactions"
+          accessibilityLabel={t('copy_qlfkps')}
         >
           <Ionicons
             name="options-outline"

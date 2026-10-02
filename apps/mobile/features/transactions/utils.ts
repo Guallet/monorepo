@@ -2,6 +2,7 @@ import { TransactionDto } from '@guallet/api-client';
 import type { DateFormat } from '@guallet/api-client';
 import { DateRangePreset } from './models';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import { getCurrentAppLocale } from '@/i18n/i18n';
 
 export type MobileTransaction = TransactionDto & { date: Date };
 
@@ -57,7 +58,7 @@ export function formatTransactionDate(
 
 export function formatCurrency(amount: number, currency: string): string {
   try {
-    return new Intl.NumberFormat('en-GB', {
+    return new Intl.NumberFormat(getCurrentAppLocale(), {
       style: 'currency',
       currency,
       minimumFractionDigits: 2,

@@ -3,8 +3,9 @@ export type SavingGoalDto = {
   name: string;
   description?: string;
   targetAmount: number;
-  targetDate: string;
+  targetDate?: string | null;
   accounts: string[];
+  currency?: string | null;
   priority?: number;
   currentAmount: number;
   progressPercentage: number;
@@ -27,7 +28,7 @@ export type UpdateSavingGoalRequest = {
   name?: string;
   description?: string;
   targetAmount?: number;
-  targetDate?: Date;
+  targetDate?: Date | null;
   accounts?: string[];
   priority?: number;
 };

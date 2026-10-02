@@ -4,13 +4,15 @@ import { useTransactionsWithFilter } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { getCurrentAppLocale } from '@/i18n/i18n';
 import {
   groupCashflowByCurrency,
   type CurrencyAmount,
 } from '../utils/currencyTotals';
+import { useTranslation } from 'react-i18next';
 
 function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
+  return new Intl.NumberFormat(getCurrentAppLocale(), {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,
@@ -24,6 +26,7 @@ interface CashflowSummaryRowProps {
 export function CashflowSummaryRow({
   onMonthDeltaChange,
 }: CashflowSummaryRowProps) {
+  const { t } = useTranslation();
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
 
@@ -97,7 +100,7 @@ export function CashflowSummaryRow({
             { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
-          INCOME · 30D
+          {t('copy_ylju92')}
         </Text>
         {cashflow.map(({ currency, income }) => (
           <Text
@@ -139,7 +142,7 @@ export function CashflowSummaryRow({
             { color: colors.text.secondary, fontSize: typography.sizes.xs },
           ]}
         >
-          EXPENSE · 30D
+          {t('copy_101anrr')}
         </Text>
         {cashflow.map(({ currency, expense }) => (
           <Text

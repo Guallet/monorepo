@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/auth/MobileAuthProvider';
+import { AuthNavigator } from '@/auth/auth-navigator';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {
@@ -11,13 +12,14 @@ import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
 } from 'expo-router/react-navigation';
-import { Stack } from 'expo-router';
 import { AppStateStatus, Platform } from 'react-native';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
 import { LunaBottomSheetProvider } from '@/components/ui/BottomSheet';
+import { initializeMobileI18n } from '@/i18n/i18n';
+import { useEffect, useState } from 'react';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -55,21 +57,7 @@ function AppNavigation() {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <GualletClientProvider client={gualletClient}>
-              <Stack
-                screenOptions={{
-                  contentStyle: {
-                    backgroundColor: colors.surface.background.page,
-                  },
-                  headerStyle: {
-                    backgroundColor: colors.surface.background.primary,
-                  },
-                  headerBackButtonDisplayMode: 'minimal',
-                  headerTintColor: colors.text.primary,
-                  headerTitleStyle: { color: colors.text.primary },
-                }}
-              >
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              </Stack>
+              <AuthNavigator />
               <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
             </GualletClientProvider>
           </AuthProvider>
@@ -83,11 +71,16 @@ function AppNavigation() {
 export function GualletApp() {
   useOnlineManager();
   useAppState(onAppStateChange);
+  const [localizationReady, setLocalizationReady] = useState(false);
+
+  useEffect(() => {
+    void initializeMobileI18n().then(() => setLocalizationReady(true));
+  }, []);
 
   return (
     <LunaProvider>
       <LunaBottomSheetProvider>
-        <AppNavigation />
+        {localizationReady && <AppNavigation />}
       </LunaBottomSheetProvider>
     </LunaProvider>
   );

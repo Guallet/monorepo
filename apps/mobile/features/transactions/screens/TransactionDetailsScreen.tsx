@@ -33,6 +33,7 @@ import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
 import { SelectionSheet } from '@/components/ui/SelectionSheet';
 import { formatTransactionDate } from '../utils';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { useTranslation } from 'react-i18next';
 
 type FormState = {
   type: 'expense' | 'income';
@@ -52,6 +53,7 @@ interface TransactionDetailsScreenProps {
 export function TransactionDetailsScreen({
   transactionId,
 }: Readonly<TransactionDetailsScreenProps>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography, borderRadius } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
@@ -94,14 +96,18 @@ export function TransactionDetailsScreen({
     JSON.stringify(form) !== JSON.stringify(initialForm);
 
   usePreventRemove(isDirty, ({ data }) => {
-    Alert.alert('Discard changes?', 'Your unsaved changes will be lost.', [
-      { text: 'Keep editing', style: 'cancel' },
-      {
-        text: 'Discard',
-        style: 'destructive',
-        onPress: () => navigation.dispatch(data.action),
-      },
-    ]);
+    Alert.alert(
+      t('Discard changes?'),
+      t('Your unsaved changes will be lost.'),
+      [
+        { text: t('Keep editing'), style: 'cancel' },
+        {
+          text: t('Discard'),
+          style: 'destructive',
+          onPress: () => navigation.dispatch(data.action),
+        },
+      ],
+    );
   });
 
   function updateForm(values: Partial<FormState>) {
@@ -120,23 +126,23 @@ export function TransactionDetailsScreen({
     const currency = form.currency.trim().toUpperCase();
 
     if (!form.description.trim()) {
-      setError('Add a description for this transaction.');
+      setError(t('Add a description for this transaction.'));
       return;
     }
     if (!form.accountId) {
-      setError('Select an account.');
+      setError(t('Select an account.'));
       return;
     }
     if (!amountInput || !Number.isFinite(amount) || amount <= 0) {
-      setError('Enter a valid amount.');
+      setError(t('Enter a valid amount.'));
       return;
     }
     if (!/^[A-Z]{3}$/.test(currency)) {
-      setError('Currency must be a three-letter code, such as GBP.');
+      setError(t('Currency must be a three-letter code, such as GBP.'));
       return;
     }
     if (!form.date) {
-      setError('Select a transaction date.');
+      setError(t('Select a transaction date.'));
       return;
     }
 
@@ -163,18 +169,18 @@ export function TransactionDetailsScreen({
       });
       router.back();
     } catch {
-      setError('We couldn’t save this transaction. Please try again.');
+      setError(t('We couldn’t save this transaction. Please try again.'));
     }
   }
 
   if (isError) {
     return (
-      <AppScreen headerTitle="Edit transaction">
+      <AppScreen headerTitle={t('copy_bxixsl')}>
         <View style={styles.centerState}>
-          <Label center>We couldn’t load this transaction.</Label>
-          <Button onClick={() => refetch()}>Try again</Button>
+          <Label center>{t('copy_23tsiz')}</Label>
+          <Button onClick={() => refetch()}>{t('copy_982hh6')}</Button>
           <Button variant="subtle" onClick={() => router.back()}>
-            Go back
+            {t('copy_rcg61q')}
           </Button>
         </View>
       </AppScreen>
@@ -183,10 +189,10 @@ export function TransactionDetailsScreen({
 
   if (!isLoading && !transaction) {
     return (
-      <AppScreen headerTitle="Edit transaction">
+      <AppScreen headerTitle={t('copy_bxixsl')}>
         <View style={styles.centerState}>
-          <Label center>Transaction not found.</Label>
-          <Button onClick={() => router.back()}>Go back</Button>
+          <Label center>{t('copy_1q8nlp4')}</Label>
+          <Button onClick={() => router.back()}>{t('copy_rcg61q')}</Button>
         </View>
       </AppScreen>
     );
@@ -202,7 +208,7 @@ export function TransactionDetailsScreen({
 
   return (
     <AppScreen
-      headerTitle="Edit transaction"
+      headerTitle={t('copy_bxixsl')}
       isLoading={isLoading || updateTransactionMutation.isPending}
       loadingMessage={loadingMessage}
       headerOptions={{
@@ -260,26 +266,26 @@ export function TransactionDetailsScreen({
 
               <View style={styles.typeRow}>
                 <TypeButton
-                  label="Expense"
+                  label={t('copy_q8z0xz')}
                   selected={form.type === 'expense'}
                   onPress={() => updateForm({ type: 'expense' })}
                 />
                 <TypeButton
-                  label="Income"
+                  label={t('copy_1hlgdxa')}
                   selected={form.type === 'income'}
                   onPress={() => updateForm({ type: 'income' })}
                 />
               </View>
 
               <TextInput
-                label="Description"
+                label={t('copy_sjj37t')}
                 value={form.description}
                 onChangeText={(description) => updateForm({ description })}
-                placeholder="Enter transaction description"
+                placeholder={t('copy_1mt6lnz')}
                 autoCapitalize="sentences"
               />
               <TextInput
-                label="Amount"
+                label={t('copy_a2ky21')}
                 value={form.amount}
                 onChangeText={(amount) => updateForm({ amount })}
                 placeholder="0.00"
@@ -287,20 +293,20 @@ export function TransactionDetailsScreen({
               />
 
               <FieldButton
-                label="Account"
+                label={t('copy_oyp43g')}
                 value={accountName}
                 onPress={() => setSelection('account')}
               />
               <TextInput
-                label="Currency"
+                label={t('copy_5o3zh2')}
                 value={form.currency}
                 onChangeText={(currency) => updateForm({ currency })}
-                placeholder="GBP"
+                placeholder={t('copy_1o6o4xg')}
                 autoCapitalize="characters"
                 maxLength={3}
               />
               <DateInput
-                label="Date"
+                label={t('copy_ggjuyh')}
                 value={form.date}
                 maxDate={new Date()}
                 onChange={(date) => updateForm({ date })}
@@ -316,14 +322,14 @@ export function TransactionDetailsScreen({
                     marginBottom: spacing.xs,
                   }}
                 >
-                  Category
+                  {t('copy_1cr1mz5')}
                 </Text>
                 <CategoryPicker
                   allowClear
                   categories={categories}
-                  clearLabel="Uncategorised"
+                  clearLabel={t('copy_1opu1wi')}
                   onChange={(categoryId) => updateForm({ categoryId })}
-                  placeholder="Uncategorised"
+                  placeholder={t('copy_1opu1wi')}
                   selectionMode="single"
                   style={[
                     styles.field,
@@ -338,10 +344,10 @@ export function TransactionDetailsScreen({
                 />
               </View>
               <TextInput
-                label="Notes"
+                label={t('copy_4f76ga')}
                 value={form.notes}
                 onChangeText={(notes) => updateForm({ notes })}
-                placeholder="Add a note"
+                placeholder={t('copy_80sifx')}
                 multiline
                 numberOfLines={4}
                 style={styles.notesInput}
@@ -363,10 +369,10 @@ export function TransactionDetailsScreen({
                 onClick={save}
                 disabled={updateTransactionMutation.isPending}
               >
-                Save changes
+                {t('copy_r69b3t')}
               </Button>
               <Button variant="outline" onClick={() => router.back()}>
-                Cancel
+                {t('copy_ew9em3')}
               </Button>
             </Stack>
           </ScrollView>
@@ -375,7 +381,7 @@ export function TransactionDetailsScreen({
 
       <SelectionSheet
         visible={selection === 'account'}
-        title="Select account"
+        title={t('copy_18a7ilu')}
         options={accounts.map((account) => ({
           id: account.id,
           label: account.name,

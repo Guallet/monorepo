@@ -23,6 +23,7 @@ const MAPPING = {
   'dollarsign.circle.fill': 'attach-money',
   'banknote.fill': 'currency-exchange',
   calendar: 'calendar-today',
+  globe: 'language',
   magnifyingglass: 'search',
   xmark: 'close',
 } satisfies Record<string, ComponentProps<typeof MaterialIcons>['name']>;

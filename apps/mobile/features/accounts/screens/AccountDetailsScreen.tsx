@@ -20,22 +20,28 @@ import { AppScreen } from '@/components/layout/AppScreen';
 import { AccountAvatar } from '../components/AccountAvatar';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
 import { formatAccountCurrency, getAccountTypeLabel } from '../models/account';
+import { getVisibleAccountProperties } from '../models/accountProperties';
+import { getMonthlyInOut, isManualAccount } from '../models/accountFlow';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import { useTranslation } from 'react-i18next';
 
 function getId(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? '') : (value ?? '');
 }
 
 export default function AccountDetailsScreen() {
+  const { t } = useTranslation();
   const { id: rawId } = useLocalSearchParams<{ id: string | string[] }>();
   const id = getId(rawId);
   const router = useRouter();
   const { colors, borderRadius, spacing, typography } = useTheme();
-  const { dateFormat } = useMobileUserPreferences();
+  const { dateFormat, languageTag } = useMobileUserPreferences();
   const { account, error, isError, isLoading, refetch } = useAccount(id);
-  const { data: chartData, isLoading: isChartLoading } = useAccountCharts(id);
-  const { transactions } = useAccountTransactions(id);
+  const chartQuery = useAccountCharts(id);
+  const { data: chartData, isLoading: isChartLoading } = chartQuery;
+  const transactionQuery = useAccountTransactions(id);
+  const { transactions } = transactionQuery;
   const { deleteAccountMutation } = useAccountMutations();
 
   const history = useMemo(
@@ -47,25 +53,29 @@ export default function AccountDetailsScreen() {
     1,
   );
   const recentTransactions = transactions.slice(0, 5);
+  const monthlyData = getMonthlyInOut(chartData?.chart ?? []);
+  const accountProperties = account ? getVisibleAccountProperties(account) : [];
 
   function confirmDelete() {
     if (!account) return;
     Alert.alert(
-      `Delete ${account.name}?`,
-      'This removes the account and its transactions. This action cannot be undone.',
+      t('Delete {{name}}?', { name: account.name }),
+      t(
+        'This removes the account and its transactions. This action cannot be undone.',
+      ),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('Cancel'), style: 'cancel' },
         {
-          text: 'Delete account',
+          text: t('Delete account'),
           style: 'destructive',
           onPress: () => {
             void deleteAccountMutation
               .mutateAsync({ id })
-              .then(() => router.replace('/(tabs)/accounts'))
+              .then(() => router.replace('/(protected)/(tabs)/accounts'))
               .catch(() =>
                 Alert.alert(
-                  'Couldn’t delete account',
-                  'Please try again in a moment.',
+                  t('Couldn’t delete account'),
+                  t('Please try again in a moment.'),
                 ),
               );
           },
@@ -80,7 +90,7 @@ export default function AccountDetailsScreen() {
     !(error instanceof ApiError && error.status === 404)
   ) {
     return (
-      <AppScreen headerTitle="Account">
+      <AppScreen headerTitle={t('copy_oyp43g')}>
         <View style={styles.notFound}>
           <Text
             style={[
@@ -88,7 +98,7 @@ export default function AccountDetailsScreen() {
               { color: colors.text.primary, fontSize: typography.sizes.lg },
             ]}
           >
-            Couldn’t load account
+            {t('copy_14kn65g')}
           </Text>
           <Text
             style={[
@@ -96,10 +106,10 @@ export default function AccountDetailsScreen() {
               { color: colors.text.secondary, fontSize: typography.sizes.sm },
             ]}
           >
-            Check your connection and try again.
+            {t('copy_k8irws')}
           </Text>
           <Button onClick={() => void refetch()} variant="outline">
-            Try again
+            {t('copy_982hh6')}
           </Button>
         </View>
       </AppScreen>
@@ -108,7 +118,7 @@ export default function AccountDetailsScreen() {
 
   if (!isLoading && !account) {
     return (
-      <AppScreen headerTitle="Account">
+      <AppScreen headerTitle={t('copy_oyp43g')}>
         <View style={styles.notFound}>
           <Text
             style={[
@@ -116,7 +126,7 @@ export default function AccountDetailsScreen() {
               { color: colors.text.primary, fontSize: typography.sizes.lg },
             ]}
           >
-            Account not found
+            {t('copy_kyuo8x')}
           </Text>
           <Text
             style={[
@@ -124,10 +134,10 @@ export default function AccountDetailsScreen() {
               { color: colors.text.secondary, fontSize: typography.sizes.sm },
             ]}
           >
-            This account may have been deleted.
+            {t('copy_1rw4fu4')}
           </Text>
           <Button onClick={() => router.back()} variant="outline">
-            Go back
+            {t('copy_rcg61q')}
           </Button>
         </View>
       </AppScreen>
@@ -137,19 +147,24 @@ export default function AccountDetailsScreen() {
   return (
     <AppScreen
       headerOptions={{
-        headerRight: () => (
-          <Pressable onPress={() => router.push(`/accounts/${id}/edit`)}>
-            <Text
-              style={[styles.headerAction, { color: colors.accent.primary }]}
+        headerRight: () =>
+          account && isManualAccount(account) ? (
+            <Pressable
+              accessibilityLabel={t('copy_1o8ro3q')}
+              accessibilityRole="button"
+              onPress={() => router.push(`/accounts/${id}/edit`)}
             >
-              Edit
-            </Text>
-          </Pressable>
-        ),
+              <Text
+                style={[styles.headerAction, { color: colors.accent.primary }]}
+              >
+                {t('copy_1i1lcq9')}
+              </Text>
+            </Pressable>
+          ) : null,
       }}
       headerTitle={account?.name ?? 'Account'}
       isLoading={isLoading}
-      loadingMessage="Loading account…"
+      loadingMessage={t('copy_gyilum')}
     >
       {account && (
         <ScrollView
@@ -221,7 +236,7 @@ export default function AccountDetailsScreen() {
                 { color: colors.text.secondary, fontSize: typography.sizes.xs },
               ]}
             >
-              CURRENT BALANCE
+              {t('copy_162r3c2')}
             </Text>
             <Text
               style={[
@@ -267,7 +282,7 @@ export default function AccountDetailsScreen() {
                   { color: colors.text.primary, fontSize: typography.sizes.lg },
                 ]}
               >
-                Balance history
+                {t('copy_1rosjw3')}
               </Text>
               <Text
                 style={[
@@ -278,7 +293,7 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                Current month
+                {t('copy_1ynxzsa')}
               </Text>
             </View>
             {isChartLoading ? (
@@ -291,6 +306,13 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               />
+            ) : chartQuery.isError ? (
+              <Button
+                onClick={() => void chartQuery.refetch()}
+                variant="outline"
+              >
+                {t('copy_3wmvo2')}
+              </Button>
             ) : history.length === 0 ? (
               <Text
                 style={[
@@ -301,7 +323,7 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                No balance history yet.
+                {t('copy_z9og1m')}
               </Text>
             ) : (
               <View style={styles.chart}>
@@ -356,6 +378,123 @@ export default function AccountDetailsScreen() {
               },
             ]}
           >
+            <Text
+              style={[
+                styles.sectionTitle,
+                { color: colors.text.primary, fontSize: typography.sizes.lg },
+              ]}
+            >
+              {t('copy_9e286o')}
+            </Text>
+            {isChartLoading && (
+              <Text style={{ color: colors.text.secondary }}>
+                {t('copy_7e4iy3')}
+              </Text>
+            )}
+            {chartQuery.isError && (
+              <Button
+                onClick={() => void chartQuery.refetch()}
+                variant="outline"
+              >
+                {t('copy_982hh6')}
+              </Button>
+            )}
+            {!isChartLoading &&
+              !chartQuery.isError &&
+              monthlyData.length === 0 && (
+                <Text style={{ color: colors.text.secondary }}>
+                  {t('copy_14e2io0')}
+                </Text>
+              )}
+            {monthlyData.map((month) => (
+              <View
+                key={`${month.year}-${month.month}`}
+                style={[
+                  styles.monthRow,
+                  { borderTopColor: colors.surface.border.primary },
+                ]}
+              >
+                <Text style={{ color: colors.text.primary, fontWeight: '600' }}>
+                  {new Intl.DateTimeFormat(languageTag, {
+                    month: 'short',
+                    year: 'numeric',
+                  }).format(new Date(month.year, month.month, 1))}
+                </Text>
+                <View style={styles.monthAmounts}>
+                  <Text
+                    style={[
+                      styles.monthAmount,
+                      { color: colors.support.primary },
+                    ]}
+                  >
+                    +{formatAccountCurrency(month.total_in, account.currency)}
+                  </Text>
+                  <Text
+                    style={[styles.monthAmount, { color: colors.status.error }]}
+                  >
+                    −
+                    {formatAccountCurrency(
+                      Math.abs(month.total_out),
+                      account.currency,
+                    )}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {accountProperties.length > 0 && (
+            <View
+              style={[
+                styles.sectionCard,
+                {
+                  backgroundColor: colors.surface.background.primary,
+                  borderColor: colors.surface.border.primary,
+                  borderRadius: borderRadius.lg,
+                  padding: spacing.md,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.sectionTitle,
+                  { color: colors.text.primary, fontSize: typography.sizes.lg },
+                ]}
+              >
+                {t('copy_fq47pe')}
+              </Text>
+              {accountProperties.map((property) => (
+                <View
+                  key={property.label}
+                  style={[
+                    styles.monthRow,
+                    { borderTopColor: colors.surface.border.primary },
+                  ]}
+                >
+                  <Text style={{ color: colors.text.secondary }}>
+                    {t(property.label)}
+                  </Text>
+                  <Text
+                    style={{ color: colors.text.primary, fontWeight: '600' }}
+                  >
+                    {property.value}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          <View
+            style={[
+              styles.sectionCard,
+              {
+                backgroundColor: colors.surface.background.primary,
+                borderColor: colors.surface.border.primary,
+                borderRadius: borderRadius.lg,
+                padding: spacing.md,
+              },
+            ]}
+          >
             <View style={styles.sectionHeader}>
               <Text
                 style={[
@@ -363,7 +502,7 @@ export default function AccountDetailsScreen() {
                   { color: colors.text.primary, fontSize: typography.sizes.lg },
                 ]}
               >
-                Transactions this month
+                {t('copy_1a6an0y')}
               </Text>
               <Text
                 style={[
@@ -374,10 +513,22 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                {recentTransactions.length} shown
+                {recentTransactions.length}
+                {t('copy_1l7ac5y')}
               </Text>
             </View>
-            {recentTransactions.length === 0 ? (
+            {transactionQuery.isLoading ? (
+              <Text style={{ color: colors.text.secondary }}>
+                {t('copy_1uajv76')}
+              </Text>
+            ) : transactionQuery.isError ? (
+              <Button
+                onClick={() => void transactionQuery.refetch()}
+                variant="outline"
+              >
+                {t('copy_1elfhrb')}
+              </Button>
+            ) : recentTransactions.length === 0 ? (
               <Text
                 style={[
                   styles.emptyText,
@@ -387,14 +538,25 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                No transactions this month.
+                {t('copy_6f6bb3')}
               </Text>
             ) : (
               recentTransactions.map((transaction) => {
                 const isIncome = transaction.amount >= 0;
                 return (
-                  <View
+                  <Pressable
                     key={transaction.id}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      transaction.description
+                        ? t('Open {{description}}', {
+                            description: transaction.description,
+                          })
+                        : t('Open transaction')
+                    }
+                    onPress={() =>
+                      router.push(`/transactions/${transaction.id}`)
+                    }
                     style={[
                       styles.transaction,
                       { borderTopColor: colors.surface.border.primary },
@@ -442,50 +604,68 @@ export default function AccountDetailsScreen() {
                         transaction.currency,
                       )}
                     </Text>
-                  </View>
+                  </Pressable>
                 );
               })
             )}
-          </View>
-
-          <View
-            style={[
-              styles.dangerCard,
-              {
-                borderColor: colors.status.error,
-                borderRadius: borderRadius.lg,
-                padding: spacing.md,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.dangerTitle,
-                { color: colors.status.error, fontSize: typography.sizes.md },
-              ]}
-            >
-              Danger zone
-            </Text>
-            <Text
-              style={[
-                styles.dangerBody,
-                { color: colors.text.secondary, fontSize: typography.sizes.sm },
-              ]}
-            >
-              Deleting an account also removes its transaction history.
-            </Text>
             <Button
-              disabled={deleteAccountMutation.isPending}
-              onClick={confirmDelete}
-              variant="outline"
-              style={{
-                ...styles.deleteButton,
-                borderColor: colors.status.error,
-              }}
+              onClick={() =>
+                router.push({
+                  pathname: '/(protected)/(tabs)/transactions',
+                  params: { accountId: id },
+                })
+              }
+              variant="subtle"
             >
-              {deleteAccountMutation.isPending ? 'Deleting…' : 'Delete account'}
+              {t('copy_1qg2904')}
             </Button>
           </View>
+
+          {isManualAccount(account) && (
+            <View
+              style={[
+                styles.dangerCard,
+                {
+                  borderColor: colors.status.error,
+                  borderRadius: borderRadius.lg,
+                  padding: spacing.md,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.dangerTitle,
+                  { color: colors.status.error, fontSize: typography.sizes.md },
+                ]}
+              >
+                {t('copy_t42th0')}
+              </Text>
+              <Text
+                style={[
+                  styles.dangerBody,
+                  {
+                    color: colors.text.secondary,
+                    fontSize: typography.sizes.sm,
+                  },
+                ]}
+              >
+                {t('copy_j0efj1')}
+              </Text>
+              <Button
+                disabled={deleteAccountMutation.isPending}
+                onClick={confirmDelete}
+                variant="outline"
+                style={{
+                  ...styles.deleteButton,
+                  borderColor: colors.status.error,
+                }}
+              >
+                {deleteAccountMutation.isPending
+                  ? 'Deleting…'
+                  : 'Delete account'}
+              </Button>
+            </View>
+          )}
           <View style={styles.bottomPad} />
         </ScrollView>
       )}
@@ -511,6 +691,14 @@ const styles = StyleSheet.create({
   balance: { fontVariant: ['tabular-nums'], fontWeight: '700' },
   source: { marginTop: 2 },
   sectionCard: { borderWidth: 1 },
+  monthRow: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+  },
+  monthAmounts: { alignItems: 'flex-end', gap: 4 },
+  monthAmount: { fontVariant: ['tabular-nums'], fontWeight: '600' },
   sectionHeader: {
     alignItems: 'baseline',
     flexDirection: 'row',

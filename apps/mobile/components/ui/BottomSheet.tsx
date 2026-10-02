@@ -37,12 +37,13 @@ function DateRangeBottomSheet({
   visible,
   onDismiss,
   children,
+  snapPoints,
 }: Readonly<DateRangeSheetProps>) {
   return (
     <BottomSheet
       isPresented={visible}
       onDismiss={onDismiss}
-      snapPoints={['full']}
+      snapPoints={snapPoints}
       contentPadding={0}
     >
       {children}

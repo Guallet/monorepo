@@ -16,8 +16,10 @@ import { BudgetCard } from '../components/BudgetCard';
 import { BudgetMonthSelector } from '../components/BudgetMonthSelector';
 import { BudgetSummaryCard } from '../components/BudgetSummaryCard';
 import { getBudgetMonth, getBudgetMetrics, getMonthStart } from '../models';
+import { useTranslation } from 'react-i18next';
 
 export default function BudgetsScreen() {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(() =>
@@ -53,9 +55,9 @@ export default function BudgetsScreen() {
   } else if (isError) {
     budgetContent = (
       <MessageCard
-        title="Couldn’t load budgets"
-        body="Check your connection and try again."
-        actionLabel="Try again"
+        title={t('copy_1bs5gvd')}
+        body={t('copy_k8irws')}
+        actionLabel={t('copy_982hh6')}
         onAction={() => void refetch()}
       />
     );
@@ -109,7 +111,7 @@ export default function BudgetsScreen() {
                 fontWeight: '700',
               }}
             >
-              Budgets
+              {t('copy_rb49fl')}
             </Text>
             <Text
               style={{
@@ -117,14 +119,14 @@ export default function BudgetsScreen() {
                 fontSize: typography.sizes.sm,
               }}
             >
-              Plan your monthly spending with confidence.
+              {t('copy_1ixdl1e')}
             </Text>
           </View>
           <Button
             onClick={() => router.push('/budgets/new')}
             style={styles.addButton}
           >
-            + New
+            {t('copy_lec9u0')}
           </Button>
         </View>
 
@@ -163,6 +165,7 @@ function LoadingState() {
 }
 
 function EmptyState({ onCreate }: Readonly<{ onCreate: () => void }>) {
+  const { t } = useTranslation();
   const { borderRadius, colors, spacing, typography } = useTheme();
 
   return (
@@ -184,7 +187,7 @@ function EmptyState({ onCreate }: Readonly<{ onCreate: () => void }>) {
           fontWeight: '700',
         }}
       >
-        No budgets yet
+        {t('copy_l1kd2')}
       </Text>
       <Text
         style={{
@@ -193,11 +196,10 @@ function EmptyState({ onCreate }: Readonly<{ onCreate: () => void }>) {
           marginTop: spacing.xs,
         }}
       >
-        Create your first budget to start tracking and controlling your
-        spending.
+        {t('copy_dedn9e')}
       </Text>
       <Button onClick={onCreate} style={{ marginTop: spacing.md }}>
-        Create your first budget
+        {t('copy_utnk9r')}
       </Button>
     </View>
   );

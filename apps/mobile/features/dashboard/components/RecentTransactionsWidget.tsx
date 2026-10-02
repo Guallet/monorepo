@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTransactions } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { TransactionListItem } from './TransactionListItem';
+import { useTranslation } from 'react-i18next';
 
 const MAX_TRANSACTIONS = 5;
 
@@ -12,6 +13,7 @@ interface RecentTransactionsWidgetProps {
 export function RecentTransactionsWidget({
   onSeeAll,
 }: RecentTransactionsWidgetProps) {
+  const { t } = useTranslation();
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { transactions, isLoading } = useTransactions();
 
@@ -51,7 +53,7 @@ export function RecentTransactionsWidget({
             { color: colors.text.primary, fontSize: typography.sizes.lg },
           ]}
         >
-          Recent
+          {t('copy_mg65fi')}
         </Text>
         {onSeeAll && (
           <Pressable onPress={onSeeAll}>
@@ -61,7 +63,7 @@ export function RecentTransactionsWidget({
                 { color: colors.accent.primary, fontSize: typography.sizes.sm },
               ]}
             >
-              See all
+              {t('copy_19mqy9f')}
             </Text>
           </Pressable>
         )}
@@ -74,7 +76,7 @@ export function RecentTransactionsWidget({
             { color: colors.text.secondary, fontSize: typography.sizes.sm },
           ]}
         >
-          No transactions yet
+          {t('copy_1w3zrc9')}
         </Text>
       ) : (
         recent.map((transaction, index) => (

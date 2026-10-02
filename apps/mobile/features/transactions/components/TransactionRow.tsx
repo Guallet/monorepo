@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
+import { useTranslation } from 'react-i18next';
 import { MobileTransaction, formatCurrency } from '../utils';
 
 interface TransactionRowProps {
@@ -33,6 +34,7 @@ export function TransactionRow({
   categoryName,
   onPress,
 }: Readonly<TransactionRowProps>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
   const isIncome = transaction.amount >= 0;
   const description = transaction.description?.trim() || 'Unknown transaction';
@@ -51,7 +53,7 @@ export function TransactionRow({
         },
       ]}
       accessibilityRole="button"
-      accessibilityLabel={`Open ${description}`}
+      accessibilityLabel={t('Open {{description}}', { description })}
     >
       <View style={[styles.avatar, { backgroundColor: avatarColor }]}>
         <Text style={[styles.avatarText, { color: colors.neutral.white }]}>

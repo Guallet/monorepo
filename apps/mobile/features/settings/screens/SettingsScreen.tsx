@@ -11,13 +11,16 @@ import {
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@guallet/auth';
+import { useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
+import { CalculatorIcon, MailIcon } from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsSection } from '../components/SettingsSection';
 import { PreferencesSection } from '../components/PreferencesSection';
 import { useMobileUserPreferences } from '../useMobileUserPreferences';
+import { useTranslation } from 'react-i18next';
 
 function getInitials(name: string): string {
   const initials = name
@@ -33,7 +36,9 @@ function getInitials(name: string): string {
 }
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const { borderRadius, colors, spacing, typography } = useTheme();
+  const router = useRouter();
   const { logout } = useAuth();
   const { user, isLoading, isError, isRefetching, refetch } = useUser();
   const { isRefetching: isSettingsRefetching, refetch: refetchSettings } =
@@ -51,32 +56,36 @@ export default function SettingsScreen() {
 
       if (!result.success) {
         Alert.alert(
-          'Couldn’t sign out',
-          result.error?.message ?? 'Please try again in a moment.',
+          t('settings.signOutError'),
+          result.error?.message ?? t('settings.retryMessage'),
         );
       }
     } catch {
-      Alert.alert('Couldn’t sign out', 'Please try again in a moment.');
+      Alert.alert(t('settings.signOutError'), t('settings.retryMessage'));
     } finally {
       setIsSigningOut(false);
     }
-  }, [logout]);
+  }, [logout, t]);
 
   const confirmSignOut = useCallback(() => {
-    Alert.alert('Sign out?', 'You can sign back in at any time.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Sign out',
-        style: 'destructive',
-        onPress: () => {
-          void handleSignOut();
+    Alert.alert(
+      t('settings.signOutQuestion'),
+      t('settings.signOutDescription'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('settings.signOut'),
+          style: 'destructive',
+          onPress: () => {
+            void handleSignOut();
+          },
         },
-      },
-    ]);
-  }, [handleSignOut]);
+      ],
+    );
+  }, [handleSignOut, t]);
 
-  const profileName = user?.name?.trim() || 'Your profile';
-  const profileEmail = user?.email?.trim() || 'Profile details unavailable';
+  const profileName = user?.name?.trim() || t('settings.profile');
+  const profileEmail = user?.email?.trim() || t('settings.profileUnavailable');
   const profileImage = user?.profile_src?.trim();
   const showProfileImage =
     Boolean(profileImage) && failedProfileImage !== profileImage;
@@ -116,7 +125,7 @@ export default function SettingsScreen() {
               { color: colors.text.primary, fontSize: typography.sizes.xxl },
             ]}
           >
-            Settings
+            {t('settings.title')}
           </Text>
           <Text
             style={[
@@ -124,7 +133,7 @@ export default function SettingsScreen() {
               { color: colors.text.secondary, fontSize: typography.sizes.sm },
             ]}
           >
-            Manage your account, preferences, and session
+            {t('settings.subtitle')}
           </Text>
         </View>
 
@@ -152,7 +161,7 @@ export default function SettingsScreen() {
                 },
               ]}
             >
-              Loading your profile…
+              {t('settings.loadingProfile')}
             </Text>
           </View>
         )}
@@ -175,7 +184,7 @@ export default function SettingsScreen() {
                 { color: colors.text.primary, fontSize: typography.sizes.lg },
               ]}
             >
-              Couldn’t load your profile
+              {t('settings.loadProfileError')}
             </Text>
             <Text
               style={[
@@ -187,14 +196,14 @@ export default function SettingsScreen() {
                 },
               ]}
             >
-              Check your connection and try again.
+              {t('settings.connectionError')}
             </Text>
             <Button
               onClick={() => void refetch()}
               variant="outline"
               style={{ marginTop: spacing.md }}
             >
-              Try again
+              {t('common.tryAgain')}
             </Button>
           </View>
         )}
@@ -221,7 +230,9 @@ export default function SettingsScreen() {
             >
               {showProfileImage && (
                 <Image
-                  accessibilityLabel={`${profileName} profile picture`}
+                  accessibilityLabel={t('settings.profilePicture', {
+                    name: profileName,
+                  })}
                   onError={() => setFailedProfileImage(profileImage ?? null)}
                   source={{ uri: profileImage }}
                   style={[
@@ -272,7 +283,25 @@ export default function SettingsScreen() {
 
         <PreferencesSection />
 
-        <SettingsSection title="Session">
+        <SettingsSection title={t('settings.yourData')}>
+          <SettingsRow
+            icon={<MailIcon size={22} color={colors.accent.primary} />}
+            label={t('settings.exportData')}
+            onPress={() => router.push('/export')}
+            value={t('settings.receiveByEmail')}
+          />
+        </SettingsSection>
+
+        <SettingsSection title={t('settings.tools')}>
+          <SettingsRow
+            icon={<CalculatorIcon size={22} color={colors.accent.primary} />}
+            label={t('settings.loanCalculator')}
+            onPress={() => router.push('/tools/loan')}
+            value={t('settings.calculateLoans')}
+          />
+        </SettingsSection>
+
+        <SettingsSection title={t('settings.session')}>
           <SettingsRow
             destructive
             disabled={isSigningOut}
@@ -284,7 +313,7 @@ export default function SettingsScreen() {
               />
             }
             isLoading={isSigningOut}
-            label="Sign out"
+            label={t('settings.signOut')}
             onPress={confirmSignOut}
           />
         </SettingsSection>

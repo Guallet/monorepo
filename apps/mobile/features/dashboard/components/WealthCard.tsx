@@ -4,13 +4,14 @@ import { useAccounts, useAccountCharts } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { getCurrentAppLocale } from '@/i18n/i18n';
 import {
   groupBalancesByCurrency,
   type CurrencyAmount,
 } from '../utils/currencyTotals';
 
 function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat('en-GB', {
+  return new Intl.NumberFormat(getCurrentAppLocale(), {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,

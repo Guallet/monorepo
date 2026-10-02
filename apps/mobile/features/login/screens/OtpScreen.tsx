@@ -5,21 +5,17 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import {
-  Button,
-  Label,
-  OtpInput,
-  Stack,
-  useTheme,
-} from '@guallet/luna-mobile';
+import { Button, Label, OtpInput, Stack, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
+import { useTranslation } from 'react-i18next';
 
 const RESEND_DELAY_SECONDS = 30;
 
 export function OtpScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? '';
@@ -67,11 +63,10 @@ export function OtpScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
       return;
     }
 
-    setError(result.error?.message ?? 'That code is not valid. Try again.');
+    setError(result.error?.message ?? t('That code is not valid. Try again.'));
   };
 
   const handleResendCode = async () => {
@@ -87,43 +82,49 @@ export function OtpScreen() {
     if (result.success) {
       setCode('');
       setResendAvailableAt(Date.now() + RESEND_DELAY_SECONDS * 1000);
-      Alert.alert('New code sent', `Check ${email} for your new code.`);
+      Alert.alert(
+        t('New code sent'),
+        t('Check {{email}} for your new code.', { email }),
+      );
       return;
     }
 
-    setError(result.error?.message ?? 'We could not resend the code.');
+    setError(result.error?.message ?? t('We could not resend the code.'));
   };
 
   const handleOpenEmailApp = async () => {
     try {
       await openInbox();
     } catch {
-      Alert.alert('Could not open your inbox', `Check ${email} for your code.`);
+      Alert.alert(
+        t('Could not open your inbox'),
+        t('Check {{email}} for your code.', { email }),
+      );
     }
   };
 
   if (!email) {
     return (
-      <AuthScreen headerTitle="Enter code">
+      <AuthScreen headerTitle={t('copy_14a0od2')}>
         <AuthIntro
-          description="Return to the previous step so we know where to send your code."
+          description={t('copy_13up95')}
           icon="alert-circle-outline"
-          title="Email address missing"
+          title={t('copy_1pen2az')}
         />
         <Button onClick={() => router.replace('/login/email-code')}>
-          Enter email address
+          {t('copy_1go9kkd')}
         </Button>
       </AuthScreen>
     );
   }
 
   return (
-    <AuthScreen headerTitle="Enter code" isLoading={isLoading}>
+    <AuthScreen headerTitle={t('copy_14a0od2')} isLoading={isLoading}>
       <AuthIntro
         align="center"
-        description={`We sent a 6-digit code to ${email}`}
+        description={t('We sent a 6-digit code to {{email}}', { email })}
         icon="shield-checkmark-outline"
-        title="Enter your code"
+        title={t('copy_xtxzmx')}
       />
 
       <Stack gap={spacing.sm}>
@@ -141,12 +142,12 @@ export function OtpScreen() {
       </Stack>
 
       <Button disabled={code.length !== 6} onClick={handleVerifyCode}>
-        Verify and sign in
+        {t('copy_s5j1zt')}
       </Button>
 
       <View style={styles.resendRow}>
         <Label color={colors.text.secondary} size="sm">
-          Didn&apos;t receive it?
+          {t('copy_1pthcag')}
         </Label>
         <AuthLink disabled={resendSeconds > 0} onPress={handleResendCode}>
           {resendSeconds > 0
@@ -156,7 +157,7 @@ export function OtpScreen() {
       </View>
 
       <Button onClick={handleOpenEmailApp} variant="outline">
-        Open email app
+        {t('copy_tbmk0e')}
       </Button>
 
       <AuthLink
@@ -167,7 +168,7 @@ export function OtpScreen() {
           })
         }
       >
-        Use a different email
+        {t('copy_pqvoqa')}
       </AuthLink>
     </AuthScreen>
   );

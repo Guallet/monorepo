@@ -3,6 +3,8 @@ import { useLocales } from 'expo-localization';
 import { useMemo } from 'react';
 import { ISO4217Currencies } from '@guallet/money';
 import type { DateFormat } from '@guallet/api-client';
+import { useTranslation } from 'react-i18next';
+import { getCurrentAppLocale } from '@/i18n/i18n';
 
 export const DEFAULT_CURRENCY = 'GBP';
 export const DEFAULT_DATE_FORMAT: DateFormat = 'DD/MM/YYYY';
@@ -33,9 +35,13 @@ function getDateFormatFromLocale(languageTag?: string | null): DateFormat {
 }
 
 export function useMobileUserPreferences() {
+  const { i18n } = useTranslation();
   const { settings, ...settingsQuery } = useUserSettings();
   const locales = useLocales();
   const locale = locales[0];
+  const languageTag = getCurrentAppLocale(
+    i18n.resolvedLanguage ?? i18n.language,
+  );
   const localeDefaults = useMemo(() => {
     const localeCurrency = locale?.currencyCode;
     const defaultCurrency =
@@ -45,10 +51,10 @@ export function useMobileUserPreferences() {
 
     return {
       defaultCurrency,
-      dateFormat: getDateFormatFromLocale(locale?.languageTag),
-      languageTag: locale?.languageTag ?? 'en-GB',
+      dateFormat: getDateFormatFromLocale(languageTag),
+      languageTag,
     };
-  }, [locale?.currencyCode, locale?.languageTag]);
+  }, [locale?.currencyCode, languageTag]);
 
   return {
     settings,

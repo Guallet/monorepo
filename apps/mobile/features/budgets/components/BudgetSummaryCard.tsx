@@ -3,6 +3,7 @@ import { useTheme } from '@guallet/luna-mobile';
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { formatBudgetCurrency, getBudgetMetrics } from '../models';
+import { useTranslation } from 'react-i18next';
 
 interface BudgetSummaryCardProps {
   budgets: BudgetDto[];
@@ -18,6 +19,7 @@ type CurrencySummary = {
 export function BudgetSummaryCard({
   budgets,
 }: Readonly<BudgetSummaryCardProps>) {
+  const { t } = useTranslation();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const summaries = useMemo(() => {
     const grouped = new Map<string, CurrencySummary>();
@@ -69,7 +71,7 @@ export function BudgetSummaryCard({
           { color: colors.text.secondary, fontSize: typography.sizes.xs },
         ]}
       >
-        BUDGET OVERVIEW
+        {t('copy_q623ln')}
       </Text>
 
       {hasSingleCurrency && (
@@ -112,7 +114,8 @@ export function BudgetSummaryCard({
                 fontWeight: '600',
               }}
             >
-              {Math.min(overallPercent, 100).toFixed(0)}% used
+              {Math.min(overallPercent, 100).toFixed(0)}
+              {t('copy_1thy01x')}
             </Text>
           </View>
         </>
@@ -125,7 +128,8 @@ export function BudgetSummaryCard({
             marginTop: spacing.sm,
           }}
         >
-          {budgets.length} budgets · Multiple currencies
+          {budgets.length}
+          {t('copy_6vkyib')}
         </Text>
       )}
 
@@ -156,12 +160,12 @@ export function BudgetSummaryCard({
           )}
           <View style={[styles.stats, { gap: spacing.sm }]}>
             <SummaryStat
-              label="Budgeted"
+              label={t('copy_1femzhl')}
               value={formatBudgetCurrency(summary.budgeted, summary.currency)}
             />
             <SummaryStat
               color={colors.status.error}
-              label="Spent"
+              label={t('copy_7vdtab')}
               value={formatBudgetCurrency(summary.spent, summary.currency)}
             />
             <SummaryStat

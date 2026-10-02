@@ -22,8 +22,10 @@ import { BudgetCard } from '../components/BudgetCard';
 import { BudgetMonthSelector } from '../components/BudgetMonthSelector';
 import { BudgetTransactionRow } from '../components/BudgetTransactionRow';
 import { getBudgetMonth, getMonthStart } from '../models';
+import { useTranslation } from 'react-i18next';
 
 export default function BudgetDetailsScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { colors, spacing, typography } = useTheme();
@@ -55,20 +57,20 @@ export default function BudgetDetailsScreen() {
 
   function confirmDelete() {
     Alert.alert(
-      'Delete budget?',
-      'This removes the budget but does not delete its transactions.',
+      t('Delete budget?'),
+      t('This removes the budget but does not delete its transactions.'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('Cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('Delete'),
           style: 'destructive',
           onPress: () => {
             void deleteBudgetMutation.mutateAsync(id).then(
               () => router.replace('/budgets'),
               () =>
                 Alert.alert(
-                  'Couldn’t delete budget',
-                  'Please try again in a moment.',
+                  t('Couldn’t delete budget'),
+                  t('Please try again in a moment.'),
                 ),
             );
           },
@@ -93,7 +95,7 @@ export default function BudgetDetailsScreen() {
             fontSize: typography.sizes.sm,
           }}
         >
-          Couldn’t load transactions for this month.
+          {t('copy_8lz5x7')}
         </Text>
         <Pressable
           onPress={() => void refetchTransactions()}
@@ -106,7 +108,7 @@ export default function BudgetDetailsScreen() {
               fontWeight: '600',
             }}
           >
-            Try again
+            {t('copy_982hh6')}
           </Text>
         </Pressable>
       </View>
@@ -120,7 +122,7 @@ export default function BudgetDetailsScreen() {
           paddingVertical: spacing.lg,
         }}
       >
-        No transactions found for this month.
+        {t('copy_9blm08')}
       </Text>
     );
   } else {
@@ -141,7 +143,7 @@ export default function BudgetDetailsScreen() {
 
   if (isLoading) {
     return (
-      <AppScreen headerTitle="Budget">
+      <AppScreen headerTitle={t('copy_auevmw')}>
         <View style={styles.centered}>
           <ActivityIndicator color={colors.accent.primary} />
         </View>
@@ -151,7 +153,7 @@ export default function BudgetDetailsScreen() {
 
   if (isError || !budget) {
     return (
-      <AppScreen headerTitle="Budget">
+      <AppScreen headerTitle={t('copy_auevmw')}>
         <View style={[styles.centered, { padding: spacing.lg }]}>
           <Text
             style={{
@@ -160,7 +162,7 @@ export default function BudgetDetailsScreen() {
               fontWeight: '700',
             }}
           >
-            Couldn’t load this budget
+            {t('copy_1br31ae')}
           </Text>
           <Text
             style={{
@@ -169,7 +171,7 @@ export default function BudgetDetailsScreen() {
               marginTop: spacing.xs,
             }}
           >
-            The budget may have been deleted or is temporarily unavailable.
+            {t('copy_g5cmja')}
           </Text>
           <Pressable
             onPress={() => void refetch()}
@@ -182,7 +184,7 @@ export default function BudgetDetailsScreen() {
                 fontWeight: '600',
               }}
             >
-              Try again
+              {t('copy_982hh6')}
             </Text>
           </Pressable>
         </View>
@@ -230,7 +232,7 @@ export default function BudgetDetailsScreen() {
             fontWeight: '700',
           }}
         >
-          Transactions
+          {t('copy_14dfqxc')}
         </Text>
 
         <View
@@ -263,12 +265,13 @@ function BudgetDetailsHeaderActions({
   onDelete,
   onEdit,
 }: BudgetDetailsHeaderActionsProps) {
+  const { t } = useTranslation();
   const { colors, typography } = useTheme();
 
   return (
     <View style={styles.headerActions}>
       <Pressable
-        accessibilityLabel="Edit budget"
+        accessibilityLabel={t('copy_j0xlla')}
         accessibilityRole="button"
         disabled={disabled}
         onPress={onEdit}
@@ -280,11 +283,11 @@ function BudgetDetailsHeaderActions({
             fontSize: typography.sizes.sm,
           }}
         >
-          Edit
+          {t('copy_1i1lcq9')}
         </Text>
       </Pressable>
       <Pressable
-        accessibilityLabel="Delete budget"
+        accessibilityLabel={t('copy_1atz37r')}
         accessibilityRole="button"
         disabled={disabled}
         onPress={onDelete}
@@ -296,7 +299,7 @@ function BudgetDetailsHeaderActions({
             fontSize: typography.sizes.sm,
           }}
         >
-          Delete
+          {t('copy_oay2cq')}
         </Text>
       </Pressable>
     </View>

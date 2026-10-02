@@ -24,6 +24,7 @@ import {
   selectedCategoryParentIds,
   type CategoryPickerItem,
 } from './categoryPicker.utils';
+import { useTranslation } from 'react-i18next';
 
 type CategoryPickerCommonProps = {
   categories: CategoryPickerItem[];
@@ -57,6 +58,7 @@ export type CategoryPickerProps = CategoryPickerCommonProps &
 
 /** Searchable native category selector with two-level expandable groups. */
 export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
+  const { t } = useTranslation();
   const {
     categories,
     recentCategoryIds = [],
@@ -212,7 +214,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
               marginBottom: spacing.md,
             }}
           >
-            Choose category
+            {t('copy_1m59bmg')}
           </Text>
 
           <View
@@ -229,11 +231,11 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
           >
             <SearchIcon color={colors.text.secondary} size={18} />
             <TextInput
-              accessibilityLabel="Search categories"
+              accessibilityLabel={t('copy_qz475z')}
               autoCapitalize="none"
               autoCorrect={false}
               onChangeText={setQuery}
-              placeholder="Search categories"
+              placeholder={t('copy_qz475z')}
               placeholderTextColor={colors.text.placeholder}
               style={{
                 color: colors.text.primary,
@@ -247,7 +249,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
 
           {!query.trim() && recents.length > 0 && (
             <View style={{ marginBottom: spacing.md }}>
-              <SectionLabel>Recent</SectionLabel>
+              <SectionLabel>{t('copy_mg65fi')}</SectionLabel>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -266,7 +268,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
             </View>
           )}
 
-          <SectionLabel>Categories</SectionLabel>
+          <SectionLabel>{t('copy_1upw6fh')}</SectionLabel>
           <ScrollView
             contentContainerStyle={{
               gap: spacing.xs,
@@ -343,7 +345,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
                   paddingVertical: spacing.md,
                 }}
               >
-                No categories found.
+                {t('copy_1ycns54')}
               </Text>
             )}
           </ScrollView>
@@ -356,12 +358,12 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
               ]}
             >
               <ActionButton
-                label="Cancel"
+                label={t('copy_ew9em3')}
                 onPress={cancelSelection}
                 secondary
               />
               <ActionButton
-                label="Done"
+                label={t('copy_13cn9g1')}
                 onPress={confirmMultipleSelection}
                 secondary={false}
               />
@@ -522,7 +524,10 @@ function CategoryRow({
       {hasChildren && onExpand && (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`${expanded ? 'Collapse' : 'Expand'} ${category.name}`}
+          accessibilityLabel={t(
+            expanded ? 'Collapse {{name}}' : 'Expand {{name}}',
+            { name: category.name },
+          )}
           accessibilityState={{ expanded }}
           hitSlop={6}
           onPress={onExpand}

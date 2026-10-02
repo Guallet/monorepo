@@ -8,8 +8,10 @@ import { Button } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 import { openInbox } from 'react-native-email-link';
+import { useTranslation } from 'react-i18next';
 
 export function ResetPasswordSentScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? 'your email address';
@@ -19,30 +21,29 @@ export function ResetPasswordSentScreen() {
       await openInbox();
     } catch {
       Alert.alert(
-        'Could not open your inbox',
-        'Open your email app and look for a message from Guallet.',
+        t('Could not open your inbox'),
+        t('Open your email app and look for a message from Guallet.'),
       );
     }
   };
 
   return (
-    <AuthScreen headerTitle="Check your email">
+    <AuthScreen headerTitle={t('copy_asrdsa')}>
       <AuthIntro
         align="center"
-        description={`We sent a password reset link to ${email}.`}
+        description={t('We sent a password reset link to {{email}}.', {
+          email,
+        })}
         icon="mail-open-outline"
-        title="Check your inbox"
+        title={t('copy_mrtr7y')}
       />
 
-      <AuthNotice>
-        The link expires for your security. If you don&apos;t see the email,
-        check your spam or junk folder.
-      </AuthNotice>
+      <AuthNotice>{t('copy_1e1985j')}</AuthNotice>
 
-      <Button onClick={handleOpenEmailApp}>Open email app</Button>
+      <Button onClick={handleOpenEmailApp}>{t('copy_tbmk0e')}</Button>
 
       <AuthLink onPress={() => router.replace('/login/password')}>
-        Back to sign in
+        {t('copy_pdsptb')}
       </AuthLink>
     </AuthScreen>
   );

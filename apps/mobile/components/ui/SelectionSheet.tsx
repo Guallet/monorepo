@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 export type SelectionOption = {
   id: string;
@@ -24,11 +25,12 @@ export function SelectionSheet({
   options,
   selectedId,
   allowNone = false,
-  noneLabel = 'None',
+  noneLabel,
   onClose,
   onSelect,
 }: Readonly<SelectionSheetProps>) {
   const { colors, spacing, typography } = useTheme();
+  const { t } = useTranslation();
 
   function handleSelect(id: string | null) {
     onSelect(id);
@@ -67,7 +69,7 @@ export function SelectionSheet({
                 fontSize: typography.sizes.sm,
               }}
             >
-              Done
+              {t('common.done')}
             </Text>
           </Pressable>
         </View>
@@ -75,7 +77,7 @@ export function SelectionSheet({
         <ScrollView showsVerticalScrollIndicator={false}>
           {allowNone && (
             <OptionRow
-              label={noneLabel}
+              label={noneLabel ?? t('common.none')}
               selected={selectedId === null}
               onPress={() => handleSelect(null)}
             />

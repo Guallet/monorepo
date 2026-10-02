@@ -4,6 +4,7 @@ import type { CategoryDto } from '@guallet/api-client';
 import { TextInput, useTheme } from '@guallet/luna-mobile';
 import { CategoryIcon } from '@guallet/luna-mobile/icons';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 interface CategorySelectionSheetProps {
   categories: CategoryDto[];
@@ -20,6 +21,7 @@ export function CategorySelectionSheet({
   onApply,
   onDismiss,
 }: Readonly<CategorySelectionSheetProps>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
   const [draftIds, setDraftIds] = useState<string[]>(selectedIds);
   const [query, setQuery] = useState('');
@@ -85,7 +87,7 @@ export function CategorySelectionSheet({
                 fontWeight: '700',
               }}
             >
-              Select categories
+              {t('copy_1k56qgb')}
             </Text>
             <Text
               style={{
@@ -93,7 +95,7 @@ export function CategorySelectionSheet({
                 fontSize: typography.sizes.sm,
               }}
             >
-              Choose the categories this budget should track.
+              {t('copy_1m26fse')}
             </Text>
           </View>
           <Pressable accessibilityRole="button" onPress={onDismiss}>
@@ -104,7 +106,7 @@ export function CategorySelectionSheet({
                 fontWeight: '600',
               }}
             >
-              Close
+              {t('copy_1l0xxoj')}
             </Text>
           </Pressable>
         </View>
@@ -112,9 +114,9 @@ export function CategorySelectionSheet({
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
-          label="Search"
+          label={t('copy_1j0itop')}
           onChangeText={setQuery}
-          placeholder="Search categories"
+          placeholder={t('copy_qz475z')}
           value={query}
         />
 
@@ -147,7 +149,7 @@ export function CategorySelectionSheet({
                 fontSize: typography.sizes.sm,
               }}
             >
-              No categories found.
+              {t('copy_1ycns54')}
             </Text>
           )}
         </ScrollView>
@@ -168,7 +170,7 @@ export function CategorySelectionSheet({
                 fontSize: typography.sizes.md,
               }}
             >
-              Cancel
+              {t('copy_ew9em3')}
             </Text>
           </Pressable>
           <Pressable
@@ -185,7 +187,8 @@ export function CategorySelectionSheet({
                 fontWeight: '600',
               }}
             >
-              Done ({draftIds.length})
+              {t('copy_9i5dxt')}
+              {draftIds.length})
             </Text>
           </Pressable>
         </View>

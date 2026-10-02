@@ -14,6 +14,7 @@ import {
   TransactionListFilters,
 } from '../models';
 import { endOfDay, formatDateRange, getDateRange, startOfDay } from '../utils';
+import { useTranslation } from 'react-i18next';
 
 interface TransactionFiltersSheetProps {
   visible: boolean;
@@ -45,6 +46,7 @@ export function TransactionFiltersSheet({
   onClose,
   onApply,
 }: Readonly<TransactionFiltersSheetProps>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
   const { dateFormat } = useMobileUserPreferences();
   const [draft, setDraft] = useState(() => createDraft(filters));
@@ -218,7 +220,7 @@ export function TransactionFiltersSheet({
                 { color: colors.text.primary, fontSize: typography.sizes.lg },
               ]}
             >
-              Filter transactions
+              {t('copy_qlfkps')}
             </Text>
             <Text
               style={{
@@ -226,7 +228,7 @@ export function TransactionFiltersSheet({
                 fontSize: typography.sizes.xs,
               }}
             >
-              Choose one or more filters
+              {t('copy_1opbbx9')}
             </Text>
           </View>
           <Pressable onPress={onClose} hitSlop={12}>
@@ -241,25 +243,25 @@ export function TransactionFiltersSheet({
             paddingBottom: spacing.md,
           }}
         >
-          <FilterSection title="Date range">
+          <FilterSection title={t('copy_a96p5c')}>
             <View style={styles.presetGrid}>
               <PresetButton
-                label="Any date"
+                label={t('copy_x2wmib')}
                 selected={draft.datePreset === 'all'}
                 onPress={() => setPreset('all')}
               />
               <PresetButton
-                label="Today"
+                label={t('copy_1sawk0u')}
                 selected={draft.datePreset === 'today'}
                 onPress={() => setPreset('today')}
               />
               <PresetButton
-                label="This month"
+                label={t('copy_1quvzxz')}
                 selected={draft.datePreset === 'this-month'}
                 onPress={() => setPreset('this-month')}
               />
               <PresetButton
-                label="Last 30 days"
+                label={t('copy_1lubgoj')}
                 selected={draft.datePreset === 'last-30-days'}
                 onPress={() => setPreset('last-30-days')}
               />
@@ -278,7 +280,7 @@ export function TransactionFiltersSheet({
                     fontSize: typography.sizes.xs,
                   }}
                 >
-                  Custom range
+                  {t('copy_7g7047')}
                 </Text>
                 <Text
                   style={{
@@ -298,7 +300,7 @@ export function TransactionFiltersSheet({
           </FilterSection>
 
           <FilterSection
-            title="Accounts"
+            title={t('copy_dpi1wd')}
             summary={getSelectionSummary(selectedAccountCount, 'accounts')}
           >
             <SelectionList
@@ -316,7 +318,7 @@ export function TransactionFiltersSheet({
           </FilterSection>
 
           <FilterSection
-            title="Categories"
+            title={t('copy_1upw6fh')}
             summary={getSelectionSummary(selectedCategoryCount, 'categories')}
           >
             <SelectionList
@@ -350,7 +352,7 @@ export function TransactionFiltersSheet({
                 fontSize: typography.sizes.md,
               }}
             >
-              Reset
+              {t('copy_2zps2o')}
             </Text>
           </Pressable>
           <Pressable
@@ -367,7 +369,7 @@ export function TransactionFiltersSheet({
                 fontSize: typography.sizes.md,
               }}
             >
-              Apply filters
+              {t('copy_1ml4h1c')}
             </Text>
           </Pressable>
         </View>
@@ -485,6 +487,7 @@ function SelectionList({
   onToggle: (id: string) => void;
   onSelectAll: () => void;
 }>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
 
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
@@ -501,7 +504,7 @@ function SelectionList({
         <Text
           style={{ color: colors.text.primary, fontSize: typography.sizes.sm }}
         >
-          All
+          {t('copy_wnjk2s')}
         </Text>
         {allSelected && <Text style={{ color: colors.accent.primary }}>✓</Text>}
       </Pressable>

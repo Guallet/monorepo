@@ -6,6 +6,7 @@ import {
   selectableCategoryIconNames,
 } from '@guallet/luna-mobile/icons';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useTranslation } from 'react-i18next';
 
 interface IconSelectionSheetProps {
   selectedIcon: string;
@@ -20,6 +21,7 @@ export function IconSelectionSheet({
   onSelect,
   onDismiss,
 }: Readonly<IconSelectionSheetProps>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
   const [draftIcon, setDraftIcon] = useState(selectedIcon);
 
@@ -43,7 +45,7 @@ export function IconSelectionSheet({
               fontWeight: '700',
             }}
           >
-            Select an icon
+            {t('copy_1uw8hbx')}
           </Text>
           <Pressable accessibilityRole="button" onPress={onDismiss}>
             <Text
@@ -52,7 +54,7 @@ export function IconSelectionSheet({
                 fontSize: typography.sizes.sm,
               }}
             >
-              Close
+              {t('copy_1l0xxoj')}
             </Text>
           </Pressable>
         </View>

@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { AccountDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 import { AccountAvatar } from './AccountAvatar';
@@ -8,13 +9,16 @@ export function AccountRow({
   account,
   onPress,
 }: Readonly<{ account: AccountDto; onPress: () => void }>) {
+  const { t } = useTranslation();
   const { colors, spacing, typography } = useTheme();
   const isNegative = account.balance.amount < 0;
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Open ${account.name}`}
+      accessibilityLabel={t('Open {{description}}', {
+        description: account.name,
+      })}
       onPress={onPress}
       style={({ pressed }) => [
         styles.row,

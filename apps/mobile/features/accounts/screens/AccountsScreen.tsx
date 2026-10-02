@@ -9,43 +9,30 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { AccountTypeDto } from '@guallet/api-client';
 import { useAccounts } from '@guallet/api-react';
 import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountRow } from '../components/AccountRow';
 import { AccountsSummary } from '../components/AccountsSummary';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
+import { formatAccountCurrency, getAccountTypeLabel } from '../models/account';
 import {
-  ACCOUNT_TYPE_ORDER,
-  formatAccountCurrency,
-  getAccountTypeLabel,
-} from '../models/account';
-
-type AccountGroup = {
-  type: AccountTypeDto;
-  accounts: AccountDto[];
-};
+  groupAccounts,
+  type AccountGroup as AccountGroupModel,
+} from '../models/accountFlow';
+import { useTranslation } from 'react-i18next';
 
 export default function AccountsScreen() {
+  const { t } = useTranslation();
   const { colors, borderRadius, spacing, typography } = useTheme();
   const router = useRouter();
   const { accounts, isLoading, isError, isRefetching, refetch } = useAccounts();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredAccounts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return accounts;
-    return accounts.filter((account) =>
-      account.name.toLowerCase().includes(query),
-    );
-  }, [accounts, searchQuery]);
-
-  const groups = useMemo<AccountGroup[]>(() => {
-    return ACCOUNT_TYPE_ORDER.map((type) => ({
-      type,
-      accounts: filteredAccounts.filter((account) => account.type === type),
-    })).filter((group) => group.accounts.length > 0);
-  }, [filteredAccounts]);
+  const groups = useMemo(
+    () => groupAccounts(accounts, searchQuery),
+    [accounts, searchQuery],
+  );
 
   return (
     <SafeAreaView
@@ -77,7 +64,7 @@ export default function AccountsScreen() {
                 { color: colors.text.primary, fontSize: typography.sizes.xxl },
               ]}
             >
-              Accounts
+              {t('copy_dpi1wd')}
             </Text>
             <Text
               style={[
@@ -85,14 +72,14 @@ export default function AccountsScreen() {
                 { color: colors.text.secondary, fontSize: typography.sizes.sm },
               ]}
             >
-              Everything you own, in one place
+              {t('copy_kq680j')}
             </Text>
           </View>
           <Button
             onClick={() => router.push('/accounts/new')}
             style={styles.addButton}
           >
-            + Add
+            {t('copy_18nj8pp')}
           </Button>
         </View>
 
@@ -123,7 +110,7 @@ export default function AccountsScreen() {
                 { color: colors.text.primary, fontSize: typography.sizes.lg },
               ]}
             >
-              Couldn’t load accounts
+              {t('copy_1jvr9h1')}
             </Text>
             <Text
               style={[
@@ -131,14 +118,14 @@ export default function AccountsScreen() {
                 { color: colors.text.secondary, fontSize: typography.sizes.sm },
               ]}
             >
-              Check your connection and try again.
+              {t('copy_k8irws')}
             </Text>
             <Button
               onClick={() => void refetch()}
               variant="outline"
               style={styles.messageButton}
             >
-              Try again
+              {t('copy_982hh6')}
             </Button>
           </View>
         ) : accounts.length === 0 ? (
@@ -174,7 +161,7 @@ export default function AccountsScreen() {
                 { color: colors.text.primary, fontSize: typography.sizes.lg },
               ]}
             >
-              No accounts yet
+              {t('copy_tgwavs')}
             </Text>
             <Text
               style={[
@@ -182,23 +169,22 @@ export default function AccountsScreen() {
                 { color: colors.text.secondary, fontSize: typography.sizes.sm },
               ]}
             >
-              Add your first account to start tracking your money and see your
-              net worth here.
+              {t('copy_klt7l3')}
             </Text>
             <Button
               onClick={() => router.push('/accounts/new')}
               style={styles.fullButton}
             >
-              Add your first account
+              {t('copy_1693j1i')}
             </Button>
           </View>
         ) : (
           <>
             <AccountsSummary accounts={accounts} />
             <TextInput
-              label="Search accounts"
+              label={t('copy_pmai9j')}
               onChangeText={setSearchQuery}
-              placeholder="Search by account name"
+              placeholder={t('copy_1v3hiwk')}
               value={searchQuery}
               autoCapitalize="none"
               autoCorrect={false}
@@ -225,7 +211,7 @@ export default function AccountsScreen() {
                     },
                   ]}
                 >
-                  No matching accounts
+                  {t('copy_de888f')}
                 </Text>
                 <Text
                   style={[
@@ -236,7 +222,7 @@ export default function AccountsScreen() {
                     },
                   ]}
                 >
-                  Try another search term or clear the search.
+                  {t('copy_1kq085o')}
                 </Text>
                 <Pressable onPress={() => setSearchQuery('')}>
                   <Text
@@ -248,7 +234,7 @@ export default function AccountsScreen() {
                       },
                     ]}
                   >
-                    Clear search
+                    {t('copy_ozrfba')}
                   </Text>
                 </Pressable>
               </View>
@@ -272,7 +258,10 @@ export default function AccountsScreen() {
 function AccountGroup({
   group,
   onAccountPress,
-}: Readonly<{ group: AccountGroup; onAccountPress: (id: string) => void }>) {
+}: Readonly<{
+  group: AccountGroupModel;
+  onAccountPress: (id: string) => void;
+}>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const totals = new Map<string, number>();
   for (const account of group.accounts) {

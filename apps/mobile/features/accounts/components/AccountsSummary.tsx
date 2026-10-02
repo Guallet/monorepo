@@ -3,10 +3,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AccountDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 import { formatAccountCurrency } from '../models/account';
+import { useTranslation } from 'react-i18next';
 
 export function AccountsSummary({
   accounts,
 }: Readonly<{ accounts: AccountDto[] }>) {
+  const { t } = useTranslation();
   const { colors, borderRadius, spacing, typography } = useTheme();
   const summary = useMemo(() => {
     const totals = new Map<
@@ -48,7 +50,7 @@ export function AccountsSummary({
           },
         ]}
       >
-        NET WORTH
+        {t('copy_ouxoq8')}
       </Text>
       <View style={[styles.totalList, { gap: spacing.xs }]}>
         {summary.map(([currency, values]) => (
@@ -101,7 +103,8 @@ export function AccountsSummary({
                 { color: colors.button.onPrimary.default },
               ]}
             >
-              Assets {formatAccountCurrency(values.assets, currency)}
+              {t('copy_1shidso')}
+              {formatAccountCurrency(values.assets, currency)}
             </Text>
             <Text
               style={[
@@ -109,7 +112,8 @@ export function AccountsSummary({
                 { color: colors.button.onPrimary.default },
               ]}
             >
-              Liabilities {formatAccountCurrency(values.liabilities, currency)}
+              {t('copy_10q7e0g')}
+              {formatAccountCurrency(values.liabilities, currency)}
             </Text>
           </View>
         ))}

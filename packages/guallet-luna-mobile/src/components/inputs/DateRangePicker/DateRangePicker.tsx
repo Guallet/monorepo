@@ -467,7 +467,7 @@ function DateRangeSheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ visible, onDismiss, children });
+  return renderSheet({ visible, onDismiss, children, snapPoints: ['full'] });
 }
 
 /** Keep each endpoint's value and expansion state accessible as one control. */

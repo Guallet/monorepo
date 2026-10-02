@@ -8,10 +8,12 @@ import {
 import { Button, TextInput } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ForgotPasswordScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const { resetPassword } = useAuth();
@@ -52,12 +54,12 @@ export function ForgotPasswordScreen() {
   };
 
   return (
-    <AuthScreen headerTitle="Password help" isLoading={isLoading}>
+    <AuthScreen headerTitle={t('copy_12vk0xn')} isLoading={isLoading}>
       <AuthIntro
-        description="Enter your account email and we’ll send you a secure link to choose a new password."
-        eyebrow="Account recovery"
+        description={t('copy_ws5fyo')}
+        eyebrow={t('copy_g068bv')}
         icon="key-outline"
-        title="Reset your password"
+        title={t('copy_ikn7x8')}
       />
 
       {requestError ? (
@@ -70,21 +72,21 @@ export function ForgotPasswordScreen() {
         autoCorrect={false}
         error={emailError}
         keyboardType="email-address"
-        label="Email address"
+        label={t('copy_1cdit03')}
         onChangeText={(value) => {
           setEmail(value);
           setEmailError(null);
           setRequestError(null);
         }}
         onSubmitEditing={handleResetPassword}
-        placeholder="you@example.com"
+        placeholder={t('copy_1f9hkpt')}
         returnKeyType="send"
         textContentType="emailAddress"
         value={email}
       />
 
       <Button disabled={!email.trim()} onClick={handleResetPassword}>
-        Send reset link
+        {t('copy_1qg1xu0')}
       </Button>
 
       <AuthLink
@@ -95,7 +97,7 @@ export function ForgotPasswordScreen() {
           })
         }
       >
-        Back to sign in
+        {t('copy_pdsptb')}
       </AuthLink>
     </AuthScreen>
   );

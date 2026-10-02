@@ -14,10 +14,12 @@ import {
 } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function EmailCodeScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const { getOtpCode } = useAuth();
@@ -55,12 +57,12 @@ export function EmailCodeScreen() {
   };
 
   return (
-    <AuthScreen headerTitle="Email code" isLoading={isLoading}>
+    <AuthScreen headerTitle={t('copy_1fs4j5g')} isLoading={isLoading}>
       <AuthIntro
-        description="We’ll email you a 6-digit code. It expires after 5 minutes."
-        eyebrow="Password-free"
+        description={t('copy_13hwh4q')}
+        eyebrow={t('copy_1l7drrh')}
         icon="mail-unread-outline"
-        title="Sign in with a code"
+        title={t('copy_ym0ol7')}
       />
 
       {requestError ? (
@@ -74,14 +76,14 @@ export function EmailCodeScreen() {
           autoCorrect={false}
           error={emailError}
           keyboardType="email-address"
-          label="Email address"
+          label={t('copy_1cdit03')}
           onChangeText={(value) => {
             setEmail(value);
             setEmailError(null);
             setRequestError(null);
           }}
           onSubmitEditing={handleSendCode}
-          placeholder="you@example.com"
+          placeholder={t('copy_1f9hkpt')}
           returnKeyType="send"
           textContentType="emailAddress"
           value={email}
@@ -91,12 +93,12 @@ export function EmailCodeScreen() {
           size="sm"
           style={{ lineHeight: typography.sizes.sm * 1.5 }}
         >
-          You can also use the secure sign-in link included in the email.
+          {t('copy_t828z3')}
         </Label>
       </Stack>
 
       <Button disabled={!email.trim()} onClick={handleSendCode}>
-        Send my code
+        {t('copy_180hgrc')}
       </Button>
 
       <AuthLink
@@ -107,7 +109,7 @@ export function EmailCodeScreen() {
           })
         }
       >
-        Use password instead
+        {t('copy_rdoe27')}
       </AuthLink>
     </AuthScreen>
   );
