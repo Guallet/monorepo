@@ -61,7 +61,7 @@ export default function AccountDetailsScreen() {
           onPress: () => {
             void deleteAccountMutation
               .mutateAsync({ id })
-              .then(() => router.replace('/(tabs)/accounts'))
+              .then(() => router.replace('/(protected)/(tabs)/accounts'))
               .catch(() =>
                 Alert.alert(
                   'Couldn’t delete account',

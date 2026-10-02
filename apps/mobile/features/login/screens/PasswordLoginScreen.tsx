@@ -46,7 +46,6 @@ export function PasswordLoginScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
       return;
     }
 
