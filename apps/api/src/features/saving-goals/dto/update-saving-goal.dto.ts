@@ -31,7 +31,12 @@ export class UpdateSavingGoalDto {
   @Min(0)
   targetAmount?: number;
 
-  @ApiProperty({ required: false, format: 'date-time', nullable: true })
+  @ApiProperty({
+    required: false,
+    type: String,
+    format: 'date-time',
+    nullable: true,
+  })
   @ValidateIf((_, value: unknown) => value !== null && value !== undefined)
   @IsDateString()
   targetDate?: string | null;

@@ -1,6 +1,6 @@
 # Mobile saving goals · issue #243
 
-[View the visual board](./issue-243-mobile-saving-goals.html) or [PNG preview](./issue-243-mobile-saving-goals.png). The board is a visual reference for the mobile implementation.
+[View the visual board](./issue-243-mobile-saving-goals.png). The board is a visual reference for the mobile implementation.
 
 ## Screens and states
 

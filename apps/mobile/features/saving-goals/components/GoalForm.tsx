@@ -15,7 +15,7 @@ import type { SavingGoalDto } from '@guallet/api-client';
 import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
 import { GoalAccountsSheet } from './GoalAccountsSheet';
-import { validateGoal } from '../models/savingGoal';
+import { availableGoalAccountIds, validateGoal } from '../models/savingGoal';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
@@ -51,8 +51,9 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   const [requestError, setRequestError] = useState(false);
   const pending =
     createSavingGoalMutation.isPending || updateSavingGoalMutation.isPending;
+  const availableAccountIds = availableGoalAccountIds(accountIds, accounts);
   const selectedAccounts = accounts.filter((account) =>
-    accountIds.includes(account.id),
+    availableAccountIds.includes(account.id),
   );
   const currency = selectedAccounts[0]?.currency ?? goal?.currency ?? null;
   const accountSummary = selectedAccounts
@@ -63,7 +64,8 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
     const result = validateGoal({
       name,
       targetAmount: amount,
-      accountIds,
+      accountIds: availableAccountIds,
+      currency: selectedAccounts[0]?.currency ?? null,
       targetDate,
     });
     setErrors(result.errors);
@@ -74,7 +76,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
       description: description.trim(),
       targetAmount: result.amount,
       targetDate: targetDate ?? null,
-      accounts: accountIds,
+      accounts: availableAccountIds,
     };
     try {
       const saved = goal
@@ -352,7 +354,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
       </View>
       <GoalAccountsSheet
         accounts={accounts}
-        selectedIds={accountIds}
+        selectedIds={availableAccountIds}
         visible={showAccounts}
         onDismiss={() => setShowAccounts(false)}
         onApply={(ids) => {

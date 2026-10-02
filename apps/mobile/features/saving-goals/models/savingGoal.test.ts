@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import type { SavingGoalDto } from '@guallet/api-client';
-import { goalProgress, goalStatus, validateGoal } from './savingGoal';
+import {
+  availableGoalAccountIds,
+  goalProgress,
+  goalStatus,
+  validateGoal,
+} from './savingGoal';
 
 const goal = {
   progressPercentage: 64,
@@ -22,6 +27,7 @@ describe('saving goal view model', () => {
         name: '',
         targetAmount: '0',
         accountIds: [],
+        currency: null,
         targetDate: null,
       }).errors,
     ).toEqual({
@@ -34,8 +40,38 @@ describe('saving goal view model', () => {
         name: 'Trip',
         targetAmount: '1500',
         accountIds: ['a'],
+        currency: 'GBP',
         targetDate: null,
       }).valid,
     ).toBe(true);
+  });
+
+  it('drops deleted accounts from an edited goal selection', () => {
+    expect(
+      availableGoalAccountIds(['deleted', 'current'], [{ id: 'current' }]),
+    ).toEqual(['current']);
+    expect(availableGoalAccountIds(['deleted'], [])).toEqual([]);
+  });
+
+  it('validates the target against its currency precision', () => {
+    const values = {
+      name: 'Trip',
+      accountIds: ['a'],
+      targetDate: null,
+    };
+    expect(
+      validateGoal({ ...values, targetAmount: '1.5', currency: 'JPY' }).errors
+        .targetAmount,
+    ).toContain('0 decimal places');
+    expect(
+      validateGoal({ ...values, targetAmount: '1.234', currency: 'GBP' }).errors
+        .targetAmount,
+    ).toContain('2 decimal places');
+    expect(
+      validateGoal({ ...values, targetAmount: '1.234', currency: 'BHD' }).valid,
+    ).toBe(true);
+    expect(
+      validateGoal({ ...values, targetAmount: '1e-3', currency: 'GBP' }).valid,
+    ).toBe(false);
   });
 });

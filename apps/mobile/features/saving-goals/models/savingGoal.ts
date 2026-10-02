@@ -1,4 +1,5 @@
 import type { SavingGoalDto } from '@guallet/api-client';
+import { Currency } from '@guallet/money';
 import { formatMoney } from '../../../utils/formatMoney';
 
 export function formatGoalAmount(amount: number, currency?: string | null) {
@@ -19,8 +20,17 @@ export type GoalFormValues = {
   name: string;
   targetAmount: string;
   accountIds: string[];
+  currency: string | null;
   targetDate: Date | null;
 };
+
+export function availableGoalAccountIds(
+  selectedIds: string[],
+  accounts: { id: string }[],
+): string[] {
+  const availableIds = new Set(accounts.map((account) => account.id));
+  return selectedIds.filter((id) => availableIds.has(id));
+}
 
 export function validateGoal(values: GoalFormValues) {
   const errors: {
@@ -29,10 +39,21 @@ export function validateGoal(values: GoalFormValues) {
     accountIds?: string;
     targetDate?: string;
   } = {};
-  const amount = Number(values.targetAmount.replace(',', '.'));
+  const amountText = values.targetAmount.trim().replace(',', '.');
+  const amount = Number(amountText);
   if (!values.name.trim()) errors.name = 'Enter a goal name.';
-  if (!Number.isFinite(amount) || amount <= 0) {
+  if (
+    !/^\d+(?:\.\d+)?$/.test(amountText) ||
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
     errors.targetAmount = 'Enter an amount above zero.';
+  } else if (values.currency) {
+    const decimalPlaces = Currency.fromISOCode(values.currency).decimalPlaces;
+    const fractionDigits = amountText.split('.')[1]?.length ?? 0;
+    if (fractionDigits > decimalPlaces) {
+      errors.targetAmount = `Enter no more than ${decimalPlaces} decimal places for ${values.currency}.`;
+    }
   }
   if (values.accountIds.length === 0) {
     errors.accountIds = 'Select at least one account.';
