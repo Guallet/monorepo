@@ -12,6 +12,14 @@ export interface ExportSelection {
   format: ExportFormat;
 }
 
+/** Encode the selected calendar day for the API's server-local day filter. */
+function toServerLocalDateTime(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}T00:00:00`;
+}
+
 /** Copy submitted values so later picker edits cannot change the summary. */
 export function snapshotExportSelection(
   selection: ExportSelection,
@@ -44,8 +52,8 @@ export function buildExportRequest(
   return {
     ...(accountIds.length > 0 && { accounts: [...accountIds] }),
     ...(dateRange && {
-      startDate: dateRange.startDate.toISOString(),
-      endDate: dateRange.endDate.toISOString(),
+      startDate: toServerLocalDateTime(dateRange.startDate),
+      endDate: toServerLocalDateTime(dateRange.endDate),
     }),
     format,
   };

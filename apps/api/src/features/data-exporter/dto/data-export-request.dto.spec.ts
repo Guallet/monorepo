@@ -18,14 +18,14 @@ describe('DataExportRequestDto', () => {
   it('accepts the mobile request through the API whitelist', async () => {
     await expect(
       validate({
-        startDate: '2026-08-31T14:00:00.000Z',
-        endDate: '2026-09-30T13:59:59.999Z',
+        startDate: '2026-09-01T00:00:00',
+        endDate: '2026-09-30T00:00:00',
         accounts: ['account-1'],
         format: 'csv',
       }),
     ).resolves.toMatchObject({
-      startDate: '2026-08-31T14:00:00.000Z',
-      endDate: '2026-09-30T13:59:59.999Z',
+      startDate: '2026-09-01T00:00:00',
+      endDate: '2026-09-30T00:00:00',
       accounts: ['account-1'],
       format: 'csv',
     });

@@ -24,10 +24,44 @@ describe('mobile data export request', () => {
       }),
     ).toEqual({
       accounts: ['account-1', 'account-2'],
-      startDate: '2026-09-01T00:00:00.000Z',
-      endDate: '2026-09-30T23:59:59.999Z',
+      startDate: '2026-09-01T00:00:00',
+      endDate: '2026-09-30T00:00:00',
       format: 'json',
     });
+  });
+
+  it('keeps selected calendar dates when device and API use different time zones', () => {
+    const previousZone = process.env.TZ;
+    try {
+      process.env.TZ = 'Australia/Sydney';
+      const request = buildExportRequest({
+        accountIds: [],
+        dateRange: {
+          startDate: new Date(2026, 8, 1),
+          endDate: new Date(2026, 8, 30, 23, 59, 59, 999),
+        },
+        format: 'csv',
+      });
+
+      expect(request.startDate).toBe('2026-09-01T00:00:00');
+      expect(request.endDate).toBe('2026-09-30T00:00:00');
+
+      process.env.TZ = 'America/Los_Angeles';
+      const startDate = new Date(request.startDate!);
+      const endDate = new Date(request.endDate!);
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
+
+      expect(startDate.getFullYear()).toBe(2026);
+      expect(startDate.getMonth()).toBe(8);
+      expect(startDate.getDate()).toBe(1);
+      expect(endDate.getFullYear()).toBe(2026);
+      expect(endDate.getMonth()).toBe(8);
+      expect(endDate.getDate()).toBe(30);
+    } finally {
+      if (previousZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousZone;
+    }
   });
 
   it('rejects invalid dates before submitting', async () => {
