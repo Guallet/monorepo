@@ -1,6 +1,6 @@
 # Mobile budgets · issue #242
 
-[Open the visual board](./issue-242-mobile-budgets.html) or [PNG preview](./issue-242-mobile-budgets.png). This is a UI proposal for review before changing the mobile implementation. Amounts and merchants are illustrative.
+[Open the visual board](./issue-242-mobile-budgets.png). This is a UI proposal for review before changing the mobile implementation. Amounts and merchants are illustrative.
 
 ## Screen inventory
 
@@ -11,9 +11,10 @@
 | 5–7 | Create form, category sheet, currency sheet | Use the webapp's form fields: name, currency, budget amount, colour, icon, and categories. Validate name, positive amount, currency, colour, and at least one category. Category selection is searchable and applies draft choices explicitly. |
 | 8 | Edit form | Prefill the same fields and preserve changes if saving fails. |
 | 9 | Delete confirmation | Name the budget and explain that transactions remain. |
-| 10–11 | Empty month and empty transactions | Provide a direct creation action on the list; keep the detail context when there is no matched spending. |
+| 10–11 | No budgets created and no matched transactions | Offer budget creation only when the user has no budgets. Keep the detail context when a budget has no matched transactions. |
 | 12–18 | Loading, API, validation, save, and delete states | Use skeletons, field-level errors, retry, and retained data. Disable duplicate mutations while pending. List, detail, and transaction failures have distinct presentations. |
 | 19–20 | Colour and icon pickers | Give each webapp field a focused mobile selection sheet. |
+| 21 | Month with no spending | Keep recurring budgets visible with £0 spent and full amounts remaining. |
 
 Budgets recur every calendar month, so the form has **no period field**. Its introduction explains that the limit applies each month. The selected month is a viewing filter on the overview and detail pages, not a property of the saved budget. This matches the webapp and the current `CreateBudgetDto`: list, detail, and transaction endpoints accept a one-based `month` and `year` query. Currency choices follow the webapp's account-currency list; a default currency can be preselected.
 
@@ -26,7 +27,7 @@ Budgets recur every calendar month, so the form has **no period field**. Its int
 - [Starling category selection](https://mobbin.com/screens/d15de7fa-c3cf-41d1-acc7-fc8afac5b200): searchable multi-select category list with a clear apply action.
 - [Monarch delete confirmation](https://mobbin.com/screens/dfc89d06-87ba-448f-bb2b-bd5f682a416d): concise consequence copy and separate cancel and destructive actions.
 
-The mocks are original layouts using Guallet's colours, card treatment, UK English, and tabular money figures; no Mobbin images are embedded.
+The mocks are original layouts using Guallet's colours, card treatment, UK English, and tabular money figures; no Mobbin images are embedded. The PNG shows each phone at its initial scroll position; detail content is arranged so its transactions and management action remain visible.
 
 ## Implementation notes
 
