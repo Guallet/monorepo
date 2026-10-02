@@ -82,7 +82,11 @@ export function AccountForm({
       currency: normalizedCurrency,
       balance: parsedBalance,
     } = validated.values;
-    const parsedProperties = parseAccountProperties(type, propertyValues);
+    const parsedProperties = parseAccountProperties(
+      type,
+      propertyValues,
+      normalizedCurrency,
+    );
     if (parsedProperties.error) {
       setError(parsedProperties.error);
       return;

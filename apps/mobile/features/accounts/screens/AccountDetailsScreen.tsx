@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   Alert,
   Pressable,
@@ -7,8 +6,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ApiError } from '@guallet/api-client';
+import {
+  useGlobalSearchParams,
+  useLocalSearchParams,
+  useRouter,
+} from 'expo-router';
+import { ApiError, type DateFormat } from '@guallet/api-client';
 import {
   useAccount,
   useAccountCharts,
@@ -29,6 +32,193 @@ function getId(value: string | string[] | undefined): string {
   return Array.isArray(value) ? (value[0] ?? '') : (value ?? '');
 }
 
+function AccountEditAction() {
+  const { id: rawId } = useGlobalSearchParams<{ id: string | string[] }>();
+  const id = getId(rawId);
+  const router = useRouter();
+  const { colors } = useTheme();
+  if (!id) return null;
+  return (
+    <Pressable
+      accessibilityLabel="Edit account"
+      accessibilityRole="button"
+      onPress={() => router.push(`/accounts/${id}/edit`)}
+    >
+      <Text style={[styles.headerAction, { color: colors.accent.primary }]}>
+        Edit
+      </Text>
+    </Pressable>
+  );
+}
+
+function BalanceHistoryContent({
+  query,
+  dateFormat,
+}: Readonly<{
+  query: ReturnType<typeof useAccountCharts>;
+  dateFormat: DateFormat;
+}>) {
+  const { colors, borderRadius, typography } = useTheme();
+  const history = (query.data?.balanceHistory ?? []).slice(-6);
+  const maxBalance = Math.max(
+    ...history.map((point) => Math.abs(point.balance)),
+    1,
+  );
+
+  if (query.isLoading) {
+    return (
+      <View
+        style={[
+          styles.chartLoading,
+          {
+            backgroundColor: colors.surface.background.secondary,
+            borderRadius: borderRadius.sm,
+          },
+        ]}
+      />
+    );
+  }
+  if (query.isError) {
+    return (
+      <Button onClick={() => void query.refetch()} variant="outline">
+        Couldn’t load balance history. Try again
+      </Button>
+    );
+  }
+  if (history.length === 0) {
+    return (
+      <Text
+        style={[
+          styles.emptyText,
+          { color: colors.text.secondary, fontSize: typography.sizes.sm },
+        ]}
+      >
+        No balance history yet.
+      </Text>
+    );
+  }
+  return (
+    <View style={styles.chart}>
+      {history.map((point) => (
+        <View key={point.date} style={styles.barColumn}>
+          <View
+            style={[
+              styles.barTrack,
+              { backgroundColor: colors.surface.background.secondary },
+            ]}
+          >
+            <View
+              style={[
+                styles.bar,
+                {
+                  backgroundColor: colors.accent.primary,
+                  height: `${Math.max(8, (Math.abs(point.balance) / maxBalance) * 100)}%`,
+                },
+              ]}
+            />
+          </View>
+          <Text
+            style={[
+              styles.chartLabel,
+              { color: colors.text.secondary, fontSize: typography.sizes.xs },
+            ]}
+          >
+            {formatPreferenceDate(`${point.date}T12:00:00`, dateFormat)}
+          </Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function RecentTransactionsContent({
+  query,
+  dateFormat,
+}: Readonly<{
+  query: ReturnType<typeof useAccountTransactions>;
+  dateFormat: DateFormat;
+}>) {
+  const router = useRouter();
+  const { colors, typography } = useTheme();
+  if (query.isLoading) {
+    return (
+      <Text style={{ color: colors.text.secondary }}>
+        Loading transactions…
+      </Text>
+    );
+  }
+  if (query.isError) {
+    return (
+      <Button onClick={() => void query.refetch()} variant="outline">
+        Couldn’t load transactions. Try again
+      </Button>
+    );
+  }
+  const recentTransactions = query.transactions.slice(0, 5);
+  if (recentTransactions.length === 0) {
+    return (
+      <Text
+        style={[
+          styles.emptyText,
+          { color: colors.text.secondary, fontSize: typography.sizes.sm },
+        ]}
+      >
+        No transactions this month.
+      </Text>
+    );
+  }
+  return recentTransactions.map((transaction) => {
+    const isIncome = transaction.amount >= 0;
+    return (
+      <Pressable
+        key={transaction.id}
+        accessibilityRole="button"
+        accessibilityLabel={`Open ${transaction.description || 'transaction'}`}
+        onPress={() => router.push(`/transactions/${transaction.id}`)}
+        style={[
+          styles.transaction,
+          { borderTopColor: colors.surface.border.primary },
+        ]}
+      >
+        <View style={styles.transactionDetails}>
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.transactionName,
+              { color: colors.text.primary, fontSize: typography.sizes.sm },
+            ]}
+          >
+            {transaction.description || 'Untitled transaction'}
+          </Text>
+          <Text
+            style={[
+              styles.transactionDate,
+              { color: colors.text.secondary, fontSize: typography.sizes.xs },
+            ]}
+          >
+            {formatPreferenceDate(transaction.date, dateFormat)}
+          </Text>
+        </View>
+        <Text
+          style={[
+            styles.transactionAmount,
+            {
+              color: isIncome ? colors.support.primary : colors.status.error,
+              fontSize: typography.sizes.sm,
+            },
+          ]}
+        >
+          {isIncome ? '+' : '-'}
+          {formatAccountCurrency(
+            Math.abs(transaction.amount),
+            transaction.currency,
+          )}
+        </Text>
+      </Pressable>
+    );
+  });
+}
+
 export default function AccountDetailsScreen() {
   const { id: rawId } = useLocalSearchParams<{ id: string | string[] }>();
   const id = getId(rawId);
@@ -42,14 +232,6 @@ export default function AccountDetailsScreen() {
   const { transactions } = transactionQuery;
   const { deleteAccountMutation } = useAccountMutations();
 
-  const history = useMemo(
-    () => (chartData?.balanceHistory ?? []).slice(-6),
-    [chartData],
-  );
-  const maxBalance = Math.max(
-    ...history.map((point) => Math.abs(point.balance)),
-    1,
-  );
   const recentTransactions = transactions.slice(0, 5);
   const monthlyData = getMonthlyInOut(chartData?.chart ?? []);
   const accountProperties = account ? getVisibleAccountProperties(account) : [];
@@ -143,20 +325,8 @@ export default function AccountDetailsScreen() {
   return (
     <AppScreen
       headerOptions={{
-        headerRight: () =>
-          account && isManualAccount(account) ? (
-            <Pressable
-              accessibilityLabel="Edit account"
-              accessibilityRole="button"
-              onPress={() => router.push(`/accounts/${id}/edit`)}
-            >
-              <Text
-                style={[styles.headerAction, { color: colors.accent.primary }]}
-              >
-                Edit
-              </Text>
-            </Pressable>
-          ) : null,
+        headerRight:
+          account && isManualAccount(account) ? AccountEditAction : undefined,
       }}
       headerTitle={account?.name ?? 'Account'}
       isLoading={isLoading}
@@ -293,78 +463,10 @@ export default function AccountDetailsScreen() {
                   },
                 ]}
               >
-                Last four months
+                Up to six transaction days
               </Text>
             </View>
-            {isChartLoading ? (
-              <View
-                style={[
-                  styles.chartLoading,
-                  {
-                    backgroundColor: colors.surface.background.secondary,
-                    borderRadius: borderRadius.sm,
-                  },
-                ]}
-              />
-            ) : chartQuery.isError ? (
-              <Button
-                onClick={() => void chartQuery.refetch()}
-                variant="outline"
-              >
-                Couldn’t load balance history. Try again
-              </Button>
-            ) : history.length === 0 ? (
-              <Text
-                style={[
-                  styles.emptyText,
-                  {
-                    color: colors.text.secondary,
-                    fontSize: typography.sizes.sm,
-                  },
-                ]}
-              >
-                No balance history yet.
-              </Text>
-            ) : (
-              <View style={styles.chart}>
-                {history.map((point) => (
-                  <View key={point.date} style={styles.barColumn}>
-                    <View
-                      style={[
-                        styles.barTrack,
-                        {
-                          backgroundColor: colors.surface.background.secondary,
-                        },
-                      ]}
-                    >
-                      <View
-                        style={[
-                          styles.bar,
-                          {
-                            backgroundColor: colors.accent.primary,
-                            height: `${Math.max(8, (Math.abs(point.balance) / maxBalance) * 100)}%`,
-                          },
-                        ]}
-                      />
-                    </View>
-                    <Text
-                      style={[
-                        styles.chartLabel,
-                        {
-                          color: colors.text.secondary,
-                          fontSize: typography.sizes.xs,
-                        },
-                      ]}
-                    >
-                      {formatPreferenceDate(
-                        `${point.date}T12:00:00`,
-                        dateFormat,
-                      )}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
+            <BalanceHistoryContent query={chartQuery} dateFormat={dateFormat} />
           </View>
 
           <View
@@ -516,95 +618,14 @@ export default function AccountDetailsScreen() {
                 {recentTransactions.length} shown
               </Text>
             </View>
-            {transactionQuery.isLoading ? (
-              <Text style={{ color: colors.text.secondary }}>
-                Loading transactions…
-              </Text>
-            ) : transactionQuery.isError ? (
-              <Button
-                onClick={() => void transactionQuery.refetch()}
-                variant="outline"
-              >
-                Couldn’t load transactions. Try again
-              </Button>
-            ) : recentTransactions.length === 0 ? (
-              <Text
-                style={[
-                  styles.emptyText,
-                  {
-                    color: colors.text.secondary,
-                    fontSize: typography.sizes.sm,
-                  },
-                ]}
-              >
-                No transactions this month.
-              </Text>
-            ) : (
-              recentTransactions.map((transaction) => {
-                const isIncome = transaction.amount >= 0;
-                return (
-                  <Pressable
-                    key={transaction.id}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Open ${transaction.description || 'transaction'}`}
-                    onPress={() =>
-                      router.push(`/transactions/${transaction.id}`)
-                    }
-                    style={[
-                      styles.transaction,
-                      { borderTopColor: colors.surface.border.primary },
-                    ]}
-                  >
-                    <View style={styles.transactionDetails}>
-                      <Text
-                        numberOfLines={1}
-                        style={[
-                          styles.transactionName,
-                          {
-                            color: colors.text.primary,
-                            fontSize: typography.sizes.sm,
-                          },
-                        ]}
-                      >
-                        {transaction.description || 'Untitled transaction'}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.transactionDate,
-                          {
-                            color: colors.text.secondary,
-                            fontSize: typography.sizes.xs,
-                          },
-                        ]}
-                      >
-                        {formatPreferenceDate(transaction.date, dateFormat)}
-                      </Text>
-                    </View>
-                    <Text
-                      style={[
-                        styles.transactionAmount,
-                        {
-                          color: isIncome
-                            ? colors.support.primary
-                            : colors.status.error,
-                          fontSize: typography.sizes.sm,
-                        },
-                      ]}
-                    >
-                      {isIncome ? '+' : '-'}
-                      {formatAccountCurrency(
-                        Math.abs(transaction.amount),
-                        transaction.currency,
-                      )}
-                    </Text>
-                  </Pressable>
-                );
-              })
-            )}
+            <RecentTransactionsContent
+              query={transactionQuery}
+              dateFormat={dateFormat}
+            />
             <Button
               onClick={() =>
                 router.push({
-                  pathname: '/(tabs)/transactions',
+                  pathname: '/(protected)/(tabs)/transactions',
                   params: { accountId: id },
                 })
               }

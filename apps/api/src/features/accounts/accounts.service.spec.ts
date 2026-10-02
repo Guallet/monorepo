@@ -425,6 +425,7 @@ describe('AccountsService', () => {
         balance: 1000,
         currency: 'GBP',
         type: AccountType.CURRENT_ACCOUNT,
+        properties: null,
       };
 
       const updatedAccount = {
@@ -434,6 +435,7 @@ describe('AccountsService', () => {
         balance: 1000,
         currency: dto.currency,
         type: dto.type,
+        properties: null,
       };
 
       mockAccountRepository.findOne.mockResolvedValue(existingAccount);
@@ -449,7 +451,76 @@ describe('AccountsService', () => {
         balance: existingAccount.balance,
         currency: dto.currency,
         type: dto.type,
+        properties: null,
       });
+    });
+
+    it('persists edited account properties', async () => {
+      const userId = 'user-123';
+      const accountId = 'account-1';
+      const properties = { interestRate: 2.5 };
+      const dto: UpdateAccountRequest = {
+        name: 'Savings',
+        currency: 'GBP',
+        type: AccountType.SAVINGS,
+        properties,
+      };
+      mockAccountRepository.findOne.mockResolvedValue({
+        id: accountId,
+        user_id: userId,
+        name: 'Savings',
+        balance: 1000,
+        currency: 'GBP',
+        type: AccountType.SAVINGS,
+        properties: { interestRate: 1 },
+      });
+      mockAccountRepository.save.mockImplementation(async (saved) => saved);
+
+      const result = await service.update({ accountId, dto, userId });
+
+      expect(result.properties).toEqual(properties);
+      expect(mockAccountRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ properties }),
+      );
+    });
+
+    it('clears properties when null and preserves them when omitted', async () => {
+      const userId = 'user-123';
+      const accountId = 'account-1';
+      const properties = { interestRate: 2.5 };
+      mockAccountRepository.findOne.mockResolvedValue({
+        id: accountId,
+        user_id: userId,
+        name: 'Savings',
+        balance: 1000,
+        currency: 'GBP',
+        type: AccountType.SAVINGS,
+        properties,
+      });
+      mockAccountRepository.save.mockImplementation(async (saved) => saved);
+      const baseDto: UpdateAccountRequest = {
+        name: 'Savings',
+        currency: 'GBP',
+        type: AccountType.SAVINGS,
+      };
+
+      const preserved = await service.update({
+        accountId,
+        dto: baseDto,
+        userId,
+      });
+      const cleared = await service.update({
+        accountId,
+        dto: { ...baseDto, properties: null },
+        userId,
+      });
+
+      expect(preserved.properties).toEqual(properties);
+      expect(cleared.properties).toBeNull();
+      expect(mockAccountRepository.save).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ properties: null }),
+      );
     });
 
     it('should throw NotFoundException when account does not exist', async () => {

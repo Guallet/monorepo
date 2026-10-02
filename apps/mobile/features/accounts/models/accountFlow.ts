@@ -1,4 +1,5 @@
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
+import { Currency } from '@guallet/money';
 
 const ACCOUNT_TYPE_ORDER: AccountTypeDto[] = [
   AccountTypeDto.CURRENT_ACCOUNT,
@@ -28,18 +29,37 @@ export function validateAccountForm(input: {
   name: string;
   currency: string;
   balance: string;
-}) {
+}):
+  | { error: string }
+  | { values: { name: string; currency: string; balance: number } } {
   const name = input.name.trim();
   const currency = input.currency.trim().toUpperCase();
-  const balance = Number(input.balance.replace(',', '.'));
   if (!name) return { error: 'Enter an account name.' } as const;
   if (!/^[A-Z]{3}$/.test(currency))
     return {
       error: 'Use a three-letter currency code, such as GBP or EUR.',
     } as const;
-  if (!input.balance.trim() || !Number.isFinite(balance))
+  let balance: number;
+  try {
+    balance = parseCurrencyAmount(input.balance, currency);
+  } catch {
+    return { error: 'Choose a supported currency.' } as const;
+  }
+  if (!Number.isFinite(balance))
     return { error: 'Enter a valid balance.' } as const;
   return { values: { name, currency, balance } } as const;
+}
+
+export function parseCurrencyAmount(
+  input: string,
+  currencyCode: string,
+): number {
+  const normalized = input.trim().replace(',', '.');
+  if (!/^-?\d+(?:\.\d+)?$/.test(normalized)) return Number.NaN;
+  const decimalPlaces = Currency.fromISOCode(currencyCode).decimalPlaces;
+  if ((normalized.split('.')[1]?.length ?? 0) > decimalPlaces)
+    return Number.NaN;
+  return Number(normalized);
 }
 
 export function isManualAccount(account: AccountDto) {

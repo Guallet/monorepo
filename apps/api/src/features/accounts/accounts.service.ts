@@ -155,6 +155,8 @@ export class AccountsService {
       name: dto.name ?? dbEntity.name,
       currency: dto.currency ?? dbEntity.currency,
       type: dto.type ?? dbEntity.type,
+      properties:
+        dto.properties === undefined ? dbEntity.properties : dto.properties,
     });
     return updatedAccount;
   }

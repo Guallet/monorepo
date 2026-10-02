@@ -6,6 +6,7 @@ import {
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useNavigation } from 'expo-router/react-navigation';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
@@ -27,6 +28,7 @@ import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 export function TransactionsListScreen() {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const router = useRouter();
+  const navigation = useNavigation();
   const { accountId } = useLocalSearchParams<{ accountId?: string }>();
   const [filters, setFilters] = useState<TransactionListFilters>(() => ({
     accounts: accountId ? [accountId] : undefined,
@@ -35,6 +37,12 @@ export function TransactionsListScreen() {
     if (accountId)
       setFilters((current) => ({ ...current, accounts: [accountId] }));
   }, [accountId]);
+  useEffect(() => {
+    if (!accountId) return;
+    return navigation.addListener('focus', () => {
+      setFilters((current) => ({ ...current, accounts: [accountId] }));
+    });
+  }, [accountId, navigation]);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const { accounts } = useAccounts();
   const { categories } = useCategories();

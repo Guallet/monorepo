@@ -3,6 +3,8 @@ import {
   AccountTypeDto,
   type CreateAccountRequest,
 } from '@guallet/api-client';
+import { formatMoney } from '../../../utils/formatMoney';
+import { parseCurrencyAmount } from './accountFlow';
 
 type PropertyKey =
   | 'accountNumber'
@@ -17,6 +19,13 @@ type PropertyKey =
   | 'loanAmount';
 export type PropertyValues = Record<PropertyKey, string>;
 type PropertyField = { key: PropertyKey; label: string; numeric?: boolean };
+const MONEY_FIELDS = new Set<PropertyKey>([
+  'overdraft',
+  'creditLimit',
+  'propertyValue',
+  'mortgageAmount',
+  'loanAmount',
+]);
 
 export const PROPERTY_FIELDS: Partial<Record<AccountTypeDto, PropertyField[]>> =
   {
@@ -47,6 +56,19 @@ export const PROPERTY_FIELDS: Partial<Record<AccountTypeDto, PropertyField[]>> =
     ],
   };
 
+function getPropertyValue(account: AccountDto, key: PropertyKey): string {
+  const properties = account.properties;
+  if (!properties) return '';
+  if (key === 'accountNumber' && 'details' in properties)
+    return properties.details.accountNumber;
+  if (key === 'sortCode' && 'details' in properties)
+    return properties.details.sortCode;
+  const value = (
+    properties as unknown as Record<string, string | number | null>
+  )[key];
+  return value == null ? '' : String(value);
+}
+
 export function getPropertyValues(account?: AccountDto | null): PropertyValues {
   const values = Object.fromEntries(
     [
@@ -58,26 +80,8 @@ export function getPropertyValues(account?: AccountDto | null): PropertyValues {
     ].map((key) => [key, '']),
   ) as PropertyValues;
   if (!account?.properties) return values;
-  const properties = account.properties;
   for (const field of PROPERTY_FIELDS[account.type] ?? []) {
-    let value: string | number | null | undefined;
-    if (
-      account.type === AccountTypeDto.CURRENT_ACCOUNT &&
-      field.key === 'accountNumber'
-    ) {
-      value =
-        'details' in properties ? properties.details.accountNumber : undefined;
-    } else if (
-      account.type === AccountTypeDto.CURRENT_ACCOUNT &&
-      field.key === 'sortCode'
-    ) {
-      value = 'details' in properties ? properties.details.sortCode : undefined;
-    } else {
-      value = (properties as unknown as Record<string, string | number | null>)[
-        field.key
-      ];
-    }
-    values[field.key] = value == null ? '' : String(value);
+    values[field.key] = getPropertyValue(account, field.key);
   }
   return values;
 }
@@ -85,6 +89,7 @@ export function getPropertyValues(account?: AccountDto | null): PropertyValues {
 export function parseAccountProperties(
   type: AccountTypeDto,
   values: PropertyValues,
+  currencyCode: string,
 ): { properties: CreateAccountRequest['properties']; error?: string } {
   const fields = PROPERTY_FIELDS[type] ?? [];
   if (!fields.length || fields.every((field) => !values[field.key]?.trim()))
@@ -106,7 +111,9 @@ export function parseAccountProperties(
       parsed[field.key] = null;
       continue;
     }
-    const number = Number(input.replace(',', '.'));
+    const number = MONEY_FIELDS.has(field.key)
+      ? parseCurrencyAmount(input, currencyCode)
+      : Number(input.replace(',', '.'));
     if (
       !Number.isFinite(number) ||
       number < 0 ||
@@ -155,7 +162,9 @@ export function getVisibleAccountProperties(
     return [
       {
         label: field.label,
-        value: field.numeric ? `${account.currency} ${value}` : value,
+        value: field.numeric
+          ? formatMoney(Number(value), account.currency, { locale: 'en-GB' })
+          : value,
       },
     ];
   });

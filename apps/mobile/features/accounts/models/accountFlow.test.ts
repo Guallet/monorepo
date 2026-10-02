@@ -60,26 +60,41 @@ describe('mobile account flows', () => {
     expect(
       validateAccountForm({ name: 'Daily', currency: 'GBP', balance: '' }),
     ).toHaveProperty('error');
+    expect(
+      validateAccountForm({ name: 'Daily', currency: 'JPY', balance: '1.5' }),
+    ).toHaveProperty('error');
+    expect(
+      validateAccountForm({ name: 'Daily', currency: 'BHD', balance: '1.234' }),
+    ).toEqual({ values: { name: 'Daily', currency: 'BHD', balance: 1.234 } });
   });
 
   it('encodes account type fields and rejects invalid details', () => {
     const values = getPropertyValues();
     values.interestRate = '2,5';
     expect(
-      parseAccountProperties(AccountTypeDto.SAVINGS, values).properties,
+      parseAccountProperties(AccountTypeDto.SAVINGS, values, 'GBP').properties,
     ).toEqual({ interestRate: 2.5 });
     values.interestRate = '-1';
     expect(
-      parseAccountProperties(AccountTypeDto.SAVINGS, values).error,
+      parseAccountProperties(AccountTypeDto.SAVINGS, values, 'GBP').error,
     ).toBeDefined();
     values.interestRate = '2';
     expect(
-      parseAccountProperties(AccountTypeDto.CREDIT_CARD, values).error,
+      parseAccountProperties(AccountTypeDto.CREDIT_CARD, values, 'GBP').error,
     ).toBeDefined();
     values.interestRate = '';
     values.cycleDay = '32';
     expect(
-      parseAccountProperties(AccountTypeDto.CREDIT_CARD, values).error,
+      parseAccountProperties(AccountTypeDto.CREDIT_CARD, values, 'GBP').error,
+    ).toBeDefined();
+    const mortgageValues = getPropertyValues();
+    mortgageValues.propertyValue = '100.001';
+    mortgageValues.mortgageAmount = '80';
+    mortgageValues.interestRate = '2';
+    mortgageValues.termLength = '20';
+    expect(
+      parseAccountProperties(AccountTypeDto.MORTGAGE, mortgageValues, 'GBP')
+        .error,
     ).toBeDefined();
   });
 
@@ -91,6 +106,19 @@ describe('mobile account flows', () => {
     expect(getVisibleAccountProperties(savings)).toEqual([
       { label: 'Interest rate', value: '2.5%' },
     ]);
+    const mortgage = {
+      ...account('2', 'Home', AccountTypeDto.MORTGAGE),
+      properties: {
+        propertyValue: 1234.5,
+        mortgageAmount: 1000,
+        interestRate: 3,
+        termLength: 20,
+      },
+    };
+    expect(getVisibleAccountProperties(mortgage)).toContainEqual({
+      label: 'Property value',
+      value: '£1,234.50',
+    });
     expect(
       getMonthlyInOut([
         { year: 2025, month: 11, total_in: 3, total_out: 2 },
