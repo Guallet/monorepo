@@ -29,9 +29,44 @@ Mobile authentication uses the Better Auth Expo client. Set
 session cookie in `expo-secure-store` and uses the `guallet` deep-link scheme
 for OAuth callbacks.
 
-## Github Actions and CI/EAS
+## GitHub Actions and EAS deployment
 
-There are some Github Actions files inside the `.github/workflows` folder that help with some internal EAS preview/deployment. You can have a look at them and adjust them to replicate them to work with your own EAS account.
+The mobile deployment workflows live in the repository's `.github/workflows`
+folder:
+
+- Changes to `develop` publish an Android OTA update to the EAS `development`
+  channel.
+- `EAS Build - Development` can be started manually when the dev native app
+  needs to be rebuilt.
+- Changes to `main` build a production Android App Bundle. The workflow pauses
+  at the protected GitHub `production` environment before submitting the exact
+  build to Google Play production.
+
+Before enabling the workflows, configure these EAS environment values for both
+the `development` and `production` environments:
+
+- `APP_VARIANT` as a plain-text value (`development` or `production`)
+- `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_SENTRY_DSN`, and
+  `EXPO_PUBLIC_VEXO_KEY` with the matching environment values
+- `GOOGLE_SERVICES_JSON` as a secret file variable containing the matching
+  Firebase `google-services.json`
+
+Configure these GitHub secrets:
+
+- `EXPO_TOKEN`
+- `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` with a Google Play service-account JSON
+  key that can release the production application
+- `SENTRY_AUTH_TOKEN` (optional, for source-map uploads)
+
+Create the `io.guallet.mobile` application in Google Play Console, grant the
+service account release permissions, and configure the protected `production`
+environment with its required reviewers. The dev application uses the
+`io.guallet.mobile.dev` identifier and is distributed through EAS internal
+builds rather than a public store listing.
+
+The production workflow expects the user-facing `version` in `app.config.ts`
+to change on every `main` release. Android `versionCode` values are managed
+and incremented remotely by EAS.
 
 ## Built with
 

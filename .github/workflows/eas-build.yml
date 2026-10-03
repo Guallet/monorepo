@@ -1,86 +1,122 @@
-name: EAS Build
+name: EAS Build and Release - Production
+
 on:
   workflow_dispatch:
   push:
     branches:
-      - develop
+      - main
     paths:
       - 'apps/mobile/**'
 
 permissions:
   contents: read
 
+concurrency:
+  group: mobile-eas-release-production
+  cancel-in-progress: false
+
 jobs:
   build:
-    name: EAS build
+    name: Build production Android app
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [24.20.x]
+    outputs:
+      build_id: ${{ steps.build.outputs.build_id }}
     steps:
-      - name: Check for EXPO_TOKEN
-        run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-          echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-          exit 1
-          fi
-
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-      - name: Install pnpm
+      - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 12.4.1
 
-      - name: Setup Node ${{ matrix.node-version }}
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          node-version: 24.20.x
+          cache: pnpm
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@v8
+      - name: Set up EAS
+        uses: expo/expo-github-action@v9
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        working-directory: apps/mobile
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Create PROD .env file
+      - name: Check production version bump
+        if: ${{ github.event_name == 'push' }}
+        working-directory: apps/mobile
+        run: node scripts/check-production-version.mjs
+
+      - name: Run typecheck
+        run: pnpm --filter mobile typecheck
+
+      - name: Run linter
+        run: pnpm --filter mobile lint
+
+      - name: Check formatting
+        run: pnpm --filter mobile format:check
+
+      - name: Build production Android app
+        id: build
         working-directory: apps/mobile
         run: |
-          touch .env
-          echo "${{ secrets.MOBILE_ENV_FILE_PROD }}" >> .env
+          eas build --platform android --profile production --non-interactive --wait --json > build.json
+          BUILD_ID=$(node --input-type=module -e "import { readFileSync } from 'node:fs'; const result = JSON.parse(readFileSync('build.json', 'utf8')); const build = Array.isArray(result) ? result[0] : result; if (!build?.id) throw new Error('EAS build did not return a build id'); process.stdout.write(build.id)")
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+          rm -f build.json
 
-      - name: Create Firebase Android config file
-        working-directory: apps/mobile/auth/firebase
+  approve:
+    name: Approve production release
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Confirm release approval
+        run: echo "Approved EAS build ${{ needs.build.outputs.build_id }} for Google Play production"
+
+  submit:
+    name: Submit to Google Play production
+    needs:
+      - build
+      - approve
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.20.x
+          cache: pnpm
+
+      - name: Set up EAS
+        uses: expo/expo-github-action@v9
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Submit approved build
+        working-directory: apps/mobile
+        env:
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
-          touch google-services.json
-          echo "${{ secrets.FIREBASE_ANDROID_FILE_PROD }}" >> google-services.json
-
-      - name: Create Firebase iOS config file
-        working-directory: apps/mobile/auth/firebase
-        run: |
-          touch GoogleService-Info.plist
-          echo "${{ secrets.FIREBASE_IOS_FILE_PROD }}" >> GoogleService-Info.plist
-
-      - name: 🧪 Run TypeScript check
-        working-directory: apps/mobile
-        run: pnpm tsc
-
-      - name: 🧹 Run Linter
-        working-directory: apps/mobile
-        run: pnpm lint
-        continue-on-error: true
-
-      - name: 🎨 Run Oxfmt check
-        working-directory: apps/mobile
-        run: pnpm format:check
-
-      - name: Build on EAS
-        run: eas build --platform android --non-interactive --no-wait
-        # run: eas build --platform all --non-interactive --no-wait
-        working-directory: apps/mobile
+          set -euo pipefail
+          test -n "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"
+          printf '%s' "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" > google-play-service-account.json
+          trap 'rm -f google-play-service-account.json' EXIT
+          eas submit --platform android --profile production --id "${{ needs.build.outputs.build_id }}" --non-interactive
