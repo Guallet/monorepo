@@ -4,6 +4,8 @@ const protectedPaths = new Set([
   '/accounts',
   '/transactions',
   '/budgets',
+  '/saving-goals',
+  '/saving-goals/new',
   '/settings',
   '/export',
   '/tools/loan',
@@ -20,7 +22,7 @@ const protectedPaths = new Set([
 ]);
 
 const protectedDetailPath =
-  /^\/(accounts|budgets)\/[^/]+(?:\/edit)?$|^\/transactions\/[^/]+$|^\/importer\/csv\/results\/[^/]+$/;
+  /^\/(accounts|budgets|saving-goals)\/[^/]+(?:\/edit)?$|^\/transactions\/[^/]+$|^\/importer\/csv\/results\/[^/]+$/;
 
 export const DASHBOARD_ROUTE = '/(protected)/(tabs)' as const;
 

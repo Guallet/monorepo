@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSavingGoals } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { SavingGoalProgressItem } from './SavingGoalProgressItem';
@@ -7,8 +8,9 @@ import { useMobileUserPreferences } from '@/features/settings/useMobileUserPrefe
 const MAX_GOALS = 3;
 
 export function SavingGoalsWidget() {
+  const router = useRouter();
   const { colors, borderRadius, spacing, typography } = useTheme();
-  const { savingGoals, isLoading } = useSavingGoals();
+  const { savingGoals, isLoading, isError } = useSavingGoals();
   const { defaultCurrency } = useMobileUserPreferences();
 
   if (isLoading) {
@@ -40,31 +42,55 @@ export function SavingGoalsWidget() {
         },
       ]}
     >
-      <Text
-        style={[
-          styles.title,
-          { color: colors.text.primary, fontSize: typography.sizes.lg },
-        ]}
-      >
-        Saving goals
-      </Text>
+      <View style={styles.header}>
+        <Text
+          style={[
+            styles.title,
+            { color: colors.text.primary, fontSize: typography.sizes.lg },
+          ]}
+        >
+          Saving goals
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="See all saving goals"
+          onPress={() => router.push('/saving-goals')}
+          style={styles.link}
+        >
+          <Text style={{ color: colors.accent.primary, fontWeight: '600' }}>
+            See all
+          </Text>
+        </Pressable>
+      </View>
 
-      {goals.length === 0 ? (
+      {isError && (
+        <Text style={{ color: colors.text.secondary }}>
+          Couldn’t load goals. Open saving goals to try again.
+        </Text>
+      )}
+      {!isError && goals.length === 0 ? (
         <Text
           style={[
             styles.emptyText,
             { color: colors.text.secondary, fontSize: typography.sizes.sm },
           ]}
         >
-          No saving goals yet
+          No saving goals yet. Create your first goal to track progress.
         </Text>
       ) : (
+        !isError &&
         goals.map((goal) => (
-          <SavingGoalProgressItem
+          <Pressable
             key={goal.id}
-            goal={goal}
-            currency={defaultCurrency}
-          />
+            accessibilityRole="button"
+            accessibilityLabel={`View ${goal.name} goal`}
+            onPress={() => router.push(`/saving-goals/${goal.id}`)}
+          >
+            <SavingGoalProgressItem
+              goal={goal}
+              currency={goal.currency ?? defaultCurrency}
+            />
+          </Pressable>
         ))
       )}
     </View>
@@ -81,6 +107,12 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: '600',
   },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  link: { justifyContent: 'center', minHeight: 44 },
   emptyText: {
     textAlign: 'center',
     paddingVertical: 8,

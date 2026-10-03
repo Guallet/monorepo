@@ -1,5 +1,6 @@
 import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
 import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
+import { Currency, Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import {
   Box,
@@ -48,9 +49,9 @@ export function SavingGoalForm({
     initialValues: {
       name: savingGoal?.name ?? '',
       description: savingGoal?.description ?? '',
-      target_amount: savingGoal?.target_amount ?? 0,
-      target_date: savingGoal?.target_date
-        ? new Date(savingGoal.target_date)
+      target_amount: savingGoal?.targetAmount ?? 0,
+      target_date: savingGoal?.targetDate
+        ? new Date(savingGoal.targetDate)
         : new Date(),
       accounts: savingGoal?.accounts ?? [],
     },
@@ -59,13 +60,53 @@ export function SavingGoalForm({
         value.trim() === ''
           ? t('screens.savingGoals.form.fields.name.error', 'Name is required')
           : null,
-      target_amount: (value) =>
-        value <= 0
-          ? t(
-              'screens.savingGoals.form.fields.targetAmount.error',
-              'Target amount must be greater than 0',
-            )
-          : null,
+      target_amount: (value, values) => {
+        if (!Number.isFinite(value) || value <= 0) {
+          return t(
+            'screens.savingGoals.form.fields.targetAmount.error',
+            'Target amount must be greater than 0',
+          );
+        }
+        const code = accounts.find((account) =>
+          values.accounts.includes(account.id),
+        )?.currency;
+        if (!code) return null;
+        try {
+          const currency = Currency.fromISOCode(code);
+          if (
+            Money.from({ amount: value, currency }).round().amount !== value
+          ) {
+            return t('screens.savingGoals.form.fields.targetAmount.precision', {
+              defaultValue:
+                'Enter no more than {{precision}} decimal places for {{currency}}.',
+              precision: currency.decimalPlaces,
+              currency: code,
+            });
+          }
+        } catch {
+          return t(
+            'screens.savingGoals.form.fields.accounts.unsupported',
+            'Select accounts with a supported currency.',
+          );
+        }
+        return null;
+      },
+      accounts: (ids) => {
+        const selected = accounts.filter((account) => ids.includes(account.id));
+        if (!ids.length || selected.length !== ids.length) {
+          return t(
+            'screens.savingGoals.form.fields.accounts.required',
+            'Select at least one available account.',
+          );
+        }
+        if (new Set(selected.map((account) => account.currency)).size !== 1) {
+          return t(
+            'screens.savingGoals.form.fields.accounts.currency',
+            'Linked accounts must use the same currency.',
+          );
+        }
+        return null;
+      },
       target_date: (value) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -79,8 +120,23 @@ export function SavingGoalForm({
     },
   });
 
+  const selectedCurrency = accounts.find((account) =>
+    form.values.accounts.includes(account.id),
+  )?.currency;
+  let decimalPlaces: number | undefined;
+  if (selectedCurrency) {
+    try {
+      decimalPlaces = Currency.fromISOCode(selectedCurrency).decimalPlaces;
+    } catch {
+      // Validation explains unsupported saved currencies before submission.
+    }
+  }
   const accountOptions = accounts.map((account) => ({
     value: account.id,
+    disabled:
+      !!selectedCurrency &&
+      account.currency !== selectedCurrency &&
+      !form.values.accounts.includes(account.id),
     label: `${account.name} (${account.sourceName || account.source || 'Manual'})`,
   }));
 
@@ -186,9 +242,11 @@ export function SavingGoalForm({
                   'Enter target amount',
                 )}
                 min={0}
-                step={0.01}
+                step={
+                  decimalPlaces === undefined ? undefined : 10 ** -decimalPlaces
+                }
                 thousandSeparator=","
-                decimalScale={2}
+                decimalScale={decimalPlaces}
                 {...form.getInputProps('target_amount')}
               />
               <DateInput
@@ -205,6 +263,7 @@ export function SavingGoalForm({
                 {...form.getInputProps('target_date')}
               />
               <MultiSelect
+                required
                 label={t(
                   'screens.savingGoals.form.fields.accounts.label',
                   'Linked accounts',

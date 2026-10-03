@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -10,75 +9,119 @@ import {
   View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BudgetDto } from '@guallet/api-client';
-import { useBudgetMutations, useCategories } from '@guallet/api-react';
-import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
+import {
+  useAccounts,
+  useBudgetMutations,
+  useCategories,
+} from '@guallet/api-react';
+import {
+  Button,
+  ColorPicker,
+  IconPicker,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
+import { ChevronRightIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CurrencyInput } from '@/components/CurrencyInput';
-import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
-import { IconSelectionSheet } from '../components/IconSelectionSheet';
+import { availableCurrencies } from '@/components/currencyPickerData';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
-
-const COLOR_SWATCHES = [
-  '#4c6ef5',
-  '#228be6',
-  '#15aabf',
-  '#12b886',
-  '#40c057',
-  '#82c91e',
-  '#fab005',
-  '#fd7e14',
-  '#fa5252',
-  '#e64980',
-  '#be4bdb',
-  '#7950f2',
-  '#868e96',
-  '#25262b',
-];
+import {
+  getAllowedBudgetCurrencies,
+  validateBudgetForm,
+  type BudgetFormErrors,
+} from '../budgetForm';
+import { BudgetStateCard } from '../components/BudgetStateCard';
+import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
 
 interface BudgetFormScreenProps {
   budget?: BudgetDto | null;
   isError?: boolean;
   isLoading?: boolean;
+  onRetry?: () => void;
 }
 
 export default function BudgetFormScreen({
   budget = null,
   isError = false,
   isLoading = false,
+  onRetry,
 }: Readonly<BudgetFormScreenProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
+  const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { categories } = useCategories();
+  const {
+    categories,
+    isError: categoriesError,
+    isLoading: categoriesLoading,
+    refetch: refetchCategories,
+  } = useCategories();
+  const {
+    accounts,
+    isError: accountsError,
+    isLoading: accountsLoading,
+    refetch: refetchAccounts,
+  } = useAccounts();
   const { defaultCurrency } = useMobileUserPreferences();
   const { createBudgetMutation, updateBudgetMutation } = useBudgetMutations();
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState(defaultCurrency);
-  const hasSelectedCurrency = useRef(false);
-  const [colour, setColour] = useState(COLOR_SWATCHES[0]);
+  const [currency, setCurrency] = useState('');
+  const [colour, setColour] = useState('');
   const [icon, setIcon] = useState('');
   const [categoryIds, setCategoryIds] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<BudgetFormErrors>({});
+  const [saveError, setSaveError] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  const [showIcons, setShowIcons] = useState(false);
+  const initializedBudgetId = useRef<string | null>(null);
+  const hasSelectedCurrency = useRef(false);
+
+  const accountCurrencies = useMemo(
+    () => [
+      ...new Set(accounts.map((account) => account.currency.toUpperCase())),
+    ],
+    [accounts],
+  );
+  const allowedCurrencies = useMemo(
+    () => getAllowedBudgetCurrencies(accountCurrencies, budget?.currency),
+    [accountCurrencies, budget?.currency],
+  );
+  const currencyChoices = useMemo(
+    () =>
+      availableCurrencies.filter((item) =>
+        allowedCurrencies.includes(item.code),
+      ),
+    [allowedCurrencies],
+  );
+  const colourChoices = [
+    colors.accent.primary,
+    colors.accent.bright,
+    colors.accent.aqua,
+    colors.support.primary,
+    colors.neutral.darkGrey,
+    colors.status.error,
+  ];
 
   useEffect(() => {
-    if (budget) {
-      setName(budget.name);
-      setAmount(String(budget.amount));
-      setCurrency(budget.currency);
-      setColour(budget.colour || COLOR_SWATCHES[0]);
-      setIcon(budget.icon || '');
-      setCategoryIds(budget.categories);
-    }
+    if (!budget || initializedBudgetId.current === budget.id) return;
+    initializedBudgetId.current = budget.id;
+    setName(budget.name);
+    setAmount(String(budget.amount));
+    setCurrency(budget.currency);
+    setColour(budget.colour ?? '');
+    setIcon(budget.icon ?? '');
+    setCategoryIds(budget.categories);
   }, [budget]);
 
   useEffect(() => {
-    if (!budget && defaultCurrency && !hasSelectedCurrency.current) {
-      setCurrency(defaultCurrency);
-    }
-  }, [budget, defaultCurrency]);
+    if (budget || hasSelectedCurrency.current || accountCurrencies.length === 0)
+      return;
+    let selected = accountCurrencies[0];
+    if (accountCurrencies.includes(defaultCurrency)) selected = defaultCurrency;
+    setCurrency(selected);
+  }, [accountCurrencies, budget, defaultCurrency]);
 
   const selectedCategoryNames = useMemo(
     () =>
@@ -87,116 +130,102 @@ export default function BudgetFormScreen({
         .map((category) => category.name),
     [categories, categoryIds],
   );
-
+  let categorySelectionLabel = 'Select categories';
+  if (selectedCategoryNames.length > 0) {
+    categorySelectionLabel = selectedCategoryNames.join(', ');
+  }
   const isPending =
     createBudgetMutation.isPending || updateBudgetMutation.isPending;
+  const isReady =
+    !accountsLoading &&
+    !categoriesLoading &&
+    !accountsError &&
+    !categoriesError;
+
+  function clearError(field: keyof BudgetFormErrors) {
+    setErrors((current) => ({ ...current, [field]: undefined }));
+    setSaveError(false);
+  }
 
   async function submit() {
-    const normalizedName = name.trim();
-    const normalizedCurrency = currency.trim().toUpperCase();
-    const parsedAmount = Number(amount.replace(',', '.'));
+    if (isPending || !isReady) return;
+    const result = validateBudgetForm(
+      { name, currency, amount, colour, icon, categoryIds },
+      allowedCurrencies,
+    );
+    setErrors(result.errors);
+    if (!result.request) return;
 
-    if (normalizedName.length < 2) {
-      setError('Enter a budget name with at least two characters.');
-      return;
-    }
-    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-      setError('Enter a positive budget amount.');
-      return;
-    }
-    if (!/^[A-Z]{3}$/.test(normalizedCurrency)) {
-      setError('Use a three-letter currency code, such as GBP or EUR.');
-      return;
-    }
-    if (categoryIds.length === 0) {
-      setError('Select at least one category.');
-      return;
-    }
-
-    setError(null);
+    setSaveError(false);
     try {
       if (budget) {
         await updateBudgetMutation.mutateAsync({
           id: budget.id,
-          request: {
-            amount: parsedAmount,
-            categories: categoryIds,
-            colour,
-            currency: normalizedCurrency,
-            icon: icon || undefined,
-            name: normalizedName,
-          },
+          request: result.request,
         });
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace(`/budgets/${budget.id}`);
+        }
       } else {
-        await createBudgetMutation.mutateAsync({
-          request: {
-            amount: parsedAmount,
-            categories: categoryIds,
-            colour,
-            currency: normalizedCurrency,
-            icon: icon || undefined,
-            name: normalizedName,
-          },
-        });
+        await createBudgetMutation.mutateAsync({ request: result.request });
+        router.replace('/budgets');
       }
-      // The mutation hooks invalidate all budget queries. Returning to the tab
-      // lets it refetch the month the user was viewing.
-      router.replace('/budgets');
     } catch {
-      let action = 'create';
-      if (budget) action = 'update';
-      setError(`Couldn’t ${action} this budget. Please try again.`);
+      setSaveError(true);
     }
   }
 
   if (isLoading) {
     return (
       <AppScreen headerTitle="Edit budget">
-        <View style={styles.centered}>
-          <ActivityIndicator color={colors.accent.primary} />
-        </View>
+        <View
+          accessibilityLabel="Loading budget form"
+          style={[
+            styles.loadingCard,
+            {
+              backgroundColor: colors.surface.background.secondary,
+              borderRadius: borderRadius.lg,
+              margin: spacing.md,
+            },
+          ]}
+        />
       </AppScreen>
     );
   }
 
   if (isError) {
+    let actionLabel: string | undefined;
+    if (onRetry) actionLabel = 'Try again';
     return (
-      <AppScreen headerTitle="Budget">
-        <View style={[styles.centered, { padding: spacing.lg }]}>
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.lg,
-              fontWeight: '700',
-            }}
-          >
-            Couldn’t load this budget
-          </Text>
-          <Text
-            style={{
-              color: colors.text.secondary,
-              fontSize: typography.sizes.sm,
-              marginTop: spacing.xs,
-            }}
-          >
-            Please go back and try again.
-          </Text>
+      <AppScreen headerTitle="Edit budget">
+        <View style={{ padding: spacing.md }}>
+          <BudgetStateCard
+            actionLabel={actionLabel}
+            body="The budget may have been deleted or is temporarily unavailable."
+            onAction={onRetry}
+            title="Couldn’t load this budget"
+            variant="error"
+          />
         </View>
       </AppScreen>
     );
   }
 
   let screenTitle = 'New budget';
-  if (budget) screenTitle = 'Edit budget';
+  let heading = 'Create a budget';
+  let description = 'Set a limit that applies every month.';
+  let saveButtonLabel = 'Create budget';
+  if (budget) {
+    screenTitle = 'Edit budget';
+    heading = 'Edit budget';
+    description = 'Update your monthly spending limit.';
+    saveButtonLabel = 'Save changes';
+  }
+  if (isPending) saveButtonLabel = 'Saving…';
   let keyboardBehavior: 'padding' | undefined;
   if (Platform.OS === 'ios') keyboardBehavior = 'padding';
-  let categorySelectionLabel = 'Select categories';
-  if (selectedCategoryNames.length > 0) {
-    categorySelectionLabel = `${selectedCategoryNames.length} selected`;
-  }
-  let saveButtonLabel = 'Create budget';
-  if (budget) saveButtonLabel = 'Save changes';
-  if (isPending) saveButtonLabel = 'Saving…';
 
   return (
     <AppScreen headerTitle={screenTitle}>
@@ -204,11 +233,47 @@ export default function BudgetFormScreen({
         <ScrollView
           contentContainerStyle={[
             styles.content,
-            { gap: spacing.md, padding: spacing.md },
+            { padding: spacing.md, paddingBottom: spacing.lg },
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
+          <Text
+            accessibilityRole="header"
+            style={{
+              color: colors.text.primary,
+              fontSize: typography.sizes.xl,
+              fontWeight: '700',
+            }}
+          >
+            {heading}
+          </Text>
+          <Text
+            style={{
+              color: colors.text.secondary,
+              fontSize: typography.sizes.sm,
+              marginBottom: spacing.md,
+            }}
+          >
+            {description}
+          </Text>
+
+          {saveError && (
+            <Text
+              accessibilityRole="alert"
+              style={{
+                backgroundColor: colors.surface.background.error,
+                borderRadius: borderRadius.md,
+                color: colors.status.error,
+                fontSize: typography.sizes.sm,
+                marginBottom: spacing.md,
+                padding: spacing.sm,
+              }}
+            >
+              Couldn’t save this budget. Your changes are still here. Try again.
+            </Text>
+          )}
+
           <View
             style={[
               styles.formCard,
@@ -222,138 +287,199 @@ export default function BudgetFormScreen({
           >
             <TextInput
               autoCapitalize="words"
-              label="Name"
-              onChangeText={setName}
+              error={errors.name}
+              label="Name *"
+              onChangeText={(value) => {
+                setName(value);
+                clearError('name');
+              }}
               placeholder="e.g. Groceries"
               value={name}
             />
-            <TextInput
-              keyboardType="decimal-pad"
-              label="Monthly amount"
-              onChangeText={setAmount}
-              placeholder="0.00"
-              value={amount}
-            />
             <CurrencyInput
+              currencies={currencyChoices}
+              description="Choose a currency used by one of your accounts."
+              disabled={accountsLoading || accountsError}
+              label="Currency *"
               onValueChanged={(selectedCurrency) => {
                 hasSelectedCurrency.current = true;
                 setCurrency(selectedCurrency ?? '');
+                clearError('currency');
               }}
               value={currency}
             />
-
-            <FieldButton
-              label="Categories"
-              value={categorySelectionLabel}
-              onPress={() => setShowCategories(true)}
-            />
-
-            <Text
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.md,
-                fontWeight: '500',
-                marginBottom: spacing.xs,
+            <FormFieldError message={errors.currency} />
+            {accountsError && (
+              <RetryData
+                onRetry={() => void refetchAccounts()}
+                label="Couldn’t load account currencies"
+              />
+            )}
+            <TextInput
+              error={errors.amount}
+              keyboardType="decimal-pad"
+              label="Budget amount *"
+              onChangeText={(value) => {
+                setAmount(value);
+                clearError('amount');
               }}
+              placeholder="0.00"
+              value={amount}
+            />
+            <Text
+              style={[
+                styles.fieldLabel,
+                {
+                  color: colors.text.primary,
+                  fontSize: typography.sizes.md,
+                  marginBottom: spacing.xs,
+                },
+              ]}
             >
-              Color
+              Colour *
             </Text>
-            <View style={[styles.colorGrid, { gap: spacing.sm }]}>
-              {COLOR_SWATCHES.map((swatch) => {
-                let borderColor = colors.surface.border.primary;
-                let borderWidth = 1;
-                if (colour === swatch) {
-                  borderColor = colors.text.primary;
-                  borderWidth = 3;
-                }
-                return (
-                  <Pressable
-                    key={swatch}
-                    accessibilityLabel={`Choose color ${swatch}`}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected: colour === swatch }}
-                    onPress={() => setColour(swatch)}
-                    style={[
-                      styles.colorSwatch,
-                      {
-                        backgroundColor: swatch,
-                        borderColor,
-                        borderWidth,
-                      },
-                    ]}
-                  />
-                );
-              })}
+            <ColorPicker
+              colors={colourChoices}
+              onChange={(value) => {
+                setColour(value);
+                clearError('colour');
+              }}
+              value={colour || null}
+            />
+            <FormFieldError message={errors.colour} />
+            <Text
+              style={[
+                styles.fieldLabel,
+                {
+                  color: colors.text.primary,
+                  fontSize: typography.sizes.md,
+                  marginBottom: spacing.xs,
+                  marginTop: spacing.md,
+                },
+              ]}
+            >
+              Icon *
+            </Text>
+            <IconPicker
+              onChange={(value) => {
+                setIcon(value);
+                clearError('icon');
+              }}
+              value={icon || null}
+            />
+            <FormFieldError message={errors.icon} />
+            <View style={{ marginTop: spacing.md }}>
+              <FieldButton
+                disabled={categoriesLoading || categoriesError}
+                label="Categories *"
+                onPress={() => setShowCategories(true)}
+                value={categorySelectionLabel}
+              />
+              <FormFieldError message={errors.categories} />
+              {categoriesError && (
+                <RetryData
+                  onRetry={() => void refetchCategories()}
+                  label="Couldn’t load categories"
+                />
+              )}
             </View>
-
-            <FieldButton
-              label="Icon"
-              value={icon || 'Choose an icon'}
-              onPress={() => setShowIcons(true)}
-            />
-          </View>
-
-          {error && (
-            <Text
-              style={{
-                color: colors.status.error,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              {error}
-            </Text>
-          )}
-
-          <View style={[styles.actions, { gap: spacing.sm }]}>
-            <Button
-              disabled={isPending}
-              onClick={() => router.back()}
-              variant="outline"
-              style={styles.actionButton}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={isPending}
-              onClick={() => void submit()}
-              style={styles.actionButton}
-            >
-              {saveButtonLabel}
-            </Button>
           </View>
         </ScrollView>
+
+        <View
+          style={[
+            styles.footer,
+            {
+              backgroundColor: colors.surface.background.primary,
+              borderTopColor: colors.surface.border.primary,
+              gap: spacing.sm,
+              paddingBottom: Math.max(insets.bottom, spacing.md),
+              paddingHorizontal: spacing.md,
+              paddingTop: spacing.sm,
+            },
+          ]}
+        >
+          <Button
+            disabled={isPending || !isReady}
+            onClick={() => void submit()}
+          >
+            {saveButtonLabel}
+          </Button>
+          <Button
+            disabled={isPending}
+            onClick={() => router.back()}
+            variant="outline"
+          >
+            Cancel
+          </Button>
+        </View>
       </KeyboardAvoidingView>
 
       <CategorySelectionSheet
         categories={categories}
-        onApply={setCategoryIds}
+        onApply={(ids) => {
+          setCategoryIds(ids);
+          clearError('categories');
+        }}
         onDismiss={() => setShowCategories(false)}
         selectedIds={categoryIds}
         visible={showCategories}
-      />
-      <IconSelectionSheet
-        onDismiss={() => setShowIcons(false)}
-        onSelect={setIcon}
-        selectedIcon={icon}
-        visible={showIcons}
       />
     </AppScreen>
   );
 }
 
+function FormFieldError({ message }: Readonly<{ message?: string }>) {
+  const { colors, spacing, typography } = useTheme();
+  if (!message) return null;
+  return (
+    <Text
+      accessibilityRole="alert"
+      style={{
+        color: colors.status.error,
+        fontSize: typography.sizes.sm,
+        marginTop: spacing.xs,
+      }}
+    >
+      {message}
+    </Text>
+  );
+}
+
+function RetryData({
+  label,
+  onRetry,
+}: Readonly<{ label: string; onRetry: () => void }>) {
+  const { colors, spacing, typography } = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onRetry}
+      style={{ marginBottom: spacing.md }}
+    >
+      <Text
+        style={{ color: colors.status.error, fontSize: typography.sizes.sm }}
+      >
+        {label}. <Text style={{ color: colors.accent.primary }}>Try again</Text>
+      </Text>
+    </Pressable>
+  );
+}
+
 function FieldButton({
+  disabled,
   label,
   onPress,
   value,
 }: Readonly<{
+  disabled?: boolean;
   label: string;
   onPress: () => void;
   value: string;
 }>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
-
   return (
-    <View style={{ marginBottom: spacing.md }}>
+    <View>
       <Text
         style={{
           color: colors.text.primary,
@@ -365,80 +491,50 @@ function FieldButton({
         {label}
       </Text>
       <Pressable
+        accessibilityLabel={`${label}, ${value}`}
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
+        disabled={disabled}
         onPress={onPress}
-        style={({ pressed }) => [
+        style={[
           styles.fieldButton,
           {
             backgroundColor: colors.surface.background.input,
             borderColor: colors.surface.border.input,
             borderRadius: borderRadius.lg,
-            opacity: getPressedOpacity(pressed),
             paddingHorizontal: spacing.md,
             paddingVertical: spacing.md,
           },
         ]}
       >
         <Text
-          style={{ color: colors.text.primary, fontSize: typography.sizes.md }}
+          numberOfLines={1}
+          style={{
+            color: colors.text.primary,
+            fontSize: typography.sizes.md,
+            flex: 1,
+          }}
         >
           {value}
         </Text>
-        <Text
-          style={{
-            color: colors.text.secondary,
-            fontSize: typography.sizes.md,
-          }}
-        >
-          ›
-        </Text>
+        <ChevronRightIcon color={colors.text.secondary} size={20} />
       </Pressable>
     </View>
   );
 }
 
-function getPressedOpacity(pressed: boolean): number {
-  if (pressed) return 0.7;
-  return 1;
-}
-
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  content: {
-    flexGrow: 1,
-    paddingBottom: 28,
-  },
-  formCard: {
-    borderWidth: 1,
-  },
-  colorGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 20,
-  },
-  colorSwatch: {
-    borderRadius: 18,
-    height: 36,
-    width: 36,
-  },
+  flex: { flex: 1 },
+  content: { flexGrow: 1 },
+  formCard: { borderWidth: 1, elevation: 1 },
+  fieldLabel: { fontWeight: '500' },
   fieldButton: {
     alignItems: 'center',
     borderWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 8,
     minHeight: 56,
   },
-  actions: {
-    flexDirection: 'row',
-    marginTop: 'auto',
-  },
-  actionButton: {
-    flex: 1,
-  },
-  centered: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
+  footer: { borderTopWidth: StyleSheet.hairlineWidth },
+  loadingCard: { height: 460 },
 });

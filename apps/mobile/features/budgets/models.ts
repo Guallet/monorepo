@@ -1,7 +1,7 @@
 import type { MoneyFormatOptions } from '@guallet/money';
-import { formatMoney } from '@/utils/formatMoney';
+import { formatMoney } from '../../utils/formatMoney';
 import type { BudgetDto, DateFormat } from '@guallet/api-client';
-import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import { formatPreferenceDate } from '../../utils/formatPreferenceDate';
 
 export const MIN_BUDGET_YEAR = 2000;
 
