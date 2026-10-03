@@ -66,6 +66,47 @@ existing Luna, React Native, Expo, and accessibility patterns.
 - For overlapping or ordered children, assign a consistent stacking order to
   every item, including the first.
 
+## Bottom sheets
+
+Use `BottomSheet` from `@guallet/luna-mobile` for mobile bottom sheets. Control
+visibility in the consuming component with React state:
+
+```tsx
+const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+```
+
+Pass `isBottomSheetOpen` to `isOpen`, open the sheet by setting it to `true`,
+and always set it back to `false` in `onClose`. The callback runs when the user
+dismisses the sheet or presses its optional close icon. Update visibility before
+running any additional close handling.
+
+```tsx
+import { useState } from 'react';
+import { BottomSheet, Button } from '@guallet/luna-mobile';
+import { Text } from 'react-native';
+
+export function ExampleSheet() {
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsBottomSheetOpen(true)}>Open sheet</Button>
+      <BottomSheet
+        isOpen={isBottomSheetOpen}
+        title="Details"
+        showCloseIcon
+        onClose={() => setIsBottomSheetOpen(false)}
+      >
+        <Text>Sheet content</Text>
+      </BottomSheet>
+    </>
+  );
+}
+```
+
+Actions inside the sheet that finish or cancel the flow must also set
+`isBottomSheetOpen` to `false`. Keep one visibility state as the source of truth.
+
 ## Review checklist
 
 - [ ] Props, events, defaults, children, style overrides, and accessibility are
@@ -75,6 +116,8 @@ existing Luna, React Native, Expo, and accessibility patterns.
 - [ ] Icons come from Luna's mobile icon exports; missing icons were added there.
 - [ ] Component uses theme tokens and native controls appropriately.
 - [ ] Children are nested between component tags, not passed as a prop.
+- [ ] Bottom sheets use `isBottomSheetOpen` state for `isOpen` and reset it to
+      `false` in `onClose` and any completion or cancellation actions.
 - [ ] No nested ternaries, avoidable complexity, hardcoded theme values, or
       UTF-16 character indexing remain.
 - [ ] Component and types are exported through the right barrels.

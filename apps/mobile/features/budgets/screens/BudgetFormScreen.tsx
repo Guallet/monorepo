@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -23,7 +23,7 @@ import {
   TextInput,
   useTheme,
 } from '@guallet/luna-mobile';
-import { ChevronRightIcon } from '@guallet/luna-mobile/icons';
+import { CategoryIcon, ChevronRightIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { availableCurrencies } from '@/components/currencyPickerData';
@@ -123,17 +123,16 @@ export default function BudgetFormScreen({
     setCurrency(selected);
   }, [accountCurrencies, budget, defaultCurrency]);
 
-  const selectedCategoryNames = useMemo(
-    () =>
-      categories
-        .filter((category) => categoryIds.includes(category.id))
-        .map((category) => category.name),
+  const selectedCategories = useMemo(
+    () => categories.filter((category) => categoryIds.includes(category.id)),
     [categories, categoryIds],
   );
-  let categorySelectionLabel = 'Select categories';
-  if (selectedCategoryNames.length > 0) {
-    categorySelectionLabel = selectedCategoryNames.join(', ');
-  }
+  const selectedCategory =
+    selectedCategories.length === 1 ? selectedCategories[0] : undefined;
+  const categorySelectionLabel =
+    selectedCategories.length > 1
+      ? `${selectedCategories.length} categories selected`
+      : (selectedCategory?.name ?? 'Select categories');
   const isPending =
     createBudgetMutation.isPending || updateBudgetMutation.isPending;
   const isReady =
@@ -372,6 +371,17 @@ export default function BudgetFormScreen({
               <FieldButton
                 disabled={categoriesLoading || categoriesError}
                 label="Categories *"
+                leftSection={
+                  selectedCategory && (
+                    <CategoryIcon
+                      name={selectedCategory.icon}
+                      color={selectedCategory.colour ?? colors.text.primary}
+                      size={spacing.lg}
+                      accessibilityElementsHidden
+                      importantForAccessibility="no"
+                    />
+                  )
+                }
                 onPress={() => setShowCategories(true)}
                 value={categorySelectionLabel}
               />
@@ -469,11 +479,13 @@ function RetryData({
 function FieldButton({
   disabled,
   label,
+  leftSection,
   onPress,
   value,
 }: Readonly<{
   disabled?: boolean;
   label: string;
+  leftSection?: ReactNode;
   onPress: () => void;
   value: string;
 }>) {
@@ -507,6 +519,7 @@ function FieldButton({
           },
         ]}
       >
+        {leftSection}
         <Text
           numberOfLines={1}
           style={{

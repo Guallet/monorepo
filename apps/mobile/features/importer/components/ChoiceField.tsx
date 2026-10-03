@@ -24,7 +24,7 @@ export function ChoiceField({
   sample,
 }: Readonly<Props>) {
   const { colors, spacing, borderRadius, typography } = useTheme();
-  const [visible, setVisible] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const selected =
     options.find((option) => option.value === value)?.label ??
     'Select a column';
@@ -45,8 +45,8 @@ export function ChoiceField({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`${label}: ${selected}`}
-        accessibilityState={{ expanded: visible }}
-        onPress={() => setVisible(true)}
+        accessibilityState={{ expanded: isBottomSheetOpen }}
+        onPress={() => setIsBottomSheetOpen(true)}
         style={[
           styles.choice,
           {
@@ -75,10 +75,10 @@ export function ChoiceField({
         </Text>
       )}
       <BottomSheet
-        isOpen={visible}
+        isOpen={isBottomSheetOpen}
         title={label}
         showCloseIcon
-        onClose={() => setVisible(false)}
+        onClose={() => setIsBottomSheetOpen(false)}
         snapPoints={['half', 'full']}
       >
         <View style={{ padding: spacing.md }}>
@@ -91,7 +91,7 @@ export function ChoiceField({
                 accessibilityState={{ selected: option.value === value }}
                 onPress={() => {
                   onChange(option.value);
-                  setVisible(false);
+                  setIsBottomSheetOpen(false);
                 }}
                 style={[
                   styles.option,
