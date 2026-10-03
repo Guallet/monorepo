@@ -17,6 +17,7 @@ export interface AlertAction {
 export interface AlertOptions {
   title: string;
   message?: string;
+  /** Actions are stacked, with cancellation actions displayed last. */
   actions?: ReadonlyArray<AlertAction>;
 }
 
@@ -57,12 +58,12 @@ function AlertDialog({
   onDismiss: () => void;
 }>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
-  const [pressedActionIndex, setPressedActionIndex] = useState<number | null>(
-    null,
-  );
   const defaultAction: AlertAction = { text: 'OK' };
   const actions = options?.actions?.length ? options.actions : [defaultAction];
-  const sideBySide = actions.length === 2;
+  const orderedActions = [
+    ...actions.filter((action) => action.style !== 'cancel'),
+    ...actions.filter((action) => action.style === 'cancel'),
+  ];
 
   const handleAction = (action: AlertAction) => {
     onDismiss();
@@ -95,11 +96,11 @@ function AlertDialog({
               borderRadius: borderRadius.lg,
               shadowColor: colors.neutral.black,
               padding: spacing.lg,
-              gap: spacing.md,
+              gap: spacing.lg,
             },
           ]}
         >
-          <View style={{ gap: spacing.xs }}>
+          <View style={{ gap: spacing.sm }}>
             <Text
               accessibilityRole="header"
               style={[
@@ -116,6 +117,8 @@ function AlertDialog({
                   {
                     color: colors.text.secondary,
                     fontSize: typography.sizes.md,
+                    lineHeight:
+                      typography.sizes.md * typography.lineHeights.normal,
                   },
                 ]}
               >
@@ -123,25 +126,16 @@ function AlertDialog({
               </Text>
             ) : null}
           </View>
-          <View
-            style={[
-              styles.actions,
-              !sideBySide && styles.stackedActions,
-              { gap: spacing.sm },
-            ]}
-          >
-            {actions.map((action, index) => {
+          <View style={[styles.actions, { gap: spacing.sm }]}>
+            {orderedActions.map((action, index) => {
               const destructive = action.style === 'destructive';
               const cancel = action.style === 'cancel';
-              const isPressed = pressedActionIndex === index;
 
               return (
                 <Pressable
                   accessibilityRole="button"
                   key={`${action.text}-${index}`}
                   onPress={() => handleAction(action)}
-                  onPressIn={() => setPressedActionIndex(index)}
-                  onPressOut={() => setPressedActionIndex(null)}
                   style={({ pressed }) => [
                     styles.action,
                     {
@@ -152,9 +146,12 @@ function AlertDialog({
                         colors,
                       ),
                       borderRadius: borderRadius.md,
+                      borderWidth: cancel ? StyleSheet.hairlineWidth : 0,
+                      borderColor: colors.surface.border.primary,
                       minHeight: typography.sizes.md + spacing.md * 2,
                       paddingHorizontal: spacing.md,
-                      flex: sideBySide ? 1 : undefined,
+                      paddingVertical: spacing.sm,
+                      opacity: pressed && destructive ? 0.85 : 1,
                     },
                   ]}
                 >
@@ -162,12 +159,7 @@ function AlertDialog({
                     style={[
                       styles.actionLabel,
                       {
-                        color: getActionTextColor(
-                          isPressed,
-                          destructive,
-                          cancel,
-                          colors,
-                        ),
+                        color: getActionTextColor(destructive, cancel, colors),
                         fontSize: typography.sizes.md,
                       },
                     ]}
@@ -199,10 +191,9 @@ const styles = StyleSheet.create({
     shadowRadius: 28,
     elevation: 18,
   },
-  title: { fontWeight: '600' },
-  message: { lineHeight: 24 },
-  actions: { flexDirection: 'row' },
-  stackedActions: { flexDirection: 'column' },
+  title: { fontWeight: '600', textAlign: 'center' },
+  message: { textAlign: 'center' },
+  actions: { flexDirection: 'column' },
   action: { alignItems: 'center', justifyContent: 'center' },
   actionLabel: { fontWeight: '500', textAlign: 'center' },
 });
@@ -214,23 +205,22 @@ function getActionBackgroundColor(
   colors: ReturnType<typeof useTheme>['colors'],
 ): string {
   if (destructive) {
-    return pressed ? colors.status.error : colors.surface.background.error;
+    return colors.status.error;
   }
   if (cancel) {
-    if (pressed) return colors.button.secondary.pressed;
-    return colors.button.secondary.default;
+    if (pressed) return colors.button.subtle.pressed;
+    return colors.surface.background.secondary;
   }
   if (pressed) return colors.button.primary.pressed;
   return colors.button.primary.default;
 }
 
 function getActionTextColor(
-  pressed: boolean,
   destructive: boolean,
   cancel: boolean,
   colors: ReturnType<typeof useTheme>['colors'],
 ): string {
-  if (destructive) return pressed ? colors.neutral.white : colors.status.error;
+  if (destructive) return colors.text.inverse;
   if (cancel) return colors.text.primary;
   return colors.button.onPrimary.default;
 }
