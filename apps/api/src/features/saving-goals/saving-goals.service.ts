@@ -1,60 +1,18 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateSavingGoalDto } from './dto/create-saving-goal.dto';
 import { UpdateSavingGoalDto } from './dto/update-saving-goal.dto';
 import { SavingGoal } from './entities/saving-goal.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Account } from '../accounts/entities/account.entity';
-import { SavingGoalDto } from './dto/saving-goal.dto';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SavingGoalsService {
+  private readonly logger = new Logger(SavingGoalsService.name);
+
   constructor(
     @InjectRepository(SavingGoal)
     private readonly repository: Repository<SavingGoal>,
-    @InjectRepository(Account)
-    private readonly accountRepository: Repository<Account>,
   ) {}
-
-  private async ownedAccounts(
-    userId: string,
-    ids: string[],
-  ): Promise<Account[]> {
-    const uniqueIds = [...new Set(ids)];
-    if (uniqueIds.length === 0 || uniqueIds.length !== ids.length) {
-      throw new BadRequestException(
-        'Select at least one unique linked account',
-      );
-    }
-    const accounts = await this.accountRepository.find({
-      where: { user_id: userId, id: In(uniqueIds) },
-    });
-    if (accounts.length !== uniqueIds.length) {
-      throw new BadRequestException('Select accounts that belong to you');
-    }
-    if (new Set(accounts.map((account) => account.currency)).size !== 1) {
-      throw new BadRequestException(
-        'Linked accounts must use the same currency',
-      );
-    }
-    return accounts;
-  }
-
-  async toDto(goal: SavingGoal, userId: string): Promise<SavingGoalDto> {
-    const accounts = await this.accountRepository.find({
-      where: { user_id: userId, id: In(goal.accounts) },
-    });
-    const currency = accounts[0]?.currency ?? null;
-    // Existing goals may have lost a linked account. Never include another user's balance.
-    const currentAmount = accounts
-      .filter((account) => account.currency === currency)
-      .reduce((sum, account) => sum + Number(account.balance), 0);
-    return SavingGoalDto.fromDomain(goal, currentAmount, currency);
-  }
 
   async create({
     userId,
@@ -63,7 +21,6 @@ export class SavingGoalsService {
     userId: string;
     request: CreateSavingGoalDto;
   }): Promise<SavingGoal> {
-    await this.ownedAccounts(userId, request.accounts);
     const savingGoal = this.repository.create({
       userId: userId,
       name: request.name,
@@ -102,6 +59,16 @@ export class SavingGoalsService {
     return goal;
   }
 
+  async findById(id: string): Promise<SavingGoal> {
+    const goal = await this.repository.findOne({
+      where: { id },
+    });
+    if (!goal) {
+      throw new NotFoundException('Saving goal not found');
+    }
+    return goal;
+  }
+
   async update({
     userId,
     savingGoalId,
@@ -112,19 +79,11 @@ export class SavingGoalsService {
     request: UpdateSavingGoalDto;
   }): Promise<SavingGoal> {
     const goal = await this.findByIdForUser({ id: savingGoalId, userId });
-    if (request.accounts) await this.ownedAccounts(userId, request.accounts);
-    if (request.name !== undefined) goal.name = request.name;
-    if (request.description !== undefined)
-      goal.description = request.description;
-    if (request.targetAmount !== undefined)
-      goal.target_amount = request.targetAmount;
-    if (request.targetDate !== undefined) {
-      goal.target_date = request.targetDate
-        ? new Date(request.targetDate)
-        : null;
+    if (!goal) {
+      throw new NotFoundException('Saving goal not found');
     }
-    if (request.accounts !== undefined) goal.accounts = request.accounts;
-    if (request.priority !== undefined) goal.priority = request.priority;
+
+    this.repository.merge(goal, request);
     return await this.repository.save(goal);
   }
 

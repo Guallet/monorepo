@@ -10,7 +10,6 @@ import {
   IsString,
   IsUUID,
   Min,
-  ValidateIf,
 } from 'class-validator';
 
 export class UpdateSavingGoalDto {
@@ -32,9 +31,9 @@ export class UpdateSavingGoalDto {
   targetAmount?: number;
 
   @ApiProperty({ required: false, format: 'date-time', nullable: true })
-  @ValidateIf((_, value: unknown) => value !== null && value !== undefined)
+  @IsOptional()
   @IsDateString()
-  targetDate?: string | null;
+  targetDate?: string;
 
   @ApiProperty({ required: false, minimum: 0, nullable: true })
   @IsOptional()

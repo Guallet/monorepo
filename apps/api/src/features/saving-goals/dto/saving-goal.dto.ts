@@ -25,20 +25,13 @@ export class SavingGoalDto {
     format: 'date-time',
     nullable: true,
   })
-  targetDate?: Date | null;
+  targetDate?: Date;
 
   @ApiProperty({
     description: 'The account ids used as source for the saving goal',
     type: [String],
   })
   accounts: string[];
-
-  @ApiProperty({
-    description: 'Currency of the linked accounts',
-    required: false,
-    nullable: true,
-  })
-  currency?: string | null;
 
   @ApiProperty({
     description: 'The current amount saved (sum of linked account balances)',
@@ -73,16 +66,12 @@ export class SavingGoalDto {
   })
   daysRemaining: number | null;
 
-  static fromDomain(
-    domain: SavingGoal,
-    currentAmount = 0,
-    currency: string | null = null,
-  ): SavingGoalDto {
+  static fromDomain(domain: SavingGoal): SavingGoalDto {
+    // TODO: compute currentAmount from linked account balances
+    const currentAmount = 0;
     const targetAmount = domain.target_amount;
     const progressPercentage =
-      targetAmount > 0
-        ? Math.min(100, Math.max(0, (currentAmount / targetAmount) * 100))
-        : 0;
+      targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
     const isCompleted = progressPercentage >= 100;
 
     const now = new Date();
@@ -101,7 +90,6 @@ export class SavingGoalDto {
       targetAmount: targetAmount,
       targetDate: domain.target_date,
       accounts: domain.accounts,
-      currency,
       currentAmount: currentAmount,
       progressPercentage: progressPercentage,
       isCompleted: isCompleted,

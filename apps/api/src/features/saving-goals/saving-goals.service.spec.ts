@@ -1,140 +1,262 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import type { Repository } from 'typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
 import { SavingGoalsService } from './saving-goals.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { SavingGoal } from './entities/saving-goal.entity';
-import { Account } from '../accounts/entities/account.entity';
+import { NotFoundException } from '@nestjs/common';
 
 describe('SavingGoalsService', () => {
-  const goalRepository = {
-    create: vi.fn((goal: Partial<SavingGoal>) => goal),
-    save: vi.fn(async (goal: SavingGoal) => goal),
+  let service: SavingGoalsService;
+
+  const mockSavingGoalRepository = {
+    create: vi.fn(),
+    save: vi.fn(),
     find: vi.fn(),
     findOne: vi.fn(),
-    remove: vi.fn(async (goal: SavingGoal) => goal),
+    merge: vi.fn(),
+    remove: vi.fn(),
   };
-  const accountRepository = { find: vi.fn() };
-  const service = new SavingGoalsService(
-    goalRepository as unknown as Repository<SavingGoal>,
-    accountRepository as unknown as Repository<Account>,
-  );
 
-  beforeEach(() => vi.clearAllMocks());
-
-  it('lists only the current user’s goals', async () => {
-    const goals = [{ id: 'g', userId: 'user-1' }];
-    goalRepository.find.mockResolvedValue(goals);
-    expect(await service.findAllUserSavingGoals({ userId: 'user-1' })).toEqual(
-      goals,
-    );
-    expect(goalRepository.find).toHaveBeenCalledWith({
-      where: { userId: 'user-1' },
-    });
-  });
-
-  it('loads a goal using both its id and the current user id', async () => {
-    const goal = { id: 'g', userId: 'user-1' };
-    goalRepository.findOne.mockResolvedValue(goal);
-    expect(
-      await service.findByIdForUser({ id: 'g', userId: 'user-1' }),
-    ).toEqual(goal);
-    expect(goalRepository.findOne).toHaveBeenCalledWith({
-      where: { id: 'g', userId: 'user-1' },
-    });
-  });
-
-  it('rejects missing goals when loading or updating', async () => {
-    goalRepository.findOne.mockResolvedValue(null);
-    await expect(
-      service.findByIdForUser({ id: 'missing', userId: 'user-1' }),
-    ).rejects.toThrow(NotFoundException);
-    await expect(
-      service.update({
-        userId: 'user-1',
-        savingGoalId: 'missing',
-        request: { name: 'New' },
-      }),
-    ).rejects.toThrow(NotFoundException);
-  });
-
-  it('removes only a goal owned by the current user', async () => {
-    const goal = { id: 'g', userId: 'user-1' } as SavingGoal;
-    goalRepository.findOne.mockResolvedValue(goal);
-    await service.remove({ id: 'g', userId: 'user-1' });
-    expect(goalRepository.remove).toHaveBeenCalledWith(goal);
-    expect(goalRepository.findOne).toHaveBeenCalledWith({
-      where: { id: 'g', userId: 'user-1' },
-    });
-  });
-
-  it('sums only user-owned linked account balances for progress', async () => {
-    const goal = {
-      id: 'g',
-      userId: 'user-1',
-      target_amount: 1000,
-      accounts: ['a', 'b'],
-    } as SavingGoal;
-    accountRepository.find.mockResolvedValue([
-      { id: 'a', user_id: 'user-1', currency: 'GBP', balance: '200.25' },
-      { id: 'b', user_id: 'user-1', currency: 'GBP', balance: '299.75' },
-    ]);
-    const dto = await service.toDto(goal, 'user-1');
-    expect(dto.currentAmount).toBe(500);
-    expect(dto.progressPercentage).toBe(50);
-    expect(dto.currency).toBe('GBP');
-    expect(accountRepository.find).toHaveBeenCalledWith({
-      where: { user_id: 'user-1', id: expect.anything() },
-    });
-  });
-
-  it('rejects a goal linked to accounts outside the current user', async () => {
-    accountRepository.find.mockResolvedValue([]);
-    await expect(
-      service.create({
-        userId: 'user-1',
-        request: {
-          name: 'Trip',
-          targetAmount: 100,
-          accounts: ['other-account'],
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        SavingGoalsService,
+        {
+          provide: getRepositoryToken(SavingGoal),
+          useValue: mockSavingGoalRepository,
         },
-      }),
-    ).rejects.toThrow(BadRequestException);
-    expect(goalRepository.save).not.toHaveBeenCalled();
+      ],
+    }).compile();
+
+    service = module.get<SavingGoalsService>(SavingGoalsService);
+
+    // Clear all mocks before each test
+    vi.clearAllMocks();
   });
 
-  it('rejects mixed account currencies', async () => {
-    accountRepository.find.mockResolvedValue([
-      { id: 'a', currency: 'GBP' },
-      { id: 'b', currency: 'EUR' },
-    ]);
-    await expect(
-      service.create({
-        userId: 'user-1',
-        request: { name: 'Trip', targetAmount: 100, accounts: ['a', 'b'] },
-      }),
-    ).rejects.toThrow('Linked accounts must use the same currency');
+  it('should be defined', () => {
+    expect(service).toBeDefined();
   });
 
-  it('maps update DTO fields to persisted entity fields and clears a deadline', async () => {
-    const goal = {
-      id: 'g',
-      userId: 'user-1',
-      name: 'Old',
-      target_amount: 100,
-      target_date: new Date('2030-01-01'),
-      accounts: ['a'],
-    } as SavingGoal;
-    goalRepository.findOne.mockResolvedValue(goal);
-    await service.update({
-      userId: 'user-1',
-      savingGoalId: 'g',
-      request: { name: 'New', targetAmount: 250, targetDate: null },
+  describe('create', () => {
+    it('should create a new saving goal', async () => {
+      const createData = {
+        userId: 'user-123',
+        request: {
+          name: 'Vacation',
+          description: 'Summer vacation fund',
+          targetAmount: 5000,
+          targetDate: new Date('2025-06-01').toDateString(),
+          accounts: ['account-1'],
+          priority: 1,
+        },
+      };
+
+      const mockGoal: Partial<SavingGoal> = {
+        id: 'goal-1',
+        userId: createData.userId,
+        name: createData.request.name,
+        description: createData.request.description,
+        target_amount: createData.request.targetAmount,
+      };
+
+      mockSavingGoalRepository.create.mockReturnValue(mockGoal);
+      mockSavingGoalRepository.save.mockResolvedValue(mockGoal);
+
+      const result = await service.create(createData);
+
+      expect(result).toEqual(mockGoal);
+      expect(mockSavingGoalRepository.create).toHaveBeenCalled();
+      expect(mockSavingGoalRepository.save).toHaveBeenCalledWith(mockGoal);
     });
-    expect(goalRepository.save).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: 'New',
-        target_amount: 250,
-        target_date: null,
-      }),
-    );
+  });
+
+  describe('findAllUserSavingGoals', () => {
+    it('should return all saving goals for a user', async () => {
+      const userId = 'user-123';
+      const mockGoals: Partial<SavingGoal>[] = [
+        {
+          id: 'goal-1',
+          userId: userId,
+          name: 'Vacation',
+          target_amount: 5000,
+        },
+        {
+          id: 'goal-2',
+          userId: userId,
+          name: 'Emergency Fund',
+          target_amount: 10000,
+        },
+      ];
+
+      mockSavingGoalRepository.find.mockResolvedValue(mockGoals);
+
+      const result = await service.findAllUserSavingGoals({ userId });
+
+      expect(result).toEqual(mockGoals);
+      expect(mockSavingGoalRepository.find).toHaveBeenCalledWith({
+        where: { userId },
+      });
+    });
+
+    it('should return empty array when no goals exist', async () => {
+      const userId = 'user-123';
+
+      mockSavingGoalRepository.find.mockResolvedValue([]);
+
+      const result = await service.findAllUserSavingGoals({ userId });
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('findByIdForUser', () => {
+    it('should return a specific saving goal', async () => {
+      const goalId = 'goal-1';
+      const userId = 'user-123';
+      const mockGoal: Partial<SavingGoal> = {
+        id: goalId,
+        userId: userId,
+        name: 'Vacation',
+        target_amount: 5000,
+      };
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(mockGoal);
+
+      const result = await service.findByIdForUser({ id: goalId, userId });
+
+      expect(result).toEqual(mockGoal);
+      expect(mockSavingGoalRepository.findOne).toHaveBeenCalledWith({
+        where: { id: goalId, userId: userId },
+      });
+    });
+
+    it('should throw NotFoundException when goal not found', async () => {
+      const goalId = 'non-existent';
+      const userId = 'user-123';
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.findByIdForUser({ id: goalId, userId }),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('findById', () => {
+    it('should return a saving goal by id', async () => {
+      const goalId = 'goal-1';
+      const mockGoal: Partial<SavingGoal> = {
+        id: goalId,
+        name: 'Vacation',
+      };
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(mockGoal);
+
+      const result = await service.findById(goalId);
+
+      expect(result).toEqual(mockGoal);
+      expect(mockSavingGoalRepository.findOne).toHaveBeenCalledWith({
+        where: { id: goalId },
+      });
+    });
+
+    it('should throw NotFoundException when goal not found', async () => {
+      const goalId = 'non-existent';
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findById(goalId)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('update', () => {
+    it('should update a saving goal', async () => {
+      const updateData = {
+        userId: 'user-123',
+        savingGoalId: 'goal-1',
+        request: {
+          name: 'Updated Vacation',
+          targetAmount: 6000,
+        },
+      };
+
+      const existingGoal: Partial<SavingGoal> = {
+        id: updateData.savingGoalId,
+        userId: updateData.userId,
+        name: 'Vacation',
+        target_amount: 5000,
+      };
+
+      const updatedGoal: Partial<SavingGoal> = {
+        ...existingGoal,
+        name: updateData.request.name,
+        target_amount: updateData.request.targetAmount,
+      };
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(existingGoal);
+      mockSavingGoalRepository.merge.mockReturnValue(updatedGoal);
+      mockSavingGoalRepository.save.mockResolvedValue(updatedGoal);
+
+      const result = await service.update(updateData);
+
+      expect(result).toEqual(updatedGoal);
+      expect(mockSavingGoalRepository.merge).toHaveBeenCalledWith(
+        existingGoal,
+        updateData.request,
+      );
+      expect(mockSavingGoalRepository.save).toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when goal not found', async () => {
+      const updateData = {
+        userId: 'user-123',
+        savingGoalId: 'non-existent',
+        request: {
+          name: 'Updated',
+        },
+      };
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.update(updateData)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a saving goal', async () => {
+      const removeData = {
+        userId: 'user-123',
+        id: 'goal-1',
+      };
+
+      const mockGoal: Partial<SavingGoal> = {
+        id: removeData.id,
+        userId: removeData.userId,
+        name: 'Vacation',
+      };
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(mockGoal);
+      mockSavingGoalRepository.remove.mockResolvedValue(mockGoal);
+
+      const result = await service.remove(removeData);
+
+      expect(result).toEqual(mockGoal);
+      expect(mockSavingGoalRepository.remove).toHaveBeenCalledWith(mockGoal);
+    });
+
+    it('should throw NotFoundException when goal not found', async () => {
+      const removeData = {
+        userId: 'user-123',
+        id: 'non-existent',
+      };
+
+      mockSavingGoalRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.remove(removeData)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
   });
 });

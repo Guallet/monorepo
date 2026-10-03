@@ -3,7 +3,6 @@ import { SavingGoalsController } from './saving-goals.controller';
 import { SavingGoalsService } from './saving-goals.service';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { SavingGoal } from './entities/saving-goal.entity';
-import { SavingGoalDto } from './dto/saving-goal.dto';
 
 describe('SavingGoalsController', () => {
   let controller: SavingGoalsController;
@@ -14,7 +13,6 @@ describe('SavingGoalsController', () => {
     findByIdForUser: vi.fn(),
     update: vi.fn(),
     remove: vi.fn(),
-    toDto: vi.fn((goal: SavingGoal) => SavingGoalDto.fromDomain(goal)),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
