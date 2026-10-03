@@ -2,7 +2,7 @@ import {
   isCategoryIconName,
   selectableCategoryIconNames,
 } from '@guallet/theme';
-import { useRef, useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -16,10 +16,7 @@ import {
 } from 'react-native';
 import { CategoryIcon, ChevronDownIcon } from '../../../icons';
 import { useTheme } from '../../../theme';
-import {
-  usePickerSheet,
-  type DateRangeSheetRenderer,
-} from '../DateRangePicker/DateRangeSheetProvider';
+import { BottomSheet } from '../../../overlays/BottomSheet';
 
 export interface IconPickerProps {
   value: string | null;
@@ -41,7 +38,7 @@ function iconLabel(name: string): string {
     .replace(/([a-z])(\d)/g, '$1 $2');
 }
 
-/** A controlled category icon picker using the host app's native BottomSheet. */
+/** A controlled category icon picker using Luna's native BottomSheet. */
 export function IconPicker({
   value,
   icons = [...selectableCategoryIconNames],
@@ -53,36 +50,24 @@ export function IconPicker({
   textStyle,
 }: Readonly<IconPickerProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
-  const renderSheet = usePickerSheet();
   const { height: windowHeight } = useWindowDimensions();
-  const [visible, setVisible] = useState(false);
-  const openRef = useRef(false);
-
-  if (!renderSheet) {
-    throw new Error('IconPicker requires PickerSheetProvider.');
-  }
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const availableIcons = [...new Set(icons.filter(isCategoryIconName))];
   const selectedIcon = isCategoryIconName(value) ? value : null;
   const label = selectedIcon ? iconLabel(selectedIcon) : 'Choose an icon';
 
   function open() {
-    if (openRef.current) return;
-    openRef.current = true;
-    setVisible(true);
+    setIsBottomSheetOpen(true);
   }
 
   function cancel() {
-    if (!openRef.current) return;
-    openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     onCancel?.();
   }
 
   function select(iconName: string) {
-    if (!openRef.current) return;
-    openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     onChange(iconName);
   }
 
@@ -150,10 +135,13 @@ export function IconPicker({
           importantForAccessibility="no"
         />
       </Pressable>
-      <IconSheetFrame
-        renderSheet={renderSheet}
-        visible={visible}
+      <BottomSheet
+        title="Choose an icon"
+        showCloseIcon
+        isOpen={isBottomSheetOpen}
+        onClose={cancel}
         onDismiss={cancel}
+        contentPadding={0}
       >
         <View
           style={[
@@ -236,29 +224,9 @@ export function IconPicker({
             )}
           </ScrollView>
         </View>
-      </IconSheetFrame>
+      </BottomSheet>
     </>
   );
-}
-
-function IconSheetFrame({
-  renderSheet,
-  visible,
-  onDismiss,
-  children,
-}: Readonly<{
-  renderSheet: DateRangeSheetRenderer;
-  visible: boolean;
-  onDismiss: () => void;
-  children: ReactNode;
-}>) {
-  return renderSheet({
-    title: 'Choose an icon',
-    showCloseIcon: true,
-    visible,
-    onDismiss,
-    children,
-  });
 }
 
 const styles = StyleSheet.create({

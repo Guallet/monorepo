@@ -1,6 +1,5 @@
 import { Children, isValidElement, type ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import type { DateRangeSheetProps } from '../components/inputs/DateRangePicker/DateRangeSheetProvider';
 
 vi.mock('@expo/ui', () => ({
   BottomSheet: 'native-sheet',
@@ -21,7 +20,7 @@ vi.mock('../theme', async () => {
   return { useTheme: () => DefaultTheme };
 });
 
-import { BottomSheet, LunaBottomSheetProvider } from './BottomSheet';
+import { BottomSheet } from './BottomSheet';
 
 function findCloseButton(node: ReactNode): (() => void) | undefined {
   for (const child of Children.toArray(node)) {
@@ -43,8 +42,8 @@ function findCloseButton(node: ReactNode): (() => void) | undefined {
   return undefined;
 }
 
-describe('BottomSheet closing', () => {
-  it('routes the shared close button and native dismissal to onClose', () => {
+describe('BottomSheet', () => {
+  it('lets the consumer close and reopen the controlled sheet', () => {
     let isBottomSheetOpen = true;
     const onClose = vi.fn(() => {
       isBottomSheetOpen = false;
@@ -54,68 +53,107 @@ describe('BottomSheet closing', () => {
       title: 'Select an account',
       showCloseIcon: true,
       onClose,
+      onDismiss: onClose,
     });
 
     const pressClose = findCloseButton(sheet);
     expect(pressClose).toBeDefined();
     pressClose?.();
     expect(isBottomSheetOpen).toBe(false);
+    expect(
+      BottomSheet({
+        isOpen: isBottomSheetOpen,
+        title: 'Select an account',
+        onDismiss: onClose,
+      }).props.isPresented,
+    ).toBe(false);
 
     isBottomSheetOpen = true;
-    sheet.props.onDismiss();
+    const reopenedSheet = BottomSheet({
+      isOpen: isBottomSheetOpen,
+      title: 'Select an account',
+      onDismiss: onClose,
+    });
+    expect(reopenedSheet.props.isPresented).toBe(true);
+    reopenedSheet.props.onDismiss();
     expect(isBottomSheetOpen).toBe(false);
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 
-  it('preserves an additional native dismissal callback', () => {
+  it('keeps close icon presses separate from native dismissal', () => {
     const onClose = vi.fn();
     const onDismiss = vi.fn();
     const sheet = BottomSheet({
       isOpen: true,
       title: 'Options',
-      onClose,
-      onDismiss,
-    });
-
-    sheet.props.onDismiss();
-    expect(onClose).toHaveBeenCalledOnce();
-    expect(onDismiss).toHaveBeenCalledOnce();
-    expect(findCloseButton(sheet)).toBeUndefined();
-  });
-
-  it('calls a shared close and dismissal callback only once per dismissal', () => {
-    const onClose = vi.fn();
-    const sheet = BottomSheet({
-      isOpen: true,
-      title: 'Options',
-      onClose,
-      onDismiss: onClose,
-    });
-
-    sheet.props.onDismiss();
-    expect(onClose).toHaveBeenCalledOnce();
-  });
-
-  it('connects picker cancellation to the shared close button', () => {
-    const onDismiss = vi.fn();
-    const provider = LunaBottomSheetProvider({ children: null });
-    const adaptedSheet = provider.props.sheet({
-      visible: true,
-      title: 'Date range',
       showCloseIcon: true,
+      onClose,
       onDismiss,
-      children: null,
+    });
+
+    findCloseButton(sheet)?.();
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(onDismiss).not.toHaveBeenCalled();
+
+    sheet.props.onDismiss();
+    expect(onDismiss).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('supports dismissal without a close icon or onClose callback', () => {
+    const onDismiss = vi.fn();
+    const sheet = BottomSheet({
+      isOpen: true,
+      title: 'Options',
+      onDismiss,
+    });
+
+    expect(findCloseButton(sheet)).toBeUndefined();
+    sheet.props.onDismiss();
+    expect(onDismiss).toHaveBeenCalledOnce();
+  });
+
+  it.each([
+    { padding: 12, expectedWidth: 376 },
+    { padding: { left: 8, right: 24 }, expectedWidth: 368 },
+    { padding: 250, expectedWidth: 0 },
+  ])(
+    'bounds content width with padding $padding',
+    ({ padding, expectedWidth }) => {
+      const sheet = BottomSheet({
+        isOpen: true,
+        title: 'Options',
+        onDismiss: vi.fn(),
+        contentPadding: padding,
+        children: 'Picker content',
+      });
+      const host = sheet.props.children;
+      expect(host.type).toBe('native-host');
+      expect(host.props.matchContents).toBe(true);
+      const content = host.props.children;
+      expect(content.props.collapsable).toBe(false);
+      expect(content.props.style).toContainEqual({ width: expectedWidth });
+      expect(Children.toArray(content.props.children)).toHaveLength(2);
+      expect(content.props.children[1].props.children).toBe('Picker content');
+    },
+  );
+
+  it('uses the native content bridge for a full-height sheet', () => {
+    const sheet = BottomSheet({
+      isOpen: true,
+      title: 'Categories',
+      onDismiss: vi.fn(),
       snapPoints: ['full'],
     });
-    const sheetElement = adaptedSheet.type(
-      adaptedSheet.props as DateRangeSheetProps,
-    );
-    const sheet = BottomSheet(sheetElement.props);
 
-    expect(sheet.props.isPresented).toBe(true);
-    findCloseButton(sheet)?.();
-    expect(onDismiss).toHaveBeenCalledOnce();
-    sheet.props.onDismiss();
-    expect(onDismiss).toHaveBeenCalledTimes(2);
+    expect(sheet.props.snapPoints).toEqual(['full']);
+    const host = sheet.props.children;
+    expect(host.type).toBe('native-host');
+    expect(host.props.matchContents).toBe(false);
+    expect(host.props.children.props.collapsable).toBe(false);
+    expect(host.props.children.props.style).toContainEqual({
+      flexGrow: 1,
+      height: 0,
+    });
   });
 });

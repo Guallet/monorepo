@@ -16,12 +16,7 @@ import { AppStateStatus, Platform } from 'react-native';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {
-  LunaBottomSheetProvider,
-  LunaProvider,
-  useTheme,
-  useThemeMode,
-} from '@guallet/luna-mobile';
+import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -69,16 +64,14 @@ function AppNavigation() {
   );
 }
 
-/** Install the Luna sheet adapter once for all mobile navigation screens. */
+/** Connect mobile navigation to the Luna theme. */
 export function GualletApp() {
   useOnlineManager();
   useAppState(onAppStateChange);
 
   return (
     <LunaProvider>
-      <LunaBottomSheetProvider>
-        <AppNavigation />
-      </LunaBottomSheetProvider>
+      <AppNavigation />
     </LunaProvider>
   );
 }

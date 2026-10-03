@@ -14,7 +14,7 @@ import {
   ChevronRightIcon,
 } from '../../../icons';
 import { useTheme } from '../../../theme';
-import { useDateRangeSheet } from '../DateRangePicker/DateRangeSheetProvider';
+import { BottomSheet } from '../../../overlays/BottomSheet';
 import {
   adjacentMonth,
   clampYearToBounds,
@@ -39,7 +39,7 @@ const MONTHS = Array.from({ length: 12 }, (_, month) =>
   ),
 );
 
-/** A controlled month selector. The host app supplies its native bottom sheet. */
+/** A controlled month selector. Uses Luna's native bottom sheet. */
 export function MonthSelector({
   value,
   onChange,
@@ -51,11 +51,7 @@ export function MonthSelector({
   bottomSheetStyle,
 }: Readonly<MonthSelectorProps>) {
   const { colors, spacing, borderRadius, typography } = useTheme();
-  const renderSheet = useDateRangeSheet();
-  if (!renderSheet) {
-    throw new Error('MonthSelector requires DateRangeSheetProvider.');
-  }
-  const [visible, setVisible] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [requestedYear, setRequestedYear] = useState(value.getFullYear());
   const displayYear = clampYearToBounds(requestedYear, minDate, maxDate);
   const label = new Intl.DateTimeFormat(undefined, {
@@ -70,14 +66,14 @@ export function MonthSelector({
   /** Recenter the sheet when the controlled value or bounds have changed. */
   function open() {
     setRequestedYear(clampYearToBounds(value.getFullYear(), minDate, maxDate));
-    setVisible(true);
+    setIsBottomSheetOpen(true);
   }
 
   /** Commit only a month that remains valid under the latest bounds. */
   function choose(month: number) {
     const selected = new Date(displayYear, month, 1);
     if (!isMonthInBounds(selected, minDate, maxDate)) return;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     onChange(selected);
   }
 
@@ -87,12 +83,15 @@ export function MonthSelector({
     if (isMonthInBounds(selected, minDate, maxDate)) onChange(selected);
   }
 
-  const sheet = renderSheet({
-    title: 'Select month',
-    showCloseIcon: true,
-    visible,
-    onDismiss: () => setVisible(false),
-    children: (
+  const sheet = (
+    <BottomSheet
+      title="Select month"
+      showCloseIcon
+      isOpen={isBottomSheetOpen}
+      onClose={() => setIsBottomSheetOpen(false)}
+      onDismiss={() => setIsBottomSheetOpen(false)}
+      contentPadding={0}
+    >
       <View
         style={[
           {
@@ -208,8 +207,8 @@ export function MonthSelector({
           })}
         </View>
       </View>
-    ),
-  });
+    </BottomSheet>
+  );
 
   return (
     <>
@@ -242,7 +241,7 @@ export function MonthSelector({
           accessibilityRole="button"
           accessibilityLabel={`Select month, ${label}`}
           accessibilityHint="Opens month and year picker"
-          accessibilityState={{ expanded: visible }}
+          accessibilityState={{ expanded: isBottomSheetOpen }}
           style={[
             styles.labelButton,
             {

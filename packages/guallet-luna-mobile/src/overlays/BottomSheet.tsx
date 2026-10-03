@@ -3,7 +3,6 @@ import {
   RNHostView,
   type BottomSheetProps as ExpoBottomSheetProps,
 } from '@expo/ui';
-import { type ReactNode } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -11,10 +10,6 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import {
-  DateRangeSheetProvider,
-  type DateRangeSheetProps,
-} from '../components/inputs/DateRangePicker/DateRangeSheetProvider';
 import { useTheme } from '../theme';
 import { CloseIcon } from '../icons';
 
@@ -24,8 +19,8 @@ export interface BottomSheetProps extends Omit<
 > {
   isOpen: boolean;
   title: string;
-  /** Called when the close button is pressed or the user dismisses the sheet. */
-  onClose: () => void;
+  /** Called when the close button is pressed */
+  onClose?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -138,41 +133,3 @@ const styles = StyleSheet.create({
   title: { flex: 1, fontWeight: '600' },
   closeButton: { alignItems: 'center', justifyContent: 'center' },
 });
-
-/** Adapts Luna picker visibility props to the native sheet component. */
-function DateRangeBottomSheet({
-  visible,
-  title,
-  showCloseIcon,
-  onDismiss,
-  children,
-  snapPoints,
-}: Readonly<DateRangeSheetProps>) {
-  return (
-    <BottomSheet
-      isOpen={visible}
-      title={title}
-      showCloseIcon={showCloseIcon}
-      onClose={onDismiss}
-      snapPoints={snapPoints}
-      contentPadding={0}
-    >
-      {children}
-    </BottomSheet>
-  );
-}
-
-function renderDateRangeBottomSheet(props: DateRangeSheetProps) {
-  return <DateRangeBottomSheet {...props} />;
-}
-
-/** Installs the Expo sheet adapter required by Luna's sheet-based pickers. */
-export function LunaBottomSheetProvider({
-  children,
-}: Readonly<{ children: ReactNode }>) {
-  return (
-    <DateRangeSheetProvider sheet={renderDateRangeBottomSheet}>
-      {children}
-    </DateRangeSheetProvider>
-  );
-}

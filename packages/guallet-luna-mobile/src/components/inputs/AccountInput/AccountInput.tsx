@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react';
+import { useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -17,10 +17,7 @@ import {
   SearchIcon,
 } from '../../../icons';
 import { useTheme } from '../../../theme';
-import {
-  usePickerSheet,
-  type DateRangeSheetRenderer,
-} from '../DateRangePicker/DateRangeSheetProvider';
+import { BottomSheet } from '../../../overlays/BottomSheet';
 import {
   accountInputLabel,
   groupAccounts,
@@ -60,12 +57,8 @@ export type AccountInputProps =
 /** Controlled account picker. Multiple selections remain local until Select. */
 export function AccountInput(props: Readonly<AccountInputProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
-  const renderSheet = usePickerSheet();
-  if (!renderSheet) {
-    throw new Error('AccountInput requires PickerSheetProvider.');
-  }
 
-  const [visible, setVisible] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [draftIds, setDraftIds] = useState<string[]>([]);
   const openRef = useRef(false);
@@ -93,21 +86,21 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
       props.selectionMode === 'multiple' ? [...(props.value ?? [])] : [],
     );
     openRef.current = true;
-    setVisible(true);
+    setIsBottomSheetOpen(true);
   }
 
   /** The close button and native dismissal share one cancellation path. */
   function cancel() {
     if (!openRef.current) return;
     openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     props.onCancel?.();
   }
 
   function select(accountId: string) {
     if (props.selectionMode === 'single') {
       openRef.current = false;
-      setVisible(false);
+      setIsBottomSheetOpen(false);
       props.onChange(accountId);
       return;
     }
@@ -121,7 +114,7 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
   function confirm() {
     if (props.selectionMode !== 'multiple') return;
     openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     props.onConfirm(draftIds);
   }
 
@@ -164,15 +157,18 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
           importantForAccessibility="no"
         />
       </Pressable>
-      <AccountSheetFrame
+      <BottomSheet
+        showCloseIcon
+        snapPoints={['full']}
         title={
           props.selectionMode === 'single'
             ? 'Select an account'
             : 'Select accounts'
         }
-        renderSheet={renderSheet}
-        visible={visible}
+        isOpen={isBottomSheetOpen}
+        onClose={cancel}
         onDismiss={cancel}
+        contentPadding={0}
       >
         <View
           style={[
@@ -430,33 +426,9 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
             </View>
           )}
         </View>
-      </AccountSheetFrame>
+      </BottomSheet>
     </>
   );
-}
-
-/** Defer the app's renderer to a component boundary. */
-function AccountSheetFrame({
-  title,
-  renderSheet,
-  visible,
-  onDismiss,
-  children,
-}: Readonly<{
-  title: string;
-  renderSheet: DateRangeSheetRenderer;
-  visible: boolean;
-  onDismiss: () => void;
-  children: ReactNode;
-}>) {
-  return renderSheet({
-    title,
-    showCloseIcon: true,
-    visible,
-    onDismiss,
-    children,
-    snapPoints: ['full'],
-  });
 }
 
 function accountInitials(name: string): string {

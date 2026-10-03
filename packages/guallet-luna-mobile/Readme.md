@@ -88,8 +88,7 @@ function Example() {
 
 The component hosts React Native children in Expo's `RNHostView`, which enables
 touch handling inside the native sheet. Consumers pass ordinary React Native
-views and controls. `LunaBottomSheetProvider` installs this sheet for Luna's
-picker components.
+views and controls. Luna's picker components use this sheet directly.
 
 ### Button
 

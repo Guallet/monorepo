@@ -17,10 +17,7 @@ import {
   SearchIcon,
 } from '../../../icons';
 import { useTheme } from '../../../theme';
-import {
-  usePickerSheet,
-  type DateRangeSheetRenderer,
-} from '../DateRangePicker/DateRangeSheetProvider';
+import { BottomSheet } from '../../../overlays/BottomSheet';
 import {
   getCurrencySections,
   type CurrencyPickerCurrency,
@@ -89,11 +86,7 @@ function getTriggerLabel(props: CurrencyPickerProps) {
 /** Searchable currency picker backed by the host app's native bottom sheet. */
 export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
-  const renderSheet = usePickerSheet();
-  if (!renderSheet)
-    throw new Error('CurrencyPicker requires PickerSheetProvider.');
-
-  const [visible, setVisible] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [draftCodes, setDraftCodes] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -119,13 +112,13 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
       props.selectionMode === 'multiple' ? [...(props.value ?? [])] : [],
     );
     openRef.current = true;
-    setVisible(true);
+    setIsBottomSheetOpen(true);
   }
 
   function cancel() {
     if (!openRef.current || savingRef.current) return;
     openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     setQuery('');
     props.onCancel?.();
   }
@@ -138,7 +131,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
       try {
         if ((await props.onChange(code)) !== false) {
           openRef.current = false;
-          setVisible(false);
+          setIsBottomSheetOpen(false);
           setQuery('');
         }
       } catch {
@@ -163,7 +156,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
     try {
       if ((await props.onConfirm(draftCodes)) !== false) {
         openRef.current = false;
-        setVisible(false);
+        setIsBottomSheetOpen(false);
         setQuery('');
       }
     } catch {
@@ -177,13 +170,16 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
   return (
     <>
       {CustomTrigger ? (
-        <CustomTrigger open={open} visible={visible} />
+        <CustomTrigger open={open} visible={isBottomSheetOpen} />
       ) : (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`Currency, ${label}`}
           accessibilityHint="Opens currency picker"
-          accessibilityState={{ disabled: props.disabled, expanded: visible }}
+          accessibilityState={{
+            disabled: props.disabled,
+            expanded: isBottomSheetOpen,
+          }}
           disabled={props.disabled}
           onPress={open}
           style={[
@@ -221,7 +217,8 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
           />
         </Pressable>
       )}
-      <CurrencySheetFrame
+      <BottomSheet
+        snapPoints={['full']}
         title={
           props.title ??
           (props.selectionMode === 'single'
@@ -229,9 +226,10 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
             : 'Choose currencies')
         }
         showCloseIcon={!saving}
-        renderSheet={renderSheet}
-        visible={visible}
+        isOpen={isBottomSheetOpen}
+        onClose={cancel}
         onDismiss={cancel}
+        contentPadding={0}
       >
         <View
           style={[
@@ -374,7 +372,7 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
             </View>
           )}
         </View>
-      </CurrencySheetFrame>
+      </BottomSheet>
     </>
   );
 }
@@ -494,31 +492,6 @@ function CurrencyRow({
       {selectionIndicator}
     </Pressable>
   );
-}
-
-function CurrencySheetFrame({
-  title,
-  showCloseIcon,
-  renderSheet,
-  visible,
-  onDismiss,
-  children,
-}: Readonly<{
-  title: string;
-  showCloseIcon: boolean;
-  renderSheet: DateRangeSheetRenderer;
-  visible: boolean;
-  onDismiss: () => void;
-  children: ReactNode;
-}>) {
-  return renderSheet({
-    title,
-    showCloseIcon,
-    visible,
-    onDismiss,
-    children,
-    snapPoints: ['full'],
-  });
 }
 
 const styles = StyleSheet.create({

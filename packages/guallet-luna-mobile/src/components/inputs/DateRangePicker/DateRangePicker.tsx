@@ -1,5 +1,5 @@
 import { IconCalendar, IconChevronDown } from '@tabler/icons-react-native';
-import { useRef, useState, type ReactNode } from 'react';
+import { useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -11,10 +11,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useTheme } from '../../../theme';
-import {
-  useDateRangeSheet,
-  type DateRangeSheetRenderer,
-} from './DateRangeSheetProvider';
+import { BottomSheet } from '../../../overlays/BottomSheet';
 import { RangeCalendar } from './RangeCalendar';
 import {
   compareCalendarDays,
@@ -63,7 +60,7 @@ function rangeLabel(
 
 /**
  * Pick a complete range in a Monzo-style sheet without committing draft taps.
- * The host app supplies its native sheet through DateRangeSheetProvider.
+ * Uses Luna's native BottomSheet directly.
  */
 export function DateRangePicker({
   value,
@@ -76,12 +73,8 @@ export function DateRangePicker({
   textStyle,
 }: Readonly<DateRangePickerProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
-  const renderSheet = useDateRangeSheet();
-  if (!renderSheet) {
-    throw new Error('DateRangePicker requires DateRangeSheetProvider.');
-  }
   const openRef = useRef(false);
-  const [visible, setVisible] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [draft, setDraft] = useState<DraftDateRange>({
     startDate: value?.startDate ?? null,
     endDate: value?.endDate ?? null,
@@ -123,14 +116,14 @@ export function DateRangePicker({
     setActiveEndpoint(null);
     setShowAll(false);
     openRef.current = true;
-    setVisible(true);
+    setIsBottomSheetOpen(true);
   }
 
   /** Discard the draft and notify once, including gesture dismissals. */
   function cancel() {
     if (!openRef.current) return;
     openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     onCancel?.();
   }
 
@@ -138,7 +131,7 @@ export function DateRangePicker({
   function apply() {
     if (!draft.startDate || !draft.endDate || !canApply) return;
     openRef.current = false;
-    setVisible(false);
+    setIsBottomSheetOpen(false);
     onApply({
       startDate: startOfDay(draft.startDate),
       endDate: endOfDay(draft.endDate),
@@ -239,10 +232,14 @@ export function DateRangePicker({
           color={colors.accent.primary}
         />
       </Pressable>
-      <DateRangeSheetFrame
-        renderSheet={renderSheet}
-        visible={visible}
+      <BottomSheet
+        title="Date range"
+        showCloseIcon
+        snapPoints={['full']}
+        isOpen={isBottomSheetOpen}
+        onClose={cancel}
         onDismiss={cancel}
+        contentPadding={0}
       >
         <View
           style={[
@@ -422,31 +419,9 @@ export function DateRangePicker({
             </Pressable>
           </View>
         </View>
-      </DateRangeSheetFrame>
+      </BottomSheet>
     </>
   );
-}
-
-/** Invoke the app's sheet renderer without treating it as an unstable component. */
-function DateRangeSheetFrame({
-  renderSheet,
-  visible,
-  onDismiss,
-  children,
-}: Readonly<{
-  renderSheet: DateRangeSheetRenderer;
-  visible: boolean;
-  onDismiss: () => void;
-  children: ReactNode;
-}>) {
-  return renderSheet({
-    title: 'Date range',
-    showCloseIcon: true,
-    visible,
-    onDismiss,
-    children,
-    snapPoints: ['full'],
-  });
 }
 
 /** Keep each endpoint's value and expansion state accessible as one control. */

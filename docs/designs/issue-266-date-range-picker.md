@@ -33,4 +33,4 @@ Keep the issue's props: `value`, `onApply`, optional `presets` and `onCancel`, a
 
 The trigger announces its label and committed value. Endpoint rows announce their date or “not selected” and whether their calendar is expanded. Day cells announce full dates plus selection state. Preset chips and list items announce selected state. Month navigation, See all, Back, and Done have distinct labels and accessible focus order. From / To text makes the selection understandable without color alone.
 
-The repository's app-local `BottomSheet` wrapper is the only allowed Expo UI sheet integration, while the issue places this reusable component in `packages/guallet-luna-mobile`. `DateRangeSheetProvider` connects the package control to that app wrapper; the package does not import Expo UI or app code.
+The reusable picker uses Luna's `BottomSheet` directly in `packages/guallet-luna-mobile`. The Luna wrapper owns the Expo UI integration and React Native content bridge. Each picker controls `isOpen` with `isBottomSheetOpen` state and resets that state in its close handler.
