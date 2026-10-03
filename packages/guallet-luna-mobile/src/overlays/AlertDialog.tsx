@@ -3,9 +3,17 @@ import {
   type PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useTheme } from '../theme';
 
 export interface AlertAction {
@@ -32,9 +40,10 @@ export function AlertProvider({ children }: Readonly<PropsWithChildren>) {
   const [options, setOptions] = useState<AlertOptions | null>(null);
   const alert = useCallback((next: AlertOptions) => setOptions(next), []);
   const dismiss = useCallback(() => setOptions(null), []);
+  const contextValue = useMemo(() => ({ alert }), [alert]);
 
   return (
-    <AlertContext.Provider value={{ alert }}>
+    <AlertContext.Provider value={contextValue}>
       {children}
       <AlertDialog options={options} onDismiss={dismiss} />
     </AlertContext.Provider>
@@ -94,82 +103,90 @@ function AlertDialog({
               backgroundColor: colors.surface.background.primary,
               borderColor: colors.surface.border.primary,
               borderRadius: borderRadius.lg,
-              shadowColor: colors.neutral.black,
-              padding: spacing.lg,
-              gap: spacing.lg,
+              shadowColor: colors.surface.shadow,
             },
           ]}
         >
-          <View style={{ gap: spacing.sm }}>
-            <Text
-              accessibilityRole="header"
-              style={[
-                styles.title,
-                { color: colors.text.primary, fontSize: typography.sizes.lg },
-              ]}
-            >
-              {options?.title}
-            </Text>
-            {options?.message ? (
+          <ScrollView
+            style={styles.scrollContent}
+            contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }}
+            bounces={false}
+          >
+            <View style={{ gap: spacing.sm }}>
               <Text
+                accessibilityRole="header"
                 style={[
-                  styles.message,
-                  {
-                    color: colors.text.secondary,
-                    fontSize: typography.sizes.md,
-                    lineHeight:
-                      typography.sizes.md * typography.lineHeights.normal,
-                  },
+                  styles.title,
+                  { color: colors.text.primary, fontSize: typography.sizes.lg },
                 ]}
               >
-                {options.message}
+                {options?.title}
               </Text>
-            ) : null}
-          </View>
-          <View style={[styles.actions, { gap: spacing.sm }]}>
-            {orderedActions.map((action, index) => {
-              const destructive = action.style === 'destructive';
-              const cancel = action.style === 'cancel';
-
-              return (
-                <Pressable
-                  accessibilityRole="button"
-                  key={`${action.text}-${index}`}
-                  onPress={() => handleAction(action)}
-                  style={({ pressed }) => [
-                    styles.action,
+              {options?.message ? (
+                <Text
+                  style={[
+                    styles.message,
                     {
-                      backgroundColor: getActionBackgroundColor(
-                        pressed,
-                        destructive,
-                        cancel,
-                        colors,
-                      ),
-                      borderRadius: borderRadius.md,
-                      borderWidth: cancel ? StyleSheet.hairlineWidth : 0,
-                      borderColor: colors.surface.border.primary,
-                      minHeight: typography.sizes.md + spacing.md * 2,
-                      paddingHorizontal: spacing.md,
-                      paddingVertical: spacing.sm,
-                      opacity: pressed && destructive ? 0.85 : 1,
+                      color: colors.text.secondary,
+                      fontSize: typography.sizes.md,
+                      lineHeight:
+                        typography.sizes.md * typography.lineHeights.normal,
                     },
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.actionLabel,
+                  {options.message}
+                </Text>
+              ) : null}
+            </View>
+            <View style={[styles.actions, { gap: spacing.sm }]}>
+              {orderedActions.map((action, index) => {
+                const destructive = action.style === 'destructive';
+                const cancel = action.style === 'cancel';
+
+                return (
+                  <Pressable
+                    accessibilityRole="button"
+                    key={`${action.text}-${index}`}
+                    onPress={() => handleAction(action)}
+                    style={({ pressed }) => [
+                      styles.action,
                       {
-                        color: getActionTextColor(destructive, cancel, colors),
-                        fontSize: typography.sizes.md,
+                        backgroundColor: getActionBackgroundColor(
+                          pressed,
+                          destructive,
+                          cancel,
+                          colors,
+                        ),
+                        borderRadius: borderRadius.md,
+                        borderWidth: cancel ? StyleSheet.hairlineWidth : 0,
+                        borderColor: colors.surface.border.primary,
+                        minHeight: typography.sizes.md + spacing.md * 2,
+                        paddingHorizontal: spacing.md,
+                        paddingVertical: spacing.sm,
+                        opacity: pressed && destructive ? 0.85 : 1,
                       },
                     ]}
                   >
-                    {action.text}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+                    <Text
+                      style={[
+                        styles.actionLabel,
+                        {
+                          color: getActionTextColor(
+                            destructive,
+                            cancel,
+                            colors,
+                          ),
+                          fontSize: typography.sizes.md,
+                        },
+                      ]}
+                    >
+                      {action.text}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
@@ -185,12 +202,14 @@ const styles = StyleSheet.create({
   dialog: {
     width: '100%',
     maxWidth: 440,
+    maxHeight: '80%',
     borderWidth: StyleSheet.hairlineWidth,
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.18,
     shadowRadius: 28,
     elevation: 18,
   },
+  scrollContent: { flexGrow: 0, flexShrink: 1 },
   title: { fontWeight: '600', textAlign: 'center' },
   message: { textAlign: 'center' },
   actions: { flexDirection: 'column' },

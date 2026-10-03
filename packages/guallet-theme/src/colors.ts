@@ -32,6 +32,8 @@ export type SurfaceColors = {
   background: SurfaceBackgroundColors;
   border: SurfaceBorderColors;
   overlay: string;
+  /** Elevation shadow colour, independent of the text's appearance. */
+  shadow: string;
 };
 
 export type ButtonInteractionColors = {
@@ -118,6 +120,7 @@ export const defaultColors: Colors = {
       disabled: '#F3F4F6',
     },
     overlay: 'rgba(100, 100, 100, 0.6)',
+    shadow: '#000000',
   },
   button: {
     primary: {
