@@ -8,6 +8,8 @@ import TablerFileImportIcon from '@tabler/icons-react-native/IconFileImport';
 import TablerCalculatorIcon from '@tabler/icons-react-native/IconCalculator';
 import TablerPigMoneyIcon from '@tabler/icons-react-native/IconPigMoney';
 import TablerMailIcon from '@tabler/icons-react-native/IconMail';
+import TablerPencilIcon from '@tabler/icons-react-native/IconPencil';
+import TablerTrashIcon from '@tabler/icons-react-native/IconTrash';
 import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
@@ -48,3 +50,6 @@ export const CalculatorIcon = createLunaIcon(
 );
 export const SavingsIcon = createLunaIcon(TablerPigMoneyIcon, 'SavingsIcon');
 export const MailIcon = createLunaIcon(TablerMailIcon, 'MailIcon');
+
+export const EditIcon = createLunaIcon(TablerPencilIcon, 'EditIcon');
+export const DeleteIcon = createLunaIcon(TablerTrashIcon, 'DeleteIcon');

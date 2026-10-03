@@ -19,6 +19,7 @@ export class UpdateCategoryDto {
 
   @ApiProperty({
     required: false,
+    type: String,
     format: 'uuid',
     nullable: true,
   })

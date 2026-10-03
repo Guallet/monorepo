@@ -15,11 +15,13 @@ import { CloseIcon } from '../icons';
 
 export interface BottomSheetProps extends Omit<
   ExpoBottomSheetProps,
-  'isPresented'
+  'isPresented' | 'onDismiss'
 > {
   isOpen: boolean;
+  /** Optional additional dismissal callback; onClose handles all user dismissal. */
+  onDismiss?: () => void;
   title: string;
-  /** Called when the close button is pressed */
+  /** Called for both the close button and native user dismissal. */
   onClose?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
@@ -58,7 +60,10 @@ export function BottomSheet({
     <ExpoBottomSheet
       {...props}
       isPresented={isOpen}
-      onDismiss={onDismiss}
+      onDismiss={() => {
+        onClose?.();
+        if (onDismiss !== onClose) onDismiss?.();
+      }}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
       snapPoints={snapPoints}

@@ -27,14 +27,14 @@ export class Category extends BaseDbEntity {
   @Column({ nullable: true })
   colour?: string;
 
-  @Column({ nullable: true })
-  parentId?: string;
+  @Column({ type: 'varchar', nullable: true })
+  parentId?: string | null;
 
   // Relations
   @ManyToOne(() => Category, (category) => category.children, {
     onDelete: 'CASCADE',
   })
-  parent: Category;
+  parent: Category | null;
 
   @OneToMany(() => Category, (category) => category.parent, {
     onDelete: 'SET NULL',
