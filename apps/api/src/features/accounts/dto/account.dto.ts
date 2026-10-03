@@ -51,6 +51,7 @@ export class AccountDto {
   type: string;
 
   @ApiProperty({
+    type: String,
     required: false,
     description:
       'The institution id of the account, if it belongs to an institution',

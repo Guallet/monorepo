@@ -46,7 +46,7 @@ export class NordigenTransactionDto {
   @ApiProperty({ required: false })
   valueDate?: string;
 
-  @ApiProperty({ required: false, nullable: true })
+  @ApiProperty({ type: String, required: false, nullable: true })
   additionalInformation?: string | null;
 }
 

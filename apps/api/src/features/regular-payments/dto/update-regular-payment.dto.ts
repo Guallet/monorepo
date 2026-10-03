@@ -48,7 +48,10 @@ export class UpdateRegularPaymentDto {
   @IsEnum(RecurrenceCadence)
   cadence?: RecurrenceCadence;
 
-  @ApiProperty({ required: false, format: 'date' })
+  @ApiProperty({
+    description: 'The start date as an ISO 8601 date or date-time string',
+    required: false,
+  })
   @IsOptional()
   @IsDateString()
   startDate?: string;
