@@ -9,7 +9,6 @@ export function useAccountTransactions(accountId: string) {
 
   const query = useQuery({
     queryKey: [ACCOUNT_TRANSACTIONS_QUERY_KEY, accountId],
-    enabled: !!accountId,
     queryFn: async () => {
       return await gualletClient.accounts.getAccountTransactions(accountId);
     },

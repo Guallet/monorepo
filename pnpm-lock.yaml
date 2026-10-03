@@ -400,6 +400,9 @@ importers:
       '@guallet/auth':
         specifier: workspace:*
         version: link:../../packages/guallet-auth
+      '@guallet/calculators':
+        specifier: workspace:*
+        version: link:../../packages/guallet-calculators
       '@guallet/luna-mobile':
         specifier: workspace:*
         version: link:../../packages/guallet-luna-mobile

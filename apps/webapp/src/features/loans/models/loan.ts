@@ -2,10 +2,10 @@ export {
   calculateLoanSchedule,
   calculateMonthlyPayment,
   normalizeLoanValues,
-} from '@guallet/money';
+} from '@guallet/calculators';
 export type {
   LoanCalculatorValues,
   LoanPaymentRow,
   LoanScenarioResult,
   LoanSummary,
-} from '@guallet/money';
+} from '@guallet/calculators';

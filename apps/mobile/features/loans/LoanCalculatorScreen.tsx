@@ -18,7 +18,7 @@ import {
   calculateLoanSchedule,
   type LoanPaymentRow,
   type LoanScenarioResult,
-} from '@guallet/money';
+} from '@guallet/calculators';
 import {
   DEFAULT_LOAN_A,
   DEFAULT_LOAN_B,

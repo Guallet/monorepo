@@ -64,7 +64,6 @@ export type UpdateAccountRequest = {
   balance?: number;
   create_balance_transaction?: boolean;
   institution_id?: string;
-  properties?: CreateAccountRequest['properties'];
 };
 
 export interface CurrentAccountProperties {

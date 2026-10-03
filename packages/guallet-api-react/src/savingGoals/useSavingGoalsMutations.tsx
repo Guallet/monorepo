@@ -15,11 +15,11 @@ export function useSavingGoalMutations() {
     mutationFn: async ({ request }: { request: CreateSavingGoalRequest }) => {
       return await gualletClient.savingGoals.create(request);
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       queryClient.setQueryData([SAVING_GOALS_QUERY_KEY, data.id], data);
-      await queryClient.invalidateQueries({
-        queryKey: [SAVING_GOALS_QUERY_KEY],
-      });
+    },
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -33,11 +33,11 @@ export function useSavingGoalMutations() {
     }) => {
       return await gualletClient.savingGoals.update(id, request);
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       queryClient.setQueryData([SAVING_GOALS_QUERY_KEY, data.id], data);
-      await queryClient.invalidateQueries({
-        queryKey: [SAVING_GOALS_QUERY_KEY],
-      });
+    },
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -45,14 +45,13 @@ export function useSavingGoalMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.savingGoals.delete(id);
     },
-    onSuccess: async (_data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.removeQueries({
         queryKey: [SAVING_GOALS_QUERY_KEY, variables.id],
       });
-      await queryClient.invalidateQueries({
-        queryKey: [SAVING_GOALS_QUERY_KEY],
-        exact: true,
-      });
+    },
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
