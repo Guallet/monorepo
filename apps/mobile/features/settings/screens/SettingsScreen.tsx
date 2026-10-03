@@ -16,6 +16,7 @@ import { Button, useAlert, useTheme } from '@guallet/luna-mobile';
 import {
   BuildingBankIcon,
   CalculatorIcon,
+  CategoryIcon,
   FileImportIcon,
   HomeIcon,
   MailIcon,
@@ -287,6 +288,21 @@ export default function SettingsScreen() {
         )}
 
         <PreferencesSection />
+
+        <SettingsSection title="Categories">
+          <SettingsRow
+            icon={
+              <CategoryIcon
+                name="IconTags"
+                size={22}
+                color={colors.accent.primary}
+              />
+            }
+            label="Manage categories"
+            onPress={() => router.push('/categories')}
+            showChevron
+          />
+        </SettingsSection>
 
         <SettingsSection title="Import & Export">
           <SettingsRow

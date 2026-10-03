@@ -2,7 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
-import { NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import { Budget } from '../budgets/entities/budget.entity';
+import { CategorizationRule } from '../rules/entities/categorization-rule.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -16,6 +22,19 @@ describe('CategoriesService', () => {
     create: vi.fn(),
     save: vi.fn(),
     remove: vi.fn(),
+    exists: vi.fn(),
+    manager: { transaction: vi.fn() },
+  };
+
+  const budgetRepository = { exists: vi.fn() };
+  const ruleRepository = { exists: vi.fn() };
+  const manager = {
+    query: vi.fn(),
+    getRepository: vi.fn((entity) => {
+      if (entity === Budget) return budgetRepository;
+      if (entity === CategorizationRule) return ruleRepository;
+      return mockCategoryRepository;
+    }),
   };
 
   beforeEach(async () => {
@@ -32,7 +51,18 @@ describe('CategoriesService', () => {
     service = module.get<CategoriesService>(CategoriesService);
 
     // Clear all mocks before each test
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    manager.getRepository.mockImplementation((entity) => {
+      if (entity === Budget) return budgetRepository;
+      if (entity === CategorizationRule) return ruleRepository;
+      return mockCategoryRepository;
+    });
+    mockCategoryRepository.manager.transaction.mockImplementation((operation) =>
+      operation(manager),
+    );
+    mockCategoryRepository.exists.mockResolvedValue(false);
+    budgetRepository.exists.mockResolvedValue(false);
+    ruleRepository.exists.mockResolvedValue(false);
   });
 
   it('should be defined', () => {
@@ -57,6 +87,11 @@ describe('CategoriesService', () => {
         colour: dto.colour,
       };
 
+      mockCategoryRepository.findOne.mockResolvedValue({
+        id: dto.parentId,
+        user_id: userId,
+        parentId: null,
+      });
       mockCategoryRepository.create.mockReturnValue(mockCategory);
       mockCategoryRepository.save.mockResolvedValue(mockCategory);
 
@@ -68,7 +103,8 @@ describe('CategoriesService', () => {
         name: dto.name,
         icon: dto.icon,
         colour: dto.colour,
-        parentId: undefined,
+        parentId: null,
+        parent: null,
       });
       expect(mockCategoryRepository.save).toHaveBeenCalledWith(mockCategory);
     });
@@ -91,6 +127,11 @@ describe('CategoriesService', () => {
         parentId: dto.parentId,
       };
 
+      mockCategoryRepository.findOne.mockResolvedValue({
+        id: dto.parentId,
+        user_id: userId,
+        parentId: null,
+      });
       mockCategoryRepository.create.mockReturnValue(mockCategory);
       mockCategoryRepository.save.mockResolvedValue(mockCategory);
 
@@ -103,6 +144,7 @@ describe('CategoriesService', () => {
         icon: dto.icon,
         colour: dto.colour,
         parentId: dto.parentId,
+        parent: { id: dto.parentId },
       });
     });
   });
@@ -412,6 +454,167 @@ describe('CategoriesService', () => {
           category_id: categoryId,
         }),
       ).rejects.toThrow(NotFoundException);
+    });
+  });
+  describe('hierarchy safeguards', () => {
+    const root = { id: 'root', user_id: 'user', name: 'Food', parentId: null };
+
+    it('clears the scalar and relation parent when moving a child to None', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue({
+        ...root,
+        id: 'child',
+        parentId: 'root',
+      });
+      await service.update({
+        user_id: 'user',
+        category_id: 'child',
+        dto: { parentId: null },
+      });
+      expect(mockCategoryRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ parentId: null, parent: null }),
+      );
+    });
+
+    it('retains the existing parent when parentId is omitted', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue({
+        ...root,
+        id: 'child',
+        parentId: 'root',
+      });
+      await service.update({
+        user_id: 'user',
+        category_id: 'child',
+        dto: { name: 'Updated' },
+      });
+      expect(mockCategoryRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ parentId: 'root' }),
+      );
+    });
+
+    it('rejects another user’s parent', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue(null);
+      await expect(
+        service.create({
+          user_id: 'user',
+          dto: {
+            name: 'Child',
+            icon: 'IconTag',
+            colour: '#005EB8',
+            parentId: 'other-user-parent',
+          },
+        }),
+      ).rejects.toThrow(NotFoundException);
+      expect(mockCategoryRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'other-user-parent', user_id: 'user' },
+      });
+      expect(mockCategoryRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('rejects a category as its own parent', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue(root);
+      await expect(
+        service.update({
+          user_id: 'user',
+          category_id: 'root',
+          dto: { parentId: 'root' },
+        }),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockCategoryRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('rejects nesting under a subcategory', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue({
+        ...root,
+        parentId: 'another-root',
+      });
+      await expect(
+        service.create({
+          user_id: 'user',
+          dto: {
+            name: 'Child',
+            icon: 'IconTag',
+            colour: '#005EB8',
+            parentId: 'root',
+          },
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('requires moving children before reparenting their category', async () => {
+      mockCategoryRepository.findOne
+        .mockResolvedValueOnce(root)
+        .mockResolvedValueOnce({ ...root, id: 'destination' });
+      mockCategoryRepository.exists.mockResolvedValue(true);
+      await expect(
+        service.update({
+          user_id: 'user',
+          category_id: 'root',
+          dto: { parentId: 'destination' },
+        }),
+      ).rejects.toThrow(ConflictException);
+      expect(mockCategoryRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('blocks deleting a parent and checks both legacy parent mappings', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue(root);
+      mockCategoryRepository.exists.mockResolvedValue(true);
+      await expect(
+        service.removeUserCategory({ user_id: 'user', category_id: 'root' }),
+      ).rejects.toThrow('Move or delete the subcategories');
+      expect(mockCategoryRepository.exists).toHaveBeenCalledWith({
+        where: [
+          { user_id: 'user', parentId: 'root' },
+          { user_id: 'user', parent: { id: 'root' } },
+        ],
+      });
+      expect(mockCategoryRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('blocks deleting categories referenced by budgets', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue(root);
+      budgetRepository.exists.mockResolvedValue(true);
+      await expect(
+        service.removeUserCategory({ user_id: 'user', category_id: 'root' }),
+      ).rejects.toThrow('Remove this category from its budgets');
+      expect(budgetRepository.exists).toHaveBeenCalledWith({
+        where: { user_id: 'user', categories: { id: 'root' } },
+      });
+      expect(mockCategoryRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('blocks deleting categories referenced by rules', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue(root);
+      ruleRepository.exists.mockResolvedValue(true);
+      await expect(
+        service.removeUserCategory({ user_id: 'user', category_id: 'root' }),
+      ).rejects.toThrow('Update or delete the rules');
+      expect(ruleRepository.exists).toHaveBeenCalledWith({
+        where: { userId: 'user', resultCategoryId: 'root' },
+      });
+      expect(mockCategoryRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('serializes category mutations for the same user', async () => {
+      mockCategoryRepository.findOne.mockResolvedValue(root);
+      await service.removeUserCategory({
+        user_id: 'user',
+        category_id: 'root',
+      });
+      expect(manager.query).toHaveBeenCalledWith(
+        'SELECT pg_advisory_xact_lock(hashtext($1))',
+        ['categories:user'],
+      );
+      expect(mockCategoryRepository.remove).toHaveBeenCalledWith(root);
+    });
+
+    it('rejects whitespace-only names', async () => {
+      await expect(
+        service.create({
+          user_id: 'user',
+          dto: { name: '   ', icon: 'IconTag', colour: '#005EB8' },
+        }),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockCategoryRepository.save).not.toHaveBeenCalled();
     });
   });
 });
