@@ -63,8 +63,8 @@ export class UserSettingsDto {
   @ApiProperty({ type: () => UserCurrenciesSettingsDto })
   currencies: UserCurrenciesSettingsDto;
 
-  @ApiProperty({ required: false, enum: ALLOWED_DATE_FORMATS, nullable: true })
-  date_format?: string | null;
+  @ApiProperty({ required: false, enum: ALLOWED_DATE_FORMATS })
+  date_format?: string;
 
   static fromDomain(domain: User): UserSettingsDto {
     return {
@@ -72,7 +72,7 @@ export class UserSettingsDto {
         default_currency: domain.default_currency,
         preferred_currencies: domain.preferred_currencies ?? [],
       },
-      date_format: domain.date_format ?? null,
+      date_format: domain.date_format ?? undefined,
     };
   }
 }

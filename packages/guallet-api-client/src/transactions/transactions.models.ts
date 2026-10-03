@@ -6,7 +6,7 @@ export type TransactionDto = {
   date: Date;
   description: string;
   notes: string | null;
-  categoryId: string | null;
+  categoryId?: string;
 };
 
 export type TransactionQueryResultDto = {
@@ -22,11 +22,11 @@ export type TransactionQueryResultDto = {
 export type CreateTransactionRequest = {
   accountId: string;
   description: string;
-  notes?: string | null;
+  notes?: string;
   amount: number;
   currency?: string;
   date: Date;
-  categoryId?: string | null;
+  categoryId?: string;
 };
 
 export type UpdateTransactionRequest = {
@@ -40,8 +40,8 @@ export type UpdateTransactionRequest = {
 };
 
 export type InboxTransactionDto = TransactionDto & {
-  processedCategoryId?: string | null; // Processed category id based by rules
-  ruleId?: string | null; // Rule that processed this transaction
+  processedCategoryId?: string; // Processed category id based by rules
+  ruleId?: string; // Rule that processed this transaction
 };
 
 export type InboxTransactionQueryResultDto = {

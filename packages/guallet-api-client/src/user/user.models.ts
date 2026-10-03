@@ -15,7 +15,7 @@ export interface UserSettings {
     default_currency: string | null;
     preferred_currencies: string[];
   };
-  date_format?: DateFormat | null;
+  date_format?: DateFormat;
 }
 
 export type UpdateUserSettingsRequest = {

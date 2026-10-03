@@ -124,7 +124,7 @@ export class CreateAccountRequest {
       return Cls ? plainToInstance(Cls, value) : value;
     },
   )
-  properties?: AccountPropertiesDto | null;
+  properties?: AccountPropertiesDto;
 
   constructor(props: CreateAccountRequest) {
     Object.assign(this, props);

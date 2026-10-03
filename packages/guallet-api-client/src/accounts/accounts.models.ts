@@ -4,7 +4,7 @@ export type AccountDto = {
   balance: { amount: number; currency: string };
   currency: string;
   type: AccountTypeDto;
-  institutionId: string;
+  institutionId?: string;
   source?: 'manual' | 'imported' | 'synced' | 'unknown';
   sourceName?: string;
   properties?:
@@ -12,8 +12,7 @@ export type AccountDto = {
     | CreditCardProperties
     | SavingAccountProperties
     | MortgageAccountProperties
-    | LoanAccountProperties
-    | null;
+    | LoanAccountProperties;
 };
 
 export type AccountConnectionDto = {
@@ -53,8 +52,7 @@ export type CreateAccountRequest = {
     | CreditCardProperties
     | SavingAccountProperties
     | MortgageAccountProperties
-    | LoanAccountProperties
-    | null;
+    | LoanAccountProperties;
 };
 
 export type UpdateAccountRequest = {

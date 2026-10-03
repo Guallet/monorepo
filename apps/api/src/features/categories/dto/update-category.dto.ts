@@ -25,5 +25,5 @@ export class UpdateCategoryDto {
   })
   @IsOptional()
   @IsUUID()
-  parentId?: string | null;
+  parentId?: string;
 }

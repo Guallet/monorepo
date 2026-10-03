@@ -68,7 +68,7 @@ export class UpdateAccountRequest {
       return Cls ? plainToInstance(Cls, value) : value;
     },
   )
-  properties?: AccountPropertiesDto | null;
+  properties?: AccountPropertiesDto;
 
   @ApiProperty({
     required: false,

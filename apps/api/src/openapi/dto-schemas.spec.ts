@@ -95,6 +95,7 @@ describe('API DTO OpenAPI contracts', () => {
             }
           }
           if (member.questionToken) {
+            expect(type).not.toMatch(/\bnull\b/);
             expect(schema.required ?? []).not.toContain(property);
           }
           if (type.includes('| null')) {

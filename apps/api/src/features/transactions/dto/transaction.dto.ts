@@ -21,9 +21,8 @@ export class TransactionDto {
     type: String,
     required: false,
     format: 'uuid',
-    nullable: true,
   })
-  categoryId?: string | null;
+  categoryId?: string;
 
   static fromDomain(domain: Transaction): TransactionDto {
     return {
@@ -34,7 +33,7 @@ export class TransactionDto {
       date: domain.date,
       description: domain.description,
       notes: domain.notes,
-      categoryId: domain.categoryId,
+      categoryId: domain.categoryId ?? undefined,
     };
   }
 }

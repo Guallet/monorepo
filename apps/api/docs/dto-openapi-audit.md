@@ -97,6 +97,23 @@ now declared before the request class so the class decorator can reference their
 runtime constructors. A standalone CSV schema now registers its referenced
 mapping schemas without relying on `DataImportRequestDto` to register them.
 
+### Optional field declarations
+
+Optional API DTO fields use `field?: T` without `| null`. Removed the nullable
+union from 10 existing optional fields, including account properties, category
+references, transaction notes, Nordigen additional information, and user date
+format. Required nullable response fields retain `T | null`.
+
+Request validation still follows the existing decorators: `@IsOptional()` skips
+validation for both missing values and `null`. Request schema nullability remains
+where it documents that accepted input.
+
+Response mappers normalize null account institution/properties, transaction
+category, and user date format to `undefined`, so these four optional fields are
+omitted from serialized JSON. Their response schemas and corresponding API client
+types reflect omission rather than null. Client optional inbox rule/category
+fields also match their existing API DTO declarations.
+
 ## Verification
 
 `src/openapi/dto-schemas.spec.ts` generates an OpenAPI document from all DTO
@@ -117,10 +134,11 @@ The suite contains 474 checks: one per property and one reference-integrity chec
 
 Validation results:
 
-- Full API suite: 56 test files and 1,068 tests passed with one worker.
-- Focused TypeScript check of all DTOs and the audit test: passed using a
+- Full API suite: 57 test files and 1,071 tests passed with one worker.
+- Focused TypeScript check of all DTOs and the audit tests: passed using a
   temporary configuration extending the API configuration, with a 384 MB Node
   heap limit.
+- API client and React query package TypeScript checks: passed.
 - Type-aware API Oxlint: passed with one thread and a bounded Go memory target.
 - Repository-wide `pnpm lint --concurrency=1`: passed.
 - Oxfmt on changed files and `git diff --check`: passed.
@@ -133,4 +151,5 @@ This audit concerns DTO OpenAPI metadata. Controller-operation coverage and
 runtime validation policy are separate concerns. Existing intentionally open
 schemas, such as normalized transaction query metadata and CSV row dictionaries,
 retain their existing shape. No Swagger compiler plugin or generated metadata
-was introduced, and no runtime validation or API client types were changed.
+was introduced. Request validation remains unchanged; optional response fields
+and corresponding client types follow the omission convention described above.
