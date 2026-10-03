@@ -165,7 +165,11 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
         />
       </Pressable>
       <AccountSheetFrame
-        title={props.selectionMode === 'single' ? 'Select an account' : 'Select accounts'}
+        title={
+          props.selectionMode === 'single'
+            ? 'Select an account'
+            : 'Select accounts'
+        }
         renderSheet={renderSheet}
         visible={visible}
         onDismiss={cancel}
@@ -445,7 +449,14 @@ function AccountSheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ title, showCloseIcon: true, visible, onDismiss, children, snapPoints: ['full'] });
+  return renderSheet({
+    title,
+    showCloseIcon: true,
+    visible,
+    onDismiss,
+    children,
+    snapPoints: ['full'],
+  });
 }
 
 function accountInitials(name: string): string {

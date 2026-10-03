@@ -1,7 +1,4 @@
-import {
-  IconCalendar,
-  IconChevronDown,
-} from '@tabler/icons-react-native';
+import { IconCalendar, IconChevronDown } from '@tabler/icons-react-native';
 import { useRef, useState, type ReactNode } from 'react';
 import {
   Pressable,
@@ -442,7 +439,14 @@ function DateRangeSheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ title: 'Date range', showCloseIcon: true, visible, onDismiss, children, snapPoints: ['full'] });
+  return renderSheet({
+    title: 'Date range',
+    showCloseIcon: true,
+    visible,
+    onDismiss,
+    children,
+    snapPoints: ['full'],
+  });
 }
 
 /** Keep each endpoint's value and expansion state accessible as one control. */

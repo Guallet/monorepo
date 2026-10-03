@@ -76,8 +76,8 @@ export function ChoiceField({
       )}
       <BottomSheet
         isOpen={visible}
-      title={label}
-      showCloseIcon
+        title={label}
+        showCloseIcon
         onClose={() => setVisible(false)}
         snapPoints={['half', 'full']}
       >

@@ -20,12 +20,14 @@ import { CloseIcon } from '../icons';
 
 export interface BottomSheetProps extends Omit<
   ExpoBottomSheetProps,
-  'isPresented'
+  'isPresented' | 'onDismiss'
 > {
   isOpen: boolean;
   title: string;
   /** Called when the close button is pressed or the user dismisses the sheet. */
-  onClose?: () => void;
+  onClose: () => void;
+  /** Optional notification in addition to onClose for native dismissal. */
+  onDismiss?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -63,7 +65,10 @@ export function BottomSheet({
     <ExpoBottomSheet
       {...props}
       isPresented={isOpen}
-      onDismiss={onDismiss}
+      onDismiss={() => {
+        onClose();
+        if (onDismiss !== onClose) onDismiss?.();
+      }}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
       snapPoints={snapPoints}
@@ -102,9 +107,7 @@ export function BottomSheet({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Close bottom sheet"
-                onPress={() => {
-                  onClose?.();
-                }}
+                onPress={onClose}
                 style={({ pressed }) => [
                   styles.closeButton,
                   {
@@ -155,7 +158,7 @@ function DateRangeBottomSheet({
       isOpen={visible}
       title={title}
       showCloseIcon={showCloseIcon}
-      onDismiss={onDismiss}
+      onClose={onDismiss}
       snapPoints={snapPoints}
       contentPadding={0}
     >

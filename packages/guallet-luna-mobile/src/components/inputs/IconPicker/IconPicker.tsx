@@ -252,7 +252,13 @@ function IconSheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ title: 'Choose an icon', showCloseIcon: true, visible, onDismiss, children });
+  return renderSheet({
+    title: 'Choose an icon',
+    showCloseIcon: true,
+    visible,
+    onDismiss,
+    children,
+  });
 }
 
 const styles = StyleSheet.create({

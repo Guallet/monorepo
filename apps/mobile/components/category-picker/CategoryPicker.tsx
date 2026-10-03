@@ -74,7 +74,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   const [query, setQuery] = useState('');
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [draftIds, setDraftIds] = useState<string[]>([]);
-  const skipDismissCallback = useRef(false);
+  const openRef = useRef(false);
 
   const tree = useMemo(
     () => buildCategoryPickerTree(categories, query),
@@ -105,6 +105,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
     );
 
   function openSheet() {
+    openRef.current = true;
     setQuery('');
     setDraftIds(selectedIds);
     setExpandedIds(selectedCategoryParentIds(categories, selectedIds));
@@ -112,16 +113,14 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   }
 
   function closeSheet() {
-    skipDismissCallback.current = true;
+    openRef.current = false;
     setIsPresented(false);
   }
 
   function handleDismiss() {
+    if (!openRef.current) return;
+    openRef.current = false;
     setIsPresented(false);
-    if (skipDismissCallback.current) {
-      skipDismissCallback.current = false;
-      return;
-    }
     onCancel?.();
   }
 
@@ -145,8 +144,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   }
 
   function cancelSelection() {
-    onCancel?.();
-    closeSheet();
+    handleDismiss();
   }
 
   return (
@@ -190,8 +188,8 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
         containerColor={colors.surface.background.primary}
         contentPadding={0}
         isOpen={isPresented}
-      title="Choose category"
-      showCloseIcon
+        title="Choose category"
+        showCloseIcon
         onClose={handleDismiss}
         snapPoints={['full']}
         testID="category-picker-sheet"
