@@ -1,0 +1,1601 @@
+[
+  {
+    "id": "ABANCA_CAGLESMM",
+    "name": "Abanca",
+    "bic": "CAGLESMM",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ABANCA_CAGLESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ABANCA_CORP_CAGLESMM",
+    "name": "Abanca Corporate",
+    "bic": "CAGLESMM",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ABANCA_CAGLESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ACTIVOBANK_BSABESBB",
+    "name": "Activo Bank",
+    "bic": "BSABESBB",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ACTIVOBANK_BSABESBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AIRWALLEX_EEA_AIPTAU32",
+    "name": "Airwallex",
+    "bic": "AIPTAU32",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AIRWALLEX_AIPTAU32_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ARQUIA_CASDESBB",
+    "name": "Arquia Banca",
+    "bic": "CASDESBB",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ARQUIA_CASDESBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MARCH_BMARES2M",
+    "name": "Banca March",
+    "bic": "BMARES2M",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MARCH_BMARES2M.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PUEYO_BAPUES22XXX",
+    "name": "Banca Pueyo",
+    "bic": "BAPUES22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PUEYO_BAPUES22XXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BIGES_IGSEESMM",
+    "name": "Banco de Investimento Global",
+    "bic": "IGSEESMM",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/_BIGES_IGSEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCSABADELL_BSABESBB",
+    "name": "Banco de Sabadell",
+    "bic": "BSABESBB",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCSABADELL_BSABESBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BEF_BEDFESM1",
+    "name": "Banco Europeo de Finanzas",
+    "bic": "BEDFESM1",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BEF_BEDFESM1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MEDIOLANUM_BFIVESBB",
+    "name": "Banco Mediolanum",
+    "bic": "BFIVESBB",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MEDIOLANUM_BFIVESBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PICHINCHA_PICHESMM",
+    "name": "Banco Pichincha",
+    "bic": "PICHESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PICHINCHA_PICHESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SANTANDER_BSCHESMM",
+    "name": "Banco Santander",
+    "bic": "BSCHESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SANTANDER_BSCHESMM.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "NORWEGIAN_ES_NORWNOK1",
+    "name": "Bank Norwegian",
+    "bic": "NORWNOK1",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NORWEGIAN_FI_NORWNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANKINTER_BKBKESMM",
+    "name": "Bankinter",
+    "bic": "BKBKESMM",
+    "transaction_total_days": "540",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANKINTER_BKBKESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BBVA_BBVAESMM",
+    "name": "BBVA",
+    "bic": "BBVAESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BBVABE_BBVABEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_BCE_BCOEESMM",
+    "name": "BCE",
+    "bic": "BCOEESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BUNQ_BUNQNL2A",
+    "name": "bunq",
+    "bic": "BUNQNL2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "SK",
+      "NL",
+      "HU",
+      "IE",
+      "LI",
+      "IS",
+      "DE",
+      "BG",
+      "IT",
+      "FI",
+      "NO",
+      "SI",
+      "ES",
+      "CY",
+      "FR",
+      "MT",
+      "EE",
+      "AT",
+      "DK",
+      "RO",
+      "SE",
+      "LU",
+      "GR",
+      "HR",
+      "BE",
+      "PT",
+      "CZ"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/bunq.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAIXA_GUISSONA_CAXIES21XXX",
+    "name": "Caixa Guissona",
+    "bic": "CAXIES21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAIXA_GUISSONA_CAXIES21XXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAIXA_POPULAR_BCOEESMM159",
+    "name": "Caixa Popular",
+    "bic": "BCOEESMM159",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAIXA_POPULAR_BCOEESMM159.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_BENICARLO_BCOEESMM162",
+    "name": "Caixa Rural Benicarlo",
+    "bic": "BCOEESMM162",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_BENICARLO_BCOEESMM162.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ALCUDIA_BCOEESMM096",
+    "name": "Caixa Rural de L'Alcudia",
+    "bic": "BCOEESMM096",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_ALCUDIA_BCOEESMM096.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_GALEGA_BCOEESMM070",
+    "name": "Caixa Rural Galega",
+    "bic": "BCOEESMM070",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAIXABANK_CAIXESBB",
+    "name": "CaixaBank",
+    "bic": "CAIXESBB",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAIXABANK_CAIXESBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAJADEINGENIEROS_CDENESBB",
+    "name": "Caja De Ingenieros",
+    "bic": "CDENESBB",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJADEINGENIEROS_CDENESBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ALBAL_BCOEESMM150",
+    "name": "Caja Rural Albal",
+    "bic": "BCOEESMM150",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ALGEMESI_BCOEESMM117",
+    "name": "Caja Rural Algemesi",
+    "bic": "BCOEESMM117",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ARAGON_BCOEESMM191",
+    "name": "Caja Rural Aragon",
+    "bic": "BCOEESMM191",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_ARAGON_BCOEESMM191.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ASTURIAS_BCOEESMM059",
+    "name": "Caja Rural Asturias",
+    "bic": "BCOEESMM059",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_ASTURIAS_BCOEESMM059.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_BAENA_BCOEESMM089",
+    "name": "Caja Rural Baena",
+    "bic": "BCOEESMM089",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_BAENA_BCOEESMM089.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_CAJAVIVA_BCOEESMM060",
+    "name": "Caja Rural Cajaviva",
+    "bic": "BCOEESMM060",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_CAJAVIVA_BCOEESMM060.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_CANETE_TORRES_BCOEESMM104",
+    "name": "Caja Rural Cañete de las Torres",
+    "bic": "BCOEESMM104",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_CANETE_TORRES_BCOEESMM104.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_CASAS_IBANEZ_BCOEESMM127",
+    "name": "Caja Rural de Casas Ibañez",
+    "bic": "BCOEESMM127",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_NUEVA_CARTEYA_BCOEESMM098",
+    "name": "Caja Rural de Nueva Carteya",
+    "bic": "BCOEESMM098",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_DEL_SUR_BCOEESMM187",
+    "name": "Caja Rural del Sur",
+    "bic": "BCOEESMM187",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_DEL_SUR_BCOEESMM187.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_EL_SALVADOR_VINAROS_BCOEESMM174",
+    "name": "Caja Rural El Salvador Vinaròs",
+    "bic": "BCOEESMM174",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_EXTREMADURA_BCOEESMM009",
+    "name": "Caja Rural Extremadura",
+    "bic": "BCOEESMM009",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_EXTREMADURA_BCOEESMM009.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_FUENTELAMO_BCOEESMM018",
+    "name": "Caja Rural Fuente Alamo",
+    "bic": "BCOEESMM018",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_GRANADA_BCOEESMM023",
+    "name": "Caja Rural Granada",
+    "bic": "BCOEESMM023",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_JAEN_BCOEESMM067",
+    "name": "Caja Rural Jaen",
+    "bic": "BCOEESMM067",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_JAEN_BCOEESMM067.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_NAVARRA_BCOEESMM008",
+    "name": "Caja Rural Navarra",
+    "bic": "BCOEESMM008",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ONDA_BCOEESMM134",
+    "name": "Caja Rural Onda",
+    "bic": "BCOEESMM134",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ORIHUELA_BCOEESMM005",
+    "name": "Caja Rural Orihuela",
+    "bic": "BCOEESMM005",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_ORIHUELA_BCOEESMM005.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_SALAMANCA_BCOEESMM016",
+    "name": "Caja Rural Salamanca",
+    "bic": "BCOEESMM016",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_SAN_ISIDRO_LESCOVES_BCOEESMM166",
+    "name": "Caja Rural San Isidro Les Coves",
+    "bic": "BCOEESMM166",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_SAN_ISIDRO_VAL_DUXO_BCOEESMM111",
+    "name": "Caja Rural San Isidro Vall D'Uxo",
+    "bic": "BCOEESMM111",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_SAN_JOSE_ALCORA_BCOEESMM113",
+    "name": "Caja Rural San Jose Alcora",
+    "bic": "BCOEESMM113",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_SAN_JOSE_DE_ALMASSORA_BCOEESMM130",
+    "name": "Caja Rural San Jose de Almassora",
+    "bic": "BCOEESMM130",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_SAN_JOSE_DE_ALMASSORA_BCOEESMM130.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_SORIA_BCOEESMM017",
+    "name": "Caja Rural Soria",
+    "bic": "BCOEESMM017",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_TERUEL_BCOEESMM080",
+    "name": "Caja Rural Teruel",
+    "bic": "BCOEESMM080",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_UTRERA_BCOEESMM020",
+    "name": "Caja Rural Utrera",
+    "bic": "BCOEESMM020",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_VILLAMALEA_BCOEESMM144",
+    "name": "Caja Rural Villamalea",
+    "bic": "BCOEESMM144",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_ZAMORA_BCOEESMM085",
+    "name": "Caja Rural Zamora",
+    "bic": "BCOEESMM085",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAJALMENDRALEJO_BCOEESMM",
+    "name": "Cajalmendralejo",
+    "bic": "BCOEESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJALMENDRALEJO_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_CAJASIETE_BCOEESMM076",
+    "name": "Cajasiete",
+    "bic": "BCOEESMM076",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_CAJASIETE_BCOEESMM076.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CBNK_CCOCESMM",
+    "name": "CBNK Bank of Collectives SA",
+    "bic": "CCOCESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CETELEM_BNPAESM2",
+    "name": "Cetelem",
+    "bic": "BNPAESM2",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/_CETELEM_BNPAESM2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "COLONYA_CECAESMM056",
+    "name": "Colonya",
+    "bic": "CECAESMM056",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/COLONYA_CECAESMM056.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITSUISSE_CRESESMM",
+    "name": "Credit Suisse",
+    "bic": "CRESESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/ES/PNG/creditsuisse.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DEUTSCHE_BANK_DEUTESBB",
+    "name": "Deutsche Bank",
+    "bic": "DEUTESBB",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/deutschebank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DEUTSCHE_BANK_CORPORATE_DEUTESBB",
+    "name": "Deutsche Bank Corporate",
+    "bic": "DEUTESBB",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/deutschebank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EBURY_EBURESM1XXX",
+    "name": "Ebury",
+    "bic": "EBURESM1XXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/ebury.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EUROCAJARURAL_BCOEESMM081",
+    "name": "Eurocaja Rural",
+    "bic": "BCOEESMM081",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EUROCAJARURAL_BCOEESMM081.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EVOBANCO_EVOBESMM",
+    "name": "EVO Banco",
+    "bic": "EVOBESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EVOBANCO_EVOBESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FIARE_ETICES21",
+    "name": "Fiare Banca Etica",
+    "bic": "ETICES21",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FIARE_ETICES21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINOM_FNOMDEB2",
+    "name": "Finom",
+    "bic": "FNOMDEB2",
+    "transaction_total_days": "365",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINOM_SOBKDEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_GLOBALCAJA_BCOEESMM190",
+    "name": "Globalcaja",
+    "bic": "BCOEESMM190",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJARURAL_BCOEESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAJAMAR_BCCAESMM",
+    "name": "Grupo Cajamar",
+    "bic": "BCCAESMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAJAMAR_BCCAESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HSBC_NET_HSBCIE2D",
+    "name": "HSBCnet",
+    "bic": "HSBCIE2DXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IBERCAJA_CAZRES2Z",
+    "name": "IberCaja",
+    "bic": "CAZRES2Z",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IBERCAJA_CAZRES2Z.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ING_INGDESMM",
+    "name": "ING",
+    "bic": "INGDESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ING_WB_INGBNL2A",
+    "name": "ING Wholesale Banking",
+    "bic": "INGBNL2AXXX",
+    "transaction_total_days": "540",
+    "countries": [
+      "SK",
+      "AT",
+      "RO",
+      "NL",
+      "HU",
+      "IE",
+      "LU",
+      "DE",
+      "BG",
+      "IT",
+      "BE",
+      "ES",
+      "GB",
+      "FR",
+      "PT",
+      "CZ"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "KUTXABANK_BASKES2B",
+    "name": "Kutxabank",
+    "bic": "BASKES2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KUTXABANK_BASKES2B.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LABORALKUTXA_CLPEES2M",
+    "name": "Laboral Kutxa",
+    "bic": "CLPEES2M",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LABORALKUTXA_CLPEES2M.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LUNAR_LUNADK22",
+    "name": "Lunar",
+    "bic": "LUNADK22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUNAR_LUNADK22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MONESE_MNEEBEB2",
+    "name": "Monese",
+    "bic": "MNEEBEB2",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monese.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "N26_NTSBDEB1",
+    "name": "N26 Bank",
+    "bic": "NTSBDEB1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/n26.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_NETEGB21",
+    "name": "Neteller",
+    "bic": "NETEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_NETEGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NICKEL_FPELFR21",
+    "name": "Nickel Beta",
+    "bic": "FPELFR21",
+    "transaction_total_days": "730",
+    "countries": [
+      "BE",
+      "ES",
+      "DE",
+      "FR",
+      "PT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NICKEL_FPELFR21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OPENBANK_OPENESMM",
+    "name": "Openbank",
+    "bic": "OPENESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OPENBANK_OPENESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYPAL_PPLXLULL",
+    "name": "PayPal",
+    "bic": "PPLXLULLXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYPAL_PPLXLULL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSERA_EVIULT21XXX",
+    "name": "Paysera",
+    "bic": "EVIULT21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/paysera.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "PLEO_PLEODK00",
+    "name": "Pleo",
+    "bic": "PLEODK00",
+    "transaction_total_days": "90",
+    "countries": [
+      "DK",
+      "SE",
+      "IE",
+      "ES",
+      "DE",
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PLEO_PLEODK00.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "QONTO_QNTOESB2XXX",
+    "name": "Qonto",
+    "bic": "QNTOESB2XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/qonto.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RENTA4_RENBESMM",
+    "name": "Renta 4 Banco",
+    "bic": "RENBESMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RENTA4_RENBESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "REVOLUT_REVOLT21",
+    "name": "Revolut",
+    "bic": "REVOLT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NL",
+      "SK",
+      "HU",
+      "IE",
+      "LI",
+      "IS",
+      "PL",
+      "BG",
+      "IT",
+      "LT",
+      "FI",
+      "NO",
+      "SI",
+      "ES",
+      "CY",
+      "FR",
+      "MT",
+      "EE",
+      "DK",
+      "AT",
+      "RO",
+      "SE",
+      "LU",
+      "GR",
+      "HR",
+      "LV",
+      "BE",
+      "PT",
+      "CZ"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/revolut.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_RURALNOSTRA_BCOEESMM138",
+    "name": "Ruralnostra",
+    "bic": "BCOEESMM138",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RURALNOSTRA_BCOEESMM138.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CORPORATESANTANDER_BSCHXXMM",
+    "name": "Santander Corporate & Investment Banking",
+    "bic": "BSCHXXMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CORPORATESANTANDER_BSCHXXMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SELFBANK_SELFESMM",
+    "name": "Self Bank",
+    "bic": "SELFESMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SELFBANK_SELFESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_SKRLGB2L",
+    "name": "Skrill",
+    "bic": "SKRLGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_SKRLGB2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOLDO_SFSDIE22",
+    "name": "Soldo",
+    "bic": "SFSDIE22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOLDO_SFSDIE22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STRIPE_STPUIE21",
+    "name": "Stripe",
+    "bic": "STPUIE21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GR",
+      "SE",
+      "NO",
+      "SI",
+      "DE",
+      "IS",
+      "FR",
+      "EE",
+      "AT",
+      "PT",
+      "IE",
+      "SK",
+      "LV",
+      "BG",
+      "CZ",
+      "DK",
+      "MT",
+      "CY",
+      "LT",
+      "GB",
+      "RO",
+      "BE",
+      "HR",
+      "ES",
+      "LU",
+      "PL",
+      "IT",
+      "NL",
+      "LI",
+      "HU",
+      "FI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STRIPE_STPUIE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SWAN_SWNBFR22",
+    "name": "Swan",
+    "bic": "SWNBFR22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/EEA/PNG/swan.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TRIODOS_ES_TRIOESMM",
+    "name": "Triodos Bank",
+    "bic": "TRIOESMM",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TRIODOS_ES_TRIOESMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNICAJA_UCJAES2M",
+    "name": "Unicaja Banco",
+    "bic": "UCJAES2M",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/UNICAJA_UCJAES2M.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VIVID_VVIDLUL2",
+    "name": "Vivid Money",
+    "bic": "VVIDLUL2",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VIVIDMONEY_SOBKDEB2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WISE_EEA_TRWIGB22",
+    "name": "Wise",
+    "bic": "TRWIGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/wise.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WIZINK_POPLESMM",
+    "name": "WiZink",
+    "bic": "POPLESMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/WIZINK_POPLESMM.png",
+    "max_access_valid_for_days": "180"
+  }
+]

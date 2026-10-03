@@ -1,0 +1,4947 @@
+[
+  {
+    "id": "AIRWALLEX_EEA_AIPTAU32",
+    "name": "Airwallex",
+    "bic": "AIPTAU32",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AIRWALLEX_AIPTAU32_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ALTO_ADIGE_BANCA_SUDTIROL_BANK_ALOAIT21",
+    "name": "Alto Adige Banca – Sudtirol Bank",
+    "bic": "ALOAIT21",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ALTO_ADIGE_BANCA_SUDTIROL_BANK_ALOAIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_ADRIA_COLLI_EUGANEI_CCRTIT2T97A",
+    "name": "Banca Adria Colli Euganei",
+    "bic": "CCRTIT2T97A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_ADRIA_COLLI_EUGANEI_CCRTIT2T97A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLA_RAGUSA_POPRIT31",
+    "name": "Banca Agricola Popolare di Ragusa",
+    "bic": "POPRIT31",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AGRICOLA_RAGUSA_POPRIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLA_RAGUSA_CORPORATE_POPRIT31",
+    "name": "Banca Agricola Popolare di Ragusa Corporate",
+    "bic": "POPRIT31",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AGRICOLA_RAGUSA_POPRIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_AIDEXA_AIDXITMM",
+    "name": "Banca AideXa",
+    "bic": "AIDXITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_AIDEXA_AIDXITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_AKROS_AKROITMM",
+    "name": "Banca Akros",
+    "bic": "AKROITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_AKROS_AKROITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_ALETTI_ALETITMM",
+    "name": "Banca Aletti",
+    "bic": "ALETITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/_BANCA_ALETTI_ALETITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_ALPI_MARITTIME_CARRU_ICRAITRRCI0",
+    "name": "Banca Alpi Marittime Carrù",
+    "bic": "ICRAITRRCI0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_ALPI_MARITTIME_CARRU_ICRAITRRCI0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_ALTA_TOSCANA_ICRAITRRPM0",
+    "name": "Banca Alta Toscana",
+    "bic": "ICRAITRRPM0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_ALTA_TOSCANA_ICRAITRRPM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_ALTO_VICENTINO_CREDITO_COOPERATIVO_DI_SCHIO_PEDEMONTE_E_ROANA_CCRTIT2TF01",
+    "name": "Banca Alto Vicentino Credito Cooperativo Di Schio, Pedemonte E Roana",
+    "bic": "CCRTIT2TF01",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_ALTO_VICENTINO_CREDITO_COOPERATIVO_DI_SCHIO_PEDEMONTE_E_ROANA_CCRTIT2TF01.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_ANNIA_CRED_COOP_CARTURA_E_POLESINE_ICRAITRRCK0",
+    "name": "Banca Annia Cred. Coop. Cartura E Polesine",
+    "bic": "ICRAITRRCK0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_ANNIA_CRED_COOP_CARTURA_E_POLESINE_ICRAITRRCK0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_CENTRO_EMILIA_CCRTIT2TBCE",
+    "name": "Banca Centro Emilia",
+    "bic": "CCRTIT2TBCE",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_CENTRO_EMILIA_CCRTIT2TBCE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_CENTRO_LAZIO_CCRTIT2TBCL",
+    "name": "Banca Centro Lazio",
+    "bic": "CCRTIT2TBCL",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_CENTRO_LAZIO_CCRTIT2TBCL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_CENTRO_CREDITO_COOPERATIVO_TOSCANA_UMBRIA_SOC_COOP_ICRAITRRTV0",
+    "name": "Banca Centro – Credito Cooperativo Toscana – Umbria Soc. Coop",
+    "bic": "ICRAITRRTV0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_CENTRO_CREDITO_COOPERATIVO_TOSCANA_UMBRIA_SOC_COOP_ICRAITRRTV0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_CENTROPADANA_ICRAITRR900",
+    "name": "Banca Centropadana",
+    "bic": "ICRAITRR900",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_CENTROPADANA_ICRAITRR900.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_CESARE_BCEPITMM",
+    "name": "Banca Cesare Ponti",
+    "bic": "BCEPITMM",
+    "transaction_total_days": "275",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_CESARE_BCEPITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_CREMASCA_E_MANTOVANA_ICRAITRRTW0",
+    "name": "Banca Cremasca E Mantovana",
+    "bic": "ICRAITRRTW0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_CREMASCA_E_MANTOVANA_ICRAITRRTW0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DEI_SIBILLINI_CREDITO_COOPERATIVO_DI_CASAVECCHIA_ICRAITRRCO0",
+    "name": "Banca Dei Sibillini, Credito Cooperativo Di Casavecchia",
+    "bic": "ICRAITRRCO0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DEI_SIBILLINI_CREDITO_COOPERATIVO_DI_CASAVECCHIA_ICRAITRRCO0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDF_BAFUITRR",
+    "name": "Banca del Fucino",
+    "bic": "BAFUITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDF_BAFUITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDF_CORPORATE_BAFUITRR",
+    "name": "Banca del Fucino Corporate",
+    "bic": "BAFUITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDF_BAFUITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDMMC_MCENITRR",
+    "name": "Banca del Mezzogiorno – MedioCredito Centrale",
+    "bic": "MCENITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDMMC_MCENITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDP_BDCPITTT",
+    "name": "Banca del Piemonte",
+    "bic": "BDCPITTT",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDP_BDCPITTT.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDP_CORPORATE_BDCPITTT",
+    "name": "Banca del Piemonte Corporate",
+    "bic": "BDCPITTT",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDP_BDCPITTT.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDS_SUDNITN1",
+    "name": "Banca del Sud",
+    "bic": "SUDNITN1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDS_SUDNITN1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DEL_TERRITORIO_LOMBARDO_CCRTIT2TBTL",
+    "name": "Banca Del Territorio Lombardo",
+    "bic": "CCRTIT2TBTL",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DEL_TERRITORIO_LOMBARDO_CCRTIT2TBTL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DELLA_MARCA_ICRAITRRU40",
+    "name": "Banca Della Marca",
+    "bic": "ICRAITRRU40",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DELLA_MARCA_ICRAITRRU40.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DELLA_VALSASSINA_ICRAITRREB0",
+    "name": "Banca Della Valsassina",
+    "bic": "ICRAITRREB0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DELLA_VALSASSINA_ICRAITRREB0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DELLE_TERRE_VENETE_ICRAITRRB30",
+    "name": "Banca Delle Terre Venete",
+    "bic": "ICRAITRRB30",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DELLE_TERRE_VENETE_ICRAITRRB30.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DELL_ELBA_ICRAITRRT40",
+    "name": "Banca Dell´elba",
+    "bic": "ICRAITRRT40",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DELL_ELBA_ICRAITRRT40.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_ANCONA_E_FALCONARA_MARITTIMA_ICRAITRR2E0",
+    "name": "Banca Di Ancona E Falconara Marittima",
+    "bic": "ICRAITRR2E0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_ANCONA_E_FALCONARA_MARITTIMA_ICRAITRR2E0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_ANDRIA_ICRAITRRUL0",
+    "name": "Banca Di Andria",
+    "bic": "ICRAITRRUL0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_ANDRIA_ICRAITRRUL0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_ANGHIARI_E_STIA_ICRAITRR9L0",
+    "name": "Banca Di Anghiari E Stia",
+    "bic": "ICRAITRR9L0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_ANGHIARI_E_STIA_ICRAITRR9L0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_BOLOGNA_BDBOIT21",
+    "name": "Banca Di Bologna",
+    "bic": "BDBOIT21",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_BOLOGNA_BDBOIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CARAGLIO_DEL_CUNEESE_E_DELLA_RIVIERA_DEI_FIORI_CCRTIT2TCAR",
+    "name": "Banca Di Caraglio, Del Cuneese E Della Riviera Dei Fiori",
+    "bic": "CCRTIT2TCAR",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CARAGLIO_DEL_CUNEESE_E_DELLA_RIVIERA_DEI_FIORI_CCRTIT2TCAR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CIVIDALE_CIVIIT2C",
+    "name": "Banca di Cividale",
+    "bic": "CIVIIT2C",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CIVIDALE_CIVIIT2C.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CIVIDALE_CORPORATE_CIVIIT2C",
+    "name": "Banca di Cividale Corporate",
+    "bic": "CIVIIT2C",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CIVIDALE_CIVIIT2C.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_BERGAMASCA_E_OROBICA_ICRAITRRQ40",
+    "name": "Banca Di Credito Cooperativo Bergamasca E Orobica",
+    "bic": "ICRAITRRQ40",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_CASSA_RURALE_DI_VAL_DI_FIEMME_CCRTIT2T50A",
+    "name": "Banca Di Credito Cooperativo Cassa Rurale Di Val Di Fiemme",
+    "bic": "CCRTIT2T50A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_CASSA_RURALE_DI_VAL_DI_FIEMME_CCRTIT2T50A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEI_CASTELLI_E_DEGLI_IBLEI_CCRTIT2TIBL",
+    "name": "Banca Di Credito Cooperativo Dei Castelli E Degli Iblei",
+    "bic": "CCRTIT2TIBL",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEI_CASTELLI_E_DEGLI_IBLEI_CCRTIT2TIBL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEI_CASTELLI_ROMANI_CCRTIT2TCRT",
+    "name": "Banca Di Credito Cooperativo Dei Castelli Romani",
+    "bic": "CCRTIT2TCRT",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_CIRCEO_E_PRIVERNATE_CCRTIT2TCIR",
+    "name": "Banca Di Credito Cooperativo Del Circeo E Privernate",
+    "bic": "CCRTIT2TCIR",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEL_CIRCEO_E_PRIVERNATE_CCRTIT2TCIR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_FRIULI_CENTRALE_ICRAITRRU50",
+    "name": "Banca Di Credito Cooperativo Del Friuli Centrale",
+    "bic": "ICRAITRRU50",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLALTA_MURGIA_CCRTIT2TMUR",
+    "name": "Banca Di Credito Cooperativo Dell'alta Murgia",
+    "bic": "CCRTIT2TMUR",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLALTO_TIRRENO_DELLA_CALABRIA_VERBICARO_CCRTIT2TATC",
+    "name": "Banca Di Credito Cooperativo Dell'alto Tirreno Della Calabria Verbicaro",
+    "bic": "CCRTIT2TATC",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLA_ROMAGNA_OCCIDENTALE_CCRTIT2TROC",
+    "name": "Banca Di Credito Cooperativo Della Romagna Occidentale",
+    "bic": "CCRTIT2TROC",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DELLA_ROMAGNA_OCCIDENTALE_CCRTIT2TROC.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLE_PREALPI_CCRTIT2TPRE",
+    "name": "Banca Di Credito Cooperativo Delle Prealpi",
+    "bic": "CCRTIT2TPRE",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DELLE_PREALPI_CCRTIT2TPRE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_ALBA_LANGHE_ROERO_E_DEL_CANAVESE_ICRAITRREQ0",
+    "name": "Banca Di Credito Cooperativo Di Alba, Langhe, Roero E Del Canavese",
+    "bic": "ICRAITRREQ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_ALBA_LANGHE_ROERO_E_DEL_CANAVESE_ICRAITRREQ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_ALBEROBELLO_E_SAMMICHELE_DI_BARI_CCRTIT2TALB",
+    "name": "Banca Di Credito Cooperativo Di Alberobello E Sammichele Di Bari",
+    "bic": "CCRTIT2TALB",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_ALBEROBELLO_E_SAMMICHELE_DI_BARI_CCRTIT2TALB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_ANAGNI_CCRTIT2TN00",
+    "name": "Banca Di Credito Cooperativo Di Anagni",
+    "bic": "CCRTIT2TN00",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_AQUARA_CCRTIT2TAQU",
+    "name": "Banca Di Credito Cooperativo Di Aquara",
+    "bic": "CCRTIT2TAQU",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_AQUARA_CCRTIT2TAQU.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_AVETRANA_ICRAITRR9U0",
+    "name": "Banca Di Credito Cooperativo Di Avetrana",
+    "bic": "ICRAITRR9U0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_AVETRANA_ICRAITRR9U0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BARLASSINA_MILANO_ICRAITRRAE0",
+    "name": "Banca Di Credito Cooperativo Di Barlassina",
+    "bic": "ICRAITRRAE0",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BARLASSINA_MILANO_ICRAITRRAE0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BRESCIA_CREDITO_COOPERATIVO_DI_BRESCIA_CCRTIT2TH00",
+    "name": "Banca Di Credito Cooperativo Di Brescia Di Brescia",
+    "bic": "CCRTIT2TH00",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BRESCIA_CREDITO_COOPERATIVO_DI_BRESCIA_CCRTIT2TH00.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CASALGRASSO_E_SANTALBANO_STURA_CCRTIT2TCSS",
+    "name": "Banca Di Credito Cooperativo Di Casalgrasso E Sant'albano Stura",
+    "bic": "CCRTIT2TCSS",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CASALGRASSO_E_SANTALBANO_STURA_CCRTIT2TCSS.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CASSANO_DELLE_MURGE_E_TOLVE_CCRTIT2TCSM",
+    "name": "Banca Di Credito Cooperativo Di Cassano Delle Murge E Tolve",
+    "bic": "CCRTIT2TCSM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CASSANO_DELLE_MURGE_E_TOLVE_CCRTIT2TCSM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CASTAGNETO_CARDUCCI_PER_AZIONI_BCCDIT3C",
+    "name": "Banca Di Credito Cooperativo Di Castagneto Carducci Soc. Coop. Per Azioni",
+    "bic": "BCCDIT3C",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CASTAGNETO_CARDUCCI_PER_AZIONI_BCCDIT3C.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CHERASCO_CCRTIT2TCHE",
+    "name": "Banca Di Credito Cooperativo Di Cherasco",
+    "bic": "CCRTIT2TCHE",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CHERASCO_CCRTIT2TCHE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CONVERSANO_CCRTIT2TT00",
+    "name": "Banca Di Credito Cooperativo Di Conversano",
+    "bic": "CCRTIT2TT00",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_FILOTTRANO_CREDITO_COOPERATIVO_DI_FILOTTRANO_E_CAMERANO_ICRAITRRF90",
+    "name": "Banca Di Credito Cooperativo Di Filottrano - Credito Cooperativo Di Filottrano E Camerano",
+    "bic": "ICRAITRRF90",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_FILOTTRANO_CREDITO_COOPERATIVO_DI_FILOTTRANO_E_CAMERANO_ICRAITRRF90.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_FLUMERI_ICRAITRRFD0",
+    "name": "Banca Di Credito Cooperativo Di Flumeri",
+    "bic": "ICRAITRRFD0",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_FLUMERI_ICRAITRRFD0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_LOCOROTONDO_CASSA_RURALE_ED_ARTIGIANA_CCRTIT2TLND",
+    "name": "Banca Di Credito Cooperativo Di Locorotondo Cassa Rurale Ed Artigiana",
+    "bic": "CCRTIT2TLND",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_LOCOROTONDO_CASSA_RURALE_ED_ARTIGIANA_CCRTIT2TLND.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_MARINA_DI_GINOSA_ICRAITRRJ40",
+    "name": "Banca Di Credito Cooperativo Di Marina Di Ginosa",
+    "bic": "ICRAITRRJ40",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_MARINA_DI_GINOSA_ICRAITRRJ40.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_OPPIDO_LUCANO_E_RIPACANDIDA_ICRAITRRJO0",
+    "name": "Banca Di Credito Cooperativo Di Oppido Lucano E Ripacandida",
+    "bic": "ICRAITRRJO0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_PIANFEI_E_ROCCA_DE_BALDI_ICRAITRRKX0",
+    "name": "Banca Di Credito Cooperativo Di Pianfei E Rocca De' Baldi",
+    "bic": "ICRAITRRKX0",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_RECANATI_E_COLMURANO_ICRAITRRL90",
+    "name": "Banca Di Credito Cooperativo Di Recanati E Colmurano",
+    "bic": "ICRAITRRL90",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_RECANATI_E_COLMURANO_ICRAITRRL90.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_SAN_GIOVANNI_ROTONDO_CCRTIT2TSGR",
+    "name": "Banca Di Credito Cooperativo Di San Giovanni Rotondo",
+    "bic": "CCRTIT2TSGR",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_SAN_GIOVANNI_ROTONDO_CCRTIT2TSGR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_S_MARCO_DEI_CAVOTI_E_DEL_SANNIO_CALVI_ICRAITRRRP0",
+    "name": "Banca Di Credito Cooperativo Di San Marco Dei Cavoti E Del Sannio",
+    "bic": "ICRAITRRRP0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_SAN_MARZANO_DI_SAN_GIUSEPPE_TARANTO_CCRTIT2TSMZ",
+    "name": "Banca Di Credito Cooperativo Di San Marzano Di San Giuseppe",
+    "bic": "CCRTIT2TSMZ",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_SAN_MARZANO_DI_SAN_GIUSEPPE_TARANTO_CCRTIT2TSMZ.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_SANTERAMO_IN_COLLE_ICRAITRRNG0",
+    "name": "Banca Di Credito Cooperativo Di Santeramo In Colle",
+    "bic": "ICRAITRRNG0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_SANTERAMO_IN_COLLE_ICRAITRRNG0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_SARSINA_CCRTIT2TSAR",
+    "name": "Banca Di Credito Cooperativo Di Sarsina",
+    "bic": "CCRTIT2TSAR",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_SCAFATI_E_CETARA_ICRAITRRNR0",
+    "name": "Banca Di Credito Cooperativo Di Scafati E Cetara",
+    "bic": "ICRAITRRNR0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_SPELLO_E_BETTONA_CCRTIT2TSBE",
+    "name": "Banca Di Credito Cooperativo Di Spello E Bettona",
+    "bic": "CCRTIT2TSBE",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_SPELLO_E_BETTONA_CCRTIT2TSBE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_SPINAZZOLA_ICRAITRRO90",
+    "name": "Banca di Credito Cooperativo di Spinazzola",
+    "bic": "ICRAITRRO90",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_DI_STARANZANO_E_VILLESSE_ICRAITRROD0",
+    "name": "Banca Di Credito Cooperativo Di Staranzano E Villesse",
+    "bic": "ICRAITRROD0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_DI_STARANZANO_E_VILLESSE_ICRAITRROD0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_LA_RISCOSSA_DI_REGALBUTO_CCRTIT2TO00",
+    "name": "Banca Di Credito Cooperativo La Riscossa Di Regalbuto",
+    "bic": "CCRTIT2TO00",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_LA_RISCOSSA_DI_REGALBUTO_CCRTIT2TO00.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_LAUDENSE_LODI_MILANO_CCRTIT2TLAU",
+    "name": "Banca Di Credito Cooperativo Laudense Lodi",
+    "bic": "CCRTIT2TLAU",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_MONTE_PRUNO_DI_ROSCIGNO_E_DI_LAURINO_CCRTIT2TMPR",
+    "name": "Banca Di Credito Cooperativo Monte Pruno Di Roscigno E Di Laurino",
+    "bic": "CCRTIT2TMPR",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MONTE_PRUNO_DI_ROSCIGNO_E_DI_LAURINO_CCRTIT2TMPR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA",
+    "name": "Banca Di Credito Cooperativo Sangro Taetina Di Atessa Castiglione Giuliano",
+    "bic": "CCRTIT2TTEA",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_VALDOSTANA_CCRTIT2TVAL",
+    "name": "Banca Di Credito Cooperativo Valdostana",
+    "bic": "CCRTIT2TVAL",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_COOPERATIVO_VALLE_DEL_TORTO_ICRAITRRGP0",
+    "name": "Banca Di Credito Cooperativo Valle Del Torto",
+    "bic": "ICRAITRRGP0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_COOPERATIVO_VALLE_DEL_TORTO_ICRAITRRGP0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_PELORITANO_CEEPIT21",
+    "name": "Banca di Credito Peloritano",
+    "bic": "CEEPIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_PELORITANO_CEEPIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_CREDITO_PELORITANO_CORPORATE_CEEPIT21",
+    "name": "Banca di Credito Peloritano Corporate",
+    "bic": "CEEPIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_CREDITO_PELORITANO_CEEPIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCP_TORRE_DEL_GRECO_BCPTITNN",
+    "name": "Banca di Credito Popolare di Torre del Greco",
+    "bic": "BCPTITNN",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCP_TORRE_DEL_GRECO_BCPTITNN.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCP_TORRE_DEL_GRECO_CORPORATE_BCPTITNN",
+    "name": "Banca di Credito Popolare di Torre del Greco Corporate",
+    "bic": "BCPTITNN",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCP_TORRE_DEL_GRECO_BCPTITNN.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_IMOLA_IMCOIT2A",
+    "name": "Banca di Imola",
+    "bic": "IMCOIT2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_IMOLA_IMCOIT2A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_IMOLA_CORPORATE_IMCOIT2A",
+    "name": "Banca di Imola Corporate",
+    "bic": "IMCOIT2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_IMOLA_IMCOIT2A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_MACERATA_PRACIT31",
+    "name": "Banca di Macerata",
+    "bic": "PRACIT31",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_PESARO_ICRAITRRMY0",
+    "name": "Banca Di Pesaro",
+    "bic": "ICRAITRRMY0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_PESARO_ICRAITRRMY0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_PESCIA_E_CASCINA_ICRAITRR9Y0",
+    "name": "Banca Di Pescia E Cascina",
+    "bic": "ICRAITRR9Y0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_PESCIA_E_CASCINA_ICRAITRR9Y0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_PISA_E_FORNACETTE_CREDITO_COOPERATIVO_BCCFIT33",
+    "name": "Banca Di Pisa E Fornacette Credito Cooperativo",
+    "bic": "BCCFIT33",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_PISA_E_FORNACETTE_CREDITO_COOPERATIVO_BCCFIT33.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_RIPATRANSONE_E_DEL_FERMANO_ICRAITRRLD0",
+    "name": "Banca Di Ripatransone E Del Fermano",
+    "bic": "ICRAITRRLD0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_RIPATRANSONE_E_DEL_FERMANO_ICRAITRRLD0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_RISPARMIO_DI_SAVIGLIANO_SARCIT2SXXX",
+    "name": "Banca di Risparmio di Savigliano",
+    "bic": "SARCIT2SXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_TARANTO_BCC_ICRAITRRU70",
+    "name": "Banca Di Taranto Bcc",
+    "bic": "ICRAITRRU70",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_TARANTO_BCC_ICRAITRRU70.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_UDINE_ICRAITRRJV0",
+    "name": "Banca Di Udine",
+    "bic": "ICRAITRRJV0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DI_UDINE_ICRAITRRJV0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DI_VERONA_E_VICENZA_ICRAITRRBK0",
+    "name": "Banca Di Verona E Vicenza",
+    "bic": "ICRAITRRBK0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DON_RIZZO_CREDITO_COOPERATIVO_DELLA_SICILIA_OCCIDENTALE_ICRAITRRQA0",
+    "name": "Banca Don Rizzo - Credito Cooperativo Della Sicilia Occidentale",
+    "bic": "ICRAITRRQA0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DON_RIZZO_CREDITO_COOPERATIVO_DELLA_SICILIA_OCCIDENTALE_ICRAITRRQA0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_EUROMOBILIARE_EUBAITM1",
+    "name": "Banca Euromobiliare",
+    "bic": "EUBAITM1",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_EUROMOBILIARE_EUBAITM1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_FIDEURAM_FIBKITMM",
+    "name": "Banca Fideuram",
+    "bic": "FIBKITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_FIDEURAM_FIBKITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINNAT_EURAMERICA_FNATITRR",
+    "name": "Banca Finnat Euramerica",
+    "bic": "FNATITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINNAT_EURAMERICA_FNATITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINNAT_EURAMERICA_CORPORATE_FNATITRR",
+    "name": "Banca Finnat Euramerica Corporate",
+    "bic": "FNATITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINNAT_EURAMERICA_FNATITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_GALILEO_GAEOITM1",
+    "name": "Banca Galileo",
+    "bic": "GAEOITM1",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_GALILEO_GAEOITM1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_GENERALI_BGENIT2T",
+    "name": "Banca Generali",
+    "bic": "BGENIT2T",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_GENERALI_BGENIT2T.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_GENERALI_CORPORATE_BGENIT2T",
+    "name": "Banca Generali Corporate",
+    "bic": "BGENIT2T",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_GENERALI_BGENIT2T.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_IFIS_IFISIT2V",
+    "name": "Banca Ifis",
+    "bic": "IFISIT2V",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_IFIS_IFISIT2V.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_INTERMOBILIARE_BIMTITTT",
+    "name": "Banca Intermobiliare",
+    "bic": "BIMTITTT",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_INTERMOBILIARE_BIMTITTT.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_INTERMOBILIARE_CORPORATE_BIMTITTT",
+    "name": "Banca Intermobiliare Corporate",
+    "bic": "BIMTITTT",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_INTERMOBILIARE_BIMTITTT.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_LAZIO_NORD_CREDITO_COOPERATIVO_SOC_COOP_PER_AZIONI_CCRTIT2TVIT",
+    "name": "Banca Lazio Nord Credito Cooperativo Soc. Coop. Per Azioni",
+    "bic": "CCRTIT2TVIT",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_LAZIO_NORD_CREDITO_COOPERATIVO_SOC_COOP_PER_AZIONI_CCRTIT2TVIT.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_MALATESTIANA_CCRTIT2TMAL",
+    "name": "Banca Malatestiana",
+    "bic": "CCRTIT2TMAL",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_MALATESTIANA_CCRTIT2TMAL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_MEDIOCREDITO_DEL_FRIULI_VENEZIA_GIULIA_MFVGIT21",
+    "name": "Banca Mediocredito Del Friuli Venezia Giulia",
+    "bic": "MFVGIT21",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_MEDIOCREDITO_DEL_FRIULI_VENEZIA_GIULIA_MFVGIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_MEDIOLANUM_MEDBITMM",
+    "name": "Banca Mediolanum",
+    "bic": "MEDBITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_MEDIOLANUM_MEDBITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_MEDIOLANUM_CORPORATE_MEDBITMM",
+    "name": "Banca Mediolanum Corporate",
+    "bic": "MEDBITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_MEDIOLANUM_MEDBITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_MONTE_CORPORATE_PASCITMM",
+    "name": "Banca Monte dei Paschi di Siena Corporate",
+    "bic": "PASCITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_MONTE_CORPORATE_PASCITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_MONTE_RETAIL_PASCITMM",
+    "name": "Banca Monte dei Paschi di Siena Retail",
+    "bic": "PASCITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_MONTE_CORPORATE_PASCITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_NAZIONALE_DEL_LAVORO_BNLIITRRXXX",
+    "name": "Banca Nazionale del Lavoro",
+    "bic": "BNLIITRRXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BNP_PARIBAS_BNPAFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_NAZIONALE_DEL_LAVORO_CORPORATE_BNLIITRRXXX",
+    "name": "Banca Nazionale del Lavoro Corporate",
+    "bic": "BNLIITRRXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BNP_PARIBAS_BNPAFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PASSADORE_PASBITGGXXX",
+    "name": "Banca Passadore",
+    "bic": "PASBITGGXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PASSADORE_PASBITGGXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PATAVINA_DI_SANTELENA_E_PIOVE_DI_SACCO_ICRAITRRK80",
+    "name": "Banca Patavina Di Sant´elena E Piove Di Sacco",
+    "bic": "ICRAITRRK80",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PATRIMONI_SENVITT1",
+    "name": "Banca Patrimoni",
+    "bic": "SENVITT1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PATRIMONI_SENVITT1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DEL_CASSINATE_PER_AZIONI_POCAIT3C",
+    "name": "Banca Popolare Del Cassinate Società Cooperativa Per Azioni",
+    "bic": "POCAIT3C",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DEL_CASSINATE_PER_AZIONI_POCAIT3C.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_FRUSINATE_BPFRIT3F",
+    "name": "Banca Popolare del Frusinate",
+    "bic": "BPFRIT3F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_FRUSINATE_BPFRIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_FRUSINATE_CORPORATE_BPFRIT3F",
+    "name": "Banca Popolare del Frusinate Corporate",
+    "bic": "BPFRIT3F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_FRUSINATE_BPFRIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DEL_LAZIO_BPLZIT3V",
+    "name": "Banca Popolare del Lazio",
+    "bic": "BPLZIT3V",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPULARE_DEL_LAZIO_BPLZIT3V.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DEL_LAZIO_CORPORATE_BPLZIT3V",
+    "name": "Banca Popolare del Lazio Corporate",
+    "bic": "BPLZIT3V",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPULARE_DEL_LAZIO_BPLZIT3V.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DELLE_PROVINCIE_MOLISANE_PPMSIT31",
+    "name": "Banca Popolare Delle Provincie Molisane",
+    "bic": "PPMSIT31",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DELLE_PROVINCIE_MOLISANE_PPMSIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DI_CORTONA_PER_AZIONI_POCSIT31019",
+    "name": "Banca Popolare Di Cortona Soc. Coop. Per Azioni",
+    "bic": "POCSIT31019",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DI_CORTONA_PER_AZIONI_POCSIT31019.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DI_FONDI_POFOIT3F",
+    "name": "Banca Popolare di Fondi",
+    "bic": "POFOIT3F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DI_FONDI_POFOIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DI_FONDI_CORPORATE_POFOIT3F",
+    "name": "Banca Popolare di Fondi Corporate",
+    "bic": "POFOIT3F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DI_FONDI_POFOIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DI_LAJATICO_BLJAIT3LXXX",
+    "name": "Banca Popolare Di Lajatico",
+    "bic": "BLJAIT3LXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DI_LAJATICO_BLJAIT3LXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_DI_LAJATICO_CORPORATE_BLJAIT3LXXX",
+    "name": "Banca Popolare Di Lajatico Corporate",
+    "bic": "BLJAIT3LXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_DI_LAJATICO_BLJAIT3LXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_PUGLIESE_BPPUIT33",
+    "name": "Banca Popolare Pugliese",
+    "bic": "BPPUIT33",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_PUGLIESE_BPPUIT33.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_PUGLIESE_CORPORATE_BPPUIT33",
+    "name": "Banca Popolare Pugliese Corporate",
+    "bic": "BPPUIT33",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_PUGLIESE_BPPUIT33.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_VALCONCA_BPVMIT2R",
+    "name": "Banca Popolare Valconca",
+    "bic": "BPVMIT2R",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_VALCONCA_BPVMIT2R.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_VALCONCA_CORPORATE_BPVMIT2R",
+    "name": "Banca Popolare Valconca Corporate",
+    "bic": "BPVMIT2R",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_VALCONCA_BPVMIT2R.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_POPOLARE_VESUVIANA_POVEIT33",
+    "name": "Banca Popolare Vesuviana",
+    "bic": "POVEIT33",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_POPOLARE_VESUVIANA_POVEIT33.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PRIVATA_LEASING_PRLEIT23",
+    "name": "Banca Privata Leasing",
+    "bic": "PRLEIT23",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PRIVATA_LEASING_PRLEIT23.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PRIVATA_LEASING_CORPORATE_PRLEIT23",
+    "name": "Banca Privata Leasing Corporate",
+    "bic": "PRLEIT23",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PRIVATA_LEASING_PRLEIT23.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PROGETTO_BPTTITMM",
+    "name": "Banca Progetto",
+    "bic": "BPTTITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PROGETTO_BPTTITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_PROMOS_PROSITNN",
+    "name": "Banca Promos",
+    "bic": "PROSITNN",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_PROMOS_PROSITNN.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_SAN_FRANCESCO_ICRAITRRQX0",
+    "name": "Banca San Francesco",
+    "bic": "ICRAITRRQX0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_SAN_FRANCESCO_ICRAITRRQX0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SANTANGELO_PSANIT3P",
+    "name": "Banca Sant'Angelo",
+    "bic": "PSANIT3P",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SANTANGELO_PSANIT3P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SANTANGELO_CORPORATE_PSANIT3P",
+    "name": "Banca Sant'Angelo Corporate",
+    "bic": "PSANIT3P",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SANTANGELO_PSANIT3P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_SANTA_GIULIA_SGIUIT21",
+    "name": "Banca Santa Giulia",
+    "bic": "SGIUIT21",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_SELLA_SELBIT2B",
+    "name": "Banca Sella",
+    "bic": "SELBIT2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_SELLA_SELBIT2B_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_SICANA_DI_SOMMATINO_SERRADIFALCO_E_SAMBUCA_DI_SICILIA_CCRTIT2TNIS",
+    "name": "Banca Sicana Di Sommatino, Serradifalco E Sambuca Di Sicilia",
+    "bic": "CCRTIT2TNIS",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_SICANA_DI_SOMMATINO_SERRADIFALCO_E_SAMBUCA_DI_SICILIA_CCRTIT2TNIS.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_STABIESE_STAIIT31",
+    "name": "Banca Stabiese",
+    "bic": "STAIIT31",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_STABIESE_STAIIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_SVILUPPO_SVIUITRR",
+    "name": "Banca Sviluppo",
+    "bic": "SVIUITRR",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_SVILUPPO_SVIUITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_TEMA_ICRAITRRNN0",
+    "name": "Banca Tema",
+    "bic": "ICRAITRRNN0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_TEMA_ICRAITRRNN0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_UBAE_UBAIITRR",
+    "name": "Banca Ubae",
+    "bic": "UBAIITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_UBAE_UBAIITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_VALSABBINA_BCVAIT2V",
+    "name": "Banca Valsabbina",
+    "bic": "BCVAIT2V",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_VELSABBINA_BCVAIT2V.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_VALSABBINA_CORPORATE_BCVAIT2V",
+    "name": "Banca Valsabbina Corporate",
+    "bic": "BCVAIT2V",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_VELSABBINA_BCVAIT2V.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_VERONESE_DI_CONCAMARISE_ICRAITRR8Y0",
+    "name": "Banca Veronese",
+    "bic": "ICRAITRR8Y0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_VERONESE_DI_CONCAMARISE_ICRAITRR8Y0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_VERSILIA_LUNIGIANA_E_GARFAGNANA_BCCVIT3F",
+    "name": "Banca Versilia Lunigiana E Garfagnana",
+    "bic": "BCCVIT3F",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_VERSILIA_LUNIGIANA_E_GARFAGNANA_BCCVIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WIDIBA_WIDIITMM",
+    "name": "Banca Widiba",
+    "bic": "WIDIITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/WIDIBA_WIDIITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCATER_CREDITO_COOPERATIVO_FVG_CCRTIT2TTER",
+    "name": "Bancater Credito Cooperativo Fvg",
+    "bic": "CCRTIT2TTER",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCATER_CREDITO_COOPERATIVO_FVG_CCRTIT2TTER.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_BPM_CORP_BAPPIT22",
+    "name": "Banco BPM Corporate",
+    "bic": "BAPPIT22XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_BPM_WEBANK_BAPPIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_BPM_WEBANK_BAPPIT22",
+    "name": "Banco BPM WeBank",
+    "bic": "BAPPIT22XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_BPM_WEBANK_BAPPIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_BPM_WEB_BAPPIT22",
+    "name": "Banco BPM YouWeb",
+    "bic": "BAPPIT22XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_BPM_WEBANK_BAPPIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDDEDB_BDBDIT22",
+    "name": "Banco di Desio e della Brianza",
+    "bic": "BDBDIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDDEDB_BDBDIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDDEDB_CORPORATE_BDBDIT22",
+    "name": "Banco di Desio e della Brianza Corporate",
+    "bic": "BDBDIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDDEDB_BDBDIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDDEDB_CORPORATE_IBK_BDBDIT22",
+    "name": "Banco di Desio e della Brianza Corporate IBK",
+    "bic": "BDBDIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDDEDB_BDBDIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_DI_LUCCA_E_DEL_TIRRENO_BLUCIT31",
+    "name": "Banco di Lucca e del Tirreno",
+    "bic": "BLUCIT31",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_DI_LUCCA_E_DEL_TIRRENO_BLUCIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_DI_LUCCA_E_DEL_TIRRENO_CORPORATE_BLUCIT31",
+    "name": "Banco di Lucca e del Tirreno Corporate",
+    "bic": "BLUCIT31",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_DI_LUCCA_E_DEL_TIRRENO_BLUCIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SARDEGNA_CORP_SARDIT31",
+    "name": "Banco di Sardegna Corporate",
+    "bic": "SARDIT31",
+    "transaction_total_days": "275",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SARDEGNA_CORP_SARDIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SARDEGNA_RETAIL_SARDIT31",
+    "name": "Banco di Sardegna Smart",
+    "bic": "SARDIT31",
+    "transaction_total_days": "275",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SARDEGNA_CORP_SARDIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_FIORENTINO_MUGELLO_IMPRUNETA_SIGNA_ICRAITRR910",
+    "name": "Banco Fiorentino-mugello Impruneta Signa",
+    "bic": "ICRAITRR910",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_FIORENTINO_MUGELLO_IMPRUNETA_SIGNA_ICRAITRR910.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCO_MARCHIGIANO_CREDITO_COOPERATIVO_CCRTIT2TCIV",
+    "name": "Banco Marchigiano Credito Cooperativo",
+    "bic": "CCRTIT2TCIV",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCO_MARCHIGIANO_CREDITO_COOPERATIVO_CCRTIT2TCIV.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCDM_BCDMITM1",
+    "name": "Banque Chaabi du Maroc",
+    "bic": "BCDMITM1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCDM_BCDMITM1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BBIPSS_BARCIT4G",
+    "name": "Barclays Bank Ireland PLC Sede Secondaria",
+    "bic": "BARCIT4G",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BARCLAYS_WEALTH_BUKBGB22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_G_TONIOLO_DI_SAN_CATALDO_ICRAITRRQG0",
+    "name": "BCC 'G. Toniolo' Di San Cataldo",
+    "bic": "ICRAITRRQG0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_G_TONIOLO_DI_SAN_CATALDO_ICRAITRRQG0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_ABRUZZESE_CAPPELLE_SUL_TAVO_ICRAITR1C21",
+    "name": "BCC Abruzzese Cappelle Sul Tavo",
+    "bic": "ICRAITR1C21",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_ABRUZZESE_CAPPELLE_SUL_TAVO_ICRAITR1C21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_AGRIGENTINO_ICRAITRRUS0",
+    "name": "BCC Agrigentino",
+    "bic": "ICRAITRRUS0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_AGROBRESCIANO_ICRAITRRFZ0",
+    "name": "BCC Agrobresciano",
+    "bic": "ICRAITRRFZ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_AGROBRESCIANO_ICRAITRRFZ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_BASILICATA_CREDITO_COOPERATIVO_DI_LAURENZANA_E_COMUNI_LUCANI_ICRAITR1GL2",
+    "name": "Bcc Basilicata Credito Cooperativo Di Laurenzana E Comuni Lucani",
+    "bic": "ICRAITR1GL2",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_BASILICATA_CREDITO_COOPERATIVO_DI_LAURENZANA_E_COMUNI_LUCANI_ICRAITR1GL2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_BRIANZA_E_LAGHI_ICRAITRR950",
+    "name": "BCC Brianza E Laghi",
+    "bic": "ICRAITRR950",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_BRIANZA_E_LAGHI_ICRAITRR950.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_CAMPANIA_CENTRO_CRA_ICRAITRRAI0",
+    "name": "BCC Campania Centro CRA",
+    "bic": "ICRAITRRAI0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_CAMPANIA_CENTRO_CRA_ICRAITRRAI0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_CANOSA_LOCONIA_ICRAITRRGU0",
+    "name": "BCC Canosa Loconia",
+    "bic": "ICRAITRRGU0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_CANOSA_LOCONIA_ICRAITRRGU0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_CRA_DI_PALIANO_ICRAITRRJX0",
+    "name": "BCC CRA Di Paliano",
+    "bic": "ICRAITRRJX0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEGLI_ULIVI_TERRA_DI_BARI_ICRAITRRRG0",
+    "name": "BCC Degli Ulivi Terra Di Bari",
+    "bic": "ICRAITRRRG0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEGLI_ULIVI_TERRA_DI_BARI_ICRAITRRRG0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEI_COLLI_ALBANI_ICRAITRRQF0",
+    "name": "BCC Dei Colli Albani",
+    "bic": "ICRAITRRQF0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEI_COLLI_ALBANI_ICRAITRRQF0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_BASSO_SEBINO_ICRAITRRC50",
+    "name": "BCC Del Basso Sebino",
+    "bic": "ICRAITRRC50",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEL_BASSO_SEBINO_ICRAITRRC50.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_GARDA_BCC_COLLI_MORENICI_DEL_GARDA_ICRAITRRIS0",
+    "name": "BCC Del Garda - BCC Colli Morenici Del Garda",
+    "bic": "ICRAITRRIS0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEL_GARDA_BCC_COLLI_MORENICI_DEL_GARDA_ICRAITRRIS0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_METAURO_ICRAITR1JG1",
+    "name": "BCC Del Metauro",
+    "bic": "ICRAITR1JG1",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_PICENO_ICRAITRRD60",
+    "name": "BCC Del Piceno",
+    "bic": "ICRAITRRD60",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEL_PICENO_ICRAITRRD60.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DEL_VALDARNO_ICRAITRRMJ0",
+    "name": "BCC Del Valdarno",
+    "bic": "ICRAITRRMJ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DEL_VALDARNO_ICRAITRRMJ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANCA_DEL_CATANZARESE_ICRAITRRUB0",
+    "name": "BCC Della Calabria Ulteriore",
+    "bic": "ICRAITRRUB0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANCA_DEL_CATANZARESE_ICRAITRRUB0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLA_VALLE_DEL_TRIGNO_ICRAITR1592",
+    "name": "BCC Della Valle Del Trigno",
+    "bic": "ICRAITR1592",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DELLA_VALLE_DEL_TRIGNO_ICRAITR1592.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_SGIUSEPPE_MADONIE_ICRAITRRR40",
+    "name": "BCC Delle Madonie",
+    "bic": "ICRAITRRR40",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SGIUSEPPE_MADONIE_ICRAITRRR40.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLADRIATICO_TERAMANO_ICRAITRRU60",
+    "name": "BCC Dell´adriatico Teramano",
+    "bic": "ICRAITRRU60",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DELLADRIATICO_TERAMANO_ICRAITRRU60.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DELLOGLIO_E_DEL_SERIO_ICRAITRREA0",
+    "name": "BCC Dell´oglio E Del Serio",
+    "bic": "ICRAITRREA0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DELLOGLIO_E_DEL_SERIO_ICRAITRREA0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_ALTOFONTE_E_CACCAMO_ICRAITRR9H0",
+    "name": "BCC Di Altofonte E Caccamo",
+    "bic": "ICRAITRR9H0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_ALTOFONTE_E_CACCAMO_ICRAITRR9H0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_ARBOREA_ICRAITRRA20",
+    "name": "BCC Di Arborea",
+    "bic": "ICRAITRRA20",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_ARBOREA_ICRAITRRA20.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BARI_ICRAITRRS40",
+    "name": "BCC Di Bari",
+    "bic": "ICRAITRRS40",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BARI_ICRAITRRS40.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BASCIANO_ICRAITRR450",
+    "name": "BCC Di Basciano",
+    "bic": "ICRAITRR450",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BASCIANO_ICRAITRR450.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BORGHETTO_LODIGIANO_ICRAITRR0U0",
+    "name": "BCC Di Borghetto Lodigiano",
+    "bic": "ICRAITRR0U0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BORGHETTO_LODIGIANO_ICRAITRR0U0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BUCCINO_E_DEI_COMUNI_CILENTANI_ICRAITRRTM0",
+    "name": "BCC Di Buccino E Dei Comuni Cilentani",
+    "bic": "ICRAITRRTM0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BUCCINO_E_DEI_COMUNI_CILENTANI_ICRAITRRTM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_BUSTO_GAROLFO_E_BUGUGGIATE_ICRAITRRB80",
+    "name": "BCC Di Busto Garolfo E Buguggiate",
+    "bic": "ICRAITRRB80",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_BUSTO_GAROLFO_E_BUGUGGIATE_ICRAITRRB80.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CAGLIARI_ICRAITRRUG0",
+    "name": "BCC Di Cagliari",
+    "bic": "ICRAITRRUG0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CAGLIARI_ICRAITRRUG0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CAPACCIO_PAESTUM_E_SERINO_ICRAITRRBZ0",
+    "name": "BCC Di Capaccio Paestum E Serino",
+    "bic": "ICRAITRRBZ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CAPACCIO_PAESTUM_E_SERINO_ICRAITRRBZ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CARATE_BRIANZA_CRCBIT22",
+    "name": "BCC Di Carate Brianza",
+    "bic": "CRCBIT22",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CARATE_BRIANZA_CRCBIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CARAVAGGIO_ADDA_E_CREMASCO_ICRAITRRC90",
+    "name": "BCC Di Caravaggio Adda E Cremasco",
+    "bic": "ICRAITRRC90",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CARAVAGGIO_ADDA_E_CREMASCO_ICRAITRRC90.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CASTIGLIONE_MESSER_RAIMONDO_E_PIANELLA_ICRAITRRD50",
+    "name": "BCC Di Castiglione Messer Raimondo E Pianella",
+    "bic": "ICRAITRRD50",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CASTIGLIONE_MESSER_RAIMONDO_E_PIANELLA_ICRAITRRD50.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_CITTANOVA_ICRAITRRDO0",
+    "name": "BCC Di Cittanova",
+    "bic": "ICRAITRRDO0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_CITTANOVA_ICRAITRRDO0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_FANO_ICRAITR1EFD",
+    "name": "BCC Di Fano",
+    "bic": "ICRAITR1EFD",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_FANO_ICRAITR1EFD.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_GAMBATESA_ICRAITRRFW0",
+    "name": "BCC Di Gambatesa",
+    "bic": "ICRAITRRFW0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_GAMBATESA_ICRAITRRFW0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_GAUDIANO_DI_LAVELLO_ICRAITRRFE0",
+    "name": "BCC Di Gaudiano Di Lavello",
+    "bic": "ICRAITRRFE0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_GAUDIANO_DI_LAVELLO_ICRAITRRFE0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_LEZZENO_ICRAITRRH60",
+    "name": "BCC Di Lezzeno",
+    "bic": "ICRAITRRH60",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_LEZZENO_ICRAITRRH60.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_MILANO_ICRAITRRCL0",
+    "name": "BCC Di Milano",
+    "bic": "ICRAITRRCL0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_MILANO_ICRAITRRCL0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_MONTEPAONE_ICRAITRR3I0",
+    "name": "BCC Di Montepaone",
+    "bic": "ICRAITRR3I0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_MONTEPAONE_ICRAITRR3I0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_MOZZANICA_ICRAITRRIV0",
+    "name": "BCC Di Mozzanica",
+    "bic": "ICRAITRRIV0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_MOZZANICA_ICRAITRRIV0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_NAPOLI_ICRAITRRUU0",
+    "name": "BCC Di Napoli",
+    "bic": "ICRAITRRUU0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_NAPOLI_ICRAITRRUU0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_OSTRA_E_MORRO_DALBA_ICRAITRRJK0",
+    "name": "BCC Di Ostra E Morro D´alba",
+    "bic": "ICRAITRRJK0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_OSTRA_VETERE_ICRAITRRJL0",
+    "name": "BCC Di Ostra Vetere",
+    "bic": "ICRAITRRJL0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_OSTUNI_ICRAITRRJM0",
+    "name": "BCC Di Ostuni",
+    "bic": "ICRAITRRJM0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_PACHINO_ICRAITRRJT0",
+    "name": "BCC Di Pachino",
+    "bic": "ICRAITRRJT0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_PERGOLA_E_CORINALDO_ICRAITRRKB0",
+    "name": "BCC Di Pergola E Corinaldo",
+    "bic": "ICRAITRRKB0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_PERGOLA_E_CORINALDO_ICRAITRRKB0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_PONTASSIEVE_ICRAITRRKG0",
+    "name": "BCC Di Pontassieve",
+    "bic": "ICRAITRRKG0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_PONTASSIEVE_ICRAITRRKG0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_PRATOLA_PELIGNA_ICRAITRRKR0",
+    "name": "BCC Di Pratola Peligna",
+    "bic": "ICRAITRRKR0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_PUTIGNANO_ICRAITRRUX0",
+    "name": "BCC Di Putignano",
+    "bic": "ICRAITRRUX0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_PUTIGNANO_ICRAITRRUX0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_ROMA_ROMAITRR",
+    "name": "BCC Di Roma",
+    "bic": "ROMAITRR",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_ROMA_ROMAITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_SAN_CALOGERO_E_MAIERATO_BCC_DEL_VIBONESE_ICRAITRRON0",
+    "name": "BCC Di San Calogero E Maierato - BCC Del Vibonese",
+    "bic": "ICRAITRRON0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_SPINAZZOLA_ICRAITRRO90",
+    "name": "BCC Di Spinazzola",
+    "bic": "ICRAITRRO90",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_TERRA_DOTRANTO_ICRAITRRCD0",
+    "name": "BCC Di Terra D´otranto",
+    "bic": "ICRAITRRCD0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_DI_TERRA_DOTRANTO_ICRAITRRCD0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_DI_TRIUGGIO_E_DELLA_VALLE_DEL_LAMBRO_ICRAITRRP10",
+    "name": "BCC Di Triuggio E Della Valle Del Lambro",
+    "bic": "ICRAITRRP10",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_FELSINEA_CCRTIT2TFEL",
+    "name": "Bcc Felsinea BCC Dal 1902",
+    "bic": "CCRTIT2TFEL",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_FELSINEA_CCRTIT2TFEL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_LEVERANO_ICRAITRRGR0",
+    "name": "BCC Leverano",
+    "bic": "ICRAITRRGR0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_LEVERANO_ICRAITRRGR0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_LONGI_VALLE_DEL_FITALIA_RL_ICRAITRRPD0",
+    "name": "BCC Longi Valle Del Fitalia R.l.",
+    "bic": "ICRAITRRPD0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_MEDIOCRATI_ICRAITRRTI0",
+    "name": "BCC Mediocrati",
+    "bic": "ICRAITRRTI0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MEDIOCRATI_ICRAITRRTI0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_PORDENONESE_E_MONSILE_ICRAITRR9W0",
+    "name": "BCC Pordenonese E Monsile",
+    "bic": "ICRAITRR9W0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_PORDENONESE_E_MONSILE_ICRAITRR9W0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_PROVINCIA_ROMANA_ICRAITRRLV0",
+    "name": "BCC Provincia Romana",
+    "bic": "ICRAITRRLV0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_PROVINCIA_ROMANA_ICRAITRRLV0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_TERRA_DI_LAVORO_S_VINCENZO_DE_PAOLI_ICRAITRRRF0",
+    "name": "BCC Terra Di Lavoro S. Vincenzo De´ Paoli",
+    "bic": "ICRAITRRRF0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_TERRA_DI_LAVORO_S_VINCENZO_DE_PAOLI_ICRAITRRRF0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_VALDARNO_FIORENTINO_BANCA_DI_CASCIA_ICRAITRRCP0",
+    "name": "BCC Valdarno Fiorentino Banca Di Cascia",
+    "bic": "ICRAITRRCP0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_VALDARNO_FIORENTINO_BANCA_DI_CASCIA_ICRAITRRCP0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_VALPOLICELLA_BENACO_BANCA_ICRAITRR8R0",
+    "name": "BCC Valpolicella Benaco Banca",
+    "bic": "ICRAITRR8R0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_VALPOLICELLA_BENACO_BANCA_ICRAITRR8R0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BCC_VICENTINO_POJANA_MAGGIORE_ICRAITRRKC0",
+    "name": "BCC Vicentino Pojana Maggiore",
+    "bic": "ICRAITRRKC0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_VICENTINO_POJANA_MAGGIORE_ICRAITRRKC0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BDMB_BPBAIT3B",
+    "name": "BDM BANCA S.p.A.",
+    "bic": "BPBAIT3B",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BPDB_BPBAIT3B.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BENE_BANCA_CREDITO_COOPERATIVO_DI_BENE_VAGIENNA_CUNEO_CCRTIT2TBEN",
+    "name": "Bene Banca Credito Cooperativo Di Bene Vagienna",
+    "bic": "CCRTIT2TBEN",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BENE_BANCA_CREDITO_COOPERATIVO_DI_BENE_VAGIENNA_CUNEO_CCRTIT2TBEN.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BLU_BANCA_SVTUIT21",
+    "name": "Blu Banca",
+    "bic": "SVTUIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BLU_BANCA_SVTUIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BLU_BANCA_CORPORATE_SVTUIT21",
+    "name": "Blu Banca Corporate",
+    "bic": "SVTUIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BLU_BANCA_SVTUIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BPER_CORP_BPMOIT22",
+    "name": "BPER Banca Corporate",
+    "bic": "BPMOIT22",
+    "transaction_total_days": "275",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BPER_CORP_BPMOIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BPER_RETAIL_BPMOIT22",
+    "name": "BPER Banca Smart",
+    "bic": "BPMOIT22",
+    "transaction_total_days": "275",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BPER_CORP_BPMOIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BUNQ_BUNQNL2A",
+    "name": "bunq",
+    "bic": "BUNQNL2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "EE",
+      "MT",
+      "SE",
+      "IT",
+      "LU",
+      "NO",
+      "DE",
+      "CZ",
+      "NL",
+      "HR",
+      "HU",
+      "BE",
+      "GR",
+      "IE",
+      "LI",
+      "FR",
+      "PT",
+      "FI",
+      "AT",
+      "SK",
+      "ES",
+      "CY",
+      "IS",
+      "RO",
+      "BG",
+      "DK"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/bunq.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_CENTRALE_BANCA_CCRTIT2T",
+    "name": "Cassa Centrale Banca",
+    "bic": "CCRTIT2T",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_CENTRALE_BANCA_CCRTIT2T.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDRDA_CASRIT22",
+    "name": "Cassa di Risparmio di Asti",
+    "bic": "CASRIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDRDA_CASRIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDRDA_CORPORATE_CASRIT22",
+    "name": "Cassa di Risparmio di Asti Corporate",
+    "bic": "CASRIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDRDA_CASRIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDRDB_CRBZIT2B",
+    "name": "Cassa di Risparmio di Bolzano",
+    "bic": "CRBZIT2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDRDB_CRBZIT2B.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_DI_RISPARMIO_DI_FERMO_CRFEIT3F",
+    "name": "Cassa di Risparmio di Fermo",
+    "bic": "CRFEIT3F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_DI_RISPARMIO_DI_FERMO_CRFEIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_DI_RISPARMIO_DI_FERMO_CORPORATE_CRFEIT3F",
+    "name": "Cassa di Risparmio di Fermo Corporate",
+    "bic": "CRFEIT3F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_DI_RISPARMIO_DI_FERMO_CRFEIT3F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDRDF_CRIFIT2F",
+    "name": "Cassa di Risparmio di Fossano",
+    "bic": "CRIFIT2F",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDRDF_CRIFIT2F.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDRDO_BPBAITR1",
+    "name": "Cassa di risparmio di Orvieto",
+    "bic": "BPBAITR1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDRDO_BPBAITR1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDRDV_CRVOIT3V",
+    "name": "Cassa di Risparmio di Volterra",
+    "bic": "CRVOIT3V",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDRDV_CRVOIT3V.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CDSER_CSRFITR1",
+    "name": "Cassa di Sovvenzioni e Risparmio",
+    "bic": "CSRFITR1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CDSER_CSRFITR1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_LOMBARDA_LOMCITMM",
+    "name": "Cassa Lombarda",
+    "bic": "LOMCITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_LOMBARDA_LOMCITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_PADANA_BCC_CCRTIT2TPAD",
+    "name": "Cassa Padana BCC",
+    "bic": "CCRTIT2TPAD",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_PADANA_BCC_CCRTIT2TPAD.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RAIFFEISEN_DI_SAN_MARTINO_IN_PASSIRIA_ICRAITRR6A0",
+    "name": "Cassa Raiffeisen Di San Martino In Passiria",
+    "bic": "ICRAITRR6A0",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RAIFFEISEN_DI_SAN_MARTINO_IN_PASSIRIA_ICRAITRR6A0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_ALTA_VALLAGARINA_DI_BESENELLO_CALLIANO_NOMI_VOLANO_BANCA_DI_CREDITO_COOPERATIVO_CCRTIT2T77A",
+    "name": "Cassa Rurale Alta Vallagarina Di Besenello, Calliano, Nomi, Volano BCC",
+    "bic": "CCRTIT2T77A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_ALTA_VALLAGARINA_DI_BESENELLO_CALLIANO_NOMI_VOLANO_BANCA_DI_CREDITO_COOPERATIVO_CCRTIT2T77A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_ALTA_VALSUGANA_BCC_CCRTIT2T47A",
+    "name": "Cassa Rurale Alta Valsugana BCC",
+    "bic": "CCRTIT2T47A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_ALTA_VALSUGANA_BCC_CCRTIT2T47A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_ALTO_GARDA_BCC_CCRTIT2T04A",
+    "name": "Cassa Rurale Alto Garda BCC",
+    "bic": "CCRTIT2T04A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_ALTO_GARDA_BCC_CCRTIT2T04A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CR_BCC_DI_TREVIGLIO_ICRAITRRTR0",
+    "name": "Cassa Rurale BCC Di Treviglio",
+    "bic": "ICRAITRRTR0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_BCC_DI_TREVIGLIO_ICRAITRRTR0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_DELLA_BASSA_VALSUGANA_BCC_CCRTIT2T27A",
+    "name": "Cassa Rurale Della Bassa Valsugana BCC",
+    "bic": "CCRTIT2T27A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_ALTA_VALSUGANA_BCC_CCRTIT2T47A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_DI_LEDRO_BCC_CCRTIT2T06A",
+    "name": "Cassa Rurale Di Ledro BCC",
+    "bic": "CCRTIT2T06A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_DI_LEDRO_BCC_CCRTIT2T06A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_DI_TRENTO_BCC_CCRTIT2T76A",
+    "name": "Cassa Rurale Di Trento BCC",
+    "bic": "CCRTIT2T76A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CR_DI_TRENTO_BCC_CCRTIT2T.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_DOLOMITI_DI_FASSA_PRIMIERO_E_BELLUNO_BCC_CCRTIT2T38A",
+    "name": "Cassa Rurale Dolomiti Di Fassa Primiero E Belluno BCC",
+    "bic": "CCRTIT2T38A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_DOLOMITI_DI_FASSA_PRIMIERO_E_BELLUNO_BCC_CCRTIT2T38A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_ED_ARTIGIANA_DI_BOVES_BCC_ICRAITRRB10",
+    "name": "Cassa Rurale Ed Artigiana Di Boves BCC",
+    "bic": "ICRAITRRB10",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_ED_ARTIGIANA_DI_CORTINA_DAMPEZZO_E_DELLE_DOLOMITI_CCRTIT2T95A",
+    "name": "Cassa Rurale Ed Artigiana Di Cortina D'ampezzo E Delle Dolomiti",
+    "bic": "CCRTIT2T95A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_ED_ARTIGIANA_DI_CORTINA_DAMPEZZO_E_DELLE_DOLOMITI_CCRTIT2T95A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_GIUDICARIE_VALSABBIA_PAGANELLA_BCC_CCRTIT2T20A",
+    "name": "Cassa Rurale Giudicarie Valsabbia Paganella BCC",
+    "bic": "CCRTIT2T20A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_NOVELLA_E_ALTA_ANAUNIA_BCC_CCRTIT2T54A",
+    "name": "Cassa Rurale Novella E Alta Anaunia BCC",
+    "bic": "CCRTIT2T54A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_RENON_CCRTIT2TRIT",
+    "name": "Cassa Rurale Renon",
+    "bic": "CCRTIT2TRIT",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_RENON_CCRTIT2TRIT.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_ROTALIANA_E_GIOVO_BCC_CCRTIT2T37A",
+    "name": "Cassa Rurale Rotaliana E Giovo BCC",
+    "bic": "CCRTIT2T37A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_ROTALIANA_E_GIOVO_BCC_CCRTIT2T37A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_VAL_DI_NON_BCC_CCRTIT2T73A",
+    "name": "Cassa Rurale Val Di Non BCC",
+    "bic": "CCRTIT2T73A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_VAL_DI_NON_BCC_CCRTIT2T73A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_VAL_DI_SOLE_BCC_CCRTIT2T43A",
+    "name": "Cassa Rurale Val Di Sole BCC",
+    "bic": "CCRTIT2T43A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_SANGRO_TAETINA_DI_ATESSA_CASTIGLIONE_GIULIANO_CCRTIT2TTEA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_RURALE_VALLAGARINA_BCC_CCRTIT2T01A",
+    "name": "Cassa Rurale Vallagarina BCC",
+    "bic": "CCRTIT2T01A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_RURALE_VALLAGARINA_BCC_CCRTIT2T01A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CENTROMARCA_BANCA_CREDITO_COOPERATIVO_DI_TREVISO_E_VENEZIA_ICRAITRRKT0",
+    "name": "Centromarca Banca - Credito Cooperativo Di Treviso E Venezia",
+    "bic": "ICRAITRRKT0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CENTROMARCA_BANCA_CREDITO_COOPERATIVO_DI_TREVISO_E_VENEZIA_ICRAITRRKT0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CENTROVENETO_BASSANO_BANCA_ICRAITRRGE0",
+    "name": "Centroveneto Bassano Banca",
+    "bic": "ICRAITRRGE0",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CENTROVENETO_BASSANO_BANCA_ICRAITRRGE0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CEREABANCA_ICRAITRRDD0",
+    "name": "Cereabanca 1897",
+    "bic": "ICRAITRRDD0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CEREABANCA_ICRAITRRDD0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CHEBANCA_CORP_MICSITM1",
+    "name": "Chebanca! Corporate",
+    "bic": "MICSITM1",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/_CHEBANCA_CORP_MICSITM1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CHERRY_BANK_TRVEIT2P",
+    "name": "Cherry Bank S.p.A.",
+    "bic": "TRVEIT2P",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDTV_TRVEIT2P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CHERRY_BANK_CORPORATE_TRVEIT2P",
+    "name": "Cherry Bank S.p.A. Corporate",
+    "bic": "TRVEIT2P",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BDTV_TRVEIT2P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CHIANTIBANCA_ICRAITRRIP0",
+    "name": "Chiantibanca",
+    "bic": "ICRAITRRIP0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CHIANTIBANCA_ICRAITRRIP0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CRA_CASTELLANA_GROTTE_ICRAITRRD10",
+    "name": "CRA Castellana Grotte",
+    "bic": "ICRAITRRD10",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CRA_CASTELLANA_GROTTE_ICRAITRRD10.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CRA_DI_BINASCO_ICRAITRRAQ0",
+    "name": "CRA Di Binasco",
+    "bic": "ICRAITRRAQ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CRA_DI_BINASCO_ICRAITRRAQ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CRA_DI_CANTU_BCC_ACARIT22",
+    "name": "CRA Di Cantù BCC",
+    "bic": "ACARIT22",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CRA_DI_CANTU_BCC_ACARIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CRA_DI_RIVAROLO_MANTOVANO_ICRAITRRLE0",
+    "name": "CRA Di Rivarolo Mantovano",
+    "bic": "ICRAITRRLE0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BCC_MUTUO_SOCCORSO_DI_GANGI_ICRAITRRQM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDEM_CORP_BACRIT22",
+    "name": "CREDEM Corporate",
+    "bic": "BACRIT22",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDEM_CORP_BACRIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDEM_RETAIL_BACRIT22",
+    "name": "CREDEM Retail",
+    "bic": "BACRIT22",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDEM_CORP_BACRIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITSUISSE_CRESITMM",
+    "name": "Credit Suisse",
+    "bic": "CRESITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/IT/PNG/creditsuisse.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A",
+    "name": "Credito Cooperativo Cassa Rurale Ed Artigiana Del Friuli Venezia Giulia",
+    "bic": "CCRTIT2T96A",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DI_ERCHIE_ICRAITRREX0",
+    "name": "Credito Cooperativo Cassa Rurale Ed Artigiana Di Erchie",
+    "bic": "ICRAITRREX0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DI_ERCHIE_ICRAITRREX0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_COOPERATIVO_CENTRO_CALABRIA_CCRTIT2TCA",
+    "name": "Credito Cooperativo Centro Calabria",
+    "bic": "CCRTIT2TCA",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CENTRO_CALABRIA_CCRTIT2TCA.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_COOPERATIVO_FRIULI_ICRAITRRU50",
+    "name": "Credito Cooperativo Friuli",
+    "bic": "ICRAITRRU50",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_FRIULI_ICRAITRRU50.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_COOPERATIVO_RAVENNATE_FORLIVESE_E_IMOLESE_ICRAITRRF20",
+    "name": "Credito Cooperativo Ravennate Forlivese E Imolese",
+    "bic": "ICRAITRRF20",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_RAVENNATE_FORLIVESE_E_IMOLESE_ICRAITRRF20.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_COOPERATIVO_ROMAGNOLO_BCC_DI_CESENA_E_GATTEO_ICRAITRRTQ0",
+    "name": "Credito Cooperativo Romagnolo - BCC Di Cesena E Gatteo",
+    "bic": "ICRAITRRTQ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_ROMAGNOLO_BCC_DI_CESENA_E_GATTEO_ICRAITRRTQ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_ETNEO_BCC_CCRTIT2TETN",
+    "name": "Credito Etneo BCC",
+    "bic": "CCRTIT2TETN",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_ETNEO_BCC_CCRTIT2TETN.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_LOMBARDO_VENETO_CRLVIT21",
+    "name": "Credito Lombardo Veneto",
+    "bic": "CRLVIT21",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_LOMBARDO_VENETO_CRLVIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDITO_PADANO_BCC_ICRAITRRCM0",
+    "name": "Credito Padano BCC",
+    "bic": "ICRAITRRCM0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_PADANO_BCC_ICRAITRRCM0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_SBW_CRPPIT2P",
+    "name": "Crédit Agricole Internet Banking PMI SBW",
+    "bic": "CRPPIT2P",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AGRICOLE_SBW_CRPPIT2P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_NET2_CRPPIT2P",
+    "name": "Crédit Agricole Internet Banking PMI-Net2 Corporate",
+    "bic": "CRPPIT2P",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AGRICOLE_SBW_CRPPIT2P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_HBW_CRPPIT2P",
+    "name": "Crédit Agricole Internet Banking Private HBW",
+    "bic": "CRPPIT2P",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AGRICOLE_SBW_CRPPIT2P.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DEUTSCHE_BANK_DEUTITMM",
+    "name": "Deutsche Bank",
+    "bic": "DEUTITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/deutschebank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DEUTSCHE_BANK_CORPORATE_DEUTITMM",
+    "name": "Deutsche Bank Corporate",
+    "bic": "DEUTITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/deutschebank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DOTS_HYEEIT22",
+    "name": "DOTS",
+    "bic": "HYEEIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/DOTS_HYEEIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EBURY_EBURITM1XXX",
+    "name": "Ebury",
+    "bic": "EBURITM1XXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/ebury.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EMIL_BANCA_ICRAITRRTS0",
+    "name": "Emil Banca",
+    "bic": "ICRAITRRTS0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EMIL_BANCA_ICRAITRRTS0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EXTRABANCA_EXRRITM2",
+    "name": "Extrabanca",
+    "bic": "EXRRITM2",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EXTRABANCA_EXRRITM2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EXTRABANCA_CORPORATE_EXRRITM2",
+    "name": "Extrabanca Corporate",
+    "bic": "EXRRITM2",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EXTRABANCA_EXRRITM2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINDOMESTIC_FIDMIT31",
+    "name": "Findomestic Banca",
+    "bic": "FIDMIT31",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINDOMESTIC_FIDMIT31.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINECO_FEBIITM2XXX",
+    "name": "Fineco",
+    "bic": "FEBIITM2XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/fineco.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINOM_FNOMDEB2",
+    "name": "Finom",
+    "bic": "FNOMDEB2",
+    "transaction_total_days": "365",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINOM_SOBKDEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FRIULOVEST_BANCA_CCRTIT2TFOB",
+    "name": "Friulovest Banca",
+    "bic": "CCRTIT2TFOB",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FRIULOVEST_BANCA_CCRTIT2TFOB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "GUBER_BANCA_GUBEIT21",
+    "name": "Guber Banca",
+    "bic": "GUBEIT21",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GUBER_BANCA_GUBEIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HELLO_BANK_BNLIITRRXXX",
+    "name": "Hello Bank!",
+    "bic": "BNLIITRRXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HELLO_BANK_BNPAFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HSBC_NET_HSBCIE2D",
+    "name": "HSBCnet",
+    "bic": "HSBCIE2DXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HYPE_HYEEIT22",
+    "name": "Hype",
+    "bic": "HYEEIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HYPE_HYEEIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HYPE_BUSINESS_HYEEIT22",
+    "name": "Hype Business",
+    "bic": "HYEEIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HYPE_BUSINESS_HYEEIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HYPO_TIROL_BANK_HYPTIT2B",
+    "name": "Hypo Tirol Bank",
+    "bic": "HYPTIT2B",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HYPO_TIROL_BANK_HYPTIT2B.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IBL_BANCA_IBLBITRR",
+    "name": "IBL Banca",
+    "bic": "IBLBITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IBL_BANCA_IBLBITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IGEA_DIGITAL_BANK_PDSCIT31XXX",
+    "name": "IGEA Digital Bank",
+    "bic": "PDSCIT31XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IGEA_DIGITAL_BANK_PDSCIT31XXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ILLIMITY_ITTPIT2M",
+    "name": "Illimity",
+    "bic": "ITTPIT2M",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ILLIMITY_ITTPIT2M.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IMPREBANCA_IMPAITRR",
+    "name": "Imprebanca",
+    "bic": "IMPAITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IMPREBANCA_IMPAITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IMPREBANCA_CORPORATE_IMPAITRR",
+    "name": "Imprebanca Corporate",
+    "bic": "IMPAITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IMPREBANCA_IMPAITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ING_INGBITMM",
+    "name": "ING",
+    "bic": "INGBITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ING_WB_INGBNL2A",
+    "name": "ING Wholesale Banking",
+    "bic": "INGBNL2AXXX",
+    "transaction_total_days": "540",
+    "countries": [
+      "AT",
+      "IE",
+      "IT",
+      "LU",
+      "SK",
+      "ES",
+      "DE",
+      "CZ",
+      "GB",
+      "NL",
+      "RO",
+      "BG",
+      "HU",
+      "BE",
+      "FR",
+      "PT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "INTESA_SANPAOLO_BCITITMMXXX",
+    "name": "Intesa Sanpaolo",
+    "bic": "BCITITMMXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/INTESA_SANPAOLO_BCITITMMXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "INTESA_SANPAOLO_CORPORATE_BCITITMMXXX",
+    "name": "Intesa Sanpaolo InBiz",
+    "bic": "BCITITMMXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/INTESA_SANPAOLO_BCITITMMXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "INTESA_SANPAOLO_PRIVATE_BCITITMMXXX",
+    "name": "Intesa Sanpaolo Private",
+    "bic": "BCITITMMXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/INTESA_SANPAOLO_BCITITMMXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IPICS_ISCSITRR",
+    "name": "Istituto per il Credito Sportivo",
+    "bic": "ISCSITRR",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IPICS_ISCSITRR.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ISYBANK_ITBBITMM",
+    "name": "Isybank",
+    "bic": "ITBBITMM",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ISYBANK_ITBBITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LA_BANCA_DEL_CROTONESE_ICRAITRRGJ0",
+    "name": "La Banca Del Crotonese",
+    "bic": "ICRAITRRGJ0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LA_BANCA_DEL_CROTONESE_ICRAITRRGJ0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_DI_RAVENNA_CRRAIT2R",
+    "name": "La Cassa di Ravenna",
+    "bic": "CRRAIT2R",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_DI_RAVENNA_CRRAIT2R.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CASSA_DI_RAVENNA_CORPORATE_CRRAIT2R",
+    "name": "La Cassa di Ravenna Corporate",
+    "bic": "CRRAIT2R",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CASSA_DI_RAVENNA_CRRAIT2R.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LIS_PAY_CIMTITR1",
+    "name": "LIS Pay",
+    "bic": "CIMTITR1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LIS_PAY_CIMTITR1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LIS_PAY_CORPORATE_CIMTITR1",
+    "name": "LIS Pay Corporate",
+    "bic": "CIMTITR1",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LIS_PAY_CIMTITR1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LUNAR_LUNADK22",
+    "name": "Lunar",
+    "bic": "LUNADK22",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUNAR_LUNADK22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MBDCF_BAMEITMM",
+    "name": "Mediobanca Banca di Credito Finanziario",
+    "bic": "BAMEITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MBDCF_BAMEITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CHEBANCA_MICSITM1",
+    "name": "Mediobanca Premier",
+    "bic": "MICSITM1",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MONESE_MNEEBEB2",
+    "name": "Monese",
+    "bic": "MNEEBEB2",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monese.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "N26_NTSBDEB1",
+    "name": "N26 Bank",
+    "bic": "NTSBDEB1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/n26.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_NETEGB21",
+    "name": "Neteller",
+    "bic": "NETEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_NETEGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYPAL_PPLXLULL",
+    "name": "PayPal",
+    "bic": "PPLXLULLXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYPAL_PPLXLULL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSERA_EVIULT21XXX",
+    "name": "Paysera",
+    "bic": "EVIULT21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/paysera.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "POSTE_ITALIANE_BANCO_POSTA_BPPIITRRXXX",
+    "name": "Poste Italiane - Banco Posta",
+    "bic": "BPPIITRRXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/POSTE_ITALIANE_BANCO_POSTA_BPPIITRRXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "POSTE_ITALIANE_BANCO_POSTA_CORPORATE_BPPIITRRXXX",
+    "name": "Poste Italiane - Banco Posta Corporate",
+    "bic": "BPPIITRRXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/POSTE_ITALIANE_BANCO_POSTA_BPPIITRRXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "POSTE_PAY_BPPIITRRXXX",
+    "name": "PostePay",
+    "bic": "BPPIITRRXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/POSTE_ITALIANE_BANCO_POSTA_BPPIITRRXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PRADER_BANK_PRRDIT21XXX",
+    "name": "Prader Bank ",
+    "bic": "PRRDIT21XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "QONTO_QNTOITM2XXX",
+    "name": "Qonto",
+    "bic": "QNTOITM2XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/qonto.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISEN_SUDTIROL_RZSBIT21",
+    "name": "Raiffeisen Landesbank Sudtirol AG",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_ALGUND_RZSBIT21",
+    "name": "Raiffeisenkasse Algund",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_BRUNECK_RZSBIT21",
+    "name": "Raiffeisenkasse Bruneck",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_DEUTSCHNOFEN_ALDEIN_RZSBIT21",
+    "name": "Raiffeisenkasse Deutschnofen-Aldein",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_EISACKTAL_RZSBIT21",
+    "name": "Raiffeisenkasse Eisacktal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_ETSCHTAL_RZSBIT21",
+    "name": "Raiffeisenkasse Etschtal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_FREIENFELD_RZSBIT21",
+    "name": "Raiffeisenkasse Freienfeld",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_GRODEN_RZSBIT21",
+    "name": "Raiffeisenkasse Groden",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_HOCHPUSTERTAL_RZSBIT21",
+    "name": "Raiffeisenkasse Hochpustertal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_KASTELRUTH_RZSBIT21",
+    "name": "Raiffeisenkasse Kastelruth - St. Ulrich",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_LAAS_RZSBIT21",
+    "name": "Raiffeisenkasse Laas",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_LANA_RZSBIT21",
+    "name": "Raiffeisenkasse Lana",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_LATSCH_RZSBIT21",
+    "name": "Raiffeisenkasse Latsch",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_MARLING_RZSBIT21",
+    "name": "Raiffeisenkasse Marling",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_MERAN_RZSBIT21",
+    "name": "Raiffeisenkasse Meran",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_NIEDERDORF_RZSBIT21",
+    "name": "Raiffeisenkasse Niederdorf",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_OBERVINSCHGAU_RZSBIT21",
+    "name": "Raiffeisenkasse Obervinschgau",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_PARTSCHINS_RZSBIT21",
+    "name": "Raiffeisenkasse Partschins",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_PASSEIER_RZSBIT21",
+    "name": "Raiffeisenkasse Passeier",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_PRAD_TAUFERS_RZSBIT21",
+    "name": "Raiffeisenkasse Prad Taufers",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_SALURN_RZSBIT21",
+    "name": "Raiffeisenkasse Salurn",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_SARNTAL_RZSBIT21",
+    "name": "Raiffeisenkasse Sarntal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_SCHENNA_RZSBIT21",
+    "name": "Raiffeisenkasse Schenna",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_SCHLANDERS_RZSBIT21",
+    "name": "Raiffeisenkasse Schlanders",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_SCHLERN_ROSENGARTEN_RZSBIT21",
+    "name": "Raiffeisenkasse Schlern-Rosengarten",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_TAUFERER_ARNTHAL_RZSBIT21",
+    "name": "Raiffeisenkasse Tauferer Arnthal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_TIROL_RZSBIT21",
+    "name": "Raiffeisenkasse Tirol",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_TISENS_RZSBIT21",
+    "name": "Raiffeisenkasse Tisens",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_TOBLACH_RZSBIT21",
+    "name": "Raiffeisenkasse Toblach",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_UBERETSCH_RZSBIT21",
+    "name": "Raiffeisenkasse Uberetsch",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_ULTEN_RZSBIT21",
+    "name": "Raiffeisenkasse Ulten-St.Pankraz- Laurein",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_UNTEREISACKTAL_RZSBIT21",
+    "name": "Raiffeisenkasse Untereisacktal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_UNTERLAND_RZSBIT21",
+    "name": "Raiffeisenkasse Unterland",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_UNTERVINSCHGAU_RZSBIT21",
+    "name": "Raiffeisenkasse Untervinschgau",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_VAL_BADIA_RZSBIT21",
+    "name": "Raiffeisenkasse Val Badia",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_VILLNOSS_RZSBIT21",
+    "name": "Raiffeisenkasse Villnoss",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_VINTL_RZSBIT21",
+    "name": "Raiffeisenkasse Vintl",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_WELSBERG_GSIES_TAISTEN_RZSBIT21",
+    "name": "Raiffeisenkasse Welsberg-Gsies-Taisten",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISENKASSE_WIPPTAL_RZSBIT21",
+    "name": "Raiffeisenkasse Wipptal",
+    "bic": "RZSBIT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISENKASSE_VAL_BADIA_RZSBIT21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "REVOLUT_REVOLT21",
+    "name": "Revolut",
+    "bic": "REVOLT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "EE",
+      "PL",
+      "MT",
+      "SE",
+      "LV",
+      "IT",
+      "LU",
+      "NO",
+      "CZ",
+      "NL",
+      "HR",
+      "HU",
+      "BE",
+      "GR",
+      "IE",
+      "LI",
+      "FR",
+      "PT",
+      "FI",
+      "AT",
+      "SK",
+      "ES",
+      "CY",
+      "IS",
+      "RO",
+      "BG",
+      "DK",
+      "LT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/revolut.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RIMINIBANCA_CREDITO_COOPERATIVO_DI_RIMINI_E_VALMARECCHIA_ICRAITRRRN0",
+    "name": "Riviera Banca Credito Cooperativo Di Rimini E Gradata",
+    "bic": "ICRAITRRRN0",
+    "transaction_total_days": "90",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ROMAGNABANCA_CCRTIT2TRMB",
+    "name": "Romagnabanca",
+    "bic": "CCRTIT2TRMB",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ROMAGNABANCA_CCRTIT2TRMB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ROVIGO_BANCA_ICRAITRRCK0",
+    "name": "Rovigo Banca",
+    "bic": "ICRAITRRCK0",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ROVIGO_BANCA_ICRAITRRCK0.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SANFELICE_1893_SFSPIT22",
+    "name": "SANFELICE 1893 Banca Popolare",
+    "bic": "SFSPIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SANFELICE_1893_SFSPIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SANFELICE_1893_CORPORATE_SFSPIT22",
+    "name": "SANFELICE 1893 Banca Popolare Corporate",
+    "bic": "SFSPIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SANFELICE_1893_SFSPIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SELLA_PERSONAL_CREDIT_SELBIT22",
+    "name": "Sella Personal Credit",
+    "bic": "SELBIT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SELLA_PERSONAL_CREDIT_SELBIT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_SKRLGB2L",
+    "name": "Skrill",
+    "bic": "SKRLGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_SKRLGB2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOLDO_SFSDIE22",
+    "name": "Soldo",
+    "bic": "SFSDIE22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOLDO_SFSDIE22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOLUTION_BANK_CRDRIT2FXXX",
+    "name": "Solution Bank",
+    "bic": "CRDRIT2FXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CREDITO_COOPERATIVO_CASSA_RURALE_ED_ARTIGIANA_DEL_FRIULI_VENEZIA_GIULIA_CCRTIT2T96A.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STRIPE_STPUIE21",
+    "name": "Stripe",
+    "bic": "STPUIE21",
+    "transaction_total_days": "730",
+    "countries": [
+      "ES",
+      "LI",
+      "EE",
+      "AT",
+      "CZ",
+      "PL",
+      "IS",
+      "GB",
+      "NL",
+      "LT",
+      "FI",
+      "HU",
+      "LV",
+      "MT",
+      "SE",
+      "HR",
+      "DK",
+      "PT",
+      "IE",
+      "SI",
+      "DE",
+      "BE",
+      "NO",
+      "CY",
+      "BG",
+      "RO",
+      "LU",
+      "SK",
+      "IT",
+      "GR",
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STRIPE_STPUIE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SWAN_SWNBFR22",
+    "name": "Swan",
+    "bic": "SWNBFR22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/EEA/PNG/swan.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TOT_SELBIT2B",
+    "name": "tot.",
+    "bic": "SELBIT2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TOT_SELBIT2B.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UBS_UBSWITMM",
+    "name": "UBS",
+    "bic": "UBSWITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/US/PNG/ubs.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNICREDIT_UNCRITMM",
+    "name": "Unicredit",
+    "bic": "UNCRITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/hypovereinsbank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNICREDIT_BUDDYBANK_UNCRITMM",
+    "name": "Unicredit - Buddy Bank",
+    "bic": "UNCRITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/hypovereinsbank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VIVID_VVIDLUL2",
+    "name": "Vivid Money",
+    "bic": "VVIDLUL2",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VIVIDMONEY_SOBKDEB2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSWAGEN_BANK_VOWAITMM",
+    "name": "Volkswagen Bank",
+    "bic": "VOWAITMM",
+    "transaction_total_days": "730",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSWAGEN_BANK_VOWAITMM.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WISE_EEA_TRWIGB22",
+    "name": "Wise",
+    "bic": "TRWIGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/wise.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ZADRUZNA_KRASKA_BANKA_TRST_GORICA_ZADRUGA_CCRTIT2TV00",
+    "name": "Zadruzna Kraska Banka Trst Gorica Zadruga",
+    "bic": "CCRTIT2TV00",
+    "transaction_total_days": "365",
+    "countries": [
+      "IT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ZADRUZNA_KRASKA_BANKA_TRST_GORICA_ZADRUGA_CCRTIT2TV00.png",
+    "max_access_valid_for_days": "180"
+  }
+]

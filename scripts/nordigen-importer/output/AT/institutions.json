@@ -1,0 +1,1480 @@
+[
+  {
+    "id": "AIRWALLEX_EEA_AIPTAU32",
+    "name": "Airwallex",
+    "bic": "AIPTAU32",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AIRWALLEX_AIPTAU32_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ALLGEMEINE_SPARKASSE_OBEROSTERREICH_AG_ASPKAT2LXXX",
+    "name": "Allgemeine Sparkasse Oberösterreich Bank AG",
+    "bic": "ASPKAT2LXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNICREDIT_BKAUATWW",
+    "name": "Bank Austria",
+    "bic": "BKAUATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/hypovereinsbank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNICREDIT_BUSINESS_BKAUATWW",
+    "name": "Bank Austria - BusinessNet",
+    "bic": "BKAUATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/hypovereinsbank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNICREDIT_EBANKING_BKAUATWW",
+    "name": "Bank Austria - UC eBanking Global",
+    "bic": "BKAUATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/hypovereinsbank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANK_NINENINE_SPBAATWW",
+    "name": "Bank99",
+    "bic": "SPBAATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANK_NINENINE_SPBAATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BAWAG_BAWAATWW",
+    "name": "BAWAG P.S.K.",
+    "bic": "BAWAATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BAWAG_BAWAATWW.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "BKS_BFKKAT2K",
+    "name": "BKS Bank",
+    "bic": "BFKKAT2K",
+    "transaction_total_days": "90",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BKS_BFKKAT2K.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BTV_BTVAAT22",
+    "name": "BTV Bank",
+    "bic": "BTVAAT22XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "AT",
+      "DE"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BTV_BTVAAT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BUNQ_BUNQNL2A",
+    "name": "bunq",
+    "bic": "BUNQNL2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "EE",
+      "MT",
+      "SE",
+      "IT",
+      "LU",
+      "NO",
+      "DE",
+      "CZ",
+      "NL",
+      "HR",
+      "HU",
+      "BE",
+      "GR",
+      "IE",
+      "LI",
+      "FR",
+      "PT",
+      "FI",
+      "AT",
+      "SK",
+      "ES",
+      "CY",
+      "IS",
+      "RO",
+      "BG",
+      "DK"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/bunq.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DIE_ZWEITE_WIENER_VEREINS_SPARCASSE_GIBAAT21XXX",
+    "name": "Die Zweite Wiener Vereins-Sparcasse",
+    "bic": "GIBAAT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DORNBIRNER_SPARKASSE_BANK_AG_DOSPAT2DXXX",
+    "name": "Dornbirner Sparkasse Bank AG",
+    "bic": "DOSPAT2DXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EASYBANK_BAWAATWW",
+    "name": "easybank BAWAG",
+    "bic": "BAWAATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EASYBANK_BAWAATWW.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "ERSTE_BANK_DER_OESTERREICHISCHEN_SPARKASSEN_AG_GIBAATWWXXX",
+    "name": "Erste Bank der oesterreichischen Sparkassen AG",
+    "bic": "GIBAATWWXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ERSTE_GROUP_BANK_AG_GIBAATWGXXX",
+    "name": "Erste Group Bank AG",
+    "bic": "GIBAATWGXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINOM_FNOMDEB2",
+    "name": "Finom",
+    "bic": "FNOMDEB2",
+    "transaction_total_days": "365",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINOM_SOBKDEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HSBC_NET_HSBCIE2D",
+    "name": "HSBCnet",
+    "bic": "HSBCIE2DXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HYPO_OBLAAT2L",
+    "name": "Hypo Oberösterreich",
+    "bic": "OBLAAT2L",
+    "transaction_total_days": "90",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HYPO_OBLAAT2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ING_WB_INGBNL2A",
+    "name": "ING Wholesale Banking",
+    "bic": "INGBNL2AXXX",
+    "transaction_total_days": "540",
+    "countries": [
+      "AT",
+      "IE",
+      "IT",
+      "LU",
+      "SK",
+      "ES",
+      "DE",
+      "CZ",
+      "GB",
+      "NL",
+      "RO",
+      "BG",
+      "HU",
+      "BE",
+      "FR",
+      "PT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "KARNTNER_SPARKASSE_AG_KSPKAT2KXXX",
+    "name": "Kärntner Sparkasse AG",
+    "bic": "KSPKAT2KXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LIENZER_SPARKASSE_AG_LISPAT21XXX",
+    "name": "Lienzer Sparkasse AG",
+    "bic": "LISPAT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LUNAR_LUNADK22",
+    "name": "Lunar",
+    "bic": "LUNADK22",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUNAR_LUNADK22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MARCHFELDER_BANK_MVOGAT22",
+    "name": "Marchfelder Bank",
+    "bic": "MVOGAT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MARCHFELDER_BANK_MVOGAT22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MONESE_MNEEBEB2",
+    "name": "Monese",
+    "bic": "MNEEBEB2",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monese.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "N26_NTSBDEB1",
+    "name": "N26 Bank",
+    "bic": "NTSBDEB1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/n26.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_NETEGB21",
+    "name": "Neteller",
+    "bic": "NETEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_NETEGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OBERBANK_OBKLHUHB",
+    "name": "Oberbank",
+    "bic": "OBKLHUHBXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "AT",
+      "HU",
+      "SK",
+      "DE",
+      "CZ"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OBERBANK_OBKLHUHB_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYPAL_PPLXLULL",
+    "name": "PayPal",
+    "bic": "PPLXLULLXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYPAL_PPLXLULL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSERA_EVIULT21XXX",
+    "name": "Paysera",
+    "bic": "EVIULT21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/paysera.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "QONTO_QNTOFRP1",
+    "name": "Qonto",
+    "bic": "QNTOFRP1",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT",
+      "NL",
+      "BE",
+      "FR",
+      "PT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/qonto.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "RAIFFEISEN_AT_RZBAATWW",
+    "name": "Raiffeisen Bank",
+    "bic": "RZBAATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RAIFFEISEN_RZBCCZPP.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "REVOLUT_REVOLT21",
+    "name": "Revolut",
+    "bic": "REVOLT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "EE",
+      "PL",
+      "MT",
+      "SE",
+      "LV",
+      "IT",
+      "LU",
+      "NO",
+      "CZ",
+      "NL",
+      "HR",
+      "HU",
+      "BE",
+      "GR",
+      "IE",
+      "LI",
+      "FR",
+      "PT",
+      "FI",
+      "AT",
+      "SK",
+      "ES",
+      "CY",
+      "IS",
+      "RO",
+      "BG",
+      "DK",
+      "LT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/revolut.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SALZBURGER_SPARKASSE_BANK_AG_SBGSAT2SXXX",
+    "name": "Salzburger Sparkasse Bank AG",
+    "bic": "SBGSAT2SXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_SKRLGB2L",
+    "name": "Skrill",
+    "bic": "SKRLGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_SKRLGB2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOLDO_SFSDIE22",
+    "name": "Soldo",
+    "bic": "SFSDIE22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOLDO_SFSDIE22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARDABANK_SVIEAT21",
+    "name": "Sparda-Bank",
+    "bic": "SVIEAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/spardabank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_BADEN_SPBDAT21",
+    "name": "Sparkasse Baden",
+    "bic": "SPBDAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_BLUDENZ_BANK_AG_SSBLAT21",
+    "name": "Sparkasse Bludenz Bank AG",
+    "bic": "SSBLAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_BREGENZ_BANK_AG_SPBRAT2B",
+    "name": "Sparkasse Bregenz Bank AG",
+    "bic": "SPBRAT2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_DER_GEMEINDE_EGG_SPEGAT21",
+    "name": "Sparkasse der Gemeinde Egg",
+    "bic": "SPEGAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_DER_STADT_AMSTETTEN_AG_SPAMAT21",
+    "name": "Sparkasse der Stadt Amstetten AG",
+    "bic": "SPAMAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_DER_STADT_FELDKIRCH_SPFKAT2B",
+    "name": "Sparkasse der Stadt Feldkirch",
+    "bic": "SPFKAT2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_DER_STADT_KITZBUHEL_SPKIAT2K",
+    "name": "Sparkasse der Stadt Kitzbühel",
+    "bic": "SPKIAT2K",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_EFERDING_PEUERBACH_WAIZENKIRCHEN_SPPBAT21",
+    "name": "Sparkasse Eferding-Peuerbach-Waizenkirchen",
+    "bic": "SPPBAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_FELDKIRCHEN_KARNTEN_SPFNAT21",
+    "name": "Sparkasse Feldkirchen/Kärnten",
+    "bic": "SPFNAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_FRANKENMARKT_AG_SPFRAT21",
+    "name": "Sparkasse Frankenmarkt AG",
+    "bic": "SPFRAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_HAINBURG_BRUCK_NEUSIEDL_AG_SPHBAT21",
+    "name": "Sparkasse Hainburg-Bruck-Neusiedl AG",
+    "bic": "SPHBAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_HAUGSDORF_SPHAAT21",
+    "name": "Sparkasse Haugsdorf",
+    "bic": "SPHAAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_HERZOGENBURG_NEULENGBACH_BANK_AG_SPHEAT21",
+    "name": "Sparkasse Herzogenburg-Neulengbach Bank AG",
+    "bic": "SPHEAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_HORN_RAVELSBACH_KIRCHBERG_AG_SPHNAT21",
+    "name": "Sparkasse Horn-Ravelsbach-Kirchberg AG",
+    "bic": "SPHNAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_IMST_AG_SPIMAT21",
+    "name": "Sparkasse Imst AG",
+    "bic": "SPIMAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_KORNEUBURG_AG_SSKOAT21",
+    "name": "Sparkasse Korneuburg AG",
+    "bic": "SSKOAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_KUFSTEIN_TIROLER_SPARKASSE_VON_1877_SPKUAT22",
+    "name": "Sparkasse Kufstein, Tiroler Sparkasse von 1877",
+    "bic": "SPKUAT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_LANGENLOIS_SPLSAT21",
+    "name": "Sparkasse Langenlois",
+    "bic": "SPLSAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_MITTERSILL_BANK_AG_SPMIAT21",
+    "name": "Sparkasse Mittersill Bank AG",
+    "bic": "SPMIAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_MUEHLVIERTEL_WEST_BANK_AG_SMWRAT21XXX",
+    "name": "Sparkasse Muehlviertel-West Bank AG",
+    "bic": "SMWRAT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_MURZZUSCHLAG_AG_SPMZAT21XXX",
+    "name": "Sparkasse Mürzzuschlag AG",
+    "bic": "SPMZAT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_NEUHOFEN_BANK_AG_SPNKAT21",
+    "name": "Sparkasse Neuhofen Bank AG",
+    "bic": "SPNKAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_NEUNKIRCHEN_SPNGAT21",
+    "name": "Sparkasse Neunkirchen",
+    "bic": "SPNGAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_NIEDEROESTERREICH_MITTE_WEST_AG_SPSPAT21XXX",
+    "name": "Sparkasse Niederoesterreich Mitte West Ag",
+    "bic": "SPSPAT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_POTTENSTEIN_NO_SPPOAT21",
+    "name": "Sparkasse Pottenstein N.Ö.",
+    "bic": "SPPOAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_POYSDORF_AG_SPPDAT21",
+    "name": "Sparkasse Poysdorf AG",
+    "bic": "SPPDAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_PREGARTEN_UNTERWEISSENBACH_AG_SPPRAT21",
+    "name": "Sparkasse Pregarten - Unterweißenbach AG",
+    "bic": "SPPRAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_POLLAU_AG_SPPLAT21",
+    "name": "Sparkasse Pöllau AG",
+    "bic": "SPPLAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_RATTENBERG_BANK_AG_SPRTAT21",
+    "name": "Sparkasse Rattenberg Bank AG",
+    "bic": "SPRTAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_REUTTE_AG_SPREAT21",
+    "name": "Sparkasse Reutte AG",
+    "bic": "SPREAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_RIED_IM_INNKREIS_HAAG_AM_HAUSRUCK_SPRHAT21",
+    "name": "Sparkasse Ried im Innkreis-Haag am Hausruck",
+    "bic": "SPRHAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_SALZKAMMERGUT_AG_SKBIAT21",
+    "name": "Sparkasse Salzkammergut AG",
+    "bic": "SKBIAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_SCHEIBBS_AG_SPSBAT21",
+    "name": "Sparkasse Scheibbs AG",
+    "bic": "SPSBAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_SCHWAZ_AG_SPSCAT22",
+    "name": "Sparkasse Schwaz AG",
+    "bic": "SPSCAT22",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPARKASSE_VOITSBERG_KOEFLACH_BANKAKTIENGESELLSCHAFT_SPVOAT21XXX",
+    "name": "Sparkasse Voitsberg-Köflach Bankaktiengesellschaft",
+    "bic": "SPVOAT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STEIERMARKISCHE_BANK_UND_SPARKASSEN_AG_STSPAT2GXXX",
+    "name": "Steiermärkische Bank und Sparkassen AG",
+    "bic": "STSPAT2GXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STRIPE_STPUIE21",
+    "name": "Stripe",
+    "bic": "STPUIE21",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "AT",
+      "CY",
+      "EE",
+      "IE",
+      "HR",
+      "GR",
+      "FI",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STRIPE_STPUIE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SWAN_SWNBFR22",
+    "name": "Swan",
+    "bic": "SWNBFR22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/EEA/PNG/swan.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VIVID_VVIDLUL2",
+    "name": "Vivid Money",
+    "bic": "VVIDLUL2",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VIVIDMONEY_SOBKDEB2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_KARNTEN_VBOEATWW",
+    "name": "Volksbank Kärnten",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_KARNTEN_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_NIEDEROSTERREICH_VBOEATWW",
+    "name": "Volksbank Niederösterreich",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_NIEDEROSTERREICH_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_OBEROSTERREICH_VBOEATWW",
+    "name": "Volksbank Oberösterreich",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_OBEROSTERREICH_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_SALZBURG_VBOEATWW",
+    "name": "Volksbank Salzburg",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_SALZBURG_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_STEIERMARK_VBOEATWW",
+    "name": "Volksbank Steiermark",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_STEIERMARK_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_TIROL_VBOEATWW",
+    "name": "Volksbank Tirol",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_TIROL_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_VORARLBERG_VBOEATWW",
+    "name": "Volksbank Vorarlberg",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_VORARLBERG_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLKSBANK_WIEN_VBOEATWW",
+    "name": "Volksbank Wien",
+    "bic": "VBOEATWW",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOLKSBANK_WIEN_VBOEATWW.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WALDVIERTLER_SPARKASSE_BANK_AG_SPWTAT21",
+    "name": "Waldviertler Sparkasse Bank AG",
+    "bic": "SPWTAT21",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WIENER_NEUSTADTER_SPARKASSE_WINSATWNXXX",
+    "name": "Wiener Neustädter Sparkasse",
+    "bic": "WINSATWNXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KARNTNER_SPARKASSE_AG_KSPKAT2KXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WISE_EEA_TRWIGB22",
+    "name": "Wise",
+    "bic": "TRWIGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/wise.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OSTERREICHISCHE_ARZTE_UND_APOTHEKERBANK_BWFBATW1",
+    "name": "Österreichische Ärzte- und Apothekerbank",
+    "bic": "BWFBATW1",
+    "transaction_total_days": "730",
+    "countries": [
+      "AT"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OSTERREICHISCHE_ARZTE_UND_APOTHEKERBANK_BWFBATW1.png",
+    "max_access_valid_for_days": "180"
+  }
+]
