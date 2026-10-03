@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
@@ -64,11 +66,14 @@ function getCadenceLabel(cadence: RecurrenceCadence): string {
   }
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: currency,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format(
+    options,
+  );
 }
 
 export function SubscriptionDetailsScreen({

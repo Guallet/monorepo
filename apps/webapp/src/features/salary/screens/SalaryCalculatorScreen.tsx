@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useTheme } from '@guallet/ui-react';
 import { Alert, Card, Grid, Group, Stack, Tabs, Text } from '@mantine/core';
@@ -15,12 +17,11 @@ import { SalaryBreakdownTable } from '../components/SalaryBreakdownTable';
 import { SalaryForm } from '../components/SalaryForm';
 import { calculateSalary, type SalaryValues } from '../models/salary';
 
-function fmtCurrency(value: number): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-    maximumFractionDigits: 2,
-  }).format(value);
+function fmtCurrency(value: number, options?: MoneyFormatOptions): string {
+  return Money.fromCurrencyCode({ amount: value, currencyCode: 'GBP' }).format({
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 interface MetricCardProps {

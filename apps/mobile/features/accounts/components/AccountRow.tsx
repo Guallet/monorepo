@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AccountDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
-import { AccountAvatar } from './AccountAvatar';
+import { InstitutionAvatar } from './InstitutionAvatar';
 import { formatAccountCurrency, getAccountTypeLabel } from '../models/account';
 
 export function AccountRow({
@@ -30,7 +30,11 @@ export function AccountRow({
         },
       ]}
     >
-      <AccountAvatar account={account} size={42} />
+      <InstitutionAvatar
+        fallbackName={account.name}
+        institutionId={account.institutionId}
+        size={42}
+      />
       <View style={[styles.details, { gap: spacing.xs }]}>
         <Text
           numberOfLines={1}

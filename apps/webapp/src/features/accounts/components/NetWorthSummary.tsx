@@ -5,6 +5,7 @@ import { Card, Divider, Group, Stack, Text } from '@mantine/core';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SummaryBlock } from './SummaryBlock';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 function formatMoney(amount: number, currency: string): string {
   return Money.fromCurrencyCode({ amount, currencyCode: currency }).format();
@@ -17,6 +18,7 @@ interface NetWorthSummaryProps {
 export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
   const { spacing } = useTheme();
   const { t } = useTranslation();
+  const defaultCurrency = useDefaultCurrency();
 
   const { totals, assets, liabilities, primary, currencies } = useMemo(() => {
     const totals: Record<string, number> = {};
@@ -35,7 +37,8 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
     }
 
     const primary =
-      Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'GBP';
+      Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ??
+      defaultCurrency;
 
     return {
       totals,
@@ -44,7 +47,7 @@ export function NetWorthSummary({ accounts }: Readonly<NetWorthSummaryProps>) {
       primary,
       currencies: Object.keys(totals),
     };
-  }, [accounts]);
+  }, [accounts, defaultCurrency]);
 
   const primaryTotal = totals[primary] ?? 0;
   const secondaryCurrencies = currencies.filter((c) => c !== primary);

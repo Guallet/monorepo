@@ -1,5 +1,6 @@
 import { AccountTypeDto } from '@guallet/api-client';
-import { Money, type MoneyFormatOptions } from '@guallet/money';
+import type { MoneyFormatOptions } from '@guallet/money';
+import { formatMoney } from '@/utils/formatMoney';
 
 export const ACCOUNT_TYPE_OPTIONS: Array<{
   type: AccountTypeDto;
@@ -38,14 +39,10 @@ export function formatAccountCurrency(
   currency: string,
   options?: MoneyFormatOptions,
 ): string {
-  try {
-    return Money.fromCurrencyCode({ amount, currencyCode: currency }).format({
-      locale: 'en-GB',
-      ...options,
-    });
-  } catch {
-    return `${currency} ${amount.toFixed(2)}`;
-  }
+  return formatMoney(amount, currency, {
+    locale: 'en-GB',
+    ...options,
+  });
 }
 
 export function getAccountInitials(name: string): string {

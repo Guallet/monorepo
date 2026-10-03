@@ -3,7 +3,7 @@
 /* oxlint-disable typescript/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Mocked } from 'vitest';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DataImporterController } from './data-importer.controller';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { DataImportRequestDto } from './dto/data-import-request.dto';
@@ -18,6 +18,9 @@ import {
 describe('DataImporterController', () => {
   let controller: DataImporterController;
   let importQueue: Mocked<Queue>;
+  const redis = {
+    hmget: vi.fn(),
+  };
 
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
@@ -28,6 +31,9 @@ describe('DataImporterController', () => {
   beforeEach(async () => {
     const mockQueue = {
       add: vi.fn(),
+      getBackend: vi.fn().mockReturnValue({ client: Promise.resolve(redis) }),
+      toKey: vi.fn((id: string) => `bull:import-data:${id}`),
+      getJobState: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -44,6 +50,7 @@ describe('DataImporterController', () => {
     importQueue = module.get(getQueueToken(IMPORT_DATA_QUEUE));
 
     vi.clearAllMocks();
+    redis.hmget.mockResolvedValue([null, null, null]);
   });
 
   it('should be defined', () => {
@@ -81,8 +88,9 @@ describe('DataImporterController', () => {
         categoryMappings: {},
       };
 
-      const mockJob = { id: 'job-123' } as Job;
-      importQueue.add.mockResolvedValue(mockJob as any);
+      importQueue.add.mockImplementation(
+        async (_name, _data, options) => ({ id: options?.jobId }) as Job,
+      );
 
       const result = await controller.importData(mockUser, dto);
 
@@ -90,11 +98,13 @@ describe('DataImporterController', () => {
         IMPORT_DATA_JOB,
         { userId: mockUser.id, dto },
         {
+          jobId: expect.stringMatching(/^user-123_[0-9a-f-]{36}$/),
           removeOnComplete: 100,
           removeOnFail: 50,
         },
       );
       expect(result).toEqual({
+        jobId: expect.stringMatching(/^user-123_[0-9a-f-]{36}$/),
         message:
           'CSV import started. You will receive an email when the import is complete.',
         processedCount: 0,
@@ -118,11 +128,13 @@ describe('DataImporterController', () => {
         IMPORT_DATA_JOB,
         { userId: mockUser.id, dto },
         {
+          jobId: expect.stringMatching(/^user-123_[0-9a-f-]{36}$/),
           removeOnComplete: 100,
           removeOnFail: 50,
         },
       );
       expect(result).toEqual({
+        jobId: 'job-234',
         message:
           'OFE import started. You will receive an email when the import is complete.',
         processedCount: 0,
@@ -147,11 +159,13 @@ describe('DataImporterController', () => {
         IMPORT_DATA_JOB,
         { userId: mockUser.id, dto },
         {
+          jobId: expect.stringMatching(/^user-123_[0-9a-f-]{36}$/),
           removeOnComplete: 100,
           removeOnFail: 50,
         },
       );
       expect(result).toEqual({
+        jobId: 'job-345',
         message:
           'JSON import started. You will receive an email when the import is complete.',
         processedCount: 0,
@@ -216,6 +230,64 @@ describe('DataImporterController', () => {
         `Unsupported import format "xml". Supported formats: ${SUPPORTED_IMPORT_FORMATS.join(', ')}`,
       );
       expect(importQueue.add).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getImportStatus', () => {
+    it('returns progress and result for the owner', async () => {
+      importQueue.getJobState.mockResolvedValue('completed');
+      redis.hmget.mockResolvedValue([
+        '100',
+        JSON.stringify({ processed: 9, failed: 1 }),
+        null,
+      ]);
+      await expect(
+        controller.getImportStatus(mockUser, 'user-123_job-123'),
+      ).resolves.toEqual({
+        status: 'completed',
+        progress: 100,
+        processedCount: 9,
+        failedCount: 1,
+      });
+    });
+
+    it('hides another user’s job', async () => {
+      await expect(
+        controller.getImportStatus(mockUser, 'other-user_job-123'),
+      ).rejects.toThrow(NotFoundException);
+      expect(importQueue.getJobState).not.toHaveBeenCalled();
+    });
+
+    it('reports a failed job without exposing its internal error', async () => {
+      importQueue.getJobState.mockResolvedValue('failed');
+      redis.hmget.mockResolvedValue([
+        '40',
+        null,
+        'database password was rejected',
+      ]);
+      await expect(
+        controller.getImportStatus(mockUser, 'user-123_job-123'),
+      ).resolves.toEqual({
+        status: 'failed',
+        progress: 40,
+        processedCount: 0,
+        failedCount: 0,
+        error: 'The import could not be completed.',
+      });
+    });
+
+    it('does not hydrate the import payload while checking status', async () => {
+      importQueue.getJobState.mockResolvedValue('active');
+      redis.hmget.mockResolvedValue(['25', null, null]);
+      await expect(
+        controller.getImportStatus(mockUser, 'user-123_job-123'),
+      ).resolves.toMatchObject({ status: 'running', progress: 25 });
+      expect(redis.hmget).toHaveBeenCalledWith(
+        'bull:import-data:user-123_job-123',
+        'progress',
+        'returnvalue',
+        'failedReason',
+      );
     });
   });
 });

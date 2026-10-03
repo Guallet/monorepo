@@ -23,6 +23,10 @@ existing Luna, React Native, Expo, and accessibility patterns.
 
 ## Component rules
 
+- For money amounts, use `@guallet/money` and `Money.format()` for display.
+  Derive precision from `Currency.decimalPlaces`; never hardcode two decimal
+  places or create a local currency formatter.
+
 - Use `Readonly<Props>` for component props. Document non-obvious props and
   callbacks. Use React Native event names and types (`onPress`, `onChangeText`,
   and so on) consistently with the native control.
@@ -41,7 +45,8 @@ existing Luna, React Native, Expo, and accessibility patterns.
 - Prefer `??` for nullish defaults. Use `.at(-1)` instead of indexing from
   `array.length - 1`, when supported by the package's TypeScript target.
 - Treat names as Unicode text. Use `Array.from(value)` or code-point iteration
-  instead of UTF-16 indexing when deriving initials or characters.
+  instead of UTF-16 indexing when deriving initials or characters. Prefer
+  `String#codePointAt()` over `String#charCodeAt()` when reading a character.
 - Derive async image state from a stable source value rather than object
   identity, so inline `{ uri }` props do not reset error/loading state on each
   render. In Expo components, use `expo-image` where appropriate and show a

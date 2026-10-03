@@ -111,6 +111,8 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
         accessibilityLabel={t('{{progress}} percent used', {
           progress: progress.toFixed(0),
         })}
+        accessibilityRole="progressbar"
+        accessibilityValue={{ min: 0, max: 100, now: progress }}
         style={[
           styles.progressTrack,
           {

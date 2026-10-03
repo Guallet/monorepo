@@ -4,6 +4,7 @@ import TablerChevronRightIcon from '@tabler/icons-react-native/IconChevronRight'
 import TablerSearchIcon from '@tabler/icons-react-native/IconSearch';
 import TablerCheckIcon from '@tabler/icons-react-native/IconCheck';
 import TablerXIcon from '@tabler/icons-react-native/IconX';
+import TablerFileImportIcon from '@tabler/icons-react-native/IconFileImport';
 import TablerCalculatorIcon from '@tabler/icons-react-native/IconCalculator';
 import TablerMailIcon from '@tabler/icons-react-native/IconMail';
 import TablerBuildingBankIcon from '@tabler/icons-react-native/IconBuildingBank';
@@ -44,6 +45,10 @@ export const ChevronLeftIcon = createLunaIcon(
 export const CloseIcon = createLunaIcon(TablerXIcon, 'CloseIcon');
 export const SearchIcon = createLunaIcon(TablerSearchIcon, 'SearchIcon');
 export const CheckIcon = createLunaIcon(TablerCheckIcon, 'CheckIcon');
+export const FileImportIcon = createLunaIcon(
+  TablerFileImportIcon,
+  'FileImportIcon',
+);
 export const CalculatorIcon = createLunaIcon(
   TablerCalculatorIcon,
   'CalculatorIcon',

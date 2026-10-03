@@ -1,28 +1,42 @@
-import type { TransactionDto } from '@guallet/api-client';
+import type { CategoryDto, TransactionDto } from '@guallet/api-client';
 import { CategoryIcon } from '@guallet/luna-mobile/icons';
 import { useTheme } from '@guallet/luna-mobile';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { formatBudgetCurrency, formatTransactionDate } from '../models';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 
 interface BudgetTransactionRowProps {
-  categoryName?: string;
+  accountName?: string;
+  category?: CategoryDto;
+  onPress: () => void;
   transaction: TransactionDto;
 }
 
 export function BudgetTransactionRow({
-  categoryName,
+  accountName,
+  category,
+  onPress,
   transaction,
 }: Readonly<BudgetTransactionRowProps>) {
   const { colors, spacing, typography } = useTheme();
   const { dateFormat } = useMobileUserPreferences();
   const amount = Number(transaction.amount);
   const isIncome = amount >= 0;
-  let amountColor = colors.status.error;
-  if (isIncome) amountColor = colors.support.primary;
+  const amountColor = isIncome ? colors.support.primary : colors.status.error;
+  const description = transaction.description || 'Unknown transaction';
+  const metadata = [
+    category?.name ?? 'Uncategorised',
+    accountName,
+    formatTransactionDate(transaction.date, dateFormat),
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
-    <View
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${description}, ${metadata}, ${formatBudgetCurrency(amount, transaction.currency)}`}
+      onPress={onPress}
       style={[
         styles.row,
         {
@@ -32,6 +46,7 @@ export function BudgetTransactionRow({
       ]}
     >
       <View
+        accessible={false}
         style={[
           styles.icon,
           {
@@ -41,8 +56,8 @@ export function BudgetTransactionRow({
         ]}
       >
         <CategoryIcon
-          color={colors.accent.primary}
-          name={undefined}
+          color={category?.colour ?? colors.accent.primary}
+          name={category?.icon}
           size={18}
         />
       </View>
@@ -55,7 +70,7 @@ export function BudgetTransactionRow({
             fontWeight: '600',
           }}
         >
-          {transaction.description || 'Unknown transaction'}
+          {description}
         </Text>
         <Text
           numberOfLines={1}
@@ -64,25 +79,21 @@ export function BudgetTransactionRow({
             fontSize: typography.sizes.xs,
           }}
         >
-          {[
-            categoryName ?? 'Uncategorised',
-            formatTransactionDate(transaction.date, dateFormat),
-          ]
-            .filter(Boolean)
-            .join(' · ')}
+          {metadata}
         </Text>
       </View>
       <Text
         style={{
           color: amountColor,
           fontSize: typography.sizes.sm,
+          fontVariant: ['tabular-nums'],
           fontWeight: '700',
         }}
       >
         {isIncome && '+'}
         {formatBudgetCurrency(amount, transaction.currency)}
       </Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -92,6 +103,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: 12,
+    minHeight: 64,
   },
   icon: {
     alignItems: 'center',
@@ -99,9 +111,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 40,
   },
-  content: {
-    flex: 1,
-    gap: 3,
-    minWidth: 0,
-  },
+  content: { flex: 1, gap: 3, minWidth: 0 },
 });

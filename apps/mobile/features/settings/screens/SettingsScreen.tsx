@@ -14,7 +14,11 @@ import { useAuth } from '@guallet/auth';
 import { useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
-import { CalculatorIcon, MailIcon } from '@guallet/luna-mobile/icons';
+import {
+  CalculatorIcon,
+  FileImportIcon,
+  MailIcon,
+} from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsSection } from '../components/SettingsSection';
@@ -284,6 +288,11 @@ export default function SettingsScreen() {
         <PreferencesSection />
 
         <SettingsSection title={t('settings.yourData')}>
+          <SettingsRow
+            icon={<FileImportIcon size={22} color={colors.accent.primary} />}
+            label={t('settings.importTransactions')}
+            onPress={() => router.push('/importer/csv')}
+          />
           <SettingsRow
             icon={<MailIcon size={22} color={colors.accent.primary} />}
             label={t('settings.exportData')}

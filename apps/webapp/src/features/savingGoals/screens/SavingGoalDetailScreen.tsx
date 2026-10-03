@@ -24,6 +24,7 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react';
 import { Money } from '@guallet/money';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 function getDaysRemainingText(
   daysRemaining: number,
@@ -51,6 +52,7 @@ export function SavingGoalDetailScreen({
 }: Readonly<SavingGoalDetailScreenProps>) {
   const { savingGoal, isLoading, error } = useSavingGoal(goalId);
   const { accounts } = useAccounts();
+  const defaultCurrency = useDefaultCurrency();
 
   if (error) {
     return (
@@ -88,6 +90,7 @@ export function SavingGoalDetailScreen({
   const linkedAccounts = accounts.filter((account) =>
     savingGoal.accounts.includes(account.id),
   );
+  const currency = linkedAccounts[0]?.currency ?? defaultCurrency;
 
   const getProgressColor = () => {
     if (isCompleted) return 'green';
@@ -179,7 +182,7 @@ export function SavingGoalDetailScreen({
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
                       amount: currentAmount,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>
                 </Stack>
@@ -196,7 +199,7 @@ export function SavingGoalDetailScreen({
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
                       amount: targetAmount,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>
                 </Stack>
@@ -233,7 +236,7 @@ export function SavingGoalDetailScreen({
                   >
                     {Money.fromCurrencyCode({
                       amount: remainingAmount,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>
                 </Stack>
@@ -269,7 +272,7 @@ export function SavingGoalDetailScreen({
                   <Text span fw={600}>
                     {Money.fromCurrencyCode({
                       amount: monthlySavingsNeeded,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>{' '}
                   per month to reach your goal.

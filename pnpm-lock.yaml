@@ -475,6 +475,9 @@ importers:
       i18next:
         specifier: 25.3.2
         version: 25.3.2(typescript@7.0.2)
+      papaparse:
+        specifier: 5.5.3
+        version: 5.5.3
       react:
         specifier: 19.2.3
         version: 19.2.3

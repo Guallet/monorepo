@@ -13,6 +13,7 @@ import {
 import { IconTargetArrow } from '@tabler/icons-react';
 import { useTheme } from '@guallet/ui-react';
 import { useRouter } from '@tanstack/react-router';
+import { Money } from '@guallet/money';
 
 const MAX_ITEMS = 6;
 
@@ -123,7 +124,15 @@ export function BudgetsWidget() {
                       {budget.name}
                     </Text>
                     <Text size="sm" fw={500} style={{ color: textColor }}>
-                      {budget.spent.toFixed(0)} / {budget.total.toFixed(0)}
+                      {Money.fromCurrencyCode({
+                        amount: budget.spent,
+                        currencyCode: budget.currency,
+                      }).format()}{' '}
+                      /{' '}
+                      {Money.fromCurrencyCode({
+                        amount: budget.total,
+                        currencyCode: budget.currency,
+                      }).format()}
                     </Text>
                   </Group>
                   <Progress
@@ -148,7 +157,10 @@ export function BudgetsWidget() {
                             : colors.support.primary,
                       }}
                     >
-                      {budget.remaining.toFixed(0)}
+                      {Money.fromCurrencyCode({
+                        amount: budget.remaining,
+                        currencyCode: budget.currency,
+                      }).format()}
                     </Text>
                   </Group>
                 </Box>

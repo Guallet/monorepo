@@ -77,6 +77,12 @@ export function BudgetSummaryCard({
       {hasSingleCurrency && (
         <>
           <View
+            accessibilityRole="progressbar"
+            accessibilityValue={{
+              min: 0,
+              max: 100,
+              now: Math.min(overallPercent, 100),
+            }}
             style={[
               styles.progressTrack,
               {
@@ -236,6 +242,7 @@ function SummaryStat({
         style={{
           color: color ?? colors.text.primary,
           fontSize: typography.sizes.sm,
+          fontVariant: ['tabular-nums'],
           fontWeight: '700',
         }}
       >
@@ -248,6 +255,7 @@ function SummaryStat({
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
+    elevation: 1,
   },
   eyebrow: {
     fontWeight: '700',
