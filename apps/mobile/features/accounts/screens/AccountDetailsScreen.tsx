@@ -1,12 +1,5 @@
 import { useMemo } from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ApiError } from '@guallet/api-client';
 import {
@@ -15,7 +8,7 @@ import {
   useAccountMutations,
   useAccountTransactions,
 } from '@guallet/api-react';
-import { Button, useTheme } from '@guallet/luna-mobile';
+import { Button, useAlert, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { InstitutionAvatar } from '../components/InstitutionAvatar';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
@@ -32,6 +25,7 @@ export default function AccountDetailsScreen() {
   const id = getId(rawId);
   const router = useRouter();
   const { colors, borderRadius, spacing, typography } = useTheme();
+  const showAlert = useAlert();
   const { dateFormat } = useMobileUserPreferences();
   const { account, error, isError, isLoading, refetch } = useAccount(id);
   const { data: chartData, isLoading: isChartLoading } = useAccountCharts(id);
@@ -50,10 +44,11 @@ export default function AccountDetailsScreen() {
 
   function confirmDelete() {
     if (!account) return;
-    Alert.alert(
-      `Delete ${account.name}?`,
-      'This removes the account and its transactions. This action cannot be undone.',
-      [
+    showAlert({
+      title: `Delete ${account.name}?`,
+      message:
+        'This removes the account and its transactions. This action cannot be undone.',
+      actions: [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete account',
@@ -63,15 +58,15 @@ export default function AccountDetailsScreen() {
               .mutateAsync({ id })
               .then(() => router.replace('/(protected)/(tabs)/accounts'))
               .catch(() =>
-                Alert.alert(
-                  'Couldn’t delete account',
-                  'Please try again in a moment.',
-                ),
+                showAlert({
+                  title: 'Couldn’t delete account',
+                  message: 'Please try again in a moment.',
+                }),
               );
           },
         },
       ],
-    );
+    });
   }
 
   if (
