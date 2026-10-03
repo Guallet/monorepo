@@ -12,11 +12,9 @@ export function useAccountMutations() {
   const gualletClient = useGualletClient();
 
   const invalidateCacheData = async () => {
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: [ACCOUNTS_QUERY_KEY],
-      }),
-    ]);
+    await queryClient.invalidateQueries({
+      queryKey: [ACCOUNTS_QUERY_KEY],
+    });
   };
 
   const createAccountMutation = useMutation({
