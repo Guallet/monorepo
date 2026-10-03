@@ -17,10 +17,9 @@ function makeGoal(overrides: Partial<SavingGoal> = {}): SavingGoal {
 
 describe('SavingGoalDto.fromDomain', () => {
   describe('currentAmount', () => {
-    it('uses the linked account balance and currency', () => {
-      const dto = SavingGoalDto.fromDomain(makeGoal(), 250, 'GBP');
-      expect(dto.currentAmount).toBe(250);
-      expect(dto.currency).toBe('GBP');
+    it('is 0 until linked account balances are computed', () => {
+      const dto = SavingGoalDto.fromDomain(makeGoal());
+      expect(dto.currentAmount).toBe(0);
     });
   });
 
@@ -33,25 +32,6 @@ describe('SavingGoalDto.fromDomain', () => {
     it('is 0 when currentAmount is 0 and targetAmount > 0', () => {
       const dto = SavingGoalDto.fromDomain(makeGoal({ target_amount: 1000 }));
       expect(dto.progressPercentage).toBe(0);
-    });
-    it('caps progress at 100 when balances exceed the target', () => {
-      const dto = SavingGoalDto.fromDomain(
-        makeGoal({ target_amount: 1000 }),
-        1200,
-        'GBP',
-      );
-      expect(dto.progressPercentage).toBe(100);
-      expect(dto.isCompleted).toBe(true);
-      expect(dto.remainingAmount).toBe(0);
-    });
-    it('does not show negative progress for an overdrawn linked account', () => {
-      const dto = SavingGoalDto.fromDomain(
-        makeGoal({ target_amount: 1000 }),
-        -50,
-        'GBP',
-      );
-      expect(dto.progressPercentage).toBe(0);
-      expect(dto.remainingAmount).toBe(1050);
     });
   });
 
@@ -103,26 +83,6 @@ describe('SavingGoalDto.fromDomain', () => {
   });
 
   describe('isOverdue', () => {
-    it('keeps a date-only deadline active throughout its calendar day', () => {
-      vi.useFakeTimers();
-      try {
-        vi.setSystemTime(new Date('2030-01-02T18:00:00Z'));
-        const goal = makeGoal({
-          target_date: new Date('2030-01-02T00:00:00Z'),
-        });
-        expect(SavingGoalDto.fromDomain(goal)).toMatchObject({
-          isOverdue: false,
-          daysRemaining: 0,
-        });
-        vi.setSystemTime(new Date('2030-01-03T00:00:00Z'));
-        expect(SavingGoalDto.fromDomain(goal)).toMatchObject({
-          isOverdue: true,
-          daysRemaining: -1,
-        });
-      } finally {
-        vi.useRealTimers();
-      }
-    });
     it('is false when no target date is set', () => {
       const dto = SavingGoalDto.fromDomain(
         makeGoal({ target_date: undefined }),

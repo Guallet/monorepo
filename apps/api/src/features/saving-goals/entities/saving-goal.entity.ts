@@ -16,7 +16,7 @@ export class SavingGoal extends BaseDbEntity {
   target_amount: number;
 
   @Column({ nullable: true })
-  target_date?: Date | null;
+  target_date?: Date;
 
   @Column({ nullable: true })
   priority?: number;
