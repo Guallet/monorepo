@@ -13,13 +13,13 @@ import {
   Label,
   Stack,
   TextInput,
+  useAlert,
   useTheme,
 } from '@guallet/luna-mobile';
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
 import { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -55,6 +55,7 @@ export function TransactionDetailsScreen({
 }: Readonly<TransactionDetailsScreenProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const router = useRouter();
+  const showAlert = useAlert();
   const navigation = useNavigation();
   const { transaction, isLoading, isError, refetch } =
     useTransaction(transactionId);
@@ -95,14 +96,18 @@ export function TransactionDetailsScreen({
     JSON.stringify(form) !== JSON.stringify(initialForm);
 
   usePreventRemove(isDirty, ({ data }) => {
-    Alert.alert('Discard changes?', 'Your unsaved changes will be lost.', [
-      { text: 'Keep editing', style: 'cancel' },
-      {
-        text: 'Discard',
-        style: 'destructive',
-        onPress: () => navigation.dispatch(data.action),
-      },
-    ]);
+    showAlert({
+      title: 'Discard changes?',
+      message: 'Your unsaved changes will be lost.',
+      actions: [
+        { text: 'Keep editing', style: 'cancel' },
+        {
+          text: 'Discard',
+          style: 'destructive',
+          onPress: () => navigation.dispatch(data.action),
+        },
+      ],
+    });
   });
 
   function updateForm(values: Partial<FormState>) {

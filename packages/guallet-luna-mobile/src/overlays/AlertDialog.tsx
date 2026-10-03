@@ -1,0 +1,245 @@
+import {
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { useTheme } from '../theme';
+
+export interface AlertAction {
+  text: string;
+  onPress?: () => void;
+  style?: 'default' | 'cancel' | 'destructive';
+}
+
+export interface AlertOptions {
+  title: string;
+  message?: string;
+  /** Actions are stacked, with cancellation actions displayed last. */
+  actions?: ReadonlyArray<AlertAction>;
+}
+
+interface AlertContextValue {
+  alert: (options: AlertOptions) => void;
+}
+
+const AlertContext = createContext<AlertContextValue | null>(null);
+
+/** Shows themed, accessible alerts above the app's current screen. */
+export function AlertProvider({ children }: Readonly<PropsWithChildren>) {
+  const [options, setOptions] = useState<AlertOptions | null>(null);
+  const alert = useCallback((next: AlertOptions) => setOptions(next), []);
+  const dismiss = useCallback(() => setOptions(null), []);
+  const contextValue = useMemo(() => ({ alert }), [alert]);
+
+  return (
+    <AlertContext.Provider value={contextValue}>
+      {children}
+      <AlertDialog options={options} onDismiss={dismiss} />
+    </AlertContext.Provider>
+  );
+}
+
+/** Access the app-level alert presenter. */
+export function useAlert() {
+  const context = useContext(AlertContext);
+  if (!context) {
+    throw new Error('useAlert must be used within an AlertProvider');
+  }
+  return context.alert;
+}
+
+function AlertDialog({
+  options,
+  onDismiss,
+}: Readonly<{
+  options: AlertOptions | null;
+  onDismiss: () => void;
+}>) {
+  const { borderRadius, colors, spacing, typography } = useTheme();
+  const defaultAction: AlertAction = { text: 'OK' };
+  const actions = options?.actions?.length ? options.actions : [defaultAction];
+  const orderedActions = [
+    ...actions.filter((action) => action.style !== 'cancel'),
+    ...actions.filter((action) => action.style === 'cancel'),
+  ];
+
+  const handleAction = (action: AlertAction) => {
+    onDismiss();
+    action.onPress?.();
+  };
+
+  return (
+    <Modal
+      animationType="fade"
+      onRequestClose={onDismiss}
+      statusBarTranslucent
+      transparent
+      visible={options !== null}
+    >
+      <View
+        accessibilityViewIsModal
+        style={[
+          styles.backdrop,
+          { backgroundColor: colors.surface.overlay, padding: spacing.lg },
+        ]}
+      >
+        <View
+          accessibilityLiveRegion="assertive"
+          accessibilityRole="alert"
+          style={[
+            styles.dialog,
+            {
+              backgroundColor: colors.surface.background.primary,
+              borderColor: colors.surface.border.primary,
+              borderRadius: borderRadius.lg,
+              shadowColor: colors.surface.shadow,
+            },
+          ]}
+        >
+          <ScrollView
+            style={styles.scrollContent}
+            contentContainerStyle={{ padding: spacing.lg, gap: spacing.lg }}
+            bounces={false}
+          >
+            <View style={{ gap: spacing.sm }}>
+              <Text
+                accessibilityRole="header"
+                style={[
+                  styles.title,
+                  { color: colors.text.primary, fontSize: typography.sizes.lg },
+                ]}
+              >
+                {options?.title}
+              </Text>
+              {options?.message ? (
+                <Text
+                  style={[
+                    styles.message,
+                    {
+                      color: colors.text.secondary,
+                      fontSize: typography.sizes.md,
+                      lineHeight:
+                        typography.sizes.md * typography.lineHeights.normal,
+                    },
+                  ]}
+                >
+                  {options.message}
+                </Text>
+              ) : null}
+            </View>
+            <View style={[styles.actions, { gap: spacing.sm }]}>
+              {orderedActions.map((action, index) => {
+                const destructive = action.style === 'destructive';
+                const cancel = action.style === 'cancel';
+
+                return (
+                  <Pressable
+                    accessibilityRole="button"
+                    key={`${action.text}-${index}`}
+                    onPress={() => handleAction(action)}
+                    style={({ pressed }) => [
+                      styles.action,
+                      {
+                        backgroundColor: getActionBackgroundColor(
+                          pressed,
+                          destructive,
+                          cancel,
+                          colors,
+                        ),
+                        borderRadius: borderRadius.md,
+                        borderWidth: cancel ? StyleSheet.hairlineWidth : 0,
+                        borderColor: colors.surface.border.primary,
+                        minHeight: typography.sizes.md + spacing.md * 2,
+                        paddingHorizontal: spacing.md,
+                        paddingVertical: spacing.sm,
+                        opacity: pressed && destructive ? 0.85 : 1,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.actionLabel,
+                        {
+                          color: getActionTextColor(
+                            destructive,
+                            cancel,
+                            colors,
+                          ),
+                          fontSize: typography.sizes.md,
+                        },
+                      ]}
+                    >
+                      {action.text}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dialog: {
+    width: '100%',
+    maxWidth: 440,
+    maxHeight: '80%',
+    borderWidth: StyleSheet.hairlineWidth,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.18,
+    shadowRadius: 28,
+    elevation: 18,
+  },
+  scrollContent: { flexGrow: 0, flexShrink: 1 },
+  title: { fontWeight: '600', textAlign: 'center' },
+  message: { textAlign: 'center' },
+  actions: { flexDirection: 'column' },
+  action: { alignItems: 'center', justifyContent: 'center' },
+  actionLabel: { fontWeight: '500', textAlign: 'center' },
+});
+
+function getActionBackgroundColor(
+  pressed: boolean,
+  destructive: boolean,
+  cancel: boolean,
+  colors: ReturnType<typeof useTheme>['colors'],
+): string {
+  if (destructive) {
+    return colors.status.error;
+  }
+  if (cancel) {
+    if (pressed) return colors.button.subtle.pressed;
+    return colors.surface.background.secondary;
+  }
+  if (pressed) return colors.button.primary.pressed;
+  return colors.button.primary.default;
+}
+
+function getActionTextColor(
+  destructive: boolean,
+  cancel: boolean,
+  colors: ReturnType<typeof useTheme>['colors'],
+): string {
+  if (destructive) return colors.text.inverse;
+  if (cancel) return colors.text.primary;
+  return colors.button.onPrimary.default;
+}

@@ -8,16 +8,18 @@ import {
   Group,
   Label,
   Stack,
+  useAlert,
   useTheme,
 } from '@guallet/luna-mobile';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export function LoginScreen() {
   const router = useRouter();
   const { loginWithProvider } = useAuth();
+  const showAlert = useAlert();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,10 +35,10 @@ export function LoginScreen() {
       return;
     }
 
-    Alert.alert(
-      'Could not sign in',
-      result.error?.message ?? 'Please try again in a moment.',
-    );
+    showAlert({
+      title: 'Could not sign in',
+      message: result.error?.message ?? 'Please try again in a moment.',
+    });
   };
 
   return (

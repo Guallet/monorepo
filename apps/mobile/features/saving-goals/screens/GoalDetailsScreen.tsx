@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ApiError } from '@guallet/api-client';
 import {
@@ -13,7 +6,7 @@ import {
   useSavingGoal,
   useSavingGoalMutations,
 } from '@guallet/api-react';
-import { Button, useTheme } from '@guallet/luna-mobile';
+import { Button, useAlert, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
@@ -28,6 +21,7 @@ export default function GoalDetailsScreen() {
   const id = Array.isArray(rawId) ? (rawId[0] ?? '') : (rawId ?? '');
   const router = useRouter();
   const { colors, spacing, typography, borderRadius } = useTheme();
+  const showAlert = useAlert();
   const { dateFormat } = useMobileUserPreferences();
   const {
     savingGoal: goal,
@@ -41,10 +35,11 @@ export default function GoalDetailsScreen() {
 
   function confirmDelete() {
     if (!goal) return;
-    Alert.alert(
-      `Delete “${goal.name}”?`,
-      'This goal and its progress will be removed. Linked account balances will stay as they are.',
-      [
+    showAlert({
+      title: `Delete “${goal.name}”?`,
+      message:
+        'This goal and its progress will be removed. Linked account balances will stay as they are.',
+      actions: [
         { text: 'Keep goal', style: 'cancel' },
         {
           text: 'Delete goal',
@@ -54,12 +49,15 @@ export default function GoalDetailsScreen() {
               .mutateAsync({ id })
               .then(() => router.replace('/saving-goals'))
               .catch(() =>
-                Alert.alert('Couldn’t delete goal', 'Please try again.'),
+                showAlert({
+                  title: 'Couldn’t delete goal',
+                  message: 'Please try again.',
+                }),
               );
           },
         },
       ],
-    );
+    });
   }
 
   if (

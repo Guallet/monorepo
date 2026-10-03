@@ -1,6 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import {
-  Alert,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -16,7 +15,7 @@ import {
   useBudgetTransactions,
   useCategories,
 } from '@guallet/api-react';
-import { useTheme } from '@guallet/luna-mobile';
+import { useAlert, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { BudgetMonthSelector } from '../components/BudgetMonthSelector';
 import { BudgetProgressCard } from '../components/BudgetProgressCard';
@@ -28,6 +27,7 @@ export default function BudgetDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { borderRadius, colors, spacing, typography } = useTheme();
+  const showAlert = useAlert();
   const [selectedDate, setSelectedDate] = useState(() =>
     getMonthStart(new Date()),
   );
@@ -69,10 +69,11 @@ export default function BudgetDetailsScreen() {
 
   function confirmDelete() {
     if (!budget) return;
-    Alert.alert(
-      `Delete “${budget.name}”?`,
-      'This budget and its progress will be removed. Its transactions will stay in your account.',
-      [
+    showAlert({
+      title: `Delete “${budget.name}”?`,
+      message:
+        'This budget and its progress will be removed. Its transactions will stay in your account.',
+      actions: [
         { text: 'Keep budget', style: 'cancel' },
         {
           text: 'Delete budget',
@@ -86,7 +87,7 @@ export default function BudgetDetailsScreen() {
           },
         },
       ],
-    );
+    });
   }
 
   let transactionContent: ReactNode;

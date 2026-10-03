@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -13,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@guallet/auth';
 import { useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
-import { Button, useTheme } from '@guallet/luna-mobile';
+import { Button, useAlert, useTheme } from '@guallet/luna-mobile';
 import {
   BuildingBankIcon,
   CalculatorIcon,
@@ -42,6 +41,7 @@ function getInitials(name: string): string {
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const showAlert = useAlert();
   const { borderRadius, colors, spacing, typography } = useTheme();
   const { logout } = useAuth();
   const { user, isLoading, isError, isRefetching, refetch } = useUser();
@@ -59,30 +59,37 @@ export default function SettingsScreen() {
       const result = await logout();
 
       if (!result.success) {
-        Alert.alert(
-          'Couldn’t sign out',
-          result.error?.message ?? 'Please try again in a moment.',
-        );
+        showAlert({
+          title: 'Couldn’t sign out',
+          message: result.error?.message ?? 'Please try again in a moment.',
+        });
       }
     } catch {
-      Alert.alert('Couldn’t sign out', 'Please try again in a moment.');
+      showAlert({
+        title: 'Couldn’t sign out',
+        message: 'Please try again in a moment.',
+      });
     } finally {
       setIsSigningOut(false);
     }
-  }, [logout]);
+  }, [logout, showAlert]);
 
   const confirmSignOut = useCallback(() => {
-    Alert.alert('Sign out?', 'You can sign back in at any time.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Sign out',
-        style: 'destructive',
-        onPress: () => {
-          void handleSignOut();
+    showAlert({
+      title: 'Sign out?',
+      message: 'You can sign back in at any time.',
+      actions: [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign out',
+          style: 'destructive',
+          onPress: () => {
+            void handleSignOut();
+          },
         },
-      },
-    ]);
-  }, [handleSignOut]);
+      ],
+    });
+  }, [handleSignOut, showAlert]);
 
   const profileName = user?.name?.trim() || 'Your profile';
   const profileEmail = user?.email?.trim() || 'Profile details unavailable';

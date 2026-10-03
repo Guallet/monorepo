@@ -1,7 +1,7 @@
 import type { DateFormat } from '@guallet/api-client';
 import { useUserSettingsMutations } from '@guallet/api-react';
-import { CurrencyPicker, useTheme } from '@guallet/luna-mobile';
-import { Alert, View } from 'react-native';
+import { CurrencyPicker, useAlert, useTheme } from '@guallet/luna-mobile';
+import { View } from 'react-native';
 import { useState } from 'react';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SelectionSheet } from '@/components/ui/SelectionSheet';
@@ -18,6 +18,7 @@ const dateFormatOptions: DateFormat[] = [
 
 export function PreferencesSection() {
   const { colors, spacing } = useTheme();
+  const showAlert = useAlert();
   const { defaultCurrency, preferredCurrencies, dateFormat } =
     useMobileUserPreferences();
   const { updateUserSettingsMutation } = useUserSettingsMutations();
@@ -31,7 +32,10 @@ export function PreferencesSection() {
       });
       return true;
     } catch {
-      Alert.alert('Couldn’t update currency', 'Please try again in a moment.');
+      showAlert({
+        title: 'Couldn’t update currency',
+        message: 'Please try again in a moment.',
+      });
       return false;
     }
   }
@@ -43,10 +47,10 @@ export function PreferencesSection() {
       });
       return true;
     } catch {
-      Alert.alert(
-        'Couldn’t update preferred currencies',
-        'Please try again in a moment.',
-      );
+      showAlert({
+        title: 'Couldn’t update preferred currencies',
+        message: 'Please try again in a moment.',
+      });
       return false;
     }
   }
@@ -60,10 +64,10 @@ export function PreferencesSection() {
       });
       setIsDateFormatPickerVisible(false);
     } catch {
-      Alert.alert(
-        'Couldn’t update date format',
-        'Please try again in a moment.',
-      );
+      showAlert({
+        title: 'Couldn’t update date format',
+        message: 'Please try again in a moment.',
+      });
     }
   }
 

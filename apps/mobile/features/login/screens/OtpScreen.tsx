@@ -5,10 +5,17 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Button, Label, OtpInput, Stack, useTheme } from '@guallet/luna-mobile';
+import {
+  Button,
+  Label,
+  OtpInput,
+  Stack,
+  useAlert,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, AppState, StyleSheet, View } from 'react-native';
+import { AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
 
 const RESEND_DELAY_SECONDS = 30;
@@ -18,6 +25,7 @@ export function OtpScreen() {
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? '';
   const { getOtpCode, verifyOtpCode } = useAuth();
+  const showAlert = useAlert();
   const { colors, spacing } = useTheme();
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +88,10 @@ export function OtpScreen() {
     if (result.success) {
       setCode('');
       setResendAvailableAt(Date.now() + RESEND_DELAY_SECONDS * 1000);
-      Alert.alert('New code sent', `Check ${email} for your new code.`);
+      showAlert({
+        title: 'New code sent',
+        message: `Check ${email} for your new code.`,
+      });
       return;
     }
 
@@ -91,7 +102,10 @@ export function OtpScreen() {
     try {
       await openInbox();
     } catch {
-      Alert.alert('Could not open your inbox', `Check ${email} for your code.`);
+      showAlert({
+        title: 'Could not open your inbox',
+        message: `Check ${email} for your code.`,
+      });
     }
   };
 

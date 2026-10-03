@@ -4,13 +4,13 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Button } from '@guallet/luna-mobile';
+import { Button, useAlert } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert } from 'react-native';
 import { openInbox } from 'react-native-email-link';
 
 export function ResetPasswordSentScreen() {
   const router = useRouter();
+  const showAlert = useAlert();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? 'your email address';
 
@@ -18,10 +18,10 @@ export function ResetPasswordSentScreen() {
     try {
       await openInbox();
     } catch {
-      Alert.alert(
-        'Could not open your inbox',
-        'Open your email app and look for a message from Guallet.',
-      );
+      showAlert({
+        title: 'Could not open your inbox',
+        message: 'Open your email app and look for a message from Guallet.',
+      });
     }
   };
 
