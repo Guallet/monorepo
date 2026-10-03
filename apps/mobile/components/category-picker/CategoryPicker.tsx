@@ -1,4 +1,4 @@
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import { BottomSheet } from '@guallet/luna-mobile';
 import {
   ChevronDownIcon,
   ChevronRightIcon,

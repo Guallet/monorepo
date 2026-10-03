@@ -234,12 +234,14 @@ Expo Router requires `export default function` (not named exports) for all route
 
 ### Mobile bottom sheets
 
-- Use `BottomSheet` from `apps/mobile/components/ui/BottomSheet.tsx` for every
+- Use `BottomSheet` from `@guallet/luna-mobile` for every
   mobile bottom sheet.
 - Do not import `BottomSheet` directly from `@expo/ui` or use another bottom
   sheet implementation in the mobile app.
-- `apps/mobile/components/ui/BottomSheet.tsx` is the only file allowed to use
-  Expo's `BottomSheet`; it owns the Expo UI integration and theme mapping.
+- `packages/guallet-luna-mobile/src/overlays/BottomSheet.tsx` owns Expo's
+  `BottomSheet`, theme mapping, and the `RNHostView` bridge that lets React
+  Native content inside the native sheet receive touches. Keep that bridge
+  in the shared wrapper; consumers pass ordinary React Native children.
 
 ## Code Style Reminders
 

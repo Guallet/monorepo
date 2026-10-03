@@ -5,8 +5,7 @@ import { AccountDto, CategoryDto } from '@guallet/api-client';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
-import { useTheme } from '@guallet/luna-mobile';
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import {
   DateRangePreset,

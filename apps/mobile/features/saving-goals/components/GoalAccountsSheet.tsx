@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { AccountDto } from '@guallet/api-client';
-import { useTheme } from '@guallet/luna-mobile';
+import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import { CheckIcon } from '@guallet/luna-mobile/icons';
-import { BottomSheet } from '@/components/ui/BottomSheet';
 import { formatMoney } from '@/utils/formatMoney';
 
 type Props = {

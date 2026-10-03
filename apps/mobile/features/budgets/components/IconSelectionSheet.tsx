@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '@guallet/luna-mobile';
+import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import {
   CategoryIcon,
   selectableCategoryIconNames,
 } from '@guallet/luna-mobile/icons';
-import { BottomSheet } from '@/components/ui/BottomSheet';
 
 interface IconSelectionSheetProps {
   selectedIcon: string;

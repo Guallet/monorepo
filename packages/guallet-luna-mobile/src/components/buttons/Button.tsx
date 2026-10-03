@@ -14,6 +14,8 @@ export interface ButtonProps {
   style?: ViewStyle;
   disabled?: boolean;
   selected?: boolean;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -23,6 +25,8 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   disabled = false,
   selected = false,
+  accessibilityLabel,
+  accessibilityHint,
 }) => {
   const { colors, spacing, typography, borderRadius } = useTheme();
 
@@ -67,6 +71,8 @@ export const Button: React.FC<ButtonProps> = ({
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
       disabled={disabled}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       accessibilityRole="button"
       accessibilityState={{ disabled, selected }}
     >

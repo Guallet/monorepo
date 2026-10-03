@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react';
+import { useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -11,11 +11,9 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { CheckIcon, ChevronDownIcon, CloseIcon } from '../../../icons';
+import { BottomSheet } from '../../../overlays/BottomSheet';
 import { useTheme } from '../../../theme';
-import {
-  usePickerSheet,
-  type DateRangeSheetRenderer,
-} from '../DateRangePicker/DateRangeSheetProvider';
+import { Button } from '../../buttons';
 import { shouldUseDarkCheck } from './colorContrast';
 
 /** Matches the web GualletColorPicker presets, including repeated entries. */
@@ -61,11 +59,6 @@ export function ColorPicker({
   textStyle,
 }: Readonly<ColorPickerProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
-  const renderSheet = usePickerSheet();
-  if (!renderSheet) {
-    throw new Error('ColorPicker requires PickerSheetProvider.');
-  }
-
   const [visible, setVisible] = useState(false);
   const openRef = useRef(false);
   const selectedIndex = palette.findIndex(
@@ -97,61 +90,62 @@ export function ColorPicker({
 
   return (
     <>
-      <Pressable
-        accessibilityRole="button"
+      <Button
         accessibilityLabel={`Colour, ${label}`}
         accessibilityHint="Opens colour picker"
-        onPress={open}
-        style={[
+        onClick={open}
+        style={StyleSheet.flatten([
           styles.trigger,
           {
             backgroundColor: colors.surface.background.input,
             borderColor: colors.surface.border.input,
             borderRadius: borderRadius.md,
-            gap: spacing.sm,
             minHeight: spacing.xl + spacing.lg,
             paddingHorizontal: spacing.md,
           },
           style,
-        ]}
+        ])}
       >
-        <View
-          accessible={false}
-          style={[
-            styles.triggerSwatch,
-            {
-              backgroundColor: value ?? colors.surface.background.secondary,
-              borderColor: colors.surface.border.input,
-              borderRadius: borderRadius.xl,
-              height: spacing.lg,
-              width: spacing.lg,
-            },
-          ]}
-        />
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.triggerText,
-            {
-              color: value ? colors.text.primary : colors.text.placeholder,
-              fontSize: typography.sizes.md,
-            },
-            textStyle,
-          ]}
-        >
-          {label}
-        </Text>
-        <ChevronDownIcon
-          size={spacing.lg}
-          color={colors.text.secondary}
-          accessibilityElementsHidden
-          importantForAccessibility="no"
-        />
-      </Pressable>
-      <ColorSheetFrame
-        renderSheet={renderSheet}
-        visible={visible}
+        <View style={[styles.triggerContent, { gap: spacing.sm }]}>
+          <View
+            accessible={false}
+            style={[
+              styles.triggerSwatch,
+              {
+                backgroundColor: value ?? colors.surface.background.secondary,
+                borderColor: colors.surface.border.input,
+                borderRadius: borderRadius.xl,
+                height: spacing.lg,
+                width: spacing.lg,
+              },
+            ]}
+          />
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.triggerText,
+              {
+                color: value ? colors.text.primary : colors.text.placeholder,
+                fontSize: typography.sizes.md,
+              },
+              textStyle,
+            ]}
+          >
+            {label}
+          </Text>
+          <ChevronDownIcon
+            size={spacing.lg}
+            color={colors.text.secondary}
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+          />
+        </View>
+      </Button>
+      <BottomSheet
+        isPresented={visible}
         onDismiss={cancel}
+        snapPoints={['half']}
+        contentPadding={0}
       >
         <View
           style={[
@@ -266,23 +260,9 @@ export function ColorPicker({
             )}
           </ScrollView>
         </View>
-      </ColorSheetFrame>
+      </BottomSheet>
     </>
   );
-}
-
-function ColorSheetFrame({
-  renderSheet,
-  visible,
-  onDismiss,
-  children,
-}: Readonly<{
-  renderSheet: DateRangeSheetRenderer;
-  visible: boolean;
-  onDismiss: () => void;
-  children: ReactNode;
-}>) {
-  return renderSheet({ visible, onDismiss, children, snapPoints: ['half'] });
 }
 
 function checkmarkColor(
@@ -303,9 +283,12 @@ function checkmarkColor(
 
 const styles = StyleSheet.create({
   trigger: {
-    alignItems: 'center',
     borderWidth: 1,
+  },
+  triggerContent: {
+    alignItems: 'center',
     flexDirection: 'row',
+    width: '100%',
   },
   triggerSwatch: { borderWidth: 1 },
   triggerText: { flex: 1 },

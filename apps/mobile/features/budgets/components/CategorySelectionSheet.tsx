@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { CategoryDto } from '@guallet/api-client';
-import { TextInput, useTheme } from '@guallet/luna-mobile';
+import { TextInput, useTheme, BottomSheet } from '@guallet/luna-mobile';
 import { CategoryIcon, CheckIcon } from '@guallet/luna-mobile/icons';
-import { BottomSheet } from '@/components/ui/BottomSheet';
 
 interface CategorySelectionSheetProps {
   categories: CategoryDto[];

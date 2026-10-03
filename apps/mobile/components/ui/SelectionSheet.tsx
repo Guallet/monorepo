@@ -1,6 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useTheme } from '@guallet/luna-mobile';
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 
 export type SelectionOption = {
   id: string;
