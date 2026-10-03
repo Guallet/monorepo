@@ -18,7 +18,6 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
 import { LunaBottomSheetProvider } from '@/components/ui/BottomSheet';
-import { BudgetMonthProvider } from '@/features/budgets/BudgetMonthContext';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -56,9 +55,7 @@ function AppNavigation() {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <GualletClientProvider client={gualletClient}>
-              <BudgetMonthProvider>
-                <AuthNavigator />
-              </BudgetMonthProvider>
+              <AuthNavigator />
               <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
             </GualletClientProvider>
           </AuthProvider>

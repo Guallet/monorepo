@@ -18,18 +18,22 @@ import {
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { useBudgetMonth } from '../BudgetMonthContext';
 import { BudgetMonthSelector } from '../components/BudgetMonthSelector';
 import { BudgetProgressCard } from '../components/BudgetProgressCard';
 import { BudgetStateCard } from '../components/BudgetStateCard';
 import { BudgetTransactionRow } from '../components/BudgetTransactionRow';
-import { getBudgetMonth } from '../models';
+import { getBudgetMonth, getMonthStart } from '../models';
 
 export default function BudgetDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { borderRadius, colors, spacing, typography } = useTheme();
-  const { selectedDate, selectMonth } = useBudgetMonth();
+  const [selectedDate, setSelectedDate] = useState(() =>
+    getMonthStart(new Date()),
+  );
+  function selectMonth(date: Date) {
+    setSelectedDate(getMonthStart(date));
+  }
   const { month, year } = getBudgetMonth(selectedDate);
   const { budget, isError, isLoading, isRefetching, refetch } = useBudget(id, {
     month,

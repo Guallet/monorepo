@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   RefreshControl,
   ScrollView,
@@ -10,17 +10,21 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBudgets } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';
-import { useBudgetMonth } from '../BudgetMonthContext';
 import { BudgetCard } from '../components/BudgetCard';
 import { BudgetMonthSelector } from '../components/BudgetMonthSelector';
 import { BudgetStateCard } from '../components/BudgetStateCard';
 import { BudgetSummaryCard } from '../components/BudgetSummaryCard';
-import { getBudgetMonth, getBudgetMetrics } from '../models';
+import { getBudgetMonth, getBudgetMetrics, getMonthStart } from '../models';
 
 export default function BudgetsScreen() {
   const { colors, spacing, typography } = useTheme();
   const router = useRouter();
-  const { selectedDate, selectMonth } = useBudgetMonth();
+  const [selectedDate, setSelectedDate] = useState(() =>
+    getMonthStart(new Date()),
+  );
+  function selectMonth(date: Date) {
+    setSelectedDate(getMonthStart(date));
+  }
   const { month, year } = getBudgetMonth(selectedDate);
   const { budgets, isError, isLoading, isRefetching, refetch } = useBudgets({
     month,
