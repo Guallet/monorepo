@@ -95,7 +95,6 @@ describe('API DTO OpenAPI contracts', () => {
             }
           }
           if (member.questionToken) {
-            expect(type).not.toMatch(/\bnull\b/);
             expect(schema.required ?? []).not.toContain(property);
           }
           if (type.includes('| null')) {
@@ -117,6 +116,15 @@ describe('API DTO OpenAPI contracts', () => {
       }
     }
   }
+
+  it('documents regular-payment startDate as a date-only value', () => {
+    expect(schemas.CreateRegularPaymentDto.properties?.startDate).toMatchObject(
+      {
+        type: 'string',
+        format: 'date',
+      },
+    );
+  });
 
   it('registers all referenced schemas, including standalone CSV mappings', async () => {
     const csvSchemas = await schemasFor([CsvImportRequestDto]);

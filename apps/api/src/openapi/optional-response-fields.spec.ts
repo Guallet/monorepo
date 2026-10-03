@@ -9,32 +9,32 @@ function serialized(value: unknown): Record<string, unknown> {
   return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
 }
 
-describe('Optional response fields', () => {
-  it('omits null account institution and properties from JSON', () => {
+describe('Nullable response compatibility', () => {
+  it('preserves null account institution and properties in JSON', () => {
     const account = new Account();
     Object.assign(account, { institutionId: null, properties: null });
 
     const response = serialized(AccountDto.fromDomain(account));
 
-    expect(response).not.toHaveProperty('institutionId');
-    expect(response).not.toHaveProperty('properties');
+    expect(response).toHaveProperty('institutionId', null);
+    expect(response).toHaveProperty('properties', null);
   });
 
-  it('omits a null transaction category from JSON', () => {
+  it('preserves a null transaction category in JSON', () => {
     const transaction = new Transaction();
     transaction.categoryId = null;
 
     const response = serialized(TransactionDto.fromDomain(transaction));
 
-    expect(response).not.toHaveProperty('categoryId');
+    expect(response).toHaveProperty('categoryId', null);
   });
 
-  it('omits a null user date format from JSON', () => {
+  it('preserves a null user date format in JSON', () => {
     const user = new User();
     Object.assign(user, { date_format: null });
 
     const response = serialized(UserSettingsDto.fromDomain(user));
 
-    expect(response).not.toHaveProperty('date_format');
+    expect(response).toHaveProperty('date_format', null);
   });
 });

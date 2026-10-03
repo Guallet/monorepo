@@ -47,7 +47,7 @@ export class NordigenTransactionDto {
   valueDate?: string;
 
   @ApiProperty({ type: String, required: false, nullable: true })
-  additionalInformation?: string;
+  additionalInformation?: string | null;
 }
 
 export class ExternalAccountDto {

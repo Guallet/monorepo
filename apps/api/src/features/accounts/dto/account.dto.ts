@@ -55,8 +55,9 @@ export class AccountDto {
     required: false,
     description:
       'The institution id of the account, if it belongs to an institution',
+    nullable: true,
   })
-  institutionId?: string;
+  institutionId?: string | null;
 
   @ApiProperty({
     required: false,
@@ -77,6 +78,7 @@ export class AccountDto {
     required: false,
     description:
       'The extra properties of the account, depending on the account type',
+    nullable: true,
     oneOf: [
       { $ref: getSchemaPath(CurrentAccountPropertiesDto) },
       { $ref: getSchemaPath(CreditCardPropertiesDto) },
@@ -85,7 +87,7 @@ export class AccountDto {
       { $ref: getSchemaPath(LoanAccountPropertiesDto) },
     ],
   })
-  properties?: AccountPropertiesDto;
+  properties?: AccountPropertiesDto | null;
 
   static fromDomain(domain: Account): AccountDto {
     return {
@@ -97,8 +99,8 @@ export class AccountDto {
         currency: domain.currency,
       },
       type: domain.type,
-      institutionId: domain.institutionId ?? undefined,
-      properties: domain.properties ?? undefined,
+      institutionId: domain.institutionId,
+      properties: domain.properties,
       source: domain.source,
       sourceName: domain.source_name,
     };
