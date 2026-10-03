@@ -3,8 +3,7 @@ import {
   RNHostView,
   type BottomSheetProps as ExpoBottomSheetProps,
 } from '@expo/ui';
-
-import { useRef, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -25,6 +24,8 @@ export interface BottomSheetProps extends Omit<
 > {
   isOpen: boolean;
   title: string;
+  /** Called when the close button is pressed or the user dismisses the sheet. */
+  onClose?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -36,6 +37,7 @@ export function BottomSheet({
   title,
   showCloseIcon = false,
   onDismiss,
+  onClose,
   containerColor,
   contentPadding,
   showDragIndicator = true,
@@ -44,13 +46,6 @@ export function BottomSheet({
 }: Readonly<BottomSheetProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const { width } = useWindowDimensions();
-  // const bottomSheetRef = useRef<ExpoBottomSheet>(null);
-
-  function close() {
-    // console.log('Closing bottom sheet', bottomSheetRef.current);
-    // bottomSheetRef.current?.dismiss();
-    onDismiss?.();
-  }
 
   const fitToContents = !snapPoints?.length;
   const padding = contentPadding ?? {
@@ -66,7 +61,6 @@ export function BottomSheet({
 
   return (
     <ExpoBottomSheet
-      // ref={bottomSheetRef}
       {...props}
       isPresented={isOpen}
       onDismiss={onDismiss}
@@ -108,7 +102,9 @@ export function BottomSheet({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Close bottom sheet"
-                onPress={close}
+                onPress={() => {
+                  onClose?.();
+                }}
                 style={({ pressed }) => [
                   styles.closeButton,
                   {
