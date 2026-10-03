@@ -16,6 +16,7 @@ export interface SettingsRowProps {
   disabled?: boolean;
   isLoading?: boolean;
   destructive?: boolean;
+  showChevron?: boolean;
   value?: string;
 }
 
@@ -23,6 +24,7 @@ export function SettingsRow({
   icon,
   label,
   onPress,
+  showChevron = false,
   disabled = false,
   isLoading = false,
   destructive = false,
@@ -32,28 +34,13 @@ export function SettingsRow({
   let accessory: ReactNode = null;
   if (isLoading) {
     accessory = <ActivityIndicator color={colors.accent.primary} />;
-  } else if (value !== undefined) {
+  } else if (showChevron) {
     accessory = (
-      <>
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.rowValue,
-            {
-              color: colors.text.secondary,
-              fontSize: typography.sizes.sm,
-              marginRight: spacing.xs,
-            },
-          ]}
-        >
-          {value}
-        </Text>
-        <IconSymbol
-          color={colors.text.secondary}
-          name="chevron.right"
-          size={20}
-        />
-      </>
+      <IconSymbol
+        color={colors.text.secondary}
+        name="chevron.right"
+        size={20}
+      />
     );
   }
 
@@ -62,7 +49,7 @@ export function SettingsRow({
       accessibilityRole="button"
       accessibilityState={{ busy: isLoading, disabled }}
       accessibilityLabel={label}
-      accessibilityValue={value ? { text: value } : undefined}
+      accessibilityValue={value !== undefined ? { text: value } : undefined}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
@@ -106,7 +93,23 @@ export function SettingsRow({
       >
         {label}
       </Text>
-      <View style={styles.rowAccessory}>{accessory}</View>
+      <View style={[styles.rowAccessory, { gap: spacing.xs }]}>
+        {value !== undefined && (
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.rowValue,
+              {
+                color: colors.text.secondary,
+                fontSize: typography.sizes.sm,
+              },
+            ]}
+          >
+            {value}
+          </Text>
+        )}
+        {accessory}
+      </View>
     </Pressable>
   );
 }
@@ -133,6 +136,7 @@ const styles = StyleSheet.create({
   },
   rowValue: {
     maxWidth: 128,
+    textAlign: 'right',
   },
   disabledRow: {
     opacity: 0.7,

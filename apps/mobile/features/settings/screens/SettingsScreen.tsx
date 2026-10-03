@@ -281,17 +281,18 @@ export default function SettingsScreen() {
 
         <PreferencesSection />
 
-        <SettingsSection title="Data">
+        <SettingsSection title="Import & Export">
           <SettingsRow
             icon={<FileImportIcon size={22} color={colors.accent.primary} />}
             label="Import transactions from CSV"
             onPress={() => router.push('/importer/csv')}
+            showChevron
           />
           <SettingsRow
             icon={<MailIcon size={22} color={colors.accent.primary} />}
             label="Export data"
             onPress={() => router.push('/export')}
-            value="Receive by email"
+            showChevron
           />
         </SettingsSection>
 
@@ -300,19 +301,19 @@ export default function SettingsScreen() {
             icon={<BuildingBankIcon size={22} color={colors.accent.primary} />}
             label="Mortgage calculator"
             onPress={() => router.push('/tools/mortgage')}
-            value="Compare repayments and overpayments"
+            showChevron
           />
           <SettingsRow
             icon={<CalculatorIcon size={22} color={colors.accent.primary} />}
             label="Loan calculator"
             onPress={() => router.push('/tools/loan')}
-            value="Calculate and compare loans"
+            showChevron
           />
           <SettingsRow
             icon={<HomeIcon size={22} color={colors.accent.primary} />}
             label="Stamp duty calculator"
             onPress={() => router.push('/tools/stamp-duty')}
-            value="Estimate property tax"
+            showChevron
           />
         </SettingsSection>
 
