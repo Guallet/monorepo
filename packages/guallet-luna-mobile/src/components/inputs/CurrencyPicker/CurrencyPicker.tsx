@@ -224,7 +224,9 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
       <CurrencySheetFrame
         title={
           props.title ??
-          (props.selectionMode === 'single' ? 'Choose currency' : 'Choose currencies')
+          (props.selectionMode === 'single'
+            ? 'Choose currency'
+            : 'Choose currencies')
         }
         showCloseIcon={!saving}
         renderSheet={renderSheet}
@@ -509,7 +511,14 @@ function CurrencySheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ title, showCloseIcon, visible, onDismiss, children, snapPoints: ['full'] });
+  return renderSheet({
+    title,
+    showCloseIcon,
+    visible,
+    onDismiss,
+    children,
+    snapPoints: ['full'],
+  });
 }
 
 const styles = StyleSheet.create({

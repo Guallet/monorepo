@@ -1,10 +1,10 @@
-import { BottomSheet } from '@guallet/luna-mobile';
 import {
   ChevronDownIcon,
   ChevronRightIcon,
   SearchIcon,
+  CategoryIcon,
 } from '@guallet/luna-mobile/icons';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -16,8 +16,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { CategoryIcon } from '@guallet/luna-mobile/icons';
-import { useTheme } from '@guallet/luna-mobile';
+import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import {
   buildCategoryPickerTree,
   toggleCategorySelection,
@@ -74,7 +73,8 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   const [query, setQuery] = useState('');
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [draftIds, setDraftIds] = useState<string[]>([]);
-  const skipDismissCallback = useRef(false);
+
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const tree = useMemo(
     () => buildCategoryPickerTree(categories, query),
@@ -90,14 +90,17 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
       : props.value
         ? [props.value]
         : [];
-  const selectedCategory = selectedIds
+  const selectedCategories = selectedIds
     .map((id) => categoriesById.get(id))
     .filter(
       (category): category is CategoryPickerItem => category !== undefined,
     );
-  const triggerLabel = selectedCategory.length
-    ? selectedCategory.map((category) => category.name).join(', ')
-    : placeholder;
+  const selectedCategory =
+    selectedCategories.length === 1 ? selectedCategories[0] : undefined;
+  const triggerLabel =
+    selectedCategories.length > 1
+      ? `${selectedCategories.length} categories selected`
+      : (selectedCategory?.name ?? placeholder);
   const recents = recentCategoryIds
     .map((id) => categoriesById.get(id))
     .filter(
@@ -105,6 +108,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
     );
 
   function openSheet() {
+    setIsBottomSheetOpen(true);
     setQuery('');
     setDraftIds(selectedIds);
     setExpandedIds(selectedCategoryParentIds(categories, selectedIds));
@@ -112,16 +116,14 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   }
 
   function closeSheet() {
-    skipDismissCallback.current = true;
+    setIsBottomSheetOpen(false);
     setIsPresented(false);
   }
 
   function handleDismiss() {
+    if (!isBottomSheetOpen) return;
+    setIsBottomSheetOpen(false);
     setIsPresented(false);
-    if (skipDismissCallback.current) {
-      skipDismissCallback.current = false;
-      return;
-    }
     onCancel?.();
   }
 
@@ -145,8 +147,7 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   }
 
   function cancelSelection() {
-    onCancel?.();
-    closeSheet();
+    handleDismiss();
   }
 
   return (
@@ -168,12 +169,21 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
           style,
         ]}
       >
+        {selectedCategory && (
+          <CategoryIcon
+            name={selectedCategory.icon}
+            color={selectedCategory.colour ?? colors.text.primary}
+            size={spacing.lg}
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+          />
+        )}
         <Text
           numberOfLines={1}
           style={[
             styles.triggerText,
             {
-              color: selectedCategory.length
+              color: selectedCategories.length
                 ? colors.text.primary
                 : colors.text.placeholder,
               fontSize: typography.sizes.md,
@@ -190,8 +200,8 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
         containerColor={colors.surface.background.primary}
         contentPadding={0}
         isOpen={isPresented}
-      title="Choose category"
-      showCloseIcon
+        title="Choose category"
+        showCloseIcon
         onClose={handleDismiss}
         snapPoints={['full']}
         testID="category-picker-sheet"

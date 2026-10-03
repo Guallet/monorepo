@@ -25,7 +25,7 @@ export interface BottomSheetProps extends Omit<
   isOpen: boolean;
   title: string;
   /** Called when the close button is pressed or the user dismisses the sheet. */
-  onClose?: () => void;
+  onClose: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -102,9 +102,7 @@ export function BottomSheet({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Close bottom sheet"
-                onPress={() => {
-                  onClose?.();
-                }}
+                onPress={onClose}
                 style={({ pressed }) => [
                   styles.closeButton,
                   {
@@ -155,7 +153,7 @@ function DateRangeBottomSheet({
       isOpen={visible}
       title={title}
       showCloseIcon={showCloseIcon}
-      onDismiss={onDismiss}
+      onClose={onDismiss}
       snapPoints={snapPoints}
       contentPadding={0}
     >
