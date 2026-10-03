@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/auth/MobileAuthProvider';
+import { AuthNavigator } from '@/auth/auth-navigator';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {
@@ -11,14 +12,12 @@ import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
 } from 'expo-router/react-navigation';
-import { Stack } from 'expo-router';
 import { AppStateStatus, Platform } from 'react-native';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LunaProvider, useTheme, useThemeMode } from '@guallet/luna-mobile';
 import { LunaBottomSheetProvider } from '@/components/ui/BottomSheet';
-import { ImportJobMonitor } from '@/features/importer/ImportJobMonitor';
 import { BudgetMonthProvider } from '@/features/budgets/BudgetMonthContext';
 
 // Create a client
@@ -57,26 +56,8 @@ function AppNavigation() {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <GualletClientProvider client={gualletClient}>
-              <ImportJobMonitor />
               <BudgetMonthProvider>
-                <Stack
-                  screenOptions={{
-                    contentStyle: {
-                      backgroundColor: colors.surface.background.page,
-                    },
-                    headerStyle: {
-                      backgroundColor: colors.surface.background.primary,
-                    },
-                    headerBackButtonDisplayMode: 'minimal',
-                    headerTintColor: colors.text.primary,
-                    headerTitleStyle: { color: colors.text.primary },
-                  }}
-                >
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                </Stack>
+                <AuthNavigator />
               </BudgetMonthProvider>
               <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
             </GualletClientProvider>

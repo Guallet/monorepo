@@ -666,8 +666,8 @@ export function ImportResultsScreen({
       title={title}
       description={description}
       action="Go to transactions"
-      onAction={() => router.replace('/(tabs)/transactions')}
-      onBack={() => router.replace('/(tabs)/settings')}
+      onAction={() => router.replace('/(protected)/(tabs)/transactions')}
+      onBack={() => router.replace('/(protected)/(tabs)/settings')}
     >
       <ErrorText message={error} />
       {!isStatusUnavailable &&
