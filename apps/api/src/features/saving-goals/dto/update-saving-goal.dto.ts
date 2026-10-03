@@ -30,7 +30,11 @@ export class UpdateSavingGoalDto {
   @Min(0)
   targetAmount?: number;
 
-  @ApiProperty({ required: false, format: 'date-time', nullable: true })
+  @ApiProperty({
+    description: 'The target date as an ISO 8601 date or date-time string',
+    required: false,
+    nullable: true,
+  })
   @IsOptional()
   @IsDateString()
   targetDate?: string;

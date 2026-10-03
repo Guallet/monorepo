@@ -46,7 +46,10 @@ export class CreateRegularPaymentDto {
   @IsNotEmpty()
   cadence: RecurrenceCadence;
 
-  @ApiProperty({ format: 'date', required: false })
+  @ApiProperty({
+    description: 'The start date as an ISO 8601 date or date-time string',
+    required: false,
+  })
   @IsOptional()
   @IsDateString()
   startDate?: string;

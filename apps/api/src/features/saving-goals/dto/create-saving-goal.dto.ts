@@ -33,9 +33,8 @@ export class CreateSavingGoalDto {
   targetAmount: number;
 
   @ApiProperty({
-    format: 'date-time',
     required: false,
-    description: 'The target date for the saving goal',
+    description: 'The target date as an ISO 8601 date or date-time string',
     nullable: true,
   })
   @IsOptional()

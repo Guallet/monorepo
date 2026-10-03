@@ -80,7 +80,8 @@ describe('API DTO OpenAPI contracts', () => {
               expect(field.enum?.length).toBeGreaterThan(0);
             }
             if (validator === 'IsDateString') {
-              expect(['date', 'date-time']).toContain(field.format);
+              expect(field.type).toBe('string');
+              expect(field.format).toBeUndefined();
             }
             const formats: Record<string, string> = {
               IsUUID: 'uuid',
@@ -116,15 +117,6 @@ describe('API DTO OpenAPI contracts', () => {
       }
     }
   }
-
-  it('documents regular-payment startDate as a date-only value', () => {
-    expect(schemas.CreateRegularPaymentDto.properties?.startDate).toMatchObject(
-      {
-        type: 'string',
-        format: 'date',
-      },
-    );
-  });
 
   it('registers all referenced schemas, including standalone CSV mappings', async () => {
     const csvSchemas = await schemasFor([CsvImportRequestDto]);
