@@ -24,7 +24,7 @@ export class CurrentAccountPropertiesDto {
   @Type(() => CurrentAccountDetailsDto)
   details: CurrentAccountDetailsDto;
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: Number, nullable: true })
   @IsNumber()
   @IsOptional()
   overdraft: number | null;

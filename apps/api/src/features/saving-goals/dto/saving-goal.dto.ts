@@ -60,6 +60,7 @@ export class SavingGoalDto {
   remainingAmount: number;
 
   @ApiProperty({
+    type: Number,
     description:
       'Days remaining until the target date, negative if overdue, null if no target date',
     nullable: true,

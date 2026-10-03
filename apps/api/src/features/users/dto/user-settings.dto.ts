@@ -34,7 +34,7 @@ export class UserCurrenciesSettingsRequestDto {
 }
 
 export class UserCurrenciesSettingsDto {
-  @ApiProperty({ nullable: true, minLength: 3, maxLength: 3 })
+  @ApiProperty({ type: String, nullable: true, minLength: 3, maxLength: 3 })
   default_currency: string | null;
 
   @ApiProperty({ type: [String] })

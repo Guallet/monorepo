@@ -33,6 +33,7 @@ export class CreateSavingGoalDto {
   targetAmount: number;
 
   @ApiProperty({
+    format: 'date-time',
     required: false,
     description: 'The target date for the saving goal',
     nullable: true,

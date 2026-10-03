@@ -35,7 +35,7 @@ export class CreateTransactionDto {
   @Length(3, 3)
   currency?: string;
 
-  @ApiProperty()
+  @ApiProperty({ format: 'date-time' })
   @IsDateString()
   date: string;
 
