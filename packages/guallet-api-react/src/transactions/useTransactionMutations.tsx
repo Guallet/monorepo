@@ -17,12 +17,12 @@ export function useTransactionMutations() {
         request,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: (data) => {
       // Add the new transaction to the cache
       queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -35,12 +35,12 @@ export function useTransactionMutations() {
     },
     onSuccess: async (data) => {
       queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -58,12 +58,12 @@ export function useTransactionMutations() {
       });
     },
     onSuccess: async () => {
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -82,12 +82,12 @@ export function useTransactionMutations() {
     },
     onSuccess: async (data) => {
       queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -96,12 +96,12 @@ export function useTransactionMutations() {
       return await gualletClient.transactions.delete(id);
     },
     onSuccess: async () => {
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
