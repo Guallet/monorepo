@@ -10,7 +10,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { CheckIcon, ChevronDownIcon, CloseIcon } from '../../../icons';
+import { CheckIcon, ChevronDownIcon } from '../../../icons';
 import { BottomSheet } from '../../../overlays/BottomSheet';
 import { useTheme } from '../../../theme';
 import { Button } from '../../buttons';
@@ -64,7 +64,6 @@ export function ColorPicker({
   const selectedIndex = palette.findIndex(
     (color) => color.toLowerCase() === value?.toLowerCase(),
   );
-  const touchSize = spacing.xxl + spacing.xs;
 
   function open() {
     if (openRef.current) return;
@@ -142,8 +141,10 @@ export function ColorPicker({
         </View>
       </Button>
       <BottomSheet
-        isPresented={visible}
-        onDismiss={cancel}
+        isOpen={visible}
+        title="Choose a colour"
+        showCloseIcon
+        onClose={cancel}
         snapPoints={['half']}
         contentPadding={0}
       >
@@ -157,34 +158,6 @@ export function ColorPicker({
             bottomSheetStyle,
           ]}
         >
-          <View style={[styles.header, { minHeight: touchSize }]}>
-            <Text
-              accessibilityRole="header"
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.lg,
-                fontWeight: '600',
-              }}
-            >
-              Choose a colour
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Close colour picker"
-              onPress={cancel}
-              style={[
-                styles.closeButton,
-                { minHeight: touchSize, minWidth: touchSize },
-              ]}
-            >
-              <CloseIcon
-                size={spacing.lg}
-                color={colors.text.secondary}
-                accessibilityElementsHidden
-                importantForAccessibility="no"
-              />
-            </Pressable>
-          </View>
           <View
             style={[
               styles.divider,
@@ -293,15 +266,6 @@ const styles = StyleSheet.create({
   triggerSwatch: { borderWidth: 1 },
   triggerText: { flex: 1 },
   sheet: { flex: 1, width: '100%' },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  closeButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   divider: { height: 1 },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   swatchButton: {

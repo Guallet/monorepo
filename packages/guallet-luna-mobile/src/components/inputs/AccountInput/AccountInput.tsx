@@ -165,6 +165,7 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
         />
       </Pressable>
       <AccountSheetFrame
+        title={props.selectionMode === 'single' ? 'Select an account' : 'Select accounts'}
         renderSheet={renderSheet}
         visible={visible}
         onDismiss={cancel}
@@ -179,46 +180,6 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
             props.bottomSheetStyle,
           ]}
         >
-          <View
-            style={[
-              styles.header,
-              {
-                paddingHorizontal: spacing.md,
-                paddingBottom: spacing.sm,
-              },
-            ]}
-          >
-            <Text
-              accessibilityRole="header"
-              style={[
-                styles.title,
-                {
-                  color: colors.text.primary,
-                  fontSize: typography.sizes.lg,
-                },
-              ]}
-            >
-              {props.selectionMode === 'single'
-                ? 'Select an account'
-                : 'Select accounts'}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Cancel account selection"
-              onPress={cancel}
-              style={styles.cancel}
-            >
-              <Text
-                style={{
-                  color: colors.accent.primary,
-                  fontSize: typography.sizes.sm,
-                  fontWeight: '600',
-                }}
-              >
-                Cancel
-              </Text>
-            </Pressable>
-          </View>
           <View
             style={[
               styles.search,
@@ -472,17 +433,19 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
 
 /** Defer the app's renderer to a component boundary. */
 function AccountSheetFrame({
+  title,
   renderSheet,
   visible,
   onDismiss,
   children,
 }: Readonly<{
+  title: string;
   renderSheet: DateRangeSheetRenderer;
   visible: boolean;
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ visible, onDismiss, children, snapPoints: ['full'] });
+  return renderSheet({ title, showCloseIcon: true, visible, onDismiss, children, snapPoints: ['full'] });
 }
 
 function accountInitials(name: string): string {
@@ -502,19 +465,6 @@ const styles = StyleSheet.create({
   },
   triggerText: { flex: 1 },
   sheet: { flex: 1 },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 52,
-  },
-  title: { fontWeight: '700' },
-  cancel: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 44,
-    minWidth: 56,
-  },
   search: {
     alignItems: 'center',
     borderWidth: 1,

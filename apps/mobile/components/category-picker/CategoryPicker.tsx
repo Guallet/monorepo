@@ -189,8 +189,10 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
       <BottomSheet
         containerColor={colors.surface.background.primary}
         contentPadding={0}
-        isPresented={isPresented}
-        onDismiss={handleDismiss}
+        isOpen={isPresented}
+      title="Choose category"
+      showCloseIcon
+        onClose={handleDismiss}
         snapPoints={['full']}
         testID="category-picker-sheet"
       >
@@ -204,17 +206,6 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
             bottomSheetStyle,
           ]}
         >
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.xl,
-              fontWeight: '700',
-              marginBottom: spacing.md,
-            }}
-          >
-            Choose category
-          </Text>
-
           <View
             style={[
               styles.search,

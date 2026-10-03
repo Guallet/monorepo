@@ -75,23 +75,13 @@ export function ChoiceField({
         </Text>
       )}
       <BottomSheet
-        isPresented={visible}
-        onDismiss={() => setVisible(false)}
+        isOpen={visible}
+      title={label}
+      showCloseIcon
+        onClose={() => setVisible(false)}
         snapPoints={['half', 'full']}
       >
         <View style={{ padding: spacing.md }}>
-          <Text
-            style={[
-              styles.sheetTitle,
-              {
-                color: colors.text.primary,
-                fontSize: typography.sizes.lg,
-                marginBottom: spacing.md,
-              },
-            ]}
-          >
-            {label}
-          </Text>
           <ScrollView>
             {options.map((option) => (
               <Pressable
@@ -140,7 +130,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: 44,
   },
-  sheetTitle: { fontWeight: '700' },
   option: {
     borderBottomWidth: 1,
     minHeight: 48,

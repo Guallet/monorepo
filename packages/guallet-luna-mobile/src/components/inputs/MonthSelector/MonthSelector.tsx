@@ -88,6 +88,8 @@ export function MonthSelector({
   }
 
   const sheet = renderSheet({
+    title: 'Select month',
+    showCloseIcon: true,
     visible,
     onDismiss: () => setVisible(false),
     children: (
@@ -101,32 +103,6 @@ export function MonthSelector({
           bottomSheetStyle,
         ]}
       >
-        <View style={styles.sheetHeader}>
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.lg,
-              fontWeight: '600',
-            }}
-          >
-            Select month
-          </Text>
-          <Pressable
-            onPress={() => setVisible(false)}
-            accessibilityRole="button"
-            accessibilityLabel="Close month picker"
-            style={styles.close}
-          >
-            <Text
-              style={{
-                color: colors.accent.primary,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              Close
-            </Text>
-          </Pressable>
-        </View>
         <View style={styles.yearRow}>
           <Pressable
             onPress={() => setRequestedYear(displayYear - 1)}
@@ -336,12 +312,6 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   label: { flexShrink: 1, fontWeight: '600' },
-  sheetHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  close: { alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   yearRow: {
     alignItems: 'center',
     flexDirection: 'row',

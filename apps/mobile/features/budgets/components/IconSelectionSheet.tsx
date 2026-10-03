@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import {
   CategoryIcon,
@@ -19,7 +19,7 @@ export function IconSelectionSheet({
   onSelect,
   onDismiss,
 }: Readonly<IconSelectionSheetProps>) {
-  const { colors, spacing, typography } = useTheme();
+  const { colors } = useTheme();
   const [draftIcon, setDraftIcon] = useState(selectedIcon);
 
   useEffect(() => {
@@ -28,34 +28,14 @@ export function IconSelectionSheet({
 
   return (
     <BottomSheet
-      isPresented={visible}
-      onDismiss={onDismiss}
+      isOpen={visible}
+      title="Select an icon"
+      showCloseIcon
+      onClose={onDismiss}
       snapPoints={['half']}
       testID="budget-icon-selection-sheet"
     >
       <View style={styles.sheet}>
-        <View style={[styles.header, { marginBottom: spacing.md }]}>
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.lg,
-              fontWeight: '700',
-            }}
-          >
-            Select an icon
-          </Text>
-          <Pressable accessibilityRole="button" onPress={onDismiss}>
-            <Text
-              style={{
-                color: colors.accent.primary,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              Close
-            </Text>
-          </Pressable>
-        </View>
-
         <ScrollView
           contentContainerStyle={styles.grid}
           showsVerticalScrollIndicator={false}
@@ -110,11 +90,6 @@ function getPressedOpacity(pressed: boolean): number {
 const styles = StyleSheet.create({
   sheet: {
     flex: 1,
-  },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   grid: {
     flexDirection: 'row',

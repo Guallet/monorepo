@@ -1,7 +1,6 @@
 import {
   IconCalendar,
   IconChevronDown,
-  IconChevronLeft,
 } from '@tabler/icons-react-native';
 import { useRef, useState, type ReactNode } from 'react';
 import {
@@ -255,30 +254,6 @@ export function DateRangePicker({
             bottomSheetStyle,
           ]}
         >
-          <View style={[styles.header, { paddingHorizontal: spacing.md }]}>
-            <Pressable
-              style={styles.back}
-              onPress={cancel}
-              accessibilityRole="button"
-              accessibilityLabel="Cancel date range selection"
-            >
-              <IconChevronLeft
-                size={24}
-                strokeWidth={1.5}
-                color={colors.accent.primary}
-              />
-            </Pressable>
-            <Text
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.lg,
-                fontWeight: '600',
-              }}
-            >
-              Date range
-            </Text>
-            <View style={styles.back} />
-          </View>
           <ScrollView
             style={styles.content}
             contentContainerStyle={{ padding: spacing.md }}
@@ -467,7 +442,7 @@ function DateRangeSheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ visible, onDismiss, children, snapPoints: ['full'] });
+  return renderSheet({ title: 'Date range', showCloseIcon: true, visible, onDismiss, children, snapPoints: ['full'] });
 }
 
 /** Keep each endpoint's value and expansion state accessible as one control. */
@@ -571,18 +546,6 @@ const styles = StyleSheet.create({
   },
   triggerText: { flex: 1 },
   sheet: { flex: 1 },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 60,
-  },
-  back: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 44,
-    height: 44,
-  },
   content: { flex: 1 },
   endpoint: {
     alignItems: 'center',

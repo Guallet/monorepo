@@ -72,50 +72,23 @@ export function CategorySelectionSheet({
 
   return (
     <BottomSheet
-      isPresented={visible}
-      onDismiss={onDismiss}
+      isOpen={visible}
+      title="Select categories"
+      showCloseIcon
+      onClose={onDismiss}
       snapPoints={['full']}
       testID="budget-category-selection-sheet"
     >
       <View style={styles.sheet}>
-        <View style={[styles.header, { marginBottom: spacing.md }]}>
-          <View style={styles.headerCopy}>
-            <Text
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.lg,
-                fontWeight: '700',
-              }}
-            >
-              Select categories
-            </Text>
-            <Text
-              style={{
-                color: colors.text.secondary,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              Choose the categories this budget should track.
-            </Text>
-          </View>
-          <Pressable
-            accessibilityLabel="Close category picker"
-            accessibilityRole="button"
-            onPress={onDismiss}
-            style={styles.closeButton}
-          >
-            <Text
-              style={{
-                color: colors.accent.primary,
-                fontSize: typography.sizes.sm,
-                fontWeight: '600',
-              }}
-            >
-              Close
-            </Text>
-          </Pressable>
-        </View>
-
+        <Text
+          style={{
+            color: colors.text.secondary,
+            fontSize: typography.sizes.sm,
+            marginBottom: spacing.md,
+          }}
+        >
+          Choose the categories this budget should track.
+        </Text>
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
@@ -287,16 +260,6 @@ const styles = StyleSheet.create({
   sheet: {
     flex: 1,
   },
-  header: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  headerCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  closeButton: { minHeight: 44, justifyContent: 'center' },
   option: {
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,

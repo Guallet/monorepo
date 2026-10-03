@@ -27,7 +27,7 @@ export function SelectionSheet({
   onClose,
   onSelect,
 }: Readonly<SelectionSheetProps>) {
-  const { colors, spacing, typography } = useTheme();
+  const { colors, spacing } = useTheme();
 
   function handleSelect(id: string | null) {
     onSelect(id);
@@ -37,8 +37,10 @@ export function SelectionSheet({
   return (
     <BottomSheet
       contentPadding={0}
-      isPresented={visible}
-      onDismiss={onClose}
+      isOpen={visible}
+      title={title}
+      showCloseIcon
+      onClose={onClose}
       snapPoints={['full']}
     >
       <View
@@ -50,27 +52,6 @@ export function SelectionSheet({
           },
         ]}
       >
-        <View style={styles.header}>
-          <Text
-            style={[
-              styles.title,
-              { color: colors.text.primary, fontSize: typography.sizes.lg },
-            ]}
-          >
-            {title}
-          </Text>
-          <Pressable onPress={onClose} hitSlop={12}>
-            <Text
-              style={{
-                color: colors.accent.primary,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              Done
-            </Text>
-          </Pressable>
-        </View>
-
         <ScrollView showsVerticalScrollIndicator={false}>
           {allowNone && (
             <OptionRow
@@ -139,15 +120,6 @@ function OptionRow({
 const styles = StyleSheet.create({
   sheet: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  title: {
-    fontWeight: '700',
   },
   option: {
     minHeight: 52,

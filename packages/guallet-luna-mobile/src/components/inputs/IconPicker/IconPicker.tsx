@@ -14,7 +14,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { CategoryIcon, ChevronDownIcon, CloseIcon } from '../../../icons';
+import { CategoryIcon, ChevronDownIcon } from '../../../icons';
 import { useTheme } from '../../../theme';
 import {
   usePickerSheet,
@@ -65,7 +65,6 @@ export function IconPicker({
   const availableIcons = [...new Set(icons.filter(isCategoryIconName))];
   const selectedIcon = isCategoryIconName(value) ? value : null;
   const label = selectedIcon ? iconLabel(selectedIcon) : 'Choose an icon';
-  const touchSize = spacing.xxl + spacing.xs;
 
   function open() {
     if (openRef.current) return;
@@ -168,36 +167,6 @@ export function IconPicker({
             bottomSheetStyle,
           ]}
         >
-          <View
-            style={[styles.header, { minHeight: spacing.xxl + spacing.lg }]}
-          >
-            <Text
-              accessibilityRole="header"
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.lg,
-                fontWeight: '600',
-              }}
-            >
-              Choose an icon
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Close icon picker"
-              onPress={cancel}
-              style={[
-                styles.closeButton,
-                { minHeight: touchSize, minWidth: touchSize },
-              ]}
-            >
-              <CloseIcon
-                size={spacing.lg}
-                color={colors.text.secondary}
-                accessibilityElementsHidden
-                importantForAccessibility="no"
-              />
-            </Pressable>
-          </View>
           <Text
             style={{
               color: colors.text.secondary,
@@ -283,7 +252,7 @@ function IconSheetFrame({
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ visible, onDismiss, children });
+  return renderSheet({ title: 'Choose an icon', showCloseIcon: true, visible, onDismiss, children });
 }
 
 const styles = StyleSheet.create({
@@ -295,12 +264,6 @@ const styles = StyleSheet.create({
   triggerText: { flex: 1 },
   preview: { alignItems: 'center', justifyContent: 'center' },
   sheet: { width: '100%' },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  closeButton: { alignItems: 'center', justifyContent: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
   gridCell: { alignItems: 'center', width: '20%' },
   iconButton: {

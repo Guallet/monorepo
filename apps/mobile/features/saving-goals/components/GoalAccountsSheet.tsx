@@ -41,8 +41,10 @@ export function GoalAccountsSheet({
   return (
     <BottomSheet
       contentPadding={0}
-      isPresented={visible}
-      onDismiss={onDismiss}
+      isOpen={visible}
+      title="Linked accounts"
+      showCloseIcon
+      onClose={onDismiss}
       snapPoints={['full']}
     >
       <View
@@ -51,34 +53,6 @@ export function GoalAccountsSheet({
           { backgroundColor: colors.surface.background.primary },
         ]}
       >
-        <View
-          style={[
-            styles.header,
-            {
-              borderBottomColor: colors.surface.border.primary,
-              paddingHorizontal: spacing.md,
-            },
-          ]}
-        >
-          <Text
-            accessibilityRole="header"
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.lg,
-              fontWeight: '700',
-            }}
-          >
-            Linked accounts
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Cancel account selection"
-            onPress={onDismiss}
-            style={styles.cancel}
-          >
-            <Text style={{ color: colors.accent.primary }}>Cancel</Text>
-          </Pressable>
-        </View>
         <Text
           style={{
             color: colors.text.secondary,
@@ -197,14 +171,6 @@ export function GoalAccountsSheet({
 
 const styles = StyleSheet.create({
   sheet: { flex: 1 },
-  header: {
-    alignItems: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 62,
-  },
-  cancel: { alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   list: { flex: 1 },
   row: {
     alignItems: 'center',

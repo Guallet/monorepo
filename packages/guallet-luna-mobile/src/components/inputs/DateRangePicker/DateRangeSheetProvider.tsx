@@ -2,6 +2,8 @@ import { createContext, useContext, type ReactNode } from 'react';
 
 export interface DateRangeSheetProps {
   visible: boolean;
+  title: string;
+  showCloseIcon?: boolean;
   onDismiss: () => void;
   children: ReactNode;
   snapPoints?: ('half' | 'full')[];

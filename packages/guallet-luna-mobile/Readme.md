@@ -53,6 +53,44 @@ exported as the `categoryIconNames` contract.
 
 ## Components
 
+### BottomSheet
+
+Use `isOpen` to control presentation, `title` for the sheet heading, and
+`onClose` to respond to the close button or a user dismissal. Set
+`showCloseIcon` to `true` to show the close button; it is hidden by default.
+`onClose` fires once per closing action. Update your open state in that callback
+so the sheet can be opened again.
+
+```tsx
+import { useState } from 'react';
+import { Text } from 'react-native';
+import { BottomSheet, Button } from '@guallet/luna-mobile';
+
+function Example() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)}>Open sheet</Button>
+      <BottomSheet
+        isOpen={isOpen}
+        title="Choose an option"
+        showCloseIcon
+        onClose={() => setIsOpen(false)}
+        snapPoints={['half']}
+      >
+        <Text>Sheet content</Text>
+      </BottomSheet>
+    </>
+  );
+}
+```
+
+The component hosts React Native children in Expo's `RNHostView`, which enables
+touch handling inside the native sheet. Consumers pass ordinary React Native
+views and controls. `LunaBottomSheetProvider` installs this sheet for Luna's
+picker components.
+
 ### Button
 
 Customizable button component with multiple variants.

@@ -222,6 +222,11 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
         </Pressable>
       )}
       <CurrencySheetFrame
+        title={
+          props.title ??
+          (props.selectionMode === 'single' ? 'Choose currency' : 'Choose currencies')
+        }
+        showCloseIcon={!saving}
         renderSheet={renderSheet}
         visible={visible}
         onDismiss={cancel}
@@ -236,35 +241,6 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
             props.bottomSheetStyle,
           ]}
         >
-          <View style={[styles.header, { paddingHorizontal: spacing.md }]}>
-            <Text
-              accessibilityRole="header"
-              style={{
-                color: colors.text.primary,
-                fontSize: typography.sizes.xl,
-                fontWeight: '700',
-              }}
-            >
-              {props.title ??
-                (props.selectionMode === 'single'
-                  ? 'Choose currency'
-                  : 'Choose currencies')}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Cancel currency selection"
-              accessibilityState={{ disabled: saving }}
-              disabled={saving}
-              onPress={cancel}
-              style={styles.close}
-            >
-              <CloseIcon
-                accessible={false}
-                color={colors.text.primary}
-                size={22}
-              />
-            </Pressable>
-          </View>
           <View
             style={[
               styles.search,
@@ -519,17 +495,21 @@ function CurrencyRow({
 }
 
 function CurrencySheetFrame({
+  title,
+  showCloseIcon,
   renderSheet,
   visible,
   onDismiss,
   children,
 }: Readonly<{
+  title: string;
+  showCloseIcon: boolean;
   renderSheet: DateRangeSheetRenderer;
   visible: boolean;
   onDismiss: () => void;
   children: ReactNode;
 }>) {
-  return renderSheet({ visible, onDismiss, children, snapPoints: ['full'] });
+  return renderSheet({ title, showCloseIcon, visible, onDismiss, children, snapPoints: ['full'] });
 }
 
 const styles = StyleSheet.create({
@@ -541,18 +521,6 @@ const styles = StyleSheet.create({
   },
   triggerText: { flex: 1 },
   sheet: { flex: 1 },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    minHeight: 56,
-  },
-  close: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 44,
-    width: 44,
-  },
   search: {
     alignItems: 'center',
     borderWidth: 1,

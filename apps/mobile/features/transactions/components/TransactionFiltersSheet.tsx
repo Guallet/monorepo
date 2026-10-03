@@ -196,8 +196,10 @@ export function TransactionFiltersSheet({
   return (
     <BottomSheet
       contentPadding={0}
-      isPresented={visible}
-      onDismiss={onClose}
+      isOpen={visible}
+      title="Filter transactions"
+      showCloseIcon
+      onClose={onClose}
       snapPoints={['full']}
     >
       <View
@@ -209,30 +211,15 @@ export function TransactionFiltersSheet({
           },
         ]}
       >
-        <View style={styles.header}>
-          <View>
-            <Text
-              style={[
-                styles.title,
-                { color: colors.text.primary, fontSize: typography.sizes.lg },
-              ]}
-            >
-              Filter transactions
-            </Text>
-            <Text
-              style={{
-                color: colors.text.secondary,
-                fontSize: typography.sizes.xs,
-              }}
-            >
-              Choose one or more filters
-            </Text>
-          </View>
-          <Pressable onPress={onClose} hitSlop={12}>
-            <Ionicons name="close" size={24} color={colors.text.secondary} />
-          </Pressable>
-        </View>
-
+        <Text
+          style={{
+            color: colors.text.secondary,
+            fontSize: typography.sizes.xs,
+            marginBottom: spacing.md,
+          }}
+        >
+          Choose one or more filters
+        </Text>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -540,15 +527,6 @@ function SelectionList({
 const styles = StyleSheet.create({
   sheet: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  title: {
-    fontWeight: '700',
   },
   section: {
     gap: 10,

@@ -236,6 +236,10 @@ Expo Router requires `export default function` (not named exports) for all route
 
 - Use `BottomSheet` from `@guallet/luna-mobile` for every
   mobile bottom sheet.
+- Pass `isOpen`, `title`, and `onClose`; use `showCloseIcon` to opt into the
+  shared close button. `onClose` handles both the button and native user
+  dismissal. Update the open state in that callback. The sheet owns its header,
+  so consumers should not duplicate its title or close control.
 - Do not import `BottomSheet` directly from `@expo/ui` or use another bottom
   sheet implementation in the mobile app.
 - `packages/guallet-luna-mobile/src/overlays/BottomSheet.tsx` owns Expo's
