@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import type { BudgetDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 import { CashIcon, CategoryIcon } from '@guallet/luna-mobile/icons';
@@ -20,7 +19,8 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
   const progressColor = getProgressColor(metrics, colors);
   const progress = Math.min(metrics.percent, 100);
   let remainingLabel = 'left';
-  if (metrics.isOverBudget) remainingLabel = 'over budget';
+  if (metrics.remaining < 0) remainingLabel = 'over budget';
+  if (metrics.remaining === 0) remainingLabel = 'limit reached';
   const remainingAmount = formatBudgetCurrency(
     Math.abs(metrics.remaining),
     budget.currency,
@@ -28,7 +28,8 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
 
   return (
     <Pressable
-      {...getAccessibilityProps(budget.name, onPress)}
+      accessibilityLabel={`${budget.name}, ${remainingAmount} ${remainingLabel}, ${progress.toFixed(0)} percent used`}
+      accessibilityRole={onPress ? 'button' : undefined}
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
@@ -107,6 +108,8 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
 
       <View
         accessibilityLabel={`${progress.toFixed(0)} percent used`}
+        accessibilityRole="progressbar"
+        accessibilityValue={{ min: 0, max: 100, now: progress }}
         style={[
           styles.progressTrack,
           {
@@ -148,32 +151,8 @@ export function BudgetCard({ budget, onPress }: Readonly<BudgetCardProps>) {
           {progress.toFixed(0)}%
         </Text>
       </View>
-
-      {metrics.isOverBudget && (
-        <Ionicons
-          accessibilityLabel="Over budget"
-          color={colors.status.error}
-          name="warning-outline"
-          size={18}
-          style={styles.warningIcon}
-        />
-      )}
     </Pressable>
   );
-}
-
-function getAccessibilityProps(
-  budgetName: string,
-  onPress: BudgetCardProps['onPress'],
-): {
-  accessibilityLabel?: string;
-  accessibilityRole?: 'button';
-} {
-  if (!onPress) return {};
-  return {
-    accessibilityLabel: `Open ${budgetName} budget`,
-    accessibilityRole: 'button',
-  };
 }
 
 function getPressedOpacity(pressed: boolean, enabled: boolean): number {
@@ -189,6 +168,7 @@ function getCategoryLabel(count: number): string {
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
+    elevation: 1,
     position: 'relative',
   },
   header: {
@@ -229,10 +209,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  warningIcon: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
   },
 });
