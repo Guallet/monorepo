@@ -15,9 +15,9 @@ export class AiAgentDto {
   name: string;
   @ApiProperty()
   modelId: string;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   modelName: string | null;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   customPrompt: string | null;
   @ApiProperty()
   createdAt: string;

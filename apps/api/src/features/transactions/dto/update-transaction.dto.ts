@@ -21,7 +21,7 @@ export class UpdateTransactionDto {
   @IsNotEmpty()
   description?: string;
 
-  @ApiProperty({ required: false, nullable: true })
+  @ApiProperty({ type: String, required: false, nullable: true })
   @IsOptional()
   @IsString()
   notes?: string | null;
@@ -37,12 +37,20 @@ export class UpdateTransactionDto {
   @Length(3, 3)
   currency?: string;
 
-  @ApiProperty({ required: false, format: 'date-time' })
+  @ApiProperty({
+    description: 'The transaction date as an ISO 8601 date or date-time string',
+    required: false,
+  })
   @IsOptional()
   @IsDateString()
   date?: string;
 
-  @ApiProperty({ required: false, format: 'uuid', nullable: true })
+  @ApiProperty({
+    type: String,
+    required: false,
+    format: 'uuid',
+    nullable: true,
+  })
   @IsOptional()
   @IsUUID()
   categoryId?: string | null;

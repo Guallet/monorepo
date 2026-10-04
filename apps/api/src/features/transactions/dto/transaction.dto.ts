@@ -9,7 +9,7 @@ export class TransactionDto {
   accountId: string;
   @ApiProperty()
   description: string;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   notes: string | null;
   @ApiProperty()
   amount: number;
@@ -18,6 +18,7 @@ export class TransactionDto {
   @ApiProperty({ type: String, format: 'date-time' })
   date: Date;
   @ApiProperty({
+    type: String,
     required: false,
     format: 'uuid',
     nullable: true,

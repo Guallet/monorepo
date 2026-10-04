@@ -23,8 +23,8 @@ export class CategoryDto {
   colour: string | null;
 
   @ApiProperty({
-    description: 'The parent of the category',
     type: String,
+    description: 'The parent of the category',
     nullable: true,
   })
   parentId: string | null;

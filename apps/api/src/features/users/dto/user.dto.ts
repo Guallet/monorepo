@@ -6,7 +6,7 @@ export class UserDto {
   name: string;
   @ApiProperty()
   email: string;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   profile_src: string | null;
 
   static fromDomain(domain: User): UserDto {

@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateAiAgentDto {
-  @ApiProperty()
+  @ApiProperty({ format: 'uuid' })
   @IsUUID()
   connectionId: string;
 

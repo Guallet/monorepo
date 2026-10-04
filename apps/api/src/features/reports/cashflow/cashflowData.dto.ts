@@ -10,7 +10,7 @@ export class CashflowDataDto {
 }
 
 export class CategoryDataRowDto {
-  @ApiProperty({ format: 'uuid', nullable: true })
+  @ApiProperty({ type: String, format: 'uuid', nullable: true })
   categoryId: string | null;
   @ApiProperty()
   categoryName: string;
