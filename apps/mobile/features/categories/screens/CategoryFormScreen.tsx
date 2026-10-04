@@ -26,7 +26,6 @@ import {
 import { CategoryIcon, DeleteIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
-import { useCategoryFeedback } from '../CategoryFeedback';
 import {
   categoryForm,
   categoryFormChanged,
@@ -48,7 +47,6 @@ export default function CategoryFormScreen({
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const showAlert = useAlert();
-  const { setFeedback } = useCategoryFeedback();
   const { categories, isLoading, isError, refetch } = useCategories();
   const {
     createCategoryMutation,
@@ -146,18 +144,14 @@ export default function CategoryFormScreen({
     setSaveError(null);
     const request = { ...form, name: form.name.trim() };
     try {
-      let saved;
-      let message = 'Category created';
       if (categoryId) {
-        saved = await updateCategoryMutation.mutateAsync({
+        await updateCategoryMutation.mutateAsync({
           id: categoryId,
           request,
         });
-        message = 'Category updated';
       } else {
-        saved = await createCategoryMutation.mutateAsync({ request });
+        await createCategoryMutation.mutateAsync({ request });
       }
-      setFeedback({ message, categoryId: saved.id, parentId: saved.parentId });
       setCompleted(true);
     } catch (error) {
       setSaveError(errorMessage(error, 'Couldn’t save category. Try again.'));
@@ -177,7 +171,6 @@ export default function CategoryFormScreen({
     try {
       await deleteCategoryMutation.mutateAsync({ id: categoryId });
       setShowDelete(false);
-      setFeedback({ message: 'Category deleted' });
       setCompleted(true);
     } catch (error) {
       setShowDelete(true);
