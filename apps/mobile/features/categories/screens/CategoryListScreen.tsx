@@ -27,10 +27,16 @@ export default function CategoryListScreen() {
   );
 
   function edit(id: string) {
-    router.push({ pathname: '/categories/[id]', params: { id } });
+    router.push({
+      pathname: '/(protected)/categories/[id]',
+      params: { id },
+    });
   }
   function create(parent?: string) {
-    router.push({ pathname: '/categories/new', params: { parent } });
+    router.push({
+      pathname: '/(protected)/categories/new',
+      params: { parent },
+    });
   }
   function toggle(id: string) {
     setExpandedIds((current) => {
