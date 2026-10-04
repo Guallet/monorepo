@@ -12,7 +12,6 @@ import {
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ApiError } from '@guallet/api-client';
 import { useCategories, useCategoryMutations } from '@guallet/api-react';
 import {
   BottomSheet,
@@ -37,6 +36,7 @@ import {
   CategoryState,
   CategoryText,
 } from '../components/CategoryUi';
+import { categoryErrorMessage } from '../categoryErrors';
 
 export default function CategoryFormScreen({
   categoryId,
@@ -154,7 +154,7 @@ export default function CategoryFormScreen({
       }
       setCompleted(true);
     } catch (error) {
-      setSaveError(errorMessage(error, 'Couldn’t save category. Try again.'));
+      setSaveError(categoryErrorMessage(error, 'save'));
     } finally {
       submission.current = false;
     }
@@ -174,9 +174,7 @@ export default function CategoryFormScreen({
       setCompleted(true);
     } catch (error) {
       setShowDelete(true);
-      setDeleteError(
-        errorMessage(error, 'Couldn’t delete category. Try again.'),
-      );
+      setDeleteError(categoryErrorMessage(error, 'delete'));
     } finally {
       submission.current = false;
     }
@@ -413,15 +411,6 @@ export default function CategoryFormScreen({
       </BottomSheet>
     </AppScreen>
   );
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  if (
-    error instanceof ApiError &&
-    (error.status === 400 || error.status === 404 || error.status === 409)
-  )
-    return error.message;
-  return fallback;
 }
 
 function DeleteButtonText({ label }: Readonly<{ label: string }>) {
