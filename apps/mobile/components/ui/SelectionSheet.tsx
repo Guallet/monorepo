@@ -87,6 +87,9 @@ function OptionRow({
 
   return (
     <Pressable
+      accessibilityRole="radio"
+      accessibilityLabel={label}
+      accessibilityState={{ checked: selected }}
       onPress={onPress}
       style={({ pressed }) => [
         styles.option,
@@ -105,6 +108,7 @@ function OptionRow({
       </Text>
       {selected && (
         <Text
+          accessible={false}
           style={{
             color: colors.accent.primary,
             fontSize: typography.sizes.lg,

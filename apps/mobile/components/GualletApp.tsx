@@ -2,6 +2,7 @@ import { AuthProvider } from '@/auth/MobileAuthProvider';
 import { AuthNavigator } from '@/auth/auth-navigator';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
+import { ThemePreferenceProvider } from '@/features/settings/ThemePreferenceProvider';
 import {
   focusManager,
   GualletClientProvider,
@@ -19,7 +20,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   AlertProvider,
-  LunaProvider,
   useTheme,
   useThemeMode,
   ToastProvider,
@@ -83,8 +83,8 @@ export function GualletApp() {
   useAppState(onAppStateChange);
 
   return (
-    <LunaProvider>
+    <ThemePreferenceProvider>
       <AppNavigation />
-    </LunaProvider>
+    </ThemePreferenceProvider>
   );
 }
