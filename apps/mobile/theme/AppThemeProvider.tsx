@@ -57,6 +57,7 @@ export function AppThemeProvider({ children }: Readonly<PropsWithChildren>) {
   useEffect(() => {
     // React Native Web has no appearance override; Luna still applies its tokens.
     if (Platform.OS !== 'web' && isLoaded) {
+      // RN 0.86 resets with 'unspecified'; null belongs to older API versions.
       Appearance.setColorScheme(getThemeOverride(preference) ?? 'unspecified');
     }
   }, [preference, isLoaded]);

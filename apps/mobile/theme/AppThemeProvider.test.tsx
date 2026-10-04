@@ -12,6 +12,9 @@ vi.mock('react-native', () => ({
   Platform: { OS: 'ios' },
   Appearance: {
     setColorScheme: vi.fn((value: string) => {
+      if (!['light', 'dark', 'unspecified'].includes(value)) {
+        throw new Error('Unsupported React Native 0.86 appearance');
+      }
       native.override = value;
       for (const listener of native.listeners) listener();
     }),

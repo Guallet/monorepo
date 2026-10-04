@@ -9,7 +9,8 @@ export const themeLabels: Record<ThemePreference, string> = {
 
 /** Validate values read from storage or an untyped selection control. */
 export function isThemePreference(value: unknown): value is ThemePreference {
-  return themePreferences.some((preference) => preference === value);
+  const validPreferences: readonly unknown[] = themePreferences;
+  return validPreferences.includes(value);
 }
 
 /** An absent override lets Luna and native appearance follow the phone. */
