@@ -15,8 +15,8 @@ export function useCategoryMutations() {
     mutationFn: async ({ request }: { request: CreateCategoryRequest }) => {
       return await gualletClient.categories.create(request);
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
     },
@@ -38,9 +38,9 @@ export function useCategoryMutations() {
         dto: request,
       });
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [CATEGORIES_QUERY_KEY],
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [CATEGORIES_QUERY_KEY, data.id],
       });
     },
     onError: async (error, variables, context) => {
@@ -52,12 +52,8 @@ export function useCategoryMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.categories.delete(id);
     },
-    onSuccess: async (_data, { id }) => {
-      queryClient.removeQueries({
-        queryKey: [CATEGORIES_QUERY_KEY, id],
-        exact: true,
-      });
-      await queryClient.invalidateQueries({
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
     },
@@ -81,10 +77,8 @@ export function useSeedDefaultCategoriesMutation() {
     mutationFn: async () => {
       return await gualletClient.categories.seedDefaults();
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [CATEGORIES_QUERY_KEY],
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] });
     },
     onError: (error) => {
       console.error(error);
