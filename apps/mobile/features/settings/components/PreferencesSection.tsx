@@ -9,14 +9,7 @@ import { availableCurrencies } from '@/components/currencyPickerData';
 import { SettingsRow } from './SettingsRow';
 import { SettingsSection } from './SettingsSection';
 import { useMobileUserPreferences } from '../useMobileUserPreferences';
-import { useThemePreference } from '../ThemePreferenceProvider';
-import { ThemeIcon } from '@guallet/luna-mobile/icons';
-
-const themeOptions = [
-  { id: 'system', label: 'System' },
-  { id: 'light', label: 'Light' },
-  { id: 'dark', label: 'Dark' },
-];
+import { ThemePreferenceRow } from './ThemePreferenceRow';
 
 const dateFormatOptions: DateFormat[] = [
   'DD/MM/YYYY',
@@ -24,33 +17,15 @@ const dateFormatOptions: DateFormat[] = [
   'YYYY/MM/DD',
 ];
 
+/** Compose local appearance and account-backed preference controls. */
 export function PreferencesSection() {
   const { colors, spacing } = useTheme();
   const showAlert = useAlert();
-  const { preference, setPreference } = useThemePreference();
-  const [isThemePickerVisible, setIsThemePickerVisible] = useState(false);
-  const [isSavingTheme, setIsSavingTheme] = useState(false);
   const { defaultCurrency, preferredCurrencies, dateFormat } =
     useMobileUserPreferences();
   const { updateUserSettingsMutation } = useUserSettingsMutations();
   const [isDateFormatPickerVisible, setIsDateFormatPickerVisible] =
     useState(false);
-
-  async function saveTheme(value: string | null) {
-    if (value !== 'system' && value !== 'light' && value !== 'dark') return;
-
-    setIsSavingTheme(true);
-    try {
-      await setPreference(value);
-    } catch {
-      showAlert({
-        title: 'Couldn’t save theme',
-        message: 'Please try again in a moment.',
-      });
-    } finally {
-      setIsSavingTheme(false);
-    }
-  }
 
   async function saveDefaultCurrency(currencyCode: string) {
     try {
@@ -101,14 +76,7 @@ export function PreferencesSection() {
   return (
     <View style={{ gap: spacing.lg }}>
       <SettingsSection title="Preferences">
-        <SettingsRow
-          disabled={isSavingTheme}
-          icon={<ThemeIcon color={colors.accent.primary} size={21} />}
-          isLoading={isSavingTheme}
-          label="Theme"
-          onPress={() => setIsThemePickerVisible(true)}
-          value={themeOptions.find((option) => option.id === preference)?.label}
-        />
+        <ThemePreferenceRow />
         <CurrencyPicker
           selectionMode="single"
           value={defaultCurrency}
@@ -176,15 +144,6 @@ export function PreferencesSection() {
           value={dateFormat}
         />
       </SettingsSection>
-
-      <SelectionSheet
-        onClose={() => setIsThemePickerVisible(false)}
-        onSelect={(value) => void saveTheme(value)}
-        options={themeOptions}
-        selectedId={preference}
-        title="Theme"
-        visible={isThemePickerVisible}
-      />
 
       <SelectionSheet
         onClose={() => setIsDateFormatPickerVisible(false)}

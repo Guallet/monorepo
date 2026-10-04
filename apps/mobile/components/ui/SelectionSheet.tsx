@@ -1,5 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
+import { CheckIcon } from '@guallet/luna-mobile/icons';
 
 export type SelectionOption = {
   id: string;
@@ -14,9 +15,11 @@ interface SelectionSheetProps {
   allowNone?: boolean;
   noneLabel?: string;
   onClose: () => void;
+  /** Called before immediate dismissal; the caller owns async saves and errors. */
   onSelect: (id: string | null) => void;
 }
 
+/** Present single-choice options and dismiss immediately after selection. */
 export function SelectionSheet({
   visible,
   title,
@@ -29,6 +32,7 @@ export function SelectionSheet({
 }: Readonly<SelectionSheetProps>) {
   const { colors, spacing } = useTheme();
 
+  /** Selection does not await persistence; dismissal is independent of saving. */
   function handleSelect(id: string | null) {
     onSelect(id);
     onClose();
@@ -74,6 +78,7 @@ export function SelectionSheet({
   );
 }
 
+/** Expose each option as a radio control with a decorative selection icon. */
 function OptionRow({
   label,
   selected,
@@ -97,25 +102,25 @@ function OptionRow({
           borderBottomColor: colors.surface.border.primary,
           opacity: pressed ? 0.7 : 1,
           paddingVertical: spacing.md,
+          gap: spacing.sm,
         },
       ]}
     >
       <Text
-        style={{ color: colors.text.primary, fontSize: typography.sizes.md }}
-        numberOfLines={1}
+        style={[
+          styles.label,
+          { color: colors.text.primary, fontSize: typography.sizes.md },
+        ]}
       >
         {label}
       </Text>
       {selected && (
-        <Text
-          accessible={false}
-          style={{
-            color: colors.accent.primary,
-            fontSize: typography.sizes.lg,
-          }}
-        >
-          ✓
-        </Text>
+        <CheckIcon
+          size={spacing.lg}
+          color={colors.accent.primary}
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        />
       )}
     </Pressable>
   );
@@ -125,6 +130,7 @@ const styles = StyleSheet.create({
   sheet: {
     flex: 1,
   },
+  label: { flex: 1 },
   option: {
     minHeight: 52,
     flexDirection: 'row',

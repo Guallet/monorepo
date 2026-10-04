@@ -2,7 +2,7 @@ import { AuthProvider } from '@/auth/MobileAuthProvider';
 import { AuthNavigator } from '@/auth/auth-navigator';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
-import { ThemePreferenceProvider } from '@/features/settings/ThemePreferenceProvider';
+import { AppThemeProvider } from '@/theme/AppThemeProvider';
 import {
   focusManager,
   GualletClientProvider,
@@ -83,8 +83,8 @@ export function GualletApp() {
   useAppState(onAppStateChange);
 
   return (
-    <ThemePreferenceProvider>
+    <AppThemeProvider>
       <AppNavigation />
-    </ThemePreferenceProvider>
+    </AppThemeProvider>
   );
 }
