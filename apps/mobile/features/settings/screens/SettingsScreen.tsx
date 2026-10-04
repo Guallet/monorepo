@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Image } from 'expo-image';
+import Constants from 'expo-constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@guallet/auth';
 import { useRouter } from 'expo-router';
@@ -22,6 +23,7 @@ import {
   MailIcon,
 } from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ExternalLink } from '@/components/external-link';
 import { SettingsRow } from '../components/SettingsRow';
 import { SettingsSection } from '../components/SettingsSection';
 import { PreferencesSection } from '../components/PreferencesSection';
@@ -356,6 +358,46 @@ export default function SettingsScreen() {
             onPress={confirmSignOut}
           />
         </SettingsSection>
+        <View style={[styles.appInfo, { gap: spacing.xs }]}>
+          <Text
+            style={{
+              color: colors.text.secondary,
+              fontSize: typography.sizes.sm,
+            }}
+          >
+            Version {Constants.expoConfig?.version ?? 'unavailable'}
+          </Text>
+          <ExternalLink
+            accessibilityLabel="Visit guallet.io"
+            accessibilityRole="link"
+            href="https://guallet.io"
+            style={[
+              styles.appInfoLink,
+              {
+                color: colors.accent.primary,
+                fontSize: typography.sizes.sm,
+                padding: spacing.md,
+              },
+            ]}
+          >
+            guallet.io
+          </ExternalLink>
+          <ExternalLink
+            accessibilityLabel="View Guallet on GitHub"
+            accessibilityRole="link"
+            href="https://github.com/Guallet/monorepo"
+            style={[
+              styles.appInfoLink,
+              {
+                color: colors.accent.primary,
+                fontSize: typography.sizes.sm,
+                padding: spacing.md,
+              },
+            ]}
+          >
+            GitHub
+          </ExternalLink>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -367,6 +409,12 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
+  },
+  appInfo: {
+    alignItems: 'center',
+  },
+  appInfoLink: {
+    textAlign: 'center',
   },
   header: {
     gap: 2,
