@@ -1,9 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  RefreshControl,
-  ScrollView,
-  View,
-} from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCategories } from '@guallet/api-react';
@@ -18,7 +14,7 @@ import {
 import { CategoryManagementRow } from '../components/CategoryManagementRow';
 
 export default function CategoryListScreen() {
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, borderRadius } = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { categories, isLoading, isError, isRefetching, refetch } =
