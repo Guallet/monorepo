@@ -10,7 +10,7 @@ export type CreateCategoryRequest = {
   name: string;
   icon: string;
   colour: string;
-  parentId?: string;
+  parentId?: string | null;
 };
 
 export type UpdateCategoryRequest = {
