@@ -1,4 +1,3 @@
-export type ToastId = string;
 export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
 
 export interface ToastAction {
@@ -14,10 +13,10 @@ export interface ToastOptions {
 }
 
 export interface LunaToast {
-  success: (title: string, options?: ToastOptions) => ToastId;
-  error: (title: string, options?: ToastOptions) => ToastId;
-  warning: (title: string, options?: ToastOptions) => ToastId;
-  info: (title: string, options?: ToastOptions) => ToastId;
+  success: (title: string, options?: ToastOptions) => string;
+  error: (title: string, options?: ToastOptions) => string;
+  warning: (title: string, options?: ToastOptions) => string;
+  info: (title: string, options?: ToastOptions) => string;
   /** Omit the ID to clear both the visible toast and the queue. */
-  dismiss: (id?: ToastId) => void;
+  dismiss: (id?: string) => void;
 }

@@ -188,6 +188,10 @@ describe('ToastProvider', () => {
       card.root.findByProps({ accessibilityRole: 'alert' }).props
         .accessibilityLabel,
     ).toBe('Export ready. Download your file');
+    expect(
+      card.root.findByProps({ accessibilityRole: 'alert' }).props
+        .accessibilityLiveRegion,
+    ).toBe('assertive');
     expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith(
       'Export ready. Download your file',
     );

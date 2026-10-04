@@ -67,7 +67,7 @@ Animations respect reduced motion; visible timers pause in the background.
 
 ## Dismissal and native sheets
 
-Every creation method returns a `ToastId`. Inside a component using `useToast`:
+Every creation method returns a string ID. Inside a component using `useToast`:
 
 ```tsx
 const id = toast.info('Export ready');

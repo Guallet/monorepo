@@ -1,7 +1,7 @@
-import type { ToastId, ToastOptions, ToastVariant } from './toast.types';
+import type { ToastOptions, ToastVariant } from './toast.types';
 
 export interface ToastMessage extends ToastOptions {
-  id: ToastId;
+  id: string;
   title: string;
   variant: ToastVariant;
 }
@@ -16,11 +16,12 @@ export interface PresentedToast {
 export class ToastQueue {
   private pending: ToastMessage[] = [];
   private active: PresentedToast | null = null;
-  private sheets = new Set<string>();
-  private listeners = new Set<() => void>();
+  private readonly sheets = new Set<string>();
+  private readonly listeners = new Set<() => void>();
   private nextId = 0;
   private generation = 0;
 
+  /** Subscribe to presentation changes; returns an unsubscribe callback. */
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
     return () => {
@@ -28,20 +29,23 @@ export class ToastQueue {
     };
   };
 
+  /** Read the stable presentation snapshot for useSyncExternalStore. */
   getSnapshot = () => this.active;
 
+  /** Append a notification and return its ID, even when sheets defer it. */
   enqueue(
     variant: ToastVariant,
     title: string,
     options?: ToastOptions,
-  ): ToastId {
+  ): string {
     const id = `luna-toast-${++this.nextId}`;
     this.pending.push({ ...options, id, title, variant });
     this.advance();
     return id;
   }
 
-  dismiss = (id?: ToastId) => {
+  /** Remove a visible or queued notification, or clear all when ID is absent. */
+  dismiss = (id?: string) => {
     this.pending = id ? this.pending.filter((toast) => toast.id !== id) : [];
     if (this.active && (!id || this.active.message.id === id)) {
       this.active = null;
@@ -50,7 +54,8 @@ export class ToastQueue {
     }
   };
 
-  finish(id: ToastId, generation: number) {
+  /** Complete only the current presentation, ignoring stale callbacks. */
+  finish(id: string, generation: number) {
     if (
       this.active?.message.id !== id ||
       this.active.generation !== generation
@@ -60,7 +65,8 @@ export class ToastQueue {
     this.dismiss(id);
   }
 
-  runAction(id: ToastId, generation: number, dismissPresentation?: () => void) {
+  /** Remove the notification and presentation before invoking its action. */
+  runAction(id: string, generation: number, dismissPresentation?: () => void) {
     if (
       this.active?.message.id !== id ||
       this.active.generation !== generation
@@ -73,6 +79,7 @@ export class ToastQueue {
     action?.onPress();
   }
 
+  /** Hold presentation for a sheet, returning an active toast to the queue. */
   block(sheetId: string) {
     if (this.sheets.has(sheetId)) return;
     this.sheets.add(sheetId);
@@ -83,11 +90,13 @@ export class ToastQueue {
     }
   }
 
+  /** Release a sheet hold and resume only when every sheet has closed. */
   release(sheetId: string) {
     if (!this.sheets.delete(sheetId)) return;
     this.advance();
   }
 
+  /** Present the next queued notification if no toast or sheet is active. */
   private advance() {
     if (this.active || this.sheets.size > 0) return;
     const message = this.pending.shift();
@@ -96,6 +105,7 @@ export class ToastQueue {
     this.emit();
   }
 
+  /** Notify subscribers after the visible presentation changes. */
   private emit() {
     for (const listener of this.listeners) listener();
   }

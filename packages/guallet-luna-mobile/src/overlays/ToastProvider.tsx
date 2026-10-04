@@ -27,6 +27,7 @@ export function ToastProvider({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
+/** Translate queue presentations into custom Sonner content and lifetimes. */
 function ToastHost({ queue }: Readonly<{ queue: ToastQueue }>) {
   const active = useSyncExternalStore(
     queue.subscribe,

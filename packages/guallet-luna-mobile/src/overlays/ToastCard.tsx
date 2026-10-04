@@ -73,7 +73,7 @@ export function ToastCard({
           accessible
           accessibilityRole="alert"
           accessibilityLabel={announcement}
-          accessibilityLiveRegion="polite"
+          accessibilityLiveRegion="assertive"
         >
           <Text
             style={{
