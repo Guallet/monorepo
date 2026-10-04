@@ -3,6 +3,7 @@ import {
   RNHostView,
   type BottomSheetProps as ExpoBottomSheetProps,
 } from '@expo/ui';
+import { useContext, useId, useLayoutEffect } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -12,6 +13,8 @@ import {
 } from 'react-native';
 import { useTheme } from '../theme';
 import { CloseIcon } from '../icons';
+import { ToastQueueContext } from './ToastContext';
+import { SheetToastPresence } from './SheetToastPresence';
 
 export interface BottomSheetProps extends Omit<
   ExpoBottomSheetProps,
@@ -42,6 +45,14 @@ export function BottomSheet({
 }: Readonly<BottomSheetProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
   const { width } = useWindowDimensions();
+  const queue = useContext(ToastQueueContext);
+  const sheetId = useId();
+  // Block before the native content mounts. Only its eventual unmount releases
+  // the block, including programmatic closes that do not call onDismiss.
+  useLayoutEffect(() => {
+    if (isOpen) queue?.block(sheetId);
+  }, [isOpen, queue, sheetId]);
+  useLayoutEffect(() => () => queue?.release(sheetId), [queue, sheetId]);
 
   const fitToContents = !snapPoints?.length;
   const padding = contentPadding ?? {
@@ -75,6 +86,7 @@ export function BottomSheet({
               : styles.fillContent,
           ]}
         >
+          <SheetToastPresence sheetId={sheetId} />
           <View
             style={[
               styles.header,
