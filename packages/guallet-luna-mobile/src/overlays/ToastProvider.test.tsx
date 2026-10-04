@@ -3,8 +3,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LunaToast } from './toast.types';
 import type { ToastQueue } from './ToastQueue';
 
+const appState = vi.hoisted(() => ({
+  currentState: 'active',
+  listeners: new Set<(state: string) => void>(),
+}));
+function changeAppState(state: string) {
+  appState.currentState = state;
+  act(() => {
+    for (const listener of appState.listeners) listener(state);
+  });
+}
 const sonner = vi.hoisted(() => ({ custom: vi.fn(), dismiss: vi.fn() }));
 vi.mock('sonner-native', () => ({ Toaster: 'toaster', toast: sonner }));
+vi.mock('react-native-gesture-handler', () => ({ ScrollView: 'scroll-view' }));
 vi.mock('react-native-reanimated', () => ({
   FadeIn: { duration: () => 'fade-in' },
   FadeOut: { duration: () => 'fade-out' },
@@ -13,6 +24,21 @@ vi.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 59, bottom: 34, left: 0, right: 0 }),
 }));
 vi.mock('react-native', () => ({
+  AppState: {
+    get currentState() {
+      return appState.currentState;
+    },
+    addEventListener: (_event: string, listener: (state: string) => void) => {
+      appState.listeners.add(listener);
+      return { remove: () => appState.listeners.delete(listener) };
+    },
+  },
+  useWindowDimensions: vi.fn(() => ({
+    width: 320,
+    height: 568,
+    fontScale: 2,
+    scale: 1,
+  })),
   AccessibilityInfo: { announceForAccessibility: vi.fn() },
   Platform: { OS: 'ios' },
   Pressable: 'pressable',
@@ -36,7 +62,7 @@ vi.mock('../theme', async () => {
 });
 
 import { useContext, useEffect } from 'react';
-import { AccessibilityInfo } from 'react-native';
+import { AccessibilityInfo, useWindowDimensions } from 'react-native';
 import { useTheme } from '../theme';
 import { DarkTheme } from '../theme/DefaultTheme';
 import { ToastProvider, useToast } from './ToastProvider';
@@ -74,6 +100,7 @@ function mount() {
 }
 
 beforeEach(() => {
+  appState.currentState = 'active';
   sonner.custom.mockReset();
   sonner.dismiss.mockReset();
   vi.clearAllMocks();
@@ -83,6 +110,53 @@ afterEach(() => {
 });
 
 describe('ToastProvider', () => {
+  it('defers background messages until foregrounded, preserving order', () => {
+    appState.currentState = 'background';
+    mount();
+    act(() => {
+      api.success('Saved');
+      api.info('Synced');
+    });
+    expect(sonner.custom).not.toHaveBeenCalled();
+    changeAppState('inactive');
+    expect(sonner.custom).not.toHaveBeenCalled();
+    changeAppState('active');
+    expect(sonner.custom.mock.calls[0][0].props.message.title).toBe('Saved');
+    act(() => sonner.custom.mock.calls[0][1].onAutoClose());
+    expect(sonner.custom.mock.calls[1][0].props.message.title).toBe('Synced');
+  });
+
+  it('hides active messages in the background and waits for sheets too', () => {
+    mount();
+    act(() => {
+      api.info('Ready', { duration: 6000 });
+    });
+    const original = sonner.custom.mock.calls[0];
+    changeAppState('background');
+    expect(sonner.dismiss).toHaveBeenCalledWith(original[1].id);
+    act(() => queue.block('sheet'));
+    changeAppState('active');
+    expect(sonner.custom).toHaveBeenCalledOnce();
+    act(() => queue.release('sheet'));
+    expect(sonner.custom.mock.calls[1][1].duration).toBe(6000);
+    act(() => original[1].onAutoClose());
+    expect(queue.getSnapshot()?.message.title).toBe('Ready');
+  });
+
+  it('clears messages while backgrounded and removes its AppState listener', () => {
+    const tree = mount();
+    changeAppState('background');
+    act(() => {
+      api.info('Ready');
+      api.dismiss();
+    });
+    changeAppState('active');
+    expect(sonner.custom).not.toHaveBeenCalled();
+    act(() => tree.unmount());
+    rendered.splice(rendered.indexOf(tree), 1);
+    expect(appState.listeners.size).toBe(0);
+  });
+
   it('positions notifications below the safe area', () => {
     const host = mount().root.find((node) => String(node.type) === 'toaster');
     expect(host.props.position).toBe('top-center');
@@ -158,6 +232,59 @@ describe('ToastProvider', () => {
     expect(onPress).not.toHaveBeenCalled();
   });
 
+  it.each([
+    { width: 320, height: 568 },
+    { width: 844, height: 390 },
+    { width: 1024, height: 768 },
+  ])(
+    'bounds long content in a $width by $height window',
+    ({ width, height }) => {
+      vi.mocked(useWindowDimensions).mockReturnValueOnce({
+        width,
+        height,
+        fontScale: 2,
+        scale: 1,
+      });
+      let card!: ReactTestRenderer;
+      act(() => {
+        card = create(
+          <ToastCard
+            message={{
+              id: 'long',
+              title: 'A long notification',
+              description: 'Long text. '.repeat(200),
+              variant: 'info',
+              action: { label: 'Undo', onPress: vi.fn() },
+            }}
+            onDismiss={vi.fn()}
+            onAction={vi.fn()}
+          />,
+        );
+      });
+      rendered.push(card);
+      const styles = card.root.findByType('view').props.style;
+      expect(styles).toContainEqual(expect.objectContaining({ maxWidth: 600 }));
+      expect(styles).toContainEqual(
+        expect.objectContaining({
+          width: width - 32,
+          maxHeight: Math.min(height - 59 - 34 - 16, height * 0.6),
+        }),
+      );
+      const scroll = card.root.find(
+        (node) => String(node.type) === 'scroll-view',
+      );
+      expect(
+        scroll.findAllByProps({ accessibilityRole: 'button' }),
+      ).toHaveLength(0);
+      expect(
+        card.root.findByProps({ accessibilityLabel: 'Undo' }),
+      ).toBeDefined();
+      expect(
+        card.root.findByProps({ accessibilityLabel: 'Dismiss notification' }),
+      ).toBeDefined();
+    },
+  );
+
   it('renders accessible custom content with dark Luna tokens', () => {
     vi.mocked(useTheme).mockReturnValueOnce(DarkTheme);
     const onDismiss = vi.fn();
@@ -179,6 +306,18 @@ describe('ToastProvider', () => {
       );
     });
     rendered.push(card);
+    expect(card.root.findByType('view').props.style).toContainEqual(
+      expect.objectContaining({ width: 288, maxHeight: 568 * 0.6 }),
+    );
+    const scroll = card.root.find(
+      (node) => String(node.type) === 'scroll-view',
+    );
+    expect(scroll.props.nestedScrollEnabled).toBe(true);
+    expect(scroll.props.disallowInterruption).toBe(true);
+    expect(scroll.findAllByProps({ accessibilityRole: 'button' })).toHaveLength(
+      0,
+    );
+
     expect(card.root.findByType('view').props.style).toContainEqual(
       expect.objectContaining({
         backgroundColor: DarkTheme.colors.surface.background.primary,

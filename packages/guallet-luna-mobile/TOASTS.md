@@ -63,7 +63,14 @@ The action dismisses its notification before calling `onPress`.
 
 Only one notification is shown at a time; additional messages wait in order.
 Text scales with system settings and notifications support screen readers.
-Animations respect reduced motion; visible timers pause in the background.
+Animations respect reduced motion. Notifications are hidden while the app is
+inactive or backgrounded. An interrupted notification returns to the front of
+the queue and restarts its full duration when the app becomes active and all
+sheets have closed. Messages created in the background wait without a timer.
+
+Cards adapt to window dimensions and safe-area insets, with a capped width on
+larger screens. Long text scrolls within a bounded height; action and close
+controls remain outside the scrolling text.
 
 ## Dismissal and native sheets
 
@@ -79,6 +86,9 @@ Luna `BottomSheet` automatically holds notifications until its native content
 finishes dismissing. No toast-specific props or changes to callers are needed.
 If a sheet opens while a notification is visible, that notification returns to
 the front of the queue and receives its full duration when displayed again.
+Native sheet dismissal invokes `onClose` so consumers can reset `isOpen`.
+An optional `onDismiss` callback also runs for native dismissal; passing the
+same callback to both props invokes it once.
 Multiple sheets must all close before the queue resumes. Unmounting a sheet
 also releases its hold.
 

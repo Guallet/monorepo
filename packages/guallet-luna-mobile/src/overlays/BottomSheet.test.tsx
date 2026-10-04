@@ -108,7 +108,7 @@ describe('BottomSheet', () => {
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps close icon presses separate from native dismissal', () => {
+  it('composes native dismissal with the controlled close callback', () => {
     const onClose = vi.fn();
     const onDismiss = vi.fn();
     const sheet = renderSheet({
@@ -125,7 +125,20 @@ describe('BottomSheet', () => {
 
     sheet.props.onDismiss();
     expect(onDismiss).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledTimes(2);
+  });
+
+  it('supports onClose-only native dismissal and deduplicates shared callbacks', () => {
+    const onClose = vi.fn();
+    renderSheet({ isOpen: true, title: 'Options', onClose }).props.onDismiss();
     expect(onClose).toHaveBeenCalledOnce();
+    renderSheet({
+      isOpen: true,
+      title: 'Options',
+      onClose,
+      onDismiss: onClose,
+    }).props.onDismiss();
+    expect(onClose).toHaveBeenCalledTimes(2);
   });
 
   it('supports dismissal without a close icon or onClose callback', () => {
@@ -186,13 +199,13 @@ describe('BottomSheet', () => {
   });
   it('holds toasts until native content unmounts after dismissal completes', () => {
     const queue = new ToastQueue();
-    const onDismiss = vi.fn();
-    const props = { isOpen: true, title: 'Options', onDismiss };
+    const onClose = vi.fn();
+    const props = { isOpen: true, title: 'Options', onClose };
     const sheet = renderSheet(props, queue);
     const id = queue.enqueue('success', 'Saved');
     expect(queue.getSnapshot()).toBeNull();
     act(() => sheet.props.onDismiss());
-    expect(onDismiss).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
     expect(queue.getSnapshot()).toBeNull();
     act(() =>
       rendered.at(-1)!.update(

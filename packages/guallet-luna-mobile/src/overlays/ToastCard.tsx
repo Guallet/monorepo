@@ -3,11 +3,14 @@ import {
   AccessibilityInfo,
   Platform,
   Pressable,
+  useWindowDimensions,
   StyleSheet,
   Text,
   type TextStyle,
   View,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CheckIcon, CloseIcon, InfoIcon, WarningIcon } from '../icons';
 import { useTheme } from '../theme';
 import type { ToastMessage } from './ToastQueue';
@@ -25,6 +28,16 @@ export function ToastCard({
   onAction,
 }: Readonly<ToastCardProps>) {
   const { colors, spacing, typography, borderRadius } = useTheme();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const availableHeight = Math.max(
+    0,
+    height - insets.top - insets.bottom - spacing.sm * 2,
+  );
+  const cardWidth = Math.max(
+    0,
+    width - insets.left - insets.right - spacing.md * 2,
+  );
   const announcement = [message.title, message.description]
     .filter(Boolean)
     .join('. ');
@@ -54,6 +67,8 @@ export function ToastCard({
         styles.card,
         {
           padding: spacing.md,
+          width: cardWidth,
+          maxHeight: Math.min(availableHeight, height * 0.6),
           gap: spacing.sm,
           borderRadius: borderRadius.lg,
           backgroundColor: colors.surface.background.primary,
@@ -69,36 +84,44 @@ export function ToastCard({
         <Icon size={spacing.lg} color={iconColors[message.variant]} />
       </View>
       <View style={styles.content}>
-        <View
-          accessible
-          accessibilityRole="alert"
-          accessibilityLabel={announcement}
-          accessibilityLiveRegion="assertive"
+        <ScrollView
+          style={styles.message}
+          disallowInterruption
+          nestedScrollEnabled
+          keyboardShouldPersistTaps="handled"
         >
-          <Text
-            style={{
-              color: colors.text.primary,
-              fontSize: typography.sizes.md,
-              fontWeight: typography.weights
-                .semibold as TextStyle['fontWeight'],
-              lineHeight: typography.sizes.md * typography.lineHeights.normal,
-            }}
+          <View
+            accessible
+            accessibilityRole="alert"
+            accessibilityLabel={announcement}
+            accessibilityLiveRegion="assertive"
           >
-            {message.title}
-          </Text>
-          {message.description && (
             <Text
               style={{
-                color: colors.text.secondary,
-                marginTop: spacing.xs,
-                fontSize: typography.sizes.sm,
-                lineHeight: typography.sizes.sm * typography.lineHeights.normal,
+                color: colors.text.primary,
+                fontSize: typography.sizes.md,
+                fontWeight: typography.weights
+                  .semibold as TextStyle['fontWeight'],
+                lineHeight: typography.sizes.md * typography.lineHeights.normal,
               }}
             >
-              {message.description}
+              {message.title}
             </Text>
-          )}
-        </View>
+            {message.description && (
+              <Text
+                style={{
+                  color: colors.text.secondary,
+                  marginTop: spacing.xs,
+                  fontSize: typography.sizes.sm,
+                  lineHeight:
+                    typography.sizes.sm * typography.lineHeights.normal,
+                }}
+              >
+                {message.description}
+              </Text>
+            )}
+          </View>
+        </ScrollView>
         {message.action && (
           <Pressable
             accessibilityRole="button"
@@ -158,16 +181,22 @@ export function ToastCard({
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     borderWidth: 1,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 3,
   },
-  content: { flex: 1, minWidth: 0 },
+  content: { flex: 1, minWidth: 0, minHeight: 0 },
+  message: { flexGrow: 0, flexShrink: 1 },
   action: { alignSelf: 'flex-start', justifyContent: 'center' },
-  close: { alignItems: 'center', justifyContent: 'center' },
+  close: {
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

@@ -2,11 +2,13 @@ import {
   useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useState,
   useSyncExternalStore,
   type PropsWithChildren,
 } from 'react';
+import { AppState } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Toaster, toast as sonnerToast } from 'sonner-native';
@@ -18,7 +20,16 @@ import type { LunaToast, ToastOptions, ToastVariant } from './toast.types';
 
 /** Mount once beneath Luna, SafeAreaProvider and GestureHandlerRootView. */
 export function ToastProvider({ children }: Readonly<PropsWithChildren>) {
-  const [queue] = useState(() => new ToastQueue());
+  const [queue] = useState(
+    () => new ToastQueue(AppState.currentState === 'active'),
+  );
+  useLayoutEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      queue.setForeground(state === 'active');
+    });
+    queue.setForeground(AppState.currentState === 'active');
+    return () => subscription.remove();
+  }, [queue]);
   return (
     <ToastQueueContext.Provider value={queue}>
       {children}

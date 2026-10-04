@@ -18,6 +18,24 @@ export class ToastQueue {
   private active: PresentedToast | null = null;
   private readonly sheets = new Set<string>();
   private readonly listeners = new Set<() => void>();
+  private foreground: boolean;
+
+  constructor(foreground = true) {
+    this.foreground = foreground;
+  }
+
+  /** Hide and defer messages whenever the app is not active. */
+  setForeground(foreground: boolean) {
+    if (this.foreground === foreground) return;
+    this.foreground = foreground;
+    if (!foreground && this.active) {
+      this.pending.unshift(this.active.message);
+      this.active = null;
+      this.emit();
+    }
+    if (foreground) this.advance();
+  }
+
   private nextId = 0;
   private generation = 0;
 
@@ -98,7 +116,7 @@ export class ToastQueue {
 
   /** Present the next queued notification if no toast or sheet is active. */
   private advance() {
-    if (this.active || this.sheets.size > 0) return;
+    if (!this.foreground || this.active || this.sheets.size > 0) return;
     const message = this.pending.shift();
     if (!message) return;
     this.active = { message, generation: ++this.generation };
