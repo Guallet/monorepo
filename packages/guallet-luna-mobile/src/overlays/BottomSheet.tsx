@@ -18,14 +18,14 @@ import { SheetToastPresence } from './SheetToastPresence';
 
 export interface BottomSheetProps extends Omit<
   ExpoBottomSheetProps,
-  'isPresented' | 'onDismiss'
+  'isPresented'
 > {
   isOpen: boolean;
   title: string;
-  /** Reset controlled visibility after a close press or native dismissal. */
+  /** Called when the close button is pressed. This is different from
+   * onDismiss as this is only triggered when the user taps on the
+   * close button. onDismiss is triggered when the sheet is dismissed for any reason. */
   onClose?: () => void;
-  /** Additional native dismissal handling; composed with onClose. */
-  onDismiss?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -54,11 +54,6 @@ export function BottomSheet({
   }, [isOpen, queue, sheetId]);
   useLayoutEffect(() => () => queue?.release(sheetId), [queue, sheetId]);
 
-  const handleNativeDismiss = () => {
-    onClose?.();
-    if (onDismiss !== onClose) onDismiss?.();
-  };
-
   const fitToContents = !snapPoints?.length;
   const padding = contentPadding ?? {
     top: spacing.md,
@@ -75,7 +70,7 @@ export function BottomSheet({
     <ExpoBottomSheet
       {...props}
       isPresented={isOpen}
-      onDismiss={handleNativeDismiss}
+      onDismiss={onDismiss}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
       snapPoints={snapPoints}
