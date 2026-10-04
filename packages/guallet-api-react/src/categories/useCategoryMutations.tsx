@@ -4,6 +4,7 @@ import {
 } from '@guallet/api-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
+import { refreshTransactionsAfterCategoryDeletion } from './refreshTransactionsAfterCategoryDeletion';
 
 const CATEGORIES_QUERY_KEY = 'categories';
 
@@ -15,8 +16,8 @@ export function useCategoryMutations() {
     mutationFn: async ({ request }: { request: CreateCategoryRequest }) => {
       return await gualletClient.categories.create(request);
     },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
     },
@@ -38,9 +39,9 @@ export function useCategoryMutations() {
         dto: request,
       });
     },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [CATEGORIES_QUERY_KEY, data.id],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [CATEGORIES_QUERY_KEY],
       });
     },
     onError: async (error, variables, context) => {
@@ -52,10 +53,17 @@ export function useCategoryMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.categories.delete(id);
     },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [CATEGORIES_QUERY_KEY],
+    onSuccess: async (_data, { id }) => {
+      queryClient.removeQueries({
+        queryKey: [CATEGORIES_QUERY_KEY, id],
+        exact: true,
       });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [CATEGORIES_QUERY_KEY],
+        }),
+        refreshTransactionsAfterCategoryDeletion(queryClient),
+      ]);
     },
     onError: async (error, variables, context) => {
       console.error(error);
@@ -77,8 +85,10 @@ export function useSeedDefaultCategoriesMutation() {
     mutationFn: async () => {
       return await gualletClient.categories.seedDefaults();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [CATEGORIES_QUERY_KEY],
+      });
     },
     onError: (error) => {
       console.error(error);
