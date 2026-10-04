@@ -78,6 +78,6 @@ export class Account extends BaseDbEntity {
   @ManyToOne(() => Institution, (institution) => institution.accounts)
   institution: Relation<Institution>;
 
-  @Column({ nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   institutionId: string | null;
 }

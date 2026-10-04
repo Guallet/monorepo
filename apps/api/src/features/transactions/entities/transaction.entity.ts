@@ -20,7 +20,7 @@ export class Transaction extends BaseDbEntity {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   notes: string | null;
 
   @Column({ type: 'decimal' })
@@ -53,7 +53,7 @@ export class Transaction extends BaseDbEntity {
   })
   category: Relation<Category>;
 
-  @Column({ nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   categoryId: string | null;
 
   // Mappers
