@@ -42,8 +42,6 @@ export function useCategoryMutations() {
       await queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['budgets'] });
     },
     onError: async (error, variables, context) => {
       console.error(error);
@@ -62,8 +60,6 @@ export function useCategoryMutations() {
       await queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      await queryClient.invalidateQueries({ queryKey: ['budgets'] });
     },
     onError: async (error, variables, context) => {
       console.error(error);

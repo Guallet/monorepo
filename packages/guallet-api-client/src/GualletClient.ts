@@ -221,7 +221,7 @@ export class GualletClientImpl implements GualletClient {
       body: JSON.stringify(payload),
       signal,
     });
-    await this.handleHttpErrors(response);
+    this.handleHttpErrors(response);
     return response;
   }
 
@@ -253,7 +253,7 @@ export class GualletClientImpl implements GualletClient {
     }
 
     const response = await fetch(`${this.baseUrl}/${path}`, requestOptions);
-    await this.handleHttpErrors(response);
+    this.handleHttpErrors(response);
     const json = await response.json();
     return json as TDto;
   }
@@ -276,24 +276,10 @@ export class GualletClientImpl implements GualletClient {
     };
   }
 
-  private async handleHttpErrors(response: Response) {
-    if (response.ok) return;
-    let message = response.statusText || `Request failed (${response.status})`;
-    try {
-      const body: unknown = await response.json();
-      if (body && typeof body === 'object' && 'message' in body) {
-        if (typeof body.message === 'string') message = body.message;
-        else if (Array.isArray(body.message)) {
-          const messages = body.message.filter(
-            (value): value is string => typeof value === 'string',
-          );
-          if (messages.length) message = messages.join('\n');
-        }
-      }
-    } catch {
-      // Non-JSON error pages still retain their HTTP status and fallback message.
+  private handleHttpErrors(response: Response) {
+    if (!response.ok) {
+      throw new ApiError(response.statusText, response.status);
     }
-    throw new ApiError(message, response.status);
   }
 }
 
