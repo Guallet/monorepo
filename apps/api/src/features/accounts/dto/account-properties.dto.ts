@@ -24,10 +24,10 @@ export class CurrentAccountPropertiesDto {
   @Type(() => CurrentAccountDetailsDto)
   details: CurrentAccountDetailsDto;
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: Number, required: false, nullable: true })
   @IsNumber()
   @IsOptional()
-  overdraft: number | null;
+  overdraft?: number | null;
 }
 
 export class CreditCardPropertiesDto {

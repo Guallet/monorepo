@@ -18,6 +18,7 @@ export class UpdateCategoryDto {
   colour?: string;
 
   @ApiProperty({
+    type: String,
     required: false,
     format: 'uuid',
     nullable: true,

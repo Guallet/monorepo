@@ -8,7 +8,7 @@ export class InboxTransactionDto {
   accountId: string;
   @ApiProperty()
   description: string;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   notes: string | null;
   @ApiProperty()
   amount: number;

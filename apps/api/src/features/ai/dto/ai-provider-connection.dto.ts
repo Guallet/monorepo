@@ -11,7 +11,7 @@ export class AiProviderConnectionDto {
   displayName: string;
   @ApiProperty()
   hasToken: boolean;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   tokenHint: string | null;
   @ApiProperty()
   createdAt: string;
