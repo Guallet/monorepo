@@ -4,6 +4,7 @@ import {
 } from '@guallet/api-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
+import { refreshTransactionsAfterCategoryDeletion } from './refreshTransactionsAfterCategoryDeletion';
 
 const CATEGORIES_QUERY_KEY = 'categories';
 
@@ -57,9 +58,12 @@ export function useCategoryMutations() {
         queryKey: [CATEGORIES_QUERY_KEY, id],
         exact: true,
       });
-      await queryClient.invalidateQueries({
-        queryKey: [CATEGORIES_QUERY_KEY],
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [CATEGORIES_QUERY_KEY],
+        }),
+        refreshTransactionsAfterCategoryDeletion(queryClient),
+      ]);
     },
     onError: async (error, variables, context) => {
       console.error(error);
