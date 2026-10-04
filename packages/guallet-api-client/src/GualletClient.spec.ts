@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { GualletClientImpl } from './GualletClient';
+import { ApiError, GualletClientImpl } from './GualletClient';
 
 describe('GualletClientImpl authentication', () => {
   afterEach(() => {
@@ -48,55 +48,27 @@ describe('GualletClientImpl authentication', () => {
 describe('GualletClientImpl HTTP errors', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('retains a deletion conflict message and status for the UI', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          message: 'Move or delete the subcategories in this category first.',
-        }),
-        { status: 409, statusText: 'Conflict' },
-      ),
-    );
-    const client = new GualletClientImpl({
-      baseUrl: 'https://api.example.test',
-    });
-    await expect(client.categories.delete('category')).rejects.toMatchObject({
-      status: 409,
-      message: 'Move or delete the subcategories in this category first.',
-    });
-  });
+  it.each([
+    { status: 400, body: JSON.stringify({ message: ['Invalid field'] }) },
+    { status: 409, body: JSON.stringify({ message: 'Category conflict' }) },
+    { status: 502, body: '<html>Error</html>' },
+  ])(
+    'exposes HTTP $status without reading its error body',
+    async ({ status, body }) => {
+      const response = new Response(body, { status });
+      const json = vi.spyOn(response, 'json');
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(response);
+      const client = new GualletClientImpl({
+        baseUrl: 'https://api.example.test',
+      });
 
-  it('combines API field validation messages', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          message: ['name must be a string', 'parentId must be a UUID'],
-        }),
-        { status: 400 },
-      ),
-    );
-    const client = new GualletClientImpl({
-      baseUrl: 'https://api.example.test',
-    });
-    await expect(client.categories.getAll()).rejects.toMatchObject({
-      status: 400,
-      message: 'name must be a string\nparentId must be a UUID',
-    });
-  });
+      await expect(client.categories.delete('category')).rejects.toBeInstanceOf(
+        ApiError,
+      );
+      await expect(client.accounts.getAll()).rejects.toMatchObject({ status });
 
-  it('falls back to HTTP status text for non-JSON errors', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response('<html>Error</html>', {
-        status: 502,
-        statusText: 'Bad Gateway',
-      }),
-    );
-    const client = new GualletClientImpl({
-      baseUrl: 'https://api.example.test',
-    });
-    await expect(client.categories.getAll()).rejects.toMatchObject({
-      status: 502,
-      message: 'Bad Gateway',
-    });
-  });
+      expect(json).not.toHaveBeenCalled();
+      expect(response.bodyUsed).toBe(false);
+    },
+  );
 });
