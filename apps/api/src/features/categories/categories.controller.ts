@@ -19,9 +19,6 @@ import {
   ApiParam,
   ApiCreatedResponse,
   ApiBody,
-  ApiBadRequestResponse,
-  ApiConflictResponse,
-  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
@@ -65,10 +62,6 @@ export class CategoriesController {
   }
 
   @ApiOperation({ summary: 'create' })
-  @ApiBadRequestResponse({ description: 'Invalid name or parent hierarchy' })
-  @ApiNotFoundResponse({
-    description: 'Parent category not found for this user',
-  })
   @ApiCreatedResponse({ type: () => CategoryDto })
   @ApiBody({ type: () => CreateCategoryDto })
   @Post()
@@ -97,13 +90,6 @@ export class CategoriesController {
   }
 
   @ApiOperation({ summary: 'update' })
-  @ApiBadRequestResponse({ description: 'Invalid name or parent hierarchy' })
-  @ApiConflictResponse({
-    description: 'Move the subcategories before changing the parent',
-  })
-  @ApiNotFoundResponse({
-    description: 'Category or parent not found for this user',
-  })
   @ApiOkResponse({ type: () => CategoryDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiBody({ type: () => UpdateCategoryDto })
@@ -122,10 +108,6 @@ export class CategoriesController {
   }
 
   @ApiOperation({ summary: 'remove' })
-  @ApiConflictResponse({
-    description: 'Category has subcategories or is used by budgets or rules',
-  })
-  @ApiNotFoundResponse({ description: 'Category not found for this user' })
   @ApiOkResponse({ type: () => CategoryDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')

@@ -20,7 +20,7 @@ export class Transaction extends BaseDbEntity {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ nullable: true })
   notes: string | null;
 
   @Column({ type: 'decimal' })
