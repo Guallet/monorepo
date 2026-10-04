@@ -1,27 +1,19 @@
-name: EAS Update - Development
+name: EAS Build - Development
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-    paths:
-      - 'apps/mobile/**'
 
 permissions:
   contents: read
 
 concurrency:
-  group: mobile-eas-update-development
-  cancel-in-progress: true
+  group: mobile-eas-build-development
+  cancel-in-progress: false
 
 jobs:
-  update:
-    name: Publish development update
+  build:
+    name: Build development Android app
     runs-on: ubuntu-latest
-    env:
-      APP_VARIANT: development
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -46,11 +38,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Publish update to development channel
+      - name: Build development Android app
         working-directory: apps/mobile
-        run: eas update --channel development --environment development --platform android --auto --non-interactive
-
-      - name: Upload Sentry sourcemaps
-        if: ${{ env.SENTRY_AUTH_TOKEN != '' }}
-        working-directory: apps/mobile
-        run: pnpm exec sentry-expo-upload-sourcemaps dist
+        run: eas build --platform android --profile development --non-interactive --wait
