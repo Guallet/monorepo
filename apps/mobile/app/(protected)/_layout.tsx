@@ -12,6 +12,7 @@ export default function ProtectedLayout() {
       <Stack screenOptions={screenOptions}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="saving-goals" options={{ headerShown: false }} />
+        <Stack.Screen name="categories" options={{ headerShown: false }} />
         <Stack.Screen name="accounts" options={{ headerShown: false }} />
         <Stack.Screen name="transactions" options={{ headerShown: false }} />
         <Stack.Screen name="export" options={{ headerShown: false }} />

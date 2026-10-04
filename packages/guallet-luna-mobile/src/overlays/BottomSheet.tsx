@@ -19,13 +19,14 @@ export interface BottomSheetProps extends Omit<
 > {
   isOpen: boolean;
   title: string;
-  /** Called when the close button is pressed */
+  /** Called when the close button is pressed. This is different from
+   * onDismiss as this is only triggered when the user taps on the
+   * close button. onDismiss is triggered when the sheet is dismissed for any reason. */
   onClose?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
 
-/** Theme-aware wrapper around Expo's universal bottom sheet. */
 export function BottomSheet({
   children,
   isOpen,
