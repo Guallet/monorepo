@@ -66,6 +66,22 @@ existing Luna, React Native, Expo, and accessibility patterns.
 - For overlapping or ordered children, assign a consistent stacking order to
   every item, including the first.
 
+## Alerts
+
+- Always use the custom Luna alert for mobile alerts and confirmations. Never
+  import or use React Native's built-in `Alert`, including `Alert.alert` and
+  `Alert.prompt`.
+- In app components, import `useAlert` from `@guallet/luna-mobile`, call
+  `const showAlert = useAlert()`, and present alerts with
+  `showAlert({ title, message, actions })`. Within the Luna package, use the
+  relative overlays import instead of importing the package from itself.
+- Each action uses `text`, an optional `onPress` callback, and an optional
+  `style` of `'default'`, `'cancel'`, or `'destructive'`. Mark cancellation and
+  destructive actions explicitly. Omitting actions provides an OK button.
+- Keep consumers beneath the app's existing `AlertProvider`; do not add a
+  provider per screen. `AlertProvider` dismisses the dialog before invoking an
+  action callback.
+
 ## Bottom sheets
 
 Use `BottomSheet` from `@guallet/luna-mobile` for mobile bottom sheets. Control
