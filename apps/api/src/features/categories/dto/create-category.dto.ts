@@ -6,6 +6,6 @@ export class CreateCategoryDto {
   icon: string;
   @ApiProperty()
   colour: string;
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: String, nullable: true })
   parentId: string | null;
 }

@@ -36,7 +36,7 @@ export class CreateRegularPaymentDto {
   @IsString()
   imageUrl?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ format: 'uuid', required: false })
   @IsOptional()
   @IsUUID()
   categoryId?: string;
@@ -46,7 +46,10 @@ export class CreateRegularPaymentDto {
   @IsNotEmpty()
   cadence: RecurrenceCadence;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'The start date as an ISO 8601 date or date-time string',
+    required: false,
+  })
   @IsOptional()
   @IsDateString()
   startDate?: string;

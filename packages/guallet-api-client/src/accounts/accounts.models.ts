@@ -71,7 +71,7 @@ export interface CurrentAccountProperties {
     accountNumber: string;
     sortCode: string;
   };
-  overdraft: number | null;
+  overdraft?: number | null;
 }
 
 export interface CreditCardProperties {

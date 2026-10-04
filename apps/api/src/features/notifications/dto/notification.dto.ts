@@ -12,6 +12,7 @@ export class NotificationDto {
   message: string;
 
   @ApiProperty({
+    type: String,
     description: 'The icon of the notification',
     nullable: true,
   })
@@ -24,6 +25,7 @@ export class NotificationDto {
   type: NotificationType;
 
   @ApiProperty({
+    type: String,
     description: 'The action deep link for navigation',
     nullable: true,
   })
