@@ -16,11 +16,13 @@ import { AppStateStatus, Platform } from 'react-native';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   AlertProvider,
   LunaProvider,
   useTheme,
   useThemeMode,
+  ToastProvider,
 } from '@guallet/luna-mobile';
 
 // Create a client
@@ -56,16 +58,20 @@ function AppNavigation() {
   return (
     <ThemeProvider value={navigationTheme}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <GualletClientProvider client={gualletClient}>
-              <AlertProvider>
-                <AuthNavigator />
-                <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
-              </AlertProvider>
-            </GualletClientProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <ToastProvider>
+            <QueryClientProvider client={queryClient}>
+              <AuthProvider>
+                <GualletClientProvider client={gualletClient}>
+                  <AlertProvider>
+                    <AuthNavigator />
+                    <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+                  </AlertProvider>
+                </GualletClientProvider>
+              </AuthProvider>
+            </QueryClientProvider>
+          </ToastProvider>
+        </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>
   );

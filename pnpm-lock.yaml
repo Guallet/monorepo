@@ -817,13 +817,37 @@ importers:
       react-native:
         specifier: 0.86.3
         version: 0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1)
+      react-native-gesture-handler:
+        specifier: '>=2.28.0'
+        version: 2.32.0(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-reanimated:
+        specifier: ^4.1.1
+        version: 4.5.1(react-native-worklets@0.10.1(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)(supports-color@8.1.1))(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-safe-area-context:
+        specifier: ^5.6.0
+        version: 5.7.0(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-screens:
+        specifier: ^4.16.0
+        version: 4.26.2(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
       react-native-svg:
         specifier: 15.15.4
         version: 15.15.4(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-worklets:
+        specifier: '>=0.6.1'
+        version: 0.10.1(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)(supports-color@8.1.1)
+      sonner-native:
+        specifier: 0.27.0
+        version: 0.27.0(1f479c4cc5bf3ffe3997aa5850e6d5dd)
     devDependencies:
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
+      '@types/react-test-renderer':
+        specifier: 19.1.0
+        version: 19.1.0
+      react-test-renderer:
+        specifier: 19.2.3
+        version: 19.2.3(react@19.2.3)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -4464,6 +4488,9 @@ packages:
     peerDependencies:
       '@types/react': 19.2.14
 
+  '@types/react-test-renderer@19.1.0':
+    resolution: {integrity: sha512-XD0WZrHqjNrxA/MaR9O22w/RNidWR9YZmBdRGI7wcnWGrv/3dA8wKCJ8m63Sn+tLJhcjmuhOi629N66W6kgWzQ==}
+
   '@types/react-test-renderer@19.3.0':
     resolution: {integrity: sha512-TX4p2D4Z2oigM3SXU7+QyLSUnSR0vR1S1Pfxm/qFL9nHQ3jclgi6ioGoWQmlIr1DeKRVmPJrmNlhgM0JlWlLUg==}
 
@@ -7905,6 +7932,9 @@ packages:
   react-is@19.2.0:
     resolution: {integrity: sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==}
 
+  react-is@19.3.0:
+    resolution: {integrity: sha512-UpMYezM4v5/18F28aC66AEsjXIgE02kyEMH6yLdgLXu/UTfa1Ntwck/nNLrbqJsEXW7gPb0coNO9FQse9WTovA==}
+
   react-native-drawer-layout@4.2.10:
     resolution: {integrity: sha512-O6TQdZ5LSm3dqnuR4rX9KPtE+9dVg7jsezEYz1l01rkQTe4fQvYZIoPu2sZFl5X2N70uhRdjnPULySVR3sBUwA==}
     peerDependencies:
@@ -8085,6 +8115,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-test-renderer@19.2.3:
+    resolution: {integrity: sha512-TMR1LnSFiWZMJkCgNf5ATSvAheTT2NvKIwiVwdBPHxjBI7n/JbWd4gaZ16DVd9foAXdvDz+sB5yxZTwMjPRxpw==}
+    peerDependencies:
+      react: 19.2.3
 
   react-transition-group@4.4.5:
     resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
@@ -8448,6 +8483,18 @@ packages:
 
   sonic-boom@4.2.0:
     resolution: {integrity: sha512-INb7TM37/mAcsGmc9hyyI6+QR3rR1zVRu36B0NeGXKnOOLiZOfER5SA+N7X7k3yUYRzLWafduTDvJAfDswwEww==}
+
+  sonner-native@0.27.0:
+    resolution: {integrity: sha512-TKX4mXoMnwx3m51bSTqrbmiImIjs18g9L6t0sv4XemR+s6XsKf1+l3yn3C4/psOHj3E+sdc2Bh5P/7+AG/41eA==}
+    peerDependencies:
+      react: 19.2.3
+      react-native: '*'
+      react-native-gesture-handler: '>=2.28.0'
+      react-native-reanimated: ^4.1.1
+      react-native-safe-area-context: ^5.6.0
+      react-native-screens: ^4.16.0
+      react-native-svg: ^15.12.1
+      react-native-worklets: '>=0.6.1'
 
   sort-keys-length@1.0.1:
     resolution: {integrity: sha512-GRbEOUqCxemTAk/b32F2xa8wDTs+Z1QHOkbhJDQTvv/6G3ZkbJ+frYWsTcc7cBB3Fu4wy4XlLCuNtJuMn7Gsvw==}
@@ -13103,6 +13150,10 @@ snapshots:
     dependencies:
       '@types/react': 19.2.14
 
+  '@types/react-test-renderer@19.1.0':
+    dependencies:
+      '@types/react': 19.2.14
+
   '@types/react-test-renderer@19.3.0':
     dependencies:
       '@types/react': 19.2.14
@@ -17170,6 +17221,8 @@ snapshots:
 
   react-is@19.2.0: {}
 
+  react-is@19.3.0: {}
+
   react-native-drawer-layout@4.2.10(4d393359daedf218c5ca958af516abcd):
     dependencies:
       color: 4.2.3
@@ -17472,6 +17525,12 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.2.14
+
+  react-test-renderer@19.2.3(react@19.2.3):
+    dependencies:
+      react: 19.2.3
+      react-is: 19.3.0
+      scheduler: 0.27.0
 
   react-transition-group@4.4.5(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
@@ -17883,6 +17942,17 @@ snapshots:
   sonic-boom@4.2.0:
     dependencies:
       atomic-sleep: 1.0.0
+
+  sonner-native@0.27.0(1f479c4cc5bf3ffe3997aa5850e6d5dd):
+    dependencies:
+      react: 19.2.3
+      react-native: 0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1)
+      react-native-gesture-handler: 2.32.0(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-reanimated: 4.5.1(react-native-worklets@0.10.1(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)(supports-color@8.1.1))(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-safe-area-context: 5.7.0(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-screens: 4.26.2(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-svg: 15.15.4(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+      react-native-worklets: 0.10.1(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.28.6(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.14)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)(supports-color@8.1.1)
 
   sort-keys-length@1.0.1:
     dependencies:

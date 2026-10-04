@@ -1,10 +1,25 @@
-import { Children, isValidElement, type ReactNode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { Children, type ReactNode } from 'react';
+import { act, create, type ReactTestRenderer } from 'react-test-renderer';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@expo/ui', () => ({
-  BottomSheet: 'native-sheet',
-  RNHostView: 'native-host',
-}));
+vi.mock('@expo/ui', async () => {
+  const { createElement, useState } = await import('react');
+  return {
+    BottomSheet: (props: { isPresented: boolean; children?: ReactNode }) => {
+      const [mounted, setMounted] = useState(props.isPresented);
+      if (props.isPresented && !mounted) setMounted(true);
+      return createElement(
+        'native-sheet',
+        {
+          ...props,
+          onDismissComplete: () => setMounted(false),
+        },
+        mounted ? props.children : null,
+      );
+    },
+    RNHostView: 'native-host',
+  };
+});
 
 vi.mock('react-native', () => ({
   Pressable: 'pressable',
@@ -22,25 +37,38 @@ vi.mock('../theme', async () => {
 
 import { BottomSheet } from './BottomSheet';
 
-function findCloseButton(node: ReactNode): (() => void) | undefined {
-  for (const child of Children.toArray(node)) {
-    if (
-      !isValidElement<{
-        accessibilityLabel?: string;
-        onPress?: () => void;
-        children?: ReactNode;
-      }>(child)
-    ) {
-      continue;
-    }
-    if (child.props.accessibilityLabel === 'Close bottom sheet') {
-      return child.props.onPress;
-    }
-    const onPress = findCloseButton(child.props.children);
-    if (onPress) return onPress;
-  }
-  return undefined;
+import { ToastQueue } from './ToastQueue';
+import { ToastQueueContext } from './ToastContext';
+
+(
+  globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
+const rendered: ReactTestRenderer[] = [];
+
+function renderSheet(
+  props: Parameters<typeof BottomSheet>[0],
+  queue?: ToastQueue,
+) {
+  let renderer!: ReactTestRenderer;
+  act(() => {
+    renderer = create(
+      <ToastQueueContext.Provider value={queue ?? null}>
+        <BottomSheet {...props} />
+      </ToastQueueContext.Provider>,
+    );
+  });
+  rendered.push(renderer);
+  return renderer.root.find((node) => String(node.type) === 'native-sheet');
 }
+
+function findCloseButton(node: ReturnType<typeof renderSheet>) {
+  return node.findAllByProps({ accessibilityLabel: 'Close bottom sheet' })[0]
+    ?.props.onPress;
+}
+
+afterEach(() => {
+  for (const renderer of rendered.splice(0)) act(() => renderer.unmount());
+});
 
 describe('BottomSheet', () => {
   it('lets the consumer close and reopen the controlled sheet', () => {
@@ -48,7 +76,7 @@ describe('BottomSheet', () => {
     const onClose = vi.fn(() => {
       isBottomSheetOpen = false;
     });
-    const sheet = BottomSheet({
+    const sheet = renderSheet({
       isOpen: isBottomSheetOpen,
       title: 'Select an account',
       showCloseIcon: true,
@@ -61,7 +89,7 @@ describe('BottomSheet', () => {
     pressClose?.();
     expect(isBottomSheetOpen).toBe(false);
     expect(
-      BottomSheet({
+      renderSheet({
         isOpen: isBottomSheetOpen,
         title: 'Select an account',
         onDismiss: onClose,
@@ -69,7 +97,7 @@ describe('BottomSheet', () => {
     ).toBe(false);
 
     isBottomSheetOpen = true;
-    const reopenedSheet = BottomSheet({
+    const reopenedSheet = renderSheet({
       isOpen: isBottomSheetOpen,
       title: 'Select an account',
       onDismiss: onClose,
@@ -80,10 +108,10 @@ describe('BottomSheet', () => {
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps close icon presses separate from native dismissal', () => {
+  it('composes native dismissal with the controlled close callback', () => {
     const onClose = vi.fn();
     const onDismiss = vi.fn();
-    const sheet = BottomSheet({
+    const sheet = renderSheet({
       isOpen: true,
       title: 'Options',
       showCloseIcon: true,
@@ -97,12 +125,25 @@ describe('BottomSheet', () => {
 
     sheet.props.onDismiss();
     expect(onDismiss).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledTimes(2);
+  });
+
+  it('supports onClose-only native dismissal and deduplicates shared callbacks', () => {
+    const onClose = vi.fn();
+    renderSheet({ isOpen: true, title: 'Options', onClose }).props.onDismiss();
     expect(onClose).toHaveBeenCalledOnce();
+    renderSheet({
+      isOpen: true,
+      title: 'Options',
+      onClose,
+      onDismiss: onClose,
+    }).props.onDismiss();
+    expect(onClose).toHaveBeenCalledTimes(2);
   });
 
   it('supports dismissal without a close icon or onClose callback', () => {
     const onDismiss = vi.fn();
-    const sheet = BottomSheet({
+    const sheet = renderSheet({
       isOpen: true,
       title: 'Options',
       onDismiss,
@@ -120,26 +161,26 @@ describe('BottomSheet', () => {
   ])(
     'bounds content width with padding $padding',
     ({ padding, expectedWidth }) => {
-      const sheet = BottomSheet({
+      const sheet = renderSheet({
         isOpen: true,
         title: 'Options',
         onDismiss: vi.fn(),
         contentPadding: padding,
         children: 'Picker content',
       });
-      const host = sheet.props.children;
+      const host = sheet.find((node) => String(node.type) === 'native-host');
       expect(host.type).toBe('native-host');
       expect(host.props.matchContents).toBe(true);
       const content = host.props.children;
       expect(content.props.collapsable).toBe(false);
       expect(content.props.style).toContainEqual({ width: expectedWidth });
-      expect(Children.toArray(content.props.children)).toHaveLength(2);
-      expect(content.props.children[1].props.children).toBe('Picker content');
+      expect(Children.toArray(content.props.children)).toHaveLength(3);
+      expect(content.props.children[2].props.children).toBe('Picker content');
     },
   );
 
   it('uses the native content bridge for a full-height sheet', () => {
-    const sheet = BottomSheet({
+    const sheet = renderSheet({
       isOpen: true,
       title: 'Categories',
       onDismiss: vi.fn(),
@@ -147,7 +188,7 @@ describe('BottomSheet', () => {
     });
 
     expect(sheet.props.snapPoints).toEqual(['full']);
-    const host = sheet.props.children;
+    const host = sheet.find((node) => String(node.type) === 'native-host');
     expect(host.type).toBe('native-host');
     expect(host.props.matchContents).toBe(false);
     expect(host.props.children.props.collapsable).toBe(false);
@@ -155,5 +196,35 @@ describe('BottomSheet', () => {
       flexGrow: 1,
       height: 0,
     });
+  });
+  it('holds toasts until native content unmounts after dismissal completes', () => {
+    const queue = new ToastQueue();
+    const onClose = vi.fn();
+    const props = { isOpen: true, title: 'Options', onClose };
+    const sheet = renderSheet(props, queue);
+    const id = queue.enqueue('success', 'Saved');
+    expect(queue.getSnapshot()).toBeNull();
+    act(() => sheet.props.onDismiss());
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(queue.getSnapshot()).toBeNull();
+    act(() =>
+      rendered.at(-1)!.update(
+        <ToastQueueContext.Provider value={queue}>
+          <BottomSheet {...props} isOpen={false} />
+        </ToastQueueContext.Provider>,
+      ),
+    );
+    expect(queue.getSnapshot()).toBeNull();
+    act(() => sheet.props.onDismissComplete());
+    expect(queue.getSnapshot()?.message.id).toBe(id);
+  });
+
+  it('releases a sheet hold if its owner unmounts', () => {
+    const queue = new ToastQueue();
+    renderSheet({ isOpen: true, title: 'Options', onDismiss: vi.fn() }, queue);
+    const id = queue.enqueue('info', 'Ready');
+    expect(queue.getSnapshot()).toBeNull();
+    act(() => rendered.pop()!.unmount());
+    expect(queue.getSnapshot()?.message.id).toBe(id);
   });
 });

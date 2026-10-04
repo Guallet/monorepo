@@ -10,6 +10,8 @@ import TablerPigMoneyIcon from '@tabler/icons-react-native/IconPigMoney';
 import TablerMailIcon from '@tabler/icons-react-native/IconMail';
 import TablerPencilIcon from '@tabler/icons-react-native/IconPencil';
 import TablerTrashIcon from '@tabler/icons-react-native/IconTrash';
+import TablerInfoCircleIcon from '@tabler/icons-react-native/IconInfoCircle';
+import TablerAlertTriangleIcon from '@tabler/icons-react-native/IconAlertTriangle';
 import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
@@ -53,3 +55,8 @@ export const MailIcon = createLunaIcon(TablerMailIcon, 'MailIcon');
 
 export const EditIcon = createLunaIcon(TablerPencilIcon, 'EditIcon');
 export const DeleteIcon = createLunaIcon(TablerTrashIcon, 'DeleteIcon');
+export const InfoIcon = createLunaIcon(TablerInfoCircleIcon, 'InfoIcon');
+export const WarningIcon = createLunaIcon(
+  TablerAlertTriangleIcon,
+  'WarningIcon',
+);
