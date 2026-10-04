@@ -82,7 +82,9 @@ export function useSeedDefaultCategoriesMutation() {
       return await gualletClient.categories.seedDefaults();
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [CATEGORIES_QUERY_KEY] });
+      await queryClient.invalidateQueries({
+        queryKey: [CATEGORIES_QUERY_KEY],
+      });
     },
     onError: (error) => {
       console.error(error);
