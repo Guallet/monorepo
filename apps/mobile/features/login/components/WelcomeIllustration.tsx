@@ -45,6 +45,7 @@ export function WelcomeIllustration({
   );
 }
 
+/** Illustrate multiple accounts with overlapping cards and a check mark. */
 function AccountsArtwork() {
   const { colors, borderRadius } = useTheme();
   return (
@@ -122,6 +123,7 @@ function AccountsArtwork() {
   );
 }
 
+/** Illustrate categorised spending with a chart and category symbols. */
 function SpendingArtwork() {
   const { colors, borderRadius } = useTheme();
   return (
@@ -204,6 +206,7 @@ function SpendingArtwork() {
   );
 }
 
+/** Illustrate progress towards saving goals with partially filled jars. */
 function SavingsArtwork() {
   const { colors, borderRadius } = useTheme();
   return (

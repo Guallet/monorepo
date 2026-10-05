@@ -36,6 +36,7 @@ const slides = [
   },
 ] as const;
 
+/** Introduce core features in a paged carousel before opening login. */
 export function WelcomeScreen() {
   const router = useRouter();
   const { borderRadius, colors, spacing, typography } = useTheme();
