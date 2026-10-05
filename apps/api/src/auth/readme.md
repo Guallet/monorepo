@@ -14,6 +14,21 @@ The `users` table retains application preferences and soft deletion alongside
 Better Auth's fields. Auth IDs are text; auth timestamps use `timestamptz`. The
 initial migration's rollback drops the tables and their data.
 
+The initial migration was generated with TypeORM's `migration:generate` command
+against an empty PostgreSQL database. Its SQL comes from the entity metadata;
+the UUID extension bootstrap is added explicitly before the generated queries.
+
+For future migrations, build the API and run from `apps/api` with the database
+environment variables pointing to a database at the current migration version:
+
+```bash
+pnpm build
+pnpm exec typeorm migration:generate src/migrations/SchemaChange -d dist/database/data-source.js
+```
+
+Review the generated migration before applying it. The CLI data source also
+supports `pnpm exec typeorm migration:run -d dist/database/data-source.js`.
+
 For later Better Auth upgrades, inspect the required schema and add a new
 TypeORM migration rather than reapplying or editing the initial migration.
 
