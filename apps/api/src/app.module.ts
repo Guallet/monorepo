@@ -32,6 +32,7 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
+import { databaseOptions } from './database/options';
 
 @Module({
   imports: [
@@ -69,21 +70,7 @@ import { ObserveModule } from './observe';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService<AppConfig>) => {
-        const dbConfig = configService.get('database', { infer: true })!;
-        return {
-          type: 'postgres',
-          host: dbConfig.host,
-          port: dbConfig.port,
-          username: dbConfig.username,
-          password: dbConfig.password,
-          database: dbConfig.database,
-          entities: [],
-          synchronize: true,
-          autoLoadEntities: true,
-          ssl: dbConfig.ssl ? { rejectUnauthorized: false } : false,
-        };
-      },
+      useFactory: () => databaseOptions(process.env),
     }),
     // EVENTS
     EventEmitterModule.forRoot(),

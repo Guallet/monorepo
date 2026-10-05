@@ -19,6 +19,8 @@ From repository root (recommended):
 
 ```bash
 pnpm install
+pnpm --filter api build
+pnpm --filter api db:migrate
 pnpm --filter api dev
 ```
 
@@ -27,6 +29,8 @@ Or from the API folder:
 ```bash
 cd apps/api
 pnpm install
+pnpm build
+pnpm db:migrate
 pnpm start
 ```
 
@@ -44,7 +48,7 @@ cp database.env.sample .env           # DB / docker-compose (repo root)
 ```
 
 - Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `DATABASE_CREDENTIALS_ENCRYPTION_KEY`, `SMTP_*`.
-- The app loads `.env.local` then `.env` (see `ConfigModule` in `src/app.module.ts`).
+- The app loads `.env` (see `ConfigModule` in `src/app.module.ts`).
 
 ---
 
@@ -56,29 +60,29 @@ Bring up local services with Docker Compose (Postgres + Redis):
 docker-compose up -d
 ```
 
-Prepare DB & auth schema:
+TypeORM migrations own the application and Better Auth schema. Synchronization
+is disabled. For an empty database:
 
 ```bash
-# from apps/api
-pnpm db:init
+pnpm --filter api build
+pnpm --filter api db:migrate
 ```
 
-or
+For an existing synchronized database, back it up, stop the old API, then run
+`pnpm --filter api db:baseline` followed by `pnpm --filter api db:migrate`.
 
-```bash
-# from apps/api
-pnpm db:generate    # generate Better-Auth migrations
-pnpm db:migrate     # apply migrations
-```
+See [database migration instructions](src/database/README.md) for container
+commands, Dokploy/Nixpacks setup, adoption checks, generation, and rollback.
 
 ---
 
 ## Useful commands
 
+- Dokploy startup (migrate, then start): `pnpm --filter api start:dockploy`
 - Start (dev/watch): `pnpm --filter api dev` or `cd apps/api && pnpm dev`
 - Build: `pnpm --filter api build`
 - Tests: `pnpm --filter api test` / `pnpm --filter api test:e2e`
-- DB tasks: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed`
+- DB tasks: `pnpm db:generate MigrationName`, `pnpm db:migrate`, `pnpm db:baseline`, `pnpm db:show`, `pnpm db:revert`
 
 ---
 
@@ -115,8 +119,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Entry point: `src/main.ts` — configures Express, CORS, middleware and Swagger (`/docs`).
 - Configuration: `src/configuration.ts` + `ConfigModule` with Zod validation.
   Unknown environment variables are preserved for modules that consume them directly.
-- Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows and CLI migrations.
-- Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
+- Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows.
+- Persistence: TypeORM + PostgreSQL; explicit shared entity registry, compiled TypeORM migrations.
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
 - Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
 - AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools. AI endpoints are rate-limited per user via `@nestjs/throttler`.
