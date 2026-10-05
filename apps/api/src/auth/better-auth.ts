@@ -44,15 +44,13 @@ export const createAuth = ({
         updatedAt: 'updated_at',
       },
     },
-    sessions: {
-      modelName: 'auth_sessions',
-    },
     account: {
       modelName: 'auth_accounts',
     },
     // AUTH CONFIG
     secret: authConfig.secret,
     session: {
+      modelName: 'session',
       expiresIn: 60 * 60 * 24 * 7, // 7 days
       updateAge: 60 * 60 * 24, // 1 day
     },
