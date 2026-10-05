@@ -23,7 +23,6 @@ export class User extends BaseDbEntity {
   @Column({
     name: 'email',
     nullable: false,
-    unique: true,
   })
   email: string;
 

@@ -1,6 +1,5 @@
 import { version } from '../package.json';
 import { z } from 'zod';
-import { databaseEnvironmentSchema } from './database/environment';
 
 /**
  * Environment variables validated by ConfigModule before the configuration
@@ -10,7 +9,26 @@ import { databaseEnvironmentSchema } from './database/environment';
 export const environmentSchema = z
   .object({
     ENVIRONMENT: z.enum(['development', 'production']).default('development'),
-    ...databaseEnvironmentSchema.shape,
+    DATABASE_HOST: z.string().min(1).default('localhost'),
+    DATABASE_PORT: z.coerce.number().default(5432),
+    DATABASE_USERNAME: z.string().min(1),
+    DATABASE_PASSWORD: z.string().min(1),
+    DATABASE_NAME: z.string().min(1),
+    DATABASE_SSL_ENABLED: z.preprocess((value) => {
+      if (value === '') {
+        return undefined;
+      }
+
+      if (value === 'true') {
+        return true;
+      }
+
+      if (value === 'false') {
+        return false;
+      }
+
+      return value;
+    }, z.boolean().default(false)),
     REDIS_HOST: z.string().min(1),
     REDIS_PORT: z.preprocess(
       (value) => (value === '' ? undefined : value),

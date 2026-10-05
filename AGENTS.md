@@ -33,17 +33,14 @@ pnpm docker:compose:up            # start PostgreSQL, Redis, and pgAdmin
 pnpm docker:compose:down          # stop development services
 pnpm docker:compose:reset         # stop services and remove volumes
 pnpm --filter api dev             # API watch mode
-pnpm --filter api start:dockploy  # migrate, then start the production API
 pnpm --filter api build           # compile API
 pnpm --filter api lint            # type-aware Oxlint
 pnpm --filter api test            # API Vitest tests
 pnpm --filter api test:watch      # API Vitest watch mode
 pnpm --filter api test:cov        # API coverage
-pnpm --filter api db:init         # apply compiled TypeORM migrations
-pnpm --filter api db:generate Name # build and generate an application migration
-pnpm --filter api db:migrate      # apply application + auth migrations
-pnpm --filter api db:baseline     # adopt a validated synchronized database
-pnpm --filter api db:show         # show applied/pending migrations
+pnpm --filter api db:init         # initialize Better Auth schema
+pnpm --filter api db:generate     # generate Better Auth schema
+pnpm --filter api db:migrate      # run Better Auth migrations
 pnpm --filter webapp dev          # Vite dev server; regenerates the route tree
 pnpm --filter webapp build        # i18n extraction, TypeScript, and Vite build
 pnpm --filter webapp lint         # Oxlint
@@ -147,17 +144,6 @@ integrations such as open banking, email, Sentry, and NestJS Observe can remain
 unconfigured.
 The API requires `DATABASE_CREDENTIALS_ENCRYPTION_KEY`; generate a 32-byte
 base64 key with `openssl rand -base64 32`.
-
-## Database schema changes
-
-TypeORM migrations own application and Better Auth tables. Synchronization is
-disabled in every environment. Register application entities in
-`apps/api/src/database/entities.ts` and in their feature modules. Build before
-running the compiled `db:migrate` command. Use `db:baseline` once to adopt a
-validated database previously created by synchronization; do not fake all pending
-migrations. Auth schema changes require explicit reviewed SQL migrations. Never
-edit applied migrations or regenerate the frozen baseline descriptions.
-See [migration instructions](apps/api/src/database/README.md).
 
 ## Testing
 

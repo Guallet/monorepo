@@ -4,12 +4,12 @@ This uses [Better Auth](https://www.better-auth.com/).
 
 ## Database migrations
 
-The shared TypeORM migration history creates both application and auth tables.
-Build the API and run `pnpm db:migrate` from `apps/api`. Do not run the Better Auth
-migration CLI against deployed databases.
+To generate and apply the database tables, run from `apps/api/`:
 
-See [database migration instructions](../database/README.md) for empty databases,
-existing database adoption, container commands, and future auth upgrades.
+```bash
+npx @better-auth/cli generate --config src/auth/better-auth.ts
+npx @better-auth/cli migrate --config src/auth/better-auth.ts
+```
 
 ## Email events
 
@@ -21,5 +21,4 @@ existing database adoption, container commands, and future auth upgrades.
 | `auth.email.otp`            | Email OTP verification sent  | `sendAuthOtpEmail`       |
 | `auth.email.magic-link`     | Magic link sign-in requested | `sendAuthMagicLinkEmail` |
 
-The standalone auth export omits the `eventEmitter`. TypeORM migration commands
-do not import or instantiate Better Auth.
+The CLI export (`export const auth`) at the bottom of `better-auth.ts` omits the `eventEmitter`, so no emails are emitted when running migrations via the CLI — this is intentional.

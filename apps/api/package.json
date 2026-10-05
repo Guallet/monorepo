@@ -15,20 +15,16 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "start:dockploy": "pnpm db:migrate && pnpm start:prod",
     "lint": "oxlint . --type-aware --tsconfig ./tsconfig.oxlint.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --inspect --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "db:init": "pnpm db:migrate",
-    "db:generate": "pnpm build && node --env-file-if-exists=.env dist/database/cli.js generate",
-    "db:migrate": "node --env-file-if-exists=.env dist/database/cli.js migrate",
-    "script:set-role": "ts-node -r tsconfig-paths/register -r dotenv/config scripts/set-user-role.ts",
-    "db:show": "node --env-file-if-exists=.env dist/database/cli.js show",
-    "db:revert": "node --env-file-if-exists=.env dist/database/cli.js revert",
-    "db:baseline": "node --env-file-if-exists=.env dist/database/cli.js baseline"
+    "db:init": "pnpm db:generate && pnpm db:migrate",
+    "db:generate": "npx @better-auth/cli generate --config src/auth/better-auth.ts",
+    "db:migrate": "npx @better-auth/cli migrate --config src/auth/better-auth.ts",
+    "script:set-role": "ts-node -r tsconfig-paths/register -r dotenv/config scripts/set-user-role.ts"
   },
   "engines": {
     "node": ">=24.20 <25"

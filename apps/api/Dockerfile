@@ -33,9 +33,6 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app/apps/api
 
-# Preserve pnpm links, including dependencies hoisted to the workspace root.
-COPY --from=base --chown=nodejs:nodejs /app/node_modules /app/node_modules
-
 # Copy built app and dependencies
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./dist
