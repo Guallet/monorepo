@@ -63,15 +63,112 @@ eas build --profile preview --platform android
 After EAS finishes, download the APK from the build link and install it on the
 Android device. Open Guallet directly; there is no need to run `pnpm start` or
 scan a development-server QR code. Login and data still require access to the
-API. Changes to JavaScript or bundled environment values require a new build.
+API. Compatible JavaScript and bundled environment changes can be delivered
+through EAS Update after installing a build configured for OTA updates.
 
 The preview uses the `Guallet` name and `io.guallet.mobile` package identifier,
 so it shares the production app's installation slot. The `development` profile
 is for development-client builds that connect to Metro.
 
-## Github Actions and CI/EAS
+## EAS Update and GitHub Actions
 
-There are some Github Actions files inside the `.github/workflows` folder that help with some internal EAS preview/deployment. You can have a look at them and adjust them to replicate them to work with your own EAS account.
+The app uses `expo-updates` to download JavaScript bundles and their assets for
+Android and iOS. OTA updates cannot change the native binary. The existing EAS
+project is `guallet/guallet` (`4933c830-42b4-4f94-b2f7-a4ee70331431`).
+
+| Build profile | EAS environment | Update channel | Purpose                                        |
+| ------------- | --------------- | -------------- | ---------------------------------------------- |
+| `development` | `development`   | `development`  | Development client; iOS simulator              |
+| `preview`     | `preview`       | `preview`      | Internal release build for testing OTA updates |
+| `production`  | `production`    | `production`   | Store builds                                   |
+
+### One-time setup
+
+1. Add an Expo access token with access to this project as the GitHub Actions
+   repository secret `EXPO_TOKEN`.
+2. In the Expo dashboard, configure the project's **preview** environment with
+   `EXPO_PUBLIC_API_URL` pointing at the API used by testers. Optionally set
+   `EXPO_PUBLIC_SENTRY_DSN` and `EXPO_PUBLIC_VEXO_KEY`. Use plain text or sensitive
+   visibility; EAS Update cannot read variables with secret visibility. These
+   `EXPO_PUBLIC_` values are embedded in the bundle and are visible to app users.
+   Keep `APP_VARIANT` unset for preview (or set it to `preview`). Configure the
+   development and production environments separately when using those profiles.
+3. If using Sentry, configure `SENTRY_AUTH_TOKEN` as an EAS secret for native
+   builds and as a GitHub Actions secret for update sourcemap uploads. The
+   workflow skips the OTA sourcemap upload when that GitHub secret is absent.
+4. Create and install a new **preview** native build. Previously installed builds
+   cannot acquire the new native update module or channel through an OTA update.
+   For initial signing/device registration, run the build interactively first:
+
+   ```bash
+   cd apps/mobile
+   pnpm dlx eas-cli@latest build --profile preview --platform all
+   ```
+
+   Android testers install the APK. iOS internal distribution requires registered
+   devices and Apple signing credentials. Subsequent builds can use the manual
+   **EAS Build** GitHub workflow, selecting the `develop` ref, `preview` profile,
+   and desired platform. Credentials must already be configured for CI.
+
+5. Verify the channel mapping with `pnpm dlx eas-cli@latest channel:view preview`.
+   Normally the preview build creates the channel linked to the `preview` EAS
+   branch. If an existing channel points elsewhere, align it explicitly:
+
+   ```bash
+   pnpm dlx eas-cli@latest branch:create preview
+   pnpm dlx eas-cli@latest channel:edit preview --branch preview
+   ```
+
+   Only create the EAS branch if it does not already exist. The EAS branch named
+   `preview` is separate from the Git branch named `develop`.
+
+### Automatic preview updates
+
+Every push to `develop` triggers `.github/workflows/eas-update.yml`, including
+changes in shared workspace packages. It installs the frozen workspace lockfile
+and publishes with:
+
+```bash
+eas update --channel preview --environment preview --platform all \
+  --message "develop <commit-sha>" --non-interactive
+```
+
+Builds and updates both use the EAS `preview` environment. With the current Expo
+SDK, the update's `--environment` flag is required; local `.env` files and the old
+`MOBILE_ENV_FILE_DEV`/`MOBILE_ENV_FILE_PROD` GitHub secrets are not used by these
+workflows. The obsolete Firebase config generation has also been removed;
+authentication uses Better Auth.
+
+The app checks on each cold launch and downloads in the background while running
+its cached bundle. After the download finishes, fully close and reopen the app to
+load the update. No forced reload interrupts an active session. Test using an
+installed preview release build; Expo Go and a development session connected to
+Metro do not exercise this release update flow.
+
+The update workflow uses a concurrency group to prevent simultaneous publishes.
+GitHub may replace an older pending run when several pushes arrive while a run is
+active, so rapid pushes converge on the latest pending commit.
+
+For a manual preview publish, run `pnpm eas:update:preview` from `apps/mobile`
+with EAS CLI installed and authenticated, or dispatch **EAS Update - Preview**
+on the `develop` ref in GitHub Actions.
+
+### Native changes require a new build
+
+`runtimeVersion.policy` is `fingerprint`. Expo computes compatibility from inputs
+that can affect the native runtime, so an update with a different fingerprint
+will not be delivered to an installed build. Adding or updating native modules,
+changing config plugins or permissions, and upgrading Expo/React Native require
+a fresh preview native build. Publishing an update does not create that build.
+
+`.github/workflows/eas-build.yml` is manual, defaults to the `preview` profile,
+and supports Android, iOS, or both. Build and install a new preview binary after
+native changes. Compatible JavaScript, styling, and asset changes continue to
+arrive through OTA updates. Production updates are not published automatically.
+
+See Expo's [EAS Update setup](https://docs.expo.dev/eas-update/getting-started/),
+[runtime compatibility](https://docs.expo.dev/eas-update/runtime-versions/), and
+[EAS environments](https://docs.expo.dev/eas/environment-variables/usage/).
 
 ## Built with
 
