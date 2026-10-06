@@ -1,5 +1,6 @@
+import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { TextInput, useTheme } from '@guallet/luna-mobile';
 import { calculateMortgageScenario } from '@guallet/calculators';
@@ -147,7 +148,7 @@ export default function MortgageCalculatorScreen() {
 
   return (
     <AppScreen headerTitle="Mortgage calculator">
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={{ gap: spacing.md, padding: spacing.md }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -255,7 +256,7 @@ export default function MortgageCalculatorScreen() {
           label="See repayment comparison"
           onPress={openResults}
         />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </AppScreen>
   );
 }

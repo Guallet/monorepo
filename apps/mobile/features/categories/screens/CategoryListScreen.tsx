@@ -1,7 +1,7 @@
+import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCategories } from '@guallet/api-react';
 import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
@@ -15,7 +15,6 @@ import { CategoryManagementRow } from '../components/CategoryManagementRow';
 
 export default function CategoryListScreen() {
   const { colors, spacing, borderRadius } = useTheme();
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { categories, isLoading, isError, isRefetching, refetch } =
     useCategories();
@@ -50,7 +49,7 @@ export default function CategoryListScreen() {
       headerTitle="Categories"
       headerOptions={{ headerBackTitle: 'Settings' }}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ padding: spacing.md, gap: spacing.md }}
         refreshControl={
@@ -149,16 +148,16 @@ export default function CategoryListScreen() {
               </View>
             );
           })}
-      </ScrollView>
-      <View
-        style={{
-          padding: spacing.md,
-          paddingBottom: Math.max(insets.bottom, spacing.md),
-          backgroundColor: colors.surface.background.primary,
-        }}
-      >
-        <Button onClick={() => create()}>Create category</Button>
-      </View>
+        <View
+          style={{
+            padding: spacing.md,
+            paddingBottom: spacing.md,
+            backgroundColor: colors.surface.background.primary,
+          }}
+        >
+          <Button onClick={() => create()}>Create category</Button>
+        </View>
+      </KeyboardAwareScrollView>
     </AppScreen>
   );
 }

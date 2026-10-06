@@ -1,3 +1,4 @@
+import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
 import { Ionicons } from '@expo/vector-icons';
 import {
   useAccounts,
@@ -19,16 +20,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
 import { useEffect, useRef, useState } from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
 import { SelectionSheet } from '@/components/ui/SelectionSheet';
@@ -203,8 +195,6 @@ export function TransactionDetailsScreen({
     'Select an account';
   let loadingMessage: string | undefined;
   if (updateTransactionMutation.isPending) loadingMessage = 'Saving…';
-  let keyboardBehavior: 'padding' | undefined;
-  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   return (
     <AppScreen
@@ -221,8 +211,8 @@ export function TransactionDetailsScreen({
       }}
     >
       {form && (
-        <KeyboardAvoidingView style={styles.flex} behavior={keyboardBehavior}>
-          <ScrollView
+        <View style={styles.flex}>
+          <KeyboardAwareScrollView
             contentContainerStyle={{
               padding: spacing.md,
               paddingBottom: spacing.xl,
@@ -375,8 +365,8 @@ export function TransactionDetailsScreen({
                 Cancel
               </Button>
             </Stack>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
+        </View>
       )}
 
       <SelectionSheet

@@ -30,6 +30,42 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 - Track the failed image URL when the fallback depends on the current source;
   this allows a changed URL to be tried independently.
 
+## Safe areas and keyboard responsiveness
+
+- Safe-area insets protect content from notches, system bars, and the home
+  indicator. Handle keyboard overlap separately: reveal the focused field and
+  keep every field and action reachable by scrolling.
+- Use `AppScreen` from `@/components/layout/AppScreen` for stack screens. It
+  owns left/right/bottom insets and also the top inset when its header is hidden.
+  Use `safeAreaEdges` when the navigator already owns an edge; do not nest
+  another safe-area wrapper or duplicate inset padding inside `AppScreen`.
+- Tab screen content owns top/left/right insets through
+  `react-native-safe-area-context`; the tab navigator owns the bottom inset.
+  Keep screen backgrounds full-screen and apply safe-area padding to content.
+- For input screens, use `KeyboardAwareScrollView` from
+  `@guallet/luna-mobile`. Put Save/Continue/Cancel actions inside its scroll
+  content, use flexible heights, and use theme spacing for content gutters.
+  The wrapper provides focus scrolling, keyboard clearance, dismissal on drag,
+  and `keyboardShouldPersistTaps="handled"` by default.
+- Do not wrap it in `KeyboardAvoidingView` or enable competing automatic
+  keyboard insets. Keep the existing root `KeyboardProvider`, Android `resize`
+  configuration, and `tabBarHideOnKeyboard` behavior. Preserve virtualized
+  lists rather than nesting them inside another vertical scroll view.
+- Use Luna `BottomSheet` for native sheets and preserve its `RNHostView`
+  bridge. Native sheet layout owns keyboard/system insets. Searchable sheets
+  use full-height snap points, flex containers, bounded scrollable results,
+  and handled keyboard taps; do not apply root-screen keyboard heights inside
+  the sheet. Keep selection and Apply actions reachable while typing.
+- Verify first/last fields, focus changes, validation errors, numeric and
+  multiline keyboards, form actions, searchable sheets, and restored layout
+  after dismissal on iOS and Android. Include small screens, larger text, and
+  iPad hardware/floating keyboards. Unit tests cannot prove native visibility.
+- A new native keyboard dependency requires rebuilt development clients and
+  a native release; an OTA-only update cannot add it.
+
+See [keyboard layout guidance](../../../apps/mobile/docs/keyboard-layout.md)
+for the shared components and device verification checklist.
+
 ## Accessibility and icons
 
 - For money amounts, use `@guallet/money` and `Money.format()` for display.
@@ -209,18 +245,19 @@ const styles = StyleSheet.create({
 
 Import from `@guallet/luna-mobile`.
 
-| Component            | Category   | Use for                                                                                       |
-| -------------------- | ---------- | --------------------------------------------------------------------------------------------- |
-| `Stack`              | Layout     | Vertical container (VStack equivalent)                                                        |
-| `Group`              | Layout     | Horizontal container (HStack equivalent)                                                      |
-| `Divider`            | Layout     | Horizontal separator line                                                                     |
-| `Title`              | Typography | Bold page/section headings                                                                    |
-| `Label`              | Typography | Body text and descriptions                                                                    |
-| `Button`             | Buttons    | Tappable buttons; `variant` = `"filled" \| "light" \| "outline" \| "subtle" \| "transparent"` |
-| `TextInput`          | Inputs     | Text input field                                                                              |
-| `OtpInput`           | Inputs     | OTP/PIN entry                                                                                 |
-| `Visibility`         | Utility    | Conditionally show/hide children: `<Visibility isVisible={bool}>`                             |
-| `ModalLoaderOverlay` | Overlays   | Full-screen loading overlay                                                                   |
+| Component                 | Category   | Use for                                                                                       |
+| ------------------------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `Stack`                   | Layout     | Vertical container (VStack equivalent)                                                        |
+| `Group`                   | Layout     | Horizontal container (HStack equivalent)                                                      |
+| `KeyboardAwareScrollView` | Layout     | Scrollable input screens that reveal focused fields above the keyboard                        |
+| `Divider`                 | Layout     | Horizontal separator line                                                                     |
+| `Title`                   | Typography | Bold page/section headings                                                                    |
+| `Label`                   | Typography | Body text and descriptions                                                                    |
+| `Button`                  | Buttons    | Tappable buttons; `variant` = `"filled" \| "light" \| "outline" \| "subtle" \| "transparent"` |
+| `TextInput`               | Inputs     | Text input field                                                                              |
+| `OtpInput`                | Inputs     | OTP/PIN entry                                                                                 |
+| `Visibility`              | Utility    | Conditionally show/hide children: `<Visibility isVisible={bool}>`                             |
+| `ModalLoaderOverlay`      | Overlays   | Full-screen loading overlay                                                                   |
 
 ### Theme hooks
 
@@ -288,7 +325,11 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 ## Checklist
 
 - [ ] Route file uses `export default function` (not named export)
-- [ ] Screen wrapped in `<View style={{ flex: 1 }}>` to fill available space
+- [ ] Stack screen uses `AppScreen`; each safe-area edge has one owner
+- [ ] Input content and form actions use Luna `KeyboardAwareScrollView` with
+      no competing keyboard adjustment or nested vertical list
+- [ ] Keyboard-open and dismissed layouts verified on iOS and Android,
+      including searchable sheets and larger text
 - [ ] Styles defined with `StyleSheet.create({})`, not inline objects
 - [ ] Tab screen registered in `(tabs)/_layout.tsx` if it's a new tab
 - [ ] Navigation uses `useRouter()` from `expo-router`, not `react-navigation` directly

@@ -1,5 +1,6 @@
+import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { TextInput, useTheme } from '@guallet/luna-mobile';
 import {
@@ -64,7 +65,7 @@ export default function StampDutyCalculatorScreen() {
 
   return (
     <AppScreen headerTitle="Stamp duty calculator">
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={{ gap: spacing.md, padding: spacing.md }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -313,7 +314,7 @@ export default function StampDutyCalculatorScreen() {
           England and Northern Ireland residential SDLT rates effective from 1
           April 2025. Other reliefs and surcharges may change the tax due.
         </Text>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </AppScreen>
   );
 }

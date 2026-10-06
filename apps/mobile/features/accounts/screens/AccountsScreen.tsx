@@ -1,8 +1,8 @@
+import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
 import {
   Pressable,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -49,13 +49,13 @@ export default function AccountsScreen() {
 
   return (
     <SafeAreaView
-      edges={['top']}
+      edges={['top', 'left', 'right']}
       style={[
         styles.safeArea,
         { backgroundColor: colors.surface.background.page },
       ]}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={[
           styles.content,
           { gap: spacing.md, padding: spacing.md },
@@ -264,7 +264,7 @@ export default function AccountsScreen() {
           </>
         )}
         <View style={styles.bottomPad} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

@@ -1,15 +1,7 @@
+import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import type { SavingGoalDto } from '@guallet/api-client';
 import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
@@ -98,11 +90,8 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.flex}
-    >
-      <ScrollView
+    <View style={styles.flex}>
+      <KeyboardAwareScrollView
         contentContainerStyle={{
           padding: spacing.md,
           paddingBottom: spacing.xl,
@@ -352,26 +341,30 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             />
           </View>
         </View>
-      </ScrollView>
-      <View
-        style={[
-          styles.footer,
-          {
-            borderTopColor: colors.surface.border.primary,
-            backgroundColor: colors.surface.background.primary,
-            padding: spacing.md,
-          },
-        ]}
-      >
-        <Button
-          onClick={() => void save()}
-          disabled={
-            pending || accountsLoading || accountsError || accounts.length === 0
-          }
+
+        <View
+          style={[
+            styles.footer,
+            {
+              borderTopColor: colors.surface.border.primary,
+              backgroundColor: colors.surface.background.primary,
+              padding: spacing.md,
+            },
+          ]}
         >
-          {pending ? 'Saving goal…' : goal ? 'Save changes' : 'Create goal'}
-        </Button>
-      </View>
+          <Button
+            onClick={() => void save()}
+            disabled={
+              pending ||
+              accountsLoading ||
+              accountsError ||
+              accounts.length === 0
+            }
+          >
+            {pending ? 'Saving goal…' : goal ? 'Save changes' : 'Create goal'}
+          </Button>
+        </View>
+      </KeyboardAwareScrollView>
       <GoalAccountsSheet
         accounts={accounts}
         selectedIds={availableAccountIds}
@@ -383,7 +376,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
           setErrors((current) => ({ ...current, accountIds: undefined }));
         }}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
