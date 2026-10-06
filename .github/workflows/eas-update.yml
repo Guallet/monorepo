@@ -4,17 +4,26 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
-  group: eas-update-preview
+  group: eas-update-${{ github.event.pull_request.number || 'preview' }}
   cancel-in-progress: false
 
 jobs:
   update:
     name: Publish preview update
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]')
     runs-on: ubuntu-latest
     steps:
       - name: Check for EXPO_TOKEN
@@ -27,7 +36,9 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -35,7 +46,7 @@ jobs:
           version: 12.4.1
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24.20.x
           cache: 'pnpm'
@@ -49,13 +60,36 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Publish update
-        working-directory: apps/mobile
+      - name: Publish update to preview channel
+        id: channel-update
+        if: github.event_name != 'pull_request'
+        uses: expo/expo-github-action/preview@v8
+        with:
+          working-directory: apps/mobile
+          comment: false
+          command: >-
+            eas update --channel preview --environment preview
+            --platform all --message "develop ${{ github.sha }}" --non-interactive
+
+      - name: Create pull request preview
+        id: pr-preview
+        if: github.event_name == 'pull_request'
+        uses: expo/expo-github-action/preview@v8
+        with:
+          working-directory: apps/mobile
+          command: >-
+            eas update --branch pr-${{ github.event.pull_request.number }}
+            --environment preview --platform all
+            --message "PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.head.sha }}"
+            --non-interactive
+
+      - name: Write update summary
         env:
-          UPDATE_MESSAGE: develop ${{ github.sha }}
-        run: >-
-          eas update --channel preview --environment preview
-          --platform all --message "$UPDATE_MESSAGE" --non-interactive
+          UPDATE_LINK: ${{ steps.channel-update.outputs.link || steps.pr-preview.outputs.link }}
+          UPDATE_QR: ${{ steps.channel-update.outputs.qr || steps.pr-preview.outputs.qr }}
+        run: |
+          printf '[View EAS update](%s)\n\n' "$UPDATE_LINK" >> "$GITHUB_STEP_SUMMARY"
+          printf '![Update QR code](%s)\n' "$UPDATE_QR" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Sentry sourcemaps
         working-directory: apps/mobile

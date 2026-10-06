@@ -126,7 +126,8 @@ project is `guallet/guallet` (`4933c830-42b4-4f94-b2f7-a4ee70331431`).
 
 Every push to `develop` triggers `.github/workflows/eas-update.yml`, including
 changes in shared workspace packages. It installs the frozen workspace lockfile
-and publishes with:
+and publishes through `expo/expo-github-action/preview@v8` with PR comments
+disabled. The run summary contains an update link and QR code. The command is:
 
 ```bash
 eas update --channel preview --environment preview --platform all \
@@ -152,6 +153,29 @@ active, so rapid pushes converge on the latest pending commit.
 For a manual preview publish, run `pnpm eas:update:preview` from `apps/mobile`
 with EAS CLI installed and authenticated, or dispatch **EAS Update - Preview**
 on the `develop` ref in GitHub Actions.
+
+### Pull request previews
+
+Pull requests targeting `develop` also run the update workflow, using
+`expo/expo-github-action/preview@v8` from Expo's
+[GitHub Actions example](https://docs.expo.dev/eas-update/github-actions/).
+Each PR publishes Android and iOS updates to its own EAS branch, `pr-<number>`,
+using the `preview` environment. The action adds or updates a PR comment with
+update links and QR codes. It checks out the PR head commit and runs in
+`apps/mobile`, while dependencies are installed at the monorepo root.
+
+These updates do not change the `preview` channel's branch mapping. Use a
+compatible development build to open the PR update from the QR code or the
+Extensions tab. A standalone preview release build continues to receive
+updates from the `preview` channel when changes are pushed to `develop`.
+Changes affecting the native runtime still require a compatible new build.
+Fork and Dependabot PRs skip publishing because repository secrets are not
+available to those runs. Push and PR publishes have separate concurrency groups.
+
+For local worktrees, install dependencies inside each checkout with
+`pnpm install --frozen-lockfile`. Do not link the checkout's `node_modules` to
+another repository directory: config plugin paths contribute to the fingerprint
+and external paths can make local runtime versions differ from EAS.
 
 ### Native changes require a new build
 
