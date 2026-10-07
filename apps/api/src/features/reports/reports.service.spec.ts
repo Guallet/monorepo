@@ -49,6 +49,49 @@ describe('ReportsService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('getMonthlyReport', () => {
+    it('scopes account filters by user and uses an exclusive UTC next-month boundary', async () => {
+      mockCategoriesRepository.find.mockResolvedValue([
+        { id: 'parent', name: 'Parent', parentId: null },
+        { id: 'child', name: 'Child', parentId: 'parent' },
+      ]);
+      mockTransactionsRepository.find.mockResolvedValue([]);
+      const result = await service.getMonthlyReport('owner', {
+        year: 2026,
+        month: 12,
+        accounts: ['account'],
+        categories: ['parent'],
+      });
+      expect(result.currencies).toEqual([]);
+      expect(mockCategoriesRepository.find).toHaveBeenCalledWith({
+        where: { user_id: 'owner' },
+      });
+      const options = mockTransactionsRepository.find.mock.calls[0][0];
+      expect(options.where.account.user_id).toBe('owner');
+      expect(options.where.account.id.value).toEqual(['account']);
+      expect(options.where.categoryId.value).toEqual(['parent', 'child']);
+      expect(options.where.date.getSql('date')).toBe(
+        'date >= :start AND date < :end',
+      );
+      expect(options.where.date.objectLiteralParameters).toEqual({
+        start: new Date('2026-12-01T00:00:00.000Z'),
+        end: new Date('2027-01-01T00:00:00.000Z'),
+      });
+    });
+
+    it('returns no data when selected categories belong to another user', async () => {
+      mockCategoriesRepository.find.mockResolvedValue([]);
+      expect(
+        await service.getMonthlyReport('owner', {
+          year: 2026,
+          month: 2,
+          categories: ['foreign-category'],
+        }),
+      ).toEqual({ year: 2026, month: 2, currencies: [] });
+      expect(mockTransactionsRepository.find).not.toHaveBeenCalled();
+    });
+  });
+
   describe('getCashFlowReport', () => {
     it('should generate cashflow report with categories', async () => {
       const userId = 'user-123';

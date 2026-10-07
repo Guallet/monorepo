@@ -1,7 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
+import type { MonthlyReportRequest } from '@guallet/api-client';
 
 const REPORTS_QUERY_KEY = 'reports';
+
+export function useMonthlyReport(args: MonthlyReportRequest) {
+  const client = useGualletClient();
+  const query = useQuery({
+    queryKey: [REPORTS_QUERY_KEY, 'monthly', args],
+    queryFn: () => client.reports.getMonthlyReport(args),
+    staleTime: 0,
+  });
+  return { report: query.data, ...query };
+}
 
 export function useCashflowReports(args: {
   year: number;
