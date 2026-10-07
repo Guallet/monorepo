@@ -67,6 +67,7 @@ mobile report-model tests, and 75 money-package tests. Repository-wide lint,
 API/client/hooks typechecking, the API production build, and an iOS JavaScript
 bundle export passed. The bundle check used a temporary Metro configuration to
 exclude native dependency build trees from file scanning; no application Metro
-configuration changed. Full mobile typechecking remains blocked by existing
-saving-goal contract errors and importer nullability errors. Native device
+configuration changed. The isolated PR also passes 30 shared sheet/toast tests.
+Full mobile typechecking remains blocked by existing category/saving-goal
+contract errors and importer nullability errors. Native device
 interaction and accessibility checks have not been performed in this environment.
