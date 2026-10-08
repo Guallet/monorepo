@@ -77,6 +77,18 @@ export function useNotification(id: string) {
       queryClient
         .getQueryData<NotificationDto[]>([UNREAD_NOTIFICATIONS_QUERY_KEY])
         ?.find((item) => item.id === id),
+    initialDataUpdatedAt: () => {
+      for (const key of [
+        NOTIFICATIONS_QUERY_KEY,
+        UNREAD_NOTIFICATIONS_QUERY_KEY,
+      ]) {
+        const state = queryClient.getQueryState<NotificationDto[]>([key]);
+        if (state?.data?.some((item) => item.id === id)) {
+          return state.dataUpdatedAt;
+        }
+      }
+      return undefined;
+    },
     queryFn: async () => {
       return await gualletClient.notifications.get(id);
     },
