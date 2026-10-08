@@ -64,12 +64,10 @@ the existing native content bridge and toast presence handling.
 
 ## Validation
 
-Automated tests cover destination mapping and rejection, timestamps, all/read/
-unread/detail cache consistency, cancellation races, failed mutations, bulk
-snapshot behaviour, deletion confirmation and retry, inbox filtering, and
-unsupported links. Native device validation is still needed for sheet gestures,
-VoiceOver/TalkBack focus, larger text and navigation on iOS and Android; renderer
-unit tests do not prove those behaviours.
+Automated unit tests cover destination mapping and rejection, timestamps,
+all/read/unread/detail cache consistency, and bulk snapshot behaviour. UI tests
+are deferred for now. Native device validation is still needed for sheet
+gestures, VoiceOver/TalkBack focus, larger text and navigation on iOS and Android.
 
 This feature adds no push permissions, delivery preferences or device token
 registration. It implements the existing web in-app notification capabilities.
