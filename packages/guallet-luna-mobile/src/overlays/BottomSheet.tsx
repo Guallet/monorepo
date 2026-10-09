@@ -18,14 +18,13 @@ import { SheetToastPresence } from './SheetToastPresence';
 
 export interface BottomSheetProps extends Omit<
   ExpoBottomSheetProps,
-  'isPresented'
+  'isPresented' | 'onDismiss'
 > {
   isOpen: boolean;
   title: string;
-  /** Called when the close button is pressed. This is different from
-   * onDismiss as this is only triggered when the user taps on the
-   * close button. onDismiss is triggered when the sheet is dismissed for any reason. */
+  /** Called by the close button and native dismissal. Reset open state here. */
   onClose?: () => void;
+  onDismiss?: ExpoBottomSheetProps['onDismiss'];
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -70,7 +69,10 @@ export function BottomSheet({
     <ExpoBottomSheet
       {...props}
       isPresented={isOpen}
-      onDismiss={onDismiss}
+      onDismiss={() => {
+        onDismiss?.();
+        if (onDismiss !== onClose) onClose?.();
+      }}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
       snapPoints={snapPoints}

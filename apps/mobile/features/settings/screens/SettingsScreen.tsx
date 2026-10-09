@@ -21,6 +21,7 @@ import {
   FileImportIcon,
   HomeIcon,
   MailIcon,
+  RepeatIcon,
 } from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ExternalLink } from '@/components/external-link';
@@ -290,6 +291,15 @@ export default function SettingsScreen() {
         )}
 
         <PreferencesSection />
+
+        <SettingsSection title="Recurring">
+          <SettingsRow
+            icon={<RepeatIcon size={22} color={colors.accent.primary} />}
+            label="Subscriptions & payments"
+            onPress={() => router.push('/recurring')}
+            showChevron
+          />
+        </SettingsSection>
 
         <SettingsSection title="Categories">
           <SettingsRow
