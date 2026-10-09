@@ -1,4 +1,4 @@
-import { InstitutionDto } from '@guallet/api-client/src/institutions';
+import type { InstitutionDto } from '@guallet/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
 
@@ -15,7 +15,7 @@ export function useInstitutions() {
     // Disable automatic refetching. This info should not change often.
     staleTime: Infinity,
     gcTime: Infinity,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchInterval: false,

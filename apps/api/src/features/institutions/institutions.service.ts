@@ -1,12 +1,14 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { Account } from '../accounts/entities/account.entity';
 import { Institution } from './entities/institution.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, QueryFailedError, Repository } from 'typeorm';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 
@@ -19,7 +21,7 @@ export class InstitutionsService {
     private repository: Repository<Institution>,
   ) {}
 
-  findAll(args: { user_id?: string }): Promise<Institution[]> {
+  findAll(args: { user_id: string }): Promise<Institution[]> {
     this.logger.debug(`Getting all institutions for user ${args.user_id}`);
 
     // The institutions with null owner are common to everyone
@@ -37,9 +39,10 @@ export class InstitutionsService {
   }): Promise<Institution> {
     // We want the user institutions, OR the common to all users
     const entity = await this.repository.findOne({
-      where: {
-        id: id,
-      },
+      where: [
+        { id, user_id: user_id ?? IsNull() },
+        { id, user_id: IsNull() },
+      ],
     });
 
     if (!entity) {
@@ -116,13 +119,14 @@ export class InstitutionsService {
       }
 
       institutionToUpdate.name = dto.name ?? institutionToUpdate.name;
-      institutionToUpdate.image_src =
-        dto.image_src ?? institutionToUpdate.image_src;
+      if (dto.image_src !== undefined) {
+        institutionToUpdate.image_src = dto.image_src;
+      }
 
       // If the country is not null, add it to the list of countries, but don't repeat it
       if (dto.country) {
         institutionToUpdate.countries = Array.from(
-          new Set([...institutionToUpdate.countries, dto.country]),
+          new Set([...(institutionToUpdate.countries ?? []), dto.country]),
         );
       }
 
@@ -143,8 +147,31 @@ export class InstitutionsService {
         throw new ForbiddenException();
       }
 
+      const hasAccounts = await this.repository.manager
+        .getRepository(Account)
+        .existsBy({ institutionId: args.id, user_id: args.user_id });
+      if (hasAccounts) {
+        throw new ConflictException(
+          'Move accounts to another institution before deleting this one.',
+        );
+      }
+
       this.logger.debug(`Deleting institution id ${entityToDelete.id}`);
-      const deleted = await this.repository.remove(entityToDelete);
+      let deleted: Institution;
+      try {
+        deleted = await this.repository.remove(entityToDelete);
+      } catch (error) {
+        // The foreign key also protects against accounts attached after the check.
+        if (
+          error instanceof QueryFailedError &&
+          error.driverError?.code === '23503'
+        ) {
+          throw new ConflictException(
+            'Move accounts to another institution before deleting this one.',
+          );
+        }
+        throw error;
+      }
 
       // Remove returns the object without the ID. So rehydrate the returned object with
       // the original id.
