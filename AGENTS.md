@@ -232,6 +232,16 @@ apps/mobile/app/{name}/[id].tsx      – detail screen with param
 
 Expo Router requires `export default function` (not named exports) for all route files.
 
+### Mobile forms
+
+New mobile screens that contain forms must use the shared TanStack Form
+foundation: `useAppForm` from `@/components/forms`, registered Luna field
+adapters, and `form.SubmitButton`. Keyboard submission uses `submitForm(form)`
+to guard concurrent requests. Keep field values and validation in the form;
+local state is for UI controls and request errors. See
+[the forms guide](apps/mobile/components/forms/README.md) and the
+`add-mobile-screen` skill for implementation details.
+
 ### Mobile bottom sheets
 
 - Use `BottomSheet` from `@guallet/luna-mobile` for every

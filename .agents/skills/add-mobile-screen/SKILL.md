@@ -1,6 +1,6 @@
 ---
 name: add-mobile-screen
-description: Add a new screen to the Expo React Native mobile app using Expo Router. Covers tab screens, stack screens, and detail screens. Use when adding new pages to apps/mobile.
+description: Add a new screen to the Expo React Native mobile app using Expo Router and the shared TanStack Form foundation for forms. Covers tab screens, stack screens, and detail screens. Use when adding new pages to apps/mobile.
 ---
 
 # add-mobile-screen
@@ -20,6 +20,33 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 - Prefer `String#codePointAt()` over `String#charCodeAt()` when reading Unicode
   characters. Iterate strings with `for...of` or `Array.from()` so characters
   outside the basic multilingual plane remain intact.
+
+## Required: Mobile forms
+
+- Every new mobile screen or screen component that edits and submits data MUST
+  use `useAppForm` from `@/components/forms` (TanStack Form). Do not introduce
+  manual field/error state, Formik, React Hook Form, or a separate form hook.
+- Use `<form.AppField>` and the registered Luna adapters, starting with
+  `<field.TextField>`. Wrap shared submit controls in `<form.AppForm>` and use
+  `<form.SubmitButton>`. Keyboard submission MUST call `submitForm(form)` from
+  the same module to prevent concurrent requests.
+- Define typed defaults and validation near the feature. Use `revalidateLogic`
+  with `onDynamic` to validate on submit and revalidate on change. Await the
+  existing API mutation or auth action in `onSubmit`; keep server request
+  errors separate from field validation and clear them when values change.
+- Use `form.Subscribe` for reactive UI and `useSelector` for navigation logic;
+  reading `form.state` alone does not subscribe. Keep picker visibility and
+  password visibility in local UI state, but keep submitted values in the form.
+- For non-text controls, register a typed adapter using the shared field
+  context; connect value, change, touch/blur, errors, and accessibility. Keep
+  temporary sheet selections local until confirmation.
+- Preserve edit initialization, normalization, money precision, and discard
+  behavior. Do not reset edits on background refetch. `isDirty` stays true even
+  after reverting changes; compare normalized values when that distinction
+  matters. Schema transforms require explicit parsing at submission.
+- Follow the [mobile forms guide](../../../apps/mobile/components/forms/README.md)
+  and use `PasswordLoginScreen` as the implemented example. Existing screens
+  only need migration when the task explicitly includes them.
 
 ## Images
 
@@ -287,6 +314,11 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 
 ## Checklist
 
+- [ ] New forms use shared `useAppForm`, Luna field adapters, and submit controls
+- [ ] Field values/validation are form-owned; requests are awaited and keyboard
+      submission uses `submitForm(form)`
+- [ ] Validation, failed requests, corrections, and concurrent submissions are
+      covered by focused tests when adding a form
 - [ ] Route file uses `export default function` (not named export)
 - [ ] Screen wrapped in `<View style={{ flex: 1 }}>` to fill available space
 - [ ] Styles defined with `StyleSheet.create({})`, not inline objects

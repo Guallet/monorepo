@@ -23,6 +23,13 @@ existing Luna, React Native, Expo, and accessibility patterns.
 
 ## Component rules
 
+- New form components consumed by mobile screens MUST integrate with TanStack
+  Form through `apps/mobile/components/forms`. Keep Luna's base inputs
+  controlled and independent of the form library; register app-owned adapters
+  with the shared `useAppForm` hook instead of adding independent value/error
+  state. See the [mobile forms guide](../../../apps/mobile/components/forms/README.md)
+  and the [mobile screen skill](../add-mobile-screen/SKILL.md).
+
 - For money amounts, use `@guallet/money` and `Money.format()` for display.
   Derive precision from `Currency.decimalPlaces`; never hardcode two decimal
   places or create a local currency formatter.
