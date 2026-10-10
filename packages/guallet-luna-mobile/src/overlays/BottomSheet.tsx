@@ -22,9 +22,6 @@ export interface BottomSheetProps extends Omit<
 > {
   isOpen: boolean;
   title: string;
-  /** Optional extra dismissal callback; onClose handles every user dismissal. */
-  onDismiss?: () => void;
-  /** Called for the close button and native user dismissal. */
   onClose?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
@@ -35,7 +32,6 @@ export function BottomSheet({
   isOpen,
   title,
   showCloseIcon = false,
-  onDismiss,
   onClose,
   containerColor,
   contentPadding,
@@ -47,6 +43,7 @@ export function BottomSheet({
   const { width } = useWindowDimensions();
   const queue = useContext(ToastQueueContext);
   const sheetId = useId();
+
   // Block before the native content mounts. Only its eventual unmount releases
   // the block, including programmatic closes that do not call onDismiss.
   useLayoutEffect(() => {
@@ -72,7 +69,6 @@ export function BottomSheet({
       isPresented={isOpen}
       onDismiss={() => {
         onClose?.();
-        if (onDismiss !== onClose) onDismiss?.();
       }}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
