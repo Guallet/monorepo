@@ -1,9 +1,17 @@
+import {
+  BottomSheet,
+  Button,
+  ColorPicker,
+  IconPicker,
+  KeyboardAwareScrollView,
+  TextInput,
+  useAlert,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text as NativeText,
@@ -11,17 +19,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCategories, useCategoryMutations } from '@guallet/api-react';
-import {
-  BottomSheet,
-  Button,
-  ColorPicker,
-  IconPicker,
-  TextInput,
-  useAlert,
-  useTheme,
-} from '@guallet/luna-mobile';
 import { CategoryIcon, DeleteIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
@@ -45,7 +43,6 @@ export default function CategoryFormScreen({
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
   const showAlert = useAlert();
   const { categories, isLoading, isError, refetch } = useCategories();
   const {
@@ -96,8 +93,6 @@ export default function CategoryFormScreen({
   if (deleteCategoryMutation.isPending) deleteLabel = 'Deleting…';
   let previewName = form.name.trim();
   if (!previewName) previewName = 'Category preview';
-  let keyboardBehavior: 'padding' | 'height' = 'height';
-  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   useEffect(() => {
     if (!category || initializedId === category.id) return;
@@ -223,12 +218,8 @@ export default function CategoryFormScreen({
       headerTitle={title}
       headerOptions={{ headerBackTitle: 'Categories' }}
     >
-      <KeyboardAvoidingView
-        behavior={keyboardBehavior}
-        style={styles.flex}
-        keyboardVerticalOffset={insets.top + 44}
-      >
-        <ScrollView
+      <View style={styles.flex}>
+        <KeyboardAwareScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ padding: spacing.md, gap: spacing.lg }}
         >
@@ -310,64 +301,64 @@ export default function CategoryFormScreen({
             </CategoryText>
           )}
           {saveError && <CategoryText error>{saveError}</CategoryText>}
-        </ScrollView>
-        <View
-          style={{
-            padding: spacing.md,
-            paddingBottom: Math.max(insets.bottom, spacing.md),
-            gap: spacing.sm,
-            backgroundColor: colors.surface.background.primary,
-          }}
-        >
-          <Button
-            disabled={pending || !ready || Boolean(categoryId && !dirty)}
-            onClick={() => void save()}
+
+          <View
+            style={{
+              padding: spacing.md,
+              paddingBottom: spacing.md,
+              gap: spacing.sm,
+              backgroundColor: colors.surface.background.primary,
+            }}
           >
-            {saveLabel}
-          </Button>
-          {categoryId && (
             <Button
-              variant="subtle"
-              disabled={pending}
-              onClick={() => {
-                Keyboard.dismiss();
-                setDeleteError(null);
-                setShowDelete(true);
-              }}
+              disabled={pending || !ready || Boolean(categoryId && !dirty)}
+              onClick={() => void save()}
             >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: spacing.sm,
+              {saveLabel}
+            </Button>
+            {categoryId && (
+              <Button
+                variant="subtle"
+                disabled={pending}
+                onClick={() => {
+                  Keyboard.dismiss();
+                  setDeleteError(null);
+                  setShowDelete(true);
                 }}
               >
-                <DeleteIcon
-                  color={colors.status.error}
-                  size={spacing.lg}
-                  accessibilityElementsHidden
-                  importantForAccessibility="no"
-                />
-                <NativeText style={{ color: colors.status.error }}>
-                  Delete category
-                </NativeText>
-              </View>
-            </Button>
-          )}
-        </View>
-      </KeyboardAvoidingView>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: spacing.sm,
+                  }}
+                >
+                  <DeleteIcon
+                    color={colors.status.error}
+                    size={spacing.lg}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no"
+                  />
+                  <NativeText style={{ color: colors.status.error }}>
+                    Delete category
+                  </NativeText>
+                </View>
+              </Button>
+            )}
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
       <BottomSheet
         isOpen={showDelete}
         title="Delete category?"
         showCloseIcon={!pending}
         onClose={closeDelete}
-        onDismiss={closeDelete}
       >
         <ScrollView
           contentContainerStyle={{
             padding: spacing.md,
             gap: spacing.md,
-            paddingBottom: Math.max(insets.bottom, spacing.md),
+            paddingBottom: spacing.md,
           }}
         >
           <View style={{ alignItems: 'center', gap: spacing.md }}>

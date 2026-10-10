@@ -15,6 +15,7 @@ export default function ProtectedLayout() {
         <Stack.Screen name="categories" options={{ headerShown: false }} />
         <Stack.Screen name="recurring" options={{ headerShown: false }} />
         <Stack.Screen name="accounts" options={{ headerShown: false }} />
+        <Stack.Screen name="notifications" options={{ headerShown: false }} />
         <Stack.Screen name="transactions" options={{ headerShown: false }} />
         <Stack.Screen name="export" options={{ headerShown: false }} />
         <Stack.Screen name="importer" options={{ headerShown: false }} />

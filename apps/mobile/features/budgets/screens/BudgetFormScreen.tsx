@@ -1,28 +1,20 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+  Button,
+  ColorPicker,
+  IconPicker,
+  KeyboardAwareScrollView,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BudgetDto } from '@guallet/api-client';
 import {
   useAccounts,
   useBudgetMutations,
   useCategories,
 } from '@guallet/api-react';
-import {
-  Button,
-  ColorPicker,
-  IconPicker,
-  TextInput,
-  useTheme,
-} from '@guallet/luna-mobile';
 import { CategoryIcon, ChevronRightIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CurrencyInput } from '@/components/CurrencyInput';
@@ -50,7 +42,6 @@ export default function BudgetFormScreen({
   onRetry,
 }: Readonly<BudgetFormScreenProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
     categories,
@@ -223,13 +214,11 @@ export default function BudgetFormScreen({
     saveButtonLabel = 'Save changes';
   }
   if (isPending) saveButtonLabel = 'Saving…';
-  let keyboardBehavior: 'padding' | undefined;
-  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   return (
     <AppScreen headerTitle={screenTitle}>
-      <KeyboardAvoidingView behavior={keyboardBehavior} style={styles.flex}>
-        <ScrollView
+      <View style={styles.flex}>
+        <KeyboardAwareScrollView
           contentContainerStyle={[
             styles.content,
             { padding: spacing.md, paddingBottom: spacing.lg },
@@ -394,36 +383,36 @@ export default function BudgetFormScreen({
               )}
             </View>
           </View>
-        </ScrollView>
 
-        <View
-          style={[
-            styles.footer,
-            {
-              backgroundColor: colors.surface.background.primary,
-              borderTopColor: colors.surface.border.primary,
-              gap: spacing.sm,
-              paddingBottom: Math.max(insets.bottom, spacing.md),
-              paddingHorizontal: spacing.md,
-              paddingTop: spacing.sm,
-            },
-          ]}
-        >
-          <Button
-            disabled={isPending || !isReady}
-            onClick={() => void submit()}
+          <View
+            style={[
+              styles.footer,
+              {
+                backgroundColor: colors.surface.background.primary,
+                borderTopColor: colors.surface.border.primary,
+                gap: spacing.sm,
+                paddingBottom: spacing.md,
+                paddingHorizontal: spacing.md,
+                paddingTop: spacing.sm,
+              },
+            ]}
           >
-            {saveButtonLabel}
-          </Button>
-          <Button
-            disabled={isPending}
-            onClick={() => router.back()}
-            variant="outline"
-          >
-            Cancel
-          </Button>
-        </View>
-      </KeyboardAvoidingView>
+            <Button
+              disabled={isPending || !isReady}
+              onClick={() => void submit()}
+            >
+              {saveButtonLabel}
+            </Button>
+            <Button
+              disabled={isPending}
+              onClick={() => router.back()}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
 
       <CategorySelectionSheet
         categories={categories}

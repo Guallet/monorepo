@@ -228,7 +228,6 @@ export function CurrencyPicker(props: Readonly<CurrencyPickerProps>) {
         showCloseIcon={!saving}
         isOpen={isBottomSheetOpen}
         onClose={cancel}
-        onDismiss={cancel}
         contentPadding={0}
       >
         <View

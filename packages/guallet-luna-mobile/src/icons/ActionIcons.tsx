@@ -14,6 +14,10 @@ import TablerInfoCircleIcon from '@tabler/icons-react-native/IconInfoCircle';
 import TablerAlertTriangleIcon from '@tabler/icons-react-native/IconAlertTriangle';
 import TablerRepeatIcon from '@tabler/icons-react-native/IconRepeat';
 import TablerPlusIcon from '@tabler/icons-react-native/IconPlus';
+import TablerBellIcon from '@tabler/icons-react-native/IconBell';
+import TablerDotsIcon from '@tabler/icons-react-native/IconDots';
+import TablerAlertCircleIcon from '@tabler/icons-react-native/IconAlertCircle';
+import TablerHandClickIcon from '@tabler/icons-react-native/IconHandClick';
 import type { IconProps } from '@tabler/icons-react-native';
 import type { ComponentType, FC } from 'react';
 
@@ -64,3 +68,14 @@ export const WarningIcon = createLunaIcon(
 );
 export const RepeatIcon = createLunaIcon(TablerRepeatIcon, 'RepeatIcon');
 export const PlusIcon = createLunaIcon(TablerPlusIcon, 'PlusIcon');
+
+export const BellIcon = createLunaIcon(TablerBellIcon, 'BellIcon');
+export const MoreIcon = createLunaIcon(TablerDotsIcon, 'MoreIcon');
+export const ImportantIcon = createLunaIcon(
+  TablerAlertCircleIcon,
+  'ImportantIcon',
+);
+export const ActionRequiredIcon = createLunaIcon(
+  TablerHandClickIcon,
+  'ActionRequiredIcon',
+);
