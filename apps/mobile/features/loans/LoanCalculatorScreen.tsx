@@ -1,4 +1,8 @@
-import { KeyboardAwareScrollView } from '@guallet/luna-mobile';
+import {
+  KeyboardAwareScrollView,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useEffect, useState } from 'react';
 import {
   BackHandler,
@@ -10,7 +14,6 @@ import {
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
-import { TextInput, useTheme } from '@guallet/luna-mobile';
 import { ChevronLeftIcon } from '@guallet/luna-mobile/icons';
 import {
   calculateLoanSchedule,
