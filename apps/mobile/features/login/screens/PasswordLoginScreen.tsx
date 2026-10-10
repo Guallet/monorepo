@@ -7,11 +7,16 @@ import {
 } from '@/features/login/components/AuthLayout';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
-import { useForm, useSelector } from '@tanstack/react-form';
+import { revalidateLogic, useForm, useSelector } from '@tanstack/react-form';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { z } from 'zod';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { passwordLoginFormOptions } from '../passwordLoginForm';
+
+const passwordLoginSchema = z.object({
+  email: z.string().trim().email('Enter a valid email address.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
+});
 
 export function PasswordLoginScreen() {
   const router = useRouter();
@@ -21,8 +26,11 @@ export function PasswordLoginScreen() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const form = useForm({
-    ...passwordLoginFormOptions,
     defaultValues: { email: params.email ?? '', password: '' },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: passwordLoginSchema,
+    },
     listeners: { onChange: () => setFormError(null) },
     onSubmit: async ({ value }) => {
       setFormError(null);
@@ -67,7 +75,7 @@ export function PasswordLoginScreen() {
               autoComplete="email"
               autoCorrect={false}
               disabled={isSubmitting}
-              error={field.state.meta.errors[0] ?? null}
+              error={field.state.meta.errors[0]?.message ?? null}
               keyboardType="email-address"
               label="Email address"
               onBlur={field.handleBlur}
@@ -86,7 +94,7 @@ export function PasswordLoginScreen() {
               autoComplete="current-password"
               autoCorrect={false}
               disabled={isSubmitting}
-              error={field.state.meta.errors[0] ?? null}
+              error={field.state.meta.errors[0]?.message ?? null}
               label="Password"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
@@ -142,10 +150,7 @@ export function PasswordLoginScreen() {
         {([canSubmit, submitting, formEmail, password]) => (
           <Button
             disabled={
-              !canSubmit ||
-              submitting ||
-              !formEmail.trim() ||
-              !password
+              !canSubmit || submitting || !formEmail.trim() || !password
             }
             onClick={() => void submitForm()}
           >
