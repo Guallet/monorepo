@@ -22,9 +22,7 @@ export interface BottomSheetProps extends Omit<
 > {
   isOpen: boolean;
   title: string;
-  /** Called by the close button and native dismissal. Reset open state here. */
   onClose?: () => void;
-  onDismiss?: ExpoBottomSheetProps['onDismiss'];
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
 }
@@ -35,7 +33,6 @@ export function BottomSheet({
   title,
   showCloseIcon = false,
   onClose,
-  onDismiss,
   containerColor,
   contentPadding,
   showDragIndicator = true,
@@ -52,11 +49,6 @@ export function BottomSheet({
     if (closeNotified.current) return;
     closeNotified.current = true;
     onClose?.();
-  }
-
-  function notifyDismiss() {
-    if (onDismiss && onDismiss !== onClose) onDismiss();
-    notifyClose();
   }
 
   // Block before the native content mounts. Only its eventual unmount releases
@@ -85,7 +77,7 @@ export function BottomSheet({
     <ExpoBottomSheet
       {...props}
       isPresented={isOpen}
-      onDismiss={notifyDismiss}
+      onDismiss={notifyClose}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
       snapPoints={snapPoints}

@@ -323,7 +323,6 @@ export function RecurringForm({
         title="Repeats"
         showCloseIcon
         onClose={() => setFrequencyOpen(false)}
-        onDismiss={() => setFrequencyOpen(false)}
       >
         <View style={{ gap: spacing.sm, padding: spacing.md }}>
           {CADENCE_OPTIONS.map((option) => (

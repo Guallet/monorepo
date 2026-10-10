@@ -203,7 +203,6 @@ export default function RecurringDetailScreen({
         title={`Remove ${item.name}?`}
         showCloseIcon={!pending}
         onClose={closeRemove}
-        onDismiss={closeRemove}
       >
         <View style={{ gap: spacing.md, padding: spacing.md }}>
           <Copy muted>{removeMessage}</Copy>
