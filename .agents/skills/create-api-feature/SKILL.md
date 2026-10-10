@@ -27,20 +27,22 @@ apps/api/src/features/{name}/
 `apps/api/src/app.module.ts` – add import and add to the `// APP MODULES` list.
 
 Whenever you add, edit, or remove a TypeORM database entity, generate a TypeORM
-migration as part of the same change. From `apps/api`, run this against a
-database at the current migration version; the script builds the API first:
+migration as part of the same change. From the monorepo root, run this against
+a database at the current migration version:
 
 ```bash
-pnpm db:migration:generate src/migrations/DescriptiveChange
+pnpm --filter api db:migrations:generate src/database/migrations/DescriptiveChange
 ```
 
 Review the generated migration and commit it with the entity change. If the CLI
 reports no schema changes, verify that the entity edit does not change persisted
-schema and record why no migration file was produced. The TypeORM CLI data
-source is separate from Nest's runtime configuration. The API applies pending
-migrations at startup, so migrations must be safe for deployed data and must
-not rely on an empty database. Never rewrite an already released migration to
-change deployed schema.
+schema and record why no migration file was produced. The script builds the API
+and uses the compiled `dist/database/data-source.js`; the argument selects the
+output path under `src/database/migrations/`. The TypeORM CLI data source is
+separate from Nest's runtime configuration. The API applies pending migrations
+at startup, so migrations must be safe for deployed data and must not rely on
+an empty database. Never rewrite an already released migration to change
+deployed schema.
 
 ---
 
