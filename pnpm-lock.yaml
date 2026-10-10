@@ -539,12 +539,6 @@ importers:
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
-      '@types/react-test-renderer':
-        specifier: 19.1.0
-        version: 19.1.0
-      react-test-renderer:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -851,12 +845,6 @@ importers:
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
-      '@types/react-test-renderer':
-        specifier: 19.1.0
-        version: 19.1.0
-      react-test-renderer:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -8154,11 +8142,6 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
-
-  react-test-renderer@19.2.3:
-    resolution: {integrity: sha512-TMR1LnSFiWZMJkCgNf5ATSvAheTT2NvKIwiVwdBPHxjBI7n/JbWd4gaZ16DVd9foAXdvDz+sB5yxZTwMjPRxpw==}
-    peerDependencies:
-      react: 19.2.3
 
   react-transition-group@4.4.5:
     resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
@@ -17458,12 +17441,6 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.2.14
-
-  react-test-renderer@19.2.3(react@19.2.3):
-    dependencies:
-      react: 19.2.3
-      react-is: 19.3.0
-      scheduler: 0.27.0
 
   react-transition-group@4.4.5(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:

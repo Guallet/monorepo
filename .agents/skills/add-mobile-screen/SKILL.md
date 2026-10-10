@@ -1,6 +1,6 @@
 ---
 name: add-mobile-screen
-description: Add a new screen to the Expo React Native mobile app using Expo Router and the shared TanStack Form foundation for forms. Covers tab screens, stack screens, and detail screens. Use when adding new pages to apps/mobile.
+description: Add a new screen to the Expo React Native mobile app using Expo Router. Covers tab screens, stack screens, and detail screens. Use when adding new pages to apps/mobile.
 ---
 
 # add-mobile-screen
@@ -23,7 +23,7 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
 
 ## Required: Mobile forms
 
-- Every new mobile screen or screen component that edits and submits data MUST
+- Every new mobile screen or screen component that edits and submits data must
   use `useAppForm` from `@/components/forms` (TanStack Form). Do not introduce
   manual field/error state, Formik, React Hook Form, or a separate form hook.
 - Use `<form.AppField>` and the registered Luna adapters, starting with
