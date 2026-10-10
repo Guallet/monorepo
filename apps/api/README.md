@@ -56,24 +56,25 @@ Bring up local services with Docker Compose (Postgres + Redis):
 docker-compose up -d
 ```
 
-The API schema is managed with TypeORM migrations in `src/migrations/`. On API
-startup, TypeORM applies any pending migrations before serving requests. The
-initial migration creates the application and Better Auth tables together and
-is intended for an empty database.
+The API schema is managed with TypeORM migrations in
+`src/database/migrations/`. On API startup, TypeORM applies any pending
+migrations before serving requests. The initial migration creates the
+application and Better Auth tables together and is intended for an empty
+database.
 
 To create a migration after changing entities, run this from `apps/api` with
 the configured `DATABASE_*` variables pointing to a database at the current
-migration version. The script builds the API before calling TypeORM's CLI:
+migration version:
 
 ```bash
-pnpm db:migration:generate src/migrations/DescriptiveChange
+pnpm db:migrations:generate src/database/migrations/DescriptiveChange
 ```
 
-Review the generated migration before committing it. To apply migrations
-without starting the API, use:
+Review the generated migration before committing it. To apply pending
+migrations without starting the API, use:
 
 ```bash
-pnpm exec typeorm migration:run -d dist/database/data-source.js
+pnpm db:migrations:run
 ```
 
 Do not edit or reapply an existing migration to change an already deployed
