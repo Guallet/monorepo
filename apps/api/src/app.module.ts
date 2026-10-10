@@ -81,7 +81,7 @@ import { ObserveModule } from './observe';
           entities: [],
           synchronize: false,
           migrations: [__dirname + '/migrations/**/*{.js,.ts}'],
-          migrationsRun: false,
+          migrationsRun: true,
           autoLoadEntities: true,
           ssl: dbConfig.ssl ? { rejectUnauthorized: false } : false,
         };

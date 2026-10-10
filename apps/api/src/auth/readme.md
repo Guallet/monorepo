@@ -8,7 +8,8 @@ The initial TypeORM migration in `src/migrations/` creates the application and
 authentication tables together. Auth entities are registered in `UsersModule` and
 match the Better Auth mappings: `users`, `session`, `auth_accounts`, and
 `verification`. Apply this migration only to an empty database through TypeORM's
-migration runner; automatic migration execution remains disabled.
+migration runner. The API applies pending TypeORM migrations automatically at
+startup; the standalone TypeORM CLI data source can also run them manually.
 
 The `users` table retains application preferences and soft deletion alongside
 Better Auth's fields. Auth IDs are text; auth timestamps use `timestamptz`. The
@@ -19,15 +20,10 @@ against an empty PostgreSQL database. Its SQL comes from the entity metadata;
 the UUID extension bootstrap is added explicitly before the generated queries.
 
 For future migrations, build the API and run from `apps/api` with the database
-environment variables pointing to a database at the current migration version:
-
-```bash
-pnpm build
-pnpm exec typeorm migration:generate src/migrations/SchemaChange -d dist/database/data-source.js
-```
-
-Review the generated migration before applying it. The CLI data source also
-supports `pnpm exec typeorm migration:run -d dist/database/data-source.js`.
+environment variables pointing to a database at the current migration version.
+Generate migrations with `pnpm exec typeorm migration:generate` and the built
+CLI data source described in the API README. Review each generated migration
+before committing it; add a new migration for later Better Auth schema changes.
 
 For later Better Auth upgrades, inspect the required schema and add a new
 TypeORM migration rather than reapplying or editing the initial migration.

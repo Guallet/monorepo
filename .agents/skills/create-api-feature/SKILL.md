@@ -26,6 +26,15 @@ apps/api/src/features/{name}/
 
 `apps/api/src/app.module.ts` – add import and add to the `// APP MODULES` list.
 
+If the feature adds or changes persisted schema, include a TypeORM migration in
+`apps/api/src/migrations/` with the feature change. Build the API and generate
+it from `apps/api` with `pnpm exec typeorm migration:generate` using
+`-d dist/database/data-source.js`; inspect and edit the generated SQL as needed
+before committing it. The TypeORM CLI data source is separate from Nest's
+runtime configuration. The API applies pending migrations at startup, so
+migrations must be safe for deployed data and must not rely on an empty
+database. Never rewrite an already released migration to change deployed schema.
+
 ---
 
 ## 1. Entity – `entities/{name}.entity.ts`

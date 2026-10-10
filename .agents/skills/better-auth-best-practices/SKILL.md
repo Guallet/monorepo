@@ -7,6 +7,17 @@ description: Configure Better Auth server and client, set up database adapters, 
 
 **Always consult [better-auth.com/docs](https://better-auth.com/docs) for code examples and latest API.**
 
+## Guallet API database migrations
+
+In this monorepo, application and Better Auth tables are managed together by
+TypeORM migrations under `apps/api/src/migrations/`. The API applies pending
+migrations at startup. When changing Better Auth configuration, plugins, or
+entity mappings, inspect the resulting schema change and add a new TypeORM
+migration. Do not use the Better Auth CLI `generate` or `migrate` commands as
+the application schema migration path; the API package's `auth:db:generate` and
+`auth:db:migrate` scripts invoke that separate CLI workflow. See
+`apps/api/README.md` for the TypeORM CLI commands and migration review steps.
+
 ---
 
 ## Setup Workflow
