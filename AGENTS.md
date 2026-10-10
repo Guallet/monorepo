@@ -232,6 +232,18 @@ apps/mobile/app/{name}/[id].tsx      – detail screen with param
 
 Expo Router requires `export default function` (not named exports) for all route files.
 
+### Mobile forms
+
+New mobile screens that contain forms use TanStack Form directly with
+`useForm` and `form.Field`. Bind Luna controls to the field's value, change, and
+blur handlers. Define a Zod schema in the screen and pass it to
+`validators.onDynamic` with `revalidateLogic()`. Use `form.Subscribe` or
+`useSelector` for reactive form state. Keep field values and validation in the
+form; local state is for UI controls and server request errors. Guard
+`form.handleSubmit()` against concurrent submissions and use that handler for
+both button and keyboard submission. See the `add-mobile-screen` skill and
+`PasswordLoginScreen` for the current pattern.
+
 ### Mobile bottom sheets
 
 - Use `BottomSheet` from `@guallet/luna-mobile` for every
