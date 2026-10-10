@@ -35,11 +35,13 @@ export default function InstitutionsScreen() {
   );
   const counts = useMemo(() => {
     const result = new Map<string, number>();
-    for (const account of accountsQuery.accounts)
+    for (const account of accountsQuery.accounts) {
+      if (!account.institutionId) continue;
       result.set(
         account.institutionId,
         (result.get(account.institutionId) ?? 0) + 1,
       );
+    }
     return result;
   }, [accountsQuery.accounts]);
   function refresh() {

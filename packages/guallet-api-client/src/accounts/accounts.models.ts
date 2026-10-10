@@ -4,7 +4,7 @@ export type AccountDto = {
   balance: { amount: number; currency: string };
   currency: string;
   type: AccountTypeDto;
-  institutionId: string;
+  institutionId: string | null;
   source?: 'manual' | 'imported' | 'synced' | 'unknown';
   sourceName?: string;
   properties?:
@@ -63,7 +63,7 @@ export type UpdateAccountRequest = {
   currency?: string;
   balance?: number;
   create_balance_transaction?: boolean;
-  institution_id?: string;
+  institution_id?: string | null;
 };
 
 export interface CurrentAccountProperties {

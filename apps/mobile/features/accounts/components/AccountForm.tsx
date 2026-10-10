@@ -1,13 +1,21 @@
 import {
   Button,
+  BottomSheet,
   KeyboardAwareScrollView,
   TextInput,
   useTheme,
 } from '@guallet/luna-mobile';
 import { useEffect, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
-import { useAccountMutations } from '@guallet/api-react';
+import { useAccountMutations, useInstitutions } from '@guallet/api-react';
 import { AccountTypeIcon } from './AccountTypeIcon';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
@@ -28,6 +36,7 @@ export function AccountForm({
   const { defaultCurrency } = useMobileUserPreferences();
   const { createAccountMutation, updateAccountMutation } =
     useAccountMutations();
+  const institutionsQuery = useInstitutions({ enabled: Boolean(account) });
   const [name, setName] = useState(account?.name ?? '');
   const [type, setType] = useState<AccountTypeDto>(
     account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
@@ -39,6 +48,10 @@ export function AccountForm({
   const [balance, setBalance] = useState(
     account ? String(account.balance.amount) : '0',
   );
+  const [institutionId, setInstitutionId] = useState<string | null>(
+    account?.institutionId ?? null,
+  );
+  const [showInstitutionPicker, setShowInstitutionPicker] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,6 +60,7 @@ export function AccountForm({
     setType(account.type);
     setCurrency(account.currency);
     setBalance(String(account.balance.amount));
+    setInstitutionId(account.institutionId ?? null);
   }, [account]);
 
   useEffect(() => {
@@ -57,6 +71,21 @@ export function AccountForm({
 
   const isPending =
     createAccountMutation.isPending || updateAccountMutation.isPending;
+  const institutions = [...institutionsQuery.institutions].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+  let institutionLabel = 'No institution';
+  if (institutionId) {
+    institutionLabel =
+      institutions.find((institution) => institution.id === institutionId)
+        ?.name ?? 'Current institution';
+  }
+
+  function selectInstitution(id: string | null) {
+    setInstitutionId(id);
+    setError(null);
+    setShowInstitutionPicker(false);
+  }
 
   async function handleSubmit() {
     const normalizedName = name.trim();
@@ -87,6 +116,7 @@ export function AccountForm({
               currency: normalizedCurrency,
               balance: parsedBalance,
               create_balance_transaction: true,
+              institution_id: institutionId,
             },
           })
         : await createAccountMutation.mutateAsync({
@@ -154,6 +184,28 @@ export function AccountForm({
             placeholder="e.g. Everyday current account"
             value={name}
           />
+          {account && (
+            <View style={{ gap: spacing.xs }}>
+              <Text
+                style={{
+                  color: colors.text.primary,
+                  fontSize: typography.sizes.sm,
+                  fontWeight: '600',
+                }}
+              >
+                Institution
+              </Text>
+              <Button
+                accessibilityLabel={`Institution: ${institutionLabel}`}
+                accessibilityHint="Choose another institution or remove the institution from this account."
+                disabled={isPending}
+                onClick={() => setShowInstitutionPicker(true)}
+                variant="outline"
+              >
+                {institutionLabel}
+              </Button>
+            </View>
+          )}
           <CurrencyInput
             onValueChanged={(selectedCurrency) => {
               hasSelectedCurrency.current = true;
@@ -262,6 +314,82 @@ export function AccountForm({
           </Button>
         </View>
       </KeyboardAwareScrollView>
+      {account && (
+        <BottomSheet
+          isOpen={showInstitutionPicker}
+          title="Choose an institution"
+          showCloseIcon
+          onClose={() => setShowInstitutionPicker(false)}
+        >
+          <Pressable
+            accessibilityRole="radio"
+            accessibilityState={{ checked: institutionId === null }}
+            disabled={isPending}
+            onPress={() => selectInstitution(null)}
+            style={[
+              styles.institutionOption,
+              { borderColor: colors.surface.border.primary },
+            ]}
+          >
+            <Text style={{ color: colors.text.primary }}>No institution</Text>
+            {institutionId === null && (
+              <Text style={{ color: colors.accent.primary }}>Selected</Text>
+            )}
+          </Pressable>
+          <FlatList
+            data={institutions}
+            keyExtractor={(item) => item.id}
+            keyboardShouldPersistTaps="handled"
+            ListEmptyComponent={
+              <Text
+                style={{
+                  color: colors.text.secondary,
+                  padding: spacing.md,
+                  textAlign: 'center',
+                }}
+              >
+                {institutionsQuery.isLoading
+                  ? 'Loading institutions…'
+                  : 'No institutions available'}
+              </Text>
+            }
+            renderItem={({ item }) => (
+              <Pressable
+                accessibilityRole="radio"
+                accessibilityState={{ checked: institutionId === item.id }}
+                accessibilityLabel={item.name}
+                disabled={isPending}
+                onPress={() => selectInstitution(item.id)}
+                style={[
+                  styles.institutionOption,
+                  { borderColor: colors.surface.border.primary },
+                ]}
+              >
+                <View style={{ flex: 1, gap: spacing.xs }}>
+                  <Text style={{ color: colors.text.primary }}>
+                    {item.name}
+                  </Text>
+                  <Text style={{ color: colors.text.secondary }}>
+                    {item.user_id === null ? 'Shared' : 'Custom'}
+                  </Text>
+                </View>
+                {institutionId === item.id && (
+                  <Text style={{ color: colors.accent.primary }}>Selected</Text>
+                )}
+              </Pressable>
+            )}
+            style={{ flex: 1 }}
+          />
+          {institutionsQuery.isError && (
+            <Button
+              onClick={() => void institutionsQuery.refetch()}
+              variant="outline"
+            >
+              Retry loading institutions
+            </Button>
+          )}
+        </BottomSheet>
+      )}
     </View>
   );
 }
@@ -282,6 +410,14 @@ const styles = StyleSheet.create({
     minHeight: 82,
     padding: 8,
     width: '31.5%',
+  },
+  institutionOption: {
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: 48,
+    paddingHorizontal: 8,
   },
   typeLabel: { fontWeight: '600', textAlign: 'center' },
   error: { fontWeight: '500', textAlign: 'center' },

@@ -34,10 +34,13 @@ Mobbin references:
 - The existing country update contract is additive: Add country retains existing
   countries and the API deduplicates the new country. Clearing that selection
   means no additional country is sent.
-- Unsaved form changes prompt before navigation. Submitting twice is prevented;
-  save failures retain entered values. Successful saves open institution details.
+- Unsaved form changes prompt before navigation, and navigation is blocked while
+  a save is pending. Submitting twice is prevented; save failures retain entered
+  values. Successful saves open institution details.
 - Account loading or refresh failures do not enable deletion. Moving associated
-  accounts to another institution is required before deletion.
+  accounts to another institution is required before deletion. Open an account
+  from the institution details and use Edit to reassign it or remove its
+  institution.
 - A custom institution without accounts can be deleted after confirmation in a
   Luna BottomSheet. The API checks user-scoped account references and converts a
   foreign-key conflict (including an account attached during deletion) to HTTP 409. It does not delete accounts. Successful deletion returns to the list.
@@ -83,5 +86,6 @@ Device verification still needs iOS and Android builds. Check:
   and iPad keyboards; save/cancel stay reachable by scrolling.
 - Country sheet search with keyboard visible; selection, dismissal and reopening.
 - VoiceOver/TalkBack control names, errors and selected states.
+- Reassign a linked account from its Edit screen, then delete the institution.
 - Deletion with and without accounts, 409 conflict, success feedback, offline
   retry and missing/invalid institution ids.

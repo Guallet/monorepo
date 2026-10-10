@@ -52,12 +52,11 @@ export class AccountDto {
 
   @ApiProperty({
     type: String,
-    required: false,
     description:
       'The institution id of the account, if it belongs to an institution',
     nullable: true,
   })
-  institutionId?: string | null;
+  institutionId: string | null;
 
   @ApiProperty({
     required: false,

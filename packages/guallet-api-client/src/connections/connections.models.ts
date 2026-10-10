@@ -1,3 +1,5 @@
+import type { InstitutionDto } from '../institutions/institutions.models';
+
 export type OpenBankingCountryDto = {
   code: string;
   name: string;
@@ -42,17 +44,8 @@ export type ObConnection = {
   deleted_at: string | null;
 };
 
-export type GualletInstitutionDto = {
-  id: string;
-  name: string;
-  image_src: string;
-  user_id: string | null;
-  nordigen_id: string;
-  countries: string[];
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-};
+/** @deprecated Use InstitutionDto from the institutions domain. */
+export type GualletInstitutionDto = InstitutionDto;
 
 export type ObAccountDto = {
   id: string;

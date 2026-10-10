@@ -141,6 +141,7 @@ function InstitutionFormContent({
     imageUrl.trim() !== initial.imageUrl.trim() ||
     country !== initial.country;
   usePreventRemove(!completedId && (dirty || pending), ({ data }) => {
+    if (pending) return;
     showAlert({
       title: 'Discard changes?',
       message: 'Your unsaved changes will be lost.',
