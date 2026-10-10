@@ -20,6 +20,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    softwareKeyboardLayoutMode: 'resize',
     // TODO: enable once we have the icons
     // adaptiveIcon: {
     //   backgroundColor: "#E6F4FE",

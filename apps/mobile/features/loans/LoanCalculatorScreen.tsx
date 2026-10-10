@@ -1,18 +1,19 @@
+import {
+  KeyboardAwareScrollView,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useEffect, useState } from 'react';
 import {
   BackHandler,
   FlatList,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
-import { TextInput, useTheme } from '@guallet/luna-mobile';
 import { ChevronLeftIcon } from '@guallet/luna-mobile/icons';
 import {
   calculateLoanSchedule,
@@ -478,8 +479,6 @@ export default function LoanCalculatorScreen() {
     resultB = calculateLoanSchedule(parsedB.values, decimalPlaces);
   let scheduleResult = resultA;
   if (scheduleSide === 'b') scheduleResult = resultB;
-  let keyboardBehavior: 'padding' | undefined;
-  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   useEffect(() => {
     if (mode !== 'schedule') return;
@@ -604,8 +603,8 @@ export default function LoanCalculatorScreen() {
       headerTitle="Loan calculator"
       headerOptions={{ headerBackVisible: true, gestureEnabled: true }}
     >
-      <KeyboardAvoidingView behavior={keyboardBehavior} style={styles.flex}>
-        <ScrollView
+      <View style={styles.flex}>
+        <KeyboardAwareScrollView
           contentContainerStyle={{ padding: spacing.md }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -759,8 +758,8 @@ export default function LoanCalculatorScreen() {
               </Pressable>
             </>
           )}
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+      </View>
     </AppScreen>
   );
 }

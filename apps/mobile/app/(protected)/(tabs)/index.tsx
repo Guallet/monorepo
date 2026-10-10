@@ -71,7 +71,7 @@ export default function DashboardScreen() {
         styles.safeArea,
         { backgroundColor: colors.surface.background.page },
       ]}
-      edges={['top']}
+      edges={['top', 'left', 'right']}
     >
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView

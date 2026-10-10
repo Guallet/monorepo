@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, useTheme } from '@guallet/luna-mobile';
+import {
+  Button,
+  KeyboardAwareScrollView,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { ChevronLeftIcon } from '@guallet/luna-mobile/icons';
 
 interface Props {
@@ -51,7 +55,7 @@ export function FlowScreen(props: Readonly<Props>) {
         </Text>
         <View style={styles.back} />
       </View>
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={{
           padding: spacing.md,
           paddingBottom: spacing.lg,
@@ -116,24 +120,25 @@ export function FlowScreen(props: Readonly<Props>) {
           {props.description}
         </Text>
         {props.children}
-      </ScrollView>
-      <View
-        style={[
-          styles.footer,
-          {
-            backgroundColor: colors.surface.background.primary,
-            borderTopColor: colors.surface.border.primary,
-            padding: spacing.md,
-          },
-        ]}
-      >
-        <Button
-          onClick={props.onAction}
-          disabled={props.disabled || props.busy}
+
+        <View
+          style={[
+            styles.footer,
+            {
+              backgroundColor: colors.surface.background.primary,
+              borderTopColor: colors.surface.border.primary,
+              padding: spacing.md,
+            },
+          ]}
         >
-          {props.busy ? 'Working…' : props.action}
-        </Button>
-      </View>
+          <Button
+            onClick={props.onAction}
+            disabled={props.disabled || props.busy}
+          >
+            {props.busy ? 'Working…' : props.action}
+          </Button>
+        </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

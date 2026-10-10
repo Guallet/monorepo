@@ -102,7 +102,7 @@ export default function BudgetsScreen() {
 
   return (
     <SafeAreaView
-      edges={['top']}
+      edges={['top', 'left', 'right']}
       style={[
         styles.safeArea,
         { backgroundColor: colors.surface.background.page },
