@@ -178,10 +178,8 @@ export class AccountsService {
       name: dto.name ?? dbEntity.name,
       currency: dto.currency ?? dbEntity.currency,
       type: dto.type ?? dbEntity.type,
+      institutionId,
     };
-    if (dto.institution_id !== undefined) {
-      updatePayload.institutionId = institutionId;
-    }
     const updatedAccount = await this.repository.save(updatePayload);
     return updatedAccount;
   }
