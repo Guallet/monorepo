@@ -6,13 +6,15 @@ RUN npm install -g pnpm@12.4.1 --ignore-scripts
 
 WORKDIR /app
 
-# Copy only API workspace files
+# Copy the API and its shared money dependency
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY .npmrc* ./
 
 # Copy API source and package.json
 COPY apps/api/package.json ./apps/api/
 COPY apps/api ./apps/api
+COPY packages/guallet-money ./packages/guallet-money
+COPY packages/tsconfig ./packages/tsconfig
 
 # Install dependencies (only for API)
 RUN pnpm install --filter ./apps/api... --frozen-lockfile
@@ -37,6 +39,8 @@ WORKDIR /app/apps/api
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./dist
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./
+COPY --from=base --chown=nodejs:nodejs /app/node_modules /app/node_modules
+COPY --from=base --chown=nodejs:nodejs /app/packages/guallet-money /app/packages/guallet-money
 
 # Switch to non-root user
 USER nodejs

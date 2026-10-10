@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
-import { useTheme } from '@guallet/luna-mobile';
+import { Button, useTheme } from '@guallet/luna-mobile';
 import { WealthCard } from '@/features/dashboard/components/WealthCard';
 import { CashflowSummaryRow } from '@/features/dashboard/components/CashflowSummaryRow';
 import { RecentTransactionsWidget } from '@/features/dashboard/components/RecentTransactionsWidget';
@@ -106,6 +106,10 @@ export default function DashboardScreen() {
 
         {/* Income / Expense 30-day summary */}
         <CashflowSummaryRow onMonthDeltaChange={handleMonthDeltaChange} />
+
+        <Button variant="outline" onClick={() => router.push('/reports')}>
+          View reports
+        </Button>
 
         {/* Recent Transactions */}
         <RecentTransactionsWidget onSeeAll={handleSeeAllTransactions} />

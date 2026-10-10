@@ -8,6 +8,7 @@ describe('ReportsController', () => {
 
   const mockReportsService = {
     getCashFlowReport: vi.fn(),
+    getMonthlyReport: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -35,6 +36,17 @@ describe('ReportsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('passes the session owner and monthly query to the service', async () => {
+    const query = { year: 2026, month: 9, accounts: ['account'] };
+    const report = { year: 2026, month: 9, currencies: [] };
+    mockReportsService.getMonthlyReport.mockResolvedValue(report);
+    expect(await controller.getMonthlyReport(mockUser, query)).toEqual(report);
+    expect(mockReportsService.getMonthlyReport).toHaveBeenCalledWith(
+      mockUser.id,
+      query,
+    );
   });
 
   describe('getCashflowReport', () => {

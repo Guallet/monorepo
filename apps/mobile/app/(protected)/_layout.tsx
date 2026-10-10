@@ -17,6 +17,7 @@ export default function ProtectedLayout() {
         <Stack.Screen name="transactions" options={{ headerShown: false }} />
         <Stack.Screen name="export" options={{ headerShown: false }} />
         <Stack.Screen name="importer" options={{ headerShown: false }} />
+        <Stack.Screen name="reports" options={{ headerShown: false }} />
       </Stack>
     </>
   );

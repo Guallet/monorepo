@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
+import { Between, In, Raw, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { Account } from 'src/features/accounts/entities/account.entity';
@@ -9,6 +9,9 @@ import {
   CategoryDataRowDto,
   SubCategoryDataRow,
 } from './cashflow/cashflowData.dto';
+import { MonthlyReportQueryDto } from './dto/monthly-report-query.dto';
+import { MonthlyReportDto } from './dto/monthly-report.dto';
+import { aggregateMonthlyReport, selectedCategoryIds } from './monthly-report';
 
 @Injectable()
 export class ReportsService {
@@ -22,6 +25,42 @@ export class ReportsService {
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
   ) {}
+
+  async getMonthlyReport(
+    user_id: string,
+    query: MonthlyReportQueryDto,
+  ): Promise<MonthlyReportDto> {
+    const categories = await this.categoriesRepository.find({
+      where: { user_id },
+    });
+    let categoryIds: string[] | undefined;
+    if (query.categories?.length) {
+      categoryIds = selectedCategoryIds(categories, query.categories);
+      if (categoryIds.length === 0)
+        return { year: query.year, month: query.month, currencies: [] };
+    }
+    const start = new Date(Date.UTC(query.year, query.month - 1, 1));
+    const end = new Date(Date.UTC(query.year, query.month, 1));
+    const transactions = await this.transactionsRepository.find({
+      select: { amount: true, currency: true, categoryId: true },
+      where: {
+        account: {
+          user_id,
+          ...(query.accounts?.length && { id: In(query.accounts) }),
+        },
+        date: Raw((alias) => `${alias} >= :start AND ${alias} < :end`, {
+          start,
+          end,
+        }),
+        ...(categoryIds && { categoryId: In(categoryIds) }),
+      },
+    });
+    return {
+      year: query.year,
+      month: query.month,
+      currencies: aggregateMonthlyReport(categories, transactions),
+    };
+  }
 
   async getCashFlowReport({
     user_id,
