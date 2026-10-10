@@ -24,8 +24,8 @@
     "db:migrations:generate": "pnpm build && pnpm typeorm migration:generate -d dist/database/data-source.js",
     "db:migrations:run": "pnpm build && pnpm typeorm migration:run -d dist/database/data-source.js",
     "auth:db:init": "pnpm auth:db:generate && pnpm auth:db:migrate",
-    "auth:db:generate": "npx @better-auth/cli generate --config src/auth/better-auth.ts",
-    "auth:db:migrate": "npx @better-auth/cli migrate --config src/auth/better-auth.ts",
+    "auth:db:generate": "npx @better-auth/cli generate --config src/auth/better-auth.cli.ts",
+    "auth:db:migrate": "npx @better-auth/cli migrate --config src/auth/better-auth.cli.ts",
     "script:set-role": "ts-node -r tsconfig-paths/register -r dotenv/config scripts/set-user-role.ts"
   },
   "engines": {

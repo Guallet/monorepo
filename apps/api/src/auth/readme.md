@@ -53,4 +53,10 @@ Run this test command from the monorepo root. The test drops and recreates the
 | `auth.email.otp`            | Email OTP verification sent  | `sendAuthOtpEmail`       |
 | `auth.email.magic-link`     | Magic link sign-in requested | `sendAuthMagicLinkEmail` |
 
-The CLI export (`export const auth`) at the bottom of `better-auth.ts` omits the `eventEmitter`, so no emails are emitted when running migrations via the CLI — this is intentional.
+The Better Auth CLI uses `src/auth/better-auth.cli.ts`. That module loads
+`.env` before creating its environment-backed auth instance. Keep the CLI
+instance separate from `better-auth.ts`, which is imported by the Nest runtime
+and only exports the `createAuth` factory. This avoids constructing an extra
+Better Auth instance with uninitialized environment values during API startup.
+The CLI instance omits the `eventEmitter`, so it does not emit email events;
+this is intentional.
