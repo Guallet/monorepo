@@ -94,12 +94,7 @@ export function DashboardNotifications() {
             notification={notification}
             locale={languageTag}
             compact
-            onOpen={() =>
-              router.push({
-                pathname: '/(protected)/notifications/[id]',
-                params: { id: notification.id },
-              })
-            }
+            onOpen={() => actions.open(notification)}
             onMarkRead={() => void actions.setRead(notification.id, true)}
             pending={actions.isUpdating}
           />

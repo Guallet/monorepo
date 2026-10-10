@@ -27,8 +27,8 @@ import { NotificationOptionsSheet } from '../components/NotificationOptionsSheet
 export function NotificationsScreen() {
   const { colors, spacing, borderRadius } = useTheme();
   const insets = useSafeAreaInsets();
-  const { languageTag } = useMobileUserPreferences();
   const router = useRouter();
+  const { languageTag } = useMobileUserPreferences();
   const query = useNotifications();
   const actions = useNotificationActions();
   const [unreadOnly, setUnreadOnly] = useState(false);
@@ -142,7 +142,7 @@ export function NotificationsScreen() {
                   {unread.length} unread
                 </NotificationText>
                 <NotificationAction
-                  busy={actions.markAllAsReadMutation?.isPending}
+                  busy={actions.isUpdating}
                   label="Mark all as read"
                   disabled={pending}
                   onPress={() => void actions.markAllRead()}
@@ -159,12 +159,7 @@ export function NotificationsScreen() {
           <NotificationRow
             notification={item}
             locale={languageTag}
-            onOpen={() =>
-              router.push({
-                pathname: '/(protected)/notifications/[id]',
-                params: { id: item.id },
-              })
-            }
+            onOpen={() => actions.open(item)}
             onOptions={() => setSelectedId(item.id)}
           />
         )}

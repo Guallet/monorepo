@@ -55,6 +55,10 @@ export function useNotificationMutations() {
   });
 
   return {
+    markAsReadAsync: (id: string, isRead: boolean) =>
+      markAsReadMutation.mutateAsync({ id, isRead }),
+    markAllAsReadAsync: () => markAllAsReadMutation.mutateAsync(),
+    deleteNotificationAsync: (id: string) => deleteMutation.mutateAsync(id),
     markAsRead: (id: string) => markAsReadMutation.mutate({ id, isRead: true }),
     markAsUnread: (id: string) =>
       markAsReadMutation.mutate({ id, isRead: false }),

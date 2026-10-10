@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import type { NotificationDto } from '@guallet/api-client';
 import { BottomSheet, useTheme } from '@guallet/luna-mobile';
 import { NotificationAction, NotificationText } from './NotificationUi';
@@ -42,14 +42,16 @@ export function NotificationOptionsSheet({
       isOpen={isOpen}
       title={title}
       showCloseIcon
-      snapPoints={['half', 'full']}
+      contentPadding={0}
       onClose={close}
     >
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: spacing.md, gap: spacing.md }}
+      <View
+        style={{
+          paddingHorizontal: spacing.md,
+          paddingVertical: spacing.sm,
+          gap: spacing.sm,
+        }}
       >
-        <NotificationText secondary>{notification.message}</NotificationText>
         {confirming && (
           <View style={{ gap: spacing.sm }}>
             <NotificationText>
@@ -83,7 +85,7 @@ export function NotificationOptionsSheet({
             />
           </View>
         )}
-      </ScrollView>
+      </View>
     </BottomSheet>
   );
 }

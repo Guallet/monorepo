@@ -42,7 +42,7 @@ export function NotificationRow({
         onPress={onOpen}
         accessibilityRole="button"
         accessibilityLabel={`${notification.type.replaceAll('_', ' ')}, ${status}, ${notification.message}, ${notificationTime(notification.createdAt, locale)}`}
-        accessibilityHint="Read the full notification"
+        accessibilityHint="Open the notification destination"
         style={[styles.content, { gap: spacing.sm }]}
       >
         {!compact && <NotificationTypeLabel type={notification.type} />}
