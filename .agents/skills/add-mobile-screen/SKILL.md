@@ -100,15 +100,27 @@ const form = useForm({
 - Tab screen content owns top/left/right insets through
   `react-native-safe-area-context`; the tab navigator owns the bottom inset.
   Keep screen backgrounds full-screen and apply safe-area padding to content.
-- For input screens, use `KeyboardAwareScrollView` from
-  `@guallet/luna-mobile`. Put Save/Continue/Cancel actions inside its scroll
-  content, use flexible heights, and use theme spacing for content gutters.
-  The wrapper provides focus scrolling, keyboard clearance, dismissal on drag,
-  and `keyboardShouldPersistTaps="handled"` by default.
-- Do not wrap it in `KeyboardAvoidingView` or enable competing automatic
-  keyboard insets. Keep the existing root `KeyboardProvider`, Android `resize`
-  configuration, and `tabBarHideOnKeyboard` behavior. Preserve virtualized
-  lists rather than nesting them inside another vertical scroll view.
+- For a simple screen with a few controls, React Native's `KeyboardAvoidingView`
+  can adjust the view for the keyboard. Set `behavior="padding"` on iOS and
+  leave `behavior` undefined on Android as a starting point; tune offsets and
+  verify on devices because the platforms handle the behavior differently.
+- For scrollable forms or multiple inputs, use `KeyboardAwareScrollView` from
+  `@guallet/luna-mobile`. It scrolls focused inputs into view. Put
+  Save/Continue/Cancel actions inside its scroll content, use flexible heights,
+  and use theme spacing for content gutters. The wrapper provides keyboard
+  clearance, drag dismissal, and `keyboardShouldPersistTaps="handled"` by
+  default. For multi-input forms, consider a keyboard toolbar when users need
+  previous/next input and dismiss controls.
+- Do not combine `KeyboardAvoidingView` with `KeyboardAwareScrollView` or enable
+  competing automatic keyboard insets. Keep the root `KeyboardProvider` and
+  Reanimated setup. Keyboard Controller requires a development build and does
+  not run in Expo Go; rebuild native clients when its native dependency changes.
+- On Android bottom-tab screens, check whether the keyboard pushes tabs above
+  itself. Expo recommends `android.softwareKeyboardLayoutMode: 'pan'` for this
+  case; `tabBarHideOnKeyboard: true` is another option for hiding the bar.
+  Check the existing app config and verify both behaviors before changing the
+  global keyboard layout mode. Preserve virtualized lists rather than nesting
+  them inside another vertical scroll view.
 - Use Luna `BottomSheet` for native sheets and preserve its `RNHostView`
   bridge. Native sheet layout owns keyboard/system insets. Searchable sheets
   use full-height snap points, flex containers, bounded scrollable results,
@@ -120,6 +132,9 @@ const form = useForm({
   iPad hardware/floating keyboards. Unit tests cannot prove native visibility.
 - A new native keyboard dependency requires rebuilt development clients and
   a native release; an OTA-only update cannot add it.
+
+See [Expo's keyboard handling guide](https://docs.expo.dev/guides/keyboard-handling/)
+for the built-in APIs, Android tab behavior, and Keyboard Controller setup.
 
 See [keyboard layout guidance](../../../apps/mobile/docs/keyboard-layout.md)
 for the shared components and device verification checklist.
