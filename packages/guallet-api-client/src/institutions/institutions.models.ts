@@ -1,13 +1,10 @@
 export type InstitutionDto = {
   id: string;
   name: string;
-  image_src: string;
+  image_src?: string | null;
   user_id: string | null;
-  nordigen_id: string;
+  nordigen_id?: string | null;
   countries: string[];
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
 };
 
 export type CreateInstitutionRequest = {
@@ -17,7 +14,7 @@ export type CreateInstitutionRequest = {
 };
 
 export type UpdateInstitutionRequest = {
-  name: string;
-  image_src?: string;
+  name?: string;
+  image_src?: string | null;
   country?: string;
 };

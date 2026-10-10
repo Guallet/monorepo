@@ -81,7 +81,7 @@ export class ObConnectionsController {
     if (institution === undefined || institution === null) {
       throw new NotFoundException();
     } else {
-      return institution;
+      return InstitutionDto.fromDomain(institution);
     }
   }
 

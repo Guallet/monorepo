@@ -1,8 +1,10 @@
 import { View } from 'react-native';
+import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import { ModalLoaderOverlay, useTheme } from '@guallet/luna-mobile';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {
+  safeAreaEdges?: Edge[];
   isLoading?: boolean;
   loadingMessage?: string;
   headerTitle?: string;
@@ -11,6 +13,7 @@ interface AppScreenProps extends React.ComponentProps<typeof View> {
 }
 
 export function AppScreen({
+  safeAreaEdges = [],
   isLoading = false,
   loadingMessage,
   children,
@@ -32,7 +35,8 @@ export function AppScreen({
   };
 
   return (
-    <View
+    <SafeAreaView
+      edges={safeAreaEdges}
       style={[
         {
           flex: 1,
@@ -47,6 +51,6 @@ export function AppScreen({
         loadingMessage={loadingMessage}
       />
       {children}
-    </View>
+    </SafeAreaView>
   );
 }

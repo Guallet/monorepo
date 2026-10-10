@@ -127,7 +127,11 @@ describe('ObConnectionsController', () => {
 
       const result = await controller.getInstitution(institutionId);
 
-      expect(result).toEqual(mockInstitution);
+      expect(result).toEqual({
+        ...mockInstitution,
+        user_id: null,
+        countries: [],
+      });
     });
 
     it('should throw NotFoundException if institution not found', async () => {
