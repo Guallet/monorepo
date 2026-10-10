@@ -61,13 +61,12 @@ startup, TypeORM applies any pending migrations before serving requests. The
 initial migration creates the application and Better Auth tables together and
 is intended for an empty database.
 
-To create a migration after changing entities, first build the API, then run
-TypeORM's CLI from `apps/api`. Point the configured `DATABASE_*` variables at a
-database that is at the current migration version:
+To create a migration after changing entities, run this from `apps/api` with
+the configured `DATABASE_*` variables pointing to a database at the current
+migration version. The script builds the API before calling TypeORM's CLI:
 
 ```bash
-pnpm build
-pnpm exec typeorm migration:generate src/migrations/DescriptiveChange -d dist/database/data-source.js
+pnpm db:migration:generate src/migrations/DescriptiveChange
 ```
 
 Review the generated migration before committing it. To apply migrations

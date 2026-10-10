@@ -27,12 +27,11 @@ apps/api/src/features/{name}/
 `apps/api/src/app.module.ts` – add import and add to the `// APP MODULES` list.
 
 Whenever you add, edit, or remove a TypeORM database entity, generate a TypeORM
-migration as part of the same change. Build the API, then run this from
-`apps/api` against a database at the current migration version:
+migration as part of the same change. From `apps/api`, run this against a
+database at the current migration version; the script builds the API first:
 
 ```bash
-pnpm build
-pnpm exec typeorm migration:generate src/migrations/DescriptiveChange -d dist/database/data-source.js
+pnpm db:migration:generate src/migrations/DescriptiveChange
 ```
 
 Review the generated migration and commit it with the entity change. If the CLI
