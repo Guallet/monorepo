@@ -9,6 +9,7 @@ import { availableCurrencies } from '@/components/currencyPickerData';
 import { SettingsRow } from './SettingsRow';
 import { SettingsSection } from './SettingsSection';
 import { useMobileUserPreferences } from '../useMobileUserPreferences';
+import { ThemePreferenceRow } from './ThemePreferenceRow';
 
 const dateFormatOptions: DateFormat[] = [
   'DD/MM/YYYY',
@@ -16,6 +17,7 @@ const dateFormatOptions: DateFormat[] = [
   'YYYY/MM/DD',
 ];
 
+/** Compose local appearance and account-backed preference controls. */
 export function PreferencesSection() {
   const { colors, spacing } = useTheme();
   const showAlert = useAlert();
@@ -74,6 +76,7 @@ export function PreferencesSection() {
   return (
     <View style={{ gap: spacing.lg }}>
       <SettingsSection title="Preferences">
+        <ThemePreferenceRow />
         <CurrencyPicker
           selectionMode="single"
           value={defaultCurrency}
