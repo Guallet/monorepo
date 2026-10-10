@@ -81,12 +81,11 @@ export const createAuth = ({
       user: {
         create: {
           after: async (user) => {
-            eventEmitter?.emit('user.created', {
+            await eventEmitter?.emitAsync('user.created', {
               userId: user.id,
               email: user.email,
               userName: user.name,
             });
-            return await Promise.resolve();
           },
         },
       },
@@ -95,13 +94,12 @@ export const createAuth = ({
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
-      sendResetPassword: ({ user, url }) => {
-        eventEmitter?.emit('auth.email.password-reset', {
+      sendResetPassword: async ({ user, url }) => {
+        await eventEmitter?.emitAsync('auth.email.password-reset', {
           to: user.email,
           url,
           userName: user.name,
         });
-        return Promise.resolve();
       },
     },
     socialProviders: {
@@ -117,17 +115,22 @@ export const createAuth = ({
       emailOTP({
         // OTP will expire after 5 minutes
         expiresIn: 60 * 5,
-        sendVerificationOTP: ({ email, otp, type }) => {
-          eventEmitter?.emit('auth.email.otp', { to: email, otp, type });
-          return Promise.resolve();
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          await eventEmitter?.emitAsync('auth.email.otp', {
+            to: email,
+            otp,
+            type,
+          });
         },
       }),
       magicLink({
         // Magic link will expire after 10 minutes
         expiresIn: 60 * 10,
-        sendMagicLink: ({ email, url }) => {
-          eventEmitter?.emit('auth.email.magic-link', { to: email, url });
-          return Promise.resolve();
+        sendMagicLink: async ({ email, url }) => {
+          await eventEmitter?.emitAsync('auth.email.magic-link', {
+            to: email,
+            url,
+          });
         },
       }),
     ],

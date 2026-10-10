@@ -45,7 +45,11 @@ Run this test command from the monorepo root. The test drops and recreates the
 
 ## Email events
 
-`createAuth` does not depend on `EmailService` directly. Instead, it emits events via NestJS `EventEmitter2` when Better Auth needs to send an email. `EmailEventListener` (in the `email` feature module) handles these events and calls the appropriate `EmailService` methods.
+`createAuth` does not depend on `EmailService` directly. Instead, it awaits
+NestJS `EventEmitter2` listeners when Better Auth needs to send an email.
+`EmailEventListener` (in the `email` feature module) handles these events and
+calls the appropriate `EmailService` methods. Awaiting the listeners keeps
+email work inside the originating operation trace.
 
 | Event                       | Trigger                      | Handler method           |
 | --------------------------- | ---------------------------- | ------------------------ |
