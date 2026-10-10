@@ -167,7 +167,6 @@ export function AccountInput(props: Readonly<AccountInputProps>) {
         }
         isOpen={isBottomSheetOpen}
         onClose={cancel}
-        onDismiss={cancel}
         contentPadding={0}
       >
         <View

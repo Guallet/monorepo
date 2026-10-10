@@ -16,9 +16,11 @@ export function useNotificationMutations() {
         dto: { isRead },
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_QUERY_KEY] });
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [NOTIFICATIONS_QUERY_KEY],
+      });
+      await queryClient.invalidateQueries({
         queryKey: [UNREAD_NOTIFICATIONS_QUERY_KEY],
       });
     },
@@ -28,9 +30,11 @@ export function useNotificationMutations() {
     mutationFn: async () => {
       return await gualletClient.notifications.markAllAsRead();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_QUERY_KEY] });
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [NOTIFICATIONS_QUERY_KEY],
+      });
+      await queryClient.invalidateQueries({
         queryKey: [UNREAD_NOTIFICATIONS_QUERY_KEY],
       });
     },
@@ -40,15 +44,21 @@ export function useNotificationMutations() {
     mutationFn: async (id: string) => {
       return await gualletClient.notifications.delete(id);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [NOTIFICATIONS_QUERY_KEY] });
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [NOTIFICATIONS_QUERY_KEY],
+      });
+      await queryClient.invalidateQueries({
         queryKey: [UNREAD_NOTIFICATIONS_QUERY_KEY],
       });
     },
   });
 
   return {
+    markAsReadAsync: (id: string, isRead: boolean) =>
+      markAsReadMutation.mutateAsync({ id, isRead }),
+    markAllAsReadAsync: () => markAllAsReadMutation.mutateAsync(),
+    deleteNotificationAsync: (id: string) => deleteMutation.mutateAsync(id),
     markAsRead: (id: string) => markAsReadMutation.mutate({ id, isRead: true }),
     markAsUnread: (id: string) =>
       markAsReadMutation.mutate({ id, isRead: false }),

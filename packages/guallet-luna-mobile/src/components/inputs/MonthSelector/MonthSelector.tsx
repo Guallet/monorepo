@@ -89,7 +89,6 @@ export function MonthSelector({
       showCloseIcon
       isOpen={isBottomSheetOpen}
       onClose={() => setIsBottomSheetOpen(false)}
-      onDismiss={() => setIsBottomSheetOpen(false)}
       contentPadding={0}
     >
       <View

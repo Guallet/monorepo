@@ -59,8 +59,12 @@ function AppNavigation() {
   return (
     <ThemeProvider value={navigationTheme}>
       <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <KeyboardProvider>
+        <KeyboardProvider
+          statusBarTranslucent
+          navigationBarTranslucent
+          preserveEdgeToEdge
+        >
+          <GestureHandlerRootView style={{ flex: 1 }}>
             <ToastProvider>
               <QueryClientProvider client={queryClient}>
                 <AuthProvider>
@@ -73,8 +77,8 @@ function AppNavigation() {
                 </AuthProvider>
               </QueryClientProvider>
             </ToastProvider>
-          </KeyboardProvider>
-        </GestureHandlerRootView>
+          </GestureHandlerRootView>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </ThemeProvider>
   );

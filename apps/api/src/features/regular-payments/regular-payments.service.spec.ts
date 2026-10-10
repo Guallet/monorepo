@@ -51,6 +51,29 @@ describe('RegularPaymentsService', () => {
   });
 
   describe('create', () => {
+    it('keeps an explicit null date undated and preserves the omitted-date default', async () => {
+      const dto: CreateRegularPaymentDto = {
+        name: 'Reading app',
+        amount: 9.99,
+        currency: 'USD',
+        type: RecurringPaymentType.SUBSCRIPTION,
+        cadence: RecurrenceCadence.MONTHLY,
+      };
+      await service.create({
+        userId: 'user-123',
+        createRegularPaymentDto: { ...dto, startDate: null },
+      });
+      expect(mockRegularPaymentRepository.save).toHaveBeenLastCalledWith(
+        expect.objectContaining({ user_id: 'user-123', startDate: null }),
+      );
+      await service.create({
+        userId: 'user-123',
+        createRegularPaymentDto: dto,
+      });
+      expect(mockRegularPaymentRepository.save).toHaveBeenLastCalledWith(
+        expect.objectContaining({ startDate: expect.any(Date) }),
+      );
+    });
     it('should create a new regular payment without category', async () => {
       const userId = 'user-123';
       const createDto: CreateRegularPaymentDto = {
@@ -308,6 +331,39 @@ describe('RegularPaymentsService', () => {
   });
 
   describe('update', () => {
+    it('clears optional fields with null and keeps them when omitted', async () => {
+      const entity = {
+        id: 'payment-1',
+        user_id: 'user-123',
+        categoryId: 'category-1',
+        startDate: new Date('2024-01-31'),
+        amount: 10,
+      };
+      mockRegularPaymentRepository.findOne.mockResolvedValue(entity);
+      await service.update({
+        userId: 'user-123',
+        id: 'payment-1',
+        dto: { startDate: null, categoryId: null },
+      });
+      expect(mockRegularPaymentRepository.save).toHaveBeenLastCalledWith(
+        expect.objectContaining({ startDate: null, categoryId: null }),
+      );
+      expect(mockCategoryRepository.findOne).not.toHaveBeenCalled();
+      expect(mockRegularPaymentRepository.findOne).toHaveBeenLastCalledWith({
+        where: { user_id: 'user-123', id: 'payment-1' },
+      });
+      await service.update({
+        userId: 'user-123',
+        id: 'payment-1',
+        dto: { name: 'New name' },
+      });
+      expect(mockRegularPaymentRepository.save).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          startDate: entity.startDate,
+          categoryId: 'category-1',
+        }),
+      );
+    });
     it('should update a regular payment', async () => {
       const userId = 'user-123';
       const paymentId = 'payment-1';

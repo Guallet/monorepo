@@ -21,6 +21,64 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
   characters. Iterate strings with `for...of` or `Array.from()` so characters
   outside the basic multilingual plane remain intact.
 
+## Required: Mobile forms
+
+- Every new mobile screen or screen component that edits and submits data must
+  use `useForm` and `form.Field` from `@tanstack/react-form` directly in the
+  screen. Bind Luna controls with `value={field.state.value}`,
+  `onChangeText={field.handleChange}`, and `onBlur={field.handleBlur}`. Keep
+  submitted values and validation in TanStack Form; do not add a shared form
+  adapter layer or a separate form-state library.
+- Define the form schema with `z.object(...)` alongside the screen and pass
+  that schema to `validators.onDynamic`. Use `revalidateLogic()` so errors
+  appear after submission and revalidate as the user corrects input. Define
+  defaults, listeners, and `onSubmit` in the screen's `useForm` options. Keep
+  server request errors separate from field validation and clear them when
+  values change. Add Zod as a direct mobile dependency if it is not already
+  declared.
+- Render Zod field issues from `field.state.meta.errors[0]?.message` into
+  Luna's `error` prop. Use `form.Subscribe` for reactive UI and `useSelector`
+  for values needed in navigation; reading `form.state` alone does not
+  subscribe.
+- Submit through `form.handleSubmit()`. Use a screen-local async handler that
+  checks `form.state.isSubmitting` before calling it, and use that same handler
+  for buttons and keyboard submission. Subscribe to `canSubmit` and
+  `isSubmitting` to keep submit controls current. Await the API mutation or auth
+  action in `onSubmit`.
+- Keep picker visibility and password visibility in local UI state. For
+  non-text controls, bind their selected values through `form.Field` and keep
+  temporary sheet selections local until confirmation.
+- Preserve edit initialization, normalization, money precision, and discard
+  behavior. Do not reset edits on background refetch. `isDirty` stays true even
+  after reverting changes; compare normalized values when that distinction
+  matters. Schema transforms require explicit parsing at submission.
+- For TanStack Form
+  React Native behavior, see the
+  [React Native guide](https://tanstack.com/form/latest/docs/framework/react/guides/react-native)
+  and [quick start](https://tanstack.com/form/latest/docs/framework/react/quick-start).
+  For Zod with `onDynamic`, see the
+  [Standard Schema validation guide](https://tanstack.com/form/latest/docs/framework/react/guides/dynamic-validation#standard-schema-validation).
+  Existing screens only need migration when the task explicitly includes them.
+
+```tsx
+import { revalidateLogic, useForm } from '@tanstack/react-form';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email('Enter a valid email address.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
+});
+
+const form = useForm({
+  defaultValues: { email: '', password: '' },
+  validationLogic: revalidateLogic(),
+  validators: { onDynamic: formSchema },
+  onSubmit: async ({ value }) => {
+    await signIn(value.email, value.password);
+  },
+});
+```
+
 ## Images
 
 - Use `Image` from `expo-image` for every image rendered in the mobile app; do
@@ -29,6 +87,57 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
   initials or a placeholder, so an unreachable URL never leaves a blank state.
 - Track the failed image URL when the fallback depends on the current source;
   this allows a changed URL to be tried independently.
+
+## Safe areas and keyboard responsiveness
+
+- Safe-area insets protect content from notches, system bars, and the home
+  indicator. Handle keyboard overlap separately: reveal the focused field and
+  keep every field and action reachable by scrolling.
+- Use `AppScreen` from `@/components/layout/AppScreen` for stack screens. It
+  owns left/right/bottom insets and also the top inset when its header is hidden.
+  Use `safeAreaEdges` when the navigator already owns an edge; do not nest
+  another safe-area wrapper or duplicate inset padding inside `AppScreen`.
+- Tab screen content owns top/left/right insets through
+  `react-native-safe-area-context`; the tab navigator owns the bottom inset.
+  Keep screen backgrounds full-screen and apply safe-area padding to content.
+- For a simple screen with a few controls, React Native's `KeyboardAvoidingView`
+  can adjust the view for the keyboard. Set `behavior="padding"` on iOS and
+  leave `behavior` undefined on Android as a starting point; tune offsets and
+  verify on devices because the platforms handle the behavior differently.
+- For scrollable forms or multiple inputs, use `KeyboardAwareScrollView` from
+  `@guallet/luna-mobile`. It scrolls focused inputs into view. Put
+  Save/Continue/Cancel actions inside its scroll content, use flexible heights,
+  and use theme spacing for content gutters. The wrapper provides keyboard
+  clearance, drag dismissal, and `keyboardShouldPersistTaps="handled"` by
+  default. For multi-input forms, consider a keyboard toolbar when users need
+  previous/next input and dismiss controls.
+- Do not combine `KeyboardAvoidingView` with `KeyboardAwareScrollView` or enable
+  competing automatic keyboard insets. Keep the root `KeyboardProvider` and
+  Reanimated setup. Keyboard Controller requires a development build and does
+  not run in Expo Go; rebuild native clients when its native dependency changes.
+- On Android bottom-tab screens, check whether the keyboard pushes tabs above
+  itself. Expo recommends `android.softwareKeyboardLayoutMode: 'pan'` for this
+  case; `tabBarHideOnKeyboard: true` is another option for hiding the bar.
+  Check the existing app config and verify both behaviors before changing the
+  global keyboard layout mode. Preserve virtualized lists rather than nesting
+  them inside another vertical scroll view.
+- Use Luna `BottomSheet` for native sheets and preserve its `RNHostView`
+  bridge. Native sheet layout owns keyboard/system insets. Searchable sheets
+  use full-height snap points, flex containers, bounded scrollable results,
+  and handled keyboard taps; do not apply root-screen keyboard heights inside
+  the sheet. Keep selection and Apply actions reachable while typing.
+- Verify first/last fields, focus changes, validation errors, numeric and
+  multiline keyboards, form actions, searchable sheets, and restored layout
+  after dismissal on iOS and Android. Include small screens, larger text, and
+  iPad hardware/floating keyboards. Unit tests cannot prove native visibility.
+- A new native keyboard dependency requires rebuilt development clients and
+  a native release; an OTA-only update cannot add it.
+
+See [Expo's keyboard handling guide](https://docs.expo.dev/guides/keyboard-handling/)
+for the built-in APIs, Android tab behavior, and Keyboard Controller setup.
+
+See [keyboard layout guidance](../../../apps/mobile/docs/keyboard-layout.md)
+for the shared components and device verification checklist.
 
 ## Accessibility and icons
 
@@ -209,18 +318,19 @@ const styles = StyleSheet.create({
 
 Import from `@guallet/luna-mobile`.
 
-| Component            | Category   | Use for                                                                                       |
-| -------------------- | ---------- | --------------------------------------------------------------------------------------------- |
-| `Stack`              | Layout     | Vertical container (VStack equivalent)                                                        |
-| `Group`              | Layout     | Horizontal container (HStack equivalent)                                                      |
-| `Divider`            | Layout     | Horizontal separator line                                                                     |
-| `Title`              | Typography | Bold page/section headings                                                                    |
-| `Label`              | Typography | Body text and descriptions                                                                    |
-| `Button`             | Buttons    | Tappable buttons; `variant` = `"filled" \| "light" \| "outline" \| "subtle" \| "transparent"` |
-| `TextInput`          | Inputs     | Text input field                                                                              |
-| `OtpInput`           | Inputs     | OTP/PIN entry                                                                                 |
-| `Visibility`         | Utility    | Conditionally show/hide children: `<Visibility isVisible={bool}>`                             |
-| `ModalLoaderOverlay` | Overlays   | Full-screen loading overlay                                                                   |
+| Component                 | Category   | Use for                                                                                       |
+| ------------------------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `Stack`                   | Layout     | Vertical container (VStack equivalent)                                                        |
+| `Group`                   | Layout     | Horizontal container (HStack equivalent)                                                      |
+| `KeyboardAwareScrollView` | Layout     | Scrollable input screens that reveal focused fields above the keyboard                        |
+| `Divider`                 | Layout     | Horizontal separator line                                                                     |
+| `Title`                   | Typography | Bold page/section headings                                                                    |
+| `Label`                   | Typography | Body text and descriptions                                                                    |
+| `Button`                  | Buttons    | Tappable buttons; `variant` = `"filled" \| "light" \| "outline" \| "subtle" \| "transparent"` |
+| `TextInput`               | Inputs     | Text input field                                                                              |
+| `OtpInput`                | Inputs     | OTP/PIN entry                                                                                 |
+| `Visibility`              | Utility    | Conditionally show/hide children: `<Visibility isVisible={bool}>`                             |
+| `ModalLoaderOverlay`      | Overlays   | Full-screen loading overlay                                                                   |
 
 ### Theme hooks
 
@@ -287,8 +397,17 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 
 ## Checklist
 
+- [ ] New forms use `useForm`/`form.Field` directly with controlled Luna inputs
+- [ ] Field values/validation are form-owned; requests are awaited and button
+      and keyboard submission share a guarded `form.handleSubmit()` handler
+- [ ] Validation, failed requests, corrections, and concurrent submissions are
+      covered by focused tests when adding a form
 - [ ] Route file uses `export default function` (not named export)
-- [ ] Screen wrapped in `<View style={{ flex: 1 }}>` to fill available space
+- [ ] Stack screen uses `AppScreen`; each safe-area edge has one owner
+- [ ] Input content and form actions use Luna `KeyboardAwareScrollView` with
+      no competing keyboard adjustment or nested vertical list
+- [ ] Keyboard-open and dismissed layouts verified on iOS and Android,
+      including searchable sheets and larger text
 - [ ] Styles defined with `StyleSheet.create({})`, not inline objects
 - [ ] Tab screen registered in `(tabs)/_layout.tsx` if it's a new tab
 - [ ] Navigation uses `useRouter()` from `expo-router`, not `react-navigation` directly

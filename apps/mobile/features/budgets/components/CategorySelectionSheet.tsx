@@ -99,6 +99,9 @@ export function CategorySelectionSheet({
         />
 
         <ScrollView
+          style={{ flex: 1 }}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           contentContainerStyle={{ paddingBottom: spacing.md }}
           showsVerticalScrollIndicator={false}
         >

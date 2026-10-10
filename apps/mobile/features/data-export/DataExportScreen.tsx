@@ -22,7 +22,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppScreen } from '@/components/layout/AppScreen';
 import {
   submitExportRequest,
@@ -136,7 +135,7 @@ export default function DataExportScreen() {
     const accepted = phase === 'accepted';
     return (
       <AppScreen headerTitle="Export data">
-        <SafeAreaView edges={['bottom']} style={styles.screen}>
+        <View style={styles.screen}>
           <ScrollView
             contentContainerStyle={{ padding: spacing.md, gap: spacing.lg }}
           >
@@ -281,14 +280,14 @@ export default function DataExportScreen() {
               </>
             )}
           </View>
-        </SafeAreaView>
+        </View>
       </AppScreen>
     );
   }
 
   return (
     <AppScreen headerTitle="Export data">
-      <SafeAreaView edges={['bottom']} style={styles.screen}>
+      <View style={styles.screen}>
         <ScrollView
           contentContainerStyle={{
             padding: spacing.md,
@@ -494,7 +493,7 @@ export default function DataExportScreen() {
             {exportMutation.isPending ? 'Submitting export…' : 'Create export'}
           </Button>
         </View>
-      </SafeAreaView>
+      </View>
     </AppScreen>
   );
 }

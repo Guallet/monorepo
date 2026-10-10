@@ -21,6 +21,7 @@ import {
   FileImportIcon,
   HomeIcon,
   MailIcon,
+  RepeatIcon,
 } from '@guallet/luna-mobile/icons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ExternalLink } from '@/components/external-link';
@@ -108,7 +109,7 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView
-      edges={['top']}
+      edges={['top', 'left', 'right']}
       style={[
         styles.safeArea,
         { backgroundColor: colors.surface.background.page },
@@ -296,6 +297,15 @@ export default function SettingsScreen() {
             icon={<BuildingBankIcon size={24} color={colors.accent.primary} />}
             label="Institutions"
             onPress={() => router.push('/institutions')}
+            showChevron
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Recurring">
+          <SettingsRow
+            icon={<RepeatIcon size={22} color={colors.accent.primary} />}
+            label="Subscriptions & payments"
+            onPress={() => router.push('/recurring')}
             showChevron
           />
         </SettingsSection>

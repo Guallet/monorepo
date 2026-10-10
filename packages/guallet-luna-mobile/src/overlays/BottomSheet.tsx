@@ -3,7 +3,7 @@ import {
   RNHostView,
   type BottomSheetProps as ExpoBottomSheetProps,
 } from '@expo/ui';
-import { useContext, useId, useLayoutEffect } from 'react';
+import { useContext, useId, useLayoutEffect, useRef } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -22,9 +22,6 @@ export interface BottomSheetProps extends Omit<
 > {
   isOpen: boolean;
   title: string;
-  /** Optional native dismissal callback; onClose covers all user dismissal. */
-  onDismiss?: () => void;
-  /** Called for the close button and native user dismissal. */
   onClose?: () => void;
   /** Show a close button in the sheet header. Defaults to false. */
   showCloseIcon?: boolean;
@@ -35,7 +32,6 @@ export function BottomSheet({
   isOpen,
   title,
   showCloseIcon = false,
-  onDismiss,
   onClose,
   containerColor,
   contentPadding,
@@ -47,10 +43,21 @@ export function BottomSheet({
   const { width } = useWindowDimensions();
   const queue = useContext(ToastQueueContext);
   const sheetId = useId();
+  const closeNotified = useRef(false);
+
+  function notifyClose() {
+    if (closeNotified.current) return;
+    closeNotified.current = true;
+    onClose?.();
+  }
+
   // Block before the native content mounts. Only its eventual unmount releases
   // the block, including programmatic closes that do not call onDismiss.
   useLayoutEffect(() => {
-    if (isOpen) queue?.block(sheetId);
+    if (isOpen) {
+      closeNotified.current = false;
+      queue?.block(sheetId);
+    }
   }, [isOpen, queue, sheetId]);
   useLayoutEffect(() => () => queue?.release(sheetId), [queue, sheetId]);
 
@@ -70,10 +77,7 @@ export function BottomSheet({
     <ExpoBottomSheet
       {...props}
       isPresented={isOpen}
-      onDismiss={() => {
-        onClose?.();
-        if (onDismiss !== onClose) onDismiss?.();
-      }}
+      onDismiss={notifyClose}
       contentPadding={padding}
       showDragIndicator={showDragIndicator}
       snapPoints={snapPoints}
@@ -113,7 +117,7 @@ export function BottomSheet({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Close bottom sheet"
-                onPress={onClose}
+                onPress={notifyClose}
                 style={({ pressed }) => [
                   styles.closeButton,
                   {

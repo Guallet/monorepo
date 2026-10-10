@@ -1,8 +1,13 @@
+import {
+  Button,
+  KeyboardAwareScrollView,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
 import {
   Pressable,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -11,7 +16,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccounts } from '@guallet/api-react';
-import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountRow } from '../components/AccountRow';
 import { AccountsSummary } from '../components/AccountsSummary';
 import { AccountTypeIcon } from '../components/AccountTypeIcon';
@@ -49,13 +53,13 @@ export default function AccountsScreen() {
 
   return (
     <SafeAreaView
-      edges={['top']}
+      edges={['top', 'left', 'right']}
       style={[
         styles.safeArea,
         { backgroundColor: colors.surface.background.page },
       ]}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={[
           styles.content,
           { gap: spacing.md, padding: spacing.md },
@@ -264,7 +268,7 @@ export default function AccountsScreen() {
           </>
         )}
         <View style={styles.bottomPad} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

@@ -4,6 +4,7 @@ import { Stack, type NativeStackNavigationOptions } from 'expo-router';
 import { ModalLoaderOverlay, useTheme } from '@guallet/luna-mobile';
 
 interface AppScreenProps extends React.ComponentProps<typeof View> {
+  /** Edges not already owned by the navigator. */
   safeAreaEdges?: Edge[];
   isLoading?: boolean;
   loadingMessage?: string;
@@ -13,13 +14,14 @@ interface AppScreenProps extends React.ComponentProps<typeof View> {
 }
 
 export function AppScreen({
-  safeAreaEdges = [],
+  safeAreaEdges,
   isLoading = false,
   loadingMessage,
   children,
   headerOptions,
   headerTitle,
   isHeaderVisible = true,
+  style,
   ...props
 }: Readonly<AppScreenProps>) {
   const { colors } = useTheme();
@@ -35,14 +37,14 @@ export function AppScreen({
   };
 
   return (
-    <SafeAreaView
-      edges={safeAreaEdges}
+    <View
+      {...props}
       style={[
         {
           flex: 1,
           backgroundColor: colors.surface.background.page,
         },
-        props.style,
+        style,
       ]}
     >
       <Stack.Screen options={combinedHeaderOptions} />
@@ -50,7 +52,17 @@ export function AppScreen({
         isVisible={isLoading}
         loadingMessage={loadingMessage}
       />
-      {children}
-    </SafeAreaView>
+      <SafeAreaView
+        edges={
+          safeAreaEdges ??
+          (combinedHeaderOptions.headerShown
+            ? ['left', 'right', 'bottom']
+            : ['top', 'left', 'right', 'bottom'])
+        }
+        style={{ flex: 1 }}
+      >
+        {children}
+      </SafeAreaView>
+    </View>
   );
 }

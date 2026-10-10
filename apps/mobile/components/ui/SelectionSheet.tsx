@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 
@@ -28,10 +29,21 @@ export function SelectionSheet({
   onSelect,
 }: Readonly<SelectionSheetProps>) {
   const { colors, spacing } = useTheme();
+  const closeNotified = useRef(false);
+
+  useLayoutEffect(() => {
+    if (visible) closeNotified.current = false;
+  }, [visible]);
+
+  function notifyClose() {
+    if (closeNotified.current) return;
+    closeNotified.current = true;
+    onClose();
+  }
 
   function handleSelect(id: string | null) {
     onSelect(id);
-    onClose();
+    notifyClose();
   }
 
   return (
@@ -40,7 +52,7 @@ export function SelectionSheet({
       isOpen={visible}
       title={title}
       showCloseIcon
-      onClose={onClose}
+      onClose={notifyClose}
       snapPoints={['full']}
     >
       <View

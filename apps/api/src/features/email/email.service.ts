@@ -2,6 +2,8 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { randomUUID } from 'node:crypto';
 import Handlebars from 'handlebars';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -19,7 +21,7 @@ interface SendEmailOptions {
 @Injectable()
 export class EmailService implements OnModuleInit {
   private readonly logger = new Logger(EmailService.name);
-  private transporter: Transporter | null = null;
+  private transporter: Transporter<SMTPTransport.SentMessageInfo> | null = null;
   private readonly templatesDir = path.join(__dirname, 'templates');
   private readonly compiledTemplates: Map<string, Handlebars.TemplateDelegate> =
     new Map();
@@ -62,6 +64,56 @@ export class EmailService implements OnModuleInit {
             }
           : undefined,
     });
+    this.logger.log({
+      message: 'SMTP transport configured (connection not yet verified)',
+      ...this.getSmtpLogContext(),
+    });
+  }
+
+  private getSmtpLogContext() {
+    const smtp = this.configService.get('email', { infer: true })!.smtp;
+    return {
+      smtpHost: smtp.host,
+      smtpPort: smtp.port,
+      smtpSecure: smtp.secure,
+      smtpAuthConfigured: Boolean(smtp.user && smtp.pass),
+    };
+  }
+
+  private getErrorLogContext(error: unknown) {
+    const details =
+      error !== null && typeof error === 'object'
+        ? (error as Record<string, unknown>)
+        : {
+            message: typeof error === 'string' ? error : 'Unknown email error',
+          };
+    const password = this.configService.get('email', { infer: true })!.smtp
+      .pass;
+    const fields: Record<string, string | number> = {};
+
+    // Explicitly select diagnostics instead of serializing the transport,
+    // credentials, or message content attached to an error.
+    for (const field of [
+      'name',
+      'message',
+      'code',
+      'command',
+      'responseCode',
+      'response',
+      'errno',
+      'syscall',
+    ]) {
+      const value = details[field];
+      if (typeof value === 'string') {
+        fields[field] = password
+          ? value.replaceAll(password, '[REDACTED]')
+          : value;
+      } else if (typeof value === 'number') {
+        fields[field] = value;
+      }
+    }
+
+    return fields;
   }
 
   /**
@@ -111,17 +163,30 @@ export class EmailService implements OnModuleInit {
   }
 
   private async sendEmail(options: SendEmailOptions): Promise<void> {
+    const { to, subject, template, context, attachments } = options;
+    const logContext = {
+      attemptId: randomUUID(),
+      template,
+      ...this.getSmtpLogContext(),
+    };
+
     if (!this.transporter) {
-      this.logger.warn('Email not sent - SMTP not configured');
+      this.logger.warn({
+        message: 'Email not sent - SMTP not configured',
+        ...logContext,
+      });
       return;
     }
 
-    const { to, subject, template, context, attachments } = options;
+    const startedAt = Date.now();
+    let stage: 'render' | 'smtp' = 'render';
+    this.logger.log({ message: 'Email send attempt started', ...logContext });
 
     try {
       const html = this.renderTemplate(template, context);
+      stage = 'smtp';
 
-      await this.transporter.sendMail({
+      const result = await this.transporter.sendMail({
         from: this.defaultFrom,
         to,
         subject,
@@ -129,9 +194,20 @@ export class EmailService implements OnModuleInit {
         attachments,
       });
 
-      this.logger.log(`${template} email sent to ${to}`);
+      this.logger.log({
+        message: 'Email accepted by SMTP server',
+        ...logContext,
+        messageId: result.messageId,
+        durationMs: Date.now() - startedAt,
+      });
     } catch (error) {
-      this.logger.error(`Failed to send ${template} email to ${to}`, error);
+      this.logger.error({
+        message: 'Email send attempt failed',
+        ...logContext,
+        stage,
+        durationMs: Date.now() - startedAt,
+        error: this.getErrorLogContext(error),
+      });
       // We don't throw here to avoid failing calling processes
     }
   }

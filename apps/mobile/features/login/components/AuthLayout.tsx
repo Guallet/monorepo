@@ -1,18 +1,20 @@
+import {
+  KeyboardAwareScrollView,
+  Label,
+  Stack,
+  Title,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Label, Stack, Title, useTheme } from '@guallet/luna-mobile';
 import React from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   View,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface AuthScreenProps {
   children: React.ReactNode;
@@ -39,28 +41,14 @@ export function AuthScreen({
       isHeaderVisible={isHeaderVisible}
       isLoading={isLoading}
     >
-      <SafeAreaView
-        edges={isHeaderVisible ? ['bottom'] : ['top', 'bottom']}
-        style={styles.safeArea}
+      <KeyboardAwareScrollView
+        contentContainerStyle={[styles.scrollContent, { padding: spacing.lg }]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.safeArea}
-        >
-          <ScrollView
-            contentContainerStyle={[
-              styles.scrollContent,
-              { padding: spacing.lg },
-            ]}
-            keyboardDismissMode="interactive"
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={[styles.content, contentStyle]}>{children}</View>
-            {footer ? <View style={styles.footer}>{footer}</View> : null}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+        <View style={[styles.content, contentStyle]}>{children}</View>
+        {footer ? <View style={styles.footer}>{footer}</View> : null}
+      </KeyboardAwareScrollView>
     </AppScreen>
   );
 }
@@ -226,9 +214,6 @@ export function AuthNotice({
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   scrollContent: {
     flexGrow: 1,
   },

@@ -56,20 +56,31 @@ Bring up local services with Docker Compose (Postgres + Redis):
 docker-compose up -d
 ```
 
-Prepare DB & auth schema:
+The API schema is managed with TypeORM migrations in
+`src/database/migrations/`. On API startup, TypeORM applies any pending
+migrations before serving requests. The initial migration creates the
+application and Better Auth tables together and is intended for an empty
+database.
+
+To create a migration after changing entities, run this from `apps/api` with
+the configured `DATABASE_*` variables pointing to a database at the current
+migration version:
 
 ```bash
-# from apps/api
-pnpm db:init
+pnpm db:migrations:generate src/database/migrations/DescriptiveChange
 ```
 
-or
+Review the generated migration before committing it. To apply pending
+migrations without starting the API, use:
 
 ```bash
-# from apps/api
-pnpm db:generate    # generate Better-Auth migrations
-pnpm db:migrate     # apply migrations
+pnpm db:migrations:run
 ```
+
+Do not edit or reapply an existing migration to change an already deployed
+schema; add a new migration. The `auth:db:generate` and `auth:db:migrate`
+scripts invoke the Better Auth CLI and are not the application schema migration
+workflow.
 
 ---
 
@@ -78,7 +89,8 @@ pnpm db:migrate     # apply migrations
 - Start (dev/watch): `pnpm --filter api dev` or `cd apps/api && pnpm dev`
 - Build: `pnpm --filter api build`
 - Tests: `pnpm --filter api test` / `pnpm --filter api test:e2e`
-- DB tasks: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed`
+- DB tasks: TypeORM migration commands above; `pnpm auth:db:generate` and
+  `pnpm auth:db:migrate` are Better Auth CLI utilities.
 
 ---
 
@@ -115,8 +127,11 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Entry point: `src/main.ts` — configures Express, CORS, middleware and Swagger (`/docs`).
 - Configuration: `src/configuration.ts` + `ConfigModule` with Zod validation.
   Unknown environment variables are preserved for modules that consume them directly.
-- Auth: `src/auth/better-auth.ts` integrates Better-Auth for user flows and CLI migrations.
-- Persistence: TypeORM + PostgreSQL; entities auto-loaded, migrations handled via CLI scripts.
+- Auth: `src/auth/better-auth.ts` integrates Better Auth for user flows; its
+  optional schema CLI utilities use the `auth:db:*` scripts.
+- Persistence: TypeORM + PostgreSQL; entities are auto-loaded and pending
+  migrations run at API startup. `src/database/data-source.ts` is the separate
+  TypeORM CLI configuration used for migration generation and manual runs.
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
 - Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
 - AI: `src/features/ai` — provider connections and agents (CRUD, token encryption), plus the assistant chat: `/ai/chat/sessions` endpoints stream replies through the Vercel AI SDK (`ai` + `@ai-sdk/openai-compatible`). The model only ever sees aggregated finance data (no raw transactions) behind a server-owned policy prompt, and is never given tools. AI endpoints are rate-limited per user via `@nestjs/throttler`.

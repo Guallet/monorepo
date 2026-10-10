@@ -49,10 +49,12 @@ export class CreateRegularPaymentDto {
   @ApiProperty({
     description: 'The start date as an ISO 8601 date or date-time string',
     required: false,
+    type: String,
+    nullable: true,
   })
   @IsOptional()
   @IsDateString()
-  startDate?: string;
+  startDate?: string | null;
 
   @ApiProperty({ enum: RecurringPaymentType })
   @IsEnum(RecurringPaymentType)

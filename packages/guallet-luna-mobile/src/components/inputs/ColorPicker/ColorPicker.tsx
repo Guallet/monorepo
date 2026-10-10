@@ -145,7 +145,6 @@ export function ColorPicker({
         title="Choose a colour"
         showCloseIcon
         onClose={cancel}
-        onDismiss={cancel}
         snapPoints={['half']}
         contentPadding={0}
       >

@@ -7,119 +7,124 @@ import {
 } from '@/features/login/components/AuthLayout';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
+import { revalidateLogic, useForm, useSelector } from '@tanstack/react-form';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { z } from 'zod';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordLoginSchema = z.object({
+  email: z.string().trim().email('Enter a valid email address.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
+});
 
 export function PasswordLoginScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const { login } = useAuth();
   const { colors, spacing } = useTheme();
-  const [email, setEmail] = useState(params.email ?? '');
-  const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLogin = async () => {
-    const nextEmailError = emailRegex.test(email.trim())
-      ? null
-      : 'Enter a valid email address.';
-    const nextPasswordError =
-      password.length >= 6 ? null : 'Password must be at least 6 characters.';
-
-    setEmailError(nextEmailError);
-    setPasswordError(nextPasswordError);
-    setFormError(null);
-
-    if (nextEmailError || nextPasswordError) {
-      return;
-    }
-
-    setIsLoading(true);
-    const result = await login(email.trim(), password);
-    setIsLoading(false);
-
-    if (result.success) {
-      return;
-    }
-
-    setFormError(
-      result.error?.message ??
-        'We could not sign you in. Check your details and try again.',
-    );
+  const form = useForm({
+    defaultValues: { email: params.email ?? '', password: '' },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: passwordLoginSchema,
+    },
+    listeners: { onChange: () => setFormError(null) },
+    onSubmit: async ({ value }) => {
+      setFormError(null);
+      const fallback =
+        'We could not sign you in. Check your details and try again.';
+      try {
+        const result = await login(value.email.trim(), value.password);
+        if (!result.success) setFormError(result.error?.message ?? fallback);
+      } catch {
+        setFormError(fallback);
+      }
+    },
+  });
+  const submitForm = async () => {
+    if (form.state.isSubmitting) return;
+    await form.handleSubmit();
   };
+  const email = useSelector(form.store, (state) => state.values.email);
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
+  let visibilityLabel = 'Show password';
+  let visibilityIcon: 'eye-outline' | 'eye-off-outline' = 'eye-outline';
+  if (isPasswordVisible) {
+    visibilityLabel = 'Hide password';
+    visibilityIcon = 'eye-off-outline';
+  }
 
   return (
-    <AuthScreen headerTitle="Sign in" isLoading={isLoading}>
+    <AuthScreen headerTitle="Sign in" isLoading={isSubmitting}>
       <AuthIntro
         description="Use the email and password linked to your Guallet account."
         eyebrow="Welcome back"
         title="Sign in to Guallet"
       />
 
-      {formError ? <AuthNotice tone="error">{formError}</AuthNotice> : null}
+      {formError && <AuthNotice tone="error">{formError}</AuthNotice>}
 
       <Stack gap={spacing.xs}>
-        <TextInput
-          autoCapitalize="none"
-          autoComplete="email"
-          autoCorrect={false}
-          error={emailError}
-          keyboardType="email-address"
-          label="Email address"
-          onChangeText={(value) => {
-            setEmail(value);
-            setEmailError(null);
-            setFormError(null);
-          }}
-          placeholder="you@example.com"
-          returnKeyType="next"
-          textContentType="emailAddress"
-          value={email}
-        />
-        <TextInput
-          autoCapitalize="none"
-          autoComplete="current-password"
-          autoCorrect={false}
-          error={passwordError}
-          label="Password"
-          onChangeText={(value) => {
-            setPassword(value);
-            setPasswordError(null);
-            setFormError(null);
-          }}
-          onSubmitEditing={handleLogin}
-          placeholder="Enter your password"
-          returnKeyType="done"
-          rightSection={
-            <Pressable
-              accessibilityLabel={
-                isPasswordVisible ? 'Hide password' : 'Show password'
+        <form.Field name="email">
+          {(field) => (
+            <TextInput
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect={false}
+              disabled={isSubmitting}
+              error={field.state.meta.errors[0]?.message ?? null}
+              keyboardType="email-address"
+              label="Email address"
+              onBlur={field.handleBlur}
+              onChangeText={field.handleChange}
+              placeholder="you@example.com"
+              returnKeyType="next"
+              textContentType="emailAddress"
+              value={field.state.value}
+            />
+          )}
+        </form.Field>
+        <form.Field name="password">
+          {(field) => (
+            <TextInput
+              autoCapitalize="none"
+              autoComplete="current-password"
+              autoCorrect={false}
+              disabled={isSubmitting}
+              error={field.state.meta.errors[0]?.message ?? null}
+              label="Password"
+              onBlur={field.handleBlur}
+              onChangeText={field.handleChange}
+              onSubmitEditing={() => void submitForm()}
+              placeholder="Enter your password"
+              returnKeyType="done"
+              rightSection={
+                <Pressable
+                  accessibilityLabel={visibilityLabel}
+                  accessibilityRole="button"
+                  hitSlop={10}
+                  onPress={() => setIsPasswordVisible((visible) => !visible)}
+                  style={styles.visibilityButton}
+                >
+                  <Ionicons
+                    color={colors.text.secondary}
+                    name={visibilityIcon}
+                    size={21}
+                  />
+                </Pressable>
               }
-              accessibilityRole="button"
-              hitSlop={10}
-              onPress={() => setIsPasswordVisible((visible) => !visible)}
-              style={styles.visibilityButton}
-            >
-              <Ionicons
-                color={colors.text.secondary}
-                name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
-                size={21}
-              />
-            </Pressable>
-          }
-          secureTextEntry={!isPasswordVisible}
-          textContentType="password"
-          value={password}
-        />
+              secureTextEntry={!isPasswordVisible}
+              textContentType="password"
+              value={field.state.value}
+            />
+          )}
+        </form.Field>
         <View style={styles.forgotPassword}>
           <AuthLink
+            disabled={isSubmitting}
             onPress={() =>
               router.push({
                 pathname: '/login/forgot-password',
@@ -132,11 +137,30 @@ export function PasswordLoginScreen() {
         </View>
       </Stack>
 
-      <Button disabled={!email.trim() || !password} onClick={handleLogin}>
-        Sign in
-      </Button>
+      <form.Subscribe
+        selector={(state) =>
+          [
+            state.canSubmit,
+            state.isSubmitting,
+            state.values.email,
+            state.values.password,
+          ] as const
+        }
+      >
+        {([canSubmit, submitting, formEmail, password]) => (
+          <Button
+            disabled={
+              !canSubmit || submitting || !formEmail.trim() || !password
+            }
+            onClick={() => void submitForm()}
+          >
+            {submitting ? 'Signing in…' : 'Sign in'}
+          </Button>
+        )}
+      </form.Subscribe>
 
       <AuthLink
+        disabled={isSubmitting}
         onPress={() =>
           router.replace({
             pathname: '/login/email-code',

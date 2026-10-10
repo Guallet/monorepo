@@ -38,9 +38,11 @@ pnpm --filter api lint            # type-aware Oxlint
 pnpm --filter api test            # API Vitest tests
 pnpm --filter api test:watch      # API Vitest watch mode
 pnpm --filter api test:cov        # API coverage
-pnpm --filter api db:init         # initialize Better Auth schema
-pnpm --filter api db:generate     # generate Better Auth schema
-pnpm --filter api db:migrate      # run Better Auth migrations
+pnpm --filter api auth:db:init     # initialize Better Auth schema
+pnpm --filter api auth:db:generate # generate Better Auth schema
+pnpm --filter api db:migrations:generate src/database/migrations/ChangeName # build and generate TypeORM migration
+pnpm --filter api db:migrations:run # build and run TypeORM migrations
+pnpm --filter api auth:db:migrate # run Better Auth CLI migrations
 pnpm --filter webapp dev          # Vite dev server; regenerates the route tree
 pnpm --filter webapp build        # i18n extraction, TypeScript, and Vite build
 pnpm --filter webapp lint         # Oxlint
@@ -166,6 +168,7 @@ architecture, and skill authoring:
 | `create-webapp-feature`         | Add a new page/section to the web frontend (route + screen + components)        |
 | `add-mobile-screen`             | Add a new screen to the Expo mobile app                                         |
 | `create-react-native-component` | Add or adapt a component in the Luna React Native package                       |
+| `migrate-database`              | Generate and apply a TypeORM API database migration                             |
 
 ## Quick Pattern Index
 
@@ -231,6 +234,18 @@ apps/mobile/app/{name}/[id].tsx      – detail screen with param
 ```
 
 Expo Router requires `export default function` (not named exports) for all route files.
+
+### Mobile forms
+
+New mobile screens that contain forms use TanStack Form directly with
+`useForm` and `form.Field`. Bind Luna controls to the field's value, change, and
+blur handlers. Define a Zod schema in the screen and pass it to
+`validators.onDynamic` with `revalidateLogic()`. Use `form.Subscribe` or
+`useSelector` for reactive form state. Keep field values and validation in the
+form; local state is for UI controls and server request errors. Guard
+`form.handleSubmit()` against concurrent submissions and use that handler for
+both button and keyboard submission. See the `add-mobile-screen` skill and
+`PasswordLoginScreen` for the current pattern.
 
 ### Mobile bottom sheets
 
