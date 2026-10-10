@@ -43,6 +43,9 @@ pnpm lint
 
 Before a native release, verify on iOS and Android: Settings navigation,
 first/last input visibility with the keyboard open, currency/category sheets,
-date picker, swipe dismissal, large text and screen-reader labels. Component
-tests cover form payloads, retries, discard confirmation and removal, but do
-not prove native keyboard or sheet visibility.
+date picker, swipe dismissal, large text and screen-reader labels.
+
+The `recurring.test.ts` suite covers date projection, currency totals and form
+validation only. The list, detail and form UI flows (payloads, retries, discard
+confirmation, removal) are not covered by automated tests, and neither are
+native keyboard or sheet visibility.

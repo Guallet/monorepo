@@ -9,7 +9,6 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, useTheme } from '@guallet/luna-mobile';
 import { ChevronRightIcon, RepeatIcon } from '@guallet/luna-mobile/icons';
 import {
@@ -32,9 +31,7 @@ export function RecurringScreen({
 }>) {
   return (
     <AppScreen headerTitle={title} headerOptions={{ headerRight }}>
-      <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.flex}>
-        {children}
-      </SafeAreaView>
+      <View style={styles.flex}>{children}</View>
     </AppScreen>
   );
 }
