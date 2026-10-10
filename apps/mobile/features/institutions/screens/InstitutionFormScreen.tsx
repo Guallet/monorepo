@@ -1,22 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
+import { revalidateLogic, useSelector } from '@tanstack/react-form';
 import type { InstitutionDto } from '@guallet/api-client';
 import { useInstitution, useInstitutionMutations } from '@guallet/api-react';
 import {
   KeyboardAwareScrollView,
-  TextInput,
   useAlert,
   useTheme,
   useToast,
 } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
+import { submitForm, useAppForm } from '@/components/forms';
 import {
   countriesLabel,
   countryName,
+  institutionFormSchema,
   institutionRequest,
-  validateInstitutionForm,
   type InstitutionForm,
 } from '../institutions';
 import { institutionError } from '../institutionError';
@@ -92,22 +93,54 @@ function InstitutionFormContent({
     imageUrl: institution?.image_src ?? '',
     country: '',
   });
-  const [form, setForm] = useState(initial);
-  const [errors, setErrors] = useState<{ name?: string; imageUrl?: string }>(
-    {},
-  );
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [showCountry, setShowCountry] = useState(false);
   const [completedId, setCompletedId] = useState<string | null>(null);
-  const submission = useRef(false);
+  const form = useAppForm({
+    defaultValues: initial,
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: institutionFormSchema },
+    listeners: { onChange: () => setSaveError(null) },
+    onSubmit: async ({ value }) => {
+      Keyboard.dismiss();
+      setSaveError(null);
+      try {
+        const request = institutionRequest(value);
+        let result: InstitutionDto;
+        if (institution) {
+          result = await updateInstitutionMutation.mutateAsync({
+            id: institution.id,
+            request,
+          });
+          toast.success('Institution updated');
+        } else {
+          result = await createInstitutionMutation.mutateAsync({
+            request: {
+              name: value.name.trim(),
+              image_src: value.imageUrl.trim() || undefined,
+              country: request.country,
+            },
+          });
+          toast.success('Institution created');
+        }
+        setCompletedId(result.id);
+      } catch (error) {
+        setSaveError(institutionError(error, 'save'));
+      }
+    },
+  });
+  const name = useSelector(form.store, (state) => state.values.name);
+  const imageUrl = useSelector(form.store, (state) => state.values.imageUrl);
+  const country = useSelector(form.store, (state) => state.values.country);
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
   const pending =
-    createInstitutionMutation.isPending || updateInstitutionMutation.isPending;
+    isSubmitting ||
+    createInstitutionMutation.isPending ||
+    updateInstitutionMutation.isPending;
   const dirty =
-    form.name !== initial.name ||
-    form.imageUrl !== initial.imageUrl ||
-    form.country !== initial.country;
+    name.trim() !== initial.name.trim() ||
+    imageUrl.trim() !== initial.imageUrl.trim() ||
+    country !== initial.country;
   usePreventRemove(!completedId && (dirty || pending), ({ data }) => {
-    if (submission.current) return;
     showAlert({
       title: 'Discard changes?',
       message: 'Your unsaved changes will be lost.',
@@ -124,45 +157,6 @@ function InstitutionFormContent({
   useEffect(() => {
     if (completedId) router.dismissTo(`/institutions/${completedId}`);
   }, [completedId, router]);
-  function update(values: Partial<InstitutionForm>) {
-    setForm((current) => ({ ...current, ...values }));
-    setSaveError(null);
-    setErrors({});
-  }
-  async function save() {
-    if (submission.current) return;
-    const validation = validateInstitutionForm(form);
-    setErrors(validation);
-    if (Object.keys(validation).length) return;
-    submission.current = true;
-    Keyboard.dismiss();
-    setSaveError(null);
-    try {
-      const request = institutionRequest(form);
-      let result: InstitutionDto;
-      if (institution) {
-        result = await updateInstitutionMutation.mutateAsync({
-          id: institution.id,
-          request,
-        });
-        toast.success('Institution updated');
-      } else {
-        result = await createInstitutionMutation.mutateAsync({
-          request: {
-            name: form.name.trim(),
-            image_src: form.imageUrl.trim() || undefined,
-            country: request.country,
-          },
-        });
-        toast.success('Institution created');
-      }
-      setCompletedId(result.id);
-    } catch (error) {
-      setSaveError(institutionError(error, 'save'));
-    } finally {
-      submission.current = false;
-    }
-  }
   let title = 'Create institution';
   let subtitle = 'Add a bank, provider or personal wallet';
   let countryLabel = 'Country (optional)';
@@ -177,89 +171,98 @@ function InstitutionFormContent({
     countryValue = 'Choose an additional country';
     countryHint = `Current: ${countriesLabel(institution.countries)}. Existing countries stay.`;
   }
-  if (form.country) countryValue = countryName(form.country);
-  if (pending) saveLabel = 'Saving…';
   return (
     <AppScreen headerTitle={title} safeAreaEdges={['left', 'right', 'bottom']}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{ padding: spacing.md, gap: spacing.md }}
-      >
-        <InstitutionText secondary>{subtitle}</InstitutionText>
-        <InstitutionCard>
-          <View style={[institutionStyles.row, { gap: spacing.md }]}>
-            <InstitutionLogo name={form.name} imageUrl={form.imageUrl.trim()} />
-            <View style={institutionStyles.copy}>
-              <InstitutionText heading>
-                {form.name.trim() || 'Institution preview'}
-              </InstitutionText>
-              <InstitutionText secondary>
-                Initials shown when no logo is available
-              </InstitutionText>
+      <form.AppForm>
+        <KeyboardAwareScrollView
+          contentContainerStyle={{ padding: spacing.md, gap: spacing.md }}
+        >
+          <InstitutionText secondary>{subtitle}</InstitutionText>
+          <InstitutionCard>
+            <View style={[institutionStyles.row, { gap: spacing.md }]}>
+              <InstitutionLogo name={name} imageUrl={imageUrl.trim()} />
+              <View style={institutionStyles.copy}>
+                <InstitutionText heading>
+                  {name.trim() || 'Institution preview'}
+                </InstitutionText>
+                <InstitutionText secondary>
+                  Initials shown when no logo is available
+                </InstitutionText>
+              </View>
             </View>
-          </View>
-        </InstitutionCard>
-        <TextInput
-          label="Institution name"
-          accessibilityLabel="Institution name, required"
-          accessibilityHint={errors.name}
-          description="Use a name you will recognise."
-          placeholder="e.g. Workplace pension"
-          value={form.name}
-          onChangeText={(name) => update({ name })}
-          error={errors.name}
-          disabled={pending}
-          autoCapitalize="words"
-        />
-        <InstitutionText>{countryLabel}</InstitutionText>
-        <InstitutionButton
-          variant="outline"
-          accessibilityLabel={`${countryLabel}: ${countryValue}`}
-          disabled={pending}
-          onClick={() => {
-            Keyboard.dismiss();
-            setShowCountry(true);
-          }}
-        >
-          {countryValue}
-        </InstitutionButton>
-        <InstitutionText secondary>{countryHint}</InstitutionText>
-        <TextInput
-          label="Logo URL (optional)"
-          accessibilityLabel="Logo URL, optional"
-          accessibilityHint={errors.imageUrl}
-          description="Paste an image link, or leave this blank."
-          placeholder="https://example.com/logo.png"
-          value={form.imageUrl}
-          onChangeText={(imageUrl) => update({ imageUrl })}
-          error={errors.imageUrl}
-          disabled={pending}
-          keyboardType="url"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        {saveError && <InstitutionText error>{saveError}</InstitutionText>}
-        <View
-          accessibilityState={{ busy: pending }}
-          style={{ gap: spacing.md }}
-        >
-          <InstitutionButton disabled={pending} onClick={() => void save()}>
-            {saveLabel}
-          </InstitutionButton>
-          <InstitutionButton
-            variant="subtle"
-            disabled={pending}
-            onClick={() => router.back()}
+          </InstitutionCard>
+          <form.AppField name="name">
+            {(field) => (
+              <field.TextField
+                label="Institution name"
+                accessibilityLabel="Institution name, required"
+                description="Use a name you will recognise."
+                placeholder="e.g. Workplace pension"
+                disabled={pending}
+                autoCapitalize="words"
+                returnKeyType="next"
+              />
+            )}
+          </form.AppField>
+          <InstitutionText>{countryLabel}</InstitutionText>
+          <form.AppField name="country">
+            {(field) => (
+              <field.SelectField
+                label={countryLabel}
+                placeholder={countryValue}
+                formatValue={countryName}
+                disabled={pending}
+                onOpen={Keyboard.dismiss}
+                renderPicker={({ open, value, onClose, onSelect }) => (
+                  <CountrySheet
+                    open={open}
+                    value={value}
+                    onSelect={onSelect}
+                    onClose={onClose}
+                  />
+                )}
+              />
+            )}
+          </form.AppField>
+          <InstitutionText secondary>{countryHint}</InstitutionText>
+          <form.AppField name="imageUrl">
+            {(field) => (
+              <field.TextField
+                label="Logo URL (optional)"
+                accessibilityLabel="Logo URL, optional"
+                description="Paste an image link, or leave this blank."
+                placeholder="https://example.com/logo.png"
+                disabled={pending}
+                keyboardType="url"
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="done"
+                onSubmitEditing={() => void submitForm(form)}
+              />
+            )}
+          </form.AppField>
+          {saveError && <InstitutionText error>{saveError}</InstitutionText>}
+          <View
+            accessibilityState={{ busy: pending }}
+            style={{ gap: spacing.md }}
           >
-            Cancel
-          </InstitutionButton>
-        </View>
-      </KeyboardAwareScrollView>
-      <CountrySheet
-        open={showCountry}
-        value={form.country}
-        onSelect={(country) => update({ country })}
-        onClose={() => setShowCountry(false)}
-      />
+            <form.SubmitButton
+              submittingLabel="Saving…"
+              disabled={pending}
+              style={{ minHeight: 44, paddingVertical: spacing.md }}
+            >
+              {saveLabel}
+            </form.SubmitButton>
+            <InstitutionButton
+              variant="subtle"
+              disabled={pending}
+              onClick={() => router.back()}
+            >
+              Cancel
+            </InstitutionButton>
+          </View>
+        </KeyboardAwareScrollView>
+      </form.AppForm>
     </AppScreen>
   );
 }

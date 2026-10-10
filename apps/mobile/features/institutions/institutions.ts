@@ -2,6 +2,7 @@ import type {
   InstitutionDto,
   UpdateInstitutionRequest,
 } from '@guallet/api-client';
+import { z } from 'zod';
 
 // ISO 3166-1 alpha-2 codes; names are localised through Intl rather than persisted.
 const countryCodes =
@@ -62,16 +63,31 @@ export type InstitutionForm = {
   imageUrl: string;
   country: string;
 };
+function isHttpUrl(value: string) {
+  if (!value) return true;
+  try {
+    const url = new URL(value);
+    return ['https:', 'http:'].includes(url.protocol) && Boolean(url.hostname);
+  } catch {
+    return false;
+  }
+}
+export const institutionFormSchema = z.object({
+  name: z.string().trim().min(1, 'Enter an institution name.'),
+  imageUrl: z
+    .string()
+    .trim()
+    .refine(isHttpUrl, 'Enter a valid http or https image URL.'),
+  country: z.string(),
+});
 export function validateInstitutionForm(form: InstitutionForm) {
   const errors: { name?: string; imageUrl?: string } = {};
-  if (!form.name.trim()) errors.name = 'Enter an institution name.';
-  if (form.imageUrl.trim()) {
-    try {
-      const url = new URL(form.imageUrl.trim());
-      if (!['https:', 'http:'].includes(url.protocol) || !url.hostname)
-        throw new Error('Invalid URL');
-    } catch {
-      errors.imageUrl = 'Enter a valid http or https image URL.';
+  const result = institutionFormSchema.safeParse(form);
+  if (!result.success) {
+    for (const issue of result.error.issues) {
+      const field = issue.path[0];
+      if (field === 'name' || field === 'imageUrl')
+        errors[field] = issue.message;
     }
   }
   return errors;
