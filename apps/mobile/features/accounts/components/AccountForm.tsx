@@ -319,6 +319,7 @@ export function AccountForm({
           isOpen={showInstitutionPicker}
           title="Choose an institution"
           showCloseIcon
+          snapPoints={['half', 'full']}
           onClose={() => setShowInstitutionPicker(false)}
         >
           <Pressable
