@@ -4,6 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useUser } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
+import {
+  DashboardNotifications,
+  NotificationBell,
+} from '@/features/notifications/components/DashboardNotifications';
 import { WealthCard } from '@/features/dashboard/components/WealthCard';
 import { CashflowSummaryRow } from '@/features/dashboard/components/CashflowSummaryRow';
 import { RecentTransactionsWidget } from '@/features/dashboard/components/RecentTransactionsWidget';
@@ -82,27 +86,33 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Greeting */}
-        <View style={styles.greeting}>
-          <Text
-            style={[
-              styles.greetingTitle,
-              { color: colors.text.primary, fontSize: typography.sizes.xxl },
-            ]}
-          >
-            Hi, {firstName}
-          </Text>
-          <Text
-            style={[
-              styles.greetingDate,
-              { color: colors.text.secondary, fontSize: typography.sizes.sm },
-            ]}
-          >
-            {formatGreetingDate(today, languageTag, dateFormat)}
-          </Text>
+        <View style={[styles.greetingRow, { gap: spacing.sm }]}>
+          <View style={styles.greeting}>
+            <Text
+              style={[
+                styles.greetingTitle,
+                { color: colors.text.primary, fontSize: typography.sizes.xxl },
+              ]}
+            >
+              Hi, {firstName}
+            </Text>
+            <Text
+              style={[
+                styles.greetingDate,
+                { color: colors.text.secondary, fontSize: typography.sizes.sm },
+              ]}
+            >
+              {formatGreetingDate(today, languageTag, dateFormat)}
+            </Text>
+          </View>
+
+          <NotificationBell />
         </View>
 
         {/* Total Wealth */}
         <WealthCard monthDeltas={monthDeltas} />
+
+        <DashboardNotifications />
 
         {/* Income / Expense 30-day summary */}
         <CashflowSummaryRow onMonthDeltaChange={handleMonthDeltaChange} />
@@ -127,7 +137,9 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
+  greetingRow: { flexDirection: 'row', alignItems: 'center' },
   greeting: {
+    flex: 1,
     gap: 2,
   },
   greetingTitle: {

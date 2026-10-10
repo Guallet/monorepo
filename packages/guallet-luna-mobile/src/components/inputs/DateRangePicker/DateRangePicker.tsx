@@ -238,7 +238,6 @@ export function DateRangePicker({
         snapPoints={['full']}
         isOpen={isBottomSheetOpen}
         onClose={cancel}
-        onDismiss={cancel}
         contentPadding={0}
       >
         <View
