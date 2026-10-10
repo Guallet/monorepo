@@ -23,6 +23,14 @@ existing Luna, React Native, Expo, and accessibility patterns.
 
 ## Component rules
 
+- Keep Luna's base inputs controlled and independent of TanStack Form. Screens
+  own their `useForm`/`form.Field` bindings and pass the field value, change,
+  blur, and Zod issue message to Luna controls. Define screen-level validation
+  with `z.object(...)` and pass the schema to TanStack Form's
+  `validators.onDynamic`; do not put schemas or form-specific context in Luna
+  controls. See the
+  [mobile screen skill](../add-mobile-screen/SKILL.md) for screen form patterns.
+
 - For money amounts, use `@guallet/money` and `Money.format()` for display.
   Derive precision from `Currency.decimalPlaces`; never hardcode two decimal
   places or create a local currency formatter.

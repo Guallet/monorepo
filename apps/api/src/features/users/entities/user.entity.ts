@@ -1,10 +1,16 @@
 import { UserRole } from 'src/auth/user-principal';
-import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 // We need to ensure the database fields name match the ones in the better auth user configuration
 @Entity('users')
-export class User extends BaseDbEntity {
+export class User {
   // @PrimaryColumn('uuid', {
   //   name: 'id',
   // })
@@ -16,12 +22,15 @@ export class User extends BaseDbEntity {
 
   @Column({
     name: 'name',
+    type: 'text',
     nullable: false,
   })
   name: string;
 
   @Column({
     name: 'email',
+    type: 'text',
+    unique: true,
     nullable: false,
   })
   email: string;
@@ -35,9 +44,10 @@ export class User extends BaseDbEntity {
 
   @Column({
     name: 'profile_image_url',
+    type: 'text',
     nullable: true,
   })
-  profile_image_url: string;
+  profile_image_url: string | null;
 
   @Column({
     // type: 'set',
@@ -65,6 +75,15 @@ export class User extends BaseDbEntity {
   })
   // preferred date format for the user, one of: MM/DD/YYYY, DD/MM/YYYY, YYYY/MM/DD
   date_format: string;
+
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
 
   // relations
 }

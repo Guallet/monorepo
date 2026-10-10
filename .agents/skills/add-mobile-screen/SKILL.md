@@ -21,6 +21,64 @@ Adds a new screen to the Expo mobile app following the file-based routing patter
   characters. Iterate strings with `for...of` or `Array.from()` so characters
   outside the basic multilingual plane remain intact.
 
+## Required: Mobile forms
+
+- Every new mobile screen or screen component that edits and submits data must
+  use `useForm` and `form.Field` from `@tanstack/react-form` directly in the
+  screen. Bind Luna controls with `value={field.state.value}`,
+  `onChangeText={field.handleChange}`, and `onBlur={field.handleBlur}`. Keep
+  submitted values and validation in TanStack Form; do not add a shared form
+  adapter layer or a separate form-state library.
+- Define the form schema with `z.object(...)` alongside the screen and pass
+  that schema to `validators.onDynamic`. Use `revalidateLogic()` so errors
+  appear after submission and revalidate as the user corrects input. Define
+  defaults, listeners, and `onSubmit` in the screen's `useForm` options. Keep
+  server request errors separate from field validation and clear them when
+  values change. Add Zod as a direct mobile dependency if it is not already
+  declared.
+- Render Zod field issues from `field.state.meta.errors[0]?.message` into
+  Luna's `error` prop. Use `form.Subscribe` for reactive UI and `useSelector`
+  for values needed in navigation; reading `form.state` alone does not
+  subscribe.
+- Submit through `form.handleSubmit()`. Use a screen-local async handler that
+  checks `form.state.isSubmitting` before calling it, and use that same handler
+  for buttons and keyboard submission. Subscribe to `canSubmit` and
+  `isSubmitting` to keep submit controls current. Await the API mutation or auth
+  action in `onSubmit`.
+- Keep picker visibility and password visibility in local UI state. For
+  non-text controls, bind their selected values through `form.Field` and keep
+  temporary sheet selections local until confirmation.
+- Preserve edit initialization, normalization, money precision, and discard
+  behavior. Do not reset edits on background refetch. `isDirty` stays true even
+  after reverting changes; compare normalized values when that distinction
+  matters. Schema transforms require explicit parsing at submission.
+- For TanStack Form
+  React Native behavior, see the
+  [React Native guide](https://tanstack.com/form/latest/docs/framework/react/guides/react-native)
+  and [quick start](https://tanstack.com/form/latest/docs/framework/react/quick-start).
+  For Zod with `onDynamic`, see the
+  [Standard Schema validation guide](https://tanstack.com/form/latest/docs/framework/react/guides/dynamic-validation#standard-schema-validation).
+  Existing screens only need migration when the task explicitly includes them.
+
+```tsx
+import { revalidateLogic, useForm } from '@tanstack/react-form';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email('Enter a valid email address.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
+});
+
+const form = useForm({
+  defaultValues: { email: '', password: '' },
+  validationLogic: revalidateLogic(),
+  validators: { onDynamic: formSchema },
+  onSubmit: async ({ value }) => {
+    await signIn(value.email, value.password);
+  },
+});
+```
+
 ## Images
 
 - Use `Image` from `expo-image` for every image rendered in the mobile app; do
@@ -324,6 +382,11 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
 
 ## Checklist
 
+- [ ] New forms use `useForm`/`form.Field` directly with controlled Luna inputs
+- [ ] Field values/validation are form-owned; requests are awaited and button
+      and keyboard submission share a guarded `form.handleSubmit()` handler
+- [ ] Validation, failed requests, corrections, and concurrent submissions are
+      covered by focused tests when adding a form
 - [ ] Route file uses `export default function` (not named export)
 - [ ] Stack screen uses `AppScreen`; each safe-area edge has one owner
 - [ ] Input content and form actions use Luna `KeyboardAwareScrollView` with
