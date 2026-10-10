@@ -195,7 +195,7 @@ export default function RecurringDetailScreen({
             setRemoveOpen(true);
           }}
         >
-          Remove from Guallet
+          Delete
         </Button>
       </ScrollView>
       <BottomSheet
@@ -222,7 +222,7 @@ export default function RecurringDetailScreen({
           >
             <Text style={{ color: colors.text.inverse, fontWeight: '600' }}>
               {pending && 'Removing…'}
-              {!pending && 'Remove from Guallet'}
+              {!pending && 'Delete'}
             </Text>
           </Button>
           <Button
