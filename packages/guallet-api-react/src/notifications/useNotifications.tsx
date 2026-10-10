@@ -2,14 +2,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
 import { NotificationDto } from '@guallet/api-client';
 
-import {
-  NOTIFICATIONS_QUERY_KEY,
-  UNREAD_NOTIFICATIONS_QUERY_KEY,
-} from './notificationCache';
-export {
-  NOTIFICATIONS_QUERY_KEY,
-  UNREAD_NOTIFICATIONS_QUERY_KEY,
-} from './notificationCache';
+export const NOTIFICATIONS_QUERY_KEY = 'notifications';
+export const UNREAD_NOTIFICATIONS_QUERY_KEY = 'notifications-unread';
 
 export function useNotifications() {
   const gualletClient = useGualletClient();
@@ -17,17 +11,16 @@ export function useNotifications() {
 
   const query = useQuery({
     queryKey: [NOTIFICATIONS_QUERY_KEY],
-    queryFn: async ({ signal }) => {
+    queryFn: async () => {
       const notifications = await gualletClient.notifications.getAll();
 
       // Prime the cache for each notification by ID
-      if (!signal.aborted)
-        notifications?.forEach((notification) => {
-          queryClient.setQueryData(
-            [NOTIFICATIONS_QUERY_KEY, notification.id],
-            notification,
-          );
-        });
+      notifications?.forEach((notification) => {
+        queryClient.setQueryData(
+          [NOTIFICATIONS_QUERY_KEY, notification.id],
+          notification,
+        );
+      });
 
       return notifications;
     },
@@ -65,30 +58,9 @@ export function useUnreadNotifications() {
 
 export function useNotification(id: string) {
   const gualletClient = useGualletClient();
-  const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: [NOTIFICATIONS_QUERY_KEY, id],
-    // A dashboard preview remains readable even when its detail fetch is offline.
-    initialData: () =>
-      queryClient
-        .getQueryData<NotificationDto[]>([NOTIFICATIONS_QUERY_KEY])
-        ?.find((item) => item.id === id) ??
-      queryClient
-        .getQueryData<NotificationDto[]>([UNREAD_NOTIFICATIONS_QUERY_KEY])
-        ?.find((item) => item.id === id),
-    initialDataUpdatedAt: () => {
-      for (const key of [
-        NOTIFICATIONS_QUERY_KEY,
-        UNREAD_NOTIFICATIONS_QUERY_KEY,
-      ]) {
-        const state = queryClient.getQueryState<NotificationDto[]>([key]);
-        if (state?.data?.some((item) => item.id === id)) {
-          return state.dataUpdatedAt;
-        }
-      }
-      return undefined;
-    },
     queryFn: async () => {
       return await gualletClient.notifications.get(id);
     },
