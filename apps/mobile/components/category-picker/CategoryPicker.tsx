@@ -269,6 +269,8 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
 
           <SectionLabel>Categories</SectionLabel>
           <ScrollView
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
             contentContainerStyle={{
               gap: spacing.xs,
               paddingBottom: spacing.md,

@@ -108,7 +108,7 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView
-      edges={['top']}
+      edges={['top', 'left', 'right']}
       style={[
         styles.safeArea,
         { backgroundColor: colors.surface.background.page },

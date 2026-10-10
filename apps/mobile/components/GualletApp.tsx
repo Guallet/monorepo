@@ -15,6 +15,7 @@ import {
 import { AppStateStatus, Platform } from 'react-native';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
@@ -58,20 +59,26 @@ function AppNavigation() {
   return (
     <ThemeProvider value={navigationTheme}>
       <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <ToastProvider>
-            <QueryClientProvider client={queryClient}>
-              <AuthProvider>
-                <GualletClientProvider client={gualletClient}>
-                  <AlertProvider>
-                    <AuthNavigator />
-                    <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
-                  </AlertProvider>
-                </GualletClientProvider>
-              </AuthProvider>
-            </QueryClientProvider>
-          </ToastProvider>
-        </GestureHandlerRootView>
+        <KeyboardProvider
+          statusBarTranslucent
+          navigationBarTranslucent
+          preserveEdgeToEdge
+        >
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <ToastProvider>
+              <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                  <GualletClientProvider client={gualletClient}>
+                    <AlertProvider>
+                      <AuthNavigator />
+                      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+                    </AlertProvider>
+                  </GualletClientProvider>
+                </AuthProvider>
+              </QueryClientProvider>
+            </ToastProvider>
+          </GestureHandlerRootView>
+        </KeyboardProvider>
       </SafeAreaProvider>
     </ThemeProvider>
   );

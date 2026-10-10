@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+  Button,
+  KeyboardAwareScrollView,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
+import { useEffect, useRef, useState } from 'react';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
-import { Button, TextInput, useTheme } from '@guallet/luna-mobile';
 import { AccountTypeIcon } from './AccountTypeIcon';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
@@ -110,11 +107,8 @@ export function AccountForm({
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.flex}
-    >
-      <ScrollView
+    <View style={styles.flex}>
+      <KeyboardAwareScrollView
         contentContainerStyle={[
           styles.content,
           { gap: spacing.lg, padding: spacing.md },
@@ -267,8 +261,8 @@ export function AccountForm({
             {isPending ? 'Saving…' : account ? 'Save changes' : 'Add account'}
           </Button>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   );
 }
 
