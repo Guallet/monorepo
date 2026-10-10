@@ -11,12 +11,15 @@ description: Configure Better Auth server and client, set up database adapters, 
 
 In this monorepo, application and Better Auth tables are managed together by
 TypeORM migrations under `apps/api/src/migrations/`. The API applies pending
-migrations at startup. When changing Better Auth configuration, plugins, or
-entity mappings, inspect the resulting schema change and add a new TypeORM
-migration. Do not use the Better Auth CLI `generate` or `migrate` commands as
-the application schema migration path; the API package's `auth:db:generate` and
-`auth:db:migrate` scripts invoke that separate CLI workflow. See
-`apps/api/README.md` for the TypeORM CLI commands and migration review steps.
+migrations at startup. Whenever a TypeORM database entity is added, edited, or
+removed, generate a TypeORM migration as part of the same change and commit it
+with the entity change. This also applies to entity mapping changes made for
+Better Auth. If migration generation reports no schema changes, verify and
+record why the entity edit does not affect persisted schema. Do not use the
+Better Auth CLI `generate` or `migrate` commands as the application schema
+migration path; the API package's `auth:db:generate` and `auth:db:migrate`
+scripts invoke that separate CLI workflow. See `apps/api/README.md` for the
+TypeORM CLI commands and migration review steps.
 
 ---
 
