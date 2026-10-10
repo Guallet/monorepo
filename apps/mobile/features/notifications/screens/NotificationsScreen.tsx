@@ -1,7 +1,14 @@
 import { useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useNotifications } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
@@ -68,7 +75,22 @@ export function NotificationsScreen() {
   return (
     <AppScreen
       headerTitle="Notifications"
-      headerOptions={{ headerBackTitle: 'Dashboard' }}
+      headerOptions={{
+        headerBackVisible: false,
+        headerLeft: () => (
+          <Pressable
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
+            hitSlop={12}
+            onPress={() => {
+              if (router.canGoBack()) router.back();
+              else router.replace('/(protected)/(tabs)');
+            }}
+          >
+            <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
+          </Pressable>
+        ),
+      }}
     >
       <FlatList
         data={visible}
