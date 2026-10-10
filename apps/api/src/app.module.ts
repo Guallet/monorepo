@@ -79,8 +79,11 @@ import { ObserveModule } from './observe';
           password: dbConfig.password,
           database: dbConfig.database,
           entities: [],
-          synchronize: true,
           autoLoadEntities: true,
+          synchronize: false,
+          migrations: [__dirname + '/database/migrations/**/*{.js,.ts}'],
+          migrationsRun: true,
+          migrationsTableName: 'migrations',
           ssl: dbConfig.ssl ? { rejectUnauthorized: false } : false,
         };
       },

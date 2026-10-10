@@ -38,9 +38,11 @@ pnpm --filter api lint            # type-aware Oxlint
 pnpm --filter api test            # API Vitest tests
 pnpm --filter api test:watch      # API Vitest watch mode
 pnpm --filter api test:cov        # API coverage
-pnpm --filter api db:init         # initialize Better Auth schema
-pnpm --filter api db:generate     # generate Better Auth schema
-pnpm --filter api db:migrate      # run Better Auth migrations
+pnpm --filter api auth:db:init     # initialize Better Auth schema
+pnpm --filter api auth:db:generate # generate Better Auth schema
+pnpm --filter api db:migrations:generate src/database/migrations/ChangeName # build and generate TypeORM migration
+pnpm --filter api db:migrations:run # build and run TypeORM migrations
+pnpm --filter api auth:db:migrate # run Better Auth CLI migrations
 pnpm --filter webapp dev          # Vite dev server; regenerates the route tree
 pnpm --filter webapp build        # i18n extraction, TypeScript, and Vite build
 pnpm --filter webapp lint         # Oxlint
@@ -166,6 +168,7 @@ architecture, and skill authoring:
 | `create-webapp-feature`         | Add a new page/section to the web frontend (route + screen + components)        |
 | `add-mobile-screen`             | Add a new screen to the Expo mobile app                                         |
 | `create-react-native-component` | Add or adapt a component in the Luna React Native package                       |
+| `migrate-database`              | Generate and apply a TypeORM API database migration                             |
 
 ## Quick Pattern Index
 
