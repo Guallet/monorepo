@@ -38,12 +38,12 @@ export class RegularPaymentDto {
     dto.user_id = entity.user_id;
     dto.type = entity.type;
     dto.name = entity.name;
-    dto.amount = entity.amount;
+    dto.amount = Number(entity.amount);
     dto.currency = entity.currency;
     dto.cadence = entity.cadence;
-    dto.startDate = entity.startDate;
+    dto.startDate = entity.startDate ?? undefined;
     dto.imageUrl = entity.imageUrl;
-    dto.categoryId = entity.category ? entity.category.id : undefined;
+    dto.categoryId = entity.categoryId ?? entity.category?.id;
     return dto;
   }
 }

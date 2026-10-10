@@ -47,7 +47,7 @@ export class RegularPayment extends BaseDbEntity {
   cadence: RecurrenceCadence;
 
   @Column({ type: 'date', nullable: true })
-  startDate?: Date;
+  startDate?: Date | null;
 
   @Column({ nullable: true })
   imageUrl?: string;
@@ -56,6 +56,6 @@ export class RegularPayment extends BaseDbEntity {
   @ManyToOne(() => Category, { onDelete: 'SET NULL', nullable: true })
   category?: Relation<Category>;
 
-  @Column({ nullable: true })
-  categoryId?: string;
+  @Column({ type: 'varchar', nullable: true })
+  categoryId?: string | null;
 }

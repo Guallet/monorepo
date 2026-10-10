@@ -38,10 +38,15 @@ export class UpdateRegularPaymentDto {
   @IsString()
   imageUrl?: string;
 
-  @ApiProperty({ required: false, format: 'uuid' })
+  @ApiProperty({
+    required: false,
+    type: String,
+    format: 'uuid',
+    nullable: true,
+  })
   @IsOptional()
   @IsUUID()
-  categoryId?: string;
+  categoryId?: string | null;
 
   @ApiProperty({ required: false, enum: RecurrenceCadence })
   @IsOptional()
@@ -51,10 +56,12 @@ export class UpdateRegularPaymentDto {
   @ApiProperty({
     description: 'The start date as an ISO 8601 date or date-time string',
     required: false,
+    type: String,
+    nullable: true,
   })
   @IsOptional()
   @IsDateString()
-  startDate?: string;
+  startDate?: string | null;
 
   @ApiProperty({ required: false, enum: RecurringPaymentType })
   @IsOptional()
