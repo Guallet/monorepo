@@ -2,7 +2,7 @@ import {
   isCategoryIconName,
   selectableCategoryIconNames,
 } from '@guallet/theme';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -52,21 +52,27 @@ export function IconPicker({
   const { colors, spacing, typography, borderRadius } = useTheme();
   const { height: windowHeight } = useWindowDimensions();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const openRef = useRef(false);
 
   const availableIcons = [...new Set(icons.filter(isCategoryIconName))];
   const selectedIcon = isCategoryIconName(value) ? value : null;
   const label = selectedIcon ? iconLabel(selectedIcon) : 'Choose an icon';
 
   function open() {
+    openRef.current = true;
     setIsBottomSheetOpen(true);
   }
 
   function cancel() {
+    if (!openRef.current) return;
+    openRef.current = false;
     setIsBottomSheetOpen(false);
     onCancel?.();
   }
 
   function select(iconName: string) {
+    if (!openRef.current) return;
+    openRef.current = false;
     setIsBottomSheetOpen(false);
     onChange(iconName);
   }
@@ -140,7 +146,6 @@ export function IconPicker({
         showCloseIcon
         isOpen={isBottomSheetOpen}
         onClose={cancel}
-        onDismiss={cancel}
         contentPadding={0}
       >
         <View

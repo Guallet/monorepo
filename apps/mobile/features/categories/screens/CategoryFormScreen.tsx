@@ -353,7 +353,6 @@ export default function CategoryFormScreen({
         title="Delete category?"
         showCloseIcon={!pending}
         onClose={closeDelete}
-        onDismiss={closeDelete}
       >
         <ScrollView
           contentContainerStyle={{
