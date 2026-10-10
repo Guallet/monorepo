@@ -31,7 +31,7 @@
     "expo-image": "57.0.5",
     "react": "19.2.3",
     "react-native": "0.86.3",
-    "react-native-keyboard-controller": "1.21.9",
+    "react-native-keyboard-controller": "1.22.6",
     "react-native-svg": "15.15.4",
     "sonner-native": "0.27.0"
   },
