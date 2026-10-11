@@ -2,17 +2,18 @@ import { useEffect, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
-import { revalidateLogic, useSelector } from '@tanstack/react-form';
+import { revalidateLogic, useForm, useSelector } from '@tanstack/react-form';
 import type { InstitutionDto } from '@guallet/api-client';
 import { useInstitution, useInstitutionMutations } from '@guallet/api-react';
 import {
+  Button,
   KeyboardAwareScrollView,
+  TextInput,
   useAlert,
   useTheme,
   useToast,
 } from '@guallet/luna-mobile';
 import { AppScreen } from '@/components/layout/AppScreen';
-import { submitForm, useAppForm } from '@/components/forms';
 import {
   countriesLabel,
   countryName,
@@ -95,7 +96,8 @@ function InstitutionFormContent({
   });
   const [saveError, setSaveError] = useState<string | null>(null);
   const [completedId, setCompletedId] = useState<string | null>(null);
-  const form = useAppForm({
+  const [showCountrySheet, setShowCountrySheet] = useState(false);
+  const form = useForm({
     defaultValues: initial,
     validationLogic: revalidateLogic(),
     validators: { onDynamic: institutionFormSchema },
@@ -140,6 +142,10 @@ function InstitutionFormContent({
     name.trim() !== initial.name.trim() ||
     imageUrl.trim() !== initial.imageUrl.trim() ||
     country !== initial.country;
+  async function submitForm() {
+    if (form.state.isSubmitting) return;
+    await form.handleSubmit();
+  }
   usePreventRemove(!completedId && (dirty || pending), ({ data }) => {
     if (pending) return;
     showAlert({
@@ -174,61 +180,80 @@ function InstitutionFormContent({
   }
   return (
     <AppScreen headerTitle={title} safeAreaEdges={['left', 'right', 'bottom']}>
-      <form.AppForm>
-        <KeyboardAwareScrollView
-          contentContainerStyle={{ padding: spacing.md, gap: spacing.md }}
-        >
-          <InstitutionText secondary>{subtitle}</InstitutionText>
-          <InstitutionCard>
-            <View style={[institutionStyles.row, { gap: spacing.md }]}>
-              <InstitutionLogo name={name} imageUrl={imageUrl.trim()} />
-              <View style={institutionStyles.copy}>
-                <InstitutionText heading>
-                  {name.trim() || 'Institution preview'}
-                </InstitutionText>
-                <InstitutionText secondary>
-                  Initials shown when no logo is available
-                </InstitutionText>
-              </View>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ padding: spacing.md, gap: spacing.md }}
+      >
+        <InstitutionText secondary>{subtitle}</InstitutionText>
+        <InstitutionCard>
+          <View style={[institutionStyles.row, { gap: spacing.md }]}>
+            <InstitutionLogo name={name} imageUrl={imageUrl.trim()} />
+            <View style={institutionStyles.copy}>
+              <InstitutionText heading>
+                {name.trim() || 'Institution preview'}
+              </InstitutionText>
+              <InstitutionText secondary>
+                Initials shown when no logo is available
+              </InstitutionText>
             </View>
-          </InstitutionCard>
-          <form.AppField name="name">
-            {(field) => (
-              <field.TextField
+          </View>
+        </InstitutionCard>
+        <form.Field name="name">
+          {(field) => {
+            const error = field.state.meta.errors[0]?.message;
+            return (
+              <TextInput
                 label="Institution name"
                 accessibilityLabel="Institution name, required"
+                accessibilityHint={error ?? 'Use a name you will recognise.'}
                 description="Use a name you will recognise."
                 placeholder="e.g. Workplace pension"
                 disabled={pending}
                 autoCapitalize="words"
                 returnKeyType="next"
+                value={field.state.value}
+                onChangeText={field.handleChange}
+                onBlur={field.handleBlur}
+                error={error}
               />
-            )}
-          </form.AppField>
-          <InstitutionText>{countryLabel}</InstitutionText>
-          <form.AppField name="country">
-            {(field) => (
-              <field.SelectField
-                label={countryLabel}
-                placeholder={countryValue}
-                formatValue={countryName}
+            );
+          }}
+        </form.Field>
+        <InstitutionText>{countryLabel}</InstitutionText>
+        <form.Field name="country">
+          {(field) => (
+            <>
+              <Button
+                variant="outline"
                 disabled={pending}
-                onOpen={Keyboard.dismiss}
-                renderPicker={({ open, value, onClose, onSelect }) => (
-                  <CountrySheet
-                    open={open}
-                    value={value}
-                    onSelect={onSelect}
-                    onClose={onClose}
-                  />
-                )}
+                accessibilityLabel={`${countryLabel}: ${field.state.value ? countryName(field.state.value) : countryValue}`}
+                onClick={() => {
+                  Keyboard.dismiss();
+                  setShowCountrySheet(true);
+                }}
+              >
+                {field.state.value
+                  ? countryName(field.state.value)
+                  : countryValue}
+              </Button>
+              <CountrySheet
+                open={showCountrySheet}
+                value={field.state.value}
+                onSelect={(value) => {
+                  field.handleChange(value);
+                  field.handleBlur();
+                  setShowCountrySheet(false);
+                }}
+                onClose={() => setShowCountrySheet(false)}
               />
-            )}
-          </form.AppField>
-          <InstitutionText secondary>{countryHint}</InstitutionText>
-          <form.AppField name="imageUrl">
-            {(field) => (
-              <field.TextField
+            </>
+          )}
+        </form.Field>
+        <InstitutionText secondary>{countryHint}</InstitutionText>
+        <form.Field name="imageUrl">
+          {(field) => {
+            const error = field.state.meta.errors[0]?.message;
+            return (
+              <TextInput
                 label="Logo URL (optional)"
                 accessibilityLabel="Logo URL, optional"
                 description="Paste an image link, or leave this blank."
@@ -238,32 +263,45 @@ function InstitutionFormContent({
                 autoCapitalize="none"
                 autoCorrect={false}
                 returnKeyType="done"
-                onSubmitEditing={() => void submitForm(form)}
+                onSubmitEditing={() => void submitForm()}
+                value={field.state.value}
+                onChangeText={field.handleChange}
+                onBlur={field.handleBlur}
+                error={error}
+                accessibilityHint={
+                  error ?? 'Paste an image link, or leave this blank.'
+                }
               />
-            )}
-          </form.AppField>
-          {saveError && <InstitutionText error>{saveError}</InstitutionText>}
-          <View
-            accessibilityState={{ busy: pending }}
-            style={{ gap: spacing.md }}
+            );
+          }}
+        </form.Field>
+        {saveError && <InstitutionText error>{saveError}</InstitutionText>}
+        <View
+          accessibilityState={{ busy: pending }}
+          style={{ gap: spacing.md }}
+        >
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
-            <form.SubmitButton
-              submittingLabel="Saving…"
-              disabled={pending}
-              style={{ minHeight: 44, paddingVertical: spacing.md }}
-            >
-              {saveLabel}
-            </form.SubmitButton>
-            <InstitutionButton
-              variant="subtle"
-              disabled={pending}
-              onClick={() => router.back()}
-            >
-              Cancel
-            </InstitutionButton>
-          </View>
-        </KeyboardAwareScrollView>
-      </form.AppForm>
+            {([canSubmit, isSubmitting]) => (
+              <Button
+                disabled={!canSubmit || pending || isSubmitting}
+                onClick={() => void submitForm()}
+                style={{ minHeight: 44, paddingVertical: spacing.md }}
+              >
+                {isSubmitting ? 'Saving…' : saveLabel}
+              </Button>
+            )}
+          </form.Subscribe>
+          <InstitutionButton
+            variant="subtle"
+            disabled={pending}
+            onClick={() => router.back()}
+          >
+            Cancel
+          </InstitutionButton>
+        </View>
+      </KeyboardAwareScrollView>
     </AppScreen>
   );
 }
