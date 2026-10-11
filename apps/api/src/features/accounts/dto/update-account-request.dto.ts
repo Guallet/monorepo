@@ -91,6 +91,7 @@ export class UpdateAccountRequest {
   create_balance_transaction?: boolean;
 
   @ApiProperty({
+    type: String,
     required: false,
     format: 'uuid',
     description: 'The institution id, or null to remove the institution',
