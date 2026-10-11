@@ -2,26 +2,24 @@
 
 New mobile forms use TanStack Form through `useAppForm` from
 `@/components/forms`. The app owns form adapters; Luna owns the controlled
-native inputs and their appearance. The password login and institution forms
-demonstrate current usage, including validation and picker adapters.
+native inputs and their appearance. The password login, account, and institution
+forms demonstrate current usage, including validation and picker adapters.
 
 ## Example
 
 ```tsx
 import { submitForm, useAppForm } from '@/components/forms';
 import { revalidateLogic } from '@tanstack/react-form';
+import { z } from 'zod';
+
+const nameSchema = z.object({
+  name: z.string().trim().min(1, 'Enter a name.'),
+});
 
 const form = useAppForm({
   defaultValues: { name: '' },
   validationLogic: revalidateLogic(),
-  validators: {
-    onDynamic: ({ value }) => {
-      if (!value.name.trim()) {
-        return { fields: { name: 'Enter a name.' } };
-      }
-      return undefined;
-    },
-  },
+  validators: { onDynamic: nameSchema },
   onSubmit: async ({ value }) => {
     await createMutation.mutateAsync({ request: { name: value.name.trim() } });
   },
@@ -49,9 +47,9 @@ This fragment belongs inside a screen component. Handle mutation failures in
 ## Conventions
 
 - `TextField` owns value/change/blur/error props, supplies an accessible label,
-  and exposes the first error in the native accessibility hint. Validators may
-  return strings or Standard Schema issues with a `message` property. A schema
-  library is optional; function validators are supported directly.
+  and exposes the first error in the native accessibility hint. Use Zod
+  schemas with `onDynamic` for new mobile forms; Standard Schema issues expose
+  a `message` property to the field adapter.
 - `revalidateLogic()` with `onDynamic` validates on submit, then on change after
   an attempted submission. Return errors keyed by actual field names.
 - `SubmitButton` subscribes to `canSubmit` and `isSubmitting`, disables itself

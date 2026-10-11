@@ -80,6 +80,7 @@ export default function EditAccountScreen() {
         </View>
       ) : (
         <AccountForm
+          key={id}
           account={account}
           onCancel={() => router.back()}
           onSaved={(savedAccount) =>
