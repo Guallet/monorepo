@@ -1,17 +1,9 @@
-import {
-  BottomSheet,
-  Button,
-  ColorPicker,
-  IconPicker,
-  KeyboardAwareScrollView,
-  TextInput,
-  useAlert,
-  useTheme,
-} from '@guallet/luna-mobile';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text as NativeText,
@@ -19,7 +11,17 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCategories, useCategoryMutations } from '@guallet/api-react';
+import {
+  BottomSheet,
+  Button,
+  ColorPicker,
+  IconPicker,
+  TextInput,
+  useAlert,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { CategoryIcon, DeleteIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
@@ -35,6 +37,9 @@ import {
   CategoryText,
 } from '../components/CategoryUi';
 import { categoryErrorMessage } from '../categoryErrors';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 
 export default function CategoryFormScreen({
   categoryId,
@@ -43,6 +48,7 @@ export default function CategoryFormScreen({
   const { colors, spacing } = useTheme();
   const router = useRouter();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const showAlert = useAlert();
   const { categories, isLoading, isError, refetch } = useCategories();
   const {
@@ -57,10 +63,8 @@ export default function CategoryFormScreen({
     icon: 'IconTag',
     colour: colors.accent.primary,
   };
-  const [form, setForm] = useState<CategoryForm>(defaults);
   const [initialForm, setInitialForm] = useState(defaults);
   const [initializedId, setInitializedId] = useState<string | null>(null);
-  const [nameError, setNameError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [showDelete, setShowDelete] = useState(false);
@@ -76,7 +80,44 @@ export default function CategoryFormScreen({
     Boolean(categoryId) &&
     categories.some((item) => item.parentId === categoryId);
   const parents = eligibleCategoryParents(categories, categoryId);
-  const dirty = categoryFormChanged(form, initialForm);
+  const schema = z.object({
+    name: z.string().trim().min(1, 'Enter a category name.'),
+    parentId: z.string().nullable(),
+    icon: z.string().min(1, 'Select an icon.'),
+    colour: z.string().min(1, 'Select a colour.'),
+  });
+  const form = useForm({
+    defaultValues: defaults,
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: schema },
+    listeners: { onChange: () => setSaveError(null) },
+    onSubmit: async ({ value }) => {
+      if (submission.current || !ready) return;
+      submission.current = true;
+      Keyboard.dismiss();
+      setSaveError(null);
+      const request = {
+        ...value,
+        name: value.name.trim(),
+        parentId: value.parentId ?? undefined,
+      };
+      try {
+        if (categoryId) {
+          await updateCategoryMutation.mutateAsync({ id: categoryId, request });
+        } else {
+          await createCategoryMutation.mutateAsync({ request });
+        }
+        setCompleted(true);
+      } catch (error) {
+        setSaveError(categoryErrorMessage(error, 'save'));
+      } finally {
+        submission.current = false;
+      }
+    },
+  });
+  const values = useStore(form.store, (state) => state.values);
+  const nameError = fieldError(form.getFieldMeta('name')?.errors ?? []);
+  const dirty = categoryFormChanged(values, initialForm);
   const ready =
     !isLoading &&
     !isError &&
@@ -91,16 +132,18 @@ export default function CategoryFormScreen({
   if (pending) saveLabel = 'Saving…';
   let deleteLabel = 'Delete category';
   if (deleteCategoryMutation.isPending) deleteLabel = 'Deleting…';
-  let previewName = form.name.trim();
+  let previewName = values.name.trim();
   if (!previewName) previewName = 'Category preview';
+  let keyboardBehavior: 'padding' | 'height' = 'height';
+  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   useEffect(() => {
     if (!category || initializedId === category.id) return;
     setInitializedId(category.id);
     const values = categoryForm(category);
     setInitialForm(values);
-    setForm(values);
-  }, [category, initializedId]);
+    form.reset(values);
+  }, [category, initializedId, form]);
 
   usePreventRemove(!completed && (dirty || pending), ({ data }) => {
     if (submission.current) return;
@@ -121,39 +164,6 @@ export default function CategoryFormScreen({
   useEffect(() => {
     if (completed) router.back();
   }, [completed, router]);
-
-  function update(values: Partial<CategoryForm>) {
-    setForm((current) => ({ ...current, ...values }));
-    setSaveError(null);
-    if (values.name !== undefined) setNameError(null);
-  }
-
-  async function save() {
-    if (submission.current || !ready) return;
-    if (!form.name.trim()) {
-      setNameError('Enter a category name');
-      return;
-    }
-    submission.current = true;
-    Keyboard.dismiss();
-    setSaveError(null);
-    const request = { ...form, name: form.name.trim() };
-    try {
-      if (categoryId) {
-        await updateCategoryMutation.mutateAsync({
-          id: categoryId,
-          request,
-        });
-      } else {
-        await createCategoryMutation.mutateAsync({ request });
-      }
-      setCompleted(true);
-    } catch (error) {
-      setSaveError(categoryErrorMessage(error, 'save'));
-    } finally {
-      submission.current = false;
-    }
-  }
 
   function closeDelete() {
     setShowDelete(false);
@@ -218,16 +228,20 @@ export default function CategoryFormScreen({
       headerTitle={title}
       headerOptions={{ headerBackTitle: 'Categories' }}
     >
-      <View style={styles.flex}>
-        <KeyboardAwareScrollView
+      <KeyboardAvoidingView
+        behavior={keyboardBehavior}
+        style={styles.flex}
+        keyboardVerticalOffset={insets.top + 44}
+      >
+        <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ padding: spacing.md, gap: spacing.lg }}
         >
           <CategoryCard>
             <View style={{ alignItems: 'center', gap: spacing.md }}>
               <CategoryIcon
-                name={form.icon}
-                color={form.colour || colors.accent.primary}
+                name={values.icon}
+                color={values.colour || colors.accent.primary}
                 size={spacing.xxl}
                 accessibilityElementsHidden
                 importantForAccessibility="no"
@@ -241,20 +255,22 @@ export default function CategoryFormScreen({
               accessibilityLabel="Category name"
               accessibilityHint={nameError ?? undefined}
               disabled={pending}
-              value={form.name}
-              onChangeText={(name) => update({ name })}
+              value={values.name}
+              onChangeText={(name) => form.setFieldValue('name', name)}
               error={nameError}
               placeholder="e.g. Groceries"
               returnKeyType="done"
-              onSubmitEditing={() => void save()}
+              onSubmitEditing={() => void submitForm(form)}
             />
             <CategoryText>Parent category</CategoryText>
             {!hasChildren && (
               <CategoryPicker
                 selectionMode="single"
                 categories={parents}
-                value={form.parentId}
-                onChange={(parentId) => update({ parentId })}
+                value={values.parentId}
+                onChange={(parentId) =>
+                  form.setFieldValue('parentId', parentId)
+                }
                 allowClear
                 clearLabel="None"
                 placeholder="None"
@@ -272,13 +288,13 @@ export default function CategoryFormScreen({
             )}
             <CategoryText>Icon</CategoryText>
             <IconPicker
-              value={form.icon}
-              onChange={(icon) => update({ icon })}
+              value={values.icon}
+              onChange={(icon) => form.setFieldValue('icon', icon)}
             />
             <CategoryText>Colour</CategoryText>
             <ColorPicker
-              value={form.colour}
-              onChange={(colour) => update({ colour })}
+              value={values.colour}
+              onChange={(colour) => form.setFieldValue('colour', colour)}
               colors={[
                 ...new Set(
                   [
@@ -289,7 +305,7 @@ export default function CategoryFormScreen({
                     colors.support.dark,
                     colors.neutral.darkGrey,
                     colors.neutral.midGrey,
-                    form.colour,
+                    values.colour,
                   ].filter(Boolean),
                 ),
               ]}
@@ -301,53 +317,61 @@ export default function CategoryFormScreen({
             </CategoryText>
           )}
           {saveError && <CategoryText error>{saveError}</CategoryText>}
-
-          <View
-            style={{
-              padding: spacing.md,
-              paddingBottom: spacing.md,
-              gap: spacing.sm,
-              backgroundColor: colors.surface.background.primary,
-            }}
+        </ScrollView>
+        <View
+          style={{
+            padding: spacing.md,
+            paddingBottom: Math.max(insets.bottom, spacing.md),
+            gap: spacing.sm,
+            backgroundColor: colors.surface.background.primary,
+          }}
+        >
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
+            {([canSubmit, isSubmitting]) => (
+              <SubmitButton
+                canSubmit={canSubmit && (!categoryId || dirty)}
+                disabled={!ready}
+                isSubmitting={isSubmitting || pending}
+                onSubmit={() => void submitForm(form)}
+                submittingLabel="Saving…"
+              >
+                {saveLabel}
+              </SubmitButton>
+            )}
+          </form.Subscribe>
+          {categoryId && (
             <Button
-              disabled={pending || !ready || Boolean(categoryId && !dirty)}
-              onClick={() => void save()}
+              variant="subtle"
+              disabled={pending}
+              onClick={() => {
+                Keyboard.dismiss();
+                setDeleteError(null);
+                setShowDelete(true);
+              }}
             >
-              {saveLabel}
-            </Button>
-            {categoryId && (
-              <Button
-                variant="subtle"
-                disabled={pending}
-                onClick={() => {
-                  Keyboard.dismiss();
-                  setDeleteError(null);
-                  setShowDelete(true);
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: spacing.sm,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: spacing.sm,
-                  }}
-                >
-                  <DeleteIcon
-                    color={colors.status.error}
-                    size={spacing.lg}
-                    accessibilityElementsHidden
-                    importantForAccessibility="no"
-                  />
-                  <NativeText style={{ color: colors.status.error }}>
-                    Delete category
-                  </NativeText>
-                </View>
-              </Button>
-            )}
-          </View>
-        </KeyboardAwareScrollView>
-      </View>
+                <DeleteIcon
+                  color={colors.status.error}
+                  size={spacing.lg}
+                  accessibilityElementsHidden
+                  importantForAccessibility="no"
+                />
+                <NativeText style={{ color: colors.status.error }}>
+                  Delete category
+                </NativeText>
+              </View>
+            </Button>
+          )}
+        </View>
+      </KeyboardAvoidingView>
       <BottomSheet
         isOpen={showDelete}
         title="Delete category?"
@@ -358,7 +382,7 @@ export default function CategoryFormScreen({
           contentContainerStyle={{
             padding: spacing.md,
             gap: spacing.md,
-            paddingBottom: spacing.md,
+            paddingBottom: Math.max(insets.bottom, spacing.md),
           }}
         >
           <View style={{ alignItems: 'center', gap: spacing.md }}>

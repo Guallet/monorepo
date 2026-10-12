@@ -1,30 +1,37 @@
-import {
-  Button,
-  ColorPicker,
-  IconPicker,
-  KeyboardAwareScrollView,
-  TextInput,
-  useTheme,
-} from '@guallet/luna-mobile';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BudgetDto } from '@guallet/api-client';
 import {
   useAccounts,
   useBudgetMutations,
   useCategories,
 } from '@guallet/api-react';
+import {
+  Button,
+  ColorPicker,
+  IconPicker,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { CategoryIcon, ChevronRightIcon } from '@guallet/luna-mobile/icons';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { availableCurrencies } from '@/components/currencyPickerData';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
-import {
-  getAllowedBudgetCurrencies,
-  validateBudgetForm,
-  type BudgetFormErrors,
-} from '../budgetForm';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, SubmitButton, submitForm } from '@/components/forms';
+import { getAllowedBudgetCurrencies, validateBudgetForm } from '../budgetForm';
 import { BudgetStateCard } from '../components/BudgetStateCard';
 import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
 
@@ -42,6 +49,7 @@ export default function BudgetFormScreen({
   onRetry,
 }: Readonly<BudgetFormScreenProps>) {
   const { borderRadius, colors, spacing, typography } = useTheme();
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const {
     categories,
@@ -57,13 +65,6 @@ export default function BudgetFormScreen({
   } = useAccounts();
   const { defaultCurrency } = useMobileUserPreferences();
   const { createBudgetMutation, updateBudgetMutation } = useBudgetMutations();
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('');
-  const [colour, setColour] = useState('');
-  const [icon, setIcon] = useState('');
-  const [categoryIds, setCategoryIds] = useState<string[]>([]);
-  const [errors, setErrors] = useState<BudgetFormErrors>({});
   const [saveError, setSaveError] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const initializedBudgetId = useRef<string | null>(null);
@@ -79,6 +80,73 @@ export default function BudgetFormScreen({
     () => getAllowedBudgetCurrencies(accountCurrencies, budget?.currency),
     [accountCurrencies, budget?.currency],
   );
+  const budgetSchema = useMemo(
+    () =>
+      z
+        .object({
+          name: z.string(),
+          currency: z.string(),
+          amount: z.string(),
+          colour: z.string(),
+          icon: z.string(),
+          categoryIds: z.array(z.string()),
+        })
+        .superRefine((values, context) => {
+          const result = validateBudgetForm(values, allowedCurrencies);
+          for (const [key, message] of Object.entries(result.errors)) {
+            if (!message) continue;
+            const path = key === 'categories' ? 'categoryIds' : key;
+            context.addIssue({
+              code: 'custom',
+              path: [path],
+              message,
+            });
+          }
+        }),
+    [allowedCurrencies],
+  );
+  const form = useForm({
+    defaultValues: {
+      name: '',
+      amount: '',
+      currency: '',
+      colour: '',
+      icon: '',
+      categoryIds: [] as string[],
+    },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: budgetSchema },
+    listeners: { onChange: () => setSaveError(false) },
+    onSubmit: async ({ value }) => {
+      const result = validateBudgetForm(value, allowedCurrencies);
+      if (!result.request) return;
+      setSaveError(false);
+      try {
+        if (budget) {
+          await updateBudgetMutation.mutateAsync({
+            id: budget.id,
+            request: result.request,
+          });
+          if (router.canGoBack()) router.back();
+          else router.replace(`/budgets/${budget.id}`);
+        } else {
+          await createBudgetMutation.mutateAsync({ request: result.request });
+          router.replace('/budgets');
+        }
+      } catch {
+        setSaveError(true);
+      }
+    },
+  });
+  const values = useStore(form.store, (state) => state.values);
+  const errors = {
+    name: fieldError(form.getFieldMeta('name')?.errors ?? []),
+    currency: fieldError(form.getFieldMeta('currency')?.errors ?? []),
+    amount: fieldError(form.getFieldMeta('amount')?.errors ?? []),
+    colour: fieldError(form.getFieldMeta('colour')?.errors ?? []),
+    icon: fieldError(form.getFieldMeta('icon')?.errors ?? []),
+    categories: fieldError(form.getFieldMeta('categoryIds')?.errors ?? []),
+  };
   const currencyChoices = useMemo(
     () =>
       availableCurrencies.filter((item) =>
@@ -98,25 +166,28 @@ export default function BudgetFormScreen({
   useEffect(() => {
     if (!budget || initializedBudgetId.current === budget.id) return;
     initializedBudgetId.current = budget.id;
-    setName(budget.name);
-    setAmount(String(budget.amount));
-    setCurrency(budget.currency);
-    setColour(budget.colour ?? '');
-    setIcon(budget.icon ?? '');
-    setCategoryIds(budget.categories);
-  }, [budget]);
+    form.reset({
+      name: budget.name,
+      amount: String(budget.amount),
+      currency: budget.currency,
+      colour: budget.colour ?? '',
+      icon: budget.icon ?? '',
+      categoryIds: budget.categories,
+    });
+  }, [budget, form]);
 
   useEffect(() => {
     if (budget || hasSelectedCurrency.current || accountCurrencies.length === 0)
       return;
     let selected = accountCurrencies[0];
     if (accountCurrencies.includes(defaultCurrency)) selected = defaultCurrency;
-    setCurrency(selected);
-  }, [accountCurrencies, budget, defaultCurrency]);
+    form.setFieldValue('currency', selected);
+  }, [accountCurrencies, budget, defaultCurrency, form]);
 
   const selectedCategories = useMemo(
-    () => categories.filter((category) => categoryIds.includes(category.id)),
-    [categories, categoryIds],
+    () =>
+      categories.filter((category) => values.categoryIds.includes(category.id)),
+    [categories, values.categoryIds],
   );
   const selectedCategory =
     selectedCategories.length === 1 ? selectedCategories[0] : undefined;
@@ -131,41 +202,6 @@ export default function BudgetFormScreen({
     !categoriesLoading &&
     !accountsError &&
     !categoriesError;
-
-  function clearError(field: keyof BudgetFormErrors) {
-    setErrors((current) => ({ ...current, [field]: undefined }));
-    setSaveError(false);
-  }
-
-  async function submit() {
-    if (isPending || !isReady) return;
-    const result = validateBudgetForm(
-      { name, currency, amount, colour, icon, categoryIds },
-      allowedCurrencies,
-    );
-    setErrors(result.errors);
-    if (!result.request) return;
-
-    setSaveError(false);
-    try {
-      if (budget) {
-        await updateBudgetMutation.mutateAsync({
-          id: budget.id,
-          request: result.request,
-        });
-        if (router.canGoBack()) {
-          router.back();
-        } else {
-          router.replace(`/budgets/${budget.id}`);
-        }
-      } else {
-        await createBudgetMutation.mutateAsync({ request: result.request });
-        router.replace('/budgets');
-      }
-    } catch {
-      setSaveError(true);
-    }
-  }
 
   if (isLoading) {
     return (
@@ -214,11 +250,13 @@ export default function BudgetFormScreen({
     saveButtonLabel = 'Save changes';
   }
   if (isPending) saveButtonLabel = 'Saving…';
+  let keyboardBehavior: 'padding' | undefined;
+  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   return (
     <AppScreen headerTitle={screenTitle}>
-      <View style={styles.flex}>
-        <KeyboardAwareScrollView
+      <KeyboardAvoidingView behavior={keyboardBehavior} style={styles.flex}>
+        <ScrollView
           contentContainerStyle={[
             styles.content,
             { padding: spacing.md, paddingBottom: spacing.lg },
@@ -277,12 +315,9 @@ export default function BudgetFormScreen({
               autoCapitalize="words"
               error={errors.name}
               label="Name *"
-              onChangeText={(value) => {
-                setName(value);
-                clearError('name');
-              }}
+              onChangeText={(value) => form.setFieldValue('name', value)}
               placeholder="e.g. Groceries"
-              value={name}
+              value={values.name}
             />
             <CurrencyInput
               currencies={currencyChoices}
@@ -291,10 +326,9 @@ export default function BudgetFormScreen({
               label="Currency *"
               onValueChanged={(selectedCurrency) => {
                 hasSelectedCurrency.current = true;
-                setCurrency(selectedCurrency ?? '');
-                clearError('currency');
+                form.setFieldValue('currency', selectedCurrency ?? '');
               }}
-              value={currency}
+              value={values.currency}
             />
             <FormFieldError message={errors.currency} />
             {accountsError && (
@@ -307,12 +341,9 @@ export default function BudgetFormScreen({
               error={errors.amount}
               keyboardType="decimal-pad"
               label="Budget amount *"
-              onChangeText={(value) => {
-                setAmount(value);
-                clearError('amount');
-              }}
+              onChangeText={(value) => form.setFieldValue('amount', value)}
               placeholder="0.00"
-              value={amount}
+              value={values.amount}
             />
             <Text
               style={[
@@ -328,11 +359,8 @@ export default function BudgetFormScreen({
             </Text>
             <ColorPicker
               colors={colourChoices}
-              onChange={(value) => {
-                setColour(value);
-                clearError('colour');
-              }}
-              value={colour || null}
+              onChange={(value) => form.setFieldValue('colour', value)}
+              value={values.colour || null}
             />
             <FormFieldError message={errors.colour} />
             <Text
@@ -349,11 +377,8 @@ export default function BudgetFormScreen({
               Icon *
             </Text>
             <IconPicker
-              onChange={(value) => {
-                setIcon(value);
-                clearError('icon');
-              }}
-              value={icon || null}
+              onChange={(value) => form.setFieldValue('icon', value)}
+              value={values.icon || null}
             />
             <FormFieldError message={errors.icon} />
             <View style={{ marginTop: spacing.md }}>
@@ -383,45 +408,53 @@ export default function BudgetFormScreen({
               )}
             </View>
           </View>
+        </ScrollView>
 
-          <View
-            style={[
-              styles.footer,
-              {
-                backgroundColor: colors.surface.background.primary,
-                borderTopColor: colors.surface.border.primary,
-                gap: spacing.sm,
-                paddingBottom: spacing.md,
-                paddingHorizontal: spacing.md,
-                paddingTop: spacing.sm,
-              },
-            ]}
+        <View
+          style={[
+            styles.footer,
+            {
+              backgroundColor: colors.surface.background.primary,
+              borderTopColor: colors.surface.border.primary,
+              gap: spacing.sm,
+              paddingBottom: Math.max(insets.bottom, spacing.md),
+              paddingHorizontal: spacing.md,
+              paddingTop: spacing.sm,
+            },
+          ]}
+        >
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
-            <Button
-              disabled={isPending || !isReady}
-              onClick={() => void submit()}
-            >
-              {saveButtonLabel}
-            </Button>
-            <Button
-              disabled={isPending}
-              onClick={() => router.back()}
-              variant="outline"
-            >
-              Cancel
-            </Button>
-          </View>
-        </KeyboardAwareScrollView>
-      </View>
+            {([canSubmit, isSubmitting]) => (
+              <SubmitButton
+                canSubmit={canSubmit}
+                disabled={!isReady}
+                isSubmitting={isSubmitting || isPending}
+                onSubmit={() => void submitForm(form)}
+                submittingLabel="Saving…"
+              >
+                {saveButtonLabel}
+              </SubmitButton>
+            )}
+          </form.Subscribe>
+          <Button
+            disabled={isPending}
+            onClick={() => router.back()}
+            variant="outline"
+          >
+            Cancel
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
 
       <CategorySelectionSheet
         categories={categories}
         onApply={(ids) => {
-          setCategoryIds(ids);
-          clearError('categories');
+          form.setFieldValue('categoryIds', ids);
         }}
         onDismiss={() => setShowCategories(false)}
-        selectedIds={categoryIds}
+        selectedIds={values.categoryIds}
         visible={showCategories}
       />
     </AppScreen>

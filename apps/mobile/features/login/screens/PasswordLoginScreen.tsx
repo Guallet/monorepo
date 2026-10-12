@@ -5,8 +5,9 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
+import { SubmitButton, submitForm } from '@/components/forms';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
+import { Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { revalidateLogic, useForm, useSelector } from '@tanstack/react-form';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { z } from 'zod';
@@ -44,10 +45,6 @@ export function PasswordLoginScreen() {
       }
     },
   });
-  const submitForm = async () => {
-    if (form.state.isSubmitting) return;
-    await form.handleSubmit();
-  };
   const email = useSelector(form.store, (state) => state.values.email);
   const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
   let visibilityLabel = 'Show password';
@@ -98,7 +95,7 @@ export function PasswordLoginScreen() {
               label="Password"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
-              onSubmitEditing={() => void submitForm()}
+              onSubmitEditing={() => void submitForm(form)}
               placeholder="Enter your password"
               returnKeyType="done"
               rightSection={
@@ -148,14 +145,14 @@ export function PasswordLoginScreen() {
         }
       >
         {([canSubmit, submitting, formEmail, password]) => (
-          <Button
-            disabled={
-              !canSubmit || submitting || !formEmail.trim() || !password
-            }
-            onClick={() => void submitForm()}
+          <SubmitButton
+            canSubmit={canSubmit && Boolean(formEmail.trim()) && Boolean(password)}
+            isSubmitting={submitting}
+            onSubmit={() => void submitForm(form)}
+            submittingLabel="Signing in…"
           >
-            {submitting ? 'Signing in…' : 'Sign in'}
-          </Button>
+            Sign in
+          </SubmitButton>
         )}
       </form.Subscribe>
 

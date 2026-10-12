@@ -5,54 +5,51 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Button, TextInput } from '@guallet/luna-mobile';
+import { TextInput } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 import { useState } from 'react';
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const forgotPasswordSchema = z.object({
+  email: z.string().trim().email('Enter a valid email address.'),
+});
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string }>();
   const { resetPassword } = useAuth();
-  const [email, setEmail] = useState(params.email ?? '');
-  const [emailError, setEmailError] = useState<string | null>(null);
   const [requestError, setRequestError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleResetPassword = async () => {
-    const normalizedEmail = email.trim();
-
-    if (!emailRegex.test(normalizedEmail)) {
-      setEmailError('Enter a valid email address.');
-      return;
-    }
-
-    setEmailError(null);
-    setRequestError(null);
-    setIsLoading(true);
-    const result = await resetPassword(
-      normalizedEmail,
-      'guallet://login/reset-password',
-    );
-    setIsLoading(false);
-
-    if (result.success) {
-      router.push({
-        pathname: '/login/reset-password-sent',
-        params: { email: normalizedEmail },
-      });
-      return;
-    }
-
-    setRequestError(
-      result.error?.message ??
-        'We could not send the reset email. Please try again.',
-    );
-  };
+  const form = useForm({
+    defaultValues: { email: params.email ?? '' },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: forgotPasswordSchema },
+    listeners: { onChange: () => setRequestError(null) },
+    onSubmit: async ({ value }) => {
+      const { email } = forgotPasswordSchema.parse(value);
+      setRequestError(null);
+      const result = await resetPassword(
+        email,
+        'guallet://login/reset-password',
+      );
+      if (result.success) {
+        router.push({
+          pathname: '/login/reset-password-sent',
+          params: { email },
+        });
+        return;
+      }
+      setRequestError(
+        result.error?.message ??
+          'We could not send the reset email. Please try again.',
+      );
+    },
+  });
+  const email = useStore(form.store, (state) => state.values.email);
 
   return (
-    <AuthScreen headerTitle="Password help" isLoading={isLoading}>
+    <AuthScreen headerTitle="Password help">
       <AuthIntro
         description="Enter your account email and we’ll send you a secure link to choose a new password."
         eyebrow="Account recovery"
@@ -64,28 +61,41 @@ export function ForgotPasswordScreen() {
         <AuthNotice tone="error">{requestError}</AuthNotice>
       ) : null}
 
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="email"
-        autoCorrect={false}
-        error={emailError}
-        keyboardType="email-address"
-        label="Email address"
-        onChangeText={(value) => {
-          setEmail(value);
-          setEmailError(null);
-          setRequestError(null);
-        }}
-        onSubmitEditing={handleResetPassword}
-        placeholder="you@example.com"
-        returnKeyType="send"
-        textContentType="emailAddress"
-        value={email}
-      />
+      <form.Field name="email">
+        {(field) => (
+          <TextInput
+            autoCapitalize="none"
+            autoComplete="email"
+            autoCorrect={false}
+            accessibilityHint={fieldError(field.state.meta.errors)}
+            error={fieldError(field.state.meta.errors)}
+            keyboardType="email-address"
+            label="Email address"
+            onBlur={field.handleBlur}
+            onChangeText={field.handleChange}
+            onSubmitEditing={() => void submitForm(form)}
+            placeholder="you@example.com"
+            returnKeyType="send"
+            textContentType="emailAddress"
+            value={field.state.value}
+          />
+        )}
+      </form.Field>
 
-      <Button disabled={!email.trim()} onClick={handleResetPassword}>
-        Send reset link
-      </Button>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+      >
+        {([canSubmit, isSubmitting]) => (
+          <SubmitButton
+            canSubmit={canSubmit && Boolean(email.trim())}
+            isSubmitting={isSubmitting}
+            onSubmit={() => void submitForm(form)}
+            submittingLabel="Sending…"
+          >
+            Send reset link
+          </SubmitButton>
+        )}
+      </form.Subscribe>
 
       <AuthLink
         onPress={() =>

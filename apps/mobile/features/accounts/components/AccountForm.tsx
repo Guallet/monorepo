@@ -12,6 +12,26 @@ import { AccountTypeIcon } from './AccountTypeIcon';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, SubmitButton, submitForm } from '@/components/forms';
+
+const accountFormSchema = z.object({
+  name: z.string().trim().min(1, 'Enter an account name.'),
+  type: z.nativeEnum(AccountTypeDto),
+  currency: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(
+      /^[A-Z]{3}$/,
+      'Use a three-letter currency code, such as GBP or EUR.',
+    ),
+  balance: z
+    .string()
+    .trim()
+    .regex(/^-?\d+(?:[.,]\d+)?$/, 'Enter a valid balance.'),
+});
 
 interface AccountFormProps {
   account?: AccountDto | null;
@@ -26,85 +46,75 @@ export function AccountForm({
 }: Readonly<AccountFormProps>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { defaultCurrency } = useMobileUserPreferences();
+  const hasSelectedCurrency = useRef(Boolean(account));
   const { createAccountMutation, updateAccountMutation } =
     useAccountMutations();
-  const [name, setName] = useState(account?.name ?? '');
-  const [type, setType] = useState<AccountTypeDto>(
-    account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
-  );
-  const [currency, setCurrency] = useState(
-    account?.currency ?? defaultCurrency,
-  );
-  const hasSelectedCurrency = useRef(Boolean(account));
-  const [balance, setBalance] = useState(
-    account ? String(account.balance.amount) : '0',
-  );
   const [error, setError] = useState<string | null>(null);
+  const form = useForm({
+    defaultValues: {
+      name: account?.name ?? '',
+      type: account?.type ?? AccountTypeDto.CURRENT_ACCOUNT,
+      currency: account?.currency ?? defaultCurrency,
+      balance: account ? String(account.balance.amount) : '0',
+    },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: accountFormSchema },
+    listeners: { onChange: () => setError(null) },
+    onSubmit: async ({ value }) => {
+      const parsed = accountFormSchema.parse(value);
+      const normalizedBalance = Number(parsed.balance.replace(',', '.'));
+      setError(null);
+      try {
+        const savedAccount = account
+          ? await updateAccountMutation.mutateAsync({
+              id: account.id,
+              request: {
+                name: parsed.name,
+                type: parsed.type,
+                currency: parsed.currency,
+                balance: normalizedBalance,
+                create_balance_transaction: true,
+              },
+            })
+          : await createAccountMutation.mutateAsync({
+              request: {
+                name: parsed.name,
+                type: parsed.type,
+                currency: parsed.currency,
+                initial_balance: normalizedBalance,
+                create_balance_transaction: true,
+              },
+            });
+        onSaved(savedAccount);
+      } catch {
+        setError(
+          `Couldn’t ${account ? 'update' : 'create'} this account. Please try again.`,
+        );
+      }
+    },
+  });
 
   useEffect(() => {
     if (!account) return;
-    setName(account.name);
-    setType(account.type);
-    setCurrency(account.currency);
-    setBalance(String(account.balance.amount));
-  }, [account]);
+    form.reset({
+      name: account.name,
+      type: account.type,
+      currency: account.currency,
+      balance: String(account.balance.amount),
+    });
+  }, [account, form]);
 
   useEffect(() => {
     if (!account && !hasSelectedCurrency.current) {
-      setCurrency(defaultCurrency);
+      form.setFieldValue('currency', defaultCurrency);
     }
-  }, [account, defaultCurrency]);
+  }, [account, defaultCurrency, form]);
 
   const isPending =
     createAccountMutation.isPending || updateAccountMutation.isPending;
 
-  async function handleSubmit() {
-    const normalizedName = name.trim();
-    const normalizedCurrency = currency.trim().toUpperCase();
-    const parsedBalance = Number(balance.replace(',', '.'));
-
-    if (!normalizedName) {
-      setError('Enter an account name.');
-      return;
-    }
-    if (!/^[A-Z]{3}$/.test(normalizedCurrency)) {
-      setError('Use a three-letter currency code, such as GBP or EUR.');
-      return;
-    }
-    if (!Number.isFinite(parsedBalance)) {
-      setError('Enter a valid balance.');
-      return;
-    }
-
-    setError(null);
-    try {
-      const savedAccount = account
-        ? await updateAccountMutation.mutateAsync({
-            id: account.id,
-            request: {
-              name: normalizedName,
-              type,
-              currency: normalizedCurrency,
-              balance: parsedBalance,
-              create_balance_transaction: true,
-            },
-          })
-        : await createAccountMutation.mutateAsync({
-            request: {
-              name: normalizedName,
-              type,
-              currency: normalizedCurrency,
-              initial_balance: parsedBalance,
-              create_balance_transaction: true,
-            },
-          });
-      onSaved(savedAccount);
-    } catch {
-      setError(
-        `Couldn’t ${account ? 'update' : 'create'} this account. Please try again.`,
-      );
-    }
-  }
+  const values = useStore(form.store, (state) => state.values);
+  const currencyError = fieldError(form.getFieldMeta('currency')?.errors ?? []);
 
   return (
     <View style={styles.flex}>
@@ -150,26 +160,39 @@ export function AccountForm({
           <TextInput
             autoCapitalize="words"
             label="Account name"
-            onChangeText={setName}
+            onChangeText={(name) => form.setFieldValue('name', name)}
             placeholder="e.g. Everyday current account"
-            value={name}
+            value={values.name}
+            error={fieldError(form.getFieldMeta('name')?.errors ?? [])}
           />
           <CurrencyInput
             onValueChanged={(selectedCurrency) => {
               hasSelectedCurrency.current = true;
-              setCurrency(selectedCurrency ?? '');
+              form.setFieldValue('currency', selectedCurrency ?? '');
             }}
             placeholder="Select a currency"
-            value={currency}
+            value={values.currency}
           />
+          {currencyError && (
+            <Text
+              accessibilityRole="alert"
+              style={{
+                color: colors.status.error,
+                fontSize: typography.sizes.sm,
+              }}
+            >
+              {currencyError}
+            </Text>
+          )}
           <TextInput
             keyboardType={
               Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'decimal-pad'
             }
             label="Current balance"
-            onChangeText={setBalance}
+            onChangeText={(balance) => form.setFieldValue('balance', balance)}
             placeholder="0.00"
-            value={balance}
+            value={values.balance}
+            error={fieldError(form.getFieldMeta('balance')?.errors ?? [])}
             description="Use a negative value for money you owe."
           />
         </View>
@@ -185,13 +208,13 @@ export function AccountForm({
           </Text>
           <View style={[styles.typeGrid, { gap: spacing.sm }]}>
             {ACCOUNT_TYPE_OPTIONS.map((option) => {
-              const selected = type === option.type;
+              const selected = values.type === option.type;
               return (
                 <Pressable
                   key={option.type}
                   accessibilityRole="radio"
                   accessibilityState={{ selected }}
-                  onPress={() => setType(option.type)}
+                  onPress={() => form.setFieldValue('type', option.type)}
                   style={({ pressed }) => [
                     styles.typeOption,
                     {
@@ -253,13 +276,21 @@ export function AccountForm({
           >
             Cancel
           </Button>
-          <Button
-            disabled={isPending}
-            onClick={() => void handleSubmit()}
-            style={styles.actionButton}
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
-            {isPending ? 'Saving…' : account ? 'Save changes' : 'Add account'}
-          </Button>
+            {([canSubmit, isSubmitting]) => (
+              <SubmitButton
+                canSubmit={canSubmit}
+                isSubmitting={isSubmitting || isPending}
+                onSubmit={() => void submitForm(form)}
+                style={styles.actionButton}
+                submittingLabel="Saving…"
+              >
+                {account ? 'Save changes' : 'Add account'}
+              </SubmitButton>
+            )}
+          </form.Subscribe>
         </View>
       </KeyboardAwareScrollView>
     </View>

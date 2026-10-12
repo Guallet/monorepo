@@ -10,6 +10,19 @@ import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
+import { revalidateLogic, useForm } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, SubmitButton, submitForm } from '@/components/forms';
+
+const resetPasswordSchema = z
+  .object({
+    password: z.string().min(8, 'Use at least 8 characters.'),
+    confirmation: z.string(),
+  })
+  .refine((value) => value.confirmation === value.password, {
+    path: ['confirmation'],
+    message: 'Passwords do not match.',
+  });
 
 export function ResetPasswordScreen() {
   const router = useRouter();
@@ -17,45 +30,29 @@ export function ResetPasswordScreen() {
   const token = params.token ?? '';
   const { confirmPasswordReset } = useAuth();
   const { colors, spacing } = useTheme();
-  const [password, setPassword] = useState('');
-  const [confirmation, setConfirmation] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [confirmationError, setConfirmationError] = useState<string | null>(
-    null,
-  );
   const [requestError, setRequestError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-
-  const handleReset = async () => {
-    const nextPasswordError =
-      password.length >= 8 ? null : 'Use at least 8 characters.';
-    const nextConfirmationError =
-      confirmation === password ? null : 'Passwords do not match.';
-
-    setPasswordError(nextPasswordError);
-    setConfirmationError(nextConfirmationError);
-    setRequestError(null);
-
-    if (nextPasswordError || nextConfirmationError || !token) {
-      return;
-    }
-
-    setIsLoading(true);
-    const result = await confirmPasswordReset(password, token);
-    setIsLoading(false);
-
-    if (result.success) {
-      setIsComplete(true);
-      return;
-    }
-
-    setRequestError(
-      result.error?.message ??
-        'This reset link may have expired. Request a new one and try again.',
-    );
-  };
+  const form = useForm({
+    defaultValues: { password: '', confirmation: '' },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: resetPasswordSchema },
+    listeners: { onChange: () => setRequestError(null) },
+    onSubmit: async ({ value }) => {
+      if (!token) return;
+      const parsed = resetPasswordSchema.parse(value);
+      setRequestError(null);
+      const result = await confirmPasswordReset(parsed.password, token);
+      if (result.success) {
+        setIsComplete(true);
+        return;
+      }
+      setRequestError(
+        result.error?.message ??
+          'This reset link may have expired. Request a new one and try again.',
+      );
+    },
+  });
 
   if (isComplete) {
     return (
@@ -95,7 +92,7 @@ export function ResetPasswordScreen() {
   }
 
   return (
-    <AuthScreen headerTitle="Reset password" isLoading={isLoading}>
+    <AuthScreen headerTitle="Reset password">
       <AuthIntro
         description="Choose a strong password you haven’t used for this account before."
         eyebrow="Secure your account"
@@ -108,60 +105,75 @@ export function ResetPasswordScreen() {
       ) : null}
 
       <Stack gap={spacing.xs}>
-        <TextInput
-          autoCapitalize="none"
-          autoComplete="new-password"
-          error={passwordError}
-          label="New password"
-          onChangeText={(value) => {
-            setPassword(value);
-            setPasswordError(null);
-            setRequestError(null);
-          }}
-          placeholder="At least 8 characters"
-          rightSection={
-            <Pressable
-              accessibilityLabel={
-                isPasswordVisible ? 'Hide passwords' : 'Show passwords'
+        <form.Field name="password">
+          {(field) => (
+            <TextInput
+              autoCapitalize="none"
+              autoComplete="new-password"
+              accessibilityHint={fieldError(field.state.meta.errors)}
+              error={fieldError(field.state.meta.errors)}
+              label="New password"
+              onBlur={field.handleBlur}
+              onChangeText={field.handleChange}
+              placeholder="At least 8 characters"
+              rightSection={
+                <Pressable
+                  accessibilityLabel={
+                    isPasswordVisible ? 'Hide passwords' : 'Show passwords'
+                  }
+                  accessibilityRole="button"
+                  hitSlop={10}
+                  onPress={() => setIsPasswordVisible((visible) => !visible)}
+                  style={styles.visibilityButton}
+                >
+                  <Ionicons
+                    color={colors.text.secondary}
+                    name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+                    size={21}
+                  />
+                </Pressable>
               }
-              accessibilityRole="button"
-              hitSlop={10}
-              onPress={() => setIsPasswordVisible((visible) => !visible)}
-              style={styles.visibilityButton}
-            >
-              <Ionicons
-                color={colors.text.secondary}
-                name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
-                size={21}
-              />
-            </Pressable>
-          }
-          secureTextEntry={!isPasswordVisible}
-          textContentType="newPassword"
-          value={password}
-        />
-        <TextInput
-          autoCapitalize="none"
-          autoComplete="new-password"
-          error={confirmationError}
-          label="Confirm new password"
-          onChangeText={(value) => {
-            setConfirmation(value);
-            setConfirmationError(null);
-            setRequestError(null);
-          }}
-          onSubmitEditing={handleReset}
-          placeholder="Enter it again"
-          returnKeyType="done"
-          secureTextEntry={!isPasswordVisible}
-          textContentType="newPassword"
-          value={confirmation}
-        />
+              secureTextEntry={!isPasswordVisible}
+              textContentType="newPassword"
+              value={field.state.value}
+            />
+          )}
+        </form.Field>
+        <form.Field name="confirmation">
+          {(field) => (
+            <TextInput
+              autoCapitalize="none"
+              autoComplete="new-password"
+              accessibilityHint={fieldError(field.state.meta.errors)}
+              error={fieldError(field.state.meta.errors)}
+              label="Confirm new password"
+              onBlur={field.handleBlur}
+              onChangeText={field.handleChange}
+              onSubmitEditing={() => void submitForm(form)}
+              placeholder="Enter it again"
+              returnKeyType="done"
+              secureTextEntry={!isPasswordVisible}
+              textContentType="newPassword"
+              value={field.state.value}
+            />
+          )}
+        </form.Field>
       </Stack>
 
-      <Button disabled={!password || !confirmation} onClick={handleReset}>
-        Update password
-      </Button>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+      >
+        {([canSubmit, isSubmitting]) => (
+          <SubmitButton
+            canSubmit={canSubmit}
+            isSubmitting={isSubmitting}
+            onSubmit={() => void submitForm(form)}
+            submittingLabel="Updating…"
+          >
+            Update password
+          </SubmitButton>
+        )}
+      </form.Subscribe>
     </AuthScreen>
   );
 }

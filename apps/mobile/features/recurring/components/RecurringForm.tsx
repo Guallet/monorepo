@@ -34,6 +34,9 @@ import { findCurrency } from '@/components/currencyPickerData';
 import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 import {
   CADENCE_OPTIONS,
   TYPE_OPTIONS,
@@ -59,7 +62,7 @@ export function RecurringForm({
   const categoryQuery = useCategories();
   const { createSubscriptionMutation, updateSubscriptionMutation } =
     useSubscriptionsMutations();
-  const [values, setValues] = useState<RecurringFormValues>(() => {
+  const [initialValues] = useState<RecurringFormValues>(() => {
     let amount: number | null = null;
     if (item) amount = Number(item.amount);
     return {
@@ -72,9 +75,8 @@ export function RecurringForm({
       categoryId: item?.categoryId ?? null,
     };
   });
-  const [baseline, setBaseline] = useState(values);
+  const [baseline, setBaseline] = useState(initialValues);
   const currencyChosen = useRef(Boolean(item));
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [requestError, setRequestError] = useState(false);
   const [frequencyOpen, setFrequencyOpen] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
@@ -82,13 +84,84 @@ export function RecurringForm({
   const pending =
     createSubscriptionMutation.isPending ||
     updateSubscriptionMutation.isPending;
+  const recurringSchema = useMemo(
+    () =>
+      z
+        .object({
+          name: z.string(),
+          amount: z.number().nullable(),
+          currency: z.string(),
+          type: z.enum([
+            RecurringPaymentType.SUBSCRIPTION,
+            RecurringPaymentType.REGULAR_PAYMENT,
+            RecurringPaymentType.REGULAR_INCOME,
+          ]),
+          cadence: z.enum([
+            RecurrenceCadence.WEEKLY,
+            RecurrenceCadence.BIWEEKLY,
+            RecurrenceCadence.MONTHLY,
+            RecurrenceCadence.QUARTERLY,
+            RecurrenceCadence.YEARLY,
+          ]),
+          startDate: z.date().nullable(),
+          categoryId: z.string().nullable(),
+        })
+        .superRefine((values, context) => {
+          const validation = validateRecurring(values);
+          for (const [key, message] of Object.entries(validation)) {
+            context.addIssue({
+              code: 'custom',
+              path: [key],
+              message,
+            });
+          }
+        }),
+    [],
+  );
+  const form = useForm({
+    defaultValues: initialValues,
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: recurringSchema },
+    onSubmit: async ({ value }) => {
+      Keyboard.dismiss();
+      setRequestError(false);
+      const request = {
+        name: value.name.trim(),
+        amount: value.amount!,
+        currency: value.currency,
+        type: value.type,
+        cadence: value.cadence,
+        startDate: value.startDate ? calendarDate(value.startDate) : null,
+      };
+      try {
+        let saved: SubscriptionDto;
+        if (item)
+          saved = await updateSubscriptionMutation.mutateAsync({
+            id: item.id,
+            request: { ...request, categoryId: value.categoryId },
+          });
+        else
+          saved = await createSubscriptionMutation.mutateAsync({
+            request: {
+              ...request,
+              categoryId: value.categoryId ?? undefined,
+            },
+          });
+        toast.success('Recurring item saved');
+        setSavedId(saved.id);
+      } catch {
+        setRequestError(true);
+      }
+    },
+  });
+  const values = useStore(form.store, (state) => state.values);
   const dirty = JSON.stringify(values) !== JSON.stringify(baseline);
   useEffect(() => {
     if (!item && !currencyChosen.current) {
-      setValues((current) => ({ ...current, currency: defaultCurrency }));
+      form.setFieldValue('currency', defaultCurrency);
       setBaseline((current) => ({ ...current, currency: defaultCurrency }));
     }
-  }, [defaultCurrency, item]);
+  }, [defaultCurrency, form, item]);
   usePreventRemove((dirty || pending) && !savedId, ({ data }) => {
     if (pending) return;
     alert({
@@ -121,42 +194,41 @@ export function RecurringForm({
     key: K,
     value: RecurringFormValues[K],
   ) {
-    setValues((current) => ({ ...current, [key]: value }));
-    setErrors((current) => ({ ...current, [key]: '' }));
-  }
-  async function save() {
-    if (pending) return;
-    Keyboard.dismiss();
-    const nextErrors = validateRecurring(values);
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length || values.amount === null) return;
-    setRequestError(false);
-    let startDate: string | null = null;
-    if (values.startDate) startDate = calendarDate(values.startDate);
-    const request = {
-      name: values.name.trim(),
-      amount: values.amount,
-      currency: values.currency,
-      type: values.type,
-      cadence: values.cadence,
-      startDate,
-    };
-    try {
-      let saved: SubscriptionDto;
-      if (item)
-        saved = await updateSubscriptionMutation.mutateAsync({
-          id: item.id,
-          request: { ...request, categoryId: values.categoryId },
-        });
-      else
-        saved = await createSubscriptionMutation.mutateAsync({
-          request: { ...request, categoryId: values.categoryId ?? undefined },
-        });
-      toast.success('Recurring item saved');
-      setSavedId(saved.id);
-    } catch {
-      setRequestError(true);
+    switch (key) {
+      case 'name':
+        form.setFieldValue('name', value as RecurringFormValues['name']);
+        break;
+      case 'amount':
+        form.setFieldValue('amount', value as RecurringFormValues['amount']);
+        break;
+      case 'currency':
+        form.setFieldValue(
+          'currency',
+          value as RecurringFormValues['currency'],
+        );
+        break;
+      case 'type':
+        form.setFieldValue('type', value as RecurringFormValues['type']);
+        break;
+      case 'cadence':
+        form.setFieldValue('cadence', value as RecurringFormValues['cadence']);
+        break;
+      case 'startDate':
+        form.setFieldValue(
+          'startDate',
+          value as RecurringFormValues['startDate'],
+        );
+        break;
+      case 'categoryId':
+        form.setFieldValue(
+          'categoryId',
+          value as RecurringFormValues['categoryId'],
+        );
+        break;
     }
+  }
+  function errorFor(key: keyof RecurringFormValues) {
+    return fieldError(form.getFieldMeta(key)?.errors ?? []);
   }
   let amountLabel = 'Amount paid';
   if (values.type === RecurringPaymentType.REGULAR_INCOME)
@@ -196,10 +268,10 @@ export function RecurringForm({
         <TextInput
           label="Name"
           accessibilityLabel="Name"
-          accessibilityHint={errors.name}
+          accessibilityHint={errorFor('name')}
           value={values.name}
           onChangeText={(value) => change('name', value)}
-          error={errors.name || undefined}
+          error={errorFor('name')}
           disabled={pending}
           autoCapitalize="sentences"
         />
@@ -219,7 +291,7 @@ export function RecurringForm({
             currencyChosen.current = true;
             change('currency', currency.code);
           }}
-          error={errors.amount || undefined}
+          error={errorFor('amount')}
         />
         <View style={{ gap: spacing.sm }}>
           <Copy>Repeats</Copy>
@@ -255,7 +327,7 @@ export function RecurringForm({
             label="First payment date · Optional"
             value={values.startDate}
             disabled={pending}
-            error={errors.startDate || undefined}
+            error={errorFor('startDate')}
             onFocus={Keyboard.dismiss}
             onChange={(value) => change('startDate', value)}
             formatValue={(value) => formatPreferenceDate(value, dateFormat)}
@@ -302,13 +374,21 @@ export function RecurringForm({
             again.
           </Copy>
         )}
-        <Button
-          disabled={pending}
-          style={styles.action}
-          onClick={() => void save()}
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting] as const}
         >
-          {saveLabel}
-        </Button>
+          {([canSubmit, isSubmitting]) => (
+            <SubmitButton
+              canSubmit={canSubmit}
+              isSubmitting={isSubmitting || pending}
+              style={styles.action}
+              onSubmit={() => void submitForm(form)}
+              submittingLabel="Saving…"
+            >
+              {saveLabel}
+            </SubmitButton>
+          )}
+        </form.Subscribe>
         <Button
           disabled={pending}
           style={styles.action}

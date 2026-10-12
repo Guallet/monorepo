@@ -17,8 +17,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
+import { revalidateLogic, useForm } from '@tanstack/react-form';
+import { z } from 'zod';
+import { SubmitButton, submitForm } from '@/components/forms';
 
 const RESEND_DELAY_SECONDS = 30;
+const otpSchema = z.object({
+  code: z.string().length(6, 'Enter the 6-digit code.'),
+});
 
 export function OtpScreen() {
   const router = useRouter();
@@ -27,9 +33,22 @@ export function OtpScreen() {
   const { getOtpCode, verifyOtpCode } = useAuth();
   const showAlert = useAlert();
   const { colors, spacing } = useTheme();
-  const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const form = useForm({
+    defaultValues: { code: '' },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: otpSchema },
+    listeners: { onChange: () => setError(null) },
+    onSubmit: async ({ value }) => {
+      if (!email) return;
+      setError(null);
+      const result = await verifyOtpCode(email, otpSchema.parse(value).code);
+      if (!result.success) {
+        setError(result.error?.message ?? 'That code is not valid. Try again.');
+      }
+    },
+  });
   const [resendAvailableAt, setResendAvailableAt] = useState(
     () => Date.now() + RESEND_DELAY_SECONDS * 1000,
   );
@@ -58,23 +77,6 @@ export function OtpScreen() {
     };
   }, [resendAvailableAt]);
 
-  const handleVerifyCode = async () => {
-    if (code.length !== 6 || !email) {
-      return;
-    }
-
-    setError(null);
-    setIsLoading(true);
-    const result = await verifyOtpCode(email, code);
-    setIsLoading(false);
-
-    if (result.success) {
-      return;
-    }
-
-    setError(result.error?.message ?? 'That code is not valid. Try again.');
-  };
-
   const handleResendCode = async () => {
     if (!email || resendSeconds > 0) {
       return;
@@ -86,7 +88,7 @@ export function OtpScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      setCode('');
+      form.reset();
       setResendAvailableAt(Date.now() + RESEND_DELAY_SECONDS * 1000);
       showAlert({
         title: 'New code sent',
@@ -134,22 +136,34 @@ export function OtpScreen() {
       />
 
       <Stack gap={spacing.sm}>
-        <OtpInput
-          autoFocus
-          hasError={Boolean(error)}
-          length={6}
-          onCodeChanged={(value) => {
-            setCode(value);
-            setError(null);
-          }}
-          value={code}
-        />
+        <form.Field name="code">
+          {(field) => (
+            <OtpInput
+              autoFocus
+              hasError={Boolean(error || field.state.meta.errors.length)}
+              length={6}
+              onCodeChanged={field.handleChange}
+              value={field.state.value}
+            />
+          )}
+        </form.Field>
         {error ? <AuthNotice tone="error">{error}</AuthNotice> : null}
       </Stack>
 
-      <Button disabled={code.length !== 6} onClick={handleVerifyCode}>
-        Verify and sign in
-      </Button>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+      >
+        {([canSubmit, isSubmitting]) => (
+          <SubmitButton
+            canSubmit={canSubmit}
+            isSubmitting={isSubmitting || isLoading}
+            onSubmit={() => void submitForm(form)}
+            submittingLabel="Verifying…"
+          >
+            Verify and sign in
+          </SubmitButton>
+        )}
+      </form.Subscribe>
 
       <View style={styles.resendRow}>
         <Label color={colors.text.secondary} size="sm">

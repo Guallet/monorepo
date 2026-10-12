@@ -38,6 +38,9 @@ import {
 } from './csv';
 import { ChoiceField, type Choice } from './components/ChoiceField';
 import { FlowScreen, ImportCard, Notice } from './components/FlowScreen';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { fieldError, submitForm } from '@/components/forms';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -200,21 +203,59 @@ const FIELD_LABELS: { key: keyof FieldMappings; label: string }[] = [
 export function MapColumnsScreen() {
   const router = useRouter();
   const { draft, updateDraft } = useImportDraft();
-  const [error, setError] = useState<string | null>(null);
+  const form = useForm({
+    defaultValues: {
+      date: draft?.fields.date ?? '',
+      amount: draft?.fields.amount ?? '',
+      description: draft?.fields.description ?? '',
+      account: draft?.fields.account ?? '',
+      category: draft?.fields.category ?? '',
+      notes: draft?.fields.notes ?? '',
+    },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: z
+        .object({
+          date: z.string().min(1, 'Map a date column.'),
+          amount: z.string().min(1, 'Map an amount column.'),
+          description: z.string().min(1, 'Map a description column.'),
+          account: z.string(),
+          category: z.string(),
+          notes: z.string(),
+        })
+        .superRefine((fields, context) => {
+          if (!draft) return;
+          const problem = validateFields({ ...draft, fields });
+          if (problem) {
+            context.addIssue({
+              code: 'custom',
+              path: ['date'],
+              message: problem,
+            });
+          }
+        }),
+    },
+    onSubmit: async ({ value }) => {
+      if (!draft) return;
+      updateDraft((current) => ({
+        ...current,
+        fields: value,
+        accounts: Object.create(null),
+        categories: Object.create(null),
+      }));
+      router.push('/importer/csv/accounts');
+    },
+  });
+  const values = useStore(form.store, (state) => state.values);
+  useEffect(() => {
+    if (!draft) return;
+    form.reset(draft.fields);
+  }, [draft, form]);
   if (!draft) return <MissingDraft />;
   const options: Choice[] = [
     { value: '', label: 'Don’t map' },
     ...draft.columns.map((column) => ({ value: column, label: column })),
   ];
-  function continueFlow() {
-    const problem = validateFields(draft);
-    if (problem) {
-      setError(problem);
-      return;
-    }
-    setError(null);
-    router.push('/importer/csv/accounts');
-  }
   return (
     <FlowScreen
       step={2}
@@ -222,31 +263,31 @@ export function MapColumnsScreen() {
       title="Match your columns"
       description="Tell Guallet what each column means. Examples from your file are shown below."
       action="Continue to accounts"
-      onAction={continueFlow}
+      onAction={() => void submitForm(form)}
       onBack={() => router.back()}
     >
       <Notice>{`We found ${draft.rows.length} rows and ${draft.columns.length} columns. Date, amount and description are required.`}</Notice>
-      <ErrorText message={error} />
+      <ErrorText
+        message={
+          fieldError(form.getFieldMeta('date')?.errors ?? []) ??
+          fieldError(form.getFieldMeta('amount')?.errors ?? []) ??
+          fieldError(form.getFieldMeta('description')?.errors ?? []) ??
+          null
+        }
+      />
       <ImportCard>
         {FIELD_LABELS.map(({ key, label }) => (
           <ChoiceField
             key={key}
             label={label}
-            value={draft.fields[key]}
+            value={values[key]}
             options={options}
             sample={
               draft.fields[key]
                 ? String(draft.rows[0]?.[draft.fields[key]] ?? '')
                 : undefined
             }
-            onChange={(value) =>
-              updateDraft((current) => ({
-                ...current,
-                fields: { ...current.fields, [key]: value },
-                accounts: Object.create(null),
-                categories: Object.create(null),
-              }))
-            }
+            onChange={(value) => form.setFieldValue(key, value)}
           />
         ))}
       </ImportCard>
@@ -258,9 +299,57 @@ export function MapAccountsScreen() {
   const router = useRouter();
   const { draft, updateDraft } = useImportDraft();
   const { accounts, isLoading, isError } = useAccounts();
-  const [error, setError] = useState<string | null>(null);
   const rows = draft?.rows;
   const accountColumn = draft?.fields.account;
+  const keys = useMemo(() => (draft ? accountKeys(draft) : []), [draft]);
+  const mappingSchema = useMemo(
+    () =>
+      z
+        .object({ mappings: z.record(z.string(), z.string()) })
+        .superRefine(({ mappings }, context) => {
+          const missing = keys.find((key) => !mappings[key]);
+          if (missing) {
+            context.addIssue({
+              code: 'custom',
+              path: ['mappings'],
+              message: `Choose an account for “${missing}”.`,
+            });
+          }
+        }),
+    [keys],
+  );
+  const form = useForm({
+    defaultValues: {
+      mappings: Object.fromEntries(
+        keys.map((key) => {
+          const mapping = draft?.accounts[key];
+          return [key, mapping?.shouldCreate ? 'create' : (mapping?.id ?? '')];
+        }),
+      ),
+    },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: mappingSchema },
+    onSubmit: async () => {
+      if (!draft) return;
+      if (distinctValues(draft, 'category').length === 0) {
+        router.push('/importer/csv/preview');
+        return;
+      }
+      router.push('/importer/csv/categories');
+    },
+  });
+  const mappings = useStore(form.store, (state) => state.values.mappings);
+  useEffect(() => {
+    if (!draft) return;
+    form.reset({
+      mappings: Object.fromEntries(
+        keys.map((key) => {
+          const mapping = draft.accounts[key];
+          return [key, mapping?.shouldCreate ? 'create' : (mapping?.id ?? '')];
+        }),
+      ),
+    });
+  }, [draft, form, keys]);
   const counts = useMemo(() => {
     const result = Object.create(null) as Record<string, number>;
     if (!rows) return result;
@@ -271,24 +360,10 @@ export function MapAccountsScreen() {
     return result;
   }, [rows, accountColumn]);
   if (!draft) return <MissingDraft />;
-  const keys = accountKeys(draft);
   const options: Choice[] = [
     ...accounts.map((account) => ({ value: account.id, label: account.name })),
     { value: 'create', label: 'Create new account' },
   ];
-  function next() {
-    const missing = keys.find((key) => !Object.hasOwn(draft.accounts, key));
-    if (missing) {
-      setError(`Choose an account for “${missing}”.`);
-      return;
-    }
-    setError(null);
-    if (distinctValues(draft, 'category').length === 0) {
-      router.push('/importer/csv/preview');
-      return;
-    }
-    router.push('/importer/csv/categories');
-  }
   return (
     <FlowScreen
       step={3}
@@ -300,7 +375,7 @@ export function MapAccountsScreen() {
           ? 'Continue to categories'
           : 'Review import'
       }
-      onAction={next}
+      onAction={() => void submitForm(form)}
       onBack={() => router.back()}
       disabled={isLoading || isError}
     >
@@ -312,12 +387,18 @@ export function MapAccountsScreen() {
       {isError && (
         <ErrorText message="Could not load accounts. Go back and try again." />
       )}
-      <ErrorText message={error} />
+      <ErrorText
+        message={
+          fieldError(form.getFieldMeta('mappings')?.errors ?? []) ?? null
+        }
+      />
       {keys.map((key) => {
         const mapping = Object.hasOwn(draft.accounts, key)
           ? draft.accounts[key]
           : undefined;
-        const value = mapping?.shouldCreate ? 'create' : (mapping?.id ?? '');
+        const value =
+          mappings[key] ??
+          (mapping?.shouldCreate ? 'create' : (mapping?.id ?? ''));
         const isDefault =
           key === 'default' &&
           (!draft.fields.account ||
@@ -339,6 +420,10 @@ export function MapAccountsScreen() {
               value={value}
               options={options}
               onChange={(selected) => {
+                form.setFieldValue('mappings', {
+                  ...mappings,
+                  [key]: selected,
+                });
                 const account = accounts.find((item) => item.id === selected);
                 let mapped: AccountMapping | undefined;
                 if (selected === 'create') {
@@ -377,6 +462,69 @@ export function MapCategoriesScreen() {
   const { categories, isLoading, isError } = useCategories();
   const rows = draft?.rows;
   const categoryColumn = draft?.fields.category;
+  const keys = useMemo(
+    () => (draft ? distinctValues(draft, 'category') : []),
+    [draft],
+  );
+  const mappingSchema = useMemo(
+    () =>
+      z
+        .object({ mappings: z.record(z.string(), z.string()) })
+        .superRefine(({ mappings }, context) => {
+          const missing = keys.find((key) => mappings[key] === '__choose__');
+          if (missing) {
+            context.addIssue({
+              code: 'custom',
+              path: ['mappings'],
+              message: `Choose what to do with “${missing}”.`,
+            });
+          }
+        }),
+    [keys],
+  );
+  const form = useForm({
+    defaultValues: {
+      mappings: Object.fromEntries(
+        keys.map((key) => {
+          const mapping = draft?.categories[key];
+          return [
+            key,
+            mapping === undefined
+              ? '__choose__'
+              : mapping === null
+                ? ''
+                : mapping.shouldCreate
+                  ? 'create'
+                  : mapping.id,
+          ];
+        }),
+      ),
+    },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: mappingSchema },
+    onSubmit: async () => router.push('/importer/csv/preview'),
+  });
+  const mappings = useStore(form.store, (state) => state.values.mappings);
+  useEffect(() => {
+    if (!draft) return;
+    form.reset({
+      mappings: Object.fromEntries(
+        keys.map((key) => {
+          const mapping = draft.categories[key];
+          return [
+            key,
+            mapping === undefined
+              ? '__choose__'
+              : mapping === null
+                ? ''
+                : mapping.shouldCreate
+                  ? 'create'
+                  : mapping.id,
+          ];
+        }),
+      ),
+    });
+  }, [draft, form, keys]);
   const counts = useMemo(() => {
     const result = Object.create(null) as Record<string, number>;
     if (!rows || !categoryColumn) return result;
@@ -387,7 +535,6 @@ export function MapCategoriesScreen() {
     return result;
   }, [rows, categoryColumn]);
   if (!draft) return <MissingDraft />;
-  const keys = distinctValues(draft, 'category');
   const options: Choice[] = [
     { value: '', label: 'Leave uncategorised' },
     ...categories.map((category) => ({
@@ -403,7 +550,7 @@ export function MapCategoriesScreen() {
       title="Organise your spending"
       description="Choose where the categories from your file belong. You can leave rows uncategorised."
       action="Review import"
-      onAction={() => router.push('/importer/csv/preview')}
+      onAction={() => void submitForm(form)}
       onBack={() => router.back()}
       disabled={isLoading || isError}
     >
@@ -413,9 +560,16 @@ export function MapCategoriesScreen() {
       {isError && (
         <ErrorText message="Could not load categories. Go back and try again." />
       )}
+      <ErrorText
+        message={
+          fieldError(form.getFieldMeta('mappings')?.errors ?? []) ?? null
+        }
+      />
       {keys.map((key) => {
         const mapping = draft.categories[key];
-        const value = mapping?.shouldCreate ? 'create' : (mapping?.id ?? '');
+        const value =
+          mappings[key] ??
+          (mapping?.shouldCreate ? 'create' : (mapping?.id ?? ''));
         return (
           <ImportCard key={key}>
             <TextLine strong>{key}</TextLine>
@@ -425,6 +579,10 @@ export function MapCategoriesScreen() {
               value={value}
               options={options}
               onChange={(selected) => {
+                form.setFieldValue('mappings', {
+                  ...mappings,
+                  [key]: selected,
+                });
                 const category = categories.find(
                   (item) => item.id === selected,
                 );
