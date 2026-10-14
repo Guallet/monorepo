@@ -154,6 +154,7 @@ export function RecurringForm({
     },
   });
   const values = useStore(form.store, (state) => state.values);
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
   const dirty = JSON.stringify(values) !== JSON.stringify(baseline);
   useEffect(() => {
     if (!item && !currencyChosen.current) {
@@ -227,7 +228,7 @@ export function RecurringForm({
     }
   }
   function errorFor(key: keyof RecurringFormValues) {
-    return form.getFieldMeta(key)?.errors[0]?.message;
+    return fieldMeta[key]?.errors[0]?.message;
   }
   let amountLabel = 'Amount paid';
   if (values.type === RecurringPaymentType.REGULAR_INCOME)

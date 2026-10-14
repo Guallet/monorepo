@@ -5,7 +5,13 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Button, Label, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
+import {
+  Button,
+  Label,
+  Stack,
+  TextInput,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
@@ -39,10 +45,13 @@ export function EmailCodeScreen() {
       );
     },
   });
-  const email = useStore(form.store, (state) => state.values.email);
+  const [email, isSubmitting] = useStore(
+    form.store,
+    (state) => [state.values.email, state.isSubmitting] as const,
+  );
 
   return (
-    <AuthScreen headerTitle="Email code">
+    <AuthScreen headerTitle="Email code" isLoading={isSubmitting}>
       <AuthIntro
         description="We’ll email you a 6-digit code. It expires after 5 minutes."
         eyebrow="Password-free"

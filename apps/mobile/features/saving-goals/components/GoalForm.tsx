@@ -130,10 +130,11 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
     },
   });
   const values = useStore(form.store, (state) => state.values);
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
   const errors = {
-    name: form.getFieldMeta('name')?.errors[0]?.message,
-    targetAmount: form.getFieldMeta('targetAmount')?.errors[0]?.message,
-    accountIds: form.getFieldMeta('accountIds')?.errors[0]?.message,
+    name: fieldMeta.name?.errors[0]?.message,
+    targetAmount: fieldMeta.targetAmount?.errors[0]?.message,
+    accountIds: fieldMeta.accountIds?.errors[0]?.message,
   };
   const availableAccountIds = availableGoalAccountIds(
     values.accountIds,

@@ -138,6 +138,7 @@ export function TransactionDetailsScreen({
     },
   });
   const values = useStore(tanstackForm.store, (state) => state.values);
+  const fieldMeta = useStore(tanstackForm.store, (state) => state.fieldMeta);
 
   useEffect(() => {
     if (!transaction || initializedId.current === transaction.id) return;
@@ -291,9 +292,7 @@ export function TransactionDetailsScreen({
                 }
                 placeholder="Enter transaction description"
                 autoCapitalize="sentences"
-                error={
-                  tanstackForm.getFieldMeta('description')?.errors[0]?.message
-                }
+                error={fieldMeta.description?.errors[0]?.message}
               />
               <TextInput
                 label="Amount"
@@ -303,7 +302,7 @@ export function TransactionDetailsScreen({
                 }
                 placeholder="0.00"
                 keyboardType="decimal-pad"
-                error={tanstackForm.getFieldMeta('amount')?.errors[0]?.message}
+                error={fieldMeta.amount?.errors[0]?.message}
               />
 
               <FieldButton
@@ -311,12 +310,12 @@ export function TransactionDetailsScreen({
                 value={accountName}
                 onPress={() => setSelection('account')}
               />
-              {tanstackForm.getFieldMeta('accountId')?.errors[0]?.message && (
+              {fieldMeta.accountId?.errors[0]?.message && (
                 <Text
                   accessibilityRole="alert"
                   style={{ color: colors.status.error }}
                 >
-                  {tanstackForm.getFieldMeta('accountId')?.errors[0]?.message}
+                  {fieldMeta.accountId?.errors[0]?.message}
                 </Text>
               )}
               <tanstackForm.Field name="currency">
@@ -341,7 +340,7 @@ export function TransactionDetailsScreen({
                   if (date) tanstackForm.setFieldValue('date', date);
                 }}
                 formatValue={(date) => formatTransactionDate(date, dateFormat)}
-                error={tanstackForm.getFieldMeta('date')?.errors[0]?.message}
+                error={fieldMeta.date?.errors[0]?.message}
               />
               <View>
                 <Text
