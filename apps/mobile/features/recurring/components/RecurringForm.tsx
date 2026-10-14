@@ -36,7 +36,6 @@ import { useMobileUserPreferences } from '@/features/settings/useMobileUserPrefe
 import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 import {
   CADENCE_OPTIONS,
   TYPE_OPTIONS,
@@ -228,7 +227,7 @@ export function RecurringForm({
     }
   }
   function errorFor(key: keyof RecurringFormValues) {
-    return fieldError(form.getFieldMeta(key)?.errors ?? []);
+    return form.getFieldMeta(key)?.errors[0]?.message;
   }
   let amountLabel = 'Amount paid';
   if (values.type === RecurringPaymentType.REGULAR_INCOME)
@@ -378,15 +377,15 @@ export function RecurringForm({
           selector={(state) => [state.canSubmit, state.isSubmitting] as const}
         >
           {([canSubmit, isSubmitting]) => (
-            <SubmitButton
-              canSubmit={canSubmit}
-              isSubmitting={isSubmitting || pending}
+            <Button
+              disabled={!canSubmit || isSubmitting || pending}
               style={styles.action}
-              onSubmit={() => void submitForm(form)}
-              submittingLabel="Saving…"
+              onClick={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
             >
-              {saveLabel}
-            </SubmitButton>
+              {isSubmitting || pending ? 'Saving…' : saveLabel}
+            </Button>
           )}
         </form.Subscribe>
         <Button

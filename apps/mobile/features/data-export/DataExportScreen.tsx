@@ -25,7 +25,6 @@ import {
 import { AppScreen } from '@/components/layout/AppScreen';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { SubmitButton, submitForm } from '@/components/forms';
 import {
   submitExportRequest,
   snapshotExportSelection,
@@ -287,7 +286,9 @@ export default function DataExportScreen() {
               <>
                 <Button
                   disabled={exportMutation.isPending}
-                  onClick={() => void submitForm(form)}
+                  onClick={() => {
+                    if (!form.state.isSubmitting) void form.handleSubmit();
+                  }}
                 >
                   {exportMutation.isPending
                     ? 'Submitting export…'
@@ -517,14 +518,18 @@ export default function DataExportScreen() {
             selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
             {([canSubmit, isSubmitting]) => (
-              <SubmitButton
-                canSubmit={canSubmit}
-                isSubmitting={isSubmitting || exportMutation.isPending}
-                onSubmit={() => void submitForm(form)}
-                submittingLabel="Submitting export…"
+              <Button
+                disabled={
+                  !canSubmit || isSubmitting || exportMutation.isPending
+                }
+                onClick={() => {
+                  if (!form.state.isSubmitting) void form.handleSubmit();
+                }}
               >
-                Create export
-              </SubmitButton>
+                {isSubmitting || exportMutation.isPending
+                  ? 'Submitting export…'
+                  : 'Create export'}
+              </Button>
             )}
           </form.Subscribe>
         </View>

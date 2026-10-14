@@ -23,7 +23,6 @@ import {
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 
 type Props = {
   goal?: SavingGoalDto | null;
@@ -129,9 +128,9 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   });
   const values = useStore(form.store, (state) => state.values);
   const errors = {
-    name: fieldError(form.getFieldMeta('name')?.errors ?? []),
-    targetAmount: fieldError(form.getFieldMeta('targetAmount')?.errors ?? []),
-    accountIds: fieldError(form.getFieldMeta('accountIds')?.errors ?? []),
+    name: form.getFieldMeta('name')?.errors[0]?.message,
+    targetAmount: form.getFieldMeta('targetAmount')?.errors[0]?.message,
+    accountIds: form.getFieldMeta('accountIds')?.errors[0]?.message,
   };
   const availableAccountIds = availableGoalAccountIds(
     values.accountIds,
@@ -410,17 +409,25 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
           selector={(state) => [state.canSubmit, state.isSubmitting] as const}
         >
           {([canSubmit, isSubmitting]) => (
-            <SubmitButton
-              canSubmit={canSubmit}
+            <Button
               disabled={
-                accountsLoading || accountsError || accounts.length === 0
+                !canSubmit ||
+                accountsLoading ||
+                accountsError ||
+                accounts.length === 0 ||
+                isSubmitting ||
+                pending
               }
-              isSubmitting={isSubmitting || pending}
-              onSubmit={() => void submitForm(form)}
-              submittingLabel="Saving goal…"
+              onClick={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
             >
-              {goal ? 'Save changes' : 'Create goal'}
-            </SubmitButton>
+              {isSubmitting || pending
+                ? 'Saving goal…'
+                : goal
+                  ? 'Save changes'
+                  : 'Create goal'}
+            </Button>
           )}
         </form.Subscribe>
       </View>

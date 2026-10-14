@@ -5,9 +5,8 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { SubmitButton, submitForm } from '@/components/forms';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Stack, TextInput, useTheme } from '@guallet/luna-mobile';
+import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { revalidateLogic, useForm, useSelector } from '@tanstack/react-form';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { z } from 'zod';
@@ -95,7 +94,9 @@ export function PasswordLoginScreen() {
               label="Password"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
-              onSubmitEditing={() => void submitForm(form)}
+              onSubmitEditing={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
               placeholder="Enter your password"
               returnKeyType="done"
               rightSection={
@@ -145,14 +146,16 @@ export function PasswordLoginScreen() {
         }
       >
         {([canSubmit, submitting, formEmail, password]) => (
-          <SubmitButton
-            canSubmit={canSubmit && Boolean(formEmail.trim()) && Boolean(password)}
-            isSubmitting={submitting}
-            onSubmit={() => void submitForm(form)}
-            submittingLabel="Signing in…"
+          <Button
+            disabled={
+              !canSubmit || !formEmail.trim() || !password || submitting
+            }
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
           >
-            Sign in
-          </SubmitButton>
+            {submitting ? 'Signing in…' : 'Sign in'}
+          </Button>
         )}
       </form.Subscribe>
 

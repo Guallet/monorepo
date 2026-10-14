@@ -39,7 +39,6 @@ import {
 import { categoryErrorMessage } from '../categoryErrors';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 
 export default function CategoryFormScreen({
   categoryId,
@@ -116,7 +115,7 @@ export default function CategoryFormScreen({
     },
   });
   const values = useStore(form.store, (state) => state.values);
-  const nameError = fieldError(form.getFieldMeta('name')?.errors ?? []);
+  const nameError = form.getFieldMeta('name')?.errors[0]?.message;
   const dirty = categoryFormChanged(values, initialForm);
   const ready =
     !isLoading &&
@@ -260,7 +259,9 @@ export default function CategoryFormScreen({
               error={nameError}
               placeholder="e.g. Groceries"
               returnKeyType="done"
-              onSubmitEditing={() => void submitForm(form)}
+              onSubmitEditing={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
             />
             <CategoryText>Parent category</CategoryText>
             {!hasChildren && (
@@ -330,15 +331,20 @@ export default function CategoryFormScreen({
             selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
             {([canSubmit, isSubmitting]) => (
-              <SubmitButton
-                canSubmit={canSubmit && (!categoryId || dirty)}
-                disabled={!ready}
-                isSubmitting={isSubmitting || pending}
-                onSubmit={() => void submitForm(form)}
-                submittingLabel="Saving…"
+              <Button
+                disabled={
+                  !canSubmit ||
+                  !ready ||
+                  (Boolean(categoryId) && !dirty) ||
+                  isSubmitting ||
+                  pending
+                }
+                onClick={() => {
+                  if (!form.state.isSubmitting) void form.handleSubmit();
+                }}
               >
-                {saveLabel}
-              </SubmitButton>
+                {isSubmitting || pending ? 'Saving…' : saveLabel}
+              </Button>
             )}
           </form.Subscribe>
           {categoryId && (

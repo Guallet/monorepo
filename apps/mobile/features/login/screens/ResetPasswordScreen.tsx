@@ -12,7 +12,6 @@ import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { revalidateLogic, useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 
 const resetPasswordSchema = z
   .object({
@@ -110,8 +109,8 @@ export function ResetPasswordScreen() {
             <TextInput
               autoCapitalize="none"
               autoComplete="new-password"
-              accessibilityHint={fieldError(field.state.meta.errors)}
-              error={fieldError(field.state.meta.errors)}
+              accessibilityHint={field.state.meta.errors[0]?.message}
+              error={field.state.meta.errors[0]?.message}
               label="New password"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
@@ -144,12 +143,14 @@ export function ResetPasswordScreen() {
             <TextInput
               autoCapitalize="none"
               autoComplete="new-password"
-              accessibilityHint={fieldError(field.state.meta.errors)}
-              error={fieldError(field.state.meta.errors)}
+              accessibilityHint={field.state.meta.errors[0]?.message}
+              error={field.state.meta.errors[0]?.message}
               label="Confirm new password"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
-              onSubmitEditing={() => void submitForm(form)}
+              onSubmitEditing={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
               placeholder="Enter it again"
               returnKeyType="done"
               secureTextEntry={!isPasswordVisible}
@@ -164,14 +165,14 @@ export function ResetPasswordScreen() {
         selector={(state) => [state.canSubmit, state.isSubmitting] as const}
       >
         {([canSubmit, isSubmitting]) => (
-          <SubmitButton
-            canSubmit={canSubmit}
-            isSubmitting={isSubmitting}
-            onSubmit={() => void submitForm(form)}
-            submittingLabel="Updating…"
+          <Button
+            disabled={!canSubmit || isSubmitting}
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
           >
-            Update password
-          </SubmitButton>
+            {isSubmitting ? 'Updating…' : 'Update password'}
+          </Button>
         )}
       </form.Subscribe>
     </AuthScreen>

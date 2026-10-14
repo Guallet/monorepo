@@ -14,7 +14,6 @@ import { ACCOUNT_TYPE_OPTIONS, getAccountTypeLabel } from '../models/account';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 
 const accountFormSchema = z.object({
   name: z.string().trim().min(1, 'Enter an account name.'),
@@ -114,7 +113,7 @@ export function AccountForm({
     createAccountMutation.isPending || updateAccountMutation.isPending;
 
   const values = useStore(form.store, (state) => state.values);
-  const currencyError = fieldError(form.getFieldMeta('currency')?.errors ?? []);
+  const currencyError = form.getFieldMeta('currency')?.errors[0]?.message;
 
   return (
     <View style={styles.flex}>
@@ -163,7 +162,7 @@ export function AccountForm({
             onChangeText={(name) => form.setFieldValue('name', name)}
             placeholder="e.g. Everyday current account"
             value={values.name}
-            error={fieldError(form.getFieldMeta('name')?.errors ?? [])}
+            error={form.getFieldMeta('name')?.errors[0]?.message}
           />
           <CurrencyInput
             onValueChanged={(selectedCurrency) => {
@@ -192,7 +191,7 @@ export function AccountForm({
             onChangeText={(balance) => form.setFieldValue('balance', balance)}
             placeholder="0.00"
             value={values.balance}
-            error={fieldError(form.getFieldMeta('balance')?.errors ?? [])}
+            error={form.getFieldMeta('balance')?.errors[0]?.message}
             description="Use a negative value for money you owe."
           />
         </View>
@@ -280,15 +279,19 @@ export function AccountForm({
             selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
             {([canSubmit, isSubmitting]) => (
-              <SubmitButton
-                canSubmit={canSubmit}
-                isSubmitting={isSubmitting || isPending}
-                onSubmit={() => void submitForm(form)}
+              <Button
+                disabled={!canSubmit || isSubmitting || isPending}
+                onClick={() => {
+                  if (!form.state.isSubmitting) void form.handleSubmit();
+                }}
                 style={styles.actionButton}
-                submittingLabel="Saving…"
               >
-                {account ? 'Save changes' : 'Add account'}
-              </SubmitButton>
+                {isSubmitting || isPending
+                  ? 'Saving…'
+                  : account
+                    ? 'Save changes'
+                    : 'Add account'}
+              </Button>
             )}
           </form.Subscribe>
         </View>

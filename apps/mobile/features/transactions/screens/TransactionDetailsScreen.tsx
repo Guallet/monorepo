@@ -36,7 +36,6 @@ import { formatTransactionDate } from '../utils';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 
 type FormState = {
   type: 'expense' | 'income';
@@ -293,9 +292,9 @@ export function TransactionDetailsScreen({
                 }
                 placeholder="Enter transaction description"
                 autoCapitalize="sentences"
-                error={fieldError(
-                  tanstackForm.getFieldMeta('description')?.errors ?? [],
-                )}
+                error={
+                  tanstackForm.getFieldMeta('description')?.errors[0]?.message
+                }
               />
               <TextInput
                 label="Amount"
@@ -305,9 +304,7 @@ export function TransactionDetailsScreen({
                 }
                 placeholder="0.00"
                 keyboardType="decimal-pad"
-                error={fieldError(
-                  tanstackForm.getFieldMeta('amount')?.errors ?? [],
-                )}
+                error={tanstackForm.getFieldMeta('amount')?.errors[0]?.message}
               />
 
               <FieldButton
@@ -315,16 +312,12 @@ export function TransactionDetailsScreen({
                 value={accountName}
                 onPress={() => setSelection('account')}
               />
-              {fieldError(
-                tanstackForm.getFieldMeta('accountId')?.errors ?? [],
-              ) && (
+              {tanstackForm.getFieldMeta('accountId')?.errors[0]?.message && (
                 <Text
                   accessibilityRole="alert"
                   style={{ color: colors.status.error }}
                 >
-                  {fieldError(
-                    tanstackForm.getFieldMeta('accountId')?.errors ?? [],
-                  )}
+                  {tanstackForm.getFieldMeta('accountId')?.errors[0]?.message}
                 </Text>
               )}
               <TextInput
@@ -345,9 +338,7 @@ export function TransactionDetailsScreen({
                   if (date) tanstackForm.setFieldValue('date', date);
                 }}
                 formatValue={(date) => formatTransactionDate(date, dateFormat)}
-                error={fieldError(
-                  tanstackForm.getFieldMeta('date')?.errors ?? [],
-                )}
+                error={tanstackForm.getFieldMeta('date')?.errors[0]?.message}
               />
               <View>
                 <Text
@@ -411,16 +402,22 @@ export function TransactionDetailsScreen({
                 }
               >
                 {([canSubmit, isSubmitting]) => (
-                  <SubmitButton
-                    canSubmit={canSubmit && isDirty}
-                    isSubmitting={
-                      isSubmitting || updateTransactionMutation.isPending
+                  <Button
+                    disabled={
+                      !canSubmit ||
+                      !isDirty ||
+                      isSubmitting ||
+                      updateTransactionMutation.isPending
                     }
-                    onSubmit={() => void submitForm(tanstackForm)}
-                    submittingLabel="Saving…"
+                    onClick={() => {
+                      if (!tanstackForm.state.isSubmitting)
+                        void tanstackForm.handleSubmit();
+                    }}
                   >
-                    Save changes
-                  </SubmitButton>
+                    {isSubmitting || updateTransactionMutation.isPending
+                      ? 'Saving…'
+                      : 'Save changes'}
+                  </Button>
                 )}
               </tanstackForm.Subscribe>
               <Button variant="outline" onClick={() => router.back()}>

@@ -40,7 +40,6 @@ import { ChoiceField, type Choice } from './components/ChoiceField';
 import { FlowScreen, ImportCard, Notice } from './components/FlowScreen';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, submitForm } from '@/components/forms';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -263,15 +262,17 @@ export function MapColumnsScreen() {
       title="Match your columns"
       description="Tell Guallet what each column means. Examples from your file are shown below."
       action="Continue to accounts"
-      onAction={() => void submitForm(form)}
+      onAction={() => {
+        if (!form.state.isSubmitting) void form.handleSubmit();
+      }}
       onBack={() => router.back()}
     >
       <Notice>{`We found ${draft.rows.length} rows and ${draft.columns.length} columns. Date, amount and description are required.`}</Notice>
       <ErrorText
         message={
-          fieldError(form.getFieldMeta('date')?.errors ?? []) ??
-          fieldError(form.getFieldMeta('amount')?.errors ?? []) ??
-          fieldError(form.getFieldMeta('description')?.errors ?? []) ??
+          form.getFieldMeta('date')?.errors[0]?.message ??
+          form.getFieldMeta('amount')?.errors[0]?.message ??
+          form.getFieldMeta('description')?.errors[0]?.message ??
           null
         }
       />
@@ -375,7 +376,9 @@ export function MapAccountsScreen() {
           ? 'Continue to categories'
           : 'Review import'
       }
-      onAction={() => void submitForm(form)}
+      onAction={() => {
+        if (!form.state.isSubmitting) void form.handleSubmit();
+      }}
       onBack={() => router.back()}
       disabled={isLoading || isError}
     >
@@ -389,7 +392,7 @@ export function MapAccountsScreen() {
       )}
       <ErrorText
         message={
-          fieldError(form.getFieldMeta('mappings')?.errors ?? []) ?? null
+          form.getFieldMeta('mappings')?.errors[0]?.message ?? null
         }
       />
       {keys.map((key) => {
@@ -550,7 +553,9 @@ export function MapCategoriesScreen() {
       title="Organise your spending"
       description="Choose where the categories from your file belong. You can leave rows uncategorised."
       action="Review import"
-      onAction={() => void submitForm(form)}
+      onAction={() => {
+        if (!form.state.isSubmitting) void form.handleSubmit();
+      }}
       onBack={() => router.back()}
       disabled={isLoading || isError}
     >
@@ -562,7 +567,7 @@ export function MapCategoriesScreen() {
       )}
       <ErrorText
         message={
-          fieldError(form.getFieldMeta('mappings')?.errors ?? []) ?? null
+          form.getFieldMeta('mappings')?.errors[0]?.message ?? null
         }
       />
       {keys.map((key) => {

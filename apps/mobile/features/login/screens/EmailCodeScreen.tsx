@@ -5,11 +5,10 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { Label, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
+import { Button, Label, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { SubmitButton, submitForm, fieldError } from '@/components/forms';
 import { useState } from 'react';
 
 const emailSchema = z.object({
@@ -62,13 +61,15 @@ export function EmailCodeScreen() {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect={false}
-              accessibilityHint={fieldError(field.state.meta.errors)}
-              error={fieldError(field.state.meta.errors)}
+              accessibilityHint={field.state.meta.errors[0]?.message}
+              error={field.state.meta.errors[0]?.message}
               keyboardType="email-address"
               label="Email address"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
-              onSubmitEditing={() => void submitForm(form)}
+              onSubmitEditing={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
               placeholder="you@example.com"
               returnKeyType="send"
               textContentType="emailAddress"
@@ -89,14 +90,14 @@ export function EmailCodeScreen() {
         selector={(state) => [state.canSubmit, state.isSubmitting] as const}
       >
         {([canSubmit, isSubmitting]) => (
-          <SubmitButton
-            canSubmit={canSubmit && Boolean(email.trim())}
-            isSubmitting={isSubmitting}
-            onSubmit={() => void submitForm(form)}
-            submittingLabel="Sending…"
+          <Button
+            disabled={!canSubmit || !email.trim() || isSubmitting}
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
           >
-            Send my code
-          </SubmitButton>
+            {isSubmitting ? 'Sending…' : 'Send my code'}
+          </Button>
         )}
       </form.Subscribe>
 

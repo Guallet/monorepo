@@ -19,7 +19,6 @@ import { AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
 import { revalidateLogic, useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-import { SubmitButton, submitForm } from '@/components/forms';
 
 const RESEND_DELAY_SECONDS = 30;
 const otpSchema = z.object({
@@ -154,14 +153,14 @@ export function OtpScreen() {
         selector={(state) => [state.canSubmit, state.isSubmitting] as const}
       >
         {([canSubmit, isSubmitting]) => (
-          <SubmitButton
-            canSubmit={canSubmit}
-            isSubmitting={isSubmitting || isLoading}
-            onSubmit={() => void submitForm(form)}
-            submittingLabel="Verifying…"
+          <Button
+            disabled={!canSubmit || isSubmitting || isLoading}
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
           >
-            Verify and sign in
-          </SubmitButton>
+            {isSubmitting || isLoading ? 'Verifying…' : 'Verify and sign in'}
+          </Button>
         )}
       </form.Subscribe>
 

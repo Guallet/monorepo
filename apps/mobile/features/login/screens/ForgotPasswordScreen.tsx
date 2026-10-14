@@ -5,11 +5,10 @@ import {
   AuthNotice,
   AuthScreen,
 } from '@/features/login/components/AuthLayout';
-import { TextInput } from '@guallet/luna-mobile';
+import { Button, TextInput } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 import { useState } from 'react';
 
 const forgotPasswordSchema = z.object({
@@ -67,13 +66,15 @@ export function ForgotPasswordScreen() {
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect={false}
-            accessibilityHint={fieldError(field.state.meta.errors)}
-            error={fieldError(field.state.meta.errors)}
+            accessibilityHint={field.state.meta.errors[0]?.message}
+            error={field.state.meta.errors[0]?.message}
             keyboardType="email-address"
             label="Email address"
             onBlur={field.handleBlur}
             onChangeText={field.handleChange}
-            onSubmitEditing={() => void submitForm(form)}
+            onSubmitEditing={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
             placeholder="you@example.com"
             returnKeyType="send"
             textContentType="emailAddress"
@@ -86,14 +87,14 @@ export function ForgotPasswordScreen() {
         selector={(state) => [state.canSubmit, state.isSubmitting] as const}
       >
         {([canSubmit, isSubmitting]) => (
-          <SubmitButton
-            canSubmit={canSubmit && Boolean(email.trim())}
-            isSubmitting={isSubmitting}
-            onSubmit={() => void submitForm(form)}
-            submittingLabel="Sending…"
+          <Button
+            disabled={!canSubmit || !email.trim() || isSubmitting}
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
           >
-            Send reset link
-          </SubmitButton>
+            {isSubmitting ? 'Sending…' : 'Send reset link'}
+          </Button>
         )}
       </form.Subscribe>
 

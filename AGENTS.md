@@ -239,13 +239,11 @@ Expo Router requires `export default function` (not named exports) for all route
 
 New mobile screens that contain forms must use TanStack Form's standard
 `useForm` hook and `form.Field` render props with Luna controlled inputs.
-Define validation with Zod schemas in the form component. Use the shared
-`SubmitButton` with subscribed `canSubmit` / `isSubmitting` values, and call
-`submitForm(form)` for button and keyboard submission to guard concurrent
-requests. Keep values and validation in the form; local state is for UI
-controls and request errors. See
-[the forms guide](apps/mobile/components/forms/README.md) and the
-`add-mobile-screen` skill for implementation details.
+Define validation with Zod schemas in the form component. Use ordinary Luna
+`Button`s with `form.Subscribe` for submit state, and call
+`form.handleSubmit()` from button and keyboard handlers after checking
+`isSubmitting`. Keep values and validation in the form; local state is for UI
+controls and request errors. See the `add-mobile-screen` skill for details.
 
 ### Mobile bottom sheets
 

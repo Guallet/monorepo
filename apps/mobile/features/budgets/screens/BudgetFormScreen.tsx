@@ -30,7 +30,6 @@ import { availableCurrencies } from '@/components/currencyPickerData';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
-import { fieldError, SubmitButton, submitForm } from '@/components/forms';
 import { getAllowedBudgetCurrencies, validateBudgetForm } from '../budgetForm';
 import { BudgetStateCard } from '../components/BudgetStateCard';
 import { CategorySelectionSheet } from '../components/CategorySelectionSheet';
@@ -140,12 +139,12 @@ export default function BudgetFormScreen({
   });
   const values = useStore(form.store, (state) => state.values);
   const errors = {
-    name: fieldError(form.getFieldMeta('name')?.errors ?? []),
-    currency: fieldError(form.getFieldMeta('currency')?.errors ?? []),
-    amount: fieldError(form.getFieldMeta('amount')?.errors ?? []),
-    colour: fieldError(form.getFieldMeta('colour')?.errors ?? []),
-    icon: fieldError(form.getFieldMeta('icon')?.errors ?? []),
-    categories: fieldError(form.getFieldMeta('categoryIds')?.errors ?? []),
+    name: form.getFieldMeta('name')?.errors[0]?.message,
+    currency: form.getFieldMeta('currency')?.errors[0]?.message,
+    amount: form.getFieldMeta('amount')?.errors[0]?.message,
+    colour: form.getFieldMeta('colour')?.errors[0]?.message,
+    icon: form.getFieldMeta('icon')?.errors[0]?.message,
+    categories: form.getFieldMeta('categoryIds')?.errors[0]?.message,
   };
   const currencyChoices = useMemo(
     () =>
@@ -427,15 +426,14 @@ export default function BudgetFormScreen({
             selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
             {([canSubmit, isSubmitting]) => (
-              <SubmitButton
-                canSubmit={canSubmit}
-                disabled={!isReady}
-                isSubmitting={isSubmitting || isPending}
-                onSubmit={() => void submitForm(form)}
-                submittingLabel="Saving…"
+              <Button
+                disabled={!canSubmit || !isReady || isSubmitting || isPending}
+                onClick={() => {
+                  if (!form.state.isSubmitting) void form.handleSubmit();
+                }}
               >
-                {saveButtonLabel}
-              </SubmitButton>
+                {isSubmitting || isPending ? 'Saving…' : saveButtonLabel}
+              </Button>
             )}
           </form.Subscribe>
           <Button
