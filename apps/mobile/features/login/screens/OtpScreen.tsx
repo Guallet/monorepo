@@ -150,11 +150,15 @@ export function OtpScreen() {
       </Stack>
 
       <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+        selector={(state) =>
+          [state.canSubmit, state.isSubmitting, state.values.code] as const
+        }
       >
-        {([canSubmit, isSubmitting]) => (
+        {([canSubmit, isSubmitting, code]) => (
           <Button
-            disabled={!canSubmit || isSubmitting || isLoading}
+            disabled={
+              !canSubmit || code.length !== 6 || isSubmitting || isLoading
+            }
             onClick={() => {
               if (!form.state.isSubmitting) void form.handleSubmit();
             }}

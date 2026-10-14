@@ -82,8 +82,8 @@ export default function CategoryFormScreen({
   const schema = z.object({
     name: z.string().trim().min(1, 'Enter a category name.'),
     parentId: z.string().nullable(),
-    icon: z.string().min(1, 'Select an icon.'),
-    colour: z.string().min(1, 'Select a colour.'),
+    icon: categoryId ? z.string() : z.string().min(1, 'Select an icon.'),
+    colour: categoryId ? z.string() : z.string().min(1, 'Select a colour.'),
   });
   const form = useForm({
     defaultValues: defaults,
@@ -115,7 +115,6 @@ export default function CategoryFormScreen({
     },
   });
   const values = useStore(form.store, (state) => state.values);
-  const nameError = form.getFieldMeta('name')?.errors[0]?.message;
   const dirty = categoryFormChanged(values, initialForm);
   const ready =
     !isLoading &&
@@ -249,20 +248,25 @@ export default function CategoryFormScreen({
             </View>
           </CategoryCard>
           <View pointerEvents={formPointerEvents} style={{ gap: spacing.md }}>
-            <TextInput
-              label="Name"
-              accessibilityLabel="Category name"
-              accessibilityHint={nameError ?? undefined}
-              disabled={pending}
-              value={values.name}
-              onChangeText={(name) => form.setFieldValue('name', name)}
-              error={nameError}
-              placeholder="e.g. Groceries"
-              returnKeyType="done"
-              onSubmitEditing={() => {
-                if (!form.state.isSubmitting) void form.handleSubmit();
-              }}
-            />
+            <form.Field name="name">
+              {(field) => (
+                <TextInput
+                  label="Name"
+                  accessibilityLabel="Category name"
+                  accessibilityHint={field.state.meta.errors[0]?.message}
+                  disabled={pending}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChangeText={field.handleChange}
+                  error={field.state.meta.errors[0]?.message}
+                  placeholder="e.g. Groceries"
+                  returnKeyType="done"
+                  onSubmitEditing={() => {
+                    if (!form.state.isSubmitting) void form.handleSubmit();
+                  }}
+                />
+              )}
+            </form.Field>
             <CategoryText>Parent category</CategoryText>
             {!hasChildren && (
               <CategoryPicker
@@ -287,30 +291,52 @@ export default function CategoryFormScreen({
                 Choose None for a top-level category.
               </CategoryText>
             )}
-            <CategoryText>Icon</CategoryText>
-            <IconPicker
-              value={values.icon}
-              onChange={(icon) => form.setFieldValue('icon', icon)}
-            />
-            <CategoryText>Colour</CategoryText>
-            <ColorPicker
-              value={values.colour}
-              onChange={(colour) => form.setFieldValue('colour', colour)}
-              colors={[
-                ...new Set(
-                  [
-                    colors.accent.primary,
-                    colors.accent.bright,
-                    colors.accent.aqua,
-                    colors.support.primary,
-                    colors.support.dark,
-                    colors.neutral.darkGrey,
-                    colors.neutral.midGrey,
-                    values.colour,
-                  ].filter(Boolean),
-                ),
-              ]}
-            />
+            <form.Field name="icon">
+              {(field) => (
+                <>
+                  <CategoryText>Icon</CategoryText>
+                  <IconPicker
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                  />
+                  {field.state.meta.errors[0]?.message && (
+                    <CategoryText error>
+                      {field.state.meta.errors[0]?.message}
+                    </CategoryText>
+                  )}
+                </>
+              )}
+            </form.Field>
+            <form.Field name="colour">
+              {(field) => (
+                <>
+                  <CategoryText>Colour</CategoryText>
+                  <ColorPicker
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    colors={[
+                      ...new Set(
+                        [
+                          colors.accent.primary,
+                          colors.accent.bright,
+                          colors.accent.aqua,
+                          colors.support.primary,
+                          colors.support.dark,
+                          colors.neutral.darkGrey,
+                          colors.neutral.midGrey,
+                          values.colour,
+                        ].filter(Boolean),
+                      ),
+                    ]}
+                  />
+                  {field.state.meta.errors[0]?.message && (
+                    <CategoryText error>
+                      {field.state.meta.errors[0]?.message}
+                    </CategoryText>
+                  )}
+                </>
+              )}
+            </form.Field>
           </View>
           {categoryId && (
             <CategoryText secondary>

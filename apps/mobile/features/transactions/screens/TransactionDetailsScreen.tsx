@@ -114,16 +114,15 @@ export function TransactionDetailsScreen({
     },
     listeners: { onChange: () => setError(null) },
     onSubmit: async ({ value }) => {
-      const parsed = transactionFormSchema.parse(value);
-      const amount = Number(parsed.amount.replace(',', '.'));
+      const amount = Number(value.amount.trim().replace(',', '.'));
       const request: UpdateTransactionRequest = {
-        accountId: parsed.accountId,
-        description: parsed.description.trim(),
-        notes: parsed.notes.trim() || null,
-        amount: parsed.type === 'income' ? amount : -amount,
-        currency: parsed.currency.trim().toUpperCase(),
-        date: parsed.date,
-        categoryId: parsed.categoryId,
+        accountId: value.accountId,
+        description: value.description.trim(),
+        notes: value.notes.trim() || null,
+        amount: value.type === 'income' ? amount : -amount,
+        currency: value.currency.trim().toUpperCase(),
+        date: value.date,
+        categoryId: value.categoryId,
       };
       Keyboard.dismiss();
       setError(null);
@@ -320,16 +319,20 @@ export function TransactionDetailsScreen({
                   {tanstackForm.getFieldMeta('accountId')?.errors[0]?.message}
                 </Text>
               )}
-              <TextInput
-                label="Currency"
-                value={values.currency}
-                onChangeText={(currency) =>
-                  tanstackForm.setFieldValue('currency', currency)
-                }
-                placeholder={defaultCurrency}
-                autoCapitalize="characters"
-                maxLength={3}
-              />
+              <tanstackForm.Field name="currency">
+                {(field) => (
+                  <TextInput
+                    label="Currency"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChangeText={field.handleChange}
+                    placeholder={defaultCurrency}
+                    autoCapitalize="characters"
+                    maxLength={3}
+                    error={field.state.meta.errors[0]?.message}
+                  />
+                )}
+              </tanstackForm.Field>
               <DateInput
                 label="Date"
                 value={values.date}

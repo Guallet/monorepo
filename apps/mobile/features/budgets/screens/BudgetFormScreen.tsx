@@ -138,14 +138,6 @@ export default function BudgetFormScreen({
     },
   });
   const values = useStore(form.store, (state) => state.values);
-  const errors = {
-    name: form.getFieldMeta('name')?.errors[0]?.message,
-    currency: form.getFieldMeta('currency')?.errors[0]?.message,
-    amount: form.getFieldMeta('amount')?.errors[0]?.message,
-    colour: form.getFieldMeta('colour')?.errors[0]?.message,
-    icon: form.getFieldMeta('icon')?.errors[0]?.message,
-    categories: form.getFieldMeta('categoryIds')?.errors[0]?.message,
-  };
   const currencyChoices = useMemo(
     () =>
       availableCurrencies.filter((item) =>
@@ -310,95 +302,140 @@ export default function BudgetFormScreen({
               },
             ]}
           >
-            <TextInput
-              autoCapitalize="words"
-              error={errors.name}
-              label="Name *"
-              onChangeText={(value) => form.setFieldValue('name', value)}
-              placeholder="e.g. Groceries"
-              value={values.name}
-            />
-            <CurrencyInput
-              currencies={currencyChoices}
-              description="Choose a currency used by one of your accounts."
-              disabled={accountsLoading || accountsError}
-              label="Currency *"
-              onValueChanged={(selectedCurrency) => {
-                hasSelectedCurrency.current = true;
-                form.setFieldValue('currency', selectedCurrency ?? '');
-              }}
-              value={values.currency}
-            />
-            <FormFieldError message={errors.currency} />
+            <form.Field name="name">
+              {(field) => (
+                <TextInput
+                  autoCapitalize="words"
+                  error={field.state.meta.errors[0]?.message}
+                  label="Name *"
+                  onBlur={field.handleBlur}
+                  onChangeText={field.handleChange}
+                  placeholder="e.g. Groceries"
+                  value={field.state.value}
+                />
+              )}
+            </form.Field>
+            <form.Field name="currency">
+              {(field) => (
+                <>
+                  <CurrencyInput
+                    currencies={currencyChoices}
+                    description="Choose a currency used by one of your accounts."
+                    disabled={accountsLoading || accountsError}
+                    label="Currency *"
+                    onValueChanged={(selectedCurrency) => {
+                      hasSelectedCurrency.current = true;
+                      field.handleChange(selectedCurrency ?? '');
+                      field.handleBlur();
+                    }}
+                    value={field.state.value}
+                  />
+                  <FormFieldError
+                    message={field.state.meta.errors[0]?.message}
+                  />
+                </>
+              )}
+            </form.Field>
             {accountsError && (
               <RetryData
                 onRetry={() => void refetchAccounts()}
                 label="Couldn’t load account currencies"
               />
             )}
-            <TextInput
-              error={errors.amount}
-              keyboardType="decimal-pad"
-              label="Budget amount *"
-              onChangeText={(value) => form.setFieldValue('amount', value)}
-              placeholder="0.00"
-              value={values.amount}
-            />
-            <Text
-              style={[
-                styles.fieldLabel,
-                {
-                  color: colors.text.primary,
-                  fontSize: typography.sizes.md,
-                  marginBottom: spacing.xs,
-                },
-              ]}
-            >
-              Colour *
-            </Text>
-            <ColorPicker
-              colors={colourChoices}
-              onChange={(value) => form.setFieldValue('colour', value)}
-              value={values.colour || null}
-            />
-            <FormFieldError message={errors.colour} />
-            <Text
-              style={[
-                styles.fieldLabel,
-                {
-                  color: colors.text.primary,
-                  fontSize: typography.sizes.md,
-                  marginBottom: spacing.xs,
-                  marginTop: spacing.md,
-                },
-              ]}
-            >
-              Icon *
-            </Text>
-            <IconPicker
-              onChange={(value) => form.setFieldValue('icon', value)}
-              value={values.icon || null}
-            />
-            <FormFieldError message={errors.icon} />
+            <form.Field name="amount">
+              {(field) => (
+                <TextInput
+                  error={field.state.meta.errors[0]?.message}
+                  keyboardType="decimal-pad"
+                  label="Budget amount *"
+                  onBlur={field.handleBlur}
+                  onChangeText={field.handleChange}
+                  placeholder="0.00"
+                  value={field.state.value}
+                />
+              )}
+            </form.Field>
+            <form.Field name="colour">
+              {(field) => (
+                <>
+                  <Text
+                    style={[
+                      styles.fieldLabel,
+                      {
+                        color: colors.text.primary,
+                        fontSize: typography.sizes.md,
+                        marginBottom: spacing.xs,
+                      },
+                    ]}
+                  >
+                    Colour *
+                  </Text>
+                  <ColorPicker
+                    colors={colourChoices}
+                    onChange={field.handleChange}
+                    value={field.state.value || null}
+                  />
+                  <FormFieldError
+                    message={field.state.meta.errors[0]?.message}
+                  />
+                </>
+              )}
+            </form.Field>
+            <form.Field name="icon">
+              {(field) => (
+                <>
+                  <Text
+                    style={[
+                      styles.fieldLabel,
+                      {
+                        color: colors.text.primary,
+                        fontSize: typography.sizes.md,
+                        marginBottom: spacing.xs,
+                        marginTop: spacing.md,
+                      },
+                    ]}
+                  >
+                    Icon *
+                  </Text>
+                  <IconPicker
+                    onChange={field.handleChange}
+                    value={field.state.value || null}
+                  />
+                  <FormFieldError
+                    message={field.state.meta.errors[0]?.message}
+                  />
+                </>
+              )}
+            </form.Field>
             <View style={{ marginTop: spacing.md }}>
-              <FieldButton
-                disabled={categoriesLoading || categoriesError}
-                label="Categories *"
-                leftSection={
-                  selectedCategory && (
-                    <CategoryIcon
-                      name={selectedCategory.icon}
-                      color={selectedCategory.colour ?? colors.text.primary}
-                      size={spacing.lg}
-                      accessibilityElementsHidden
-                      importantForAccessibility="no"
+              <form.Field name="categoryIds">
+                {(field) => (
+                  <>
+                    <FieldButton
+                      disabled={categoriesLoading || categoriesError}
+                      label="Categories *"
+                      leftSection={
+                        selectedCategory && (
+                          <CategoryIcon
+                            name={selectedCategory.icon}
+                            color={
+                              selectedCategory.colour ?? colors.text.primary
+                            }
+                            size={spacing.lg}
+                            accessibilityElementsHidden
+                            importantForAccessibility="no"
+                          />
+                        )
+                      }
+                      onPress={() => setShowCategories(true)}
+                      value={categorySelectionLabel}
                     />
-                  )
-                }
-                onPress={() => setShowCategories(true)}
-                value={categorySelectionLabel}
-              />
-              <FormFieldError message={errors.categories} />
+                    <FormFieldError
+                      message={field.state.meta.errors[0]?.message}
+                    />
+                  </>
+                )}
+              </form.Field>
               {categoriesError && (
                 <RetryData
                   onRetry={() => void refetchCategories()}

@@ -45,7 +45,11 @@ export function ForgotPasswordScreen() {
       );
     },
   });
-  const email = useStore(form.store, (state) => state.values.email);
+  const [email, canSubmit, isSubmitting] = useStore(
+    form.store,
+    (state) =>
+      [state.values.email, state.canSubmit, state.isSubmitting] as const,
+  );
 
   return (
     <AuthScreen headerTitle="Password help">
@@ -83,20 +87,14 @@ export function ForgotPasswordScreen() {
         )}
       </form.Field>
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+      <Button
+        disabled={!canSubmit || !email.trim() || isSubmitting}
+        onClick={() => {
+          if (!form.state.isSubmitting) void form.handleSubmit();
+        }}
       >
-        {([canSubmit, isSubmitting]) => (
-          <Button
-            disabled={!canSubmit || !email.trim() || isSubmitting}
-            onClick={() => {
-              if (!form.state.isSubmitting) void form.handleSubmit();
-            }}
-          >
-            {isSubmitting ? 'Sending…' : 'Send reset link'}
-          </Button>
-        )}
-      </form.Subscribe>
+        {isSubmitting ? 'Sending…' : 'Send reset link'}
+      </Button>
 
       <AuthLink
         onPress={() =>

@@ -246,6 +246,7 @@ export function MapColumnsScreen() {
     },
   });
   const values = useStore(form.store, (state) => state.values);
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
   useEffect(() => {
     if (!draft) return;
     form.reset(draft.fields);
@@ -270,9 +271,9 @@ export function MapColumnsScreen() {
       <Notice>{`We found ${draft.rows.length} rows and ${draft.columns.length} columns. Date, amount and description are required.`}</Notice>
       <ErrorText
         message={
-          form.getFieldMeta('date')?.errors[0]?.message ??
-          form.getFieldMeta('amount')?.errors[0]?.message ??
-          form.getFieldMeta('description')?.errors[0]?.message ??
+          fieldMeta.date?.errors[0]?.message ??
+          fieldMeta.amount?.errors[0]?.message ??
+          fieldMeta.description?.errors[0]?.message ??
           null
         }
       />
@@ -284,8 +285,8 @@ export function MapColumnsScreen() {
             value={values[key]}
             options={options}
             sample={
-              draft.fields[key]
-                ? String(draft.rows[0]?.[draft.fields[key]] ?? '')
+              values[key]
+                ? String(draft.rows[0]?.[values[key]] ?? '')
                 : undefined
             }
             onChange={(value) => form.setFieldValue(key, value)}
@@ -340,6 +341,7 @@ export function MapAccountsScreen() {
     },
   });
   const mappings = useStore(form.store, (state) => state.values.mappings);
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
   useEffect(() => {
     if (!draft) return;
     form.reset({
@@ -390,11 +392,7 @@ export function MapAccountsScreen() {
       {isError && (
         <ErrorText message="Could not load accounts. Go back and try again." />
       )}
-      <ErrorText
-        message={
-          form.getFieldMeta('mappings')?.errors[0]?.message ?? null
-        }
-      />
+      <ErrorText message={fieldMeta.mappings?.errors[0]?.message ?? null} />
       {keys.map((key) => {
         const mapping = Object.hasOwn(draft.accounts, key)
           ? draft.accounts[key]
@@ -508,6 +506,7 @@ export function MapCategoriesScreen() {
     onSubmit: async () => router.push('/importer/csv/preview'),
   });
   const mappings = useStore(form.store, (state) => state.values.mappings);
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
   useEffect(() => {
     if (!draft) return;
     form.reset({
@@ -565,11 +564,7 @@ export function MapCategoriesScreen() {
       {isError && (
         <ErrorText message="Could not load categories. Go back and try again." />
       )}
-      <ErrorText
-        message={
-          form.getFieldMeta('mappings')?.errors[0]?.message ?? null
-        }
-      />
+      <ErrorText message={fieldMeta.mappings?.errors[0]?.message ?? null} />
       {keys.map((key) => {
         const mapping = draft.categories[key];
         const value =

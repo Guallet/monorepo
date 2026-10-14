@@ -19,6 +19,7 @@ import { availableGoalAccountIds, validateGoal } from '../models/savingGoal';
 import {
   formatPreferenceDate,
   endOfPreferenceDay,
+  parsePreferenceDate,
 } from '@/utils/formatPreferenceDate';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
@@ -52,7 +53,9 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
       targetAmount: goal ? String(goal.targetAmount) : '',
       description: goal?.description ?? '',
       accountIds: goal?.accounts ?? [],
-      targetDate: goal?.targetDate ? new Date(goal.targetDate) : null,
+      targetDate: goal?.targetDate
+        ? parsePreferenceDate(goal.targetDate.toISOString())
+        : null,
     },
     validationLogic: revalidateLogic(),
     validators: {

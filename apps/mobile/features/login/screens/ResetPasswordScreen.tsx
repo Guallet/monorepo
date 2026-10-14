@@ -162,11 +162,18 @@ export function ResetPasswordScreen() {
       </Stack>
 
       <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
+        selector={(state) =>
+          [
+            state.canSubmit,
+            state.isSubmitting,
+            state.values.password,
+            state.values.confirmation,
+          ] as const
+        }
       >
-        {([canSubmit, isSubmitting]) => (
+        {([canSubmit, isSubmitting, password, confirmation]) => (
           <Button
-            disabled={!canSubmit || isSubmitting}
+            disabled={!canSubmit || !password || !confirmation || isSubmitting}
             onClick={() => {
               if (!form.state.isSubmitting) void form.handleSubmit();
             }}

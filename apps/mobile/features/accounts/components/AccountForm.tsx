@@ -113,7 +113,6 @@ export function AccountForm({
     createAccountMutation.isPending || updateAccountMutation.isPending;
 
   const values = useStore(form.store, (state) => state.values);
-  const currencyError = form.getFieldMeta('currency')?.errors[0]?.message;
 
   return (
     <View style={styles.flex}>
@@ -156,44 +155,66 @@ export function AccountForm({
             },
           ]}
         >
-          <TextInput
-            autoCapitalize="words"
-            label="Account name"
-            onChangeText={(name) => form.setFieldValue('name', name)}
-            placeholder="e.g. Everyday current account"
-            value={values.name}
-            error={form.getFieldMeta('name')?.errors[0]?.message}
-          />
-          <CurrencyInput
-            onValueChanged={(selectedCurrency) => {
-              hasSelectedCurrency.current = true;
-              form.setFieldValue('currency', selectedCurrency ?? '');
+          <form.Field name="name">
+            {(field) => (
+              <TextInput
+                autoCapitalize="words"
+                label="Account name"
+                onBlur={field.handleBlur}
+                onChangeText={field.handleChange}
+                placeholder="e.g. Everyday current account"
+                value={field.state.value}
+                error={field.state.meta.errors[0]?.message}
+              />
+            )}
+          </form.Field>
+          <form.Field name="currency">
+            {(field) => {
+              const currencyError = field.state.meta.errors[0]?.message;
+              return (
+                <>
+                  <CurrencyInput
+                    onValueChanged={(selectedCurrency) => {
+                      hasSelectedCurrency.current = true;
+                      field.handleChange(selectedCurrency ?? '');
+                      field.handleBlur();
+                    }}
+                    placeholder="Select a currency"
+                    value={field.state.value}
+                  />
+                  {currencyError && (
+                    <Text
+                      accessibilityRole="alert"
+                      style={{
+                        color: colors.status.error,
+                        fontSize: typography.sizes.sm,
+                      }}
+                    >
+                      {currencyError}
+                    </Text>
+                  )}
+                </>
+              );
             }}
-            placeholder="Select a currency"
-            value={values.currency}
-          />
-          {currencyError && (
-            <Text
-              accessibilityRole="alert"
-              style={{
-                color: colors.status.error,
-                fontSize: typography.sizes.sm,
-              }}
-            >
-              {currencyError}
-            </Text>
-          )}
-          <TextInput
-            keyboardType={
-              Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'decimal-pad'
-            }
-            label="Current balance"
-            onChangeText={(balance) => form.setFieldValue('balance', balance)}
-            placeholder="0.00"
-            value={values.balance}
-            error={form.getFieldMeta('balance')?.errors[0]?.message}
-            description="Use a negative value for money you owe."
-          />
+          </form.Field>
+          <form.Field name="balance">
+            {(field) => (
+              <TextInput
+                keyboardType={
+                  Platform.OS === 'ios'
+                    ? 'numbers-and-punctuation'
+                    : 'decimal-pad'
+                }
+                label="Current balance"
+                onBlur={field.handleBlur}
+                onChangeText={field.handleChange}
+                placeholder="0.00"
+                value={field.state.value}
+                error={field.state.meta.errors[0]?.message}
+                description="Use a negative value for money you owe."
+              />
+            )}
+          </form.Field>
         </View>
 
         <View style={{ gap: spacing.sm }}>
