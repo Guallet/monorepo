@@ -12,34 +12,34 @@ describe('SyncService', () => {
   let service: SyncService;
 
   const mockNordigenAccountRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockAccountRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockNordigenService = {
-    getInstitutions: jest.fn(),
-    getAccountMetadata: jest.fn(),
-    getAccountBalance: jest.fn(),
-    getAccountTransactions: jest.fn(),
+    getInstitutions: vi.fn(),
+    getAccountMetadata: vi.fn(),
+    getAccountBalance: vi.fn(),
+    getAccountTransactions: vi.fn(),
   };
 
   const mockInstitutionsService = {
-    createOrUpdate: jest.fn(),
-    saveAll: jest.fn(),
+    createOrUpdate: vi.fn(),
+    saveAll: vi.fn(),
   };
 
   const mockNotificationsService = {
-    createSystemNotification: jest.fn(),
+    createSystemNotification: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -76,7 +76,7 @@ describe('SyncService', () => {
     service = module.get<SyncService>(SyncService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

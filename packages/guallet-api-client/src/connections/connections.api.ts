@@ -1,4 +1,4 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   ConnectObAccountsRequest,
   GualletInstitutionDto,
@@ -8,9 +8,9 @@ import {
   ObInstitutionDto,
   ObRConnectionPermissionDto,
   OpenBankingCountryDto,
-} from "./connections.models";
+} from './connections.models';
 
-const OPEN_BANKING_PATH = "openbanking";
+const OPEN_BANKING_PATH = 'openbanking';
 
 export class ConnectionsApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -22,7 +22,7 @@ export class ConnectionsApi {
   }
 
   async getInstitutionsForCountry(
-    countryCode: string
+    countryCode: string,
   ): Promise<ObInstitutionDto[]> {
     return await this.client.get<ObInstitutionDto[]>({
       path: `${OPEN_BANKING_PATH}/${countryCode}/institutions`,

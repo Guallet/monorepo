@@ -8,6 +8,8 @@ export class CreateInstitutionRequest {
   name: string;
 
   @ApiProperty({
+    format: 'uri',
+    required: false,
     description: 'The image path for the institution',
     nullable: true,
   })
@@ -16,6 +18,7 @@ export class CreateInstitutionRequest {
   image_src?: string;
 
   @ApiProperty({
+    required: false,
     description: 'The country the institution',
     nullable: true,
   })

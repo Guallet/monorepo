@@ -11,8 +11,21 @@ const BUDGETS_PATH = 'budgets';
 export class BudgetsApi {
   constructor(private readonly client: GualletClientImpl) {}
 
-  async getAll(): Promise<BudgetDto[]> {
-    return await this.client.get<BudgetDto[]>({ path: BUDGETS_PATH });
+  async getAll(params?: {
+    month?: number;
+    year?: number;
+  }): Promise<BudgetDto[]> {
+    const queryParams = new URLSearchParams();
+    if (params?.month !== undefined) {
+      queryParams.append('month', params.month.toString());
+    }
+    if (params?.year !== undefined) {
+      queryParams.append('year', params.year.toString());
+    }
+    const query = queryParams.toString();
+    return await this.client.get<BudgetDto[]>({
+      path: query ? `${BUDGETS_PATH}?${query}` : BUDGETS_PATH,
+    });
   }
 
   async getById({

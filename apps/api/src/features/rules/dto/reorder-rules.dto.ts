@@ -4,6 +4,7 @@ import { MAX_RULES_PER_USER, MAX_CONDITIONS_PER_RULE } from '../constants';
 
 export class ReorderRulesDto {
   @ApiProperty({
+    type: [String],
     description: 'Array of rule IDs in the desired order',
     example: ['uuid-1', 'uuid-2', 'uuid-3'],
   })
@@ -16,6 +17,7 @@ export class ReorderRulesDto {
 
 export class ReorderConditionsDto {
   @ApiProperty({
+    type: [String],
     description: 'Array of condition IDs in the desired order',
     example: ['uuid-1', 'uuid-2', 'uuid-3'],
   })

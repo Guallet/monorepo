@@ -1,150 +1,207 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { AppScreen } from '@/components/layout/AppScreen';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useAuth } from '@/auth/useAuth';
+import {
+  AuthIntro,
+  AuthLink,
+  AuthNotice,
+  AuthScreen,
+} from '@/features/login/components/AuthLayout';
 import {
   Button,
   Label,
   OtpInput,
-  Title,
+  Stack,
+  useAlert,
   useTheme,
-} from '@guallet/ui-react-native';
+} from '@guallet/luna-mobile';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
-import { useAuth } from '@/auth/useAuth';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+
+const RESEND_DELAY_SECONDS = 30;
+const otpSchema = z.object({
+  code: z.string().length(6, 'Enter the 6-digit code.'),
+});
 
 export function OtpScreen() {
   const router = useRouter();
-  const { colors } = useTheme();
-  const { verifyOtpCode, getOtpCode } = useAuth();
   const params = useLocalSearchParams<{ email?: string }>();
   const email = params.email ?? '';
-
-  const [code, setCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { getOtpCode, verifyOtpCode } = useAuth();
+  const showAlert = useAlert();
+  const { colors, spacing } = useTheme();
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const form = useForm({
+    defaultValues: { code: '' },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: otpSchema },
+    listeners: { onChange: () => setError(null) },
+    onSubmit: async ({ value }) => {
+      if (!email) return;
+      setError(null);
+      const result = await verifyOtpCode(email, otpSchema.parse(value).code);
+      if (!result.success) {
+        setError(result.error?.message ?? 'That code is not valid. Try again.');
+      }
+    },
+  });
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const [resendAvailableAt, setResendAvailableAt] = useState(
+    () => Date.now() + RESEND_DELAY_SECONDS * 1000,
+  );
+  const [resendSeconds, setResendSeconds] = useState(RESEND_DELAY_SECONDS);
 
-  const isCodeComplete = code.length === 6;
+  useEffect(() => {
+    const updateRemainingTime = () => {
+      const remainingSeconds = Math.max(
+        0,
+        Math.ceil((resendAvailableAt - Date.now()) / 1000),
+      );
+      setResendSeconds(remainingSeconds);
+    };
 
-  const handleVerifyCode = async () => {
-    if (!isCodeComplete || !email) {
+    updateRemainingTime();
+    const timer = setInterval(updateRemainingTime, 1000);
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active') {
+        updateRemainingTime();
+      }
+    });
+
+    return () => {
+      clearInterval(timer);
+      subscription.remove();
+    };
+  }, [resendAvailableAt]);
+
+  const handleResendCode = async () => {
+    if (!email || resendSeconds > 0) {
       return;
     }
 
     setError(null);
     setIsLoading(true);
-
-    const result = await verifyOtpCode(email, code);
+    const result = await getOtpCode(email);
     setIsLoading(false);
 
     if (result.success) {
-      router.replace('/(tabs)');
-    } else {
-      setError(result.error?.message ?? 'Invalid code. Please try again.');
-    }
-  };
-
-  const handleResendCode = async () => {
-    if (!email) {
+      form.reset();
+      setResendAvailableAt(Date.now() + RESEND_DELAY_SECONDS * 1000);
+      showAlert({
+        title: 'New code sent',
+        message: `Check ${email} for your new code.`,
+      });
       return;
     }
 
-    setIsLoading(true);
-    const success = await getOtpCode(email);
-    setIsLoading(false);
-
-    if (success) {
-      setError(null);
-      alert('A new code has been sent to your email.');
-    } else {
-      setError('Failed to resend code. Please try again.');
-    }
+    setError(result.error?.message ?? 'We could not resend the code.');
   };
 
   const handleOpenEmailApp = async () => {
-    await openInbox();
+    try {
+      await openInbox();
+    } catch {
+      showAlert({
+        title: 'Could not open your inbox',
+        message: `Check ${email} for your code.`,
+      });
+    }
   };
 
-  return (
-    <AppScreen headerTitle="Enter code" isLoading={isLoading}>
-      {/* Content */}
-      <View style={{ flex: 1, padding: 16 }}>
-        <Title>Check your email</Title>
-        <Label>
-          We&apos;ve sent a 6-digit code to{' '}
-          {email ? (
-            <Label style={{ fontWeight: 'bold' }}>{email}</Label>
-          ) : (
-            'your email'
-          )}
-          . Enter the code below to sign in.
-        </Label>
-        <Label style={{ marginTop: 8 }}>
-          The email also contains a magic link you can click to sign in
-          automatically.
-        </Label>
-
-        {/* Code Input */}
-        <OtpInput
-          length={6}
-          style={{
-            marginVertical: 24,
-          }}
-          onCodeChanged={(newCode) => {
-            setCode(newCode);
-            setError(null);
-          }}
+  if (!email) {
+    return (
+      <AuthScreen headerTitle="Enter code">
+        <AuthIntro
+          description="Return to the previous step so we know where to send your code."
+          icon="alert-circle-outline"
+          title="Email address missing"
         />
-
-        {error && <Text style={styles.errorText}>{error}</Text>}
-
-        <Button onClick={handleVerifyCode} disabled={!isCodeComplete}>
-          Verify code
+        <Button onClick={() => router.replace('/login/email-code')}>
+          Enter email address
         </Button>
+      </AuthScreen>
+    );
+  }
 
-        {/* Resend Code */}
-        <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Didn&apos;t receive the code?</Text>
-          <TouchableOpacity onPress={handleResendCode}>
-            <Text style={[styles.resendButton, { color: colors.primary }]}>
-              Resend code
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+  return (
+    <AuthScreen headerTitle="Enter code" isLoading={isLoading || isSubmitting}>
+      <AuthIntro
+        align="center"
+        description={`We sent a 6-digit code to ${email}`}
+        icon="shield-checkmark-outline"
+        title="Enter your code"
+      />
 
-      {/* Bottom Button */}
-      <View
-        style={{
-          padding: 24,
-        }}
+      <Stack gap={spacing.sm}>
+        <form.Field name="code">
+          {(field) => (
+            <OtpInput
+              autoFocus
+              hasError={Boolean(error || field.state.meta.errors.length)}
+              length={6}
+              onCodeChanged={field.handleChange}
+              value={field.state.value}
+            />
+          )}
+        </form.Field>
+        {error ? <AuthNotice tone="error">{error}</AuthNotice> : null}
+      </Stack>
+
+      <form.Subscribe
+        selector={(state) =>
+          [state.canSubmit, state.isSubmitting, state.values.code] as const
+        }
       >
-        <Button variant="outline" onClick={handleOpenEmailApp}>
-          Open email app
-        </Button>
+        {([canSubmit, isSubmitting, code]) => (
+          <Button
+            disabled={
+              !canSubmit || code.length !== 6 || isSubmitting || isLoading
+            }
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
+          >
+            {isSubmitting || isLoading ? 'Verifying…' : 'Verify and sign in'}
+          </Button>
+        )}
+      </form.Subscribe>
+
+      <View style={styles.resendRow}>
+        <Label color={colors.text.secondary} size="sm">
+          Didn&apos;t receive it?
+        </Label>
+        <AuthLink disabled={resendSeconds > 0} onPress={handleResendCode}>
+          {resendSeconds > 0
+            ? `Resend in 0:${String(resendSeconds).padStart(2, '0')}`
+            : 'Resend code'}
+        </AuthLink>
       </View>
-    </AppScreen>
+
+      <Button onClick={handleOpenEmailApp} variant="outline">
+        Open email app
+      </Button>
+
+      <AuthLink
+        onPress={() =>
+          router.replace({
+            pathname: '/login/email-code',
+            params: { email },
+          })
+        }
+      >
+        Use a different email
+      </AuthLink>
+    </AuthScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  resendContainer: {
+  resendRow: {
     alignItems: 'center',
-    marginTop: 24,
-  },
-  resendText: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
-  },
-  resendButton: {
-    fontSize: 16,
-    fontWeight: '500',
-    textDecorationLine: 'underline',
-  },
-  errorText: {
-    fontSize: 14,
-    color: '#EF4444',
-    textAlign: 'center',
-    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });

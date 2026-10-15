@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "../GualletClientProvider";
-import { CreateBudgetRequest, UpdateBudgetRequest } from "@guallet/api-client";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from '../GualletClientProvider';
+import { CreateBudgetRequest, UpdateBudgetRequest } from '@guallet/api-client';
 
-const BUDGETS_QUERY_KEY = "budgets";
+const BUDGETS_QUERY_KEY = 'budgets';
 
 export function useBudgetMutations() {
   const queryClient = useQueryClient();

@@ -14,6 +14,7 @@ export const accountFormBaseSchema = z.object({
   balance: z.number().default(0),
   createInitialTransaction: z.boolean().default(true),
   account_type: z.enum(AccountTypeDto),
+  institution_id: z.string().nullable().optional(),
   currentAccountNumber: z.string().trim().optional(),
   currentSortCode: z.string().trim().optional(),
   currentOverdraftLimit: z.number().nullable().optional(),

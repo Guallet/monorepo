@@ -1,9 +1,14 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Institution } from '../entities/institution.entity';
 
 export class InstitutionDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty()
   name: string;
+  @ApiProperty({ required: false })
   image_src?: string;
+  @ApiProperty({ required: false })
   nordigen_id?: string;
 
   static fromDomain(domain: Institution): InstitutionDto {

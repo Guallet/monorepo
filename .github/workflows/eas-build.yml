@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - "apps/mobile/**"
+      - 'apps/mobile/**'
 
 permissions:
   contents: read
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20]
+        node-version: [24.20.x]
     steps:
       - name: Check for EXPO_TOKEN
         run: |
@@ -31,13 +31,13 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.14.0
+          version: 12.4.1
 
       - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -71,15 +71,14 @@ jobs:
         working-directory: apps/mobile
         run: pnpm tsc
 
-      - name: 🧹 Run ESLint
+      - name: 🧹 Run Linter
         working-directory: apps/mobile
         run: pnpm lint
         continue-on-error: true
 
-      - name: 🎨 Run Prettier check
+      - name: 🎨 Run Oxfmt check
         working-directory: apps/mobile
         run: pnpm format:check
-        continue-on-error: true
 
       - name: Build on EAS
         run: eas build --platform android --non-interactive --no-wait

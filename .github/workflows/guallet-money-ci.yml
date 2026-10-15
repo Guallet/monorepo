@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24.20.x]
 
     steps:
       - name: Checkout
@@ -30,7 +30,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.14.0
+          version: 12.4.1
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -45,6 +45,9 @@ jobs:
       - name: Lint @guallet/money
         working-directory: packages/guallet-money
         run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
 
       - name: Run type check
         working-directory: packages/guallet-money

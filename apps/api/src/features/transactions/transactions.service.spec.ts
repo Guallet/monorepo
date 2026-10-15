@@ -10,16 +10,16 @@ describe('TransactionsService', () => {
   let service: TransactionsService;
 
   const mockTransactionRepository = {
-    create: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    count: jest.fn(),
+    create: vi.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    count: vi.fn(),
   };
 
   const mockAccountsService = {
-    getUserAccount: jest.fn(),
+    getUserAccount: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -40,7 +40,7 @@ describe('TransactionsService', () => {
     service = module.get<TransactionsService>(TransactionsService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockTransactionRepository.create.mockImplementation(
       (value: Partial<Transaction>) => value,
     );
@@ -376,6 +376,42 @@ describe('TransactionsService', () => {
 
       expect(result).toEqual(updatedTransaction);
       expect(mockTransactionRepository.save).toHaveBeenCalled();
+    });
+
+    it('should validate and persist an account change', async () => {
+      const updateData = {
+        user_id: 'user-123',
+        transaction_id: 'trans-1',
+        dto: {
+          accountId: 'account-2',
+        },
+      };
+      const existingTransaction: Partial<Transaction> = {
+        id: updateData.transaction_id,
+        accountId: 'account-1',
+        amount: 100,
+      };
+      const updatedTransaction = {
+        ...existingTransaction,
+        accountId: 'account-2',
+      };
+
+      mockTransactionRepository.findOne.mockResolvedValue(existingTransaction);
+      mockAccountsService.getUserAccount.mockResolvedValue({
+        id: 'account-2',
+      });
+      mockTransactionRepository.save.mockResolvedValue(updatedTransaction);
+
+      const result = await service.updateUserTransaction(updateData);
+
+      expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
+        'user-123',
+        'account-2',
+      );
+      expect(mockTransactionRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ accountId: 'account-2' }),
+      );
+      expect(result).toEqual(updatedTransaction);
     });
 
     it('should throw NotFoundException when transaction not found', async () => {

@@ -1,10 +1,10 @@
+import { Fragment } from 'react';
 import {
   IconGauge,
   IconPresentationAnalytics,
   IconBuildingBank,
   IconCash,
-  IconSettings,
-  IconLogout,
+  IconSparkles,
   IconTools,
   IconCategory2,
   IconChartFunnel,
@@ -12,9 +12,8 @@ import {
   IconRepeat,
   Icon,
 } from '@tabler/icons-react';
-import { AppShell, Button, Divider, ScrollArea } from '@mantine/core';
+import { AppShell, Divider, ScrollArea } from '@mantine/core';
 import { LinksGroup } from './NavbarLinksGroup';
-import { useNavigate } from '@tanstack/react-router';
 
 type MenuData = {
   label: string;
@@ -28,7 +27,6 @@ const menuData: MenuData[] = [
   {
     label: 'Dashboard',
     icon: IconGauge,
-    initiallyOpened: true,
     link: '/dashboard',
   },
   {
@@ -77,19 +75,19 @@ const menuData: MenuData[] = [
     subLinks: [{ label: 'Cashflow', link: '/reports/cashflow' }],
   },
   {
+    label: 'AI Assistant',
+    icon: IconSparkles,
+    link: '/assistant',
+  },
+  {
     label: 'Tools',
     icon: IconTools,
     subLinks: [
-      { label: 'Pensions', link: '/' },
-      { label: 'Investments', link: '/' },
       { label: 'Loans', link: '/tools/loan' },
       { label: 'Mortgages', link: '/tools/mortgage' },
+      { label: 'UK Stamp Duty', link: '/tools/stamp-duty' },
+      { label: 'UK Salary Calculator', link: '/tools/salary' },
     ],
-  },
-  {
-    label: 'Settings',
-    icon: IconSettings,
-    link: '/settings',
   },
 ];
 
@@ -98,35 +96,14 @@ interface Props {
 }
 
 export function AppNavBar({ onItemSelected }: Readonly<Props>) {
-  // TODO: Instead of this hook, the navbar should use the <Link> component
-  const navigate = useNavigate();
-
   return (
-    <>
-      <AppShell.Section grow my="md" component={ScrollArea}>
-        {menuData.map((item) => {
-          return (
-            <LinksGroup
-              {...item}
-              key={item.label}
-              onItemSelected={onItemSelected}
-            />
-          );
-        })}
-      </AppShell.Section>
-      <AppShell.Section>
-        <Divider />
-
-        <Button
-          variant="transparent"
-          onClick={() => {
-            navigate({ to: '/logout' });
-          }}
-        >
-          <IconLogout />
-          Logout
-        </Button>
-      </AppShell.Section>
-    </>
+    <AppShell.Section grow my="md" component={ScrollArea}>
+      {menuData.map((item) => (
+        <Fragment key={item.label}>
+          <LinksGroup {...item} onItemSelected={onItemSelected} />
+          {item.label === 'Subscriptions' && <Divider my="xs" mx="xs" />}
+        </Fragment>
+      ))}
+    </AppShell.Section>
   );
 }

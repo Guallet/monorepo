@@ -1,0 +1,118 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Response } from 'express';
+import { RequestUser } from 'src/auth/request-user.decorator';
+import { UserPrincipal } from 'src/auth/user-principal';
+import { AiChatService } from './ai-chat.service';
+import { AiChatMessageDto } from './dto/ai-chat-message.dto';
+import { AiChatSessionDto } from './dto/ai-chat-session.dto';
+import { CreateAiChatSessionDto } from './dto/create-ai-chat-session.dto';
+import { SendAiChatMessageDto } from './dto/send-ai-chat-message.dto';
+
+@Controller('ai/chat')
+@ApiTags('AI')
+@UseGuards(ThrottlerGuard)
+export class AiChatController {
+  constructor(private readonly aiChatService: AiChatService) {}
+
+  @ApiOperation({ summary: 'findSessions' })
+  @ApiOkResponse({ type: () => AiChatSessionDto, isArray: true })
+  @Get('sessions')
+  async findSessions(
+    @RequestUser() user: UserPrincipal,
+  ): Promise<AiChatSessionDto[]> {
+    return await this.aiChatService.findSessions(user.id);
+  }
+
+  @ApiOperation({ summary: 'createSession' })
+  @ApiCreatedResponse({ type: () => AiChatSessionDto })
+  @ApiBody({ type: () => CreateAiChatSessionDto })
+  @Post('sessions')
+  @HttpCode(HttpStatus.CREATED)
+  async createSession(
+    @RequestUser() user: UserPrincipal,
+    @Body() dto: CreateAiChatSessionDto,
+  ): Promise<AiChatSessionDto> {
+    return await this.aiChatService.createSession({
+      userId: user.id,
+      agentId: dto.agentId,
+    });
+  }
+
+  @ApiOperation({ summary: 'deleteSession' })
+  @ApiOkResponse({ type: () => AiChatSessionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @Delete('sessions/:id')
+  async deleteSession(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<AiChatSessionDto> {
+    return await this.aiChatService.deleteSession({
+      userId: user.id,
+      sessionId: id,
+    });
+  }
+
+  @ApiOperation({ summary: 'findMessages' })
+  @ApiOkResponse({ type: () => AiChatMessageDto, isArray: true })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @Get('sessions/:id/messages')
+  async findMessages(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<AiChatMessageDto[]> {
+    return await this.aiChatService.findMessages({
+      userId: user.id,
+      sessionId: id,
+    });
+  }
+
+  // Streams the assistant reply as plain text chunks. Each call makes an
+  // outbound request to the user's AI provider, hence the stricter limit.
+  @ApiOperation({ summary: 'sendMessage' })
+  @ApiOkResponse({
+    description: 'Streamed assistant response',
+    content: {
+      'text/plain': {
+        schema: { type: 'string' },
+      },
+    },
+  })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => SendAiChatMessageDto })
+  @Post('sessions/:id/messages')
+  @Throttle({ default: { ttl: 60_000, limit: 20 } })
+  async sendMessage(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+    @Body() dto: SendAiChatMessageDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    const result = await this.aiChatService.streamReply({
+      userId: user.id,
+      sessionId: id,
+      content: dto.content,
+    });
+
+    void result.pipeTextStreamToResponse(response);
+  }
+}

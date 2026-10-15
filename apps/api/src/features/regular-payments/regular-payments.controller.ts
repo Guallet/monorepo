@@ -11,7 +11,14 @@ import {
 import { RegularPaymentsService } from './regular-payments.service';
 import { CreateRegularPaymentDto } from './dto/create-regular-payment.dto';
 import { UpdateRegularPaymentDto } from './dto/update-regular-payment.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiParam,
+  ApiCreatedResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 import { RegularPaymentDto } from './dto/regular-payment.dto';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { RequestUser } from 'src/auth/request-user.decorator';
@@ -25,6 +32,8 @@ export class RegularPaymentsController {
     private readonly regularPaymentsService: RegularPaymentsService,
   ) {}
 
+  @ApiOperation({ summary: 'findAll' })
+  @ApiOkResponse({ type: () => RegularPaymentDto, isArray: true })
   @Get()
   async findAll(
     @RequestUser() user: UserPrincipal,
@@ -35,6 +44,9 @@ export class RegularPaymentsController {
     return entities.map((x) => RegularPaymentDto.fromDomain(x));
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => RegularPaymentDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async findOne(
     @RequestUser() user: UserPrincipal,
@@ -47,6 +59,9 @@ export class RegularPaymentsController {
     return RegularPaymentDto.fromDomain(entity);
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => RegularPaymentDto })
+  @ApiBody({ type: () => CreateRegularPaymentDto })
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
@@ -60,6 +75,10 @@ export class RegularPaymentsController {
     return RegularPaymentDto.fromDomain(entity);
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => RegularPaymentDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateRegularPaymentDto })
   @Patch(':id')
   async update(
     @RequestUser() user: UserPrincipal,
@@ -74,6 +93,9 @@ export class RegularPaymentsController {
     return RegularPaymentDto.fromDomain(updated);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => RegularPaymentDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

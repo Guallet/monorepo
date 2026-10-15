@@ -94,7 +94,7 @@ export function PreferredCurrenciesRow() {
         value={t('components.preferredCurrenciesRow.row.value', {
           count: settings?.currencies.preferred_currencies.length ?? 0,
         })}
-        rightSection={<IconChevronRight />}
+        rightSection={<IconChevronRight size={20} strokeWidth={1.5} />}
         onClick={openPreferredCurrenciesModal}
       />
     </>

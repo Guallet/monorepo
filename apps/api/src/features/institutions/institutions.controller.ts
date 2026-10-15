@@ -14,7 +14,14 @@ import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiParam,
+  ApiCreatedResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 import { InstitutionDto } from './dto/institution.dto';
 
 @ApiTags('Bank institutions')
@@ -24,6 +31,8 @@ export class InstitutionsController {
 
   constructor(private readonly institutionsService: InstitutionsService) {}
 
+  @ApiOperation({ summary: 'getUserInstitutions' })
+  @ApiOkResponse({ type: () => InstitutionDto, isArray: true })
   @Get()
   async getUserInstitutions(
     @RequestUser() user: UserPrincipal,
@@ -34,6 +43,9 @@ export class InstitutionsController {
     return institutions.map((inst) => InstitutionDto.fromDomain(inst));
   }
 
+  @ApiOperation({ summary: 'getInstitution' })
+  @ApiOkResponse({ type: () => InstitutionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async getInstitution(
     @RequestUser() user: UserPrincipal,
@@ -50,6 +62,9 @@ export class InstitutionsController {
     return InstitutionDto.fromDomain(institution);
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => InstitutionDto })
+  @ApiBody({ type: () => CreateInstitutionRequest })
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
@@ -62,6 +77,10 @@ export class InstitutionsController {
     return InstitutionDto.fromDomain(institution);
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => InstitutionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateInstitutionRequest })
   @Patch(':id')
   async update(
     @RequestUser() user: UserPrincipal,
@@ -76,6 +95,9 @@ export class InstitutionsController {
     return InstitutionDto.fromDomain(institution);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => InstitutionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

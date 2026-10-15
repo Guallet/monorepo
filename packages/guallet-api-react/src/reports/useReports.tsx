@@ -1,4 +1,3 @@
-import { CashflowDataDto } from '@guallet/api-client';
 import { useQuery } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
 

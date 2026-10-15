@@ -1,14 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import type { Mock } from 'vitest';
 import { EmailService } from './email.service';
 import { EmailConfig } from 'src/configuration';
 
 describe('EmailService', () => {
   let service: EmailService;
-  let mockSendMail: jest.Mock;
+  let mockSendMail: Mock;
 
   const createMockConfigService = (smtpHost?: string) => ({
-    get: jest.fn(<T>(key: string, defaultValue?: T): T | undefined => {
+    get: vi.fn(<T>(key: string, defaultValue?: T): T | undefined => {
       if (key === 'email') {
         const emailConfig: EmailConfig = {
           from: 'Guallet <noreply@guallet.io>',
@@ -28,9 +29,7 @@ describe('EmailService', () => {
   });
 
   beforeEach(async () => {
-    mockSendMail = jest
-      .fn()
-      .mockResolvedValue({ messageId: 'test-message-id' });
+    mockSendMail = vi.fn().mockResolvedValue({ messageId: 'test-message-id' });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -49,6 +48,175 @@ describe('EmailService', () => {
     if (service['transporter']) {
       service['transporter'].sendMail = mockSendMail;
     }
+  });
+
+  describe('delivery diagnostics', () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('logs the attempt before SMTP resolves and correlates acceptance', async () => {
+      const log = vi
+        .spyOn(service['logger'], 'log')
+        .mockImplementation(() => {});
+      let resolveSend!: (result: { messageId: string }) => void;
+      mockSendMail.mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveSend = resolve;
+        }),
+      );
+
+      const sending = service.sendWelcomeEmail({
+        to: 'test@example.com',
+        userName: 'Test User',
+      });
+
+      expect(log).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Email send attempt started',
+          attemptId: expect.any(String),
+          template: 'welcome',
+          smtpHost: 'smtp.test.com',
+          smtpPort: 587,
+          smtpSecure: true,
+          smtpAuthConfigured: true,
+        }),
+      );
+      expect(log).toHaveBeenCalledTimes(1);
+      const attemptId = log.mock.calls[0][0].attemptId;
+
+      resolveSend({ messageId: 'smtp-message-id' });
+      await sending;
+
+      expect(log).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          message: 'Email accepted by SMTP server',
+          attemptId,
+          messageId: 'smtp-message-id',
+          durationMs: expect.any(Number),
+        }),
+      );
+    });
+
+    it('logs SMTP rejection details without credentials or email content', async () => {
+      const log = vi
+        .spyOn(service['logger'], 'log')
+        .mockImplementation(() => {});
+      const errorLog = vi
+        .spyOn(service['logger'], 'error')
+        .mockImplementation(() => {});
+      mockSendMail.mockRejectedValueOnce(
+        Object.assign(new Error('Authentication failed: test-pass'), {
+          code: 'EAUTH',
+          command: 'AUTH PLAIN',
+          responseCode: 535,
+          response: '535 Invalid credentials: test-pass',
+          auth: { user: 'test-user', pass: 'test-pass' },
+          html: 'private-email-body',
+        }),
+      );
+
+      await expect(
+        service.sendAuthOtpEmail({
+          to: 'private@example.com',
+          otp: 'secret-otp',
+          type: 'sign-in',
+        }),
+      ).resolves.toBeUndefined();
+
+      expect(errorLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Email send attempt failed',
+          attemptId: log.mock.calls[0][0].attemptId,
+          template: 'auth-otp',
+          stage: 'smtp',
+          durationMs: expect.any(Number),
+          error: {
+            name: 'Error',
+            message: 'Authentication failed: [REDACTED]',
+            code: 'EAUTH',
+            command: 'AUTH PLAIN',
+            responseCode: 535,
+            response: '535 Invalid credentials: [REDACTED]',
+          },
+        }),
+      );
+      const output = JSON.stringify([
+        ...log.mock.calls,
+        ...errorLog.mock.calls,
+      ]);
+      for (const secret of [
+        'test-user',
+        'test-pass',
+        'private@example.com',
+        'secret-otp',
+        'private-email-body',
+      ]) {
+        expect(output).not.toContain(secret);
+      }
+    });
+
+    it('distinguishes template errors from SMTP failures', async () => {
+      const errorLog = vi
+        .spyOn(service['logger'], 'error')
+        .mockImplementation(() => {});
+      service['compiledTemplates'].delete('welcome');
+
+      await service.sendWelcomeEmail({
+        to: 'test@example.com',
+        userName: 'Test User',
+      });
+
+      expect(mockSendMail).not.toHaveBeenCalled();
+      expect(errorLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stage: 'render',
+          error: { name: 'Error', message: 'Template welcome not found' },
+        }),
+      );
+    });
+
+    it('logs skipped email attempts when SMTP is unavailable', async () => {
+      const warn = vi
+        .spyOn(service['logger'], 'warn')
+        .mockImplementation(() => {});
+      service['transporter'] = null;
+
+      await service.sendWelcomeEmail({
+        to: 'test@example.com',
+        userName: 'Test User',
+      });
+
+      expect(mockSendMail).not.toHaveBeenCalled();
+      expect(warn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Email not sent - SMTP not configured',
+          attemptId: expect.any(String),
+          template: 'welcome',
+        }),
+      );
+    });
+
+    it('handles non-Error rejections without changing caller behavior', async () => {
+      const errorLog = vi
+        .spyOn(service['logger'], 'error')
+        .mockImplementation(() => {});
+      mockSendMail.mockRejectedValueOnce('SMTP unavailable');
+
+      await expect(
+        service.sendWelcomeEmail({
+          to: 'test@example.com',
+          userName: 'Test User',
+        }),
+      ).resolves.toBeUndefined();
+
+      expect(errorLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          stage: 'smtp',
+          error: { message: 'SMTP unavailable' },
+        }),
+      );
+    });
   });
 
   describe('HTML escaping', () => {
@@ -253,6 +421,22 @@ describe('EmailService', () => {
               content: expect.any(String),
             }),
           ]),
+        }),
+      );
+    });
+
+    it('should send a welcome email', async () => {
+      await service.sendWelcomeEmail({
+        to: 'new-user@example.com',
+        userName: 'New User',
+      });
+
+      expect(mockSendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: 'Guallet <noreply@guallet.io>',
+          to: 'new-user@example.com',
+          subject: 'Welcome to Guallet',
+          html: expect.stringContaining('New User'),
         }),
       );
     });

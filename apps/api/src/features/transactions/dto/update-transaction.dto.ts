@@ -1,4 +1,57 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateTransactionDto } from './create-transaction.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
 
-export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {}
+export class UpdateTransactionDto {
+  @ApiProperty({ required: false, format: 'uuid' })
+  @IsOptional()
+  @IsUUID()
+  accountId?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  description?: string;
+
+  @ApiProperty({ type: String, required: false, nullable: true })
+  @IsOptional()
+  @IsString()
+  notes?: string | null;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  amount?: number;
+
+  @ApiProperty({ required: false, minLength: 3, maxLength: 3 })
+  @IsOptional()
+  @IsString()
+  @Length(3, 3)
+  currency?: string;
+
+  @ApiProperty({
+    description: 'The transaction date as an ISO 8601 date or date-time string',
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  date?: string;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+    format: 'uuid',
+    nullable: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string | null;
+}

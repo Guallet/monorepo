@@ -1,5 +1,5 @@
-import { useMediaQuery } from "@mantine/hooks";
-import { useTheme } from "./useTheme";
+import { useMediaQuery } from '@mantine/hooks';
+import { useTheme } from './useTheme';
 
 export function useIsMobile(): boolean {
   const { breakpoints } = useTheme();

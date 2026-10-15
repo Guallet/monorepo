@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* oxlint-disable typescript/no-unsafe-argument */
+/* oxlint-disable typescript/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionsController } from './transactions.controller';
 import { TransactionsService } from './transactions.service';
@@ -11,14 +11,14 @@ describe('TransactionsController', () => {
   let controller: TransactionsController;
 
   const mockTransactionsService = {
-    getUserTransactions: jest.fn(),
-    getUserTransactionsCount: jest.fn(),
-    getUserTransactionsInbox: jest.fn(),
-    getUserTransactionsInboxCount: jest.fn(),
-    create: jest.fn(),
-    findOne: jest.fn(),
-    updateUserTransaction: jest.fn(),
-    deleteUserTransaction: jest.fn(),
+    getUserTransactions: vi.fn(),
+    getUserTransactionsCount: vi.fn(),
+    getUserTransactionsInbox: vi.fn(),
+    getUserTransactionsInboxCount: vi.fn(),
+    create: vi.fn(),
+    findOne: vi.fn(),
+    updateUserTransaction: vi.fn(),
+    deleteUserTransaction: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -41,7 +41,7 @@ describe('TransactionsController', () => {
     controller = module.get<TransactionsController>(TransactionsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -79,6 +79,30 @@ describe('TransactionsController', () => {
       expect(
         mockTransactionsService.getUserTransactionsCount,
       ).toHaveBeenCalled();
+    });
+
+    it('should forward category filters to list and count queries', async () => {
+      const query = {
+        page: 1,
+        pageSize: 50,
+        categories: ['category-1'],
+      };
+
+      mockTransactionsService.getUserTransactions.mockResolvedValue([]);
+      mockTransactionsService.getUserTransactionsCount.mockResolvedValue(0);
+
+      await controller.getTransactions(mockUser, query);
+
+      expect(mockTransactionsService.getUserTransactions).toHaveBeenCalledWith(
+        expect.objectContaining({ categories: ['category-1'] }),
+      );
+      expect(
+        mockTransactionsService.getUserTransactionsCount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          filters: expect.objectContaining({ categories: ['category-1'] }),
+        }),
+      );
     });
 
     it('should throw BadRequestException for invalid query', async () => {

@@ -67,7 +67,8 @@ export function useConnectedAccount(id: string) {
     enabled: !!id,
     queryFn: async () => {
       if (!id) return null;
-      return await gualletClient.accounts.getConnectedAccount(id);
+      const response = await gualletClient.accounts.getConnectedAccount(id);
+      return response.connectedAccount;
     },
   });
 

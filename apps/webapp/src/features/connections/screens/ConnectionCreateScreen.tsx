@@ -17,6 +17,7 @@ import { ObInstitutionDto, OpenBankingCountryDto } from '@guallet/api-client';
 import { SearchableListView } from '@guallet/ui-react';
 import { ObInstitutionRow } from '../components/ObInstitutionRow';
 import { notifications } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 
 interface ConnectionCreateScreenProps {
   selectedCountryCode?: string;
@@ -43,6 +44,7 @@ export function ConnectionCreateScreen({
   selectedCountryCode,
   onCountryChange,
 }: Readonly<ConnectionCreateScreenProps>) {
+  const { t } = useTranslation();
   const { countries, isLoading } = useOpenBankingSupportedCountries();
   const { institutions } =
     useOpenBankingInstitutionsForCountry(selectedCountryCode);
@@ -97,7 +99,7 @@ export function ConnectionCreateScreen({
   );
 
   return (
-    <BaseScreen>
+    <BaseScreen title={t('screens.connections.create.title', 'Connect a bank')}>
       <Stack>
         <Autocomplete
           disabled={isLoading}

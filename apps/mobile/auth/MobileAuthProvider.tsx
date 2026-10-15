@@ -1,26 +1,34 @@
-import React, { useCallback } from 'react';
-import { supabase } from './supabase';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { BuildConfig } from '@/BuildConfig';
+import React, { useCallback, useRef } from 'react';
 import { setAnalyticsDeviceId } from '@/utils/analytics';
 import { AuthProvider as BaseAuthProvider } from '@guallet/auth';
-
-GoogleSignin.configure({
-  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  webClientId: BuildConfig.Auth.GOOGLE_WEB_CLIENT_ID,
-});
+import { useQueryClient } from '@guallet/api-react';
+import { authClient } from './auth';
 
 interface MobileAuthProviderProps {
   children: React.ReactNode;
 }
 
 export function AuthProvider({ children }: Readonly<MobileAuthProviderProps>) {
-  const handleUserChange = useCallback(async (userId: string | null) => {
-    await setAnalyticsDeviceId(userId);
-  }, []);
+  const queryClient = useQueryClient();
+  const previousUserId = useRef<string | null>(null);
+
+  const handleUserChange = useCallback(
+    async (userId: string | null) => {
+      if (
+        previousUserId.current !== null &&
+        previousUserId.current !== userId
+      ) {
+        queryClient.clear();
+      }
+
+      previousUserId.current = userId;
+      await setAnalyticsDeviceId(userId);
+    },
+    [queryClient],
+  );
 
   return (
-    <BaseAuthProvider supabaseClient={supabase} onUserChange={handleUserChange}>
+    <BaseAuthProvider authClient={authClient} onUserChange={handleUserChange}>
       {children}
     </BaseAuthProvider>
   );

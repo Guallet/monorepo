@@ -243,8 +243,13 @@ export class TransactionsService {
       throw new NotFoundException();
     }
 
+    if (dto.accountId && dto.accountId !== dbEntity.accountId) {
+      await this.accountService.getUserAccount(user_id, dto.accountId);
+    }
+
     const updatedEntity = {
       ...dbEntity,
+      accountId: dto.accountId ?? dbEntity.accountId,
       amount: dto.amount ?? dbEntity.amount,
       description: dto.description ?? dbEntity.description,
       notes: dto.notes ?? dbEntity.notes,
@@ -275,6 +280,28 @@ export class TransactionsService {
     });
 
     return transactions;
+  }
+
+  async getAccountTransactionsSum({
+    accountId,
+    startDateExclusive,
+    endDate,
+  }: {
+    accountId: string;
+    startDateExclusive: Date;
+    endDate: Date;
+  }): Promise<number> {
+    const result = await this.repository
+      .createQueryBuilder('transaction')
+      .select('COALESCE(SUM(transaction.amount), 0)', 'sum')
+      .where('transaction.accountId = :accountId', { accountId })
+      .andWhere('transaction.date > :startDateExclusive', {
+        startDateExclusive,
+      })
+      .andWhere('transaction.date <= :endDate', { endDate })
+      .getRawOne<{ sum: string | number | null }>();
+
+    return Number(result?.sum ?? 0);
   }
 
   async deleteUserTransaction({

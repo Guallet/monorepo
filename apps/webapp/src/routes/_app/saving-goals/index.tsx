@@ -1,7 +1,7 @@
-import { SavingGoalsListScreen } from "@/features/savingGoals/screens/SavingGoalsListScreen";
-import { createFileRoute } from "@tanstack/react-router";
+import { SavingGoalsListScreen } from '@/features/savingGoals/screens/SavingGoalsListScreen';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/saving-goals/")({
+export const Route = createFileRoute('/_app/saving-goals/')({
   component: SavingGoalsPage,
 });
 

@@ -14,37 +14,37 @@ describe('OpenbankingService', () => {
   let service: OpenbankingService;
 
   const mockObConnectionRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
   };
 
   const mockNordigenAccountRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    delete: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    save: vi.fn(),
+    delete: vi.fn(),
   };
 
   const mockAccountRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockInstitutionRepository = {
-    find: jest.fn(),
+    find: vi.fn(),
   };
 
   const mockTransactionRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
+    find: vi.fn(),
+    save: vi.fn(),
   };
 
   const mockNordigenService = {
-    getInstitutions: jest.fn(),
-    getAccountMetadata: jest.fn(),
-    getAccountDetails: jest.fn(),
+    getInstitutions: vi.fn(),
+    getAccountMetadata: vi.fn(),
+    getAccountDetails: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -81,7 +81,7 @@ describe('OpenbankingService', () => {
     service = module.get<OpenbankingService>(OpenbankingService);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

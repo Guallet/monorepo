@@ -20,8 +20,9 @@ const defaultSwatches = [
   '#fd7e14',
 ];
 
-interface GualletColorPickerProps
-  extends React.ComponentProps<typeof ColorInput> {
+interface GualletColorPickerProps extends React.ComponentProps<
+  typeof ColorInput
+> {
   onColourSelected: (colour: string) => void;
 }
 

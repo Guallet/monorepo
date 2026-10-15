@@ -16,7 +16,14 @@ import { RuleDto } from './dto/rule.dto';
 import { ReorderRulesDto, ReorderConditionsDto } from './dto/reorder-rules.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiOkResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { RuleEvaluationResultDto } from './dto/rule-evaluation-result.dto';
 import { TransactionsService } from '../transactions/transactions.service';
 import { LimitsDto } from './dto/limits.dto';
@@ -31,6 +38,7 @@ export class RulesController {
     private readonly transactionsService: TransactionsService,
   ) {}
 
+  @ApiBody({ type: () => CreateRuleDto })
   @Post()
   @ApiOperation({ summary: 'Create a new categorization rule' })
   @ApiResponse({ status: 201, type: RuleDto })
@@ -62,6 +70,37 @@ export class RulesController {
     return rules.map((rule) => RuleDto.fromEntity(rule));
   }
 
+  @ApiOkResponse({
+    schema: {
+      type: 'object',
+      required: ['fields'],
+      properties: {
+        fields: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['name', 'label', 'type', 'operators'],
+            properties: {
+              name: { type: 'string' },
+              label: { type: 'string' },
+              type: { type: 'string' },
+              operators: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['value', 'label'],
+                  properties: {
+                    value: { type: 'string' },
+                    label: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   @Get('fields')
   @ApiOperation({ summary: 'Get available fields and operators for rules' })
   getFieldDefinitions() {
@@ -75,6 +114,7 @@ export class RulesController {
     return this.rulesService.getLimits();
   }
 
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific rule by ID' })
   @ApiResponse({ status: 200, type: RuleDto })
@@ -86,6 +126,8 @@ export class RulesController {
     return RuleDto.fromEntity(rule);
   }
 
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateRuleDto })
   @Patch(':id')
   @ApiOperation({ summary: 'Update a categorization rule' })
   @ApiResponse({ status: 200, type: RuleDto })
@@ -98,6 +140,8 @@ export class RulesController {
     return RuleDto.fromEntity(rule);
   }
 
+  @ApiOkResponse({ type: () => RuleDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a categorization rule' })
   async remove(
@@ -111,6 +155,7 @@ export class RulesController {
     return RuleDto.fromEntity(deleted);
   }
 
+  @ApiBody({ type: () => ReorderRulesDto })
   @Post('reorder')
   @ApiOperation({ summary: 'Reorder categorization rules' })
   @ApiResponse({ status: 200, type: [RuleDto] })
@@ -125,6 +170,8 @@ export class RulesController {
     return rules.map((rule) => RuleDto.fromEntity(rule));
   }
 
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => ReorderConditionsDto })
   @Post(':id/conditions/reorder')
   @ApiOperation({ summary: 'Reorder conditions within a rule' })
   @ApiResponse({ status: 200, type: RuleDto })
@@ -141,6 +188,7 @@ export class RulesController {
     return RuleDto.fromEntity(rule);
   }
 
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get('evaluate/:id')
   @ApiOperation({ summary: 'Evaluate a transaction by ID against all rules' })
   @ApiResponse({ status: 200, type: RuleEvaluationResultDto })

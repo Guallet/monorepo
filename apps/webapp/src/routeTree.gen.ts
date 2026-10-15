@@ -21,6 +21,7 @@ import { Route as LoginValidateotpRouteImport } from './routes/login/validateotp
 import { Route as LoginResetPasswordSentRouteImport } from './routes/login/reset-password-sent'
 import { Route as LoginForgotPasswordRouteImport } from './routes/login/forgot-password'
 import { Route as LoginCallbackRouteImport } from './routes/login/callback'
+import { Route as AppAssistantRouteImport } from './routes/_app/assistant'
 import { Route as AppUserIndexRouteImport } from './routes/_app/user/index'
 import { Route as AppTransactionsIndexRouteImport } from './routes/_app/transactions/index'
 import { Route as AppSubscriptionsIndexRouteImport } from './routes/_app/subscriptions/index'
@@ -41,6 +42,7 @@ import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transac
 import { Route as AppSubscriptionsNewRouteImport } from './routes/_app/subscriptions/new'
 import { Route as AppSubscriptionsIdRouteImport } from './routes/_app/subscriptions/$id'
 import { Route as AppSettingsExportRouteImport } from './routes/_app/settings/export'
+import { Route as AppSettingsAiRouteImport } from './routes/_app/settings/ai'
 import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
@@ -56,6 +58,9 @@ import { Route as AppConnectionsConnectIndexRouteImport } from './routes/_app/co
 import { Route as AppCategoriesRulesIndexRouteImport } from './routes/_app/categories/rules/index'
 import { Route as AppTransactionsIdEditRouteImport } from './routes/_app/transactions/$id_.edit'
 import { Route as AppSubscriptionsIdEditRouteImport } from './routes/_app/subscriptions/$id_.edit'
+import { Route as AppSettingsAiProvidersRouteImport } from './routes/_app/settings/ai_.providers'
+import { Route as AppSettingsAiNewRouteImport } from './routes/_app/settings/ai_.new'
+import { Route as AppSettingsAiIdRouteImport } from './routes/_app/settings/ai_.$id'
 import { Route as AppSavingGoalsIdEditRouteImport } from './routes/_app/saving-goals/$id_.edit'
 import { Route as AppImporterCsvSummaryRouteImport } from './routes/_app/importer/csv/summary'
 import { Route as AppImporterCsvPropertiesRouteImport } from './routes/_app/importer/csv/properties'
@@ -65,10 +70,17 @@ import { Route as AppConnectionsConnectCallbackRouteImport } from './routes/_app
 import { Route as AppCategoriesRulesNewRouteImport } from './routes/_app/categories/rules/new'
 import { Route as AppCategoriesIdEditRouteImport } from './routes/_app/categories/$id_.edit'
 import { Route as AppAccountsIdEditRouteImport } from './routes/_app/accounts/$id_.edit'
+import { Route as AppSettingsAiProvidersNewRouteImport } from './routes/_app/settings/ai_.providers_.new'
+import { Route as AppSettingsAiProvidersIdRouteImport } from './routes/_app/settings/ai_.providers_.$id'
+import { Route as AppImporterCsvStatusJobIdRouteImport } from './routes/_app/importer/csv/status/$jobId'
 import { Route as AppCategoriesRulesIdEditRouteImport } from './routes/_app/categories/rules/$id_.edit'
 
 const UserdeletedLazyRouteImport = createFileRoute('/userdeleted')()
 const IndexLazyRouteImport = createFileRoute('/')()
+const AppToolsStampDutyLazyRouteImport = createFileRoute(
+  '/_app/tools/stamp-duty',
+)()
+const AppToolsSalaryLazyRouteImport = createFileRoute('/_app/tools/salary')()
 const AppToolsMortgageLazyRouteImport = createFileRoute(
   '/_app/tools/mortgage',
 )()
@@ -132,6 +144,11 @@ const LoginCallbackRoute = LoginCallbackRouteImport.update({
   id: '/login/callback',
   path: '/login/callback',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppAssistantRoute = AppAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppUserIndexRoute = AppUserIndexRouteImport.update({
   id: '/user/',
@@ -203,6 +220,20 @@ const AppAccountsIndexRoute = AppAccountsIndexRouteImport.update({
   path: '/accounts/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppToolsStampDutyLazyRoute = AppToolsStampDutyLazyRouteImport.update({
+  id: '/tools/stamp-duty',
+  path: '/tools/stamp-duty',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/_app/tools/stamp-duty.lazy').then((d) => d.Route),
+)
+const AppToolsSalaryLazyRoute = AppToolsSalaryLazyRouteImport.update({
+  id: '/tools/salary',
+  path: '/tools/salary',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() =>
+  import('./routes/_app/tools/salary.lazy').then((d) => d.Route),
+)
 const AppToolsMortgageLazyRoute = AppToolsMortgageLazyRouteImport.update({
   id: '/tools/mortgage',
   path: '/tools/mortgage',
@@ -245,6 +276,11 @@ const AppSubscriptionsIdRoute = AppSubscriptionsIdRouteImport.update({
 const AppSettingsExportRoute = AppSettingsExportRouteImport.update({
   id: '/settings/export',
   path: '/settings/export',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsAiRoute = AppSettingsAiRouteImport.update({
+  id: '/settings/ai',
+  path: '/settings/ai',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSavingGoalsNewRoute = AppSavingGoalsNewRouteImport.update({
@@ -323,6 +359,21 @@ const AppSubscriptionsIdEditRoute = AppSubscriptionsIdEditRouteImport.update({
   path: '/subscriptions/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsAiProvidersRoute = AppSettingsAiProvidersRouteImport.update({
+  id: '/settings/ai_/providers',
+  path: '/settings/ai/providers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsAiNewRoute = AppSettingsAiNewRouteImport.update({
+  id: '/settings/ai_/new',
+  path: '/settings/ai/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsAiIdRoute = AppSettingsAiIdRouteImport.update({
+  id: '/settings/ai_/$id',
+  path: '/settings/ai/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSavingGoalsIdEditRoute = AppSavingGoalsIdEditRouteImport.update({
   id: '/saving-goals/$id_/edit',
   path: '/saving-goals/$id/edit',
@@ -371,6 +422,24 @@ const AppAccountsIdEditRoute = AppAccountsIdEditRouteImport.update({
   path: '/accounts/$id/edit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsAiProvidersNewRoute =
+  AppSettingsAiProvidersNewRouteImport.update({
+    id: '/settings/ai_/providers_/new',
+    path: '/settings/ai/providers/new',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppSettingsAiProvidersIdRoute =
+  AppSettingsAiProvidersIdRouteImport.update({
+    id: '/settings/ai_/providers_/$id',
+    path: '/settings/ai/providers/$id',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppImporterCsvStatusJobIdRoute =
+  AppImporterCsvStatusJobIdRouteImport.update({
+    id: '/importer/csv/status/$jobId',
+    path: '/importer/csv/status/$jobId',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppCategoriesRulesIdEditRoute =
   AppCategoriesRulesIdEditRouteImport.update({
     id: '/categories/rules/$id_/edit',
@@ -385,6 +454,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/userdeleted': typeof UserdeletedLazyRoute
+  '/assistant': typeof AppAssistantRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
@@ -400,6 +470,7 @@ export interface FileRoutesByFullPath {
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/settings/ai': typeof AppSettingsAiRoute
   '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
@@ -408,6 +479,8 @@ export interface FileRoutesByFullPath {
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
+  '/tools/salary': typeof AppToolsSalaryLazyRoute
+  '/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
   '/accounts': typeof AppAccountsIndexRoute
   '/budgets': typeof AppBudgetsIndexRoute
   '/categories': typeof AppCategoriesIndexRoute
@@ -431,12 +504,18 @@ export interface FileRoutesByFullPath {
   '/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
+  '/settings/ai/$id': typeof AppSettingsAiIdRoute
+  '/settings/ai/new': typeof AppSettingsAiNewRoute
+  '/settings/ai/providers': typeof AppSettingsAiProvidersRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
   '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
+  '/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
+  '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
+  '/settings/ai/providers/new': typeof AppSettingsAiProvidersNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
@@ -445,6 +524,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/userdeleted': typeof UserdeletedLazyRoute
+  '/assistant': typeof AppAssistantRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
@@ -460,6 +540,7 @@ export interface FileRoutesByTo {
   '/reports/cashflow': typeof AppReportsCashflowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/settings/ai': typeof AppSettingsAiRoute
   '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
@@ -468,6 +549,8 @@ export interface FileRoutesByTo {
   '/user/edit': typeof AppUserEditRoute
   '/tools/loan': typeof AppToolsLoanLazyRoute
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
+  '/tools/salary': typeof AppToolsSalaryLazyRoute
+  '/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
   '/accounts': typeof AppAccountsIndexRoute
   '/budgets': typeof AppBudgetsIndexRoute
   '/categories': typeof AppCategoriesIndexRoute
@@ -491,12 +574,18 @@ export interface FileRoutesByTo {
   '/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/saving-goals/$id/edit': typeof AppSavingGoalsIdEditRoute
+  '/settings/ai/$id': typeof AppSettingsAiIdRoute
+  '/settings/ai/new': typeof AppSettingsAiNewRoute
+  '/settings/ai/providers': typeof AppSettingsAiProvidersRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
   '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
   '/categories/rules': typeof AppCategoriesRulesIndexRoute
   '/connections/connect': typeof AppConnectionsConnectIndexRoute
   '/importer/csv': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
+  '/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
+  '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
+  '/settings/ai/providers/new': typeof AppSettingsAiProvidersNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -507,6 +596,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/userdeleted': typeof UserdeletedLazyRoute
+  '/_app/assistant': typeof AppAssistantRoute
   '/login/callback': typeof LoginCallbackRoute
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
@@ -522,6 +612,7 @@ export interface FileRoutesById {
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
+  '/_app/settings/ai': typeof AppSettingsAiRoute
   '/_app/settings/export': typeof AppSettingsExportRoute
   '/_app/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/_app/subscriptions/new': typeof AppSubscriptionsNewRoute
@@ -530,6 +621,8 @@ export interface FileRoutesById {
   '/_app/user/edit': typeof AppUserEditRoute
   '/_app/tools/loan': typeof AppToolsLoanLazyRoute
   '/_app/tools/mortgage': typeof AppToolsMortgageLazyRoute
+  '/_app/tools/salary': typeof AppToolsSalaryLazyRoute
+  '/_app/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
   '/_app/accounts/': typeof AppAccountsIndexRoute
   '/_app/budgets/': typeof AppBudgetsIndexRoute
   '/_app/categories/': typeof AppCategoriesIndexRoute
@@ -553,12 +646,18 @@ export interface FileRoutesById {
   '/_app/importer/csv/properties': typeof AppImporterCsvPropertiesRoute
   '/_app/importer/csv/summary': typeof AppImporterCsvSummaryRoute
   '/_app/saving-goals/$id_/edit': typeof AppSavingGoalsIdEditRoute
+  '/_app/settings/ai_/$id': typeof AppSettingsAiIdRoute
+  '/_app/settings/ai_/new': typeof AppSettingsAiNewRoute
+  '/_app/settings/ai_/providers': typeof AppSettingsAiProvidersRoute
   '/_app/subscriptions/$id_/edit': typeof AppSubscriptionsIdEditRoute
   '/_app/transactions/$id_/edit': typeof AppTransactionsIdEditRoute
   '/_app/categories/rules/': typeof AppCategoriesRulesIndexRoute
   '/_app/connections/connect/': typeof AppConnectionsConnectIndexRoute
   '/_app/importer/csv/': typeof AppImporterCsvIndexRoute
   '/_app/categories/rules/$id_/edit': typeof AppCategoriesRulesIdEditRoute
+  '/_app/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
+  '/_app/settings/ai_/providers_/$id': typeof AppSettingsAiProvidersIdRoute
+  '/_app/settings/ai_/providers_/new': typeof AppSettingsAiProvidersNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -569,6 +668,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/userdeleted'
+    | '/assistant'
     | '/login/callback'
     | '/login/forgot-password'
     | '/login/reset-password-sent'
@@ -584,6 +684,7 @@ export interface FileRouteTypes {
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
+    | '/settings/ai'
     | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
@@ -592,6 +693,8 @@ export interface FileRouteTypes {
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
+    | '/tools/salary'
+    | '/tools/stamp-duty'
     | '/accounts'
     | '/budgets'
     | '/categories'
@@ -615,12 +718,18 @@ export interface FileRouteTypes {
     | '/importer/csv/properties'
     | '/importer/csv/summary'
     | '/saving-goals/$id/edit'
+    | '/settings/ai/$id'
+    | '/settings/ai/new'
+    | '/settings/ai/providers'
     | '/subscriptions/$id/edit'
     | '/transactions/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
     | '/categories/rules/$id/edit'
+    | '/importer/csv/status/$jobId'
+    | '/settings/ai/providers/$id'
+    | '/settings/ai/providers/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -629,6 +738,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/userdeleted'
+    | '/assistant'
     | '/login/callback'
     | '/login/forgot-password'
     | '/login/reset-password-sent'
@@ -644,6 +754,7 @@ export interface FileRouteTypes {
     | '/reports/cashflow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
+    | '/settings/ai'
     | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
@@ -652,6 +763,8 @@ export interface FileRouteTypes {
     | '/user/edit'
     | '/tools/loan'
     | '/tools/mortgage'
+    | '/tools/salary'
+    | '/tools/stamp-duty'
     | '/accounts'
     | '/budgets'
     | '/categories'
@@ -675,12 +788,18 @@ export interface FileRouteTypes {
     | '/importer/csv/properties'
     | '/importer/csv/summary'
     | '/saving-goals/$id/edit'
+    | '/settings/ai/$id'
+    | '/settings/ai/new'
+    | '/settings/ai/providers'
     | '/subscriptions/$id/edit'
     | '/transactions/$id/edit'
     | '/categories/rules'
     | '/connections/connect'
     | '/importer/csv'
     | '/categories/rules/$id/edit'
+    | '/importer/csv/status/$jobId'
+    | '/settings/ai/providers/$id'
+    | '/settings/ai/providers/new'
   id:
     | '__root__'
     | '/'
@@ -690,6 +809,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/userdeleted'
+    | '/_app/assistant'
     | '/login/callback'
     | '/login/forgot-password'
     | '/login/reset-password-sent'
@@ -705,6 +825,7 @@ export interface FileRouteTypes {
     | '/_app/reports/cashflow'
     | '/_app/saving-goals/$id'
     | '/_app/saving-goals/new'
+    | '/_app/settings/ai'
     | '/_app/settings/export'
     | '/_app/subscriptions/$id'
     | '/_app/subscriptions/new'
@@ -713,6 +834,8 @@ export interface FileRouteTypes {
     | '/_app/user/edit'
     | '/_app/tools/loan'
     | '/_app/tools/mortgage'
+    | '/_app/tools/salary'
+    | '/_app/tools/stamp-duty'
     | '/_app/accounts/'
     | '/_app/budgets/'
     | '/_app/categories/'
@@ -736,12 +859,18 @@ export interface FileRouteTypes {
     | '/_app/importer/csv/properties'
     | '/_app/importer/csv/summary'
     | '/_app/saving-goals/$id_/edit'
+    | '/_app/settings/ai_/$id'
+    | '/_app/settings/ai_/new'
+    | '/_app/settings/ai_/providers'
     | '/_app/subscriptions/$id_/edit'
     | '/_app/transactions/$id_/edit'
     | '/_app/categories/rules/'
     | '/_app/connections/connect/'
     | '/_app/importer/csv/'
     | '/_app/categories/rules/$id_/edit'
+    | '/_app/importer/csv/status/$jobId'
+    | '/_app/settings/ai_/providers_/$id'
+    | '/_app/settings/ai_/providers_/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -845,6 +974,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/assistant': {
+      id: '/_app/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AppAssistantRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/user/': {
       id: '/_app/user/'
       path: '/user'
@@ -943,6 +1079,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/tools/stamp-duty': {
+      id: '/_app/tools/stamp-duty'
+      path: '/tools/stamp-duty'
+      fullPath: '/tools/stamp-duty'
+      preLoaderRoute: typeof AppToolsStampDutyLazyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tools/salary': {
+      id: '/_app/tools/salary'
+      path: '/tools/salary'
+      fullPath: '/tools/salary'
+      preLoaderRoute: typeof AppToolsSalaryLazyRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/tools/mortgage': {
       id: '/_app/tools/mortgage'
       path: '/tools/mortgage'
@@ -997,6 +1147,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/export'
       fullPath: '/settings/export'
       preLoaderRoute: typeof AppSettingsExportRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai': {
+      id: '/_app/settings/ai'
+      path: '/settings/ai'
+      fullPath: '/settings/ai'
+      preLoaderRoute: typeof AppSettingsAiRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/saving-goals/new': {
@@ -1104,6 +1261,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubscriptionsIdEditRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/ai_/providers': {
+      id: '/_app/settings/ai_/providers'
+      path: '/settings/ai/providers'
+      fullPath: '/settings/ai/providers'
+      preLoaderRoute: typeof AppSettingsAiProvidersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai_/new': {
+      id: '/_app/settings/ai_/new'
+      path: '/settings/ai/new'
+      fullPath: '/settings/ai/new'
+      preLoaderRoute: typeof AppSettingsAiNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai_/$id': {
+      id: '/_app/settings/ai_/$id'
+      path: '/settings/ai/$id'
+      fullPath: '/settings/ai/$id'
+      preLoaderRoute: typeof AppSettingsAiIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/saving-goals/$id_/edit': {
       id: '/_app/saving-goals/$id_/edit'
       path: '/saving-goals/$id/edit'
@@ -1167,6 +1345,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountsIdEditRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/ai_/providers_/new': {
+      id: '/_app/settings/ai_/providers_/new'
+      path: '/settings/ai/providers/new'
+      fullPath: '/settings/ai/providers/new'
+      preLoaderRoute: typeof AppSettingsAiProvidersNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/ai_/providers_/$id': {
+      id: '/_app/settings/ai_/providers_/$id'
+      path: '/settings/ai/providers/$id'
+      fullPath: '/settings/ai/providers/$id'
+      preLoaderRoute: typeof AppSettingsAiProvidersIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/importer/csv/status/$jobId': {
+      id: '/_app/importer/csv/status/$jobId'
+      path: '/importer/csv/status/$jobId'
+      fullPath: '/importer/csv/status/$jobId'
+      preLoaderRoute: typeof AppImporterCsvStatusJobIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/categories/rules/$id_/edit': {
       id: '/_app/categories/rules/$id_/edit'
       path: '/categories/rules/$id/edit'
@@ -1178,6 +1377,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAssistantRoute: typeof AppAssistantRoute
   AppAccountsIdRoute: typeof AppAccountsIdRoute
   AppAccountsNewRoute: typeof AppAccountsNewRoute
   AppBudgetsIdRoute: typeof AppBudgetsIdRoute
@@ -1188,6 +1388,7 @@ interface AppRouteChildren {
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
   AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
+  AppSettingsAiRoute: typeof AppSettingsAiRoute
   AppSettingsExportRoute: typeof AppSettingsExportRoute
   AppSubscriptionsIdRoute: typeof AppSubscriptionsIdRoute
   AppSubscriptionsNewRoute: typeof AppSubscriptionsNewRoute
@@ -1196,6 +1397,8 @@ interface AppRouteChildren {
   AppUserEditRoute: typeof AppUserEditRoute
   AppToolsLoanLazyRoute: typeof AppToolsLoanLazyRoute
   AppToolsMortgageLazyRoute: typeof AppToolsMortgageLazyRoute
+  AppToolsSalaryLazyRoute: typeof AppToolsSalaryLazyRoute
+  AppToolsStampDutyLazyRoute: typeof AppToolsStampDutyLazyRoute
   AppAccountsIndexRoute: typeof AppAccountsIndexRoute
   AppBudgetsIndexRoute: typeof AppBudgetsIndexRoute
   AppCategoriesIndexRoute: typeof AppCategoriesIndexRoute
@@ -1219,15 +1422,22 @@ interface AppRouteChildren {
   AppImporterCsvPropertiesRoute: typeof AppImporterCsvPropertiesRoute
   AppImporterCsvSummaryRoute: typeof AppImporterCsvSummaryRoute
   AppSavingGoalsIdEditRoute: typeof AppSavingGoalsIdEditRoute
+  AppSettingsAiIdRoute: typeof AppSettingsAiIdRoute
+  AppSettingsAiNewRoute: typeof AppSettingsAiNewRoute
+  AppSettingsAiProvidersRoute: typeof AppSettingsAiProvidersRoute
   AppSubscriptionsIdEditRoute: typeof AppSubscriptionsIdEditRoute
   AppTransactionsIdEditRoute: typeof AppTransactionsIdEditRoute
   AppCategoriesRulesIndexRoute: typeof AppCategoriesRulesIndexRoute
   AppConnectionsConnectIndexRoute: typeof AppConnectionsConnectIndexRoute
   AppImporterCsvIndexRoute: typeof AppImporterCsvIndexRoute
   AppCategoriesRulesIdEditRoute: typeof AppCategoriesRulesIdEditRoute
+  AppImporterCsvStatusJobIdRoute: typeof AppImporterCsvStatusJobIdRoute
+  AppSettingsAiProvidersIdRoute: typeof AppSettingsAiProvidersIdRoute
+  AppSettingsAiProvidersNewRoute: typeof AppSettingsAiProvidersNewRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAssistantRoute: AppAssistantRoute,
   AppAccountsIdRoute: AppAccountsIdRoute,
   AppAccountsNewRoute: AppAccountsNewRoute,
   AppBudgetsIdRoute: AppBudgetsIdRoute,
@@ -1238,6 +1448,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppReportsCashflowRoute: AppReportsCashflowRoute,
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
   AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
+  AppSettingsAiRoute: AppSettingsAiRoute,
   AppSettingsExportRoute: AppSettingsExportRoute,
   AppSubscriptionsIdRoute: AppSubscriptionsIdRoute,
   AppSubscriptionsNewRoute: AppSubscriptionsNewRoute,
@@ -1246,6 +1457,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppUserEditRoute: AppUserEditRoute,
   AppToolsLoanLazyRoute: AppToolsLoanLazyRoute,
   AppToolsMortgageLazyRoute: AppToolsMortgageLazyRoute,
+  AppToolsSalaryLazyRoute: AppToolsSalaryLazyRoute,
+  AppToolsStampDutyLazyRoute: AppToolsStampDutyLazyRoute,
   AppAccountsIndexRoute: AppAccountsIndexRoute,
   AppBudgetsIndexRoute: AppBudgetsIndexRoute,
   AppCategoriesIndexRoute: AppCategoriesIndexRoute,
@@ -1269,12 +1482,18 @@ const AppRouteChildren: AppRouteChildren = {
   AppImporterCsvPropertiesRoute: AppImporterCsvPropertiesRoute,
   AppImporterCsvSummaryRoute: AppImporterCsvSummaryRoute,
   AppSavingGoalsIdEditRoute: AppSavingGoalsIdEditRoute,
+  AppSettingsAiIdRoute: AppSettingsAiIdRoute,
+  AppSettingsAiNewRoute: AppSettingsAiNewRoute,
+  AppSettingsAiProvidersRoute: AppSettingsAiProvidersRoute,
   AppSubscriptionsIdEditRoute: AppSubscriptionsIdEditRoute,
   AppTransactionsIdEditRoute: AppTransactionsIdEditRoute,
   AppCategoriesRulesIndexRoute: AppCategoriesRulesIndexRoute,
   AppConnectionsConnectIndexRoute: AppConnectionsConnectIndexRoute,
   AppImporterCsvIndexRoute: AppImporterCsvIndexRoute,
   AppCategoriesRulesIdEditRoute: AppCategoriesRulesIdEditRoute,
+  AppImporterCsvStatusJobIdRoute: AppImporterCsvStatusJobIdRoute,
+  AppSettingsAiProvidersIdRoute: AppSettingsAiProvidersIdRoute,
+  AppSettingsAiProvidersNewRoute: AppSettingsAiProvidersNewRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

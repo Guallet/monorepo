@@ -1,7 +1,9 @@
 import { Stepper, StepperProps } from '@mantine/core';
 
-interface CsvStepperProps
-  extends Omit<StepperProps, 'children' | 'active' | 'onStepClick'> {
+interface CsvStepperProps extends Omit<
+  StepperProps,
+  'children' | 'active' | 'onStepClick'
+> {
   activeStep: number;
   onStepClick?: (stepIndex: number) => void;
 }

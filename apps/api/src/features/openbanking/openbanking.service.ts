@@ -120,7 +120,7 @@ export class OpenbankingService {
         accounts_count: accountIds.length,
       };
     } catch (error) {
-      this.logger.error(`Error syncing accounts: ${error}`);
+      this.logger.error(`Error syncing accounts: ${String(error)}`);
       throw new InternalServerErrorException();
     }
   }

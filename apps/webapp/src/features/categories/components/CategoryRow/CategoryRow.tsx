@@ -1,6 +1,6 @@
-import { CategoryAvatar } from "@/components/Categories/CategoryAvatar";
-import { CategoryDto } from "@guallet/api-client";
-import { UnstyledButton, Group, Text } from "@mantine/core";
+import { CategoryAvatar } from '@/components/Categories/CategoryAvatar';
+import { CategoryDto } from '@guallet/api-client';
+import { UnstyledButton, Group, Text } from '@mantine/core';
 
 interface CategoryRowProps {
   category: CategoryDto;

@@ -1,98 +1,111 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { AppScreen } from '@/components/layout/AppScreen';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import {
-  Button,
-  Label,
-  TextInput,
-  Title,
-  Stack,
-  useTheme,
-} from '@guallet/ui-react-native';
 import { useAuth } from '@/auth/useAuth';
+import {
+  AuthIntro,
+  AuthLink,
+  AuthNotice,
+  AuthScreen,
+} from '@/features/login/components/AuthLayout';
+import { Button, TextInput } from '@guallet/luna-mobile';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
+import { useState } from 'react';
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const forgotPasswordSchema = z.object({
+  email: z.string().trim().email('Enter a valid email address.'),
+});
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
-  const { spacing } = useTheme();
-  const { resetPassword } = useAuth();
   const params = useLocalSearchParams<{ email?: string }>();
-
-  const [email, setEmail] = useState(params.email ?? '');
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const isValidEmail = emailRegex.test(email);
-
-  const handleResetPassword = async () => {
-    if (!isValidEmail) {
-      setEmailError('Please enter a valid email');
-      return;
-    }
-
-    setEmailError(null);
-    setIsLoading(true);
-
-    const success = await resetPassword(email);
-    setIsLoading(false);
-
-    if (success) {
-      router.navigate({
-        pathname: '/login/reset-password-sent',
-        params: { email },
-      });
-    } else {
-      setEmailError('Failed to send reset email. Please try again.');
-    }
-  };
+  const { resetPassword } = useAuth();
+  const [requestError, setRequestError] = useState<string | null>(null);
+  const form = useForm({
+    defaultValues: { email: params.email ?? '' },
+    validationLogic: revalidateLogic(),
+    validators: { onDynamic: forgotPasswordSchema },
+    listeners: { onChange: () => setRequestError(null) },
+    onSubmit: async ({ value }) => {
+      const { email } = forgotPasswordSchema.parse(value);
+      setRequestError(null);
+      const result = await resetPassword(
+        email,
+        'guallet://login/reset-password',
+      );
+      if (result.success) {
+        router.push({
+          pathname: '/login/reset-password-sent',
+          params: { email },
+        });
+        return;
+      }
+      setRequestError(
+        result.error?.message ??
+          'We could not send the reset email. Please try again.',
+      );
+    },
+  });
+  const [email, canSubmit, isSubmitting] = useStore(
+    form.store,
+    (state) =>
+      [state.values.email, state.canSubmit, state.isSubmitting] as const,
+  );
 
   return (
-    <AppScreen headerTitle="Reset Password" isLoading={isLoading}>
-      <Stack style={{ flex: 1, padding: spacing.md }} gap={spacing.lg}>
-        <View style={styles.content}>
-          <Title>Forgot your password?</Title>
-          <Label>
-            Enter your email address and we&apos;ll send you a link to reset
-            your password.
-          </Label>
+    <AuthScreen headerTitle="Password help" isLoading={isSubmitting}>
+      <AuthIntro
+        description="Enter your account email and we’ll send you a secure link to choose a new password."
+        eyebrow="Account recovery"
+        icon="key-outline"
+        title="Reset your password"
+      />
 
+      {requestError ? (
+        <AuthNotice tone="error">{requestError}</AuthNotice>
+      ) : null}
+
+      <form.Field name="email">
+        {(field) => (
           <TextInput
-            label="Email"
-            onChangeText={(input) => {
-              setEmail(input);
-              setEmailError(null);
-            }}
-            value={email}
-            placeholder="Enter your email"
-            keyboardType="email-address"
             autoCapitalize="none"
+            autoComplete="email"
             autoCorrect={false}
-            error={emailError}
+            accessibilityHint={field.state.meta.errors[0]?.message}
+            error={field.state.meta.errors[0]?.message}
+            keyboardType="email-address"
+            label="Email address"
+            onBlur={field.handleBlur}
+            onChangeText={field.handleChange}
+            onSubmitEditing={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
+            placeholder="you@example.com"
+            returnKeyType="send"
+            textContentType="emailAddress"
+            value={field.state.value}
           />
-        </View>
+        )}
+      </form.Field>
 
-        <View style={styles.buttonContainer}>
-          <Button onClick={handleResetPassword} disabled={!isValidEmail}>
-            Send reset link
-          </Button>
-          <Button variant="outline" onClick={() => router.back()}>
-            Back to login
-          </Button>
-        </View>
-      </Stack>
-    </AppScreen>
+      <Button
+        disabled={!canSubmit || !email.trim() || isSubmitting}
+        onClick={() => {
+          if (!form.state.isSubmitting) void form.handleSubmit();
+        }}
+      >
+        {isSubmitting ? 'Sending…' : 'Send reset link'}
+      </Button>
+
+      <AuthLink
+        onPress={() =>
+          router.replace({
+            pathname: '/login/password',
+            params: { email: email.trim() },
+          })
+        }
+      >
+        Back to sign in
+      </AuthLink>
+    </AuthScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    gap: 16,
-  },
-  buttonContainer: {
-    gap: 12,
-    paddingBottom: 24,
-  },
-});

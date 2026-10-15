@@ -1,4 +1,4 @@
-import { AccountDto, CategoryDto } from "@guallet/api-client";
+import { AccountDto, CategoryDto } from '@guallet/api-client';
 
 export type FilterData = {
   selectedAccounts?: AccountDto[] | null;

@@ -1,0 +1,51 @@
+{
+  "name": "@guallet/luna-mobile",
+  "version": "0.1.0",
+  "description": "Luna UI components and category icons for React Native",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./icons": {
+      "types": "./src/icons/index.ts",
+      "default": "./src/icons/index.ts"
+    }
+  },
+  "private": true,
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "oxlint .",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "cjgaliana",
+  "dependencies": {
+    "@expo/ui": "57.0.19",
+    "@guallet/theme": "workspace:*",
+    "@react-native-community/datetimepicker": "9.2.1",
+    "@tabler/icons-react-native": "3.46.0",
+    "expo-image": "57.0.5",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-keyboard-controller": "1.22.6",
+    "react-native-svg": "15.15.4",
+    "sonner-native": "0.27.0"
+  },
+  "devDependencies": {
+    "@types/react": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
+  },
+  "peerDependencies": {
+    "react-native-gesture-handler": ">=2.28.0",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "^5.6.0",
+    "react-native-screens": "^4.16.0",
+    "react-native-worklets": "0.10.1"
+  }
+}

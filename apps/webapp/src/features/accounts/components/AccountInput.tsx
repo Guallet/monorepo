@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getAccountTypeTitle } from '../models/Account';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { IconCheck } from '@tabler/icons-react';
-import { AccountAvatar } from '@/components/AccountAvatar/AccountAvatar';
+import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 
 type AccountInputProps = React.ComponentProps<typeof Select>;
 

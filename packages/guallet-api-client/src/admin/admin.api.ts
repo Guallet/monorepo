@@ -1,6 +1,6 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 
-const ADMIN_PATH = "admin";
+const ADMIN_PATH = 'admin';
 
 export class AdminApi {
   constructor(private readonly client: GualletClientImpl) {}

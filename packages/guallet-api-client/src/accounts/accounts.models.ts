@@ -71,7 +71,7 @@ export interface CurrentAccountProperties {
     accountNumber: string;
     sortCode: string;
   };
-  overdraft: number | null;
+  overdraft?: number | null;
 }
 
 export interface CreditCardProperties {
@@ -98,11 +98,25 @@ export interface LoanAccountProperties {
   termLength: number | null;
 }
 
-export interface AccountChartsDto {
-  startDate: Date;
-  endDate: Date;
+export interface BalanceHistoryPoint {
+  date: string;
+  balance: number;
+}
 
+export interface ConnectedAccountDto {
+  id: string;
+  updated_at: string;
+}
+
+export interface ConnectedAccountResponseDto {
+  connectedAccount: ConnectedAccountDto;
+}
+
+export interface AccountChartsDto {
+  startDate: string;
+  endDate: string;
   chart: AccountChartData[];
+  balanceHistory: BalanceHistoryPoint[];
 }
 
 export interface AccountChartData {

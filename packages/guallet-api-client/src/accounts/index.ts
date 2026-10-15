@@ -1,2 +1,2 @@
-export * from "./accounts.models";
-export * from "./accounts.api";
+export * from './accounts.models';
+export * from './accounts.api';

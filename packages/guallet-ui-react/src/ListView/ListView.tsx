@@ -1,5 +1,5 @@
-import { Stack, Text } from "@mantine/core";
-import React from "react";
+import { Stack, Text } from '@mantine/core';
+import React from 'react';
 
 interface IProps<T> {
   items: T[];

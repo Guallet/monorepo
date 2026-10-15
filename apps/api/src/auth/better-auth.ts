@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
 import { emailOTP, magicLink } from 'better-auth/plugins';
+import { expo } from '@better-auth/expo';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export const createAuth = ({
@@ -24,7 +25,9 @@ export const createAuth = ({
 
   return betterAuth({
     appName: 'Guallet',
-    trustedOrigins: [...authConfig.allowedOrigins],
+    // Native Expo requests use this origin while the Expo plugin proxies OAuth
+    // callbacks back to the app's custom URL scheme.
+    trustedOrigins: [...new Set([...authConfig.allowedOrigins, 'guallet://'])],
     basePath: '/auth',
     baseURL: authConfig.baseUrl,
     // DATABASE CONFIG
@@ -41,15 +44,13 @@ export const createAuth = ({
         updatedAt: 'updated_at',
       },
     },
-    sessions: {
-      modelName: 'auth_sessions',
-    },
     account: {
       modelName: 'auth_accounts',
     },
     // AUTH CONFIG
     secret: authConfig.secret,
     session: {
+      modelName: 'session',
       expiresIn: 60 * 60 * 24 * 7, // 7 days
       updateAge: 60 * 60 * 24, // 1 day
     },
@@ -80,8 +81,11 @@ export const createAuth = ({
       user: {
         create: {
           after: async (user) => {
-            eventEmitter?.emit('user.created', { userId: user.id });
-            return await Promise.resolve();
+            await eventEmitter?.emitAsync('user.created', {
+              userId: user.id,
+              email: user.email,
+              userName: user.name,
+            });
           },
         },
       },
@@ -90,13 +94,12 @@ export const createAuth = ({
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
-      sendResetPassword: ({ user, url }) => {
-        eventEmitter?.emit('auth.email.password-reset', {
+      sendResetPassword: async ({ user, url }) => {
+        await eventEmitter?.emitAsync('auth.email.password-reset', {
           to: user.email,
           url,
           userName: user.name,
         });
-        return Promise.resolve();
       },
     },
     socialProviders: {
@@ -108,46 +111,28 @@ export const createAuth = ({
     },
     // PLUGINS
     plugins: [
+      expo(),
       emailOTP({
         // OTP will expire after 5 minutes
         expiresIn: 60 * 5,
-        sendVerificationOTP: ({ email, otp, type }) => {
-          eventEmitter?.emit('auth.email.otp', { to: email, otp, type });
-          return Promise.resolve();
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          await eventEmitter?.emitAsync('auth.email.otp', {
+            to: email,
+            otp,
+            type,
+          });
         },
       }),
       magicLink({
         // Magic link will expire after 10 minutes
         expiresIn: 60 * 10,
-        sendMagicLink: ({ email, url }) => {
-          eventEmitter?.emit('auth.email.magic-link', { to: email, url });
-          return Promise.resolve();
+        sendMagicLink: async ({ email, url }) => {
+          await eventEmitter?.emitAsync('auth.email.magic-link', {
+            to: email,
+            url,
+          });
         },
       }),
     ],
   });
 };
-
-// This export is specifically for the Better Auth CLI to handle migrations
-// It uses process.env because the CLI runs outside the NestJS context
-export const auth = createAuth({
-  databaseConfig: {
-    host: process.env.DATABASE_HOST || 'localhost',
-    port: Number.parseInt(process.env.DATABASE_PORT || '5432'),
-    username: process.env.DATABASE_USERNAME || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'postgres',
-    database: process.env.DATABASE_NAME || 'guallet',
-    ssl: process.env.DATABASE_SSL_ENABLED === 'true',
-  },
-  authConfig: {
-    secret: process.env.BETTER_AUTH_SECRET || '',
-    baseUrl: process.env.BETTER_AUTH_BASE_URL || '',
-    allowedOrigins: (process.env.ALLOWED_CORS_ORIGINS ?? '').split(','),
-    socialProviders: {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID || '',
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-      },
-    },
-  },
-});

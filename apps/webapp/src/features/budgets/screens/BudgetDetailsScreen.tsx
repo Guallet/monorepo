@@ -5,7 +5,7 @@ import {
   useBudgetTransactions,
 } from '@guallet/api-react';
 import { BudgetCard } from '../components/BudgetCard';
-import { Stack, Title, Text, Group, ActionIcon, Tooltip } from '@mantine/core';
+import { Stack, Title, Text, ActionIcon, Tooltip } from '@mantine/core';
 import { useState } from 'react';
 import { MonthSelectorHeader } from '@/components/MonthSelectorHeader/MonthSelectorHeader';
 import { useTranslation } from 'react-i18next';
@@ -39,12 +39,11 @@ export function BudgetDetailsScreen({
   });
 
   return (
-    <BaseScreen isLoading={isLoading}>
-      <Stack align="stretch">
-        <Group>
-          <Title order={2} flex={1}>
-            {budget?.name}
-          </Title>
+    <BaseScreen
+      isLoading={isLoading}
+      title={budget?.name ?? t('screens.budgets.details.title', 'Budget')}
+      actions={
+        <>
           <Tooltip
             label={t('screens.budgets.details.editButton.tooltip', 'Edit')}
           >
@@ -72,7 +71,6 @@ export function BudgetDetailsScreen({
               'Are you sure you want to delete the budget?',
             )}
             onDelete={() => {
-              // Handle account deletion
               deleteBudgetMutation.mutate(budgetId, {
                 onSuccess: () => {
                   notifications.show({
@@ -102,7 +100,10 @@ export function BudgetDetailsScreen({
               });
             }}
           />
-        </Group>
+        </>
+      }
+    >
+      <Stack align="stretch">
         <MonthSelectorHeader
           style={{ flexGrow: 1 }}
           date={selectedDate}

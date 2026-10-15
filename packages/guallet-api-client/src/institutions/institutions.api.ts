@@ -1,10 +1,10 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   CreateInstitutionRequest,
   InstitutionDto,
-} from "./institutions.models";
+} from './institutions.models';
 
-const INSTITUTIONS_PATH = "institutions";
+const INSTITUTIONS_PATH = 'institutions';
 
 export class InstitutionsApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -28,7 +28,7 @@ export class InstitutionsApi {
 
   async edit(
     institutionId: string,
-    request: InstitutionDto
+    request: InstitutionDto,
   ): Promise<InstitutionDto> {
     return await this.client.put<InstitutionDto, CreateInstitutionRequest>({
       path: `${INSTITUTIONS_PATH}/${institutionId}`,

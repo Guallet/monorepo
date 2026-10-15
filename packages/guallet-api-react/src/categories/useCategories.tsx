@@ -1,12 +1,12 @@
-import { CategoryDto } from "@guallet/api-client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { CategoryDto } from '@guallet/api-client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
 export type AppCategory = {
   subCategories: AppCategory[];
 } & CategoryDto;
 
-const CATEGORIES_QUERY_KEY = "categories";
+const CATEGORIES_QUERY_KEY = 'categories';
 
 export function useCategories() {
   const gualletClient = useGualletClient();
@@ -65,7 +65,7 @@ export function useCategory(id: string | null) {
       if (id) {
         return await gualletClient.categories.get(id);
       } else {
-        throw Error("Category ID is null");
+        throw Error('Category ID is null');
       }
     },
     gcTime: 1000 * 60 * 60, // 1 Hour

@@ -1,27 +1,35 @@
 import { AuthProvider } from '@/auth/MobileAuthProvider';
+import { AuthNavigator } from '@/auth/auth-navigator';
 import { useAppState } from '@/hooks/useAppState';
 import { useOnlineManager } from '@/hooks/useOnlineManager';
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
-import {
   focusManager,
+  GualletClientProvider,
   QueryClient,
   QueryClientProvider,
-} from '@tanstack/react-query';
-import { Stack } from 'expo-router';
-import { AppStateStatus, Platform, useColorScheme } from 'react-native';
-import { GualletClientProvider } from '@guallet/api-react';
+} from '@guallet/api-react';
+import {
+  DefaultTheme as NavigationDefaultTheme,
+  ThemeProvider,
+} from 'expo-router/react-navigation';
+import { AppStateStatus, Platform } from 'react-native';
 import { gualletClient } from '@/api/gualletClient';
 import { StatusBar } from 'expo-status-bar';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { LunaProvider } from '@guallet/ui-react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  AlertProvider,
+  LunaProvider,
+  useTheme,
+  useThemeMode,
+  ToastProvider,
+} from '@guallet/luna-mobile';
 
 // Create a client
 const queryClient = new QueryClient();
 
+/** Mirror native foreground state into TanStack Query's focus manager. */
 function onAppStateChange(status: AppStateStatus) {
   // React Query already supports in web browser refetch on window focus by default
   if (Platform.OS !== 'web') {
@@ -29,38 +37,61 @@ function onAppStateChange(status: AppStateStatus) {
   }
 }
 
+/** Compose navigation and data providers within Luna's theme. */
+function AppNavigation() {
+  const { colors } = useTheme();
+  const mode = useThemeMode();
+
+  const navigationTheme = {
+    ...NavigationDefaultTheme,
+    dark: mode === 'dark',
+    colors: {
+      ...NavigationDefaultTheme.colors,
+      primary: colors.accent.primary,
+      background: colors.surface.background.page,
+      card: colors.tabBar.background,
+      text: colors.text.primary,
+      border: colors.tabBar.border,
+      notification: colors.status.error,
+    },
+  };
+
+  return (
+    <ThemeProvider value={navigationTheme}>
+      <SafeAreaProvider>
+        <KeyboardProvider
+          statusBarTranslucent
+          navigationBarTranslucent
+          preserveEdgeToEdge
+        >
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <ToastProvider>
+              <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                  <GualletClientProvider client={gualletClient}>
+                    <AlertProvider>
+                      <AuthNavigator />
+                      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+                    </AlertProvider>
+                  </GualletClientProvider>
+                </AuthProvider>
+              </QueryClientProvider>
+            </ToastProvider>
+          </GestureHandlerRootView>
+        </KeyboardProvider>
+      </SafeAreaProvider>
+    </ThemeProvider>
+  );
+}
+
+/** Connect mobile navigation to the Luna theme. */
 export function GualletApp() {
-  const colorScheme = useColorScheme();
   useOnlineManager();
   useAppState(onAppStateChange);
 
   return (
     <LunaProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <SafeAreaProvider>
-          <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <GualletClientProvider client={gualletClient}>
-                <Stack
-                  screenOptions={{
-                    contentStyle: { backgroundColor: 'white' },
-                  }}
-                >
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="modal"
-                    options={{ presentation: 'modal', title: 'Modal' }}
-                  />
-                </Stack>
-                <StatusBar style="auto" />
-              </GualletClientProvider>
-            </AuthProvider>
-          </QueryClientProvider>
-        </SafeAreaProvider>
-      </ThemeProvider>
+      <AppNavigation />
     </LunaProvider>
   );
 }

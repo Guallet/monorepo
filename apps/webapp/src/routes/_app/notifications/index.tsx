@@ -1,7 +1,7 @@
-import { NotificationsScreen } from "@/features/notifications/screens/NotificationsScreen";
-import { createFileRoute } from "@tanstack/react-router";
+import { NotificationsScreen } from '@/features/notifications/screens/NotificationsScreen';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/notifications/")({
+export const Route = createFileRoute('/_app/notifications/')({
   component: NotificationsPage,
 });
 

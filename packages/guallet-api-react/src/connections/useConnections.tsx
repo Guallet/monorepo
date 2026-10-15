@@ -3,17 +3,17 @@ import {
   ObConnection,
   ObInstitutionDto,
   OpenBankingCountryDto,
-} from "@guallet/api-client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+} from '@guallet/api-client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const CONNECTIONS_QUERY_KEY = "connections";
+const CONNECTIONS_QUERY_KEY = 'connections';
 
 export function useOpenBankingSupportedCountries() {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [CONNECTIONS_QUERY_KEY, "countries"],
+    queryKey: [CONNECTIONS_QUERY_KEY, 'countries'],
     queryFn: async () => {
       return await gualletClient.connections.getSupportedCountries();
     },
@@ -32,11 +32,11 @@ export function useOpenBankingInstitutionsForCountry(countryCode?: string) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [CONNECTIONS_QUERY_KEY, "countries", countryCode],
+    queryKey: [CONNECTIONS_QUERY_KEY, 'countries', countryCode],
     enabled: !!countryCode,
     queryFn: async () => {
       return await gualletClient.connections.getInstitutionsForCountry(
-        countryCode!
+        countryCode!,
       );
     },
   });
@@ -63,7 +63,7 @@ export function useOpenBankingConnections() {
       connections.forEach((connection) => {
         queryClient.setQueryData(
           [CONNECTIONS_QUERY_KEY, connection.id],
-          connection
+          connection,
         );
       });
 
@@ -92,7 +92,7 @@ export function useOpenBankingConnection(id: string) {
 }
 
 export function useOpenBankingAccountsForConnection(
-  connectionId: string | null | undefined
+  connectionId: string | null | undefined,
 ) {
   const gualletClient = useGualletClient();
   const queryClient = useQueryClient();
@@ -102,14 +102,14 @@ export function useOpenBankingAccountsForConnection(
     enabled: !!connectionId,
     queryFn: async () => {
       const connections = await gualletClient.connections.getConnectionAccounts(
-        { connectionId: connectionId! }
+        { connectionId: connectionId! },
       );
 
       // Add the individual connections to the connections cache
       connections.forEach((connection) => {
         queryClient.setQueryData(
-          [CONNECTIONS_QUERY_KEY, connection.id, "accounts"],
-          connection
+          [CONNECTIONS_QUERY_KEY, connection.id, 'accounts'],
+          connection,
         );
       });
 
@@ -125,16 +125,16 @@ export function useOpenBankingAccountsForConnection(
 }
 
 export function useOpenBankingInstitution(
-  institutionId: string | null | undefined
+  institutionId: string | null | undefined,
 ) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [CONNECTIONS_QUERY_KEY, "institutions", institutionId],
+    queryKey: [CONNECTIONS_QUERY_KEY, 'institutions', institutionId],
     enabled: !!institutionId,
     queryFn: async () => {
       return await gualletClient.connections.getInstitutionDetails(
-        institutionId!
+        institutionId!,
       );
     },
   });

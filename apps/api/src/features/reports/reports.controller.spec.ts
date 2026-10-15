@@ -7,7 +7,7 @@ describe('ReportsController', () => {
   let controller: ReportsController;
 
   const mockReportsService = {
-    getCashFlowReport: jest.fn(),
+    getCashFlowReport: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -30,7 +30,7 @@ describe('ReportsController', () => {
     controller = module.get<ReportsController>(ReportsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -46,20 +46,9 @@ describe('ReportsController', () => {
         data: [],
       };
 
-      const mockQuery = {
-        accounts: [],
-        categories: [],
-        startDate: '',
-        endDate: '',
-      };
-
       mockReportsService.getCashFlowReport.mockResolvedValue(mockReport);
 
-      const result = await controller.getCashflowReport(
-        mockUser,
-        mockQuery,
-        2026,
-      );
+      const result = await controller.getCashflowReport(mockUser, 2026);
 
       expect(result).toEqual(mockReport);
       expect(mockReportsService.getCashFlowReport).toHaveBeenCalledWith({
@@ -76,20 +65,9 @@ describe('ReportsController', () => {
         data: [],
       };
 
-      const mockQuery = {
-        accounts: [],
-        categories: [],
-        startDate: '',
-        endDate: '',
-      };
-
       mockReportsService.getCashFlowReport.mockResolvedValue(mockReport);
 
-      const result = await controller.getCashflowReport(
-        mockUser,
-        mockQuery,
-        year,
-      );
+      const result = await controller.getCashflowReport(mockUser, year);
 
       expect(result).toEqual(mockReport);
       expect(mockReportsService.getCashFlowReport).toHaveBeenCalledWith({
@@ -106,20 +84,9 @@ describe('ReportsController', () => {
         data: [],
       };
 
-      const mockQuery = {
-        accounts: [],
-        categories: [],
-        startDate: '',
-        endDate: '',
-      };
-
       mockReportsService.getCashFlowReport.mockResolvedValue(mockReport);
 
-      const result = await controller.getCashflowReport(
-        mockUser,
-        mockQuery,
-        year,
-      );
+      const result = await controller.getCashflowReport(mockUser, year);
 
       expect(result).toEqual(mockReport);
       expect(result.totalTransactions).toBe(0);

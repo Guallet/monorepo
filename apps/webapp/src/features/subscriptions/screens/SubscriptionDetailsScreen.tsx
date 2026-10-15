@@ -1,3 +1,5 @@
+import type { MoneyFormatOptions } from '@guallet/money';
+import { Money } from '@guallet/money';
 import { AppSection } from '@/components/Cards/AppSection';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { RecurringPaymentType, RecurrenceCadence } from '@guallet/api-client';
@@ -15,6 +17,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { useNavigate, notFound } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SubscriptionDetailsScreenProps {
   subscriptionId: string;
@@ -63,16 +66,20 @@ function getCadenceLabel(cadence: RecurrenceCadence): string {
   }
 }
 
-function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: currency,
-  }).format(amount);
+function formatCurrency(
+  amount: number,
+  currency: string,
+  options?: MoneyFormatOptions,
+): string {
+  return Money.fromCurrencyCode({ amount, currencyCode: currency }).format(
+    options,
+  );
 }
 
 export function SubscriptionDetailsScreen({
   subscriptionId,
 }: Readonly<SubscriptionDetailsScreenProps>) {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { subscription, isLoading } = useSubscription(subscriptionId);
   const { deleteSubscriptionMutation } = useSubscriptionsMutations();
@@ -115,7 +122,13 @@ export function SubscriptionDetailsScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={
+        subscription?.name ??
+        t('screens.subscriptions.details.title', 'Subscription')
+      }
+    >
       <Modal
         centered
         opened={isDeleteModalOpen}

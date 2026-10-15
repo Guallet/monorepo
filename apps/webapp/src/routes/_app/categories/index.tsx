@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router';
 
-import { CategoryListScreen } from "@/features/categories/screens/CategoryListScreen";
+import { CategoryListScreen } from '@/features/categories/screens/CategoryListScreen';
 
-export const Route = createFileRoute("/_app/categories/")({
+export const Route = createFileRoute('/_app/categories/')({
   component: CategoriesPage,
 });
 

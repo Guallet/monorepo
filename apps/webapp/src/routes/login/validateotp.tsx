@@ -50,7 +50,9 @@ function ValidateOtpPage() {
 
     if (resendError) {
       console.error('Error resending OTP', resendError);
-      setError(resendError.message ?? 'Failed to resend code. Please try again.');
+      setError(
+        resendError.message ?? 'Failed to resend code. Please try again.',
+      );
     }
   };
 

@@ -1,7 +1,7 @@
-import { useLocale } from "@/i18n/useLocale";
-import { Button, Popover } from "@mantine/core";
-import { MonthPicker } from "@mantine/dates";
-import { useState } from "react";
+import { useLocale } from '@/i18n/useLocale';
+import { Button, Popover } from '@mantine/core';
+import { MonthPicker } from '@mantine/dates';
+import { useState } from 'react';
 
 interface MonthSelectorProps extends React.ComponentProps<typeof MonthPicker> {
   date: Date;
@@ -31,8 +31,8 @@ export function MonthSelector({
       <Popover.Target>
         <Button variant="outline" onClick={() => setOpened((o) => !o)}>
           {date.toLocaleDateString(locale, {
-            month: "long",
-            year: "numeric",
+            month: 'long',
+            year: 'numeric',
           })}
         </Button>
       </Popover.Target>
@@ -44,11 +44,11 @@ export function MonthSelector({
           maxDate={maxDate}
           value={date}
           onChange={(newValue) => {
-            if (newValue && typeof newValue === "string") {
+            if (newValue && typeof newValue === 'string') {
               onDateSelected(new Date(newValue));
               setOpened(false);
             } else {
-              console.error("Invalid date selected", newValue);
+              console.error('Invalid date selected', newValue);
             }
           }}
           {...props}

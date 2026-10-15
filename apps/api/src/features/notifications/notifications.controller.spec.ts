@@ -10,12 +10,12 @@ describe('NotificationsController', () => {
   let controller: NotificationsController;
 
   const mockNotificationsService = {
-    findAllUserNotifications: jest.fn(),
-    findUnreadUserNotifications: jest.fn(),
-    findUserNotification: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-    markAllAsRead: jest.fn(),
+    findAllUserNotifications: vi.fn(),
+    findUnreadUserNotifications: vi.fn(),
+    findUserNotification: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
+    markAllAsRead: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -38,7 +38,7 @@ describe('NotificationsController', () => {
     controller = module.get<NotificationsController>(NotificationsController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

@@ -8,7 +8,7 @@ describe('ObASyncController', () => {
   let controller: ObASyncController;
 
   const mockSyncService = {
-    syncConnectedAccounts: jest.fn(),
+    syncConnectedAccounts: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -25,7 +25,7 @@ describe('ObASyncController', () => {
     controller = module.get<ObASyncController>(ObASyncController);
 
     // Clear all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {

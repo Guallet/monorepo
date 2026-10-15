@@ -3,7 +3,7 @@ import { DateRangeButton } from '@/components/DateRangeButton/DateRangeButton';
 import { Card, Group, Stack, Box, Button } from '@mantine/core';
 import { FilterData } from './FilterData';
 import { AccountDto, CategoryDto } from '@guallet/api-client';
-import { CategoryMultiSelect } from '@/features/categories/components/CategoryMultiSelect/CategoryMultiSelect';
+import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
 import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useAccounts, useCategories } from '@guallet/api-react';
@@ -48,7 +48,8 @@ export function TransactionsFilter({
             });
           }}
         />
-        <CategoryMultiSelect
+        <CategoryPicker
+          mode="multiple"
           label={t(
             'components.transactionsFilter.categories.label',
             'Categories',
@@ -113,7 +114,8 @@ export function TransactionsFilter({
           />
         </Box>
         <Box style={{ minWidth: 200, flexGrow: 1 }}>
-          <CategoryMultiSelect
+          <CategoryPicker
+            mode="multiple"
             label={t(
               'components.transactionsFilter.categories.label',
               'Categories',

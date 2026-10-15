@@ -1,11 +1,12 @@
 import { DeleteButton } from '@/components/Buttons/DeleteButton';
 import { AppSection } from '@/components/Cards/AppSection';
-import { GualletIcon } from '@/components/GualletIcon/GualletIcon';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { useGroupedCategory, useCategoryMutations } from '@guallet/api-react';
+import { CategoryIcon } from '@guallet/luna/icons';
 import { Stack, Button, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 import { CategoryRow } from '../components/CategoryRow/CategoryRow';
 
 interface AppCategoryRowProps {
@@ -15,6 +16,7 @@ interface AppCategoryRowProps {
 export function CategoriesScreen({
   categoryId,
 }: Readonly<AppCategoryRowProps>) {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { category, isLoading } = useGroupedCategory(categoryId);
   const { deleteCategoryMutation } = useCategoryMutations();
@@ -58,13 +60,18 @@ export function CategoriesScreen({
   };
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={
+        category?.name ?? t('screens.categories.details.title', 'Category')
+      }
+    >
       <Stack>
         <AppSection>
           <Stack align="center">
-            <GualletIcon
-              iconName={category?.icon ?? 'question'}
-              iconColor={category?.colour ?? 'black'}
+            <CategoryIcon
+              name={category?.icon}
+              color={category?.colour ?? 'black'}
             />
             <Text>{category?.name}</Text>
           </Stack>

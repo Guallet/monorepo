@@ -18,7 +18,9 @@ export function TermsScreen() {
   const { t } = useTranslation();
 
   return (
-    <Box style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
+    >
       <LandingHeader />
 
       <Box py={64} style={{ flex: 1 }}>
@@ -66,7 +68,11 @@ export function TermsScreen() {
                   'Guallet is released as open source software under the Apache 2.0 Licence. You may inspect, fork, and contribute to the source code on GitHub.',
                 )}
               </Text>
-              <Anchor href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+              <Anchor
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {t('terms.section2.githubLink', 'View source on GitHub')}
               </Anchor>
             </Stack>
@@ -89,12 +95,13 @@ export function TermsScreen() {
               <Title order={3}>
                 {t('terms.section4.title', '4. Acceptable Use')}
               </Title>
-              <Text>
-                {t('terms.section4.intro', 'You agree not to:')}
-              </Text>
+              <Text>{t('terms.section4.intro', 'You agree not to:')}</Text>
               <List spacing="xs">
                 <List.Item>
-                  {t('terms.section4.item1', 'Use the service for any unlawful purpose')}
+                  {t(
+                    'terms.section4.item1',
+                    'Use the service for any unlawful purpose',
+                  )}
                 </List.Item>
                 <List.Item>
                   {t(
@@ -171,16 +178,18 @@ export function TermsScreen() {
 
             {/* Section 9 */}
             <Stack gap="sm">
-              <Title order={3}>
-                {t('terms.section9.title', '9. Contact')}
-              </Title>
+              <Title order={3}>{t('terms.section9.title', '9. Contact')}</Title>
               <Text>
                 {t(
                   'terms.section9.body',
                   'If you have any questions about these Terms please open an issue on our GitHub repository.',
                 )}
               </Text>
-              <Anchor href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+              <Anchor
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {t('terms.section9.githubLink', 'Open an issue on GitHub')}
               </Anchor>
             </Stack>

@@ -1,5 +1,5 @@
-import { useUserSettings } from "@guallet/api-react";
-import type { DateFormat } from "@guallet/api-client";
+import { useUserSettings } from '@guallet/api-react';
+import type { DateFormat } from '@guallet/api-client';
 
 export function useDateFormat() {
   const { settings } = useUserSettings();

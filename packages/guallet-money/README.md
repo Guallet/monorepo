@@ -74,11 +74,15 @@ All arithmetic operations return new Money instances and maintain immutability:
 const base = Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' });
 
 // Addition (requires same currency)
-const sum = base.add(Money.fromCurrencyCode({ amount: 50, currencyCode: 'GBP' }));
+const sum = base.add(
+  Money.fromCurrencyCode({ amount: 50, currencyCode: 'GBP' }),
+);
 // Result: £150.00
 
 // Subtraction (requires same currency)
-const diff = base.subtract(Money.fromCurrencyCode({ amount: 30, currencyCode: 'GBP' }));
+const diff = base.subtract(
+  Money.fromCurrencyCode({ amount: 30, currencyCode: 'GBP' }),
+);
 // Result: £70.00
 
 // Multiplication
@@ -217,7 +221,7 @@ gbp2.toString(); // "GBP (British Pound Sterling)"
 The library throws descriptive, domain-specific errors so you can handle cases precisely by type.
 
 ```typescript
-import { 
+import {
   InvalidCurrencyError,
   InvalidAmountError,
   CurrencyMismatchError,
@@ -263,7 +267,10 @@ try {
 }
 
 try {
-  Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' }).convertTo(eur, 0);
+  Money.fromCurrencyCode({ amount: 100, currencyCode: 'GBP' }).convertTo(
+    eur,
+    0,
+  );
 } catch (error) {
   if (error instanceof InvalidExchangeRateError) {
     // handle invalid exchange rate

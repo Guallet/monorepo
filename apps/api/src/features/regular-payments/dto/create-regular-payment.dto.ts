@@ -16,21 +16,28 @@ import {
 } from '../entities/regular-payment.entity';
 
 export class CreateRegularPaymentDto {
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   amount: number;
 
+  @ApiProperty()
   @IsISO4217CurrencyCode()
   currency: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   imageUrl?: string;
 
+  @ApiProperty({ format: 'uuid', required: false })
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 
@@ -39,10 +46,15 @@ export class CreateRegularPaymentDto {
   @IsNotEmpty()
   cadence: RecurrenceCadence;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'The start date as an ISO 8601 date or date-time string',
+    required: false,
+    type: String,
+    nullable: true,
+  })
   @IsOptional()
   @IsDateString()
-  startDate?: string;
+  startDate?: string | null;
 
   @ApiProperty({ enum: RecurringPaymentType })
   @IsEnum(RecurringPaymentType)

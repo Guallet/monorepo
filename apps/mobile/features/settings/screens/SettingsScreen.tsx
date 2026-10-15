@@ -1,0 +1,486 @@
+import { useCallback, useState } from 'react';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { Image } from 'expo-image';
+import Constants from 'expo-constants';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '@guallet/auth';
+import { useRouter } from 'expo-router';
+import { useUser } from '@guallet/api-react';
+import { Button, useAlert, useTheme } from '@guallet/luna-mobile';
+import {
+  BuildingBankIcon,
+  CalculatorIcon,
+  CategoryIcon,
+  FileImportIcon,
+  HomeIcon,
+  MailIcon,
+  RepeatIcon,
+} from '@guallet/luna-mobile/icons';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ExternalLink } from '@/components/external-link';
+import { SettingsRow } from '../components/SettingsRow';
+import { SettingsSection } from '../components/SettingsSection';
+import { PreferencesSection } from '../components/PreferencesSection';
+import { useMobileUserPreferences } from '../useMobileUserPreferences';
+
+function getInitials(name: string): string {
+  const initials = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+
+  return initials || '?';
+}
+
+export default function SettingsScreen() {
+  const router = useRouter();
+  const showAlert = useAlert();
+  const { borderRadius, colors, spacing, typography } = useTheme();
+  const { logout } = useAuth();
+  const { user, isLoading, isError, isRefetching, refetch } = useUser();
+  const { isRefetching: isSettingsRefetching, refetch: refetchSettings } =
+    useMobileUserPreferences();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [failedProfileImage, setFailedProfileImage] = useState<string | null>(
+    null,
+  );
+
+  const handleSignOut = useCallback(async () => {
+    setIsSigningOut(true);
+
+    try {
+      const result = await logout();
+
+      if (!result.success) {
+        showAlert({
+          title: 'Couldn’t sign out',
+          message: result.error?.message ?? 'Please try again in a moment.',
+        });
+      }
+    } catch {
+      showAlert({
+        title: 'Couldn’t sign out',
+        message: 'Please try again in a moment.',
+      });
+    } finally {
+      setIsSigningOut(false);
+    }
+  }, [logout, showAlert]);
+
+  const confirmSignOut = useCallback(() => {
+    showAlert({
+      title: 'Sign out?',
+      message: 'You can sign back in at any time.',
+      actions: [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign out',
+          style: 'destructive',
+          onPress: () => {
+            void handleSignOut();
+          },
+        },
+      ],
+    });
+  }, [handleSignOut, showAlert]);
+
+  const profileName = user?.name?.trim() || 'Your profile';
+  const profileEmail = user?.email?.trim() || 'Profile details unavailable';
+  const profileImage = user?.profile_src?.trim();
+  const showProfileImage =
+    Boolean(profileImage) && failedProfileImage !== profileImage;
+  const showLoading = isLoading && !user;
+  const showError = !showLoading && isError && !user;
+  const showProfile = !showLoading && !showError;
+  const refreshSettings = useCallback(() => {
+    void Promise.all([refetch(), refetchSettings()]);
+  }, [refetch, refetchSettings]);
+
+  return (
+    <SafeAreaView
+      edges={['top', 'left', 'right']}
+      style={[
+        styles.safeArea,
+        { backgroundColor: colors.surface.background.page },
+      ]}
+    >
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          { gap: spacing.lg, padding: spacing.md },
+        ]}
+        refreshControl={
+          <RefreshControl
+            onRefresh={refreshSettings}
+            refreshing={isRefetching || isSettingsRefetching}
+            tintColor={colors.accent.primary}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <Text
+            style={[
+              styles.title,
+              { color: colors.text.primary, fontSize: typography.sizes.xxl },
+            ]}
+          >
+            Settings
+          </Text>
+          <Text
+            style={[
+              styles.subtitle,
+              { color: colors.text.secondary, fontSize: typography.sizes.sm },
+            ]}
+          >
+            Manage your account, preferences, and session
+          </Text>
+        </View>
+
+        {showLoading && (
+          <View
+            style={[
+              styles.profileStatusCard,
+              styles.profileLoadingCard,
+              {
+                backgroundColor: colors.surface.background.primary,
+                borderColor: colors.surface.border.primary,
+                borderRadius: borderRadius.lg,
+                padding: spacing.lg,
+              },
+            ]}
+          >
+            <ActivityIndicator color={colors.accent.primary} />
+            <Text
+              style={[
+                styles.loadingText,
+                {
+                  color: colors.text.secondary,
+                  fontSize: typography.sizes.sm,
+                  marginTop: spacing.sm,
+                },
+              ]}
+            >
+              Loading your profile…
+            </Text>
+          </View>
+        )}
+        {showError && (
+          <View
+            style={[
+              styles.profileStatusCard,
+              styles.profileErrorCard,
+              {
+                backgroundColor: colors.surface.background.primary,
+                borderColor: colors.surface.border.primary,
+                borderRadius: borderRadius.lg,
+                padding: spacing.lg,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.profileErrorTitle,
+                { color: colors.text.primary, fontSize: typography.sizes.lg },
+              ]}
+            >
+              Couldn’t load your profile
+            </Text>
+            <Text
+              style={[
+                styles.profileErrorBody,
+                {
+                  color: colors.text.secondary,
+                  fontSize: typography.sizes.sm,
+                  marginTop: spacing.xs,
+                },
+              ]}
+            >
+              Check your connection and try again.
+            </Text>
+            <Button
+              onClick={() => void refetch()}
+              variant="outline"
+              style={{ marginTop: spacing.md }}
+            >
+              Try again
+            </Button>
+          </View>
+        )}
+        {showProfile && (
+          <View
+            style={[
+              styles.profileCard,
+              {
+                backgroundColor: colors.surface.background.primary,
+                borderColor: colors.surface.border.primary,
+                borderRadius: borderRadius.lg,
+                padding: spacing.lg,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.avatar,
+                {
+                  backgroundColor: colors.button.secondary.default,
+                  borderRadius: borderRadius.xl,
+                },
+              ]}
+            >
+              {showProfileImage && (
+                <Image
+                  accessibilityLabel={`${profileName} profile picture`}
+                  onError={() => setFailedProfileImage(profileImage ?? null)}
+                  source={{ uri: profileImage }}
+                  style={[
+                    styles.avatarImage,
+                    { borderRadius: borderRadius.xl },
+                  ]}
+                />
+              )}
+              {!showProfileImage && (
+                <Text
+                  style={[
+                    styles.avatarInitials,
+                    {
+                      color: colors.accent.dark,
+                      fontSize: typography.sizes.lg,
+                    },
+                  ]}
+                >
+                  {getInitials(profileName)}
+                </Text>
+              )}
+            </View>
+            <View style={[styles.profileCopy, { marginLeft: spacing.md }]}>
+              <Text
+                style={[
+                  styles.profileName,
+                  { color: colors.text.primary, fontSize: typography.sizes.lg },
+                ]}
+                numberOfLines={1}
+              >
+                {profileName}
+              </Text>
+              <Text
+                style={[
+                  styles.profileEmail,
+                  {
+                    color: colors.text.secondary,
+                    fontSize: typography.sizes.sm,
+                  },
+                ]}
+                numberOfLines={1}
+              >
+                {profileEmail}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        <PreferencesSection />
+
+        <SettingsSection title="Recurring">
+          <SettingsRow
+            icon={<RepeatIcon size={22} color={colors.accent.primary} />}
+            label="Subscriptions & payments"
+            onPress={() => router.push('/recurring')}
+            showChevron
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Categories">
+          <SettingsRow
+            icon={
+              <CategoryIcon
+                name="IconTags"
+                size={22}
+                color={colors.accent.primary}
+              />
+            }
+            label="Manage categories"
+            onPress={() => router.push('/categories')}
+            showChevron
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Import & Export">
+          <SettingsRow
+            icon={<FileImportIcon size={22} color={colors.accent.primary} />}
+            label="Import transactions from CSV"
+            onPress={() => router.push('/importer/csv')}
+            showChevron
+          />
+          <SettingsRow
+            icon={<MailIcon size={22} color={colors.accent.primary} />}
+            label="Export data"
+            onPress={() => router.push('/export')}
+            showChevron
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Tools">
+          <SettingsRow
+            icon={<BuildingBankIcon size={22} color={colors.accent.primary} />}
+            label="Mortgage calculator"
+            onPress={() => router.push('/tools/mortgage')}
+            showChevron
+          />
+          <SettingsRow
+            icon={<CalculatorIcon size={22} color={colors.accent.primary} />}
+            label="Loan calculator"
+            onPress={() => router.push('/tools/loan')}
+            showChevron
+          />
+          <SettingsRow
+            icon={<HomeIcon size={22} color={colors.accent.primary} />}
+            label="Stamp duty calculator"
+            onPress={() => router.push('/tools/stamp-duty')}
+            showChevron
+          />
+        </SettingsSection>
+
+        <SettingsSection title="Session">
+          <SettingsRow
+            destructive
+            disabled={isSigningOut}
+            icon={
+              <IconSymbol
+                name="rectangle.portrait.and.arrow.right"
+                size={22}
+                color={colors.status.error}
+              />
+            }
+            isLoading={isSigningOut}
+            label="Sign out"
+            onPress={confirmSignOut}
+          />
+        </SettingsSection>
+        <View style={[styles.appInfo, { gap: spacing.xs }]}>
+          <Text
+            style={{
+              color: colors.text.secondary,
+              fontSize: typography.sizes.sm,
+            }}
+          >
+            Version {Constants.expoConfig?.version ?? 'unavailable'}
+          </Text>
+          <ExternalLink
+            accessibilityLabel="Visit guallet.io"
+            accessibilityRole="link"
+            href="https://guallet.io"
+            style={[
+              styles.appInfoLink,
+              {
+                color: colors.accent.primary,
+                fontSize: typography.sizes.sm,
+                padding: spacing.md,
+              },
+            ]}
+          >
+            guallet.io
+          </ExternalLink>
+          <ExternalLink
+            accessibilityLabel="View Guallet on GitHub"
+            accessibilityRole="link"
+            href="https://github.com/Guallet/monorepo"
+            style={[
+              styles.appInfoLink,
+              {
+                color: colors.accent.primary,
+                fontSize: typography.sizes.sm,
+                padding: spacing.md,
+              },
+            ]}
+          >
+            GitHub
+          </ExternalLink>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+  content: {
+    flexGrow: 1,
+  },
+  appInfo: {
+    alignItems: 'center',
+  },
+  appInfoLink: {
+    textAlign: 'center',
+  },
+  header: {
+    gap: 2,
+  },
+  title: {
+    fontWeight: '700',
+  },
+  subtitle: {
+    fontWeight: '400',
+  },
+  profileCard: {
+    alignItems: 'center',
+    borderWidth: 1,
+    flexDirection: 'row',
+  },
+  profileStatusCard: {
+    borderWidth: 1,
+    flexDirection: 'column',
+  },
+  profileLoadingCard: {
+    alignItems: 'center',
+  },
+  profileErrorCard: {
+    alignItems: 'stretch',
+  },
+  avatar: {
+    alignItems: 'center',
+    height: 64,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: 64,
+  },
+  avatarImage: {
+    height: '100%',
+    width: '100%',
+  },
+  avatarInitials: {
+    fontWeight: '700',
+  },
+  profileCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  profileName: {
+    fontWeight: '700',
+  },
+  profileEmail: {
+    marginTop: 2,
+  },
+  loadingText: {
+    textAlign: 'center',
+  },
+  profileErrorTitle: {
+    fontWeight: '700',
+  },
+  profileErrorBody: {
+    lineHeight: 20,
+  },
+});

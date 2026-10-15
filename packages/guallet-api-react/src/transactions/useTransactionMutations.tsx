@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 import {
   CreateTransactionRequest,
   UpdateTransactionRequest,
-} from "@guallet/api-client";
+} from '@guallet/api-client';
 
-const TRANSACTIONS_QUERY_KEY = "transactions";
+const TRANSACTIONS_QUERY_KEY = 'transactions';
 
 export function useTransactionMutations() {
   const gualletClient = useGualletClient();
@@ -17,12 +17,12 @@ export function useTransactionMutations() {
         request,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: (data) => {
       // Add the new transaction to the cache
       queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -33,47 +33,61 @@ export function useTransactionMutations() {
         notes,
       });
     },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
+    onSuccess: async (data) => {
+      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
   const updateTransactionCategoryMutation = useMutation({
-    mutationFn: async ({ id, categoryId }: { id: string; categoryId: string }) => {
+    mutationFn: async ({
+      id,
+      categoryId,
+    }: {
+      id: string;
+      categoryId: string;
+    }) => {
       return await gualletClient.transactions.updateTransactionCategory({
         transactionId: id,
         categoryId,
       });
     },
     onSuccess: async () => {
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
   const updateTransactionMutation = useMutation({
-    mutationFn: async ({ id, request }: { id: string; request: UpdateTransactionRequest }) => {
+    mutationFn: async ({
+      id,
+      request,
+    }: {
+      id: string;
+      request: UpdateTransactionRequest;
+    }) => {
       return await gualletClient.transactions.update({
         transactionId: id,
         request,
       });
     },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
+    onSuccess: async (data) => {
+      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 
@@ -82,12 +96,12 @@ export function useTransactionMutations() {
       return await gualletClient.transactions.delete(id);
     },
     onSuccess: async () => {
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    onError: (error, variables, context) => {
+      console.error(error, variables);
     },
   });
 

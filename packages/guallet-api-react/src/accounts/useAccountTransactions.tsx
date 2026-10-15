@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
-import { TransactionDto } from "@guallet/api-client";
+import { useQuery } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
+import { TransactionDto } from '@guallet/api-client';
 
-const ACCOUNT_TRANSACTIONS_QUERY_KEY = "accounts-transactions";
+const ACCOUNT_TRANSACTIONS_QUERY_KEY = 'accounts-transactions';
 
 export function useAccountTransactions(accountId: string) {
   const gualletClient = useGualletClient();

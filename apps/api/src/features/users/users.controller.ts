@@ -16,7 +16,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { UserDto } from './dto/user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiNoContentResponse,
+} from '@nestjs/swagger';
 import { UserSettingsDto, UserSettingsRequest } from './dto/user-settings.dto';
 
 @ApiTags('Users')
@@ -26,6 +33,8 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiOperation({ summary: 'findUserDetails' })
+  @ApiOkResponse({ type: () => UserDto })
   @Get()
   async findUserDetails(@RequestUser() user: UserPrincipal): Promise<UserDto> {
     const userProfile = await this.usersService.findUserData(user.id);
@@ -36,6 +45,9 @@ export class UsersController {
     throw new NotFoundException();
   }
 
+  @ApiOperation({ summary: 'registerUser' })
+  @ApiCreatedResponse({ type: () => UserDto })
+  @ApiBody({ type: () => CreateUserDto })
   @Post()
   async registerUser(
     @RequestUser() user: UserPrincipal,
@@ -48,6 +60,9 @@ export class UsersController {
     return UserDto.fromDomain(entity);
   }
 
+  @ApiOperation({ summary: 'updateUser' })
+  @ApiOkResponse({ type: () => UserDto })
+  @ApiBody({ type: () => UpdateUserDto })
   @Patch()
   async updateUser(
     @RequestUser() user: UserPrincipal,
@@ -60,6 +75,8 @@ export class UsersController {
     return UserDto.fromDomain(userEntity);
   }
 
+  @ApiOperation({ summary: 'deleteUser' })
+  @ApiNoContentResponse({ description: 'The user was deleted' })
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
@@ -71,6 +88,8 @@ export class UsersController {
     return { message: 'User deleted successfully' };
   }
 
+  @ApiOperation({ summary: 'getUserSettings' })
+  @ApiOkResponse({ type: () => UserSettingsDto })
   @Get('settings')
   async getUserSettings(
     @RequestUser() user: UserPrincipal,
@@ -82,6 +101,9 @@ export class UsersController {
     return UserSettingsDto.fromDomain(userEntity);
   }
 
+  @ApiOperation({ summary: 'updateUserSettings' })
+  @ApiOkResponse({ type: () => UserSettingsDto })
+  @ApiBody({ type: () => UserSettingsRequest })
   @Patch('settings')
   async updateUserSettings(
     @RequestUser() user: UserPrincipal,

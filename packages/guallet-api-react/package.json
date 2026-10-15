@@ -6,13 +6,15 @@
   "license": "Apache-2.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "scripts": {
+    "lint": "oxlint .",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
   "dependencies": {
     "@guallet/api-client": "workspace:*",
     "@tanstack/react-query": "workspace:*"
   },
   "devDependencies": {
-    "eslint": "workspace:*",
-    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "typescript": "workspace:*"
   }

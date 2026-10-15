@@ -1,5 +1,5 @@
-import { Account } from "../../accounts/models/Account";
-import { Category } from "../../categories/models/Category";
+import { Account } from '../../accounts/models/Account';
+import { Category } from '../../categories/models/Category';
 
 export type Transaction = {
   id: string;

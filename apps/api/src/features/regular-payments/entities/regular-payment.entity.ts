@@ -1,12 +1,7 @@
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { Category } from 'src/features/categories/entities/category.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Relation,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 export enum RecurringPaymentType {
   SUBSCRIPTION = 'subscription',
@@ -52,7 +47,7 @@ export class RegularPayment extends BaseDbEntity {
   cadence: RecurrenceCadence;
 
   @Column({ type: 'date', nullable: true })
-  startDate?: Date;
+  startDate?: Date | null;
 
   @Column({ nullable: true })
   imageUrl?: string;
@@ -61,6 +56,6 @@ export class RegularPayment extends BaseDbEntity {
   @ManyToOne(() => Category, { onDelete: 'SET NULL', nullable: true })
   category?: Relation<Category>;
 
-  @Column({ nullable: true })
-  categoryId?: string;
+  @Column({ type: 'varchar', nullable: true })
+  categoryId?: string | null;
 }

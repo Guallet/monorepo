@@ -1,4 +1,4 @@
-import { BaseRow } from "@guallet/ui-react";
+import { BaseRow } from '@guallet/ui-react';
 
 interface DataImporterItemProps extends React.ComponentProps<typeof BaseRow> {
   description: string;

@@ -52,9 +52,10 @@ export class RegularPaymentsService {
       currency: createRegularPaymentDto.currency,
       name: createRegularPaymentDto.name,
       type: createRegularPaymentDto.type,
-      startDate: createRegularPaymentDto.startDate
-        ? new Date(createRegularPaymentDto.startDate)
-        : new Date(),
+      startDate:
+        createRegularPaymentDto.startDate === null
+          ? null
+          : new Date(createRegularPaymentDto.startDate ?? Date.now()),
       imageUrl: createRegularPaymentDto.imageUrl,
       category: createRegularPaymentDto.categoryId
         ? { id: createRegularPaymentDto.categoryId }
@@ -147,9 +148,15 @@ export class RegularPaymentsService {
       currency: dto.currency ?? entity.currency,
       cadence: dto.cadence ?? entity.cadence,
       type: dto.type ?? entity.type,
-      startDate: dto.startDate ? new Date(dto.startDate) : entity.startDate,
+      startDate:
+        dto.startDate === undefined
+          ? entity.startDate
+          : dto.startDate === null
+            ? null
+            : new Date(dto.startDate),
       imageUrl: dto.imageUrl ?? entity.imageUrl,
-      categoryId: dto.categoryId ?? entity.categoryId,
+      categoryId:
+        dto.categoryId === undefined ? entity.categoryId : dto.categoryId,
     });
 
     return updatedEntity;

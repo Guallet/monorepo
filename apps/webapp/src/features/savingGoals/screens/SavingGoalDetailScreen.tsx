@@ -24,6 +24,7 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react';
 import { Money } from '@guallet/money';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 function getDaysRemainingText(
   daysRemaining: number,
@@ -51,6 +52,7 @@ export function SavingGoalDetailScreen({
 }: Readonly<SavingGoalDetailScreenProps>) {
   const { savingGoal, isLoading, error } = useSavingGoal(goalId);
   const { accounts } = useAccounts();
+  const defaultCurrency = useDefaultCurrency();
 
   if (error) {
     return (
@@ -88,6 +90,7 @@ export function SavingGoalDetailScreen({
   const linkedAccounts = accounts.filter((account) =>
     savingGoal.accounts.includes(account.id),
   );
+  const currency = linkedAccounts[0]?.currency ?? defaultCurrency;
 
   const getProgressColor = () => {
     if (isCompleted) return 'green';
@@ -124,35 +127,29 @@ export function SavingGoalDetailScreen({
   };
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={savingGoal.name}
+      actions={
+        <>
+          {onBack && (
+            <ActionIcon variant="subtle" size="lg" onClick={onBack}>
+              <IconArrowLeft size={20} />
+            </ActionIcon>
+          )}
+          {getStatusBadge()}
+          {onEdit && (
+            <Button
+              leftSection={<IconEdit size={16} />}
+              onClick={() => onEdit(savingGoal)}
+            >
+              Edit Goal
+            </Button>
+          )}
+        </>
+      }
+    >
       <Stack gap="lg">
-        {/* Header */}
-        <Group justify="space-between">
-          <Group>
-            {onBack && (
-              <ActionIcon variant="subtle" size="lg" onClick={onBack}>
-                <IconArrowLeft size={20} />
-              </ActionIcon>
-            )}
-            <IconPigMoney size={28} />
-            <Text size="xl" fw={700}>
-              {savingGoal.name}
-            </Text>
-          </Group>
-
-          <Group>
-            {getStatusBadge()}
-            {onEdit && (
-              <Button
-                leftSection={<IconEdit size={16} />}
-                onClick={() => onEdit(savingGoal)}
-              >
-                Edit Goal
-              </Button>
-            )}
-          </Group>
-        </Group>
-
         {/* Progress Overview */}
         <Card withBorder shadow="sm" radius="lg" p="lg">
           <Stack gap="md">
@@ -185,7 +182,7 @@ export function SavingGoalDetailScreen({
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
                       amount: currentAmount,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>
                 </Stack>
@@ -202,7 +199,7 @@ export function SavingGoalDetailScreen({
                   <Text size="lg" fw={600}>
                     {Money.fromCurrencyCode({
                       amount: targetAmount,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>
                 </Stack>
@@ -239,7 +236,7 @@ export function SavingGoalDetailScreen({
                   >
                     {Money.fromCurrencyCode({
                       amount: remainingAmount,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>
                 </Stack>
@@ -275,7 +272,7 @@ export function SavingGoalDetailScreen({
                   <Text span fw={600}>
                     {Money.fromCurrencyCode({
                       amount: monthlySavingsNeeded,
-                      currencyCode: 'GBP',
+                      currencyCode: currency,
                     }).format()}
                   </Text>{' '}
                   per month to reach your goal.

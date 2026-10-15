@@ -5,10 +5,18 @@ import {
 } from '@guallet/api-react';
 import { CategoryDto, TransactionDto } from '@guallet/api-client';
 import { ResponsiveModal } from '@guallet/ui-react';
-import { Button, Group, Pagination, Stack, Textarea } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Pagination,
+  Stack,
+  Textarea,
+  Tooltip,
+} from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 import { TransactionList } from '../components/TransactionList';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
-import { TransactionScreenHeader } from '../components/TransactionScreenHeader';
 import {
   FilterData,
   TransactionsFilterDataWrapper,
@@ -128,7 +136,27 @@ export function TransactionListScreen({
   }
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.transactions.list.header.title', 'Transactions')}
+      actions={
+        <Tooltip
+          label={t(
+            'screens.transactions.list.header.add.tooltip',
+            'Add new transaction',
+          )}
+        >
+          <ActionIcon
+            variant="outline"
+            onClick={() => {
+              onAddTransaction();
+            }}
+          >
+            <IconPlus style={{ width: '70%', height: '70%' }} stroke={1.5} />
+          </ActionIcon>
+        </Tooltip>
+      }
+    >
       <Stack>
         <ResponsiveModal
           opened={!!selectedTransaction}
@@ -160,6 +188,7 @@ export function TransactionListScreen({
                 {...quickEditForm.getInputProps('notes')}
               />
               <CategoryPicker
+                mode="single"
                 label={t(
                   'screens.transactions.list.quickEdit.form.category.label',
                   'Category',
@@ -169,7 +198,7 @@ export function TransactionListScreen({
                   'Select a category',
                 )}
                 selectedCategory={selectedCategory}
-                onCategorySelected={(selectedCategory) => {
+                onSelectionChanged={(selectedCategory) => {
                   setSelectedCategory(selectedCategory);
                   quickEditForm.setFieldValue(
                     'categoryId',
@@ -217,7 +246,6 @@ export function TransactionListScreen({
             </Stack>
           </form>
         </ResponsiveModal>
-        <TransactionScreenHeader onAddTransaction={onAddTransaction} />
         <TransactionsFilterDataWrapper
           selectedAccounts={selectedAccounts}
           selectedCategories={selectedCategories}

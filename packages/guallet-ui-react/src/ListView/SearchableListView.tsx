@@ -1,6 +1,6 @@
-import { Paper, Space, Stack, Text } from "@mantine/core";
-import { SearchBoxInput } from "../SearchBoxInput/SearchBoxInput";
-import { useMemo, useState } from "react";
+import { Paper, Space, Stack, Text } from '@mantine/core';
+import { SearchBoxInput } from '../SearchBoxInput/SearchBoxInput';
+import { useMemo, useState } from 'react';
 
 interface SearchableListViewProps<T> {
   items: T[];
@@ -15,14 +15,14 @@ export function SearchableListView<T>({
   itemTemplate,
   emptyView,
   placeholder,
-  gap = "md",
+  gap = 'md',
 }: Readonly<SearchableListViewProps<T>>) {
-  const [queryString, setQueryString] = useState("");
+  const [queryString, setQueryString] = useState('');
 
   const filteredItems = useMemo(() => {
     if (!queryString.trim()) return items;
     return items.filter((item) =>
-      JSON.stringify(item).toLowerCase().includes(queryString.toLowerCase())
+      JSON.stringify(item).toLowerCase().includes(queryString.toLowerCase()),
     );
   }, [items, queryString]);
 

@@ -1,8 +1,8 @@
-import { InstitutionDto } from "@guallet/api-client/src/institutions";
-import { useQueries, useQuery } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { InstitutionDto } from '@guallet/api-client/src/institutions';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const INSTITUTIONS_QUERY_KEY = "institutions";
+const INSTITUTIONS_QUERY_KEY = 'institutions';
 
 export function useInstitutions() {
   const gualletClient = useGualletClient();

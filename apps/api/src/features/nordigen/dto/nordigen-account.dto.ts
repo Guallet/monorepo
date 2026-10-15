@@ -1,11 +1,27 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { ExternalCashAccountType1Code } from './ExternalCashAccountType1Code.helper';
 
 export class NordigenAccountMetadataDto {
+  @ApiProperty()
   id: string;
+  @ApiProperty({ type: String, format: 'date-time' })
   created: Date;
+  @ApiProperty({ type: String, format: 'date-time' })
   last_accessed: Date;
+  @ApiProperty()
   iban: string;
+  @ApiProperty()
   institution_id: string;
+  @ApiProperty({
+    enum: [
+      'DISCOVERED',
+      'PROCESSING',
+      'ERROR',
+      'EXPIRED',
+      'READY',
+      'SUSPENDED',
+    ],
+  })
   status: NordigenAccountStatus;
 }
 
@@ -37,16 +53,33 @@ export type NordigenAccountStatus =
 // EX	EXPIRED Access to accounts has expired as set in End User Agreement 8
 
 export class NordigenAccountBalancesDto {
+  @ApiProperty({ type: () => [NordigenAccountBalanceDto] })
   balances: NordigenAccountBalanceDto[];
 }
 
 export class NordigenAccountBalanceDto {
-  balanceAmount: NordigenBalanceDto;
-  balanceType?: BalanceTypeDto;
+  @ApiProperty({ type: () => NordigenBalanceDto })
+  balanceAmount: NordigenBalanceSchema;
+  @ApiProperty({
+    enum: [
+      'closingBooked',
+      'expected',
+      'forwardAvailable',
+      'interimAvailable',
+      'interimBooked',
+      'nonInvoiced',
+      'openingBooked',
+    ],
+  })
+  balanceType: BalanceTypeDto;
+  @ApiProperty({ required: false, type: String, format: 'date-time' })
   referenceDate?: Date;
 }
+type NordigenBalanceSchema = NordigenBalanceDto;
 export class NordigenBalanceDto {
+  @ApiProperty()
   amount: string;
+  @ApiProperty()
   currency: string;
 }
 
@@ -113,67 +146,110 @@ export enum BalanceTypeDto {
   OPENING_BOOKED = 'openingBooked',
 }
 
+type NordigenAccountSchema = NordigenAccountDto;
+
 export class NordigenAccountDetailsDto {
-  account: NordigenAccountDto;
+  @ApiProperty({ type: () => NordigenAccountDto })
+  account: NordigenAccountSchema;
 }
 
 export class NordigenAccountDto {
+  @ApiProperty({ required: false })
   id?: string;
 
   /**
    * Inner Nordigen Account Resource ID
    * This is NOT the account ID
    */
-  resourceId: string;
+  @ApiProperty({ required: false })
+  resourceId?: string;
 
   /**
    * The account iban
    */
+  @ApiProperty({ required: false })
   iban?: string;
 
   /**
    * The account bban.
    */
+  @ApiProperty({ required: false })
   bban?: string;
 
   /**
    * The account currency code
    */
+  @ApiProperty()
   currency: string;
 
   /**
    * The account owner name
    */
-  ownerName: string;
+  @ApiProperty({ required: false })
+  ownerName?: string;
 
   /**
    * The account name
    */
+  @ApiProperty({ required: false })
   name?: string;
 
   /**
    * The account BIC.
    */
+  @ApiProperty({ required: false })
   bic?: string;
 
   /**
    * The Account Status
    */
-  status: string;
+  @ApiProperty({ required: false })
+  status?: string;
 
   /**
    * The account type
    */
+  @ApiProperty({
+    required: false,
+    enum: [
+      'CACC',
+      'CARD',
+      'CASH',
+      'CHAR',
+      'CISH',
+      'COMM',
+      'CPAC',
+      'LLSV',
+      'LOAN',
+      'MGLD',
+      'MOMA',
+      'NREX',
+      'ODFT',
+      'ONDP',
+      'OTHR',
+      'SACC',
+      'SLRY',
+      'SVGS',
+      'TAXE',
+      'TRAN',
+      'TRAS',
+      'VACC',
+      'NFCA',
+      'UNKNOWN',
+    ],
+  })
   cashAccountType?: ExternalCashAccountType1Code;
 
   /**
    * Masked Pan of the account.
    * For Credit cards
    */
+  @ApiProperty({ required: false })
   maskedPan?: string;
 
   /**
    * The account details
    */
-  details: string;
+  @ApiProperty({ required: false })
+  details?: string;
 }

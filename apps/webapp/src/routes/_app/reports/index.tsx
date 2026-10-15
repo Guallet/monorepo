@@ -1,13 +1,13 @@
-import { Button, ScrollArea, Stack } from "@mantine/core";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button, ScrollArea, Stack } from '@mantine/core';
+import { createFileRoute, Link } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/reports/")({
+export const Route = createFileRoute('/_app/reports/')({
   component: ReportsPage,
 });
 
 function ReportsPage() {
   return (
-    <Stack style={{ height: "calc(100dvh - 92px)" }}>
+    <Stack style={{ height: 'calc(100dvh - 92px)' }}>
       {/* HEADER */}
       <Stack>
         <h1>Reports Page</h1>

@@ -82,7 +82,7 @@ export type ObAccountMetadataDto = {
   last_accessed: Date;
   iban: string;
   institution_id: string;
-  status: "DISCOVERED" | "PROCESSING" | "READY" | "ERROR" | "SUSPENDED";
+  status: 'DISCOVERED' | 'PROCESSING' | 'READY' | 'ERROR' | 'SUSPENDED';
   owner_name: string;
 };
 

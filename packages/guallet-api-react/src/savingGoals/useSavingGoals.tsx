@@ -1,8 +1,8 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
 
-const SAVING_GOALS_QUERY_KEY = "savingGoals";
+const SAVING_GOALS_QUERY_KEY = 'savingGoals';
 
 export function useSavingGoals() {
   const gualletClient = useGualletClient();

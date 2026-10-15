@@ -1,4 +1,4 @@
-import { Text, Group } from "@mantine/core";
+import { Text, Group } from '@mantine/core';
 
 interface Props {
   title: string;

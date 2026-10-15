@@ -1,7 +1,7 @@
-import { DataExportScreen } from "@/features/importer/screens/DataExportScreen";
-import { createFileRoute } from "@tanstack/react-router";
+import { DataExportScreen } from '@/features/importer/screens/DataExportScreen';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/settings/export")({
+export const Route = createFileRoute('/_app/settings/export')({
   component: RouteComponent,
 });
 

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Param,
@@ -16,7 +17,15 @@ import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiQuery,
+  ApiParam,
+  ApiCreatedResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 import { BudgetDto } from './dto/budget.dto';
 import { TransactionDto } from '../transactions/dto/transaction.dto';
 
@@ -25,24 +34,48 @@ import { TransactionDto } from '../transactions/dto/transaction.dto';
 export class BudgetsController {
   private readonly logger = new Logger(BudgetsController.name);
 
-  // Budgets only works on the assumptions of monthly budgets, so the dates only make sense to be
-  // from months, not specific dates
+  // Budgets only work with monthly ranges. The public API uses one-based
+  // months (January = 1), while JavaScript Date uses zero-based months.
   private readonly defaultMonth: number;
   private readonly defaultYear: number;
 
   constructor(private readonly budgetsService: BudgetsService) {
     // By default, the dates are just the current month
     const today = new Date();
-    this.defaultMonth = today.getMonth();
+    this.defaultMonth = today.getMonth() + 1;
     this.defaultYear = today.getFullYear();
   }
 
+  private resolveDateRange(month?: number, year?: number) {
+    if (
+      month !== undefined &&
+      (!Number.isInteger(month) || month < 1 || month > 12)
+    ) {
+      throw new BadRequestException('month must be an integer from 1 to 12');
+    }
+
+    return {
+      month: month ?? this.defaultMonth,
+      year: year ?? this.defaultYear,
+    };
+  }
+
+  @ApiOperation({ summary: 'findAll' })
+  @ApiOkResponse({ type: () => BudgetDto, isArray: true })
+  @ApiQuery({
+    description: 'One-based month number (January = 1)',
+    name: 'month',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get()
   async findAll(
     @RequestUser() user: UserPrincipal,
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<BudgetDto[]> {
+    const dateRange = this.resolveDateRange(month, year);
     const budgets = await this.budgetsService.findAllForUser(user.id);
 
     this.logger.debug(`Found ${budgets.length} budgets for user ${user.id}`);
@@ -51,16 +84,23 @@ export class BudgetsController {
       const spent = await this.budgetsService.getMonthlySpending({
         userId: user.id,
         budgetId: budget.id,
-        dateRange: {
-          month: month ?? this.defaultMonth,
-          year: year ?? this.defaultYear,
-        },
+        dateRange,
       });
       result.push(BudgetDto.fromDomain(budget, spent));
     }
     return result;
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => BudgetDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiQuery({
+    description: 'One-based month number (January = 1)',
+    name: 'month',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -68,6 +108,7 @@ export class BudgetsController {
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<BudgetDto> {
+    const dateRange = this.resolveDateRange(month, year);
     const budget = await this.budgetsService.findOneForUser({
       id: id,
       userId: user.id,
@@ -75,14 +116,21 @@ export class BudgetsController {
     const spent = await this.budgetsService.getMonthlySpending({
       userId: user.id,
       budgetId: id,
-      dateRange: {
-        month: month ?? this.defaultMonth,
-        year: year ?? this.defaultYear,
-      },
+      dateRange,
     });
     return BudgetDto.fromDomain(budget, spent);
   }
 
+  @ApiOperation({ summary: 'getBudgetTransactions' })
+  @ApiOkResponse({ type: () => TransactionDto, isArray: true })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiQuery({
+    description: 'One-based month number (January = 1)',
+    name: 'month',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({ name: 'year', type: Number, required: false })
   @Get(':id/transactions')
   async getBudgetTransactions(
     @RequestUser() user: UserPrincipal,
@@ -90,18 +138,19 @@ export class BudgetsController {
     @Query('month') month?: number,
     @Query('year') year?: number,
   ): Promise<TransactionDto[]> {
+    const dateRange = this.resolveDateRange(month, year);
     const transactions = await this.budgetsService.getBudgetTransactions({
       userId: user.id,
       budgetId: id,
-      dateRange: {
-        month: month ?? this.defaultMonth,
-        year: year ?? this.defaultYear,
-      },
+      dateRange,
     });
 
     return transactions.map((x) => TransactionDto.fromDomain(x));
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => BudgetDto })
+  @ApiBody({ type: () => CreateBudgetDto })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -123,6 +172,10 @@ export class BudgetsController {
     return BudgetDto.fromDomain(budget, spent);
   }
 
+  @ApiOperation({ summary: 'update' })
+  @ApiOkResponse({ type: () => BudgetDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateBudgetDto })
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -145,6 +198,9 @@ export class BudgetsController {
     return BudgetDto.fromDomain(budget, spent);
   }
 
+  @ApiOperation({ summary: 'delete' })
+  @ApiOkResponse({ type: () => BudgetDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async delete(
     @Param('id') id: string,

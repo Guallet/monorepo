@@ -1,7 +1,7 @@
-import { TextInput } from "@mantine/core";
-import { useDebouncedState } from "@mantine/hooks";
-import { IconSearch, IconSquareRoundedXFilled } from "@tabler/icons-react";
-import { useEffect } from "react";
+import { TextInput } from '@mantine/core';
+import { useDebouncedState } from '@mantine/hooks';
+import { IconSearch, IconSquareRoundedXFilled } from '@tabler/icons-react';
+import { useEffect } from 'react';
 
 interface SearchBoxInputProps extends React.ComponentProps<typeof TextInput> {
   label?: string;
@@ -29,15 +29,15 @@ export function SearchBoxInput({
 
   return (
     <TextInput
-      placeholder={placeholder ?? "Search..."}
+      placeholder={placeholder ?? 'Search...'}
       label={label}
       description={description}
       leftSection={<IconSearch />}
       rightSection={
-        filterValue !== "" && (
+        filterValue !== '' && (
           <IconSquareRoundedXFilled
             onClick={() => {
-              setFilterValue("");
+              setFilterValue('');
             }}
           />
         )

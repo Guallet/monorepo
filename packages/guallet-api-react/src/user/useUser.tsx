@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { useGualletClient } from "./../GualletClientProvider";
+import { useQuery } from '@tanstack/react-query';
+import { useGualletClient } from './../GualletClientProvider';
 
-const USER_QUERY_KEY = "user";
+const USER_QUERY_KEY = 'user';
 
 export function useUser() {
   const gualletClient = useGualletClient();
@@ -23,7 +23,7 @@ export function useUserSettings() {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
-    queryKey: [USER_QUERY_KEY, "settings"],
+    queryKey: [USER_QUERY_KEY, 'settings'],
     queryFn: async () => {
       return await gualletClient.user.getUserSettings();
     },

@@ -1,2 +1,2 @@
-export * from "./institutions.models";
-export * from "./institutions.api";
+export * from './institutions.models';
+export * from './institutions.api';

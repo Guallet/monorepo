@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import { isAxiosError, type AxiosResponse } from 'axios';
 import {
   BadRequestException,
   ForbiddenException,
@@ -227,8 +227,8 @@ export class NordigenService {
             },
           })
           .pipe(
-            catchError((e) => {
-              throw e.response;
+            catchError((error: unknown) => {
+              throw isAxiosError(error) ? error.response : error;
             }),
           ),
       );
@@ -236,38 +236,50 @@ export class NordigenService {
       this.handleHttpStatusCodes(response);
 
       // If no exception thrown in the step before, then return the data
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line typescript/no-unsafe-return
       return response.data;
     } catch (error_) {
       this.logger.error(
         `Error making Nordigen GET request to ${path}. Error: ${typeof error_}}`,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      // oxlint-disable-next-line typescript/no-unsafe-argument
       this.handleHttpStatusCodes(error_, true);
       throw new InternalServerErrorException();
     }
   }
 
-  private handleHttpStatusCodes(response: AxiosResponse, forceHandle = false) {
-    switch (response.status) {
-      case 400:
-        throw new BadRequestException();
-      case 401:
-        throw new UnauthorizedException();
-      case 403:
-        throw new ForbiddenException();
-      case 404:
-        throw new NotFoundException();
+  private handleHttpStatusCodes(response: unknown, forceHandle = false) {
+    if (this.isAxiosResponse(response)) {
+      switch (response.status) {
+        case 400:
+          throw new BadRequestException();
+        case 401:
+          throw new UnauthorizedException();
+        case 403:
+          throw new ForbiddenException();
+        case 404:
+          throw new NotFoundException();
+      }
     }
 
     // If forceHandle true, then throw an exception since this has to be handled here
     if (forceHandle) {
       this.logger.error(`Error making request to Nordigen`, {
-        status: response.status,
-        error: response.data,
+        status: this.isAxiosResponse(response) ? response.status : undefined,
+        error: this.isAxiosResponse(response) ? response.data : response,
       });
       throw new InternalServerErrorException();
     }
+  }
+
+  private isAxiosResponse(response: unknown): response is AxiosResponse {
+    return (
+      typeof response === 'object' &&
+      response !== null &&
+      'status' in response &&
+      typeof response.status === 'number' &&
+      'data' in response
+    );
   }
 
   async makePostRequest<T>(path: string, payload: unknown): Promise<T> {
@@ -285,15 +297,15 @@ export class NordigenService {
             },
           })
           .pipe(
-            catchError((e) => {
-              throw e.response;
+            catchError((error: unknown) => {
+              throw isAxiosError(error) ? error.response : error;
             }),
           ),
       );
       // Search for common HTTP status codes
       this.handleHttpStatusCodes(response);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line typescript/no-unsafe-return
       return response.data;
     } catch (error_) {
       this.logger.error(
@@ -303,7 +315,7 @@ export class NordigenService {
           4,
         )}`,
       );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      // oxlint-disable-next-line typescript/no-unsafe-argument
       this.handleHttpStatusCodes(error_, true);
       throw new InternalServerErrorException();
     }
@@ -323,8 +335,8 @@ export class NordigenService {
             },
           })
           .pipe(
-            catchError((e) => {
-              throw e.response;
+            catchError((error: unknown) => {
+              throw isAxiosError(error) ? error.response : error;
             }),
           ),
       );
@@ -332,11 +344,11 @@ export class NordigenService {
       this.handleHttpStatusCodes(response);
 
       // If no exception thrown in the step before, then return the data
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line typescript/no-unsafe-return
       return response.data;
     } catch (error_) {
       this.logger.error(`Error making Nordigen GET request to ${path}`);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      // oxlint-disable-next-line typescript/no-unsafe-argument
       this.handleHttpStatusCodes(error_, true);
       throw error_;
     }
@@ -350,7 +362,7 @@ export class NordigenService {
   ): Promise<NordigenRequisitionDto> {
     const path = `/api/v2/requisitions/`;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript/no-explicit-any
     const response = await this.makePostRequest<any>(path, {
       redirect: redirect_url,
       institution_id: institution_id,

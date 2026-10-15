@@ -1,11 +1,11 @@
 import {
   CreateInstitutionRequest,
   UpdateInstitutionRequest,
-} from "@guallet/api-client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useGualletClient } from "../GualletClientProvider";
+} from '@guallet/api-client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGualletClient } from '../GualletClientProvider';
 
-const INSTITUTIONS_QUERY_KEY = "institutions";
+const INSTITUTIONS_QUERY_KEY = 'institutions';
 
 export function useInstitutionMutations() {
   const queryClient = useQueryClient();

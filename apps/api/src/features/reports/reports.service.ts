@@ -37,7 +37,7 @@ export class ReportsService {
     });
 
     const transactions = await this.transactionsRepository.find({
-      relations: ['category', 'account'],
+      relations: { category: true, account: true },
       where: {
         account: {
           user_id: user_id,

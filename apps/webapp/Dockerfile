@@ -1,8 +1,8 @@
 # Base image for building
-FROM node:22-alpine AS base
+FROM node:24.20-alpine AS base
 
 # Install pnpm globally
-RUN npm install -g pnpm@10.14.0 --ignore-scripts
+RUN npm install -g pnpm@12.4.1 --ignore-scripts
 
 # Set working directory
 WORKDIR /app
@@ -12,7 +12,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY .npmrc* ./
 
 # Copy all package.json files for dependency installation
-COPY packages/eslint-config-custom/package.json ./packages/eslint-config-custom/
 COPY packages/guallet-api-react/package.json ./packages/guallet-api-react/
 COPY packages/guallet-auth/package.json ./packages/guallet-auth/
 COPY packages/tsconfig/package.json ./packages/tsconfig/

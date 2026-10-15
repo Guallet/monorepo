@@ -17,11 +17,17 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionDto, TransactionsResultDto } from './dto/transaction.dto';
 import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
-  TransactionsQueryFilter,
-  transactionsQueryFilterSchema,
-} from './dto/transaction.query';
+  ApiQuery,
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
+import { transactionsQueryFilterSchema } from './dto/transaction.query';
+import type { TransactionsQueryFilter } from './dto/transaction.query';
 import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
 import { InboxTransactionsResultDto } from './dto/inbox-transaction.dto';
 
@@ -32,6 +38,8 @@ export class TransactionsController {
 
   constructor(private readonly transactionsService: TransactionsService) {}
 
+  @ApiOperation({ summary: 'getTransactions' })
+  @ApiOkResponse({ type: () => TransactionsResultDto })
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -54,6 +62,13 @@ export class TransactionsController {
       'The id of the accounts to filter by. Is empty or null, use all accounts. Default is null',
     required: false,
   })
+  @ApiQuery({
+    name: 'categories',
+    type: String,
+    example: 'id1,id2,id3',
+    description: 'The category ids to filter by, separated by commas',
+    required: false,
+  })
   @Get()
   async getTransactions(
     @RequestUser() user: UserPrincipal,
@@ -63,7 +78,14 @@ export class TransactionsController {
     if (!query) {
       throw new BadRequestException('Query Params are not valid');
     }
-    const { page = 1, pageSize = 50, startDate, endDate, accounts } = query;
+    const {
+      page = 1,
+      pageSize = 50,
+      startDate,
+      endDate,
+      accounts,
+      categories,
+    } = query;
 
     this.logger.log(`Transaction Query: ${JSON.stringify(query)}`);
 
@@ -86,12 +108,18 @@ export class TransactionsController {
         page: page,
         pageSize: pageSize,
         accounts: accounts,
+        categories: categories,
         startDate: startDate,
         endDate: endDate,
       }),
       this.transactionsService.getUserTransactionsCount({
         userId: user.id,
-        filters: { accounts: accounts, startDate: startDate, endDate: endDate },
+        filters: {
+          accounts: accounts,
+          categories: categories,
+          startDate: startDate,
+          endDate: endDate,
+        },
       }),
     ]);
 
@@ -103,6 +131,8 @@ export class TransactionsController {
     });
   }
 
+  @ApiOperation({ summary: 'getUserTransactionInbox' })
+  @ApiOkResponse({ type: () => InboxTransactionsResultDto })
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -168,6 +198,9 @@ export class TransactionsController {
     });
   }
 
+  @ApiOperation({ summary: 'create' })
+  @ApiCreatedResponse({ type: () => TransactionDto })
+  @ApiBody({ type: () => CreateTransactionDto })
   @Post()
   async create(
     @RequestUser() user: UserPrincipal,
@@ -183,6 +216,9 @@ export class TransactionsController {
     return TransactionDto.fromDomain(transaction);
   }
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiOkResponse({ type: () => TransactionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Get(':id')
   async findOne(
     @RequestUser() user: UserPrincipal,
@@ -195,6 +231,10 @@ export class TransactionsController {
     return TransactionDto.fromDomain(transaction);
   }
 
+  @ApiOperation({ summary: 'async' })
+  @ApiOkResponse({ type: () => TransactionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiBody({ type: () => UpdateTransactionDto })
   @Patch(':id')
   async async(
     @RequestUser() user: UserPrincipal,
@@ -209,6 +249,9 @@ export class TransactionsController {
     return TransactionDto.fromDomain(transaction);
   }
 
+  @ApiOperation({ summary: 'remove' })
+  @ApiOkResponse({ type: () => TransactionDto })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

@@ -1,11 +1,11 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   CategoryDto,
   CreateCategoryRequest,
   UpdateCategoryRequest,
-} from "./categories.models";
+} from './categories.models';
 
-const CATEGORIES_PATH = "categories";
+const CATEGORIES_PATH = 'categories';
 
 export class CategoriesApi {
   constructor(private readonly client: GualletClientImpl) {}

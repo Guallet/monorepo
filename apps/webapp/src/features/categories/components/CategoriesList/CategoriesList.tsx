@@ -1,6 +1,6 @@
-import { CategoryDto } from "@guallet/api-client";
-import { AppCategory, Category } from "../../models/Category";
-import { CategoriesListItem } from "./CategoriesListItem";
+import { CategoryDto } from '@guallet/api-client';
+import { AppCategory, Category } from '../../models/Category';
+import { CategoriesListItem } from './CategoriesListItem';
 
 interface Props {
   categories: CategoryDto[];

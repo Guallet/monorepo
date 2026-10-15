@@ -1,3 +1,10 @@
+export {
+  focusManager,
+  onlineManager,
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query';
 export * from './GualletClientProvider';
 export * from './accounts';
 export * from './budgets';
@@ -11,3 +18,6 @@ export * from './subscriptions';
 export * from './notifications';
 export * from './reports';
 export * from './rules';
+export * from './ai';
+export * from './data-importer';
+export * from './data-exporter';

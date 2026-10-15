@@ -1,12 +1,12 @@
 import {
   AccountChartsDto,
+  ConnectedAccountResponseDto,
   AccountDto,
   CreateAccountRequest,
   UpdateAccountRequest,
 } from './accounts.models';
 import { GualletClientImpl } from './../GualletClient';
 import { TransactionDto } from './../transactions/transactions.models';
-import { ObAccountDto } from './../connections';
 
 const ACCOUNTS_PATH = 'accounts';
 
@@ -48,9 +48,21 @@ export class AccountsApi {
     });
   }
 
-  async getAccountChartData(accountId: string): Promise<AccountChartsDto> {
+  async getAccountChartData(
+    accountId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<AccountChartsDto> {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate.toISOString());
+    if (endDate) params.append('endDate', endDate.toISOString());
+
+    const basePath = `${ACCOUNTS_PATH}/${accountId}/charts`;
+    const query = params.toString();
+    const path = query ? `${basePath}?${query}` : basePath;
+
     return await this.client.get<AccountChartsDto>({
-      path: `${ACCOUNTS_PATH}/${accountId}/charts`,
+      path,
     });
   }
 
@@ -61,8 +73,10 @@ export class AccountsApi {
     });
   }
 
-  async getConnectedAccount(accountId: string): Promise<ObAccountDto> {
-    return await this.client.get<ObAccountDto>({
+  async getConnectedAccount(
+    accountId: string,
+  ): Promise<ConnectedAccountResponseDto> {
+    return await this.client.get<ConnectedAccountResponseDto>({
       path: `${ACCOUNTS_PATH}/${accountId}/connection`,
     });
   }

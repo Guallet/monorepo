@@ -1,11 +1,11 @@
-import { GualletClientImpl } from "./../GualletClient";
+import { GualletClientImpl } from './../GualletClient';
 import {
   CreateSavingGoalRequest,
   SavingGoalDto,
   UpdateSavingGoalRequest,
-} from "./saving-goals.models";
+} from './saving-goals.models';
 
-const SAVING_GOALS_PATH = "saving-goals";
+const SAVING_GOALS_PATH = 'saving-goals';
 
 export class SavingGoalsApi {
   constructor(private readonly client: GualletClientImpl) {}
@@ -29,7 +29,7 @@ export class SavingGoalsApi {
 
   async update(
     savingGoalId: string,
-    request: UpdateSavingGoalRequest
+    request: UpdateSavingGoalRequest,
   ): Promise<SavingGoalDto> {
     return await this.client.patch<SavingGoalDto, UpdateSavingGoalRequest>({
       path: `${SAVING_GOALS_PATH}/${savingGoalId}`,

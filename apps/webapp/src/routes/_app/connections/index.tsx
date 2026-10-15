@@ -1,7 +1,7 @@
-import { ConnectionsScreen } from "@/features/connections/screens/ConnectionsScreen";
-import { createFileRoute } from "@tanstack/react-router";
+import { ConnectionsScreen } from '@/features/connections/screens/ConnectionsScreen';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/_app/connections/")({
+export const Route = createFileRoute('/_app/connections/')({
   component: ConnectionsPage,
 });
 

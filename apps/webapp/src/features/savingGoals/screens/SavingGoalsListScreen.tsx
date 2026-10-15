@@ -1,17 +1,26 @@
-import { BaseScreen } from "@/components/Screens/BaseScreen";
-import { SavingGoalDto } from "@guallet/api-client/src/savingGoals";
-import { useSavingGoalMutations, useSavingGoals } from "@guallet/api-react";
-import { Stack, Button, Text, Group, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { SavingGoalRow } from "../components/SavingGoalRow";
-import { IconPlus, IconPigMoney } from "@tabler/icons-react";
+import { BaseScreen } from '@/components/Screens/BaseScreen';
+import { SavingGoalDto } from '@guallet/api-client/src/savingGoals';
+import {
+  useAccounts,
+  useSavingGoalMutations,
+  useSavingGoals,
+} from '@guallet/api-react';
+import { Stack, Button, Text, Group, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SavingGoalRow } from '../components/SavingGoalRow';
+import { IconPlus, IconPigMoney } from '@tabler/icons-react';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
 export function SavingGoalsListScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const defaultCurrency = useDefaultCurrency();
   const { savingGoals, isLoading } = useSavingGoals();
+  const { accounts } = useAccounts();
   const [
     deleteModalOpened,
     { open: openDeleteModal, close: closeDeleteModal },
@@ -35,20 +44,20 @@ export function SavingGoalsListScreen() {
       {
         onSuccess: () => {
           notifications.show({
-            title: "Success",
+            title: 'Success',
             message: `Saving goal "${goalToDelete.name}" has been deleted`,
-            color: "green",
+            color: 'green',
           });
         },
         onError: (error) => {
-          console.error("Failed to delete saving goal:", error);
+          console.error('Failed to delete saving goal:', error);
           notifications.show({
-            title: "Error",
-            message: "Failed to delete saving goal",
-            color: "red",
+            title: 'Error',
+            message: 'Failed to delete saving goal',
+            color: 'red',
           });
         },
-      }
+      },
     );
 
     closeDeleteModal();
@@ -64,23 +73,19 @@ export function SavingGoalsListScreen() {
   };
 
   return (
-    <BaseScreen isLoading={isLoading}>
+    <BaseScreen
+      isLoading={isLoading}
+      title={t('screens.savingGoals.list.title', 'Saving Goals')}
+      actions={
+        <Button
+          leftSection={<IconPlus size={16} />}
+          onClick={() => navigate({ to: '/saving-goals/new' })}
+        >
+          {t('screens.savingGoals.list.addButton', 'New Saving Goal')}
+        </Button>
+      }
+    >
       <Stack gap="lg">
-        <Group justify="space-between" align="center">
-          <Group>
-            <IconPigMoney size={24} />
-            <Text size="xl" fw={700}>
-              Saving Goals
-            </Text>
-          </Group>
-          <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={() => navigate({ to: "/saving-goals/new" })}
-          >
-            New Saving Goal
-          </Button>
-        </Group>
-
         {savingGoals.length === 0 ? (
           <Stack align="center" gap="lg" py="xl">
             <IconPigMoney size={48} opacity={0.5} />
@@ -93,7 +98,7 @@ export function SavingGoalsListScreen() {
             </Text>
             <Button
               leftSection={<IconPlus size={16} />}
-              onClick={() => navigate({ to: "/saving-goals/new" })}
+              onClick={() => navigate({ to: '/saving-goals/new' })}
             >
               Create Your First Goal
             </Button>
@@ -104,6 +109,10 @@ export function SavingGoalsListScreen() {
               <SavingGoalRow
                 key={goal.id}
                 savingGoal={goal}
+                currency={
+                  accounts.find((account) => goal.accounts.includes(account.id))
+                    ?.currency ?? defaultCurrency
+                }
                 onClick={() => handleGoalClick(goal)}
                 onEdit={() => handleEdit(goal)}
                 onDelete={() => handleDelete(goal)}

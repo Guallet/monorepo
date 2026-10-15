@@ -12,16 +12,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './assets/images/icon.png',
   scheme: 'guallet',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     bundleIdentifier: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
-    googleServicesFile: './auth/firebase/GoogleService-Info.plist',
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
   },
   android: {
+    softwareKeyboardLayoutMode: 'resize',
     // TODO: enable once we have the icons
     // adaptiveIcon: {
     //   backgroundColor: "#E6F4FE",
@@ -29,10 +28,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     //   backgroundImage: "./assets/images/android-icon-background.png",
     //   monochromeImage: "./assets/images/android-icon-monochrome.png",
     // },
-    edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: IS_DEV ? 'io.guallet.mobile.dev' : 'io.guallet.mobile',
-    googleServicesFile: './auth/firebase/google-services.json',
   },
   web: {
     output: 'static',
@@ -41,11 +38,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     'expo-router',
     [
+      'expo-build-properties',
+      {
+        ios: {
+          enableSceneSupport: true,
+        },
+      },
+    ],
+    [
       'expo-splash-screen',
       {
         image: './assets/images/splash-icon.png',
         imageWidth: 200,
         resizeMode: 'contain',
+        // Native splash fallback colors are outside the runtime theme.
         backgroundColor: '#ffffff',
         dark: {
           backgroundColor: '#000000',
@@ -53,7 +59,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'react-native-email-link',
-    '@react-native-google-signin/google-signin',
     [
       '@sentry/react-native/expo',
       {

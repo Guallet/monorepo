@@ -1,5 +1,5 @@
-import { Money } from "@guallet/money";
-import { Text, TextProps } from "@mantine/core";
+import { Money } from '@guallet/money';
+import { Text, TextProps } from '@mantine/core';
 
 interface AmountLabelProps extends TextProps {
   amount: number;

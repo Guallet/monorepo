@@ -1,5 +1,5 @@
-import { Image } from "@mantine/core";
-import svgLogo from "@/assets/guallet.svg";
+import { Image } from '@mantine/core';
+import svgLogo from '@/assets/guallet.svg';
 
 interface Props extends React.ComponentPropsWithoutRef<typeof Image> {
   size?: string | number;

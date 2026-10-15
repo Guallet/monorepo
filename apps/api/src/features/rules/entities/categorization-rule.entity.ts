@@ -5,8 +5,8 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Relation,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 @Entity('categorization_rules')
 export class CategorizationRule extends BaseDbEntity {

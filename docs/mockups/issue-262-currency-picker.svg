@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+  <defs>
+    <style>
+      text { font-family: Inter, Arial, sans-serif; fill: #231f20; }
+      .caption { font-size: 16px; font-weight: 700; }
+      .small { font-size: 12px; fill: #768692; }
+      .label { font-size: 13px; font-weight: 700; fill: #425563; }
+      .title { font-size: 22px; font-weight: 700; }
+      .name { font-size: 16px; font-weight: 600; }
+      .code { font-size: 13px; fill: #768692; }
+      .symbol { font-size: 18px; font-weight: 700; fill: #005eb8; }
+      .button { font-size: 16px; font-weight: 700; fill: white; }
+    </style>
+    <clipPath id="phone1"><rect x="30" y="62" width="350" height="740" rx="32"/></clipPath>
+    <clipPath id="phone2"><rect x="425" y="62" width="350" height="740" rx="32"/></clipPath>
+    <clipPath id="phone3"><rect x="820" y="62" width="350" height="740" rx="32"/></clipPath>
+  </defs>
+  <rect width="1200" height="850" fill="#f7fafc"/>
+  <text x="30" y="36" class="caption">A · Single selection</text>
+  <text x="425" y="36" class="caption">B · Search results</text>
+  <text x="820" y="36" class="caption">C · Multiple selection</text>
+
+  <!-- Phone backgrounds and dimmed underlying form -->
+  <g fill="white" stroke="#e5e7eb"><rect x="30" y="62" width="350" height="740" rx="32"/><rect x="425" y="62" width="350" height="740" rx="32"/><rect x="820" y="62" width="350" height="740" rx="32"/></g>
+  <g clip-path="url(#phone1)"><rect x="30" y="62" width="350" height="740" fill="#f7fafc"/><text x="52" y="110" class="small">Account details</text><rect x="50" y="126" width="310" height="46" rx="8" fill="white" stroke="#e5e7eb"/><text x="65" y="155" class="code">Currency    GBP · British Pound</text><rect x="30" y="62" width="350" height="740" fill="#231f20" opacity=".30"/></g>
+  <g clip-path="url(#phone2)"><rect x="425" y="62" width="350" height="740" fill="#f7fafc"/><text x="447" y="110" class="small">Account details</text><rect x="445" y="126" width="310" height="46" rx="8" fill="white" stroke="#e5e7eb"/><text x="460" y="155" class="code">Currency    GBP · British Pound</text><rect x="425" y="62" width="350" height="740" fill="#231f20" opacity=".30"/></g>
+  <g clip-path="url(#phone3)"><rect x="820" y="62" width="350" height="740" fill="#f7fafc"/><text x="842" y="110" class="small">Preferences</text><rect x="840" y="126" width="310" height="46" rx="8" fill="white" stroke="#e5e7eb"/><text x="855" y="155" class="code">Preferred currencies    3 selected</text><rect x="820" y="62" width="350" height="740" fill="#231f20" opacity=".30"/></g>
+
+  <!-- Sheets -->
+  <path d="M30 195 Q30 171 54 171 H356 Q380 171 380 195 V802 H30Z" fill="white"/>
+  <path d="M425 195 Q425 171 449 171 H751 Q775 171 775 195 V802 H425Z" fill="white"/>
+  <path d="M820 195 Q820 171 844 171 H1146 Q1170 171 1170 195 V802 H820Z" fill="white"/>
+  <g fill="#b9c4ca"><rect x="177" y="182" width="56" height="5" rx="3"/><rect x="572" y="182" width="56" height="5" rx="3"/><rect x="967" y="182" width="56" height="5" rx="3"/></g>
+  <text x="50" y="229" class="title">Choose currency</text><text x="350" y="227" text-anchor="middle" font-size="24" fill="#425563">×</text>
+  <text x="445" y="229" class="title">Choose currency</text><text x="745" y="227" text-anchor="middle" font-size="24" fill="#425563">×</text>
+  <text x="840" y="229" class="title">Preferred currencies</text><text x="1140" y="227" text-anchor="middle" font-size="24" fill="#425563">×</text>
+
+  <!-- Search fields -->
+  <g fill="#f5f7f8" stroke="#e5e7eb"><rect x="50" y="248" width="310" height="48" rx="12"/><rect x="445" y="248" width="310" height="48" rx="12"/><rect x="840" y="248" width="310" height="48" rx="12"/></g>
+  <g font-size="17" fill="#768692"><text x="66" y="278">⌕</text><text x="461" y="278">⌕</text><text x="856" y="278">⌕</text></g>
+  <text x="90" y="278" class="code">Search name, code or symbol</text><text x="485" y="278" font-size="15">yen</text><text x="880" y="278" class="code">Search name, code or symbol</text>
+  <text x="728" y="278" fill="#768692" font-size="18">×</text>
+
+  <!-- Single state -->
+  <text x="50" y="334" class="label">DEFAULT CURRENCY</text>
+  <rect x="50" y="349" width="310" height="67" rx="12" fill="#edf5fc" stroke="#005eb8"/>
+  <rect x="64" y="362" width="42" height="42" rx="10" fill="#dcecf9"/><text x="85" y="390" class="symbol" text-anchor="middle">£</text>
+  <text x="120" y="378" class="name">British Pound</text><text x="120" y="399" class="code">GBP</text><path d="M327 383 l6 6 11 -13" fill="none" stroke="#005eb8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="50" y="452" class="label">PREFERRED</text>
+  <rect x="50" y="466" width="310" height="134" rx="12" fill="white" stroke="#e5e7eb"/>
+  <rect x="64" y="478" width="42" height="42" rx="10" fill="#edf5fc"/><text x="85" y="505" class="symbol" text-anchor="middle">€</text><text x="120" y="493" class="name">Euro</text><text x="120" y="513" class="code">EUR</text>
+  <line x1="64" y1="533" x2="346" y2="533" stroke="#e8edee"/>
+  <rect x="64" y="545" width="42" height="42" rx="10" fill="#edf5fc"/><text x="85" y="572" class="symbol" text-anchor="middle">$</text><text x="120" y="560" class="name">US Dollar</text><text x="120" y="580" class="code">USD</text>
+  <text x="50" y="639" class="label">ALL CURRENCIES</text><text x="64" y="676" class="name">Australian Dollar</text><text x="64" y="697" class="code">AUD</text><line x1="50" y1="714" x2="360" y2="714" stroke="#e8edee"/><text x="64" y="745" class="name">Canadian Dollar</text><text x="64" y="766" class="code">CAD</text>
+
+  <!-- Search state -->
+  <text x="445" y="334" class="label">RESULTS · 2</text>
+  <rect x="445" y="350" width="310" height="70" rx="12" fill="white" stroke="#e5e7eb"/>
+  <rect x="459" y="364" width="42" height="42" rx="10" fill="#edf5fc"/><text x="480" y="391" class="symbol" text-anchor="middle">¥</text><text x="515" y="380" class="name">Japanese Yen</text><text x="515" y="401" class="code">JPY</text>
+  <rect x="459" y="435" width="42" height="42" rx="10" fill="#edf5fc"/><text x="480" y="462" class="symbol" text-anchor="middle">¥</text><text x="515" y="451" class="name">Chinese Yuan</text><text x="515" y="472" class="code">CNY</text>
+  <line x1="445" y1="492" x2="755" y2="492" stroke="#e8edee"/>
+  <text x="445" y="529" class="small">Tap a currency to select and close.</text>
+
+  <!-- Multi state -->
+  <text x="840" y="334" class="label">DEFAULT CURRENCY</text>
+  <rect x="840" y="349" width="310" height="63" rx="12" fill="white" stroke="#e5e7eb"/>
+  <text x="855" y="376" class="name">British Pound</text><text x="855" y="397" class="code">GBP</text><rect x="1118" y="369" width="20" height="20" rx="5" fill="#005eb8"/><path d="M1123 379 l4 4 7 -9" fill="none" stroke="white" stroke-width="2"/>
+  <text x="840" y="448" class="label">PREFERRED</text>
+  <rect x="840" y="464" width="310" height="136" rx="12" fill="white" stroke="#e5e7eb"/>
+  <text x="855" y="493" class="name">Euro</text><text x="855" y="513" class="code">EUR</text><rect x="1118" y="482" width="20" height="20" rx="5" fill="#005eb8"/><path d="M1123 492 l4 4 7 -9" fill="none" stroke="white" stroke-width="2"/>
+  <line x1="855" y1="532" x2="1135" y2="532" stroke="#e8edee"/>
+  <text x="855" y="561" class="name">US Dollar</text><text x="855" y="581" class="code">USD</text><rect x="1118" y="550" width="20" height="20" rx="5" fill="#005eb8"/><path d="M1123 560 l4 4 7 -9" fill="none" stroke="white" stroke-width="2"/>
+  <text x="840" y="638" class="label">ALL CURRENCIES</text><text x="855" y="674" class="name">Australian Dollar</text><text x="855" y="695" class="code">AUD</text><rect x="1118" y="664" width="20" height="20" rx="5" fill="white" stroke="#768692"/>
+  <rect x="820" y="714" width="350" height="88" fill="white"/><line x1="820" y1="714" x2="1170" y2="714" stroke="#e8edee"/><rect x="840" y="730" width="310" height="54" rx="10" fill="#005eb8"/><text x="995" y="764" class="button" text-anchor="middle">Confirm 3 currencies</text>
+</svg>

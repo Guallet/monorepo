@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 
@@ -41,20 +41,15 @@ export function TransactionFormFields({
 }: Readonly<TransactionFormFieldsProps>) {
   const { t } = useTranslation();
   const { accounts } = useAccounts();
-  const { category } = useCategory(form.values.categoryId ?? null);
-  const defaultCurrency = useDefaultCurrency();
-  const [selectedCategory, setSelectedCategory] = useState<CategoryDto | null>(
-    null,
+  const { category: selectedCategory } = useCategory(
+    form.values.categoryId ?? null,
   );
+  const defaultCurrency = useDefaultCurrency();
   const previousAccountIdRef = useRef<string | null>(null);
 
   const selectedCurrency = form.values.currency
     ? Currency.fromISOCode(form.values.currency)
     : Currency.fromISOCode(defaultCurrency);
-
-  useEffect(() => {
-    setSelectedCategory(category);
-  }, [category]);
 
   useEffect(() => {
     const accountId = form.values.accountId || null;
@@ -160,14 +155,14 @@ export function TransactionFormFields({
         {...form.getInputProps('date')}
       />
       <CategoryPicker
+        mode="single"
         label={t(`${translationKeyPrefix}.form.category.label`, 'Category')}
         placeholder={t(
           `${translationKeyPrefix}.form.category.placeholder`,
           'Select a category',
         )}
-        selectedCategory={selectedCategory}
-        onCategorySelected={(selectedCategoryValue: CategoryDto) => {
-          setSelectedCategory(selectedCategoryValue);
+        selectedCategory={selectedCategory ?? null}
+        onSelectionChanged={(selectedCategoryValue: CategoryDto) => {
           form.setFieldValue('categoryId', selectedCategoryValue.id || null);
         }}
       />
