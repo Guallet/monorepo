@@ -54,7 +54,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
       description: goal?.description ?? '',
       accountIds: goal?.accounts ?? [],
       targetDate: goal?.targetDate
-        ? parsePreferenceDate(goal.targetDate.toISOString())
+        ? parsePreferenceDate(goal.targetDate)
         : null,
     },
     validationLogic: revalidateLogic(),

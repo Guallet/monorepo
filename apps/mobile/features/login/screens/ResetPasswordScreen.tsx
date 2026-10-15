@@ -10,7 +10,7 @@ import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { revalidateLogic, useForm } from '@tanstack/react-form';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
 
 const resetPasswordSchema = z
@@ -52,6 +52,7 @@ export function ResetPasswordScreen() {
       );
     },
   });
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
   if (isComplete) {
     return (
@@ -91,7 +92,7 @@ export function ResetPasswordScreen() {
   }
 
   return (
-    <AuthScreen headerTitle="Reset password">
+    <AuthScreen headerTitle="Reset password" isLoading={isSubmitting}>
       <AuthIntro
         description="Choose a strong password you haven’t used for this account before."
         eyebrow="Secure your account"

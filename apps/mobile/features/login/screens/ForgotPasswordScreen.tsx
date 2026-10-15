@@ -52,7 +52,7 @@ export function ForgotPasswordScreen() {
   );
 
   return (
-    <AuthScreen headerTitle="Password help">
+    <AuthScreen headerTitle="Password help" isLoading={isSubmitting}>
       <AuthIntro
         description="Enter your account email and we’ll send you a secure link to choose a new password."
         eyebrow="Account recovery"

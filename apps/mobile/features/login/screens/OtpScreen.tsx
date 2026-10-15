@@ -17,7 +17,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { AppState, StyleSheet, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
-import { revalidateLogic, useForm } from '@tanstack/react-form';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
 
 const RESEND_DELAY_SECONDS = 30;
@@ -48,6 +48,7 @@ export function OtpScreen() {
       }
     },
   });
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
   const [resendAvailableAt, setResendAvailableAt] = useState(
     () => Date.now() + RESEND_DELAY_SECONDS * 1000,
   );
@@ -126,7 +127,7 @@ export function OtpScreen() {
   }
 
   return (
-    <AuthScreen headerTitle="Enter code" isLoading={isLoading}>
+    <AuthScreen headerTitle="Enter code" isLoading={isLoading || isSubmitting}>
       <AuthIntro
         align="center"
         description={`We sent a 6-digit code to ${email}`}
