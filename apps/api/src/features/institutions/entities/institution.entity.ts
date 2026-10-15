@@ -10,8 +10,8 @@ export class Institution extends BaseDbEntity {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
-  image_src?: string;
+  @Column({ type: 'varchar', nullable: true })
+  image_src?: string | null;
 
   // If this is not null, it's because the user created this manually. We need a UI to manage this from the user app
   @Column({ nullable: true })

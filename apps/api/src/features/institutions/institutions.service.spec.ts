@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Institution } from './entities/institution.entity';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
+import { IsNull } from 'typeorm';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 
 describe('InstitutionsService', () => {
@@ -16,6 +17,9 @@ describe('InstitutionsService', () => {
     save: vi.fn(),
     remove: vi.fn(),
     upsert: vi.fn(),
+    manager: {
+      getRepository: () => ({ existsBy: vi.fn().mockResolvedValue(false) }),
+    },
   };
 
   beforeEach(async () => {
@@ -98,7 +102,10 @@ describe('InstitutionsService', () => {
 
       expect(result).toEqual(mockInstitution);
       expect(mockInstitutionRepository.findOne).toHaveBeenCalledWith({
-        where: { id: institutionId },
+        where: [
+          { id: institutionId, user_id: userId },
+          { id: institutionId, user_id: IsNull() },
+        ],
       });
     });
 

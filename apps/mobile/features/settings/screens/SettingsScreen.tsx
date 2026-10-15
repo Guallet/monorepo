@@ -292,6 +292,15 @@ export default function SettingsScreen() {
 
         <PreferencesSection />
 
+        <SettingsSection title="Institutions">
+          <SettingsRow
+            icon={<BuildingBankIcon size={24} color={colors.accent.primary} />}
+            label="Institutions"
+            onPress={() => router.push('/institutions')}
+            showChevron
+          />
+        </SettingsSection>
+
         <SettingsSection title="Recurring">
           <SettingsRow
             icon={<RepeatIcon size={22} color={colors.accent.primary} />}

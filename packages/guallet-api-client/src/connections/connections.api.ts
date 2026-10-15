@@ -1,7 +1,6 @@
 import { GualletClientImpl } from './../GualletClient';
 import {
   ConnectObAccountsRequest,
-  GualletInstitutionDto,
   ObAccountDto,
   ObConnection,
   ObConnectionRequest,
@@ -9,6 +8,7 @@ import {
   ObRConnectionPermissionDto,
   OpenBankingCountryDto,
 } from './connections.models';
+import type { InstitutionDto } from '../institutions/institutions.models';
 
 const OPEN_BANKING_PATH = 'openbanking';
 
@@ -47,8 +47,8 @@ export class ConnectionsApi {
     });
   }
 
-  async getInstitutionDetails(id: string): Promise<GualletInstitutionDto> {
-    return await this.client.get<GualletInstitutionDto>({
+  async getInstitutionDetails(id: string): Promise<InstitutionDto> {
+    return await this.client.get<InstitutionDto>({
       path: `${OPEN_BANKING_PATH}/institutions/${id}/`,
     });
   }

@@ -1,10 +1,10 @@
-import { InstitutionDto } from '@guallet/api-client/src/institutions';
+import type { InstitutionDto } from '@guallet/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { useGualletClient } from './../GualletClientProvider';
 
 const INSTITUTIONS_QUERY_KEY = 'institutions';
 
-export function useInstitutions() {
+export function useInstitutions(options: { enabled?: boolean } = {}) {
   const gualletClient = useGualletClient();
 
   const query = useQuery({
@@ -12,10 +12,11 @@ export function useInstitutions() {
     queryFn: async () => {
       return await gualletClient.institutions.getAll();
     },
-    // Disable automatic refetching. This info should not change often.
+    // Refresh when the screen opens; skip focus, reconnect, and interval polls.
+    enabled: options.enabled ?? true,
     staleTime: Infinity,
     gcTime: Infinity,
-    refetchOnMount: false,
+    refetchOnMount: 'always',
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchInterval: false,

@@ -8,6 +8,7 @@ import { AccountType } from './entities/accountType.model';
 import { AccountSource } from './entities/accountSource.model';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
+import { InstitutionsService } from '../institutions/institutions.service';
 
 describe('AccountsService', () => {
   let service: AccountsService;
@@ -22,8 +23,14 @@ describe('AccountsService', () => {
   const mockTransactionRepository = {
     save: vi.fn(),
   };
+  const mockInstitutionsService = {
+    findOne: vi.fn(),
+  };
 
   beforeEach(async () => {
+    mockInstitutionsService.findOne.mockImplementation(
+      async ({ id }: { id: string }) => ({ id }),
+    );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountsService,
@@ -35,6 +42,7 @@ describe('AccountsService', () => {
           provide: getRepositoryToken(Transaction),
           useValue: mockTransactionRepository,
         },
+        { provide: InstitutionsService, useValue: mockInstitutionsService },
       ],
     }).compile();
 

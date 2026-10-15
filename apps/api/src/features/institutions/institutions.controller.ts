@@ -15,6 +15,8 @@ import { UserPrincipal } from 'src/auth/user-principal';
 import { CreateInstitutionRequest } from './dto/create-institution-request.dto';
 import { UpdateInstitutionRequest } from './dto/update-institution-request.dto';
 import {
+  ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiTags,
   ApiOperation,
   ApiOkResponse,
@@ -98,6 +100,10 @@ export class InstitutionsController {
   @ApiOperation({ summary: 'remove' })
   @ApiOkResponse({ type: () => InstitutionDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @ApiConflictResponse({ description: 'Institution still has accounts.' })
+  @ApiForbiddenResponse({
+    description: 'Shared institutions cannot be deleted.',
+  })
   @Delete(':id')
   async remove(
     @RequestUser() user: UserPrincipal,

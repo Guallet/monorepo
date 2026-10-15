@@ -9,7 +9,7 @@ export function InstitutionAvatar({
   fallbackName,
   size = 48,
 }: Readonly<{
-  institutionId: string;
+  institutionId: string | null;
   fallbackName: string;
   size?: number;
 }>) {

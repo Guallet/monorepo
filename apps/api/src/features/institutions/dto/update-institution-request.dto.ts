@@ -8,10 +8,10 @@ export class UpdateInstitutionRequest {
   @IsNotEmpty()
   name?: string;
 
-  @ApiProperty({ required: false, format: 'uri' })
+  @ApiProperty({ required: false, nullable: true, type: String, format: 'uri' })
   @IsOptional()
   @IsUrl({ require_tld: false })
-  image_src?: string;
+  image_src?: string | null;
 
   @ApiProperty({ required: false })
   @IsOptional()

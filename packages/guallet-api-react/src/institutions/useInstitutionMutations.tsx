@@ -1,4 +1,4 @@
-import {
+import type {
   CreateInstitutionRequest,
   UpdateInstitutionRequest,
 } from '@guallet/api-client';
@@ -9,44 +9,50 @@ const INSTITUTIONS_QUERY_KEY = 'institutions';
 
 export function useInstitutionMutations() {
   const queryClient = useQueryClient();
-  const gualletClient = useGualletClient();
+  const client = useGualletClient();
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: [INSTITUTIONS_QUERY_KEY] });
 
   const createInstitutionMutation = useMutation({
-    mutationFn: async ({ request }: { request: CreateInstitutionRequest }) => {
-      return await gualletClient.institutions.create(request);
-    },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [INSTITUTIONS_QUERY_KEY],
-      });
-    },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    mutationFn: ({ request }: { request: CreateInstitutionRequest }) =>
+      client.institutions.create(request),
+    onSuccess: (institution) => {
+      queryClient.setQueryData(
+        [INSTITUTIONS_QUERY_KEY, institution.id],
+        institution,
+      );
+      void invalidate();
     },
   });
-
   const updateInstitutionMutation = useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       id,
       request,
     }: {
       id: string;
       request: UpdateInstitutionRequest;
-    }) => {
-      return await gualletClient.accounts.update(id, request);
-    },
-    onSuccess: async (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [INSTITUTIONS_QUERY_KEY, data.id],
-      });
-    },
-    onError: async (error, variables, context) => {
-      console.error(error);
+    }) => client.institutions.update(id, request),
+    onSuccess: (institution) => {
+      queryClient.setQueryData(
+        [INSTITUTIONS_QUERY_KEY, institution.id],
+        institution,
+      );
+      void invalidate();
     },
   });
-
+  const deleteInstitutionMutation = useMutation({
+    mutationFn: ({ id }: { id: string }) => client.institutions.delete(id),
+    onSuccess: (_, { id }) => {
+      queryClient.removeQueries({
+        queryKey: [INSTITUTIONS_QUERY_KEY, id],
+        exact: true,
+      });
+      void invalidate();
+    },
+  });
   return {
     createInstitutionMutation,
     updateInstitutionMutation,
+    deleteInstitutionMutation,
   };
 }

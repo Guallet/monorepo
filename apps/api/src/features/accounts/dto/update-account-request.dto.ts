@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsString,
   Length,
+  IsUUID,
   ValidateNested,
 } from 'class-validator';
 import { AccountType } from '../entities/accountType.model';
@@ -88,4 +89,15 @@ export class UpdateAccountRequest {
   @IsOptional()
   @IsBoolean()
   create_balance_transaction?: boolean;
+
+  @ApiProperty({
+    type: String,
+    required: false,
+    format: 'uuid',
+    description: 'The institution id, or null to remove the institution',
+    nullable: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  institution_id?: string | null;
 }

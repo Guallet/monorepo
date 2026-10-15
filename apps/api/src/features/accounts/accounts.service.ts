@@ -7,6 +7,7 @@ import { AccountType } from './entities/accountType.model';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { AccountSource } from './entities/accountSource.model';
 import { Transaction } from '../transactions/entities/transaction.entity';
+import { InstitutionsService } from '../institutions/institutions.service';
 
 @Injectable()
 export class AccountsService {
@@ -17,6 +18,7 @@ export class AccountsService {
     private readonly repository: Repository<Account>,
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
+    private readonly institutionsService: InstitutionsService,
   ) {}
 
   async findAllUserAccounts(userId: string): Promise<Account[]> {
@@ -53,6 +55,15 @@ export class AccountsService {
   }): Promise<Account> {
     const { user_id, dto } = args;
 
+    let institutionId: string | null = null;
+    if (dto.institution_id) {
+      const institution = await this.institutionsService.findOne({
+        id: dto.institution_id,
+        user_id,
+      });
+      institutionId = institution.id;
+    }
+
     let normalizedInitialBalance = dto.initial_balance ?? 0;
 
     // Depending on the account type, the balance would be negative or positive
@@ -80,7 +91,7 @@ export class AccountsService {
       type: dto.type ?? AccountType.UNKNOWN,
       source: (dto.source as AccountSource) ?? AccountSource.UNKNOWN,
       source_name: dto.source_name,
-      institutionId: dto.institution_id ?? null,
+      institutionId,
       properties: dto.properties ?? null,
     });
 
@@ -122,6 +133,18 @@ export class AccountsService {
       throw new NotFoundException();
     }
 
+    let institutionId = dbEntity.institutionId;
+    if (dto.institution_id !== undefined) {
+      institutionId = dto.institution_id;
+      if (dto.institution_id) {
+        const institution = await this.institutionsService.findOne({
+          id: dto.institution_id,
+          user_id: userId,
+        });
+        institutionId = institution.id;
+      }
+    }
+
     if (typeof dto.balance === 'number' && dto.create_balance_transaction) {
       // Create a new transaction if the balance is being updated
       this.logger.debug(
@@ -148,14 +171,16 @@ export class AccountsService {
       }
     }
 
-    const updatedAccount = await this.repository.save({
+    const updatePayload: Partial<Account> = {
       balance: dto.balance ?? dbEntity.balance,
       id: accountId,
       user_id: userId,
       name: dto.name ?? dbEntity.name,
       currency: dto.currency ?? dbEntity.currency,
       type: dto.type ?? dbEntity.type,
-    });
+      institutionId,
+    };
+    const updatedAccount = await this.repository.save(updatePayload);
     return updatedAccount;
   }
 
