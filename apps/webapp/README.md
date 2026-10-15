@@ -2,10 +2,13 @@
 
 This project contains the Guallet Web App
 
+The webapp uses TanStack Start in SPA mode, with file-based TanStack Router
+routes. It builds a static app shell for the Nginx deployment.
+
 The main libraries used to build this app are:
 
 - [Vite](https://vitejs.dev/): Local development tooling
-- [Tanstack Router](https://tanstack.com/router): Router
+- [TanStack Start](https://tanstack.com/start): Application framework and routing
 - [Mantine UI](https://mantine.dev/): React components library
 - [Zod](https://zod.dev/): Validation
 - [Better Auth](https://www.better-auth.com/): Authentication

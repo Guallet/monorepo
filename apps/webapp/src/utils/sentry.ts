@@ -1,15 +1,18 @@
-import { router } from '@/router';
 import * as Sentry from '@sentry/react';
+import type { AnyRouter } from '@tanstack/react-router';
+
+let isInitialized = false;
 
 function isSentryEnabled() {
   return import.meta.env.VITE_SENTRY_ENABLED === 'true' && !import.meta.env.DEV;
 }
 
-export function initSentry() {
-  if (globalThis.window === undefined || !isSentryEnabled()) {
+export function initSentry(router: AnyRouter) {
+  if (globalThis.window === undefined || !isSentryEnabled() || isInitialized) {
     return;
   }
 
+  isInitialized = true;
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
     enabled: true,

@@ -62,5 +62,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: webapp-dist
-          path: apps/webapp/dist
+          path: apps/webapp/dist/client
           retention-days: 7

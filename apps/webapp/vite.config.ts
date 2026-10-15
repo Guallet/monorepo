@@ -18,7 +18,14 @@ export default defineConfig({
   plugins: [
     // tanstackStart replaces tanstackRouter and adds SSR entry wiring,
     // server functions, and code splitting out of the box.
-    tanstackStart(),
+    tanstackStart({
+      spa: {
+        enabled: true,
+        prerender: {
+          outputPath: '/index.html',
+        },
+      },
+    }),
     // React Compiler is enabled to automatically optimize React components
     // Docs: https://react.dev/learn/react-compiler
     react({

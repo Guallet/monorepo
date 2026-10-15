@@ -18,8 +18,8 @@
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
     "@guallet/auth": "workspace:*",
-    "@guallet/luna": "workspace:*",
     "@guallet/calculators": "workspace:*",
+    "@guallet/luna": "workspace:*",
     "@guallet/money": "workspace:*",
     "@guallet/theme": "workspace:*",
     "@guallet/ui-react": "workspace:*",
@@ -56,7 +56,7 @@
     "zustand": "5.0.11"
   },
   "devDependencies": {
-    "@tanstack/router-plugin": "1.131.27",
+    "@tanstack/router-plugin": "1.151.3",
     "@types/papaparse": "5.3.16",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",

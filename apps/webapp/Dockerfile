@@ -58,7 +58,7 @@ RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx && \
 USER nonroot
 
 # Copy built files from base stage ensuring nonroot ownership
-COPY --chown=nonroot:nonroot --from=base /app/apps/webapp/dist /usr/share/nginx/html
+COPY --chown=nonroot:nonroot --from=base /app/apps/webapp/dist/client/ /usr/share/nginx/html/
 
 # Copy custom nginx configuration ensuring nonroot ownership
 COPY --chown=nonroot:nonroot apps/webapp/nginx.conf /etc/nginx/conf.d/default.conf

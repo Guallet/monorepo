@@ -20,6 +20,11 @@ Run from the monorepo root. No test suite in the webapp itself.
 TanStack Router with file-system routing. **`src/routeTree.gen.ts` is auto-generated — never edit it manually.** The router plugin regenerates it on dev/build.
 
 - `src/routes/__root.tsx` — root layout (providers, devtools)
+- `src/router.tsx` — exports `getRouter()`; Start creates a router per request
+- `src/client.tsx` — hydrates the Start app and wires React error callbacks
+- Start is configured in SPA mode because production serves static files from
+  Nginx. The build prerenders the root shell to `dist/client/index.html`, which
+  is copied into Nginx's document root by the webapp Dockerfile.
 - `src/routes/_app.tsx` — authenticated layout guard (redirects to `/login` if unauthenticated), wraps `GualletAppShell`
 - `src/routes/_app/<feature>/` — protected feature routes
 - `src/routes/login`, `register`, `privacy`, `terms` — public routes
