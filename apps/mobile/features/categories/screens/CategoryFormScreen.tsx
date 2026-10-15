@@ -40,6 +40,14 @@ import { categoryErrorMessage } from '../categoryErrors';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
 
+function categoryHasChildren(
+  categories: ReadonlyArray<{ parentId: string | null }>,
+  categoryId?: string,
+) {
+  if (!categoryId) return false;
+  return categories.some((item) => item.parentId === categoryId);
+}
+
 export default function CategoryFormScreen({
   categoryId,
   initialParentId,
@@ -75,9 +83,7 @@ export default function CategoryFormScreen({
     deleteCategoryMutation.isPending;
   let formPointerEvents: 'none' | 'auto' = 'auto';
   if (pending) formPointerEvents = 'none';
-  const hasChildren =
-    Boolean(categoryId) &&
-    categories.some((item) => item.parentId === categoryId);
+  const hasChildren = categoryHasChildren(categories, categoryId);
   const parents = eligibleCategoryParents(categories, categoryId);
   const schema = z.object({
     name: z.string().trim().min(1, 'Enter a category name.'),

@@ -32,6 +32,16 @@ const accountFormSchema = z.object({
     .regex(/^-?\d+(?:[.,]\d+)?$/, 'Enter a valid balance.'),
 });
 
+function submitLabel(
+  isSubmitting: boolean,
+  isPending: boolean,
+  isEditing: boolean,
+) {
+  if (isSubmitting || isPending) return 'Saving…';
+  if (isEditing) return 'Save changes';
+  return 'Add account';
+}
+
 interface AccountFormProps {
   account?: AccountDto | null;
   onCancel: () => void;
@@ -307,11 +317,7 @@ export function AccountForm({
                 }}
                 style={styles.actionButton}
               >
-                {isSubmitting || isPending
-                  ? 'Saving…'
-                  : account
-                    ? 'Save changes'
-                    : 'Add account'}
+                {submitLabel(isSubmitting, isPending, Boolean(account))}
               </Button>
             )}
           </form.Subscribe>

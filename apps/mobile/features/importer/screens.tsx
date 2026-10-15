@@ -43,6 +43,15 @@ import { z } from 'zod';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
+function categoryMappingValue(
+  mapping: CategoryMapping | null | undefined,
+): string {
+  if (mapping === undefined) return '__choose__';
+  if (mapping === null) return '';
+  if (mapping.shouldCreate) return 'create';
+  return mapping.id ?? '';
+}
+
 function TextLine({
   children,
   strong = false,
@@ -234,7 +243,7 @@ export function MapColumnsScreen() {
           }
         }),
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: ({ value }) => {
       if (!draft) return;
       updateDraft((current) => ({
         ...current,
@@ -331,7 +340,7 @@ export function MapAccountsScreen() {
     },
     validationLogic: revalidateLogic(),
     validators: { onDynamic: mappingSchema },
-    onSubmit: async () => {
+    onSubmit: () => {
       if (!draft) return;
       if (distinctValues(draft, 'category').length === 0) {
         router.push('/importer/csv/preview');
@@ -488,22 +497,13 @@ export function MapCategoriesScreen() {
       mappings: Object.fromEntries(
         keys.map((key) => {
           const mapping = draft?.categories[key];
-          return [
-            key,
-            mapping === undefined
-              ? '__choose__'
-              : mapping === null
-                ? ''
-                : mapping.shouldCreate
-                  ? 'create'
-                  : mapping.id,
-          ];
+          return [key, categoryMappingValue(mapping)];
         }),
       ),
     },
     validationLogic: revalidateLogic(),
     validators: { onDynamic: mappingSchema },
-    onSubmit: async () => router.push('/importer/csv/preview'),
+    onSubmit: () => router.push('/importer/csv/preview'),
   });
   const mappings = useStore(form.store, (state) => state.values.mappings);
   const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
@@ -513,16 +513,7 @@ export function MapCategoriesScreen() {
       mappings: Object.fromEntries(
         keys.map((key) => {
           const mapping = draft.categories[key];
-          return [
-            key,
-            mapping === undefined
-              ? '__choose__'
-              : mapping === null
-                ? ''
-                : mapping.shouldCreate
-                  ? 'create'
-                  : mapping.id,
-          ];
+          return [key, categoryMappingValue(mapping)];
         }),
       ),
     });

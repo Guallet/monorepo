@@ -30,6 +30,16 @@ type Props = {
   onSaved: (goal: SavingGoalDto) => void;
 };
 
+function submitLabel(
+  isSubmitting: boolean,
+  isPending: boolean,
+  isEditing: boolean,
+) {
+  if (isSubmitting || isPending) return 'Saving goal…';
+  if (isEditing) return 'Save changes';
+  return 'Create goal';
+}
+
 export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   const router = useRouter();
   const { colors, spacing, typography, borderRadius } = useTheme();
@@ -70,14 +80,14 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
               targetDate: z.date().nullable(),
             })
             .superRefine((value, context) => {
-              const selected = accounts.filter((account) =>
+              const selected = accounts.find((account) =>
                 value.accountIds.includes(account.id),
               );
               const result = validateGoal({
                 name: value.name,
                 targetAmount: value.targetAmount,
                 accountIds: availableGoalAccountIds(value.accountIds, accounts),
-                currency: selected[0]?.currency ?? null,
+                currency: selected?.currency ?? null,
                 targetDate: value.targetDate,
               });
               for (const [key, message] of Object.entries(result.errors)) {
@@ -95,14 +105,14 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
     },
     onSubmit: async ({ value }) => {
       const validIds = availableGoalAccountIds(value.accountIds, accounts);
-      const selected = accounts.filter((account) =>
+      const selected = accounts.find((account) =>
         validIds.includes(account.id),
       );
       const result = validateGoal({
         name: value.name,
         targetAmount: value.targetAmount,
         accountIds: validIds,
-        currency: selected[0]?.currency ?? null,
+        currency: selected?.currency ?? null,
         targetDate: value.targetDate,
       });
       if (!result.valid) return;
@@ -426,11 +436,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
                 if (!form.state.isSubmitting) void form.handleSubmit();
               }}
             >
-              {isSubmitting || pending
-                ? 'Saving goal…'
-                : goal
-                  ? 'Save changes'
-                  : 'Create goal'}
+              {submitLabel(isSubmitting, pending, Boolean(goal))}
             </Button>
           )}
         </form.Subscribe>
