@@ -1,23 +1,35 @@
-import { router } from '@/router';
 import * as Sentry from '@sentry/react';
+import type { AnyRouter } from '@tanstack/react-router';
 
-// Initialize Sentry
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  enabled: import.meta.env.VITE_SENTRY_ENABLED === true && !import.meta.env.DEV, // Disabled in dev mode
-  debug: import.meta.env.DEV,
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-    Sentry.tanstackRouterBrowserTracingIntegration(router),
-  ],
-  // Performance Monitoring
-  // For finer control of sent transactions you can adjust this value, or use tracesSampler
-  tracesSampleRate: 1.0,
-  // Set `tracePropagationTargets` to control for which URLs trace propagation should be enabled
-  tracePropagationTargets: [/^https:\/\/app\.guallet\.io/],
+let isInitialized = false;
 
-  // Session Replay
-  replaysSessionSampleRate: 0.1, // Sample 10% of sessions
-  replaysOnErrorSampleRate: 1.0, // Always record sessions with errors
-});
+function isSentryEnabled() {
+  return import.meta.env.VITE_SENTRY_ENABLED === 'true' && !import.meta.env.DEV;
+}
+
+export function initSentry(router: AnyRouter) {
+  if (globalThis.window === undefined || !isSentryEnabled() || isInitialized) {
+    return;
+  }
+
+  isInitialized = true;
+  Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    enabled: true,
+    debug: import.meta.env.DEV,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration(),
+      Sentry.tanstackRouterBrowserTracingIntegration(router),
+    ],
+    // Performance Monitoring
+    // For finer control of sent transactions you can adjust this value, or use tracesSampler
+    tracesSampleRate: 1,
+    // Set `tracePropagationTargets` to control for which URLs trace propagation should be enabled
+    tracePropagationTargets: [/^https:\/\/app\.guallet\.io/],
+
+    // Session Replay
+    replaysSessionSampleRate: 0.1, // Sample 10% of sessions
+    replaysOnErrorSampleRate: 1, // Always record sessions with errors
+  });
+}

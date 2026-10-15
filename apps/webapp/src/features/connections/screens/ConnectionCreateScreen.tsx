@@ -11,6 +11,7 @@ import {
   Group,
   Stack,
 } from '@mantine/core';
+import { useCallback } from 'react';
 import { FlagEmoji } from '../components/FlagEmoji';
 import { ObInstitutionDto, OpenBankingCountryDto } from '@guallet/api-client';
 import { SearchableListView } from '@guallet/ui-react';
@@ -25,15 +26,19 @@ interface ConnectionCreateScreenProps {
 
 const renderAutocompleteOption: AutocompleteProps['renderOption'] = ({
   option,
-}) => (
-  <Group gap="sm">
-    <FlagEmoji countryCode={option.value} />
-    <Text size="sm">{option.label}</Text>
-    <Text size="xs" opacity={0.5}>
-      {option.value}
-    </Text>
-  </Group>
-);
+}) => {
+  const typedOption = option as { label: string; value: string };
+
+  return (
+    <Group gap="sm">
+      <FlagEmoji countryCode={typedOption.value} />
+      <Text size="sm">{typedOption.label}</Text>
+      <Text size="xs" opacity={0.5}>
+        {typedOption.value}
+      </Text>
+    </Group>
+  );
+};
 
 export function ConnectionCreateScreen({
   selectedCountryCode,
@@ -49,6 +54,49 @@ export function ConnectionCreateScreen({
   );
 
   const { createConnectionMutation } = useConnectionMutations();
+
+  const redirectOrigin =
+    globalThis.window === undefined ? '' : globalThis.window.location.origin;
+
+  const renderInstitutionRow = useCallback(
+    (institution: ObInstitutionDto) => (
+      <ObInstitutionRow
+        institution={institution}
+        onClick={() => {
+          if (!redirectOrigin) {
+            return;
+          }
+
+          createConnectionMutation.mutate(
+            {
+              request: {
+                institution_id: institution.id,
+                redirect_to: `${redirectOrigin}/connections/connect/callback`,
+              },
+            },
+            {
+              onSuccess: (data) => {
+                // Open the website to complete the connection
+                if (globalThis.window !== undefined) {
+                  globalThis.window.open(data.link, '_self');
+                }
+              },
+              onError: (error) => {
+                console.error('Error creating connection:', error);
+                notifications.show({
+                  title: 'Error',
+                  message:
+                    'There was an error creating the connection. Please try again.',
+                  color: 'red',
+                });
+              },
+            },
+          );
+        }}
+      />
+    ),
+    [createConnectionMutation, redirectOrigin],
+  );
 
   return (
     <BaseScreen title={t('screens.connections.create.title', 'Connect a bank')}>
@@ -85,36 +133,7 @@ export function ConnectionCreateScreen({
                 </Text>
               </Stack>
             }
-            itemTemplate={(institution: ObInstitutionDto) => (
-              <ObInstitutionRow
-                institution={institution}
-                onClick={() => {
-                  createConnectionMutation.mutate(
-                    {
-                      request: {
-                        institution_id: institution.id,
-                        redirect_to: `${window.location.origin}/connections/connect/callback`,
-                      },
-                    },
-                    {
-                      onSuccess: (data) => {
-                        // Open the website to complete the connection
-                        window.open(data.link, '_self');
-                      },
-                      onError: (error) => {
-                        console.error('Error creating connection:', error);
-                        notifications.show({
-                          title: 'Error',
-                          message:
-                            'There was an error creating the connection. Please try again.',
-                          color: 'red',
-                        });
-                      },
-                    },
-                  );
-                }}
-              />
-            )}
+            itemTemplate={renderInstitutionRow}
           />
         )}
       </Stack>

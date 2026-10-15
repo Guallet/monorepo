@@ -11,6 +11,10 @@ export function useDefaultCurrency() {
 
 // Only works on web browsers. Find some equivalent for React native
 function getDefaultCurrencyFromLocale(): string | undefined {
+  if (typeof navigator === 'undefined') {
+    return undefined;
+  }
+
   const locale = navigator.language;
   const parts = new Intl.NumberFormat(locale, {
     style: 'currency',

@@ -1,4 +1,4 @@
-import { router } from '@/router';
+import { getRouter } from '@/router';
 
 /**
  * Validates if a given path is a valid route in the application.
@@ -22,7 +22,7 @@ export function isValidRoute({
   try {
     // Use router.buildLocation to validate the route exists
     // This will throw if the route is invalid
-    const parsed = router.buildLocation({
+    const parsed = getRouter().buildLocation({
       to,
       params,
       search,

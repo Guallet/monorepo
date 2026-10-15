@@ -1,22 +1,14 @@
-import '@fontsource-variable/inter';
-
-// Import styles of packages that you've installed.
-// All packages except `@mantine/hooks` require styles imports
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/notifications/styles.css';
-import '@mantine/charts/styles.css';
-import '@mantine/dropzone/styles.css';
-
 import { GualletThemeProvider } from '@guallet/ui-react';
 import { Notifications } from '@mantine/notifications';
-import { RouterProvider } from '@tanstack/react-router';
+import { useRouter } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { GualletClientProvider } from '@guallet/api-react';
-import { router, TanStackRouterDevtools } from './router.tsx';
+import { TanStackRouterDevtools } from '@/components/TanStackRouterDevtools';
 import { gualletClient } from '@/api/gualletClient.ts';
+import { initSentry } from '@/utils/sentry';
 import { DatesProvider } from '@mantine/dates';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { authClient } from './auth/auth.ts';
 import { AuthProvider } from '@guallet/auth';
@@ -24,10 +16,14 @@ import { AuthProvider } from '@guallet/auth';
 // Init i18n
 import i18next from './i18n/i18n';
 
-// Create a Query client
-const queryClient = new QueryClient();
+export default function App({ children }: Readonly<{ children: ReactNode }>) {
+  const router = useRouter();
+  const [queryClient] = useState(() => new QueryClient());
 
-export default function App() {
+  useEffect(() => {
+    initSentry(router);
+  }, [router]);
+
   return (
     <GualletThemeProvider>
       <DatesProvider
@@ -39,9 +35,9 @@ export default function App() {
         <AuthProvider authClient={authClient}>
           <QueryClientProvider client={queryClient}>
             <GualletClientProvider client={gualletClient}>
-              <RouterProvider router={router} />
+              {children}
               {/* Tanstack Dev Tools */}
-              <TanStackRouterDevtools router={router} />
+              <TanStackRouterDevtools />
               <ReactQueryDevtools initialIsOpen={false} />
               {/* END Tanstack Dev Tools */}
             </GualletClientProvider>

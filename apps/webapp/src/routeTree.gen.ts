@@ -459,7 +459,7 @@ export interface FileRoutesByFullPath {
   '/login/forgot-password': typeof LoginForgotPasswordRoute
   '/login/reset-password-sent': typeof LoginResetPasswordSentRoute
   '/login/validateotp': typeof LoginValidateotpRoute
-  '/login': typeof LoginIndexRoute
+  '/login/': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
   '/budgets/$id': typeof AppBudgetsIdRoute
@@ -481,20 +481,20 @@ export interface FileRoutesByFullPath {
   '/tools/mortgage': typeof AppToolsMortgageLazyRoute
   '/tools/salary': typeof AppToolsSalaryLazyRoute
   '/tools/stamp-duty': typeof AppToolsStampDutyLazyRoute
-  '/accounts': typeof AppAccountsIndexRoute
-  '/budgets': typeof AppBudgetsIndexRoute
-  '/categories': typeof AppCategoriesIndexRoute
-  '/connections': typeof AppConnectionsIndexRoute
-  '/dashboard': typeof AppDashboardIndexRoute
-  '/importer': typeof AppImporterIndexRoute
-  '/institutions': typeof AppInstitutionsIndexRoute
-  '/notifications': typeof AppNotificationsIndexRoute
-  '/reports': typeof AppReportsIndexRoute
-  '/saving-goals': typeof AppSavingGoalsIndexRoute
-  '/settings': typeof AppSettingsIndexRoute
-  '/subscriptions': typeof AppSubscriptionsIndexRoute
-  '/transactions': typeof AppTransactionsIndexRoute
-  '/user': typeof AppUserIndexRoute
+  '/accounts/': typeof AppAccountsIndexRoute
+  '/budgets/': typeof AppBudgetsIndexRoute
+  '/categories/': typeof AppCategoriesIndexRoute
+  '/connections/': typeof AppConnectionsIndexRoute
+  '/dashboard/': typeof AppDashboardIndexRoute
+  '/importer/': typeof AppImporterIndexRoute
+  '/institutions/': typeof AppInstitutionsIndexRoute
+  '/notifications/': typeof AppNotificationsIndexRoute
+  '/reports/': typeof AppReportsIndexRoute
+  '/saving-goals/': typeof AppSavingGoalsIndexRoute
+  '/settings/': typeof AppSettingsIndexRoute
+  '/subscriptions/': typeof AppSubscriptionsIndexRoute
+  '/transactions/': typeof AppTransactionsIndexRoute
+  '/user/': typeof AppUserIndexRoute
   '/accounts/$id/edit': typeof AppAccountsIdEditRoute
   '/categories/$id/edit': typeof AppCategoriesIdEditRoute
   '/categories/rules/new': typeof AppCategoriesRulesNewRoute
@@ -509,9 +509,9 @@ export interface FileRoutesByFullPath {
   '/settings/ai/providers': typeof AppSettingsAiProvidersRoute
   '/subscriptions/$id/edit': typeof AppSubscriptionsIdEditRoute
   '/transactions/$id/edit': typeof AppTransactionsIdEditRoute
-  '/categories/rules': typeof AppCategoriesRulesIndexRoute
-  '/connections/connect': typeof AppConnectionsConnectIndexRoute
-  '/importer/csv': typeof AppImporterCsvIndexRoute
+  '/categories/rules/': typeof AppCategoriesRulesIndexRoute
+  '/connections/connect/': typeof AppConnectionsConnectIndexRoute
+  '/importer/csv/': typeof AppImporterCsvIndexRoute
   '/categories/rules/$id/edit': typeof AppCategoriesRulesIdEditRoute
   '/importer/csv/status/$jobId': typeof AppImporterCsvStatusJobIdRoute
   '/settings/ai/providers/$id': typeof AppSettingsAiProvidersIdRoute
@@ -673,7 +673,7 @@ export interface FileRouteTypes {
     | '/login/forgot-password'
     | '/login/reset-password-sent'
     | '/login/validateotp'
-    | '/login'
+    | '/login/'
     | '/accounts/$id'
     | '/accounts/new'
     | '/budgets/$id'
@@ -695,20 +695,20 @@ export interface FileRouteTypes {
     | '/tools/mortgage'
     | '/tools/salary'
     | '/tools/stamp-duty'
-    | '/accounts'
-    | '/budgets'
-    | '/categories'
-    | '/connections'
-    | '/dashboard'
-    | '/importer'
-    | '/institutions'
-    | '/notifications'
-    | '/reports'
-    | '/saving-goals'
-    | '/settings'
-    | '/subscriptions'
-    | '/transactions'
-    | '/user'
+    | '/accounts/'
+    | '/budgets/'
+    | '/categories/'
+    | '/connections/'
+    | '/dashboard/'
+    | '/importer/'
+    | '/institutions/'
+    | '/notifications/'
+    | '/reports/'
+    | '/saving-goals/'
+    | '/settings/'
+    | '/subscriptions/'
+    | '/transactions/'
+    | '/user/'
     | '/accounts/$id/edit'
     | '/categories/$id/edit'
     | '/categories/rules/new'
@@ -723,9 +723,9 @@ export interface FileRouteTypes {
     | '/settings/ai/providers'
     | '/subscriptions/$id/edit'
     | '/transactions/$id/edit'
-    | '/categories/rules'
-    | '/connections/connect'
-    | '/importer/csv'
+    | '/categories/rules/'
+    | '/connections/connect/'
+    | '/importer/csv/'
     | '/categories/rules/$id/edit'
     | '/importer/csv/status/$jobId'
     | '/settings/ai/providers/$id'
@@ -928,7 +928,7 @@ declare module '@tanstack/react-router' {
     '/_app': {
       id: '/_app'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -942,7 +942,7 @@ declare module '@tanstack/react-router' {
     '/login/': {
       id: '/login/'
       path: '/login'
-      fullPath: '/login'
+      fullPath: '/login/'
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -984,98 +984,98 @@ declare module '@tanstack/react-router' {
     '/_app/user/': {
       id: '/_app/user/'
       path: '/user'
-      fullPath: '/user'
+      fullPath: '/user/'
       preLoaderRoute: typeof AppUserIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/transactions/': {
       id: '/_app/transactions/'
       path: '/transactions'
-      fullPath: '/transactions'
+      fullPath: '/transactions/'
       preLoaderRoute: typeof AppTransactionsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/subscriptions/': {
       id: '/_app/subscriptions/'
       path: '/subscriptions'
-      fullPath: '/subscriptions'
+      fullPath: '/subscriptions/'
       preLoaderRoute: typeof AppSubscriptionsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/settings/': {
       id: '/_app/settings/'
       path: '/settings'
-      fullPath: '/settings'
+      fullPath: '/settings/'
       preLoaderRoute: typeof AppSettingsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/saving-goals/': {
       id: '/_app/saving-goals/'
       path: '/saving-goals'
-      fullPath: '/saving-goals'
+      fullPath: '/saving-goals/'
       preLoaderRoute: typeof AppSavingGoalsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/reports/': {
       id: '/_app/reports/'
       path: '/reports'
-      fullPath: '/reports'
+      fullPath: '/reports/'
       preLoaderRoute: typeof AppReportsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/notifications/': {
       id: '/_app/notifications/'
       path: '/notifications'
-      fullPath: '/notifications'
+      fullPath: '/notifications/'
       preLoaderRoute: typeof AppNotificationsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/institutions/': {
       id: '/_app/institutions/'
       path: '/institutions'
-      fullPath: '/institutions'
+      fullPath: '/institutions/'
       preLoaderRoute: typeof AppInstitutionsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/importer/': {
       id: '/_app/importer/'
       path: '/importer'
-      fullPath: '/importer'
+      fullPath: '/importer/'
       preLoaderRoute: typeof AppImporterIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/dashboard/': {
       id: '/_app/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
+      fullPath: '/dashboard/'
       preLoaderRoute: typeof AppDashboardIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/connections/': {
       id: '/_app/connections/'
       path: '/connections'
-      fullPath: '/connections'
+      fullPath: '/connections/'
       preLoaderRoute: typeof AppConnectionsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/categories/': {
       id: '/_app/categories/'
       path: '/categories'
-      fullPath: '/categories'
+      fullPath: '/categories/'
       preLoaderRoute: typeof AppCategoriesIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/budgets/': {
       id: '/_app/budgets/'
       path: '/budgets'
-      fullPath: '/budgets'
+      fullPath: '/budgets/'
       preLoaderRoute: typeof AppBudgetsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/accounts/': {
       id: '/_app/accounts/'
       path: '/accounts'
-      fullPath: '/accounts'
+      fullPath: '/accounts/'
       preLoaderRoute: typeof AppAccountsIndexRouteImport
       parentRoute: typeof AppRoute
     }
@@ -1229,21 +1229,21 @@ declare module '@tanstack/react-router' {
     '/_app/importer/csv/': {
       id: '/_app/importer/csv/'
       path: '/importer/csv'
-      fullPath: '/importer/csv'
+      fullPath: '/importer/csv/'
       preLoaderRoute: typeof AppImporterCsvIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/connections/connect/': {
       id: '/_app/connections/connect/'
       path: '/connections/connect'
-      fullPath: '/connections/connect'
+      fullPath: '/connections/connect/'
       preLoaderRoute: typeof AppConnectionsConnectIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/categories/rules/': {
       id: '/_app/categories/rules/'
       path: '/categories/rules'
-      fullPath: '/categories/rules'
+      fullPath: '/categories/rules/'
       preLoaderRoute: typeof AppCategoriesRulesIndexRouteImport
       parentRoute: typeof AppRoute
     }
@@ -1515,3 +1515,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

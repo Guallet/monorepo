@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "tsc && vite build",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "lint": "oxlint .",
@@ -18,8 +18,8 @@
     "@guallet/api-client": "workspace:*",
     "@guallet/api-react": "workspace:*",
     "@guallet/auth": "workspace:*",
-    "@guallet/luna": "workspace:*",
     "@guallet/calculators": "workspace:*",
+    "@guallet/luna": "workspace:*",
     "@guallet/money": "workspace:*",
     "@guallet/theme": "workspace:*",
     "@guallet/ui-react": "workspace:*",
@@ -38,6 +38,8 @@
     "@tanstack/react-query-devtools": "5.83.0",
     "@tanstack/react-router": "1.151.3",
     "@tanstack/react-router-devtools": "1.151.3",
+    "@tanstack/react-router-ssr-query": "1.151.3",
+    "@tanstack/react-start": "1.151.3",
     "better-auth": "workspace:*",
     "core-js": "3.44.0",
     "dayjs": "1.11.13",
@@ -54,7 +56,7 @@
     "zustand": "5.0.11"
   },
   "devDependencies": {
-    "@tanstack/router-plugin": "1.131.27",
+    "@tanstack/router-plugin": "1.151.3",
     "@types/papaparse": "5.3.16",
     "@types/react": "workspace:*",
     "@types/react-dom": "workspace:*",
