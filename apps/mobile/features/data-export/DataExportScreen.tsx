@@ -12,7 +12,7 @@ import {
   MailIcon,
 } from '@guallet/luna-mobile/icons';
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
@@ -23,6 +23,8 @@ import {
   View,
 } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
 import {
   submitExportRequest,
   snapshotExportSelection,
@@ -54,19 +56,69 @@ export default function DataExportScreen() {
     refetch,
   } = useAccounts();
   const exportMutation = useDataExportMutation();
-  const [accountIds, setAccountIds] = useState<string[]>([]);
-  const [dateRange, setDateRange] = useState<DateRange | null>(null);
-  const [format, setFormat] = useState<ExportFormat>('csv');
   const [phase, setPhase] = useState<Phase>('form');
   const [errorMessage, setErrorMessage] = useState('');
   const [submittedSelection, setSubmittedSelection] =
     useState<ExportSelection | null>(null);
-  const submittingRef = useRef(false);
+  const form = useForm({
+    defaultValues: {
+      accountIds: [] as string[],
+      dateRange: null as DateRange | null,
+      format: 'csv' as ExportFormat,
+    },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: z
+        .object({
+          accountIds: z.array(z.string()),
+          dateRange: z
+            .object({ startDate: z.date(), endDate: z.date() })
+            .nullable(),
+          format: z.enum(['csv', 'json', 'ofe']),
+        })
+        .superRefine(({ dateRange }, context) => {
+          if (dateRange && dateRange.endDate < dateRange.startDate) {
+            context.addIssue({
+              code: 'custom',
+              path: ['dateRange'],
+              message: 'Choose an end date on or after the start date.',
+            });
+          }
+        }),
+    },
+    onSubmit: async ({ value }) => {
+      const requestSelection = snapshotExportSelection(value);
+      setSubmittedSelection(requestSelection);
+      setErrorMessage('');
+      const result = await submitExportRequest(
+        exportMutation.mutateAsync,
+        requestSelection,
+      );
+      if (result.status === 'accepted') {
+        setPhase('accepted');
+        AccessibilityInfo.announceForAccessibility(
+          'Export started. We will email your file when it is ready.',
+        );
+        return;
+      }
+      setPhase('failed');
+      const message =
+        result.error instanceof Error &&
+        result.error.message ===
+          'Choose an end date on or after the start date.'
+          ? result.error.message
+          : 'Check your connection and try again. Your choices are saved.';
+      setErrorMessage(message);
+      AccessibilityInfo.announceForAccessibility(
+        `Couldn’t start export. ${message}`,
+      );
+    },
+  });
+  const selection = useStore(form.store, (state) => state.values);
+  const { accountIds, dateRange, format } = selection;
 
   const displayedSelection =
-    phase === 'form' || !submittedSelection
-      ? { accountIds, dateRange, format }
-      : submittedSelection;
+    phase === 'form' || !submittedSelection ? selection : submittedSelection;
 
   const accountSummary = displayedSelection.accountIds.length
     ? accounts
@@ -78,43 +130,13 @@ export default function DataExportScreen() {
     ? `${formatDate(displayedSelection.dateRange.startDate)} – ${formatDate(displayedSelection.dateRange.endDate)}`
     : 'All dates';
 
-  async function submit(selection?: ExportSelection) {
-    if (submittingRef.current) return;
-    submittingRef.current = true;
-    const requestSelection = snapshotExportSelection(
-      selection ?? { accountIds, dateRange, format },
-    );
-    setSubmittedSelection(requestSelection);
-    setErrorMessage('');
-    const result = await submitExportRequest(
-      exportMutation.mutateAsync,
-      requestSelection,
-    );
-    if (result.status === 'accepted') {
-      setPhase('accepted');
-      AccessibilityInfo.announceForAccessibility(
-        'Export started. We will email your file when it is ready.',
-      );
-      return;
-    }
-    submittingRef.current = false;
-    setPhase('failed');
-    const message =
-      result.error instanceof Error &&
-      result.error.message === 'Choose an end date on or after the start date.'
-        ? result.error.message
-        : 'Check your connection and try again. Your choices are saved.';
-    setErrorMessage(message);
-    AccessibilityInfo.announceForAccessibility(
-      `Couldn’t start export. ${message}`,
-    );
-  }
-
   function editSelection() {
     if (submittedSelection) {
-      setAccountIds([...submittedSelection.accountIds]);
-      setDateRange(submittedSelection.dateRange);
-      setFormat(submittedSelection.format);
+      form.reset({
+        accountIds: [...submittedSelection.accountIds],
+        dateRange: submittedSelection.dateRange,
+        format: submittedSelection.format,
+      });
     }
     exportMutation.reset();
     setPhase('form');
@@ -264,7 +286,9 @@ export default function DataExportScreen() {
               <>
                 <Button
                   disabled={exportMutation.isPending}
-                  onClick={() => void submit(submittedSelection ?? undefined)}
+                  onClick={() => {
+                    if (!form.state.isSubmitting) void form.handleSubmit();
+                  }}
                 >
                   {exportMutation.isPending
                     ? 'Submitting export…'
@@ -349,7 +373,9 @@ export default function DataExportScreen() {
             {!accountsLoading && !isError && (
               <AccountInput
                 accounts={accounts}
-                onConfirm={setAccountIds}
+                onConfirm={(accountIds) =>
+                  form.setFieldValue('accountIds', accountIds)
+                }
                 placeholder="All accounts"
                 selectionMode="multiple"
                 style={cardStyle}
@@ -359,7 +385,7 @@ export default function DataExportScreen() {
             {accountIds.length > 0 && (
               <Pressable
                 accessibilityRole="button"
-                onPress={() => setAccountIds([])}
+                onPress={() => form.setFieldValue('accountIds', [])}
                 style={{ paddingVertical: spacing.sm }}
               >
                 <Text
@@ -388,14 +414,16 @@ export default function DataExportScreen() {
               </Text>
             )}
             <DateRangePicker
-              onApply={setDateRange}
+              onApply={(dateRange) =>
+                form.setFieldValue('dateRange', dateRange)
+              }
               value={dateRange}
               style={cardStyle}
             />
             {dateRange && (
               <Pressable
                 accessibilityRole="button"
-                onPress={() => setDateRange(null)}
+                onPress={() => form.setFieldValue('dateRange', null)}
                 style={{ paddingVertical: spacing.sm }}
               >
                 <Text
@@ -419,7 +447,7 @@ export default function DataExportScreen() {
                   accessibilityRole="radio"
                   accessibilityLabel={`${formatLabels[option.value]}, ${option.description}`}
                   accessibilityState={{ selected: format === option.value }}
-                  onPress={() => setFormat(option.value)}
+                  onPress={() => form.setFieldValue('format', option.value)}
                   style={[
                     styles.formatRow,
                     {
@@ -486,12 +514,24 @@ export default function DataExportScreen() {
             },
           ]}
         >
-          <Button
-            disabled={exportMutation.isPending}
-            onClick={() => void submit()}
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting] as const}
           >
-            {exportMutation.isPending ? 'Submitting export…' : 'Create export'}
-          </Button>
+            {([canSubmit, isSubmitting]) => (
+              <Button
+                disabled={
+                  !canSubmit || isSubmitting || exportMutation.isPending
+                }
+                onClick={() => {
+                  if (!form.state.isSubmitting) void form.handleSubmit();
+                }}
+              >
+                {isSubmitting || exportMutation.isPending
+                  ? 'Submitting export…'
+                  : 'Create export'}
+              </Button>
+            )}
+          </form.Subscribe>
         </View>
       </View>
     </AppScreen>

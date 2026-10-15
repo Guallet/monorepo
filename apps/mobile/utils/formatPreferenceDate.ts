@@ -5,9 +5,10 @@ function pad(value: number): string {
 }
 
 /** Interpret an API date's calendar portion without a timezone shift. */
-export function parsePreferenceDate(date: string): Date {
-  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(date);
-  if (!match) return new Date(date);
+export function parsePreferenceDate(date: string | Date): Date {
+  const value = date instanceof Date ? date.toISOString() : date;
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!match) return new Date(value);
   return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
 }
 
