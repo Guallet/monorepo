@@ -1,27 +1,44 @@
-import {
-  Button,
-  KeyboardAwareScrollView,
-  useTheme,
-} from '@guallet/luna-mobile';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import type { SavingGoalDto } from '@guallet/api-client';
 import { useAccounts, useSavingGoalMutations } from '@guallet/api-react';
+import { Button, useTheme } from '@guallet/luna-mobile';
 import { GoalAccountsSheet } from './GoalAccountsSheet';
 import { availableGoalAccountIds, validateGoal } from '../models/savingGoal';
 import {
   formatPreferenceDate,
-  parsePreferenceDate,
   endOfPreferenceDay,
+  parsePreferenceDate,
 } from '@/utils/formatPreferenceDate';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
 
 type Props = {
   goal?: SavingGoalDto | null;
   onSaved: (goal: SavingGoalDto) => void;
 };
+
+function submitLabel(
+  isSubmitting: boolean,
+  isPending: boolean,
+  isEditing: boolean,
+) {
+  if (isSubmitting || isPending) return 'Saving goal…';
+  if (isEditing) return 'Save changes';
+  return 'Create goal';
+}
 
 export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   const router = useRouter();
@@ -35,66 +52,118 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
   } = useAccounts();
   const { createSavingGoalMutation, updateSavingGoalMutation } =
     useSavingGoalMutations();
-  const [name, setName] = useState(goal?.name ?? '');
-  const [amount, setAmount] = useState(goal ? String(goal.targetAmount) : '');
-  const [description, setDescription] = useState(goal?.description ?? '');
-  const [accountIds, setAccountIds] = useState<string[]>(goal?.accounts ?? []);
-  const [targetDate, setTargetDate] = useState<Date | null>(
-    goal?.targetDate ? new Date(goal.targetDate) : null,
-  );
-  const [targetDateText, setTargetDateText] = useState<string | null>(
-    goal?.targetDate ?? null,
-  );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showAccounts, setShowAccounts] = useState(false);
-  const [errors, setErrors] = useState<
-    ReturnType<typeof validateGoal>['errors']
-  >({});
   const [requestError, setRequestError] = useState(false);
   const pending =
     createSavingGoalMutation.isPending || updateSavingGoalMutation.isPending;
-  const availableAccountIds = availableGoalAccountIds(accountIds, accounts);
+  const form = useForm({
+    defaultValues: {
+      name: goal?.name ?? '',
+      targetAmount: goal ? String(goal.targetAmount) : '',
+      description: goal?.description ?? '',
+      accountIds: goal?.accounts ?? [],
+      targetDate: goal?.targetDate
+        ? parsePreferenceDate(goal.targetDate)
+        : null,
+    },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: useMemo(
+        () =>
+          z
+            .object({
+              name: z.string(),
+              targetAmount: z.string(),
+              description: z.string(),
+              accountIds: z.array(z.string()),
+              targetDate: z.date().nullable(),
+            })
+            .superRefine((value, context) => {
+              const selected = accounts.find((account) =>
+                value.accountIds.includes(account.id),
+              );
+              const result = validateGoal({
+                name: value.name,
+                targetAmount: value.targetAmount,
+                accountIds: availableGoalAccountIds(value.accountIds, accounts),
+                currency: selected?.currency ?? null,
+                targetDate: value.targetDate,
+              });
+              for (const [key, message] of Object.entries(result.errors)) {
+                if (!message) continue;
+                const path = key === 'accountIds' ? 'accountIds' : key;
+                context.addIssue({
+                  code: 'custom',
+                  path: [path],
+                  message,
+                });
+              }
+            }),
+        [accounts],
+      ),
+    },
+    onSubmit: async ({ value }) => {
+      const validIds = availableGoalAccountIds(value.accountIds, accounts);
+      const selected = accounts.find((account) =>
+        validIds.includes(account.id),
+      );
+      const result = validateGoal({
+        name: value.name,
+        targetAmount: value.targetAmount,
+        accountIds: validIds,
+        currency: selected?.currency ?? null,
+        targetDate: value.targetDate,
+      });
+      if (!result.valid) return;
+      setRequestError(false);
+      const request = {
+        name: value.name.trim(),
+        description: value.description.trim(),
+        targetAmount: result.amount,
+        targetDate: value.targetDate ?? null,
+        accounts: validIds,
+      };
+      try {
+        const saved = goal
+          ? await updateSavingGoalMutation.mutateAsync({ id: goal.id, request })
+          : await createSavingGoalMutation.mutateAsync({
+              request: {
+                ...request,
+                targetDate: value.targetDate ?? undefined,
+              },
+            });
+        onSaved(saved);
+      } catch {
+        setRequestError(true);
+      }
+    },
+  });
+  const values = useStore(form.store, (state) => state.values);
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
+  const errors = {
+    name: fieldMeta.name?.errors[0]?.message,
+    targetAmount: fieldMeta.targetAmount?.errors[0]?.message,
+    accountIds: fieldMeta.accountIds?.errors[0]?.message,
+  };
+  const availableAccountIds = availableGoalAccountIds(
+    values.accountIds,
+    accounts,
+  );
   const selectedAccounts = accounts.filter((account) =>
     availableAccountIds.includes(account.id),
   );
-  const currency = selectedAccounts[0]?.currency ?? goal?.currency ?? null;
+  const currency = selectedAccounts[0]?.currency ?? null;
   const accountSummary = selectedAccounts
     .map((account) => account.name)
     .join(', ');
 
-  async function save() {
-    const result = validateGoal({
-      name,
-      targetAmount: amount,
-      accountIds: availableAccountIds,
-      currency: selectedAccounts[0]?.currency ?? null,
-      targetDate,
-    });
-    setErrors(result.errors);
-    if (!result.valid || pending) return;
-    setRequestError(false);
-    const request = {
-      name: name.trim(),
-      description: description.trim(),
-      targetAmount: result.amount,
-      targetDate: targetDate ?? null,
-      accounts: availableAccountIds,
-    };
-    try {
-      const saved = goal
-        ? await updateSavingGoalMutation.mutateAsync({ id: goal.id, request })
-        : await createSavingGoalMutation.mutateAsync({
-            request: { ...request, targetDate: targetDate ?? undefined },
-          });
-      onSaved(saved);
-    } catch {
-      setRequestError(true);
-    }
-  }
-
   return (
-    <View style={styles.flex}>
-      <KeyboardAwareScrollView
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.flex}
+    >
+      <ScrollView
         contentContainerStyle={{
           padding: spacing.md,
           paddingBottom: spacing.xl,
@@ -144,7 +213,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             <TextInput
               accessibilityLabel="Goal name"
               autoCapitalize="sentences"
-              onChangeText={setName}
+              onChangeText={(name) => form.setFieldValue('name', name)}
               placeholder="e.g. Emergency fund"
               placeholderTextColor={colors.text.secondary}
               style={[
@@ -157,7 +226,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
                   borderRadius: borderRadius.md,
                 },
               ]}
-              value={name}
+              value={values.name}
             />
             {errors.name && (
               <Text
@@ -175,7 +244,9 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             <TextInput
               accessibilityLabel="Target amount"
               keyboardType="decimal-pad"
-              onChangeText={setAmount}
+              onChangeText={(targetAmount) =>
+                form.setFieldValue('targetAmount', targetAmount)
+              }
               placeholder="0.00"
               placeholderTextColor={colors.text.secondary}
               style={[
@@ -188,7 +259,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
                   borderRadius: borderRadius.md,
                 },
               ]}
-              value={amount}
+              value={values.targetAmount}
             />
             {errors.targetAmount && (
               <Text
@@ -217,21 +288,17 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
               ]}
             >
               <Text style={{ color: colors.text.primary }}>
-                {targetDate
-                  ? formatPreferenceDate(
-                      targetDateText ?? targetDate,
-                      dateFormat,
-                    )
+                {values.targetDate
+                  ? formatPreferenceDate(values.targetDate, dateFormat)
                   : 'Select a date'}
               </Text>
             </Pressable>
-            {targetDate && (
+            {values.targetDate && (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Clear target date"
                 onPress={() => {
-                  setTargetDate(null);
-                  setTargetDateText(null);
+                  form.setFieldValue('targetDate', null);
                 }}
                 style={styles.clear}
               >
@@ -240,18 +307,13 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             )}
             {showDatePicker && (
               <DateTimePicker
-                value={
-                  targetDateText
-                    ? parsePreferenceDate(targetDateText)
-                    : (targetDate ?? new Date())
-                }
+                value={values.targetDate ?? new Date()}
                 mode="date"
                 display="default"
                 onChange={(event, date) => {
                   setShowDatePicker(false);
                   if (event.type === 'set' && date) {
-                    setTargetDate(endOfPreferenceDay(date));
-                    setTargetDateText(null);
+                    form.setFieldValue('targetDate', endOfPreferenceDay(date));
                   }
                 }}
               />
@@ -313,7 +375,7 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
                   Add an account before creating a goal.
                 </Text>
                 <Button
-                  onClick={() => router.push('/(tabs)/accounts')}
+                  onClick={() => router.push('/accounts')}
                   variant="outline"
                 >
                   View accounts
@@ -328,7 +390,9 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
             <TextInput
               accessibilityLabel="Goal description"
               multiline
-              onChangeText={setDescription}
+              onChangeText={(description) =>
+                form.setFieldValue('description', description)
+              }
               placeholder="Add a note"
               placeholderTextColor={colors.text.secondary}
               style={[
@@ -340,46 +404,55 @@ export function GoalForm({ goal, onSaved }: Readonly<Props>) {
                   borderRadius: borderRadius.md,
                 },
               ]}
-              value={description}
+              value={values.description}
             />
           </View>
         </View>
-
-        <View
-          style={[
-            styles.footer,
-            {
-              borderTopColor: colors.surface.border.primary,
-              backgroundColor: colors.surface.background.primary,
-              padding: spacing.md,
-            },
-          ]}
+      </ScrollView>
+      <View
+        style={[
+          styles.footer,
+          {
+            borderTopColor: colors.surface.border.primary,
+            backgroundColor: colors.surface.background.primary,
+            padding: spacing.md,
+          },
+        ]}
+      >
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting] as const}
         >
-          <Button
-            onClick={() => void save()}
-            disabled={
-              pending ||
-              accountsLoading ||
-              accountsError ||
-              accounts.length === 0
-            }
-          >
-            {pending ? 'Saving goal…' : goal ? 'Save changes' : 'Create goal'}
-          </Button>
-        </View>
-      </KeyboardAwareScrollView>
+          {([canSubmit, isSubmitting]) => (
+            <Button
+              disabled={
+                !canSubmit ||
+                accountsLoading ||
+                accountsError ||
+                accounts.length === 0 ||
+                isSubmitting ||
+                pending
+              }
+              onClick={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
+            >
+              {submitLabel(isSubmitting, pending, Boolean(goal))}
+            </Button>
+          )}
+        </form.Subscribe>
+      </View>
       <GoalAccountsSheet
         accounts={accounts}
         selectedIds={availableAccountIds}
         visible={showAccounts}
         onDismiss={() => setShowAccounts(false)}
         onApply={(ids) => {
-          setAccountIds(ids);
+          form.setFieldValue('accountIds', ids);
           setShowAccounts(false);
-          setErrors((current) => ({ ...current, accountIds: undefined }));
+          form.validateField('accountIds', 'change');
         }}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

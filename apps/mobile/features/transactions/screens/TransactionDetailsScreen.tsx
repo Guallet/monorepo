@@ -1,13 +1,3 @@
-import {
-  Button,
-  DateInput,
-  KeyboardAwareScrollView,
-  Label,
-  Stack,
-  TextInput,
-  useAlert,
-  useTheme,
-} from '@guallet/luna-mobile';
 import { Ionicons } from '@expo/vector-icons';
 import {
   useAccounts,
@@ -17,15 +7,35 @@ import {
 } from '@guallet/api-react';
 import { UpdateTransactionRequest } from '@guallet/api-client';
 import { ISO4217Currencies } from '@guallet/money';
+import {
+  Button,
+  DateInput,
+  Label,
+  Stack,
+  TextInput,
+  useAlert,
+  useTheme,
+} from '@guallet/luna-mobile';
 import { useRouter } from 'expo-router';
 import { useNavigation, usePreventRemove } from 'expo-router/react-navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { CategoryPicker } from '@/components/category-picker/CategoryPicker';
 import { SelectionSheet } from '@/components/ui/SelectionSheet';
 import { formatTransactionDate } from '../utils';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
+import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
+import { z } from 'zod';
 
 type FormState = {
   type: 'expense' | 'income';
@@ -34,9 +44,36 @@ type FormState = {
   notes: string;
   amount: string;
   currency: string;
-  date: Date | null;
+  date: Date;
   categoryId: string | null;
 };
+
+const transactionFormSchema = z.object({
+  type: z.enum(['expense', 'income']),
+  accountId: z.string().min(1, 'Select an account.'),
+  description: z
+    .string()
+    .trim()
+    .min(1, 'Add a description for this transaction.'),
+  notes: z.string(),
+  amount: z
+    .string()
+    .regex(/^\d+(?:[.,]\d+)?$/, 'Enter a valid amount above zero.')
+    .refine(
+      (amount) => Number(amount.replace(',', '.')) > 0,
+      'Enter a valid amount above zero.',
+    ),
+  currency: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .refine(
+      (currency) => Boolean(ISO4217Currencies[currency]),
+      'Choose a supported currency code, such as GBP.',
+    ),
+  date: z.date(),
+  categoryId: z.string().nullable(),
+});
 
 interface TransactionDetailsScreenProps {
   transactionId: string;
@@ -56,10 +93,52 @@ export function TransactionDetailsScreen({
   const { dateFormat, defaultCurrency } = useMobileUserPreferences();
   const { updateTransactionMutation } = useTransactionMutations();
   const initializedId = useRef<string | null>(null);
-  const [form, setForm] = useState<FormState | null>(null);
   const [initialForm, setInitialForm] = useState<FormState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selection, setSelection] = useState<'account' | null>(null);
+
+  const tanstackForm = useForm({
+    defaultValues: {
+      type: 'expense' as FormState['type'],
+      accountId: '',
+      description: '',
+      notes: '',
+      amount: '',
+      currency: defaultCurrency,
+      date: new Date(),
+      categoryId: null as string | null,
+    },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: transactionFormSchema,
+    },
+    listeners: { onChange: () => setError(null) },
+    onSubmit: async ({ value }) => {
+      const amount = Number(value.amount.trim().replace(',', '.'));
+      const request: UpdateTransactionRequest = {
+        accountId: value.accountId,
+        description: value.description.trim(),
+        notes: value.notes.trim() || null,
+        amount: value.type === 'income' ? amount : -amount,
+        currency: value.currency.trim().toUpperCase(),
+        date: value.date,
+        categoryId: value.categoryId,
+      };
+      Keyboard.dismiss();
+      setError(null);
+      try {
+        await updateTransactionMutation.mutateAsync({
+          id: transactionId,
+          request,
+        });
+        router.back();
+      } catch {
+        setError('We couldn’t save this transaction. Please try again.');
+      }
+    },
+  });
+  const values = useStore(tanstackForm.store, (state) => state.values);
+  const fieldMeta = useStore(tanstackForm.store, (state) => state.fieldMeta);
 
   useEffect(() => {
     if (!transaction || initializedId.current === transaction.id) return;
@@ -77,15 +156,14 @@ export function TransactionDetailsScreen({
       date: new Date(transaction.date),
       categoryId: transaction.categoryId,
     };
-    setForm(nextForm);
+    tanstackForm.reset(nextForm);
     setInitialForm(nextForm);
     initializedId.current = transaction.id;
-  }, [transaction, defaultCurrency]);
+  }, [transaction, defaultCurrency, tanstackForm]);
 
   const isDirty =
-    form !== null &&
     initialForm !== null &&
-    JSON.stringify(form) !== JSON.stringify(initialForm);
+    JSON.stringify(values) !== JSON.stringify(initialForm);
 
   usePreventRemove(isDirty, ({ data }) => {
     showAlert({
@@ -101,69 +179,6 @@ export function TransactionDetailsScreen({
       ],
     });
   });
-
-  function updateForm(values: Partial<FormState>) {
-    setForm((current) => {
-      if (!current) return current;
-      return { ...current, ...values };
-    });
-    setError(null);
-  }
-
-  async function save() {
-    if (!form) return;
-
-    const amountInput = form.amount.trim();
-    const amount = Number(amountInput);
-    const currency = form.currency.trim().toUpperCase();
-
-    if (!form.description.trim()) {
-      setError('Add a description for this transaction.');
-      return;
-    }
-    if (!form.accountId) {
-      setError('Select an account.');
-      return;
-    }
-    if (!amountInput || !Number.isFinite(amount) || amount <= 0) {
-      setError('Enter a valid amount.');
-      return;
-    }
-    if (!ISO4217Currencies[currency]) {
-      setError('Choose a supported currency code, such as GBP.');
-      return;
-    }
-    if (!form.date) {
-      setError('Select a transaction date.');
-      return;
-    }
-
-    let signedAmount = -amount;
-    if (form.type === 'income') signedAmount = amount;
-
-    const request: UpdateTransactionRequest = {
-      accountId: form.accountId,
-      description: form.description.trim(),
-      notes: form.notes.trim() || null,
-      amount: signedAmount,
-      currency,
-      date: form.date,
-      categoryId: form.categoryId,
-    };
-
-    Keyboard.dismiss();
-    setError(null);
-
-    try {
-      await updateTransactionMutation.mutateAsync({
-        id: transactionId,
-        request,
-      });
-      router.back();
-    } catch {
-      setError('We couldn’t save this transaction. Please try again.');
-    }
-  }
 
   if (isError) {
     return (
@@ -191,10 +206,12 @@ export function TransactionDetailsScreen({
   }
 
   const accountName =
-    accounts.find((account) => account.id === form?.accountId)?.name ??
+    accounts.find((account) => account.id === values.accountId)?.name ??
     'Select an account';
   let loadingMessage: string | undefined;
   if (updateTransactionMutation.isPending) loadingMessage = 'Saving…';
+  let keyboardBehavior: 'padding' | undefined;
+  if (Platform.OS === 'ios') keyboardBehavior = 'padding';
 
   return (
     <AppScreen
@@ -210,9 +227,9 @@ export function TransactionDetailsScreen({
         ),
       }}
     >
-      {form && (
-        <View style={styles.flex}>
-          <KeyboardAwareScrollView
+      {transaction && !isLoading && (
+        <KeyboardAvoidingView style={styles.flex} behavior={keyboardBehavior}>
+          <ScrollView
             contentContainerStyle={{
               padding: spacing.md,
               paddingBottom: spacing.xl,
@@ -238,8 +255,8 @@ export function TransactionDetailsScreen({
                     fontSize: typography.sizes.xs,
                   }}
                 >
-                  {form.date
-                    ? formatTransactionDate(form.date, dateFormat)
+                  {values.date
+                    ? formatTransactionDate(values.date, dateFormat)
                     : 'Select date'}
                 </Text>
                 <Text
@@ -250,36 +267,42 @@ export function TransactionDetailsScreen({
                   }}
                   numberOfLines={2}
                 >
-                  {form.description || 'Transaction'}
+                  {values.description || 'Transaction'}
                 </Text>
               </View>
 
               <View style={styles.typeRow}>
                 <TypeButton
                   label="Expense"
-                  selected={form.type === 'expense'}
-                  onPress={() => updateForm({ type: 'expense' })}
+                  selected={values.type === 'expense'}
+                  onPress={() => tanstackForm.setFieldValue('type', 'expense')}
                 />
                 <TypeButton
                   label="Income"
-                  selected={form.type === 'income'}
-                  onPress={() => updateForm({ type: 'income' })}
+                  selected={values.type === 'income'}
+                  onPress={() => tanstackForm.setFieldValue('type', 'income')}
                 />
               </View>
 
               <TextInput
                 label="Description"
-                value={form.description}
-                onChangeText={(description) => updateForm({ description })}
+                value={values.description}
+                onChangeText={(description) =>
+                  tanstackForm.setFieldValue('description', description)
+                }
                 placeholder="Enter transaction description"
                 autoCapitalize="sentences"
+                error={fieldMeta.description?.errors[0]?.message}
               />
               <TextInput
                 label="Amount"
-                value={form.amount}
-                onChangeText={(amount) => updateForm({ amount })}
+                value={values.amount}
+                onChangeText={(amount) =>
+                  tanstackForm.setFieldValue('amount', amount)
+                }
                 placeholder="0.00"
                 keyboardType="decimal-pad"
+                error={fieldMeta.amount?.errors[0]?.message}
               />
 
               <FieldButton
@@ -287,21 +310,37 @@ export function TransactionDetailsScreen({
                 value={accountName}
                 onPress={() => setSelection('account')}
               />
-              <TextInput
-                label="Currency"
-                value={form.currency}
-                onChangeText={(currency) => updateForm({ currency })}
-                placeholder={defaultCurrency}
-                autoCapitalize="characters"
-                maxLength={3}
-              />
+              {fieldMeta.accountId?.errors[0]?.message && (
+                <Text
+                  accessibilityRole="alert"
+                  style={{ color: colors.status.error }}
+                >
+                  {fieldMeta.accountId?.errors[0]?.message}
+                </Text>
+              )}
+              <tanstackForm.Field name="currency">
+                {(field) => (
+                  <TextInput
+                    label="Currency"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChangeText={field.handleChange}
+                    placeholder={defaultCurrency}
+                    autoCapitalize="characters"
+                    maxLength={3}
+                    error={field.state.meta.errors[0]?.message}
+                  />
+                )}
+              </tanstackForm.Field>
               <DateInput
                 label="Date"
-                value={form.date}
+                value={values.date}
                 maxDate={new Date()}
-                onChange={(date) => updateForm({ date })}
+                onChange={(date) => {
+                  if (date) tanstackForm.setFieldValue('date', date);
+                }}
                 formatValue={(date) => formatTransactionDate(date, dateFormat)}
-                error={form.date ? undefined : 'Select a transaction date.'}
+                error={fieldMeta.date?.errors[0]?.message}
               />
               <View>
                 <Text
@@ -318,7 +357,9 @@ export function TransactionDetailsScreen({
                   allowClear
                   categories={categories}
                   clearLabel="Uncategorised"
-                  onChange={(categoryId) => updateForm({ categoryId })}
+                  onChange={(categoryId) =>
+                    tanstackForm.setFieldValue('categoryId', categoryId)
+                  }
                   placeholder="Uncategorised"
                   selectionMode="single"
                   style={[
@@ -330,13 +371,15 @@ export function TransactionDetailsScreen({
                       paddingHorizontal: spacing.md,
                     },
                   ]}
-                  value={form.categoryId}
+                  value={values.categoryId}
                 />
               </View>
               <TextInput
                 label="Notes"
-                value={form.notes}
-                onChangeText={(notes) => updateForm({ notes })}
+                value={values.notes}
+                onChangeText={(notes) =>
+                  tanstackForm.setFieldValue('notes', notes)
+                }
                 placeholder="Add a note"
                 multiline
                 numberOfLines={4}
@@ -355,18 +398,36 @@ export function TransactionDetailsScreen({
                 </Text>
               )}
 
-              <Button
-                onClick={save}
-                disabled={updateTransactionMutation.isPending}
+              <tanstackForm.Subscribe
+                selector={(state) =>
+                  [state.canSubmit, state.isSubmitting] as const
+                }
               >
-                Save changes
-              </Button>
+                {([canSubmit, isSubmitting]) => (
+                  <Button
+                    disabled={
+                      !canSubmit ||
+                      !isDirty ||
+                      isSubmitting ||
+                      updateTransactionMutation.isPending
+                    }
+                    onClick={() => {
+                      if (!tanstackForm.state.isSubmitting)
+                        void tanstackForm.handleSubmit();
+                    }}
+                  >
+                    {isSubmitting || updateTransactionMutation.isPending
+                      ? 'Saving…'
+                      : 'Save changes'}
+                  </Button>
+                )}
+              </tanstackForm.Subscribe>
               <Button variant="outline" onClick={() => router.back()}>
                 Cancel
               </Button>
             </Stack>
-          </KeyboardAwareScrollView>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       )}
 
       <SelectionSheet
@@ -376,10 +437,10 @@ export function TransactionDetailsScreen({
           id: account.id,
           label: account.name,
         }))}
-        selectedId={form?.accountId ?? null}
+        selectedId={values.accountId || null}
         onClose={() => setSelection(null)}
         onSelect={(accountId) => {
-          if (accountId) updateForm({ accountId });
+          if (accountId) tanstackForm.setFieldValue('accountId', accountId);
         }}
       />
     </AppScreen>

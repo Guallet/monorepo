@@ -44,10 +44,6 @@ export function PasswordLoginScreen() {
       }
     },
   });
-  const submitForm = async () => {
-    if (form.state.isSubmitting) return;
-    await form.handleSubmit();
-  };
   const email = useSelector(form.store, (state) => state.values.email);
   const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
   let visibilityLabel = 'Show password';
@@ -98,7 +94,9 @@ export function PasswordLoginScreen() {
               label="Password"
               onBlur={field.handleBlur}
               onChangeText={field.handleChange}
-              onSubmitEditing={() => void submitForm()}
+              onSubmitEditing={() => {
+                if (!form.state.isSubmitting) void form.handleSubmit();
+              }}
               placeholder="Enter your password"
               returnKeyType="done"
               rightSection={
@@ -150,9 +148,11 @@ export function PasswordLoginScreen() {
         {([canSubmit, submitting, formEmail, password]) => (
           <Button
             disabled={
-              !canSubmit || submitting || !formEmail.trim() || !password
+              !canSubmit || !formEmail.trim() || !password || submitting
             }
-            onClick={() => void submitForm()}
+            onClick={() => {
+              if (!form.state.isSubmitting) void form.handleSubmit();
+            }}
           >
             {submitting ? 'Signing in…' : 'Sign in'}
           </Button>
