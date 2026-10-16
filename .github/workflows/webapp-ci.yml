@@ -7,11 +7,45 @@ on:
       - develop
     paths:
       - 'apps/webapp/**'
+      - 'packages/guallet-api-client/**'
+      - 'packages/guallet-api-react/**'
+      - 'packages/guallet-auth/**'
+      - 'packages/guallet-calculators/**'
+      - 'packages/guallet-luna/**'
+      - 'packages/guallet-money/**'
+      - 'packages/guallet-theme/**'
+      - 'packages/guallet-ui-react/**'
+      - 'packages/tsconfig/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.oxlintrc.json'
+      - '.oxfmtrc.json'
+      - 'turbo.json'
+      - '.github/workflows/webapp-ci.yml'
   pull_request:
     branches:
       - '*'
     paths:
       - 'apps/webapp/**'
+      - 'packages/guallet-api-client/**'
+      - 'packages/guallet-api-react/**'
+      - 'packages/guallet-auth/**'
+      - 'packages/guallet-calculators/**'
+      - 'packages/guallet-luna/**'
+      - 'packages/guallet-money/**'
+      - 'packages/guallet-theme/**'
+      - 'packages/guallet-ui-react/**'
+      - 'packages/tsconfig/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.oxlintrc.json'
+      - '.oxfmtrc.json'
+      - 'turbo.json'
+      - '.github/workflows/webapp-ci.yml'
 
 jobs:
   build:

@@ -7,11 +7,27 @@ on:
       - develop
     paths:
       - 'apps/api/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.oxlintrc.json'
+      - '.oxfmtrc.json'
+      - 'turbo.json'
+      - '.github/workflows/api-ci.yml'
   pull_request:
     branches:
       - '*'
     paths:
       - 'apps/api/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.oxlintrc.json'
+      - '.oxfmtrc.json'
+      - 'turbo.json'
+      - '.github/workflows/api-ci.yml'
 
 permissions:
   contents: read
