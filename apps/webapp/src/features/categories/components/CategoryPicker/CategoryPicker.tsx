@@ -2,7 +2,7 @@ import { ResponsiveModal } from '@guallet/ui-react';
 import { CategoryDto } from '@guallet/api-client';
 import { Input, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCategories } from '@guallet/api-react';
 import { CategoryPickerModal } from './CategoryPickerModal';
@@ -26,6 +26,7 @@ type CategoryPickerProps = React.ComponentProps<typeof Input.Wrapper> &
 export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
   const { t } = useTranslation();
   const [opened, { open, close }] = useDisclosure(false);
+  const generatedId = useId();
   const { categories } = useCategories();
 
   const inputValue = useMemo(() => {
@@ -72,22 +73,29 @@ export function CategoryPicker(props: Readonly<CategoryPickerProps>) {
     selectedCategories = [],
     ...wrapperProps
   } = rest;
+  const inputId = wrapperProps.id ?? generatedId;
 
   return (
     <>
-      <Input.Wrapper {...wrapperProps}>
+      <Input.Wrapper {...wrapperProps} id={inputId}>
         <Input
-          readOnly
-          value={inputValue}
+          id={inputId}
+          component="button"
+          type="button"
           onClick={open}
-          placeholder={inputPlaceholder}
-          pointer={true}
+          pointer
+          aria-haspopup="dialog"
+          aria-expanded={opened}
           leftSection={
             mode === 'single' && selectedCategory ? (
               <CategoryIcon categoryId={selectedCategory.id} />
             ) : null
           }
-        />
+        >
+          {inputValue || (
+            <Input.Placeholder>{inputPlaceholder}</Input.Placeholder>
+          )}
+        </Input>
       </Input.Wrapper>
       <ResponsiveModal
         opened={opened}
