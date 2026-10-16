@@ -37,6 +37,7 @@ overrides:
   postcss-simple-vars: 7.0.1
   react: 19.2.3
   react-dom: 19.2.3
+  zod: 4.6.6
   unplugin-swc: 1.6.0
   # Nest CLI requires the compiler API, which TypeScript 7.0 does not expose.
   typescript: 6.0.3
