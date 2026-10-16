@@ -30,7 +30,7 @@ function ProtectedRoute() {
       return (
         <Navigate
           to="/login"
-          search={{ redirect: resolvedLocation?.pathname }}
+          search={{ redirect: resolvedLocation?.pathname ?? '/dashboard' }}
         />
       );
     }
