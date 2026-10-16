@@ -79,14 +79,16 @@ export function CreateBudgetScreen() {
     },
   });
 
-  const availableCurrencies = useMemo(
-    () =>
-      accounts
-        .map((account) => account.currency)
-        .filter((code, index, self) => self.indexOf(code) === index)
-        .map((code) => Currency.fromISOCode(code, locale)),
-    [accounts, locale],
-  );
+  const availableCurrencies = useMemo(() => {
+    const currencyCodes = [
+      ...accounts.map((account) => account.currency),
+      defaultCurrency,
+    ];
+
+    return currencyCodes
+      .filter((code, index, self) => self.indexOf(code) === index)
+      .map((code) => Currency.fromISOCode(code, locale));
+  }, [accounts, defaultCurrency, locale]);
 
   const currencyOptions = useMemo(
     () =>
@@ -163,7 +165,7 @@ export function CreateBudgetScreen() {
                   )}
                   description={t(
                     'screens.budgets.create.form.currency.description',
-                    'Only currencies from your existing accounts are shown.',
+                    'Currencies from your accounts and your default currency are available.',
                   )}
                   placeholder={t(
                     'screens.budgets.create.form.currency.placeholder',
