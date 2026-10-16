@@ -187,8 +187,29 @@ describe('ExportDataProcessor', () => {
     expect(callArgs.accounts).toEqual(['account-1']);
     expect(callArgs.startDate).toBeInstanceOf(Date);
     expect(callArgs.endDate).toBeInstanceOf(Date);
-    expect(callArgs.startDate?.getHours()).toBe(0);
-    expect(callArgs.endDate?.getHours()).toBe(23);
+    expect(callArgs.startDate?.toISOString()).toBe('2024-01-01T10:00:00.000Z');
+    expect(callArgs.endDate?.toISOString()).toBe('2024-01-31T15:30:00.000Z');
+  });
+
+  it('passes a single date bound through without widening the range', async () => {
+    accountsService.findAllUserAccounts.mockResolvedValue([]);
+    categoriesService.findAllUserCategories.mockResolvedValue([]);
+    transactionsService.getAllUserTransactionsForExport.mockResolvedValue([]);
+
+    const job: Partial<Job<ExportJobData>> = {
+      id: 'job-start-only',
+      data: {
+        userId: mockUserId,
+        dto: { format: 'csv', startDate: '2024-01-01T10:00:00.000Z' },
+      },
+    };
+
+    await processor.process(job as Job<ExportJobData>);
+
+    const callArgs =
+      transactionsService.getAllUserTransactionsForExport.mock.calls[0][0];
+    expect(callArgs.startDate?.toISOString()).toBe('2024-01-01T10:00:00.000Z');
+    expect(callArgs.endDate).toBeUndefined();
   });
 
   // ── CSV content ────────────────────────────────────────────────────────

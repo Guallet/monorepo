@@ -5,9 +5,25 @@ import {
   IsISO8601,
   IsOptional,
   IsString,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
 } from 'class-validator';
 
 export type ExportFormat = 'csv' | 'ofe' | 'json';
+
+@ValidatorConstraint({ name: 'validExportDateRange', async: false })
+class ValidExportDateRange implements ValidatorConstraintInterface {
+  validate(endDate: string | undefined, args: ValidationArguments) {
+    const { startDate } = args.object as { startDate?: string };
+    return !startDate || !endDate || new Date(startDate) <= new Date(endDate);
+  }
+
+  defaultMessage() {
+    return 'endDate must be on or after startDate';
+  }
+}
 
 export class DataExportRequestDto {
   @IsOptional()
@@ -15,17 +31,20 @@ export class DataExportRequestDto {
   @ApiProperty({
     required: false,
     format: 'date-time',
-    description: 'Start date for filtering transactions (ISO 8601 format)',
+    description:
+      'Inclusive ISO 8601 timestamp lower bound. The timezone offset is honored.',
     example: '2024-01-01T00:00:00.000Z',
   })
   startDate?: string;
 
   @IsOptional()
   @IsISO8601()
+  @Validate(ValidExportDateRange)
   @ApiProperty({
     required: false,
     format: 'date-time',
-    description: 'End date for filtering transactions (ISO 8601 format)',
+    description:
+      'Inclusive ISO 8601 timestamp upper bound. The timezone offset is honored; must be on or after startDate.',
     example: '2024-12-31T23:59:59.999Z',
   })
   endDate?: string;

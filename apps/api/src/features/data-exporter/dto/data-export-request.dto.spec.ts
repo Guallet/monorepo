@@ -35,4 +35,13 @@ describe('DataExportRequestDto', () => {
     await expect(validate({ unexpected: true })).rejects.toThrow();
     await expect(validate({ startDate: 'not-a-date' })).rejects.toThrow();
   });
+
+  it('rejects an end date earlier than the start date', async () => {
+    await expect(
+      validate({
+        startDate: '2026-09-30T00:00:00.000Z',
+        endDate: '2026-08-31T23:59:59.999Z',
+      }),
+    ).rejects.toThrow();
+  });
 });

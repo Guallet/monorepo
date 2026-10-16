@@ -81,9 +81,6 @@ export class ExportDataProcessor extends WorkerHost {
       const startDate = dto.startDate ? new Date(dto.startDate) : undefined;
       const endDate = dto.endDate ? new Date(dto.endDate) : undefined;
 
-      if (startDate) startDate.setHours(0, 0, 0, 0);
-      if (endDate) endDate.setHours(23, 59, 59, 999);
-
       // Fetch accounts & categories (both cheap – always fetch)
       const accounts = await this.accountsService.findAllUserAccounts(userId);
       const accountsMap = new Map(accounts.map((a) => [a.id, a.name]));

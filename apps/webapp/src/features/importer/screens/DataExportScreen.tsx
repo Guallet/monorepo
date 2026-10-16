@@ -45,13 +45,15 @@ export function DataExportScreen() {
   const handleExport = async () => {
     try {
       setError(null);
+      const startDate = dateRange[0]
+        ? new Date(`${dateRange[0]}T00:00:00`)
+        : undefined;
+      const endDate = dateRange[1]
+        ? new Date(`${dateRange[1]}T23:59:59.999`)
+        : undefined;
       await exportMutation.mutateAsync({
-        startDate: dateRange[0]
-          ? new Date(dateRange[0]).toISOString()
-          : undefined,
-        endDate: dateRange[1]
-          ? new Date(dateRange[1]).toISOString()
-          : undefined,
+        startDate: startDate?.toISOString(),
+        endDate: endDate?.toISOString(),
         accounts:
           selectedAccountIds.length > 0 ? selectedAccountIds : undefined,
         format: exportFormat,
