@@ -38,7 +38,7 @@ const editSubscriptionFormDataSchema = z.object({
   currency: z.string().min(1),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
-  startDate: z.date({ required_error: 'Start date is required' }),
+  startDate: z.date({ error: 'Start date is required' }),
   imageUrl: z.string().optional(),
 });
 type EditSubscriptionFormData = z.infer<typeof editSubscriptionFormDataSchema>;
@@ -92,7 +92,9 @@ export function EditSubscriptionScreen({
         currency: subscription.currency,
         cadence: subscription.cadence,
         type: subscription.type,
-        startDate: new Date(subscription.startDate),
+        startDate: subscription.startDate
+          ? new Date(subscription.startDate)
+          : new Date(),
         imageUrl: subscription.imageUrl ?? '',
       });
     }
@@ -151,7 +153,7 @@ export function EditSubscriptionScreen({
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <Stack gap={spacing.md}>
                 <TextInput

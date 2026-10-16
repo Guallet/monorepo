@@ -149,7 +149,7 @@ export function useInfiniteTransactionInbox() {
       });
     },
     initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => {
+    getNextPageParam: (lastPage) => {
       if (lastPage === undefined) return undefined;
       const { meta } = lastPage;
       if (meta.hasMore) {
@@ -189,7 +189,7 @@ export function useTransactionsWithFilter(filters: {
 
   const query = useQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY, 'filter', filters],
-    queryFn: async ({ queryKey }) => {
+    queryFn: async () => {
       const transactions = await gualletClient.transactions.loadTransactions({
         ...filters,
       });

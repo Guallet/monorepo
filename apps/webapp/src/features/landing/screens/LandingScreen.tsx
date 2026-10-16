@@ -278,7 +278,7 @@ export function LandingScreen() {
               </Stack>
             </div>
 
-            <Grid gutter="md">
+            <Grid gap="md">
               {features.map((feature, index) => (
                 <Grid.Col key={feature.title} span={{ base: 12, sm: 6, lg: 3 }}>
                   <FeatureCard

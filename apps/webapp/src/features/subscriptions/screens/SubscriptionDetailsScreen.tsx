@@ -191,7 +191,9 @@ export function SubscriptionDetailsScreen({
             <Group justify="space-between">
               <Text c="dimmed">Start Date</Text>
               <Text fw={500}>
-                {new Date(subscription.startDate).toLocaleDateString()}
+                {subscription.startDate
+                  ? new Date(subscription.startDate).toLocaleDateString()
+                  : '—'}
               </Text>
             </Group>
             <Group justify="space-between">

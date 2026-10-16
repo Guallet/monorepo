@@ -48,11 +48,8 @@ export function SavingGoalsWidget() {
       };
     })
     .sort((a, b) => {
-      const priorityOrder = { high: 1, medium: 2, low: 3 };
-      const aPriority =
-        priorityOrder[a.priority as keyof typeof priorityOrder] ?? 3;
-      const bPriority =
-        priorityOrder[b.priority as keyof typeof priorityOrder] ?? 3;
+      const aPriority = a.priority ?? 3;
+      const bPriority = b.priority ?? 3;
       if (aPriority !== bPriority) return aPriority - bPriority;
       if (a.isCompleted !== b.isCompleted) return b.isCompleted ? -1 : 1;
       return b.progressPercentage - a.progressPercentage;

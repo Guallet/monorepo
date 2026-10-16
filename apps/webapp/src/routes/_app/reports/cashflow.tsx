@@ -5,10 +5,10 @@ import { YearPickerInput } from '@mantine/dates';
 import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { ReportFilters } from '@/features/reports/components/ReportFilters';
-import { CashflowDataDto } from '@/features/reports/CashFlow/cashflow.models';
 import { CashFlowRow } from '@/features/reports/CashFlow/CashFlowCategoryRow';
 
 import { z } from 'zod';
+import { CashflowDataDto } from '@guallet/api-client';
 import {
   useAccounts,
   useCategories,
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/_app/reports/cashflow')({
 
 export function CashFlowPage() {
   const { year } = Route.useSearch();
-  const [selectedYear, setSelectedYear] = useState<Date | null>(null);
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
   const { accounts } = useAccounts();
   const { categories, isLoading: categoriesLoading } = useCategories();
@@ -44,9 +44,7 @@ export function CashFlowPage() {
       <Text>Cash flow</Text>
       <ReportFilters
         accounts={accounts}
-        selectedAccounts={[]}
         categories={categories}
-        selectedCategories={[]}
         onFiltersUpdate={(x) => {
           console.log('Filters updated', x);
         }}

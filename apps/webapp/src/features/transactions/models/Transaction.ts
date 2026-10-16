@@ -1,10 +1,10 @@
-import { Account } from '../../accounts/models/Account';
+import { AccountDto } from '@guallet/api-client';
 import { Category } from '../../categories/models/Category';
 
 export type Transaction = {
   id: string;
   accountId: string;
-  account: Account | null;
+  account: AccountDto | null;
   amount: number;
   currency: string;
   date: Date;

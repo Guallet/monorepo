@@ -12,12 +12,12 @@ export function useBudgetMutations() {
     mutationFn: async ({ request }: { request: CreateBudgetRequest }) => {
       return await gualletClient.budgets.create({ request });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [BUDGETS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -35,12 +35,12 @@ export function useBudgetMutations() {
         budget: request,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [BUDGETS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -49,12 +49,12 @@ export function useBudgetMutations() {
     mutationFn: async (id: string) => {
       return await gualletClient.budgets.delete({ budgetId: id });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [BUDGETS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });

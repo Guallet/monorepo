@@ -164,7 +164,7 @@ export function EditTransactionScreen({
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <TransactionFormFields
                 form={form}

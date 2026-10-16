@@ -21,7 +21,7 @@ export function useTransactionMutations() {
       // Add the new transaction to the cache
       queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });
@@ -39,7 +39,7 @@ export function useTransactionMutations() {
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });
@@ -62,7 +62,7 @@ export function useTransactionMutations() {
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });
@@ -86,7 +86,7 @@ export function useTransactionMutations() {
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });
@@ -100,7 +100,7 @@ export function useTransactionMutations() {
         queryKey: [TRANSACTIONS_QUERY_KEY],
       });
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });

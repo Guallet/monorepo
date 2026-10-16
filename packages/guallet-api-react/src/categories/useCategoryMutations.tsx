@@ -15,12 +15,12 @@ export function useCategoryMutations() {
     mutationFn: async ({ request }: { request: CreateCategoryRequest }) => {
       return await gualletClient.categories.create(request);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -38,12 +38,12 @@ export function useCategoryMutations() {
         dto: request,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY, data.id],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -52,12 +52,12 @@ export function useCategoryMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.categories.delete(id);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [CATEGORIES_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });

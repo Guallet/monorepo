@@ -15,13 +15,13 @@ export function useSubscriptionsMutations() {
     mutationFn: async ({ request }: { request: CreateSubscriptionRequest }) => {
       return await gualletClient.subscriptions.create(request);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       queryClient.setQueryData([SUBSCRIPTIONS_QUERY_KEY, data.id], data);
       queryClient.invalidateQueries({
         queryKey: [SUBSCRIPTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -39,13 +39,13 @@ export function useSubscriptionsMutations() {
         dto: request,
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       queryClient.setQueryData([SUBSCRIPTIONS_QUERY_KEY, data.id], data);
       queryClient.invalidateQueries({
         queryKey: [SUBSCRIPTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -54,12 +54,12 @@ export function useSubscriptionsMutations() {
     mutationFn: async ({ id }: { id: string }) => {
       return await gualletClient.subscriptions.delete(id);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [SUBSCRIPTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });

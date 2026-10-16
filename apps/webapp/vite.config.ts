@@ -1,6 +1,7 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import dns from 'node:dns';
 
@@ -24,18 +25,11 @@ export default defineConfig({
       autoCodeSplitting: true,
     }), // React Compiler is enabled to automatically optimize React components
     // Docs: https://react.dev/learn/react-compiler
-    react({
-      babel: {
-        plugins: [
-          [
-            'babel-plugin-react-compiler',
-            {
-              // Uncomment to see compilation logs
-              // compilationMode: "annotation", // Only compile components with "use memo" pragma
-            },
-          ],
-        ],
-      },
+    // plugin-react v6 dropped the `babel` option; the compiler is now attached
+    // through @rolldown/plugin-babel with the shared reactCompilerPreset.
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
     sentryVitePlugin({
       org: 'guallet',

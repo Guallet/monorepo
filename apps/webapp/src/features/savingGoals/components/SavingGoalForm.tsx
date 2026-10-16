@@ -200,12 +200,7 @@ export function SavingGoalForm({
     <Box maw={560} mx="auto">
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap={spacing.md}>
-          <Card
-            withBorder
-            shadow="sm"
-            radius="lg"
-            padding={{ base: 'md', sm: 'lg' }}
-          >
+          <Card withBorder shadow="sm" radius="lg" p={{ base: 'md', sm: 'lg' }}>
             <Stack gap={spacing.md}>
               <TextInput
                 required

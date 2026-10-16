@@ -14,12 +14,12 @@ export function useConnectionMutations() {
         request,
       );
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [CONNECTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -28,12 +28,12 @@ export function useConnectionMutations() {
     mutationFn: async ({ accountIds }: { accountIds: string[] }) => {
       return await gualletClient.connections.linkObAccounts(accountIds);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [CONNECTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
