@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSavingGoals } from '@guallet/api-react';
+import { useAccounts, useSavingGoals } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { SavingGoalProgressItem } from './SavingGoalProgressItem';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
@@ -11,6 +11,7 @@ export function SavingGoalsWidget() {
   const router = useRouter();
   const { colors, borderRadius, spacing, typography } = useTheme();
   const { savingGoals, isLoading, isError } = useSavingGoals();
+  const { accounts } = useAccounts();
   const { defaultCurrency } = useMobileUserPreferences();
 
   if (isLoading) {
@@ -88,7 +89,10 @@ export function SavingGoalsWidget() {
           >
             <SavingGoalProgressItem
               goal={goal}
-              currency={goal.currency ?? defaultCurrency}
+              currency={
+                accounts.find((account) => goal.accounts.includes(account.id))
+                  ?.currency ?? defaultCurrency
+              }
             />
           </Pressable>
         ))

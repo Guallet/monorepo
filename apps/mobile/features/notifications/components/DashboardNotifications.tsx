@@ -29,7 +29,7 @@ export function NotificationBell() {
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      onPress={() => router.push('/(protected)/notifications')}
+      onPress={() => router.push('/(protected)/notifications' as never)}
       style={styles.bell}
     >
       <BellIcon
@@ -111,7 +111,7 @@ export function DashboardNotifications() {
         )}
         <NotificationAction
           label="View all notifications"
-          onPress={() => router.push('/(protected)/notifications')}
+          onPress={() => router.push('/(protected)/notifications' as never)}
         />
       </View>
     </NotificationCard>

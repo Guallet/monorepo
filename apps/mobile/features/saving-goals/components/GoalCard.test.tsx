@@ -63,18 +63,20 @@ describe('GoalCard progress rendering', () => {
     const goal = {
       id: 'g',
       name: 'Emergency fund',
+      accounts: [],
       targetAmount: 1000,
       currentAmount: 640,
       remainingAmount: 360,
       progressPercentage: 64,
-      currency: 'GBP',
       isCompleted: false,
       isOverdue: false,
-    } as SavingGoalDto;
+      daysRemaining: null,
+    } satisfies SavingGoalDto;
     const html = renderToStaticMarkup(
       <GoalCard
         goal={goal}
         accountNames="Savings account"
+        currency="GBP"
         onPress={() => {}}
       />,
     );
