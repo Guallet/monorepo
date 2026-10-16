@@ -30,11 +30,13 @@ export function BudgetDetailsScreen({
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const month = selectedDate.getMonth() + 1;
+  const year = selectedDate.getFullYear();
   const { transactions } = useBudgetTransactions({
     budgetId,
     args: {
-      month: selectedDate.getMonth() + 1,
-      year: selectedDate.getFullYear(),
+      month,
+      year,
     },
   });
 
@@ -111,7 +113,9 @@ export function BudgetDetailsScreen({
             setSelectedDate(newDate);
           }}
         />
-        {budget && <BudgetCard budgetId={budget.id} />}
+        {budget && (
+          <BudgetCard budgetId={budget.id} month={month} year={year} />
+        )}
         <Title order={2}>
           {t('screens.budgets.details.transactions.title', 'Transactions')}
         </Title>
