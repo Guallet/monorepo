@@ -5,7 +5,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const API_BASE_URL = 'https://bankaccountdata.gocardless.com/api/v2';
-const OUTPUT_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'output');
+const OUTPUT_DIR = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'output',
+);
 
 // Keep in sync with supportedCountries in apps/api/src/features/openbanking/sync.service.ts.
 const SUPPORTED_COUNTRIES = [
@@ -44,7 +47,9 @@ const SUPPORTED_COUNTRIES = [
 
 function promptLine(label, { secret = false } = {}) {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
-    throw new Error('Run this script in an interactive terminal to enter credentials.');
+    throw new Error(
+      'Run this script in an interactive terminal to enter credentials.',
+    );
   }
 
   return new Promise((resolve, reject) => {
@@ -155,7 +160,11 @@ function toSql(institutions, country) {
 }
 
 function imageExtension(response, imageUrl) {
-  const contentType = response.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+  const contentType = response.headers
+    .get('content-type')
+    ?.split(';')[0]
+    .trim()
+    .toLowerCase();
   const contentTypeExtensions = new Map([
     ['image/avif', '.avif'],
     ['image/bmp', '.bmp'],
@@ -223,12 +232,19 @@ async function syncCountry(country, accessToken, failures) {
     path.join(countryDir, 'institutions.json'),
     `${JSON.stringify(institutions, null, 2)}\n`,
   );
-  await writeFile(path.join(countryDir, 'institutions.sql'), toSql(institutions, country));
+  await writeFile(
+    path.join(countryDir, 'institutions.sql'),
+    toSql(institutions, country),
+  );
 
   let downloaded = 0;
   for (const institution of institutions) {
-    if (typeof institution.logo !== 'string' || institution.logo.length === 0) continue;
-    const imageBase = path.join(imageDir, safeFilename(institution.id ?? institution.name ?? 'institution'));
+    if (typeof institution.logo !== 'string' || institution.logo.length === 0)
+      continue;
+    const imageBase = path.join(
+      imageDir,
+      safeFilename(institution.id ?? institution.name ?? 'institution'),
+    );
     try {
       await downloadImage(institution.logo, imageBase);
       downloaded += 1;
@@ -239,14 +255,19 @@ async function syncCountry(country, accessToken, failures) {
     }
   }
 
-  console.log(`[${country}] Saved ${institutions.length} institutions and ${downloaded} images.`);
+  console.log(
+    `[${country}] Saved ${institutions.length} institutions and ${downloaded} images.`,
+  );
 }
 
 async function main() {
   console.log('Nordigen institution backup');
   const clientId = await promptLine('Nordigen client ID: ');
-  const clientSecret = await promptLine('Nordigen client secret: ', { secret: true });
-  if (!clientId || !clientSecret) throw new Error('Client ID and secret are required.');
+  const clientSecret = await promptLine('Nordigen client secret: ', {
+    secret: true,
+  });
+  if (!clientId || !clientSecret)
+    throw new Error('Client ID and secret are required.');
 
   console.log('Requesting Nordigen access token...');
   const accessToken = await getAccessToken(clientId, clientSecret);

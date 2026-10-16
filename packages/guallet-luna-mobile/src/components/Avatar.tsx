@@ -139,13 +139,14 @@ function getAvatarColors(
     foreground,
     placeholder,
     initials:
-      variant === 'light'
-        ? (resolvedColor ?? colors.text.primary)
-        : foreground,
+      variant === 'light' ? (resolvedColor ?? colors.text.primary) : foreground,
   };
 }
 
-function DefaultPlaceholder({ size, color }: Readonly<{
+function DefaultPlaceholder({
+  size,
+  color,
+}: Readonly<{
   size: number;
   color: ColorValue;
 }>) {
