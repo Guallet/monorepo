@@ -17,7 +17,9 @@ export type ExportFormat = 'csv' | 'ofe' | 'json';
 class ValidExportDateRange implements ValidatorConstraintInterface {
   validate(endDate: string | undefined, args: ValidationArguments) {
     const { startDate } = args.object as { startDate?: string };
-    return !startDate || !endDate || new Date(startDate) <= new Date(endDate);
+    return (
+      !startDate || !endDate || startDate.slice(0, 10) <= endDate.slice(0, 10)
+    );
   }
 
   defaultMessage() {
@@ -30,10 +32,10 @@ export class DataExportRequestDto {
   @IsISO8601()
   @ApiProperty({
     required: false,
-    format: 'date-time',
+    format: 'date',
     description:
-      'Inclusive ISO 8601 timestamp lower bound. The timezone offset is honored.',
-    example: '2024-01-01T00:00:00.000Z',
+      'Start calendar date for export filtering. Time is ignored; the full date is included using UTC day boundaries.',
+    example: '2024-01-01',
   })
   startDate?: string;
 
@@ -42,10 +44,10 @@ export class DataExportRequestDto {
   @Validate(ValidExportDateRange)
   @ApiProperty({
     required: false,
-    format: 'date-time',
+    format: 'date',
     description:
-      'Inclusive ISO 8601 timestamp upper bound. The timezone offset is honored; must be on or after startDate.',
-    example: '2024-12-31T23:59:59.999Z',
+      'End calendar date for export filtering. Time is ignored; the full date is included using UTC day boundaries. Must be on or after startDate.',
+    example: '2024-12-31',
   })
   endDate?: string;
 

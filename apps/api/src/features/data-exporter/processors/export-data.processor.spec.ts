@@ -187,11 +187,11 @@ describe('ExportDataProcessor', () => {
     expect(callArgs.accounts).toEqual(['account-1']);
     expect(callArgs.startDate).toBeInstanceOf(Date);
     expect(callArgs.endDate).toBeInstanceOf(Date);
-    expect(callArgs.startDate?.toISOString()).toBe('2024-01-01T10:00:00.000Z');
-    expect(callArgs.endDate?.toISOString()).toBe('2024-01-31T15:30:00.000Z');
+    expect(callArgs.startDate?.toISOString()).toBe('2024-01-01T00:00:00.000Z');
+    expect(callArgs.endDate?.toISOString()).toBe('2024-01-31T23:59:59.999Z');
   });
 
-  it('passes a single date bound through without widening the range', async () => {
+  it('includes the entire day when only a start date is provided', async () => {
     accountsService.findAllUserAccounts.mockResolvedValue([]);
     categoriesService.findAllUserCategories.mockResolvedValue([]);
     transactionsService.getAllUserTransactionsForExport.mockResolvedValue([]);
@@ -200,7 +200,7 @@ describe('ExportDataProcessor', () => {
       id: 'job-start-only',
       data: {
         userId: mockUserId,
-        dto: { format: 'csv', startDate: '2024-01-01T10:00:00.000Z' },
+        dto: { format: 'csv', startDate: '2024-01-01' },
       },
     };
 
@@ -208,8 +208,29 @@ describe('ExportDataProcessor', () => {
 
     const callArgs =
       transactionsService.getAllUserTransactionsForExport.mock.calls[0][0];
-    expect(callArgs.startDate?.toISOString()).toBe('2024-01-01T10:00:00.000Z');
+    expect(callArgs.startDate?.toISOString()).toBe('2024-01-01T00:00:00.000Z');
     expect(callArgs.endDate).toBeUndefined();
+  });
+
+  it('includes the entire day when only an end date is provided', async () => {
+    accountsService.findAllUserAccounts.mockResolvedValue([]);
+    categoriesService.findAllUserCategories.mockResolvedValue([]);
+    transactionsService.getAllUserTransactionsForExport.mockResolvedValue([]);
+
+    const job: Partial<Job<ExportJobData>> = {
+      id: 'job-end-only',
+      data: {
+        userId: mockUserId,
+        dto: { format: 'csv', endDate: '2024-01-31' },
+      },
+    };
+
+    await processor.process(job as Job<ExportJobData>);
+
+    const callArgs =
+      transactionsService.getAllUserTransactionsForExport.mock.calls[0][0];
+    expect(callArgs.startDate).toBeUndefined();
+    expect(callArgs.endDate?.toISOString()).toBe('2024-01-31T23:59:59.999Z');
   });
 
   // ── CSV content ────────────────────────────────────────────────────────
