@@ -17,6 +17,7 @@ export function TextInput({
   label,
   description,
   placeholder,
+  accessibilityLabel,
   disabled = false,
   error,
   rightSection,
@@ -71,6 +72,7 @@ export function TextInput({
           placeholder={placeholder}
           placeholderTextColor={colors.text.placeholder}
           editable={!disabled}
+          accessibilityLabel={accessibilityLabel ?? label}
           {...props}
         />
         {rightSection ? (
