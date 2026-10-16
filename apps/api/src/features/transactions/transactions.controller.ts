@@ -25,6 +25,7 @@ import {
   ApiCreatedResponse,
   ApiBody,
   ApiParam,
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { transactionsQueryFilterSchema } from './dto/transaction.query';
 import type { TransactionsQueryFilter } from './dto/transaction.query';
@@ -195,6 +196,20 @@ export class TransactionsController {
       total: total,
       page: pageNum,
       pageSize: pageSizeNum,
+    });
+  }
+
+  @ApiOperation({ summary: 'Confirm a transaction inbox item' })
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  @Post(':id/confirm')
+  async confirmInboxItem(
+    @RequestUser() user: UserPrincipal,
+    @Param('id') id: string,
+  ): Promise<void> {
+    await this.transactionsService.confirmUserTransactionInboxItem({
+      userId: user.id,
+      transactionId: id,
     });
   }
 
