@@ -445,7 +445,9 @@
     "back": "Back",
     "optional": "Optional",
     "continue": "Continue",
-    "startOver": "Start over"
+    "startOver": "Start over",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "screens": {
     "assistant": {
@@ -974,6 +976,9 @@
           "calculator": "Calculator",
           "compare": "Compare loans"
         },
+        "errors": {
+          "nonAmortizing": "Increase the loan amount or shorten the term so each payment reduces the balance."
+        },
         "overview": {
           "costBreakdown": "Interest as % of loan"
         }
@@ -1369,8 +1374,17 @@
           },
           "targetAmount": {
             "error": "Target amount must be greater than 0",
+            "precision": "Enter no more than {{precision}} decimal places for {{currency}}.",
             "label": "Target amount",
             "placeholder": "Enter target amount"
+          },
+          "accounts": {
+            "unsupported": "Select accounts with a supported currency.",
+            "required": "Select at least one available account.",
+            "currency": "Linked accounts must use the same currency.",
+            "label": "Linked accounts",
+            "description": "Progress is calculated from the balance of these accounts.",
+            "placeholder": "Select accounts"
           },
           "targetDate": {
             "error": "Target date cannot be in the past",
@@ -1380,11 +1394,6 @@
           "description": {
             "label": "Description",
             "placeholder": "Optional description of your saving goal"
-          },
-          "accounts": {
-            "label": "Linked accounts",
-            "description": "Progress is calculated from the balance of these accounts.",
-            "placeholder": "Select accounts"
           }
         },
         "notifications": {
@@ -1465,6 +1474,13 @@
           "label": "Default currency"
         },
         "language": {
+          "options": {
+            "english": "English",
+            "spanish": "Spanish"
+          },
+          "modal": {
+            "title": "Select language"
+          },
           "label": "Default language"
         },
         "title": "User preferences",

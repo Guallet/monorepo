@@ -10,8 +10,11 @@ const initPromise = i18next
   .use(initReactI18next)
   .init({
     debug: !BuildConfig.IS_PRODUCTION,
-    lng: 'en',
     supportedLngs: ['en', 'es'],
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage'],
+    },
     fallbackLng: {
       default: ['en'],
     },
