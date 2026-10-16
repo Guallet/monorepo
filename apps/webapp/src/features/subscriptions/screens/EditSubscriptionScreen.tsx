@@ -38,7 +38,7 @@ const editSubscriptionFormDataSchema = z.object({
   currency: z.string().min(1),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
-  startDate: z.date({ error: 'Start date is required' }),
+  startDate: z.date().nullable(),
   imageUrl: z.string().optional(),
 });
 type EditSubscriptionFormData = z.infer<typeof editSubscriptionFormDataSchema>;
@@ -76,7 +76,7 @@ export function EditSubscriptionScreen({
       type: subscription?.type ?? RecurringPaymentType.SUBSCRIPTION,
       startDate: subscription?.startDate
         ? new Date(subscription.startDate)
-        : new Date(),
+        : null,
       imageUrl: subscription?.imageUrl ?? '',
     },
     validate: zod4Resolver(editSubscriptionFormDataSchema),
@@ -94,20 +94,26 @@ export function EditSubscriptionScreen({
         type: subscription.type,
         startDate: subscription.startDate
           ? new Date(subscription.startDate)
-          : new Date(),
+          : null,
         imageUrl: subscription.imageUrl ?? '',
       });
     }
   }, [form, subscription]);
 
   async function onFormSubmit(data: EditSubscriptionFormData) {
+    const startDate = data.startDate?.toISOString().split('T')[0];
+    const originalStartDate = subscription?.startDate
+      ? new Date(subscription.startDate).toISOString().split('T')[0]
+      : undefined;
     const request: UpdateSubscriptionRequest = {
       name: data.name,
       amount: data.amount,
       currency: data.currency,
       cadence: data.cadence,
       type: data.type,
-      startDate: data.startDate.toISOString().split('T')[0],
+      ...(startDate !== originalStartDate && {
+        startDate: startDate ?? null,
+      }),
       imageUrl: data.imageUrl || undefined,
     };
 
@@ -224,7 +230,7 @@ export function EditSubscriptionScreen({
                 />
                 <DateInput
                   key={form.key('startDate')}
-                  required
+                  clearable
                   label={t(
                     'screens.subscriptions.edit.fields.startDate.label',
                     'Start date',
