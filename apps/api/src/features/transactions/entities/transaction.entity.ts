@@ -56,6 +56,9 @@ export class Transaction extends BaseDbEntity {
   @Column({ type: 'uuid', nullable: true })
   categoryId: string | null;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  inboxConfirmedAt: Date | null;
+
   // Mappers
   static fromNordigenDto(
     account_id: string,

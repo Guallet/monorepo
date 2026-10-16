@@ -29,12 +29,10 @@ import { InboxTransactionEditModal } from './InboxTransactionEditModal';
 
 interface InboxTransactionCardProps {
   transaction: InboxTransactionDto;
-  onSaveChanges?: () => void;
 }
 
 export function InboxTransactionCard({
   transaction,
-  onSaveChanges,
 }: Readonly<InboxTransactionCardProps>) {
   const { colors, spacing } = useTheme();
   const { locale } = useLocale();
@@ -48,7 +46,10 @@ export function InboxTransactionCard({
   ] = useDisclosure(false);
 
   const { account } = useAccount(transaction.accountId);
-  const { updateTransactionCategoryMutation } = useTransactionMutations();
+  const {
+    updateTransactionCategoryMutation,
+    confirmTransactionInboxItemMutation,
+  } = useTransactionMutations();
 
   const isAutoSuggested =
     transaction.processedCategoryId != null &&
@@ -171,8 +172,37 @@ export function InboxTransactionCard({
               </Tooltip>
               <Button
                 size="sm"
+                loading={confirmTransactionInboxItemMutation.isPending}
                 leftSection={<IconCheck size={14} strokeWidth={2} />}
-                onClick={() => onSaveChanges?.()}
+                onClick={() =>
+                  confirmTransactionInboxItemMutation.mutate(
+                    { id: transaction.id },
+                    {
+                      onSuccess: () => {
+                        notifications.show({
+                          message: t(
+                            'screens.transactions.inbox.card.confirmed',
+                            'Transaction confirmed',
+                          ),
+                          color: 'green',
+                        });
+                      },
+                      onError: () => {
+                        notifications.show({
+                          title: t(
+                            'screens.transactions.inbox.card.confirmError.title',
+                            'Unable to confirm transaction',
+                          ),
+                          message: t(
+                            'screens.transactions.inbox.card.confirmError.message',
+                            'Please try again. The transaction is still in your inbox.',
+                          ),
+                          color: 'red',
+                        });
+                      },
+                    },
+                  )
+                }
               >
                 {t('screens.transactions.inbox.card.confirmButton', 'Confirm')}
               </Button>
