@@ -25,13 +25,12 @@ export function BudgetDetailsScreen({
 }: Readonly<BudgetDetailsScreenProps>) {
   const { t } = useTranslation();
   const { deleteBudgetMutation } = useBudgetMutations();
-  const { budget, isLoading } = useBudget(budgetId);
-
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const month = selectedDate.getMonth() + 1;
   const year = selectedDate.getFullYear();
+  const { budget, isLoading } = useBudget(budgetId, { month, year });
   const { transactions } = useBudgetTransactions({
     budgetId,
     args: {
