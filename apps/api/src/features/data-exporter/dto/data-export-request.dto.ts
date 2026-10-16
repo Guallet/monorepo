@@ -5,28 +5,49 @@ import {
   IsISO8601,
   IsOptional,
   IsString,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
 } from 'class-validator';
 
 export type ExportFormat = 'csv' | 'ofe' | 'json';
+
+@ValidatorConstraint({ name: 'validExportDateRange', async: false })
+class ValidExportDateRange implements ValidatorConstraintInterface {
+  validate(endDate: string | undefined, args: ValidationArguments) {
+    const { startDate } = args.object as { startDate?: string };
+    return (
+      !startDate || !endDate || startDate.slice(0, 10) <= endDate.slice(0, 10)
+    );
+  }
+
+  defaultMessage() {
+    return 'endDate must be on or after startDate';
+  }
+}
 
 export class DataExportRequestDto {
   @IsOptional()
   @IsISO8601()
   @ApiProperty({
     required: false,
-    format: 'date-time',
-    description: 'Start date for filtering transactions (ISO 8601 format)',
-    example: '2024-01-01T00:00:00.000Z',
+    format: 'date',
+    description:
+      'Start calendar date for export filtering. Time is ignored; the full date is included using UTC day boundaries.',
+    example: '2024-01-01',
   })
   startDate?: string;
 
   @IsOptional()
   @IsISO8601()
+  @Validate(ValidExportDateRange)
   @ApiProperty({
     required: false,
-    format: 'date-time',
-    description: 'End date for filtering transactions (ISO 8601 format)',
-    example: '2024-12-31T23:59:59.999Z',
+    format: 'date',
+    description:
+      'End calendar date for export filtering. Time is ignored; the full date is included using UTC day boundaries. Must be on or after startDate.',
+    example: '2024-12-31',
   })
   endDate?: string;
 
