@@ -86,10 +86,7 @@ export function SavingGoalsWidget() {
             accessibilityLabel={`View ${goal.name} goal`}
             onPress={() => router.push(`/saving-goals/${goal.id}`)}
           >
-            <SavingGoalProgressItem
-              goal={goal}
-              currency={goal.currency ?? defaultCurrency}
-            />
+            <SavingGoalProgressItem goal={goal} currency={defaultCurrency} />
           </Pressable>
         ))
       )}

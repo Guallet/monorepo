@@ -17,7 +17,7 @@ import { formatPreferenceDate } from '@/utils/formatPreferenceDate';
 export default function SavingGoalsScreen() {
   const router = useRouter();
   const { colors, spacing, typography, borderRadius } = useTheme();
-  const { dateFormat } = useMobileUserPreferences();
+  const { dateFormat, defaultCurrency } = useMobileUserPreferences();
   const { savingGoals, isLoading, isError, isRefetching, refetch } =
     useSavingGoals();
   const { accounts } = useAccounts();
@@ -130,6 +130,7 @@ export default function SavingGoalsScreen() {
                 key={goal.id}
                 goal={goal}
                 accountNames={`${names || `${goal.accounts.length} linked account${goal.accounts.length === 1 ? '' : 's'}`}${deadline}`}
+                currency={defaultCurrency}
                 onPress={() => router.push(`/saving-goals/${goal.id}`)}
               />
             );

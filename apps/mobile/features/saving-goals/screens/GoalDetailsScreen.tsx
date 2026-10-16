@@ -22,7 +22,7 @@ export default function GoalDetailsScreen() {
   const router = useRouter();
   const { colors, spacing, typography, borderRadius } = useTheme();
   const showAlert = useAlert();
-  const { dateFormat } = useMobileUserPreferences();
+  const { dateFormat, defaultCurrency } = useMobileUserPreferences();
   const {
     savingGoal: goal,
     isLoading,
@@ -196,10 +196,11 @@ export default function GoalDetailsScreen() {
                 },
               ]}
             >
-              {formatGoalAmount(goal.currentAmount, goal.currency)}
+              {formatGoalAmount(goal.currentAmount, defaultCurrency)}
             </Text>
             <Text style={{ color: colors.text.secondary }}>
-              saved towards {formatGoalAmount(goal.targetAmount, goal.currency)}
+              saved towards{' '}
+              {formatGoalAmount(goal.targetAmount, defaultCurrency)}
             </Text>
             <View
               accessible
@@ -228,7 +229,7 @@ export default function GoalDetailsScreen() {
                 {Math.round(progress)}% complete
               </Text>
               <Text style={{ color: colors.text.secondary }}>
-                {formatGoalAmount(goal.remainingAmount, goal.currency)}{' '}
+                {formatGoalAmount(goal.remainingAmount, defaultCurrency)}{' '}
                 remaining
               </Text>
             </View>
@@ -248,11 +249,11 @@ export default function GoalDetailsScreen() {
           >
             <DetailRow
               label="Target amount"
-              value={formatGoalAmount(goal.targetAmount, goal.currency)}
+              value={formatGoalAmount(goal.targetAmount, defaultCurrency)}
             />
             <DetailRow
               label="Current amount"
-              value={formatGoalAmount(goal.currentAmount, goal.currency)}
+              value={formatGoalAmount(goal.currentAmount, defaultCurrency)}
             />
             <DetailRow
               label="Target date"
