@@ -76,6 +76,29 @@ describe('ReportsController', () => {
       });
     });
 
+    it('should pass supported filters to the report service', async () => {
+      const report = { year: 2023, totalTransactions: 0, data: [] };
+      mockReportsService.getCashFlowReport.mockResolvedValue(report);
+
+      await controller.getCashflowReport(
+        mockUser,
+        2023,
+        'account-1,account-2',
+        'category-1',
+        '2023-02-01T00:00:00.000Z',
+        '2023-02-28T00:00:00.000Z',
+      );
+
+      expect(mockReportsService.getCashFlowReport).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        year: 2023,
+        accounts: ['account-1', 'account-2'],
+        categories: ['category-1'],
+        startDate: new Date(2023, 1, 1),
+        endDate: new Date(2023, 1, 28, 23, 59, 59, 999),
+      });
+    });
+
     it('should handle empty report data', async () => {
       const year = 2024;
       const mockReport = {

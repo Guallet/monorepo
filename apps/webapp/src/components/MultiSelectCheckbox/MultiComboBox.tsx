@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Input,
   Combobox,
@@ -10,7 +9,9 @@ import {
 } from '@mantine/core';
 
 interface IProps {
-  data: string[];
+  data: { value: string; label: string }[];
+  value: string[];
+  onChange: (value: string[]) => void;
   placeholder?: string;
   emptyMessage?: string;
   allItemsSelectedMessage?: string;
@@ -18,6 +19,8 @@ interface IProps {
 
 export function MultiSelectCheckbox({
   data,
+  value,
+  onChange,
   placeholder,
   emptyMessage,
   allItemsSelectedMessage,
@@ -27,26 +30,26 @@ export function MultiSelectCheckbox({
     onDropdownOpen: () => combobox.updateSelectedOptionIndex('active'),
   });
 
-  const [value, setValue] = useState<string[]>([]);
-
   const handleValueSelect = (val: string) =>
-    setValue((current) =>
-      current.includes(val)
-        ? current.filter((v) => v !== val)
-        : [...current, val],
+    onChange(
+      value.includes(val) ? value.filter((v) => v !== val) : [...value, val],
     );
 
   const options = data.map((item) => (
-    <Combobox.Option value={item} key={item} active={value.includes(item)}>
+    <Combobox.Option
+      value={item.value}
+      key={item.value}
+      active={value.includes(item.value)}
+    >
       <Group gap="sm">
         <Checkbox
-          checked={value.includes(item)}
+          checked={value.includes(item.value)}
           onChange={() => {}}
           aria-hidden
           tabIndex={-1}
           style={{ pointerEvents: 'none' }}
         />
-        <span>{item}</span>
+        <span>{item.label}</span>
       </Group>
     </Combobox.Option>
   ));
@@ -65,7 +68,7 @@ export function MultiSelectCheckbox({
               ? value.length === data.length
                 ? allItemsSelectedMessage
                 : value.length === 1
-                  ? value[0] // The item value
+                  ? data.find((item) => item.value === value[0])?.label
                   : `${value.length} accounts selected`
               : emptyMessage
           }
@@ -75,8 +78,15 @@ export function MultiSelectCheckbox({
 
       <Combobox.Dropdown>
         <Group>
-          <Button variant="transparent">Select all</Button>
-          <Button variant="subtle">Clear all</Button>
+          <Button
+            variant="transparent"
+            onClick={() => onChange(data.map((x) => x.value))}
+          >
+            Select all
+          </Button>
+          <Button variant="subtle" onClick={() => onChange([])}>
+            Clear all
+          </Button>
         </Group>
         <Divider />
         <Combobox.Options>{options}</Combobox.Options>
