@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, IsNull, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { InboxTransaction } from './entities/inbox-transaction.model';
-import { AccountsService } from '../accounts/accounts.service';
+import { Account } from '../accounts/entities/account.entity';
 
 @Injectable()
 export class TransactionsService {
@@ -19,7 +19,8 @@ export class TransactionsService {
   constructor(
     @InjectRepository(Transaction)
     private readonly repository: Repository<Transaction>,
-    private readonly accountService: AccountsService,
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
   ) {}
 
   async findUserTransaction({
@@ -191,10 +192,12 @@ export class TransactionsService {
     dto: CreateTransactionDto;
   }): Promise<Transaction> {
     // Validate the user can access the account
-    const account = await this.accountService.getUserAccount(
-      userId,
-      dto.accountId,
-    );
+    const account = await this.accountRepository.findOne({
+      where: { id: dto.accountId, user_id: userId },
+    });
+    if (!account) {
+      throw new NotFoundException();
+    }
 
     const entity = this.repository.create({
       accountId: dto.accountId,
@@ -244,7 +247,12 @@ export class TransactionsService {
     }
 
     if (dto.accountId && dto.accountId !== dbEntity.accountId) {
-      await this.accountService.getUserAccount(user_id, dto.accountId);
+      const account = await this.accountRepository.findOne({
+        where: { id: dto.accountId, user_id },
+      });
+      if (!account) {
+        throw new NotFoundException();
+      }
     }
 
     const updatedEntity = {

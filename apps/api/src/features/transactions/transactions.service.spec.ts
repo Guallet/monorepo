@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionsService } from './transactions.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
-import { AccountsService } from '../accounts/accounts.service';
+import { Account } from '../accounts/entities/account.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 
@@ -18,8 +18,8 @@ describe('TransactionsService', () => {
     count: vi.fn(),
   };
 
-  const mockAccountsService = {
-    getUserAccount: vi.fn(),
+  const mockAccountRepository = {
+    findOne: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -31,8 +31,8 @@ describe('TransactionsService', () => {
           useValue: mockTransactionRepository,
         },
         {
-          provide: AccountsService,
-          useValue: mockAccountsService,
+          provide: getRepositoryToken(Account),
+          useValue: mockAccountRepository,
         },
       ],
     }).compile();
@@ -271,16 +271,15 @@ describe('TransactionsService', () => {
         date: new Date(createData.dto.date),
       };
 
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
+      mockAccountRepository.findOne.mockResolvedValue(mockAccount);
       mockTransactionRepository.save.mockResolvedValue(mockTransaction);
 
       const result = await service.create(createData);
 
       expect(result).toEqual(mockTransaction);
-      expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
-        createData.userId,
-        createData.dto.accountId,
-      );
+      expect(mockAccountRepository.findOne).toHaveBeenCalledWith({
+        where: { id: createData.dto.accountId, user_id: createData.userId },
+      });
       expect(mockTransactionRepository.save).toHaveBeenCalled();
     });
 
@@ -303,7 +302,7 @@ describe('TransactionsService', () => {
         currency: 'EUR',
       };
 
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
+      mockAccountRepository.findOne.mockResolvedValue(mockAccount);
       mockTransactionRepository.save.mockResolvedValue({});
 
       await service.create(createData);
@@ -397,17 +396,16 @@ describe('TransactionsService', () => {
       };
 
       mockTransactionRepository.findOne.mockResolvedValue(existingTransaction);
-      mockAccountsService.getUserAccount.mockResolvedValue({
+      mockAccountRepository.findOne.mockResolvedValue({
         id: 'account-2',
       });
       mockTransactionRepository.save.mockResolvedValue(updatedTransaction);
 
       const result = await service.updateUserTransaction(updateData);
 
-      expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
-        'user-123',
-        'account-2',
-      );
+      expect(mockAccountRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'account-2', user_id: 'user-123' },
+      });
       expect(mockTransactionRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ accountId: 'account-2' }),
       );
