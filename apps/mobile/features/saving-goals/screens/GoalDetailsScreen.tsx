@@ -32,6 +32,9 @@ export default function GoalDetailsScreen() {
   } = useSavingGoal(id);
   const { accounts } = useAccounts();
   const { deleteSavingGoalMutation } = useSavingGoalMutations();
+  const currency =
+    accounts.find((account) => goal?.accounts.includes(account.id))?.currency ??
+    defaultCurrency;
 
   function confirmDelete() {
     if (!goal) return;
@@ -196,11 +199,10 @@ export default function GoalDetailsScreen() {
                 },
               ]}
             >
-              {formatGoalAmount(goal.currentAmount, defaultCurrency)}
+              {formatGoalAmount(goal.currentAmount, currency)}
             </Text>
             <Text style={{ color: colors.text.secondary }}>
-              saved towards{' '}
-              {formatGoalAmount(goal.targetAmount, defaultCurrency)}
+              saved towards {formatGoalAmount(goal.targetAmount, currency)}
             </Text>
             <View
               accessible
@@ -229,8 +231,7 @@ export default function GoalDetailsScreen() {
                 {Math.round(progress)}% complete
               </Text>
               <Text style={{ color: colors.text.secondary }}>
-                {formatGoalAmount(goal.remainingAmount, defaultCurrency)}{' '}
-                remaining
+                {formatGoalAmount(goal.remainingAmount, currency)} remaining
               </Text>
             </View>
           </View>
@@ -249,11 +250,11 @@ export default function GoalDetailsScreen() {
           >
             <DetailRow
               label="Target amount"
-              value={formatGoalAmount(goal.targetAmount, defaultCurrency)}
+              value={formatGoalAmount(goal.targetAmount, currency)}
             />
             <DetailRow
               label="Current amount"
-              value={formatGoalAmount(goal.currentAmount, defaultCurrency)}
+              value={formatGoalAmount(goal.currentAmount, currency)}
             />
             <DetailRow
               label="Target date"
