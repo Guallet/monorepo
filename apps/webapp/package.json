@@ -50,7 +50,7 @@
     "react-dom": "workspace:*",
     "react-i18next": "15.6.0",
     "recharts": "3.8.1",
-    "zod": "^4.6.6",
+    "zod": "4.6.6",
     "zustand": "5.0.11"
   },
   "devDependencies": {
