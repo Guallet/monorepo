@@ -50,7 +50,7 @@ jobs:
 
       - name: Run type check
         working-directory: apps/webapp
-        run: pnpm tsc --noEmit
+        run: pnpm typecheck
 
       - name: Build WEBAPP
         working-directory: apps/webapp
