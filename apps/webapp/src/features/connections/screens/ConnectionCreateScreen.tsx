@@ -7,6 +7,7 @@ import {
 import {
   Autocomplete,
   AutocompleteProps,
+  ComboboxItem,
   Text,
   Group,
   Stack,
@@ -25,15 +26,18 @@ interface ConnectionCreateScreenProps {
 
 const renderAutocompleteOption: AutocompleteProps['renderOption'] = ({
   option,
-}) => (
-  <Group gap="sm">
-    <FlagEmoji countryCode={option.value} />
-    <Text size="sm">{option.label}</Text>
-    <Text size="xs" opacity={0.5}>
-      {option.value}
-    </Text>
-  </Group>
-);
+}) => {
+  const { value, label } = option as ComboboxItem<string>;
+  return (
+    <Group gap="sm">
+      <FlagEmoji countryCode={value} />
+      <Text size="sm">{label}</Text>
+      <Text size="xs" opacity={0.5}>
+        {value}
+      </Text>
+    </Group>
+  );
+};
 
 export function ConnectionCreateScreen({
   selectedCountryCode,

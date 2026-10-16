@@ -33,7 +33,7 @@ const subscriptionFormDataSchema = z.object({
   currency: z.string().nullable().default(null),
   cadence: z.enum(RecurrenceCadence).default(RecurrenceCadence.MONTHLY),
   type: z.enum(RecurringPaymentType).default(RecurringPaymentType.SUBSCRIPTION),
-  startDate: z.date({ required_error: 'Start date is required' }),
+  startDate: z.date({ error: 'Start date is required' }),
   imageUrl: z.string().optional(),
 });
 type AddSubscriptionFormData = z.infer<typeof subscriptionFormDataSchema>;
@@ -145,7 +145,7 @@ export function AddSubscriptionScreen() {
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <Stack gap={spacing.md}>
                 <TextInput

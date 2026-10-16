@@ -44,7 +44,7 @@ export function BalanceTrendChart({
   }));
 
   return (
-    <Card withBorder shadow="sm" radius="lg" padding={{ base: 'md', sm: 'lg' }}>
+    <Card withBorder shadow="sm" radius="lg" p={{ base: 'md', sm: 'lg' }}>
       <Text fw={600} mb={spacing.sm}>
         {t('feature.accounts.details.balanceTrend.title', 'Balance over time')}
       </Text>

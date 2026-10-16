@@ -130,7 +130,7 @@ export function DataExportScreen() {
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <Stack gap={spacing.md}>
                 <Text fw={600} size="sm">
@@ -196,7 +196,7 @@ export function DataExportScreen() {
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <Stack gap="sm">
                 <Text fw={600} size="sm">

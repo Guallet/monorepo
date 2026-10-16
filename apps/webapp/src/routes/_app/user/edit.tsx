@@ -24,7 +24,7 @@ function EditUserPage() {
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <Stack gap={spacing.md}>
                 <TextInput

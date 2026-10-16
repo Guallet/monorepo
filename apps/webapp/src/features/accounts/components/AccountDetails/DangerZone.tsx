@@ -64,7 +64,7 @@ export function DangerZone({ accountId }: Readonly<DangerZoneProps>) {
         withBorder
         shadow="sm"
         radius="lg"
-        padding={{ base: 'md', sm: 'lg' }}
+        p={{ base: 'md', sm: 'lg' }}
         style={{ borderColor: 'var(--mantine-color-red-3)' }}
       >
         <Text fw={600} c="red" mb={spacing.sm}>

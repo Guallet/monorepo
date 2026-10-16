@@ -15,12 +15,12 @@ export function useInstitutionMutations() {
     mutationFn: async ({ request }: { request: CreateInstitutionRequest }) => {
       return await gualletClient.institutions.create(request);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({
         queryKey: [INSTITUTIONS_QUERY_KEY],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -35,12 +35,12 @@ export function useInstitutionMutations() {
     }) => {
       return await gualletClient.accounts.update(id, request);
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({
         queryKey: [INSTITUTIONS_QUERY_KEY, data.id],
       });
     },
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });

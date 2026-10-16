@@ -22,7 +22,7 @@ export function useAccountMutations() {
       return await gualletClient.accounts.create(request);
     },
     onSuccess: invalidateCacheData,
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -38,7 +38,7 @@ export function useAccountMutations() {
       return await gualletClient.accounts.update(id, request);
     },
     onSuccess: invalidateCacheData,
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });
@@ -48,7 +48,7 @@ export function useAccountMutations() {
       return await gualletClient.accounts.delete(id);
     },
     onSuccess: invalidateCacheData,
-    onError: async (error, variables, context) => {
+    onError: async (error) => {
       console.error(error);
     },
   });

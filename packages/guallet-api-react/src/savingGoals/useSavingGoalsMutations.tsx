@@ -18,7 +18,7 @@ export function useSavingGoalMutations() {
     onSuccess: (data) => {
       queryClient.setQueryData([SAVING_GOALS_QUERY_KEY, data.id], data);
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });
@@ -36,7 +36,7 @@ export function useSavingGoalMutations() {
     onSuccess: (data) => {
       queryClient.setQueryData([SAVING_GOALS_QUERY_KEY, data.id], data);
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });
@@ -50,7 +50,7 @@ export function useSavingGoalMutations() {
         queryKey: [SAVING_GOALS_QUERY_KEY, variables.id],
       });
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables) => {
       console.error(error, variables);
     },
   });

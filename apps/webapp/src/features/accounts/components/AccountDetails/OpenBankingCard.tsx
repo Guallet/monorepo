@@ -26,12 +26,7 @@ export function OpenBankingCard({ accountId }: Readonly<OpenBankingCardProps>) {
 
   return (
     <UnstyledButton onClick={() => navigate({ to: '/connections' })}>
-      <Card
-        withBorder
-        shadow="sm"
-        radius="lg"
-        padding={{ base: 'md', sm: 'lg' }}
-      >
+      <Card withBorder shadow="sm" radius="lg" p={{ base: 'md', sm: 'lg' }}>
         <Group justify="space-between" align="center">
           <Group gap={spacing.sm}>
             <IconPlugConnected size={20} />

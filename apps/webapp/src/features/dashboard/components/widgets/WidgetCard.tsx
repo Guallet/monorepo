@@ -1,8 +1,8 @@
-import { Card, Group, Text, Box } from '@mantine/core';
+import { Box, Card, CardProps, Group, Text } from '@mantine/core';
 import React from 'react';
 import { useTheme } from '@guallet/ui-react';
 
-interface WidgetCardProps extends React.ComponentProps<typeof Card> {
+interface WidgetCardProps extends CardProps {
   onClick?: () => void;
   title: string;
   children: React.ReactNode;

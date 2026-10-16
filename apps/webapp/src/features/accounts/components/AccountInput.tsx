@@ -7,7 +7,7 @@ import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { IconCheck } from '@tabler/icons-react';
 import { AccountAvatar } from '@/features/accounts/components/AccountAvatar';
 
-type AccountInputProps = React.ComponentProps<typeof Select>;
+type AccountInputProps = SelectProps;
 
 export function AccountInput({ ...props }: AccountInputProps) {
   const { t } = useTranslation();

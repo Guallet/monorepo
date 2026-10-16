@@ -2,13 +2,10 @@ import { GualletColorPicker } from '@/components/GualletColorPicker/GualletColor
 import { IconPicker } from '@/components/IconPicker/IconPicker';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { CategoryPicker } from '@/features/categories/components/CategoryPicker/CategoryPicker';
+import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { useLocale } from '@/i18n/useLocale';
 import { CategoryDto } from '@guallet/api-client';
-import {
-  useAccounts,
-  useBudgetMutations,
-  useUserSettings,
-} from '@guallet/api-react';
+import { useAccounts, useBudgetMutations } from '@guallet/api-react';
 import { Currency } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import {
@@ -34,14 +31,14 @@ export function CreateBudgetScreen() {
   const { locale } = useLocale();
   const { accounts } = useAccounts();
   const navigate = useNavigate();
-  const { settings } = useUserSettings();
+  const defaultCurrency = useDefaultCurrency();
 
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
       name: '',
       amount: 0,
-      currency: settings?.currencies.default_currency,
+      currency: defaultCurrency,
       colour: '',
       icon: '',
       categories: [] as CategoryDto[],
@@ -146,7 +143,7 @@ export function CreateBudgetScreen() {
               withBorder
               shadow="sm"
               radius="lg"
-              padding={{ base: 'md', sm: 'lg' }}
+              p={{ base: 'md', sm: 'lg' }}
             >
               <Stack gap={spacing.md}>
                 <TextInput

@@ -1,7 +1,7 @@
 import { Money } from '@guallet/money';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { Group, Table, Text } from '@mantine/core';
-import { CategoryDataRowDto } from './cashflow.models';
+import { CategoryDataRowDto } from '@guallet/api-client';
 import { useState } from 'react';
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 
