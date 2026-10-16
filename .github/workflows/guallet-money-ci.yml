@@ -7,12 +7,14 @@ on:
       - develop
     paths:
       - 'packages/guallet-money/**'
+      - '.github/workflows/guallet-money-ci.yml'
   pull_request:
     branches:
       - main
       - develop
     paths:
       - 'packages/guallet-money/**'
+      - '.github/workflows/guallet-money-ci.yml'
 
 jobs:
   test-and-lint:
@@ -53,6 +55,14 @@ jobs:
         working-directory: packages/guallet-money
         run: pnpm tsc --noEmit
 
-      - name: Run unit tests (@guallet/money)
+      - name: Run unit tests and coverage (@guallet/money)
         working-directory: packages/guallet-money
-        run: pnpm test
+        run: pnpm test:cov
+
+      - name: Upload coverage report (@guallet/money)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guallet-money-coverage
+          path: packages/guallet-money/coverage/
+          if-no-files-found: ignore
