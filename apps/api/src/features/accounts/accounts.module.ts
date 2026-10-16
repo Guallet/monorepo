@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { AccountsController } from './accounts.controller';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { TransactionsService } from 'src/features/transactions/transactions.service';
+import { TransactionsModule } from 'src/features/transactions/transactions.module';
 import { OpenbankingModule } from '../openbanking/openbanking.module';
 import { ObConnection } from '../openbanking/entities/connection.entity';
 import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
@@ -23,11 +23,12 @@ import { NordigenModule } from '../nordigen/nordigen.module';
       Institution,
     ]),
     InstitutionsModule,
+    TransactionsModule,
     OpenbankingModule,
     NordigenModule,
     HttpModule,
   ],
-  providers: [AccountsService, TransactionsService],
+  providers: [AccountsService],
   exports: [AccountsService],
   controllers: [AccountsController],
 })
