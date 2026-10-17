@@ -206,9 +206,9 @@ describe('Condition Evaluators', () => {
     });
 
     describe('matches operator (regex)', () => {
-      it('should return true when regex pattern matches', () => {
+      it('should return true when regex pattern matches', async () => {
         expect(
-          evaluateStringCondition(
+          await evaluateStringCondition(
             description,
             StringOperator.MATCHES,
             "Sainsbury's.*Store",
@@ -216,9 +216,9 @@ describe('Condition Evaluators', () => {
         ).toBe(true);
       });
 
-      it('should return true for case insensitive regex match', () => {
+      it('should return true for case insensitive regex match', async () => {
         expect(
-          evaluateStringCondition(
+          await evaluateStringCondition(
             description,
             StringOperator.MATCHES,
             'sainsbury',
@@ -226,9 +226,9 @@ describe('Condition Evaluators', () => {
         ).toBe(true);
       });
 
-      it('should return false when regex does not match', () => {
+      it('should return false when regex does not match', async () => {
         expect(
-          evaluateStringCondition(
+          await evaluateStringCondition(
             description,
             StringOperator.MATCHES,
             '^Tesco',
@@ -236,9 +236,9 @@ describe('Condition Evaluators', () => {
         ).toBe(false);
       });
 
-      it('should return false for invalid regex pattern', () => {
+      it('should return false for invalid regex pattern', async () => {
         expect(
-          evaluateStringCondition(
+          await evaluateStringCondition(
             description,
             StringOperator.MATCHES,
             '[invalid(regex',
@@ -246,14 +246,36 @@ describe('Condition Evaluators', () => {
         ).toBe(false);
       });
 
-      it('should match using regex special characters', () => {
+      it('should match using regex special characters', async () => {
         expect(
-          evaluateStringCondition(
+          await evaluateStringCondition(
             'Order #12345',
             StringOperator.MATCHES,
             String.raw`#\d+`,
           ),
         ).toBe(true);
+      });
+
+      it('bounds pathological regex work without blocking the event loop', async () => {
+        const startedAt = Date.now();
+        const regexEvaluation = evaluateStringCondition(
+          `${'a'.repeat(9_999)}!`,
+          StringOperator.MATCHES,
+          '^(a+)+$',
+        );
+        const eventLoopHeartbeat = new Promise<number>((resolve) =>
+          setTimeout(() => resolve(Date.now() - startedAt), 10),
+        );
+
+        const [matches, heartbeatMs] = await Promise.all([
+          regexEvaluation,
+          eventLoopHeartbeat,
+        ]);
+        const elapsedMs = Date.now() - startedAt;
+
+        expect(matches).toBe(false);
+        expect(elapsedMs).toBeGreaterThanOrEqual(45);
+        expect(heartbeatMs).toBeLessThan(100);
       });
     });
 
