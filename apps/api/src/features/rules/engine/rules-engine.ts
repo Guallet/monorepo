@@ -31,7 +31,7 @@ import { MAX_CONDITIONS_PER_RULE } from '../constants';
 export function evaluateCondition(
   transaction: Transaction,
   condition: RuleCondition,
-): boolean {
+): boolean | Promise<boolean> {
   const { field, operator, value } = condition;
 
   // Validate operator is valid for field
@@ -91,10 +91,10 @@ export function evaluateCondition(
  * Evaluate a single rule against a transaction
  * Conditions are evaluated based on the rule's conditionLogic (AND or OR)
  */
-export function evaluateRule(
+export async function evaluateRule(
   transaction: Transaction,
   rule: CategorizationRule,
-): boolean {
+): Promise<boolean> {
   if (!rule.isActive) {
     return false;
   }
@@ -111,30 +111,32 @@ export function evaluateRule(
   // Evaluate based on condition logic
   if (rule.conditionLogic === ConditionLogic.OR) {
     // OR logic: at least one condition must match
-    return sortedConditions.some((condition) =>
-      evaluateCondition(transaction, condition),
-    );
+    for (const condition of sortedConditions) {
+      if (await evaluateCondition(transaction, condition)) return true;
+    }
+    return false;
   }
 
   // AND logic (default): all conditions must match
-  return sortedConditions.every((condition) =>
-    evaluateCondition(transaction, condition),
-  );
+  for (const condition of sortedConditions) {
+    if (!(await evaluateCondition(transaction, condition))) return false;
+  }
+  return true;
 }
 
 /**
  * Evaluate a list of rules against a transaction
  * Returns the first matching rule's category, or null if no match
  */
-export function evaluateRules(
+export async function evaluateRules(
   transaction: Transaction,
   rules: CategorizationRule[],
-): RuleEvaluationResult {
+): Promise<RuleEvaluationResult> {
   // Sort rules by order
   const sortedRules = [...rules].sort((a, b) => a.order - b.order);
 
   for (const rule of sortedRules) {
-    if (evaluateRule(transaction, rule)) {
+    if (await evaluateRule(transaction, rule)) {
       return {
         categoryId: rule.resultCategoryId,
         matchedRuleId: rule.id,

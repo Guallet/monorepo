@@ -114,7 +114,7 @@ describe('Rules Engine', () => {
   });
 
   describe('evaluateRule', () => {
-    it('should return true when all conditions match', () => {
+    it('should return true when all conditions match', async () => {
       const transaction = createTransaction();
       const rule = createRule({
         conditions: [
@@ -135,10 +135,10 @@ describe('Rules Engine', () => {
         ],
       });
 
-      expect(evaluateRule(transaction, rule)).toBe(true);
+      expect(await evaluateRule(transaction, rule)).toBe(true);
     });
 
-    it('should return false when any condition does not match', () => {
+    it('should return false when any condition does not match', async () => {
       const transaction = createTransaction();
       const rule = createRule({
         conditions: [
@@ -152,25 +152,25 @@ describe('Rules Engine', () => {
         ],
       });
 
-      expect(evaluateRule(transaction, rule)).toBe(false);
+      expect(await evaluateRule(transaction, rule)).toBe(false);
     });
 
-    it('should return false when rule is inactive', () => {
+    it('should return false when rule is inactive', async () => {
       const transaction = createTransaction();
       const rule = createRule({ isActive: false });
 
-      expect(evaluateRule(transaction, rule)).toBe(false);
+      expect(await evaluateRule(transaction, rule)).toBe(false);
     });
 
-    it('should return false when rule has no conditions', () => {
+    it('should return false when rule has no conditions', async () => {
       const transaction = createTransaction();
       const rule = createRule({ conditions: [] });
 
-      expect(evaluateRule(transaction, rule)).toBe(false);
+      expect(await evaluateRule(transaction, rule)).toBe(false);
     });
 
     describe('OR condition logic', () => {
-      it('should return true when at least one condition matches with OR logic', () => {
+      it('should return true when at least one condition matches with OR logic', async () => {
         const transaction = createTransaction();
         const rule = createRule({
           conditionLogic: ConditionLogic.OR,
@@ -192,10 +192,10 @@ describe('Rules Engine', () => {
           ],
         });
 
-        expect(evaluateRule(transaction, rule)).toBe(true);
+        expect(await evaluateRule(transaction, rule)).toBe(true);
       });
 
-      it('should return false when no conditions match with OR logic', () => {
+      it('should return false when no conditions match with OR logic', async () => {
         const transaction = createTransaction();
         const rule = createRule({
           conditionLogic: ConditionLogic.OR,
@@ -217,10 +217,10 @@ describe('Rules Engine', () => {
           ],
         });
 
-        expect(evaluateRule(transaction, rule)).toBe(false);
+        expect(await evaluateRule(transaction, rule)).toBe(false);
       });
 
-      it('should return true when first condition matches with OR logic', () => {
+      it('should return true when first condition matches with OR logic', async () => {
         const transaction = createTransaction();
         const rule = createRule({
           conditionLogic: ConditionLogic.OR,
@@ -242,13 +242,13 @@ describe('Rules Engine', () => {
           ],
         });
 
-        expect(evaluateRule(transaction, rule)).toBe(true);
+        expect(await evaluateRule(transaction, rule)).toBe(true);
       });
     });
   });
 
   describe('evaluateRules', () => {
-    it('should return first matching rule category', () => {
+    it('should return first matching rule category', async () => {
       const transaction = createTransaction();
       const rules: CategorizationRule[] = [
         createRule({
@@ -281,13 +281,13 @@ describe('Rules Engine', () => {
         }),
       ];
 
-      const result = evaluateRules(transaction, rules);
+      const result = await evaluateRules(transaction, rules);
 
       expect(result.categoryId).toBe('cat-sainsbury');
       expect(result.matchedRuleId).toBe('rule-2');
     });
 
-    it('should respect rule order', () => {
+    it('should respect rule order', async () => {
       const transaction = createTransaction({ description: 'Sainsbury Tesco' });
       const rules: CategorizationRule[] = [
         createRule({
@@ -320,14 +320,14 @@ describe('Rules Engine', () => {
         }),
       ];
 
-      const result = evaluateRules(transaction, rules);
+      const result = await evaluateRules(transaction, rules);
 
       // Tesco rule has lower order, so it should match first
       expect(result.categoryId).toBe('cat-tesco');
       expect(result.matchedRuleId).toBe('rule-2');
     });
 
-    it('should return null when no rules match', () => {
+    it('should return null when no rules match', async () => {
       const transaction = createTransaction({ description: 'Amazon' });
       const rules: CategorizationRule[] = [
         createRule({
@@ -343,15 +343,15 @@ describe('Rules Engine', () => {
         }),
       ];
 
-      const result = evaluateRules(transaction, rules);
+      const result = await evaluateRules(transaction, rules);
 
       expect(result.categoryId).toBeNull();
       expect(result.matchedRuleId).toBeNull();
     });
 
-    it('should return null when rules array is empty', () => {
+    it('should return null when rules array is empty', async () => {
       const transaction = createTransaction();
-      const result = evaluateRules(transaction, []);
+      const result = await evaluateRules(transaction, []);
 
       expect(result.categoryId).toBeNull();
       expect(result.matchedRuleId).toBeNull();
