@@ -78,7 +78,7 @@ export function evaluateStringCondition(
  * Evaluate number field conditions
  */
 export function evaluateNumberCondition(
-  fieldValue: number | null | undefined,
+  fieldValue: number | string | null | undefined,
   operator: NumberOperatorType,
   value: string,
 ): boolean {
@@ -86,27 +86,64 @@ export function evaluateNumberCondition(
     return false;
   }
 
-  const numericValue = Number.parseFloat(value);
-  if (Number.isNaN(numericValue)) {
+  const comparison = compareDecimalValues(fieldValue, value);
+  if (comparison === null) {
     return false;
   }
 
   switch (operator) {
     case NumberOperator.EQUALS:
-      return fieldValue === numericValue;
+      return comparison === 0;
     case NumberOperator.NOT_EQUALS:
-      return fieldValue !== numericValue;
+      return comparison !== 0;
     case NumberOperator.GREATER_THAN:
-      return fieldValue > numericValue;
+      return comparison > 0;
     case NumberOperator.LESS_THAN:
-      return fieldValue < numericValue;
+      return comparison < 0;
     case NumberOperator.GREATER_THAN_OR_EQUALS:
-      return fieldValue >= numericValue;
+      return comparison >= 0;
     case NumberOperator.LESS_THAN_OR_EQUALS:
-      return fieldValue <= numericValue;
+      return comparison <= 0;
     default:
       return false;
   }
+}
+
+/** Compare decimal text exactly, without converting PostgreSQL decimals to floats. */
+function compareDecimalValues(
+  left: number | string,
+  right: string,
+): number | null {
+  const leftDecimal = parseDecimal(left);
+  const rightDecimal = parseDecimal(right);
+  if (!leftDecimal || !rightDecimal) return null;
+
+  const scale = Math.max(leftDecimal.scale, rightDecimal.scale);
+  const leftInteger =
+    leftDecimal.coefficient * 10n ** BigInt(scale - leftDecimal.scale);
+  const rightInteger =
+    rightDecimal.coefficient * 10n ** BigInt(scale - rightDecimal.scale);
+  return leftInteger < rightInteger ? -1 : leftInteger > rightInteger ? 1 : 0;
+}
+
+function parseDecimal(
+  value: number | string,
+): { coefficient: bigint; scale: number } | null {
+  const text = String(value).trim();
+  const match = /^([+-]?)(\d+)(?:\.(\d*))?(?:[eE]([+-]?\d+))?$/.exec(text);
+  if (!match) return null;
+
+  const fraction = match[3] ?? '';
+  const exponent = Number(match[4] ?? 0);
+  if (!Number.isSafeInteger(exponent) || Math.abs(exponent) > 1000) return null;
+  const digits = `${match[2]}${fraction}`;
+  let coefficient = BigInt(digits) * (match[1] === '-' ? -1n : 1n);
+  let scale = fraction.length - exponent;
+  if (scale < 0) {
+    coefficient *= 10n ** BigInt(-scale);
+    scale = 0;
+  }
+  return { coefficient, scale };
 }
 
 /**
