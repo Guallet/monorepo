@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Currency, Money } from '@guallet/money';
 import {
   ExportEngine,
   ExportEngineParams,
@@ -26,7 +27,13 @@ export class OfeExportEngine implements ExportEngine {
         const stmtTrns = txs
           .map((tx) => {
             const normalizedAmount = normalizeAmount(tx.amount);
-            const amount = normalizedAmount.toFixed(2);
+            const currencyDetails = Currency.fromISOCode(currency);
+            const amount = Money.from({
+              amount: normalizedAmount,
+              currency: currencyDetails,
+            })
+              .round(currencyDetails.decimalPlaces)
+              .amount.toFixed(currencyDetails.decimalPlaces);
             const trnType = normalizedAmount < 0 ? 'DEBIT' : 'CREDIT';
             const description = this.escapeOfe(tx.description || '');
             const memo = this.escapeOfe(tx.notes || '');
