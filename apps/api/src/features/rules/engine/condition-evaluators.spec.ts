@@ -273,6 +273,38 @@ describe('Condition Evaluators', () => {
   describe('evaluateNumberCondition', () => {
     const amount = 50.25;
 
+    it('compares PostgreSQL decimal strings exactly', () => {
+      expect(
+        evaluateNumberCondition('12.34', NumberOperator.EQUALS, '12.34'),
+      ).toBe(true);
+      expect(
+        evaluateNumberCondition('-12.34', NumberOperator.NOT_EQUALS, '12.35'),
+      ).toBe(true);
+      expect(
+        evaluateNumberCondition('-12.34', NumberOperator.LESS_THAN, '-12.3'),
+      ).toBe(true);
+      expect(
+        evaluateNumberCondition('-12.34', NumberOperator.GREATER_THAN, '-12.4'),
+      ).toBe(true);
+    });
+
+    it('does not treat distinct high precision decimals as equal', () => {
+      expect(
+        evaluateNumberCondition(
+          '9007199254740992.01',
+          NumberOperator.EQUALS,
+          '9007199254740992.02',
+        ),
+      ).toBe(false);
+      expect(
+        evaluateNumberCondition(
+          '9007199254740992.01',
+          NumberOperator.NOT_EQUALS,
+          '9007199254740992.02',
+        ),
+      ).toBe(true);
+    });
+
     describe('equals operator', () => {
       it('should return true for equal values', () => {
         expect(
