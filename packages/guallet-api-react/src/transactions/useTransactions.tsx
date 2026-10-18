@@ -142,6 +142,9 @@ export function useInfiniteTransactionInbox() {
 
   const query = useInfiniteQuery({
     queryKey: [TRANSACTIONS_QUERY_KEY, '-inbox-infinite'],
+    // Background ingestion can finish after the import/sync query invalidates.
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
     queryFn: async ({ pageParam }) => {
       return await gualletClient.transactions.getInbox({
         page: pageParam,

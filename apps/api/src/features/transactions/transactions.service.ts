@@ -10,6 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, In, IsNull, Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { InboxTransaction } from './entities/inbox-transaction.model';
+import { TransactionSuggestion } from '../classification/entities/transaction-suggestion.entity';
+import { Category } from '../categories/entities/category.entity';
 import { Account } from '../accounts/entities/account.entity';
 
 @Injectable()
@@ -22,6 +24,14 @@ export class TransactionsService {
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
   ) {}
+
+  private async validateCategory(userId: string, categoryId?: string | null) {
+    if (!categoryId) return;
+    const category = await this.repository.manager
+      .getRepository(Category)
+      .findOneBy({ id: categoryId, user_id: userId });
+    if (!category) throw new BadRequestException('Category not found');
+  }
 
   async findUserTransaction({
     userId,
@@ -100,12 +110,33 @@ export class TransactionsService {
       skip: offset,
     });
 
-    // TODO: Apply the rules to the transactions and get the processed category
+    const suggestions = transactions.length
+      ? await this.repository.manager
+          .getRepository(TransactionSuggestion)
+          .findBy({
+            user_id: userId,
+            transaction_id: In(transactions.map((t) => t.id)),
+            status: 'pending',
+          })
+      : [];
+    const byTransaction = new Map(
+      suggestions.map((s) => [s.transaction_id, s]),
+    );
     return transactions.map((x) => {
+      const s = byTransaction.get(x.id);
       return {
         ...x,
-        rule_id: undefined,
-        processed_category_id: undefined,
+        rule_id: s?.rule_id ?? undefined,
+        processed_category_id: s?.suggested_category_id ?? undefined,
+        suggestion: s?.suggested_category_id
+          ? {
+              id: s.id,
+              source: s.source,
+              categoryId: s.suggested_category_id,
+              confidence: s.confidence,
+              ruleId: s.rule_id,
+            }
+          : undefined,
       };
     });
   }
@@ -199,6 +230,7 @@ export class TransactionsService {
       throw new NotFoundException();
     }
 
+    await this.validateCategory(userId, dto.categoryId);
     const entity = this.repository.create({
       accountId: dto.accountId,
       description: dto.description,
@@ -255,15 +287,17 @@ export class TransactionsService {
       }
     }
 
+    await this.validateCategory(user_id, dto.categoryId);
     const updatedEntity = {
       ...dbEntity,
       accountId: dto.accountId ?? dbEntity.accountId,
       amount: dto.amount ?? dbEntity.amount,
       description: dto.description ?? dbEntity.description,
-      notes: dto.notes ?? dbEntity.notes,
+      notes: dto.notes === undefined ? dbEntity.notes : dto.notes,
       currency: dto.currency ?? dbEntity.currency,
       date: dto.date ? new Date(dto.date) : dbEntity.date,
-      categoryId: dto.categoryId ?? dbEntity.categoryId,
+      categoryId:
+        dto.categoryId === undefined ? dbEntity.categoryId : dto.categoryId,
     };
     return await this.repository.save(updatedEntity);
   }

@@ -23,6 +23,7 @@ import { DataImporterModule } from './features/data-importer/data-importer.modul
 import { DataExporterModule } from './features/data-exporter/data-exporter.module';
 import { EmailModule } from './features/email/email.module';
 import { NotificationsModule } from './features/notifications/notifications.module';
+import { ClassificationModule } from './features/classification/classification.module';
 import { AiModule } from './features/ai/ai.module';
 import { BullModule } from '@nestjs/bullmq';
 import { HealthModule } from './features/health/health.module';
@@ -53,7 +54,14 @@ import { ObserveModule } from './observe';
           pinoHttp: {
             autoLogging: false,
             level: config.get('logging', { infer: true })?.level,
-            redact: ['req.headers.authorization', 'req.headers.cookie'],
+            redact: [
+              'req.headers.authorization',
+              'req.headers.cookie',
+              'req.body.apiKey',
+              'req.body.headerValue',
+              'req.body.clientId',
+              'req.body.clientSecret',
+            ],
             transport: {
               targets: [
                 {
@@ -166,6 +174,7 @@ import { ObserveModule } from './observe';
     NotificationsModule,
     RegularPaymentsModule,
     AiModule,
+    ClassificationModule,
     HealthModule,
   ],
   controllers: [AppController],

@@ -1,3 +1,4 @@
+import { ClassifyInboxAction } from '@/features/classification/components/ClassifyInboxAction';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { EmptyState } from '@/components/EmptyState/EmptyState';
 import { useInfiniteTransactionInbox } from '@guallet/api-react';
@@ -43,6 +44,7 @@ export function TransactionInboxScreen() {
         ) : null
       }
     >
+      <ClassifyInboxAction />
       {!isLoading && transactions.length === 0 ? (
         <EmptyState
           illustration={
@@ -67,9 +69,6 @@ export function TransactionInboxScreen() {
             <InboxTransactionCard
               key={transaction.id}
               transaction={transaction}
-              onSaveChanges={() => {
-                console.log('Save changes for transaction:', transaction);
-              }}
             />
           ))}
 

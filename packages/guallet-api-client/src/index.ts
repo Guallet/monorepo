@@ -17,3 +17,5 @@ export * from './ai';
 
 export { ApiError, createClient } from './GualletClient';
 export type { CookieHelper, GualletClient } from './GualletClient';
+
+export * from './classification';

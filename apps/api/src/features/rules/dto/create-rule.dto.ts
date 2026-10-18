@@ -15,6 +15,7 @@ import { MAX_CONDITIONS_PER_RULE } from '../constants';
 export class CreateConditionDto {
   @ApiProperty({
     description: 'The transaction field to evaluate',
+    enum: ['account', 'description', 'notes', 'amount', 'date'],
     example: 'description',
   })
   @IsString()

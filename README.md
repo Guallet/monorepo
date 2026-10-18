@@ -105,3 +105,6 @@ npx turbo link
 
 ![KO-FI](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)
 ![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)
+
+Transaction classification can suggest inbox categories using a user-provided
+Jev-compatible service. See [classification setup and validation](docs/transaction-classification.md).

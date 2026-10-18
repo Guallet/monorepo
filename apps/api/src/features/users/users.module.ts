@@ -1,3 +1,4 @@
+import { ClassificationLimitsModule } from '../classification/classification-limits.service';
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
@@ -11,6 +12,7 @@ import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
   imports: [
+    ClassificationLimitsModule,
     TypeOrmModule.forFeature([
       User,
       AuthAccount,

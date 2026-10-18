@@ -53,9 +53,14 @@ export function evaluateCondition(
       );
 
     case FieldDataType.STRING:
-      if (field === TransactionField.DESCRIPTION) {
+      if (
+        field === TransactionField.DESCRIPTION ||
+        field === TransactionField.NOTES
+      ) {
         return evaluateStringCondition(
-          transaction.description,
+          (field === TransactionField.NOTES
+            ? transaction.notes
+            : transaction.description) ?? '',
           operator as StringOperatorType,
           value,
         );
@@ -206,6 +211,8 @@ export function getTransactionFieldValue(
   switch (field) {
     case TransactionField.ACCOUNT:
       return transaction.accountId;
+    case TransactionField.NOTES:
+      return transaction.notes ?? '';
     case TransactionField.DESCRIPTION:
       return transaction.description;
     case TransactionField.AMOUNT:

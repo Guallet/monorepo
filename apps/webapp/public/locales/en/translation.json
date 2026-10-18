@@ -438,8 +438,8 @@
     "back": "Back",
     "optional": "Optional",
     "continue": "Continue",
-    "startOver": "Start over",
     "cancel": "Cancel",
+    "startOver": "Start over",
     "save": "Save"
   },
   "screens": {
@@ -1767,7 +1767,6 @@
             "message": "Failed to update category. Please try again."
           },
           "uncategorised": "Uncategorised",
-          "autoBadge": "Suggested",
           "editTooltip": "Edit",
           "confirmButton": "Confirm"
         },
@@ -1929,6 +1928,59 @@
       "feature3": "Self-host or secure cloud",
       "license": "Open source · Apache 2.0"
     }
+  },
+  "classification": {
+    "rulesOnly": "Rules are checked without an external service.",
+    "configure": "Configure a decision service",
+    "run": "Suggest inbox categories",
+    "progress": "{{processed}} reviewed, {{queued}} waiting, {{suggested}} suggested, {{failed}} failed.",
+    "runError": "Could not classify the inbox or load progress. Refresh and try again.",
+    "validation": {
+      "required": "Required",
+      "url": "Enter a valid API URL"
+    },
+    "privacy": "When enabled, uncategorised transaction descriptions, currency, direction and category names are sent to your chosen service. Known sensitive patterns are masked, but text may still contain personal information. Notes are only sent if you enable them. Every suggestion needs your review.",
+    "name": "Connection name",
+    "url": "API base URL",
+    "urlHelp": "Enter the base URL ending in /v1.",
+    "model": "Model",
+    "auth": {
+      "label": "Authentication",
+      "none": "None",
+      "bearer": "Bearer token",
+      "header": "API key header",
+      "basic": "Username and password"
+    },
+    "header": "Header name",
+    "headerHelp": "Use an x- header ending in key or token, such as x-api-key.",
+    "username": "Username",
+    "secret": "Credential",
+    "secretKeep": "Leave empty to keep the saved credential. Change authentication to None to remove it.",
+    "threshold": "Minimum suggestion score",
+    "margin": "Minimum gap from the next category",
+    "scoreHelp": "Scores are provider estimates, not measured accuracy.",
+    "notes": "Share transaction notes",
+    "active": "Enable background suggestions",
+    "save": "Save and test",
+    "testSaved": "Test saved connection",
+    "test": "Test connection",
+    "saved": "Connection saved and tested.",
+    "inactive": "Connection saved inactive because the test failed. Check the address, credentials and service availability.",
+    "saveError": "Could not save the connection. Check the address and credentials.",
+    "testOk": "Connection test passed.",
+    "testError": "Connection test failed. Check the address, credentials and service availability.",
+    "title": "Transaction classification",
+    "loadError": "Could not load classification settings.",
+    "disabled": "Background suggestions are inactive. Enable them and save to test the connection again.",
+    "reviews": "Last 30 days: {{accepted}} accepted, {{rejected}} corrected, {{dismissed}} dismissed. These review counts are not measured accuracy.",
+    "delete": "Delete connection",
+    "deleteHelp": "Delete saved credentials and stop provider suggestions? Existing review history will remain.",
+    "deleted": "Connection deleted.",
+    "deleteError": "Could not delete the connection.",
+    "ruleSuggestion": "Rule suggestion",
+    "providerSuggestion": "Provider suggestion",
+    "dismissError": "Could not dismiss suggestion.",
+    "dismiss": "Dismiss"
   },
   "landing": {
     "footer": {

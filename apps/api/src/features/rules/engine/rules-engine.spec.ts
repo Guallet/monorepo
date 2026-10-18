@@ -33,6 +33,7 @@ describe('Rules Engine', () => {
     created_at: new Date('2024-06-15'),
     updated_at: new Date('2024-06-15'),
     deleted_at: null as any,
+    revision: 1,
     ...overrides,
   });
 

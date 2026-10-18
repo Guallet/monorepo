@@ -9,7 +9,12 @@ import { IsNull } from 'typeorm';
 describe('TransactionsService', () => {
   let service: TransactionsService;
 
+  const relatedRepository = {
+    findBy: vi.fn().mockResolvedValue([]),
+    findOneBy: vi.fn().mockResolvedValue({ id: 'category-1' }),
+  };
   const mockTransactionRepository = {
+    manager: { getRepository: vi.fn(() => relatedRepository) },
     create: vi.fn(),
     find: vi.fn(),
     findOne: vi.fn(),

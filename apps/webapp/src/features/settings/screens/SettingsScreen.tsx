@@ -100,6 +100,10 @@ export function SettingsScreen() {
       <BaseScreen title={t('screens.settings.title', 'Settings')}>
         <Stack gap={spacing.md}>
           <UserSettingsCard />
+          <TextRow
+            label={t('classification.title', 'Transaction classification')}
+            onClick={() => navigate({ to: '/settings/classification' })}
+          />
 
           <SettingsSection
             title={t('screens.settings.preferences.title', 'User preferences')}

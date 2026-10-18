@@ -8,6 +8,22 @@ import { z } from 'zod';
  */
 export const environmentSchema = z
   .object({
+    DECISION_ALLOW_HTTP: z.enum(['true', 'false']).default('false'),
+    DECISION_PRIVATE_TARGETS: z.string().default(''),
+    DECISION_ALLOWED_HOSTS: z.string().default(''),
+    DECISION_REQUEST_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(100)
+      .max(30000)
+      .default(8000),
+    DECISION_MAX_QUESTIONS: z.coerce.number().int().min(1).max(24).default(24),
+    DECISION_REQUESTS_PER_MINUTE: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(120)
+      .default(60),
     ENVIRONMENT: z.enum(['development', 'production']).default('development'),
     DATABASE_HOST: z.string().min(1).default('localhost'),
     DATABASE_PORT: z.coerce.number().default(5432),
@@ -122,6 +138,14 @@ export interface AppConfig {
   email: EmailConfig;
   ai: AiConfig;
   observe: NestObserveConfig;
+  decision: {
+    allowHttp: boolean;
+    privateTargets: string[];
+    allowedHosts: string[];
+    timeoutMs: number;
+    maxQuestions: number;
+    requestsPerMinute: number;
+  };
 }
 
 const configuration = (): AppConfig => {
@@ -169,6 +193,18 @@ const configuration = (): AppConfig => {
         pass: process.env.SMTP_PASS,
         secure: process.env.SMTP_SECURE !== 'false',
       },
+    },
+    decision: {
+      allowHttp: environment.DECISION_ALLOW_HTTP === 'true',
+      privateTargets: environment.DECISION_PRIVATE_TARGETS.split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean),
+      allowedHosts: environment.DECISION_ALLOWED_HOSTS.split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean),
+      timeoutMs: environment.DECISION_REQUEST_TIMEOUT_MS,
+      maxQuestions: environment.DECISION_MAX_QUESTIONS,
+      requestsPerMinute: environment.DECISION_REQUESTS_PER_MINUTE,
     },
     ai: {
       credentialsEncryptionKey: environment.DATABASE_CREDENTIALS_ENCRYPTION_KEY,

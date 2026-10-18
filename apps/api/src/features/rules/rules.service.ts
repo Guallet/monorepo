@@ -1,3 +1,4 @@
+import { Category } from '../categories/entities/category.entity';
 import {
   Injectable,
   Logger,
@@ -45,6 +46,13 @@ export class RulesService {
     @InjectRepository(Transaction)
     private readonly transactionsRepository: Repository<Transaction>,
   ) {}
+
+  private async validateCategory(userId: string, categoryId: string) {
+    const category = await this.rulesRepository.manager
+      .getRepository(Category)
+      .findOneBy({ id: categoryId, user_id: userId });
+    if (!category) throw new BadRequestException('Category not found');
+  }
 
   /**
    * Validate that all conditions have valid field-operator combinations
@@ -123,6 +131,8 @@ export class RulesService {
     if (existingRuleCount >= MAX_RULES_PER_USER) {
       throw new BadRequestException(TOO_MANY_RULES_MESSAGE);
     }
+
+    await this.validateCategory(userId, dto.resultCategoryId);
 
     // Get the next order number
     const maxOrderResult = await this.rulesRepository
@@ -212,6 +222,9 @@ export class RulesService {
     if (dto.conditions) {
       this.validateConditions(dto.conditions);
     }
+
+    if (dto.resultCategoryId !== undefined)
+      await this.validateCategory(userId, dto.resultCategoryId);
 
     // Update rule properties
     if (dto.name !== undefined) existingRule.name = dto.name;
@@ -346,27 +359,48 @@ export class RulesService {
     userId: string;
     transaction: Transaction;
   }): Promise<RuleEvaluationResult> {
+    return (
+      await this.evaluateTransactions({ userId, transactions: [transaction] })
+    )[0];
+  }
+
+  async evaluateTransactions({
+    userId,
+    transactions,
+    validCategoryIds,
+  }: {
+    userId: string;
+    transactions: Transaction[];
+    validCategoryIds?: string[];
+  }): Promise<RuleEvaluationResult[]> {
     const rules = await this.findAll(userId);
 
-    const domainRules: CategorizationRule[] = rules.map((r) => ({
-      id: r.id,
-      userId: r.userId,
-      name: r.name,
-      description: r.description,
-      conditions: r.conditions.map((c) => ({
-        id: c.id,
-        field: c.field as TransactionFieldType,
-        operator: c.operator as OperatorType,
-        value: c.value,
-        order: c.order,
-      })),
-      conditionLogic: (r.conditionLogic ?? 'and') as ConditionLogicType,
-      resultCategoryId: r.resultCategoryId,
-      order: r.order,
-      isActive: r.isActive,
-    }));
+    const domainRules: CategorizationRule[] = rules
+      .filter(
+        (r) =>
+          !validCategoryIds || validCategoryIds.includes(r.resultCategoryId),
+      )
+      .map((r) => ({
+        id: r.id,
+        userId: r.userId,
+        name: r.name,
+        description: r.description,
+        conditions: r.conditions.map((c) => ({
+          id: c.id,
+          field: c.field as TransactionFieldType,
+          operator: c.operator as OperatorType,
+          value: c.value,
+          order: c.order,
+        })),
+        conditionLogic: (r.conditionLogic ?? 'and') as ConditionLogicType,
+        resultCategoryId: r.resultCategoryId,
+        order: r.order,
+        isActive: r.isActive,
+      }));
 
-    return evaluateRules(transaction, domainRules);
+    return transactions.map((transaction) =>
+      evaluateRules(transaction, domainRules),
+    );
   }
 
   /**
@@ -375,6 +409,17 @@ export class RulesService {
   getFieldDefinitions() {
     return {
       fields: [
+        {
+          name: TransactionField.NOTES,
+          label: 'Notes',
+          type: 'string',
+          operators: [
+            { value: 'equals', label: 'Equals' },
+            { value: 'not_equals', label: 'Does not equal' },
+            { value: 'contains', label: 'Contains' },
+            { value: 'matches', label: 'Matches regex' },
+          ],
+        },
         {
           name: TransactionField.ACCOUNT,
           label: 'Account',

@@ -4,6 +4,7 @@
 export const TransactionField = {
   ACCOUNT: 'account',
   DESCRIPTION: 'description',
+  NOTES: 'notes',
   AMOUNT: 'amount',
   DATE: 'date',
 } as const;
@@ -31,6 +32,7 @@ export const FieldToDataType: Record<TransactionFieldType, FieldDataTypeValue> =
   {
     [TransactionField.ACCOUNT]: FieldDataType.ACCOUNT,
     [TransactionField.DESCRIPTION]: FieldDataType.STRING,
+    [TransactionField.NOTES]: FieldDataType.STRING,
     [TransactionField.AMOUNT]: FieldDataType.NUMBER,
     [TransactionField.DATE]: FieldDataType.DATETIME,
   };

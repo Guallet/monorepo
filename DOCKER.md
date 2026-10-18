@@ -323,3 +323,24 @@ For issues and questions:
 ## License
 
 This project is licensed under Apache-2.0 - see the LICENSE file for details.
+
+## User-provided transaction classification
+
+A user can configure a Jev-compatible `/v1/systemone` service in Settings →
+Transaction classification. Enter its base URL ending in `/v1`. No model is
+bundled in the default compose deployment. Results require manual review.
+
+Public endpoints require HTTPS by default. For an administrator-approved private
+service, set `DECISION_PRIVATE_TARGETS=decision-service:8017`; this is an exact
+hostname and port, not a wildcard. Set `DECISION_ALLOW_HTTP=true` only if the
+approved service needs HTTP. Optionally restrict all requests with
+`DECISION_ALLOWED_HOSTS=decision-service`. The destination must be reachable from
+the API container. Private access never permits metadata or configured Guallet
+API/database/Redis addresses; use a separate container/IP for the decision service.
+
+`DECISION_REQUEST_TIMEOUT_MS` defaults to 8000, `DECISION_MAX_QUESTIONS` to 24,
+and `DECISION_REQUESTS_PER_MINUTE` to 60 per connection across workers. Redis
+outages retain work in PostgreSQL for later delivery. Each user has at most one
+outstanding queue delivery; failures pause only the affected connection's work.
+The dispatcher runs every five seconds. Pending work can be inspected in
+`classification_work`; status endpoints expose only the requesting user's runs.
