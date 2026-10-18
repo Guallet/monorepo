@@ -25,18 +25,21 @@ export class ClassificationDispatcher {
       const rows: { id: string; user_id: string }[] = await this.db.query(
         `SELECT DISTINCT ON (w.user_id) w.id, w.user_id FROM classification_work w JOIN users u ON u.id=w.user_id AND u.deleted_at IS NULL WHERE w.status='queued' AND w.available_at <= now() ORDER BY w.user_id, w.created_at, w.id`,
       );
-      for (const row of rows)
-        await this.queue.add(
-          'classify',
-          { userId: row.user_id, id: row.id },
-          {
-            jobId: `classification-${hash(row.user_id)}`,
-            removeOnComplete: true,
-            removeOnFail: true,
-            attempts: 3,
-            backoff: { type: 'exponential', delay: 5000 },
-          },
-        );
+      await Promise.all(
+        rows.map((row) =>
+          this.queue.add(
+            'classify',
+            { userId: row.user_id, id: row.id },
+            {
+              jobId: `classification-${hash(row.user_id)}`,
+              removeOnComplete: true,
+              removeOnFail: true,
+              attempts: 3,
+              backoff: { type: 'exponential', delay: 5000 },
+            },
+          ),
+        ),
+      );
     } catch {
       this.logger.warn(
         'Classification dispatch unavailable; durable work retained',

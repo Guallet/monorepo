@@ -25,13 +25,7 @@ export class DecisionConnectionsService {
     private readonly client: JevClient,
     private readonly limits: ClassificationLimits,
   ) {}
-  async get({
-    userId,
-    secrets = false,
-  }: {
-    userId: string;
-    secrets?: boolean;
-  }) {
+  get({ userId, secrets = false }: { userId: string; secrets?: boolean }) {
     const query = this.db
       .getRepository(DecisionConnection)
       .createQueryBuilder('connection')
@@ -102,12 +96,12 @@ export class DecisionConnectionsService {
       c.encrypted_credentials = this.cipher.encrypt(
         JSON.stringify(credentials),
       );
-      const secret =
-        c.auth_type === 'basic'
-          ? credentials.clientSecret
-          : c.auth_type === 'header'
-            ? credentials.headerValue
-            : credentials.apiKey;
+      const credentialsByType: Record<string, string | undefined> = {
+        basic: credentials.clientSecret,
+        header: credentials.headerValue,
+        bearer: credentials.apiKey,
+      };
+      const secret = credentialsByType[c.auth_type];
       c.credential_hint =
         secret && secret.length > 4 ? secret.slice(-4) : '••••';
     }

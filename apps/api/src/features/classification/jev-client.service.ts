@@ -23,10 +23,12 @@ export function authHeaders(
     connection.auth_type === 'basic' &&
     credentials.clientId &&
     credentials.clientSecret
-  )
+  ) {
+    const credentialsValue = `${credentials.clientId}:${credentials.clientSecret}`;
     return {
-      authorization: `Basic ${Buffer.from(`${credentials.clientId}:${credentials.clientSecret}`).toString('base64')}`,
+      authorization: `Basic ${Buffer.from(credentialsValue).toString('base64')}`,
     };
+  }
   if (connection.auth_type === 'header' && credentials.headerValue) {
     const name = connection.auth_header_name?.toLowerCase() ?? '';
     // Only explicitly named API-key headers are supported; transport, proxy,
@@ -62,9 +64,10 @@ export class JevClient {
     }).maxQuestions;
     if (options.length > 500) throw new DecisionError('protocol');
     for (let offset = 0; offset < options.length; offset += max) {
-      await beforeRequest();
+      await beforeRequest(); //NOSONAR -- Maintain request-budget ordering.
       const batch = options.slice(offset, offset + max);
       const raw = await this.http.post(
+        //NOSONAR -- Preserve per-connection request ordering.
         connection.base_url,
         {
           model: connection.model,
@@ -74,7 +77,7 @@ export class JevClient {
               o.key,
               {
                 type: 'noul',
-                instructions: `Does this transaction belong to the category ${JSON.stringify(o.label)}? Answer yes only if this is a clear fit.`,
+                instructions: makeInstructions(o.label),
               },
             ]),
           ),
@@ -87,7 +90,7 @@ export class JevClient {
         Object.keys(parsed.data.answers).length !== batch.length ||
         batch.some(
           (o) =>
-            !Object.prototype.hasOwnProperty.call(parsed.data.answers, o.key),
+            !Object.prototype.hasOwnProperty.call(parsed.data.answers, o.key), //NOSONAR -- The configured TS lib predates Object.hasOwn.
         )
       )
         throw new DecisionError('protocol');
@@ -96,4 +99,9 @@ export class JevClient {
     }
     return scores;
   }
+}
+
+function makeInstructions(label: string): string {
+  const encodedLabel = JSON.stringify(label);
+  return `Does this transaction belong to the category ${encodedLabel}? Answer yes only if this is a clear fit.`;
 }

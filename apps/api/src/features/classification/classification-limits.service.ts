@@ -72,6 +72,7 @@ export class ClassificationLimits implements OnModuleDestroy {
     let cursor = '0';
     do {
       const [next, keys] = await redis.scan(
+        //NOSONAR -- Each SCAN page depends on the prior cursor.
         cursor,
         'MATCH',
         `classification:${hash(userId)}:*`,
@@ -79,7 +80,7 @@ export class ClassificationLimits implements OnModuleDestroy {
         100,
       );
       cursor = next;
-      if (keys.length) await redis.del(...keys);
+      if (keys.length) await redis.del(...keys); //NOSONAR -- Delete this page before scanning the next.
     } while (cursor !== '0');
   }
 }

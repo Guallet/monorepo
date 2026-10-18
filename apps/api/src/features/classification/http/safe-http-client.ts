@@ -54,7 +54,8 @@ export function canonicalIp(address: string): string {
   const normalized = new URL(`http://[${ip}]`).hostname.slice(1, -1);
   const match = /^::ffff:([\da-f]+):([\da-f]+)$/.exec(normalized);
   if (!match) return normalized;
-  const value = parseInt(match[1], 16) * 65536 + parseInt(match[2], 16);
+  const value =
+    Number.parseInt(match[1], 16) * 65536 + Number.parseInt(match[2], 16);
   return [24, 16, 8, 0].map((shift) => (value >>> shift) & 255).join('.');
 }
 export function isPublicAddress(address: string): boolean {
@@ -72,6 +73,22 @@ export function isMetadataAddress(address: string): boolean {
     ip === 'fd00:ec2::254' || //NOSONAR -- cloud metadata endpoint blocked for SSRF protection.
     ip === '100.100.100.200' || //NOSONAR -- cloud metadata endpoint blocked for SSRF protection.
     ip === '168.63.129.16' //NOSONAR -- cloud metadata endpoint blocked for SSRF protection.
+  );
+}
+
+function responseError(status: number, retryHeader: string | undefined) {
+  let code: DecisionError['code'];
+  if (status === 401 || status === 403) code = 'auth';
+  else if (status === 429) code = 'rate_limit';
+  else if (status >= 500) code = 'unavailable';
+  else code = 'protocol';
+
+  const retrySeconds = Number(retryHeader);
+  const retryDate = Date.parse(String(retryHeader)) - Date.now();
+  const delay = Number.isFinite(retrySeconds) ? retrySeconds * 1000 : retryDate;
+  return new DecisionError(
+    code,
+    Math.min(900000, Math.max(1000, Number.isFinite(delay) ? delay : 60000)),
   );
 }
 
@@ -102,22 +119,7 @@ export class SafeHttpClient {
     value: string,
   ): Promise<{ url: URL; address: string; family: number }> {
     const policy = this.config.getOrThrow('decision', { infer: true });
-    let url: URL;
-    try {
-      url = new URL(value);
-    } catch {
-      throw new DecisionError('blocked');
-    }
-    if (
-      value.length > 2048 ||
-      url.username ||
-      url.password ||
-      url.hash ||
-      url.search ||
-      !url.hostname ||
-      !['https:', ...(policy.allowHttp ? ['http:'] : [])].includes(url.protocol)
-    )
-      throw new DecisionError('blocked');
+    const url = this.parseTarget(value, policy.allowHttp);
     const hostname = url.hostname.replace(/^\[|\]$/g, '').toLowerCase();
     if (policy.allowedHosts.length && !policy.allowedHosts.includes(hostname))
       throw new DecisionError('blocked');
@@ -125,34 +127,13 @@ export class SafeHttpClient {
     const privateAllowed = policy.privateTargets.includes(
       `${url.hostname.toLowerCase()}:${port}`,
     );
-    const db = this.config.getOrThrow('database', { infer: true });
-    const redis = this.config.getOrThrow('redis', { infer: true });
-    const auth = this.config.getOrThrow('auth', { infer: true });
-    const protectedHosts = [db.host, redis.host, new URL(auth.baseUrl).hostname]
-      .filter((host) => !host.startsWith('/'))
-      .map((host) => host.replace(/^\[|\]$/g, '').toLowerCase());
+    const protectedHosts = this.protectedHosts();
     if (protectedHosts.includes(hostname)) throw new DecisionError('blocked');
-    let addresses: { address: string; family: number }[];
-    try {
-      addresses = isIP(hostname)
-        ? [{ address: hostname, family: isIP(hostname) }]
-        : await lookup(hostname, { all: true });
-    } catch {
-      throw new DecisionError('unavailable');
-    }
-    const protectedIps = new Set<string>();
-    // Resolve configured services as well, so DNS aliases cannot bypass blocking.
-    for (const host of protectedHosts) {
-      if (isIP(host)) protectedIps.add(canonicalIp(host));
-      else {
-        try {
-          for (const a of await lookup(host, { all: true }))
-            protectedIps.add(canonicalIp(a.address));
-        } catch {
-          if (privateAllowed) throw new DecisionError('blocked');
-        }
-      }
-    }
+    const addresses = await this.resolveAddresses(hostname);
+    const protectedIps = await this.resolveProtectedIps(
+      protectedHosts,
+      privateAllowed,
+    );
     if (
       !addresses.length ||
       addresses.some(
@@ -164,6 +145,66 @@ export class SafeHttpClient {
     )
       throw new DecisionError('blocked');
     return { url, ...addresses[0] };
+  }
+
+  private parseTarget(value: string, allowHttp: boolean): URL {
+    let url: URL;
+    try {
+      url = new URL(value);
+    } catch {
+      throw new DecisionError('blocked');
+    }
+    const protocols = allowHttp ? ['https:', 'http:'] : ['https:'];
+    if (
+      value.length > 2048 ||
+      url.username ||
+      url.password ||
+      url.hash ||
+      url.search ||
+      !url.hostname ||
+      !protocols.includes(url.protocol)
+    )
+      throw new DecisionError('blocked');
+    return url;
+  }
+
+  private protectedHosts(): string[] {
+    const db = this.config.getOrThrow('database', { infer: true });
+    const redis = this.config.getOrThrow('redis', { infer: true });
+    const auth = this.config.getOrThrow('auth', { infer: true });
+    return [db.host, redis.host, new URL(auth.baseUrl).hostname]
+      .filter((host) => !host.startsWith('/'))
+      .map((host) => host.replace(/^\[|\]$/g, '').toLowerCase());
+  }
+
+  private async resolveAddresses(hostname: string) {
+    try {
+      if (isIP(hostname))
+        return [{ address: hostname, family: isIP(hostname) }];
+      return await lookup(hostname, { all: true });
+    } catch {
+      throw new DecisionError('unavailable');
+    }
+  }
+
+  private async resolveProtectedIps(
+    protectedHosts: string[],
+    privateAllowed: boolean,
+  ) {
+    // Resolve configured services as well, so DNS aliases cannot bypass blocking.
+    const results = await Promise.all(
+      protectedHosts.map(async (host) => {
+        if (isIP(host)) return [canonicalIp(host)];
+        try {
+          const addresses = await lookup(host, { all: true });
+          return addresses.map((address) => canonicalIp(address.address));
+        } catch {
+          if (privateAllowed) throw new DecisionError('blocked');
+          return [];
+        }
+      }),
+    );
+    return new Set(results.flat());
   }
 
   async post(
@@ -216,26 +257,7 @@ export class SafeHttpClient {
             (res) => {
               const status = res.statusCode ?? 0;
               if (status !== 200) {
-                const retry = res.headers['retry-after'];
-                const seconds = Number(retry);
-                const delay = Number.isFinite(seconds)
-                  ? seconds * 1000
-                  : Date.parse(String(retry)) - Date.now();
-                finish(
-                  new DecisionError(
-                    status === 401 || status === 403
-                      ? 'auth'
-                      : status === 429
-                        ? 'rate_limit'
-                        : status >= 500
-                          ? 'unavailable'
-                          : 'protocol',
-                    Math.min(
-                      900000,
-                      Math.max(1000, Number.isFinite(delay) ? delay : 60000),
-                    ),
-                  ),
-                );
+                finish(responseError(status, res.headers['retry-after']));
                 res.destroy();
                 return;
               }

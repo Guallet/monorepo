@@ -69,19 +69,17 @@ export function DecisionConnectionForm({
   });
   function request(): CreateDecisionConnectionRequest {
     const { secret, clientId, authHeaderName, ...values } = form.values;
+    const credentialFields: Partial<Record<DecisionAuthType, string>> = {
+      bearer: 'apiKey',
+      header: 'headerValue',
+      basic: 'clientSecret',
+    };
+    const credentialField = credentialFields[values.authType];
     return {
       ...values,
       ...(values.authType === 'header' ? { authHeaderName } : {}),
       ...(clientId ? { clientId } : {}),
-      ...(secret
-        ? {
-            [values.authType === 'bearer'
-              ? 'apiKey'
-              : values.authType === 'header'
-                ? 'headerValue'
-                : 'clientSecret']: secret,
-          }
-        : {}),
+      ...(secret && credentialField ? { [credentialField]: secret } : {}),
     };
   }
   return (

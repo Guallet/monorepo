@@ -102,6 +102,7 @@ async function main() {
     for (const row of rows) {
       const started = Date.now();
       const scores = await client.scores(
+        //NOSONAR -- Respect provider request budgets during evaluation.
         connection,
         credentials,
         row.state,

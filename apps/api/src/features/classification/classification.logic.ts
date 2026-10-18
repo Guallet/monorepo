@@ -13,7 +13,7 @@ export function maskText(
   return (value ?? '')
     .normalize('NFKC')
     .replace(/[\u0000-\u001f\u007f]/g, ' ')
-    .replace(/\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]){11,30}\b/gi, '[iban]')
+    .replace(/\b[A-Z]{2}\d{2}[A-Z0-9 ]{11,60}\b/gi, '[iban]')
     .replace(/[^\s@]+@[^\s@]+\.[^\s@]+/g, '[email]')
     .replace(/\d{6,}/g, '[number]')
     .replace(/\s+/g, ' ')
@@ -29,15 +29,13 @@ export function buildState(
   },
   sendNotes: boolean,
 ) {
+  let type = 'neutral';
+  if (Number(transaction.amount) > 0) type = 'income';
+  else if (Number(transaction.amount) < 0) type = 'expense';
   return {
     description: maskText(transaction.description, 300),
     ...(sendNotes ? { notes: maskText(transaction.notes, 500) } : {}),
-    type:
-      Number(transaction.amount) > 0
-        ? 'income'
-        : Number(transaction.amount) < 0
-          ? 'expense'
-          : 'neutral',
+    type,
     currency: transaction.currency,
   };
 }
@@ -97,7 +95,7 @@ export function resolveScores(
     keys.length !== options.length ||
     options.some(
       (o) =>
-        !Object.prototype.hasOwnProperty.call(scores, o.key) ||
+        !Object.prototype.hasOwnProperty.call(scores, o.key) || //NOSONAR -- The configured TS lib predates Object.hasOwn.
         !Number.isFinite(scores[o.key]) ||
         scores[o.key] < 0 ||
         scores[o.key] > 1,
@@ -111,7 +109,7 @@ export function resolveScores(
   if (
     !top ||
     top.score < threshold ||
-    (ranked[1] && top.score === ranked[1].score) ||
+    top.score === ranked[1]?.score ||
     top.score - (ranked[1]?.score ?? 0) + Number.EPSILON < margin
   )
     return null;

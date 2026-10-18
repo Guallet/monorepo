@@ -22,6 +22,16 @@ function config(port = 8017, allowHttp = true) {
   });
 }
 describe('safe decision HTTP', () => {
+  let server: Server;
+  let base: string;
+  let settings: ConfigService<AppConfig>;
+  afterEach(async () => {
+    if (server) {
+      server.closeAllConnections();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  });
+
   it.each([
     '0.0.0.0',
     '10.0.0.1',
@@ -70,15 +80,6 @@ describe('safe decision HTTP', () => {
     await expect(
       new SafeHttpClient(config()).validate('http://127.0.0.2:8017/v1'),
     ).resolves.toMatchObject({ address: '127.0.0.2' });
-  });
-  let server: Server;
-  let base: string;
-  let settings: ConfigService<AppConfig>;
-  afterEach(async () => {
-    if (server) {
-      server.closeAllConnections();
-      await new Promise<void>((resolve) => server.close(() => resolve()));
-    }
   });
   async function listen(handler: RequestListener) {
     server = createServer(handler);

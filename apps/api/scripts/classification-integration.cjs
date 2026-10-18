@@ -98,15 +98,17 @@ before(async () => {
 });
 after(async () => {
   if (db.isInitialized) {
-    for (const id of users) {
-      await db.query(
-        'DELETE FROM transactions WHERE "accountId" IN (SELECT id FROM accounts WHERE user_id=$1)',
-        [id],
-      );
-      await db.query('DELETE FROM accounts WHERE user_id=$1', [id]);
-      await db.query('DELETE FROM categories WHERE user_id=$1', [id]);
-      await db.query('DELETE FROM users WHERE id=$1', [id]);
-    }
+    await Promise.all(
+      users.map(async (id) => {
+        await db.query(
+          'DELETE FROM transactions WHERE "accountId" IN (SELECT id FROM accounts WHERE user_id=$1)',
+          [id],
+        );
+        await db.query('DELETE FROM accounts WHERE user_id=$1', [id]);
+        await db.query('DELETE FROM categories WHERE user_id=$1', [id]);
+        await db.query('DELETE FROM users WHERE id=$1', [id]);
+      }),
+    );
     await db.destroy();
   }
   if (server) {
@@ -226,8 +228,9 @@ void test('dismissal suppresses identical inputs without another provider call',
   assert.equal((await suggestions(f)).length, 1);
 });
 void test('user edits and configuration edits while HTTP is in flight discard results', async () => {
+  //NOSONAR -- Scenarios share the fake provider callback and must run serially.
   for (const change of ['transaction', 'category', 'connection']) {
-    const f = await fixture();
+    const f = await fixture(); //NOSONAR -- These scenarios share mutable test state.
     let called = false;
     onRequest = async () => {
       if (called) return;
@@ -245,7 +248,7 @@ void test('user edits and configuration edits while HTTP is in flight discard re
       if (change === 'connection')
         await connections.remove({ userId: f.userId });
     };
-    await service.process({ userId: f.userId, id: f.work.id });
+    await service.process({ userId: f.userId, id: f.work.id }); //NOSONAR -- Keep the shared fake provider scenarios serial.
     assert.equal((await suggestions(f)).length, 0, change);
   }
 });
@@ -318,17 +321,17 @@ void test('cross-user category assignment is rejected and deletion cannot recrea
   );
   await db.query('DELETE FROM users WHERE id=$1', [f.userId]);
   await service.process({ userId: f.userId, id: f.work.id });
-  for (const table of [
-    'decision_connections',
-    'classification_work',
-    'classification_state',
-    'transaction_suggestions',
-  ])
-    assert.equal(
-      (await db.query(`SELECT * FROM ${table} WHERE user_id=$1`, [f.userId]))
-        .length,
-      0,
-    );
+  const userRows = await Promise.all(
+    [
+      'decision_connections',
+      'classification_work',
+      'classification_state',
+      'transaction_suggestions',
+    ].map((table) =>
+      db.query(`SELECT * FROM ${table} WHERE user_id=$1`, [f.userId]),
+    ),
+  );
+  for (const rows of userRows) assert.equal(rows.length, 0);
 });
 
 void test(
@@ -435,11 +438,12 @@ void test('evaluation produces a held-out report without exposing transaction te
     category,
     f.transaction.id,
   ]);
-  for (let i = 0; i < 3; i++)
-    await db.query(
-      'INSERT INTO transactions("accountId","categoryId",description,amount,currency,date) VALUES($1,$2,$3,-10,$4,now())',
-      [f.account.id, category, `Synthetic private merchant ${i}`, 'GBP'],
-    );
+  await db.query(
+    `INSERT INTO transactions("accountId","categoryId",description,amount,currency,date)
+     SELECT $1,$2,'Synthetic private merchant ' || i,-10,$3,now()
+     FROM generate_series(0,2) AS i`,
+    [f.account.id, category, 'GBP'],
+  );
   const directory = await mkdtemp(join(tmpdir(), 'classification-eval-'));
   try {
     await promisify(execFile)(
