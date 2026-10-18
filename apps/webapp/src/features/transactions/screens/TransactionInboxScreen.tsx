@@ -44,7 +44,7 @@ export function TransactionInboxScreen() {
         ) : null
       }
     >
-      <ClassifyInboxAction />
+      {totalCount > 0 && <ClassifyInboxAction />}
       {!isLoading && transactions.length === 0 ? (
         <EmptyState
           illustration={

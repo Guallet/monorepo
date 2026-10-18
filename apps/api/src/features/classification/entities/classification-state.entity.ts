@@ -10,4 +10,5 @@ export class ClassificationState extends BaseDbEntity {
   @PrimaryColumn('text')
   user_id: string;
   @Column({ default: 1 }) revision: number;
+  @Column({ type: 'uuid', nullable: true }) inbox_cursor: string | null;
 }

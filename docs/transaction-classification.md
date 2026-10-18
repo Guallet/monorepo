@@ -18,7 +18,9 @@ bounded yes/no batches across all leaf categories, with direction as context and
 no name-based category filtering. Scores are estimates, not measured accuracy.
 
 The inbox offers accept, choose another category, and dismiss. Accepted/corrected
-feedback is committed atomically with the transaction update. A dismissed
+feedback is committed atomically with the transaction update. Inbox runs visit
+uncategorized transactions in UUID-ordered pages of 10,000, keeping a per-user
+cursor so older backlogs continue across runs. A dismissed
 fingerprint is not suggested again unless inputs/configuration change. Existing
 inbox transactions can be submitted manually. Category/rule/connection edits
 invalidate pending results without automatically incurring new provider charges.
@@ -35,9 +37,11 @@ schema. Database foreign keys purge classification data on user deletion.
 
 Triggers ensure all ingestion paths, including direct importer writes and
 upserts, obey the same transaction boundary. Rolled-back writes publish nothing.
-Every transaction update advances its revision; every relevant configuration
-mutation advances the user's configuration revision. Workers validate both before
-persisting. HTTP calls happen outside database transactions. Concurrent workers
+Classification-relevant transaction updates advance the transaction revision;
+no-op and unrelated updates leave it unchanged. Changes to uncategorized inputs
+also enqueue fresh work. Every relevant configuration mutation advances the
+user's configuration revision. Workers validate both before persisting. HTTP
+calls happen outside database transactions. Concurrent workers
 serialize persistence with row locks and a unique pending-suggestion index.
 
 The dispatcher re-delivers unfinished rows to BullMQ until terminal, with one

@@ -120,9 +120,16 @@ export class DecisionConnectionsService {
     userId: string;
     dto?: CreateDecisionConnectionDto;
   }) {
-    const c = dto
-      ? this.merge(userId, dto)
-      : await this.get({ userId, secrets: true });
+    let c: DecisionConnection | null;
+    try {
+      c = dto
+        ? this.merge(userId, dto)
+        : await this.get({ userId, secrets: true });
+    } catch (error) {
+      if (error instanceof DecisionError)
+        return { ok: false, status: error.code };
+      throw error;
+    }
     if (!c) throw new NotFoundException();
     const result = await this.probe(c);
     if (!dto)
@@ -205,6 +212,7 @@ export class DecisionConnectionsService {
   }
   async remove({ userId }: { userId: string }) {
     await this.db.getRepository(DecisionConnection).delete({ user_id: userId });
-    await this.limits.clear({ userId });
+    // Counters expire automatically; Redis outages must not fail a committed delete.
+    await this.limits.clear({ userId }).catch(() => undefined);
   }
 }

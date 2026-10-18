@@ -5,7 +5,7 @@ export class AddTransactionClassification1792307535950 implements MigrationInter
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "classification_state" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "user_id" text NOT NULL, "revision" integer NOT NULL DEFAULT '1', CONSTRAINT "PK_d92c9a1e41543acc775c37602db" PRIMARY KEY ("user_id"))`,
+      `CREATE TABLE "classification_state" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "user_id" text NOT NULL, "revision" integer NOT NULL DEFAULT '1', "inbox_cursor" uuid, CONSTRAINT "PK_d92c9a1e41543acc775c37602db" PRIMARY KEY ("user_id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "classification_work" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" text NOT NULL, "run_id" uuid NOT NULL, "transaction_id" uuid NOT NULL, "transaction_revision" integer NOT NULL, "status" text NOT NULL DEFAULT 'queued', "attempts" integer NOT NULL DEFAULT '0', "available_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "error_code" text, "latency_ms" integer, CONSTRAINT "PK_508abf28d0371a6164d239e0f5b" PRIMARY KEY ("id"))`,
@@ -82,20 +82,32 @@ END $$;
 CREATE TRIGGER classification_connection BEFORE INSERT OR UPDATE OR DELETE ON decision_connections FOR EACH ROW EXECUTE FUNCTION classification_connection_changed();
 
 CREATE FUNCTION classification_transaction_changed() RETURNS trigger LANGUAGE plpgsql AS $$
-DECLARE owner_id text;
+DECLARE
+  owner_id text;
+  classification_changed boolean;
 BEGIN
   SELECT user_id INTO owner_id FROM accounts WHERE id=NEW."accountId";
   IF NEW."categoryId" IS NOT NULL AND NOT EXISTS (SELECT 1 FROM categories WHERE id=NEW."categoryId" AND user_id=owner_id AND deleted_at IS NULL) THEN
     RAISE EXCEPTION 'Category must belong to transaction owner' USING ERRCODE='23514';
   END IF;
   IF TG_OP='UPDATE' THEN
-    NEW.revision := OLD.revision+1;
-    IF NEW."categoryId" IS DISTINCT FROM OLD."categoryId" THEN
-      UPDATE transaction_suggestions SET status=CASE WHEN NEW."categoryId"=suggested_category_id THEN 'accepted' ELSE 'rejected' END,
-        resolved_category_id=NEW."categoryId", resolved_at=now(), updated_at=now()
-        WHERE transaction_id=NEW.id AND user_id=owner_id AND status='pending';
-    ELSE
-      UPDATE transaction_suggestions SET status='superseded',updated_at=now() WHERE transaction_id=NEW.id AND status='pending';
+    classification_changed :=
+      NEW."categoryId" IS DISTINCT FROM OLD."categoryId"
+      OR (NEW.description, NEW.notes, NEW.amount, NEW.currency, NEW.date, NEW."accountId", NEW.deleted_at)
+        IS DISTINCT FROM (OLD.description, OLD.notes, OLD.amount, OLD.currency, OLD.date, OLD."accountId", OLD.deleted_at);
+    IF classification_changed THEN
+      NEW.revision := OLD.revision+1;
+      IF NEW."categoryId" IS DISTINCT FROM OLD."categoryId" THEN
+        UPDATE transaction_suggestions SET status=CASE WHEN NEW."categoryId"=suggested_category_id THEN 'accepted' ELSE 'rejected' END,
+          resolved_category_id=NEW."categoryId", resolved_at=now(), updated_at=now()
+          WHERE transaction_id=NEW.id AND user_id=owner_id AND status='pending';
+      ELSE
+        UPDATE transaction_suggestions SET status='superseded',updated_at=now() WHERE transaction_id=NEW.id AND user_id=owner_id AND status='pending';
+      END IF;
+      IF NEW."categoryId" IS NULL AND NEW.deleted_at IS NULL THEN
+        INSERT INTO classification_work(user_id, run_id, transaction_id, transaction_revision)
+          VALUES(owner_id, uuid_generate_v4(), NEW.id, NEW.revision);
+      END IF;
     END IF;
   END IF;
   RETURN NEW;

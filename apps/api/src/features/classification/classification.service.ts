@@ -29,6 +29,8 @@ import { JevClient } from './jev-client.service';
 import { DecisionError } from './http/safe-http-client';
 import { ClassificationLimits } from './classification-limits.service';
 
+class StaleClassificationError extends Error {}
+
 @Injectable()
 export class ClassificationService {
   constructor(
@@ -54,18 +56,47 @@ export class ClassificationService {
         [userId],
       );
       if (!owners.length) throw new NotFoundException();
-      const transactions = await manager
-        .getRepository(Transaction)
-        .createQueryBuilder('t')
-        .innerJoin('t.account', 'a')
-        .where('a.user_id = :userId', { userId })
-        .andWhere('t.categoryId IS NULL')
-        .andWhere(dto.transactionIds ? 't.id IN (:...ids)' : 'TRUE', {
-          ids: dto.transactionIds,
-        })
-        .orderBy('t.id')
-        .take(10000)
-        .getMany();
+      await manager.query(
+        'INSERT INTO classification_state(user_id) VALUES($1) ON CONFLICT DO NOTHING',
+        [userId],
+      );
+      const state = await manager.findOne(ClassificationState, {
+        where: { user_id: userId },
+        lock: { mode: 'pessimistic_write' },
+      });
+      const transactionQuery = () =>
+        manager
+          .getRepository(Transaction)
+          .createQueryBuilder('t')
+          .innerJoin('t.account', 'a')
+          .where('a.user_id = :userId', { userId })
+          .andWhere('t.categoryId IS NULL');
+      let transactions: Transaction[];
+      if (dto.transactionIds) {
+        transactions = await transactionQuery()
+          .andWhere('t.id IN (:...ids)', { ids: dto.transactionIds })
+          .orderBy('t.id')
+          .take(10000)
+          .getMany();
+      } else {
+        const cursor = state?.inbox_cursor;
+        let page = await transactionQuery()
+          .andWhere(cursor ? 't.id > :cursor' : 'TRUE', { cursor })
+          .orderBy('t.id')
+          .take(10001)
+          .getMany();
+        if (cursor && !page.length) {
+          page = await transactionQuery().orderBy('t.id').take(10001).getMany();
+        }
+        const hasMore = page.length > 10000;
+        transactions = page.slice(0, 10000);
+        if (transactions.length && state) {
+          state.inbox_cursor = hasMore
+            ? transactions[transactions.length - 1].id
+            : null;
+          await manager.save(state);
+        }
+      }
       if (
         dto.transactionIds &&
         transactions.length !== new Set(dto.transactionIds).size
@@ -152,7 +183,8 @@ export class ClassificationService {
       count < 10 && nextId && Date.now() < deadline;
       count++
     ) {
-      await this.process({ userId, id: nextId });
+      const result = await this.process({ userId, id: nextId });
+      if (result?.localRateLimit) break;
       const next = await this.db.getRepository(ClassificationWork).findOne({
         where: {
           user_id: userId,
@@ -165,7 +197,13 @@ export class ClassificationService {
     }
   }
 
-  async process({ userId, id }: { userId: string; id: string }) {
+  async process({
+    userId,
+    id,
+  }: {
+    userId: string;
+    id: string;
+  }): Promise<{ localRateLimit: true } | undefined> {
     const work = await this.db
       .getRepository(ClassificationWork)
       .findOneBy({ id, user_id: userId, status: 'queued' });
@@ -187,6 +225,7 @@ export class ClassificationService {
       return;
     }
     let connection: DecisionConnection | null = null;
+    let localRateLimit = false;
     try {
       const categories = await this.db
         .getRepository(Category)
@@ -284,8 +323,14 @@ export class ClassificationService {
               currentTransaction?.revision !== work.transaction_revision ||
               currentTransaction.categoryId
             )
-              throw new DecisionError('protocol');
-            await this.limits.request({ userId, connectionId: current.id });
+              throw new StaleClassificationError();
+            try {
+              await this.limits.request({ userId, connectionId: current.id });
+            } catch (error) {
+              if (error instanceof DecisionError && error.code === 'rate_limit')
+                localRateLimit = true;
+              throw error;
+            }
           },
         );
         candidate = resolveScores(
@@ -366,9 +411,14 @@ export class ClassificationService {
         );
       });
     } catch (error) {
+      if (error instanceof StaleClassificationError) {
+        await this.finish(work, 'skipped', started);
+        return;
+      }
       const code = error instanceof DecisionError ? error.code : 'unavailable';
-      const attempts = work.attempts + 1;
+      const attempts = work.attempts + (localRateLimit ? 0 : 1);
       const retry =
+        localRateLimit ||
         (code === 'unavailable' && attempts < 3) ||
         (code === 'rate_limit' && attempts < 20);
       const delay =
@@ -400,6 +450,7 @@ export class ClassificationService {
           latency_ms: Date.now() - started,
         },
       );
+      if (localRateLimit) return { localRateLimit: true };
     }
   }
   private async finish(

@@ -22,29 +22,29 @@ export class DecisionError extends Error {
 const reserved = new BlockList();
 for (const [address, prefix] of [
   ['0.0.0.0', 8],
-  ['10.0.0.0', 8],
-  ['100.64.0.0', 10],
+  ['10.0.0.0', 8], //NOSONAR -- RFC1918 denylist entry for SSRF protection.
+  ['100.64.0.0', 10], //NOSONAR -- shared-address denylist entry for SSRF protection.
   ['127.0.0.0', 8],
-  ['169.254.0.0', 16],
-  ['172.16.0.0', 12],
-  ['192.0.0.0', 24],
+  ['169.254.0.0', 16], //NOSONAR -- link-local denylist entry for SSRF protection.
+  ['172.16.0.0', 12], //NOSONAR -- RFC1918 denylist entry for SSRF protection.
+  ['192.0.0.0', 24], //NOSONAR -- special-purpose denylist entry for SSRF protection.
   ['192.0.2.0', 24],
-  ['192.168.0.0', 16],
-  ['198.18.0.0', 15],
+  ['192.168.0.0', 16], //NOSONAR -- RFC1918 denylist entry for SSRF protection.
+  ['198.18.0.0', 15], //NOSONAR -- benchmarking denylist entry for SSRF protection.
   ['198.51.100.0', 24],
   ['203.0.113.0', 24],
-  ['224.0.0.0', 4],
-  ['240.0.0.0', 4],
+  ['224.0.0.0', 4], //NOSONAR -- multicast denylist entry for SSRF protection.
+  ['240.0.0.0', 4], //NOSONAR -- reserved-range denylist entry for SSRF protection.
 ] as const)
   reserved.addSubnet(address, prefix);
 const publicV6 = new BlockList();
-publicV6.addSubnet('2000::', 3, 'ipv6');
+publicV6.addSubnet('2000::', 3, 'ipv6'); //NOSONAR -- global-unicast range for SSRF allow policy.
 const reservedV6 = new BlockList();
 for (const [address, prefix] of [
-  ['2001::', 23],
+  ['2001::', 23], //NOSONAR -- special-purpose denylist entry for SSRF protection.
   ['2001:db8::', 32],
-  ['2002::', 16],
-  ['3fff::', 20],
+  ['2002::', 16], //NOSONAR -- deprecated tunnel denylist entry for SSRF protection.
+  ['3fff::', 20], //NOSONAR -- documentation range denylist entry for SSRF protection.
 ] as const)
   reservedV6.addSubnet(address, prefix, 'ipv6');
 export function canonicalIp(address: string): string {
@@ -69,9 +69,9 @@ export function isMetadataAddress(address: string): boolean {
   const ip = canonicalIp(address);
   return (
     ip.startsWith('169.254.') ||
-    ip === 'fd00:ec2::254' ||
-    ip === '100.100.100.200' ||
-    ip === '168.63.129.16'
+    ip === 'fd00:ec2::254' || //NOSONAR -- cloud metadata endpoint blocked for SSRF protection.
+    ip === '100.100.100.200' || //NOSONAR -- cloud metadata endpoint blocked for SSRF protection.
+    ip === '168.63.129.16' //NOSONAR -- cloud metadata endpoint blocked for SSRF protection.
   );
 }
 
