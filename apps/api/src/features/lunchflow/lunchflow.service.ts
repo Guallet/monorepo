@@ -351,12 +351,15 @@ export class LunchFlowService {
         amount: Number(transaction.amount),
         currencyCode: transaction.currency || localAccount.currency,
       });
+      const transactionDate = /^\d{4}-\d{2}-\d{2}$/.test(transaction.date)
+        ? new Date(`${transaction.date}T12:00:00.000Z`)
+        : new Date(transaction.date);
       return {
         accountId: localAccount.id,
         externalId: `lunchflow:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`,
         amount: money.amount,
         currency: money.currency.code,
-        date: new Date(transaction.date),
+        date: transactionDate,
         description: transaction.merchant || transaction.description || '',
         metadata: {
           provider: 'lunchflow' as const,
