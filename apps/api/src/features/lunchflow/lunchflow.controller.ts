@@ -64,7 +64,7 @@ export class LunchFlowController {
 
   @Delete('connection')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete Lunch Flow credentials and local links' })
+  @ApiOperation({ summary: 'Delete Lunch Flow credentials' })
   @ApiNoContentResponse()
   async deleteConnection(@RequestUser() user: UserPrincipal): Promise<void> {
     await this.lunchFlowService.deleteCredential(user.id);
@@ -82,6 +82,7 @@ export class LunchFlowController {
   }
 
   @Post('accounts/import')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Import selected Lunch Flow accounts' })
   @ApiBody({ type: ValidatedImportLunchFlowAccountsDto })
   @ApiOkResponse({ type: LunchFlowImportResponseDto })
@@ -98,6 +99,7 @@ export class LunchFlowController {
   }
 
   @Post('sync')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sync linked Lunch Flow accounts' })
   @ApiOkResponse({ type: LunchFlowSyncResponseDto })
   async sync(

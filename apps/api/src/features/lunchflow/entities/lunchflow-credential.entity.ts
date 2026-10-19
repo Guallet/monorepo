@@ -11,7 +11,9 @@ import { User } from 'src/features/users/entities/user.entity';
 @Entity('lunchflow_credentials')
 @Index('lunchflow_credentials_user_id_unique', ['user_id'], { unique: true })
 export class LunchFlowCredential extends BaseDbEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', {
+    primaryKeyConstraintName: 'PK_lunchflow_credentials',
+  })
   id: string;
 
   @Column({ type: 'text' })

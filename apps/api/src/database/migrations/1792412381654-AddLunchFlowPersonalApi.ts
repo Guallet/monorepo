@@ -11,7 +11,7 @@ export class AddLunchFlowPersonalApi1792412381654 implements MigrationInterface 
       `CREATE UNIQUE INDEX "lunchflow_credentials_user_id_unique" ON "lunchflow_credentials" ("user_id")`,
     );
     await queryRunner.query(
-      `CREATE TABLE "lunchflow_accounts" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" text NOT NULL, "remote_account_id" text NOT NULL, "remote_connection_id" text, "guallet_account_id" uuid NOT NULL, CONSTRAINT "PK_lunchflow_accounts" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "lunchflow_accounts" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" text NOT NULL, "remote_account_id" text NOT NULL, "remote_connection_id" text, "guallet_account_id" uuid NOT NULL, "is_linked" boolean NOT NULL DEFAULT true, CONSTRAINT "PK_lunchflow_accounts" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "lunchflow_accounts_user_remote_unique" ON "lunchflow_accounts" ("user_id", "remote_account_id")`,

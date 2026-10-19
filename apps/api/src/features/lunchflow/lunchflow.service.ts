@@ -83,7 +83,9 @@ export class LunchFlowService {
       this.remoteAccounts.find({ where: { user_id: userId } }),
     ]);
     const linkedByRemoteId = new Map(
-      linked.map((item) => [item.remote_account_id, item.guallet_account_id]),
+      linked
+        .filter((item) => item.is_linked)
+        .map((item) => [item.remote_account_id, item.guallet_account_id]),
     );
     return accounts.map((account) => ({
       id: String(account.id),
@@ -127,7 +129,7 @@ export class LunchFlowService {
   async syncUserAccounts(userId: string) {
     const apiKey = await this.getApiKey(userId);
     const mappings = await this.remoteAccounts.find({
-      where: { user_id: userId },
+      where: { user_id: userId, is_linked: true },
     });
     return await this.syncMappings(userId, apiKey, mappings);
   }
@@ -139,16 +141,21 @@ export class LunchFlowService {
     userId: string;
     remoteAccountId: string;
   }): Promise<void> {
-    const result = await this.remoteAccounts.delete({
-      user_id: userId,
-      remote_account_id: remoteAccountId,
-    });
+    const result = await this.remoteAccounts.update(
+      {
+        user_id: userId,
+        remote_account_id: remoteAccountId,
+      },
+      { is_linked: false },
+    );
     if (!result.affected) throw new NotFoundException();
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async syncAllAccounts(): Promise<void> {
-    const mappings = await this.remoteAccounts.find();
+    const mappings = await this.remoteAccounts.find({
+      where: { is_linked: true },
+    });
     const byUser = new Map<string, LunchFlowAccount[]>();
     for (const mapping of mappings) {
       const items = byUser.get(mapping.user_id) ?? [];
@@ -193,15 +200,20 @@ export class LunchFlowService {
       if (!localAccount) {
         throw new NotFoundException('Linked Guallet account not found');
       }
+      if (!mapping.is_linked) {
+        mapping.is_linked = true;
+        await this.remoteAccounts.save(mapping);
+      }
     } else {
+      const currency = balance.currency || account.currency || 'GBP';
       localAccount = await this.accounts.save({
         user_id: userId,
         name: account.name,
         balance: Money.fromCurrencyCode({
           amount: balance.amount,
-          currencyCode: balance.currency,
+          currencyCode: currency,
         }).amount,
-        currency: balance.currency || account.currency || 'GBP',
+        currency,
         type: AccountType.UNKNOWN,
         source: AccountSource.SYNCED,
         source_name: 'Lunch Flow',
@@ -216,6 +228,7 @@ export class LunchFlowService {
             ? null
             : String(account.connection_id),
         guallet_account_id: localAccount.id,
+        is_linked: true,
       });
     }
     await this.persistRemoteData({
@@ -298,15 +311,41 @@ export class LunchFlowService {
     const currentBalance =
       balance ??
       (await this.client.getBalance(apiKey, mapping.remote_account_id));
+    const currency =
+      currentBalance.currency || account.currency || localAccount.currency;
     localAccount.balance = Money.fromCurrencyCode({
       amount: currentBalance.amount,
-      currencyCode: currentBalance.currency,
+      currencyCode: currency,
     }).amount;
-    localAccount.currency =
-      currentBalance.currency || account.currency || localAccount.currency;
+    localAccount.currency = currency;
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
 
+    const existingTransactions = await this.transactions
+      .createQueryBuilder('transaction')
+      .where('transaction.accountId = :accountId', {
+        accountId: localAccount.id,
+      })
+      .andWhere("transaction.metadata ->> 'provider' = :provider", {
+        provider: 'lunchflow',
+      })
+      .getMany();
+    const existingByRemoteId = new Map(
+      existingTransactions.flatMap((existing) => {
+        const data = existing.metadata?.data;
+        if (typeof data !== 'object' || data === null || !('id' in data)) {
+          return [];
+        }
+        return [[String(data.id), existing] as const];
+      }),
+    );
+    for (const transaction of transactions) {
+      const externalId = `lunchflow:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`;
+      const existing = existingByRemoteId.get(String(transaction.id));
+      if (existing && existing.externalId !== externalId) {
+        await this.transactions.update(existing.id, { externalId });
+      }
+    }
     const rows = transactions.map((transaction) => {
       const money = Money.fromCurrencyCode({
         amount: Number(transaction.amount),
@@ -314,7 +353,7 @@ export class LunchFlowService {
       });
       return {
         accountId: localAccount.id,
-        externalId: `lunchflow:${localAccount.id}:${transaction.id}`,
+        externalId: `lunchflow:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`,
         amount: money.amount,
         currency: money.currency.code,
         date: new Date(transaction.date),

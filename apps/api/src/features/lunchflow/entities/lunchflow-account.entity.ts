@@ -18,7 +18,9 @@ import { Account } from 'src/features/accounts/entities/account.entity';
   },
 )
 export class LunchFlowAccount extends BaseDbEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', {
+    primaryKeyConstraintName: 'PK_lunchflow_accounts',
+  })
   id: string;
 
   @Column({ type: 'text' })
@@ -33,6 +35,9 @@ export class LunchFlowAccount extends BaseDbEntity {
 
   @Column({ type: 'text', nullable: true })
   remote_connection_id: string | null;
+
+  @Column({ type: 'boolean', default: true })
+  is_linked: boolean;
 
   @Column({ type: 'uuid' })
   @ForeignKey(() => Account, 'id', {
