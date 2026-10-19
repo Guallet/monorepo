@@ -43,6 +43,10 @@ export function useLunchFlowMutations() {
       client.lunchFlow.importAccounts(request),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['accounts-transactions'],
+      });
       await queryClient.invalidateQueries({
         queryKey: [LUNCHFLOW_ACCOUNTS_QUERY_KEY],
       });

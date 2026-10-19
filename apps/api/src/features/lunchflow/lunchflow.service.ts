@@ -73,7 +73,6 @@ export class LunchFlowService {
   }
 
   async deleteCredential(userId: string): Promise<void> {
-    await this.remoteAccounts.delete({ user_id: userId });
     await this.credentials.delete({ user_id: userId });
   }
 
@@ -161,8 +160,10 @@ export class LunchFlowService {
         try {
           const key = await this.getApiKey(userId);
           await this.syncMappings(userId, key, userMappings);
-        } catch {
-          this.logger.warn(`Lunch Flow sync failed for user ${userId}`);
+        } catch (error) {
+          if (!(error instanceof NotFoundException)) {
+            this.logger.warn(`Lunch Flow sync failed for user ${userId}`);
+          }
         }
       }),
     );
