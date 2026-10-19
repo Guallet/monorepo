@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CredentialEncryptionService } from 'src/common/crypto/credential-encryption.service';
+import { AiModule } from 'src/features/ai/ai.module';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { LunchFlowAccount } from './entities/lunchflow-account.entity';
@@ -12,6 +12,7 @@ import { LunchFlowService } from './lunchflow.service';
 
 @Module({
   imports: [
+    AiModule,
     HttpModule,
     TypeOrmModule.forFeature([
       LunchFlowCredential,
@@ -21,7 +22,7 @@ import { LunchFlowService } from './lunchflow.service';
     ]),
   ],
   controllers: [LunchFlowController],
-  providers: [LunchFlowService, LunchFlowClient, CredentialEncryptionService],
+  providers: [LunchFlowService, LunchFlowClient],
   exports: [LunchFlowService],
 })
 export class LunchFlowModule {}

@@ -136,7 +136,7 @@ export function StepLunchFlowImport({
           'Choose the accounts enabled in your Lunch Flow API destination.',
         )}
       </Text>
-      {isError ? (
+      {isError && (
         <Alert color="red" icon={<IconInfoCircle size={18} />}>
           {t(
             'feature.accounts.add.lunchFlow.listError',
@@ -146,16 +146,17 @@ export function StepLunchFlowImport({
             {t('common.retry', 'Retry')}
           </Button>
         </Alert>
-      ) : isLoading ? (
-        <Text>{t('common.loading', 'Loading…')}</Text>
-      ) : accounts.length === 0 ? (
+      )}
+      {!isError && isLoading && <Text>{t('common.loading', 'Loading…')}</Text>}
+      {!isError && !isLoading && accounts.length === 0 && (
         <Alert icon={<IconInfoCircle size={18} />}>
           {t(
             'feature.accounts.add.lunchFlow.empty',
             'No accounts are available. Connect a bank in Lunch Flow and enable it in your API destination.',
           )}
         </Alert>
-      ) : (
+      )}
+      {!isError && !isLoading && accounts.length > 0 && (
         <Checkbox.Group value={selectedIds} onChange={setSelectedIds}>
           <Stack gap={spacing.xs}>
             {accounts.map((account) => (

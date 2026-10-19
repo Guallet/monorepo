@@ -9,7 +9,7 @@ import {
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Money } from '@guallet/money';
-import { CredentialEncryptionService } from 'src/common/crypto/credential-encryption.service';
+import { AiCredentialEncryptionService } from 'src/features/ai/ai-credential-encryption.service';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
@@ -34,7 +34,7 @@ export class LunchFlowService {
     @InjectRepository(Transaction)
     private readonly transactions: Repository<Transaction>,
     private readonly client: LunchFlowClient,
-    private readonly cipher: CredentialEncryptionService,
+    private readonly cipher: AiCredentialEncryptionService,
   ) {}
 
   async getCredential(userId: string): Promise<LunchFlowCredentialDto> {
@@ -117,16 +117,12 @@ export class LunchFlowService {
       );
     }
 
-    const imported: string[] = [];
-    for (const account of selected) {
-      const mapping = await this.importRemoteAccount({
-        userId,
-        apiKey,
-        account,
-      });
-      imported.push(mapping.guallet_account_id);
-    }
-    return imported;
+    const mappings = await Promise.all(
+      selected.map((account) =>
+        this.importRemoteAccount({ userId, apiKey, account }),
+      ),
+    );
+    return mappings.map((mapping) => mapping.guallet_account_id);
   }
 
   async syncUserAccounts(userId: string) {
@@ -160,14 +156,16 @@ export class LunchFlowService {
       items.push(mapping);
       byUser.set(mapping.user_id, items);
     }
-    for (const [userId, userMappings] of byUser) {
-      try {
-        const key = await this.getApiKey(userId);
-        await this.syncMappings(userId, key, userMappings);
-      } catch {
-        this.logger.warn(`Lunch Flow sync failed for user ${userId}`);
-      }
-    }
+    await Promise.all(
+      [...byUser].map(async ([userId, userMappings]) => {
+        try {
+          const key = await this.getApiKey(userId);
+          await this.syncMappings(userId, key, userMappings);
+        } catch {
+          this.logger.warn(`Lunch Flow sync failed for user ${userId}`);
+        }
+      }),
+    );
   }
 
   private async importRemoteAccount({
@@ -241,32 +239,41 @@ export class LunchFlowService {
     );
     const errors: string[] = [];
     let accountsSynced = 0;
-    for (const mapping of mappings) {
-      const account = remoteById.get(mapping.remote_account_id);
-      if (!account) continue;
-      try {
-        const localAccount = await this.accounts.findOne({
-          where: { id: mapping.guallet_account_id, user_id: userId },
-        });
-        if (!localAccount) continue;
-        const [balance, transactions] = await Promise.all([
-          this.client.getBalance(apiKey, mapping.remote_account_id),
-          this.client.getTransactions(apiKey, mapping.remote_account_id),
-        ]);
-        await this.persistRemoteData({
-          apiKey,
-          account,
-          mapping,
-          localAccount,
-          transactions,
-          balance,
-        });
-        accountsSynced += 1;
-      } catch {
-        errors.push(mapping.remote_account_id);
+    const results = await Promise.all(
+      mappings.map(async (mapping) => {
+        const account = remoteById.get(mapping.remote_account_id);
+        if (!account) return null;
+        try {
+          const localAccount = await this.accounts.findOne({
+            where: { id: mapping.guallet_account_id, user_id: userId },
+          });
+          if (!localAccount) return null;
+          const [balance, transactions] = await Promise.all([
+            this.client.getBalance(apiKey, mapping.remote_account_id),
+            this.client.getTransactions(apiKey, mapping.remote_account_id),
+          ]);
+          await this.persistRemoteData({
+            apiKey,
+            account,
+            mapping,
+            localAccount,
+            transactions,
+            balance,
+          });
+          return true;
+        } catch {
+          return mapping.remote_account_id;
+        }
+      }),
+    );
+    for (const remoteAccountId of results) {
+      if (typeof remoteAccountId === 'string') {
+        errors.push(remoteAccountId);
         this.logger.warn(
-          `Lunch Flow account sync failed for ${mapping.remote_account_id}`,
+          `Lunch Flow account sync failed for ${remoteAccountId}`,
         );
+      } else if (remoteAccountId) {
+        accountsSynced += 1;
       }
     }
     return { accountsSynced, errors };
