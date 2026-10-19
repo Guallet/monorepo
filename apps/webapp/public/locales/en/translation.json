@@ -268,6 +268,10 @@
         "chooseMethod": {
           "title": "Add an account",
           "subtitle": "Choose how you'd like to connect your account",
+          "lunchFlow": {
+            "title": "Import from Lunch Flow",
+            "desc": "Import accounts already connected to your Lunch Flow account using your own API key."
+          },
           "openBanking": {
             "title": "Connect via Open Banking",
             "desc": "Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money."
@@ -277,6 +281,22 @@
             "title": "Add manually",
             "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
           }
+        },
+        "lunchFlow": {
+          "importSuccess": "Selected accounts imported from Lunch Flow.",
+          "importErrorTitle": "Could not import accounts",
+          "importErrorMessage": "Refresh the account list and try again.",
+          "unlinkSuccess": "Account unlinked from Lunch Flow sync. Its Guallet data remains.",
+          "unlinkErrorTitle": "Could not unlink account",
+          "unlinkErrorMessage": "Please try again.",
+          "title": "Import from Lunch Flow",
+          "configureMessage": "Add your Lunch Flow API key in Settings before importing accounts. Connect your banks and enable them for the API destination in Lunch Flow first.",
+          "configureButton": "Open settings",
+          "subtitle": "Choose the accounts enabled in your Lunch Flow API destination.",
+          "listError": "Could not load Lunch Flow accounts. Check your key and account access settings.",
+          "empty": "No accounts are available. Connect a bank in Lunch Flow and enable it in your API destination.",
+          "unlinkButton": "Unlink",
+          "importButton": "Import selected"
         },
         "fields": {
           "accountNumber": {
@@ -436,6 +456,9 @@
   },
   "common": {
     "back": "Back",
+    "loading": "Loading…",
+    "retry": "Retry",
+    "refresh": "Refresh",
     "optional": "Optional",
     "continue": "Continue",
     "startOver": "Start over",
@@ -1469,6 +1492,25 @@
         },
         "title": "User preferences",
         "description": "Set regional preferences for currencies, language, and dates."
+      },
+      "lunchFlow": {
+        "saveSuccess": "Lunch Flow API key saved.",
+        "saveErrorTitle": "Could not save API key",
+        "saveErrorMessage": "Check the key and try again.",
+        "deleteSuccess": "Lunch Flow key removed. Imported accounts remain in Guallet.",
+        "deleteErrorTitle": "Could not remove API key",
+        "deleteErrorMessage": "Please try again.",
+        "instructions": "Connect your banks in Lunch Flow, create a REST API destination, and enable the accounts you want Guallet to access.",
+        "learnMore": "View Lunch Flow instructions",
+        "keyConfigured": "API key configured",
+        "apiKeyLabel": "Lunch Flow API key",
+        "apiKeyPlaceholder": "Enter a new key to replace it or paste your API key",
+        "saveButton": "Save and validate key",
+        "deleteButton": "Remove key",
+        "confirmDeleteTitle": "Remove Lunch Flow key?",
+        "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
+        "title": "Lunch Flow",
+        "description": "Import bank accounts using your Lunch Flow API key."
       },
       "profile": {
         "title": "User information",

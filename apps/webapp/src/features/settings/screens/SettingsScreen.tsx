@@ -18,6 +18,7 @@ import { DefaultCurrencyRow } from '../components/DefaultCurrencyRow';
 import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
 import { DateFormatRow } from '../components/DateFormatRow';
 import { CloseAccountModal } from '../components/CloseAccountModal';
+import { LunchFlowSettingsCard } from '../components/LunchFlowSettingsCard';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow, useTheme } from '@guallet/ui-react';
 import {
@@ -140,6 +141,19 @@ export function SettingsScreen() {
                 navigate({ to: '/settings/ai/providers' });
               }}
             />
+          </SettingsSection>
+
+          <SettingsSection
+            title={t('screens.settings.lunchFlow.title', 'Lunch Flow')}
+            description={t(
+              'screens.settings.lunchFlow.description',
+              'Import bank accounts using your Lunch Flow API key.',
+            )}
+            icon={<IconKey size={24} strokeWidth={1.5} />}
+          >
+            <Box px={spacing.lg}>
+              <LunchFlowSettingsCard />
+            </Box>
           </SettingsSection>
 
           <SettingsSection

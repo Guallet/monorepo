@@ -32,6 +32,7 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
+import { LunchFlowModule } from './features/lunchflow/lunchflow.module';
 
 @Module({
   imports: [
@@ -166,6 +167,7 @@ import { ObserveModule } from './observe';
     NotificationsModule,
     RegularPaymentsModule,
     AiModule,
+    LunchFlowModule,
     HealthModule,
   ],
   controllers: [AppController],

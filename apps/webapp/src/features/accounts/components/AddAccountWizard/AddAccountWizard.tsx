@@ -12,6 +12,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import {
@@ -26,6 +27,7 @@ import { StepManualType } from './StepManualType';
 import { StepOBBank } from './StepOBBank';
 import { StepOBCountry } from './StepOBCountry';
 import { StepOBRedirect } from './StepOBRedirect';
+import { StepLunchFlowImport } from './StepLunchFlowImport';
 
 type WizardStep =
   | 'method'
@@ -34,7 +36,8 @@ type WizardStep =
   | 'm-success'
   | 'ob-country'
   | 'ob-bank'
-  | 'ob-redirect';
+  | 'ob-redirect'
+  | 'lf-accounts';
 
 interface AddAccountWizardProps {
   onDone: () => void;
@@ -42,6 +45,7 @@ interface AddAccountWizardProps {
 
 export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const defaultCurrency = useDefaultCurrency();
   const [step, setStep] = useState<WizardStep>('method');
   const [createdAccountId, setCreatedAccountId] = useState<string | null>(null);
@@ -176,9 +180,11 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     <Box maw={560} mx="auto">
       {step === 'method' && (
         <StepChooseMethod
-          onChoose={(method) =>
-            setStep(method === 'ob' ? 'ob-country' : 'm-type')
-          }
+          onChoose={(method) => {
+            if (method === 'ob') setStep('ob-country');
+            else if (method === 'lunchflow') setStep('lf-accounts');
+            else setStep('m-type');
+          }}
         />
       )}
       {step === 'm-type' && (
@@ -226,6 +232,13 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
           institution={obInstitution}
           onInitiate={handleConnectBank}
           isLoading={createConnectionMutation.isPending}
+        />
+      )}
+      {step === 'lf-accounts' && (
+        <StepLunchFlowImport
+          onBack={() => setStep('method')}
+          onDone={onDone}
+          onConfigure={() => void navigate({ to: '/settings' })}
         />
       )}
     </Box>

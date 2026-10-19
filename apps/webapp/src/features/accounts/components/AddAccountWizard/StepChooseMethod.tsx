@@ -1,10 +1,14 @@
 import { Box, Stack, Text, ThemeIcon, Title } from '@mantine/core';
-import { IconBuildingBank, IconPlus } from '@tabler/icons-react';
+import {
+  IconBuildingBank,
+  IconCloudDownload,
+  IconPlus,
+} from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { MethodCard } from './MethodCard';
 
 interface StepChooseMethodProps {
-  onChoose: (method: 'ob' | 'manual') => void;
+  onChoose: (method: 'ob' | 'lunchflow' | 'manual') => void;
 }
 
 export function StepChooseMethod({
@@ -27,6 +31,22 @@ export function StepChooseMethod({
       </Box>
 
       <Stack gap="sm">
+        <MethodCard
+          title={t(
+            'feature.accounts.add.chooseMethod.lunchFlow.title',
+            'Import from Lunch Flow',
+          )}
+          description={t(
+            'feature.accounts.add.chooseMethod.lunchFlow.desc',
+            'Import accounts already connected to your Lunch Flow account using your own API key.',
+          )}
+          onClick={() => onChoose('lunchflow')}
+          icon={
+            <ThemeIcon size={44} radius="sm" variant="light" color="blue">
+              <IconCloudDownload size={24} />
+            </ThemeIcon>
+          }
+        />
         <MethodCard
           title={t(
             'feature.accounts.add.chooseMethod.openBanking.title',
