@@ -24,7 +24,7 @@ export type PersonalProviderAccount = {
   linkedAccountId: string | null;
 };
 
-export type PersonalProviderImportLabels = {
+type PersonalProviderImportLabels = {
   title: string;
   subtitle: string;
   configureMessage: string;
@@ -41,8 +41,56 @@ export type PersonalProviderImportLabels = {
   importButton: string;
 };
 
+type PersonalProvider = 'bankSync' | 'lunchFlow';
+
+const providerImportDefaults: Record<
+  PersonalProvider,
+  PersonalProviderImportLabels
+> = {
+  bankSync: {
+    title: 'Import from BankSync',
+    subtitle:
+      'Select the connected bank accounts to import. Guallet imports available transaction history and then syncs daily.',
+    configureMessage:
+      'Add your BankSync API key in Settings before importing. Create a key with banks:read scope; API key access requires a Standard or higher BankSync plan.',
+    configureButton: 'Open settings',
+    listError:
+      'Could not load BankSync accounts. Check your API key, REST API plan, and banks:read scope.',
+    empty: 'No connected bank accounts are available in BankSync.',
+    importSuccess: 'Selected accounts imported from BankSync.',
+    importErrorTitle: 'Could not import accounts',
+    importErrorMessage: 'Refresh the account list and try again.',
+    unlinkSuccess:
+      'Account unlinked from BankSync sync. Its Guallet data remains.',
+    unlinkErrorTitle: 'Could not unlink account',
+    unlinkErrorMessage: 'Please try again.',
+    unlinkButton: 'Unlink',
+    importButton: 'Import selected accounts',
+  },
+  lunchFlow: {
+    title: 'Import from Lunch Flow',
+    subtitle: 'Choose the accounts enabled in your Lunch Flow API destination.',
+    configureMessage:
+      'Add your Lunch Flow API key in Settings before importing accounts. Connect your banks and enable them for the API destination in Lunch Flow first.',
+    configureButton: 'Open settings',
+    listError:
+      'Could not load Lunch Flow accounts. Check your key and account access settings.',
+    empty:
+      'No accounts are available. Connect a bank in Lunch Flow and enable it in your API destination.',
+    importSuccess: 'Selected accounts imported from Lunch Flow.',
+    importErrorTitle: 'Could not import accounts',
+    importErrorMessage: 'Refresh the account list and try again.',
+    unlinkSuccess:
+      'Account unlinked from Lunch Flow sync. Its Guallet data remains.',
+    unlinkErrorTitle: 'Could not unlink account',
+    unlinkErrorMessage: 'Please try again.',
+    unlinkButton: 'Unlink',
+    importButton: 'Import selected',
+  },
+};
+
 type PersonalProviderImportStepProps = {
-  labels: PersonalProviderImportLabels;
+  provider: PersonalProvider;
   isCredentialLoading: boolean;
   configured: boolean;
   accounts: PersonalProviderAccount[];
@@ -59,7 +107,7 @@ type PersonalProviderImportStepProps = {
 };
 
 export function PersonalProviderImportStep({
-  labels,
+  provider,
   isCredentialLoading,
   configured,
   accounts,
@@ -76,6 +124,14 @@ export function PersonalProviderImportStep({
 }: Readonly<PersonalProviderImportStepProps>) {
   const { t } = useTranslation();
   const { spacing } = useTheme();
+  const prefix = `feature.accounts.add.${provider}`;
+  const defaults = providerImportDefaults[provider];
+  const labels = Object.fromEntries(
+    Object.entries(defaults).map(([key, value]) => [
+      key,
+      t(`${prefix}.${key}`, value),
+    ]),
+  ) as PersonalProviderImportLabels;
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   async function importSelected() {

@@ -4,7 +4,6 @@ import {
   useBankSyncMutations,
 } from '@guallet/api-react';
 import { BankSyncAccountDto } from '@guallet/api-client';
-import { useTranslation } from 'react-i18next';
 import { PersonalProviderImportStep } from './PersonalProviderImportStep';
 
 interface StepBankSyncImportProps {
@@ -21,7 +20,6 @@ export function StepBankSyncImport({
   onDone,
   onConfigure,
 }: Readonly<StepBankSyncImportProps>) {
-  const { t } = useTranslation();
   const { credential, isLoading: isCredentialLoading } =
     useBankSyncCredential();
   const { accounts, isLoading, isError, refetch } = useBankSyncAccounts(
@@ -35,58 +33,7 @@ export function StepBankSyncImport({
 
   return (
     <PersonalProviderImportStep
-      labels={{
-        title: t('feature.accounts.add.bankSync.title', 'Import from BankSync'),
-        subtitle: t(
-          'feature.accounts.add.bankSync.subtitle',
-          'Select the connected bank accounts to import. Guallet imports available transaction history and then syncs daily.',
-        ),
-        configureMessage: t(
-          'feature.accounts.add.bankSync.configureMessage',
-          'Add your BankSync API key in Settings before importing. Create a key with banks:read scope; API key access requires a Standard or higher BankSync plan.',
-        ),
-        configureButton: t(
-          'feature.accounts.add.bankSync.configureButton',
-          'Open settings',
-        ),
-        listError: t(
-          'feature.accounts.add.bankSync.listError',
-          'Could not load BankSync accounts. Check your API key, REST API plan, and banks:read scope.',
-        ),
-        empty: t(
-          'feature.accounts.add.bankSync.empty',
-          'No connected bank accounts are available in BankSync.',
-        ),
-        importSuccess: t(
-          'feature.accounts.add.bankSync.importSuccess',
-          'Selected accounts imported from BankSync.',
-        ),
-        importErrorTitle: t(
-          'feature.accounts.add.bankSync.importErrorTitle',
-          'Could not import accounts',
-        ),
-        importErrorMessage: t(
-          'feature.accounts.add.bankSync.importErrorMessage',
-          'Refresh the account list and try again.',
-        ),
-        unlinkSuccess: t(
-          'feature.accounts.add.bankSync.unlinkSuccess',
-          'Account unlinked from BankSync sync. Its Guallet data remains.',
-        ),
-        unlinkErrorTitle: t(
-          'feature.accounts.add.bankSync.unlinkErrorTitle',
-          'Could not unlink account',
-        ),
-        unlinkErrorMessage: t(
-          'feature.accounts.add.bankSync.unlinkErrorMessage',
-          'Please try again.',
-        ),
-        unlinkButton: t('feature.accounts.add.bankSync.unlinkButton', 'Unlink'),
-        importButton: t(
-          'feature.accounts.add.bankSync.importButton',
-          'Import selected accounts',
-        ),
-      }}
+      provider="bankSync"
       isCredentialLoading={isCredentialLoading}
       configured={credential.configured}
       accounts={accounts.map((account) => ({

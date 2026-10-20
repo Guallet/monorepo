@@ -14,7 +14,7 @@ import { IconInfoCircle } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export type PersonalProviderSettingsLabels = {
+type PersonalProviderSettingsLabels = {
   instructions: string;
   learnMore: string;
   keySecurity?: string;
@@ -36,9 +36,64 @@ export type PersonalProviderSettingsLabels = {
   confirmDeleteBody: string;
 };
 
+type PersonalProvider = 'bankSync' | 'lunchFlow';
+
+const providerSettingsDefaults: Record<
+  PersonalProvider,
+  PersonalProviderSettingsLabels
+> = {
+  bankSync: {
+    instructions:
+      'Connect your banks in BankSync, then create an API key with the banks:read scope. BankSync REST API access requires Standard or higher.',
+    learnMore: 'View BankSync instructions',
+    keySecurity:
+      'Your key is encrypted in Guallet and is only used to read your connected bank data.',
+    keyConfigured: 'API key configured',
+    apiKeyLabel: 'BankSync API key',
+    apiKeyPlaceholder: 'Enter a new key to replace it or paste your API key',
+    saveButton: 'Save and validate key',
+    saveSuccess: 'BankSync API key saved.',
+    saveErrorTitle: 'Could not save API key',
+    saveErrorMessage:
+      'Check that your key has REST API access and the banks:read scope.',
+    syncButton: 'Sync now',
+    syncErrorTitle: 'Could not sync accounts',
+    syncErrorMessage: 'Please try again later.',
+    deleteButton: 'Remove key',
+    deleteSuccess: 'BankSync key removed. Imported accounts remain in Guallet.',
+    deleteErrorTitle: 'Could not remove API key',
+    deleteErrorMessage: 'Please try again.',
+    confirmDeleteTitle: 'Remove BankSync key?',
+    confirmDeleteBody:
+      'Guallet will stop syncing these accounts. Imported accounts and transactions will remain.',
+  },
+  lunchFlow: {
+    instructions:
+      'Connect your banks in Lunch Flow, create a REST API destination, and enable the accounts you want Guallet to access.',
+    learnMore: 'View Lunch Flow instructions',
+    keyConfigured: 'API key configured',
+    apiKeyLabel: 'Lunch Flow API key',
+    apiKeyPlaceholder: 'Enter a new key to replace it or paste your API key',
+    saveButton: 'Save and validate key',
+    saveSuccess: 'Lunch Flow API key saved.',
+    saveErrorTitle: 'Could not save API key',
+    saveErrorMessage: 'Check the key and try again.',
+    syncButton: 'Sync now',
+    syncErrorTitle: 'Could not sync accounts',
+    syncErrorMessage: 'Please try again later.',
+    deleteButton: 'Remove key',
+    deleteSuccess:
+      'Lunch Flow key removed. Imported accounts remain in Guallet.',
+    deleteErrorTitle: 'Could not remove API key',
+    deleteErrorMessage: 'Please try again.',
+    confirmDeleteTitle: 'Remove Lunch Flow key?',
+    confirmDeleteBody:
+      'Guallet will stop syncing these accounts. Imported accounts and transactions will remain.',
+  },
+};
+
 type PersonalProviderSettingsCardProps = {
-  labels: PersonalProviderSettingsLabels;
-  docsUrl: string;
+  provider: PersonalProvider;
   configured: boolean;
   keyHint: string | null;
   isLoading: boolean;
@@ -51,8 +106,7 @@ type PersonalProviderSettingsCardProps = {
 };
 
 export function PersonalProviderSettingsCard({
-  labels,
-  docsUrl,
+  provider,
   configured,
   keyHint,
   isLoading,
@@ -65,6 +119,18 @@ export function PersonalProviderSettingsCard({
 }: Readonly<PersonalProviderSettingsCardProps>) {
   const { t } = useTranslation();
   const { spacing } = useTheme();
+  const prefix = `screens.settings.${provider}`;
+  const defaults = providerSettingsDefaults[provider];
+  const labels = Object.fromEntries(
+    Object.entries(defaults).map(([key, value]) => [
+      key,
+      t(`${prefix}.${key}`, value),
+    ]),
+  ) as PersonalProviderSettingsLabels;
+  const docsUrl =
+    provider === 'bankSync'
+      ? 'https://banksync.io/docs/api/authentication'
+      : 'https://www.lunchflow.app/docs/api/personal-api-overview';
   const [apiKey, setApiKey] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
 
