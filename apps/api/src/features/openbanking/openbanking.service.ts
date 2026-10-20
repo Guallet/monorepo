@@ -130,14 +130,20 @@ export class OpenbankingService {
   async connectToAccount(user_id: string, nordigen_accountId: string) {
     // Get nordigen account metadata
     // this.logger.debug(`Getting Account Metadata: ${nordigen_accountId}`);
-    const metadata =
-      await this.nordigenService.getAccountMetadata(nordigen_accountId);
+    const metadata = await this.nordigenService.getAccountMetadata(
+      user_id,
+      nordigen_accountId,
+    );
     // this.logger.debug(`Getting Account balances: ${nordigen_accountId}`);
-    const balances =
-      await this.nordigenService.getAccountBalance(nordigen_accountId);
+    const balances = await this.nordigenService.getAccountBalance(
+      user_id,
+      nordigen_accountId,
+    );
     // this.logger.debug(`Getting Account details: ${nordigen_accountId}`);
-    const details =
-      await this.nordigenService.getAccountDetails(nordigen_accountId);
+    const details = await this.nordigenService.getAccountDetails(
+      user_id,
+      nordigen_accountId,
+    );
 
     // If there is an existing account linked to this nordigen account, don't create it again
     const existingNordigenAccount =
@@ -285,12 +291,14 @@ export class OpenbankingService {
     try {
       // Sync Account Details and metadata
       const metadata = await this.nordigenService.getAccountMetadata(
+        gualletAccount.user_id,
         nordigenAccount.id,
       );
       nordigenAccount.status = metadata.status;
 
       // Sync the balances
       const balances = await this.nordigenService.getAccountBalance(
+        gualletAccount.user_id,
         nordigenAccount.id,
       );
       gualletAccount.balance = getBalanceAmountFrom(balances);
@@ -299,6 +307,7 @@ export class OpenbankingService {
       // Sync the transactions
       // TODO: As we know the last sync date, should we only sync the transactions since then?
       const transactions = await this.nordigenService.getAccountTransactions(
+        gualletAccount.user_id,
         nordigenAccount.id,
       );
 

@@ -32,6 +32,7 @@ describe('ObConnectionsController', () => {
 
   const mockInstitutionsService = {
     findOneByNordigenId: vi.fn(),
+    saveAll: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -106,10 +107,13 @@ describe('ObConnectionsController', () => {
 
       mockNordigenService.getInstitutions.mockResolvedValue(mockInstitutions);
 
-      const result = await controller.getInstitutions(country);
+      const result = await controller.getInstitutions(mockUser, country);
 
       expect(result).toEqual(mockInstitutions);
-      expect(mockNordigenService.getInstitutions).toHaveBeenCalledWith(country);
+      expect(mockNordigenService.getInstitutions).toHaveBeenCalledWith(
+        mockUser.id,
+        country,
+      );
     });
   });
 

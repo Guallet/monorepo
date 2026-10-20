@@ -1675,6 +1675,22 @@
         }
       },
       "title": "Settings",
+      "nordigen": {
+        "title": "Open Banking provider",
+        "sectionDescription": "Manage your personal credentials for bank connections.",
+        "description": "Use your own Nordigen credentials to connect and sync bank accounts. Existing bank links must be reconnected after setup.",
+        "configured": "Credentials configured",
+        "secretId": "Secret ID",
+        "secretKey": "Secret key",
+        "save": "Validate and save",
+        "saved": "Nordigen credentials validated and saved.",
+        "remove": "Remove credentials",
+        "removed": "Nordigen credentials removed.",
+        "errorTitle": "Could not update credentials",
+        "errorMessage": "Check your Nordigen credentials and try again.",
+        "confirmTitle": "Remove Nordigen credentials?",
+        "confirmBody": "Bank sync will stop. Existing bank links and imported data remain, but links must be reconnected after adding credentials again."
+      },
       "institutions": {
         "title": "Institutions",
         "description": "Manage banks and institutions used to organise your accounts.",

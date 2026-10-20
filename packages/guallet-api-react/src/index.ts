@@ -23,3 +23,4 @@ export * from './data-importer';
 export * from './data-exporter';
 export * from './lunchflow';
 export * from './banksync';
+export * from './nordigen';

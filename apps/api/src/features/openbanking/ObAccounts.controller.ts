@@ -40,6 +40,6 @@ export class ObAccountsController {
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<NordigenAccountMetadataDto> {
-    return await this.nordigenService.getAccountMetadata(id);
+    return await this.nordigenService.getAccountMetadata(user.id, id);
   }
 }

@@ -7,10 +7,9 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'src/configuration';
 import { catchError, firstValueFrom } from 'rxjs';
 import { NordigenInstitutionDto } from './dto/nordigen-institution.dto';
 import {
@@ -28,6 +27,10 @@ import { NordigenToken } from './entities/nordigen-token.entity';
 import { NordigenTokenDto } from './dto/nordigen-token.dto';
 import { NordigenRepository } from './nordigen.repository';
 import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { NordigenCredentials } from './entities/nordigen-credentials.entity';
+import { AiCredentialEncryptionService } from 'src/features/ai/ai-credential-encryption.service';
 
 @Injectable()
 export class NordigenService {
@@ -37,19 +40,80 @@ export class NordigenService {
   private readonly logger = new Logger(NordigenService.name);
 
   constructor(
-    private readonly configService: ConfigService<AppConfig>,
     private readonly httpService: HttpService,
     private repository: NordigenRepository,
+    @InjectRepository(NordigenCredentials)
+    private readonly credentialsRepository: Repository<NordigenCredentials>,
+    private readonly cipher: AiCredentialEncryptionService,
   ) {}
 
+  async getCredentialStatus(userId: string) {
+    const credentials = await this.credentialsRepository.findOne({
+      where: { user_id: userId },
+    });
+    return {
+      configured: Boolean(credentials),
+      credentialHint: credentials?.credential_hint ?? null,
+    };
+  }
+
+  async saveCredentials(userId: string, secretId: string, secretKey: string) {
+    await this.validateCredentials(secretId, secretKey);
+    const existing = await this.credentialsRepository.findOne({
+      where: { user_id: userId },
+      select: { id: true, user_id: true, credential_hint: true },
+    });
+    const credential = this.credentialsRepository.create({
+      ...existing,
+      user_id: userId,
+      encrypted_credentials: this.cipher.encrypt(
+        JSON.stringify({ secretId, secretKey }),
+      ),
+      credential_hint:
+        secretKey.length > 4 ? `••••${secretKey.slice(-4)}` : '••••',
+    });
+    await this.credentialsRepository.save(credential);
+    await this.repository.deleteUserToken(userId);
+    return this.getCredentialStatus(userId);
+  }
+
+  async deleteCredentials(userId: string) {
+    await this.credentialsRepository.delete({ user_id: userId });
+    await this.repository.deleteUserToken(userId);
+    return { configured: false, credentialHint: null };
+  }
+
+  async validateCredentials(secretId: string, secretKey: string) {
+    const url = `${this.BASE_URL}/api/v2/token/new/`;
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          url,
+          { secret_id: secretId, secret_key: secretKey },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+          },
+        ),
+      );
+    } catch {
+      throw new BadRequestException(
+        'Nordigen credentials could not be validated',
+      );
+    }
+    return { ok: true };
+  }
+
   //#region token
-  private async getAccessToken(): Promise<string> {
-    const token = await this.getToken();
+  private async getAccessToken(userId: string): Promise<string> {
+    const token = await this.getToken(userId);
     return token.access;
   }
 
-  private async getToken(): Promise<NordigenToken> {
-    const existingToken = await this.repository.getToken();
+  private async getToken(userId: string): Promise<NordigenToken> {
+    const existingToken = await this.repository.getToken(userId);
 
     if (existingToken) {
       if (this.isTokenExpired(existingToken)) {
@@ -58,12 +122,13 @@ export class NordigenService {
           this.logger.log(
             'Refresh token expired. Deleting token and getting a new one',
           );
-          await this.repository.deleteToken(existingToken);
-          return await this.getNewToken();
+          await this.repository.deleteUserToken(userId);
+          return await this.getNewToken(userId);
         } else {
           // Refresh token
           this.logger.log('Nordigen token is expired. Refresh token');
           return await this.refreshToken(
+            userId,
             existingToken.id,
             existingToken.refresh,
           );
@@ -74,15 +139,15 @@ export class NordigenService {
     } else {
       // Get a new one
       this.logger.warn('No existing token. Getting a new one');
-      return await this.getNewToken();
+      return await this.getNewToken(userId);
     }
   }
 
-  private async getNewToken(): Promise<NordigenToken> {
+  private async getNewToken(userId: string): Promise<NordigenToken> {
     this.logger.debug('Getting new Nordigen token');
     const url = `${this.BASE_URL}/api/v2/token/new/`;
 
-    const nordigenConfig = this.configService.get('nordigen', { infer: true })!;
+    const nordigenConfig = await this.getCredentials(userId);
     const response = await firstValueFrom(
       this.httpService.post<NordigenTokenDto>(
         url,
@@ -116,6 +181,7 @@ export class NordigenService {
 
     this.logger.debug('Saving new token');
     return await this.repository.createToken(
+      userId,
       dto.access,
       access_expiration_date,
       dto.refresh,
@@ -124,6 +190,7 @@ export class NordigenService {
   }
 
   private async refreshToken(
+    userId: string,
     tokenId: number,
     refresh_token: string,
   ): Promise<NordigenToken> {
@@ -139,6 +206,7 @@ export class NordigenService {
     const dto = response.data;
     this.logger.debug('Updating token');
     return await this.repository.updateToken(
+      userId,
       tokenId,
       dto.access,
       dto.access_expires,
@@ -150,17 +218,42 @@ export class NordigenService {
     return token.access_expires_on < now;
   }
 
+  private async getCredentials(
+    userId: string,
+  ): Promise<{ secretId: string; secretKey: string }> {
+    const credential = await this.credentialsRepository
+      .createQueryBuilder('credential')
+      .addSelect('credential.encrypted_credentials')
+      .where('credential.user_id = :userId', { userId })
+      .getOne();
+    if (!credential)
+      throw new ServiceUnavailableException(
+        'Configure Nordigen credentials in Settings first',
+      );
+    return JSON.parse(
+      this.cipher.decrypt(credential.encrypted_credentials),
+    ) as { secretId: string; secretKey: string };
+  }
+
   //#endregion
 
   //#region institutions
-  async getInstitutions(countyCode: string): Promise<NordigenInstitutionDto[]> {
+  async getInstitutions(
+    userId: string,
+    countyCode: string,
+  ): Promise<NordigenInstitutionDto[]> {
     return await this.makeGetRequest<NordigenInstitutionDto[]>(
+      userId,
       `/api/v2/institutions/?country=${countyCode}`,
     );
   }
 
-  async getInstitution(institutionId: string): Promise<NordigenInstitutionDto> {
+  async getInstitution(
+    userId: string,
+    institutionId: string,
+  ): Promise<NordigenInstitutionDto> {
     return await this.makeGetRequest<NordigenInstitutionDto>(
+      userId,
       `/api/v2/institutions/${institutionId}`,
     );
   }
@@ -168,43 +261,47 @@ export class NordigenService {
 
   //#region accounts
   async getAccountMetadata(
+    userId: string,
     account_id: string,
   ): Promise<NordigenAccountMetadataDto> {
     return await this.makeGetRequest<NordigenAccountMetadataDto>(
+      userId,
       `/api/v2/accounts/${account_id}/`,
     );
   }
 
-  async getAccountDetails(account_id: string): Promise<NordigenAccountDto> {
+  async getAccountDetails(
+    userId: string,
+    account_id: string,
+  ): Promise<NordigenAccountDto> {
     const response = await this.makeGetRequest<NordigenAccountDetailsDto>(
+      userId,
       `/api/v2/accounts/${account_id}/details/`,
     );
-    this.logger.log(
-      `Getting Nordigen account details for ${account_id}. Response: ${JSON.stringify(
-        response,
-        null,
-        4,
-      )}`,
-    );
+    this.logger.debug(`Retrieved Nordigen account details for ${account_id}`);
     return response.account;
   }
 
   async getAccountBalance(
+    userId: string,
     account_id: string,
   ): Promise<NordigenAccountBalanceDto[]> {
     const response = await this.makeGetRequest<NordigenAccountBalancesDto>(
+      userId,
       `/api/v2/accounts/${account_id}/balances/`,
     );
     return response.balances;
   }
 
   async getAccountTransactions(
+    userId: string,
     account_id: string,
   ): Promise<NordigenTransactionDto[]> {
     this.logger.debug(
       `Getting Nordigen transactions for account ${account_id}`,
     );
     const response = await this.makeGetRequest<NordigenTransactionsDto>(
+      userId,
       `/api/v2/accounts/${account_id}/transactions/`,
     );
     // We are not interested in the pending transactions yet. Better work only with booked for now
@@ -213,9 +310,9 @@ export class NordigenService {
   //#endregion
 
   //#region HTTP helpers
-  async makeGetRequest<T>(path: string): Promise<T> {
+  async makeGetRequest<T>(userId: string, path: string): Promise<T> {
     const url = `${this.BASE_URL}${path}`;
-    const token = await this.getAccessToken();
+    const token = await this.getAccessToken(userId);
 
     try {
       const response = await firstValueFrom(
@@ -282,9 +379,13 @@ export class NordigenService {
     );
   }
 
-  async makePostRequest<T>(path: string, payload: unknown): Promise<T> {
+  async makePostRequest<T>(
+    userId: string,
+    path: string,
+    payload: unknown,
+  ): Promise<T> {
     const url = `${this.BASE_URL}${path}`;
-    const token = await this.getAccessToken();
+    const token = await this.getAccessToken(userId);
 
     try {
       const response = await firstValueFrom(
@@ -321,9 +422,9 @@ export class NordigenService {
     }
   }
 
-  async makeDeleteRequest<T>(path: string): Promise<T> {
+  async makeDeleteRequest<T>(userId: string, path: string): Promise<T> {
     const url = `${this.BASE_URL}${path}`;
-    const token = await this.getAccessToken();
+    const token = await this.getAccessToken(userId);
 
     try {
       const response = await firstValueFrom(
@@ -357,13 +458,14 @@ export class NordigenService {
 
   //# region requisitions
   async createRequisition(
+    userId: string,
     institution_id: string,
     redirect_url: string,
   ): Promise<NordigenRequisitionDto> {
     const path = `/api/v2/requisitions/`;
 
     // oxlint-disable-next-line typescript/no-explicit-any
-    const response = await this.makePostRequest<any>(path, {
+    const response = await this.makePostRequest<any>(userId, path, {
       redirect: redirect_url,
       institution_id: institution_id,
     });
@@ -382,23 +484,30 @@ export class NordigenService {
   }
 
   async getRequisition(
+    userId: string,
     requisition_id: string,
   ): Promise<NordigenRequisitionDto> {
     this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
     const path = `/api/v2/requisitions/${requisition_id}`;
 
-    const response = await this.makeGetRequest<NordigenRequisitionDto>(path);
+    const response = await this.makeGetRequest<NordigenRequisitionDto>(
+      userId,
+      path,
+    );
     return response;
   }
 
   async deleteRequisition(
+    userId: string,
     requisition_id: string,
   ): Promise<DeleteRequisitionResponse> {
     this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
     const path = `/api/v2/requisitions/${requisition_id}`;
 
-    const response =
-      await this.makeDeleteRequest<DeleteRequisitionResponse>(path);
+    const response = await this.makeDeleteRequest<DeleteRequisitionResponse>(
+      userId,
+      path,
+    );
     return response;
   }
 

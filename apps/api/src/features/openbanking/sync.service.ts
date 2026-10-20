@@ -13,9 +13,6 @@ import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { getMoneyBalanceFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { NordigenInstitutionDto } from 'src/features/nordigen/dto/nordigen-institution.dto';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
 
@@ -75,7 +72,6 @@ export class SyncService {
     @InjectRepository(Transaction)
     private readonly transactionsRepository: Repository<Transaction>,
     private readonly nordigenService: NordigenService,
-    private readonly institutionsService: InstitutionsService,
     private readonly notificationsService: NotificationsService,
   ) {}
 
@@ -84,28 +80,15 @@ export class SyncService {
     timeZone: CRON_JOB_TIMEZONE,
   })
   async syncOpenBankingInstitutions(): Promise<void> {
-    this.logger.log('Syncing Nordigen institutions via cron job');
-    await this.syncOpenBankingInstitutionsFromNordigen();
+    this.logger.log(
+      'Skipping Nordigen institution refresh; credentials are user scoped',
+    );
   }
 
   async syncOpenBankingInstitutionsFromNordigen() {
-    for (const country of supportedCountries) {
-      this.logger.log(
-        `Syncing Open Banking institutions for country: ${country}`,
-      );
-      const institutions = await this.nordigenService.getInstitutions(country);
-      const entities = institutions.map((x: NordigenInstitutionDto) => {
-        const bank = new Institution();
-        bank.nordigen_id = x.id;
-        bank.name = x.name;
-        bank.image_src = x.logo;
-        bank.countries = x.countries;
-
-        return bank;
-      });
-      await this.institutionsService.saveAll(entities);
-    }
-    this.logger.log('Syncing Open Banking institutions completed');
+    this.logger.log(
+      'Institution catalogs are refreshed by authenticated user requests',
+    );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -216,13 +199,25 @@ export class SyncService {
       }
 
       // Get the new data from Nordigen
-      await this.updateNordigenAccountMetadata(nordigenAccount);
-      await this.updateNordigenAccountDetails(nordigenAccount);
-      await this.syncAccountBalance(nordigenAccount, gualletAccount);
+      await this.updateNordigenAccountMetadata(
+        nordigenAccount,
+        gualletAccount.user_id,
+      );
+      await this.updateNordigenAccountDetails(
+        nordigenAccount,
+        gualletAccount.user_id,
+      );
+      await this.syncAccountBalance(
+        nordigenAccount,
+        gualletAccount,
+        gualletAccount.user_id,
+      );
 
       // Sync the transactions
-      const newUncategorizedCount =
-        await this.syncAccountTransactions(nordigenAccount);
+      const newUncategorizedCount = await this.syncAccountTransactions(
+        nordigenAccount,
+        gualletAccount.user_id,
+      );
 
       // Update nordigen account
       nordigenAccount.last_refreshed = new Date();
@@ -244,10 +239,12 @@ export class SyncService {
 
   private async updateNordigenAccountMetadata(
     account: NordigenAccount,
+    userId: string,
   ): Promise<NordigenAccount> {
     try {
       // Refresh the account metadata
       const metadata = await this.nordigenService.getAccountMetadata(
+        userId,
         account.id,
       );
 
@@ -269,9 +266,13 @@ export class SyncService {
 
   private async updateNordigenAccountDetails(
     account: NordigenAccount,
+    userId: string,
   ): Promise<NordigenAccount> {
     try {
-      const details = await this.nordigenService.getAccountDetails(account.id);
+      const details = await this.nordigenService.getAccountDetails(
+        userId,
+        account.id,
+      );
 
       // Update the DB account
       account.details_raw = details;
@@ -303,12 +304,14 @@ export class SyncService {
   private async syncAccountBalance(
     nordigen_account: NordigenAccount,
     guallet_account: Account,
+    userId: string,
   ) {
     try {
       this.logger.log(`Syncing Account Balance:${nordigen_account.id}`);
 
       // Sync the balances
       const balances = await this.nordigenService.getAccountBalance(
+        userId,
         nordigen_account.id,
       );
 
@@ -343,6 +346,7 @@ export class SyncService {
 
   private async syncAccountTransactions(
     account: NordigenAccount,
+    userId: string,
   ): Promise<number> {
     try {
       this.logger.log(`Syncing Account Transactions:${account.id}`);
@@ -357,6 +361,7 @@ export class SyncService {
 
       // TODO: As we know the last sync date, should we only sync the transactions since then?
       const transactions = await this.nordigenService.getAccountTransactions(
+        userId,
         account.id,
       );
 

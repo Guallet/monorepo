@@ -10,21 +10,23 @@ export class NordigenRepository {
     private repository: Repository<NordigenToken>,
   ) {}
 
-  async getToken() {
-    const tokens = await this.repository.find({
-      order: { id: 'DESC' },
-    });
+  async getToken(userId: string) {
+    return await this.repository.findOne({ where: { user_id: userId } });
+  }
 
-    return tokens.find(Boolean);
+  async deleteUserToken(userId: string) {
+    await this.repository.delete({ user_id: userId });
   }
 
   async createToken(
+    userId: string,
     access: string,
     access_expires: Date,
     refresh?: string,
     refresh_expires?: Date,
   ): Promise<NordigenToken> {
     return await this.repository.save({
+      user_id: userId,
       access: access,
       refresh: refresh,
       access_expires_on: access_expires,
@@ -45,6 +47,7 @@ export class NordigenRepository {
   }
 
   async updateToken(
+    userId: string,
     id: number,
     access: string,
     expires_on: number,
@@ -53,13 +56,13 @@ export class NordigenRepository {
     expiration_date.setSeconds(expiration_date.getSeconds() + expires_on);
 
     await this.repository.update(
-      { id: id },
+      { id, user_id: userId },
       {
         access: access,
         access_expires_on: expiration_date,
       },
     );
 
-    return await this.repository.findOneByOrFail({ id: id });
+    return await this.repository.findOneByOrFail({ id, user_id: userId });
   }
 }

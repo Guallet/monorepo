@@ -1694,6 +1694,22 @@
         }
       },
       "title": "Settings",
+      "nordigen": {
+        "title": "Proveedor de banca abierta",
+        "sectionDescription": "Administra tus credenciales personales para conectar bancos.",
+        "description": "Usa tus propias credenciales de Nordigen para conectar y sincronizar cuentas bancarias. Debes volver a conectar los bancos existentes después de configurarlas.",
+        "configured": "Credenciales configuradas",
+        "secretId": "ID secreto",
+        "secretKey": "Clave secreta",
+        "save": "Validar y guardar",
+        "saved": "Las credenciales de Nordigen se validaron y guardaron.",
+        "remove": "Eliminar credenciales",
+        "removed": "Se eliminaron las credenciales de Nordigen.",
+        "errorTitle": "No se pudieron actualizar las credenciales",
+        "errorMessage": "Comprueba tus credenciales de Nordigen e inténtalo de nuevo.",
+        "confirmTitle": "¿Eliminar las credenciales de Nordigen?",
+        "confirmBody": "La sincronización bancaria se detendrá. Los enlaces bancarios y los datos importados se conservarán, pero tendrás que volver a conectar los bancos después de añadir credenciales."
+      },
       "institutions": {
         "title": "Institutions",
         "description": "Manage banks and institutions used to organise your accounts.",

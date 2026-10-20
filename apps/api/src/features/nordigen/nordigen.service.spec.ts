@@ -1,9 +1,11 @@
 /* oxlint-disable typescript/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
 import { NordigenService } from './nordigen.service';
 import { HttpService } from '@nestjs/axios';
 import { NordigenRepository } from './nordigen.repository';
+import { NordigenCredentials } from './entities/nordigen-credentials.entity';
+import { AiCredentialEncryptionService } from 'src/features/ai/ai-credential-encryption.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { of } from 'rxjs';
 import { AxiosResponse } from 'axios';
 
@@ -19,27 +21,32 @@ describe('NordigenService', () => {
     getToken: vi.fn(),
     createToken: vi.fn(),
     updateToken: vi.fn(),
-    deleteToken: vi.fn(),
+    deleteUserToken: vi.fn(),
+  };
+
+  const mockCredentialsRepository = {
+    createQueryBuilder: vi.fn(() => ({
+      addSelect: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      getOne: vi.fn().mockResolvedValue({
+        encrypted_credentials: 'encrypted-credentials',
+      }),
+    })),
+  };
+
+  const mockCipher = {
+    decrypt: vi.fn().mockReturnValue(
+      JSON.stringify({
+        secretId: 'test-secret-id',
+        secretKey: 'test-secret-key',
+      }),
+    ),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NordigenService,
-        {
-          provide: ConfigService,
-          useValue: {
-            get: vi.fn((key: string) => {
-              if (key === 'nordigen') {
-                return {
-                  secretId: process.env.NORDIGEN_SECRET_ID,
-                  secretKey: process.env.NORDIGEN_SECRET_KEY,
-                };
-              }
-              return undefined;
-            }),
-          },
-        },
         {
           provide: HttpService,
           useValue: mockHttpService,
@@ -48,6 +55,14 @@ describe('NordigenService', () => {
           provide: NordigenRepository,
           useValue: mockNordigenRepository,
         },
+        {
+          provide: getRepositoryToken(NordigenCredentials),
+          useValue: mockCredentialsRepository,
+        },
+        {
+          provide: AiCredentialEncryptionService,
+          useValue: mockCipher,
+        },
       ],
     }).compile();
 
@@ -55,10 +70,6 @@ describe('NordigenService', () => {
 
     // Clear all mocks before each test
     vi.clearAllMocks();
-
-    // Set environment variables for testing
-    process.env.NORDIGEN_SECRET_ID = 'test-secret-id';
-    process.env.NORDIGEN_SECRET_KEY = 'test-secret-key';
   });
 
   it('should be defined', () => {
@@ -99,7 +110,7 @@ describe('NordigenService', () => {
       mockNordigenRepository.getToken.mockResolvedValue(mockToken);
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
-      const result = await service.getInstitutions(countryCode);
+      const result = await service.getInstitutions('user-id', countryCode);
 
       expect(result).toEqual(mockInstitutions);
     });
@@ -136,7 +147,7 @@ describe('NordigenService', () => {
       mockNordigenRepository.getToken.mockResolvedValue(mockToken);
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
-      const result = await service.getInstitution(institutionId);
+      const result = await service.getInstitution('user-id', institutionId);
 
       expect(result).toEqual(mockInstitution);
     });
@@ -174,7 +185,7 @@ describe('NordigenService', () => {
       mockNordigenRepository.getToken.mockResolvedValue(mockToken);
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
-      const result = await service.getAccountMetadata(accountId);
+      const result = await service.getAccountMetadata('user-id', accountId);
 
       expect(result).toEqual(mockMetadata);
     });
@@ -211,7 +222,7 @@ describe('NordigenService', () => {
       mockNordigenRepository.getToken.mockResolvedValue(mockToken);
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
-      const result = await service.getAccountDetails(accountId);
+      const result = await service.getAccountDetails('user-id', accountId);
 
       expect(result).toEqual(mockAccount);
     });
@@ -251,7 +262,7 @@ describe('NordigenService', () => {
       mockNordigenRepository.getToken.mockResolvedValue(mockToken);
       mockHttpService.get.mockReturnValue(of(mockResponse));
 
-      const result = await service.getAccountBalance(accountId);
+      const result = await service.getAccountBalance('user-id', accountId);
 
       expect(result).toEqual(mockBalances);
     });
@@ -301,7 +312,7 @@ describe('NordigenService', () => {
 
       mockHttpService.get.mockReturnValue(of(mockInstitutionsResponse));
 
-      await service.getInstitutions('GB');
+      await service.getInstitutions('user-id', 'GB');
 
       expect(mockNordigenRepository.createToken).toHaveBeenCalled();
     });

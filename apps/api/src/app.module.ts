@@ -55,7 +55,12 @@ import { BankSyncModule } from './features/banksync/banksync.module';
           pinoHttp: {
             autoLogging: false,
             level: config.get('logging', { infer: true })?.level,
-            redact: ['req.headers.authorization', 'req.headers.cookie'],
+            redact: [
+              'req.headers.authorization',
+              'req.headers.cookie',
+              'req.body.secretId',
+              'req.body.secretKey',
+            ],
             transport: {
               targets: [
                 {

@@ -33,6 +33,7 @@ import {
 } from 'src/features/nordigen/dto/nordigen-account.dto';
 import { NordigenInstitutionDto } from 'src/features/nordigen/dto/nordigen-institution.dto';
 import { InstitutionDto } from '../institutions/dto/institution.dto';
+import { Institution as InstitutionEntity } from '../institutions/entities/institution.entity';
 import {
   ConnectAccountsResponseDto,
   CountryDto,
@@ -65,11 +66,26 @@ export class ObConnectionsController {
   @ApiOkResponse({ type: NordigenInstitutionDto, isArray: true })
   @ApiParam({ name: 'country', type: String })
   @Get(':country/institutions')
-  getInstitutions(
+  async getInstitutions(
+    @RequestUser() user: UserPrincipal,
     @Param('country') country: string,
   ): Promise<NordigenInstitutionDto[]> {
     // TODO: Cache this call in the DB? We should sync only once a day or less
-    return this.nordigenService.getInstitutions(country);
+    const institutions = await this.nordigenService.getInstitutions(
+      user.id,
+      country,
+    );
+    await this.institutionService.saveAll(
+      institutions.map((item) => {
+        const institution = new InstitutionEntity();
+        institution.nordigen_id = item.id;
+        institution.name = item.name;
+        institution.image_src = item.logo;
+        institution.countries = item.countries;
+        return institution;
+      }),
+    );
+    return institutions;
   }
 
   @ApiOperation({ summary: 'getInstitution' })
@@ -111,7 +127,10 @@ export class ObConnectionsController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<DeleteConnectionResponseDto> {
     try {
-      const remoteResponse = await this.nordigenService.deleteRequisition(id);
+      const remoteResponse = await this.nordigenService.deleteRequisition(
+        user.id,
+        id,
+      );
       this.logger.debug(
         `Deleted requisition ${id} from Nordigen: ${JSON.stringify(
           remoteResponse,
@@ -139,8 +158,10 @@ export class ObConnectionsController {
     @RequestUser() user: UserPrincipal,
     @Param('id') requisition_id: string,
   ): Promise<RemoteAccountDto[]> {
-    const requisition =
-      await this.nordigenService.getRequisition(requisition_id);
+    const requisition = await this.nordigenService.getRequisition(
+      user.id,
+      requisition_id,
+    );
 
     await this.openbankingService.saveRequisition(user.id, requisition);
 
@@ -154,13 +175,18 @@ export class ObConnectionsController {
       }[] = [];
       for (const accountId of accountIds) {
         try {
-          const accountMetadata =
-            await this.nordigenService.getAccountMetadata(accountId);
+          const accountMetadata = await this.nordigenService.getAccountMetadata(
+            user.id,
+            accountId,
+          );
 
           if (accountMetadata.status === 'READY') {
             try {
               const accountDetails =
-                await this.nordigenService.getAccountDetails(accountId);
+                await this.nordigenService.getAccountDetails(
+                  user.id,
+                  accountId,
+                );
               remoteAccounts.push({
                 id: accountId,
                 metadata: accountMetadata,
@@ -212,6 +238,7 @@ export class ObConnectionsController {
     @Body() dto: ConnectBankInstitutionRequestDto,
   ): Promise<CreateConnectionResponseDto> {
     const requisition = await this.nordigenService.createRequisition(
+      user.id,
       dto.institution_id,
       dto.redirect_to,
     );

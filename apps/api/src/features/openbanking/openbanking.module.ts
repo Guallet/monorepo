@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OpenbankingService } from './openbanking.service';
 import { ObConnectionsController } from './ObConnections.controller';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
 import { NordigenModule } from 'src/features/nordigen/nordigen.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
@@ -39,7 +38,6 @@ import { NotificationsModule } from '../notifications/notifications.module';
   ],
   providers: [
     OpenbankingService,
-    NordigenService,
     NordigenAccountRepository,
     InstitutionsService,
     SyncService,
