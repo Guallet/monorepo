@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NordigenController } from './nordigen.controller';
 import { NordigenService } from './nordigen.service';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 describe('NordigenController', () => {
   let controller: NordigenController;
@@ -16,7 +17,10 @@ describe('NordigenController', () => {
           useValue: mockNordigenService,
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(ThrottlerGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<NordigenController>(NordigenController);
   });

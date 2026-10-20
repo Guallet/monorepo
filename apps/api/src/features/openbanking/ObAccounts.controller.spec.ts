@@ -69,6 +69,7 @@ describe('ObAccountsController', () => {
 
       expect(result).toEqual(mockMetadata);
       expect(mockNordigenService.getAccountMetadata).toHaveBeenCalledWith(
+        mockUser.id,
         accountId,
       );
     });

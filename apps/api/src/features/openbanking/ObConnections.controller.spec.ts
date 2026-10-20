@@ -189,6 +189,7 @@ describe('ObConnectionsController', () => {
 
       expect(result).toEqual(mockDeleteResult);
       expect(mockNordigenService.deleteRequisition).toHaveBeenCalledWith(
+        mockUser.id,
         connectionId,
       );
     });
