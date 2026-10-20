@@ -3,7 +3,6 @@ import { AmountLabel } from '@/components/Amount/AmountLabel';
 import { Group, Stack, Text } from '@mantine/core';
 import { getAccountTypeTitleSingular } from '../models/Account';
 import { useAccount } from '@guallet/api-react';
-import { ConnectedAccountStatus } from './ConnectedAccountStatus';
 
 interface AccountDetailsHeaderProps {
   accountId: string;
@@ -32,9 +31,6 @@ export function AccountDetailsHeader({
         <Text size="sm" c="dimmed">
           {getAccountTypeTitleSingular(account.type)}
         </Text>
-        {account.source === 'synced' && (
-          <ConnectedAccountStatus accountId={account.id} />
-        )}
       </Stack>
 
       <AmountLabel

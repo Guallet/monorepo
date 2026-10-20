@@ -122,8 +122,7 @@ export class BankSyncService {
         if (!id) return [];
         return [
           {
-            id,
-            bankId: bank.id,
+            id: JSON.stringify([bank.id, id]),
             name: account.name ?? account.accountName ?? 'Bank account',
             institutionName: bank.name,
             currency: account.currency ?? null,

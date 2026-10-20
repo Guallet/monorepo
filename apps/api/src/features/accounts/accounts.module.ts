@@ -6,27 +6,13 @@ import { Account } from './entities/account.entity';
 import { AccountsController } from './accounts.controller';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionsModule } from 'src/features/transactions/transactions.module';
-import { OpenbankingModule } from '../openbanking/openbanking.module';
-import { ObConnection } from '../openbanking/entities/connection.entity';
-import { NordigenAccount } from '../openbanking/entities/nordigen-account.entity';
 import { Institution } from '../institutions/entities/institution.entity';
-import { HttpModule } from '@nestjs/axios';
-import { NordigenModule } from '../nordigen/nordigen.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Account,
-      Transaction,
-      ObConnection,
-      NordigenAccount,
-      Institution,
-    ]),
+    TypeOrmModule.forFeature([Account, Transaction, Institution]),
     InstitutionsModule,
     TransactionsModule,
-    OpenbankingModule,
-    NordigenModule,
-    HttpModule,
   ],
   providers: [AccountsService],
   exports: [AccountsService],

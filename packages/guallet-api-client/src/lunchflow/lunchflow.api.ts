@@ -8,66 +8,46 @@ import {
   SaveLunchFlowCredentialRequest,
 } from './lunchflow.models';
 
-const LUNCHFLOW_PATH = 'lunchflow';
-
 export class LunchFlowApi {
   constructor(private readonly client: GualletClientImpl) {}
 
   async getCredential(): Promise<LunchFlowCredentialDto> {
-    return await this.client.get<LunchFlowCredentialDto>({
-      path: `${LUNCHFLOW_PATH}/connection`,
-    });
+    return await this.client.bankProviders.getCredentials('lunchflow');
   }
 
   async saveCredential(
     request: SaveLunchFlowCredentialRequest,
   ): Promise<LunchFlowCredentialDto> {
-    return await this.client.put<
-      LunchFlowCredentialDto,
-      SaveLunchFlowCredentialRequest
-    >({
-      path: `${LUNCHFLOW_PATH}/connection`,
-      payload: request,
-    });
+    return await this.client.bankProviders.saveCredentials(
+      'lunchflow',
+      request,
+    );
   }
 
   async deleteCredential(): Promise<void> {
-    return await this.client.fetch_delete<void>({
-      path: `${LUNCHFLOW_PATH}/connection`,
-    });
+    return await this.client.bankProviders.deleteCredentials('lunchflow');
   }
 
   async getAccounts(): Promise<LunchFlowAccountsResponseDto> {
-    return await this.client.get<LunchFlowAccountsResponseDto>({
-      path: `${LUNCHFLOW_PATH}/accounts`,
-    });
+    return (await this.client.bankProviders.getAccounts(
+      'lunchflow',
+    )) as LunchFlowAccountsResponseDto;
   }
 
   async importAccounts(
     request: ImportLunchFlowAccountsRequest,
   ): Promise<LunchFlowImportResponseDto> {
-    return await this.client.post<
-      LunchFlowImportResponseDto,
-      ImportLunchFlowAccountsRequest
-    >({
-      path: `${LUNCHFLOW_PATH}/accounts/import`,
-      payload: request,
-    });
+    return await this.client.bankProviders.importAccounts('lunchflow', request);
   }
 
   async sync(): Promise<LunchFlowSyncResponseDto> {
-    return await this.client.post<
-      LunchFlowSyncResponseDto,
-      Record<string, never>
-    >({
-      path: `${LUNCHFLOW_PATH}/sync`,
-      payload: {},
-    });
+    return await this.client.bankProviders.sync('lunchflow');
   }
 
   async unlinkAccount(accountId: string): Promise<void> {
-    return await this.client.fetch_delete<void>({
-      path: `${LUNCHFLOW_PATH}/accounts/${encodeURIComponent(accountId)}`,
-    });
+    return await this.client.bankProviders.unlinkAccount(
+      'lunchflow',
+      accountId,
+    );
   }
 }

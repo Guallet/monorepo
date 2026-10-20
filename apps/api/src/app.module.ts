@@ -10,8 +10,6 @@ import { CategoriesModule } from './features/categories/categories.module';
 import { TransactionsModule } from './features/transactions/transactions.module';
 import { RulesModule } from './features/rules/rules.module';
 import { ReportsModule } from './features/reports/reports.module';
-import { OpenbankingModule } from './features/openbanking/openbanking.module';
-import { NordigenModule } from './features/nordigen/nordigen.module';
 import { UsersModule } from './features/users/users.module';
 import configuration, { AppConfig, environmentSchema } from './configuration';
 import { BudgetsModule } from './features/budgets/budgets.module';
@@ -31,9 +29,7 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
-import { LunchFlowModule } from './features/lunchflow/lunchflow.module';
-import { BankSyncModule } from './features/banksync/banksync.module';
-import { SynciModule } from './features/synci/synci.module';
+import { BankProvidersModule } from './features/bank-providers/bank-providers.module';
 
 @Module({
   imports: [
@@ -161,8 +157,6 @@ import { SynciModule } from './features/synci/synci.module';
     TransactionsModule,
     RulesModule,
     ReportsModule,
-    OpenbankingModule,
-    NordigenModule,
     BudgetsModule,
     WebhooksModule,
     SavingGoalsModule,
@@ -172,9 +166,7 @@ import { SynciModule } from './features/synci/synci.module';
     NotificationsModule,
     RegularPaymentsModule,
     AiModule,
-    LunchFlowModule,
-    BankSyncModule,
-    SynciModule,
+    BankProvidersModule,
     HealthModule,
   ],
   controllers: [AppController],

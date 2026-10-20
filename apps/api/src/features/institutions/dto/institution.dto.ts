@@ -8,15 +8,12 @@ export class InstitutionDto {
   name: string;
   @ApiProperty({ required: false })
   image_src?: string;
-  @ApiProperty({ required: false })
-  nordigen_id?: string;
 
   static fromDomain(domain: Institution): InstitutionDto {
     return {
       id: domain.id,
       name: domain.name,
       image_src: domain.image_src,
-      nordigen_id: domain.nordigen_id,
     };
   }
 }

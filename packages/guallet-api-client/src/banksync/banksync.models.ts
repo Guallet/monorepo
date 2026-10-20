@@ -7,18 +7,15 @@ export type SaveBankSyncCredentialRequest = {
   apiKey: string;
 };
 
-export type BankSyncAccountSelection = {
-  bankId: string;
-  accountId: string;
-};
-
 export type BankSyncAccountDto = {
   id: string;
-  bankId: string;
   name: string;
-  institutionName: string;
+  institutionName: string | null;
+  institutionLogo?: string | null;
+  provider?: string | null;
   currency: string | null;
   balance: string | null;
+  status?: string;
   linkedAccountId: string | null;
 };
 
@@ -27,7 +24,7 @@ export type BankSyncAccountsResponseDto = {
 };
 
 export type ImportBankSyncAccountsRequest = {
-  accounts: BankSyncAccountSelection[];
+  accountIds: string[];
 };
 
 export type BankSyncImportResponseDto = {

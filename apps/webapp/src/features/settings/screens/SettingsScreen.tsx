@@ -21,7 +21,6 @@ import { CloseAccountModal } from '../components/CloseAccountModal';
 import { LunchFlowSettingsCard } from '../components/LunchFlowSettingsCard';
 import { SynciSettingsCard } from '../components/SynciSettingsCard';
 import { BankSyncSettingsCard } from '../components/BankSyncSettingsCard';
-import { NordigenSettingsCard } from '../components/NordigenSettingsCard';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow, useTheme } from '@guallet/ui-react';
 import {
@@ -182,19 +181,6 @@ export function SettingsScreen() {
           >
             <Box px={spacing.lg}>
               <SynciSettingsCard />
-            </Box>
-          </SettingsSection>
-
-          <SettingsSection
-            title={t('screens.settings.nordigen.title', 'Nordigen')}
-            description={t(
-              'screens.settings.nordigen.sectionDescription',
-              'Connect bank accounts using your Nordigen credentials.',
-            )}
-            icon={<IconKey size={24} strokeWidth={1.5} />}
-          >
-            <Box px={spacing.lg}>
-              <NordigenSettingsCard />
             </Box>
           </SettingsSection>
 

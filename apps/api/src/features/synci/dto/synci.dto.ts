@@ -47,11 +47,6 @@ export class SynciAccountsResponseDto {
   accounts: SynciAccountDto[];
 }
 
-export class SaveSynciCredentialDto {
-  @ApiProperty({ maxLength: 4096 })
-  apiKey: string;
-}
-
 export class SynciImportResponseDto {
   @ApiProperty({ type: [String] })
   accountIds: string[];

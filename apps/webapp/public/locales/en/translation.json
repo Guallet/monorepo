@@ -194,7 +194,7 @@
         },
         "emptyState": {
           "title": "No accounts yet",
-          "description": "Track all your bank accounts, credit cards and savings in one place. Connect through open banking, or add an account manually if your provider isn't supported.",
+          "description": "Track your bank accounts, credit cards and savings in one place. Import accounts from a supported provider with your own credentials, or add an account manually.",
           "connectBank": "Connect a bank",
           "addManually": "Add manually",
           "trait1": {
@@ -2081,7 +2081,7 @@
         "line2": "under control."
       },
       "description": "Track every account, card and saving goal in one place — without giving anyone access to your money.",
-      "feature1": "Open Banking sync — read-only",
+      "feature1": "Connect with your own bank provider credentials",
       "feature2": "Multi-currency, multi-account",
       "feature3": "Self-host or secure cloud",
       "license": "Open source · Apache 2.0"
@@ -2134,7 +2134,7 @@
       },
       "personalProviderKeys": {
         "title": "Connect with your own provider credentials",
-        "description": "Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account."
+        "description": "Connect through BankSync, Lunch Flow, or Synci using your own credentials. Guallet encrypts them for your account."
       },
       "badge": "Features",
       "title": "Everything you need to manage your money",
@@ -2186,7 +2186,7 @@
     },
     "section4": {
       "title": "4. Data Sharing",
-      "body": "We do not sell, trade, or rent your personal data to third parties. We may share anonymised, aggregated data for analytical purposes. When you connect your bank via open banking, your data is transmitted directly through the provider's secure API — we never store your banking credentials."
+      "body": "We do not sell, trade, or rent your personal data to third parties. Provider credentials you add are encrypted at rest and used only to read account data from the provider you selected."
     },
     "section5": {
       "title": "5. Cookies",

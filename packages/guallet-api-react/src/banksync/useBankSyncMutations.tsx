@@ -55,8 +55,7 @@ export function useBankSyncMutations() {
     },
   });
   const unlinkAccountMutation = useMutation({
-    mutationFn: (account: { bankId: string; accountId: string }) =>
-      client.bankSync.unlinkAccount(account),
+    mutationFn: (accountId: string) => client.bankSync.unlinkAccount(accountId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: [BANKSYNC_ACCOUNTS_QUERY_KEY],

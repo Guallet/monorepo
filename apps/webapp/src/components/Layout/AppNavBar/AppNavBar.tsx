@@ -32,10 +32,7 @@ const menuData: MenuData[] = [
   {
     label: 'Accounts',
     icon: IconBuildingBank,
-    subLinks: [
-      { label: 'Overview', link: '/accounts' },
-      { label: 'Connections', link: '/connections' },
-    ],
+    link: '/accounts',
   },
   {
     label: 'Transactions',

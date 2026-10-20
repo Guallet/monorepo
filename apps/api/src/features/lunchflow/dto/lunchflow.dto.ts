@@ -49,11 +49,6 @@ export class LunchFlowAccountsResponseDto {
   accounts: LunchFlowAccountDto[];
 }
 
-export class SaveLunchFlowCredentialDto {
-  @ApiProperty({ maxLength: 4096 })
-  apiKey: string;
-}
-
 export class LunchFlowImportResponseDto {
   @ApiProperty({ type: [String] })
   accountIds: string[];

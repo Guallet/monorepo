@@ -1,33 +1,20 @@
 import { Box, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import {
-  IconBuildingBank,
   IconCloudDownload,
   IconDatabaseImport,
   IconPlus,
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from '@tanstack/react-router';
-import { useNordigenCredentials } from '@guallet/api-react';
 import { MethodCard } from './MethodCard';
 
 interface StepChooseMethodProps {
-  onChoose: (
-    method: 'ob' | 'lunchflow' | 'banksync' | 'synci' | 'manual',
-  ) => void;
+  onChoose: (method: 'lunchflow' | 'banksync' | 'synci' | 'manual') => void;
 }
 
 export function StepChooseMethod({
   onChoose,
 }: Readonly<StepChooseMethodProps>) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const {
-    credentialStatus,
-    isLoading: isNordigenCredentialsLoading,
-    isError: isNordigenCredentialsError,
-    refetch: refetchNordigenCredentials,
-  } = useNordigenCredentials();
-  const hasNordigenCredentials = credentialStatus?.configured === true;
 
   return (
     <Stack>
@@ -89,49 +76,6 @@ export function StepChooseMethod({
           icon={
             <ThemeIcon size={44} radius="sm" variant="light" color="blue">
               <IconCloudDownload size={24} />
-            </ThemeIcon>
-          }
-        />
-        <MethodCard
-          title={t(
-            'feature.accounts.add.chooseMethod.openBanking.title',
-            'Connect via Open Banking',
-          )}
-          description={
-            isNordigenCredentialsLoading
-              ? t(
-                  'feature.accounts.add.chooseMethod.openBanking.checkingCredentials',
-                  'Checking Nordigen credentials…',
-                )
-              : hasNordigenCredentials
-                ? t(
-                    'feature.accounts.add.chooseMethod.openBanking.desc',
-                    'Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money.',
-                  )
-                : t(
-                    'feature.accounts.add.chooseMethod.openBanking.configureCredentials',
-                    'Add your Nordigen credentials in Settings before connecting a bank.',
-                  )
-          }
-          badge={t(
-            'feature.accounts.add.chooseMethod.recommended',
-            'Recommended',
-          )}
-          onClick={() => {
-            if (isNordigenCredentialsLoading) return;
-            if (isNordigenCredentialsError) {
-              void refetchNordigenCredentials();
-              return;
-            }
-            if (hasNordigenCredentials) {
-              onChoose('ob');
-            } else {
-              void navigate({ to: '/settings' });
-            }
-          }}
-          icon={
-            <ThemeIcon size={44} radius="sm" variant="light" color="blue">
-              <IconBuildingBank size={24} />
             </ThemeIcon>
           }
         />

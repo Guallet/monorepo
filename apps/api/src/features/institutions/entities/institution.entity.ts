@@ -17,10 +17,6 @@ export class Institution extends BaseDbEntity {
   @Column({ nullable: true })
   user_id?: string;
 
-  // THIS IS BECAUSE NORDIGEN OPEN BANKING
-  @Column({ nullable: true, unique: true })
-  nordigen_id: string;
-
   @Column('simple-array', { nullable: true })
   countries: string[];
 

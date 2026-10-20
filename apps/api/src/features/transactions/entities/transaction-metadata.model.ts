@@ -1,5 +1,3 @@
-import { NordigenTransactionDto } from 'src/features/nordigen/dto/nordigen-transaction.dto';
-
 export interface LunchFlowTransactionData {
   id: string | number;
   amount: number;
@@ -34,7 +32,7 @@ export interface SynciTransactionData {
 export interface TransactionMetadata {
   provider: TransactionDataProvider;
   data:
-    | NordigenTransactionDto
+    | Record<string, unknown>
     | LunchFlowTransactionData
     | BankSyncTransactionData
     | SynciTransactionData

@@ -8,63 +8,40 @@ import {
   SaveSynciCredentialRequest,
 } from './synci.models';
 
-const SYNCI_PATH = 'synci';
-
 export class SynciApi {
   constructor(private readonly client: GualletClientImpl) {}
 
   async getCredential(): Promise<SynciCredentialDto> {
-    return await this.client.get<SynciCredentialDto>({
-      path: `${SYNCI_PATH}/connection`,
-    });
+    return await this.client.bankProviders.getCredentials('synci');
   }
 
   async saveCredential(
     request: SaveSynciCredentialRequest,
   ): Promise<SynciCredentialDto> {
-    return await this.client.put<
-      SynciCredentialDto,
-      SaveSynciCredentialRequest
-    >({
-      path: `${SYNCI_PATH}/connection`,
-      payload: request,
-    });
+    return await this.client.bankProviders.saveCredentials('synci', request);
   }
 
   async deleteCredential(): Promise<void> {
-    return await this.client.fetch_delete<void>({
-      path: `${SYNCI_PATH}/connection`,
-    });
+    return await this.client.bankProviders.deleteCredentials('synci');
   }
 
   async getAccounts(): Promise<SynciAccountsResponseDto> {
-    return await this.client.get<SynciAccountsResponseDto>({
-      path: `${SYNCI_PATH}/accounts`,
-    });
+    return (await this.client.bankProviders.getAccounts(
+      'synci',
+    )) as SynciAccountsResponseDto;
   }
 
   async importAccounts(
     request: ImportSynciAccountsRequest,
   ): Promise<SynciImportResponseDto> {
-    return await this.client.post<
-      SynciImportResponseDto,
-      ImportSynciAccountsRequest
-    >({
-      path: `${SYNCI_PATH}/accounts/import`,
-      payload: request,
-    });
+    return await this.client.bankProviders.importAccounts('synci', request);
   }
 
   async sync(): Promise<SynciSyncResponseDto> {
-    return await this.client.post<SynciSyncResponseDto, Record<string, never>>({
-      path: `${SYNCI_PATH}/sync`,
-      payload: {},
-    });
+    return await this.client.bankProviders.sync('synci');
   }
 
   async unlinkAccount(accountId: string): Promise<void> {
-    return await this.client.fetch_delete<void>({
-      path: `${SYNCI_PATH}/accounts/${encodeURIComponent(accountId)}`,
-    });
+    return await this.client.bankProviders.unlinkAccount('synci', accountId);
   }
 }

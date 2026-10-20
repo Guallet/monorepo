@@ -1,7 +1,6 @@
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
-import { NordigenTransactionDto } from 'src/features/nordigen/dto/nordigen-transaction.dto';
 import {
   Column,
   Entity,
@@ -55,25 +54,4 @@ export class Transaction extends BaseDbEntity {
 
   @Column({ type: 'uuid', nullable: true })
   categoryId: string | null;
-
-  // Mappers
-  static fromNordigenDto(
-    account_id: string,
-    nordigenTransaction: NordigenTransactionDto,
-  ) {
-    const entity = new Transaction();
-    entity.metadata = {
-      provider: 'nordigen',
-      data: nordigenTransaction,
-    };
-    entity.externalId = nordigenTransaction.transactionId;
-    entity.amount = Number(nordigenTransaction.transactionAmount.amount);
-    entity.currency = nordigenTransaction.transactionAmount.currency;
-    entity.accountId = account_id;
-    entity.date = nordigenTransaction.bookingDateTime;
-
-    entity.description = nordigenTransaction.remittanceInformationUnstructured;
-
-    return entity;
-  }
 }

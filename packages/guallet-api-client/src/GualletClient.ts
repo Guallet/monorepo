@@ -1,7 +1,6 @@
 import { AccountsApi } from './accounts';
 import { BudgetsApi } from './budgets';
 import { CategoriesApi } from './categories';
-import { ConnectionsApi } from './connections';
 import { InstitutionsApi } from './institutions';
 import { TransactionsApi } from './transactions';
 import { UserApi } from './user';
@@ -16,12 +15,11 @@ import { AiApi } from './ai';
 import { LunchFlowApi } from './lunchflow';
 import { BankSyncApi } from './banksync';
 import { SynciApi } from './synci';
-import { NordigenApi } from './nordigen';
+import { BankProvidersApi } from './bank-providers';
 
 export interface GualletClient {
   accounts: AccountsApi;
   categories: CategoriesApi;
-  connections: ConnectionsApi;
   institutions: InstitutionsApi;
   transactions: TransactionsApi;
   budgets: BudgetsApi;
@@ -37,7 +35,7 @@ export interface GualletClient {
   lunchFlow: LunchFlowApi;
   bankSync: BankSyncApi;
   synci: SynciApi;
-  nordigen: NordigenApi;
+  bankProviders: BankProvidersApi;
 }
 
 export interface CookieHelper {
@@ -75,7 +73,6 @@ export class GualletClientImpl implements GualletClient {
 
   accounts: AccountsApi;
   categories: CategoriesApi;
-  connections: ConnectionsApi;
   institutions: InstitutionsApi;
   transactions: TransactionsApi;
   budgets: BudgetsApi;
@@ -91,7 +88,7 @@ export class GualletClientImpl implements GualletClient {
   lunchFlow: LunchFlowApi;
   bankSync: BankSyncApi;
   synci: SynciApi;
-  nordigen: NordigenApi;
+  bankProviders: BankProvidersApi;
 
   constructor({
     baseUrl,
@@ -105,7 +102,6 @@ export class GualletClientImpl implements GualletClient {
 
     this.accounts = new AccountsApi(this);
     this.categories = new CategoriesApi(this);
-    this.connections = new ConnectionsApi(this);
     this.institutions = new InstitutionsApi(this);
     this.transactions = new TransactionsApi(this);
     this.budgets = new BudgetsApi(this);
@@ -121,7 +117,7 @@ export class GualletClientImpl implements GualletClient {
     this.lunchFlow = new LunchFlowApi(this);
     this.bankSync = new BankSyncApi(this);
     this.synci = new SynciApi(this);
-    this.nordigen = new NordigenApi(this);
+    this.bankProviders = new BankProvidersApi(this);
   }
 
   async get<TDto>({

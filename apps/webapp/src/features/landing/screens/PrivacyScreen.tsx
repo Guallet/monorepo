@@ -138,7 +138,7 @@ export function PrivacyScreen() {
               <Text>
                 {t(
                   'privacy.section4.body',
-                  "We do not sell, trade, or rent your personal data to third parties. We may share anonymised, aggregated data for analytical purposes. When you connect your bank via open banking, your data is transmitted directly through the provider's secure API — we never store your banking credentials.",
+                  'We do not sell, trade, or rent your personal data to third parties. Provider credentials you add are encrypted at rest and used only to read account data from the provider you selected.',
                 )}
               </Text>
             </Stack>

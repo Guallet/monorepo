@@ -22,7 +22,6 @@ import {
   IconKey,
   IconLock,
   IconRefresh,
-  IconShieldCheck,
   IconTarget,
 } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
@@ -145,14 +144,6 @@ export function LandingScreen() {
       ),
     },
     {
-      icon: <IconShieldCheck size={24} />,
-      title: t('landing.features.openBanking.title', 'Open Banking'),
-      description: t(
-        'landing.features.openBanking.description',
-        'Connect to thousands of banks and institutions via open banking APIs.',
-      ),
-    },
-    {
       icon: <IconKey size={24} />,
       title: t(
         'landing.features.personalProviderKeys.title',
@@ -160,7 +151,7 @@ export function LandingScreen() {
       ),
       description: t(
         'landing.features.personalProviderKeys.description',
-        'Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account.',
+        'Connect through BankSync, Lunch Flow, or Synci using your own credentials. Guallet encrypts them for your account.',
       ),
     },
   ];

@@ -196,7 +196,7 @@
         },
         "emptyState": {
           "title": "No accounts yet",
-          "description": "Track all your bank accounts, credit cards and savings in one place. Connect through open banking, or add an account manually if your provider isn't supported.",
+          "description": "Track your bank accounts, credit cards and savings in one place. Import accounts from a supported provider with your own credentials, or add an account manually.",
           "connectBank": "Connect a bank",
           "addManually": "Add manually",
           "trait1": {
@@ -2092,7 +2092,7 @@
         "line2": "under control."
       },
       "description": "Track every account, card and saving goal in one place — without giving anyone access to your money.",
-      "feature1": "Open Banking sync — read-only",
+      "feature1": "Connect with your own bank provider credentials",
       "feature2": "Multi-currency, multi-account",
       "feature3": "Self-host or secure cloud",
       "license": "Open source · Apache 2.0"
@@ -2145,7 +2145,7 @@
       },
       "personalProviderKeys": {
         "title": "Connect with your own provider credentials",
-        "description": "Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account."
+        "description": "Connect through BankSync, Lunch Flow, or Synci using your own credentials. Guallet encrypts them for your account."
       },
       "badge": "Características",
       "title": "Todo lo que necesitas para gestionar tu dinero",

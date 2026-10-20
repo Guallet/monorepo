@@ -12,7 +12,6 @@ import { AccountPropertiesCard } from '../components/AccountDetails/AccountPrope
 import { BalanceTrendChart } from '../components/AccountDetails/BalanceTrendChart';
 import { DangerZone } from '../components/AccountDetails/DangerZone';
 import { MonthlyInOutChart } from '../components/AccountDetails/MonthlyInOutChart';
-import { OpenBankingCard } from '../components/AccountDetails/OpenBankingCard';
 import { TransactionsSection } from '../components/AccountDetails/TransactionsSection';
 
 type DateRange = { startDate: Date; endDate: Date };
@@ -91,10 +90,6 @@ export function AccountDetailsScreen({
             startDate={dateRange.startDate}
             endDate={dateRange.endDate}
           />
-
-          {account?.source === 'synced' && (
-            <OpenBankingCard accountId={accountId} />
-          )}
 
           {account && <AccountPropertiesCard account={account} />}
 

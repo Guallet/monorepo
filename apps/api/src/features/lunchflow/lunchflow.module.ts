@@ -7,7 +7,6 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { LunchFlowAccount } from './entities/lunchflow-account.entity';
 import { LunchFlowCredential } from './entities/lunchflow-credential.entity';
 import { LunchFlowClient } from './lunchflow.client';
-import { LunchFlowController } from './lunchflow.controller';
 import { LunchFlowService } from './lunchflow.service';
 
 @Module({
@@ -21,7 +20,6 @@ import { LunchFlowService } from './lunchflow.service';
       Transaction,
     ]),
   ],
-  controllers: [LunchFlowController],
   providers: [LunchFlowService, LunchFlowClient],
   exports: [LunchFlowService],
 })

@@ -12,8 +12,7 @@ interface StepBankSyncImportProps {
   onConfigure: () => void;
 }
 
-const selectionKey = (account: BankSyncAccountDto) =>
-  `${encodeURIComponent(account.bankId)}:${encodeURIComponent(account.id)}`;
+const selectionKey = (account: BankSyncAccountDto) => account.id;
 
 export function StepBankSyncImport({
   onBack,
@@ -59,16 +58,13 @@ export function StepBankSyncImport({
           .filter(
             (account): account is BankSyncAccountDto => account !== undefined,
           )
-          .map(({ bankId, id }) => ({ bankId, accountId: id }));
-        await importAccountsMutation.mutateAsync({ accounts: selected });
+          .map(({ id }) => id);
+        await importAccountsMutation.mutateAsync({ accountIds: selected });
       }}
       onUnlink={async (key) => {
         const account = accountByKey.get(key);
         if (!account) return;
-        await unlinkAccountMutation.mutateAsync({
-          bankId: account.bankId,
-          accountId: account.id,
-        });
+        await unlinkAccountMutation.mutateAsync(account.id);
       }}
       onBack={onBack}
       onDone={onDone}

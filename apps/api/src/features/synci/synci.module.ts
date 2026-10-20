@@ -7,7 +7,6 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { SynciAccount } from './entities/synci-account.entity';
 import { SynciCredential } from './entities/synci-credential.entity';
 import { SynciClient } from './synci.client';
-import { SynciController } from './synci.controller';
 import { SynciService } from './synci.service';
 
 @Module({
@@ -21,7 +20,6 @@ import { SynciService } from './synci.service';
       Transaction,
     ]),
   ],
-  controllers: [SynciController],
   providers: [SynciService, SynciClient],
   exports: [SynciService],
 })

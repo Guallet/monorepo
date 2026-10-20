@@ -1,12 +1,5 @@
-import {
-  AccountTypeDto,
-  CreateAccountRequest,
-  ObInstitutionDto,
-} from '@guallet/api-client';
-import {
-  useAccountMutations,
-  useConnectionMutations,
-} from '@guallet/api-react';
+import { AccountTypeDto, CreateAccountRequest } from '@guallet/api-client';
+import { useAccountMutations } from '@guallet/api-react';
 import { Box } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -24,9 +17,6 @@ import { StepChooseMethod } from './StepChooseMethod';
 import { StepManualDetails } from './StepManualDetails';
 import { StepManualSuccess } from './StepManualSuccess';
 import { StepManualType } from './StepManualType';
-import { StepOBBank } from './StepOBBank';
-import { StepOBCountry } from './StepOBCountry';
-import { StepOBRedirect } from './StepOBRedirect';
 import { StepLunchFlowImport } from './StepLunchFlowImport';
 import { StepBankSyncImport } from './StepBankSyncImport';
 import { StepSynciImport } from './StepSynciImport';
@@ -36,9 +26,6 @@ type WizardStep =
   | 'm-type'
   | 'm-details'
   | 'm-success'
-  | 'ob-country'
-  | 'ob-bank'
-  | 'ob-redirect'
   | 'lf-accounts'
   | 'bs-accounts'
   | 'synci-accounts';
@@ -80,20 +67,12 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     },
   });
 
-  const [obCountry, setObCountry] = useState('GB');
-  const [obInstitution, setObInstitution] = useState<ObInstitutionDto | null>(
-    null,
-  );
-
   const { createAccountMutation } = useAccountMutations();
-  const { createConnectionMutation } = useConnectionMutations();
 
   function resetAndRestart() {
     setStep('method');
     setCreatedAccountId(null);
     form.reset();
-    setObCountry('GB');
-    setObInstitution(null);
   }
 
   async function handleSaveAccount() {
@@ -150,43 +129,12 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     }
   }
 
-  function handleConnectBank() {
-    if (!obInstitution) return;
-    createConnectionMutation.mutate(
-      {
-        request: {
-          institution_id: obInstitution.id,
-          redirect_to: `${globalThis.location.origin}/connections/connect/callback`,
-        },
-      },
-      {
-        onSuccess: (data) => {
-          window.open(data.link, '_self');
-        },
-        onError: () => {
-          notifications.show({
-            title: t(
-              'feature.accounts.add.obRedirect.error.title',
-              'Connection failed',
-            ),
-            message: t(
-              'feature.accounts.add.obRedirect.error.message',
-              'Could not start the bank connection. Please try again.',
-            ),
-            color: 'red',
-          });
-        },
-      },
-    );
-  }
-
   return (
     <Box maw={560} mx="auto">
       {step === 'method' && (
         <StepChooseMethod
           onChoose={(method) => {
-            if (method === 'ob') setStep('ob-country');
-            else if (method === 'lunchflow') setStep('lf-accounts');
+            if (method === 'lunchflow') setStep('lf-accounts');
             else if (method === 'banksync') setStep('bs-accounts');
             else if (method === 'synci') setStep('synci-accounts');
             else setStep('m-type');
@@ -214,30 +162,6 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
           accountId={createdAccountId}
           onDone={onDone}
           onAddAnother={resetAndRestart}
-        />
-      )}
-      {step === 'ob-country' && (
-        <StepOBCountry
-          value={obCountry}
-          onChange={setObCountry}
-          onNext={() => setStep('ob-bank')}
-          onBack={() => setStep('method')}
-        />
-      )}
-      {step === 'ob-bank' && (
-        <StepOBBank
-          countryCode={obCountry}
-          value={obInstitution}
-          onChange={setObInstitution}
-          onNext={() => setStep('ob-redirect')}
-          onBack={() => setStep('ob-country')}
-        />
-      )}
-      {step === 'ob-redirect' && obInstitution && (
-        <StepOBRedirect
-          institution={obInstitution}
-          onInitiate={handleConnectBank}
-          isLoading={createConnectionMutation.isPending}
         />
       )}
       {step === 'lf-accounts' && (

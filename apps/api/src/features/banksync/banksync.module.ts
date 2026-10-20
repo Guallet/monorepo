@@ -8,7 +8,6 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { BankSyncAccount } from './entities/banksync-account.entity';
 import { BankSyncCredential } from './entities/banksync-credential.entity';
 import { BankSyncClient } from './banksync.client';
-import { BankSyncController } from './banksync.controller';
 import { BankSyncService } from './banksync.service';
 import { BANKSYNC_QUEUE, BankSyncProcessor } from './banksync.processor';
 
@@ -24,7 +23,7 @@ import { BANKSYNC_QUEUE, BankSyncProcessor } from './banksync.processor';
       Transaction,
     ]),
   ],
-  controllers: [BankSyncController],
   providers: [BankSyncService, BankSyncClient, BankSyncProcessor],
+  exports: [BankSyncService, BullModule],
 })
 export class BankSyncModule {}
