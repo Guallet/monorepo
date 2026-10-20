@@ -33,6 +33,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
 import { LunchFlowModule } from './features/lunchflow/lunchflow.module';
+import { BankSyncModule } from './features/banksync/banksync.module';
 
 @Module({
   imports: [
@@ -168,6 +169,7 @@ import { LunchFlowModule } from './features/lunchflow/lunchflow.module';
     RegularPaymentsModule,
     AiModule,
     LunchFlowModule,
+    BankSyncModule,
     HealthModule,
   ],
   controllers: [AppController],

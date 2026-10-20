@@ -19,6 +19,7 @@ import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
 import { DateFormatRow } from '../components/DateFormatRow';
 import { CloseAccountModal } from '../components/CloseAccountModal';
 import { LunchFlowSettingsCard } from '../components/LunchFlowSettingsCard';
+import { BankSyncSettingsCard } from '../components/BankSyncSettingsCard';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow, useTheme } from '@guallet/ui-react';
 import {
@@ -114,6 +115,19 @@ export function SettingsScreen() {
             <DefaultCurrencyRow />
             <PreferredCurrenciesRow />
             <DateFormatRow />
+          </SettingsSection>
+
+          <SettingsSection
+            title={t('screens.settings.bankSync.title', 'BankSync')}
+            description={t(
+              'screens.settings.bankSync.description',
+              'Import and sync bank accounts using your BankSync API key.',
+            )}
+            icon={<IconKey size={24} strokeWidth={1.5} />}
+          >
+            <Box px={spacing.lg}>
+              <BankSyncSettingsCard />
+            </Box>
           </SettingsSection>
 
           <SettingsSection

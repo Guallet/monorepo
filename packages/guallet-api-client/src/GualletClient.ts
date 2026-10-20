@@ -15,6 +15,7 @@ import { ReportsApi } from './reports';
 import { RulesApi } from './rules';
 import { AiApi } from './ai';
 import { LunchFlowApi } from './lunchflow';
+import { BankSyncApi } from './banksync';
 
 export interface GualletClient {
   admin: AdminApi;
@@ -34,6 +35,7 @@ export interface GualletClient {
   rules: RulesApi;
   ai: AiApi;
   lunchFlow: LunchFlowApi;
+  bankSync: BankSyncApi;
 }
 
 export interface CookieHelper {
@@ -86,6 +88,7 @@ export class GualletClientImpl implements GualletClient {
   rules: RulesApi;
   ai: AiApi;
   lunchFlow: LunchFlowApi;
+  bankSync: BankSyncApi;
 
   constructor({
     baseUrl,
@@ -114,6 +117,7 @@ export class GualletClientImpl implements GualletClient {
     this.rules = new RulesApi(this);
     this.ai = new AiApi(this);
     this.lunchFlow = new LunchFlowApi(this);
+    this.bankSync = new BankSyncApi(this);
   }
 
   async get<TDto>({

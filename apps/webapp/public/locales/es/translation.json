@@ -287,6 +287,10 @@
           "manual": {
             "title": "Add manually",
             "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
+          },
+          "bankSync": {
+            "title": "Importar desde BankSync",
+            "desc": "Importa cuentas conectadas a BankSync con tu propia clave API."
           }
         },
         "lunchFlow": {
@@ -411,7 +415,23 @@
           "loan": "Personal, student, car",
           "other": "Cash, crypto, or anything else"
         },
-        "title": "New account"
+        "title": "New account",
+        "bankSync": {
+          "title": "Importar desde BankSync",
+          "configureMessage": "Añade tu clave API de BankSync en Ajustes. Crea una clave con el permiso banks:read; el acceso API requiere el plan Standard o superior.",
+          "configureButton": "Abrir ajustes",
+          "subtitle": "Selecciona las cuentas bancarias conectadas que quieres importar. Guallet importa el historial disponible y luego sincroniza a diario.",
+          "listError": "No se pudieron cargar las cuentas de BankSync. Comprueba la clave API, el plan REST y el permiso banks:read.",
+          "empty": "No hay cuentas bancarias conectadas disponibles en BankSync.",
+          "importSuccess": "Cuentas seleccionadas importadas desde BankSync.",
+          "importErrorTitle": "No se pudieron importar las cuentas",
+          "importErrorMessage": "Actualiza la lista de cuentas e inténtalo de nuevo.",
+          "unlinkSuccess": "Cuenta desvinculada de BankSync. Sus datos permanecen en Guallet.",
+          "unlinkErrorTitle": "No se pudo desvincular la cuenta",
+          "unlinkErrorMessage": "Inténtalo de nuevo.",
+          "unlinkButton": "Desvincular",
+          "importButton": "Importar cuentas seleccionadas"
+        }
       },
       "accountType": {
         "currentAccounts": "Cuentas corrientes",
@@ -1694,6 +1714,30 @@
         "closeAccountButton": {
           "label": "Close account"
         }
+      },
+      "bankSync": {
+        "title": "BankSync",
+        "description": "Importa y sincroniza cuentas bancarias con tu clave API de BankSync.",
+        "instructions": "Conecta tus bancos en BankSync y crea una clave API con el permiso banks:read. El acceso a la API REST de BankSync requiere el plan Standard o superior.",
+        "learnMore": "Ver instrucciones de BankSync",
+        "keySecurity": "Tu clave se cifra en Guallet y solo se usa para leer los datos de tus bancos conectados.",
+        "keyConfigured": "Clave API configurada",
+        "apiKeyLabel": "Clave API de BankSync",
+        "apiKeyPlaceholder": "Introduce una clave nueva para sustituirla o pega tu clave API",
+        "saveButton": "Guardar y validar clave",
+        "saveSuccess": "Clave API de BankSync guardada.",
+        "saveErrorTitle": "No se pudo guardar la clave API",
+        "saveErrorMessage": "Comprueba que tu clave tenga acceso a la API REST y el permiso banks:read.",
+        "deleteButton": "Eliminar clave",
+        "deleteSuccess": "Clave de BankSync eliminada. Las cuentas importadas permanecen en Guallet.",
+        "deleteErrorTitle": "No se pudo eliminar la clave API",
+        "deleteErrorMessage": "Inténtalo de nuevo.",
+        "confirmDeleteTitle": "¿Eliminar la clave de BankSync?",
+        "confirmDeleteBody": "Guallet dejará de sincronizar estas cuentas. Las cuentas y transacciones importadas permanecerán.",
+        "syncButton": "Sincronizar ahora",
+        "syncSuccess": "{{count}} cuentas sincronizadas.",
+        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
+        "syncErrorMessage": "Inténtalo de nuevo más tarde."
       }
     },
     "subscriptions": {

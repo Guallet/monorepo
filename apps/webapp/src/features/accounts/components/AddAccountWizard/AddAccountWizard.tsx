@@ -28,6 +28,7 @@ import { StepOBBank } from './StepOBBank';
 import { StepOBCountry } from './StepOBCountry';
 import { StepOBRedirect } from './StepOBRedirect';
 import { StepLunchFlowImport } from './StepLunchFlowImport';
+import { StepBankSyncImport } from './StepBankSyncImport';
 
 type WizardStep =
   | 'method'
@@ -37,7 +38,8 @@ type WizardStep =
   | 'ob-country'
   | 'ob-bank'
   | 'ob-redirect'
-  | 'lf-accounts';
+  | 'lf-accounts'
+  | 'bs-accounts';
 
 interface AddAccountWizardProps {
   onDone: () => void;
@@ -183,6 +185,7 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
           onChoose={(method) => {
             if (method === 'ob') setStep('ob-country');
             else if (method === 'lunchflow') setStep('lf-accounts');
+            else if (method === 'banksync') setStep('bs-accounts');
             else setStep('m-type');
           }}
         />
@@ -236,6 +239,13 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
       )}
       {step === 'lf-accounts' && (
         <StepLunchFlowImport
+          onBack={() => setStep('method')}
+          onDone={onDone}
+          onConfigure={() => void navigate({ to: '/settings' })}
+        />
+      )}
+      {step === 'bs-accounts' && (
+        <StepBankSyncImport
           onBack={() => setStep('method')}
           onDone={onDone}
           onConfigure={() => void navigate({ to: '/settings' })}
