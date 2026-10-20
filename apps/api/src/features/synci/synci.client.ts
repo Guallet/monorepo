@@ -111,14 +111,10 @@ export class SynciClient {
     });
   }
 
-  async getBalance(
-    apiKey: string,
-    accountId: string,
-  ): Promise<{ amount: number; currency: string }> {
-    const account = (await this.getAccounts(apiKey)).find(
-      (item) => String(item.id) === accountId,
-    );
-    if (!account) throw new BadGatewayException('Synci account was not found');
+  getBalance(account: SynciRemoteAccount): {
+    amount: number;
+    currency: string;
+  } {
     return {
       amount: account.balance_amount,
       currency: account.balance_currency,
@@ -128,11 +124,19 @@ export class SynciClient {
   async getTransactions(
     apiKey: string,
     accountId: string,
+    from?: string,
+    to?: string,
   ): Promise<SynciRemoteTransaction[]> {
+    const params: Record<string, string> = {
+      'filter[financial_account_id]': accountId,
+      'page[size]': '100',
+    };
+    if (from) params['filter[booking_date_after]'] = from;
+    if (to) params['filter[booking_date_before]'] = to;
     const remote = await this.getAllPages<SynciTransactionResource>(
       '/finance/transactions',
       apiKey,
-      { 'filter[financial_account_id]': accountId, 'page[size]': '100' },
+      params,
     );
     return remote.map((transaction) => ({
       id: transaction.id,
@@ -162,7 +166,7 @@ export class SynciClient {
   ): Promise<T[]> {
     const values: T[] = [];
     let page = 1;
-    let lastPage = 1;
+    let lastPage: number;
     do {
       const response = await this.get<SynciPage<T>>(path, apiKey, {
         ...params,

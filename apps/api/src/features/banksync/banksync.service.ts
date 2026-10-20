@@ -14,15 +14,16 @@ import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import {
   BankSyncBank,
   BankSyncClient,
   BankSyncRemoteAccount,
+  BankSyncRemoteTransaction,
 } from './banksync.client';
 import { BankSyncAccount } from './entities/banksync-account.entity';
 import { BankSyncCredential } from './entities/banksync-credential.entity';
-import { BankSyncAccountDto, BankSyncCredentialDto } from './dto/banksync.dto';
+import { BankSyncCredentialDto } from './dto/banksync.dto';
 
 const HISTORY_YEARS = 7;
 const SYNC_OVERLAP_DAYS = 7;
@@ -97,30 +98,42 @@ export class BankSyncService {
           mapping.guallet_account_id,
         ]),
     );
-    const accounts: BankSyncAccountDto[] = [];
-    for (const bank of banks) {
-      if (bank.connectionStatus?.connected === false) continue;
-      const remoteAccounts = await this.client.getAccounts(
-        apiKey,
-        bank.id,
-        userId,
-      );
-      for (const account of remoteAccounts) {
+    const remoteAccountsByBank = await Promise.all(
+      banks.map(async (bank) => {
+        if (bank.connectionStatus?.connected === false) {
+          return { bank, accounts: [] as BankSyncRemoteAccount[] };
+        }
+        try {
+          return {
+            bank,
+            accounts: await this.client.getAccounts(apiKey, bank.id, userId),
+          };
+        } catch {
+          this.logger.warn(
+            `BankSync account discovery failed for bank ${bank.id}`,
+          );
+          return { bank, accounts: [] as BankSyncRemoteAccount[] };
+        }
+      }),
+    );
+    return remoteAccountsByBank.flatMap(({ bank, accounts }) =>
+      accounts.flatMap((account) => {
         const id = this.remoteAccountId(account);
-        if (!id) continue;
-        accounts.push({
-          id,
-          bankId: bank.id,
-          name: account.name ?? account.accountName ?? 'Bank account',
-          institutionName: bank.name,
-          currency: account.currency ?? null,
-          balance: this.remoteBalance(account)?.amount.toString() ?? null,
-          linkedAccountId:
-            linkedByRemoteKey.get(this.remoteKey(bank.id, id)) ?? null,
-        });
-      }
-    }
-    return accounts;
+        if (!id) return [];
+        return [
+          {
+            id,
+            bankId: bank.id,
+            name: account.name ?? account.accountName ?? 'Bank account',
+            institutionName: bank.name,
+            currency: account.currency ?? null,
+            balance: this.remoteBalance(account)?.amount.toString() ?? null,
+            linkedAccountId:
+              linkedByRemoteKey.get(this.remoteKey(bank.id, id)) ?? null,
+          },
+        ];
+      }),
+    );
   }
 
   async importAccounts({
@@ -140,19 +153,26 @@ export class BankSyncService {
     >();
     const banks = await this.client.getBanks(apiKey, userId);
     const banksById = new Map(banks.map((bank) => [bank.id, bank]));
-    const accountsByBank = new Map<string, BankSyncRemoteAccount[]>();
+    const selectedBankIds = [
+      ...new Set(selections.map((selection) => selection.bankId)),
+    ].filter((bankId) => {
+      const bank = banksById.get(bankId);
+      return bank && bank.connectionStatus?.connected !== false;
+    });
+    const accountGroups = await Promise.all(
+      selectedBankIds.map(
+        async (bankId) =>
+          [
+            bankId,
+            await this.client.getAccounts(apiKey, bankId, userId),
+          ] as const,
+      ),
+    );
+    const accountsByBank = new Map(accountGroups);
     for (const selection of selections) {
       const bank = banksById.get(selection.bankId);
       if (!bank || bank.connectionStatus?.connected === false) continue;
-      let remoteAccounts = accountsByBank.get(selection.bankId);
-      if (!remoteAccounts) {
-        remoteAccounts = await this.client.getAccounts(
-          apiKey,
-          selection.bankId,
-          userId,
-        );
-        accountsByBank.set(selection.bankId, remoteAccounts);
-      }
+      const remoteAccounts = accountsByBank.get(selection.bankId) ?? [];
       const account = remoteAccounts.find(
         (item) => this.remoteAccountId(item) === selection.accountId,
       );
@@ -172,12 +192,11 @@ export class BankSyncService {
       );
     }
 
-    const mappings: BankSyncAccount[] = [];
-    for (const { bank, account } of selected.values()) {
-      mappings.push(
-        await this.importRemoteAccount({ userId, apiKey, bank, account }),
-      );
-    }
+    const mappings = await Promise.all(
+      [...selected.values()].map(({ bank, account }) =>
+        this.importRemoteAccount({ userId, apiKey, bank, account }),
+      ),
+    );
     return mappings.map((mapping) => mapping.guallet_account_id);
   }
 
@@ -255,7 +274,7 @@ export class BankSyncService {
         remote_account_id: remoteId,
       },
     });
-    const transactions = await this.getTransactionsForMapping(
+    const transactionResult = await this.getTransactionsForMapping(
       userId,
       apiKey,
       bank.id,
@@ -266,12 +285,15 @@ export class BankSyncService {
       this.remoteBalance(account) ??
       (await this.client.getBalances(apiKey, bank.id, remoteId, userId));
     let localAccount: Account | null = null;
+    let createdLocalAccount = false;
     if (mapping) {
       localAccount = await this.accounts.findOne({
         where: { id: mapping.guallet_account_id, user_id: userId },
       });
       if (!localAccount)
         throw new NotFoundException('Linked Guallet account not found');
+      localAccount.source = AccountSource.IMPORTED;
+      localAccount.source_name = 'BankSync';
       if (!mapping.is_linked) mapping.is_linked = true;
     } else {
       const currency = account.currency ?? reportedBalance?.currency ?? 'USD';
@@ -286,11 +308,12 @@ export class BankSyncService {
         }).amount,
         currency,
         type: AccountType.UNKNOWN,
-        source: AccountSource.SYNCED,
+        source: AccountSource.IMPORTED,
         source_name: 'BankSync',
         institutionId: null,
         properties: null,
       });
+      createdLocalAccount = true;
       mapping = this.remoteAccounts.create({
         user_id: userId,
         remote_bank_id: bank.id,
@@ -299,13 +322,32 @@ export class BankSyncService {
         is_linked: true,
       });
     }
-    await this.remoteAccounts.save(mapping);
+    try {
+      await this.remoteAccounts.save(mapping);
+    } catch (error) {
+      if (!createdLocalAccount || !this.isUniqueConstraintError(error)) {
+        throw error;
+      }
+      await this.accounts.delete({ id: localAccount.id, user_id: userId });
+      mapping = await this.remoteAccounts.findOneByOrFail({
+        user_id: userId,
+        remote_bank_id: bank.id,
+        remote_account_id: remoteId,
+      });
+      localAccount = await this.accounts.findOneOrFail({
+        where: { id: mapping.guallet_account_id, user_id: userId },
+      });
+      localAccount.source = AccountSource.IMPORTED;
+      localAccount.source_name = 'BankSync';
+      mapping.is_linked = true;
+    }
     await this.persistRemoteData({
       bank,
       account,
       mapping,
       localAccount,
-      transactions,
+      transactions: transactionResult.transactions,
+      removedTransactionIds: transactionResult.removedIds,
       balance: reportedBalance,
     });
     mapping.last_synced_at = new Date();
@@ -326,13 +368,29 @@ export class BankSyncService {
         account: BankSyncRemoteAccount;
       }
     >();
-    for (const bank of banks) {
-      if (bank.connectionStatus?.connected === false) continue;
-      for (const account of await this.client.getAccounts(
-        apiKey,
-        bank.id,
-        userId,
-      )) {
+    const failedBanks = new Set<string>();
+    const accountGroups = await Promise.all(
+      banks.map(async (bank) => {
+        if (bank.connectionStatus?.connected === false) {
+          failedBanks.add(bank.id);
+          return { bank, accounts: [] as BankSyncRemoteAccount[] };
+        }
+        try {
+          return {
+            bank,
+            accounts: await this.client.getAccounts(apiKey, bank.id, userId),
+          };
+        } catch {
+          failedBanks.add(bank.id);
+          this.logger.warn(
+            `BankSync account discovery failed for bank ${bank.id}`,
+          );
+          return { bank, accounts: [] as BankSyncRemoteAccount[] };
+        }
+      }),
+    );
+    for (const { bank, accounts } of accountGroups) {
+      for (const account of accounts) {
         const accountId = this.remoteAccountId(account);
         if (!accountId) continue;
         remoteAccounts.set(this.remoteKey(bank.id, accountId), {
@@ -343,50 +401,66 @@ export class BankSyncService {
     }
     const errors: string[] = [];
     let accountsSynced = 0;
-    for (const mapping of mappings) {
-      const key = this.remoteKey(
-        mapping.remote_bank_id,
-        mapping.remote_account_id,
-      );
-      const remote = remoteAccounts.get(key);
-      if (!remote) continue;
-      try {
-        const localAccount = await this.accounts.findOne({
-          where: { id: mapping.guallet_account_id, user_id: userId },
-        });
-        if (!localAccount) continue;
-        const transactions = await this.getTransactionsForMapping(
-          userId,
-          apiKey,
+    const results = await Promise.all(
+      mappings.map(async (mapping) => {
+        const key = this.remoteKey(
           mapping.remote_bank_id,
           mapping.remote_account_id,
-          mapping.last_synced_at,
         );
-        const balance =
-          this.remoteBalance(remote.account) ??
-          (await this.client.getBalances(
-            apiKey,
-            mapping.remote_bank_id,
-            mapping.remote_account_id,
-            userId,
-          ));
-        await this.persistRemoteData({
-          bank: remote.bank,
-          account: remote.account,
-          mapping,
-          localAccount,
-          transactions,
-          balance,
-        });
-        mapping.last_synced_at = new Date();
-        await this.remoteAccounts.save(mapping);
-        accountsSynced += 1;
-      } catch {
-        errors.push(mapping.remote_account_id);
-        this.logger.warn(
-          `BankSync account sync failed for ${mapping.remote_account_id}`,
-        );
-      }
+        if (failedBanks.has(mapping.remote_bank_id)) {
+          return mapping.remote_account_id;
+        }
+        const remote = remoteAccounts.get(key);
+        if (!remote) {
+          return mapping.remote_account_id;
+        }
+        try {
+          const localAccount = await this.accounts.findOne({
+            where: { id: mapping.guallet_account_id, user_id: userId },
+          });
+          if (!localAccount) {
+            return mapping.remote_account_id;
+          }
+          const [transactionResult, reportedBalance] = await Promise.all([
+            this.getTransactionsForMapping(
+              userId,
+              apiKey,
+              mapping.remote_bank_id,
+              mapping.remote_account_id,
+              mapping.last_synced_at,
+            ),
+            this.remoteBalance(remote.account)
+              ? Promise.resolve(this.remoteBalance(remote.account))
+              : this.client.getBalances(
+                  apiKey,
+                  mapping.remote_bank_id,
+                  mapping.remote_account_id,
+                  userId,
+                ),
+          ]);
+          await this.persistRemoteData({
+            bank: remote.bank,
+            account: remote.account,
+            mapping,
+            localAccount,
+            transactions: transactionResult.transactions,
+            removedTransactionIds: transactionResult.removedIds,
+            balance: reportedBalance,
+          });
+          mapping.last_synced_at = new Date();
+          await this.remoteAccounts.save(mapping);
+          return true;
+        } catch {
+          this.logger.warn(
+            `BankSync account sync failed for ${mapping.remote_account_id}`,
+          );
+          return mapping.remote_account_id;
+        }
+      }),
+    );
+    for (const result of results) {
+      if (result === true) accountsSynced += 1;
+      else if (typeof result === 'string') errors.push(result);
     }
     return { accountsSynced, errors };
   }
@@ -420,13 +494,15 @@ export class BankSyncService {
     mapping,
     localAccount,
     transactions,
+    removedTransactionIds,
     balance,
   }: {
     bank: BankSyncBank;
     account: BankSyncRemoteAccount;
     mapping: BankSyncAccount;
     localAccount: Account;
-    transactions: Awaited<ReturnType<BankSyncClient['getTransactions']>>;
+    transactions: BankSyncRemoteTransaction[];
+    removedTransactionIds: string[];
     balance: { amount: number; currency: string } | null;
   }) {
     if (balance) {
@@ -439,6 +515,28 @@ export class BankSyncService {
     localAccount.name = account.name ?? account.accountName ?? bank.name;
     await this.accounts.save(localAccount);
 
+    const transactionIds = new Set(
+      transactions.map((transaction) => transaction.id),
+    );
+    const removedIds = new Set(removedTransactionIds);
+    for (const transaction of transactions) {
+      if (transaction.pendingTransactionId) {
+        removedIds.add(transaction.pendingTransactionId);
+      }
+    }
+    for (const transactionId of transactionIds) {
+      removedIds.delete(transactionId);
+    }
+    if (removedIds.size > 0) {
+      await this.transactions.delete({
+        externalId: In(
+          [...removedIds].map(
+            (id) =>
+              `banksync:${mapping.user_id}:${mapping.remote_bank_id}:${mapping.remote_account_id}:${id}`,
+          ),
+        ),
+      });
+    }
     const rows = transactions.map((transaction) => {
       const currency = transaction.currency ?? localAccount.currency;
       const money = Money.fromCurrencyCode({
@@ -484,6 +582,13 @@ export class BankSyncService {
 
   private remoteKey(bankId: string, accountId: string) {
     return `${bankId}\u0000${accountId}`;
+  }
+
+  private isUniqueConstraintError(error: unknown): boolean {
+    if (typeof error !== 'object' || error === null) return false;
+    const driverError = (error as { driverError?: { code?: string } })
+      .driverError;
+    return driverError?.code === '23505';
   }
 
   private async getApiKey(userId: string): Promise<string> {

@@ -1,5 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AiModule } from 'src/features/ai/ai.module';
 import { Account } from 'src/features/accounts/entities/account.entity';
@@ -9,10 +10,12 @@ import { BankSyncCredential } from './entities/banksync-credential.entity';
 import { BankSyncClient } from './banksync.client';
 import { BankSyncController } from './banksync.controller';
 import { BankSyncService } from './banksync.service';
+import { BANKSYNC_QUEUE, BankSyncProcessor } from './banksync.processor';
 
 @Module({
   imports: [
     AiModule,
+    BullModule.registerQueue({ name: BANKSYNC_QUEUE }),
     HttpModule,
     TypeOrmModule.forFeature([
       BankSyncCredential,
@@ -22,6 +25,6 @@ import { BankSyncService } from './banksync.service';
     ]),
   ],
   controllers: [BankSyncController],
-  providers: [BankSyncService, BankSyncClient],
+  providers: [BankSyncService, BankSyncClient, BankSyncProcessor],
 })
 export class BankSyncModule {}

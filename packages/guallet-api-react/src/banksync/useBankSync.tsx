@@ -13,7 +13,7 @@ export function useBankSyncCredential() {
     select: (credential): BankSyncCredentialDto => credential,
   });
   return {
-    credential: data ?? { configured: false, keyHint: null },
+    credential: data ?? null,
     ...query,
   };
 }

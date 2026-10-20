@@ -12,8 +12,8 @@ export function BankSyncSettingsCard() {
   return (
     <PersonalProviderSettingsCard
       provider="bankSync"
-      configured={credential.configured}
-      keyHint={credential.keyHint}
+      configured={credential?.configured ?? false}
+      keyHint={credential?.keyHint ?? null}
       isLoading={isLoading}
       savePending={saveCredentialMutation.isPending}
       deletePending={deleteCredentialMutation.isPending}

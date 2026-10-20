@@ -58,6 +58,9 @@ export function useSynciMutations() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['accounts'] });
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['accounts-transactions'],
+      });
     },
   });
 

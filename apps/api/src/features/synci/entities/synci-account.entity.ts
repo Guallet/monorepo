@@ -35,6 +35,9 @@ export class SynciAccount extends BaseDbEntity {
   @Column({ type: 'boolean', default: true })
   is_linked: boolean;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  last_synced_at: Date | null;
+
   @Column({ type: 'uuid' })
   @ForeignKey(() => Account, 'id', {
     name: 'synci_accounts_guallet_account',

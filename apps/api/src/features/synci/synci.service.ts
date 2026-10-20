@@ -14,6 +14,7 @@ import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
 import { SynciAccount } from './entities/synci-account.entity';
 import { SynciCredential } from './entities/synci-credential.entity';
@@ -189,7 +190,7 @@ export class SynciService {
     let mapping = await this.remoteAccounts.findOne({
       where: { user_id: userId, remote_account_id: remoteId },
     });
-    const balance = await this.client.getBalance(apiKey, remoteId);
+    const balance = this.client.getBalance(account);
     const transactions = await this.client.getTransactions(apiKey, remoteId);
 
     let localAccount: Account | null = null;
@@ -200,6 +201,8 @@ export class SynciService {
       if (!localAccount) {
         throw new NotFoundException('Linked Guallet account not found');
       }
+      localAccount.source = AccountSource.IMPORTED;
+      localAccount.source_name = 'Synci';
       if (!mapping.is_linked) {
         mapping.is_linked = true;
         await this.remoteAccounts.save(mapping);
@@ -215,7 +218,7 @@ export class SynciService {
         }).amount,
         currency,
         type: AccountType.UNKNOWN,
-        source: AccountSource.SYNCED,
+        source: AccountSource.IMPORTED,
         source_name: 'Synci',
         institutionId: null,
         properties: null,
@@ -232,13 +235,14 @@ export class SynciService {
       });
     }
     await this.persistRemoteData({
-      apiKey,
       account,
       mapping,
       localAccount,
       transactions,
       balance,
     });
+    mapping.last_synced_at = new Date();
+    await this.remoteAccounts.save(mapping);
     return mapping;
   }
 
@@ -256,24 +260,32 @@ export class SynciService {
     const results = await Promise.all(
       mappings.map(async (mapping) => {
         const account = remoteById.get(mapping.remote_account_id);
-        if (!account) return null;
+        if (!account) return mapping.remote_account_id;
         try {
           const localAccount = await this.accounts.findOne({
             where: { id: mapping.guallet_account_id, user_id: userId },
           });
-          if (!localAccount) return null;
-          const [balance, transactions] = await Promise.all([
-            this.client.getBalance(apiKey, mapping.remote_account_id),
-            this.client.getTransactions(apiKey, mapping.remote_account_id),
-          ]);
-          await this.persistRemoteData({
+          if (!localAccount) return mapping.remote_account_id;
+          const to = new Date().toISOString().slice(0, 10);
+          const fromDate = mapping.last_synced_at
+            ? new Date(mapping.last_synced_at)
+            : null;
+          if (fromDate) fromDate.setUTCDate(fromDate.getUTCDate() - 7);
+          const transactions = await this.client.getTransactions(
             apiKey,
+            mapping.remote_account_id,
+            fromDate?.toISOString().slice(0, 10),
+            to,
+          );
+          await this.persistRemoteData({
             account,
             mapping,
             localAccount,
             transactions,
-            balance,
+            balance: this.client.getBalance(account),
           });
+          mapping.last_synced_at = new Date();
+          await this.remoteAccounts.save(mapping);
           return true;
         } catch {
           return mapping.remote_account_id;
@@ -292,23 +304,19 @@ export class SynciService {
   }
 
   private async persistRemoteData({
-    apiKey,
     account,
     mapping,
     localAccount,
     transactions,
     balance,
   }: {
-    apiKey: string;
     account: SynciRemoteAccount;
     mapping: SynciAccount;
     localAccount: Account;
     transactions: Awaited<ReturnType<SynciClient['getTransactions']>>;
     balance?: { amount: number; currency: string };
   }) {
-    const currentBalance =
-      balance ??
-      (await this.client.getBalance(apiKey, mapping.remote_account_id));
+    const currentBalance = balance ?? this.client.getBalance(account);
     const currency =
       currentBalance.currency || account.currency || localAccount.currency;
     localAccount.balance = Money.fromCurrencyCode({
@@ -319,58 +327,15 @@ export class SynciService {
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
 
-    const existingTransactions = await this.transactions
-      .createQueryBuilder('transaction')
-      .where('transaction.accountId = :accountId', {
-        accountId: localAccount.id,
-      })
-      .andWhere("transaction.metadata ->> 'provider' = :provider", {
-        provider: 'synci',
-      })
-      .getMany();
-    const existingByRemoteId = new Map(
-      existingTransactions.flatMap((existing) => {
-        const data = existing.metadata?.data;
-        if (typeof data !== 'object' || data === null || !('id' in data)) {
-          return [];
-        }
-        return [[String(data.id), existing] as const];
-      }),
-    );
-    for (const transaction of transactions) {
-      const externalId = `synci:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`;
-      const existing = existingByRemoteId.get(String(transaction.id));
-      if (existing && existing.externalId !== externalId) {
-        await this.transactions.update(existing.id, { externalId });
-      }
-    }
-    const rows = transactions.map((transaction) => {
-      const money = Money.fromCurrencyCode({
-        amount: Number(transaction.amount),
-        currencyCode: transaction.currency || localAccount.currency,
-      });
-      const transactionDate = /^\d{4}-\d{2}-\d{2}$/.test(transaction.date)
-        ? new Date(`${transaction.date}T12:00:00.000Z`)
-        : new Date(transaction.date);
-      return {
-        accountId: localAccount.id,
-        externalId: `synci:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`,
-        amount: money.amount,
-        currency: money.currency.code,
-        date: transactionDate,
-        description: transaction.merchant || transaction.description || '',
-        metadata: {
-          provider: 'synci' as const,
-          data: transaction,
-        },
-      };
+    await persistPersonalProviderTransactions({
+      repository: this.transactions,
+      accountId: localAccount.id,
+      provider: 'synci',
+      userId: mapping.user_id,
+      remoteAccountId: mapping.remote_account_id,
+      currency: localAccount.currency,
+      transactions,
     });
-    if (rows.length) {
-      await this.transactions.upsert(rows, {
-        conflictPaths: ['externalId'],
-        skipUpdateIfNoValuesChanged: true,
-      });
-    }
   }
 
   private async getApiKey(userId: string): Promise<string> {

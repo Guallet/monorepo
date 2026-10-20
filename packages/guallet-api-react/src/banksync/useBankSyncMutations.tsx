@@ -49,6 +49,9 @@ export function useBankSyncMutations() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['accounts'] });
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['accounts-transactions'],
+      });
     },
   });
   const unlinkAccountMutation = useMutation({

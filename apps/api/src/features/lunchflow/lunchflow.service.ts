@@ -14,6 +14,7 @@ import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
 import { LunchFlowAccount } from './entities/lunchflow-account.entity';
 import { LunchFlowCredential } from './entities/lunchflow-credential.entity';
@@ -200,6 +201,8 @@ export class LunchFlowService {
       if (!localAccount) {
         throw new NotFoundException('Linked Guallet account not found');
       }
+      localAccount.source = AccountSource.IMPORTED;
+      localAccount.source_name = 'Lunch Flow';
       if (!mapping.is_linked) {
         mapping.is_linked = true;
         await this.remoteAccounts.save(mapping);
@@ -215,7 +218,7 @@ export class LunchFlowService {
         }).amount,
         currency,
         type: AccountType.UNKNOWN,
-        source: AccountSource.SYNCED,
+        source: AccountSource.IMPORTED,
         source_name: 'Lunch Flow',
         institutionId: null,
         properties: null,
@@ -256,12 +259,12 @@ export class LunchFlowService {
     const results = await Promise.all(
       mappings.map(async (mapping) => {
         const account = remoteById.get(mapping.remote_account_id);
-        if (!account) return null;
+        if (!account) return mapping.remote_account_id;
         try {
           const localAccount = await this.accounts.findOne({
             where: { id: mapping.guallet_account_id, user_id: userId },
           });
-          if (!localAccount) return null;
+          if (!localAccount) return mapping.remote_account_id;
           const [balance, transactions] = await Promise.all([
             this.client.getBalance(apiKey, mapping.remote_account_id),
             this.client.getTransactions(apiKey, mapping.remote_account_id),
@@ -321,58 +324,15 @@ export class LunchFlowService {
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
 
-    const existingTransactions = await this.transactions
-      .createQueryBuilder('transaction')
-      .where('transaction.accountId = :accountId', {
-        accountId: localAccount.id,
-      })
-      .andWhere("transaction.metadata ->> 'provider' = :provider", {
-        provider: 'lunchflow',
-      })
-      .getMany();
-    const existingByRemoteId = new Map(
-      existingTransactions.flatMap((existing) => {
-        const data = existing.metadata?.data;
-        if (typeof data !== 'object' || data === null || !('id' in data)) {
-          return [];
-        }
-        return [[String(data.id), existing] as const];
-      }),
-    );
-    for (const transaction of transactions) {
-      const externalId = `lunchflow:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`;
-      const existing = existingByRemoteId.get(String(transaction.id));
-      if (existing && existing.externalId !== externalId) {
-        await this.transactions.update(existing.id, { externalId });
-      }
-    }
-    const rows = transactions.map((transaction) => {
-      const money = Money.fromCurrencyCode({
-        amount: Number(transaction.amount),
-        currencyCode: transaction.currency || localAccount.currency,
-      });
-      const transactionDate = /^\d{4}-\d{2}-\d{2}$/.test(transaction.date)
-        ? new Date(`${transaction.date}T12:00:00.000Z`)
-        : new Date(transaction.date);
-      return {
-        accountId: localAccount.id,
-        externalId: `lunchflow:${mapping.user_id}:${mapping.remote_account_id}:${transaction.id}`,
-        amount: money.amount,
-        currency: money.currency.code,
-        date: transactionDate,
-        description: transaction.merchant || transaction.description || '',
-        metadata: {
-          provider: 'lunchflow' as const,
-          data: transaction,
-        },
-      };
+    await persistPersonalProviderTransactions({
+      repository: this.transactions,
+      accountId: localAccount.id,
+      provider: 'lunchflow',
+      userId: mapping.user_id,
+      remoteAccountId: mapping.remote_account_id,
+      currency: localAccount.currency,
+      transactions,
     });
-    if (rows.length) {
-      await this.transactions.upsert(rows, {
-        conflictPaths: ['externalId'],
-        skipUpdateIfNoValuesChanged: true,
-      });
-    }
   }
 
   private async getApiKey(userId: string): Promise<string> {

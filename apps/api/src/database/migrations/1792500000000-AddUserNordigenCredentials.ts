@@ -21,9 +21,22 @@ export class AddUserNordigenCredentials1792500000000 implements MigrationInterfa
     await queryRunner.query(
       `ALTER TABLE "nordigen_token" ADD CONSTRAINT "FK_nordigen_token_user" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "nordigen_token" ALTER COLUMN "access" TYPE text`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "nordigen_token" ALTER COLUMN "refresh" TYPE text`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DELETE FROM "nordigen_token"`);
+    await queryRunner.query(
+      `ALTER TABLE "nordigen_token" ALTER COLUMN "access" TYPE character varying(255)`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "nordigen_token" ALTER COLUMN "refresh" TYPE character varying(255)`,
+    );
     await queryRunner.query(
       `ALTER TABLE "nordigen_token" DROP CONSTRAINT "FK_nordigen_token_user"`,
     );

@@ -17,7 +17,6 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
 
 const CRON_JOB_SYNC_ACCOUNTS_NAME = 'cron.sync.accounts';
-const CRON_JOB_SYNC_INSTITUTIONS_NAME = 'cron.sync.institutions';
 const CRON_JOB_TIMEZONE = 'Europe/London';
 
 // Refactor this. Maybe saved in the DB?
@@ -74,22 +73,6 @@ export class SyncService {
     private readonly nordigenService: NordigenService,
     private readonly notificationsService: NotificationsService,
   ) {}
-
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, {
-    name: CRON_JOB_SYNC_INSTITUTIONS_NAME,
-    timeZone: CRON_JOB_TIMEZONE,
-  })
-  async syncOpenBankingInstitutions(): Promise<void> {
-    this.logger.log(
-      'Skipping Nordigen institution refresh; credentials are user scoped',
-    );
-  }
-
-  async syncOpenBankingInstitutionsFromNordigen() {
-    this.logger.log(
-      'Institution catalogs are refreshed by authenticated user requests',
-    );
-  }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
     name: CRON_JOB_SYNC_ACCOUNTS_NAME,

@@ -38,3 +38,13 @@ export type BankSyncSyncResponseDto = {
   accountsSynced: number;
   errors: string[];
 };
+
+export type BankSyncJobAcceptedDto = {
+  jobId: string;
+};
+
+export type BankSyncJobStatusDto = {
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  result?: Record<string, unknown> | null;
+  error?: string | null;
+};

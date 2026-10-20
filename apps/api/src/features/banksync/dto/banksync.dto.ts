@@ -57,6 +57,22 @@ export class BankSyncSyncResponseDto {
   errors: string[];
 }
 
+export class BankSyncJobAcceptedDto {
+  @ApiProperty()
+  jobId: string;
+}
+
+export class BankSyncJobStatusDto {
+  @ApiProperty({ enum: ['queued', 'running', 'completed', 'failed'] })
+  status: 'queued' | 'running' | 'completed' | 'failed';
+
+  @ApiProperty({ required: false, nullable: true })
+  result?: Record<string, unknown> | null;
+
+  @ApiProperty({ type: String, required: false, nullable: true })
+  error?: string | null;
+}
+
 export class SaveBankSyncCredentialDto {
   @ApiProperty({ maxLength: 4096 })
   apiKey: string;

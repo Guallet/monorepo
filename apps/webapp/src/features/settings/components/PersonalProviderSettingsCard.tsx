@@ -143,20 +143,246 @@ export function PersonalProviderSettingsCard({
 }: Readonly<PersonalProviderSettingsCardProps>) {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const prefix = `screens.settings.${provider}`;
-  const defaults = providerSettingsDefaults[provider];
-  const labels = Object.fromEntries(
-    Object.entries(defaults).map(([key, value]) => [
-      key,
-      t(`${prefix}.${key}`, value),
-    ]),
-  ) as PersonalProviderSettingsLabels;
-  const docsUrl =
-    provider === 'bankSync'
-      ? 'https://banksync.io/docs/api/authentication'
-      : provider === 'synci'
-        ? 'https://docs.synci.io'
-        : 'https://www.lunchflow.app/docs/api/personal-api-overview';
+  const labelsByProvider: Record<
+    PersonalProvider,
+    PersonalProviderSettingsLabels
+  > = {
+    bankSync: {
+      instructions: t(
+        'screens.settings.bankSync.instructions',
+        providerSettingsDefaults.bankSync.instructions,
+      ),
+      learnMore: t(
+        'screens.settings.bankSync.learnMore',
+        providerSettingsDefaults.bankSync.learnMore,
+      ),
+      keySecurity: t(
+        'screens.settings.bankSync.keySecurity',
+        providerSettingsDefaults.bankSync.keySecurity ?? '',
+      ),
+      keyConfigured: t(
+        'screens.settings.bankSync.keyConfigured',
+        providerSettingsDefaults.bankSync.keyConfigured,
+      ),
+      apiKeyLabel: t(
+        'screens.settings.bankSync.apiKeyLabel',
+        providerSettingsDefaults.bankSync.apiKeyLabel,
+      ),
+      apiKeyPlaceholder: t(
+        'screens.settings.bankSync.apiKeyPlaceholder',
+        providerSettingsDefaults.bankSync.apiKeyPlaceholder,
+      ),
+      saveButton: t(
+        'screens.settings.bankSync.saveButton',
+        providerSettingsDefaults.bankSync.saveButton,
+      ),
+      saveSuccess: t(
+        'screens.settings.bankSync.saveSuccess',
+        providerSettingsDefaults.bankSync.saveSuccess,
+      ),
+      saveErrorTitle: t(
+        'screens.settings.bankSync.saveErrorTitle',
+        providerSettingsDefaults.bankSync.saveErrorTitle,
+      ),
+      saveErrorMessage: t(
+        'screens.settings.bankSync.saveErrorMessage',
+        providerSettingsDefaults.bankSync.saveErrorMessage,
+      ),
+      syncButton: t(
+        'screens.settings.bankSync.syncButton',
+        providerSettingsDefaults.bankSync.syncButton ?? 'Sync now',
+      ),
+      syncErrorTitle: t(
+        'screens.settings.bankSync.syncErrorTitle',
+        providerSettingsDefaults.bankSync.syncErrorTitle ??
+          'Could not sync accounts',
+      ),
+      syncErrorMessage: t(
+        'screens.settings.bankSync.syncErrorMessage',
+        providerSettingsDefaults.bankSync.syncErrorMessage ??
+          'Please try again later.',
+      ),
+      deleteButton: t(
+        'screens.settings.bankSync.deleteButton',
+        providerSettingsDefaults.bankSync.deleteButton,
+      ),
+      deleteSuccess: t(
+        'screens.settings.bankSync.deleteSuccess',
+        providerSettingsDefaults.bankSync.deleteSuccess,
+      ),
+      deleteErrorTitle: t(
+        'screens.settings.bankSync.deleteErrorTitle',
+        providerSettingsDefaults.bankSync.deleteErrorTitle,
+      ),
+      deleteErrorMessage: t(
+        'screens.settings.bankSync.deleteErrorMessage',
+        providerSettingsDefaults.bankSync.deleteErrorMessage,
+      ),
+      confirmDeleteTitle: t(
+        'screens.settings.bankSync.confirmDeleteTitle',
+        providerSettingsDefaults.bankSync.confirmDeleteTitle,
+      ),
+      confirmDeleteBody: t(
+        'screens.settings.bankSync.confirmDeleteBody',
+        providerSettingsDefaults.bankSync.confirmDeleteBody,
+      ),
+    },
+    lunchFlow: {
+      instructions: t(
+        'screens.settings.lunchFlow.instructions',
+        providerSettingsDefaults.lunchFlow.instructions,
+      ),
+      learnMore: t(
+        'screens.settings.lunchFlow.learnMore',
+        providerSettingsDefaults.lunchFlow.learnMore,
+      ),
+      keyConfigured: t(
+        'screens.settings.lunchFlow.keyConfigured',
+        providerSettingsDefaults.lunchFlow.keyConfigured,
+      ),
+      apiKeyLabel: t(
+        'screens.settings.lunchFlow.apiKeyLabel',
+        providerSettingsDefaults.lunchFlow.apiKeyLabel,
+      ),
+      apiKeyPlaceholder: t(
+        'screens.settings.lunchFlow.apiKeyPlaceholder',
+        providerSettingsDefaults.lunchFlow.apiKeyPlaceholder,
+      ),
+      saveButton: t(
+        'screens.settings.lunchFlow.saveButton',
+        providerSettingsDefaults.lunchFlow.saveButton,
+      ),
+      saveSuccess: t(
+        'screens.settings.lunchFlow.saveSuccess',
+        providerSettingsDefaults.lunchFlow.saveSuccess,
+      ),
+      saveErrorTitle: t(
+        'screens.settings.lunchFlow.saveErrorTitle',
+        providerSettingsDefaults.lunchFlow.saveErrorTitle,
+      ),
+      saveErrorMessage: t(
+        'screens.settings.lunchFlow.saveErrorMessage',
+        providerSettingsDefaults.lunchFlow.saveErrorMessage,
+      ),
+      syncButton: t(
+        'screens.settings.lunchFlow.syncButton',
+        providerSettingsDefaults.lunchFlow.syncButton ?? 'Sync now',
+      ),
+      syncErrorTitle: t(
+        'screens.settings.lunchFlow.syncErrorTitle',
+        providerSettingsDefaults.lunchFlow.syncErrorTitle ??
+          'Could not sync accounts',
+      ),
+      syncErrorMessage: t(
+        'screens.settings.lunchFlow.syncErrorMessage',
+        providerSettingsDefaults.lunchFlow.syncErrorMessage ??
+          'Please try again later.',
+      ),
+      deleteButton: t(
+        'screens.settings.lunchFlow.deleteButton',
+        providerSettingsDefaults.lunchFlow.deleteButton,
+      ),
+      deleteSuccess: t(
+        'screens.settings.lunchFlow.deleteSuccess',
+        providerSettingsDefaults.lunchFlow.deleteSuccess,
+      ),
+      deleteErrorTitle: t(
+        'screens.settings.lunchFlow.deleteErrorTitle',
+        providerSettingsDefaults.lunchFlow.deleteErrorTitle,
+      ),
+      deleteErrorMessage: t(
+        'screens.settings.lunchFlow.deleteErrorMessage',
+        providerSettingsDefaults.lunchFlow.deleteErrorMessage,
+      ),
+      confirmDeleteTitle: t(
+        'screens.settings.lunchFlow.confirmDeleteTitle',
+        providerSettingsDefaults.lunchFlow.confirmDeleteTitle,
+      ),
+      confirmDeleteBody: t(
+        'screens.settings.lunchFlow.confirmDeleteBody',
+        providerSettingsDefaults.lunchFlow.confirmDeleteBody,
+      ),
+    },
+    synci: {
+      instructions: t(
+        'screens.settings.synci.instructions',
+        'Create a personal access token in Synci under Developers > Tokens. Guallet uses it to read your connected accounts and transactions.',
+      ),
+      learnMore: t(
+        'screens.settings.synci.learnMore',
+        'View Synci API instructions',
+      ),
+      keySecurity: t(
+        'screens.settings.synci.keySecurity',
+        'Your token is encrypted in Guallet and is only used to read your Synci financial data.',
+      ),
+      keyConfigured: t(
+        'screens.settings.synci.keyConfigured',
+        'Personal access token configured',
+      ),
+      apiKeyLabel: t(
+        'screens.settings.synci.apiKeyLabel',
+        'Synci personal access token',
+      ),
+      apiKeyPlaceholder: t(
+        'screens.settings.synci.apiKeyPlaceholder',
+        'Enter a new token to replace it or paste your token',
+      ),
+      saveButton: t(
+        'screens.settings.synci.saveButton',
+        'Save and validate token',
+      ),
+      saveSuccess: t(
+        'screens.settings.synci.saveSuccess',
+        'Synci token saved.',
+      ),
+      saveErrorTitle: t(
+        'screens.settings.synci.saveErrorTitle',
+        'Could not save token',
+      ),
+      saveErrorMessage: t(
+        'screens.settings.synci.saveErrorMessage',
+        'Check that your Synci personal access token is valid.',
+      ),
+      syncButton: t('screens.settings.synci.syncButton', 'Sync now'),
+      syncErrorTitle: t(
+        'screens.settings.synci.syncErrorTitle',
+        'Could not sync accounts',
+      ),
+      syncErrorMessage: t(
+        'screens.settings.synci.syncErrorMessage',
+        'Please try again later.',
+      ),
+      deleteButton: t('screens.settings.synci.deleteButton', 'Remove token'),
+      deleteSuccess: t(
+        'screens.settings.synci.deleteSuccess',
+        'Synci token removed. Imported accounts remain in Guallet.',
+      ),
+      deleteErrorTitle: t(
+        'screens.settings.synci.deleteErrorTitle',
+        'Could not remove token',
+      ),
+      deleteErrorMessage: t(
+        'screens.settings.synci.deleteErrorMessage',
+        'Please try again.',
+      ),
+      confirmDeleteTitle: t(
+        'screens.settings.synci.confirmDeleteTitle',
+        'Remove Synci token?',
+      ),
+      confirmDeleteBody: t(
+        'screens.settings.synci.confirmDeleteBody',
+        'Guallet will stop syncing these accounts. Imported accounts and transactions will remain.',
+      ),
+    },
+  };
+  const labels = labelsByProvider[provider];
+  const docsUrlByProvider: Record<PersonalProvider, string> = {
+    bankSync: 'https://banksync.io/docs/api/authentication',
+    lunchFlow: 'https://www.lunchflow.app/docs/api/personal-api-overview',
+    synci: 'https://docs.synci.io',
+  };
+  const docsUrl = docsUrlByProvider[provider];
   const [apiKey, setApiKey] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
 

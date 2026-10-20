@@ -20,10 +20,14 @@ export function StepBankSyncImport({
   onDone,
   onConfigure,
 }: Readonly<StepBankSyncImportProps>) {
-  const { credential, isLoading: isCredentialLoading } =
-    useBankSyncCredential();
+  const {
+    credential,
+    isLoading: isCredentialLoading,
+    isError: isCredentialError,
+    refetch: refetchCredential,
+  } = useBankSyncCredential();
   const { accounts, isLoading, isError, refetch } = useBankSyncAccounts(
-    credential.configured,
+    credential?.configured === true,
   );
   const { importAccountsMutation, unlinkAccountMutation } =
     useBankSyncMutations();
@@ -35,7 +39,8 @@ export function StepBankSyncImport({
     <PersonalProviderImportStep
       provider="bankSync"
       isCredentialLoading={isCredentialLoading}
-      configured={credential.configured}
+      isCredentialError={isCredentialError}
+      configured={credential?.configured ?? false}
       accounts={accounts.map((account) => ({
         key: selectionKey(account),
         name: account.name,
@@ -47,7 +52,7 @@ export function StepBankSyncImport({
       isError={isError}
       isImporting={importAccountsMutation.isPending}
       isUnlinking={unlinkAccountMutation.isPending}
-      onRefresh={() => void refetch()}
+      onRefresh={() => void Promise.all([refetch(), refetchCredential()])}
       onImport={async (selectedKeys) => {
         const selected = selectedKeys
           .map((key) => accountByKey.get(key))

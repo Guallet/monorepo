@@ -1,4 +1,3 @@
-import { AdminApi } from './admin';
 import { AccountsApi } from './accounts';
 import { BudgetsApi } from './budgets';
 import { CategoriesApi } from './categories';
@@ -20,7 +19,6 @@ import { SynciApi } from './synci';
 import { NordigenApi } from './nordigen';
 
 export interface GualletClient {
-  admin: AdminApi;
   accounts: AccountsApi;
   categories: CategoriesApi;
   connections: ConnectionsApi;
@@ -75,7 +73,6 @@ export class GualletClientImpl implements GualletClient {
   private readonly baseUrl: string;
   private readonly cookieHelper?: CookieHelper;
 
-  admin: AdminApi;
   accounts: AccountsApi;
   categories: CategoriesApi;
   connections: ConnectionsApi;
@@ -106,7 +103,6 @@ export class GualletClientImpl implements GualletClient {
     this.baseUrl = baseUrl;
     this.cookieHelper = cookieHelper;
 
-    this.admin = new AdminApi(this);
     this.accounts = new AccountsApi(this);
     this.categories = new CategoriesApi(this);
     this.connections = new ConnectionsApi(this);

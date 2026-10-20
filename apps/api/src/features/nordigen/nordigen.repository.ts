@@ -2,16 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NordigenToken } from './entities/nordigen-token.entity';
+import { AiCredentialEncryptionService } from 'src/features/ai/ai-credential-encryption.service';
 
 @Injectable()
 export class NordigenRepository {
   constructor(
     @InjectRepository(NordigenToken)
     private repository: Repository<NordigenToken>,
+    private readonly cipher: AiCredentialEncryptionService,
   ) {}
 
   async getToken(userId: string) {
-    return await this.repository.findOne({ where: { user_id: userId } });
+    const token = await this.repository.findOne({ where: { user_id: userId } });
+    if (!token) return null;
+    return {
+      ...token,
+      access: this.cipher.decrypt(token.access),
+      refresh: this.cipher.decrypt(token.refresh),
+    };
   }
 
   async deleteUserToken(userId: string) {
@@ -27,8 +35,8 @@ export class NordigenRepository {
   ): Promise<NordigenToken> {
     return await this.repository.save({
       user_id: userId,
-      access: access,
-      refresh: refresh,
+      access: this.cipher.encrypt(access),
+      refresh: this.cipher.encrypt(refresh ?? ''),
       access_expires_on: access_expires,
       refresh_expires_on: refresh_expires,
     });
@@ -58,11 +66,19 @@ export class NordigenRepository {
     await this.repository.update(
       { id, user_id: userId },
       {
-        access: access,
+        access: this.cipher.encrypt(access),
         access_expires_on: expiration_date,
       },
     );
 
-    return await this.repository.findOneByOrFail({ id, user_id: userId });
+    const token = await this.repository.findOneByOrFail({
+      id,
+      user_id: userId,
+    });
+    return {
+      ...token,
+      access: this.cipher.decrypt(token.access),
+      refresh: this.cipher.decrypt(token.refresh),
+    };
   }
 }

@@ -22,10 +22,10 @@ export class NordigenToken extends BaseDbEntity {
   })
   user_id: string;
 
-  @Column()
+  @Column({ type: 'text' })
   access: string;
 
-  @Column()
+  @Column({ type: 'text' })
   refresh: string;
 
   @Column()

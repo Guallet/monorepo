@@ -83,37 +83,6 @@ describe('SyncService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('syncOpenBankingInstitutionsFromNordigen', () => {
-    it('should sync institutions for supported countries', async () => {
-      const mockInstitutions = [
-        {
-          id: 'inst-1',
-          name: 'Test Bank',
-          logo: 'http://example.com/logo.png',
-          countries: ['GB'],
-        },
-      ];
-
-      mockNordigenService.getInstitutions.mockResolvedValue(mockInstitutions);
-      mockInstitutionsService.saveAll.mockResolvedValue({});
-
-      await service.syncOpenBankingInstitutionsFromNordigen();
-
-      // Should be called for each supported country
-      expect(mockNordigenService.getInstitutions).toHaveBeenCalled();
-      expect(mockInstitutionsService.saveAll).toHaveBeenCalled();
-    });
-
-    it('should handle empty institutions list', async () => {
-      mockNordigenService.getInstitutions.mockResolvedValue([]);
-      mockInstitutionsService.saveAll.mockResolvedValue({});
-
-      await service.syncOpenBankingInstitutionsFromNordigen();
-
-      expect(mockNordigenService.getInstitutions).toHaveBeenCalled();
-    });
-  });
-
   describe('syncConnectedAccounts', () => {
     it('should sync connected accounts', async () => {
       const mockAccounts = [

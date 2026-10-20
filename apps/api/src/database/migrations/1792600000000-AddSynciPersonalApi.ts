@@ -27,9 +27,15 @@ export class AddSynciPersonalApi1792600000000 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await createPersonalProviderTables(queryRunner, config);
+    await queryRunner.query(
+      `ALTER TABLE "synci_accounts" ADD "last_synced_at" TIMESTAMPTZ`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "synci_accounts" DROP COLUMN "last_synced_at"`,
+    );
     await dropPersonalProviderTables(queryRunner, config);
   }
 }

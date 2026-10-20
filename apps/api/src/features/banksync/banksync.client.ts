@@ -4,6 +4,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotImplementedException,
   ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -39,11 +40,14 @@ export type BankSyncRemoteTransaction = {
   name?: string | null;
   merchant?: string | null;
   pending?: boolean;
+  pendingTransactionId?: string | null;
 };
 
 type BankSyncResponse<T> = {
   success: boolean;
   data: T;
+  modified?: T;
+  removed?: string[];
   meta?: { cursor?: string | null; hasMore?: boolean };
 };
 
@@ -85,8 +89,12 @@ export class BankSyncClient {
     from: string,
     to: string,
     userId: string,
-  ): Promise<BankSyncRemoteTransaction[]> {
+  ): Promise<{
+    transactions: BankSyncRemoteTransaction[];
+    removedIds: string[];
+  }> {
     const transactions: BankSyncRemoteTransaction[] = [];
+    const removedIds = new Set<string>();
     let cursor: string | undefined;
     for (let page = 0; page < 100; page += 1) {
       const query = new URLSearchParams({ from, to });
@@ -99,7 +107,21 @@ export class BankSyncClient {
         userId,
       );
       transactions.push(...response.data);
-      if (!response.meta?.hasMore) return transactions;
+      for (const transaction of response.modified ?? []) {
+        transactions.push(transaction);
+      }
+      for (const removedId of response.removed ?? []) {
+        removedIds.add(removedId);
+      }
+      if (!response.meta?.hasMore) {
+        const uniqueTransactions = new Map(
+          transactions.map((transaction) => [transaction.id, transaction]),
+        );
+        return {
+          transactions: [...uniqueTransactions.values()],
+          removedIds: [...removedIds],
+        };
+      }
       if (!response.meta.cursor || response.meta.cursor === cursor) {
         throw new BadGatewayException(
           'BankSync returned an invalid page cursor',
@@ -118,18 +140,27 @@ export class BankSyncClient {
     accountId: string,
     userId: string,
   ): Promise<{ amount: number; currency: string } | null> {
-    const response = await this.get<{
-      data: BankSyncRemoteBalance | BankSyncRemoteBalance[];
-    }>(
-      `/banks/${encodeURIComponent(bankId)}/accounts/${encodeURIComponent(accountId)}/balances`,
-      apiKey,
-      userId,
-    );
+    let response: { data: BankSyncRemoteBalance | BankSyncRemoteBalance[] };
+    try {
+      response = await this.get<{
+        data: BankSyncRemoteBalance | BankSyncRemoteBalance[];
+      }>(
+        `/banks/${encodeURIComponent(bankId)}/accounts/${encodeURIComponent(accountId)}/balances`,
+        apiKey,
+        userId,
+      );
+    } catch (error) {
+      if (error instanceof NotImplementedException) return null;
+      throw error;
+    }
     const balances = Array.isArray(response.data)
       ? response.data
       : [response.data];
     const balance = balances.find(
-      (item) => item.balance !== undefined || item.amount !== undefined,
+      (item) =>
+        item.balance !== undefined ||
+        item.currentBalance !== undefined ||
+        item.amount !== undefined,
     );
     const amount =
       balance?.balance ?? balance?.currentBalance ?? balance?.amount;
@@ -144,59 +175,72 @@ export class BankSyncClient {
   ): Promise<T> {
     for (let attempt = 0; attempt < 4; attempt += 1) {
       try {
-        await this.pace(userId);
+        await this.pace(userId); // NOSONAR -- requests must obey BankSync pacing
         const response = await firstValueFrom(
           this.http.get<T>(`${BASE_URL}${path}`, {
             headers: { 'X-API-Key': apiKey },
             timeout: 20_000,
           }),
         );
-        const payload = response.data as { success?: boolean; error?: string };
-        if (payload?.success === false) {
-          throw new BadGatewayException(
-            'BankSync returned an unsuccessful response',
-          );
-        }
+        this.assertSuccessfulResponse(response.data);
         return response.data;
       } catch (error) {
-        if (error instanceof BadGatewayException) throw error;
-        const axiosError = error as AxiosError;
-        const status = axiosError.response?.status;
-        if (status === 429 && attempt < 3) {
-          const retryAfter = Number(
-            axiosError.response?.headers['retry-after'],
-          );
-          const waitMs = Number.isFinite(retryAfter)
-            ? Math.min(Math.max(retryAfter, 1), 120) * 1000
-            : 60_000;
-          await new Promise((resolve) => setTimeout(resolve, waitMs));
-          continue;
-        }
-        if (status === 401) {
-          throw new UnauthorizedException('BankSync API key was rejected');
-        }
-        if (status === 403) {
-          throw new ForbiddenException(
-            'BankSync requires REST API access and the banks:read scope',
-          );
-        }
-        if (status === 400) {
-          throw new BadRequestException('BankSync rejected the request');
-        }
-        if (
-          status === 409 ||
-          status === 423 ||
-          status === 425 ||
-          status === 503
-        ) {
-          throw new ServiceUnavailableException(
-            'BankSync bank connection needs attention; reconnect it in BankSync',
-          );
-        }
-        throw new BadGatewayException('BankSync API request failed');
+        if (await this.handleRequestError(error, attempt)) continue;
       }
     }
     throw new BadGatewayException('BankSync rate limit was exceeded');
+  }
+
+  private assertSuccessfulResponse(value: unknown): void {
+    const payload = value as { success?: boolean } | null;
+    if (payload?.success === false) {
+      throw new BadGatewayException(
+        'BankSync returned an unsuccessful response',
+      );
+    }
+  }
+
+  private async handleRequestError(
+    error: unknown,
+    attempt: number,
+  ): Promise<boolean> {
+    if (error instanceof BadGatewayException) throw error;
+    const axiosError = error as AxiosError;
+    const status = axiosError.response?.status;
+    if (status === 429 && attempt < 3) {
+      await this.waitForRateLimit(axiosError);
+      return true;
+    }
+    if (status === 401) {
+      throw new UnauthorizedException('BankSync API key was rejected');
+    }
+    if (status === 403) {
+      throw new ForbiddenException(
+        'BankSync requires REST API access and the banks:read scope',
+      );
+    }
+    if (status === 400) {
+      throw new BadRequestException('BankSync rejected the request');
+    }
+    if (status === 501) {
+      throw new NotImplementedException(
+        'BankSync does not provide balances for this account',
+      );
+    }
+    if (status === 409 || status === 423 || status === 425 || status === 503) {
+      throw new ServiceUnavailableException(
+        'BankSync bank connection needs attention; reconnect it in BankSync',
+      );
+    }
+    throw new BadGatewayException('BankSync API request failed');
+  }
+
+  private async waitForRateLimit(error: AxiosError): Promise<void> {
+    const retryAfter = Number(error.response?.headers['retry-after']);
+    const waitMs = Number.isFinite(retryAfter)
+      ? Math.min(Math.max(retryAfter, 1), 120) * 1000
+      : 60_000;
+    await new Promise((resolve) => setTimeout(resolve, waitMs));
   }
 
   private async pace(userId: string): Promise<void> {

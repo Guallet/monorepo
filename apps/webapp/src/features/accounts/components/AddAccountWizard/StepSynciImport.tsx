@@ -16,9 +16,14 @@ export function StepSynciImport({
   onDone,
   onConfigure,
 }: Readonly<StepSynciImportProps>) {
-  const { credential, isLoading: isCredentialLoading } = useSynciCredential();
+  const {
+    credential,
+    isLoading: isCredentialLoading,
+    isError: isCredentialError,
+    refetch: refetchCredential,
+  } = useSynciCredential();
   const { accounts, isLoading, isError, refetch } = useSynciAccounts(
-    credential.configured,
+    credential?.configured === true,
   );
   const { importAccountsMutation, unlinkAccountMutation } = useSynciMutations();
   const accountByKey = new Map(
@@ -29,7 +34,8 @@ export function StepSynciImport({
     <PersonalProviderImportStep
       provider="synci"
       isCredentialLoading={isCredentialLoading}
-      configured={credential.configured}
+      isCredentialError={isCredentialError}
+      configured={credential?.configured ?? false}
       accounts={accounts.map((account) => ({
         key: account.id,
         name: account.name,
@@ -42,7 +48,7 @@ export function StepSynciImport({
       isError={isError}
       isImporting={importAccountsMutation.isPending}
       isUnlinking={unlinkAccountMutation.isPending}
-      onRefresh={() => void refetch()}
+      onRefresh={() => void Promise.all([refetch(), refetchCredential()])}
       onImport={async (accountIds) => {
         await importAccountsMutation.mutateAsync({ accountIds });
       }}

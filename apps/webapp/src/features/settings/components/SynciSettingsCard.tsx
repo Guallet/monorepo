@@ -9,8 +9,8 @@ export function SynciSettingsCard() {
   return (
     <PersonalProviderSettingsCard
       provider="synci"
-      configured={credential.configured}
-      keyHint={credential.keyHint}
+      configured={credential?.configured ?? false}
+      keyHint={credential?.keyHint ?? null}
       isLoading={isLoading}
       savePending={saveCredentialMutation.isPending}
       deletePending={deleteCredentialMutation.isPending}

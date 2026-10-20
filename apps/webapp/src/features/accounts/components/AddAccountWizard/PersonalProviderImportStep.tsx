@@ -112,6 +112,7 @@ const providerImportDefaults: Record<
 type PersonalProviderImportStepProps = {
   provider: PersonalProvider;
   isCredentialLoading: boolean;
+  isCredentialError: boolean;
   configured: boolean;
   accounts: PersonalProviderAccount[];
   isLoading: boolean;
@@ -129,6 +130,7 @@ type PersonalProviderImportStepProps = {
 export function PersonalProviderImportStep({
   provider,
   isCredentialLoading,
+  isCredentialError,
   configured,
   accounts,
   isLoading,
@@ -144,14 +146,180 @@ export function PersonalProviderImportStep({
 }: Readonly<PersonalProviderImportStepProps>) {
   const { t } = useTranslation();
   const { spacing } = useTheme();
-  const prefix = `feature.accounts.add.${provider}`;
-  const defaults = providerImportDefaults[provider];
-  const labels = Object.fromEntries(
-    Object.entries(defaults).map(([key, value]) => [
-      key,
-      t(`${prefix}.${key}`, value),
-    ]),
-  ) as PersonalProviderImportLabels;
+  const labelsByProvider: Record<
+    PersonalProvider,
+    PersonalProviderImportLabels
+  > = {
+    bankSync: {
+      title: t(
+        'feature.accounts.add.bankSync.title',
+        providerImportDefaults.bankSync.title,
+      ),
+      subtitle: t(
+        'feature.accounts.add.bankSync.subtitle',
+        providerImportDefaults.bankSync.subtitle,
+      ),
+      configureMessage: t(
+        'feature.accounts.add.bankSync.configureMessage',
+        providerImportDefaults.bankSync.configureMessage,
+      ),
+      configureButton: t(
+        'feature.accounts.add.bankSync.configureButton',
+        providerImportDefaults.bankSync.configureButton,
+      ),
+      listError: t(
+        'feature.accounts.add.bankSync.listError',
+        providerImportDefaults.bankSync.listError,
+      ),
+      empty: t(
+        'feature.accounts.add.bankSync.empty',
+        providerImportDefaults.bankSync.empty,
+      ),
+      importSuccess: t(
+        'feature.accounts.add.bankSync.importSuccess',
+        providerImportDefaults.bankSync.importSuccess,
+      ),
+      importErrorTitle: t(
+        'feature.accounts.add.bankSync.importErrorTitle',
+        providerImportDefaults.bankSync.importErrorTitle,
+      ),
+      importErrorMessage: t(
+        'feature.accounts.add.bankSync.importErrorMessage',
+        providerImportDefaults.bankSync.importErrorMessage,
+      ),
+      unlinkSuccess: t(
+        'feature.accounts.add.bankSync.unlinkSuccess',
+        providerImportDefaults.bankSync.unlinkSuccess,
+      ),
+      unlinkErrorTitle: t(
+        'feature.accounts.add.bankSync.unlinkErrorTitle',
+        providerImportDefaults.bankSync.unlinkErrorTitle,
+      ),
+      unlinkErrorMessage: t(
+        'feature.accounts.add.bankSync.unlinkErrorMessage',
+        providerImportDefaults.bankSync.unlinkErrorMessage,
+      ),
+      unlinkButton: t(
+        'feature.accounts.add.bankSync.unlinkButton',
+        providerImportDefaults.bankSync.unlinkButton,
+      ),
+      importButton: t(
+        'feature.accounts.add.bankSync.importButton',
+        providerImportDefaults.bankSync.importButton,
+      ),
+    },
+    lunchFlow: {
+      title: t(
+        'feature.accounts.add.lunchFlow.title',
+        providerImportDefaults.lunchFlow.title,
+      ),
+      subtitle: t(
+        'feature.accounts.add.lunchFlow.subtitle',
+        providerImportDefaults.lunchFlow.subtitle,
+      ),
+      configureMessage: t(
+        'feature.accounts.add.lunchFlow.configureMessage',
+        providerImportDefaults.lunchFlow.configureMessage,
+      ),
+      configureButton: t(
+        'feature.accounts.add.lunchFlow.configureButton',
+        providerImportDefaults.lunchFlow.configureButton,
+      ),
+      listError: t(
+        'feature.accounts.add.lunchFlow.listError',
+        providerImportDefaults.lunchFlow.listError,
+      ),
+      empty: t(
+        'feature.accounts.add.lunchFlow.empty',
+        providerImportDefaults.lunchFlow.empty,
+      ),
+      importSuccess: t(
+        'feature.accounts.add.lunchFlow.importSuccess',
+        providerImportDefaults.lunchFlow.importSuccess,
+      ),
+      importErrorTitle: t(
+        'feature.accounts.add.lunchFlow.importErrorTitle',
+        providerImportDefaults.lunchFlow.importErrorTitle,
+      ),
+      importErrorMessage: t(
+        'feature.accounts.add.lunchFlow.importErrorMessage',
+        providerImportDefaults.lunchFlow.importErrorMessage,
+      ),
+      unlinkSuccess: t(
+        'feature.accounts.add.lunchFlow.unlinkSuccess',
+        providerImportDefaults.lunchFlow.unlinkSuccess,
+      ),
+      unlinkErrorTitle: t(
+        'feature.accounts.add.lunchFlow.unlinkErrorTitle',
+        providerImportDefaults.lunchFlow.unlinkErrorTitle,
+      ),
+      unlinkErrorMessage: t(
+        'feature.accounts.add.lunchFlow.unlinkErrorMessage',
+        providerImportDefaults.lunchFlow.unlinkErrorMessage,
+      ),
+      unlinkButton: t(
+        'feature.accounts.add.lunchFlow.unlinkButton',
+        providerImportDefaults.lunchFlow.unlinkButton,
+      ),
+      importButton: t(
+        'feature.accounts.add.lunchFlow.importButton',
+        providerImportDefaults.lunchFlow.importButton,
+      ),
+    },
+    synci: {
+      title: t('feature.accounts.add.synci.title', 'Import from Synci'),
+      subtitle: t(
+        'feature.accounts.add.synci.subtitle',
+        'Choose the bank accounts connected to your Synci account. Guallet imports transaction history and syncs daily.',
+      ),
+      configureMessage: t(
+        'feature.accounts.add.synci.configureMessage',
+        'Add your Synci personal access token in Settings before importing. Create a token from Developers > Tokens in Synci.',
+      ),
+      configureButton: t(
+        'feature.accounts.add.synci.configureButton',
+        'Open settings',
+      ),
+      listError: t(
+        'feature.accounts.add.synci.listError',
+        'Could not load Synci accounts. Check your personal access token and try again.',
+      ),
+      empty: t(
+        'feature.accounts.add.synci.empty',
+        'No connected bank accounts are available in Synci.',
+      ),
+      importSuccess: t(
+        'feature.accounts.add.synci.importSuccess',
+        'Selected accounts imported from Synci.',
+      ),
+      importErrorTitle: t(
+        'feature.accounts.add.synci.importErrorTitle',
+        'Could not import accounts',
+      ),
+      importErrorMessage: t(
+        'feature.accounts.add.synci.importErrorMessage',
+        'Refresh the account list and try again.',
+      ),
+      unlinkSuccess: t(
+        'feature.accounts.add.synci.unlinkSuccess',
+        'Account unlinked from Synci sync. Its Guallet data remains.',
+      ),
+      unlinkErrorTitle: t(
+        'feature.accounts.add.synci.unlinkErrorTitle',
+        'Could not unlink account',
+      ),
+      unlinkErrorMessage: t(
+        'feature.accounts.add.synci.unlinkErrorMessage',
+        'Please try again.',
+      ),
+      unlinkButton: t('feature.accounts.add.synci.unlinkButton', 'Unlink'),
+      importButton: t(
+        'feature.accounts.add.synci.importButton',
+        'Import selected',
+      ),
+    },
+  };
+  const labels = labelsByProvider[provider];
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   async function importSelected() {
@@ -184,6 +352,25 @@ export function PersonalProviderImportStep({
 
   if (isCredentialLoading)
     return <Text>{t('common.loading', 'Loading…')}</Text>;
+  if (isCredentialError) {
+    return (
+      <Stack gap={spacing.md}>
+        <Title order={3}>{labels.title}</Title>
+        <Alert color="red" icon={<IconInfoCircle size={18} />}>
+          {t(
+            'feature.accounts.add.provider.credentialLoadError',
+            'Could not check provider credentials. Please retry.',
+          )}
+        </Alert>
+        <Group justify="space-between">
+          <Button variant="outline" onClick={onBack}>
+            {t('common.back', 'Back')}
+          </Button>
+          <Button onClick={onRefresh}>{t('common.retry', 'Retry')}</Button>
+        </Group>
+      </Stack>
+    );
+  }
   if (!configured) {
     return (
       <Stack gap={spacing.md}>

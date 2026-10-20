@@ -16,10 +16,14 @@ export function StepLunchFlowImport({
   onDone,
   onConfigure,
 }: Readonly<StepLunchFlowImportProps>) {
-  const { credential, isLoading: isCredentialLoading } =
-    useLunchFlowCredential();
+  const {
+    credential,
+    isLoading: isCredentialLoading,
+    isError: isCredentialError,
+    refetch: refetchCredential,
+  } = useLunchFlowCredential();
   const { accounts, isLoading, isError, refetch } = useLunchFlowAccounts(
-    credential.configured,
+    credential?.configured === true,
   );
   const { importAccountsMutation, unlinkAccountMutation } =
     useLunchFlowMutations();
@@ -31,7 +35,8 @@ export function StepLunchFlowImport({
     <PersonalProviderImportStep
       provider="lunchFlow"
       isCredentialLoading={isCredentialLoading}
-      configured={credential.configured}
+      isCredentialError={isCredentialError}
+      configured={credential?.configured ?? false}
       accounts={accounts.map((account) => ({
         key: account.id,
         name: account.name,
@@ -44,7 +49,7 @@ export function StepLunchFlowImport({
       isError={isError}
       isImporting={importAccountsMutation.isPending}
       isUnlinking={unlinkAccountMutation.isPending}
-      onRefresh={() => void refetch()}
+      onRefresh={() => void Promise.all([refetch(), refetchCredential()])}
       onImport={async (accountIds) => {
         await importAccountsMutation.mutateAsync({ accountIds });
       }}

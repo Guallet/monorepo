@@ -265,42 +265,83 @@
           "searchPlaceholder": "Type to search…",
           "none": "No institution"
         },
-        "chooseMethod": {
-          "title": "Add an account",
-          "subtitle": "Choose how you'd like to connect your account",
-          "lunchFlow": {
-            "title": "Import from Lunch Flow",
-            "desc": "Import accounts already connected to your Lunch Flow account using your own API key."
-          },
-          "openBanking": {
-            "title": "Connect via Open Banking",
-            "desc": "Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money."
-          },
-          "recommended": "Recommended",
-          "manual": {
-            "title": "Add manually",
-            "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
-          },
-          "bankSync": {
-            "title": "Import from BankSync",
-            "desc": "Import accounts already connected to BankSync using your own API key."
-          }
+        "bankSync": {
+          "title": "Import from BankSync",
+          "subtitle": "Select the connected bank accounts to import. Guallet imports available transaction history and then syncs daily.",
+          "configureMessage": "Add your BankSync API key in Settings before importing. Create a key with banks:read scope; API key access requires a Standard or higher BankSync plan.",
+          "configureButton": "Open settings",
+          "listError": "Could not load BankSync accounts. Check your API key, REST API plan, and banks:read scope.",
+          "empty": "No connected bank accounts are available in BankSync.",
+          "importSuccess": "Selected accounts imported from BankSync.",
+          "importErrorTitle": "Could not import accounts",
+          "importErrorMessage": "Refresh the account list and try again.",
+          "unlinkSuccess": "Account unlinked from BankSync sync. Its Guallet data remains.",
+          "unlinkErrorTitle": "Could not unlink account",
+          "unlinkErrorMessage": "Please try again.",
+          "unlinkButton": "Unlink",
+          "importButton": "Import selected accounts"
         },
         "lunchFlow": {
+          "title": "Import from Lunch Flow",
+          "subtitle": "Choose the accounts enabled in your Lunch Flow API destination.",
+          "configureMessage": "Add your Lunch Flow API key in Settings before importing accounts. Connect your banks and enable them for the API destination in Lunch Flow first.",
+          "configureButton": "Open settings",
+          "listError": "Could not load Lunch Flow accounts. Check your key and account access settings.",
+          "empty": "No accounts are available. Connect a bank in Lunch Flow and enable it in your API destination.",
           "importSuccess": "Selected accounts imported from Lunch Flow.",
           "importErrorTitle": "Could not import accounts",
           "importErrorMessage": "Refresh the account list and try again.",
           "unlinkSuccess": "Account unlinked from Lunch Flow sync. Its Guallet data remains.",
           "unlinkErrorTitle": "Could not unlink account",
           "unlinkErrorMessage": "Please try again.",
-          "title": "Import from Lunch Flow",
-          "configureMessage": "Add your Lunch Flow API key in Settings before importing accounts. Connect your banks and enable them for the API destination in Lunch Flow first.",
-          "configureButton": "Open settings",
-          "subtitle": "Choose the accounts enabled in your Lunch Flow API destination.",
-          "listError": "Could not load Lunch Flow accounts. Check your key and account access settings.",
-          "empty": "No accounts are available. Connect a bank in Lunch Flow and enable it in your API destination.",
           "unlinkButton": "Unlink",
           "importButton": "Import selected"
+        },
+        "synci": {
+          "title": "Import from Synci",
+          "subtitle": "Choose the bank accounts connected to your Synci account. Guallet imports transaction history and syncs daily.",
+          "configureMessage": "Add your Synci personal access token in Settings before importing. Create a token from Developers > Tokens in Synci.",
+          "configureButton": "Open settings",
+          "listError": "Could not load Synci accounts. Check your personal access token and try again.",
+          "empty": "No connected bank accounts are available in Synci.",
+          "importSuccess": "Selected accounts imported from Synci.",
+          "importErrorTitle": "Could not import accounts",
+          "importErrorMessage": "Refresh the account list and try again.",
+          "unlinkSuccess": "Account unlinked from Synci sync. Its Guallet data remains.",
+          "unlinkErrorTitle": "Could not unlink account",
+          "unlinkErrorMessage": "Please try again.",
+          "unlinkButton": "Unlink",
+          "importButton": "Import selected"
+        },
+        "provider": {
+          "credentialLoadError": "Could not check provider credentials. Please retry."
+        },
+        "chooseMethod": {
+          "title": "Add an account",
+          "subtitle": "Choose how you'd like to connect your account",
+          "synci": {
+            "title": "Import from Synci",
+            "desc": "Import accounts connected to Synci using your own personal access token."
+          },
+          "bankSync": {
+            "title": "Import from BankSync",
+            "desc": "Import accounts already connected to BankSync using your own API key."
+          },
+          "lunchFlow": {
+            "title": "Import from Lunch Flow",
+            "desc": "Import accounts already connected to your Lunch Flow account using your own API key."
+          },
+          "openBanking": {
+            "title": "Connect via Open Banking",
+            "checkingCredentials": "Checking Nordigen credentials…",
+            "desc": "Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money.",
+            "configureCredentials": "Add your Nordigen credentials in Settings before connecting a bank."
+          },
+          "recommended": "Recommended",
+          "manual": {
+            "title": "Add manually",
+            "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
+          }
         },
         "fields": {
           "accountNumber": {
@@ -408,23 +449,7 @@
           "loan": "Personal, student, car",
           "other": "Cash, crypto, or anything else"
         },
-        "title": "New account",
-        "bankSync": {
-          "title": "Import from BankSync",
-          "configureMessage": "Add your BankSync API key in Settings before importing. Create a key with banks:read scope; API key access requires a Standard or higher BankSync plan.",
-          "configureButton": "Open settings",
-          "subtitle": "Select the connected bank accounts to import. Guallet imports available transaction history and then syncs daily.",
-          "listError": "Could not load BankSync accounts. Check your API key, REST API plan, and banks:read scope.",
-          "empty": "No connected bank accounts are available in BankSync.",
-          "importSuccess": "Selected accounts imported from BankSync.",
-          "importErrorTitle": "Could not import accounts",
-          "importErrorMessage": "Refresh the account list and try again.",
-          "unlinkSuccess": "Account unlinked from BankSync sync. Its Guallet data remains.",
-          "unlinkErrorTitle": "Could not unlink account",
-          "unlinkErrorMessage": "Please try again.",
-          "unlinkButton": "Unlink",
-          "importButton": "Import selected accounts"
-        }
+        "title": "New account"
       },
       "accountType": {
         "currentAccounts": "Current Accounts",
@@ -1338,8 +1363,6 @@
           }
         },
         "rule": {
-          "conditions_one": "",
-          "conditions_other": "",
           "conditions": {
             "logic": {
               "any": "ANY",
@@ -1513,27 +1536,96 @@
         "title": "User preferences",
         "description": "Set regional preferences for currencies, language, and dates."
       },
-      "lunchFlow": {
-        "saveSuccess": "Lunch Flow API key saved.",
+      "nordigen": {
+        "saved": "Nordigen credentials validated and saved.",
+        "errorTitle": "Could not update credentials",
+        "errorMessage": "Check your Nordigen credentials and try again.",
+        "removed": "Nordigen credentials removed.",
+        "description": "Use your own Nordigen credentials to connect and sync bank accounts. Existing bank links must be reconnected after setup.",
+        "configured": "Credentials configured",
+        "secretId": "Secret ID",
+        "secretKey": "Secret key",
+        "save": "Validate and save",
+        "remove": "Remove credentials",
+        "confirmTitle": "Remove Nordigen credentials?",
+        "confirmBody": "Bank sync will stop. Existing bank links and imported data remain, but links must be reconnected after adding credentials again.",
+        "title": "Open Banking provider",
+        "sectionDescription": "Manage your personal credentials for bank connections."
+      },
+      "bankSync": {
+        "instructions": "Connect your banks in BankSync, then create an API key with the banks:read scope. BankSync REST API access requires Standard or higher.",
+        "learnMore": "View BankSync instructions",
+        "keySecurity": "Your key is encrypted in Guallet and is only used to read your connected bank data.",
+        "keyConfigured": "API key configured",
+        "apiKeyLabel": "BankSync API key",
+        "apiKeyPlaceholder": "Enter a new key to replace it or paste your API key",
+        "saveButton": "Save and validate key",
+        "saveSuccess": "BankSync API key saved.",
         "saveErrorTitle": "Could not save API key",
-        "saveErrorMessage": "Check the key and try again.",
-        "deleteSuccess": "Lunch Flow key removed. Imported accounts remain in Guallet.",
+        "saveErrorMessage": "Check that your key has REST API access and the banks:read scope.",
+        "syncButton": "Sync now",
+        "syncErrorTitle": "Could not sync accounts",
+        "syncErrorMessage": "Please try again later.",
+        "deleteButton": "Remove key",
+        "deleteSuccess": "BankSync key removed. Imported accounts remain in Guallet.",
         "deleteErrorTitle": "Could not remove API key",
         "deleteErrorMessage": "Please try again.",
+        "confirmDeleteTitle": "Remove BankSync key?",
+        "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
+        "title": "BankSync",
+        "description": "Import and sync bank accounts using your BankSync API key."
+      },
+      "lunchFlow": {
         "instructions": "Connect your banks in Lunch Flow, create a REST API destination, and enable the accounts you want Guallet to access.",
         "learnMore": "View Lunch Flow instructions",
         "keyConfigured": "API key configured",
         "apiKeyLabel": "Lunch Flow API key",
         "apiKeyPlaceholder": "Enter a new key to replace it or paste your API key",
         "saveButton": "Save and validate key",
+        "saveSuccess": "Lunch Flow API key saved.",
+        "saveErrorTitle": "Could not save API key",
+        "saveErrorMessage": "Check the key and try again.",
+        "syncButton": "Sync now",
+        "syncErrorTitle": "Could not sync accounts",
+        "syncErrorMessage": "Please try again later.",
         "deleteButton": "Remove key",
+        "deleteSuccess": "Lunch Flow key removed. Imported accounts remain in Guallet.",
+        "deleteErrorTitle": "Could not remove API key",
+        "deleteErrorMessage": "Please try again.",
         "confirmDeleteTitle": "Remove Lunch Flow key?",
         "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
         "title": "Lunch Flow",
-        "description": "Import bank accounts using your Lunch Flow API key.",
+        "description": "Import bank accounts using your Lunch Flow API key."
+      },
+      "synci": {
+        "instructions": "Create a personal access token in Synci under Developers > Tokens. Guallet uses it to read your connected accounts and transactions.",
+        "learnMore": "View Synci API instructions",
+        "keySecurity": "Your token is encrypted in Guallet and is only used to read your Synci financial data.",
+        "keyConfigured": "Personal access token configured",
+        "apiKeyLabel": "Synci personal access token",
+        "apiKeyPlaceholder": "Enter a new token to replace it or paste your token",
+        "saveButton": "Save and validate token",
+        "saveSuccess": "Synci token saved.",
+        "saveErrorTitle": "Could not save token",
+        "saveErrorMessage": "Check that your Synci personal access token is valid.",
         "syncButton": "Sync now",
         "syncErrorTitle": "Could not sync accounts",
-        "syncErrorMessage": "Please try again later."
+        "syncErrorMessage": "Please try again later.",
+        "deleteButton": "Remove token",
+        "deleteSuccess": "Synci token removed. Imported accounts remain in Guallet.",
+        "deleteErrorTitle": "Could not remove token",
+        "deleteErrorMessage": "Please try again.",
+        "confirmDeleteTitle": "Remove Synci token?",
+        "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
+        "title": "Synci",
+        "description": "Import bank accounts using your Synci personal access token."
+      },
+      "provider": {
+        "syncSuccess_one": "{{count}} accounts synced.",
+        "syncSuccess_other": "{{count}} accounts synced.",
+        "syncErrorTitle": "Could not sync accounts",
+        "syncErrorMessage": "Please try again later.",
+        "syncButton": "Sync now"
       },
       "profile": {
         "title": "User information",
@@ -1675,22 +1767,6 @@
         }
       },
       "title": "Settings",
-      "nordigen": {
-        "title": "Open Banking provider",
-        "sectionDescription": "Manage your personal credentials for bank connections.",
-        "description": "Use your own Nordigen credentials to connect and sync bank accounts. Existing bank links must be reconnected after setup.",
-        "configured": "Credentials configured",
-        "secretId": "Secret ID",
-        "secretKey": "Secret key",
-        "save": "Validate and save",
-        "saved": "Nordigen credentials validated and saved.",
-        "remove": "Remove credentials",
-        "removed": "Nordigen credentials removed.",
-        "errorTitle": "Could not update credentials",
-        "errorMessage": "Check your Nordigen credentials and try again.",
-        "confirmTitle": "Remove Nordigen credentials?",
-        "confirmBody": "Bank sync will stop. Existing bank links and imported data remain, but links must be reconnected after adding credentials again."
-      },
       "institutions": {
         "title": "Institutions",
         "description": "Manage banks and institutions used to organise your accounts.",
@@ -1714,36 +1790,6 @@
         "closeAccountButton": {
           "label": "Close account"
         }
-      },
-      "bankSync": {
-        "title": "BankSync",
-        "description": "Import and sync bank accounts using your BankSync API key.",
-        "instructions": "Connect your banks in BankSync, then create an API key with the banks:read scope. BankSync REST API access requires Standard or higher.",
-        "learnMore": "View BankSync instructions",
-        "keySecurity": "Your key is encrypted in Guallet and is only used to read your connected bank data.",
-        "keyConfigured": "API key configured",
-        "apiKeyLabel": "BankSync API key",
-        "apiKeyPlaceholder": "Enter a new key to replace it or paste your API key",
-        "saveButton": "Save and validate key",
-        "saveSuccess": "BankSync API key saved.",
-        "saveErrorTitle": "Could not save API key",
-        "saveErrorMessage": "Check that your key has REST API access and the banks:read scope.",
-        "deleteButton": "Remove key",
-        "deleteSuccess": "BankSync key removed. Imported accounts remain in Guallet.",
-        "deleteErrorTitle": "Could not remove API key",
-        "deleteErrorMessage": "Please try again.",
-        "confirmDeleteTitle": "Remove BankSync key?",
-        "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
-        "syncButton": "Sync now",
-        "syncSuccess": "{{count}} accounts synced.",
-        "syncErrorTitle": "Could not sync accounts",
-        "syncErrorMessage": "Please try again later."
-      },
-      "provider": {
-        "syncSuccess": "{{count}} accounts synced.",
-        "syncButton": "Sync now",
-        "syncErrorTitle": "Could not sync accounts",
-        "syncErrorMessage": "Please try again later."
       }
     },
     "subscriptions": {
@@ -2085,6 +2131,10 @@
       "openBanking": {
         "title": "Open Banking",
         "description": "Connect to thousands of banks and institutions via open banking APIs."
+      },
+      "personalProviderKeys": {
+        "title": "Connect with your own provider credentials",
+        "description": "Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account."
       },
       "badge": "Features",
       "title": "Everything you need to manage your money",

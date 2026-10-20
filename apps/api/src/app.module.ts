@@ -12,7 +12,6 @@ import { RulesModule } from './features/rules/rules.module';
 import { ReportsModule } from './features/reports/reports.module';
 import { OpenbankingModule } from './features/openbanking/openbanking.module';
 import { NordigenModule } from './features/nordigen/nordigen.module';
-import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './features/users/users.module';
 import configuration, { AppConfig, environmentSchema } from './configuration';
 import { BudgetsModule } from './features/budgets/budgets.module';
@@ -164,7 +163,6 @@ import { SynciModule } from './features/synci/synci.module';
     ReportsModule,
     OpenbankingModule,
     NordigenModule,
-    AdminModule,
     BudgetsModule,
     WebhooksModule,
     SavingGoalsModule,

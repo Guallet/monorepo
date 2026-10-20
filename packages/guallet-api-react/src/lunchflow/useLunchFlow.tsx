@@ -1,7 +1,4 @@
-import {
-  LunchFlowAccountDto,
-  LunchFlowCredentialDto,
-} from '@guallet/api-client';
+import { LunchFlowAccountDto } from '@guallet/api-client';
 import { useQuery } from '@tanstack/react-query';
 import { useGualletClient } from '../GualletClientProvider';
 
@@ -14,12 +11,7 @@ export function useLunchFlowCredential() {
     queryKey: [LUNCHFLOW_CREDENTIAL_QUERY_KEY],
     queryFn: () => client.lunchFlow.getCredential(),
   });
-  return {
-    credential:
-      query.data ??
-      ({ configured: false, keyHint: null } as LunchFlowCredentialDto),
-    ...query,
-  };
+  return { credential: query.data ?? null, ...query };
 }
 
 export function useLunchFlowAccounts(enabled = true) {

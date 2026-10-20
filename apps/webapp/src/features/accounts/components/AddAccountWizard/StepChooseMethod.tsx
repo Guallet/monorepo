@@ -6,6 +6,8 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from '@tanstack/react-router';
+import { useNordigenCredentials } from '@guallet/api-react';
 import { MethodCard } from './MethodCard';
 
 interface StepChooseMethodProps {
@@ -18,6 +20,14 @@ export function StepChooseMethod({
   onChoose,
 }: Readonly<StepChooseMethodProps>) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const {
+    credentialStatus,
+    isLoading: isNordigenCredentialsLoading,
+    isError: isNordigenCredentialsError,
+    refetch: refetchNordigenCredentials,
+  } = useNordigenCredentials();
+  const hasNordigenCredentials = credentialStatus?.configured === true;
 
   return (
     <Stack>
@@ -87,15 +97,38 @@ export function StepChooseMethod({
             'feature.accounts.add.chooseMethod.openBanking.title',
             'Connect via Open Banking',
           )}
-          description={t(
-            'feature.accounts.add.chooseMethod.openBanking.desc',
-            'Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money.',
-          )}
+          description={
+            isNordigenCredentialsLoading
+              ? t(
+                  'feature.accounts.add.chooseMethod.openBanking.checkingCredentials',
+                  'Checking Nordigen credentials…',
+                )
+              : hasNordigenCredentials
+                ? t(
+                    'feature.accounts.add.chooseMethod.openBanking.desc',
+                    'Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money.',
+                  )
+                : t(
+                    'feature.accounts.add.chooseMethod.openBanking.configureCredentials',
+                    'Add your Nordigen credentials in Settings before connecting a bank.',
+                  )
+          }
           badge={t(
             'feature.accounts.add.chooseMethod.recommended',
             'Recommended',
           )}
-          onClick={() => onChoose('ob')}
+          onClick={() => {
+            if (isNordigenCredentialsLoading) return;
+            if (isNordigenCredentialsError) {
+              void refetchNordigenCredentials();
+              return;
+            }
+            if (hasNordigenCredentials) {
+              onChoose('ob');
+            } else {
+              void navigate({ to: '/settings' });
+            }
+          }}
           icon={
             <ThemeIcon size={44} radius="sm" variant="light" color="blue">
               <IconBuildingBank size={24} />

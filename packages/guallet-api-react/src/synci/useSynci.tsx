@@ -1,4 +1,4 @@
-import { SynciAccountDto, SynciCredentialDto } from '@guallet/api-client';
+import { SynciAccountDto } from '@guallet/api-client';
 import { useQuery } from '@tanstack/react-query';
 import { useGualletClient } from '../GualletClientProvider';
 
@@ -11,12 +11,7 @@ export function useSynciCredential() {
     queryKey: [SYNCI_CREDENTIAL_QUERY_KEY],
     queryFn: () => client.synci.getCredential(),
   });
-  return {
-    credential:
-      query.data ??
-      ({ configured: false, keyHint: null } as SynciCredentialDto),
-    ...query,
-  };
+  return { credential: query.data ?? null, ...query };
 }
 
 export function useSynciAccounts(enabled = true) {
