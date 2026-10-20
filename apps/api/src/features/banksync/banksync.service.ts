@@ -58,7 +58,7 @@ export class BankSyncService {
     apiKey: string;
   }): Promise<BankSyncCredentialDto> {
     try {
-      await this.client.getBanks(apiKey);
+      await this.client.getBanks(apiKey, userId);
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw new BadRequestException('BankSync API key is invalid');
@@ -85,7 +85,7 @@ export class BankSyncService {
 
   async listRemoteAccounts(userId: string) {
     const apiKey = await this.getApiKey(userId);
-    const banks = await this.client.getBanks(apiKey);
+    const banks = await this.client.getBanks(apiKey, userId);
     const mappings = await this.remoteAccounts.find({
       where: { user_id: userId },
     });
@@ -100,7 +100,11 @@ export class BankSyncService {
     const accounts: BankSyncAccountDto[] = [];
     for (const bank of banks) {
       if (bank.connectionStatus?.connected === false) continue;
-      const remoteAccounts = await this.client.getAccounts(apiKey, bank.id);
+      const remoteAccounts = await this.client.getAccounts(
+        apiKey,
+        bank.id,
+        userId,
+      );
       for (const account of remoteAccounts) {
         const id = this.remoteAccountId(account);
         if (!id) continue;
@@ -134,7 +138,7 @@ export class BankSyncService {
         account: BankSyncRemoteAccount;
       }
     >();
-    const banks = await this.client.getBanks(apiKey);
+    const banks = await this.client.getBanks(apiKey, userId);
     const banksById = new Map(banks.map((bank) => [bank.id, bank]));
     const accountsByBank = new Map<string, BankSyncRemoteAccount[]>();
     for (const selection of selections) {
@@ -145,6 +149,7 @@ export class BankSyncService {
         remoteAccounts = await this.client.getAccounts(
           apiKey,
           selection.bankId,
+          userId,
         );
         accountsByBank.set(selection.bankId, remoteAccounts);
       }
@@ -251,6 +256,7 @@ export class BankSyncService {
       },
     });
     const transactions = await this.getTransactionsForMapping(
+      userId,
       apiKey,
       bank.id,
       remoteId,
@@ -258,7 +264,7 @@ export class BankSyncService {
     );
     const reportedBalance =
       this.remoteBalance(account) ??
-      (await this.client.getBalances(apiKey, bank.id, remoteId));
+      (await this.client.getBalances(apiKey, bank.id, remoteId, userId));
     let localAccount: Account | null = null;
     if (mapping) {
       localAccount = await this.accounts.findOne({
@@ -312,7 +318,7 @@ export class BankSyncService {
     apiKey: string,
     mappings: BankSyncAccount[],
   ) {
-    const banks = await this.client.getBanks(apiKey);
+    const banks = await this.client.getBanks(apiKey, userId);
     const remoteAccounts = new Map<
       string,
       {
@@ -322,7 +328,11 @@ export class BankSyncService {
     >();
     for (const bank of banks) {
       if (bank.connectionStatus?.connected === false) continue;
-      for (const account of await this.client.getAccounts(apiKey, bank.id)) {
+      for (const account of await this.client.getAccounts(
+        apiKey,
+        bank.id,
+        userId,
+      )) {
         const accountId = this.remoteAccountId(account);
         if (!accountId) continue;
         remoteAccounts.set(this.remoteKey(bank.id, accountId), {
@@ -346,6 +356,7 @@ export class BankSyncService {
         });
         if (!localAccount) continue;
         const transactions = await this.getTransactionsForMapping(
+          userId,
           apiKey,
           mapping.remote_bank_id,
           mapping.remote_account_id,
@@ -357,6 +368,7 @@ export class BankSyncService {
             apiKey,
             mapping.remote_bank_id,
             mapping.remote_account_id,
+            userId,
           ));
         await this.persistRemoteData({
           bank: remote.bank,
@@ -380,6 +392,7 @@ export class BankSyncService {
   }
 
   private async getTransactionsForMapping(
+    userId: string,
     apiKey: string,
     bankId: string,
     accountId: string,
@@ -397,6 +410,7 @@ export class BankSyncService {
       accountId,
       from,
       to,
+      userId,
     );
   }
 

@@ -1,5 +1,4 @@
 import { HttpService } from '@nestjs/axios';
-import { createHash } from 'node:crypto';
 import {
   BadGatewayException,
   BadRequestException,
@@ -57,21 +56,24 @@ type BankSyncRemoteBalance = {
 
 @Injectable()
 export class BankSyncClient {
-  private readonly nextRequestAtByKey = new Map<string, number>();
+  private readonly nextRequestAtByUser = new Map<string, number>();
 
   constructor(private readonly http: HttpService) {}
 
-  async getBanks(apiKey: string): Promise<BankSyncBank[]> {
-    return (await this.get<{ data: BankSyncBank[] }>('/banks', apiKey)).data;
+  async getBanks(apiKey: string, userId: string): Promise<BankSyncBank[]> {
+    return (await this.get<{ data: BankSyncBank[] }>('/banks', apiKey, userId))
+      .data;
   }
 
   async getAccounts(
     apiKey: string,
     bankId: string,
+    userId: string,
   ): Promise<BankSyncRemoteAccount[]> {
     const response = await this.get<{ data: BankSyncRemoteAccount[] }>(
       `/banks/${encodeURIComponent(bankId)}/accounts`,
       apiKey,
+      userId,
     );
     return response.data;
   }
@@ -82,6 +84,7 @@ export class BankSyncClient {
     accountId: string,
     from: string,
     to: string,
+    userId: string,
   ): Promise<BankSyncRemoteTransaction[]> {
     const transactions: BankSyncRemoteTransaction[] = [];
     let cursor: string | undefined;
@@ -93,6 +96,7 @@ export class BankSyncClient {
       >(
         `/banks/${encodeURIComponent(bankId)}/accounts/${encodeURIComponent(accountId)}/transactions?${query.toString()}`,
         apiKey,
+        userId,
       );
       transactions.push(...response.data);
       if (!response.meta?.hasMore) return transactions;
@@ -112,12 +116,14 @@ export class BankSyncClient {
     apiKey: string,
     bankId: string,
     accountId: string,
+    userId: string,
   ): Promise<{ amount: number; currency: string } | null> {
     const response = await this.get<{
       data: BankSyncRemoteBalance | BankSyncRemoteBalance[];
     }>(
       `/banks/${encodeURIComponent(bankId)}/accounts/${encodeURIComponent(accountId)}/balances`,
       apiKey,
+      userId,
     );
     const balances = Array.isArray(response.data)
       ? response.data
@@ -131,10 +137,14 @@ export class BankSyncClient {
     return { amount: Number(amount), currency: balance.currency };
   }
 
-  private async get<T>(path: string, apiKey: string): Promise<T> {
+  private async get<T>(
+    path: string,
+    apiKey: string,
+    userId: string,
+  ): Promise<T> {
     for (let attempt = 0; attempt < 4; attempt += 1) {
       try {
-        await this.pace(apiKey);
+        await this.pace(userId);
         const response = await firstValueFrom(
           this.http.get<T>(`${BASE_URL}${path}`, {
             headers: { 'X-API-Key': apiKey },
@@ -189,14 +199,13 @@ export class BankSyncClient {
     throw new BadGatewayException('BankSync rate limit was exceeded');
   }
 
-  private async pace(apiKey: string): Promise<void> {
-    const keyHash = createHash('sha256').update(apiKey).digest('hex');
+  private async pace(userId: string): Promise<void> {
     const now = Date.now();
     const nextRequestAt = Math.max(
       now,
-      this.nextRequestAtByKey.get(keyHash) ?? now,
+      this.nextRequestAtByUser.get(userId) ?? now,
     );
-    this.nextRequestAtByKey.set(keyHash, nextRequestAt + REQUEST_INTERVAL_MS);
+    this.nextRequestAtByUser.set(userId, nextRequestAt + REQUEST_INTERVAL_MS);
     if (nextRequestAt > now) {
       await new Promise((resolve) => setTimeout(resolve, nextRequestAt - now));
     }
