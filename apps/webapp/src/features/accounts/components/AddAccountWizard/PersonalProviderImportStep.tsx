@@ -41,7 +41,7 @@ type PersonalProviderImportLabels = {
   importButton: string;
 };
 
-type PersonalProvider = 'bankSync' | 'lunchFlow';
+type PersonalProvider = 'bankSync' | 'lunchFlow' | 'synci';
 
 const providerImportDefaults: Record<
   PersonalProvider,
@@ -82,6 +82,26 @@ const providerImportDefaults: Record<
     importErrorMessage: 'Refresh the account list and try again.',
     unlinkSuccess:
       'Account unlinked from Lunch Flow sync. Its Guallet data remains.',
+    unlinkErrorTitle: 'Could not unlink account',
+    unlinkErrorMessage: 'Please try again.',
+    unlinkButton: 'Unlink',
+    importButton: 'Import selected',
+  },
+  synci: {
+    title: 'Import from Synci',
+    subtitle:
+      'Choose the bank accounts connected to your Synci account. Guallet imports transaction history and syncs daily.',
+    configureMessage:
+      'Add your Synci personal access token in Settings before importing. Create a token from Developers > Tokens in Synci.',
+    configureButton: 'Open settings',
+    listError:
+      'Could not load Synci accounts. Check your personal access token and try again.',
+    empty: 'No connected bank accounts are available in Synci.',
+    importSuccess: 'Selected accounts imported from Synci.',
+    importErrorTitle: 'Could not import accounts',
+    importErrorMessage: 'Refresh the account list and try again.',
+    unlinkSuccess:
+      'Account unlinked from Synci sync. Its Guallet data remains.',
     unlinkErrorTitle: 'Could not unlink account',
     unlinkErrorMessage: 'Please try again.',
     unlinkButton: 'Unlink',

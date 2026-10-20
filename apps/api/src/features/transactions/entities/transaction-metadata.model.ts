@@ -21,12 +21,23 @@ export interface BankSyncTransactionData {
   pending?: boolean;
 }
 
+export interface SynciTransactionData {
+  id: string | number;
+  amount: number | string;
+  currency: string;
+  date: string;
+  merchant?: string | null;
+  description?: string | null;
+  isPending?: boolean;
+}
+
 export interface TransactionMetadata {
   provider: TransactionDataProvider;
   data:
     | NordigenTransactionDto
     | LunchFlowTransactionData
     | BankSyncTransactionData
+    | SynciTransactionData
     | string
     | null;
 }
@@ -35,5 +46,6 @@ export type TransactionDataProvider =
   | 'nordigen'
   | 'lunchflow'
   | 'banksync'
+  | 'synci'
   | 'moneydashboard-importer'
   | 'csv-importer';

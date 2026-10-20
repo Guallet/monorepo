@@ -34,6 +34,7 @@ import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
 import { LunchFlowModule } from './features/lunchflow/lunchflow.module';
 import { BankSyncModule } from './features/banksync/banksync.module';
+import { SynciModule } from './features/synci/synci.module';
 
 @Module({
   imports: [
@@ -175,6 +176,7 @@ import { BankSyncModule } from './features/banksync/banksync.module';
     AiModule,
     LunchFlowModule,
     BankSyncModule,
+    SynciModule,
     HealthModule,
   ],
   controllers: [AppController],

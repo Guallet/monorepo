@@ -36,7 +36,7 @@ type PersonalProviderSettingsLabels = {
   confirmDeleteBody: string;
 };
 
-type PersonalProvider = 'bankSync' | 'lunchFlow';
+type PersonalProvider = 'bankSync' | 'lunchFlow' | 'synci';
 
 const providerSettingsDefaults: Record<
   PersonalProvider,
@@ -90,6 +90,30 @@ const providerSettingsDefaults: Record<
     confirmDeleteBody:
       'Guallet will stop syncing these accounts. Imported accounts and transactions will remain.',
   },
+  synci: {
+    instructions:
+      'Create a personal access token in Synci under Developers > Tokens. Guallet uses it to read your connected accounts and transactions.',
+    learnMore: 'View Synci API instructions',
+    keySecurity:
+      'Your token is encrypted in Guallet and is only used to read your Synci financial data.',
+    keyConfigured: 'Personal access token configured',
+    apiKeyLabel: 'Synci personal access token',
+    apiKeyPlaceholder: 'Enter a new token to replace it or paste your token',
+    saveButton: 'Save and validate token',
+    saveSuccess: 'Synci token saved.',
+    saveErrorTitle: 'Could not save token',
+    saveErrorMessage: 'Check that your Synci personal access token is valid.',
+    syncButton: 'Sync now',
+    syncErrorTitle: 'Could not sync accounts',
+    syncErrorMessage: 'Please try again later.',
+    deleteButton: 'Remove token',
+    deleteSuccess: 'Synci token removed. Imported accounts remain in Guallet.',
+    deleteErrorTitle: 'Could not remove token',
+    deleteErrorMessage: 'Please try again.',
+    confirmDeleteTitle: 'Remove Synci token?',
+    confirmDeleteBody:
+      'Guallet will stop syncing these accounts. Imported accounts and transactions will remain.',
+  },
 };
 
 type PersonalProviderSettingsCardProps = {
@@ -130,7 +154,9 @@ export function PersonalProviderSettingsCard({
   const docsUrl =
     provider === 'bankSync'
       ? 'https://banksync.io/docs/api/authentication'
-      : 'https://www.lunchflow.app/docs/api/personal-api-overview';
+      : provider === 'synci'
+        ? 'https://docs.synci.io'
+        : 'https://www.lunchflow.app/docs/api/personal-api-overview';
   const [apiKey, setApiKey] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
 

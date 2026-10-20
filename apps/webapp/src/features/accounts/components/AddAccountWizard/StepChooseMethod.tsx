@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { MethodCard } from './MethodCard';
 
 interface StepChooseMethodProps {
-  onChoose: (method: 'ob' | 'lunchflow' | 'banksync' | 'manual') => void;
+  onChoose: (
+    method: 'ob' | 'lunchflow' | 'banksync' | 'synci' | 'manual',
+  ) => void;
 }
 
 export function StepChooseMethod({
@@ -32,6 +34,22 @@ export function StepChooseMethod({
       </Box>
 
       <Stack gap="sm">
+        <MethodCard
+          title={t(
+            'feature.accounts.add.chooseMethod.synci.title',
+            'Import from Synci',
+          )}
+          description={t(
+            'feature.accounts.add.chooseMethod.synci.desc',
+            'Import accounts connected to Synci using your own personal access token.',
+          )}
+          onClick={() => onChoose('synci')}
+          icon={
+            <ThemeIcon size={44} radius="sm" variant="light" color="cyan">
+              <IconCloudDownload size={24} />
+            </ThemeIcon>
+          }
+        />
         <MethodCard
           title={t(
             'feature.accounts.add.chooseMethod.bankSync.title',

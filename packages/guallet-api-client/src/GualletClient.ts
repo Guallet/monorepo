@@ -16,6 +16,7 @@ import { RulesApi } from './rules';
 import { AiApi } from './ai';
 import { LunchFlowApi } from './lunchflow';
 import { BankSyncApi } from './banksync';
+import { SynciApi } from './synci';
 import { NordigenApi } from './nordigen';
 
 export interface GualletClient {
@@ -37,6 +38,7 @@ export interface GualletClient {
   ai: AiApi;
   lunchFlow: LunchFlowApi;
   bankSync: BankSyncApi;
+  synci: SynciApi;
   nordigen: NordigenApi;
 }
 
@@ -91,6 +93,7 @@ export class GualletClientImpl implements GualletClient {
   ai: AiApi;
   lunchFlow: LunchFlowApi;
   bankSync: BankSyncApi;
+  synci: SynciApi;
   nordigen: NordigenApi;
 
   constructor({
@@ -121,6 +124,7 @@ export class GualletClientImpl implements GualletClient {
     this.ai = new AiApi(this);
     this.lunchFlow = new LunchFlowApi(this);
     this.bankSync = new BankSyncApi(this);
+    this.synci = new SynciApi(this);
     this.nordigen = new NordigenApi(this);
   }
 

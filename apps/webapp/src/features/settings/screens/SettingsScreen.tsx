@@ -19,6 +19,7 @@ import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
 import { DateFormatRow } from '../components/DateFormatRow';
 import { CloseAccountModal } from '../components/CloseAccountModal';
 import { LunchFlowSettingsCard } from '../components/LunchFlowSettingsCard';
+import { SynciSettingsCard } from '../components/SynciSettingsCard';
 import { BankSyncSettingsCard } from '../components/BankSyncSettingsCard';
 import { NordigenSettingsCard } from '../components/NordigenSettingsCard';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
@@ -168,6 +169,19 @@ export function SettingsScreen() {
           >
             <Box px={spacing.lg}>
               <LunchFlowSettingsCard />
+            </Box>
+          </SettingsSection>
+
+          <SettingsSection
+            title={t('screens.settings.synci.title', 'Synci')}
+            description={t(
+              'screens.settings.synci.description',
+              'Import bank accounts using your Synci personal access token.',
+            )}
+            icon={<IconKey size={24} strokeWidth={1.5} />}
+          >
+            <Box px={spacing.lg}>
+              <SynciSettingsCard />
             </Box>
           </SettingsSection>
 
