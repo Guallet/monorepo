@@ -1530,7 +1530,10 @@
         "confirmDeleteTitle": "Remove Lunch Flow key?",
         "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
         "title": "Lunch Flow",
-        "description": "Import bank accounts using your Lunch Flow API key."
+        "description": "Import bank accounts using your Lunch Flow API key.",
+        "syncButton": "Sync now",
+        "syncErrorTitle": "Could not sync accounts",
+        "syncErrorMessage": "Please try again later."
       },
       "profile": {
         "title": "User information",
@@ -1717,6 +1720,12 @@
         "confirmDeleteBody": "Guallet will stop syncing these accounts. Imported accounts and transactions will remain.",
         "syncButton": "Sync now",
         "syncSuccess": "{{count}} accounts synced.",
+        "syncErrorTitle": "Could not sync accounts",
+        "syncErrorMessage": "Please try again later."
+      },
+      "provider": {
+        "syncSuccess": "{{count}} accounts synced.",
+        "syncButton": "Sync now",
         "syncErrorTitle": "Could not sync accounts",
         "syncErrorMessage": "Please try again later."
       }

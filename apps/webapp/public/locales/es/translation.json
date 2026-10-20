@@ -1546,7 +1546,10 @@
         "confirmDeleteTitle": "¿Eliminar la clave de Lunch Flow?",
         "confirmDeleteBody": "Guallet dejará de sincronizar estas cuentas. Las cuentas y los movimientos importados se conservarán.",
         "title": "Lunch Flow",
-        "description": "Importa cuentas bancarias con tu clave API de Lunch Flow."
+        "description": "Importa cuentas bancarias con tu clave API de Lunch Flow.",
+        "syncButton": "Sincronizar ahora",
+        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
+        "syncErrorMessage": "Inténtalo de nuevo más tarde."
       },
       "profile": {
         "title": "User information",
@@ -1736,6 +1739,12 @@
         "confirmDeleteBody": "Guallet dejará de sincronizar estas cuentas. Las cuentas y transacciones importadas permanecerán.",
         "syncButton": "Sincronizar ahora",
         "syncSuccess": "{{count}} cuentas sincronizadas.",
+        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
+        "syncErrorMessage": "Inténtalo de nuevo más tarde."
+      },
+      "provider": {
+        "syncSuccess": "{{count}} cuentas sincronizadas.",
+        "syncButton": "Sincronizar ahora",
         "syncErrorTitle": "No se pudieron sincronizar las cuentas",
         "syncErrorMessage": "Inténtalo de nuevo más tarde."
       }
