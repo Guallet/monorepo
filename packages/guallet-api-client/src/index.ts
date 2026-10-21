@@ -15,7 +15,4 @@ export * from './ai';
 
 export { ApiError, createClient } from './GualletClient';
 export type { CookieHelper, GualletClient } from './GualletClient';
-export * from './lunchflow';
-export * from './banksync';
-export * from './synci';
-export * from './bank-providers';
+export * from './openbanking';

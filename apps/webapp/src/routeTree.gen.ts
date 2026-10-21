@@ -49,6 +49,7 @@ import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/n
 import { Route as AppCategoriesIdRouteImport } from './routes/_app/categories/$id'
 import { Route as AppBudgetsCreateRouteImport } from './routes/_app/budgets/create'
 import { Route as AppBudgetsIdRouteImport } from './routes/_app/budgets/$id'
+import { Route as AppBankConnectionsCallbackRouteImport } from './routes/_app/bank-connections/callback'
 import { Route as AppAccountsNewRouteImport } from './routes/_app/accounts/new'
 import { Route as AppAccountsIdRouteImport } from './routes/_app/accounts/$id'
 import { Route as AppImporterCsvIndexRouteImport } from './routes/_app/importer/csv/index'
@@ -309,6 +310,12 @@ const AppBudgetsIdRoute = AppBudgetsIdRouteImport.update({
   path: '/budgets/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBankConnectionsCallbackRoute =
+  AppBankConnectionsCallbackRouteImport.update({
+    id: '/bank-connections/callback',
+    path: '/bank-connections/callback',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppAccountsNewRoute = AppAccountsNewRouteImport.update({
   id: '/accounts/new',
   path: '/accounts/new',
@@ -436,6 +443,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
+  '/bank-connections/callback': typeof AppBankConnectionsCallbackRoute
   '/budgets/$id': typeof AppBudgetsIdRoute
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
@@ -502,6 +510,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
+  '/bank-connections/callback': typeof AppBankConnectionsCallbackRoute
   '/budgets/$id': typeof AppBudgetsIdRoute
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
@@ -570,6 +579,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
+  '/_app/bank-connections/callback': typeof AppBankConnectionsCallbackRoute
   '/_app/budgets/$id': typeof AppBudgetsIdRoute
   '/_app/budgets/create': typeof AppBudgetsCreateRoute
   '/_app/categories/$id': typeof AppCategoriesIdRoute
@@ -638,6 +648,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
+    | '/bank-connections/callback'
     | '/budgets/$id'
     | '/budgets/create'
     | '/categories/$id'
@@ -704,6 +715,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/accounts/$id'
     | '/accounts/new'
+    | '/bank-connections/callback'
     | '/budgets/$id'
     | '/budgets/create'
     | '/categories/$id'
@@ -771,6 +783,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/_app/accounts/$id'
     | '/_app/accounts/new'
+    | '/_app/bank-connections/callback'
     | '/_app/budgets/$id'
     | '/_app/budgets/create'
     | '/_app/categories/$id'
@@ -1148,6 +1161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBudgetsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/bank-connections/callback': {
+      id: '/_app/bank-connections/callback'
+      path: '/bank-connections/callback'
+      fullPath: '/bank-connections/callback'
+      preLoaderRoute: typeof AppBankConnectionsCallbackRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/accounts/new': {
       id: '/_app/accounts/new'
       path: '/accounts/new'
@@ -1302,6 +1322,7 @@ interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
   AppAccountsIdRoute: typeof AppAccountsIdRoute
   AppAccountsNewRoute: typeof AppAccountsNewRoute
+  AppBankConnectionsCallbackRoute: typeof AppBankConnectionsCallbackRoute
   AppBudgetsIdRoute: typeof AppBudgetsIdRoute
   AppBudgetsCreateRoute: typeof AppBudgetsCreateRoute
   AppCategoriesIdRoute: typeof AppCategoriesIdRoute
@@ -1358,6 +1379,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
   AppAccountsIdRoute: AppAccountsIdRoute,
   AppAccountsNewRoute: AppAccountsNewRoute,
+  AppBankConnectionsCallbackRoute: AppBankConnectionsCallbackRoute,
   AppBudgetsIdRoute: AppBudgetsIdRoute,
   AppBudgetsCreateRoute: AppBudgetsCreateRoute,
   AppCategoriesIdRoute: AppCategoriesIdRoute,

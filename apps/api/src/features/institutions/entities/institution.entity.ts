@@ -17,6 +17,10 @@ export class Institution extends BaseDbEntity {
   @Column({ nullable: true })
   user_id?: string;
 
+  // Preserve existing institution mappings when migrating bank connections.
+  @Column({ nullable: true, unique: true })
+  nordigen_id: string;
+
   @Column('simple-array', { nullable: true })
   countries: string[];
 

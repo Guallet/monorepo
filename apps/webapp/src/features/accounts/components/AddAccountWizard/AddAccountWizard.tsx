@@ -1,4 +1,9 @@
-import { AccountTypeDto, CreateAccountRequest } from '@guallet/api-client';
+import { StepBankImport } from './StepBankImport';
+import {
+  AccountTypeDto,
+  BankProviderId,
+  CreateAccountRequest,
+} from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { Box } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -17,18 +22,13 @@ import { StepChooseMethod } from './StepChooseMethod';
 import { StepManualDetails } from './StepManualDetails';
 import { StepManualSuccess } from './StepManualSuccess';
 import { StepManualType } from './StepManualType';
-import { StepLunchFlowImport } from './StepLunchFlowImport';
-import { StepBankSyncImport } from './StepBankSyncImport';
-import { StepSynciImport } from './StepSynciImport';
 
 type WizardStep =
   | 'method'
   | 'm-type'
   | 'm-details'
   | 'm-success'
-  | 'lf-accounts'
-  | 'bs-accounts'
-  | 'synci-accounts';
+  | 'bank-accounts';
 
 interface AddAccountWizardProps {
   onDone: () => void;
@@ -39,6 +39,7 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
   const navigate = useNavigate();
   const defaultCurrency = useDefaultCurrency();
   const [step, setStep] = useState<WizardStep>('method');
+  const [providerId, setProviderId] = useState<BankProviderId | null>(null);
   const [createdAccountId, setCreatedAccountId] = useState<string | null>(null);
 
   const form = useForm<AddAccountFormData>({
@@ -134,10 +135,11 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
       {step === 'method' && (
         <StepChooseMethod
           onChoose={(method) => {
-            if (method === 'lunchflow') setStep('lf-accounts');
-            else if (method === 'banksync') setStep('bs-accounts');
-            else if (method === 'synci') setStep('synci-accounts');
-            else setStep('m-type');
+            if (method === 'manual') setStep('m-type');
+            else {
+              setProviderId(method);
+              setStep('bank-accounts');
+            }
           }}
         />
       )}
@@ -164,22 +166,10 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
           onAddAnother={resetAndRestart}
         />
       )}
-      {step === 'lf-accounts' && (
-        <StepLunchFlowImport
-          onBack={() => setStep('method')}
-          onDone={onDone}
-          onConfigure={() => void navigate({ to: '/settings' })}
-        />
-      )}
-      {step === 'bs-accounts' && (
-        <StepBankSyncImport
-          onBack={() => setStep('method')}
-          onDone={onDone}
-          onConfigure={() => void navigate({ to: '/settings' })}
-        />
-      )}
-      {step === 'synci-accounts' && (
-        <StepSynciImport
+      {step === 'bank-accounts' && providerId && (
+        <StepBankImport
+          key={providerId}
+          providerId={providerId}
           onBack={() => setStep('method')}
           onDone={onDone}
           onConfigure={() => void navigate({ to: '/settings' })}

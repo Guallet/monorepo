@@ -1,3 +1,4 @@
+import { OpenbankingApi } from './openbanking';
 import { AccountsApi } from './accounts';
 import { BudgetsApi } from './budgets';
 import { CategoriesApi } from './categories';
@@ -12,10 +13,6 @@ import { NotificationsApi } from './notifications';
 import { ReportsApi } from './reports';
 import { RulesApi } from './rules';
 import { AiApi } from './ai';
-import { LunchFlowApi } from './lunchflow';
-import { BankSyncApi } from './banksync';
-import { SynciApi } from './synci';
-import { BankProvidersApi } from './bank-providers';
 
 export interface GualletClient {
   accounts: AccountsApi;
@@ -32,10 +29,7 @@ export interface GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
-  lunchFlow: LunchFlowApi;
-  bankSync: BankSyncApi;
-  synci: SynciApi;
-  bankProviders: BankProvidersApi;
+  openbanking: OpenbankingApi;
 }
 
 export interface CookieHelper {
@@ -85,10 +79,7 @@ export class GualletClientImpl implements GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
-  lunchFlow: LunchFlowApi;
-  bankSync: BankSyncApi;
-  synci: SynciApi;
-  bankProviders: BankProvidersApi;
+  openbanking: OpenbankingApi;
 
   constructor({
     baseUrl,
@@ -114,10 +105,7 @@ export class GualletClientImpl implements GualletClient {
     this.reports = new ReportsApi(this);
     this.rules = new RulesApi(this);
     this.ai = new AiApi(this);
-    this.lunchFlow = new LunchFlowApi(this);
-    this.bankSync = new BankSyncApi(this);
-    this.synci = new SynciApi(this);
-    this.bankProviders = new BankProvidersApi(this);
+    this.openbanking = new OpenbankingApi(this);
   }
 
   async get<TDto>({

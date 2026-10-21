@@ -1,15 +1,17 @@
 import {
-  BadGatewayException,
+  BankProviderAdapter,
+  ProviderContext,
+  ProviderIdentity,
+  requireApiKey,
+} from '../openbanking/providers/bank-provider.interface';
+import {
   BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Money } from '@guallet/money';
-import { AiCredentialEncryptionService } from 'src/features/ai/ai-credential-encryption.service';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
@@ -17,17 +19,13 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
 import { SynciAccount } from './entities/synci-account.entity';
-import { SynciCredential } from './entities/synci-credential.entity';
 import { SynciClient, SynciRemoteAccount } from './synci.client';
-import { SynciCredentialDto } from './dto/synci.dto';
 
 @Injectable()
-export class SynciService {
+export class SynciService implements BankProviderAdapter {
   private readonly logger = new Logger(SynciService.name);
 
   constructor(
-    @InjectRepository(SynciCredential)
-    private readonly credentials: Repository<SynciCredential>,
     @InjectRepository(SynciAccount)
     private readonly remoteAccounts: Repository<SynciAccount>,
     @InjectRepository(Account)
@@ -35,50 +33,22 @@ export class SynciService {
     @InjectRepository(Transaction)
     private readonly transactions: Repository<Transaction>,
     private readonly client: SynciClient,
-    private readonly cipher: AiCredentialEncryptionService,
   ) {}
 
-  async getCredential(userId: string): Promise<SynciCredentialDto> {
-    return SynciCredentialDto.fromDomain(
-      await this.credentials.findOne({ where: { user_id: userId } }),
-    );
-  }
-
-  async saveCredential({
+  async validateCredentials({
     userId,
-    apiKey,
-  }: {
-    userId: string;
-    apiKey: string;
-  }): Promise<SynciCredentialDto> {
-    try {
-      await this.client.getAccounts(apiKey);
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw new BadRequestException('Synci API key is invalid');
-      }
-      throw error;
-    }
-
-    const existing = await this.credentials
-      .createQueryBuilder('credential')
-      .addSelect('credential.encrypted_api_key')
-      .where('credential.user_id = :userId', { userId })
-      .getOne();
-    const credential = existing ?? this.credentials.create({ user_id: userId });
-    credential.encrypted_api_key = this.cipher.encrypt(apiKey);
-    credential.api_key_hint = apiKey.length > 4 ? apiKey.slice(-4) : '••••';
-    return SynciCredentialDto.fromDomain(
-      await this.credentials.save(credential),
-    );
+    credentials,
+  }: ProviderContext): Promise<void> {
+    const apiKey = requireApiKey(credentials);
+    await this.client.getAccounts(apiKey);
   }
 
-  async deleteCredential(userId: string): Promise<void> {
-    await this.credentials.delete({ user_id: userId });
+  async disconnect({ userId }: ProviderIdentity): Promise<void> {
+    await this.remoteAccounts.update({ user_id: userId }, { is_linked: false });
   }
 
-  async listRemoteAccounts(userId: string) {
-    const apiKey = await this.getApiKey(userId);
+  async listAccounts({ userId, credentials }: ProviderContext) {
+    const apiKey = requireApiKey(credentials);
     const [accounts, linked] = await Promise.all([
       this.client.getAccounts(apiKey),
       this.remoteAccounts.find({ where: { user_id: userId } }),
@@ -102,12 +72,10 @@ export class SynciService {
 
   async importAccounts({
     userId,
+    credentials,
     accountIds,
-  }: {
-    userId: string;
-    accountIds: string[];
-  }): Promise<string[]> {
-    const apiKey = await this.getApiKey(userId);
+  }: ProviderContext & { accountIds: string[] }): Promise<string[]> {
+    const apiKey = requireApiKey(credentials);
     const remote = await this.client.getAccounts(apiKey);
     const requested = new Set(accountIds);
     const selected = remote.filter((account) =>
@@ -119,16 +87,21 @@ export class SynciService {
       );
     }
 
-    const mappings = await Promise.all(
-      selected.map((account) =>
-        this.importRemoteAccount({ userId, apiKey, account }),
-      ),
-    );
-    return mappings.map((mapping) => mapping.guallet_account_id);
+    // Finish every write before releasing the connection lock, even on failure.
+    const imported: string[] = [];
+    for (const account of selected) {
+      const mapping = await this.importRemoteAccount({
+        userId,
+        apiKey,
+        account,
+      });
+      imported.push(mapping.guallet_account_id);
+    }
+    return imported;
   }
 
-  async syncUserAccounts(userId: string) {
-    const apiKey = await this.getApiKey(userId);
+  async sync({ userId, credentials }: ProviderContext) {
+    const apiKey = requireApiKey(credentials);
     const mappings = await this.remoteAccounts.find({
       where: { user_id: userId, is_linked: true },
     });
@@ -137,11 +110,8 @@ export class SynciService {
 
   async unlinkAccount({
     userId,
-    remoteAccountId,
-  }: {
-    userId: string;
-    remoteAccountId: string;
-  }): Promise<void> {
+    accountId: remoteAccountId,
+  }: ProviderIdentity & { accountId: string }): Promise<void> {
     const result = await this.remoteAccounts.update(
       {
         user_id: userId,
@@ -150,31 +120,6 @@ export class SynciService {
       { is_linked: false },
     );
     if (!result.affected) throw new NotFoundException();
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
-  async syncAllAccounts(): Promise<void> {
-    const mappings = await this.remoteAccounts.find({
-      where: { is_linked: true },
-    });
-    const byUser = new Map<string, SynciAccount[]>();
-    for (const mapping of mappings) {
-      const items = byUser.get(mapping.user_id) ?? [];
-      items.push(mapping);
-      byUser.set(mapping.user_id, items);
-    }
-    await Promise.all(
-      [...byUser].map(async ([userId, userMappings]) => {
-        try {
-          const key = await this.getApiKey(userId);
-          await this.syncMappings(userId, key, userMappings);
-        } catch (error) {
-          if (!(error instanceof NotFoundException)) {
-            this.logger.warn(`Synci sync failed for user ${userId}`);
-          }
-        }
-      }),
-    );
   }
 
   private async importRemoteAccount({
@@ -209,30 +154,38 @@ export class SynciService {
       }
     } else {
       const currency = balance.currency || account.currency || 'GBP';
-      localAccount = await this.accounts.save({
-        user_id: userId,
-        name: account.name,
-        balance: Money.fromCurrencyCode({
-          amount: balance.amount,
-          currencyCode: currency,
-        }).amount,
-        currency,
-        type: AccountType.UNKNOWN,
-        source: AccountSource.IMPORTED,
-        source_name: 'Synci',
-        institutionId: null,
-        properties: null,
-      });
-      mapping = await this.remoteAccounts.save({
-        user_id: userId,
-        remote_account_id: remoteId,
-        remote_connection_id:
-          account.connection_id === undefined || account.connection_id === null
-            ? null
-            : String(account.connection_id),
-        guallet_account_id: localAccount.id,
-        is_linked: true,
-      });
+      const created = await this.accounts.manager.transaction(
+        async (manager) => {
+          const createdAccount = await manager.save(Account, {
+            user_id: userId,
+            name: account.name,
+            balance: Money.fromCurrencyCode({
+              amount: balance.amount,
+              currencyCode: currency,
+            }).amount,
+            currency,
+            type: AccountType.UNKNOWN,
+            source: AccountSource.IMPORTED,
+            source_name: 'Synci',
+            institutionId: null,
+            properties: null,
+          });
+          const createdMapping = await manager.save(SynciAccount, {
+            user_id: userId,
+            remote_account_id: remoteId,
+            remote_connection_id:
+              account.connection_id === undefined ||
+              account.connection_id === null
+                ? null
+                : String(account.connection_id),
+            guallet_account_id: createdAccount.id,
+            is_linked: true,
+          });
+          return { account: createdAccount, mapping: createdMapping };
+        },
+      );
+      localAccount = created.account;
+      mapping = created.mapping;
     }
     await this.persistRemoteData({
       account,
@@ -336,19 +289,5 @@ export class SynciService {
       currency: localAccount.currency,
       transactions,
     });
-  }
-
-  private async getApiKey(userId: string): Promise<string> {
-    const credential = await this.credentials
-      .createQueryBuilder('credential')
-      .addSelect('credential.encrypted_api_key')
-      .where('credential.user_id = :userId', { userId })
-      .getOne();
-    if (!credential) throw new NotFoundException('Synci key is not configured');
-    try {
-      return this.cipher.decrypt(credential.encrypted_api_key);
-    } catch {
-      throw new BadGatewayException('Synci key could not be decrypted');
-    }
   }
 }

@@ -4,7 +4,7 @@ Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScrip
 
 ### Quick summary
 
-- Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and bank providers (BankSync, Lunch Flow, Synci), webhooks and CSV import.
+- Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and bank connections (BankSync, Lunch Flow, Synci, Nordigen), webhooks and CSV import.
 - AI features: user-owned provider connections (OpenAI, OpenRouter, Vercel AI Gateway), agents, and a streaming AI Assistant chat grounded on a server-built financial summary. Provider tokens are AES-256-GCM encrypted at rest; chat sessions are purged after 30 days.
 - Authentication via Better-Auth (magic links / OTP / Social).
 - DB: PostgreSQL (TypeORM). Background jobs: BullMQ + Redis. Scheduled jobs via `@nestjs/schedule` cron.
@@ -166,3 +166,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ## License
 
 This package is covered by the repository Apache-2.0 license — see the root `LICENSE`.
+
+## Bank connections
+
+See [the shared open banking API](../../docs/openbanking.md) for endpoints,
+provider adapters, background jobs, and migration guidance.

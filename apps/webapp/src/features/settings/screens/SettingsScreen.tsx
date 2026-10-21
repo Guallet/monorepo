@@ -1,3 +1,4 @@
+import { BankConnectionsSettings } from '@/features/openbanking/components/BankConnectionsSettings';
 import {
   Box,
   Button,
@@ -18,9 +19,6 @@ import { DefaultCurrencyRow } from '../components/DefaultCurrencyRow';
 import { PreferredCurrenciesRow } from '../components/PreferredCurrenciesRow';
 import { DateFormatRow } from '../components/DateFormatRow';
 import { CloseAccountModal } from '../components/CloseAccountModal';
-import { LunchFlowSettingsCard } from '../components/LunchFlowSettingsCard';
-import { SynciSettingsCard } from '../components/SynciSettingsCard';
-import { BankSyncSettingsCard } from '../components/BankSyncSettingsCard';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { TextRow, useTheme } from '@guallet/ui-react';
 import {
@@ -119,15 +117,15 @@ export function SettingsScreen() {
           </SettingsSection>
 
           <SettingsSection
-            title={t('screens.settings.bankSync.title', 'BankSync')}
+            title={t('openbanking.settings.title', 'Bank connections')}
             description={t(
-              'screens.settings.bankSync.description',
-              'Import and sync bank accounts using your BankSync API key.',
+              'openbanking.settings.description',
+              'Connect bank accounts using your own provider credentials.',
             )}
             icon={<IconKey size={24} strokeWidth={1.5} />}
           >
             <Box px={spacing.lg}>
-              <BankSyncSettingsCard />
+              <BankConnectionsSettings />
             </Box>
           </SettingsSection>
 
@@ -156,32 +154,6 @@ export function SettingsScreen() {
                 navigate({ to: '/settings/ai/providers' });
               }}
             />
-          </SettingsSection>
-
-          <SettingsSection
-            title={t('screens.settings.lunchFlow.title', 'Lunch Flow')}
-            description={t(
-              'screens.settings.lunchFlow.description',
-              'Import bank accounts using your Lunch Flow API key.',
-            )}
-            icon={<IconKey size={24} strokeWidth={1.5} />}
-          >
-            <Box px={spacing.lg}>
-              <LunchFlowSettingsCard />
-            </Box>
-          </SettingsSection>
-
-          <SettingsSection
-            title={t('screens.settings.synci.title', 'Synci')}
-            description={t(
-              'screens.settings.synci.description',
-              'Import bank accounts using your Synci personal access token.',
-            )}
-            icon={<IconKey size={24} strokeWidth={1.5} />}
-          >
-            <Box px={spacing.lg}>
-              <SynciSettingsCard />
-            </Box>
           </SettingsSection>
 
           <SettingsSection

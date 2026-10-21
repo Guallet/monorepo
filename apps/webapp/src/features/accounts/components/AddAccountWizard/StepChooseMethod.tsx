@@ -1,101 +1,74 @@
-import { Box, Stack, Text, ThemeIcon, Title } from '@mantine/core';
-import {
-  IconCloudDownload,
-  IconDatabaseImport,
-  IconPlus,
-} from '@tabler/icons-react';
+import { BankProviderId } from '@guallet/api-client';
+import { useBankProviders } from '@guallet/api-react';
+import { useTheme } from '@guallet/ui-react';
+import { Alert, Button, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import { IconCloudDownload, IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { MethodCard } from './MethodCard';
-
 interface StepChooseMethodProps {
-  onChoose: (method: 'lunchflow' | 'banksync' | 'synci' | 'manual') => void;
+  onChoose: (method: BankProviderId | 'manual') => void;
 }
-
 export function StepChooseMethod({
   onChoose,
 }: Readonly<StepChooseMethodProps>) {
   const { t } = useTranslation();
-
+  const { spacing } = useTheme();
+  const providers = useBankProviders();
   return (
-    <Stack>
-      <Box mb="md">
-        <Title order={3} mb={4}>
-          {t('feature.accounts.add.chooseMethod.title', 'Add an account')}
-        </Title>
-        <Text size="sm" c="dimmed">
-          {t(
-            'feature.accounts.add.chooseMethod.subtitle',
-            "Choose how you'd like to connect your account",
-          )}
-        </Text>
-      </Box>
-
-      <Stack gap="sm">
+    <Stack gap={spacing.md}>
+      <Title order={3}>
+        {t('feature.accounts.add.chooseMethod.title', 'Add an account')}
+      </Title>
+      <Text size="sm" c="dimmed">
+        {t(
+          'feature.accounts.add.chooseMethod.subtitle',
+          "Choose how you'd like to connect your account",
+        )}
+      </Text>
+      {providers.isLoading && <Text>{t('common.loading', 'Loading…')}</Text>}
+      {providers.isError && (
+        <Alert color="red">
+          {t('openbanking.providers.error', 'Could not load bank providers.')}
+          <Button variant="subtle" onClick={() => void providers.refetch()}>
+            {t('common.retry', 'Retry')}
+          </Button>
+        </Alert>
+      )}
+      {providers.data?.map((provider) => (
         <MethodCard
-          title={t(
-            'feature.accounts.add.chooseMethod.synci.title',
-            'Import from Synci',
-          )}
+          key={provider.id}
+          title={t('openbanking.import.title', 'Import from {{provider}}', {
+            provider: provider.name,
+          })}
           description={t(
-            'feature.accounts.add.chooseMethod.synci.desc',
-            'Import accounts connected to Synci using your own personal access token.',
+            'openbanking.import.providerDescription',
+            'Connect bank accounts using your own {{provider}} credentials.',
+            { provider: provider.name },
           )}
-          onClick={() => onChoose('synci')}
+          onClick={() => onChoose(provider.id)}
           icon={
-            <ThemeIcon size={44} radius="sm" variant="light" color="cyan">
-              <IconCloudDownload size={24} />
+            <ThemeIcon variant="light">
+              <IconCloudDownload />
             </ThemeIcon>
           }
         />
-        <MethodCard
-          title={t(
-            'feature.accounts.add.chooseMethod.bankSync.title',
-            'Import from BankSync',
-          )}
-          description={t(
-            'feature.accounts.add.chooseMethod.bankSync.desc',
-            'Import accounts already connected to BankSync using your own API key.',
-          )}
-          onClick={() => onChoose('banksync')}
-          icon={
-            <ThemeIcon size={44} radius="sm" variant="light" color="teal">
-              <IconDatabaseImport size={24} />
-            </ThemeIcon>
-          }
-        />
-        <MethodCard
-          title={t(
-            'feature.accounts.add.chooseMethod.lunchFlow.title',
-            'Import from Lunch Flow',
-          )}
-          description={t(
-            'feature.accounts.add.chooseMethod.lunchFlow.desc',
-            'Import accounts already connected to your Lunch Flow account using your own API key.',
-          )}
-          onClick={() => onChoose('lunchflow')}
-          icon={
-            <ThemeIcon size={44} radius="sm" variant="light" color="blue">
-              <IconCloudDownload size={24} />
-            </ThemeIcon>
-          }
-        />
-        <MethodCard
-          title={t(
-            'feature.accounts.add.chooseMethod.manual.title',
-            'Add manually',
-          )}
-          description={t(
-            'feature.accounts.add.chooseMethod.manual.desc',
-            'Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported.',
-          )}
-          onClick={() => onChoose('manual')}
-          icon={
-            <ThemeIcon size={44} radius="sm" variant="light" color="gray">
-              <IconPlus size={24} />
-            </ThemeIcon>
-          }
-        />
-      </Stack>
+      ))}
+      <MethodCard
+        title={t(
+          'feature.accounts.add.chooseMethod.manual.title',
+          'Add manually',
+        )}
+        description={t(
+          'feature.accounts.add.chooseMethod.manual.desc',
+          'Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported.',
+        )}
+        onClick={() => onChoose('manual')}
+        icon={
+          <ThemeIcon variant="light">
+            <IconPlus />
+          </ThemeIcon>
+        }
+      />
     </Stack>
   );
 }

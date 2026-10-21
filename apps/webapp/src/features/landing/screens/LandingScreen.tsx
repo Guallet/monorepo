@@ -150,8 +150,8 @@ export function LandingScreen() {
         'Connect with your own provider credentials',
       ),
       description: t(
-        'landing.features.personalProviderKeys.description',
-        'Connect through BankSync, Lunch Flow, or Synci using your own credentials. Guallet encrypts them for your account.',
+        'landing.features.personalProviderKeys.supportedProviders',
+        'Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account.',
       ),
     },
   ];

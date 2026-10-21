@@ -1,15 +1,18 @@
 import {
+  BankProviderAdapter,
+  ProviderContext,
+  ProviderIdentity,
+  requireApiKey,
+} from '../openbanking/providers/bank-provider.interface';
+import {
   BadGatewayException,
   BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Money } from '@guallet/money';
-import { AiCredentialEncryptionService } from 'src/features/ai/ai-credential-encryption.service';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
@@ -22,19 +25,15 @@ import {
   BankSyncRemoteTransaction,
 } from './banksync.client';
 import { BankSyncAccount } from './entities/banksync-account.entity';
-import { BankSyncCredential } from './entities/banksync-credential.entity';
-import { BankSyncCredentialDto } from './dto/banksync.dto';
 
 const HISTORY_YEARS = 7;
 const SYNC_OVERLAP_DAYS = 7;
 
 @Injectable()
-export class BankSyncService {
+export class BankSyncService implements BankProviderAdapter {
   private readonly logger = new Logger(BankSyncService.name);
 
   constructor(
-    @InjectRepository(BankSyncCredential)
-    private readonly credentials: Repository<BankSyncCredential>,
     @InjectRepository(BankSyncAccount)
     private readonly remoteAccounts: Repository<BankSyncAccount>,
     @InjectRepository(Account)
@@ -42,50 +41,22 @@ export class BankSyncService {
     @InjectRepository(Transaction)
     private readonly transactions: Repository<Transaction>,
     private readonly client: BankSyncClient,
-    private readonly cipher: AiCredentialEncryptionService,
   ) {}
 
-  async getCredential(userId: string): Promise<BankSyncCredentialDto> {
-    return BankSyncCredentialDto.fromDomain(
-      await this.credentials.findOne({ where: { user_id: userId } }),
-    );
-  }
-
-  async saveCredential({
+  async validateCredentials({
     userId,
-    apiKey,
-  }: {
-    userId: string;
-    apiKey: string;
-  }): Promise<BankSyncCredentialDto> {
-    try {
-      await this.client.getBanks(apiKey, userId);
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw new BadRequestException('BankSync API key is invalid');
-      }
-      throw error;
-    }
-
-    const existing = await this.credentials
-      .createQueryBuilder('credential')
-      .addSelect('credential.encrypted_api_key')
-      .where('credential.user_id = :userId', { userId })
-      .getOne();
-    const credential = existing ?? this.credentials.create({ user_id: userId });
-    credential.encrypted_api_key = this.cipher.encrypt(apiKey);
-    credential.api_key_hint = apiKey.length > 4 ? apiKey.slice(-4) : '••••';
-    return BankSyncCredentialDto.fromDomain(
-      await this.credentials.save(credential),
-    );
+    credentials,
+  }: ProviderContext): Promise<void> {
+    const apiKey = requireApiKey(credentials);
+    await this.client.getBanks(apiKey, userId);
   }
 
-  async deleteCredential(userId: string): Promise<void> {
-    await this.credentials.delete({ user_id: userId });
+  async disconnect({ userId }: ProviderIdentity): Promise<void> {
+    await this.remoteAccounts.update({ user_id: userId }, { is_linked: false });
   }
 
-  async listRemoteAccounts(userId: string) {
-    const apiKey = await this.getApiKey(userId);
+  async listAccounts({ userId, credentials }: ProviderContext) {
+    const apiKey = requireApiKey(credentials);
     const banks = await this.client.getBanks(apiKey, userId);
     const mappings = await this.remoteAccounts.find({
       where: { user_id: userId },
@@ -137,12 +108,11 @@ export class BankSyncService {
 
   async importAccounts({
     userId,
-    selections,
-  }: {
-    userId: string;
-    selections: Array<{ bankId: string; accountId: string }>;
-  }): Promise<string[]> {
-    const apiKey = await this.getApiKey(userId);
+    credentials,
+    accountIds,
+  }: ProviderContext & { accountIds: string[] }): Promise<string[]> {
+    const selections = accountIds.map(decodeBankSyncAccountId);
+    const apiKey = requireApiKey(credentials);
     const selected = new Map<
       string,
       {
@@ -191,16 +161,22 @@ export class BankSyncService {
       );
     }
 
-    const mappings = await Promise.all(
-      [...selected.values()].map(({ bank, account }) =>
-        this.importRemoteAccount({ userId, apiKey, bank, account }),
-      ),
-    );
-    return mappings.map((mapping) => mapping.guallet_account_id);
+    // Finish every write before releasing the connection lock, even on failure.
+    const imported: string[] = [];
+    for (const { bank, account } of [...selected.values()]) {
+      const mapping = await this.importRemoteAccount({
+        userId,
+        apiKey,
+        bank,
+        account,
+      });
+      imported.push(mapping.guallet_account_id);
+    }
+    return imported;
   }
 
-  async syncUserAccounts(userId: string) {
-    const apiKey = await this.getApiKey(userId);
+  async sync({ userId, credentials }: ProviderContext) {
+    const apiKey = requireApiKey(credentials);
     const mappings = await this.remoteAccounts.find({
       where: { user_id: userId, is_linked: true },
     });
@@ -210,13 +186,9 @@ export class BankSyncService {
 
   async unlinkAccount({
     userId,
-    bankId,
-    accountId,
-  }: {
-    userId: string;
-    bankId: string;
-    accountId: string;
-  }): Promise<void> {
+    accountId: id,
+  }: ProviderIdentity & { accountId: string }): Promise<void> {
+    const { bankId, accountId } = decodeBankSyncAccountId(id);
     const result = await this.remoteAccounts.update(
       {
         user_id: userId,
@@ -226,31 +198,6 @@ export class BankSyncService {
       { is_linked: false },
     );
     if (!result.affected) throw new NotFoundException();
-  }
-
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
-  async syncAllAccounts(): Promise<void> {
-    const mappings = await this.remoteAccounts.find({
-      where: { is_linked: true },
-    });
-    const byUser = new Map<string, BankSyncAccount[]>();
-    for (const mapping of mappings) {
-      const items = byUser.get(mapping.user_id) ?? [];
-      items.push(mapping);
-      byUser.set(mapping.user_id, items);
-    }
-    await Promise.all(
-      [...byUser].map(async ([userId, userMappings]) => {
-        try {
-          const apiKey = await this.getApiKey(userId);
-          await this.syncMappings(userId, apiKey, userMappings);
-        } catch (error) {
-          if (!(error instanceof NotFoundException)) {
-            this.logger.warn(`BankSync sync failed for user ${userId}`);
-          }
-        }
-      }),
-    );
   }
 
   private async importRemoteAccount({
@@ -284,7 +231,6 @@ export class BankSyncService {
       this.remoteBalance(account) ??
       (await this.client.getBalances(apiKey, bank.id, remoteId, userId));
     let localAccount: Account | null = null;
-    let createdLocalAccount = false;
     if (mapping) {
       localAccount = await this.accounts.findOne({
         where: { id: mapping.guallet_account_id, user_id: userId },
@@ -298,48 +244,37 @@ export class BankSyncService {
       const currency = account.currency ?? reportedBalance?.currency ?? 'USD';
       const balance =
         reportedBalance?.currency === currency ? reportedBalance.amount : 0;
-      localAccount = await this.accounts.save({
-        user_id: userId,
-        name: account.name ?? account.accountName ?? bank.name,
-        balance: Money.fromCurrencyCode({
-          amount: balance,
-          currencyCode: currency,
-        }).amount,
-        currency,
-        type: AccountType.UNKNOWN,
-        source: AccountSource.IMPORTED,
-        source_name: 'BankSync',
-        institutionId: null,
-        properties: null,
-      });
-      createdLocalAccount = true;
-      mapping = this.remoteAccounts.create({
-        user_id: userId,
-        remote_bank_id: bank.id,
-        remote_account_id: remoteId,
-        guallet_account_id: localAccount.id,
-        is_linked: true,
-      });
+      const created = await this.accounts.manager.transaction(
+        async (manager) => {
+          const createdAccount = await manager.save(Account, {
+            user_id: userId,
+            name: account.name ?? account.accountName ?? bank.name,
+            balance: Money.fromCurrencyCode({
+              amount: balance,
+              currencyCode: currency,
+            }).amount,
+            currency,
+            type: AccountType.UNKNOWN,
+            source: AccountSource.IMPORTED,
+            source_name: 'BankSync',
+            institutionId: null,
+            properties: null,
+          });
+          const createdMapping = await manager.save(BankSyncAccount, {
+            user_id: userId,
+            remote_bank_id: bank.id,
+            remote_account_id: remoteId,
+            guallet_account_id: createdAccount.id,
+            is_linked: true,
+          });
+
+          return { account: createdAccount, mapping: createdMapping };
+        },
+      );
+      localAccount = created.account;
+      mapping = created.mapping;
     }
-    try {
-      await this.remoteAccounts.save(mapping);
-    } catch (error) {
-      if (!createdLocalAccount || !this.isUniqueConstraintError(error)) {
-        throw error;
-      }
-      await this.accounts.delete({ id: localAccount.id, user_id: userId });
-      mapping = await this.remoteAccounts.findOneByOrFail({
-        user_id: userId,
-        remote_bank_id: bank.id,
-        remote_account_id: remoteId,
-      });
-      localAccount = await this.accounts.findOneOrFail({
-        where: { id: mapping.guallet_account_id, user_id: userId },
-      });
-      localAccount.source = AccountSource.IMPORTED;
-      localAccount.source_name = 'BankSync';
-      mapping.is_linked = true;
-    }
+    await this.remoteAccounts.save(mapping);
     await this.persistRemoteData({
       bank,
       account,
@@ -582,26 +517,26 @@ export class BankSyncService {
   private remoteKey(bankId: string, accountId: string) {
     return `${bankId}\u0000${accountId}`;
   }
+}
 
-  private isUniqueConstraintError(error: unknown): boolean {
-    if (typeof error !== 'object' || error === null) return false;
-    const driverError = (error as { driverError?: { code?: string } })
-      .driverError;
-    return driverError?.code === '23505';
-  }
-
-  private async getApiKey(userId: string): Promise<string> {
-    const credential = await this.credentials
-      .createQueryBuilder('credential')
-      .addSelect('credential.encrypted_api_key')
-      .where('credential.user_id = :userId', { userId })
-      .getOne();
-    if (!credential)
-      throw new NotFoundException('BankSync key is not configured');
-    try {
-      return this.cipher.decrypt(credential.encrypted_api_key);
-    } catch {
-      throw new BadGatewayException('BankSync key could not be decrypted');
+export function decodeBankSyncAccountId(value: string): {
+  bankId: string;
+  accountId: string;
+} {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    if (
+      Array.isArray(parsed) &&
+      parsed.length === 2 &&
+      typeof parsed[0] === 'string' &&
+      parsed[0] &&
+      typeof parsed[1] === 'string' &&
+      parsed[1]
+    ) {
+      return { bankId: parsed[0], accountId: parsed[1] };
     }
+  } catch {
+    /* Report the same error for invalid JSON and invalid identifiers. */
   }
+  throw new BadRequestException('Invalid provider account id');
 }

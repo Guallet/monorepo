@@ -29,7 +29,7 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
-import { BankProvidersModule } from './features/bank-providers/bank-providers.module';
+import { OpenbankingModule } from './features/openbanking/openbanking.module';
 
 @Module({
   imports: [
@@ -56,6 +56,7 @@ import { BankProvidersModule } from './features/bank-providers/bank-providers.mo
               'req.headers.cookie',
               'req.body.secretId',
               'req.body.secretKey',
+              'req.body.credentials',
             ],
             transport: {
               targets: [
@@ -166,7 +167,7 @@ import { BankProvidersModule } from './features/bank-providers/bank-providers.mo
     NotificationsModule,
     RegularPaymentsModule,
     AiModule,
-    BankProvidersModule,
+    OpenbankingModule,
     HealthModule,
   ],
   controllers: [AppController],

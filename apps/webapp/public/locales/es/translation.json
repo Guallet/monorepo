@@ -90,15 +90,6 @@
         }
       }
     },
-    "connectionCard": {
-      "status": {
-        "unknown": "desconocido"
-      },
-      "created": "Creado:",
-      "updated": "Actualizado:",
-      "accountsLinked_many": "{{count}} cuentas vinculadas",
-      "noAccountsLinked": "Sin cuentas vinculadas"
-    },
     "preferredCurrenciesRow": {
       "notifications": {
         "success": {
@@ -177,11 +168,6 @@
           "income": "Income",
           "spending": "Spending"
         },
-        "openBanking": {
-          "title": "Open Banking connection",
-          "synced": "Synced",
-          "lastSynced": "Last synced: {{date}}"
-        },
         "transactions": {
           "title": "Latest transactions",
           "viewAll": "View all",
@@ -215,13 +201,16 @@
         "header": {
           "multipleCurrencies": "Multiple currencies — totals hidden",
           "accountCount_one": "{{count}} account",
+          "accountCount_many": "",
           "accountCount_other": "{{count}} accounts",
           "currencyCount_one": "{{count}} currency",
+          "currencyCount_many": "",
           "currencyCount_other": "{{count}} currencies"
         },
         "summary": {
           "netWorth": "Net worth",
           "coverage_one": "Across {{accountCount}} account in {{currencyCount}} currencies",
+          "coverage_many": "",
           "coverage_other": "Across {{accountCount}} accounts in {{currencyCount}} currencies",
           "assets": "Assets",
           "liabilities": "Liabilities"
@@ -253,93 +242,14 @@
             "message": "A network or server error occurred. Please try again."
           }
         },
-        "obRedirect": {
-          "error": {
-            "title": "Connection failed",
-            "message": "Could not start the bank connection. Please try again."
-          },
-          "title": "Connecting to {{bank}}",
-          "subtitle": "You'll be redirected to your bank's secure login page. Return to Guallet when done.",
-          "goToBank": "Go to {{bank}}"
-        },
         "institutionPicker": {
           "placeholder": "Search for a bank…",
           "searchPlaceholder": "Type to search…",
           "none": "No institution"
         },
-        "bankSync": {
-          "title": "Importar desde BankSync",
-          "subtitle": "Selecciona las cuentas bancarias conectadas que quieres importar. Guallet importa el historial disponible y luego sincroniza a diario.",
-          "configureMessage": "Añade tu clave API de BankSync en Ajustes. Crea una clave con el permiso banks:read; el acceso API requiere el plan Standard o superior.",
-          "configureButton": "Abrir ajustes",
-          "listError": "No se pudieron cargar las cuentas de BankSync. Comprueba la clave API, el plan REST y el permiso banks:read.",
-          "empty": "No hay cuentas bancarias conectadas disponibles en BankSync.",
-          "importSuccess": "Cuentas seleccionadas importadas desde BankSync.",
-          "importErrorTitle": "No se pudieron importar las cuentas",
-          "importErrorMessage": "Actualiza la lista de cuentas e inténtalo de nuevo.",
-          "unlinkSuccess": "Cuenta desvinculada de BankSync. Sus datos permanecen en Guallet.",
-          "unlinkErrorTitle": "No se pudo desvincular la cuenta",
-          "unlinkErrorMessage": "Inténtalo de nuevo.",
-          "unlinkButton": "Desvincular",
-          "importButton": "Importar cuentas seleccionadas"
-        },
-        "lunchFlow": {
-          "title": "Importar desde Lunch Flow",
-          "subtitle": "Elige las cuentas habilitadas en tu destino API de Lunch Flow.",
-          "configureMessage": "Añade tu clave API de Lunch Flow en Ajustes antes de importar cuentas. Primero conecta tus bancos en Lunch Flow y habilítalos para el destino API.",
-          "configureButton": "Abrir ajustes",
-          "listError": "No se pudieron cargar las cuentas de Lunch Flow. Comprueba la clave y los permisos de acceso.",
-          "empty": "No hay cuentas disponibles. Conecta un banco en Lunch Flow y habilítalo en tu destino API.",
-          "importSuccess": "Se importaron las cuentas seleccionadas desde Lunch Flow.",
-          "importErrorTitle": "No se pudieron importar las cuentas",
-          "importErrorMessage": "Actualiza la lista de cuentas e inténtalo de nuevo.",
-          "unlinkSuccess": "Se detuvo la sincronización de la cuenta. Sus datos de Guallet se conservarán.",
-          "unlinkErrorTitle": "No se pudo desvincular la cuenta",
-          "unlinkErrorMessage": "Inténtalo de nuevo.",
-          "unlinkButton": "Desvincular",
-          "importButton": "Importar seleccionadas"
-        },
-        "synci": {
-          "title": "Importar desde Synci",
-          "subtitle": "Elige las cuentas bancarias conectadas a tu cuenta de Synci. Guallet importará el historial de transacciones y sincronizará a diario.",
-          "configureMessage": "Añade tu token de acceso personal de Synci en Ajustes antes de importar. Crea un token en Developers > Tokens en Synci.",
-          "configureButton": "Abrir ajustes",
-          "listError": "No se pudieron cargar las cuentas de Synci. Comprueba tu token de acceso personal e inténtalo de nuevo.",
-          "empty": "No hay cuentas bancarias conectadas disponibles en Synci.",
-          "importSuccess": "Se importaron las cuentas seleccionadas desde Synci.",
-          "importErrorTitle": "No se pudieron importar las cuentas",
-          "importErrorMessage": "Actualiza la lista de cuentas e inténtalo de nuevo.",
-          "unlinkSuccess": "Se desvinculó la cuenta de Synci. Sus datos permanecen en Guallet.",
-          "unlinkErrorTitle": "No se pudo desvincular la cuenta",
-          "unlinkErrorMessage": "Inténtalo de nuevo.",
-          "unlinkButton": "Desvincular",
-          "importButton": "Importar seleccionadas"
-        },
-        "provider": {
-          "credentialLoadError": "No se pudo comprobar la configuración del proveedor. Inténtalo de nuevo."
-        },
         "chooseMethod": {
           "title": "Add an account",
           "subtitle": "Choose how you'd like to connect your account",
-          "synci": {
-            "title": "Import from Synci",
-            "desc": "Import accounts connected to Synci using your own personal access token."
-          },
-          "bankSync": {
-            "title": "Importar desde BankSync",
-            "desc": "Importa cuentas conectadas a BankSync con tu propia clave API."
-          },
-          "lunchFlow": {
-            "title": "Importar desde Lunch Flow",
-            "desc": "Importa las cuentas que ya conectaste a Lunch Flow con tu propia clave API."
-          },
-          "openBanking": {
-            "title": "Connect via Open Banking",
-            "checkingCredentials": "Comprobando las credenciales de Nordigen…",
-            "desc": "Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money.",
-            "configureCredentials": "Añade tus credenciales de Nordigen en Ajustes antes de conectar un banco."
-          },
-          "recommended": "Recommended",
           "manual": {
             "title": "Add manually",
             "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
@@ -418,29 +328,6 @@
           "title": "What type of account?",
           "subtitle": "This helps Guallet categorise balances and transactions correctly."
         },
-        "obSteps": {
-          "country": "Country",
-          "bank": "Bank",
-          "connecting": "Connecting"
-        },
-        "obBank": {
-          "title": "Select your bank",
-          "subtitle": "You'll be redirected to your bank's secure login. Guallet only requests read-only access.",
-          "searchPlaceholder": "Search bank…",
-          "noResults": "No banks found for \"{{search}}\"",
-          "noInstitutions": "No institutions available for this country",
-          "psd2Notice": "You'll be redirected to {{bank}}'s secure website. Guallet requests read-only access via PSD2 Open Banking and never sees your login credentials.",
-          "psd2NoticeGeneric": "Guallet requests read-only access via PSD2 Open Banking and never sees your login credentials.",
-          "connectTo": "Connect to {{bank}}",
-          "selectBank": "Select a bank to continue"
-        },
-        "obCountry": {
-          "title": "Where is your bank?",
-          "subtitle": "Select the country where your bank is based.",
-          "searchPlaceholder": "Search country…",
-          "noResults": "No results for \"{{search}}\"",
-          "continueWith": "Continue with {{name}}"
-        },
         "typeDesc": {
           "current": "Everyday spending & income",
           "savings": "Pots, ISAs, easy-access",
@@ -505,12 +392,73 @@
     "back": "Back",
     "loading": "Cargando…",
     "retry": "Reintentar",
-    "refresh": "Actualizar",
+    "done": "Done",
     "optional": "Optional",
     "continue": "Continue",
-    "startOver": "Start over",
     "cancel": "Cancel",
     "save": "Save"
+  },
+  "openbanking": {
+    "unlinkError": "Could not unlink the account. Please try again.",
+    "import": {
+      "title": "Import from {{provider}}",
+      "configure": "Add your provider credentials in Settings before importing bank accounts.",
+      "settings": "Open settings",
+      "help": "Refresh to find available accounts, then select the accounts to import. Linked accounts sync daily.",
+      "loadError": "Could not load accounts or start the operation. Please try again.",
+      "empty": "No accounts listed yet. Connect your banks with the provider, then refresh.",
+      "unavailable": "This account is unavailable. Check your bank consent or unlink it and authorize the bank again.",
+      "selected": "Import selected accounts",
+      "providerDescription": "Connect bank accounts using your own {{provider}} credentials."
+    },
+    "loadError": "Could not load bank connections.",
+    "unlink": "Unlink",
+    "refresh": "Refresh accounts",
+    "providers": {
+      "error": "Could not load bank providers."
+    },
+    "authorization": {
+      "startError": "Could not start bank authorization. Please try again.",
+      "country": "Country",
+      "bank": "Bank",
+      "loadError": "Could not load banks.",
+      "connect": "Authorize a bank",
+      "title": "Bank authorization",
+      "invalid": "The bank authorization link is invalid. Please start again.",
+      "returned": "Continue to confirm your bank authorization and discover your accounts.",
+      "incomplete": "Authorization could not be confirmed. Complete it with your bank, or start again.",
+      "import": "Choose accounts to import"
+    },
+    "credentials": {
+      "apiKey": "API key or personal access token",
+      "secretId": "Secret ID",
+      "secretKey": "Secret key",
+      "required": "Enter a valid credential.",
+      "saved": "Credentials validated and saved.",
+      "saveError": "Could not save credentials. Check your provider details and try again.",
+      "deleteError": "Could not disconnect. Please try again.",
+      "help": "Use credentials from your own provider account. They are encrypted before being saved.",
+      "configured": "Configured: ••••{{hint}}",
+      "save": "Save and validate"
+    },
+    "sync": "Sync now",
+    "disconnect": {
+      "button": "Disconnect",
+      "title": "Disconnect bank provider?",
+      "description": "Saved credentials will be deleted and syncing will stop. Imported accounts and transactions will remain in Guallet."
+    },
+    "job": {
+      "startError": "Could not start the operation. Please try again.",
+      "requestError": "Could not check the operation. It may still be running.",
+      "failed": "The operation failed. Check your provider connection, then refresh and try again.",
+      "running": "Working with your bank provider. This can take a few minutes…",
+      "partial": "Some accounts could not be synced. Check their status with your provider and try again.",
+      "completed": "Operation completed."
+    },
+    "settings": {
+      "title": "Bank connections",
+      "description": "Connect bank accounts using your own provider credentials."
+    }
   },
   "screens": {
     "assistant": {
@@ -715,12 +663,14 @@
         "overBudget": "over budget",
         "remaining": "left",
         "categoryCount_one": "{{count}} category",
+        "categoryCount_many": "",
         "categoryCount_other": "{{count}} categories",
         "spentOf": "{{spent}} of {{budget}} spent"
       },
       "header": {
         "title": "Budget overview",
         "budgetCount_one": "{{count}} budget",
+        "budgetCount_many": "",
         "budgetCount_other": "{{count}} budgets",
         "used": "used",
         "budgeted": "Budgeted",
@@ -859,72 +809,6 @@
       },
       "edit": {
         "title": "Edit category"
-      }
-    },
-    "connections": {
-      "callback": {
-        "cancelled": {
-          "title": "Authorisation cancelled",
-          "description": "No accounts were connected. You cancelled the authorisation. You can try again or add an account manually.",
-          "retry": "Try connecting again",
-          "manual": "Add account manually"
-        },
-        "error": {
-          "connectionFailed": "Connection failed",
-          "description": "Your bank rejected the connection request. This can happen if the session expired or the bank's Open Banking service is temporarily unavailable.",
-          "details": "Error details",
-          "whatToTry": "What to try next",
-          "tip1": "Check your bank app for any pending authorisation requests",
-          "tip2": "Make sure you completed the login process before returning",
-          "tip3": "Try again — the bank's service may now be available",
-          "retry": "Try again",
-          "manual": "Add account manually instead",
-          "title": "Link failed",
-          "message": "Could not link accounts. Please try again.",
-          "unknown": "Unknown error"
-        },
-        "success": {
-          "title": "Accounts found!",
-          "subtitle_one": "Found {{count}} accounts. Choose which to import.",
-          "subtitle_many": "Found {{count}} accounts. Choose which to import.",
-          "subtitle_other": "Found {{count}} accounts. Choose which to import.",
-          "selectedCount": "{{selected}} of {{total}} accounts selected",
-          "import_one": "Import {{count}} account",
-          "import_many": "Import {{count}} account",
-          "import_other": "Import {{count}} accounts",
-          "importNone": "Select accounts to import",
-          "notification": "Accounts linked successfully",
-          "notificationCount_one": "{{count}} accounts linked",
-          "notificationCount_many": "{{count}} accounts linked",
-          "notificationCount_other": "{{count}} accounts linked"
-        },
-        "linking": "Linking accounts…",
-        "loading": "Loading accounts…"
-      },
-      "create": {
-        "title": "Connect a bank"
-      },
-      "details": {
-        "title": "Connection",
-        "refreshButton": {
-          "label": "Actualizar conexión"
-        },
-        "updateButton": {
-          "label": "Actualizar cuentas conectadas"
-        },
-        "deleteButton": {
-          "modalTitle": "Eliminar conexión",
-          "modalMessage": "¿Estás seguro de que deseas eliminar esta conexión?",
-          "label": "Eliminar"
-        }
-      },
-      "list": {
-        "title": "Conexiones",
-        "addButton": "Agregar nueva conexión",
-        "emptyState": {
-          "title": "No connections yet",
-          "description": "Connect your bank accounts via open banking to automatically import transactions."
-        }
       }
     },
     "importer": {
@@ -1371,6 +1255,9 @@
           }
         },
         "rule": {
+          "conditions_one": "",
+          "conditions_many": "",
+          "conditions_other": "",
           "conditions": {
             "logic": {
               "any": "CUALQUIERA",
@@ -1544,98 +1431,6 @@
         "title": "User preferences",
         "description": "Set regional preferences for currencies, language, and dates."
       },
-      "nordigen": {
-        "saved": "Las credenciales de Nordigen se validaron y guardaron.",
-        "errorTitle": "No se pudieron actualizar las credenciales",
-        "errorMessage": "Comprueba tus credenciales de Nordigen e inténtalo de nuevo.",
-        "removed": "Se eliminaron las credenciales de Nordigen.",
-        "description": "Usa tus propias credenciales de Nordigen para conectar y sincronizar cuentas bancarias. Debes volver a conectar los bancos existentes después de configurarlas.",
-        "configured": "Credenciales configuradas",
-        "secretId": "ID secreto",
-        "secretKey": "Clave secreta",
-        "save": "Validar y guardar",
-        "remove": "Eliminar credenciales",
-        "confirmTitle": "¿Eliminar las credenciales de Nordigen?",
-        "confirmBody": "La sincronización bancaria se detendrá. Los enlaces bancarios y los datos importados se conservarán, pero tendrás que volver a conectar los bancos después de añadir credenciales.",
-        "title": "Proveedor de banca abierta",
-        "sectionDescription": "Administra tus credenciales personales para conectar bancos."
-      },
-      "bankSync": {
-        "instructions": "Conecta tus bancos en BankSync y crea una clave API con el permiso banks:read. El acceso a la API REST de BankSync requiere el plan Standard o superior.",
-        "learnMore": "Ver instrucciones de BankSync",
-        "keySecurity": "Tu clave se cifra en Guallet y solo se usa para leer los datos de tus bancos conectados.",
-        "keyConfigured": "Clave API configurada",
-        "apiKeyLabel": "Clave API de BankSync",
-        "apiKeyPlaceholder": "Introduce una clave nueva para sustituirla o pega tu clave API",
-        "saveButton": "Guardar y validar clave",
-        "saveSuccess": "Clave API de BankSync guardada.",
-        "saveErrorTitle": "No se pudo guardar la clave API",
-        "saveErrorMessage": "Comprueba que tu clave tenga acceso a la API REST y el permiso banks:read.",
-        "syncButton": "Sincronizar ahora",
-        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
-        "syncErrorMessage": "Inténtalo de nuevo más tarde.",
-        "deleteButton": "Eliminar clave",
-        "deleteSuccess": "Clave de BankSync eliminada. Las cuentas importadas permanecen en Guallet.",
-        "deleteErrorTitle": "No se pudo eliminar la clave API",
-        "deleteErrorMessage": "Inténtalo de nuevo.",
-        "confirmDeleteTitle": "¿Eliminar la clave de BankSync?",
-        "confirmDeleteBody": "Guallet dejará de sincronizar estas cuentas. Las cuentas y transacciones importadas permanecerán.",
-        "title": "BankSync",
-        "description": "Importa y sincroniza cuentas bancarias con tu clave API de BankSync."
-      },
-      "lunchFlow": {
-        "instructions": "Conecta tus bancos en Lunch Flow, crea un destino REST API y habilita las cuentas que quieras compartir con Guallet.",
-        "learnMore": "Ver instrucciones de Lunch Flow",
-        "keyConfigured": "Clave API configurada",
-        "apiKeyLabel": "Clave API de Lunch Flow",
-        "apiKeyPlaceholder": "Introduce una clave nueva para sustituirla o pega tu clave API",
-        "saveButton": "Guardar y validar clave",
-        "saveSuccess": "Se guardó la clave API de Lunch Flow.",
-        "saveErrorTitle": "No se pudo guardar la clave API",
-        "saveErrorMessage": "Comprueba la clave e inténtalo de nuevo.",
-        "syncButton": "Sincronizar ahora",
-        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
-        "syncErrorMessage": "Inténtalo de nuevo más tarde.",
-        "deleteButton": "Eliminar clave",
-        "deleteSuccess": "Se eliminó la clave de Lunch Flow. Las cuentas importadas se conservarán en Guallet.",
-        "deleteErrorTitle": "No se pudo eliminar la clave API",
-        "deleteErrorMessage": "Inténtalo de nuevo.",
-        "confirmDeleteTitle": "¿Eliminar la clave de Lunch Flow?",
-        "confirmDeleteBody": "Guallet dejará de sincronizar estas cuentas. Las cuentas y los movimientos importados se conservarán.",
-        "title": "Lunch Flow",
-        "description": "Importa cuentas bancarias con tu clave API de Lunch Flow."
-      },
-      "synci": {
-        "instructions": "Crea un token de acceso personal en Synci, en Developers > Tokens. Guallet lo usa para leer tus cuentas y transacciones conectadas.",
-        "learnMore": "Ver instrucciones de la API de Synci",
-        "keySecurity": "Tu token se cifra en Guallet y solo se usa para leer tus datos financieros de Synci.",
-        "keyConfigured": "Token de acceso personal configurado",
-        "apiKeyLabel": "Token de acceso personal de Synci",
-        "apiKeyPlaceholder": "Introduce un token nuevo para reemplazarlo o pega tu token",
-        "saveButton": "Guardar y validar token",
-        "saveSuccess": "Token de Synci guardado.",
-        "saveErrorTitle": "No se pudo guardar el token",
-        "saveErrorMessage": "Comprueba que tu token de acceso personal de Synci sea válido.",
-        "syncButton": "Sincronizar ahora",
-        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
-        "syncErrorMessage": "Inténtalo de nuevo más tarde.",
-        "deleteButton": "Eliminar token",
-        "deleteSuccess": "Token de Synci eliminado. Las cuentas importadas permanecen en Guallet.",
-        "deleteErrorTitle": "No se pudo eliminar el token",
-        "deleteErrorMessage": "Inténtalo de nuevo.",
-        "confirmDeleteTitle": "¿Eliminar el token de Synci?",
-        "confirmDeleteBody": "Guallet dejará de sincronizar estas cuentas. Las cuentas y transacciones importadas permanecerán.",
-        "title": "Synci",
-        "description": "Import bank accounts using your Synci personal access token."
-      },
-      "provider": {
-        "syncSuccess_one": "{{count}} accounts synced.",
-        "syncSuccess_many": "{{count}} accounts synced.",
-        "syncSuccess_other": "{{count}} accounts synced.",
-        "syncErrorTitle": "No se pudieron sincronizar las cuentas",
-        "syncErrorMessage": "Inténtalo de nuevo más tarde.",
-        "syncButton": "Sincronizar ahora"
-      },
       "profile": {
         "title": "User information",
         "description": "Review your signed-in profile and account session.",
@@ -1668,6 +1463,7 @@
           },
           "savedTitle": "Saved agents",
           "count_one": "{{count}} agent",
+          "count_many": "",
           "count_other": "{{count}} agents",
           "empty": {
             "title": "No agents",
@@ -1731,6 +1527,7 @@
           "configTitle": "Provider configuration",
           "savedTitle": "Saved providers",
           "count_one": "{{count}} AI provider",
+          "count_many": "",
           "count_other": "{{count}} AI providers",
           "title": "AI providers",
           "searchPlaceholder": "Search AI providers...",
@@ -2139,13 +1936,9 @@
         "title": "Privacidad primero",
         "description": "Tus datos financieros son tuyos. Aloja Guallet tú mismo o usa nuestra nube segura."
       },
-      "openBanking": {
-        "title": "Banca abierta",
-        "description": "Conéctate a miles de bancos e instituciones a través de APIs de banca abierta."
-      },
       "personalProviderKeys": {
         "title": "Connect with your own provider credentials",
-        "description": "Connect through BankSync, Lunch Flow, or Synci using your own credentials. Guallet encrypts them for your account."
+        "supportedProviders": "Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account."
       },
       "badge": "Características",
       "title": "Todo lo que necesitas para gestionar tu dinero",
