@@ -1,4 +1,3 @@
-import { Worker } from 'node:worker_threads';
 import {
   AccountOperator,
   AccountOperatorType,
@@ -47,7 +46,7 @@ export function evaluateStringCondition(
   fieldValue: string | null | undefined,
   operator: StringOperatorType,
   value: string,
-): boolean | Promise<boolean> {
+): boolean {
   if (fieldValue === null || fieldValue === undefined) {
     return false;
   }
@@ -63,61 +62,19 @@ export function evaluateStringCondition(
     case StringOperator.CONTAINS:
       return normalizedFieldValue.includes(normalizedValue);
     case StringOperator.MATCHES:
-      return evaluateRegexInWorker(value, fieldValue);
+      return evaluateRegex(value, fieldValue);
     default:
       return false;
   }
 }
 
-const REGEX_TIMEOUT_MS = 50;
-const MAX_REGEX_PATTERN_LENGTH = 1_000;
-const MAX_REGEX_INPUT_LENGTH = 10_000;
-
-/** Run user regexes away from the API event loop and terminate over-budget work. */
-function evaluateRegexInWorker(
-  pattern: string,
-  input: string,
-): Promise<boolean> {
-  if (
-    pattern.length > MAX_REGEX_PATTERN_LENGTH ||
-    input.length > MAX_REGEX_INPUT_LENGTH
-  ) {
-    return Promise.resolve(false);
+/** Evaluate regexes synchronously, treating invalid patterns as non-matches. */
+function evaluateRegex(pattern: string, input: string): boolean {
+  try {
+    return new RegExp(pattern, 'i').test(input);
+  } catch {
+    return false;
   }
-
-  return new Promise((resolve) => {
-    const worker = new Worker(
-      `const { parentPort } = require('node:worker_threads');
-       parentPort.postMessage('ready');
-       parentPort.once('message', ({ pattern, input }) => {
-         try {
-           parentPort.postMessage(new RegExp(pattern, 'i').test(input));
-         } catch {
-           parentPort.postMessage(false);
-         }
-       });`,
-      { eval: true },
-    );
-    let settled = false;
-    const finish = (result: boolean) => {
-      if (settled) return;
-      settled = true;
-      if (timeout) clearTimeout(timeout);
-      void worker.terminate();
-      resolve(result);
-    };
-    let timeout: NodeJS.Timeout | undefined;
-    worker.on('message', (result: boolean | 'ready') => {
-      if (result === 'ready') {
-        timeout = setTimeout(() => finish(false), REGEX_TIMEOUT_MS);
-        worker.postMessage({ pattern, input });
-      } else {
-        finish(result);
-      }
-    });
-    worker.once('error', () => finish(false));
-    worker.once('exit', () => finish(false));
-  });
 }
 
 /**

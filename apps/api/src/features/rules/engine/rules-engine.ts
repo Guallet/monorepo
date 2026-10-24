@@ -31,7 +31,7 @@ import { MAX_CONDITIONS_PER_RULE } from '../constants';
 export function evaluateCondition(
   transaction: Transaction,
   condition: RuleCondition,
-): boolean | Promise<boolean> {
+): boolean {
   const { field, operator, value } = condition;
 
   // Validate operator is valid for field
