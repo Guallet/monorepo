@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ReportsController } from './reports.controller';
 import { ReportsService } from './reports.service';
 import { UserPrincipal } from 'src/auth/user-principal';
+import { afterEach } from 'vitest';
 
 describe('ReportsController', () => {
   let controller: ReportsController;
@@ -31,6 +32,10 @@ describe('ReportsController', () => {
 
     // Clear all mocks before each test
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('should be defined', () => {
@@ -94,9 +99,31 @@ describe('ReportsController', () => {
         year: 2023,
         accounts: ['account-1', 'account-2'],
         categories: ['category-1'],
-        startDate: new Date(2023, 1, 1),
-        endDate: new Date(2023, 1, 28, 23, 59, 59, 999),
+        startDate: new Date('2023-02-01T00:00:00.000Z'),
+        endDate: new Date('2023-02-28T00:00:00.000Z'),
       });
+    });
+
+    it('preserves date instants when the API and browser use different time zones', async () => {
+      vi.stubEnv('TZ', 'UTC');
+
+      await controller.getCashflowReport(
+        mockUser,
+        2025,
+        undefined,
+        undefined,
+        '2025-10-15T14:00:00.000Z',
+        '2025-10-16T13:59:59.999Z',
+      );
+
+      const reportFilters =
+        mockReportsService.getCashFlowReport.mock.calls[0][0];
+      expect(reportFilters.startDate.toISOString()).toBe(
+        '2025-10-15T14:00:00.000Z',
+      );
+      expect(reportFilters.endDate.toISOString()).toBe(
+        '2025-10-16T13:59:59.999Z',
+      );
     });
 
     it('should handle empty report data', async () => {

@@ -3,10 +3,11 @@ import { Category } from '../../categories/models/Category';
 import { DateRangeButton } from '../../../components/DateRangeButton/DateRangeButton';
 import { MultiSelectCheckbox } from '../../../components/MultiSelectCheckbox/MultiComboBox';
 import { AccountDto } from '@guallet/api-client';
+import { useTranslation } from 'react-i18next';
 
 export type FilterData = {
-  selectedAccounts: AccountDto[];
-  selectedCategories: Category[];
+  selectedAccounts: string[];
+  selectedCategories: string[];
   dateRange: {
     startDate: Date;
     endDate: Date;
@@ -30,6 +31,8 @@ export function ReportFilters({
   dateRange,
   onFiltersUpdate,
 }: Readonly<IProps>) {
+  const { t } = useTranslation();
+
   return (
     <div>
       <h1>Reports Filters</h1>
@@ -42,10 +45,8 @@ export function ReportFilters({
           value={selectedAccounts}
           onChange={(value) =>
             onFiltersUpdate({
-              selectedAccounts: accounts.filter((x) => value.includes(x.id)),
-              selectedCategories: categories.filter((x) =>
-                selectedCategories.includes(x.id),
-              ),
+              selectedAccounts: value,
+              selectedCategories,
               dateRange,
             })
           }
@@ -60,12 +61,8 @@ export function ReportFilters({
           value={selectedCategories}
           onChange={(value) =>
             onFiltersUpdate({
-              selectedAccounts: accounts.filter((x) =>
-                selectedAccounts.includes(x.id),
-              ),
-              selectedCategories: categories.filter((x) =>
-                value.includes(x.id),
-              ),
+              selectedAccounts,
+              selectedCategories: value,
               dateRange,
             })
           }
@@ -76,12 +73,8 @@ export function ReportFilters({
           selectedRange={dateRange}
           onRangeSelected={(selectedRange) =>
             onFiltersUpdate({
-              selectedAccounts: accounts.filter((x) =>
-                selectedAccounts.includes(x.id),
-              ),
-              selectedCategories: categories.filter((x) =>
-                selectedCategories.includes(x.id),
-              ),
+              selectedAccounts,
+              selectedCategories,
               dateRange: selectedRange,
             })
           }
@@ -91,17 +84,13 @@ export function ReportFilters({
             variant="subtle"
             onClick={() =>
               onFiltersUpdate({
-                selectedAccounts: accounts.filter((x) =>
-                  selectedAccounts.includes(x.id),
-                ),
-                selectedCategories: categories.filter((x) =>
-                  selectedCategories.includes(x.id),
-                ),
+                selectedAccounts,
+                selectedCategories,
                 dateRange: null,
               })
             }
           >
-            Clear date range
+            {t('screens.reports.filters.clearDateRange', 'Clear date range')}
           </Button>
         )}
       </Group>

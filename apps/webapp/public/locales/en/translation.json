@@ -1162,6 +1162,11 @@
         "emptyState": "You have no notifications"
       }
     },
+    "reports": {
+      "filters": {
+        "clearDateRange": "Clear date range"
+      }
+    },
     "rules": {
       "form": {
         "details": {

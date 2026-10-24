@@ -40,8 +40,8 @@ export class ReportsController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ): Promise<CashflowDataDto> {
-    const parsedStartDate = parseDate(startDate, false);
-    const parsedEndDate = parseDate(endDate, true);
+    const parsedStartDate = parseDate(startDate);
+    const parsedEndDate = parseDate(endDate);
     const parsedAccounts = parseIds(accounts);
     const parsedCategories = parseIds(categories);
 
@@ -61,10 +61,7 @@ function parseIds(value?: string): string[] | undefined {
   return ids?.length ? ids : undefined;
 }
 
-function parseDate(
-  value: string | undefined,
-  isEndDate: boolean,
-): Date | undefined {
+function parseDate(value: string | undefined): Date | undefined {
   if (!value) return undefined;
 
   const date = new Date(value);
@@ -72,10 +69,5 @@ function parseDate(
     throw new BadRequestException('Invalid report date');
   }
 
-  if (isEndDate) {
-    date.setHours(23, 59, 59, 999);
-  } else {
-    date.setHours(0, 0, 0, 0);
-  }
   return date;
 }

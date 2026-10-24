@@ -5,6 +5,10 @@ import { YearPickerInput } from '@mantine/dates';
 import { createFileRoute } from '@tanstack/react-router';
 import { ReportFilters } from '@/features/reports/components/ReportFilters';
 import { CashFlowRow } from '@/features/reports/CashFlow/CashFlowCategoryRow';
+import {
+  getYearPickerValue,
+  updateCashflowYearSearch,
+} from '@/features/reports/cashflowYear';
 
 import { z } from 'zod';
 import { CashflowDataDto } from '@guallet/api-client';
@@ -70,10 +74,10 @@ export function CashFlowPage() {
             search: (previous) => ({
               ...previous,
               accounts: filters.selectedAccounts.length
-                ? filters.selectedAccounts.map((x) => x.id)
+                ? filters.selectedAccounts
                 : undefined,
               categories: filters.selectedCategories.length
-                ? filters.selectedCategories.map((x) => x.id)
+                ? filters.selectedCategories
                 : undefined,
               startDate: filters.dateRange?.startDate.toISOString(),
               endDate: filters.dateRange?.endDate.toISOString(),
@@ -84,11 +88,11 @@ export function CashFlowPage() {
       <YearPickerInput
         label="Pick year"
         placeholder="Pick a year to run the report"
-        value={String(year)}
+        value={getYearPickerValue(year)}
         onChange={(value) => {
           if (value) {
             void navigate({
-              search: (previous) => ({ ...previous, year: Number(value) }),
+              search: (previous) => updateCashflowYearSearch(previous, value),
             });
           }
         }}

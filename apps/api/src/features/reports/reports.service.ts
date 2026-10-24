@@ -49,21 +49,29 @@ export class ReportsService {
     const reportStart =
       startDate && startDate > yearStart ? startDate : yearStart;
     const reportEnd = endDate && endDate < yearEnd ? endDate : yearEnd;
+    const reportCategoryIds = categoryIds?.length
+      ? getCategoryIdsWithDescendants(categoryIds, categories)
+      : undefined;
 
-    const transactions = await this.transactionsRepository.find({
-      relations: { category: true, account: true },
-      where: {
-        account: {
-          user_id: user_id,
-          ...(accounts?.length ? { id: In(accounts) } : {}),
-        },
-        ...(categoryIds?.length ? { categoryId: In(categoryIds) } : {}),
-        date: Between(reportStart, reportEnd),
-      },
-      order: {
-        date: 'ASC',
-      },
-    });
+    const transactions =
+      reportStart <= reportEnd
+        ? await this.transactionsRepository.find({
+            relations: { category: true, account: true },
+            where: {
+              account: {
+                user_id: user_id,
+                ...(accounts?.length ? { id: In(accounts) } : {}),
+              },
+              ...(reportCategoryIds?.length
+                ? { categoryId: In(reportCategoryIds) }
+                : {}),
+              date: Between(reportStart, reportEnd),
+            },
+            order: {
+              date: 'ASC',
+            },
+          })
+        : [];
 
     const dto = new CashflowDataDto();
     dto.year = year;
@@ -150,6 +158,30 @@ export class ReportsService {
 
     return dto;
   }
+}
+
+function getCategoryIdsWithDescendants(
+  categoryIds: string[],
+  categories: Category[],
+): string[] {
+  const selectedIds = new Set(categoryIds);
+  let addedDescendant = true;
+
+  while (addedDescendant) {
+    addedDescendant = false;
+    for (const category of categories) {
+      if (
+        category.parentId &&
+        selectedIds.has(category.parentId) &&
+        !selectedIds.has(category.id)
+      ) {
+        selectedIds.add(category.id);
+        addedDescendant = true;
+      }
+    }
+  }
+
+  return [...selectedIds];
 }
 
 function getTotalMonthly(

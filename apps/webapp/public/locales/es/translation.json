@@ -1177,6 +1177,11 @@
         "emptyState": "No tienes notificaciones"
       }
     },
+    "reports": {
+      "filters": {
+        "clearDateRange": "Limpiar intervalo de fechas"
+      }
+    },
     "rules": {
       "form": {
         "details": {
