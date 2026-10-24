@@ -52,7 +52,8 @@ WORKDIR /app
 
 # Copy built app and workspace-hoisted dependencies
 COPY --from=production-dependencies --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=production-dependencies --chown=nodejs:nodejs /app/packages/guallet-money ./packages/guallet-money
+COPY --from=production-dependencies --chown=nodejs:nodejs /app/packages/guallet-money/package.json ./packages/guallet-money/package.json
+COPY --from=base --chown=nodejs:nodejs /app/packages/guallet-money/dist ./packages/guallet-money/dist
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./apps/api/dist
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./apps/api/package.json
 
