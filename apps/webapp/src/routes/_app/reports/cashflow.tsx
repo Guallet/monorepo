@@ -22,8 +22,8 @@ const pageSearchSchema = z.object({
   year: z.number().int().catch(new Date().getUTCFullYear()),
   accounts: z.array(z.string()).optional(),
   categories: z.array(z.string()).optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.iso.datetime().optional(),
+  endDate: z.iso.datetime().optional(),
 });
 
 export const Route = createFileRoute('/_app/reports/cashflow')({
