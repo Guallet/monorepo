@@ -18,11 +18,13 @@ export function serializeCashflowDateRange(
 ): { startDate: string | undefined; endDate: string | undefined } {
   if (!range) return { startDate: undefined, endDate: undefined };
 
+  const startDate = new Date(range.startDate);
+  startDate.setHours(0, 0, 0, 0);
   const endDate = new Date(range.endDate);
   endDate.setHours(23, 59, 59, 999);
 
   return {
-    startDate: range.startDate.toISOString(),
+    startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
   };
 }

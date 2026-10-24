@@ -40,9 +40,11 @@ export function CashFlowPage() {
     endDate,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const selectedStartDate = startDate ? new Date(startDate) : null;
+  selectedStartDate?.setHours(0, 0, 0, 0);
   const dateRange =
-    startDate && endDate
-      ? { startDate: new Date(startDate), endDate: new Date(endDate) }
+    selectedStartDate && endDate
+      ? { startDate: selectedStartDate, endDate: new Date(endDate) }
       : null;
 
   const { accounts } = useAccounts();
@@ -55,9 +57,7 @@ export function CashFlowPage() {
     endDate: dateRange?.endDate,
   });
 
-  const isLoading = categoriesLoading || reportLoading;
-
-  if (isLoading) {
+  if (categoriesLoading) {
     return <Text>Loading...</Text>;
   }
 
@@ -97,7 +97,11 @@ export function CashFlowPage() {
           }
         }}
       />
-      {cashflowData && <CashFlowTable reportData={cashflowData} />}
+      {reportLoading ? (
+        <Text>Loading...</Text>
+      ) : (
+        cashflowData && <CashFlowTable reportData={cashflowData} />
+      )}
     </Stack>
   );
 }
