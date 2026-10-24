@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
+import { In } from 'typeorm';
 
 describe('ReportsService', () => {
   let service: ReportsService;
@@ -247,6 +248,53 @@ describe('ReportsService', () => {
         // If Food category is not there, at least check that data is returned
         expect(result.data).toBeDefined();
       }
+    });
+
+    it('includes descendant categories when filtering by a parent', async () => {
+      const userId = 'user-123';
+      mockCategoriesRepository.find.mockResolvedValue([
+        { id: 'parent', name: 'Food', parentId: null, user_id: userId },
+        { id: 'child', name: 'Groceries', parentId: 'parent', user_id: userId },
+        {
+          id: 'grandchild',
+          name: 'Produce',
+          parentId: 'child',
+          user_id: userId,
+        },
+      ]);
+      mockTransactionsRepository.find.mockResolvedValue([]);
+
+      await service.getCashFlowReport({
+        user_id: userId,
+        year: 2024,
+        categories: ['parent'],
+      });
+
+      expect(mockTransactionsRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            categoryId: In(['parent', 'child', 'grandchild']),
+          }),
+        }),
+      );
+    });
+
+    it('returns an empty report when the selected range does not overlap the year', async () => {
+      const userId = 'user-123';
+      mockCategoriesRepository.find.mockResolvedValue([
+        { id: 'parent', name: 'Food', parentId: null, user_id: userId },
+      ]);
+
+      const result = await service.getCashFlowReport({
+        user_id: userId,
+        year: 2026,
+        startDate: new Date('2025-01-01T00:00:00.000Z'),
+        endDate: new Date('2025-12-31T23:59:59.999Z'),
+      });
+
+      expect(mockTransactionsRepository.find).not.toHaveBeenCalled();
+      expect(result.totalTransactions).toBe(0);
+      expect(result.data[0].values).toEqual(Array(12).fill('0.00'));
     });
   });
 });

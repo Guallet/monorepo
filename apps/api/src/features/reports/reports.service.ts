@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Between, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { Account } from 'src/features/accounts/entities/account.entity';
@@ -26,9 +26,17 @@ export class ReportsService {
   async getCashFlowReport({
     user_id,
     year,
+    accounts,
+    categories: categoryIds,
+    startDate,
+    endDate,
   }: {
     user_id: string;
     year: number;
+    accounts?: string[];
+    categories?: string[];
+    startDate?: Date;
+    endDate?: Date;
   }): Promise<CashflowDataDto> {
     const categories = await this.categoriesRepository.find({
       where: {
@@ -36,18 +44,39 @@ export class ReportsService {
       },
     });
 
-    const transactions = await this.transactionsRepository.find({
-      relations: { category: true, account: true },
-      where: {
-        account: {
-          user_id: user_id,
-        },
-        date: Between(new Date(year, 0, 1), new Date(year, 11, 31)),
-      },
-      order: {
-        date: 'ASC',
-      },
-    });
+    const yearStart = new Date(year, 0, 1);
+    const yearEnd = new Date(year, 11, 31, 23, 59, 59, 999);
+    const reportStart =
+      startDate && startDate > yearStart ? startDate : yearStart;
+    const reportEnd = endDate && endDate < yearEnd ? endDate : yearEnd;
+    const selectedCategoryIds = categoryIds?.length
+      ? getCategoryIdsWithDescendants(
+          categoryIds.filter((categoryId) =>
+            categories.some((category) => category.id === categoryId),
+          ),
+          categories,
+        )
+      : undefined;
+
+    const transactions =
+      reportStart <= reportEnd && selectedCategoryIds?.length !== 0
+        ? await this.transactionsRepository.find({
+            relations: { category: true, account: true },
+            where: {
+              account: {
+                user_id: user_id,
+                ...(accounts?.length ? { id: In(accounts) } : {}),
+              },
+              ...(selectedCategoryIds
+                ? { categoryId: In(selectedCategoryIds) }
+                : {}),
+              date: Between(reportStart, reportEnd),
+            },
+            order: {
+              date: 'ASC',
+            },
+          })
+        : [];
 
     const dto = new CashflowDataDto();
     dto.year = year;
@@ -134,6 +163,30 @@ export class ReportsService {
 
     return dto;
   }
+}
+
+function getCategoryIdsWithDescendants(
+  categoryIds: string[],
+  categories: Category[],
+): string[] {
+  const selectedIds = new Set(categoryIds);
+  let addedDescendant = true;
+
+  while (addedDescendant) {
+    addedDescendant = false;
+    for (const category of categories) {
+      if (
+        category.parentId &&
+        selectedIds.has(category.parentId) &&
+        !selectedIds.has(category.id)
+      ) {
+        selectedIds.add(category.id);
+        addedDescendant = true;
+      }
+    }
+  }
+
+  return [...selectedIds];
 }
 
 function getTotalMonthly(

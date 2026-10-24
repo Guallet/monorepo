@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ReportsController } from './reports.controller';
 import { ReportsService } from './reports.service';
 import { UserPrincipal } from 'src/auth/user-principal';
+import { afterEach } from 'vitest';
 
 describe('ReportsController', () => {
   let controller: ReportsController;
@@ -31,6 +32,10 @@ describe('ReportsController', () => {
 
     // Clear all mocks before each test
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('should be defined', () => {
@@ -74,6 +79,54 @@ describe('ReportsController', () => {
         user_id: mockUser.id,
         year: year,
       });
+    });
+
+    it('should pass supported filters to the report service', async () => {
+      const report = { year: 2023, totalTransactions: 0, data: [] };
+      mockReportsService.getCashFlowReport.mockResolvedValue(report);
+
+      await controller.getCashflowReport(
+        mockUser,
+        2023,
+        '00000000-0000-4000-8000-000000000001,00000000-0000-4000-8000-000000000002',
+        '00000000-0000-4000-8000-000000000003',
+        '2023-02-01T00:00:00.000Z',
+        '2023-02-28T00:00:00.000Z',
+      );
+
+      expect(mockReportsService.getCashFlowReport).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        year: 2023,
+        accounts: [
+          '00000000-0000-4000-8000-000000000001',
+          '00000000-0000-4000-8000-000000000002',
+        ],
+        categories: ['00000000-0000-4000-8000-000000000003'],
+        startDate: new Date('2023-02-01T00:00:00.000Z'),
+        endDate: new Date('2023-02-28T00:00:00.000Z'),
+      });
+    });
+
+    it('preserves date instants when the API and browser use different time zones', async () => {
+      vi.stubEnv('TZ', 'UTC');
+
+      await controller.getCashflowReport(
+        mockUser,
+        2025,
+        undefined,
+        undefined,
+        '2025-10-15T14:00:00.000Z',
+        '2025-10-16T13:59:59.999Z',
+      );
+
+      const reportFilters =
+        mockReportsService.getCashFlowReport.mock.calls[0][0];
+      expect(reportFilters.startDate.toISOString()).toBe(
+        '2025-10-15T14:00:00.000Z',
+      );
+      expect(reportFilters.endDate.toISOString()).toBe(
+        '2025-10-16T13:59:59.999Z',
+      );
     });
 
     it('should handle empty report data', async () => {
