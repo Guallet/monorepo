@@ -21,3 +21,5 @@ export * from './rules';
 export * from './ai';
 export * from './data-importer';
 export * from './data-exporter';
+
+export * from './classification';

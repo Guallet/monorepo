@@ -8,7 +8,10 @@ export class RuleConditionDto {
   @ApiProperty({ description: 'Condition ID' })
   id: string;
 
-  @ApiProperty({ description: 'Transaction field to evaluate' })
+  @ApiProperty({
+    description: 'Transaction field to evaluate',
+    enum: ['account', 'description', 'notes', 'amount', 'date'],
+  })
   field: string;
 
   @ApiProperty({ description: 'Operator for evaluation' })

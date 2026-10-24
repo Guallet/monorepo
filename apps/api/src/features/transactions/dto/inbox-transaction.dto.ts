@@ -1,7 +1,10 @@
+import { SuggestionDto } from '../../classification/dto/classification.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { InboxTransaction } from '../entities/inbox-transaction.model';
 
 export class InboxTransactionDto {
+  @ApiProperty({ required: false, type: () => SuggestionDto })
+  suggestion?: SuggestionDto;
   @ApiProperty()
   id: string;
   @ApiProperty()
@@ -23,6 +26,7 @@ export class InboxTransactionDto {
 
   static fromDomain(domain: InboxTransaction): InboxTransactionDto {
     return {
+      suggestion: domain.suggestion,
       id: domain.id,
       accountId: domain.accountId,
       amount: domain.amount,

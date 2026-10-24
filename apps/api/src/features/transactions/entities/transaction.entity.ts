@@ -41,6 +41,9 @@ export class Transaction extends BaseDbEntity {
   @Column({ type: 'jsonb', nullable: true })
   metadata: TransactionMetadata | null;
 
+  @Column({ default: 1 })
+  revision: number;
+
   // relations
   @ManyToOne(() => Account, (account) => account.transactions)
   account: Relation<Account>;

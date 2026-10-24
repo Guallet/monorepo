@@ -54,3 +54,32 @@ We will confirm receipt of your report and try to implement a fix as soon as pos
 
 For general (non-security) issues, please use the [GitHub Issues](https://github.com/Guallet/monorepo/issues/new/choose) page.  
 For sensitive matters, use the reporting methods listed above.
+
+## Transaction classification
+
+Classification is opt-in per user and suggestion-only. An active connection sends
+masked descriptions, currency, direction, and category labels to the user's
+chosen Jev-compatible service. Notes default to off. Masking is best-effort:
+free text may still contain personal information. No exact amounts, dates,
+account IDs, or category UUIDs are transmitted.
+
+Credentials use the existing AES-256-GCM cipher and
+`DATABASE_CREDENTIALS_ENCRYPTION_KEY`. Responses expose a hint, never the secret.
+Deleting a connection hard-deletes credentials. User deletion cascades through
+classification tables; API deletion also clears short-lived Redis counters.
+Counter keys contain no transaction text or credentials and expire automatically
+if Redis cleanup is unavailable. Jobs contain IDs only. Provider response bodies
+and transaction text must never be logged.
+
+The outbound client validates every request, pins the validated DNS address,
+preserves TLS hostname verification, uses no environment proxy, rejects redirects,
+and limits total duration and response size. Private endpoints require an exact
+administrator destination/port allowlist. HTTP requires a separate opt-in.
+Metadata addresses and configured database, Redis, and API addresses remain
+blocked, including aliases resolving to those addresses. Colocating a decision
+service on an IP used by these protected services is intentionally unsupported.
+
+Database triggers own transaction revisions, durable outbox insertion, atomic
+feedback, and configuration invalidation. They are part of the migration contract
+and must not be dropped by schema tooling. No database locks are held during
+provider requests. Review history and terminal work are retained for 12 months.

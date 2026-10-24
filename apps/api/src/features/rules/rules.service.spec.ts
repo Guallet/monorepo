@@ -16,6 +16,11 @@ describe('RulesService', () => {
   let service: RulesService;
 
   const mockRulesRepository = {
+    manager: {
+      getRepository: vi.fn(() => ({
+        findOneBy: vi.fn().mockResolvedValue({ id: 'category-1' }),
+      })),
+    },
     find: vi.fn(),
     findOne: vi.fn(),
     create: vi.fn(),

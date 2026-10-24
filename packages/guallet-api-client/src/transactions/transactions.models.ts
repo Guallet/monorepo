@@ -1,3 +1,4 @@
+import type { TransactionSuggestionDto } from '../classification';
 export type TransactionDto = {
   id: string;
   accountId: string;
@@ -31,15 +32,16 @@ export type CreateTransactionRequest = {
 
 export type UpdateTransactionRequest = {
   accountId?: string;
-  description: string | null;
-  notes: string | null;
-  amount: number | null;
-  currency: string | null;
-  date: Date | null;
-  categoryId: string | null;
+  description?: string | null;
+  notes?: string | null;
+  amount?: number | null;
+  currency?: string | null;
+  date?: Date | null;
+  categoryId?: string | null;
 };
 
 export type InboxTransactionDto = TransactionDto & {
+  suggestion?: TransactionSuggestionDto;
   processedCategoryId?: string | null; // Processed category id based by rules
   ruleId?: string | null; // Rule that processed this transaction
 };

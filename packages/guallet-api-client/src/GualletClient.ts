@@ -1,3 +1,4 @@
+import { ClassificationApi } from './classification';
 import { AdminApi } from './admin';
 import { AccountsApi } from './accounts';
 import { BudgetsApi } from './budgets';
@@ -32,6 +33,7 @@ export interface GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
+  classification: ClassificationApi;
 }
 
 export interface CookieHelper {
@@ -83,6 +85,7 @@ export class GualletClientImpl implements GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
+  classification: ClassificationApi;
 
   constructor({
     baseUrl,
@@ -110,6 +113,7 @@ export class GualletClientImpl implements GualletClient {
     this.reports = new ReportsApi(this);
     this.rules = new RulesApi(this);
     this.ai = new AiApi(this);
+    this.classification = new ClassificationApi(this);
   }
 
   async get<TDto>({
@@ -254,8 +258,8 @@ export class GualletClientImpl implements GualletClient {
 
     const response = await fetch(`${this.baseUrl}/${path}`, requestOptions);
     this.handleHttpErrors(response);
-    const json = await response.json();
-    return json as TDto;
+    const body = await response.text();
+    return (body ? JSON.parse(body) : undefined) as TDto;
   }
 
   private async getAuthHeaders(requestHeaders?: HeadersInit): Promise<{

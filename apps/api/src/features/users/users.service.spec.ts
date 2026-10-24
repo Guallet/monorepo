@@ -1,3 +1,4 @@
+import { ClassificationLimits } from '../classification/classification-limits.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -22,6 +23,10 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
+        {
+          provide: ClassificationLimits,
+          useValue: { clear: vi.fn().mockResolvedValue(undefined) },
+        },
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,

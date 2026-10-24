@@ -5,6 +5,7 @@ import { useLocale } from '@/i18n/useLocale';
 import { CategoryDto, InboxTransactionDto } from '@guallet/api-client';
 import {
   useAccount,
+  useClassificationMutations,
   useCategory,
   useTransactionMutations,
 } from '@guallet/api-react';
@@ -34,7 +35,6 @@ interface InboxTransactionCardProps {
 
 export function InboxTransactionCard({
   transaction,
-  onSaveChanges,
 }: Readonly<InboxTransactionCardProps>) {
   const { colors, spacing } = useTheme();
   const { locale } = useLocale();
@@ -47,6 +47,7 @@ export function InboxTransactionCard({
     { open: openCategoryPicker, close: closeCategoryPicker },
   ] = useDisclosure(false);
 
+  const { dismiss } = useClassificationMutations();
   const { account } = useAccount(transaction.accountId);
   const { updateTransactionCategoryMutation } = useTransactionMutations();
 
@@ -156,7 +157,12 @@ export function InboxTransactionCard({
               </Text>
               {isAutoSuggested && (
                 <Badge size="xs" variant="light">
-                  {t('screens.transactions.inbox.card.autoBadge', 'Suggested')}
+                  {transaction.suggestion?.source === 'rule'
+                    ? t('classification.ruleSuggestion', 'Rule suggestion')
+                    : t(
+                        'classification.providerSuggestion',
+                        'Provider suggestion',
+                      )}
                 </Badge>
               )}
             </UnstyledButton>
@@ -169,10 +175,36 @@ export function InboxTransactionCard({
                   <IconEdit size={18} strokeWidth={1.5} />
                 </ActionIcon>
               </Tooltip>
+              {transaction.suggestion && (
+                <Button
+                  variant="subtle"
+                  loading={dismiss.isPending}
+                  onClick={() =>
+                    dismiss.mutate(transaction.suggestion!.id, {
+                      onError: () =>
+                        notifications.show({
+                          message: t(
+                            'classification.dismissError',
+                            'Could not dismiss suggestion.',
+                          ),
+                          color: 'error',
+                        }),
+                    })
+                  }
+                >
+                  {t('classification.dismiss', 'Dismiss')}
+                </Button>
+              )}
               <Button
                 size="sm"
                 leftSection={<IconCheck size={14} strokeWidth={2} />}
-                onClick={() => onSaveChanges?.()}
+                disabled={
+                  !category || updateTransactionCategoryMutation.isPending
+                }
+                loading={updateTransactionCategoryMutation.isPending}
+                onClick={() => {
+                  if (category) handleCategorySelected(category);
+                }}
               >
                 {t('screens.transactions.inbox.card.confirmButton', 'Confirm')}
               </Button>

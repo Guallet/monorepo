@@ -1,3 +1,4 @@
+import { ClassificationLimits } from '../classification/classification-limits.service';
 import {
   ConflictException,
   Injectable,
@@ -27,6 +28,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
+    private readonly classificationLimits: ClassificationLimits,
   ) {}
 
   async upsertUser({
@@ -131,6 +133,14 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     const removed = await this.repository.remove(user);
+    // Database cascades purge durable classification data even if Redis is down.
+    try {
+      await this.classificationLimits.clear({ userId });
+    } catch {
+      this.logger.warn(
+        'Classification rate-limit cleanup unavailable; keys expire automatically',
+      );
+    }
     this.logger.log(`User removed from DB: ${userId}`);
 
     // TODO: Remove from auth service
