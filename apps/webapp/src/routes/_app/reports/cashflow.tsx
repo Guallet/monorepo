@@ -7,8 +7,9 @@ import { ReportFilters } from '@/features/reports/components/ReportFilters';
 import { CashFlowRow } from '@/features/reports/CashFlow/CashFlowCategoryRow';
 import {
   getYearPickerValue,
+  serializeCashflowDateRange,
   updateCashflowYearSearch,
-} from '@/features/reports/cashflowYear';
+} from '@/features/reports/cashflowSearch';
 
 import { z } from 'zod';
 import { CashflowDataDto } from '@guallet/api-client';
@@ -79,8 +80,7 @@ export function CashFlowPage() {
               categories: filters.selectedCategories.length
                 ? filters.selectedCategories
                 : undefined,
-              startDate: filters.dateRange?.startDate.toISOString(),
-              endDate: filters.dateRange?.endDate.toISOString(),
+              ...serializeCashflowDateRange(filters.dateRange),
             }),
           })
         }
