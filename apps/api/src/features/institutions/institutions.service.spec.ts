@@ -180,35 +180,6 @@ describe('InstitutionsService', () => {
     });
   });
 
-  describe('findOneByNordigenId', () => {
-    it('should return an institution by nordigen id', async () => {
-      const nordigenId = 'nordigen-123';
-      const mockInstitution = {
-        id: 'inst-1',
-        nordigen_id: nordigenId,
-        name: 'Bank A',
-      };
-
-      mockInstitutionRepository.findOne.mockResolvedValue(mockInstitution);
-
-      const result = await service.findOneByNordigenId(nordigenId);
-
-      expect(result).toEqual(mockInstitution);
-      expect(mockInstitutionRepository.findOne).toHaveBeenCalledWith({
-        where: { nordigen_id: nordigenId },
-      });
-    });
-
-    it('should throw NotFoundException when institution not found', async () => {
-      const nordigenId = 'non-existent';
-      mockInstitutionRepository.findOne.mockResolvedValue(null);
-
-      await expect(service.findOneByNordigenId(nordigenId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-  });
-
   describe('create', () => {
     it('should create a new institution', async () => {
       const userId = 'user-123';
@@ -434,25 +405,6 @@ describe('InstitutionsService', () => {
       await expect(
         service.remove({ id: institutionId, user_id: userId }),
       ).rejects.toThrow(NotFoundException);
-    });
-  });
-
-  describe('saveAll', () => {
-    it('should upsert multiple institutions', async () => {
-      const institutions = [
-        { id: 'inst-1', name: 'Bank A', nordigen_id: 'nord-1' },
-        { id: 'inst-2', name: 'Bank B', nordigen_id: 'nord-2' },
-      ] as Institution[];
-
-      mockInstitutionRepository.upsert.mockResolvedValue(undefined);
-
-      const result = await service.saveAll(institutions);
-
-      expect(result).toEqual(institutions);
-      expect(mockInstitutionRepository.upsert).toHaveBeenCalledWith(
-        institutions,
-        ['nordigen_id'],
-      );
     });
   });
 });

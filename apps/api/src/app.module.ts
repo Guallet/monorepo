@@ -10,9 +10,6 @@ import { CategoriesModule } from './features/categories/categories.module';
 import { TransactionsModule } from './features/transactions/transactions.module';
 import { RulesModule } from './features/rules/rules.module';
 import { ReportsModule } from './features/reports/reports.module';
-import { OpenbankingModule } from './features/openbanking/openbanking.module';
-import { NordigenModule } from './features/nordigen/nordigen.module';
-import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './features/users/users.module';
 import configuration, { AppConfig, environmentSchema } from './configuration';
 import { BudgetsModule } from './features/budgets/budgets.module';
@@ -32,6 +29,7 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
+import { OpenbankingModule } from './features/openbanking/openbanking.module';
 
 @Module({
   imports: [
@@ -53,7 +51,13 @@ import { ObserveModule } from './observe';
           pinoHttp: {
             autoLogging: false,
             level: config.get('logging', { infer: true })?.level,
-            redact: ['req.headers.authorization', 'req.headers.cookie'],
+            redact: [
+              'req.headers.authorization',
+              'req.headers.cookie',
+              'req.body.secretId',
+              'req.body.secretKey',
+              'req.body.credentials',
+            ],
             transport: {
               targets: [
                 {
@@ -154,9 +158,6 @@ import { ObserveModule } from './observe';
     TransactionsModule,
     RulesModule,
     ReportsModule,
-    OpenbankingModule,
-    NordigenModule,
-    AdminModule,
     BudgetsModule,
     WebhooksModule,
     SavingGoalsModule,
@@ -166,6 +167,7 @@ import { ObserveModule } from './observe';
     NotificationsModule,
     RegularPaymentsModule,
     AiModule,
+    OpenbankingModule,
     HealthModule,
   ],
   controllers: [AppController],

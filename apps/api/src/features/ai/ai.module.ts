@@ -41,5 +41,6 @@ import { AiProviderRegistryService } from './providers/ai-provider-registry.serv
     AiFinancialContextService,
     AiProviderRegistryService,
   ],
+  exports: [AiCredentialEncryptionService],
 })
 export class AiModule {}

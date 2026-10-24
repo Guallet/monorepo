@@ -103,15 +103,6 @@ export interface BalanceHistoryPoint {
   balance: number;
 }
 
-export interface ConnectedAccountDto {
-  id: string;
-  updated_at: string;
-}
-
-export interface ConnectedAccountResponseDto {
-  connectedAccount: ConnectedAccountDto;
-}
-
 export interface AccountChartsDto {
   startDate: string;
   endDate: string;

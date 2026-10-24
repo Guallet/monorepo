@@ -1,17 +1,16 @@
+import { StepBankImport } from './StepBankImport';
 import {
   AccountTypeDto,
+  BankProviderId,
   CreateAccountRequest,
-  ObInstitutionDto,
 } from '@guallet/api-client';
-import {
-  useAccountMutations,
-  useConnectionMutations,
-} from '@guallet/api-react';
+import { useAccountMutations } from '@guallet/api-react';
 import { Box } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import {
@@ -23,18 +22,13 @@ import { StepChooseMethod } from './StepChooseMethod';
 import { StepManualDetails } from './StepManualDetails';
 import { StepManualSuccess } from './StepManualSuccess';
 import { StepManualType } from './StepManualType';
-import { StepOBBank } from './StepOBBank';
-import { StepOBCountry } from './StepOBCountry';
-import { StepOBRedirect } from './StepOBRedirect';
 
 type WizardStep =
   | 'method'
   | 'm-type'
   | 'm-details'
   | 'm-success'
-  | 'ob-country'
-  | 'ob-bank'
-  | 'ob-redirect';
+  | 'bank-accounts';
 
 interface AddAccountWizardProps {
   onDone: () => void;
@@ -42,8 +36,10 @@ interface AddAccountWizardProps {
 
 export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const defaultCurrency = useDefaultCurrency();
   const [step, setStep] = useState<WizardStep>('method');
+  const [providerId, setProviderId] = useState<BankProviderId | null>(null);
   const [createdAccountId, setCreatedAccountId] = useState<string | null>(null);
 
   const form = useForm<AddAccountFormData>({
@@ -72,20 +68,12 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     },
   });
 
-  const [obCountry, setObCountry] = useState('GB');
-  const [obInstitution, setObInstitution] = useState<ObInstitutionDto | null>(
-    null,
-  );
-
   const { createAccountMutation } = useAccountMutations();
-  const { createConnectionMutation } = useConnectionMutations();
 
   function resetAndRestart() {
     setStep('method');
     setCreatedAccountId(null);
     form.reset();
-    setObCountry('GB');
-    setObInstitution(null);
   }
 
   async function handleSaveAccount() {
@@ -142,43 +130,17 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
     }
   }
 
-  function handleConnectBank() {
-    if (!obInstitution) return;
-    createConnectionMutation.mutate(
-      {
-        request: {
-          institution_id: obInstitution.id,
-          redirect_to: `${globalThis.location.origin}/connections/connect/callback`,
-        },
-      },
-      {
-        onSuccess: (data) => {
-          window.open(data.link, '_self');
-        },
-        onError: () => {
-          notifications.show({
-            title: t(
-              'feature.accounts.add.obRedirect.error.title',
-              'Connection failed',
-            ),
-            message: t(
-              'feature.accounts.add.obRedirect.error.message',
-              'Could not start the bank connection. Please try again.',
-            ),
-            color: 'red',
-          });
-        },
-      },
-    );
-  }
-
   return (
     <Box maw={560} mx="auto">
       {step === 'method' && (
         <StepChooseMethod
-          onChoose={(method) =>
-            setStep(method === 'ob' ? 'ob-country' : 'm-type')
-          }
+          onChoose={(method) => {
+            if (method === 'manual') setStep('m-type');
+            else {
+              setProviderId(method);
+              setStep('bank-accounts');
+            }
+          }}
         />
       )}
       {step === 'm-type' && (
@@ -204,28 +166,13 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
           onAddAnother={resetAndRestart}
         />
       )}
-      {step === 'ob-country' && (
-        <StepOBCountry
-          value={obCountry}
-          onChange={setObCountry}
-          onNext={() => setStep('ob-bank')}
+      {step === 'bank-accounts' && providerId && (
+        <StepBankImport
+          key={providerId}
+          providerId={providerId}
           onBack={() => setStep('method')}
-        />
-      )}
-      {step === 'ob-bank' && (
-        <StepOBBank
-          countryCode={obCountry}
-          value={obInstitution}
-          onChange={setObInstitution}
-          onNext={() => setStep('ob-redirect')}
-          onBack={() => setStep('ob-country')}
-        />
-      )}
-      {step === 'ob-redirect' && obInstitution && (
-        <StepOBRedirect
-          institution={obInstitution}
-          onInitiate={handleConnectBank}
-          isLoading={createConnectionMutation.isPending}
+          onDone={onDone}
+          onConfigure={() => void navigate({ to: '/settings' })}
         />
       )}
     </Box>

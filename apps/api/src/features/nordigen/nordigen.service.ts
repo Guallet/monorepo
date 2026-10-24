@@ -1,411 +1,301 @@
-import { HttpService } from '@nestjs/axios';
-import { isAxiosError, type AxiosResponse } from 'axios';
 import {
+  BadGatewayException,
   BadRequestException,
-  ForbiddenException,
   Injectable,
-  InternalServerErrorException,
-  Logger,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { AppConfig } from 'src/configuration';
-import { catchError, firstValueFrom } from 'rxjs';
-import { NordigenInstitutionDto } from './dto/nordigen-institution.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
+import { Money } from '@guallet/money';
+import { createHash } from 'node:crypto';
+import { Account } from '../accounts/entities/account.entity';
+import { AccountSource } from '../accounts/entities/accountSource.model';
+import { Transaction } from '../transactions/entities/transaction.entity';
+import { BankAuthorization } from '../openbanking/entities/bank-authorization.entity';
 import {
-  NordigenAccountBalanceDto,
-  NordigenAccountBalancesDto,
-  NordigenAccountDetailsDto,
-  NordigenAccountDto,
-  NordigenAccountMetadataDto,
-} from './dto/nordigen-account.dto';
-import {
-  NordigenTransactionDto,
-  NordigenTransactionsDto,
-} from './dto/nordigen-transaction.dto';
-import { NordigenToken } from './entities/nordigen-token.entity';
-import { NordigenTokenDto } from './dto/nordigen-token.dto';
-import { NordigenRepository } from './nordigen.repository';
-import { NordigenRequisitionDto } from './dto/nordigen-requisition.dto';
+  BankProviderAdapter,
+  ProviderAccount,
+  ProviderContext,
+  ProviderIdentity,
+  requireNordigenCredentials,
+} from '../openbanking/providers/bank-provider.interface';
+import { NordigenLink } from './entities/nordigen-link.entity';
+import { NordigenClient } from './nordigen.client';
+import { getAccountTypeFrom } from './dto/ExternalCashAccountType1Code.helper';
+import { getMoneyBalanceFrom } from './dto/nordigen-balances.helper';
 
 @Injectable()
-export class NordigenService {
-  //   private readonly BASE_URL = 'https://ob.nordigen.com';
-  private readonly BASE_URL = 'https://bankaccountdata.gocardless.com';
-
-  private readonly logger = new Logger(NordigenService.name);
-
+export class NordigenService implements BankProviderAdapter {
   constructor(
-    private readonly configService: ConfigService<AppConfig>,
-    private readonly httpService: HttpService,
-    private repository: NordigenRepository,
+    private readonly client: NordigenClient,
+    @InjectRepository(BankAuthorization)
+    private readonly authorizations: Repository<BankAuthorization>,
+    @InjectRepository(NordigenLink)
+    private readonly links: Repository<NordigenLink>,
+    @InjectRepository(Account) private readonly accounts: Repository<Account>,
+    @InjectRepository(Transaction)
+    private readonly transactions: Repository<Transaction>,
   ) {}
-
-  //#region token
-  private async getAccessToken(): Promise<string> {
-    const token = await this.getToken();
-    return token.access;
+  async validateCredentials(context: ProviderContext): Promise<void> {
+    await this.token(context);
   }
-
-  private async getToken(): Promise<NordigenToken> {
-    const existingToken = await this.repository.getToken();
-
-    if (existingToken) {
-      if (this.isTokenExpired(existingToken)) {
-        if (existingToken.refresh_expires_on <= new Date()) {
-          // Expired too long ago. Get a new one
-          this.logger.log(
-            'Refresh token expired. Deleting token and getting a new one',
-          );
-          await this.repository.deleteToken(existingToken);
-          return await this.getNewToken();
-        } else {
-          // Refresh token
-          this.logger.log('Nordigen token is expired. Refresh token');
-          return await this.refreshToken(
-            existingToken.id,
-            existingToken.refresh,
-          );
-        }
-      } else {
-        return existingToken;
-      }
-    } else {
-      // Get a new one
-      this.logger.warn('No existing token. Getting a new one');
-      return await this.getNewToken();
-    }
-  }
-
-  private async getNewToken(): Promise<NordigenToken> {
-    this.logger.debug('Getting new Nordigen token');
-    const url = `${this.BASE_URL}/api/v2/token/new/`;
-
-    const nordigenConfig = this.configService.get('nordigen', { infer: true })!;
-    const response = await firstValueFrom(
-      this.httpService.post<NordigenTokenDto>(
-        url,
-        {
-          secret_id: nordigenConfig.secretId,
-          secret_key: nordigenConfig.secretKey,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-        },
-      ),
-    );
-
-    // Save new token
-    const dto = response.data;
-
-    // Access date
-    const access_expiration_date = new Date();
-    access_expiration_date.setSeconds(
-      access_expiration_date.getSeconds() + dto.access_expires,
-    );
-
-    // Refresh date
-    const refresh_expiration_date = new Date();
-    refresh_expiration_date.setSeconds(
-      refresh_expiration_date.getSeconds() + dto.refresh_expires,
-    );
-
-    this.logger.debug('Saving new token');
-    return await this.repository.createToken(
-      dto.access,
-      access_expiration_date,
-      dto.refresh,
-      refresh_expiration_date,
+  async getInstitutions(context: ProviderContext & { country: string }) {
+    return await this.client.getInstitutions(
+      await this.token(context),
+      context.country,
     );
   }
-
-  private async refreshToken(
-    tokenId: number,
-    refresh_token: string,
-  ): Promise<NordigenToken> {
-    const url = `${this.BASE_URL}/api/v2/token/refresh/`;
-
-    const response = await firstValueFrom(
-      this.httpService.post<NordigenTokenDto>(url, {
-        refresh: refresh_token,
+  async authorize(
+    context: ProviderContext & {
+      institutionId: string;
+      redirectUrl: string;
+      reference: string;
+    },
+  ) {
+    const result = await this.client.authorize(
+      await this.token(context),
+      context.institutionId,
+      context.redirectUrl,
+      context.reference,
+    );
+    return { remoteId: result.id, redirectUrl: result.link };
+  }
+  async completeAuthorization(context: ProviderContext & { remoteId: string }) {
+    const result = await this.client.getAuthorization(
+      await this.token(context),
+      context.remoteId,
+    );
+    if (result.status !== 'LN')
+      throw new BadRequestException('Bank authorization is not complete');
+    return result.accounts;
+  }
+  async listAccounts(context: ProviderContext) {
+    const ids = await this.authorizedIds(context);
+    if (!ids.length) return [];
+    const token = await this.token(context);
+    const links = await this.links.find({
+      where: { user_id: context.userId, is_linked: true },
+    });
+    const linkedById = new Map(
+      links.map((link) => [link.remote_account_id, link.guallet_account_id]),
+    );
+    const discovered = await Promise.allSettled(
+      ids.map(async (id) => {
+        const account = await this.client.getDetails(token, id);
+        return {
+          id,
+          name: account.name || account.ownerName || 'Bank account',
+          institutionName: null,
+          currency: account.currency ?? null,
+          linkedAccountId: linkedById.get(id) ?? null,
+        };
       }),
     );
-
-    // Save new token
-    const dto = response.data;
-    this.logger.debug('Updating token');
-    return await this.repository.updateToken(
-      tokenId,
-      dto.access,
-      dto.access_expires,
-    );
-  }
-
-  private isTokenExpired(token: NordigenToken): boolean {
-    const now = new Date();
-    return token.access_expires_on < now;
-  }
-
-  //#endregion
-
-  //#region institutions
-  async getInstitutions(countyCode: string): Promise<NordigenInstitutionDto[]> {
-    return await this.makeGetRequest<NordigenInstitutionDto[]>(
-      `/api/v2/institutions/?country=${countyCode}`,
-    );
-  }
-
-  async getInstitution(institutionId: string): Promise<NordigenInstitutionDto> {
-    return await this.makeGetRequest<NordigenInstitutionDto>(
-      `/api/v2/institutions/${institutionId}`,
-    );
-  }
-  //#endregion
-
-  //#region accounts
-  async getAccountMetadata(
-    account_id: string,
-  ): Promise<NordigenAccountMetadataDto> {
-    return await this.makeGetRequest<NordigenAccountMetadataDto>(
-      `/api/v2/accounts/${account_id}/`,
-    );
-  }
-
-  async getAccountDetails(account_id: string): Promise<NordigenAccountDto> {
-    const response = await this.makeGetRequest<NordigenAccountDetailsDto>(
-      `/api/v2/accounts/${account_id}/details/`,
-    );
-    this.logger.log(
-      `Getting Nordigen account details for ${account_id}. Response: ${JSON.stringify(
-        response,
-        null,
-        4,
-      )}`,
-    );
-    return response.account;
-  }
-
-  async getAccountBalance(
-    account_id: string,
-  ): Promise<NordigenAccountBalanceDto[]> {
-    const response = await this.makeGetRequest<NordigenAccountBalancesDto>(
-      `/api/v2/accounts/${account_id}/balances/`,
-    );
-    return response.balances;
-  }
-
-  async getAccountTransactions(
-    account_id: string,
-  ): Promise<NordigenTransactionDto[]> {
-    this.logger.debug(
-      `Getting Nordigen transactions for account ${account_id}`,
-    );
-    const response = await this.makeGetRequest<NordigenTransactionsDto>(
-      `/api/v2/accounts/${account_id}/transactions/`,
-    );
-    // We are not interested in the pending transactions yet. Better work only with booked for now
-    return response.transactions.booked;
-  }
-  //#endregion
-
-  //#region HTTP helpers
-  async makeGetRequest<T>(path: string): Promise<T> {
-    const url = `${this.BASE_URL}${path}`;
-    const token = await this.getAccessToken();
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService
-          .get(url, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: 'application/json',
-            },
-          })
-          .pipe(
-            catchError((error: unknown) => {
-              throw isAxiosError(error) ? error.response : error;
-            }),
-          ),
-      );
-      // Search for common HTTP status codes
-      this.handleHttpStatusCodes(response);
-
-      // If no exception thrown in the step before, then return the data
-      // oxlint-disable-next-line typescript/no-unsafe-return
-      return response.data;
-    } catch (error_) {
-      this.logger.error(
-        `Error making Nordigen GET request to ${path}. Error: ${typeof error_}}`,
-      );
-      // oxlint-disable-next-line typescript/no-unsafe-argument
-      this.handleHttpStatusCodes(error_, true);
-      throw new InternalServerErrorException();
+    // Expired consent for one bank must not hide accounts from other banks.
+    // Keep linked accounts visible so users can unlink and reauthorize them.
+    if (
+      discovered.every((result) => result.status === 'rejected') &&
+      links.length === 0
+    ) {
+      throw new BadGatewayException('Bank accounts could not be refreshed');
     }
+    return discovered.flatMap<ProviderAccount>((result, index) => {
+      if (result.status === 'fulfilled') return [result.value];
+      const linkedAccountId = linkedById.get(ids[index]);
+      return linkedAccountId
+        ? [
+            {
+              id: ids[index],
+              name: 'Bank account',
+              institutionName: null,
+              currency: null,
+              linkedAccountId,
+              status: 'unavailable',
+            },
+          ]
+        : [];
+    });
   }
-
-  private handleHttpStatusCodes(response: unknown, forceHandle = false) {
-    if (this.isAxiosResponse(response)) {
-      switch (response.status) {
-        case 400:
+  async importAccounts(
+    context: ProviderContext & { accountIds: string[] },
+  ): Promise<string[]> {
+    const allowed = new Set(await this.authorizedIds(context));
+    if (context.accountIds.some((id) => !allowed.has(id)))
+      throw new BadRequestException(
+        'Account is not authorized for this connection',
+      );
+    const token = await this.token(context);
+    const imported: string[] = [];
+    for (const id of new Set(context.accountIds)) {
+      imported.push(await this.importAccount(context.userId, token, id));
+    }
+    return imported;
+  }
+  async sync(context: ProviderContext) {
+    const links = await this.links.find({
+      where: { user_id: context.userId, is_linked: true },
+    });
+    const allowed = new Set(await this.authorizedIds(context));
+    const token = await this.token(context);
+    const errors: string[] = [];
+    let accountsSynced = 0;
+    for (const link of links) {
+      try {
+        if (!allowed.has(link.remote_account_id))
           throw new BadRequestException();
-        case 401:
-          throw new UnauthorizedException();
-        case 403:
-          throw new ForbiddenException();
-        case 404:
-          throw new NotFoundException();
+        await this.importAccount(context.userId, token, link.remote_account_id);
+        accountsSynced++;
+      } catch {
+        errors.push(link.remote_account_id);
       }
     }
-
-    // If forceHandle true, then throw an exception since this has to be handled here
-    if (forceHandle) {
-      this.logger.error(`Error making request to Nordigen`, {
-        status: this.isAxiosResponse(response) ? response.status : undefined,
-        error: this.isAxiosResponse(response) ? response.data : response,
-      });
-      throw new InternalServerErrorException();
-    }
+    return { accountsSynced, errors };
   }
-
-  private isAxiosResponse(response: unknown): response is AxiosResponse {
-    return (
-      typeof response === 'object' &&
-      response !== null &&
-      'status' in response &&
-      typeof response.status === 'number' &&
-      'data' in response
+  async unlinkAccount(
+    context: ProviderIdentity & { accountId: string },
+  ): Promise<void> {
+    const result = await this.links.update(
+      { user_id: context.userId, remote_account_id: context.accountId },
+      { is_linked: false },
+    );
+    if (!result.affected) throw new NotFoundException();
+  }
+  async disconnect(context: ProviderIdentity): Promise<void> {
+    await this.links.update({ user_id: context.userId }, { is_linked: false });
+  }
+  private async token(context: ProviderContext) {
+    return await this.client.getToken(
+      requireNordigenCredentials(context.credentials),
     );
   }
-
-  async makePostRequest<T>(path: string, payload: unknown): Promise<T> {
-    const url = `${this.BASE_URL}${path}`;
-    const token = await this.getAccessToken();
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService
-          .post(url, payload, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          })
-          .pipe(
-            catchError((error: unknown) => {
-              throw isAxiosError(error) ? error.response : error;
-            }),
-          ),
-      );
-      // Search for common HTTP status codes
-      this.handleHttpStatusCodes(response);
-
-      // oxlint-disable-next-line typescript/no-unsafe-return
-      return response.data;
-    } catch (error_) {
-      this.logger.error(
-        `Error making POST request to ${path}. Payload ${JSON.stringify(
-          payload,
-          null,
-          4,
-        )}`,
-      );
-      // oxlint-disable-next-line typescript/no-unsafe-argument
-      this.handleHttpStatusCodes(error_, true);
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async makeDeleteRequest<T>(path: string): Promise<T> {
-    const url = `${this.BASE_URL}${path}`;
-    const token = await this.getAccessToken();
-
-    try {
-      const response = await firstValueFrom(
-        this.httpService
-          .delete(url, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: 'application/json',
-            },
-          })
-          .pipe(
-            catchError((error: unknown) => {
-              throw isAxiosError(error) ? error.response : error;
-            }),
-          ),
-      );
-      // Search for common HTTP status codes
-      this.handleHttpStatusCodes(response);
-
-      // If no exception thrown in the step before, then return the data
-      // oxlint-disable-next-line typescript/no-unsafe-return
-      return response.data;
-    } catch (error_) {
-      this.logger.error(`Error making Nordigen GET request to ${path}`);
-      // oxlint-disable-next-line typescript/no-unsafe-argument
-      this.handleHttpStatusCodes(error_, true);
-      throw error_;
-    }
-  }
-  //#endregion
-
-  //# region requisitions
-  async createRequisition(
-    institution_id: string,
-    redirect_url: string,
-  ): Promise<NordigenRequisitionDto> {
-    const path = `/api/v2/requisitions/`;
-
-    // oxlint-disable-next-line typescript/no-explicit-any
-    const response = await this.makePostRequest<any>(path, {
-      redirect: redirect_url,
-      institution_id: institution_id,
+  private async authorizedIds({ userId, connectionId }: ProviderContext) {
+    const authorizations = await this.authorizations.find({
+      where: {
+        user_id: userId,
+        connection_id: connectionId,
+        completed_at: Not(IsNull()),
+      },
     });
-
-    // Weird error from nordigen where it returns the GET object instead of the POST one
-    if (response.count) {
-      this.logger.error('Error: Incorrect response format from Nordigen');
-      throw new InternalServerErrorException(
-        'Error getting a single item from PSD2 Provider',
+    return [...new Set(authorizations.flatMap((item) => item.account_ids))];
+  }
+  private async importAccount(
+    userId: string,
+    token: string,
+    remoteId: string,
+  ): Promise<string> {
+    const [details, balances, remoteTransactions] = await Promise.all([
+      this.client.getDetails(token, remoteId),
+      this.client.getBalances(token, remoteId),
+      this.client.getTransactions(token, remoteId),
+    ]);
+    const balance = getMoneyBalanceFrom(balances);
+    let link = await this.links.findOne({
+      where: { user_id: userId, remote_account_id: remoteId },
+    });
+    let account = link
+      ? await this.accounts.findOne({
+          where: { user_id: userId, id: link.guallet_account_id },
+        })
+      : null;
+    if (link && !account)
+      throw new NotFoundException('Linked account not found');
+    const currency =
+      balance?.currency.code || details.currency || account?.currency;
+    if (!currency)
+      throw new BadRequestException('Account currency is unavailable');
+    const saved = await this.accounts.manager.transaction(async (manager) => {
+      const savedAccount = await manager.save(Account, {
+        ...account,
+        user_id: userId,
+        name:
+          details.name || account?.name || details.ownerName || 'Bank account',
+        currency,
+        balance: balance?.amount ?? account?.balance ?? 0,
+        type: account?.type ?? getAccountTypeFrom(details.cashAccountType),
+        source: AccountSource.IMPORTED,
+        source_name: 'Nordigen',
+      });
+      const savedLink = await manager.save(NordigenLink, {
+        ...link,
+        user_id: userId,
+        remote_account_id: remoteId,
+        guallet_account_id: savedAccount.id,
+        is_linked: true,
+      });
+      return { account: savedAccount, link: savedLink };
+    });
+    account = saved.account;
+    link = saved.link;
+    const occurrences = new Map<string, number>();
+    const rows = remoteTransactions.map((transaction) => {
+      const date = new Date(
+        transaction.bookingDateTime ||
+          transaction.bookingDate ||
+          transaction.valueDate ||
+          '',
       );
-    } else {
-      this.logger.debug(`Response: ${JSON.stringify(response, null, 4)}`);
-
-      return response as NordigenRequisitionDto;
+      if (!Number.isFinite(date.getTime()))
+        throw new BadRequestException('Transaction date is invalid');
+      const money = Money.fromCurrencyCode({
+        amount: Number(transaction.transactionAmount.amount),
+        currencyCode: transaction.transactionAmount.currency,
+      });
+      let id = transaction.transactionId || transaction.entryReference;
+      if (!id) {
+        const hash = createHash('sha256')
+          .update(
+            JSON.stringify([
+              date.toISOString(),
+              transaction.transactionAmount,
+              transaction.remittanceInformationUnstructured,
+              transaction.debtorAccount,
+              transaction.creditorAccount,
+            ]),
+          )
+          .digest('hex');
+        const occurrence = (occurrences.get(hash) ?? 0) + 1;
+        occurrences.set(hash, occurrence);
+        id = `${hash}_${occurrence}`;
+      }
+      return {
+        accountId: account.id,
+        externalId: `nordigen:${userId}:${remoteId}:${id}`,
+        amount: money.amount,
+        currency: money.currency.code,
+        date,
+        description:
+          transaction.remittanceInformationUnstructured ||
+          transaction.creditorName ||
+          transaction.debtorName ||
+          '',
+        metadata: { provider: 'nordigen' as const, data: { ...transaction } },
+      };
+    });
+    // Upgrade legacy transaction identifiers only within the owned local account.
+    const legacyIds = remoteTransactions
+      .map((transaction) => transaction.transactionId)
+      .filter(Boolean);
+    if (legacyIds.length) {
+      const legacy = await this.transactions.find({
+        where: { accountId: account.id, externalId: In(legacyIds) },
+      });
+      for (const row of legacy) {
+        if (row.metadata?.provider === 'nordigen') {
+          await this.transactions.update(
+            { id: row.id, accountId: account.id },
+            { externalId: `nordigen:${userId}:${remoteId}:${row.externalId}` },
+          );
+        }
+      }
     }
+    const uniqueRows = [
+      ...new Map(rows.map((row) => [row.externalId, row])).values(),
+    ];
+    if (uniqueRows.length)
+      await this.transactions.upsert(uniqueRows, {
+        conflictPaths: ['externalId'],
+        skipUpdateIfNoValuesChanged: true,
+      });
+    return link.guallet_account_id;
   }
-
-  async getRequisition(
-    requisition_id: string,
-  ): Promise<NordigenRequisitionDto> {
-    this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
-    const path = `/api/v2/requisitions/${requisition_id}`;
-
-    const response = await this.makeGetRequest<NordigenRequisitionDto>(path);
-    return response;
-  }
-
-  async deleteRequisition(
-    requisition_id: string,
-  ): Promise<DeleteRequisitionResponse> {
-    this.logger.debug(`Getting the requisition id ${requisition_id} from API`);
-    const path = `/api/v2/requisitions/${requisition_id}`;
-
-    const response =
-      await this.makeDeleteRequest<DeleteRequisitionResponse>(path);
-    return response;
-  }
-
-  //#endregion
 }
-
-export type DeleteRequisitionResponse = {
-  summary: string;
-  detail: string;
-};

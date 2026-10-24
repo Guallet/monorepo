@@ -2,8 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
 import { TransactionsService } from '../transactions/transactions.service';
-import { OpenbankingService } from '../openbanking/openbanking.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { Account } from './entities/account.entity';
 import { AccountType } from './entities/accountType.model';
@@ -28,10 +27,6 @@ describe('AccountsController', () => {
     getAccountTransactionsSum: vi.fn(),
   };
 
-  const mockOpenBankingService = {
-    getLinkedAccount: vi.fn(),
-  };
-
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
     'test@example.com',
@@ -49,10 +44,6 @@ describe('AccountsController', () => {
         {
           provide: TransactionsService,
           useValue: mockTransactionsService,
-        },
-        {
-          provide: OpenbankingService,
-          useValue: mockOpenBankingService,
         },
       ],
     }).compile();
@@ -406,88 +397,6 @@ describe('AccountsController', () => {
       expect(
         mockTransactionsService.getAccountTransactions,
       ).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('getConnectedAccountDetails', () => {
-    it('should return connected account details for synced account', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Connected Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-        source: AccountSource.SYNCED,
-      };
-
-      const mockConnectedAccount = {
-        id: 'ob-account-1',
-        accountId: accountId,
-        nordigenAccountId: 'nordigen-123',
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockOpenBankingService.getLinkedAccount.mockResolvedValue(
-        mockConnectedAccount,
-      );
-
-      const result = await controller.getConnectedAccountDetails(
-        mockUser,
-        accountId,
-      );
-
-      expect(result).toBeDefined();
-      expect(result.connectedAccount).toEqual(mockConnectedAccount);
-      expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
-        mockUser.id,
-        accountId,
-      );
-      expect(mockOpenBankingService.getLinkedAccount).toHaveBeenCalledWith({
-        accountId: accountId,
-      });
-    });
-
-    it('should throw BadRequestException for non-synced account', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Manual Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-        source: AccountSource.MANUAL,
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-
-      await expect(
-        controller.getConnectedAccountDetails(mockUser, accountId),
-      ).rejects.toThrow(BadRequestException);
-
-      expect(mockOpenBankingService.getLinkedAccount).not.toHaveBeenCalled();
-    });
-
-    it('should throw NotFoundException when connected account not found', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Connected Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-        source: AccountSource.SYNCED,
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockOpenBankingService.getLinkedAccount.mockResolvedValue(null);
-
-      await expect(
-        controller.getConnectedAccountDetails(mockUser, accountId),
-      ).rejects.toThrow(NotFoundException);
     });
   });
 

@@ -115,8 +115,9 @@ All environment variables can be configured in the `.env` file:
 - `REDIS_PASSWORD`: Redis password (default: `guallet_redis_password`)
 - `PGADMIN_EMAIL`: pgAdmin login email (default: `admin@guallet.io`)
 - `PGADMIN_PASSWORD`: pgAdmin login password (default: `admin`)
-- `NORDIGEN_SECRET_ID`: API credentials for bank integrations
-- `NORDIGEN_SECRET_KEY`: API secret for bank integrations
+
+Banking provider credentials are configured per user in Guallet settings and
+are not required as server environment variables.
 
 #### Optional Variables
 

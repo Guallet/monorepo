@@ -1,8 +1,7 @@
-import { AdminApi } from './admin';
+import { OpenbankingApi } from './openbanking';
 import { AccountsApi } from './accounts';
 import { BudgetsApi } from './budgets';
 import { CategoriesApi } from './categories';
-import { ConnectionsApi } from './connections';
 import { InstitutionsApi } from './institutions';
 import { TransactionsApi } from './transactions';
 import { UserApi } from './user';
@@ -16,10 +15,8 @@ import { RulesApi } from './rules';
 import { AiApi } from './ai';
 
 export interface GualletClient {
-  admin: AdminApi;
   accounts: AccountsApi;
   categories: CategoriesApi;
-  connections: ConnectionsApi;
   institutions: InstitutionsApi;
   transactions: TransactionsApi;
   budgets: BudgetsApi;
@@ -32,6 +29,7 @@ export interface GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
+  openbanking: OpenbankingApi;
 }
 
 export interface CookieHelper {
@@ -67,10 +65,8 @@ export class GualletClientImpl implements GualletClient {
   private readonly baseUrl: string;
   private readonly cookieHelper?: CookieHelper;
 
-  admin: AdminApi;
   accounts: AccountsApi;
   categories: CategoriesApi;
-  connections: ConnectionsApi;
   institutions: InstitutionsApi;
   transactions: TransactionsApi;
   budgets: BudgetsApi;
@@ -83,6 +79,7 @@ export class GualletClientImpl implements GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
+  openbanking: OpenbankingApi;
 
   constructor({
     baseUrl,
@@ -94,10 +91,8 @@ export class GualletClientImpl implements GualletClient {
     this.baseUrl = baseUrl;
     this.cookieHelper = cookieHelper;
 
-    this.admin = new AdminApi(this);
     this.accounts = new AccountsApi(this);
     this.categories = new CategoriesApi(this);
-    this.connections = new ConnectionsApi(this);
     this.institutions = new InstitutionsApi(this);
     this.transactions = new TransactionsApi(this);
     this.budgets = new BudgetsApi(this);
@@ -110,6 +105,7 @@ export class GualletClientImpl implements GualletClient {
     this.reports = new ReportsApi(this);
     this.rules = new RulesApi(this);
     this.ai = new AiApi(this);
+    this.openbanking = new OpenbankingApi(this);
   }
 
   async get<TDto>({
@@ -254,6 +250,9 @@ export class GualletClientImpl implements GualletClient {
 
     const response = await fetch(`${this.baseUrl}/${path}`, requestOptions);
     this.handleHttpErrors(response);
+    if (response.status === 204) {
+      return undefined as TDto;
+    }
     const json = await response.json();
     return json as TDto;
   }
