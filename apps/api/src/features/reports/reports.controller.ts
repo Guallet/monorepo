@@ -6,6 +6,7 @@ import {
   Query,
   ParseIntPipe,
 } from '@nestjs/common';
+import { isUUID } from 'class-validator';
 import { ReportsService } from './reports.service';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { RequestUser } from 'src/auth/request-user.decorator';
@@ -58,6 +59,10 @@ export class ReportsController {
 
 function parseIds(value?: string): string[] | undefined {
   const ids = value?.split(',').filter(Boolean);
+  if (ids?.some((id) => !isUUID(id))) {
+    throw new BadRequestException('Invalid report filter ID');
+  }
+
   return ids?.length ? ids : undefined;
 }
 

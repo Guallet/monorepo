@@ -88,8 +88,8 @@ describe('ReportsController', () => {
       await controller.getCashflowReport(
         mockUser,
         2023,
-        'account-1,account-2',
-        'category-1',
+        '00000000-0000-4000-8000-000000000001,00000000-0000-4000-8000-000000000002',
+        '00000000-0000-4000-8000-000000000003',
         '2023-02-01T00:00:00.000Z',
         '2023-02-28T00:00:00.000Z',
       );
@@ -97,8 +97,11 @@ describe('ReportsController', () => {
       expect(mockReportsService.getCashFlowReport).toHaveBeenCalledWith({
         user_id: mockUser.id,
         year: 2023,
-        accounts: ['account-1', 'account-2'],
-        categories: ['category-1'],
+        accounts: [
+          '00000000-0000-4000-8000-000000000001',
+          '00000000-0000-4000-8000-000000000002',
+        ],
+        categories: ['00000000-0000-4000-8000-000000000003'],
         startDate: new Date('2023-02-01T00:00:00.000Z'),
         endDate: new Date('2023-02-28T00:00:00.000Z'),
       });

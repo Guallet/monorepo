@@ -49,12 +49,17 @@ export class ReportsService {
     const reportStart =
       startDate && startDate > yearStart ? startDate : yearStart;
     const reportEnd = endDate && endDate < yearEnd ? endDate : yearEnd;
-    const reportCategoryIds = categoryIds?.length
-      ? getCategoryIdsWithDescendants(categoryIds, categories)
+    const selectedCategoryIds = categoryIds?.length
+      ? getCategoryIdsWithDescendants(
+          categoryIds.filter((categoryId) =>
+            categories.some((category) => category.id === categoryId),
+          ),
+          categories,
+        )
       : undefined;
 
     const transactions =
-      reportStart <= reportEnd
+      reportStart <= reportEnd && selectedCategoryIds?.length !== 0
         ? await this.transactionsRepository.find({
             relations: { category: true, account: true },
             where: {
@@ -62,8 +67,8 @@ export class ReportsService {
                 user_id: user_id,
                 ...(accounts?.length ? { id: In(accounts) } : {}),
               },
-              ...(reportCategoryIds?.length
-                ? { categoryId: In(reportCategoryIds) }
+              ...(selectedCategoryIds
+                ? { categoryId: In(selectedCategoryIds) }
                 : {}),
               date: Between(reportStart, reportEnd),
             },
