@@ -6,13 +6,15 @@ RUN npm install -g pnpm@12.4.1 --ignore-scripts
 
 WORKDIR /app
 
-# Copy only API workspace files
+# Copy API files and its local workspace dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY .npmrc* ./
 
 # Copy API source and package.json
 COPY apps/api/package.json ./apps/api/
 COPY apps/api ./apps/api
+COPY packages/tsconfig ./packages/tsconfig
+COPY packages/guallet-money ./packages/guallet-money
 
 # Install dependencies (only for API)
 RUN pnpm install --filter ./apps/api... --frozen-lockfile
@@ -21,22 +23,40 @@ RUN pnpm install --filter ./apps/api... --frozen-lockfile
 WORKDIR /app/apps/api
 RUN pnpm run build
 
+# Install only the production dependencies required by the API.
+FROM node:24.20-alpine AS production-dependencies
+
+RUN npm install -g pnpm@12.4.1 --ignore-scripts
+
+WORKDIR /app
+
+# Install runtime dependencies with the workspace package available for linking.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY .npmrc* ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/tsconfig ./packages/tsconfig
+COPY packages/guallet-money/package.json ./packages/guallet-money/
+COPY packages/guallet-money/src ./packages/guallet-money/src
+RUN pnpm install --prod --filter ./apps/api... --frozen-lockfile
+
 # Production stage
 FROM node:24.20-alpine AS production
 
-RUN npm install -g pnpm@12.4.1 --ignore-scripts
 RUN apk add --no-cache curl
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
-WORKDIR /app/apps/api
+WORKDIR /app
 
-# Copy built app and dependencies
-COPY --from=base --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
-COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./dist
-COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./
+# Copy built app and workspace-hoisted dependencies
+COPY --from=production-dependencies --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=production-dependencies --chown=nodejs:nodejs /app/packages/guallet-money ./packages/guallet-money
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./apps/api/dist
+COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./apps/api/package.json
+
+WORKDIR /app/apps/api
 
 # Switch to non-root user
 USER nodejs
