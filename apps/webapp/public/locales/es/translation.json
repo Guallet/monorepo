@@ -774,6 +774,17 @@
           }
         },
         "title": "New budget"
+      },
+      "edit": {
+        "notFound": "Budget not found.",
+        "notifications": {
+          "success": "Budget updated successfully.",
+          "error": {
+            "title": "Could not update budget"
+          }
+        },
+        "title": "Edit budget",
+        "save": "Save changes"
       }
     },
     "categories": {
@@ -1120,6 +1131,11 @@
         "markAllAsRead": "Marcar todas como leídas",
         "loading": "Cargando notificaciones...",
         "emptyState": "No tienes notificaciones"
+      }
+    },
+    "reports": {
+      "filters": {
+        "clearDateRange": "Limpiar intervalo de fechas"
       }
     },
     "rules": {

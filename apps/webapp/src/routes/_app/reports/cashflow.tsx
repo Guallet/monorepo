@@ -2,10 +2,14 @@ import { Money } from '@guallet/money';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import { Stack, Table, Text, useMantineTheme } from '@mantine/core';
 import { YearPickerInput } from '@mantine/dates';
-import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { ReportFilters } from '@/features/reports/components/ReportFilters';
 import { CashFlowRow } from '@/features/reports/CashFlow/CashFlowCategoryRow';
+import {
+  getYearPickerValue,
+  serializeCashflowDateRange,
+  updateCashflowYearSearch,
+} from '@/features/reports/cashflowSearch';
 
 import { z } from 'zod';
 import { CashflowDataDto } from '@guallet/api-client';
@@ -15,7 +19,11 @@ import {
   useCashflowReports,
 } from '@guallet/api-react';
 const pageSearchSchema = z.object({
-  year: z.number().catch(new Date().getUTCFullYear()),
+  year: z.number().int().catch(new Date().getUTCFullYear()),
+  accounts: z.array(z.string()).optional(),
+  categories: z.array(z.string()).optional(),
+  startDate: z.iso.datetime().optional(),
+  endDate: z.iso.datetime().optional(),
 });
 
 export const Route = createFileRoute('/_app/reports/cashflow')({
@@ -24,18 +32,32 @@ export const Route = createFileRoute('/_app/reports/cashflow')({
 });
 
 export function CashFlowPage() {
-  const { year } = Route.useSearch();
-  const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  const {
+    year,
+    accounts: accountIds = [],
+    categories: categoryIds = [],
+    startDate,
+    endDate,
+  } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const selectedStartDate = startDate ? new Date(startDate) : null;
+  selectedStartDate?.setHours(0, 0, 0, 0);
+  const dateRange =
+    selectedStartDate && endDate
+      ? { startDate: selectedStartDate, endDate: new Date(endDate) }
+      : null;
 
   const { accounts } = useAccounts();
   const { categories, isLoading: categoriesLoading } = useCategories();
   const { cashflowData, isLoading: reportLoading } = useCashflowReports({
     year,
+    accounts: accountIds,
+    categories: categoryIds,
+    startDate: dateRange?.startDate,
+    endDate: dateRange?.endDate,
   });
 
-  const isLoading = categoriesLoading || reportLoading;
-
-  if (isLoading) {
+  if (categoriesLoading) {
     return <Text>Loading...</Text>;
   }
 
@@ -45,17 +67,41 @@ export function CashFlowPage() {
       <ReportFilters
         accounts={accounts}
         categories={categories}
-        onFiltersUpdate={(x) => {
-          console.log('Filters updated', x);
-        }}
+        selectedAccounts={accountIds}
+        selectedCategories={categoryIds}
+        dateRange={dateRange}
+        onFiltersUpdate={(filters) =>
+          navigate({
+            search: (previous) => ({
+              ...previous,
+              accounts: filters.selectedAccounts.length
+                ? filters.selectedAccounts
+                : undefined,
+              categories: filters.selectedCategories.length
+                ? filters.selectedCategories
+                : undefined,
+              ...serializeCashflowDateRange(filters.dateRange),
+            }),
+          })
+        }
       />
       <YearPickerInput
         label="Pick year"
         placeholder="Pick a year to run the report"
-        value={selectedYear}
-        onChange={setSelectedYear}
+        value={getYearPickerValue(year)}
+        onChange={(value) => {
+          if (value) {
+            void navigate({
+              search: (previous) => updateCashflowYearSearch(previous, value),
+            });
+          }
+        }}
       />
-      {cashflowData && <CashFlowTable reportData={cashflowData} />}
+      {reportLoading ? (
+        <Text>Loading...</Text>
+      ) : (
+        cashflowData && <CashFlowTable reportData={cashflowData} />
+      )}
     </Stack>
   );
 }
