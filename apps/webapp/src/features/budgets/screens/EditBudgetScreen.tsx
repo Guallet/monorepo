@@ -149,7 +149,7 @@ function EditBudgetForm({
     mode: 'controlled',
     initialValues: {
       name: budget.name,
-      amount: budget.amount,
+      amount: Number(budget.amount),
       currency: budget.currency,
       colour: budget.colour ?? '',
       icon: budget.icon ?? '',
