@@ -1,0 +1,2046 @@
+[
+  {
+    "id": "AASEN_SPAREBANK_AASANO21",
+    "name": "Aasen Sparebank",
+    "bic": "AASANO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AASEN_SPAREBANK_AASANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AIRWALLEX_EEA_AIPTAU32",
+    "name": "Airwallex",
+    "bic": "AIPTAU32",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AIRWALLEX_AIPTAU32_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ANDEBU_SPAREBANK_ANBUNO21",
+    "name": "Andebu Sparebank",
+    "bic": "ANBUNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ANDEBU_SPAREBANK_ANBUNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ARENDAL_OG_OMEGNS_SPAREKASSE_ARENNO21",
+    "name": "Arendal og Omegns Sparekasse",
+    "bic": "ARENNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ARENDAL_OG_OMEGNS_SPAREKASSE_ARENNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ASKIM_OG_SPYDEBERG_SPAREBANK_ASKSNO21",
+    "name": "Askim og Spydeberg Sparebank",
+    "bic": "ASKSNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ASKIM_OG_SPYDEBERG_SPAREBANK_ASKSNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AURSKOG_SPAREBANK_AUSNNO21",
+    "name": "Aurskog Sparebank",
+    "bic": "AUSNNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AURSKOG_SPAREBANK_AUSNNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NORWEGIAN_NO_NORWNOK1",
+    "name": "Bank Norwegian",
+    "bic": "NORWNOK1",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NORWEGIAN_FI_NORWNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANK2_BTWONOK1",
+    "name": "Bank2",
+    "bic": "BTWONOK1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANK2_BTWONOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BERG_SPAREBANK_BRGPNO21",
+    "name": "Berg Sparebank",
+    "bic": "BRGPNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BERG_SPAREBANK_BRGPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BIEN_SPAREBANK_BIENNOK1",
+    "name": "Bien Sparebank",
+    "bic": "BIENNOK1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BIEN_SPAREBANK_BIENNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BJUGN_SPAREBANK_BJUGNO21",
+    "name": "Bjugn Sparebank",
+    "bic": "BJUGNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BJUGN_SPAREBANK_BJUGNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BLAKER_SPAREBANK_BLSANO21",
+    "name": "Blaker Sparebank",
+    "bic": "BLSANO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BLAKER_SPAREBANK_BLSANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BNBANK_KBNONO22",
+    "name": "BN Bank ASA",
+    "bic": "KBNONO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BNBANK_KBNONO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BOLIGBANKEN_PRBONO22",
+    "name": "BoligBanken",
+    "bic": "PRBONO22",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BOLIGBANKEN_PRBONO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BUNQ_BUNQNL2A",
+    "name": "bunq",
+    "bic": "BUNQNL2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "EE",
+      "FR",
+      "SK",
+      "NO",
+      "DK",
+      "CY",
+      "IT",
+      "DE",
+      "SE",
+      "FI",
+      "HU",
+      "MT",
+      "BE",
+      "SI",
+      "GR",
+      "CZ",
+      "IS",
+      "PT",
+      "AT",
+      "IE",
+      "BG",
+      "ES",
+      "LI",
+      "LU",
+      "HR",
+      "NL",
+      "RO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/bunq.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CIRCLE_K_MASTERCARD_NO_SKHSFI21",
+    "name": "Circle K Mastercard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/SE/PNG/circle%20k.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CULTURA_CULTNOK1",
+    "name": "Cultura",
+    "bic": "CULTNOK1",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CULTURA_CULTNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DANSKEBANK_BUSINESS_DABANO22",
+    "name": "Danske Bank Business",
+    "bic": "DABANO22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/danskebank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DANSKEBANK_DABANO22",
+    "name": "Danske Bank Private",
+    "bic": "DABANO22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/danskebank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "DNB_DNBANOKK",
+    "name": "DNB",
+    "bic": "DNBANOKK",
+    "transaction_total_days": "395",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/DNB_DNBANOKK.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "DRANGEDAL_OG_TORDAL_SPAREBANK_DRANNO21",
+    "name": "Drangedal og Tørdal Sparebank",
+    "bic": "DRANNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/DRANGEDAL_OG_TORDAL_SPAREBANK_DRANNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EIDSBERG_SPAREBANK_EIDSNO21",
+    "name": "Eidsberg Sparebank",
+    "bic": "EIDSNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EIDSBERG_SPAREBANK_EIDSNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ENTERCARD_SWEDNOKK",
+    "name": "Entercard",
+    "bic": "SWEDNOKK",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ENTERCARD_DKEDSESS.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ESSO_SKHSFI21",
+    "name": "Esso",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ETNEDAL_SPAREBANK_ETSPNO21",
+    "name": "Etnedal Sparebank",
+    "bic": "ETSPNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ETNEDAL_SPAREBANK_ETSPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EUROCARD_NO_SKHSFI21",
+    "name": "Eurocard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EUROCARD_CORP_SKHSFI21",
+    "name": "Eurocard Corporate",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO",
+      "DK",
+      "FI",
+      "SE"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/SE/PNG/airplus.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EVJE_OG_HORNNES_SPAREBANK_EVJENO21",
+    "name": "Evje og Hornnes Sparebank",
+    "bic": "EVJENO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/EVJE_OG_HORNNES_SPAREBANK_EVJENO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FACITBANK_NO_FATIDK22NO",
+    "name": "Facitbank NO",
+    "bic": "FATIDK22NO",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FACITBANK_NO_FATIDK22NO.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FANA_SPAREBANK_FANANOB1",
+    "name": "Fana Sparebank",
+    "bic": "FANANOB1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FANA_SPAREBANK_FANANOB1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINNAIR_MASTERCARD_NO_SKHSFI21",
+    "name": "Finnair Mastercard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINOM_FNOMDEB2",
+    "name": "Finom",
+    "bic": "FNOMDEB2",
+    "transaction_total_days": "365",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINOM_SOBKDEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FLEKKEFJORD_SPAREBANK_FLEKNO21",
+    "name": "Flekkefjord Sparebank",
+    "bic": "FLEKNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FLEKKEFJORD_SPAREBANK_FLEKNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FORSVARETS_PERSONELL_SERVICE_FPSVCNOK1",
+    "name": "Forsvarets Personell Service",
+    "bic": "FPSVCNOK1",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FORSVARETS_PERSONELL_SERVICE_FPSVCNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "GILDESKAL_SPAREBANK_GILDNO21",
+    "name": "Gildeskål Sparebank",
+    "bic": "GILDNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GILDESKAL_SPAREBANK_GILDNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "GLOBECARD_NO_SKHSFI21",
+    "name": "GlobeCard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "GRONG_SPAREBANK_GRONNO21",
+    "name": "Grong Sparebank",
+    "bic": "GRONNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GRONG_SPAREBANK_GRONNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "GRUE_SPAREBANK_GRUENO21",
+    "name": "Grue Sparebank",
+    "bic": "GRUENO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GRUE_SPAREBANK_GRUENO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HALTDALEN_SPAREBANK_HALTNO21",
+    "name": "Haltdalen Sparebank",
+    "bic": "HALTNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HALTDALEN_SPAREBANK_HALTNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HANDELSBANKEN_HANDNOKK",
+    "name": "Handelsbanken",
+    "bic": "HANDNOKK",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HANDELSBANKEN_HANDNOKK.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HEGRA_SPAREBANK_HESPNOB1",
+    "name": "Hegra Sparebank",
+    "bic": "HESPNOB1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HEGRA_SPAREBANK_HESPNOB1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HSBC_NET_HSBCIE2D",
+    "name": "HSBCnet",
+    "bic": "HSBCIE2DXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HOLAND_OG_SETSKOG_SPAREBANK_HOLLNO21",
+    "name": "Høland og Setskog Sparebank",
+    "bic": "HOLLNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HOLAND_OG_SETSKOG_SPAREBANK_HOLLNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "IKANO_HANDNOKK",
+    "name": "Ikano Bank",
+    "bic": "HANDNOKK",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/IKANO_IKANSE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "JAEREN_SPAREBANK_KLEPNO21",
+    "name": "Jæren Sparebank",
+    "bic": "KLEPNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/JAEREN_SPAREBANK_KLEPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "KLP_KLPKNO21",
+    "name": "KLP Banken",
+    "bic": "KLPKNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KLP_KLPKNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "KVINESDAL_SPAREBANK_KVIDNO21",
+    "name": "Kvinesdal Sparebank",
+    "bic": "KVIDNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/KVINESDAL_SPAREBANK_KVIDNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LANDKREDITT_LANDNOK1",
+    "name": "Landkreditt Bank AS",
+    "bic": "LANDNOK1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LANDKREDITT_LANDNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LANDKREDITT_MASTERCARD_SKHSFI21",
+    "name": "Landkreditt Mastercard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LARVIKBANKEN_BRUNLANES_SPAREBANK_LABRNOB1",
+    "name": "Larvikbanken Brunlanes Sparebank",
+    "bic": "LABRNOB1",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LARVIKBANKEN_BRUNLANES_SPAREBANK_LABRNOB1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LILLESANDS_SPAREBANK_LILLNO21",
+    "name": "Lillesands Sparebank",
+    "bic": "LILLNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LILLESANDS_SPAREBANK_LILLNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LUNAR_LUNADK22",
+    "name": "Lunar",
+    "bic": "LUNADK22",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUNAR_LUNADK22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LUSTER_SPAREBANK_LUSKNO21",
+    "name": "Luster Sparebank",
+    "bic": "LUSKNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUSTER_SPAREBANK_LUSKNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MARITIME_AND_MERCHANT_BANK_MRMANOK1",
+    "name": "Maritime & Merchant Bank",
+    "bic": "MRMANOK1",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MARITIME_AND_MERCHANT_BANK_MRMANOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MARKER_SPAREBANK_MASPNO21",
+    "name": "Marker Sparebank",
+    "bic": "MASPNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MARKER_SPAREBANK_MASPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MELHUS_SPAREBANK_MELHNO21",
+    "name": "Melhus Sparebank",
+    "bic": "MELHNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MELHUS_SPAREBANK_MELHNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MONESE_MNEEBEB2",
+    "name": "Monese",
+    "bic": "MNEEBEB2",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monese.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MORROW_NDEANOKK",
+    "name": "Morrow Bank",
+    "bic": "NDEANOKK",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MORROW_NDEAFIHH.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MYBANK_ASA_MYASNOK1",
+    "name": "MyBank ASA",
+    "bic": "MYASNOK1",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MYBANK_ASA_MYASNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "N26_NTSBDEB1",
+    "name": "N26 Bank",
+    "bic": "NTSBDEB1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/n26.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_NETEGB21",
+    "name": "Neteller",
+    "bic": "NETEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_NETEGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NIDAROS_SPAREBANK_KLBUNO21",
+    "name": "Nidaros Sparebank",
+    "bic": "KLBUNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NIDAROS_SPAREBANK_KLBUNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NORDEA_BUSINESS_NDEANOKK",
+    "name": "Nordea Business",
+    "bic": "NDEANOKK",
+    "transaction_total_days": "360",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NORDEA_NDEAFIHH.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NORDEA_CORPORATE_NDEADKKK",
+    "name": "Nordea Corporate",
+    "bic": "NDEADKKK",
+    "transaction_total_days": "450",
+    "countries": [
+      "NO",
+      "FI",
+      "SE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NORDEA_NDEAFIHH.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NORDEA_NDEANOKK",
+    "name": "Nordea Personal",
+    "bic": "NDEANOKK",
+    "transaction_total_days": "360",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NORDEA_NDEAFIHH.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NORDIC_CHOICE_CLUB_NO_SKHSFI21",
+    "name": "Nordic Choice Club",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NORDIC_CORPORATE_BANK_NRCANOK2",
+    "name": "Nordic Corporate Bank",
+    "bic": "NRCANOK2",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NORDIC_CORPORATE_BANK_NRCANOK2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NAERINGSBANKEN_IEVENO21",
+    "name": "Næringsbanken",
+    "bic": "IEVENO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NAERINGSBANKEN_IEVENO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OBOS_BANKEN_OBOSNOK1",
+    "name": "OBOS-banken AS",
+    "bic": "OBOSNOK1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OBOS_BANKEN_OBOSNOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ODAL_SPAREBANK_ODASNO21",
+    "name": "Odal Sparebank",
+    "bic": "ODASNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ODAL_SPAREBANK_ODASNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OPPDALSBANKEN_OPPDNO21",
+    "name": "Oppdalsbanken",
+    "bic": "OPPDNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OPPDALSBANKEN_OPPDNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ORKLA_SPAREBANK_OKDLNO21XXX",
+    "name": "Orkla Sparebank",
+    "bic": "OKDLNO21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ORKLA_SPAREBANK_OKDLNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OSLOFJORD_SPAREBANK_TELENO21",
+    "name": "Oslofjord Sparebank",
+    "bic": "TELENO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OSLOFJORD_SPAREBANK_TELENO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PARETO_PTAANOK1",
+    "name": "Pareto Bank ASA",
+    "bic": "PTAANOK1",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PARETO_PTAANOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYPAL_PPLXLULL",
+    "name": "PayPal",
+    "bic": "PPLXLULLXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYPAL_PPLXLULL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSERA_EVIULT21XXX",
+    "name": "Paysera",
+    "bic": "EVIULT21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/paysera.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "RESURSBANK_YABANOK1",
+    "name": "Resurs Bank",
+    "bic": "YABANOK1",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/RESURSBANK_RESUSE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "REVOLUT_REVOLT21",
+    "name": "Revolut",
+    "bic": "REVOLT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "EE",
+      "FR",
+      "SK",
+      "NO",
+      "DK",
+      "LV",
+      "CY",
+      "IT",
+      "LT",
+      "SE",
+      "FI",
+      "HU",
+      "MT",
+      "BE",
+      "SI",
+      "GR",
+      "CZ",
+      "IS",
+      "PT",
+      "AT",
+      "IE",
+      "BG",
+      "ES",
+      "LI",
+      "LU",
+      "HR",
+      "NL",
+      "RO",
+      "PL"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/revolut.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ROGALAND_SPAREBANK_SASKNO22",
+    "name": "Rogaland Sparebank",
+    "bic": "SASKNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ROMERIKE_SPAREBANK_LISTNO21",
+    "name": "Romerike Sparebank",
+    "bic": "LISTNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ROMERIKE_SPAREBANK_LISTNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ROROSBANKEN_RORBNO21",
+    "name": "RørosBanken",
+    "bic": "RORBNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ROROSBANKEN_RORBNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SAS_MASTERCARD_NO_SKHSFI21",
+    "name": "SAS Mastercard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SEB_NO_ENSKNOKK",
+    "name": "SEB",
+    "bic": "ENSKNOKK",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SEB_UNLALV2X.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SEB_KORT_AB_NO_SKHSFI21",
+    "name": "SEB Kort Bank AB",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SEB_ESSESESS_PRIVATE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SEB_KORT_AB_CORP_NO_SKHSFI21",
+    "name": "SEB Kort Bank AB Corporate",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SEB_ESSESESS_PRIVATE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SEB_SELECTED_MASTERCARD_SKHSFI21",
+    "name": "SEB Selected Mastercard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SEB_ESSESESS_PRIVATE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SELBU_SPAREBANK_SELSNO21",
+    "name": "Selbu Sparebank",
+    "bic": "SELSNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SELBU_SPAREBANK_SELSNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SKAGERRAK_SPAREBANK_BLSPNO21",
+    "name": "Skagerrak Sparebank",
+    "bic": "BLSPNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SKAGERRAK_SPAREBANK_BLSPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_SKRLGB2L",
+    "name": "Skrill",
+    "bic": "SKRLGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_SKRLGB2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SKUDENES_AAKRA_SKAANO21",
+    "name": "Skudenes & Aakra Sparebank",
+    "bic": "SKAANO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SKUDENES_AAKRA_SKAANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SKUE_SPAREBANK_NEPRNO21XXX",
+    "name": "Skue Sparebank",
+    "bic": "NEPRNO21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SKUE_SPAREBANK_NEPRNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOGN_SPAREBANK_IDRENO21",
+    "name": "Sogn Sparebank",
+    "bic": "IDRENO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOGN_SPAREBANK_IDRENO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOKNEDAL_SPAREBANK_SOKNNO21",
+    "name": "Soknedal Sparebank",
+    "bic": "SOKNNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOKNEDAL_SPAREBANK_SOKNNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOLDO_SFSDIE22",
+    "name": "Soldo",
+    "bic": "SFSDIE22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOLDO_SFSDIE22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_GUDBRANDSDAL_SPTRNO22",
+    "name": "Sparebank 1 Gudbrandsdal",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_GUDBRANDSDAL_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_HALLINGDAL_VALDRES_SPTRNO22",
+    "name": "Sparebank 1 Hallingdal Valdres",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_HALLINGDAL_VALDRES_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_HELGELAND_HELGNO21",
+    "name": "Sparebank 1 Helgeland",
+    "bic": "HELGNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_HELGELAND_HELGNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_LOM_OG_SKJAK_SPTRNO22",
+    "name": "Sparebank 1 Lom og Skjåk",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_LOM_OG_SKJAK_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_NORD_NORGE_SNOWNO22",
+    "name": "Sparebank 1 Nord-Norge",
+    "bic": "SNOWNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_NORD_NORGE_SNOWNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_NORDVEST_NORVNO21",
+    "name": "Sparebank 1 Nordvest",
+    "bic": "NORVNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_NORDVEST_NORVNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_RINGERIKE_HADELAND_SPTRNO22",
+    "name": "Sparebank 1 Ringerike Hadeland",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_RINGERIKE_HADELAND_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_SMN_SPTRNO22",
+    "name": "Sparebank 1 SMN",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_SMN_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_SR_BANK_SPRONO22",
+    "name": "Sparebank 1 SR-Bank",
+    "bic": "SPRONO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_SR_BANK_SPRONO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_SOROST_NORGE_SPTRNO22",
+    "name": "SpareBank 1 Sørøst-Norge",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_SOROST_NORGE_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_OSTFOLD_AKERSHUS_SPTRNO22",
+    "name": "SpareBank 1 Østfold Akershus",
+    "bic": "SPTRNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_OSTFOLD_AKERSHUS_SPTRNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_OSTLANDET_SHEDNO22",
+    "name": "SpareBank 1 Østlandet",
+    "bic": "SHEDNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_OSTLANDET_SHEDNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANK_68_NORD_HASBNO21",
+    "name": "Sparebank 68 Nord",
+    "bic": "HASBNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANK_68_NORD_HASBNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_DIN_BSPANO21",
+    "name": "Sparebanken DIN",
+    "bic": "BSPANO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_DIN_BSPANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_MORE_SPARNO22",
+    "name": "Sparebanken Møre",
+    "bic": "SPARNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_MORE_SPARNO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_NARVIK_NARVNO21",
+    "name": "Sparebanken Narvik",
+    "bic": "NARVNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_NARVIK_NARVNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_VEST_SPAVNOBB",
+    "name": "Sparebanken Norge",
+    "bic": "SPAVNOBB",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_VEST_SPAVNOBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_SOR_SPSONO22",
+    "name": "Sparebanken Norge (Sør)",
+    "bic": "SPSONO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_SOR_SPSONO22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_VEST_CORPORATE_SPAVNOBB",
+    "name": "Sparebanken Norge Corporate",
+    "bic": "SPAVNOBB",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_VEST_SPAVNOBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_SOGN_OG_FJORDANE",
+    "name": "Sparebanken Sogn og Fjordane",
+    "bic": "SOFJNO22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_SOGN_OG_FJORDANE.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREBANKEN_OST_SPOENO21",
+    "name": "Sparebanken Øst",
+    "bic": "SPOENO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREBANKEN_OST_SPOENO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SPAREKILLINGSBANKEN_SPSKNO21",
+    "name": "Spareskillingsbanken",
+    "bic": "SPSKNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SPAREKILLINGSBANKEN_SPSKNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STADSBYGD_SPAREBANK_STADNO21",
+    "name": "Stadsbygd Sparebank",
+    "bic": "STADNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STADSBYGD_SPAREBANK_STADNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STOREBRAND_STFBNOKK",
+    "name": "Storebrand",
+    "bic": "STFBNOKK",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STOREBRAND_STFBNOKK.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STRIPE_STPUIE21",
+    "name": "Stripe",
+    "bic": "STPUIE21",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STRIPE_STPUIE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STROMMEN_SPAREBANK_STMMNO21",
+    "name": "Strømmen Sparebank",
+    "bic": "STMMNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STROMMEN_SPAREBANK_STMMNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SUNNDAL_SPAREBANK_SUSANO21",
+    "name": "Sunndal Sparebank",
+    "bic": "SUSANO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SUNNDAL_SPAREBANK_SUSANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SWAN_SWNBFR22",
+    "name": "Swan",
+    "bic": "SWNBFR22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/EEA/PNG/swan.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SWEDBANK_SWEDNOKK",
+    "name": "Swedbank",
+    "bic": "SWEDNOKK",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SWEDBANK_SWEDNOKK.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOGNE_OG_GREIPSTAD_SPAREBANK_SOGSNO21",
+    "name": "Søgne og Greipstad Sparebank",
+    "bic": "SOGSNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOGNE_OG_GREIPSTAD_SPAREBANK_SOGSNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TOLGAOS_SPAREBANK_TOSPNO21",
+    "name": "Tolga-Os Sparebank",
+    "bic": "TOSPNO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TOLGAOS_SPAREBANK_TOSPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TRONDELAG_SPAREBANK_HEMNNO21",
+    "name": "Trondelag Sparebank",
+    "bic": "HEMNNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TRONDELAG_SPAREBANK_HEMNNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TRONDELAG_SPAREBANK_AFJONO21",
+    "name": "Trondelag Sparebank",
+    "bic": "AFJONO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TRONDELAG_SPAREBANK_AFJONO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TROGSTAD_SPAREBANK_TRSPNO21",
+    "name": "Trøgstad Sparebank",
+    "bic": "TRSPNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TROGSTAD_SPAREBANK_TRSPNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TYSNES_SPAREBANK_TYSSNO21",
+    "name": "Tysnes Sparebank",
+    "bic": "TYSSNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/TYSNES_SPAREBANK_TYSSNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VALDRES_SPAREBANK_VESLNO21",
+    "name": "Valdres Sparebank",
+    "bic": "VESLNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VALDRES_SPAREBANK_VESLNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VALLE_SPAREBANK_VSPANO21",
+    "name": "Valle Sparebank",
+    "bic": "VSPANO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VALLE_SPAREBANK_VSPANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VEKSELBANKEN_VVELNO21",
+    "name": "Vekselbanken",
+    "bic": "VVELNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VEKSELBANKEN_VVELNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VIVID_VVIDLUL2",
+    "name": "Vivid Money",
+    "bic": "VVIDLUL2",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VIVIDMONEY_SOBKDEB2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOLVO_KORTET_MASTERCARD_SKHSFI21",
+    "name": "Volvo kortet Mastercard",
+    "bic": "SKHSFI21",
+    "transaction_total_days": "390",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VOSS_SPAREBANK_VOSKNO21",
+    "name": "Voss Sparebank",
+    "bic": "VOSKNO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VOSS_SPAREBANK_VOSKNO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WISE_EEA_TRWIGB22",
+    "name": "Wise",
+    "bic": "TRWIGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/wise.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "YABANK_YABANOK1",
+    "name": "yA Bank",
+    "bic": "YABANOK1",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/YABANK_YABANOK1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ORLAND_SPAREBANK_ORLANO21",
+    "name": "Ørland Sparebank",
+    "bic": "ORLANO21",
+    "transaction_total_days": "720",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ORLAND_SPAREBANK_ORLANO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ORSKOG_SPAREBANK_ORKONO21",
+    "name": "Ørskog Sparebank",
+    "bic": "ORKONO21",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ORSKOG_SPAREBANK_ORKONO21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "OSTRE_AGDER_SPAREBANK_GJSPNO21XXX",
+    "name": "Østre Agder Sparebank",
+    "bic": "GJSPNO21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/OSTRE_AGDER_SPAREBANK_GJSPNO21.png",
+    "max_access_valid_for_days": "180"
+  }
+]
