@@ -7,7 +7,14 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, In, IsNull, Repository } from 'typeorm';
+import {
+  Between,
+  In,
+  IsNull,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { InboxTransaction } from './entities/inbox-transaction.model';
 import { Account } from '../accounts/entities/account.entity';
@@ -363,7 +370,13 @@ export class TransactionsService {
       where: {
         account: { user_id: userId },
         ...(accounts && accounts.length > 0 && { accountId: In(accounts) }),
-        ...(startDate && endDate && { date: Between(startDate, endDate) }),
+        ...(startDate && endDate
+          ? { date: Between(startDate, endDate) }
+          : startDate
+            ? { date: MoreThanOrEqual(startDate) }
+            : endDate
+              ? { date: LessThanOrEqual(endDate) }
+              : {}),
       },
       order: {
         date: 'DESC',
