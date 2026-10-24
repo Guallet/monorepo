@@ -45,18 +45,30 @@ export function BudgetDetailsScreen({
       title={budget?.name ?? t('screens.budgets.details.title', 'Budget')}
       actions={
         <>
-          <Tooltip
-            label={t('screens.budgets.details.editButton.tooltip', 'Edit')}
-          >
-            <ActionIcon
-              variant="outline"
-              onClick={() => {
-                console.log('Edit budget');
-              }}
+          {budget && (
+            <Tooltip
+              label={t('screens.budgets.details.editButton.tooltip', 'Edit')}
             >
-              <IconEdit style={{ width: '70%', height: '70%' }} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
+              <ActionIcon
+                variant="outline"
+                aria-label={t(
+                  'screens.budgets.details.editButton.tooltip',
+                  'Edit',
+                )}
+                onClick={() =>
+                  navigate({
+                    to: '/budgets/$id/edit',
+                    params: { id: budgetId },
+                  })
+                }
+              >
+                <IconEdit
+                  style={{ width: '70%', height: '70%' }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Tooltip>
+          )}
 
           <DeleteIconButton
             tooltipText={t(
