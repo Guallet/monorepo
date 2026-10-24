@@ -22,7 +22,7 @@ export default function GoalDetailsScreen() {
   const router = useRouter();
   const { colors, spacing, typography, borderRadius } = useTheme();
   const showAlert = useAlert();
-  const { dateFormat } = useMobileUserPreferences();
+  const { dateFormat, defaultCurrency } = useMobileUserPreferences();
   const {
     savingGoal: goal,
     isLoading,
@@ -32,6 +32,9 @@ export default function GoalDetailsScreen() {
   } = useSavingGoal(id);
   const { accounts } = useAccounts();
   const { deleteSavingGoalMutation } = useSavingGoalMutations();
+  const currency =
+    accounts.find((account) => goal?.accounts.includes(account.id))?.currency ??
+    defaultCurrency;
 
   function confirmDelete() {
     if (!goal) return;
@@ -196,10 +199,10 @@ export default function GoalDetailsScreen() {
                 },
               ]}
             >
-              {formatGoalAmount(goal.currentAmount, goal.currency)}
+              {formatGoalAmount(goal.currentAmount, currency)}
             </Text>
             <Text style={{ color: colors.text.secondary }}>
-              saved towards {formatGoalAmount(goal.targetAmount, goal.currency)}
+              saved towards {formatGoalAmount(goal.targetAmount, currency)}
             </Text>
             <View
               accessible
@@ -228,8 +231,7 @@ export default function GoalDetailsScreen() {
                 {Math.round(progress)}% complete
               </Text>
               <Text style={{ color: colors.text.secondary }}>
-                {formatGoalAmount(goal.remainingAmount, goal.currency)}{' '}
-                remaining
+                {formatGoalAmount(goal.remainingAmount, currency)} remaining
               </Text>
             </View>
           </View>
@@ -248,11 +250,11 @@ export default function GoalDetailsScreen() {
           >
             <DetailRow
               label="Target amount"
-              value={formatGoalAmount(goal.targetAmount, goal.currency)}
+              value={formatGoalAmount(goal.targetAmount, currency)}
             />
             <DetailRow
               label="Current amount"
-              value={formatGoalAmount(goal.currentAmount, goal.currency)}
+              value={formatGoalAmount(goal.currentAmount, currency)}
             />
             <DetailRow
               label="Target date"
