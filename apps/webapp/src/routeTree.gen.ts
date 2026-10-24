@@ -69,7 +69,7 @@ import { Route as AppImporterCsvAccountsRouteImport } from './routes/_app/import
 import { Route as AppConnectionsConnectCallbackRouteImport } from './routes/_app/connections/connect/callback'
 import { Route as AppCategoriesRulesNewRouteImport } from './routes/_app/categories/rules/new'
 import { Route as AppCategoriesIdEditRouteImport } from './routes/_app/categories/$id_.edit'
-import { Route as AppBudgetsIdEditRouteImport } from './routes/_app/budgets/$id.edit'
+import { Route as AppBudgetsIdEditRouteImport } from './routes/_app/budgets/$id_.edit'
 import { Route as AppAccountsIdEditRouteImport } from './routes/_app/accounts/$id_.edit'
 import { Route as AppSettingsAiProvidersNewRouteImport } from './routes/_app/settings/ai_.providers_.new'
 import { Route as AppSettingsAiProvidersIdRouteImport } from './routes/_app/settings/ai_.providers_.$id'
@@ -419,9 +419,9 @@ const AppCategoriesIdEditRoute = AppCategoriesIdEditRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const AppBudgetsIdEditRoute = AppBudgetsIdEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => AppBudgetsIdRoute,
+  id: '/budgets/$id_/edit',
+  path: '/budgets/$id/edit',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppAccountsIdEditRoute = AppAccountsIdEditRouteImport.update({
   id: '/accounts/$id_/edit',
@@ -468,7 +468,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
-  '/budgets/$id': typeof AppBudgetsIdRouteWithChildren
+  '/budgets/$id': typeof AppBudgetsIdRoute
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
@@ -539,7 +539,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginIndexRoute
   '/accounts/$id': typeof AppAccountsIdRoute
   '/accounts/new': typeof AppAccountsNewRoute
-  '/budgets/$id': typeof AppBudgetsIdRouteWithChildren
+  '/budgets/$id': typeof AppBudgetsIdRoute
   '/budgets/create': typeof AppBudgetsCreateRoute
   '/categories/$id': typeof AppCategoriesIdRoute
   '/categories/new': typeof AppCategoriesNewRoute
@@ -612,7 +612,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginIndexRoute
   '/_app/accounts/$id': typeof AppAccountsIdRoute
   '/_app/accounts/new': typeof AppAccountsNewRoute
-  '/_app/budgets/$id': typeof AppBudgetsIdRouteWithChildren
+  '/_app/budgets/$id': typeof AppBudgetsIdRoute
   '/_app/budgets/create': typeof AppBudgetsCreateRoute
   '/_app/categories/$id': typeof AppCategoriesIdRoute
   '/_app/categories/new': typeof AppCategoriesNewRoute
@@ -646,7 +646,7 @@ export interface FileRoutesById {
   '/_app/transactions/': typeof AppTransactionsIndexRoute
   '/_app/user/': typeof AppUserIndexRoute
   '/_app/accounts/$id_/edit': typeof AppAccountsIdEditRoute
-  '/_app/budgets/$id/edit': typeof AppBudgetsIdEditRoute
+  '/_app/budgets/$id_/edit': typeof AppBudgetsIdEditRoute
   '/_app/categories/$id_/edit': typeof AppCategoriesIdEditRoute
   '/_app/categories/rules/new': typeof AppCategoriesRulesNewRoute
   '/_app/connections/connect/callback': typeof AppConnectionsConnectCallbackRoute
@@ -862,7 +862,7 @@ export interface FileRouteTypes {
     | '/_app/transactions/'
     | '/_app/user/'
     | '/_app/accounts/$id_/edit'
-    | '/_app/budgets/$id/edit'
+    | '/_app/budgets/$id_/edit'
     | '/_app/categories/$id_/edit'
     | '/_app/categories/rules/new'
     | '/_app/connections/connect/callback'
@@ -1350,12 +1350,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoriesIdEditRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/budgets/$id/edit': {
-      id: '/_app/budgets/$id/edit'
-      path: '/edit'
+    '/_app/budgets/$id_/edit': {
+      id: '/_app/budgets/$id_/edit'
+      path: '/budgets/$id/edit'
       fullPath: '/budgets/$id/edit'
       preLoaderRoute: typeof AppBudgetsIdEditRouteImport
-      parentRoute: typeof AppBudgetsIdRoute
+      parentRoute: typeof AppRoute
     }
     '/_app/accounts/$id_/edit': {
       id: '/_app/accounts/$id_/edit'
@@ -1395,23 +1395,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AppBudgetsIdRouteChildren {
-  AppBudgetsIdEditRoute: typeof AppBudgetsIdEditRoute
-}
-
-const AppBudgetsIdRouteChildren: AppBudgetsIdRouteChildren = {
-  AppBudgetsIdEditRoute: AppBudgetsIdEditRoute,
-}
-
-const AppBudgetsIdRouteWithChildren = AppBudgetsIdRoute._addFileChildren(
-  AppBudgetsIdRouteChildren,
-)
-
 interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
   AppAccountsIdRoute: typeof AppAccountsIdRoute
   AppAccountsNewRoute: typeof AppAccountsNewRoute
-  AppBudgetsIdRoute: typeof AppBudgetsIdRouteWithChildren
+  AppBudgetsIdRoute: typeof AppBudgetsIdRoute
   AppBudgetsCreateRoute: typeof AppBudgetsCreateRoute
   AppCategoriesIdRoute: typeof AppCategoriesIdRoute
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
@@ -1445,6 +1433,7 @@ interface AppRouteChildren {
   AppTransactionsIndexRoute: typeof AppTransactionsIndexRoute
   AppUserIndexRoute: typeof AppUserIndexRoute
   AppAccountsIdEditRoute: typeof AppAccountsIdEditRoute
+  AppBudgetsIdEditRoute: typeof AppBudgetsIdEditRoute
   AppCategoriesIdEditRoute: typeof AppCategoriesIdEditRoute
   AppCategoriesRulesNewRoute: typeof AppCategoriesRulesNewRoute
   AppConnectionsConnectCallbackRoute: typeof AppConnectionsConnectCallbackRoute
@@ -1471,7 +1460,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
   AppAccountsIdRoute: AppAccountsIdRoute,
   AppAccountsNewRoute: AppAccountsNewRoute,
-  AppBudgetsIdRoute: AppBudgetsIdRouteWithChildren,
+  AppBudgetsIdRoute: AppBudgetsIdRoute,
   AppBudgetsCreateRoute: AppBudgetsCreateRoute,
   AppCategoriesIdRoute: AppCategoriesIdRoute,
   AppCategoriesNewRoute: AppCategoriesNewRoute,
@@ -1505,6 +1494,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppTransactionsIndexRoute: AppTransactionsIndexRoute,
   AppUserIndexRoute: AppUserIndexRoute,
   AppAccountsIdEditRoute: AppAccountsIdEditRoute,
+  AppBudgetsIdEditRoute: AppBudgetsIdEditRoute,
   AppCategoriesIdEditRoute: AppCategoriesIdEditRoute,
   AppCategoriesRulesNewRoute: AppCategoriesRulesNewRoute,
   AppConnectionsConnectCallbackRoute: AppConnectionsConnectCallbackRoute,

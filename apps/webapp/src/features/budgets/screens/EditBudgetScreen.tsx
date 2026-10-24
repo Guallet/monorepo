@@ -43,7 +43,7 @@ export function EditBudgetScreen({
   const { updateBudgetMutation } = useBudgetMutations();
 
   if (isBudgetLoading || isCategoriesLoading) {
-    return <BaseScreen isLoading />;
+    return <BaseScreen isLoading>{null}</BaseScreen>;
   }
 
   if (!budget) {
@@ -146,7 +146,7 @@ function EditBudgetForm({
   const { spacing } = useTheme();
   const { locale } = useLocale();
   const form = useForm<EditBudgetValues>({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     initialValues: {
       name: budget.name,
       amount: budget.amount,
@@ -175,13 +175,6 @@ function EditBudgetForm({
           : t(
               'screens.budgets.create.form.currency.error',
               'Currency is required',
-            ),
-      colour: (value) =>
-        value
-          ? null
-          : t(
-              'screens.budgets.create.form.colorPicker.error',
-              'Colour is required',
             ),
       categories: (value) =>
         value.length > 0
