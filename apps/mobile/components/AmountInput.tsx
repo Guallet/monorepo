@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { CurrencyPicker, useTheme } from '@guallet/luna-mobile';
 import { ChevronDownIcon } from '@guallet/luna-mobile/icons';
 import type { Currency } from '@guallet/money';
@@ -5,7 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Keyboard,
   Pressable,
-  StyleSheet,
   Text,
   TextInput as RNTextInput,
   View,

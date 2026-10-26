@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 import { calculateStampDuty, type BuyerType } from '@guallet/calculators';
 import { AppScreen } from '@/components/layout/AppScreen';

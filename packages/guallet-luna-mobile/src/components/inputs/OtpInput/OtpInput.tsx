@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { Pressable, Text, TextInput, View } from 'react-native';
 import { useRef, useState } from 'react';
 import { useTheme } from '../../../theme';
 

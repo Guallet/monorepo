@@ -1,10 +1,11 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   KeyboardAwareScrollView,
   TextInput,
   useTheme,
 } from '@guallet/luna-mobile';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import {
   calculateStampDuty,

@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigation, useRouter } from 'expo-router';
 import {
@@ -10,7 +11,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   View,
 } from 'react-native';
 import { useCategories, useSubscriptionsMutations } from '@guallet/api-react';

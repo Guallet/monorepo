@@ -1,9 +1,9 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useMemo, useState, type ReactNode } from 'react';
 import {
   Pressable,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';

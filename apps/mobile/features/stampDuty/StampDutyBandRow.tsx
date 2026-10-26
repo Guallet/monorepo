@@ -1,6 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { MoneyFormatOptions } from '@guallet/money';
 import { Money } from '@guallet/money';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 import type { StampDutyBandResult } from '@guallet/calculators';
 

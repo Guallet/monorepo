@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
 import { useTheme, useThemeMode } from '../../../theme';
 
 interface IOSDatePickerModalProps {

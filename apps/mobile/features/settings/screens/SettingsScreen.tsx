@@ -1,9 +1,9 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';

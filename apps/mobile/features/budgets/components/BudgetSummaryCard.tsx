@@ -1,7 +1,8 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { BudgetDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { formatBudgetCurrency, getBudgetMetrics } from '../models';
 
 interface BudgetSummaryCardProps {

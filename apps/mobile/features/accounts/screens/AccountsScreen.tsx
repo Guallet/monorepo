@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   Button,
   KeyboardAwareScrollView,
@@ -5,13 +6,7 @@ import {
   useTheme,
 } from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
-import {
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, RefreshControl, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';

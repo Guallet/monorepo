@@ -1,8 +1,8 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useRef, useState, type ReactNode } from 'react';
 import {
   Pressable,
   SectionList,
-  StyleSheet,
   Text,
   TextInput,
   View,

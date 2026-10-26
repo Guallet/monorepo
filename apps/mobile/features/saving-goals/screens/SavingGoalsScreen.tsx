@@ -1,10 +1,5 @@
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAccounts, useSavingGoals } from '@guallet/api-react';
 import { Button, useTheme } from '@guallet/luna-mobile';

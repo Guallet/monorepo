@@ -1,6 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import {
   useCategory,
   useSubscription,

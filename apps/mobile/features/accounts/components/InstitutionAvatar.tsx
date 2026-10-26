@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { useInstitution } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { getAccountHue, getAccountInitials } from '../models/account';

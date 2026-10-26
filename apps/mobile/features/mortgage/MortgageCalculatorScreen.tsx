@@ -1,10 +1,11 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   KeyboardAwareScrollView,
   TextInput,
   useTheme,
 } from '@guallet/luna-mobile';
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { calculateMortgageScenario } from '@guallet/calculators';
 import { Currency } from '@guallet/money';

@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { forwardRef } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import {
   KeyboardAwareScrollView as ControllerScrollView,
   type KeyboardAwareScrollViewProps,

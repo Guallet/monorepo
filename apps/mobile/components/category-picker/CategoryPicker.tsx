@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   ChevronDownIcon,
   ChevronRightIcon,
@@ -8,7 +9,6 @@ import { useMemo, useState } from 'react';
 import {
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   View,
