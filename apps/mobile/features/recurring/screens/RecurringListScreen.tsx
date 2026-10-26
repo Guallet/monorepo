@@ -1,12 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useCallback, useMemo, useState } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
-import {
-  Pressable,
-  ScrollView,
-  SectionList,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, SectionList, View } from 'react-native';
 import { useSubscriptions } from '@guallet/api-react';
 import {
   RecurringPaymentType,

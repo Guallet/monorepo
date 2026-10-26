@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useTheme } from '@guallet/luna-mobile';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 type WelcomeFeature = 'accounts' | 'spending' | 'savings';

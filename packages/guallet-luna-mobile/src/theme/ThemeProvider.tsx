@@ -1,11 +1,14 @@
 import {
   createContext,
   PropsWithChildren,
+  useLayoutEffect,
   useContext,
   useSyncExternalStore,
 } from 'react';
 import { type GualletTheme, type GualletThemeOverrides } from '@guallet/theme';
 import { Platform, useColorScheme } from 'react-native';
+import { UnistylesRuntime } from 'react-native-unistyles';
+import './unistyles';
 import { DefaultTheme } from './DefaultTheme';
 import { resolveTheme } from './resolveTheme';
 
@@ -52,6 +55,16 @@ export function LunaProvider({
     lightTheme,
     darkTheme,
   });
+
+  useLayoutEffect(() => {
+    UnistylesRuntime.updateTheme('light', () =>
+      resolveTheme({ mode: 'light', theme, lightTheme, darkTheme: undefined }),
+    );
+    UnistylesRuntime.updateTheme('dark', () =>
+      resolveTheme({ mode: 'dark', theme, lightTheme, darkTheme }),
+    );
+    UnistylesRuntime.setTheme(mode);
+  }, [darkTheme, lightTheme, mode, theme]);
 
   return (
     <ThemeModeContext.Provider value={mode}>

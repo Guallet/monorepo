@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import type { AccountDto } from '@guallet/api-client';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import { CheckIcon } from '@guallet/luna-mobile/icons';

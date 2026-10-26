@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 
 export function StampDutyCard({ children }: Readonly<{ children: ReactNode }>) {

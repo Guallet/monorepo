@@ -44,8 +44,10 @@ existing Luna, React Native, Expo, and accessibility patterns.
   and named radii. Do not hardcode values that have a theme token. Resolve
   named radii from `theme.borderRadius`; reserve explicit numbers for values
   that are genuinely component-specific.
-- Define static styles with `StyleSheet.create`. Keep theme-dependent values in
-  style arrays or helper functions.
+- Import `StyleSheet` from `react-native-unistyles`. Define styles with
+  `StyleSheet.create`; use its theme callback for theme-dependent styles and
+  variants for existing visual states. Keep data-dependent values in style
+  arrays or helper functions.
 - Prefer guard clauses, `switch` statements, and small helpers over nested
   ternaries. Split rendering into focused subcomponents when a component's
   cognitive complexity grows; keep individual functions understandable and

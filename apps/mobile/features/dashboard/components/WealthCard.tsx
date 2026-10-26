@@ -1,7 +1,8 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { MoneyFormatOptions } from '@guallet/money';
 import { formatMoney } from '@/utils/formatMoney';
 import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useAccounts, useAccountCharts } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { useDashboardDateRange } from '../hooks/useDashboardDateRange';

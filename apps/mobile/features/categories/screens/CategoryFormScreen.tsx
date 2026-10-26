@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -5,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   Text as NativeText,
   View,
 } from 'react-native';

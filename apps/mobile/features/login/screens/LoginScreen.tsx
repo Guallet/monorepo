@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useAuth } from '@/auth/useAuth';
 import { AuthIntro, AuthScreen } from '@/features/login/components/AuthLayout';
 import { GoogleButton } from '@/features/login/components/GoogleButton';
@@ -14,7 +15,7 @@ import {
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 export function LoginScreen() {
   const router = useRouter();

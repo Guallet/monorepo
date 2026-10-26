@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useNavigationScreenOptions } from '@/hooks/navigation-screen-options';
 import { useAuth } from '@guallet/auth';
 import { useTheme } from '@guallet/luna-mobile';
@@ -11,7 +12,7 @@ import {
 import { Stack } from 'expo-router/stack';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { createAuthNavigationCoordinator } from './auth-destination';
 import { useAuthDestination } from './use-auth-destination';
 

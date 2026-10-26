@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { LunaSpacing } from './../../theme/spacing';
 import { getSpacingValue, useTheme } from './../../theme';
 
@@ -37,9 +38,8 @@ export function Stack({
       alignItems: align,
       justifyContent: justify,
       gap: gapValue,
-      ...style,
     },
   });
 
-  return <View style={stackStyle.container}>{children}</View>;
+  return <View style={[stackStyle.container, style]}>{children}</View>;
 }

@@ -1,16 +1,11 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   BottomSheet as ExpoBottomSheet,
   RNHostView,
   type BottomSheetProps as ExpoBottomSheetProps,
 } from '@expo/ui';
 import { useContext, useId, useLayoutEffect, useRef } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { useTheme } from '../theme';
 import { CloseIcon } from '../icons';
 import { ToastQueueContext } from './ToastContext';

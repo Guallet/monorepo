@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useAuth } from '@/auth/useAuth';
 import {
   AuthIntro,
@@ -11,7 +12,7 @@ import { revalidateLogic, useForm, useSelector } from '@tanstack/react-form';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { z } from 'zod';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 const passwordLoginSchema = z.object({
   email: z.string().trim().email('Enter a valid email address.'),

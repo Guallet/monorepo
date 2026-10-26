@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   KeyboardAwareScrollView,
   Label,
@@ -8,13 +9,7 @@ import {
 import { AppScreen } from '@/components/layout/AppScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 
 interface AuthScreenProps {
   children: React.ReactNode;
