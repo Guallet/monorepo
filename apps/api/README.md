@@ -32,6 +32,14 @@ pnpm start
 
 Open the API docs: http://localhost:5000/docs
 
+### Explore the API with Bruno
+
+A curated [Bruno](https://www.usebruno.com/) collection lives in
+[`apps/api/bruno/`](./bruno/) - open that folder in Bruno, select the `Local`
+environment, and sign in from the `Auth` folder. See
+[`docs/bruno-collection.md`](../../docs/bruno-collection.md) for the reasoning
+and maintenance plan.
+
 ---
 
 ## Environment & configuration 🔧

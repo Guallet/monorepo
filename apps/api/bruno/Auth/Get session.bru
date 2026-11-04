@@ -1,0 +1,16 @@
+meta {
+  name: Get session
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/auth/get-session
+  body: none
+  auth: none
+}
+
+docs {
+  Returns the current session and user when the session cookie is valid.
+  Useful to confirm the sign-in requests worked before calling the API.
+}
