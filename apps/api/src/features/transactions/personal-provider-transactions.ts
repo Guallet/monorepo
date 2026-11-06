@@ -1,3 +1,4 @@
+import { persistBankTransactions } from './persist-bank-transactions';
 import { Money } from '@guallet/money';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
@@ -35,7 +36,7 @@ export async function persistPersonalProviderTransactions({
   remoteAccountId: string;
   currency: string;
   transactions: PersonalProviderTransaction[];
-}): Promise<void> {
+}): Promise<number> {
   const externalId = (id: string | number) =>
     `${provider}:${userId}:${remoteAccountId}:${id}`;
   const legacyExternalIds = transactions.map(
@@ -121,10 +122,5 @@ export async function persistPersonalProviderTransactions({
       },
     };
   });
-  if (rows.length > 0) {
-    await repository.upsert(rows, {
-      conflictPaths: ['externalId'],
-      skipUpdateIfNoValuesChanged: true,
-    });
-  }
+  return await persistBankTransactions(repository, accountId, rows);
 }

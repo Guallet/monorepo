@@ -34,7 +34,11 @@ export type ProviderInstitution = {
   name: string;
   logo: string | null;
 };
-export type SyncResult = { accountsSynced: number; errors: string[] };
+export type SyncResult = {
+  accountsSynced: number;
+  errors: string[];
+  newUncategorizedCount: number;
+};
 export interface BankProviderAdapter {
   validateCredentials(context: ProviderContext): Promise<void>;
   listAccounts(context: ProviderContext): Promise<ProviderAccount[]>;

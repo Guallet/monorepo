@@ -1,6 +1,8 @@
+import { persistBankTransactions } from '../transactions/persist-bank-transactions';
 import {
   BankProviderAdapter,
   ProviderContext,
+  ProviderAccount,
   ProviderIdentity,
   requireApiKey,
 } from '../openbanking/providers/bank-provider.interface';
@@ -87,7 +89,7 @@ export class BankSyncService implements BankProviderAdapter {
         }
       }),
     );
-    return remoteAccountsByBank.flatMap(({ bank, accounts }) =>
+    const discovered = remoteAccountsByBank.flatMap(({ bank, accounts }) =>
       accounts.flatMap((account) => {
         const id = this.remoteAccountId(account);
         if (!id) return [];
@@ -104,6 +106,37 @@ export class BankSyncService implements BankProviderAdapter {
         ];
       }),
     );
+    const discoveredIds = new Set(discovered.map((account) => account.id));
+    const unavailable = mappings.filter(
+      (mapping) =>
+        mapping.is_linked &&
+        !discoveredIds.has(
+          JSON.stringify([mapping.remote_bank_id, mapping.remote_account_id]),
+        ),
+    );
+    if (!unavailable.length) return discovered;
+    const localAccounts = await this.accounts.find({
+      where: {
+        user_id: userId,
+        id: In(unavailable.map((mapping) => mapping.guallet_account_id)),
+      },
+    });
+    const localById = new Map(
+      localAccounts.map((account) => [account.id, account]),
+    );
+    const banksById = new Map(banks.map((bank) => [bank.id, bank]));
+    const retained: ProviderAccount[] = unavailable.map((mapping) => {
+      const local = localById.get(mapping.guallet_account_id);
+      return {
+        id: JSON.stringify([mapping.remote_bank_id, mapping.remote_account_id]),
+        name: local?.name ?? 'Bank account',
+        institutionName: banksById.get(mapping.remote_bank_id)?.name ?? null,
+        currency: local?.currency ?? null,
+        linkedAccountId: mapping.guallet_account_id,
+        status: 'unavailable',
+      };
+    });
+    return [...discovered, ...retained];
   }
 
   async importAccounts({
@@ -180,7 +213,8 @@ export class BankSyncService implements BankProviderAdapter {
     const mappings = await this.remoteAccounts.find({
       where: { user_id: userId, is_linked: true },
     });
-    if (mappings.length === 0) return { accountsSynced: 0, errors: [] };
+    if (mappings.length === 0)
+      return { accountsSynced: 0, errors: [], newUncategorizedCount: 0 };
     return await this.syncMappings(userId, apiKey, mappings);
   }
 
@@ -335,6 +369,7 @@ export class BankSyncService implements BankProviderAdapter {
     }
     const errors: string[] = [];
     let accountsSynced = 0;
+    let newUncategorizedCount = 0;
     const results = await Promise.all(
       mappings.map(async (mapping) => {
         const key = this.remoteKey(
@@ -372,7 +407,7 @@ export class BankSyncService implements BankProviderAdapter {
                   userId,
                 ),
           ]);
-          await this.persistRemoteData({
+          const importedCount = await this.persistRemoteData({
             bank: remote.bank,
             account: remote.account,
             mapping,
@@ -383,7 +418,7 @@ export class BankSyncService implements BankProviderAdapter {
           });
           mapping.last_synced_at = new Date();
           await this.remoteAccounts.save(mapping);
-          return true;
+          return { importedCount };
         } catch {
           this.logger.warn(
             `BankSync account sync failed for ${mapping.remote_account_id}`,
@@ -393,10 +428,13 @@ export class BankSyncService implements BankProviderAdapter {
       }),
     );
     for (const result of results) {
-      if (result === true) accountsSynced += 1;
-      else if (typeof result === 'string') errors.push(result);
+      if (typeof result === 'string') errors.push(result);
+      else {
+        accountsSynced += 1;
+        newUncategorizedCount += result.importedCount;
+      }
     }
-    return { accountsSynced, errors };
+    return { accountsSynced, errors, newUncategorizedCount };
   }
 
   private async getTransactionsForMapping(
@@ -494,12 +532,11 @@ export class BankSyncService implements BankProviderAdapter {
         metadata: { provider: 'banksync' as const, data: transaction },
       };
     });
-    if (rows.length) {
-      await this.transactions.upsert(rows, {
-        conflictPaths: ['externalId'],
-        skipUpdateIfNoValuesChanged: true,
-      });
-    }
+    return await persistBankTransactions(
+      this.transactions,
+      localAccount.id,
+      rows,
+    );
   }
 
   private remoteBalance(account: BankSyncRemoteAccount) {

@@ -1,3 +1,4 @@
+import { persistBankTransactions } from '../transactions/persist-bank-transactions';
 import {
   BadGatewayException,
   BadRequestException,
@@ -127,7 +128,8 @@ export class NordigenService implements BankProviderAdapter {
     const token = await this.token(context);
     const imported: string[] = [];
     for (const id of new Set(context.accountIds)) {
-      imported.push(await this.importAccount(context.userId, token, id));
+      const result = await this.importAccount(context.userId, token, id);
+      imported.push(result.accountId);
     }
     return imported;
   }
@@ -139,17 +141,23 @@ export class NordigenService implements BankProviderAdapter {
     const token = await this.token(context);
     const errors: string[] = [];
     let accountsSynced = 0;
+    let newUncategorizedCount = 0;
     for (const link of links) {
       try {
         if (!allowed.has(link.remote_account_id))
           throw new BadRequestException();
-        await this.importAccount(context.userId, token, link.remote_account_id);
+        const result = await this.importAccount(
+          context.userId,
+          token,
+          link.remote_account_id,
+        );
+        newUncategorizedCount += result.newUncategorizedCount;
         accountsSynced++;
       } catch {
         errors.push(link.remote_account_id);
       }
     }
-    return { accountsSynced, errors };
+    return { accountsSynced, errors, newUncategorizedCount };
   }
   async unlinkAccount(
     context: ProviderIdentity & { accountId: string },
@@ -182,7 +190,7 @@ export class NordigenService implements BankProviderAdapter {
     userId: string,
     token: string,
     remoteId: string,
-  ): Promise<string> {
+  ): Promise<{ accountId: string; newUncategorizedCount: number }> {
     const [details, balances, remoteTransactions] = await Promise.all([
       this.client.getDetails(token, remoteId),
       this.client.getBalances(token, remoteId),
@@ -288,14 +296,11 @@ export class NordigenService implements BankProviderAdapter {
         }
       }
     }
-    const uniqueRows = [
-      ...new Map(rows.map((row) => [row.externalId, row])).values(),
-    ];
-    if (uniqueRows.length)
-      await this.transactions.upsert(uniqueRows, {
-        conflictPaths: ['externalId'],
-        skipUpdateIfNoValuesChanged: true,
-      });
-    return link.guallet_account_id;
+    const newUncategorizedCount = await persistBankTransactions(
+      this.transactions,
+      account.id,
+      rows,
+    );
+    return { accountId: link.guallet_account_id, newUncategorizedCount };
   }
 }

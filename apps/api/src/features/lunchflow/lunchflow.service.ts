@@ -208,6 +208,7 @@ export class LunchFlowService implements BankProviderAdapter {
     );
     const errors: string[] = [];
     let accountsSynced = 0;
+    let newUncategorizedCount = 0;
     const results = await Promise.all(
       mappings.map(async (mapping) => {
         const account = remoteById.get(mapping.remote_account_id);
@@ -221,7 +222,7 @@ export class LunchFlowService implements BankProviderAdapter {
             this.client.getBalance(apiKey, mapping.remote_account_id),
             this.client.getTransactions(apiKey, mapping.remote_account_id),
           ]);
-          await this.persistRemoteData({
+          const importedCount = await this.persistRemoteData({
             apiKey,
             account,
             mapping,
@@ -229,7 +230,7 @@ export class LunchFlowService implements BankProviderAdapter {
             transactions,
             balance,
           });
-          return true;
+          return { importedCount };
         } catch {
           return mapping.remote_account_id;
         }
@@ -243,9 +244,10 @@ export class LunchFlowService implements BankProviderAdapter {
         );
       } else if (remoteAccountId) {
         accountsSynced += 1;
+        newUncategorizedCount += remoteAccountId.importedCount;
       }
     }
-    return { accountsSynced, errors };
+    return { accountsSynced, errors, newUncategorizedCount };
   }
 
   private async persistRemoteData({
@@ -276,7 +278,7 @@ export class LunchFlowService implements BankProviderAdapter {
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
 
-    await persistPersonalProviderTransactions({
+    return await persistPersonalProviderTransactions({
       repository: this.transactions,
       accountId: localAccount.id,
       provider: 'lunchflow',

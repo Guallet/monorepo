@@ -6,4 +6,5 @@ export type BankJobData = {
   credentialVersion: number;
   operation: BankJobOperation;
   accountIds?: string[];
+  notifyOnNewTransactions?: boolean;
 };

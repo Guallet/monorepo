@@ -1,3 +1,4 @@
+import { NotificationsModule } from '../notifications/notifications.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bullmq';
@@ -16,6 +17,7 @@ import { OPENBANKING_QUEUE } from './openbanking.jobs';
 @Module({
   imports: [
     AiModule,
+    NotificationsModule,
     BankSyncModule,
     LunchFlowModule,
     SynciModule,

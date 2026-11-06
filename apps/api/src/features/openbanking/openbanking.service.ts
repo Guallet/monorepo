@@ -1,3 +1,5 @@
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 import {
   BadRequestException,
   ConflictException,
@@ -57,6 +59,7 @@ export class OpenbankingService {
       BankJobData,
       BankJobResultDto
     >,
+    private readonly notifications: NotificationsService,
   ) {}
 
   providers() {
@@ -181,6 +184,7 @@ export class OpenbankingService {
     owner: ConnectionOwner & {
       operation: BankJobOperation;
       accountIds?: string[];
+      notifyOnNewTransactions?: boolean;
     },
   ) {
     const connection = await this.find(owner);
@@ -198,11 +202,12 @@ export class OpenbankingService {
         credentialVersion: connection.credential_version,
         operation: owner.operation,
         accountIds,
+        notifyOnNewTransactions: owner.notifyOnNewTransactions,
       },
       {
         jobId: randomUUID(),
         deduplication: {
-          id: `${connection.id}_${connection.credential_version}_${owner.operation}_${selection}`,
+          id: `${connection.id}_${connection.credential_version}_${owner.operation}_${selection}_${owner.notifyOnNewTransactions ? 'scheduled' : 'manual'}`,
         },
         removeOnComplete: { age: 86400, count: 1000 },
         removeOnFail: { age: 86400, count: 1000 },
@@ -244,46 +249,71 @@ export class OpenbankingService {
     };
   }
   async process(data: BankJobData): Promise<BankJobResultDto> {
-    return await this.locked(
-      { userId: data.userId, id: data.connectionId },
-      async (connection, manager) => {
-        if (connection.credential_version !== data.credentialVersion)
-          throw new BadRequestException(
-            'Credentials changed; request a new operation',
-          );
-        const adapter = this.registry.get(connection.provider_id);
-        const context = this.context(connection);
-        let result: BankJobResultDto;
-        if (data.operation === 'import') {
-          if (!data.accountIds?.length)
-            throw new BadRequestException('Select accounts to import');
-          const available = new Set(
-            connection.accounts.map((account) => account.id),
-          );
-          if (data.accountIds.some((id) => !available.has(id)))
+    let newUncategorizedCount = 0;
+    try {
+      return await this.locked(
+        { userId: data.userId, id: data.connectionId },
+        async (connection, manager) => {
+          if (connection.credential_version !== data.credentialVersion)
             throw new BadRequestException(
-              'Refresh available accounts before importing',
+              'Credentials changed; request a new operation',
             );
-          result = {
-            accountIds: await adapter.importAccounts({
-              ...context,
-              accountIds: data.accountIds,
-            }),
-          };
-        } else if (data.operation === 'sync') {
-          result = await adapter.sync(context);
-          if (!result.errors?.length) connection.last_synced_at = new Date();
-        } else {
-          result = {};
+          const adapter = this.registry.get(connection.provider_id);
+          const context = this.context(connection);
+          let result: BankJobResultDto;
+          if (data.operation === 'import') {
+            if (!data.accountIds?.length)
+              throw new BadRequestException('Select accounts to import');
+            const available = new Set(
+              connection.accounts.map((account) => account.id),
+            );
+            if (data.accountIds.some((id) => !available.has(id)))
+              throw new BadRequestException(
+                'Refresh available accounts before importing',
+              );
+            result = {
+              accountIds: await adapter.importAccounts({
+                ...context,
+                accountIds: data.accountIds,
+              }),
+            };
+          } else if (data.operation === 'sync') {
+            const syncResult = await adapter.sync(context);
+            newUncategorizedCount = syncResult.newUncategorizedCount;
+            result = {
+              accountsSynced: syncResult.accountsSynced,
+              errors: syncResult.errors,
+            };
+            if (!result.errors?.length) connection.last_synced_at = new Date();
+          } else {
+            result = {};
+          }
+          connection.accounts = await adapter.listAccounts(context);
+          connection.accounts_refreshed_at = new Date();
+          if (data.operation === 'refresh')
+            result.accountsDiscovered = connection.accounts.length;
+          await manager.save(connection);
+          return result;
+        },
+      );
+    } finally {
+      // Adapter writes have committed independently, even if discovery fails.
+      if (data.notifyOnNewTransactions && newUncategorizedCount > 0) {
+        try {
+          await this.notifications.createSystemNotification({
+            userId: data.userId,
+            message: `You have ${newUncategorizedCount} new transactions to categorize`,
+            icon: '👆',
+            type: NotificationType.ACTION_REQUIRED,
+            action: '/transactions/inbox',
+          });
+        } catch {
+          this.logger.warn(
+            'Could not send bank sync categorization notification',
+          );
         }
-        connection.accounts = await adapter.listAccounts(context);
-        connection.accounts_refreshed_at = new Date();
-        if (data.operation === 'refresh')
-          result.accountsDiscovered = connection.accounts.length;
-        await manager.save(connection);
-        return result;
-      },
-    );
+      }
+    }
   }
   async institutions(owner: ConnectionOwner & { country: string }) {
     if (!/^[A-Z]{2}$/.test(owner.country))
@@ -379,6 +409,7 @@ export class OpenbankingService {
           id: connection.id,
           userId: connection.user_id,
           operation: 'sync',
+          notifyOnNewTransactions: true,
         });
       } catch {
         this.logger.warn('Could not schedule a bank connection sync');
