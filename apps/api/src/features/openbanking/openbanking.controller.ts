@@ -28,7 +28,7 @@ import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { OpenbankingService } from './openbanking.service';
 import {
-  AuthorizeBankDto,
+  AuthorizeBankRequestDto,
   BankAccountsDto,
   BankAuthorizationDto,
   BankConnectionDto,
@@ -36,9 +36,9 @@ import {
   BankJobAcceptedDto,
   BankJobStatusDto,
   BankProviderDto,
-  CreateBankConnectionDto,
-  ImportBankAccountsDto,
-  ReplaceBankCredentialsDto,
+  CreateBankConnectionRequestDto,
+  ImportBankAccountsRequestDto,
+  ReplaceBankCredentialsRequestDto,
 } from './dto/openbanking.dto';
 
 @ApiTags('Open Banking')
@@ -68,11 +68,11 @@ export class OpenbankingController {
   @ApiOperation({
     summary: 'Validate credentials and create a bank connection',
   })
-  @ApiBody({ type: CreateBankConnectionDto })
+  @ApiBody({ type: CreateBankConnectionRequestDto })
   @ApiCreatedResponse({ type: BankConnectionDto })
   create(
     @RequestUser() user: UserPrincipal,
-    @Body() dto: CreateBankConnectionDto,
+    @Body() dto: CreateBankConnectionRequestDto,
   ) {
     return this.service.create({ userId: user.id, dto });
   }
@@ -92,12 +92,12 @@ export class OpenbankingController {
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @ApiOperation({ summary: 'Replace bank provider credentials' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiBody({ type: ReplaceBankCredentialsDto })
+  @ApiBody({ type: ReplaceBankCredentialsRequestDto })
   @ApiOkResponse({ type: BankConnectionDto })
   replace(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: ReplaceBankCredentialsDto,
+    @Body() dto: ReplaceBankCredentialsRequestDto,
   ) {
     return this.service.replaceCredentials({
       userId: user.id,
@@ -150,12 +150,12 @@ export class OpenbankingController {
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @ApiOperation({ summary: 'Queue a bank account import' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiBody({ type: ImportBankAccountsDto })
+  @ApiBody({ type: ImportBankAccountsRequestDto })
   @ApiAcceptedResponse({ type: BankJobAcceptedDto })
   import(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: ImportBankAccountsDto,
+    @Body() dto: ImportBankAccountsRequestDto,
   ) {
     return this.service.enqueue({
       userId: user.id,
@@ -224,12 +224,12 @@ export class OpenbankingController {
   @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @ApiOperation({ summary: 'Start bank authorization' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @ApiBody({ type: AuthorizeBankDto })
+  @ApiBody({ type: AuthorizeBankRequestDto })
   @ApiCreatedResponse({ type: BankAuthorizationDto })
   authorize(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: AuthorizeBankDto,
+    @Body() dto: AuthorizeBankRequestDto,
   ) {
     return this.service.authorize({ userId: user.id, id, dto });
   }

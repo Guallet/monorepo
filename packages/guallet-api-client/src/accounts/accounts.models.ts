@@ -18,6 +18,7 @@ export type AccountDto = {
     | null;
 };
 
+/** Linked accounts return flat connection details; disconnected accounts return {}. */
 export type AccountConnectionDto =
   | AccountConnectionDetailsDto
   | Record<string, never>;

@@ -70,8 +70,9 @@ signed-in user. An active provider link returns:
 ```
 
 Manual accounts, unlinked accounts, and accounts whose provider connection was
-removed return HTTP 200 with an empty object (`{}`). The presence of
-Connection details indicate a persisted link; inspect `status` for current usability.
+removed return HTTP 200 with an empty object (`{}`). The response contains
+connection fields directly, without a `connection` wrapper. Connection details
+indicate a persisted link; inspect `status` for current usability.
 Missing accounts and accounts owned by another user return HTTP 404.
 
 The check uses persisted links even when the discovery cache is empty or the

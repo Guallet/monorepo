@@ -40,18 +40,14 @@ export class AccountConnectionDto {
   @ApiProperty({ enum: BANK_CONNECTION_STATUSES })
   status: BankConnectionStatus;
 
-  static fromDomain(
-    connection: AccountConnection | null,
-  ): AccountConnectionDto {
+  static fromDomain(connection: AccountConnection): AccountConnectionDto {
     const dto = new AccountConnectionDto();
-    if (connection) {
-      dto.id = connection.id;
-      dto.providerId = connection.providerId;
-      dto.remoteAccountId = connection.remoteAccountId;
-      dto.lastRefresh = connection.lastRefresh;
-      dto.daysRemaining = connection.daysRemaining;
-      dto.status = connection.status;
-    }
+    dto.id = connection.id;
+    dto.providerId = connection.providerId;
+    dto.remoteAccountId = connection.remoteAccountId;
+    dto.lastRefresh = connection.lastRefresh;
+    dto.daysRemaining = connection.daysRemaining;
+    dto.status = connection.status;
     return dto;
   }
 }

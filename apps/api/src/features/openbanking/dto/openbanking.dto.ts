@@ -20,19 +20,21 @@ import {
   BankProviderId,
 } from '../providers/bank-provider.interface';
 
-export class BankCredentialsDto {
+export class BankCredentialsRequestDto {
   @ApiProperty({ required: false, maxLength: 4096 })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MaxLength(4096)
   apiKey?: string;
+
   @ApiProperty({ required: false, maxLength: 4096 })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MaxLength(4096)
   secretId?: string;
+
   @ApiProperty({ required: false, maxLength: 4096 })
   @IsOptional()
   @IsString()
@@ -40,26 +42,27 @@ export class BankCredentialsDto {
   @MaxLength(4096)
   secretKey?: string;
 }
-export class CreateBankConnectionDto {
+export class CreateBankConnectionRequestDto {
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
   @IsIn(BANK_PROVIDER_IDS)
   providerId: BankProviderId;
-  @ApiProperty({ type: () => BankCredentialsDto })
+
+  @ApiProperty({ type: () => BankCredentialsRequestDto })
   @IsDefined()
   @IsObject()
   @ValidateNested()
-  @Type(() => BankCredentialsDto)
-  credentials: BankCredentialsDto;
+  @Type(() => BankCredentialsRequestDto)
+  credentials: BankCredentialsRequestDto;
 }
-export class ReplaceBankCredentialsDto {
-  @ApiProperty({ type: () => BankCredentialsDto })
+export class ReplaceBankCredentialsRequestDto {
+  @ApiProperty({ type: () => BankCredentialsRequestDto })
   @IsDefined()
   @IsObject()
   @ValidateNested()
-  @Type(() => BankCredentialsDto)
-  credentials: BankCredentialsDto;
+  @Type(() => BankCredentialsRequestDto)
+  credentials: BankCredentialsRequestDto;
 }
-export class ImportBankAccountsDto {
+export class ImportBankAccountsRequestDto {
   @ApiProperty({ type: [String], maxItems: 100 })
   @IsArray()
   @ArrayNotEmpty()
@@ -70,12 +73,13 @@ export class ImportBankAccountsDto {
   @MaxLength(1024, { each: true })
   accountIds: string[];
 }
-export class AuthorizeBankDto {
+export class AuthorizeBankRequestDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   institutionId: string;
+
   @ApiProperty({
     format: 'uri',
     description: 'A callback URL on a configured frontend origin',
@@ -97,26 +101,34 @@ export class BankCredentialFieldDto {
 export class BankProviderDto {
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
   id: BankProviderId;
+
   @ApiProperty()
   name: string;
   @ApiProperty({ type: () => [BankCredentialFieldDto] })
   credentialFields: BankCredentialFieldDto[];
+
   @ApiProperty()
   supportsBankAuthorization: boolean;
+
   @ApiProperty({ type: [String], required: false })
   authorizationCountries?: string[];
 }
 export class BankConnectionDto {
   @ApiProperty({ format: 'uuid' })
   id: string;
+
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
   providerId: BankProviderId;
+
   @ApiProperty({ enum: ['configured'] })
   status: 'configured';
+
   @ApiProperty({ type: String, nullable: true })
   credentialHint: string | null;
+
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   accountsRefreshedAt: Date | null;
+
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   lastSyncedAt: Date | null;
 }
@@ -126,24 +138,32 @@ export class BankAccountDto {
       'Opaque account ID; return it unchanged when importing or unlinking',
   })
   id: string;
+
   @ApiProperty()
   name: string;
+
   @ApiProperty({ type: String, nullable: true })
   institutionName: string | null;
+
   @ApiProperty({ type: String, nullable: true, required: false })
   institutionLogo?: string | null;
+
   @ApiProperty({ type: String, nullable: true })
   currency: string | null;
+
   @ApiProperty({ type: String, nullable: true, required: false })
   balance?: string | null;
+
   @ApiProperty({ required: false })
   status?: string;
+
   @ApiProperty({ type: String, nullable: true, format: 'uuid' })
   linkedAccountId: string | null;
 }
 export class BankAccountsDto {
   @ApiProperty({ type: () => [BankAccountDto] })
   accounts: BankAccountDto[];
+
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   refreshedAt: Date | null;
 }
@@ -154,36 +174,46 @@ export class BankJobAcceptedDto {
 export class BankJobResultDto {
   @ApiProperty({ required: false })
   accountsDiscovered?: number;
+
   @ApiProperty({ required: false, type: [String] })
   accountIds?: string[];
+
   @ApiProperty({ required: false })
   accountsSynced?: number;
+
   @ApiProperty({ required: false, type: [String] })
   errors?: string[];
 }
 export class BankJobStatusDto {
   @ApiProperty({ enum: ['queued', 'running', 'completed', 'failed'] })
   status: 'queued' | 'running' | 'completed' | 'failed';
+
   @ApiProperty({ enum: ['refresh', 'import', 'sync'] })
   operation: 'refresh' | 'import' | 'sync';
+
   @ApiProperty({ required: false, type: () => BankJobResultDto })
   result?: BankJobResultDto;
+
   @ApiProperty({ required: false })
   error?: string;
 }
 export class BankInstitutionDto {
   @ApiProperty()
   id: string;
+
   @ApiProperty()
   name: string;
+
   @ApiProperty({ type: String, nullable: true })
   logo: string | null;
 }
 export class BankAuthorizationDto {
   @ApiProperty({ format: 'uuid' })
   id: string;
+
   @ApiProperty({ enum: ['redirect'] })
   action: 'redirect';
+
   @ApiProperty({ format: 'uri' })
   redirectUrl: string;
 }

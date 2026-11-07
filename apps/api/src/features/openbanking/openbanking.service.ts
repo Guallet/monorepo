@@ -37,11 +37,11 @@ import {
   requireNordigenCredentials,
 } from './providers/bank-provider.interface';
 import {
-  AuthorizeBankDto,
+  AuthorizeBankRequestDto,
   BankConnectionDto,
   BankJobResultDto,
   BankJobStatusDto,
-  CreateBankConnectionDto,
+  CreateBankConnectionRequestDto,
 } from './dto/openbanking.dto';
 import {
   BankJobData,
@@ -87,7 +87,7 @@ export class OpenbankingService {
     dto,
   }: {
     userId: string;
-    dto: CreateBankConnectionDto;
+    dto: CreateBankConnectionRequestDto;
   }): Promise<BankConnectionDto> {
     const existing = await this.connections.findOne({
       where: { user_id: userId, provider_id: dto.providerId },
@@ -416,7 +416,7 @@ export class OpenbankingService {
       });
     });
   }
-  async authorize(owner: ConnectionOwner & { dto: AuthorizeBankDto }) {
+  async authorize(owner: ConnectionOwner & { dto: AuthorizeBankRequestDto }) {
     const redirect = new URL(owner.dto.redirectUrl);
     const origins =
       this.config.get('auth.allowedOrigins', { infer: true }) ?? [];

@@ -23,6 +23,8 @@ import {
   ApiQuery,
   ApiNotFoundResponse,
   ApiBadRequestResponse,
+  ApiExtraModels,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
@@ -98,18 +100,29 @@ export class AccountsController {
   @ApiOperation({
     summary: 'Get account connection status and provider details',
   })
-  @ApiOkResponse({ type: () => AccountConnectionDto })
+  @ApiExtraModels(AccountConnectionDto)
+  @ApiOkResponse({
+    description:
+      'Flat connection details for linked accounts; {} when unlinked',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(AccountConnectionDto) },
+        { type: 'object', additionalProperties: false, maxProperties: 0 },
+      ],
+    },
+  })
   @ApiNotFoundResponse({ description: 'Account not found for this user' })
   @ApiBadRequestResponse({ description: 'Invalid account UUID' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   async getConnectedAccountDetails(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-  ): Promise<AccountConnectionDto> {
+  ): Promise<AccountConnectionDto | Record<string, never>> {
     const connection = await this.accountConnectionsService.getConnection(
       user.id,
       accountId,
     );
+    if (!connection) return {};
     return AccountConnectionDto.fromDomain(connection);
   }
 
