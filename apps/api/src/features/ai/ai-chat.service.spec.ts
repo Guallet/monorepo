@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { streamText } from 'ai';
 import type { Mock } from 'vitest';
 import { AiChatService } from './ai-chat.service';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
+import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
 import { AiFinancialContextService } from './ai-financial-context.service';
 import { AiAgent } from './entities/ai-agent.entity';
 import { AiChatMessage } from './entities/ai-chat-message.entity';
@@ -46,7 +46,7 @@ describe('AiChatService', () => {
     findOne: vi.fn(),
   };
 
-  const mockCredentialEncryption = {
+  const mockUserCredentialsService = {
     decrypt: vi.fn(() => 'decrypted-token'),
   };
 
@@ -93,8 +93,8 @@ describe('AiChatService', () => {
           useValue: mockAgentRepository,
         },
         {
-          provide: AiCredentialEncryptionService,
-          useValue: mockCredentialEncryption,
+          provide: UserCredentialsService,
+          useValue: mockUserCredentialsService,
         },
         {
           provide: AiFinancialContextService,
@@ -106,7 +106,7 @@ describe('AiChatService', () => {
     service = module.get<AiChatService>(AiChatService);
     vi.clearAllMocks();
     mockFinancialContext.buildSummary.mockResolvedValue('{"accounts":[]}');
-    mockCredentialEncryption.decrypt.mockReturnValue('decrypted-token');
+    mockUserCredentialsService.decrypt.mockReturnValue('decrypted-token');
   });
 
   it('throws NotFoundException when creating a session for another user agent', async () => {
@@ -198,7 +198,7 @@ describe('AiChatService', () => {
     expect(mockSessionRepository.save).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'What did I spend on groceries?' }),
     );
-    expect(mockCredentialEncryption.decrypt).toHaveBeenCalledWith(
+    expect(mockUserCredentialsService.decrypt).toHaveBeenCalledWith(
       'encrypted:token',
     );
 

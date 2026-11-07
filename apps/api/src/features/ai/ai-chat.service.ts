@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { ModelMessage, StreamTextResult, ToolSet, streamText } from 'ai';
 import { Repository } from 'typeorm';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
+import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
 import { AiFinancialContextService } from './ai-financial-context.service';
 import { AiChatMessageDto } from './dto/ai-chat-message.dto';
 import { AiChatSessionDto } from './dto/ai-chat-session.dto';
@@ -43,7 +43,7 @@ export class AiChatService {
     private readonly messageRepository: Repository<AiChatMessage>,
     @InjectRepository(AiAgent)
     private readonly agentRepository: Repository<AiAgent>,
-    private readonly credentialEncryption: AiCredentialEncryptionService,
+    private readonly userCredentials: UserCredentialsService,
     private readonly financialContext: AiFinancialContextService,
   ) {}
 
@@ -168,7 +168,7 @@ export class AiChatService {
       }),
     ]);
 
-    const apiToken = this.credentialEncryption.decrypt(
+    const apiToken = this.userCredentials.decrypt(
       session.agent.connection.encrypted_token,
     );
     const provider = createOpenAICompatible({

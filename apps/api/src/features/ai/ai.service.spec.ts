@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
+import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
 import { AiService } from './ai.service';
 import { AiAgent } from './entities/ai-agent.entity';
 import { AiProviderConnection } from './entities/ai-provider-connection.entity';
@@ -33,7 +33,7 @@ describe('AiService', () => {
     delete: vi.fn(),
   };
 
-  const mockCredentialEncryption = {
+  const mockUserCredentialsService = {
     encrypt: vi.fn((value: string) => `encrypted:${value}`),
     decrypt: vi.fn((value: string) => value.replace('encrypted:', '')),
   };
@@ -63,8 +63,8 @@ describe('AiService', () => {
           useValue: mockAgentRepository,
         },
         {
-          provide: AiCredentialEncryptionService,
-          useValue: mockCredentialEncryption,
+          provide: UserCredentialsService,
+          useValue: mockUserCredentialsService,
         },
         {
           provide: AiProviderRegistryService,
@@ -106,7 +106,7 @@ describe('AiService', () => {
       AiProvider.OPENAI,
     );
     expect(mockAdapter.validateApiToken).toHaveBeenCalledWith('sk-test-1234');
-    expect(mockCredentialEncryption.encrypt).toHaveBeenCalledWith(
+    expect(mockUserCredentialsService.encrypt).toHaveBeenCalledWith(
       'sk-test-1234',
     );
     expect(mockConnectionRepository.create).toHaveBeenCalledWith({
@@ -143,7 +143,7 @@ describe('AiService', () => {
       }),
     ).rejects.toThrow(BadRequestException);
 
-    expect(mockCredentialEncryption.encrypt).not.toHaveBeenCalled();
+    expect(mockUserCredentialsService.encrypt).not.toHaveBeenCalled();
     expect(mockConnectionRepository.create).not.toHaveBeenCalled();
     expect(mockConnectionRepository.save).not.toHaveBeenCalled();
   });
@@ -171,7 +171,7 @@ describe('AiService', () => {
       }),
     ).rejects.toThrow(BadRequestException);
 
-    expect(mockCredentialEncryption.encrypt).not.toHaveBeenCalled();
+    expect(mockUserCredentialsService.encrypt).not.toHaveBeenCalled();
     expect(mockConnectionRepository.save).not.toHaveBeenCalled();
   });
 
@@ -197,7 +197,7 @@ describe('AiService', () => {
     expect(mockProviderRegistry.getAdapter).toHaveBeenCalledWith(
       AiProvider.OPENROUTER,
     );
-    expect(mockCredentialEncryption.decrypt).toHaveBeenCalledWith(
+    expect(mockUserCredentialsService.decrypt).toHaveBeenCalledWith(
       'encrypted:openrouter-token',
     );
     expect(mockAdapter.listModels).toHaveBeenCalledWith('openrouter-token');

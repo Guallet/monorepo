@@ -101,8 +101,8 @@ export interface EmailConfig {
   };
 }
 
-export interface AiConfig {
-  credentialsEncryptionKey: string;
+export interface UserCredentialsConfig {
+  encryptionKey: string;
 }
 
 export interface NestObserveConfig {
@@ -120,7 +120,7 @@ export interface AppConfig {
   nordigen: NordigenConfig;
   redis: RedisConfig;
   email: EmailConfig;
-  ai: AiConfig;
+  userCredentials: UserCredentialsConfig;
   observe: NestObserveConfig;
 }
 
@@ -170,8 +170,8 @@ const configuration = (): AppConfig => {
         secure: process.env.SMTP_SECURE !== 'false',
       },
     },
-    ai: {
-      credentialsEncryptionKey: environment.DATABASE_CREDENTIALS_ENCRYPTION_KEY,
+    userCredentials: {
+      encryptionKey: environment.DATABASE_CREDENTIALS_ENCRYPTION_KEY,
     },
     observe: {
       appKey: environment.NESTJS_OBSERVE_APP_KEY ?? '',
