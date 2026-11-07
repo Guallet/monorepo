@@ -12,6 +12,47 @@ import {
 import type { Relation } from 'typeorm';
 import { TransactionMetadata } from './transaction-metadata.model';
 
+function parseNordigenDate(value: string | undefined, transactionId: string): Date {
+  const invalidDate = () =>
+    new Error(
+      `Nordigen transaction ${transactionId} has no valid bookingDateTime or bookingDate`,
+    );
+
+  if (!value) throw invalidDate();
+
+  const dateOnlyMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (dateOnlyMatch) {
+    const [, yearText, monthText, dayText] = dateOnlyMatch;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const day = Number(dayText);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (
+      date.getUTCFullYear() !== year ||
+      date.getUTCMonth() !== month - 1 ||
+      date.getUTCDate() !== day
+    ) {
+      throw invalidDate();
+    }
+    return date;
+  }
+
+  const timestampDate = new Date(value);
+  if (!/^\d{4}-\d{2}-\d{2}T/.test(value) || Number.isNaN(timestampDate.getTime())) {
+    throw invalidDate();
+  }
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  const calendarDate = new Date(Date.UTC(year, month - 1, day));
+  if (
+    calendarDate.getUTCFullYear() !== year ||
+    calendarDate.getUTCMonth() !== month - 1 ||
+    calendarDate.getUTCDate() !== day
+  ) {
+    throw invalidDate();
+  }
+  return timestampDate;
+}
+
 @Entity('transactions')
 export class Transaction extends BaseDbEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -70,7 +111,10 @@ export class Transaction extends BaseDbEntity {
     entity.amount = Number(nordigenTransaction.transactionAmount.amount);
     entity.currency = nordigenTransaction.transactionAmount.currency;
     entity.accountId = account_id;
-    entity.date = nordigenTransaction.bookingDateTime;
+    entity.date = parseNordigenDate(
+      nordigenTransaction.bookingDateTime ?? nordigenTransaction.bookingDate,
+      nordigenTransaction.transactionId,
+    );
 
     entity.description = nordigenTransaction.remittanceInformationUnstructured;
 

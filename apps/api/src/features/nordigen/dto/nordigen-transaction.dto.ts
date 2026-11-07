@@ -21,9 +21,9 @@ export class NordigenTransactionDto {
   @ApiProperty({ required: false })
   transactionId: string;
   @ApiProperty({ required: false, type: String, format: 'date' })
-  bookingDate: Date;
+  bookingDate?: string;
   @ApiProperty({ required: false, type: String, format: 'date-time' })
-  bookingDateTime: Date;
+  bookingDateTime?: string;
   @ApiProperty({ type: () => TransactionAmountDto })
   transactionAmount: TransactionAmountSchema;
   @ApiProperty({ required: false })

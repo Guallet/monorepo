@@ -28,3 +28,39 @@ describe('Transaction PostgreSQL metadata', () => {
     expect(notes?.isNullable).toBe(true);
   });
 });
+
+describe('Transaction.fromNordigenDto', () => {
+  const transaction = (dates: { bookingDateTime?: string; bookingDate?: string }) =>
+    Transaction.fromNordigenDto('account-id', {
+      transactionId: 'external-id',
+      transactionAmount: { amount: '12.34', currency: 'EUR' },
+      proprietaryBankTransactionCode: '',
+      remittanceInformationUnstructured: '',
+      ...dates,
+    });
+
+  it('uses the booking timestamp when present', () => {
+    expect(
+      transaction({
+        bookingDateTime: '2025-04-03T10:15:30+02:00',
+        bookingDate: '2025-04-02',
+      }).date.toISOString(),
+    ).toBe('2025-04-03T08:15:30.000Z');
+  });
+
+  it('uses date-only bookings at midnight UTC', () => {
+    expect(transaction({ bookingDate: '2025-04-03' }).date.toISOString()).toBe(
+      '2025-04-03T00:00:00.000Z',
+    );
+  });
+
+  it.each([
+    {},
+    { bookingDate: '2025-02-30' },
+    { bookingDateTime: 'not-a-date' },
+  ])('rejects missing or invalid booking dates: %o', (dates) => {
+    expect(() => transaction(dates)).toThrow(
+      'Nordigen transaction external-id has no valid bookingDateTime or bookingDate',
+    );
+  });
+});
