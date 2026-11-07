@@ -575,7 +575,7 @@ describe('TransactionsService', () => {
       expect(callArg.where.date._value).toEqual([startDate, endDate]);
     });
 
-    it('should NOT filter by date when only startDate provided', async () => {
+    it('should apply an inclusive lower bound when only startDate is provided', async () => {
       const startDate = new Date('2024-01-01');
       mockTransactionRepository.find.mockResolvedValue(mockTransactions);
 
@@ -585,10 +585,11 @@ describe('TransactionsService', () => {
       });
 
       const callArg = mockTransactionRepository.find.mock.calls[0][0];
-      expect(callArg.where).not.toHaveProperty('date');
+      expect(callArg.where.date._type).toBe('moreThanOrEqual');
+      expect(callArg.where.date._value).toBe(startDate);
     });
 
-    it('should NOT filter by date when only endDate provided', async () => {
+    it('should apply an inclusive upper bound when only endDate is provided', async () => {
       const endDate = new Date('2024-12-31');
       mockTransactionRepository.find.mockResolvedValue(mockTransactions);
 
@@ -598,7 +599,8 @@ describe('TransactionsService', () => {
       });
 
       const callArg = mockTransactionRepository.find.mock.calls[0][0];
-      expect(callArg.where).not.toHaveProperty('date');
+      expect(callArg.where.date._type).toBe('lessThanOrEqual');
+      expect(callArg.where.date._value).toBe(endDate);
     });
 
     it('should combine multiple filters correctly', async () => {

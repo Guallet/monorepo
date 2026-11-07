@@ -77,12 +77,14 @@ export class ExportDataProcessor extends WorkerHost {
     }
 
     try {
-      // Parse date filters
-      const startDate = dto.startDate ? new Date(dto.startDate) : undefined;
-      const endDate = dto.endDate ? new Date(dto.endDate) : undefined;
-
-      if (startDate) startDate.setHours(0, 0, 0, 0);
-      if (endDate) endDate.setHours(23, 59, 59, 999);
+      // Export filters are calendar dates. Ignore any time component and
+      // include the entire date using UTC boundaries.
+      const startDate = dto.startDate
+        ? new Date(`${dto.startDate.slice(0, 10)}T00:00:00.000Z`)
+        : undefined;
+      const endDate = dto.endDate
+        ? new Date(`${dto.endDate.slice(0, 10)}T23:59:59.999Z`)
+        : undefined;
 
       // Fetch accounts & categories (both cheap – always fetch)
       const accounts = await this.accountsService.findAllUserAccounts(userId);
