@@ -1,0 +1,2029 @@
+[
+  {
+    "id": "AIRWALLEX_EEA_AIPTAU32",
+    "name": "Airwallex",
+    "bic": "AIPTAU32",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AIRWALLEX_AIPTAU32_1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ALLIANZ_BANQUE_AGFBFRPPXXX",
+    "name": "Allianz Banque",
+    "bic": "AGFBFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ALLIANZ_BANQUE_AGFBFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AMERICAN_EXPRESS_AESUDEF1",
+    "name": "American Express",
+    "bic": "AESUDEF1",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AMERICAN_EXPRESS_AESUGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ABS_CMBRFR2BXXX",
+    "name": "Arkéa Banking Services",
+    "bic": "CMBRFR2BXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ABS_CMBRFR2BXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ENTREPRISES_INSTITUTIONNELS_CMBRFR2BXXX",
+    "name": "Arkéa Banque Entreprises et Institutionnels",
+    "bic": "CMBRFR2BXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/ABS_CMBRFR2BXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUE_PRIVEE_CMBRFR2BXXX",
+    "name": "Arkéa Banque Privée",
+    "bic": "CMBRFR2BXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANQUE_PRIVEE_CMBRFR2BXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AXA_AXABFRPPXXX",
+    "name": "Axa Banque",
+    "bic": "AXABFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AXA_AXABFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUE_BCP_BPSMFRPPXXX",
+    "name": "Banque BCP",
+    "bic": "BPSMFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquebcp.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CHALUS_BCHAFR21",
+    "name": "Banque Chalus",
+    "bic": "BCHAFR21XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquechalus.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUE_DE_SAVOIE_BSAVFR2CXXX",
+    "name": "Banque de Savoie",
+    "bic": "BSAVFR2CXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquedesavoie.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BECM_CMCIDEFF",
+    "name": "Banque Europeenne Credit Mutuel",
+    "bic": "CMCIFR2AXXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banqueeuropeenne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPALATINE_BSPFFRPPXXX",
+    "name": "Banque Palatine",
+    "bic": "BSPFFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BANQUEPALATINE_BSPFFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_ALSACE_LORRAINE_CHAMPAGNE_CCBPFRPPMTZ",
+    "name": "Banque Populaire Alsace Lorraine Champagne",
+    "bic": "CCBPFRPPMTZ",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_AQUITAINE_CENTRE_ATLANTIQUE_CCBPFRPPBDX",
+    "name": "Banque Populaire Aquitaine Centre Atlantique",
+    "bic": "CCBPFRPPBDX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_AUVERGNE_RHONE_ALPES_CCBPFRPPGRE",
+    "name": "Banque Populaire Auvergne et Rhône-Alpes",
+    "bic": "CCBPFRPPGRE",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_BOURGOGNE_FRANCHE_COMTE_CCBPFRPPDJN",
+    "name": "Banque Populaire Bourgogne Franche Comté",
+    "bic": "CCBPFRPPDJN",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_DU_NORD_CCBPFRPPLIL",
+    "name": "Banque Populaire du Nord",
+    "bic": "CCBPFRPPLIL",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_DU_SUD_CCBPFRPPPPG",
+    "name": "Banque Populaire du Sud",
+    "bic": "CCBPFRPPPPG",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_GRAND_OUEST_CCBPFRPPNAN",
+    "name": "Banque Populaire Grand Ouest",
+    "bic": "CCBPFRPPNAN",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_MEDITERRANEE_CCBPFRPPMAR",
+    "name": "Banque Populaire Méditerranée",
+    "bic": "CCBPFRPPMAR",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_OCCITANE_CCBPFRPPTLS",
+    "name": "Banque Populaire Occitane",
+    "bic": "CCBPFRPPTLS",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_RIVES_DE_PARIS_CCBPFRPPMTG",
+    "name": "Banque Populaire Rives de Paris",
+    "bic": "CCBPFRPPMTG",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BANQUEPOPULAIRE_VAL_DE_FRANCE_CCBPFRPPVER",
+    "name": "Banque Populaire Val de France",
+    "bic": "CCBPFRPPVER",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquepopulaire.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TRANSATLANTIQUE_CMCIFRP1",
+    "name": "Banque Transatlantique",
+    "bic": "CMCIFRPPXXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/banquetransatlantique.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BFORBANK_BFBKFRP1",
+    "name": "BforBank",
+    "bic": "BFBKFRP1XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/bforbank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BNP_PARIBAS_BNPAFRPPXXX",
+    "name": "BNP Paribas",
+    "bic": "BNPAFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BNP_PARIBAS_BNPAFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BNP_PARIBAS_ANTILLES_GUYANE_BNPAMQMXXXX",
+    "name": "BNP Paribas Antilles-Guyane",
+    "bic": "BNPAMQMXXXX",
+    "transaction_total_days": "390",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/bnp.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BNP_PARIBAS_ENTREPRISE_BNPAFRPPXXX",
+    "name": "BNP Paribas Entreprise",
+    "bic": "BNPAFRPPXXX",
+    "transaction_total_days": "390",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/BNP_PARIBAS_BNPAFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BNP_PARIBAS_NOUVELLE_CALEDONIE_BNPANCNXXXX",
+    "name": "BNP Paribas Nouvelle Calédonie",
+    "bic": "BNPANCNXXXX",
+    "transaction_total_days": "390",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/bnp.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BNP_PARIBAS_REUNION_BNPARERXXXX",
+    "name": "BNP Paribas Réunion",
+    "bic": "BNPARERXXXX",
+    "transaction_total_days": "390",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/bnp.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BOURSORAMA_BOUSFRPP",
+    "name": "BoursoBank",
+    "bic": "BOUSFRPP",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/boursorama.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BRED_BREDFRPP",
+    "name": "BRED Banque Populaire",
+    "bic": "BREDFRPP",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/bred.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BTP_BANQUE_BATIFRP1XXX",
+    "name": "BTP Banque",
+    "bic": "BATIFRP1XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/btpbanque.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "BUNQ_BUNQNL2A",
+    "name": "bunq",
+    "bic": "BUNQNL2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "BG",
+      "RO",
+      "PT",
+      "FR",
+      "SK",
+      "HR",
+      "SE",
+      "HU",
+      "NL",
+      "FI",
+      "NO",
+      "DK",
+      "LI",
+      "DE",
+      "AT",
+      "CZ",
+      "EE",
+      "CY",
+      "IE",
+      "GR",
+      "BE",
+      "IT",
+      "MT",
+      "SI",
+      "ES",
+      "LU",
+      "IS"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/bunq.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_AQUITAINE_POITOU_CHARENTES_CEPAFRPP333",
+    "name": "Caisse d'Epargne Aquitaine Poitou-Charentes",
+    "bic": "CEPAFRPP333",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_AUVERGNE_ET_LIMOUSIN_CEPAFRPP871",
+    "name": "Caisse d'Epargne Auvergne et Limousin",
+    "bic": "CEPAFRPP871",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_BOURGOGNE_FRANCHE_COMTE_CEPAFRPP213",
+    "name": "Caisse d'Epargne Bourgogne Franche-Comté",
+    "bic": "CEPAFRPP213",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_BRETAGNE_PAYS_DE_LOIRE_CEPAFRPP444",
+    "name": "Caisse d'Epargne Bretagne-Pays De Loire",
+    "bic": "CEPAFRPP444",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_COTE_D_AZUR_CEPAFRPP831",
+    "name": "Caisse d'Epargne Côte d'Azur",
+    "bic": "CEPAFRPP831",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_GRAND_EST_EUROPE_CEPAFRPP513",
+    "name": "Caisse d'Epargne Grand Est Europe",
+    "bic": "CEPAFRPP513",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_HAUTS_DE_FRANCE_CEPAFRPP627",
+    "name": "Caisse d'Epargne Hauts de France",
+    "bic": "CEPAFRPP627",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_ILE_DE_FRANCE_CEPAFRPP751",
+    "name": "Caisse d'Epargne Ile De France",
+    "bic": "CEPAFRPP751",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_LANGUEDOC_ROUSSILLON_CEPAFRPP348",
+    "name": "Caisse d'Epargne Languedoc-Roussillon",
+    "bic": "CEPAFRPP348",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_LOIRE_DROME_ARDECHE_CEPAFRPP426",
+    "name": "Caisse d'Epargne Loire Drôme Ardèche",
+    "bic": "CEPAFRPP426",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_LOIRE_CENTRE_CEPAFRPP450",
+    "name": "Caisse d'Epargne Loire-Centre",
+    "bic": "CEPAFRPP450",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_MIDI_PYRENEES_CEPAFRPP313",
+    "name": "Caisse d'Epargne Midi-Pyrénées",
+    "bic": "CEPAFRPP313",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_NORMANDIE_CEPAFRPP142",
+    "name": "Caisse d'Epargne Normandie",
+    "bic": "CEPAFRPP142",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_PROVENCE_ALPES_CORSE_CEPAFRPP131",
+    "name": "Caisse d'Epargne Provence Alpes Corse",
+    "bic": "CEPAFRPP131",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAISSEDEPARGNE_RHONE_ALPES_CEPAFRPP382",
+    "name": "Caisse d'Epargne Rhône Alpes",
+    "bic": "CEPAFRPP382",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caissedepargne.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CAIXA_GERAL_DEPOSITOS_CGDIFRPP",
+    "name": "Caixa Geral De Depositos",
+    "bic": "CGDIFRPP",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/caixadirecta.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CIC_BANQUE_PRIVEE_CMCIFRPPXXX",
+    "name": "CIC Banque Privée",
+    "bic": "CMCIFRPP",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/cicbanque.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDIT_MUNICIPAL_CRMPFRP1XXX",
+    "name": "Credit Municipal",
+    "bic": "CRMPFRP1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditmunicipal.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_ALPES_PROVENCE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Alpes Provence",
+    "bic": "AGRIFRPP813",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_ALSACE_VOSGES_AGRIFRPPXXX",
+    "name": "Crédit Agricole Alsace Vosges",
+    "bic": "AGRIFRPP872",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_ATLANTIQUE_VENDEE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Atlantique Vendée",
+    "bic": "AGRIFRPP847",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_BRIE_PICARDIE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Brie Picardie",
+    "bic": "AGRIFRPP887",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CHAMPAGNE_BOURGOGNE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Champagne-Bourgogne",
+    "bic": "AGRIFRPP810",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CHARANTE_PERIGORD_AGRIFRPPXXX",
+    "name": "Crédit Agricole Charente Périgord",
+    "bic": "AGRIFRPP824",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CMDS_AGRIFRPPXXX",
+    "name": "Crédit Agricole Charente-Maritime Deux-Sèvres",
+    "bic": "AGRIFRPP817",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_AQUITAINE_AGRIFRPPXXX",
+    "name": "Crédit Agricole d'Aquitaine",
+    "bic": "AGRIFRPP833",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_ILLE_ET_VILAINE_AGRIFRPPXXX",
+    "name": "Crédit Agricole d'Ille et Vilaine",
+    "bic": "AGRIFRPP836",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CENTRE_FRANCE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Centre France",
+    "bic": "AGRIFRPP868",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CENTRE_LOIRE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Centre Loire",
+    "bic": "AGRIFRPP848",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CENTRE_EST_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Centre-Est",
+    "bic": "AGRIFRPP878",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_FRANCHE_COMTE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Franche-Comté",
+    "bic": "AGRIFRPP825",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_GUADELOUPE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Guadeloupe",
+    "bic": "AGRIGPGXXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_ANJOU_MAINE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de l'Anjou et du Maine",
+    "bic": "AGRIFRPP879",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CORSE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de la Corse",
+    "bic": "AGRIFRPP820",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_MARTINIQUE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de la Martinique et de la Guyane",
+    "bic": "AGRIMQMXXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_REUNION_AGRIRERX",
+    "name": "Crédit Agricole de la Réunion",
+    "bic": "AGRIRERXXXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_TOURAINE_POITOU_AGRIFRPPXXX",
+    "name": "Crédit Agricole de la Touraine et du Poitou",
+    "bic": "AGRIFRPP894",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_HAUTE_LOIRE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Loire Haute-Loire",
+    "bic": "AGRIFRPP845",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_LORRAINE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Lorraine",
+    "bic": "AGRIFRPP861",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_NORD_DE_FRANCE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Nord De France",
+    "bic": "AGRIFRPP802",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_NORMANDIE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Normandie",
+    "bic": "AGRIFRPP866",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_NORMANDIE_SEINE_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Normandie Seine",
+    "bic": "AGRIFRPP883",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_PARIS_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Paris et d'Ile de France",
+    "bic": "AGRIFRPP882",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_PCA_AGRIFRPPXXX",
+    "name": "Crédit Agricole de Provence Côtes d'Azur",
+    "bic": "AGRIFRPP891",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_COTES_DARMOR_AGRIFRPPXXX",
+    "name": "Crédit Agricole des Côtes d'Armor",
+    "bic": "AGRIFRPP822",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_SAVOIE_AGRIFRPPXXX",
+    "name": "Crédit Agricole des Savoie",
+    "bic": "AGRIFRPP881",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_CENTRE_OUEST_AGRIFRPPXXX",
+    "name": "Crédit Agricole du Centre Ouest",
+    "bic": "AGRIFRPP895",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_FINISTERE_AGRIFRPPXXX",
+    "name": "Crédit Agricole du Finistère",
+    "bic": "AGRIFRPP829",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_LANGUEDOC_AGRIFRPPXXX",
+    "name": "Crédit Agricole du Languedoc",
+    "bic": "AGRIFRPP835",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_MORBIHAN_AGRIFRPPXXX",
+    "name": "Crédit Agricole du Morbihan",
+    "bic": "AGRIFRPP860",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_NORD_EST_AGRIFRPPXXX",
+    "name": "Crédit Agricole du Nord Est",
+    "bic": "AGRIFRPP867",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_NMP_AGRIFRPPXXX",
+    "name": "Crédit Agricole Nord Midi-Pyrénées",
+    "bic": "AGRIFRPP812",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_PYRENEES_GASCOGNE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Pyrénées Gascogne",
+    "bic": "AGRIFRPP869",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_SUD_MEDITERRANEE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Sud Méditerranée",
+    "bic": "AGRIFRPP871",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_SUD_RHONE_ALPES_AGRIFRPPXXX",
+    "name": "Crédit Agricole Sud Rhône-Alpes",
+    "bic": "AGRIFRPP839",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_TOULOUSE31_AGRIFRPPXXX",
+    "name": "Crédit Agricole Toulouse31",
+    "bic": "AGRIFRPP831",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "AGRICOLE_VAL_DE_FRANCE_AGRIFRPPXXX",
+    "name": "Crédit Agricole Val De France",
+    "bic": "AGRIFRPP844",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditagricole.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDIT_COOPERATIF_CCOPFRPPXXX",
+    "name": "Crédit Coopératif",
+    "bic": "CCOPFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditcooperatif.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "INDUSTRIEL_CMCIFRPAXXX",
+    "name": "Crédit Industriel et Commercial (CIC)",
+    "bic": "CMCIFRPPXXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/cicbanque.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDIT_MARITIME_MUTUEL_GRAND_OUEST_CCBPFRPPNAN",
+    "name": "Crédit Maritime Mutuel Grand Ouest",
+    "bic": "CCBPFRPPNAN",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditmaritime.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CREDIT_MARITIME_MUTUEL_LITTORAL_DU_SUD_OUEST_CCBPFRPP169",
+    "name": "Crédit Maritime Mutuel Littoral du Sud Ouest",
+    "bic": "CCBPFRPP169",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditmaritime.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MUTUEL_CMCIFRPAXXX",
+    "name": "Crédit Mutuel",
+    "bic": "CMCIFR2AXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/creditmutuel.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CMB_CMBRFR2BXXX",
+    "name": "Crédit Mutuel de Bretagne",
+    "bic": "CMBRFR2BXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CMB_CMBRFR2BXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "CMSO_CMCIFRP1SBC",
+    "name": "Crédit Mutuel du Sud-Ouest",
+    "bic": "CMCIFRP1SBC",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CMSO_CMCIFRP1SBC.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "EBURY_EBURFRP1XXX",
+    "name": "Ebury",
+    "bic": "EBURFRP1XXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/ebury.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FINOM_FNOMDEB2",
+    "name": "Finom",
+    "bic": "FNOMDEB2",
+    "transaction_total_days": "365",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINOM_SOBKDEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FORTUNEO_FTNOFRP1XXX",
+    "name": "Fortuneo Banque",
+    "bic": "FTNOFRP1XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FORTUNEO_FTNOFRP1XXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HELLO_BANK_BNPAFRPPXXX",
+    "name": "Hello bank!",
+    "bic": "BNPAFRPPXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/HELLO_BANK_BNPAFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HSBC_NET_HSBCIE2D",
+    "name": "HSBCnet",
+    "bic": "HSBCIE2DXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "ING_WB_INGBNL2A",
+    "name": "ING Wholesale Banking",
+    "bic": "INGBNL2AXXX",
+    "transaction_total_days": "540",
+    "countries": [
+      "BG",
+      "PT",
+      "FR",
+      "RO",
+      "SK",
+      "IE",
+      "BE",
+      "HU",
+      "IT",
+      "NL",
+      "GB",
+      "ES",
+      "AT",
+      "CZ",
+      "LU",
+      "DE"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "KBC_KREDFRPP",
+    "name": "KBC",
+    "bic": "KREDFRPP",
+    "transaction_total_days": "365",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/kbc.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LABANQUEPOSTALE_PSSTFRPP",
+    "name": "La Banque Postale",
+    "bic": "PSSTFRPP",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LABANQUEPOSTALE_PSSTFRPP.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LAZARD_FRERES_LAZPFRCC",
+    "name": "Lazard Freres Banque",
+    "bic": "LAZPFRCC",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/lazard.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LCL_CRLYFRPP",
+    "name": "LCL",
+    "bic": "CRLYFRPP",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/lcl.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LCL_CORPORATE_CRLYFRPP",
+    "name": "LCL Corporate",
+    "bic": "CRLYFRPP",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/lcl.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LBP_PREUFRP1XXX",
+    "name": "Louvre Banque Privée",
+    "bic": "PREUFRP1XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/louvrebanqueprive%CC%81e.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "LUNAR_LUNADK22",
+    "name": "Lunar",
+    "bic": "LUNADK22",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUNAR_LUNADK22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MANAGER_ONE_ESCBFRPPXXX",
+    "name": "Manager One",
+    "bic": "ESCBFRPPXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/managerone.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MEMOBANK_MEMOFRP2",
+    "name": "Memo Bank",
+    "bic": "MEMOFRP2",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/memobank.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MILLEIS_PRIVFRPP",
+    "name": "Milleis Banque",
+    "bic": "PRIVFRPP",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/MILLEIS_PRIVFRPP.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MONABANQ_MONNFR22",
+    "name": "Monabanq",
+    "bic": "CMCIFRP1MON",
+    "transaction_total_days": "90",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monabanq.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "MONESE_MNEEBEB2",
+    "name": "Monese",
+    "bic": "MNEEBEB2",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monese.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "N26_NTSBDEB1",
+    "name": "N26 Bank",
+    "bic": "NTSBDEB1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/n26.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_NETEGB21",
+    "name": "Neteller",
+    "bic": "NETEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_NETEGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NEUFLIZE_OBC_NSMBFRPPXXX",
+    "name": "Neuflize OBC",
+    "bic": "NSMBFRPPXXX",
+    "transaction_total_days": "120",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEUFLIZE_OBC_NSMBFRPPXXX.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NICKEL_FPELFR21",
+    "name": "Nickel Beta",
+    "bic": "FPELFR21",
+    "transaction_total_days": "730",
+    "countries": [
+      "PT",
+      "ES",
+      "FR",
+      "BE",
+      "DE"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NICKEL_FPELFR21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYPAL_PPLXLULL",
+    "name": "PayPal",
+    "bic": "PPLXLULLXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYPAL_PPLXLULL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSERA_EVIULT21XXX",
+    "name": "Paysera",
+    "bic": "EVIULT21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/paysera.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "QONTO_QNTOFRP1",
+    "name": "Qonto",
+    "bic": "QNTOFRP1",
+    "transaction_total_days": "730",
+    "countries": [
+      "PT",
+      "FR",
+      "BE",
+      "AT",
+      "NL"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/qonto.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "REVOLUT_REVOLT21",
+    "name": "Revolut",
+    "bic": "REVOLT21XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "BG",
+      "RO",
+      "PT",
+      "FR",
+      "SK",
+      "SE",
+      "HR",
+      "HU",
+      "NL",
+      "FI",
+      "PL",
+      "DK",
+      "LI",
+      "NO",
+      "LV",
+      "AT",
+      "CZ",
+      "LT",
+      "EE",
+      "IE",
+      "GR",
+      "BE",
+      "IT",
+      "MT",
+      "LU",
+      "SI",
+      "ES",
+      "CY",
+      "IS"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/revolut.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SHINE_TRZOFR21",
+    "name": "Shine",
+    "bic": "TRZOFR21",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SHINE_TRZOFR1.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSAFE_SKRLGB2L",
+    "name": "Skrill",
+    "bic": "SKRLGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_SKRLGB2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SG_SOGEFRPP",
+    "name": "Société Générale",
+    "bic": "SOGEFRPP",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/societegenerale.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SG_MEDIUM_ENTERPRISE_SOGEFRPP",
+    "name": "Société Générale Medium Enterprise",
+    "bic": "SOGEFRPP",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/societegenerale.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SG_SMALL_ENTERPRISE_SOGEFRPP",
+    "name": "Société Générale Small Enterprise",
+    "bic": "SOGEFRPP",
+    "transaction_total_days": "180",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/societegenerale.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SOLDO_SFSDIE22",
+    "name": "Soldo",
+    "bic": "SFSDIE22",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOLDO_SFSDIE22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "STRIPE_STPUIE21",
+    "name": "Stripe",
+    "bic": "STPUIE21",
+    "transaction_total_days": "730",
+    "countries": [
+      "SI",
+      "IS",
+      "FR",
+      "CY",
+      "AT",
+      "EE",
+      "IE",
+      "HR",
+      "FI",
+      "GR",
+      "PL",
+      "SE",
+      "CZ",
+      "NL",
+      "ES",
+      "DK",
+      "IT",
+      "BG",
+      "MT",
+      "LI",
+      "BE",
+      "GB",
+      "LV",
+      "RO",
+      "HU",
+      "LT",
+      "SK",
+      "DE",
+      "PT",
+      "LU",
+      "NO"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STRIPE_STPUIE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SWAN_SWNBFR22",
+    "name": "Swan",
+    "bic": "SWNBFR22",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/EEA/PNG/swan.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UBS_UBSWFRPP",
+    "name": "UBS",
+    "bic": "UBSWFRPP",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/US/PNG/ubs.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNION_UBPGMCMX",
+    "name": "Union Bancaire Privée",
+    "bic": "UBPGMCMX",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/UNION_DBSALULLFND.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "UNION_UBPGMCMXT2S",
+    "name": "Union Bancaire Privée des Moulins",
+    "bic": "UBPGMCMXT2S",
+    "transaction_total_days": "730",
+    "countries": [
+      "FR"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/UNION_DBSALULLFND.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "VIVID_VVIDLUL2",
+    "name": "Vivid Money",
+    "bic": "VVIDLUL2",
+    "transaction_total_days": "90",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/VIVIDMONEY_SOBKDEB2.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "WISE_EEA_TRWIGB22",
+    "name": "Wise",
+    "bic": "TRWIGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "NO",
+      "SE",
+      "FI",
+      "DK",
+      "EE",
+      "LV",
+      "LT",
+      "NL",
+      "CZ",
+      "ES",
+      "PL",
+      "BE",
+      "DE",
+      "AT",
+      "BG",
+      "HR",
+      "CY",
+      "FR",
+      "GR",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LI",
+      "LU",
+      "MT",
+      "PT",
+      "RO",
+      "SK",
+      "SI"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/wise.png",
+    "max_access_valid_for_days": "180"
+  }
+]

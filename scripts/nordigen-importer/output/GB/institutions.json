@@ -1,0 +1,1642 @@
+[
+  {
+    "id": "ABNAMRO_ABNAGB2LXXX",
+    "name": "ABN AMRO Bank Commercial",
+    "bic": "ABNAGB2LXXX",
+    "transaction_total_days": "540",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/abnamrobank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "AIRWALLEX_AIPTAU32",
+    "name": "Airwallex",
+    "bic": "AIPTAU32",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AIRWALLEX_AIPTAU32_1.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ALLICA_CIIVGB2AXXX",
+    "name": "Allica Bank",
+    "bic": "CIIVGB2AXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/allica.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "AIB_AIBKGB2LXXX",
+    "name": "Allied Irish Banks",
+    "bic": "AIBKGB2LXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/IE/PNG/aib.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "AIB_FTBKGB2BXXX",
+    "name": "Allied Irish Banks (NI)",
+    "bic": "FTBKGB2BXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/IE/PNG/aib.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "AIB_CORP_AIBKGB2LXXX",
+    "name": "Allied Irish Banks Corporate",
+    "bic": "AIBKGB2LXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/IE/PNG/aib.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ALPHA_FX_APAHGB2L",
+    "name": "Alpha FX",
+    "bic": "APAHGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/alphafx.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_AMAZON_NEWDUK00X01",
+    "name": "Amazon card (Newday)",
+    "bic": "NEWDUK00X01",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_AMAZON_NEWDUK00X01.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "AMERICAN_EXPRESS_AESUGB21",
+    "name": "American Express",
+    "bic": "AESUGB21",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/AMERICAN_EXPRESS_AESUGB21.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_AQUA_NEWDUK00X02",
+    "name": "Aqua card (Newday)",
+    "bic": "NEWDUK00X02",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_AQUA_NEWDUK00X02.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ARBUTHNOT_LATHAM_ARBUGB2LXXX",
+    "name": "Arbuthnot Latham",
+    "bic": "ARBUGB2LXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/arbuthnotlatham.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_ARGOS_NEWDUK00X04",
+    "name": "Argos card (Newday)",
+    "bic": "NEWDUK00X04",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_ARGOS_NEWDUK00X04.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BANK_OF_IRELAND_B365_BOFIGB2B",
+    "name": "Bank of Ireland 365 Online",
+    "bic": "BOFIGB2B",
+    "transaction_total_days": "365",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/bankofireland.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BANK_OF_IRELAND_BUSINESS_ONLINE_BOFIGB2B",
+    "name": "Bank of Ireland Business On Line",
+    "bic": "BOFIGB2B",
+    "transaction_total_days": "365",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/bankofirelandbusiness_uk",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BANK_OF_SCOTLAND_BUSINESS_BOFSGBS1",
+    "name": "Bank of Scotland Business",
+    "bic": "BOFSGBS1",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/bankofscotlandbusiness.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BANK_OF_SCOTLAND_COMMERCIAL_BOFSGBS1",
+    "name": "Bank of Scotland Commercial",
+    "bic": "BOFSGBS1",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/bankofscotlandbusiness.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BANK_OF_SCOTLAND_BOFSGBS1",
+    "name": "Bank of Scotland Personal",
+    "bic": "BOFSGBS1",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/bankofscotlandpersonal.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BARCLAYCARD_COMMERCIAL_BUKBGB22",
+    "name": "Barclaycard Commercial Payments",
+    "bic": "BUKBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/barclaycard.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BARCLAYCARD_BUKBGB22",
+    "name": "Barclaycard UK",
+    "bic": "BUKBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/barclaycard.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BARCLAYS_BUSINESS_BUKBGB22",
+    "name": "Barclays Business",
+    "bic": "BUKBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/barclayscorporate.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BARCLAYS_CORPORATE_BUKBGB22",
+    "name": "Barclays Corporate",
+    "bic": "BUKBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/barclayscorporate.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BARCLAYS_BUKBGB22",
+    "name": "Barclays Personal",
+    "bic": "BUKBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/barclayspersonal.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BARCLAYS_WEALTH_BUKBGB22",
+    "name": "Barclays Wealth",
+    "bic": "BUKBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/barclayscorporate.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "BBVAUK_BBVAGB2L",
+    "name": "BBVA",
+    "bic": "BBVAGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/bbva.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_BIP_NEWDUK00X05",
+    "name": "BIP card (Newday)",
+    "bic": "NEWDUK00X05",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_BIP_NEWDUK00X05.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_BURTON_NEWDUK00X06",
+    "name": "Burton card (Newday)",
+    "bic": "NEWDUK00X06",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_BURTON_NEWDUK00X06.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HOARES_HOABGB2L",
+    "name": "C. Hoare & Co",
+    "bic": "HOABGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/choare.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CAFBANK_CAFBGB21XXX",
+    "name": "CAF Bank",
+    "bic": "CAFBGB21XXX",
+    "transaction_total_days": "365",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/caf.png",
+    "max_access_valid_for_days": "90"
+  },
+  {
+    "id": "CAPITALONE_NFBKUSF1XXX",
+    "name": "Capital One",
+    "bic": "NFBKUSF1XXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/capitalone.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CATER_ALLEN_CATEGB21",
+    "name": "Cater Allen",
+    "bic": "CATEGB21",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/caterallen.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CAXTON_CAXTGB2L",
+    "name": "Caxton",
+    "bic": "CAXTGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/CAXTON_CAXTGB2L.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CHASE_CHASGB2L",
+    "name": "Chase Bank",
+    "bic": "CHASGB2L",
+    "transaction_total_days": "395",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/chasebank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CITI_CITIGB2L",
+    "name": "Citi Private Bank",
+    "bic": "CITIGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/citibank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "COUTTS_COUTGB22XXX",
+    "name": "Coutts",
+    "bic": "COUTGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/coutts.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "COUTTS_CS_COUTGB22XXX",
+    "name": "Coutts&Co ClearSpend",
+    "bic": "COUTGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/coutts.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CREDITSUISSE_CSUKGB2L",
+    "name": "Credit Suisse",
+    "bic": "CSUKGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/ES/PNG/creditsuisse.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CUMBERLAND_CMBSGB2AXXX",
+    "name": "Cumberland Building Society",
+    "bic": "CMBSGB2AXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/cumberland.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CYNERGY_BCYPGB2LXXX",
+    "name": "Cynergy Bank",
+    "bic": "BCYPGB2LXXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/cynergybank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "DANSKEBANK_BUSINESS_DABAGB2B",
+    "name": "Danske Bank Business",
+    "bic": "DABAGB2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/danskebank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "DANSKEBANK_DABAGB2B",
+    "name": "Danske Bank Private",
+    "bic": "DABAGB2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/danskebank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_DEBENHAMS_NEWDUK00X07",
+    "name": "Debenhams card (Newday)",
+    "bic": "NEWDUK00X07",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_DEBENHAMS_NEWDUK00X07.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_DOROTHYPERKINS_NEWDUK00X08",
+    "name": "Dorothy Perkins card (Newday)",
+    "bic": "NEWDUK00X08",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_DOROTHYPERKINS_NEWDUK00X08.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "EBURY_EBURGB2LXXX",
+    "name": "Ebury",
+    "bic": "EBURGB2LXXX",
+    "transaction_total_days": "180",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/ebury.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "FINOM_FNOMDEB2",
+    "name": "Finom",
+    "bic": "FNOMDEB2",
+    "transaction_total_days": "365",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/FINOM_SOBKDEBB.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "FIRST_DIRECT_MIDLGB22",
+    "name": "First Direct",
+    "bic": "MIDLGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/firstdirect",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_FLUID_NEWDUK00X10",
+    "name": "Fluid card (Newday)",
+    "bic": "NEWDUK00X10",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_FLUID_NEWDUK00X10.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "GHANA_GHIBGB2L",
+    "name": "Ghana International Bank",
+    "bic": "GHIBGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GHANA_GHIBGB2L.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "GOHENRY_IDFEGIG1",
+    "name": "GoHenry",
+    "bic": "IDFEGIG1",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GOHENRY_IDFEGIG1.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "GOLDMAN_SACHS_GSILGB2X",
+    "name": "Goldman Sachs",
+    "bic": "GSILGB2X",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB",
+      "LU"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/GOLDMAN_SACHS_GSILGB2X.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "HALIFAX_HLFXGB22",
+    "name": "Halifax Personal",
+    "bic": "HLFXGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/halifax.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HANDELSBANKEN_CORPORATE_HANDGB22",
+    "name": "Handelsbanken Corporate",
+    "bic": "HANDGB22",
+    "transaction_total_days": "395",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/handelsbanken.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HANDELSBANKEN_HANDGB22",
+    "name": "Handelsbanken Private",
+    "bic": "HANDGB22",
+    "transaction_total_days": "395",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/handelsbanken.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HARGREAVES_LANSDOWN_HLSVGB22",
+    "name": "Hargreaves Lansdown Saving Limited",
+    "bic": "HLSVGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hargreaveslansdown.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_HOUSEOFFRASER_NEWDUK00X11",
+    "name": "House of Fraser card (Newday)",
+    "bic": "NEWDUK00X11",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_HOUSEOFFRASER_NEWDUK00X11.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HSBC_BUSINESS_HBUKGB4B",
+    "name": "HSBC Business",
+    "bic": "HBUKGB4B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HSBC_HBUKGB4B",
+    "name": "HSBC Personal",
+    "bic": "HBUKGB4B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "HSBC_NET_HBUKGB4B",
+    "name": "HSBCnet",
+    "bic": "HBUKGB4B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/hsbcpersonal.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ING_WB_INGBNL2A",
+    "name": "ING Wholesale Banking",
+    "bic": "INGBNL2AXXX",
+    "transaction_total_days": "540",
+    "countries": [
+      "IT",
+      "AT",
+      "HU",
+      "PT",
+      "RO",
+      "GB",
+      "LU",
+      "IE",
+      "CZ",
+      "BE",
+      "ES",
+      "NL",
+      "SK",
+      "BG",
+      "FR",
+      "DE"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/ing.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "INVESTEC_IVESGB2L",
+    "name": "Investec",
+    "bic": "IVESGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/investec.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "LLOYDS_BUSINESS_LOYDGB2L",
+    "name": "Lloyds Business",
+    "bic": "LOYDGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/lloyds.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "LLOYDS_COMMERCIAL_LOYDGB2L",
+    "name": "Lloyds Commercial",
+    "bic": "LOYDGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/lloyds.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "LLOYDS_LOYDGB2L",
+    "name": "Lloyds Personal",
+    "bic": "LOYDGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/lloyds.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "LOMBARD_ODIER_GB_LOCYGB2L",
+    "name": "Lombard Odier",
+    "bic": "LOCYGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LOMBARD_ODIER_LOCYLULL.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "LUNAR_LUNADK22",
+    "name": "Lunar",
+    "bic": "LUNADK22",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/LUNAR_LUNADK22.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NEWDAY_MARBLES_NEWDUK00X13",
+    "name": "Marbles card (Newday)",
+    "bic": "NEWDUK00X13",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_MARBLES_NEWDUK00X13.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "MNS_MSFEGB21",
+    "name": "Marks & Spencer",
+    "bic": "MSFEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/marksandspencer.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "MBNA_MBNAGB22",
+    "name": "MBNA Personal",
+    "bic": "MBNAGB22",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/mbna.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "METRO_MYMBGB2L",
+    "name": "Metro Bank",
+    "bic": "MYMBGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/metro.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "METTLE_NWBKGB2L",
+    "name": "Mettle",
+    "bic": "NWBKGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/mettle.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "MONESE_MNEEGB21",
+    "name": "Monese",
+    "bic": "MNEEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/FR/PNG/monese.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "MONZO_MONZGB2L",
+    "name": "Monzo",
+    "bic": "MONZGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/monzo.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "N26_NTSBDEB1",
+    "name": "N26 Bank",
+    "bic": "NTSBDEB1XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/DE/PNG/n26.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NATIONWIDE_NAIAGB21",
+    "name": "Nationwide",
+    "bic": "NAIAGB21",
+    "transaction_total_days": "449",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/nationwide.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NATWEST_NWBKGB2L",
+    "name": "Natwest",
+    "bic": "NWBKGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/natwest.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NATWEST_CORP_NWBKGB2L",
+    "name": "Natwest Bankline",
+    "bic": "NWBKGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/natwestbankline.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NATWEST_CS_NWBKGB2L",
+    "name": "Natwest ClearSpend",
+    "bic": "NWBKGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/natwest.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NATWEST_INTERNATONAL_RBOSGIGI",
+    "name": "Natwest International",
+    "bic": "RBOSGIGI",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/natwest.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "PAYSAFE_NETEGB21",
+    "name": "Neteller",
+    "bic": "NETEGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_NETEGB21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NEWDAY_NEWPAY_NEWDUK00X15",
+    "name": "Newpay card (Newday)",
+    "bic": "NEWDUK00X15",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_NEWPAY_NEWDUK00X15.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_OPUS_NEWDUK00X16",
+    "name": "Opus card (Newday)",
+    "bic": "NEWDUK00X16",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_OPUS_NEWDUK00X16.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "PAYPAL_PPLXLULL",
+    "name": "PayPal",
+    "bic": "PPLXLULLXXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYPAL_PPLXLULL.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "PAYSERA_EVIULT21XXX",
+    "name": "Paysera",
+    "bic": "EVIULT21XXX",
+    "transaction_total_days": "90",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/paysera.png",
+    "max_access_valid_for_days": "179"
+  },
+  {
+    "id": "PLEO_PLEODK00",
+    "name": "Pleo",
+    "bic": "PLEODK00",
+    "transaction_total_days": "90",
+    "countries": [
+      "ES",
+      "DK",
+      "GB",
+      "IE",
+      "DE",
+      "SE"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PLEO_PLEODK00.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "NEWDAY_PULSE_NEWDUK00X17",
+    "name": "Pulse card (Newday)",
+    "bic": "NEWDUK00X17",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_PULSE_NEWDUK00X17.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "REVOLUT_REVOGB21",
+    "name": "Revolut",
+    "bic": "REVOGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/revolut.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "RBS_GB_RBSSGBKC",
+    "name": "Royal Bank of Scotland",
+    "bic": "RBSSGBKC",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/rbs.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "RBS_GB_CORP_RBSSGBKC",
+    "name": "Royal Bank of Scotland Bankline",
+    "bic": "RBSSGBKC",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/rbsbankline.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "RBS_GB_CS_RBSSGBKC",
+    "name": "Royal Bank of Scotland ClearSpend",
+    "bic": "RBSSGBKC",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/rbs.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "SANTANDER_GB_BUSINESS_ABBYGB2L",
+    "name": "Santander Business",
+    "bic": "ABBYGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/santander.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "SANTANDER_GB_CORP_ABBYGB2L",
+    "name": "Santander Corporate",
+    "bic": "ABBYGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/santander.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "SANTANDER_GB_ABBYGB2L",
+    "name": "Santander Personal",
+    "bic": "ABBYGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/santander.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "PAYSAFE_SKRLGB2L",
+    "name": "Skrill",
+    "bic": "SKRLGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/PAYSAFE_SKRLGB2L.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "SMILE_CPBKGB22",
+    "name": "smile",
+    "bic": "CPBKGB22",
+    "transaction_total_days": "390",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/smile.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "SOLDO_SOAVGB21",
+    "name": "Soldo",
+    "bic": "SOAVGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/SOLDO_SOAVGB21.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "STARLING_SRLGGB3L",
+    "name": "Starling",
+    "bic": "SRLGGB3L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/starling.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "STRIPE_STPUIE21",
+    "name": "Stripe",
+    "bic": "STPUIE21",
+    "transaction_total_days": "730",
+    "countries": [
+      "HR",
+      "SK",
+      "AT",
+      "LU",
+      "LI",
+      "SE",
+      "FR",
+      "HU",
+      "CY",
+      "PL",
+      "RO",
+      "LT",
+      "IT",
+      "GB",
+      "FI",
+      "IS",
+      "DE",
+      "BE",
+      "SI",
+      "BG",
+      "PT",
+      "NL",
+      "MT",
+      "LV",
+      "GR",
+      "CZ",
+      "IE",
+      "NO",
+      "ES",
+      "EE",
+      "DK"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/STRIPE_STPUIE21.png",
+    "max_access_valid_for_days": "180"
+  },
+  {
+    "id": "TESCOBANK_TPFGGB2E",
+    "name": "Tesco Bank",
+    "bic": "TPFGGB2E",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/tescobank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "COOPERATIVE_CPBKGB22",
+    "name": "The Co-Operative Bank Business",
+    "bic": "CPBKGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/COOPERATIVE_CPBKGB22.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "COOPERATIVE_RETAIL_CPBKGB22",
+    "name": "The Co-Operative Bank Retail",
+    "bic": "CPBKGB22",
+    "transaction_total_days": "390",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/coop.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "THINKMONEY_THKMGB21",
+    "name": "thinkmoney",
+    "bic": "THKMGB21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/THINKMONEY_THKMGB21.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "TIDE_TIDEGB00X01",
+    "name": "Tide",
+    "bic": "TIDEGB00X01",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/tide.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "TRIODOS_TRIOGB22",
+    "name": "Triodos Bank",
+    "bic": "TRIOGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/triodosbank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "TSB_GB_TSBSGB2A",
+    "name": "TSB Bank",
+    "bic": "TSBSGB2A",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/tsbbank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_TUI_NEWDUK00X20",
+    "name": "TUI card (Newday)",
+    "bic": "NEWDUK00X20",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_TUI_NEWDUK00X20.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "UBS_UBSWGB2L",
+    "name": "UBS",
+    "bic": "UBSWGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/US/PNG/ubs.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ULSTER_ULSBGB2B",
+    "name": "Ulster Bank",
+    "bic": "ULSBGB2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/ulsterbank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ULSTER_CORP_ULSBGB2B",
+    "name": "Ulster Bank Bankline",
+    "bic": "ULSBGB2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/ulsterbank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ULSTER_CS_ULSBGB2B",
+    "name": "Ulster Bank ClearSpend",
+    "bic": "ULSBGB2B",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/ulsterbank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "UNITY_TRUST_UYTBGB22",
+    "name": "Unity Trust Bank",
+    "bic": "UYTBGB22",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/UNITY_TRUST_UYTBGB22.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "VANQUIS_VQISGB21",
+    "name": "Vanquis Bank",
+    "bic": "VQISGB21",
+    "transaction_total_days": "180",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/vanquis.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "VIRGIN_NRNBGB22",
+    "name": "Virgin Money - sort code starts with 05 or 82",
+    "bic": "NRNBGB22",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/virginmoney.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "VIRGIN_STANDALONE_NRNBGB22",
+    "name": "Virgin Money - sort code starts with 08",
+    "bic": "NRNBGB22",
+    "transaction_total_days": "90",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/virginmoney.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "NEWDAY_WALLIS_NEWDUK00X21",
+    "name": "Wallis card (Newday)",
+    "bic": "NEWDUK00X21",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://cdn-logos.gocardless.com/ais/NEWDAY_WALLIS_NEWDUK00X21.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "WISE_TRWIGB22",
+    "name": "Wise",
+    "bic": "TRWIGB22XXX",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/wise.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "CASHPLUS_NWBKGB2L",
+    "name": "Zempler Bank",
+    "bic": "APSFGB2L",
+    "transaction_total_days": "540",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/zemplerbank.png",
+    "max_access_valid_for_days": "90",
+    "max_access_valid_for_days_reconfirmation": "730"
+  },
+  {
+    "id": "ZOPA_ZOFSGB2L",
+    "name": "Zopa Bank",
+    "bic": "ZOFSGB2L",
+    "transaction_total_days": "730",
+    "countries": [
+      "GB"
+    ],
+    "logo": "https://storage.googleapis.com/gc-prd-institution_icons-production/UK/PNG/zopa.png",
+    "max_access_valid_for_days": "90"
+  }
+]
