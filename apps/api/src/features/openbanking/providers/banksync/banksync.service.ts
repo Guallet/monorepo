@@ -1,11 +1,11 @@
-import { persistBankTransactions } from '../transactions/persist-bank-transactions';
+import { persistBankTransactions } from '../../../transactions/persist-bank-transactions';
 import {
   BankProviderAdapter,
   ProviderContext,
   ProviderAccount,
   ProviderIdentity,
   requireApiKey,
-} from '../openbanking/providers/bank-provider.interface';
+} from '../bank-provider.interface';
 import {
   BadGatewayException,
   BadRequestException,
@@ -19,14 +19,14 @@ import { AccountSource } from 'src/features/accounts/entities/accountSource.mode
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { In, Repository } from 'typeorm';
-import {
+import { BankSyncClient } from './banksync.client';
+import type {
   BankSyncBank,
-  BankSyncClient,
   BankSyncRemoteAccount,
   BankSyncRemoteTransaction,
-} from './banksync.client';
-import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
-import { connectionStatusFromProvider } from '../openbanking/models/bank-connection-state.model';
+} from './types';
+import { ConnectedAccount } from '../../entities/connected-account.entity';
+import { connectionStatusFromProvider } from '../../models/bank-connection-state.model';
 
 const HISTORY_YEARS = 7;
 const SYNC_OVERLAP_DAYS = 7;

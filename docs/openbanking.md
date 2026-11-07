@@ -60,20 +60,18 @@ signed-in user. An active provider link returns:
 
 ```json
 {
-  "connection": {
-    "id": "connection-uuid",
-    "providerId": "synci",
-    "remoteAccountId": "opaque-provider-account-id",
-    "lastRefresh": "2026-11-07T10:00:00.000Z",
-    "daysRemaining": 45,
-    "status": "connected"
-  }
+  "id": "connection-uuid",
+  "providerId": "synci",
+  "remoteAccountId": "opaque-provider-account-id",
+  "lastRefresh": "2026-11-07T10:00:00.000Z",
+  "daysRemaining": 45,
+  "status": "connected"
 }
 ```
 
 Manual accounts, unlinked accounts, and accounts whose provider connection was
 removed return HTTP 200 with an empty object (`{}`). The presence of
-`connection` indicates a persisted link; inspect its `status` for current usability.
+Connection details indicate a persisted link; inspect `status` for current usability.
 Missing accounts and accounts owned by another user return HTTP 404.
 
 The check uses persisted links even when the discovery cache is empty or the

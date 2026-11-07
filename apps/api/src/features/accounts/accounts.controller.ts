@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -38,19 +37,11 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
 import { AccountConnectionsService } from './account-connections.service';
 import { AccountConnectionDto } from './dto/account-connection.dto';
-
-function parseDateParam(value: string | undefined, name: string): Date | null {
-  if (!value) {
-    return null;
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    throw new BadRequestException(`Invalid ${name} query parameter`);
-  }
-
-  return parsed;
-}
+import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
+import {
+  accountChartQuerySchema,
+  AccountChartQuery,
+} from './dto/account-chart.query';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -152,6 +143,7 @@ export class AccountsController {
 
   @ApiOperation({ summary: 'getAccountChart' })
   @ApiOkResponse({ type: () => AccountChartsDto })
+  @ApiBadRequestResponse({ description: 'Invalid date query or date range' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiQuery({ name: 'startDate', type: String, required: false })
   @ApiQuery({ name: 'endDate', type: String, required: false })
@@ -159,31 +151,15 @@ export class AccountsController {
   async getAccountChart(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-    @Query('startDate') startDateParam?: string,
-    @Query('endDate') endDateParam?: string,
+    @Query(new ZodValidationPipe(accountChartQuerySchema))
+    query: AccountChartQuery,
   ): Promise<AccountChartsDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
     );
 
-    const endDate = parseDateParam(endDateParam, 'endDate') ?? new Date();
-
-    const startDate =
-      parseDateParam(startDateParam, 'startDate') ??
-      (() => {
-        const d = new Date();
-        d.setMonth(d.getMonth() - 3);
-        d.setDate(1);
-        d.setHours(0, 0, 0, 0);
-        return d;
-      })();
-
-    if (startDate > endDate) {
-      throw new BadRequestException(
-        'startDate must be before or equal to endDate',
-      );
-    }
+    const { startDate, endDate } = query;
 
     const transactions = await this.transactionsService.getAccountTransactions({
       accountId: account.id,
@@ -207,12 +183,12 @@ export class AccountsController {
     );
 
     const accountCharts = Object.entries(transactionsByMonth).map(
-      ([key, txns]) => {
+      ([key, transaction]) => {
         const [year, month] = key.split('-');
-        const totalIn = txns
+        const totalIn = transaction
           .filter((t) => t.amount > 0)
           .reduce((acc, t) => acc + Number(t.amount), 0);
-        const totalOut = txns
+        const totalOut = transaction
           .filter((t) => t.amount < 0)
           .reduce((acc, t) => acc + Number(t.amount), 0);
         return {
@@ -237,20 +213,20 @@ export class AccountsController {
     const balanceAtRangeEnd = currentBalance - Number(postRangeSum ?? 0);
 
     // Walk transactions oldest→newest, accumulating daily balance
-    const sortedTxns = [...transactions].sort(
+    const sortedTransactions = [...transactions].sort(
       (a, b) => a.date.getTime() - b.date.getTime(),
     );
     const balanceHistory: BalanceHistoryPoint[] = [];
 
     // Work backwards to get opening balance, then forward for history
-    const reversedTxns = [...sortedTxns].reverse();
+    const reversedTransactions = [...sortedTransactions].reverse();
     let openingBalance = balanceAtRangeEnd;
-    for (const t of reversedTxns) {
+    for (const t of reversedTransactions) {
       openingBalance -= Number(t.amount);
     }
 
     const dailyMap = new Map<string, number>();
-    for (const t of sortedTxns) {
+    for (const t of sortedTransactions) {
       const dateKey = t.date.toISOString().split('T')[0];
       dailyMap.set(dateKey, (dailyMap.get(dateKey) ?? 0) + Number(t.amount));
     }

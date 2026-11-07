@@ -10,57 +10,16 @@ import {
 } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
+import type {
+  BankSyncBank,
+  BankSyncRemoteAccount,
+  BankSyncRemoteTransaction,
+  BankSyncResponse,
+  BankSyncRemoteBalance,
+} from './types';
 
 const BASE_URL = 'https://api.banksync.io/v1';
 const REQUEST_INTERVAL_MS = 7_000;
-
-export type BankSyncBank = {
-  id: string;
-  name: string;
-  connectionStatus?: {
-    connected?: boolean;
-    status?: string;
-    errorCode?: string;
-  };
-};
-
-export type BankSyncRemoteAccount = {
-  id?: string;
-  accountId?: string;
-  name?: string;
-  accountName?: string;
-  type?: string;
-  currency?: string;
-  balance?: number | string | null;
-  currentBalance?: number | string | null;
-};
-
-export type BankSyncRemoteTransaction = {
-  id: string;
-  date: string;
-  amount: number | string;
-  currency?: string | null;
-  description?: string | null;
-  name?: string | null;
-  merchant?: string | null;
-  pending?: boolean;
-  pendingTransactionId?: string | null;
-};
-
-type BankSyncResponse<T> = {
-  success: boolean;
-  data: T;
-  modified?: T;
-  removed?: string[];
-  meta?: { cursor?: string | null; hasMore?: boolean };
-};
-
-type BankSyncRemoteBalance = {
-  balance?: number | string;
-  currentBalance?: number | string;
-  amount?: number | string;
-  currency?: string;
-};
 
 @Injectable()
 export class BankSyncClient {

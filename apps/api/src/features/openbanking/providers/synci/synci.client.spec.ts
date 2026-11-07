@@ -22,14 +22,14 @@ describe('Synci connection metadata', () => {
       const accounts = await new SynciClient(http as never).getAccounts('key');
       expect(http.get).toHaveBeenCalledTimes(2);
       expect(accounts).toHaveLength(2);
+      const expectedStatus = {
+        CONNECTED: 'connected',
+        EXPIRED: 'expired',
+        ERROR: 'connectionError',
+      }[status];
       expect(accounts[0]).toMatchObject({
         connectionExpiresAt: '2026-12-01T00:00:00Z',
-        connectionStatus:
-          status === 'CONNECTED'
-            ? 'connected'
-            : status === 'EXPIRED'
-              ? 'expired'
-              : 'connectionError',
+        connectionStatus: expectedStatus,
       });
     },
   );

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BankSyncService } from '../../banksync/banksync.service';
-import { LunchFlowService } from '../../lunchflow/lunchflow.service';
-import { SynciService } from '../../synci/synci.service';
-import { NordigenService } from '../../nordigen/nordigen.service';
+import { BankSyncService } from './banksync/banksync.service';
+import { LunchFlowService } from './lunchflow/lunchflow.service';
+import { SynciService } from './synci/synci.service';
+import { NordigenService } from './nordigen/nordigen.service';
 import { BankProviderAdapter, BankProviderId } from './bank-provider.interface';
 import { BankProviderDto } from '../dto/openbanking.dto';
 

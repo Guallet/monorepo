@@ -18,9 +18,9 @@ export type AccountDto = {
     | null;
 };
 
-export type AccountConnectionDto = {
-  connection?: AccountConnectionDetailsDto;
-};
+export type AccountConnectionDto =
+  | AccountConnectionDetailsDto
+  | Record<string, never>;
 
 export type AccountConnectionDetailsDto = {
   id: string;

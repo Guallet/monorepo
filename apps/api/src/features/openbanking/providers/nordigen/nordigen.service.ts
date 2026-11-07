@@ -1,4 +1,4 @@
-import { persistBankTransactions } from '../transactions/persist-bank-transactions';
+import { persistBankTransactions } from '../../../transactions/persist-bank-transactions';
 import {
   BadGatewayException,
   BadRequestException,
@@ -8,25 +8,25 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { createHash } from 'node:crypto';
-import { Account } from '../accounts/entities/account.entity';
-import { AccountSource } from '../accounts/entities/accountSource.model';
-import { Transaction } from '../transactions/entities/transaction.entity';
-import { BankAuthorization } from '../openbanking/entities/bank-authorization.entity';
+import { Account } from '../../../accounts/entities/account.entity';
+import { AccountSource } from '../../../accounts/entities/accountSource.model';
+import { Transaction } from '../../../transactions/entities/transaction.entity';
+import { BankAuthorization } from '../../entities/bank-authorization.entity';
 import {
   BankProviderAdapter,
   ProviderAccount,
   ProviderContext,
   ProviderIdentity,
   requireNordigenCredentials,
-} from '../openbanking/providers/bank-provider.interface';
-import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
+} from '../bank-provider.interface';
+import { ConnectedAccount } from '../../entities/connected-account.entity';
 import { NordigenClient } from './nordigen.client';
 import { getAccountTypeFrom } from './dto/ExternalCashAccountType1Code.helper';
 import { getBalanceFrom } from './dto/nordigen-balances.helper';
 import {
   connectionStatusFromProvider,
   validDate,
-} from '../openbanking/models/bank-connection-state.model';
+} from '../../models/bank-connection-state.model';
 
 @Injectable()
 export class NordigenService implements BankProviderAdapter {
@@ -150,23 +150,22 @@ export class NordigenService implements BankProviderAdapter {
     return discovered.flatMap<ProviderAccount>((result, index) => {
       if (result.status === 'fulfilled') return [result.value];
       const linkedAccountId = linkedById.get(ids[index]);
-      return linkedAccountId
-        ? [
-            {
-              ...metadata.get(ids[index]),
-              id: ids[index],
-              name: 'Bank account',
-              institutionName: null,
-              currency: null,
-              linkedAccountId,
-              status: 'unavailable',
-              connectionStatus:
-                metadata.get(ids[index])?.connectionStatus === 'expired'
-                  ? 'expired'
-                  : 'connectionError',
-            },
-          ]
-        : [];
+      if (!linkedAccountId) return [];
+      return [
+        {
+          ...metadata.get(ids[index]),
+          id: ids[index],
+          name: 'Bank account',
+          institutionName: null,
+          currency: null,
+          linkedAccountId,
+          status: 'unavailable',
+          connectionStatus:
+            metadata.get(ids[index])?.connectionStatus === 'expired'
+              ? 'expired'
+              : 'connectionError',
+        },
+      ];
     });
   }
   async importAccounts(

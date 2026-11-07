@@ -40,7 +40,9 @@ export class AccountConnectionDto {
   @ApiProperty({ enum: BANK_CONNECTION_STATUSES })
   status: BankConnectionStatus;
 
-  static fromDomain(connection: AccountConnection): AccountConnectionDto {
+  static fromDomain(
+    connection: AccountConnection | null,
+  ): AccountConnectionDto {
     const dto = new AccountConnectionDto();
     if (connection) {
       dto.id = connection.id;

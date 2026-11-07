@@ -11,6 +11,6 @@ export function useAccountConnection(accountId?: string) {
 
   return {
     ...query,
-    connection: query.data?.connection ?? null,
+    connection: query.data?.id ? query.data : null,
   };
 }

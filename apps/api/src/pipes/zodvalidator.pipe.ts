@@ -11,7 +11,6 @@ export class ZodValidationPipe implements PipeTransform {
   // oxlint-disable-next-line typescript/no-unused-vars
   transform(value: unknown, metadata: ArgumentMetadata) {
     try {
-      console.log('value', value);
       const parsedValue = this.schema.parse(value);
       return parsedValue;
     } catch (error: unknown) {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
@@ -24,7 +24,7 @@ export class AccountConnectionsService {
     userId: string,
     accountId: string,
   ): Promise<AccountConnection | null> {
-    const account = await this.accounts.getUserAccount(userId, accountId);
+    await this.accounts.getUserAccount(userId, accountId);
 
     const where = {
       user_id: userId,
@@ -67,16 +67,19 @@ export class AccountConnectionsService {
         connection.last_error != null &&
         (connection.last_error.accountIds === null ||
           connection.last_error.accountIds.includes(remoteAccountId));
-      const status = expired
-        ? 'expired'
-        : hasError
-          ? 'connectionError'
-          : providerStatus;
-      const daysRemaining = expired
-        ? 0
-        : expiresAt
-          ? Math.ceil((expiresAt.getTime() - now) / 86_400_000)
-          : null;
+      let status = providerStatus;
+      if (expired) {
+        status = 'expired';
+      } else if (hasError) {
+        status = 'connectionError';
+      }
+
+      let daysRemaining: number | null = null;
+      if (expired) {
+        daysRemaining = 0;
+      } else if (expiresAt) {
+        daysRemaining = Math.ceil((expiresAt.getTime() - now) / 86_400_000);
+      }
       const refreshDates = [
         validDate(cachedAccount?.lastRefresh),
         validDate(lastSyncedAt),
@@ -86,14 +89,14 @@ export class AccountConnectionsService {
         ? new Date(Math.max(...refreshDates.map((date) => date.getTime())))
         : null;
 
-      return new AccountConnection(
-        connection.id,
+      return {
+        id: connection.id,
         providerId,
         remoteAccountId,
         lastRefresh,
         daysRemaining,
         status,
-      );
+      };
     }
 
     return null;

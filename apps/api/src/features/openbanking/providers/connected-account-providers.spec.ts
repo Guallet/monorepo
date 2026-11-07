@@ -1,7 +1,7 @@
-import { BankSyncService } from '../../banksync/banksync.service';
-import { LunchFlowService } from '../../lunchflow/lunchflow.service';
-import { NordigenService } from '../../nordigen/nordigen.service';
-import { SynciService } from '../../synci/synci.service';
+import { BankSyncService } from './banksync/banksync.service';
+import { LunchFlowService } from './lunchflow/lunchflow.service';
+import { NordigenService } from './nordigen/nordigen.service';
+import { SynciService } from './synci/synci.service';
 import type {
   BankProviderAdapter,
   BankProviderId,

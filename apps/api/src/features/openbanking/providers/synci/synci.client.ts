@@ -9,7 +9,7 @@ import { firstValueFrom } from 'rxjs';
 import {
   connectionStatusFromProvider,
   BankConnectionStatus,
-} from '../openbanking/models/bank-connection-state.model';
+} from '../../models/bank-connection-state.model';
 
 const BASE_URL = 'https://api.synci.io/api/v1';
 
@@ -128,11 +128,14 @@ export class SynciClient {
         account.financial_connection_id == null
           ? undefined
           : connections.get(String(account.financial_connection_id));
-      const connectionStatus = connectionStatusFromProvider(connection?.status);
+      let connectionStatus = connectionStatusFromProvider(connection?.status);
       const hasError =
         connection === null ||
         account.enabled === false ||
         ['FAILING', 'DEAD'].includes(connection?.health?.status ?? '');
+      if (hasError && connectionStatus !== 'expired') {
+        connectionStatus = 'connectionError';
+      }
       const balance =
         account.cash_balance?.amount ??
         account.balance?.available ??
@@ -154,12 +157,7 @@ export class SynciClient {
         provider: account.integrator ?? null,
         currency: account.cash_balance?.currency ?? account.currency ?? null,
         status: account.enabled === false ? 'INACTIVE' : 'ACTIVE',
-        connectionStatus:
-          connectionStatus === 'expired'
-            ? 'expired'
-            : hasError
-              ? 'connectionError'
-              : connectionStatus,
+        connectionStatus,
         connectionExpiresAt: connection?.consent_expires_at,
         lastRefresh: connection?.activated_at,
         balance_amount: Number(balance),

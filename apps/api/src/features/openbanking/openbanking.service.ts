@@ -243,14 +243,12 @@ export class OpenbankingService {
     )
       throw new NotFoundException();
     const state = await job.getState();
-    const status =
-      state === 'completed'
-        ? 'completed'
-        : state === 'failed'
-          ? 'failed'
-          : state === 'active'
-            ? 'running'
-            : 'queued';
+    let status: BankJobStatusDto['status'] = 'queued';
+    if (state === 'completed' || state === 'failed') {
+      status = state;
+    } else if (state === 'active') {
+      status = 'running';
+    }
     return {
       status,
       operation: job.data.operation,

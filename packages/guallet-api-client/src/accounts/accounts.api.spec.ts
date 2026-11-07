@@ -8,14 +8,12 @@ describe('account connection API', () => {
   it.each<AccountConnectionDto>([
     {},
     {
-      connection: {
-        id: 'connection-1',
-        providerId: 'synci',
-        remoteAccountId: 'remote-account',
-        lastRefresh: '2026-11-07T10:00:00.000Z',
-        daysRemaining: null,
-        status: 'connected' as const,
-      },
+      id: 'connection-1',
+      providerId: 'synci',
+      remoteAccountId: 'remote-account',
+      lastRefresh: '2026-11-07T10:00:00.000Z',
+      daysRemaining: null,
+      status: 'connected' as const,
     },
   ])(
     'reads the account connection response unchanged: %j',

@@ -3,8 +3,7 @@ import {
   ProviderContext,
   ProviderIdentity,
   requireApiKey,
-} from '../openbanking/providers/bank-provider.interface';
-import { connectionStatusFromProvider } from '../openbanking/models/bank-connection-state.model';
+} from '../bank-provider.interface';
 import {
   BadRequestException,
   Injectable,
@@ -18,12 +17,12 @@ import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
-import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
-import { LunchFlowClient, LunchFlowRemoteAccount } from './lunchflow.client';
+import { ConnectedAccount } from '../../entities/connected-account.entity';
+import { SynciClient, SynciRemoteAccount } from './synci.client';
 
 @Injectable()
-export class LunchFlowService implements BankProviderAdapter {
-  private readonly logger = new Logger(LunchFlowService.name);
+export class SynciService implements BankProviderAdapter {
+  private readonly logger = new Logger(SynciService.name);
 
   constructor(
     @InjectRepository(ConnectedAccount)
@@ -32,7 +31,7 @@ export class LunchFlowService implements BankProviderAdapter {
     private readonly accounts: Repository<Account>,
     @InjectRepository(Transaction)
     private readonly transactions: Repository<Transaction>,
-    private readonly client: LunchFlowClient,
+    private readonly client: SynciClient,
   ) {}
 
   async validateCredentials({
@@ -45,7 +44,7 @@ export class LunchFlowService implements BankProviderAdapter {
 
   async disconnect({ userId }: ProviderIdentity): Promise<void> {
     await this.remoteAccounts.update(
-      { provider: 'lunchflow', user_id: userId },
+      { provider: 'synci', user_id: userId },
       { is_linked: false },
     );
   }
@@ -55,7 +54,7 @@ export class LunchFlowService implements BankProviderAdapter {
     const [accounts, linked] = await Promise.all([
       this.client.getAccounts(apiKey),
       this.remoteAccounts.find({
-        where: { provider: 'lunchflow', user_id: userId },
+        where: { provider: 'synci', user_id: userId },
       }),
     ]);
     const linkedByRemoteId = new Map(
@@ -64,14 +63,17 @@ export class LunchFlowService implements BankProviderAdapter {
         .map((item) => [item.remote_account_id, item.guallet_account_id]),
     );
     return accounts.map((account) => ({
-      raw: account,
+      raw: account.raw,
       id: String(account.id),
       name: account.name,
       institutionName: account.institution_name ?? null,
       institutionLogo: account.institution_logo ?? null,
+      provider: account.provider ?? null,
       currency: account.currency ?? null,
       status: account.status ?? 'ACTIVE',
-      connectionStatus: connectionStatusFromProvider(account.status),
+      connectionStatus: account.connectionStatus,
+      connectionExpiresAt: account.connectionExpiresAt,
+      lastRefresh: account.lastRefresh,
       linkedAccountId: linkedByRemoteId.get(String(account.id)) ?? null,
     }));
   }
@@ -89,7 +91,7 @@ export class LunchFlowService implements BankProviderAdapter {
     );
     if (selected.length !== requested.size) {
       throw new BadRequestException(
-        'One or more Lunch Flow accounts are unavailable',
+        'One or more Synci accounts are unavailable',
       );
     }
 
@@ -109,7 +111,7 @@ export class LunchFlowService implements BankProviderAdapter {
   async sync({ userId, credentials }: ProviderContext) {
     const apiKey = requireApiKey(credentials);
     const mappings = await this.remoteAccounts.find({
-      where: { provider: 'lunchflow', user_id: userId, is_linked: true },
+      where: { provider: 'synci', user_id: userId, is_linked: true },
     });
     return await this.syncMappings(userId, apiKey, mappings);
   }
@@ -120,7 +122,7 @@ export class LunchFlowService implements BankProviderAdapter {
   }: ProviderIdentity & { accountId: string }): Promise<void> {
     const result = await this.remoteAccounts.update(
       {
-        provider: 'lunchflow',
+        provider: 'synci',
         user_id: userId,
         remote_account_id: remoteAccountId,
       },
@@ -136,17 +138,17 @@ export class LunchFlowService implements BankProviderAdapter {
   }: {
     userId: string;
     apiKey: string;
-    account: LunchFlowRemoteAccount;
+    account: SynciRemoteAccount;
   }) {
     const remoteId = String(account.id);
     let mapping = await this.remoteAccounts.findOne({
       where: {
-        provider: 'lunchflow',
+        provider: 'synci',
         user_id: userId,
         remote_account_id: remoteId,
       },
     });
-    const balance = await this.client.getBalance(apiKey, remoteId);
+    const balance = this.client.getBalance(account);
     const transactions = await this.client.getTransactions(apiKey, remoteId);
 
     let localAccount: Account | null = null;
@@ -158,7 +160,7 @@ export class LunchFlowService implements BankProviderAdapter {
         throw new NotFoundException('Linked Guallet account not found');
       }
       localAccount.source = AccountSource.IMPORTED;
-      localAccount.source_name = 'Lunch Flow';
+      localAccount.source_name = 'Synci';
       if (!mapping.is_linked) {
         mapping.is_linked = true;
         await this.remoteAccounts.save(mapping);
@@ -174,15 +176,15 @@ export class LunchFlowService implements BankProviderAdapter {
             currency,
             type: AccountType.UNKNOWN,
             source: AccountSource.IMPORTED,
-            source_name: 'Lunch Flow',
+            source_name: 'Synci',
             institutionId: null,
             properties: null,
           });
           const createdMapping = await manager.save(ConnectedAccount, {
-            provider: 'lunchflow',
+            provider: 'synci',
             user_id: userId,
             remote_account_id: remoteId,
-            raw: account,
+            raw: account.raw,
             remote_connection_id:
               account.connection_id === undefined ||
               account.connection_id === null
@@ -198,7 +200,6 @@ export class LunchFlowService implements BankProviderAdapter {
       mapping = created.mapping;
     }
     await this.persistRemoteData({
-      apiKey,
       account,
       mapping,
       localAccount,
@@ -231,17 +232,23 @@ export class LunchFlowService implements BankProviderAdapter {
             where: { id: mapping.guallet_account_id, user_id: userId },
           });
           if (!localAccount) return mapping.remote_account_id;
-          const [balance, transactions] = await Promise.all([
-            this.client.getBalance(apiKey, mapping.remote_account_id),
-            this.client.getTransactions(apiKey, mapping.remote_account_id),
-          ]);
-          const importedCount = await this.persistRemoteData({
+          const to = new Date().toISOString().slice(0, 10);
+          const fromDate = mapping.last_synced_at
+            ? new Date(mapping.last_synced_at)
+            : null;
+          if (fromDate) fromDate.setUTCDate(fromDate.getUTCDate() - 7);
+          const transactions = await this.client.getTransactions(
             apiKey,
+            mapping.remote_account_id,
+            fromDate?.toISOString().slice(0, 10),
+            to,
+          );
+          const importedCount = await this.persistRemoteData({
             account,
             mapping,
             localAccount,
             transactions,
-            balance,
+            balance: this.client.getBalance(account),
           });
           mapping.last_synced_at = new Date();
           await this.remoteAccounts.save(mapping);
@@ -254,9 +261,7 @@ export class LunchFlowService implements BankProviderAdapter {
     for (const remoteAccountId of results) {
       if (typeof remoteAccountId === 'string') {
         errors.push(remoteAccountId);
-        this.logger.warn(
-          `Lunch Flow account sync failed for ${remoteAccountId}`,
-        );
+        this.logger.warn(`Synci account sync failed for ${remoteAccountId}`);
       } else if (remoteAccountId) {
         accountsSynced += 1;
         newUncategorizedCount += remoteAccountId.importedCount;
@@ -266,30 +271,26 @@ export class LunchFlowService implements BankProviderAdapter {
   }
 
   private async persistRemoteData({
-    apiKey,
     account,
     mapping,
     localAccount,
     transactions,
     balance,
   }: {
-    apiKey: string;
-    account: LunchFlowRemoteAccount;
+    account: SynciRemoteAccount;
     mapping: ConnectedAccount;
     localAccount: Account;
-    transactions: Awaited<ReturnType<LunchFlowClient['getTransactions']>>;
+    transactions: Awaited<ReturnType<SynciClient['getTransactions']>>;
     balance?: { amount: number; currency: string };
   }) {
-    const currentBalance =
-      balance ??
-      (await this.client.getBalance(apiKey, mapping.remote_account_id));
+    const currentBalance = balance ?? this.client.getBalance(account);
     const currency =
       currentBalance.currency || account.currency || localAccount.currency;
     localAccount.balance = currentBalance.amount;
     localAccount.currency = currency;
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
-    mapping.raw = account;
+    mapping.raw = account.raw;
     mapping.remote_connection_id =
       account.connection_id == null ? null : String(account.connection_id);
     await this.remoteAccounts.save(mapping);
@@ -297,7 +298,7 @@ export class LunchFlowService implements BankProviderAdapter {
     return await persistPersonalProviderTransactions({
       repository: this.transactions,
       accountId: localAccount.id,
-      provider: 'lunchflow',
+      provider: 'synci',
       userId: mapping.user_id,
       remoteAccountId: mapping.remote_account_id,
       currency: localAccount.currency,
