@@ -1,5 +1,6 @@
 import {
   AccountChartsDto,
+  AccountConnectionDto,
   AccountDto,
   CreateAccountRequest,
   UpdateAccountRequest,
@@ -21,6 +22,12 @@ export class AccountsApi {
   async get(accountId: string): Promise<AccountDto> {
     return await this.client.get<AccountDto>({
       path: `${ACCOUNTS_PATH}/${accountId}`,
+    });
+  }
+
+  async getAccountConnection(accountId: string): Promise<AccountConnectionDto> {
+    return await this.client.get<AccountConnectionDto>({
+      path: `${ACCOUNTS_PATH}/${encodeURIComponent(accountId)}/connection`,
     });
   }
 

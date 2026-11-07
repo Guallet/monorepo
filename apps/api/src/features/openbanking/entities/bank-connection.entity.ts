@@ -11,6 +11,7 @@ import type {
   BankProviderId,
   ProviderAccount,
 } from '../providers/bank-provider.interface';
+import type { BankConnectionError } from '../models/bank-connection-state.model';
 
 @Entity('bank_connections')
 @Index('bank_connections_owner_provider_unique', ['user_id', 'provider_id'], {
@@ -49,4 +50,7 @@ export class BankConnection extends BaseDbEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   last_synced_at: Date | null;
+
+  @Column({ type: 'jsonb', nullable: true })
+  last_error: BankConnectionError | null;
 }

@@ -17,7 +17,7 @@ import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
-import { SynciAccount } from './entities/synci-account.entity';
+import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
 import { SynciClient, SynciRemoteAccount } from './synci.client';
 
 @Injectable()
@@ -25,8 +25,8 @@ export class SynciService implements BankProviderAdapter {
   private readonly logger = new Logger(SynciService.name);
 
   constructor(
-    @InjectRepository(SynciAccount)
-    private readonly remoteAccounts: Repository<SynciAccount>,
+    @InjectRepository(ConnectedAccount)
+    private readonly remoteAccounts: Repository<ConnectedAccount>,
     @InjectRepository(Account)
     private readonly accounts: Repository<Account>,
     @InjectRepository(Transaction)
@@ -43,14 +43,19 @@ export class SynciService implements BankProviderAdapter {
   }
 
   async disconnect({ userId }: ProviderIdentity): Promise<void> {
-    await this.remoteAccounts.update({ user_id: userId }, { is_linked: false });
+    await this.remoteAccounts.update(
+      { provider: 'synci', user_id: userId },
+      { is_linked: false },
+    );
   }
 
   async listAccounts({ userId, credentials }: ProviderContext) {
     const apiKey = requireApiKey(credentials);
     const [accounts, linked] = await Promise.all([
       this.client.getAccounts(apiKey),
-      this.remoteAccounts.find({ where: { user_id: userId } }),
+      this.remoteAccounts.find({
+        where: { provider: 'synci', user_id: userId },
+      }),
     ]);
     const linkedByRemoteId = new Map(
       linked
@@ -58,6 +63,7 @@ export class SynciService implements BankProviderAdapter {
         .map((item) => [item.remote_account_id, item.guallet_account_id]),
     );
     return accounts.map((account) => ({
+      raw: account.raw,
       id: String(account.id),
       name: account.name,
       institutionName: account.institution_name ?? null,
@@ -65,6 +71,9 @@ export class SynciService implements BankProviderAdapter {
       provider: account.provider ?? null,
       currency: account.currency ?? null,
       status: account.status ?? 'ACTIVE',
+      connectionStatus: account.connectionStatus,
+      connectionExpiresAt: account.connectionExpiresAt,
+      lastRefresh: account.lastRefresh,
       linkedAccountId: linkedByRemoteId.get(String(account.id)) ?? null,
     }));
   }
@@ -102,7 +111,7 @@ export class SynciService implements BankProviderAdapter {
   async sync({ userId, credentials }: ProviderContext) {
     const apiKey = requireApiKey(credentials);
     const mappings = await this.remoteAccounts.find({
-      where: { user_id: userId, is_linked: true },
+      where: { provider: 'synci', user_id: userId, is_linked: true },
     });
     return await this.syncMappings(userId, apiKey, mappings);
   }
@@ -113,6 +122,7 @@ export class SynciService implements BankProviderAdapter {
   }: ProviderIdentity & { accountId: string }): Promise<void> {
     const result = await this.remoteAccounts.update(
       {
+        provider: 'synci',
         user_id: userId,
         remote_account_id: remoteAccountId,
       },
@@ -132,7 +142,11 @@ export class SynciService implements BankProviderAdapter {
   }) {
     const remoteId = String(account.id);
     let mapping = await this.remoteAccounts.findOne({
-      where: { user_id: userId, remote_account_id: remoteId },
+      where: {
+        provider: 'synci',
+        user_id: userId,
+        remote_account_id: remoteId,
+      },
     });
     const balance = this.client.getBalance(account);
     const transactions = await this.client.getTransactions(apiKey, remoteId);
@@ -166,9 +180,11 @@ export class SynciService implements BankProviderAdapter {
             institutionId: null,
             properties: null,
           });
-          const createdMapping = await manager.save(SynciAccount, {
+          const createdMapping = await manager.save(ConnectedAccount, {
+            provider: 'synci',
             user_id: userId,
             remote_account_id: remoteId,
+            raw: account.raw,
             remote_connection_id:
               account.connection_id === undefined ||
               account.connection_id === null
@@ -198,7 +214,7 @@ export class SynciService implements BankProviderAdapter {
   private async syncMappings(
     userId: string,
     apiKey: string,
-    mappings: SynciAccount[],
+    mappings: ConnectedAccount[],
   ) {
     const remote = await this.client.getAccounts(apiKey);
     const remoteById = new Map(
@@ -262,7 +278,7 @@ export class SynciService implements BankProviderAdapter {
     balance,
   }: {
     account: SynciRemoteAccount;
-    mapping: SynciAccount;
+    mapping: ConnectedAccount;
     localAccount: Account;
     transactions: Awaited<ReturnType<SynciClient['getTransactions']>>;
     balance?: { amount: number; currency: string };
@@ -274,6 +290,10 @@ export class SynciService implements BankProviderAdapter {
     localAccount.currency = currency;
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
+    mapping.raw = account.raw;
+    mapping.remote_connection_id =
+      account.connection_id == null ? null : String(account.connection_id);
+    await this.remoteAccounts.save(mapping);
 
     return await persistPersonalProviderTransactions({
       repository: this.transactions,

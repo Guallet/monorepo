@@ -6,8 +6,19 @@ import {
 } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
+import {
+  connectionStatusFromProvider,
+  BankConnectionStatus,
+} from '../openbanking/models/bank-connection-state.model';
 
 const BASE_URL = 'https://api.synci.io/api/v1';
+
+type SynciConnectionResource = {
+  status?: string | null;
+  consent_expires_at?: string | null;
+  activated_at?: string | null;
+  health?: { status?: string | null } | null;
+};
 
 type SynciPage<T> = {
   data: T[];
@@ -31,6 +42,7 @@ type SynciAccountResource = {
 };
 
 export type SynciRemoteAccount = {
+  raw: Record<string, unknown>;
   id: string | number;
   connection_id?: string | number | null;
   name: string;
@@ -39,6 +51,9 @@ export type SynciRemoteAccount = {
   provider?: string | null;
   currency?: string | null;
   status?: string | null;
+  connectionStatus?: BankConnectionStatus;
+  connectionExpiresAt?: string | null;
+  lastRefresh?: string | null;
   balance_amount: number;
   balance_currency: string;
 };
@@ -83,13 +98,48 @@ export class SynciClient {
       '/finance/accounts',
       apiKey,
     );
+    const connectionIds = [
+      ...new Set(
+        remote.flatMap((account) =>
+          account.financial_connection_id == null
+            ? []
+            : [String(account.financial_connection_id)],
+        ),
+      ),
+    ];
+    const connections = new Map(
+      await Promise.all(
+        connectionIds.map(async (id) => {
+          try {
+            const response = await this.get<{ data: SynciConnectionResource }>(
+              `/finance/connections/${encodeURIComponent(id)}`,
+              apiKey,
+              {},
+            );
+            return [id, response.data] as const;
+          } catch {
+            return [id, null] as const;
+          }
+        }),
+      ),
+    );
     return remote.map((account) => {
+      const connection =
+        account.financial_connection_id == null
+          ? undefined
+          : connections.get(String(account.financial_connection_id));
+      const connectionStatus = connectionStatusFromProvider(connection?.status);
+      const hasError =
+        connection === null ||
+        account.enabled === false ||
+        ['FAILING', 'DEAD'].includes(connection?.health?.status ?? '');
       const balance =
         account.cash_balance?.amount ??
         account.balance?.available ??
         account.balance?.cleared ??
         0;
       return {
+        raw: account,
         id: account.id,
         connection_id: account.financial_connection_id,
         name:
@@ -104,6 +154,14 @@ export class SynciClient {
         provider: account.integrator ?? null,
         currency: account.cash_balance?.currency ?? account.currency ?? null,
         status: account.enabled === false ? 'INACTIVE' : 'ACTIVE',
+        connectionStatus:
+          connectionStatus === 'expired'
+            ? 'expired'
+            : hasError
+              ? 'connectionError'
+              : connectionStatus,
+        connectionExpiresAt: connection?.consent_expires_at,
+        lastRefresh: connection?.activated_at,
         balance_amount: Number(balance),
         balance_currency:
           account.cash_balance?.currency ?? account.currency ?? '',

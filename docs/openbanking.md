@@ -53,6 +53,52 @@ BankSync IDs encode both bank and account identity internally; clients do not
 need to interpret them. Import returns local Guallet account IDs in the job
 result. Account discovery is explicit; reading accounts does not call providers.
 
+## Checking an account's connection
+
+`GET /accounts/:id/connection` checks a local Guallet account owned by the
+signed-in user. An active provider link returns:
+
+```json
+{
+  "connection": {
+    "id": "connection-uuid",
+    "providerId": "synci",
+    "remoteAccountId": "opaque-provider-account-id",
+    "lastRefresh": "2026-11-07T10:00:00.000Z",
+    "daysRemaining": 45,
+    "status": "connected"
+  }
+}
+```
+
+Manual accounts, unlinked accounts, and accounts whose provider connection was
+removed return HTTP 200 with an empty object (`{}`). The presence of
+`connection` indicates a persisted link; inspect its `status` for current usability.
+Missing accounts and accounts owned by another user return HTTP 404.
+
+The check uses persisted links even when the discovery cache is empty or the
+account source label changes. It makes no provider requests and returns no
+credentials. `lastRefresh` is the latest successful account refresh/sync or
+initial link date, and can be null for legacy records without timestamps.
+`status` is `connected`, `expired`, or `connectionError`. Expiry takes precedence
+over an operation error. Status reflects the latest background operation;
+known expiry dates are also checked at request time.
+
+`daysRemaining` rounds remaining consent time up to whole days and returns zero
+for expired consent. It is null when expiry is unknown or not supplied by the
+provider. Synci supplies `consent_expires_at`; Nordigen expiry is calculated from
+the agreement's acceptance date and `access_valid_for_days`. Lunch Flow and
+BankSync do not supply a documented consent expiry in account discovery.
+The one-hour authorization callback deadline is unrelated to consent expiry.
+Refresh available accounts to populate metadata for existing connections.
+Internal connection timestamps still distinguish discovery from financial sync.
+The connection `id` and opaque `remoteAccountId` work with the shared sync and
+unlink endpoints.
+
+The SDK exposes `client.accounts.getAccountConnection(accountId)`, and
+`useAccountConnection(accountId)` provides the connection details or null to
+apps. Bank operations, unlinking, and connection changes invalidate this query.
+
 ## Authorization
 
 The catalog's `supportsBankAuthorization` flag controls the bank picker.
@@ -113,3 +159,37 @@ use a database backup or an explicit data conversion in that case.
 If the removed destructive migration was already applied to a development
 database, restore its pre-migration backup before applying this migration.
 Deleted legacy records cannot be reconstructed from the new schema.
+
+## Shared connected accounts
+
+`connected_accounts` stores imported account links for every provider. It replaces
+`lunchflow_accounts`, `banksync_accounts`, `synci_accounts`, and `nordigen_links`.
+Each row contains:
+
+| Column                 | Purpose                                                  |
+| ---------------------- | -------------------------------------------------------- |
+| `user_id`              | Owner of the link                                        |
+| `provider`             | Adapter used for discovery, sync, unlink, and disconnect |
+| `guallet_account_id`   | Local account, with a cascading foreign key              |
+| `remote_account_id`    | Opaque provider account identifier                       |
+| `remote_connection_id` | Remote bank/connection identifier when supplied          |
+| `is_linked`            | Whether automatic synchronization is enabled             |
+| `last_synced_at`       | Most recent successful financial sync for this account   |
+| `raw`                  | Latest original provider account JSON, stored as JSONB   |
+
+The unique key is `(user_id, provider, remote_account_id)`. BankSync uses the
+compact JSON array `[bankId, accountId]` as its opaque remote account ID so two
+banks may use the same native account ID. The adapter decodes it for provider
+requests; transaction identifiers retain their existing format.
+
+Imports, syncs, and discovery refreshes update `raw` for connected accounts. Synci
+retains the account object before normalization; Nordigen retains the full account
+details response. Unknown fields are preserved. Unavailable accounts retain their
+previous payload. `raw` is excluded from default entity selection, discovery
+responses, and the account connection response.
+
+The migration preserves existing link IDs, ownership, local account references,
+remote identifiers, timestamps, and linked/deleted states before dropping the
+old tables. Legacy rows start with `raw = null` because original responses were
+not stored; their next successful provider response populates it. Rollback
+restores the old tables and link columns; the old schema has no place for `raw`.

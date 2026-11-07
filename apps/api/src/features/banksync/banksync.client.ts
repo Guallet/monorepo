@@ -17,7 +17,11 @@ const REQUEST_INTERVAL_MS = 7_000;
 export type BankSyncBank = {
   id: string;
   name: string;
-  connectionStatus?: { connected?: boolean };
+  connectionStatus?: {
+    connected?: boolean;
+    status?: string;
+    errorCode?: string;
+  };
 };
 
 export type BankSyncRemoteAccount = {

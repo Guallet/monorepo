@@ -56,20 +56,24 @@ export class NordigenClient {
     );
   }
   async getAuthorization(token: string, id: string) {
-    return await this.request<{ status: string; accounts: string[] }>(
-      'GET',
-      `/requisitions/${encodeURIComponent(id)}/`,
-      token,
-    );
+    return await this.request<{
+      status: string;
+      accounts: string[];
+      agreement?: string;
+    }>('GET', `/requisitions/${encodeURIComponent(id)}/`, token);
+  }
+  async getAgreement(token: string, id: string) {
+    return await this.request<{
+      accepted: string | null;
+      access_valid_for_days: number;
+    }>('GET', `/agreements/enduser/${encodeURIComponent(id)}/`, token);
   }
   async getDetails(token: string, id: string) {
-    return (
-      await this.request<NordigenAccountDetailsDto>(
-        'GET',
-        `/accounts/${encodeURIComponent(id)}/details/`,
-        token,
-      )
-    ).account;
+    return await this.request<NordigenAccountDetailsDto>(
+      'GET',
+      `/accounts/${encodeURIComponent(id)}/details/`,
+      token,
+    );
   }
   async getBalances(token: string, id: string) {
     return (

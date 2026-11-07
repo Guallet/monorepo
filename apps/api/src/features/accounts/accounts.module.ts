@@ -7,14 +7,23 @@ import { AccountsController } from './accounts.controller';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionsModule } from 'src/features/transactions/transactions.module';
 import { Institution } from '../institutions/entities/institution.entity';
+import { AccountConnectionsService } from './account-connections.service';
+import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
+import { BankConnection } from '../openbanking/entities/bank-connection.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account, Transaction, Institution]),
+    TypeOrmModule.forFeature([
+      Account,
+      Transaction,
+      Institution,
+      BankConnection,
+      ConnectedAccount,
+    ]),
     InstitutionsModule,
     TransactionsModule,
   ],
-  providers: [AccountsService],
+  providers: [AccountsService, AccountConnectionsService],
   exports: [AccountsService],
   controllers: [AccountsController],
 })

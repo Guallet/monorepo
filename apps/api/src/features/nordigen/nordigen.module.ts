@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from '../accounts/entities/account.entity';
 import { Transaction } from '../transactions/entities/transaction.entity';
 import { BankAuthorization } from '../openbanking/entities/bank-authorization.entity';
-import { NordigenLink } from './entities/nordigen-link.entity';
+import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
 import { NordigenClient } from './nordigen.client';
 import { NordigenService } from './nordigen.service';
 @Module({
@@ -14,7 +14,7 @@ import { NordigenService } from './nordigen.service';
       Account,
       Transaction,
       BankAuthorization,
-      NordigenLink,
+      ConnectedAccount,
     ]),
   ],
   providers: [NordigenClient, NordigenService],

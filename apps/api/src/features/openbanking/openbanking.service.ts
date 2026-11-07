@@ -21,8 +21,13 @@ import { Queue } from 'bullmq';
 import { createHash, randomUUID } from 'node:crypto';
 import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
 import { AppConfig } from 'src/configuration';
+import { ConnectedAccount } from './entities/connected-account.entity';
 import { BankConnection } from './entities/bank-connection.entity';
 import { BankAuthorization } from './entities/bank-authorization.entity';
+import {
+  connectionStatusFromProvider,
+  validDate,
+} from './models/bank-connection-state.model';
 import { BankProviderRegistry } from './providers/bank-provider.registry';
 import {
   BankProviderId,
@@ -143,6 +148,7 @@ export class OpenbankingService {
       connection.credential_version++;
       connection.accounts = [];
       connection.accounts_refreshed_at = null;
+      connection.last_error = null;
       await manager.save(connection);
       return this.toDto(connection);
     });
@@ -161,7 +167,16 @@ export class OpenbankingService {
   async accounts(owner: ConnectionOwner) {
     const connection = await this.find(owner);
     return {
-      accounts: connection.accounts,
+      accounts: connection.accounts.map((account) => ({
+        id: account.id,
+        name: account.name,
+        institutionName: account.institutionName,
+        institutionLogo: account.institutionLogo,
+        currency: account.currency,
+        balance: account.balance,
+        status: account.status,
+        linkedAccountId: account.linkedAccountId,
+      })),
       refreshedAt: connection.accounts_refreshed_at,
     };
   }
@@ -250,6 +265,8 @@ export class OpenbankingService {
   }
   async process(data: BankJobData): Promise<BankJobResultDto> {
     let newUncategorizedCount = 0;
+    let providerOperationStarted = false;
+    let connectionUpdatedAt: Date | undefined;
     try {
       return await this.locked(
         { userId: data.userId, id: data.connectionId },
@@ -260,6 +277,7 @@ export class OpenbankingService {
             );
           const adapter = this.registry.get(connection.provider_id);
           const context = this.context(connection);
+          connectionUpdatedAt = connection.updated_at;
           let result: BankJobResultDto;
           if (data.operation === 'import') {
             if (!data.accountIds?.length)
@@ -271,6 +289,7 @@ export class OpenbankingService {
               throw new BadRequestException(
                 'Refresh available accounts before importing',
               );
+            providerOperationStarted = true;
             result = {
               accountIds: await adapter.importAccounts({
                 ...context,
@@ -278,6 +297,7 @@ export class OpenbankingService {
               }),
             };
           } else if (data.operation === 'sync') {
+            providerOperationStarted = true;
             const syncResult = await adapter.sync(context);
             newUncategorizedCount = syncResult.newUncategorizedCount;
             result = {
@@ -288,14 +308,82 @@ export class OpenbankingService {
           } else {
             result = {};
           }
-          connection.accounts = await adapter.listAccounts(context);
-          connection.accounts_refreshed_at = new Date();
+          providerOperationStarted = true;
+          const previousAccounts = new Map(
+            connection.accounts.map((account) => [account.id, account]),
+          );
+          const discovered = await adapter.listAccounts(context);
+          const refreshedAt = new Date();
+          const failedIds = new Set(result.errors ?? []);
+          connection.accounts = discovered.map((account) => {
+            const metadata = { ...account };
+            delete metadata.raw;
+            const previous = previousAccounts.get(account.id);
+            const status =
+              account.connectionStatus ??
+              connectionStatusFromProvider(account.status);
+            const connectionExpiresAt =
+              account.connectionExpiresAt === undefined
+                ? previous?.connectionExpiresAt
+                : account.connectionExpiresAt;
+            const expiresAt = validDate(connectionExpiresAt);
+            const expired =
+              status === 'expired' ||
+              (expiresAt !== null && expiresAt <= refreshedAt);
+            const successful =
+              status === 'connected' && !expired && !failedIds.has(account.id);
+            return {
+              ...metadata,
+              connectionStatus: expired ? 'expired' : status,
+              connectionExpiresAt,
+              lastRefresh: successful
+                ? refreshedAt.toISOString()
+                : (previous?.lastRefresh ?? account.lastRefresh ?? null),
+            };
+          });
+          connection.accounts_refreshed_at = refreshedAt;
+          connection.last_error = failedIds.size
+            ? { accountIds: [...failedIds] }
+            : null;
           if (data.operation === 'refresh')
             result.accountsDiscovered = connection.accounts.length;
+          for (const account of discovered) {
+            if (account.raw !== undefined) {
+              await manager
+                .createQueryBuilder()
+                .update(ConnectedAccount)
+                .set({ raw: () => ':raw' })
+                .where({
+                  user_id: connection.user_id,
+                  provider: connection.provider_id,
+                  remote_account_id: account.id,
+                })
+                .andWhere('deleted_at IS NULL')
+                .setParameter('raw', JSON.stringify(account.raw))
+                .execute();
+            }
+          }
           await manager.save(connection);
           return result;
         },
       );
+    } catch (error) {
+      if (providerOperationStarted) {
+        try {
+          await this.connections.update(
+            {
+              id: data.connectionId,
+              user_id: data.userId,
+              credential_version: data.credentialVersion,
+              updated_at: connectionUpdatedAt,
+            },
+            { last_error: { accountIds: null } },
+          );
+        } catch {
+          this.logger.warn('Could not record bank connection failure');
+        }
+      }
+      throw error;
     } finally {
       // Adapter writes have committed independently, even if discovery fails.
       if (data.notifyOnNewTransactions && newUncategorizedCount > 0) {

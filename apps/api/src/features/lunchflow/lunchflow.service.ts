@@ -4,6 +4,7 @@ import {
   ProviderIdentity,
   requireApiKey,
 } from '../openbanking/providers/bank-provider.interface';
+import { connectionStatusFromProvider } from '../openbanking/models/bank-connection-state.model';
 import {
   BadRequestException,
   Injectable,
@@ -17,7 +18,7 @@ import { AccountType } from 'src/features/accounts/entities/accountType.model';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
-import { LunchFlowAccount } from './entities/lunchflow-account.entity';
+import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
 import { LunchFlowClient, LunchFlowRemoteAccount } from './lunchflow.client';
 
 @Injectable()
@@ -25,8 +26,8 @@ export class LunchFlowService implements BankProviderAdapter {
   private readonly logger = new Logger(LunchFlowService.name);
 
   constructor(
-    @InjectRepository(LunchFlowAccount)
-    private readonly remoteAccounts: Repository<LunchFlowAccount>,
+    @InjectRepository(ConnectedAccount)
+    private readonly remoteAccounts: Repository<ConnectedAccount>,
     @InjectRepository(Account)
     private readonly accounts: Repository<Account>,
     @InjectRepository(Transaction)
@@ -43,14 +44,19 @@ export class LunchFlowService implements BankProviderAdapter {
   }
 
   async disconnect({ userId }: ProviderIdentity): Promise<void> {
-    await this.remoteAccounts.update({ user_id: userId }, { is_linked: false });
+    await this.remoteAccounts.update(
+      { provider: 'lunchflow', user_id: userId },
+      { is_linked: false },
+    );
   }
 
   async listAccounts({ userId, credentials }: ProviderContext) {
     const apiKey = requireApiKey(credentials);
     const [accounts, linked] = await Promise.all([
       this.client.getAccounts(apiKey),
-      this.remoteAccounts.find({ where: { user_id: userId } }),
+      this.remoteAccounts.find({
+        where: { provider: 'lunchflow', user_id: userId },
+      }),
     ]);
     const linkedByRemoteId = new Map(
       linked
@@ -58,12 +64,14 @@ export class LunchFlowService implements BankProviderAdapter {
         .map((item) => [item.remote_account_id, item.guallet_account_id]),
     );
     return accounts.map((account) => ({
+      raw: account,
       id: String(account.id),
       name: account.name,
       institutionName: account.institution_name ?? null,
       institutionLogo: account.institution_logo ?? null,
       currency: account.currency ?? null,
       status: account.status ?? 'ACTIVE',
+      connectionStatus: connectionStatusFromProvider(account.status),
       linkedAccountId: linkedByRemoteId.get(String(account.id)) ?? null,
     }));
   }
@@ -101,7 +109,7 @@ export class LunchFlowService implements BankProviderAdapter {
   async sync({ userId, credentials }: ProviderContext) {
     const apiKey = requireApiKey(credentials);
     const mappings = await this.remoteAccounts.find({
-      where: { user_id: userId, is_linked: true },
+      where: { provider: 'lunchflow', user_id: userId, is_linked: true },
     });
     return await this.syncMappings(userId, apiKey, mappings);
   }
@@ -112,6 +120,7 @@ export class LunchFlowService implements BankProviderAdapter {
   }: ProviderIdentity & { accountId: string }): Promise<void> {
     const result = await this.remoteAccounts.update(
       {
+        provider: 'lunchflow',
         user_id: userId,
         remote_account_id: remoteAccountId,
       },
@@ -131,7 +140,11 @@ export class LunchFlowService implements BankProviderAdapter {
   }) {
     const remoteId = String(account.id);
     let mapping = await this.remoteAccounts.findOne({
-      where: { user_id: userId, remote_account_id: remoteId },
+      where: {
+        provider: 'lunchflow',
+        user_id: userId,
+        remote_account_id: remoteId,
+      },
     });
     const balance = await this.client.getBalance(apiKey, remoteId);
     const transactions = await this.client.getTransactions(apiKey, remoteId);
@@ -165,9 +178,11 @@ export class LunchFlowService implements BankProviderAdapter {
             institutionId: null,
             properties: null,
           });
-          const createdMapping = await manager.save(LunchFlowAccount, {
+          const createdMapping = await manager.save(ConnectedAccount, {
+            provider: 'lunchflow',
             user_id: userId,
             remote_account_id: remoteId,
+            raw: account,
             remote_connection_id:
               account.connection_id === undefined ||
               account.connection_id === null
@@ -190,13 +205,15 @@ export class LunchFlowService implements BankProviderAdapter {
       transactions,
       balance,
     });
+    mapping.last_synced_at = new Date();
+    await this.remoteAccounts.save(mapping);
     return mapping;
   }
 
   private async syncMappings(
     userId: string,
     apiKey: string,
-    mappings: LunchFlowAccount[],
+    mappings: ConnectedAccount[],
   ) {
     const remote = await this.client.getAccounts(apiKey);
     const remoteById = new Map(
@@ -226,6 +243,8 @@ export class LunchFlowService implements BankProviderAdapter {
             transactions,
             balance,
           });
+          mapping.last_synced_at = new Date();
+          await this.remoteAccounts.save(mapping);
           return { importedCount };
         } catch {
           return mapping.remote_account_id;
@@ -256,7 +275,7 @@ export class LunchFlowService implements BankProviderAdapter {
   }: {
     apiKey: string;
     account: LunchFlowRemoteAccount;
-    mapping: LunchFlowAccount;
+    mapping: ConnectedAccount;
     localAccount: Account;
     transactions: Awaited<ReturnType<LunchFlowClient['getTransactions']>>;
     balance?: { amount: number; currency: string };
@@ -270,6 +289,10 @@ export class LunchFlowService implements BankProviderAdapter {
     localAccount.currency = currency;
     localAccount.name = account.name;
     await this.accounts.save(localAccount);
+    mapping.raw = account;
+    mapping.remote_connection_id =
+      account.connection_id == null ? null : String(account.connection_id);
+    await this.remoteAccounts.save(mapping);
 
     return await persistPersonalProviderTransactions({
       repository: this.transactions,

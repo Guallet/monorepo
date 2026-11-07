@@ -11,8 +11,12 @@ import { OPENBANKING_QUERY_KEY, useBankJob } from './useOpenbanking';
 export function useBankConnectionMutations() {
   const client = useGualletClient();
   const cache = useQueryClient();
-  const invalidate = () =>
-    cache.invalidateQueries({ queryKey: [OPENBANKING_QUERY_KEY] });
+  const invalidate = async () => {
+    await Promise.all([
+      cache.invalidateQueries({ queryKey: [OPENBANKING_QUERY_KEY] }),
+      cache.invalidateQueries({ queryKey: ['accounts'] }),
+    ]);
+  };
   const create = useMutation({
     gcTime: 0,
     mutationFn: (request: CreateBankConnectionRequest) =>

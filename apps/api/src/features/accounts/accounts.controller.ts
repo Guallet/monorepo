@@ -22,6 +22,8 @@ import {
   ApiBody,
   ApiParam,
   ApiQuery,
+  ApiNotFoundResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
@@ -34,6 +36,8 @@ import {
 } from './dto/account-charts.dto';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
+import { AccountConnectionsService } from './account-connections.service';
+import { AccountConnectionDto } from './dto/account-connection.dto';
 
 function parseDateParam(value: string | undefined, name: string): Date | null {
   if (!value) {
@@ -56,6 +60,7 @@ export class AccountsController {
   constructor(
     private readonly accountsService: AccountsService,
     private readonly transactionsService: TransactionsService,
+    private readonly accountConnectionsService: AccountConnectionsService,
   ) {}
 
   @ApiOperation({ summary: 'getUserAccounts' })
@@ -96,6 +101,25 @@ export class AccountsController {
       accountId,
     );
     return AccountDto.fromDomain(account);
+  }
+
+  @Get(':id/connection')
+  @ApiOperation({
+    summary: 'Get account connection status and provider details',
+  })
+  @ApiOkResponse({ type: () => AccountConnectionDto })
+  @ApiNotFoundResponse({ description: 'Account not found for this user' })
+  @ApiBadRequestResponse({ description: 'Invalid account UUID' })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  async getConnectedAccountDetails(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) accountId: string,
+  ): Promise<AccountConnectionDto> {
+    const connection = await this.accountConnectionsService.getConnection(
+      user.id,
+      accountId,
+    );
+    return AccountConnectionDto.fromDomain(connection);
   }
 
   @ApiOperation({ summary: 'getAccountTransactions' })

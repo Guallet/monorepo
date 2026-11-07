@@ -10,6 +10,8 @@ import { AccountSource } from './entities/accountSource.model';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { Transaction } from '../transactions/entities/transaction.entity';
+import { AccountConnectionsService } from './account-connections.service';
+import { AccountConnection } from './models/account-connection.model';
 
 describe('AccountsController', () => {
   let controller: AccountsController;
@@ -27,6 +29,10 @@ describe('AccountsController', () => {
     getAccountTransactionsSum: vi.fn(),
   };
 
+  const mockAccountConnectionsService = {
+    getConnection: vi.fn(),
+  };
+
   const mockUser: UserPrincipal = new UserPrincipal(
     'user-123',
     'test@example.com',
@@ -37,6 +43,10 @@ describe('AccountsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AccountsController],
       providers: [
+        {
+          provide: AccountConnectionsService,
+          useValue: mockAccountConnectionsService,
+        },
         {
           provide: AccountsService,
           useValue: mockAccountsService,
@@ -156,6 +166,53 @@ describe('AccountsController', () => {
         mockUser.id,
         accountId,
       );
+    });
+  });
+
+  describe('getConnectedAccountDetails', () => {
+    it('serializes disconnected accounts as an empty object', async () => {
+      mockAccountConnectionsService.getConnection.mockResolvedValue(null);
+
+      const response = await controller.getConnectedAccountDetails(
+        mockUser,
+        'account-1',
+      );
+
+      expect(JSON.stringify(response)).toBe('{}');
+      expect(mockAccountConnectionsService.getConnection).toHaveBeenCalledWith(
+        mockUser.id,
+        'account-1',
+      );
+    });
+
+    it('maps domain connection data to a response DTO', async () => {
+      const lastRefresh = new Date('2026-11-07T10:00:00Z');
+      mockAccountConnectionsService.getConnection.mockResolvedValue(
+        new AccountConnection(
+          'connection-1',
+          'synci',
+          'remote-account',
+          lastRefresh,
+          null,
+          'connected',
+        ),
+      );
+
+      const response = await controller.getConnectedAccountDetails(
+        mockUser,
+        'account-1',
+      );
+
+      expect(JSON.parse(JSON.stringify(response))).toEqual({
+        connection: {
+          id: 'connection-1',
+          providerId: 'synci',
+          remoteAccountId: 'remote-account',
+          lastRefresh: lastRefresh.toISOString(),
+          daysRemaining: null,
+          status: 'connected',
+        },
+      });
     });
   });
 

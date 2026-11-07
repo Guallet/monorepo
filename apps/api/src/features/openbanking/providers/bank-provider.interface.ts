@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import type { BankConnectionStatus } from '../models/bank-connection-state.model';
 
 export const BANK_PROVIDER_IDS = [
   'lunchflow',
@@ -20,6 +21,7 @@ export type ProviderContext = ProviderIdentity & {
   credentials: ProviderCredentials;
 };
 export type ProviderAccount = {
+  raw?: Record<string, unknown>;
   id: string;
   name: string;
   institutionName: string | null;
@@ -27,6 +29,9 @@ export type ProviderAccount = {
   currency: string | null;
   balance?: string | null;
   status?: string;
+  connectionStatus?: BankConnectionStatus;
+  connectionExpiresAt?: string | null;
+  lastRefresh?: string | null;
   linkedAccountId: string | null;
 };
 export type ProviderInstitution = {

@@ -1,3 +1,5 @@
+import type { BankProviderId } from '../openbanking/openbanking.models';
+
 export type AccountDto = {
   id: string;
   name: string;
@@ -17,8 +19,16 @@ export type AccountDto = {
 };
 
 export type AccountConnectionDto = {
-  last_refreshed: Date;
-  status: string;
+  connection?: AccountConnectionDetailsDto;
+};
+
+export type AccountConnectionDetailsDto = {
+  id: string;
+  providerId: BankProviderId;
+  remoteAccountId: string;
+  lastRefresh: string | null;
+  daysRemaining: number | null;
+  status: 'connected' | 'expired' | 'connectionError';
 };
 
 export enum AccountTypeDto {

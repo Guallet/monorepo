@@ -19,10 +19,14 @@ import {
   ProviderIdentity,
   requireNordigenCredentials,
 } from '../openbanking/providers/bank-provider.interface';
-import { NordigenLink } from './entities/nordigen-link.entity';
+import { ConnectedAccount } from '../openbanking/entities/connected-account.entity';
 import { NordigenClient } from './nordigen.client';
 import { getAccountTypeFrom } from './dto/ExternalCashAccountType1Code.helper';
 import { getBalanceFrom } from './dto/nordigen-balances.helper';
+import {
+  connectionStatusFromProvider,
+  validDate,
+} from '../openbanking/models/bank-connection-state.model';
 
 @Injectable()
 export class NordigenService implements BankProviderAdapter {
@@ -30,8 +34,8 @@ export class NordigenService implements BankProviderAdapter {
     private readonly client: NordigenClient,
     @InjectRepository(BankAuthorization)
     private readonly authorizations: Repository<BankAuthorization>,
-    @InjectRepository(NordigenLink)
-    private readonly links: Repository<NordigenLink>,
+    @InjectRepository(ConnectedAccount)
+    private readonly links: Repository<ConnectedAccount>,
     @InjectRepository(Account) private readonly accounts: Repository<Account>,
     @InjectRepository(Transaction)
     private readonly transactions: Repository<Transaction>,
@@ -70,19 +74,63 @@ export class NordigenService implements BankProviderAdapter {
     return result.accounts;
   }
   async listAccounts(context: ProviderContext) {
-    const ids = await this.authorizedIds(context);
+    const authorizations = await this.completedAuthorizations(context);
+    const ids = [
+      ...new Set(authorizations.flatMap((item) => item.account_ids)),
+    ];
     if (!ids.length) return [];
     const token = await this.token(context);
+    const metadata = new Map<string, Partial<ProviderAccount>>();
+    const connectionMetadata = await Promise.all(
+      authorizations.map(async (authorization) => {
+        let details: Partial<ProviderAccount>;
+        try {
+          const requisition = await this.client.getAuthorization(
+            token,
+            authorization.remote_id,
+          );
+          const agreement = requisition.agreement
+            ? await this.client.getAgreement(token, requisition.agreement)
+            : null;
+          const accepted = validDate(agreement?.accepted);
+          details = {
+            connectionStatus: connectionStatusFromProvider(requisition.status),
+            connectionExpiresAt:
+              accepted && agreement
+                ? new Date(
+                    accepted.getTime() +
+                      agreement.access_valid_for_days * 86_400_000,
+                  ).toISOString()
+                : null,
+            lastRefresh: authorization.completed_at?.toISOString() ?? null,
+          };
+        } catch {
+          details = { connectionStatus: 'connectionError' };
+        }
+        return { authorization, details };
+      }),
+    );
+    connectionMetadata.sort(
+      (a, b) =>
+        (a.authorization.completed_at?.getTime() ?? 0) -
+        (b.authorization.completed_at?.getTime() ?? 0),
+    );
+    for (const { authorization, details } of connectionMetadata) {
+      for (const id of authorization.account_ids) metadata.set(id, details);
+    }
     const links = await this.links.find({
-      where: { user_id: context.userId, is_linked: true },
+      where: { provider: 'nordigen', user_id: context.userId, is_linked: true },
     });
     const linkedById = new Map(
       links.map((link) => [link.remote_account_id, link.guallet_account_id]),
     );
     const discovered = await Promise.allSettled(
       ids.map(async (id) => {
-        const account = await this.client.getDetails(token, id);
+        const raw = await this.client.getDetails(token, id);
+        const account = raw.account;
         return {
+          ...metadata.get(id),
+          raw: { ...raw },
           id,
           name: account.name || account.ownerName || 'Bank account',
           institutionName: null,
@@ -105,12 +153,17 @@ export class NordigenService implements BankProviderAdapter {
       return linkedAccountId
         ? [
             {
+              ...metadata.get(ids[index]),
               id: ids[index],
               name: 'Bank account',
               institutionName: null,
               currency: null,
               linkedAccountId,
               status: 'unavailable',
+              connectionStatus:
+                metadata.get(ids[index])?.connectionStatus === 'expired'
+                  ? 'expired'
+                  : 'connectionError',
             },
           ]
         : [];
@@ -134,7 +187,7 @@ export class NordigenService implements BankProviderAdapter {
   }
   async sync(context: ProviderContext) {
     const links = await this.links.find({
-      where: { user_id: context.userId, is_linked: true },
+      where: { provider: 'nordigen', user_id: context.userId, is_linked: true },
     });
     const allowed = new Set(await this.authorizedIds(context));
     const token = await this.token(context);
@@ -162,13 +215,20 @@ export class NordigenService implements BankProviderAdapter {
     context: ProviderIdentity & { accountId: string },
   ): Promise<void> {
     const result = await this.links.update(
-      { user_id: context.userId, remote_account_id: context.accountId },
+      {
+        provider: 'nordigen',
+        user_id: context.userId,
+        remote_account_id: context.accountId,
+      },
       { is_linked: false },
     );
     if (!result.affected) throw new NotFoundException();
   }
   async disconnect(context: ProviderIdentity): Promise<void> {
-    await this.links.update({ user_id: context.userId }, { is_linked: false });
+    await this.links.update(
+      { provider: 'nordigen', user_id: context.userId },
+      { is_linked: false },
+    );
   }
   private async token(context: ProviderContext) {
     return await this.client.getToken(
@@ -176,28 +236,42 @@ export class NordigenService implements BankProviderAdapter {
     );
   }
   private async authorizedIds({ userId, connectionId }: ProviderContext) {
-    const authorizations = await this.authorizations.find({
+    const authorizations = await this.completedAuthorizations({
+      userId,
+      connectionId,
+    });
+    return [...new Set(authorizations.flatMap((item) => item.account_ids))];
+  }
+  private async completedAuthorizations({
+    userId,
+    connectionId,
+  }: ProviderIdentity) {
+    return await this.authorizations.find({
       where: {
         user_id: userId,
         connection_id: connectionId,
         completed_at: Not(IsNull()),
       },
     });
-    return [...new Set(authorizations.flatMap((item) => item.account_ids))];
   }
   private async importAccount(
     userId: string,
     token: string,
     remoteId: string,
   ): Promise<{ accountId: string; newUncategorizedCount: number }> {
-    const [details, balances, remoteTransactions] = await Promise.all([
+    const [raw, balances, remoteTransactions] = await Promise.all([
       this.client.getDetails(token, remoteId),
       this.client.getBalances(token, remoteId),
       this.client.getTransactions(token, remoteId),
     ]);
+    const details = raw.account;
     const balance = getBalanceFrom(balances);
     let link = await this.links.findOne({
-      where: { user_id: userId, remote_account_id: remoteId },
+      where: {
+        provider: 'nordigen',
+        user_id: userId,
+        remote_account_id: remoteId,
+      },
     });
     let account = link
       ? await this.accounts.findOne({
@@ -221,8 +295,10 @@ export class NordigenService implements BankProviderAdapter {
         source: AccountSource.IMPORTED,
         source_name: 'Nordigen',
       });
-      const savedLink = await manager.save(NordigenLink, {
+      const savedLink = await manager.save(ConnectedAccount, {
         ...link,
+        provider: 'nordigen',
+        raw: { ...raw },
         user_id: userId,
         remote_account_id: remoteId,
         guallet_account_id: savedAccount.id,
@@ -295,6 +371,8 @@ export class NordigenService implements BankProviderAdapter {
       account.id,
       rows,
     );
+    link.last_synced_at = new Date();
+    await this.links.save(link);
     return { accountId: link.guallet_account_id, newUncategorizedCount };
   }
 }

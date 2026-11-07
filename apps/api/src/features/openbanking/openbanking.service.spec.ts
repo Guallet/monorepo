@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { OpenbankingService } from './openbanking.service';
 import { BankJobData } from './openbanking.jobs';
+import type { BankConnection } from './entities/bank-connection.entity';
 import { NotificationType } from '../notifications/entities/notification.entity';
 
 function setup() {
@@ -11,16 +12,23 @@ function setup() {
     credential_version: 1,
     encrypted_credentials: 'encrypted',
     accounts: [],
-  };
+    updated_at: new Date('2026-11-01T00:00:00Z'),
+  } as unknown as BankConnection;
   const query = {
     addSelect: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
     setLock: vi.fn().mockReturnThis(),
     getOne: vi.fn().mockResolvedValue(connection),
+    update: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
+    andWhere: vi.fn().mockReturnThis(),
+    setParameter: vi.fn().mockReturnThis(),
+    execute: vi.fn().mockResolvedValue({ affected: 1 }),
   };
   const manager = {
     getRepository: () => ({ createQueryBuilder: () => query }),
     save: vi.fn().mockResolvedValue(connection),
+    createQueryBuilder: () => query,
   };
   const db = {
     transaction: vi.fn(
@@ -29,6 +37,7 @@ function setup() {
     ),
   };
   const connections = {
+    update: vi.fn().mockResolvedValue({ affected: 1 }),
     find: vi.fn().mockResolvedValue([connection]),
     findOne: vi.fn().mockResolvedValue(connection),
   };
@@ -38,7 +47,9 @@ function setup() {
       errors: [],
       newUncategorizedCount: 3,
     }),
-    listAccounts: vi.fn().mockResolvedValue([]),
+    listAccounts: vi
+      .fn<() => Promise<BankConnection['accounts']>>()
+      .mockResolvedValue([]),
   };
   const notifications = {
     createSystemNotification: vi.fn().mockResolvedValue({}),
@@ -60,7 +71,17 @@ function setup() {
     operation: 'sync',
     notifyOnNewTransactions: true,
   };
-  return { service, adapter, notifications, jobs, data, manager };
+  return {
+    service,
+    adapter,
+    notifications,
+    jobs,
+    data,
+    manager,
+    connection,
+    connections,
+    query,
+  };
 }
 
 describe('scheduled bank sync categorization notifications', () => {
@@ -144,5 +165,117 @@ describe('scheduled bank sync categorization notifications', () => {
     expect(jobs.add.mock.calls[0][2].deduplication.id).not.toBe(
       jobs.add.mock.calls[1][2].deduplication.id,
     );
+  });
+});
+
+describe('bank connection refresh state', () => {
+  it('records provider failures after rollback without overwriting a newer connection version', async () => {
+    const { service, adapter, data, connections, connection } = setup();
+    adapter.sync.mockRejectedValue(new Error('Provider unavailable'));
+    await expect(service.process(data)).rejects.toThrow('Provider unavailable');
+    expect(connections.update).toHaveBeenCalledWith(
+      {
+        id: 'connection',
+        user_id: 'user',
+        credential_version: 1,
+        updated_at: connection.updated_at,
+      },
+      { last_error: { accountIds: null } },
+    );
+  });
+  it('does not mark stale jobs as provider failures', async () => {
+    const { service, data, connections } = setup();
+    await expect(
+      service.process({ ...data, credentialVersion: 2 }),
+    ).rejects.toThrow('Credentials changed');
+    expect(connections.update).not.toHaveBeenCalled();
+  });
+  it('clears previous errors and advances successful refresh dates', async () => {
+    const { service, adapter, data, connection } = setup();
+    connection.last_error = { accountIds: null };
+    adapter.listAccounts.mockResolvedValue([
+      {
+        id: 'remote',
+        name: 'Bank account',
+        institutionName: null,
+        currency: 'GBP',
+        linkedAccountId: 'local',
+      },
+    ]);
+    await service.process(data);
+    expect(connection.last_error).toBeNull();
+    expect(connection.accounts[0].lastRefresh).toBeTruthy();
+  });
+  it('stores original account JSON on the owned provider link, outside public discovery metadata', async () => {
+    const { service, adapter, data, connection, query } = setup();
+    const raw = { id: 'remote', extra: { debug: true } };
+    adapter.listAccounts.mockResolvedValue([
+      {
+        id: 'remote',
+        name: 'Bank account',
+        institutionName: null,
+        currency: 'GBP',
+        linkedAccountId: 'local',
+        raw,
+      },
+    ]);
+    await service.process({ ...data, operation: 'refresh' });
+    expect(query.where).toHaveBeenCalledWith({
+      user_id: 'user',
+      provider: 'synci',
+      remote_account_id: 'remote',
+    });
+    expect(query.setParameter).toHaveBeenCalledWith('raw', JSON.stringify(raw));
+    expect(connection.accounts[0]).not.toHaveProperty('raw');
+    expect(
+      (await service.accounts({ userId: 'user', id: 'connection' }))
+        .accounts[0],
+    ).not.toHaveProperty('raw');
+  });
+  it('does not advance refresh dates for expired consent', async () => {
+    const { service, adapter, data, connection } = setup();
+    const old = '2026-11-01T00:00:00.000Z';
+    const account = {
+      id: 'expired',
+      name: 'Bank account',
+      institutionName: null,
+      currency: 'GBP',
+      linkedAccountId: 'local',
+      lastRefresh: old,
+      connectionExpiresAt: '2020-01-01T00:00:00Z',
+    };
+    connection.accounts = [account];
+    adapter.listAccounts.mockResolvedValue([account]);
+    await service.process({ ...data, operation: 'refresh' });
+    expect(connection.accounts[0]).toMatchObject({
+      lastRefresh: old,
+      connectionStatus: 'expired',
+    });
+  });
+  it('preserves failed account refresh dates and records only affected ids', async () => {
+    const { service, adapter, data, connection } = setup();
+    const old = '2026-11-01T00:00:00.000Z';
+    const account = {
+      id: 'failed',
+      name: 'Bank account',
+      institutionName: null,
+      currency: 'GBP',
+      linkedAccountId: 'local',
+      lastRefresh: old,
+    };
+    connection.accounts = [account];
+    adapter.sync.mockResolvedValue({
+      accountsSynced: 1,
+      errors: ['failed'],
+      newUncategorizedCount: 0,
+    });
+    adapter.listAccounts.mockResolvedValue([
+      account,
+      { ...account, id: 'healthy' },
+    ]);
+    await service.process(data);
+    expect(connection.last_error).toEqual({ accountIds: ['failed'] });
+    expect(connection.accounts[0].lastRefresh).toBe(old);
+    expect(connection.accounts[1].lastRefresh).not.toBe(old);
   });
 });
