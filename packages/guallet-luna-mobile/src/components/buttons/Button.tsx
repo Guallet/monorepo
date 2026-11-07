@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import React from 'react';
-import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, Text, ViewStyle } from 'react-native';
 import { useTheme } from '../../theme';
 import {
   getButtonInteractionState,

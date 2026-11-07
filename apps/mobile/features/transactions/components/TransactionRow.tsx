@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { Pressable, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 import { MobileTransaction, formatCurrency } from '../utils';
 

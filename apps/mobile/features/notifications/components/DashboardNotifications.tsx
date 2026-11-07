@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { Text, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUnreadNotifications } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';

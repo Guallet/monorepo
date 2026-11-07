@@ -1,10 +1,10 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useEffect } from 'react';
 import {
   AccessibilityInfo,
   Platform,
   Pressable,
   useWindowDimensions,
-  StyleSheet,
   Text,
   type TextStyle,
   View,

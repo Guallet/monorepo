@@ -1,17 +1,11 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   KeyboardAwareScrollView,
   TextInput,
   useTheme,
 } from '@guallet/luna-mobile';
 import { useEffect, useState } from 'react';
-import {
-  BackHandler,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { BackHandler, FlatList, Pressable, Text, View } from 'react-native';
 import { AppScreen } from '@/components/layout/AppScreen';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 import { ChevronLeftIcon } from '@guallet/luna-mobile/icons';

@@ -9,6 +9,10 @@ vi.mock('react-native', () => ({
   StyleSheet: { create: (styles: unknown) => styles },
 }));
 
+vi.mock('react-native-unistyles', () => ({
+  StyleSheet: { create: (styles: unknown) => styles },
+}));
+
 vi.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: 'icon-symbol',
 }));

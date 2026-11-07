@@ -1,11 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useMemo, useState, type ReactNode } from 'react';
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBudgets } from '@guallet/api-react';

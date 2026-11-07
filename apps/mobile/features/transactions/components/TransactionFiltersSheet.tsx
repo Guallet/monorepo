@@ -1,9 +1,10 @@
+import { StyleSheet } from 'react-native-unistyles';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { AccountDto, CategoryDto } from '@guallet/api-client';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';

@@ -1,6 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { MoneyFormatOptions } from '@guallet/money';
 import { formatMoney } from '@/utils/formatMoney';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { SavingGoalDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 

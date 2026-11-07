@@ -1,7 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useState } from 'react';
 import {
   Pressable,
-  StyleSheet,
   Text,
   View,
   type StyleProp,

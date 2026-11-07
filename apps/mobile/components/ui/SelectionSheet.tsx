@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useLayoutEffect, useRef } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 
 export type SelectionOption = {

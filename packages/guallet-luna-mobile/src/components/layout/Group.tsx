@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { getSpacingValue, LunaSpacing, useTheme } from '../../theme';
 
 type AlignItems = 'flex-start' | 'center' | 'flex-end' | 'stretch';

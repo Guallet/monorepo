@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { AuthLink, AuthScreen } from '@/features/login/components/AuthLayout';
 import { WelcomeIllustration } from '@/features/login/components/WelcomeIllustration';
 import { Button, Label, Title, useTheme } from '@guallet/luna-mobile';
@@ -6,7 +7,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
-  StyleSheet,
   View,
   type NativeScrollEvent,
   type NativeSyntheticEvent,

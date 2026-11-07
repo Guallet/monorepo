@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useAccounts, useDataExportMutation } from '@guallet/api-react';
 import {
   AccountInput,
@@ -18,7 +19,6 @@ import {
   ActivityIndicator,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';

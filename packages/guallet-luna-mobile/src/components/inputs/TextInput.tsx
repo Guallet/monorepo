@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import React from 'react';
-import { View, Text, TextInput as RNTextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput as RNTextInput } from 'react-native';
 import { useTheme } from '../../theme';
 
 export interface TextInputProps extends React.ComponentProps<

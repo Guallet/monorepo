@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { Pressable, Text, View } from 'react-native';
 import { AccountDto } from '@guallet/api-client';
 import { useTheme } from '@guallet/luna-mobile';
 import { InstitutionAvatar } from './InstitutionAvatar';

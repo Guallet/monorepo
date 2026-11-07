@@ -38,6 +38,10 @@ vi.mock('react-native', () => {
   };
 });
 
+vi.mock('react-native-unistyles', () => ({
+  StyleSheet: { create: (styles: unknown) => styles },
+}));
+
 vi.mock('@guallet/luna-mobile', () => ({
   useTheme: () => ({
     colors: {

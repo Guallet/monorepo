@@ -1,7 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react-native';
 import {
   Pressable,
-  StyleSheet,
   Text,
   View,
   type StyleProp,

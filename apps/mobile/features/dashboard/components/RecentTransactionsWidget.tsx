@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+import { Pressable, Text, View } from 'react-native';
 import { useTransactions } from '@guallet/api-react';
 import { useTheme } from '@guallet/luna-mobile';
 import { TransactionListItem } from './TransactionListItem';

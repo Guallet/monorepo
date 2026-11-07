@@ -1,10 +1,10 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { IconCalendar, IconX } from '@tabler/icons-react-native';
 import { useRef, useState } from 'react';
 import {
   Platform,
   Pressable,
-  StyleSheet,
   Text,
   View,
   type StyleProp,

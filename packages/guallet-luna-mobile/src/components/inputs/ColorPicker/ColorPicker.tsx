@@ -1,8 +1,8 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   View,
   processColor,

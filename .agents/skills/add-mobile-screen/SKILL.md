@@ -173,7 +173,8 @@ for the shared components and device verification checklist.
 ## 1. Tab Screen – `app/(tabs)/{name}.tsx`
 
 ```typescript
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 import { Stack, Title, Label } from '@guallet/luna-mobile';
 import { use{Name}s } from '@guallet/api-react';
 
@@ -226,7 +227,8 @@ Choose a Luna icon that matches the destination; `HomeIcon` is only an example.
 ## 2. Stack Screen – `app/{name}/index.tsx`
 
 ```typescript
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 import { useRouter } from 'expo-router';
 import { Stack, Title, Button } from '@guallet/luna-mobile';
 import { use{Name}s } from '@guallet/api-react';
@@ -269,7 +271,8 @@ const styles = StyleSheet.create({
 ## 3. Detail Screen with Param – `app/{name}/[id].tsx`
 
 ```typescript
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Stack, Title, Label, Button } from '@guallet/luna-mobile';
 import { use{Name} } from '@guallet/api-react';
@@ -408,7 +411,8 @@ Auth is handled globally by the `(tabs)/_layout.tsx`:
       no competing keyboard adjustment or nested vertical list
 - [ ] Keyboard-open and dismissed layouts verified on iOS and Android,
       including searchable sheets and larger text
-- [ ] Styles defined with `StyleSheet.create({})`, not inline objects
+- [ ] Styles use `StyleSheet` from `react-native-unistyles` and are defined
+      with `StyleSheet.create({})`, not inline objects
 - [ ] Tab screen registered in `(tabs)/_layout.tsx` if it's a new tab
 - [ ] Navigation uses `useRouter()` from `expo-router`, not `react-navigation` directly
 - [ ] Params read with `useLocalSearchParams()` for `[id]` route files

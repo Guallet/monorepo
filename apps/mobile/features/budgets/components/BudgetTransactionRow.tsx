@@ -1,7 +1,8 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { CategoryDto, TransactionDto } from '@guallet/api-client';
 import { CategoryIcon } from '@guallet/luna-mobile/icons';
 import { useTheme } from '@guallet/luna-mobile';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { formatBudgetCurrency, formatTransactionDate } from '../models';
 import { useMobileUserPreferences } from '@/features/settings/useMobileUserPreferences';
 

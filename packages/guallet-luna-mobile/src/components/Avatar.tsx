@@ -1,9 +1,9 @@
+import { StyleSheet } from 'react-native-unistyles';
 import React from 'react';
 import { Image } from 'expo-image';
 import {
   type ImageSourcePropType,
   type ImageStyle,
-  StyleSheet,
   Text,
   View,
   type ColorValue,

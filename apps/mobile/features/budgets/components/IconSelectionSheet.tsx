@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useTheme, BottomSheet } from '@guallet/luna-mobile';
 import {
   CategoryIcon,

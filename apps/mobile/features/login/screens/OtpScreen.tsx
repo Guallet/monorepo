@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useAuth } from '@/auth/useAuth';
 import {
   AuthIntro,
@@ -15,7 +16,7 @@ import {
 } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { AppState, StyleSheet, View } from 'react-native';
+import { AppState, View } from 'react-native';
 import { openInbox } from 'react-native-email-link';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';

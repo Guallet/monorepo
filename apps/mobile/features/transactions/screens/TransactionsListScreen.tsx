@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { Ionicons } from '@expo/vector-icons';
 import {
   useInfiniteTransactions,
@@ -12,7 +13,6 @@ import {
   Pressable,
   RefreshControl,
   SectionList,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';

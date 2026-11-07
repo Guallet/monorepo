@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useAuth } from '@/auth/useAuth';
 import {
   AuthIntro,
@@ -9,7 +10,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button, Stack, TextInput, useTheme } from '@guallet/luna-mobile';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 import { revalidateLogic, useForm, useStore } from '@tanstack/react-form';
 import { z } from 'zod';
 

@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import {
@@ -5,7 +6,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   View,

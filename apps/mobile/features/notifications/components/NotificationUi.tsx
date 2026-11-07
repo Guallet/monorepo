@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useTheme } from '@guallet/luna-mobile';
 import { NotificationType } from '@guallet/api-client';
 import {

@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ApiError } from '@guallet/api-client';
 import {

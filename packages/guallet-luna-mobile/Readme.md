@@ -150,6 +150,11 @@ returns the active theme. Navigation tokens are available at
 `colors.tabBar.tint`, `colors.tabBar.inactiveTint`, `colors.tabBar.background`,
 and `colors.tabBar.border`.
 
+Styles use `StyleSheet` from `react-native-unistyles`. The app registers Luna's
+light and dark themes before Expo Router loads, and `LunaProvider` keeps
+Unistyles in sync with the active appearance and theme overrides. Native
+development requires a development build; Expo Go is not supported.
+
 Color tokens are grouped by purpose so components can use the appropriate
 semantic level:
 

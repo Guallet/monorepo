@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import React from 'react';
-import { Text, TextProps, StyleSheet } from 'react-native';
+import { Text, TextProps } from 'react-native';
 import { useTheme } from '../../theme';
 import {
   titleOrderToSize,

@@ -1,12 +1,7 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useTheme } from '@guallet/luna-mobile';
 import type { ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export interface SettingsRowProps {

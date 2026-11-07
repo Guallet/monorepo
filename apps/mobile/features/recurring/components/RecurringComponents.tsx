@@ -1,9 +1,9 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useState, type ReactNode } from 'react';
 import { Image } from 'expo-image';
 import {
   ActivityIndicator,
   Pressable,
-  StyleSheet,
   Text,
   View,
   type StyleProp,

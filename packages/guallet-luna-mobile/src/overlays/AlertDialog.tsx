@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   createContext,
   type PropsWithChildren,
@@ -6,14 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTheme } from '../theme';
 
 export interface AlertAction {

@@ -6,6 +6,7 @@ const path = require('path');
 const {
   wrapWithReanimatedMetroConfig,
 } = require('react-native-reanimated/metro-config');
+const { withUnistylesConfig } = require('react-native-unistyles/metro');
 
 const projectRoot = __dirname;
 const config = getSentryExpoConfig(projectRoot, {
@@ -19,4 +20,4 @@ config.cacheStores = [
   }),
 ];
 
-module.exports = wrapWithReanimatedMetroConfig(config);
+module.exports = withUnistylesConfig(wrapWithReanimatedMetroConfig(config));

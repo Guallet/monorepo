@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native-unistyles';
 import {
   Button,
   KeyboardAwareScrollView,
@@ -5,7 +6,7 @@ import {
   useTheme,
 } from '@guallet/luna-mobile';
 import { useEffect, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { AccountDto, AccountTypeDto } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
 import { AccountTypeIcon } from './AccountTypeIcon';

@@ -1,5 +1,6 @@
+import { StyleSheet } from 'react-native-unistyles';
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '@guallet/luna-mobile';
 import { Currency } from '@guallet/money';
