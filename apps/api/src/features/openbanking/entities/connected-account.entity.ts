@@ -50,7 +50,7 @@ export class ConnectedAccount extends BaseDbEntity {
   @Column({ type: 'timestamptz', nullable: true })
   last_synced_at: Date | null;
 
-  // Original provider account payload. Legacy links have no saved response.
+  // Original provider account payload, including fields we do not normalize.
   @Column({ type: 'jsonb', nullable: true, select: false })
   raw: Record<string, unknown> | null;
 }

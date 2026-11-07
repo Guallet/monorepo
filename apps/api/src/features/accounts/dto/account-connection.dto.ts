@@ -9,7 +9,7 @@ import {
   BankConnectionStatus,
 } from '../../openbanking/models/bank-connection-state.model';
 
-export class AccountConnectionDetailsDto {
+export class AccountConnectionDto {
   @ApiProperty({ format: 'uuid' })
   id: string;
 
@@ -39,25 +39,16 @@ export class AccountConnectionDetailsDto {
 
   @ApiProperty({ enum: BANK_CONNECTION_STATUSES })
   status: BankConnectionStatus;
-}
 
-export class AccountConnectionDto {
-  @ApiProperty({ type: () => AccountConnectionDetailsDto, required: false })
-  connection?: AccountConnectionDetailsDto;
-
-  static fromDomain(
-    connection: AccountConnection | null,
-  ): AccountConnectionDto {
+  static fromDomain(connection: AccountConnection): AccountConnectionDto {
     const dto = new AccountConnectionDto();
     if (connection) {
-      const details = new AccountConnectionDetailsDto();
-      details.id = connection.id;
-      details.providerId = connection.providerId;
-      details.remoteAccountId = connection.remoteAccountId;
-      details.lastRefresh = connection.lastRefresh;
-      details.daysRemaining = connection.daysRemaining;
-      details.status = connection.status;
-      dto.connection = details;
+      dto.id = connection.id;
+      dto.providerId = connection.providerId;
+      dto.remoteAccountId = connection.remoteAccountId;
+      dto.lastRefresh = connection.lastRefresh;
+      dto.daysRemaining = connection.daysRemaining;
+      dto.status = connection.status;
     }
     return dto;
   }

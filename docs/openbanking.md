@@ -79,7 +79,7 @@ Missing accounts and accounts owned by another user return HTTP 404.
 The check uses persisted links even when the discovery cache is empty or the
 account source label changes. It makes no provider requests and returns no
 credentials. `lastRefresh` is the latest successful account refresh/sync or
-initial link date, and can be null for legacy records without timestamps.
+initial link date.
 `status` is `connected`, `expired`, or `connectionError`. Expiry takes precedence
 over an operation error. Status reflects the latest background operation;
 known expiry dates are also checked at request time.
@@ -138,33 +138,17 @@ the selection to resume; existing account mappings and transaction identifiers
 prevent creating duplicate imports. Provider availability and consent expiry
 can still require reconnecting a bank.
 
-## Migration and deployment
+## Database setup
 
-`UnifyBankConnections1792800000000` replaces the destructive, unreleased
-`RemoveLegacyOpenBanking` migration from this PR. It copies encrypted credentials
-without decrypting or re-encrypting them, preserves Nordigen account links and
-authorizations, and leaves imported accounts and transactions intact. It clears
-redundant legacy credentials and tokens. Keep the existing encryption key.
-
-Stop old API/worker replicas and drain their queues before applying this
-migration. Deploy the new API, workers, client, and webapp together: legacy
-provider routes and SDK wrappers have been removed. Old queued jobs are not
-converted to the shared queue; users can start new syncs after deployment.
-
-The legacy table schemas remain for rollback. Reverting restores credentials
-and existing Nordigen link state. Rollback refuses to discard new Nordigen
-links or authorizations that cannot be represented safely by the old model;
-use a database backup or an explicit data conversion in that case.
-
-If the removed destructive migration was already applied to a development
-database, restore its pre-migration backup before applying this migration.
-Deleted legacy records cannot be reconstructed from the new schema.
+This feature starts with an empty database. Run the API migrations to create
+`bank_connections`, `bank_authorizations`, and `connected_accounts` directly.
+There are no provider-specific account/credential tables or historical-data
+conversions. Rollback removes the feature tables.
 
 ## Shared connected accounts
 
-`connected_accounts` stores imported account links for every provider. It replaces
-`lunchflow_accounts`, `banksync_accounts`, `synci_accounts`, and `nordigen_links`.
-Each row contains:
+`connected_accounts` stores imported account links for every provider. Each row
+contains:
 
 | Column                 | Purpose                                                  |
 | ---------------------- | -------------------------------------------------------- |
@@ -187,9 +171,3 @@ retains the account object before normalization; Nordigen retains the full accou
 details response. Unknown fields are preserved. Unavailable accounts retain their
 previous payload. `raw` is excluded from default entity selection, discovery
 responses, and the account connection response.
-
-The migration preserves existing link IDs, ownership, local account references,
-remote identifiers, timestamps, and linked/deleted states before dropping the
-old tables. Legacy rows start with `raw = null` because original responses were
-not stored; their next successful provider response populates it. Rollback
-restores the old tables and link columns; the old schema has no place for `raw`.

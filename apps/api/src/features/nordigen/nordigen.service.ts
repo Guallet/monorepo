@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, IsNull, Not, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { createHash } from 'node:crypto';
 import { Account } from '../accounts/entities/account.entity';
 import { AccountSource } from '../accounts/entities/accountSource.model';
@@ -349,23 +349,6 @@ export class NordigenService implements BankProviderAdapter {
         metadata: { provider: 'nordigen' as const, data: { ...transaction } },
       };
     });
-    // Upgrade legacy transaction identifiers only within the owned local account.
-    const legacyIds = remoteTransactions
-      .map((transaction) => transaction.transactionId)
-      .filter(Boolean);
-    if (legacyIds.length) {
-      const legacy = await this.transactions.find({
-        where: { accountId: account.id, externalId: In(legacyIds) },
-      });
-      for (const row of legacy) {
-        if (row.metadata?.provider === 'nordigen') {
-          await this.transactions.update(
-            { id: row.id, accountId: account.id },
-            { externalId: `nordigen:${userId}:${remoteId}:${row.externalId}` },
-          );
-        }
-      }
-    }
     const newUncategorizedCount = await persistBankTransactions(
       this.transactions,
       account.id,

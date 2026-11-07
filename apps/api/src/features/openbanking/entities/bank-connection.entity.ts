@@ -32,7 +32,6 @@ export class BankConnection extends BaseDbEntity {
   provider_id: BankProviderId;
 
   // API-key providers encrypt the key directly; Nordigen encrypts the secret pair.
-  // This retains existing ciphertext during migration, without needing the key in SQL.
   @Column({ type: 'text', select: false })
   encrypted_credentials: string;
 
