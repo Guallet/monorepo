@@ -28,7 +28,7 @@
     "sitemap:android": "npx uri-scheme open exp://192.168.1.166:8081/--/_sitemap --android",
     "eas:android:development": "eas build --profile development --platform android",
     "eas:android:preview": "eas build --profile preview --platform android",
-    "eas:update-branch": "eas update --auto",
+    "eas:update:preview": "eas update --channel preview --environment preview --platform all",
     "eas:env:push": "eas secret:push --scope project --env-file .env",
     "eas:env:pull": "eas env:pull --environment development"
   },
@@ -67,6 +67,7 @@
     "expo-status-bar": "57.0.1",
     "expo-symbols": "57.0.3",
     "expo-system-ui": "57.0.4",
+    "expo-updates": "~57.0.24",
     "expo-web-browser": "57.0.3",
     "papaparse": "5.5.3",
     "react": "19.2.8",

@@ -1,11 +1,23 @@
 name: EAS Build
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-    paths:
-      - 'apps/mobile/**'
+    inputs:
+      profile:
+        description: EAS build profile (rebuild preview after native changes)
+        type: choice
+        default: preview
+        options:
+          - preview
+          - production
+          - development
+      platform:
+        description: Native platform
+        type: choice
+        default: all
+        options:
+          - all
+          - android
+          - ios
 
 permissions:
   contents: read
@@ -14,15 +26,14 @@ jobs:
   build:
     name: EAS build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [24.20.x]
     steps:
       - name: Check for EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-          echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-          exit 1
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "Add EXPO_TOKEN to the repository's Actions secrets."
+            exit 1
           fi
 
       - name: Checkout repository
@@ -33,10 +44,10 @@ jobs:
         with:
           version: 12.4.1
 
-      - name: Setup Node ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 24.20.x
           cache: 'pnpm'
 
       - name: Setup EAS
@@ -46,41 +57,22 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        working-directory: apps/mobile
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Create PROD .env file
-        working-directory: apps/mobile
-        run: |
-          touch .env
-          echo "${{ secrets.MOBILE_ENV_FILE_PROD }}" >> .env
+      - name: Run TypeScript check
+        run: pnpm --filter mobile typecheck
 
-      - name: Create Firebase Android config file
-        working-directory: apps/mobile/auth/firebase
-        run: |
-          touch google-services.json
-          echo "${{ secrets.FIREBASE_ANDROID_FILE_PROD }}" >> google-services.json
+      - name: Run linter
+        run: pnpm --filter mobile lint
 
-      - name: Create Firebase iOS config file
-        working-directory: apps/mobile/auth/firebase
-        run: |
-          touch GoogleService-Info.plist
-          echo "${{ secrets.FIREBASE_IOS_FILE_PROD }}" >> GoogleService-Info.plist
-
-      - name: 🧪 Run TypeScript check
-        working-directory: apps/mobile
-        run: pnpm tsc
-
-      - name: 🧹 Run Linter
-        working-directory: apps/mobile
-        run: pnpm lint
-        continue-on-error: true
-
-      - name: 🎨 Run Oxfmt check
-        working-directory: apps/mobile
-        run: pnpm format:check
+      - name: Run format check
+        run: pnpm --filter mobile format:check
 
       - name: Build on EAS
-        run: eas build --platform android --non-interactive --no-wait
-        # run: eas build --platform all --non-interactive --no-wait
         working-directory: apps/mobile
+        env:
+          BUILD_PROFILE: ${{ inputs.profile }}
+          BUILD_PLATFORM: ${{ inputs.platform }}
+        run: >-
+          eas build --profile "$BUILD_PROFILE" --platform "$BUILD_PLATFORM"
+          --non-interactive --no-wait
