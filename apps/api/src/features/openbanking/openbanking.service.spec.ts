@@ -1,182 +1,148 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { describe, expect, it, vi } from 'vitest';
 import { OpenbankingService } from './openbanking.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { ObConnection } from './entities/connection.entity';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { NotFoundException } from '@nestjs/common';
-import { NordigenRequisitionDto } from '../nordigen/dto/nordigen-requisition.dto';
+import { BankJobData } from './openbanking.jobs';
+import { NotificationType } from '../notifications/entities/notification.entity';
 
-describe('OpenbankingService', () => {
-  let service: OpenbankingService;
-
-  const mockObConnectionRepository = {
-    find: vi.fn(),
-    findOne: vi.fn(),
-    save: vi.fn(),
-    remove: vi.fn(),
+function setup() {
+  const connection = {
+    id: 'connection',
+    user_id: 'user',
+    provider_id: 'synci',
+    credential_version: 1,
+    encrypted_credentials: 'encrypted',
+    accounts: [],
   };
-
-  const mockNordigenAccountRepository = {
-    find: vi.fn(),
-    findOne: vi.fn(),
-    save: vi.fn(),
-    delete: vi.fn(),
+  const query = {
+    addSelect: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    setLock: vi.fn().mockReturnThis(),
+    getOne: vi.fn().mockResolvedValue(connection),
   };
-
-  const mockAccountRepository = {
-    find: vi.fn(),
-    save: vi.fn(),
+  const manager = {
+    getRepository: () => ({ createQueryBuilder: () => query }),
+    save: vi.fn().mockResolvedValue(connection),
   };
-
-  const mockInstitutionRepository = {
-    find: vi.fn(),
+  const db = {
+    transaction: vi.fn(
+      async (operation: (manager: unknown) => Promise<unknown>) =>
+        operation(manager),
+    ),
   };
-
-  const mockTransactionRepository = {
-    find: vi.fn(),
-    save: vi.fn(),
+  const connections = {
+    find: vi.fn().mockResolvedValue([connection]),
+    findOne: vi.fn().mockResolvedValue(connection),
   };
-
-  const mockNordigenService = {
-    getInstitutions: vi.fn(),
-    getAccountMetadata: vi.fn(),
-    getAccountDetails: vi.fn(),
+  const adapter = {
+    sync: vi.fn().mockResolvedValue({
+      accountsSynced: 1,
+      errors: [],
+      newUncategorizedCount: 3,
+    }),
+    listAccounts: vi.fn().mockResolvedValue([]),
   };
+  const notifications = {
+    createSystemNotification: vi.fn().mockResolvedValue({}),
+  };
+  const jobs = { add: vi.fn().mockResolvedValue({ id: 'job' }) };
+  const service = new OpenbankingService(
+    connections as never,
+    db as never,
+    { get: () => adapter } as never,
+    { decrypt: () => 'key' } as never,
+    {} as never,
+    jobs as never,
+    notifications as never,
+  );
+  const data: BankJobData = {
+    userId: 'user',
+    connectionId: 'connection',
+    credentialVersion: 1,
+    operation: 'sync',
+    notifyOnNewTransactions: true,
+  };
+  return { service, adapter, notifications, jobs, data, manager };
+}
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        OpenbankingService,
-        {
-          provide: getRepositoryToken(ObConnection),
-          useValue: mockObConnectionRepository,
-        },
-        {
-          provide: getRepositoryToken(NordigenAccount),
-          useValue: mockNordigenAccountRepository,
-        },
-        {
-          provide: getRepositoryToken(Account),
-          useValue: mockAccountRepository,
-        },
-        {
-          provide: getRepositoryToken(Institution),
-          useValue: mockInstitutionRepository,
-        },
-        {
-          provide: getRepositoryToken(Transaction),
-          useValue: mockTransactionRepository,
-        },
-        {
-          provide: NordigenService,
-          useValue: mockNordigenService,
-        },
-      ],
-    }).compile();
-
-    service = module.get<OpenbankingService>(OpenbankingService);
-
-    // Clear all mocks before each test
-    vi.clearAllMocks();
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
-  describe('getAvailableCountries', () => {
-    it('should return list of countries with localized names', () => {
-      const result = service.getAvailableCountries('en');
-
-      expect(result).toBeDefined();
-      expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBeGreaterThan(0);
-      expect(result[0]).toHaveProperty('code');
-      expect(result[0]).toHaveProperty('name');
+describe('scheduled bank sync categorization notifications', () => {
+  it('notifies the connection owner after a scheduled sync imports new transactions', async () => {
+    const { service, notifications, data, manager } = setup();
+    await service.process(data);
+    expect(
+      notifications.createSystemNotification,
+    ).toHaveBeenCalledExactlyOnceWith({
+      userId: 'user',
+      message: 'You have 3 new transactions to categorize',
+      icon: '👆',
+      type: NotificationType.ACTION_REQUIRED,
+      action: '/transactions/inbox',
     });
-
-    it('should return different names for different locales', () => {
-      const resultEn = service.getAvailableCountries('en');
-      const resultEs = service.getAvailableCountries('es');
-
-      expect(resultEn).toBeDefined();
-      expect(resultEs).toBeDefined();
-      // Names should be different for different locales
-      const gbEn = resultEn.find((c) => c.code === 'GB');
-      const gbEs = resultEs.find((c) => c.code === 'GB');
-      expect(gbEn?.name).not.toBe(gbEs?.name);
-    });
+    expect(manager.save.mock.invocationCallOrder[0]).toBeLessThan(
+      notifications.createSystemNotification.mock.invocationCallOrder[0],
+    );
   });
-
-  describe('deleteConnection', () => {
-    it('should delete a connection and its accounts', async () => {
-      const args = {
-        user_id: 'user-123',
-        connection_id: 'conn-1',
-      };
-
-      const mockConnection = {
-        id: args.connection_id,
-        user_id: args.user_id,
-        accounts: ['account-1', 'account-2'],
-      };
-
-      mockObConnectionRepository.findOne.mockResolvedValue(mockConnection);
-      mockNordigenAccountRepository.delete.mockResolvedValue({});
-      mockObConnectionRepository.remove.mockResolvedValue(mockConnection);
-
-      const result = await service.deleteConnection(args);
-
-      expect(result).toBeDefined();
-      expect(result.accounts).toEqual(['account-1', 'account-2']);
-      expect(mockNordigenAccountRepository.delete).toHaveBeenCalledTimes(2);
-      expect(mockObConnectionRepository.remove).toHaveBeenCalledWith(
-        mockConnection,
-      );
+  it.each([0, 3])(
+    'does not notify for manual syncs (new count %i)',
+    async (count) => {
+      const { service, adapter, notifications, data } = setup();
+      adapter.sync.mockResolvedValue({
+        accountsSynced: 1,
+        errors: [],
+        newUncategorizedCount: count,
+      });
+      await service.process({ ...data, notifyOnNewTransactions: undefined });
+      expect(notifications.createSystemNotification).not.toHaveBeenCalled();
+    },
+  );
+  it('does not notify on a repeat sync with no new transactions', async () => {
+    const { service, adapter, notifications, data } = setup();
+    adapter.sync.mockResolvedValue({
+      accountsSynced: 1,
+      errors: [],
+      newUncategorizedCount: 0,
     });
-
-    it('should throw NotFoundException if connection not found', async () => {
-      const args = {
-        user_id: 'user-123',
-        connection_id: 'non-existent',
-      };
-
-      mockObConnectionRepository.findOne.mockResolvedValue(null);
-
-      await expect(service.deleteConnection(args)).rejects.toThrow(
-        NotFoundException,
-      );
+    await service.process(data);
+    expect(notifications.createSystemNotification).not.toHaveBeenCalled();
+  });
+  it('notifies about successful imports when another account fails', async () => {
+    const { service, adapter, notifications, data } = setup();
+    adapter.sync.mockResolvedValue({
+      accountsSynced: 1,
+      errors: ['other-account'],
+      newUncategorizedCount: 3,
+    });
+    const result = await service.process(data);
+    expect(result.errors).toEqual(['other-account']);
+    expect(notifications.createSystemNotification).toHaveBeenCalledOnce();
+  });
+  it('still notifies when discovery fails after committed transaction writes', async () => {
+    const { service, adapter, notifications, data } = setup();
+    adapter.listAccounts.mockRejectedValue(new Error('Discovery failed'));
+    await expect(service.process(data)).rejects.toThrow('Discovery failed');
+    expect(notifications.createSystemNotification).toHaveBeenCalledOnce();
+  });
+  it('does not fail a successful sync when notification delivery fails', async () => {
+    const { service, notifications, data } = setup();
+    notifications.createSystemNotification.mockRejectedValue(
+      new Error('Notification failed'),
+    );
+    await expect(service.process(data)).resolves.toMatchObject({
+      accountsSynced: 1,
     });
   });
-
-  describe('saveRequisition', () => {
-    it('should save a requisition', async () => {
-      const userId = 'user-123';
-      const requisitionDto = {
-        id: 'req-1',
-        created: new Date('2024-01-01'),
-        redirect: 'http://localhost:3000',
-        status: 'LN',
-        institution_id: 'inst-1',
-        agreement: 'agr-1',
-        reference: 'ref-1',
-        accounts: ['account-1'],
-        user_language: 'en',
-        link: 'https://nordigen.com/auth',
-        ssn: null,
-        account_selection: false,
-        redirect_immediate: false,
-      } as unknown as NordigenRequisitionDto;
-
-      mockObConnectionRepository.save.mockResolvedValue({});
-
-      await service.saveRequisition(userId, requisitionDto);
-
-      expect(mockObConnectionRepository.save).toHaveBeenCalled();
+  it('marks scheduled jobs for notification and keeps their deduplication separate', async () => {
+    const { service, jobs } = setup();
+    await service.syncAll();
+    expect(jobs.add.mock.calls[0][1]).toMatchObject({
+      userId: 'user',
+      notifyOnNewTransactions: true,
     });
+    await service.enqueue({
+      userId: 'user',
+      id: 'connection',
+      operation: 'sync',
+    });
+    expect(jobs.add.mock.calls[0][2].deduplication.id).not.toBe(
+      jobs.add.mock.calls[1][2].deduplication.id,
+    );
   });
 });

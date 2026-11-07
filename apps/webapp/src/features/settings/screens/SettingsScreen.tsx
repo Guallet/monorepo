@@ -1,3 +1,4 @@
+import { BankConnectionsSettings } from '@/features/openbanking/components/BankConnectionsSettings';
 import {
   Box,
   Button,
@@ -113,6 +114,19 @@ export function SettingsScreen() {
             <DefaultCurrencyRow />
             <PreferredCurrenciesRow />
             <DateFormatRow />
+          </SettingsSection>
+
+          <SettingsSection
+            title={t('openbanking.settings.title', 'Bank connections')}
+            description={t(
+              'openbanking.settings.description',
+              'Connect bank accounts using your own provider credentials.',
+            )}
+            icon={<IconKey size={24} strokeWidth={1.5} />}
+          >
+            <Box px={spacing.lg}>
+              <BankConnectionsSettings />
+            </Box>
           </SettingsSection>
 
           <SettingsSection

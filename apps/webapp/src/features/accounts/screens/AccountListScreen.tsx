@@ -57,7 +57,7 @@ export function AccountListScreen() {
   }
 
   function goToConnectBank() {
-    navigate({ to: '/connections/connect' });
+    navigate({ to: '/accounts/new' });
   }
 
   return (

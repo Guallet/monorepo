@@ -4,7 +4,7 @@ Guallet API — backend for the Guallet personal-finance app (NestJS + TypeScrip
 
 ### Quick summary
 
-- Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and integrations (Nordigen, webhooks, CSV importer).
+- Exposes REST endpoints for accounts, transactions, categories, budgets, rules, reports and bank connections (BankSync, Lunch Flow, Synci, Nordigen), webhooks and CSV import.
 - AI features: user-owned provider connections (OpenAI, OpenRouter, Vercel AI Gateway), agents, and a streaming AI Assistant chat grounded on a server-built financial summary. Provider tokens are AES-256-GCM encrypted at rest; chat sessions are purged after 30 days.
 - Authentication via Better-Auth (magic links / OTP / Social).
 - DB: PostgreSQL (TypeORM). Background jobs: BullMQ + Redis. Scheduled jobs via `@nestjs/schedule` cron.
@@ -43,7 +43,7 @@ cp api.env.sample apps/api/.env       # API runtime env (repo root -> apps/api)
 cp database.env.sample .env           # DB / docker-compose (repo root)
 ```
 
-- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `NORDIGEN_*`, `DATABASE_CREDENTIALS_ENCRYPTION_KEY`, `SMTP_*`.
+- Important env vars: `DATABASE_*`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_BASE_URL`, `ALLOWED_CORS_ORIGINS`, `DATABASE_CREDENTIALS_ENCRYPTION_KEY`, `SMTP_*`.
 - The app loads `.env.local` then `.env` (see `ConfigModule` in `src/app.module.ts`).
 
 ---
@@ -135,7 +135,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
 - Credentials: `src/user-credentials` exports `UserCredentialsModule` and
   its `UserCredentialsService` service for encrypting and decrypting sensitive
-  strings. Feature modules import this shared module as needed. It uses
+  strings. Feature modules such as AI and open banking import this shared
+  module as needed. It uses
   `DATABASE_CREDENTIALS_ENCRYPTION_KEY` through the
   `userCredentials.encryptionKey` configuration setting.
 - Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
@@ -171,3 +172,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 ## License
 
 This package is covered by the repository Apache-2.0 license — see the root `LICENSE`.
+
+## Bank connections
+
+See [the shared open banking API](../../docs/openbanking.md) for endpoints,
+provider adapters, background jobs, and migration guidance.

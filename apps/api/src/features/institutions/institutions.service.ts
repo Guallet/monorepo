@@ -66,18 +66,6 @@ export class InstitutionsService {
     return entity;
   }
 
-  async findOneByNordigenId(nordigen_id: string): Promise<Institution> {
-    const entity = await this.repository.findOne({
-      where: {
-        nordigen_id: nordigen_id,
-      },
-    });
-    if (!entity) {
-      throw new NotFoundException();
-    }
-    return entity;
-  }
-
   async create({
     user_id,
     dto,
@@ -154,11 +142,5 @@ export class InstitutionsService {
     } else {
       throw new NotFoundException();
     }
-  }
-
-  // TODO: This only be called from admin, so check the role of the user calling this
-  async saveAll(entities: Institution[]): Promise<Institution[]> {
-    await this.repository.upsert(entities, ['nordigen_id']);
-    return entities;
   }
 }

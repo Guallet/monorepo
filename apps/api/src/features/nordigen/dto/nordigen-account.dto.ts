@@ -1,57 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ExternalCashAccountType1Code } from './ExternalCashAccountType1Code.helper';
 
-export class NordigenAccountMetadataDto {
-  @ApiProperty()
-  id: string;
-  @ApiProperty({ type: String, format: 'date-time' })
-  created: Date;
-  @ApiProperty({ type: String, format: 'date-time' })
-  last_accessed: Date;
-  @ApiProperty()
-  iban: string;
-  @ApiProperty()
-  institution_id: string;
-  @ApiProperty({
-    enum: [
-      'DISCOVERED',
-      'PROCESSING',
-      'ERROR',
-      'EXPIRED',
-      'READY',
-      'SUSPENDED',
-    ],
-  })
-  status: NordigenAccountStatus;
-}
-
-export type NordigenAccountStatus =
-  | 'DISCOVERED' // User has successfully authenticated and account is discovered
-  | 'PROCESSING' // Account is being processed by the Institution
-  | 'ERROR' // An error was encountered when processing account
-  | 'EXPIRED' // Access to account has expired as set in End User Agreement
-  | 'READY' // Account has been successfully processed
-  | 'SUSPENDED'; // Account has been suspended (more than 10 consecutive failed attempts to access the account
-
-// export enum NordigenAccountStatus{
-//  { "DISCOVERED": "User has successfully authenticated and account is discovered" },
-//  { "PROCESSING": "Account is being processed by the Institution" },
-//  { "ERROR": "An error was encountered when processing account" },
-//  { "EXPIRED": "Access to account has expired as set in End User Agreement" },
-//  { "READY": "Account has been successfully processed" },
-//  { "SUSPENDED": "Account has been suspended (more than 10 consecutive failed attempts to access the account)" } ]
-// }
-
-// Status short	Status long	Description	Stage
-// CR	CREATED	Requisition has been successfully created	1
-// GC	GIVING_CONSENT	End-user is giving consent at GoCardless's consent screen	2
-// UA	UNDERGOING_AUTHENTICATION	End-user is redirected to the financial institution for authentication	3
-// RJ	REJECTED	Either SSN verification has failed or end-user has entered incorrect credentials	4
-// SA	SELECTING_ACCOUNTS	End-user is selecting accounts	5
-// GA	GRANTING_ACCESS	End-user is granting access to their account information	6
-// LN	LINKED	Account has been successfully linked to requisition	7
-// EX	EXPIRED Access to accounts has expired as set in End User Agreement 8
-
 export class NordigenAccountBalancesDto {
   @ApiProperty({ type: () => [NordigenAccountBalanceDto] })
   balances: NordigenAccountBalanceDto[];

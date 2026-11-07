@@ -90,17 +90,6 @@
         }
       }
     },
-    "connectionCard": {
-      "status": {
-        "unknown": "desconocido"
-      },
-      "created": "Creado:",
-      "updated": "Actualizado:",
-      "accountsLinked_one": "",
-      "accountsLinked_many": "{{count}} cuentas vinculadas",
-      "accountsLinked_other": "",
-      "noAccountsLinked": "Sin cuentas vinculadas"
-    },
     "preferredCurrenciesRow": {
       "notifications": {
         "success": {
@@ -179,11 +168,6 @@
           "income": "Income",
           "spending": "Spending"
         },
-        "openBanking": {
-          "title": "Open Banking connection",
-          "synced": "Synced",
-          "lastSynced": "Last synced: {{date}}"
-        },
         "transactions": {
           "title": "Latest transactions",
           "viewAll": "View all",
@@ -198,7 +182,7 @@
         },
         "emptyState": {
           "title": "No accounts yet",
-          "description": "Track all your bank accounts, credit cards and savings in one place. Connect through open banking, or add an account manually if your provider isn't supported.",
+          "description": "Track your bank accounts, credit cards and savings in one place. Import accounts from a supported provider with your own credentials, or add an account manually.",
           "connectBank": "Connect a bank",
           "addManually": "Add manually",
           "trait1": {
@@ -258,15 +242,6 @@
             "message": "A network or server error occurred. Please try again."
           }
         },
-        "obRedirect": {
-          "error": {
-            "title": "Connection failed",
-            "message": "Could not start the bank connection. Please try again."
-          },
-          "title": "Connecting to {{bank}}",
-          "subtitle": "You'll be redirected to your bank's secure login page. Return to Guallet when done.",
-          "goToBank": "Go to {{bank}}"
-        },
         "institutionPicker": {
           "placeholder": "Search for a bank…",
           "searchPlaceholder": "Type to search…",
@@ -275,11 +250,6 @@
         "chooseMethod": {
           "title": "Add an account",
           "subtitle": "Choose how you'd like to connect your account",
-          "openBanking": {
-            "title": "Connect via Open Banking",
-            "desc": "Securely link your bank account. Balances and transactions sync automatically. Read-only — Guallet never moves money."
-          },
-          "recommended": "Recommended",
           "manual": {
             "title": "Add manually",
             "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
@@ -358,29 +328,6 @@
           "title": "What type of account?",
           "subtitle": "This helps Guallet categorise balances and transactions correctly."
         },
-        "obSteps": {
-          "country": "Country",
-          "bank": "Bank",
-          "connecting": "Connecting"
-        },
-        "obBank": {
-          "title": "Select your bank",
-          "subtitle": "You'll be redirected to your bank's secure login. Guallet only requests read-only access.",
-          "searchPlaceholder": "Search bank…",
-          "noResults": "No banks found for \"{{search}}\"",
-          "noInstitutions": "No institutions available for this country",
-          "psd2Notice": "You'll be redirected to {{bank}}'s secure website. Guallet requests read-only access via PSD2 Open Banking and never sees your login credentials.",
-          "psd2NoticeGeneric": "Guallet requests read-only access via PSD2 Open Banking and never sees your login credentials.",
-          "connectTo": "Connect to {{bank}}",
-          "selectBank": "Select a bank to continue"
-        },
-        "obCountry": {
-          "title": "Where is your bank?",
-          "subtitle": "Select the country where your bank is based.",
-          "searchPlaceholder": "Search country…",
-          "noResults": "No results for \"{{search}}\"",
-          "continueWith": "Continue with {{name}}"
-        },
         "typeDesc": {
           "current": "Everyday spending & income",
           "savings": "Pots, ISAs, easy-access",
@@ -443,11 +390,75 @@
   },
   "common": {
     "back": "Back",
+    "loading": "Cargando…",
+    "retry": "Reintentar",
+    "done": "Done",
     "optional": "Optional",
     "continue": "Continue",
-    "startOver": "Start over",
     "cancel": "Cancel",
     "save": "Save"
+  },
+  "openbanking": {
+    "unlinkError": "Could not unlink the account. Please try again.",
+    "import": {
+      "title": "Import from {{provider}}",
+      "configure": "Add your provider credentials in Settings before importing bank accounts.",
+      "settings": "Open settings",
+      "help": "Refresh to find available accounts, then select the accounts to import. Linked accounts sync daily.",
+      "loadError": "Could not load accounts or start the operation. Please try again.",
+      "empty": "No accounts listed yet. Connect your banks with the provider, then refresh.",
+      "unavailable": "This account is unavailable. Check your bank consent or unlink it and authorize the bank again.",
+      "selected": "Import selected accounts",
+      "providerDescription": "Connect bank accounts using your own {{provider}} credentials."
+    },
+    "loadError": "Could not load bank connections.",
+    "unlink": "Unlink",
+    "refresh": "Refresh accounts",
+    "providers": {
+      "error": "Could not load bank providers."
+    },
+    "authorization": {
+      "startError": "Could not start bank authorization. Please try again.",
+      "country": "Country",
+      "bank": "Bank",
+      "loadError": "Could not load banks.",
+      "connect": "Authorize a bank",
+      "title": "Bank authorization",
+      "invalid": "The bank authorization link is invalid. Please start again.",
+      "returned": "Continue to confirm your bank authorization and discover your accounts.",
+      "incomplete": "Authorization could not be confirmed. Complete it with your bank, or start again.",
+      "import": "Choose accounts to import"
+    },
+    "credentials": {
+      "apiKey": "API key or personal access token",
+      "secretId": "Secret ID",
+      "secretKey": "Secret key",
+      "required": "Enter a valid credential.",
+      "saved": "Credentials validated and saved.",
+      "saveError": "Could not save credentials. Check your provider details and try again.",
+      "deleteError": "Could not disconnect. Please try again.",
+      "help": "Use credentials from your own provider account. They are encrypted before being saved.",
+      "configured": "Configured: ••••{{hint}}",
+      "save": "Save and validate"
+    },
+    "sync": "Sync now",
+    "disconnect": {
+      "button": "Disconnect",
+      "title": "Disconnect bank provider?",
+      "description": "Saved credentials will be deleted and syncing will stop. Imported accounts and transactions will remain in Guallet."
+    },
+    "job": {
+      "startError": "Could not start the operation. Please try again.",
+      "requestError": "Could not check the operation. It may still be running.",
+      "failed": "The operation failed. Check your provider connection, then refresh and try again.",
+      "running": "Working with your bank provider. This can take a few minutes…",
+      "partial": "Some accounts could not be synced. Check their status with your provider and try again.",
+      "completed": "Operation completed."
+    },
+    "settings": {
+      "title": "Bank connections",
+      "description": "Connect bank accounts using your own provider credentials."
+    }
   },
   "screens": {
     "assistant": {
@@ -809,72 +820,6 @@
       },
       "edit": {
         "title": "Edit category"
-      }
-    },
-    "connections": {
-      "callback": {
-        "cancelled": {
-          "title": "Authorisation cancelled",
-          "description": "No accounts were connected. You cancelled the authorisation. You can try again or add an account manually.",
-          "retry": "Try connecting again",
-          "manual": "Add account manually"
-        },
-        "error": {
-          "connectionFailed": "Connection failed",
-          "description": "Your bank rejected the connection request. This can happen if the session expired or the bank's Open Banking service is temporarily unavailable.",
-          "details": "Error details",
-          "whatToTry": "What to try next",
-          "tip1": "Check your bank app for any pending authorisation requests",
-          "tip2": "Make sure you completed the login process before returning",
-          "tip3": "Try again — the bank's service may now be available",
-          "retry": "Try again",
-          "manual": "Add account manually instead",
-          "title": "Link failed",
-          "message": "Could not link accounts. Please try again.",
-          "unknown": "Unknown error"
-        },
-        "success": {
-          "title": "Accounts found!",
-          "subtitle_one": "Found {{count}} accounts. Choose which to import.",
-          "subtitle_many": "Found {{count}} accounts. Choose which to import.",
-          "subtitle_other": "Found {{count}} accounts. Choose which to import.",
-          "selectedCount": "{{selected}} of {{total}} accounts selected",
-          "import_one": "Import {{count}} account",
-          "import_many": "Import {{count}} account",
-          "import_other": "Import {{count}} accounts",
-          "importNone": "Select accounts to import",
-          "notification": "Accounts linked successfully",
-          "notificationCount_one": "{{count}} accounts linked",
-          "notificationCount_many": "{{count}} accounts linked",
-          "notificationCount_other": "{{count}} accounts linked"
-        },
-        "linking": "Linking accounts…",
-        "loading": "Loading accounts…"
-      },
-      "create": {
-        "title": "Connect a bank"
-      },
-      "details": {
-        "title": "Connection",
-        "refreshButton": {
-          "label": "Actualizar conexión"
-        },
-        "updateButton": {
-          "label": "Actualizar cuentas conectadas"
-        },
-        "deleteButton": {
-          "modalTitle": "Eliminar conexión",
-          "modalMessage": "¿Estás seguro de que deseas eliminar esta conexión?",
-          "label": "Eliminar"
-        }
-      },
-      "list": {
-        "title": "Conexiones",
-        "addButton": "Agregar nueva conexión",
-        "emptyState": {
-          "title": "No connections yet",
-          "description": "Connect your bank accounts via open banking to automatically import transactions."
-        }
       }
     },
     "importer": {
@@ -1960,7 +1905,7 @@
         "line2": "under control."
       },
       "description": "Track every account, card and saving goal in one place — without giving anyone access to your money.",
-      "feature1": "Open Banking sync — read-only",
+      "feature1": "Connect with your own bank provider credentials",
       "feature2": "Multi-currency, multi-account",
       "feature3": "Self-host or secure cloud",
       "license": "Open source · Apache 2.0"
@@ -2007,9 +1952,9 @@
         "title": "Privacidad primero",
         "description": "Tus datos financieros son tuyos. Aloja Guallet tú mismo o usa nuestra nube segura."
       },
-      "openBanking": {
-        "title": "Banca abierta",
-        "description": "Conéctate a miles de bancos e instituciones a través de APIs de banca abierta."
+      "personalProviderKeys": {
+        "title": "Connect with your own provider credentials",
+        "supportedProviders": "Connect through BankSync, Lunch Flow, Synci, or Nordigen using your own credentials. Guallet encrypts them for your account."
       },
       "badge": "Características",
       "title": "Todo lo que necesitas para gestionar tu dinero",

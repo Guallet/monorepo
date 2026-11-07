@@ -13,8 +13,6 @@ const validEnvironment = {
   REDIS_PASSWORD: '',
   BETTER_AUTH_SECRET: 'auth-secret',
   BETTER_AUTH_BASE_URL: 'http://localhost:5000',
-  NORDIGEN_SECRET_ID: 'secret-id',
-  NORDIGEN_SECRET_KEY: 'secret-key',
   DATABASE_CREDENTIALS_ENCRYPTION_KEY: 'encryption-key',
   NESTJS_OBSERVE_APP_KEY: '',
   NESTJS_OBSERVE_APP_SECRET: '',

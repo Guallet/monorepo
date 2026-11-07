@@ -1,49 +1,31 @@
-import { Module } from '@nestjs/common';
-import { OpenbankingService } from './openbanking.service';
-import { ObConnectionsController } from './ObConnections.controller';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { NordigenModule } from 'src/features/nordigen/nordigen.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { HttpModule } from '@nestjs/axios';
-import { ObConnection } from './entities/connection.entity';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { NordigenAccountRepository } from './repositories/nordigen-account.repository';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { InstitutionsModule } from 'src/features/institutions/institutions.module';
-import { InstitutionsService } from 'src/features/institutions/institutions.service';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { ObAccountsController } from './ObAccounts.controller';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { SyncService } from './sync.service';
-import { ObASyncController } from './ObSync.controller';
 import { NotificationsModule } from '../notifications/notifications.module';
-
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bullmq';
+import { UserCredentialsModule } from 'src/user-credentials/user-credentials.module';
+import { BankSyncModule } from '../banksync/banksync.module';
+import { LunchFlowModule } from '../lunchflow/lunchflow.module';
+import { SynciModule } from '../synci/synci.module';
+import { NordigenModule } from '../nordigen/nordigen.module';
+import { BankConnection } from './entities/bank-connection.entity';
+import { BankAuthorization } from './entities/bank-authorization.entity';
+import { BankProviderRegistry } from './providers/bank-provider.registry';
+import { OpenbankingController } from './openbanking.controller';
+import { OpenbankingService } from './openbanking.service';
+import { OpenbankingProcessor } from './openbanking.processor';
+import { OPENBANKING_QUEUE } from './openbanking.jobs';
 @Module({
   imports: [
-    HttpModule,
-    NordigenModule,
-    InstitutionsModule,
+    UserCredentialsModule,
     NotificationsModule,
-    TypeOrmModule.forFeature([
-      ObConnection,
-      NordigenAccount,
-      Account,
-      Institution,
-      Transaction,
-    ]),
+    BankSyncModule,
+    LunchFlowModule,
+    SynciModule,
+    NordigenModule,
+    TypeOrmModule.forFeature([BankConnection, BankAuthorization]),
+    BullModule.registerQueue({ name: OPENBANKING_QUEUE }),
   ],
-  controllers: [
-    ObConnectionsController,
-    ObAccountsController,
-    ObASyncController,
-  ],
-  providers: [
-    OpenbankingService,
-    NordigenService,
-    NordigenAccountRepository,
-    InstitutionsService,
-    SyncService,
-  ],
-  exports: [SyncService, OpenbankingService],
+  controllers: [OpenbankingController],
+  providers: [BankProviderRegistry, OpenbankingService, OpenbankingProcessor],
 })
 export class OpenbankingModule {}

@@ -59,25 +59,6 @@ export function useAccount(id?: string) {
   };
 }
 
-export function useConnectedAccount(id: string) {
-  const gualletClient = useGualletClient();
-
-  const query = useQuery({
-    queryKey: [ACCOUNTS_QUERY_KEY, id, 'connected'],
-    enabled: !!id,
-    queryFn: async () => {
-      if (!id) return null;
-      const response = await gualletClient.accounts.getConnectedAccount(id);
-      return response.connectedAccount;
-    },
-  });
-
-  return {
-    connectedAccount: query.data ?? null,
-    ...query,
-  };
-}
-
 const compareAccountTypes = (
   a: { type: string; accounts: AccountDto[] },
   b: { type: string; accounts: AccountDto[] },

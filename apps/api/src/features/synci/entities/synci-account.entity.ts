@@ -1,0 +1,47 @@
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import {
+  Column,
+  Entity,
+  ForeignKey,
+  Index,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from 'src/features/users/entities/user.entity';
+import { Account } from 'src/features/accounts/entities/account.entity';
+
+@Entity('synci_accounts')
+@Index('synci_accounts_user_remote_unique', ['user_id', 'remote_account_id'], {
+  unique: true,
+})
+export class SynciAccount extends BaseDbEntity {
+  @PrimaryGeneratedColumn('uuid', {
+    primaryKeyConstraintName: 'PK_synci_accounts',
+  })
+  id: string;
+
+  @Column({ type: 'text' })
+  @ForeignKey(() => User, 'id', {
+    name: 'synci_accounts_owner',
+    onDelete: 'CASCADE',
+  })
+  user_id: string;
+
+  @Column({ type: 'text' })
+  remote_account_id: string;
+
+  @Column({ type: 'text', nullable: true })
+  remote_connection_id: string | null;
+
+  @Column({ type: 'boolean', default: true })
+  is_linked: boolean;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  last_synced_at: Date | null;
+
+  @Column({ type: 'uuid' })
+  @ForeignKey(() => Account, 'id', {
+    name: 'synci_accounts_guallet_account',
+    onDelete: 'CASCADE',
+  })
+  guallet_account_id: string;
+}
