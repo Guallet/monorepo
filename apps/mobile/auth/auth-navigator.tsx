@@ -26,7 +26,7 @@ export function AuthNavigator() {
   const screenOptions = useNavigationScreenOptions();
   const navigation = useNavigationContainerRef();
   const router = useRouter();
-  const segments = useSegments();
+  const segments = [...useSegments()];
   const pathname = usePathname();
   const routeKey = `${segments.join('/')}:${pathname}`;
   const [coordinator] = useState(createAuthNavigationCoordinator);

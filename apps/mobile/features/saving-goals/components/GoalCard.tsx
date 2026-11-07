@@ -7,9 +7,19 @@ import {
   goalStatus,
 } from '../models/savingGoal';
 
-type Props = { goal: SavingGoalDto; onPress: () => void; accountNames: string };
+type Props = {
+  goal: SavingGoalDto;
+  onPress: () => void;
+  accountNames: string;
+  currency: string;
+};
 
-export function GoalCard({ goal, onPress, accountNames }: Readonly<Props>) {
+export function GoalCard({
+  goal,
+  onPress,
+  accountNames,
+  currency,
+}: Readonly<Props>) {
   const { colors, borderRadius, spacing, typography } = useTheme();
   const progress = goalProgress(goal);
   const status = goalStatus(goal);
@@ -93,9 +103,9 @@ export function GoalCard({ goal, onPress, accountNames }: Readonly<Props>) {
               },
             ]}
           >
-            {formatGoalAmount(goal.currentAmount, goal.currency)}
+            {formatGoalAmount(goal.currentAmount, currency)}
           </Text>{' '}
-          of {formatGoalAmount(goal.targetAmount, goal.currency)}
+          of {formatGoalAmount(goal.targetAmount, currency)}
         </Text>
         <Text style={{ color: colors.accent.primary, fontWeight: '700' }}>
           {Math.round(progress)}%

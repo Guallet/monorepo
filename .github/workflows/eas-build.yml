@@ -6,13 +6,33 @@ on:
       - develop
     paths:
       - 'apps/mobile/**'
+      - 'packages/guallet-api-client/**'
+      - 'packages/guallet-api-react/**'
+      - 'packages/guallet-auth/**'
+      - 'packages/guallet-calculators/**'
+      - 'packages/guallet-luna-mobile/**'
+      - 'packages/guallet-money/**'
+      - 'packages/guallet-theme/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.oxlintrc.json'
+      - '.oxfmtrc.json'
+      - 'turbo.json'
+      - '.github/workflows/mobile-ci.yml'
 
 permissions:
   contents: read
 
 jobs:
+  validate:
+    name: Validate mobile app
+    uses: ./.github/workflows/mobile-ci.yml
+
   build:
     name: EAS build
+    needs: validate
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -66,19 +86,6 @@ jobs:
         run: |
           touch GoogleService-Info.plist
           echo "${{ secrets.FIREBASE_IOS_FILE_PROD }}" >> GoogleService-Info.plist
-
-      - name: 🧪 Run TypeScript check
-        working-directory: apps/mobile
-        run: pnpm tsc
-
-      - name: 🧹 Run Linter
-        working-directory: apps/mobile
-        run: pnpm lint
-        continue-on-error: true
-
-      - name: 🎨 Run Oxfmt check
-        working-directory: apps/mobile
-        run: pnpm format:check
 
       - name: Build on EAS
         run: eas build --platform android --non-interactive --no-wait
