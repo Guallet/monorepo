@@ -141,6 +141,63 @@ describe('OfeExportEngine', () => {
     expect(output).toContain('<TRNAMT>99.99</TRNAMT>');
   });
 
+  it('should preserve the precision defined by each transaction currency', () => {
+    const params: ExportEngineParams = {
+      ...baseParams(),
+      transactions: [
+        {
+          id: 'kwd-positive',
+          accountId: 'acc-1',
+          description: 'Positive KWD',
+          notes: '',
+          amount: 1.234,
+          currency: 'KWD',
+          date: new Date('2024-03-01T00:00:00Z'),
+          categoryId: null,
+        },
+        {
+          id: 'bhd-negative',
+          accountId: 'acc-1',
+          description: 'Negative BHD',
+          notes: '',
+          amount: -1.234,
+          currency: 'BHD',
+          date: new Date('2024-03-01T00:00:00Z'),
+          categoryId: null,
+        },
+        {
+          id: 'gbp-two-decimals',
+          accountId: 'acc-1',
+          description: 'GBP',
+          notes: '',
+          amount: 1.23,
+          currency: 'GBP',
+          date: new Date('2024-03-01T00:00:00Z'),
+          categoryId: null,
+        },
+        {
+          id: 'jpy-zero-decimals',
+          accountId: 'acc-1',
+          description: 'JPY',
+          notes: '',
+          amount: 123,
+          currency: 'JPY',
+          date: new Date('2024-03-01T00:00:00Z'),
+          categoryId: null,
+        },
+      ],
+    };
+
+    const output = engine.generateContent(params);
+
+    expect(output).toContain('<TRNAMT>1.234</TRNAMT>');
+    expect(output).toContain('<TRNAMT>-1.234</TRNAMT>');
+    expect(output).toContain('<TRNAMT>1.23</TRNAMT>');
+    expect(output).toContain('<TRNAMT>123</TRNAMT>');
+    expect(Number(output.match(/<TRNAMT>(1\.234)<\/TRNAMT>/)?.[1])).toBe(1.234);
+    expect(Number(output.match(/<TRNAMT>(-1\.234)<\/TRNAMT>/)?.[1])).toBe(-1.234);
+  });
+
   it('should default missing currency to GBP', () => {
     const params: ExportEngineParams = {
       ...baseParams(),
