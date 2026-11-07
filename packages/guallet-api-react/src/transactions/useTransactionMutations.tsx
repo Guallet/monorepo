@@ -105,11 +105,23 @@ export function useTransactionMutations() {
     },
   });
 
+  const confirmTransactionInboxItemMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return await gualletClient.transactions.confirmInboxItem(id);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [TRANSACTIONS_QUERY_KEY],
+      });
+    },
+  });
+
   return {
     createTransactionMutation,
     updateTransactionNotesMutation,
     updateTransactionCategoryMutation,
     updateTransactionMutation,
     deleteTransactionMutation,
+    confirmTransactionInboxItemMutation,
   };
 }

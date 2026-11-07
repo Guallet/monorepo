@@ -89,6 +89,7 @@ export class TransactionsService {
       relations: { account: true, category: true },
       where: {
         account: { user_id: userId },
+        inboxConfirmedAt: IsNull(),
         category: {
           id: IsNull(),
         },
@@ -118,11 +119,34 @@ export class TransactionsService {
     return await this.repository.count({
       where: {
         account: { user_id: userId },
+        inboxConfirmedAt: IsNull(),
         category: {
           id: IsNull(),
         },
       },
     });
+  }
+
+  async confirmUserTransactionInboxItem({
+    userId,
+    transactionId,
+  }: {
+    userId: string;
+    transactionId: string;
+  }): Promise<void> {
+    const transaction = await this.repository.findOne({
+      relations: { account: true },
+      where: { id: transactionId, account: { user_id: userId } },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    if (transaction.categoryId == null) {
+      transaction.inboxConfirmedAt ??= new Date();
+      await this.repository.save(transaction);
+    }
   }
 
   async getUserTransactions({

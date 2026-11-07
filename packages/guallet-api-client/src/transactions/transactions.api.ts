@@ -93,6 +93,13 @@ export class TransactionsApi {
     });
   }
 
+  async confirmInboxItem(transactionId: string): Promise<void> {
+    await this.client.post<void, undefined>({
+      path: `${TRANSACTIONS_PATH}/${transactionId}/confirm`,
+      payload: undefined,
+    });
+  }
+
   async create({
     request,
   }: {

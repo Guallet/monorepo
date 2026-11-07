@@ -67,9 +67,6 @@ export function TransactionInboxScreen() {
             <InboxTransactionCard
               key={transaction.id}
               transaction={transaction}
-              onSaveChanges={() => {
-                console.log('Save changes for transaction:', transaction);
-              }}
             />
           ))}
 
