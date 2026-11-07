@@ -11,15 +11,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import {
-  DataSource,
-  EntityManager,
-  QueryFailedError,
-  Repository,
-} from 'typeorm';
+import { EntityManager, QueryFailedError, Repository } from 'typeorm';
 import { Queue } from 'bullmq';
 import { createHash, randomUUID } from 'node:crypto';
-import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
+import { UserCredentialsService } from 'src/features/user-credentials/user-credentials.service';
+import type { CredentialOwner } from 'src/features/user-credentials/types';
 import { AppConfig } from 'src/configuration';
 import { ConnectedAccount } from './entities/connected-account.entity';
 import { BankConnection } from './entities/bank-connection.entity';
@@ -53,10 +49,10 @@ type ConnectionOwner = { userId: string; id: string };
 @Injectable()
 export class OpenbankingService {
   private readonly logger = new Logger(OpenbankingService.name);
+
   constructor(
     @InjectRepository(BankConnection)
     private readonly connections: Repository<BankConnection>,
-    private readonly dataSource: DataSource,
     private readonly registry: BankProviderRegistry,
     private readonly userCredentials: UserCredentialsService,
     private readonly config: ConfigService<AppConfig>,
@@ -72,13 +68,15 @@ export class OpenbankingService {
   }
 
   async list({ userId }: { userId: string }): Promise<BankConnectionDto[]> {
-    return (
-      await this.connections.find({
-        where: { user_id: userId },
-        order: { created_at: 'ASC' },
-      })
-    ).map((connection) => this.toDto(connection));
+    const connections = await this.connections.find({
+      where: { user_id: userId },
+      order: { created_at: 'ASC' },
+    });
+    return await Promise.all(
+      connections.map((connection) => this.toDto(connection)),
+    );
   }
+
   async get(owner: ConnectionOwner): Promise<BankConnectionDto> {
     return this.toDto(await this.find(owner));
   }
@@ -105,17 +103,16 @@ export class OpenbankingService {
       .get(dto.providerId)
       .validateCredentials({ userId, connectionId: id, credentials });
     try {
-      const connection = await this.connections.save(
-        this.connections.create({
+      return await this.connections.manager.transaction(async (manager) => {
+        const connection = await manager.save(BankConnection, {
           id,
           user_id: userId,
           provider_id: dto.providerId,
-          ...this.encrypt(dto.providerId, credentials),
           accounts: [],
-          credential_version: 1,
-        }),
-      );
-      return this.toDto(connection);
+        });
+        await this.saveCredentials(connection, credentials, manager);
+        return await this.toDto(connection, manager);
+      });
     } catch (error) {
       if (
         error instanceof QueryFailedError &&
@@ -141,16 +138,12 @@ export class OpenbankingService {
         connectionId: connection.id,
         credentials,
       });
-      Object.assign(
-        connection,
-        this.encrypt(connection.provider_id, credentials),
-      );
-      connection.credential_version++;
+      await this.saveCredentials(connection, credentials, manager);
       connection.accounts = [];
       connection.accounts_refreshed_at = null;
       connection.last_error = null;
       await manager.save(connection);
-      return this.toDto(connection);
+      return await this.toDto(connection, manager);
     });
   }
   async remove(owner: ConnectionOwner): Promise<void> {
@@ -158,6 +151,10 @@ export class OpenbankingService {
       await this.registry
         .get(connection.provider_id)
         .disconnect({ userId: owner.userId, connectionId: connection.id });
+      await this.userCredentials.removeCredentials(
+        this.credentialOwner(connection),
+        manager,
+      );
       await manager.delete(BankConnection, {
         id: connection.id,
         user_id: owner.userId,
@@ -203,6 +200,11 @@ export class OpenbankingService {
     },
   ) {
     const connection = await this.find(owner);
+    const credential = await this.userCredentials.getCredentialMetadata(
+      this.credentialOwner(connection),
+    );
+    if (!credential)
+      throw new NotFoundException('Provider credentials not found');
     const accountIds = owner.accountIds
       ? [...new Set(owner.accountIds)].sort()
       : undefined;
@@ -214,7 +216,8 @@ export class OpenbankingService {
       {
         userId: owner.userId,
         connectionId: connection.id,
-        credentialVersion: connection.credential_version,
+        credentialId: credential.id,
+        credentialVersion: credential.version,
         operation: owner.operation,
         accountIds,
         notifyOnNewTransactions: owner.notifyOnNewTransactions,
@@ -222,7 +225,7 @@ export class OpenbankingService {
       {
         jobId: randomUUID(),
         deduplication: {
-          id: `${connection.id}_${connection.credential_version}_${owner.operation}_${selection}_${owner.notifyOnNewTransactions ? 'scheduled' : 'manual'}`,
+          id: `${connection.id}_${credential.version}_${credential.id}_${owner.operation}_${selection}_${owner.notifyOnNewTransactions ? 'scheduled' : 'manual'}`,
         },
         removeOnComplete: { age: 86400, count: 1000 },
         removeOnFail: { age: 86400, count: 1000 },
@@ -265,16 +268,21 @@ export class OpenbankingService {
     let newUncategorizedCount = 0;
     let providerOperationStarted = false;
     let connectionUpdatedAt: Date | undefined;
+    let credentialOwner: CredentialOwner | undefined;
     try {
       return await this.locked(
         { userId: data.userId, id: data.connectionId },
         async (connection, manager) => {
-          if (connection.credential_version !== data.credentialVersion)
+          credentialOwner = this.credentialOwner(connection);
+          const context = await this.context(connection, manager);
+          if (
+            context.credentialId !== data.credentialId ||
+            context.credentialVersion !== data.credentialVersion
+          )
             throw new BadRequestException(
               'Credentials changed; request a new operation',
             );
           const adapter = this.registry.get(connection.provider_id);
-          const context = this.context(connection);
           connectionUpdatedAt = connection.updated_at;
           let result: BankJobResultDto;
           if (data.operation === 'import') {
@@ -368,15 +376,22 @@ export class OpenbankingService {
     } catch (error) {
       if (providerOperationStarted) {
         try {
-          await this.connections.update(
-            {
-              id: data.connectionId,
-              user_id: data.userId,
-              credential_version: data.credentialVersion,
-              updated_at: connectionUpdatedAt,
-            },
-            { last_error: { accountIds: null } },
-          );
+          const current = credentialOwner
+            ? await this.userCredentials.getCredentialMetadata(credentialOwner)
+            : null;
+          if (
+            current?.id === data.credentialId &&
+            current.version === data.credentialVersion
+          ) {
+            await this.connections.update(
+              {
+                id: data.connectionId,
+                user_id: data.userId,
+                updated_at: connectionUpdatedAt,
+              },
+              { last_error: { accountIds: null } },
+            );
+          }
         } catch {
           this.logger.warn('Could not record bank connection failure');
         }
@@ -404,14 +419,14 @@ export class OpenbankingService {
   async institutions(owner: ConnectionOwner & { country: string }) {
     if (!/^[A-Z]{2}$/.test(owner.country))
       throw new BadRequestException('Use a two-letter country code');
-    return await this.locked(owner, async (connection) => {
+    return await this.locked(owner, async (connection, manager) => {
       const adapter = this.registry.get(connection.provider_id);
       if (!adapter.getInstitutions)
         throw new BadRequestException(
           'This provider manages bank authorization externally',
         );
       return await adapter.getInstitutions({
-        ...this.context(connection),
+        ...(await this.context(connection, manager)),
         country: owner.country,
       });
     });
@@ -436,7 +451,7 @@ export class OpenbankingService {
       redirect.searchParams.set('connectionId', connection.id);
       redirect.searchParams.set('authorizationId', id);
       const result = await adapter.authorize({
-        ...this.context(connection),
+        ...(await this.context(connection, manager)),
         institutionId: owner.dto.institutionId,
         redirectUrl: redirect.toString(),
         reference: id,
@@ -475,7 +490,7 @@ export class OpenbankingService {
       if (!adapter.completeAuthorization)
         throw new BadRequestException('Authorization is not supported');
       authorization.account_ids = await adapter.completeAuthorization({
-        ...this.context(connection),
+        ...(await this.context(connection, manager)),
         remoteId: authorization.remote_id,
       });
       authorization.completed_at = new Date();
@@ -517,11 +532,10 @@ export class OpenbankingService {
     ) => Promise<T>,
   ): Promise<T> {
     // Serializes jobs, credential changes and disconnects across API/worker replicas.
-    return await this.dataSource.transaction(async (manager) => {
+    return await this.connections.manager.transaction(async (manager) => {
       const connection = await manager
         .getRepository(BankConnection)
         .createQueryBuilder('connection')
-        .addSelect('connection.encrypted_credentials')
         .where('connection.id = :id AND connection.user_id = :userId', {
           id,
           userId,
@@ -540,42 +554,65 @@ export class OpenbankingService {
       ? requireNordigenCredentials(credentials)
       : { apiKey: requireApiKey(credentials) };
   }
-  private encrypt(
-    providerId: BankProviderId,
-    credentials: ProviderCredentials,
-  ) {
-    const secret =
-      providerId === 'nordigen' ? credentials.secretKey! : credentials.apiKey!;
+  private credentialOwner(connection: BankConnection): CredentialOwner {
     return {
-      encrypted_credentials: this.userCredentials.encrypt(
-        providerId === 'nordigen' ? JSON.stringify(credentials) : secret,
-      ),
-      credential_hint: secret.length > 4 ? secret.slice(-4) : '••••',
+      userId: connection.user_id,
+      key: `openbanking:${connection.provider_id}`,
     };
   }
-  private context(connection: BankConnection): ProviderContext {
-    const plaintext = this.userCredentials.decrypt(
-      connection.encrypted_credentials,
-    );
-    const credentials =
+
+  private async saveCredentials(
+    connection: BankConnection,
+    credentials: ProviderCredentials,
+    manager: EntityManager,
+  ): Promise<void> {
+    const secret =
       connection.provider_id === 'nordigen'
-        ? this.normalizeCredentials(
-            connection.provider_id,
-            JSON.parse(plaintext) as ProviderCredentials,
-          )
-        : { apiKey: plaintext };
+        ? requireNordigenCredentials(credentials).secretKey
+        : requireApiKey(credentials);
+    const hint = secret.length > 4 ? secret.slice(-4) : null;
+    await this.userCredentials.setCredentials(
+      this.credentialOwner(connection),
+      JSON.stringify(credentials),
+      hint,
+      manager,
+    );
+  }
+
+  private async context(
+    connection: BankConnection,
+    manager: EntityManager,
+  ): Promise<
+    ProviderContext & { credentialId: string; credentialVersion: number }
+  > {
+    const stored = await this.userCredentials.getCredentials(
+      this.credentialOwner(connection),
+      manager,
+    );
     return {
       userId: connection.user_id,
       connectionId: connection.id,
-      credentials,
+      credentials: this.normalizeCredentials(
+        connection.provider_id,
+        JSON.parse(stored.value) as ProviderCredentials,
+      ),
+      credentialId: stored.id,
+      credentialVersion: stored.version,
     };
   }
-  private toDto(connection: BankConnection): BankConnectionDto {
+  private async toDto(
+    connection: BankConnection,
+    manager?: EntityManager,
+  ): Promise<BankConnectionDto> {
+    const credential = await this.userCredentials.getCredentialMetadata(
+      this.credentialOwner(connection),
+      manager,
+    );
     return {
       id: connection.id,
       providerId: connection.provider_id,
       status: 'configured',
-      credentialHint: connection.credential_hint?.replace(/^•+/, '') ?? null,
+      credentialHint: credential?.hint ?? null,
       accountsRefreshedAt: connection.accounts_refreshed_at ?? null,
       lastSyncedAt: connection.last_synced_at ?? null,
     };

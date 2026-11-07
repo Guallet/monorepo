@@ -1,10 +1,12 @@
 import {
   Column,
   Entity,
-  ForeignKey,
   Index,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { User } from '../../users/entities/user.entity';
 import type {
@@ -22,24 +24,18 @@ export class BankConnection extends BaseDbEntity {
   id: string;
 
   @Column({ type: 'text' })
-  @ForeignKey(() => User, 'id', {
-    name: 'bank_connections_owner',
-    onDelete: 'CASCADE',
-  })
   user_id: string;
+
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'bank_connections_owner',
+  })
+  user: Relation<User>;
 
   @Column({ type: 'text' })
   provider_id: BankProviderId;
-
-  // API-key providers encrypt the key directly; Nordigen encrypts the secret pair.
-  @Column({ type: 'text', select: false })
-  encrypted_credentials: string;
-
-  @Column({ type: 'text', nullable: true })
-  credential_hint: string | null;
-
-  @Column({ type: 'integer', default: 1 })
-  credential_version: number;
 
   @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
   accounts: ProviderAccount[];

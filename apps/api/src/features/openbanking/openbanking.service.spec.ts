@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
+import { NotFoundException } from '@nestjs/common';
+import { BankConnection as BankConnectionEntity } from './entities/bank-connection.entity';
 import { OpenbankingService } from './openbanking.service';
 import { BankJobData } from './openbanking.jobs';
 import type { BankConnection } from './entities/bank-connection.entity';
@@ -9,8 +11,6 @@ function setup() {
     id: 'connection',
     user_id: 'user',
     provider_id: 'synci',
-    credential_version: 1,
-    encrypted_credentials: 'encrypted',
     accounts: [],
     updated_at: new Date('2026-11-01T00:00:00Z'),
   } as unknown as BankConnection;
@@ -29,19 +29,23 @@ function setup() {
     getRepository: () => ({ createQueryBuilder: () => query }),
     save: vi.fn().mockResolvedValue(connection),
     createQueryBuilder: () => query,
+    delete: vi.fn().mockResolvedValue({ affected: 1 }),
   };
-  const db = {
+  const repositoryManager = {
     transaction: vi.fn(
       async (operation: (manager: unknown) => Promise<unknown>) =>
         operation(manager),
     ),
   };
   const connections = {
+    manager: repositoryManager,
     update: vi.fn().mockResolvedValue({ affected: 1 }),
     find: vi.fn().mockResolvedValue([connection]),
     findOne: vi.fn().mockResolvedValue(connection),
   };
   const adapter = {
+    validateCredentials: vi.fn().mockResolvedValue(undefined),
+    disconnect: vi.fn().mockResolvedValue(undefined),
     sync: vi.fn().mockResolvedValue({
       accountsSynced: 1,
       errors: [],
@@ -55,11 +59,23 @@ function setup() {
     createSystemNotification: vi.fn().mockResolvedValue({}),
   };
   const jobs = { add: vi.fn().mockResolvedValue({ id: 'job' }) };
+  const userCredentials = {
+    getCredentials: vi.fn().mockResolvedValue({
+      id: 'credential',
+      value: '{"apiKey":"key"}',
+      version: 1,
+      hint: 'hint',
+    }),
+    getCredentialMetadata: vi
+      .fn()
+      .mockResolvedValue({ id: 'credential', version: 1, hint: 'hint' }),
+    setCredentials: vi.fn().mockResolvedValue(undefined),
+    removeCredentials: vi.fn().mockResolvedValue(undefined),
+  };
   const service = new OpenbankingService(
     connections as never,
-    db as never,
     { get: () => adapter } as never,
-    { decrypt: () => 'key' } as never,
+    userCredentials as never,
     {} as never,
     jobs as never,
     notifications as never,
@@ -67,6 +83,7 @@ function setup() {
   const data: BankJobData = {
     userId: 'user',
     connectionId: 'connection',
+    credentialId: 'credential',
     credentialVersion: 1,
     operation: 'sync',
     notifyOnNewTransactions: true,
@@ -81,6 +98,7 @@ function setup() {
     connection,
     connections,
     query,
+    userCredentials,
   };
 }
 
@@ -177,7 +195,6 @@ describe('bank connection refresh state', () => {
       {
         id: 'connection',
         user_id: 'user',
-        credential_version: 1,
         updated_at: connection.updated_at,
       },
       { last_error: { accountIds: null } },
@@ -277,5 +294,164 @@ describe('bank connection refresh state', () => {
     expect(connection.last_error).toEqual({ accountIds: ['failed'] });
     expect(connection.accounts[0].lastRefresh).toBe(old);
     expect(connection.accounts[1].lastRefresh).not.toBe(old);
+  });
+});
+
+describe('bank provider credential lookup', () => {
+  it('loads credentials using the connection owner and provider', async () => {
+    const { service, data, userCredentials, manager, adapter } = setup();
+    await service.process(data);
+    expect(userCredentials.getCredentials).toHaveBeenCalledWith(
+      { userId: 'user', key: 'openbanking:synci' },
+      manager,
+    );
+    expect(adapter.sync).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user',
+        connectionId: 'connection',
+        credentials: { apiKey: 'key' },
+      }),
+    );
+  });
+  it('uses the credential store revision when enqueueing work', async () => {
+    const { service, jobs, userCredentials } = setup();
+    userCredentials.getCredentialMetadata.mockResolvedValue({
+      version: 7,
+      hint: 'hint',
+    });
+    await service.enqueue({
+      userId: 'user',
+      id: 'connection',
+      operation: 'sync',
+    });
+    expect(jobs.add.mock.calls[0][1].credentialVersion).toBe(7);
+    expect(jobs.add.mock.calls[0][2].deduplication.id).toContain(
+      'connection_7_',
+    );
+  });
+  it('does not call the provider when credentials are missing', async () => {
+    const { service, data, userCredentials, adapter, connections } = setup();
+    userCredentials.getCredentials.mockRejectedValue(
+      new NotFoundException('Credentials not found'),
+    );
+    await expect(service.process(data)).rejects.toThrow(
+      'Credentials not found',
+    );
+    expect(adapter.sync).not.toHaveBeenCalled();
+    expect(connections.update).not.toHaveBeenCalled();
+  });
+  it('rejects work queued before credential replacement', async () => {
+    const { service, data, userCredentials, adapter } = setup();
+    userCredentials.getCredentials.mockResolvedValue({
+      id: 'credential',
+      value: '{"apiKey":"new-key"}',
+      version: 2,
+      hint: 'hint',
+    });
+    await expect(service.process(data)).rejects.toThrow('Credentials changed');
+    expect(adapter.sync).not.toHaveBeenCalled();
+  });
+  it('rejects work when credentials have been deleted and recreated at the same revision', async () => {
+    const { service, data, userCredentials, adapter } = setup();
+    userCredentials.getCredentials.mockResolvedValue({
+      id: 'new-credential',
+      value: '{"apiKey":"new-key"}',
+      version: 1,
+      hint: 'hint',
+    });
+    await expect(service.process(data)).rejects.toThrow('Credentials changed');
+    expect(adapter.sync).not.toHaveBeenCalled();
+  });
+  it('does not record an old provider failure against newer credentials', async () => {
+    const { service, data, userCredentials, adapter, connections } = setup();
+    adapter.sync.mockRejectedValue(new Error('Old provider failure'));
+    userCredentials.getCredentialMetadata.mockResolvedValue({
+      version: 2,
+      hint: 'hint',
+    });
+    await expect(service.process(data)).rejects.toThrow('Old provider failure');
+    expect(connections.update).not.toHaveBeenCalled();
+  });
+  it('stores credentials separately when creating a connection', async () => {
+    const { service, connections, manager, userCredentials } = setup();
+    connections.findOne.mockResolvedValueOnce(null);
+    const secret = 'provider-secret-1234';
+    await service.create({
+      userId: 'user',
+      dto: { providerId: 'synci', credentials: { apiKey: secret } },
+    });
+    expect(manager.save).toHaveBeenCalledWith(BankConnectionEntity, {
+      id: expect.any(String),
+      user_id: 'user',
+      provider_id: 'synci',
+      accounts: [],
+    });
+    expect(userCredentials.setCredentials).toHaveBeenCalledWith(
+      { userId: 'user', key: 'openbanking:synci' },
+      JSON.stringify({ apiKey: secret }),
+      '1234',
+      manager,
+    );
+    expect(JSON.stringify(manager.save.mock.calls)).not.toContain(secret);
+  });
+  it('does not persist rejected credentials', async () => {
+    const { service, connections, manager, userCredentials, adapter } = setup();
+    connections.findOne.mockResolvedValueOnce(null);
+    adapter.validateCredentials.mockRejectedValue(new Error('Rejected'));
+    await expect(
+      service.create({
+        userId: 'user',
+        dto: { providerId: 'synci', credentials: { apiKey: 'rejected' } },
+      }),
+    ).rejects.toThrow('Rejected');
+    expect(manager.save).not.toHaveBeenCalled();
+    expect(userCredentials.setCredentials).not.toHaveBeenCalled();
+  });
+  it('replaces stored credentials and resets discovery without putting secrets on the connection', async () => {
+    const { service, userCredentials, manager, connection } = setup();
+    connection.accounts_refreshed_at = new Date();
+    await service.replaceCredentials({
+      userId: 'user',
+      id: 'connection',
+      credentials: { apiKey: 'replacement-5678' },
+    });
+    expect(userCredentials.setCredentials).toHaveBeenCalledWith(
+      { userId: 'user', key: 'openbanking:synci' },
+      JSON.stringify({ apiKey: 'replacement-5678' }),
+      '5678',
+      manager,
+    );
+    expect(connection.accounts_refreshed_at).toBeNull();
+    expect(connection).not.toHaveProperty('encrypted_credentials');
+    expect(connection).not.toHaveProperty('credential_hint');
+    expect(connection).not.toHaveProperty('credential_version');
+  });
+  it('removes only the owned provider credentials when disconnecting', async () => {
+    const { service, userCredentials, manager, adapter } = setup();
+    await service.remove({ userId: 'user', id: 'connection' });
+    expect(adapter.disconnect).toHaveBeenCalledWith({
+      userId: 'user',
+      connectionId: 'connection',
+    });
+    expect(userCredentials.removeCredentials).toHaveBeenCalledWith(
+      { userId: 'user', key: 'openbanking:synci' },
+      manager,
+    );
+    expect(manager.delete).toHaveBeenCalledWith(BankConnectionEntity, {
+      id: 'connection',
+      user_id: 'user',
+    });
+    expect(userCredentials.getCredentials).not.toHaveBeenCalled();
+  });
+  it('reads the display hint without decrypting credentials', async () => {
+    const { service, userCredentials } = setup();
+    expect(
+      await service.get({ userId: 'user', id: 'connection' }),
+    ).toMatchObject({ credentialHint: 'hint' });
+    expect(userCredentials.getCredentialMetadata).toHaveBeenCalledWith(
+      { userId: 'user', key: 'openbanking:synci' },
+      undefined,
+    );
+    expect(userCredentials.getCredentials).not.toHaveBeenCalled();
   });
 });

@@ -2,7 +2,8 @@
 
 The public API uses saved, user-owned connections. Specify `providerId` once
 when creating a connection; every subsequent request uses its UUID. The API
-resolves the provider, decrypts the credentials, and calls its adapter.
+resolves the provider, looks up credentials for that user and provider through
+`UserCredentialsService`, decrypts them, and calls the adapter.
 
 Supported provider IDs are `lunchflow`, `banksync`, `synci`, and `nordigen`.
 Each user can have one connection per provider. The first three accept
@@ -119,12 +120,20 @@ is safe. This deadline applies to completing the callback, not bank consent.
   daily sync schedule. It selects an adapter from `BankProviderRegistry`.
 - Provider services implement `BankProviderAdapter` and retain their own HTTP
   clients, data mappings, import rules, and provider-specific rate limits.
+- `BankConnection` stores the owner, provider, and synchronization state. It has
+  no credentials, credential hint, or credential revision columns.
+- `UserCredentialsModule` stores encrypted credentials separately in
+  `user_credentials`, uniquely keyed by `(user_id, key)`. Banking chooses the
+  key `openbanking:<providerId>`. Calling services choose their own keys for AI
+  credentials and other user settings. Hints and revisions belong to the stored
+  record. AI continues to use its existing encryption/decryption methods.
 - Credentials are encrypted using `DATABASE_CREDENTIALS_ENCRYPTION_KEY`.
   Responses contain only a hint; queue payloads contain IDs and operation
   parameters. Provider errors are sanitized before storing failed job results.
 - A database row lock serializes work, credential replacement, and disconnects
-  for each connection across replicas. Queued jobs carry a credential version;
-  replacing credentials invalidates work queued against an older version.
+  for each connection across replicas. Credential reads also lock their store row
+  during provider operations. Queued jobs carry the credential record ID and
+  revision; replacing or recreating credentials invalidates older queued work.
 - Identical in-flight operations are deduplicated. Imports finish all writes
   before releasing the lock. Account and provider-link creation is atomic.
 - Disconnecting and unlinking preserve imported accounts and transactions.
@@ -140,7 +149,8 @@ can still require reconnecting a bank.
 ## Database setup
 
 This feature starts with an empty database. Run the API migrations to create
-`bank_connections`, `bank_authorizations`, and `connected_accounts` directly.
+`bank_connections`, `bank_authorizations`, `connected_accounts`, and
+`user_credentials` directly.
 There are no provider-specific account/credential tables or historical-data
 conversions. Rollback removes the feature tables.
 

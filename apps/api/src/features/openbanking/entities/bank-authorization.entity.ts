@@ -1,4 +1,11 @@
-import { Column, Entity, ForeignKey, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import type { Relation } from 'typeorm';
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { User } from '../../users/entities/user.entity';
 import { BankConnection } from './bank-connection.entity';
@@ -9,18 +16,26 @@ export class BankAuthorization extends BaseDbEntity {
   id: string;
 
   @Column({ type: 'text' })
-  @ForeignKey(() => User, 'id', {
-    name: 'bank_authorizations_owner',
-    onDelete: 'CASCADE',
-  })
   user_id: string;
 
-  @Column({ type: 'uuid' })
-  @ForeignKey(() => BankConnection, 'id', {
-    name: 'bank_authorizations_connection',
-    onDelete: 'CASCADE',
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'bank_authorizations_owner',
   })
+  user: Relation<User>;
+
+  @Column({ type: 'uuid' })
   connection_id: string;
+
+  @ManyToOne(() => BankConnection, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'connection_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'bank_authorizations_connection',
+  })
+  connection: Relation<BankConnection>;
 
   @Column({ type: 'text' })
   remote_id: string;

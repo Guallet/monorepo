@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
+import { UserCredentialsService } from 'src/features/user-credentials/user-credentials.service';
 import { AiService } from './ai.service';
 import { AiAgent } from './entities/ai-agent.entity';
 import { AiProviderConnection } from './entities/ai-provider-connection.entity';

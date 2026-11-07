@@ -5,7 +5,13 @@ export class AddBankConnections1794070832529 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "bank_connections" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" text NOT NULL, "provider_id" text NOT NULL, "encrypted_credentials" text NOT NULL, "credential_hint" text, "credential_version" integer NOT NULL DEFAULT '1', "accounts" jsonb NOT NULL DEFAULT '[]'::jsonb, "accounts_refreshed_at" TIMESTAMP, "last_synced_at" TIMESTAMP, "last_error" jsonb, CONSTRAINT "PK_e819ec14a4c20543aec5749da80" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "user_credentials" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" text NOT NULL, "key" text NOT NULL, "encrypted_credentials" text NOT NULL, "hint" text, "version" integer NOT NULL DEFAULT '1', CONSTRAINT "PK_5cadc04d03e2d9fe76e1b44eb34" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "user_credentials_owner_key_unique" ON "user_credentials"  ("user_id", "key") `,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "bank_connections" ("created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "user_id" text NOT NULL, "provider_id" text NOT NULL, "accounts" jsonb NOT NULL DEFAULT '[]'::jsonb, "accounts_refreshed_at" TIMESTAMP, "last_synced_at" TIMESTAMP, "last_error" jsonb, CONSTRAINT "PK_e819ec14a4c20543aec5749da80" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "bank_connections_owner_provider_unique" ON "bank_connections"  ("user_id", "provider_id") `,
@@ -34,6 +40,9 @@ export class AddBankConnections1794070832529 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "bank_authorizations" ADD CONSTRAINT "bank_authorizations_connection" FOREIGN KEY ("connection_id") REFERENCES "bank_connections"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "user_credentials" ADD CONSTRAINT "user_credentials_owner" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
     // The original baseline creates obsolete Nordigen tables. This feature
     // starts empty, so remove them without copying historical data.
     await queryRunner.query(`DROP TABLE "nordigen_accounts"`);
@@ -45,6 +54,7 @@ export class AddBankConnections1794070832529 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE "user_credentials"`);
     await queryRunner.query(
       `ALTER TABLE "bank_authorizations" DROP CONSTRAINT "bank_authorizations_connection"`,
     );

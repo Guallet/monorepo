@@ -9,7 +9,7 @@ import { AiChatController } from './ai-chat.controller';
 import { AiChatRetentionService } from './ai-chat-retention.service';
 import { AiChatService } from './ai-chat.service';
 import { AiController } from './ai.controller';
-import { UserCredentialsModule } from 'src/user-credentials/user-credentials.module';
+import { UserCredentialsModule } from 'src/features/user-credentials/user-credentials.module';
 import { AiFinancialContextService } from './ai-financial-context.service';
 import { AiService } from './ai.service';
 import { AiAgent } from './entities/ai-agent.entity';

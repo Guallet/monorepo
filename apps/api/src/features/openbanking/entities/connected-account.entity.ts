@@ -4,10 +4,12 @@ import { User } from '../../users/entities/user.entity';
 import {
   Column,
   Entity,
-  ForeignKey,
   Index,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import type { BankProviderId } from '../providers/bank-provider.interface';
 
 @Entity('connected_accounts')
@@ -21,11 +23,15 @@ export class ConnectedAccount extends BaseDbEntity {
   id: string;
 
   @Column({ type: 'text' })
-  @ForeignKey(() => User, 'id', {
-    name: 'connected_accounts_owner',
-    onDelete: 'CASCADE',
-  })
   user_id: string;
+
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'connected_accounts_owner',
+  })
+  user: Relation<User>;
 
   @Column({ type: 'text' })
   provider: BankProviderId;
@@ -38,11 +44,15 @@ export class ConnectedAccount extends BaseDbEntity {
   remote_connection_id: string | null;
 
   @Column({ type: 'uuid' })
-  @ForeignKey(() => Account, 'id', {
-    name: 'connected_accounts_account',
-    onDelete: 'CASCADE',
-  })
   guallet_account_id: string;
+
+  @ManyToOne(() => Account, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'guallet_account_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'connected_accounts_account',
+  })
+  account: Relation<Account>;
 
   @Column({ type: 'boolean', default: true })
   is_linked: boolean;

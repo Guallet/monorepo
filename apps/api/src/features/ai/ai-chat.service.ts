@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { ModelMessage, StreamTextResult, ToolSet, streamText } from 'ai';
 import { Repository } from 'typeorm';
-import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
+import { UserCredentialsService } from 'src/features/user-credentials/user-credentials.service';
 import { AiFinancialContextService } from './ai-financial-context.service';
 import { AiChatMessageDto } from './dto/ai-chat-message.dto';
 import { AiChatSessionDto } from './dto/ai-chat-session.dto';

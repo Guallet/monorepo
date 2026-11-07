@@ -2,7 +2,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bullmq';
-import { UserCredentialsModule } from 'src/user-credentials/user-credentials.module';
+import { UserCredentialsModule } from 'src/features/user-credentials/user-credentials.module';
 import { BankSyncModule } from './providers/banksync/banksync.module';
 import { LunchFlowModule } from './providers/lunchflow/lunchflow.module';
 import { SynciModule } from './providers/synci/synci.module';
