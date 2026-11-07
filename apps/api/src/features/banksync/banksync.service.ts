@@ -14,7 +14,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Money } from '@guallet/money';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
@@ -283,10 +282,7 @@ export class BankSyncService implements BankProviderAdapter {
           const createdAccount = await manager.save(Account, {
             user_id: userId,
             name: account.name ?? account.accountName ?? bank.name,
-            balance: Money.fromCurrencyCode({
-              amount: balance,
-              currencyCode: currency,
-            }).amount,
+            balance,
             currency,
             type: AccountType.UNKNOWN,
             source: AccountSource.IMPORTED,
@@ -478,10 +474,7 @@ export class BankSyncService implements BankProviderAdapter {
     balance: { amount: number; currency: string } | null;
   }) {
     if (balance) {
-      localAccount.balance = Money.fromCurrencyCode({
-        amount: balance.amount,
-        currencyCode: balance.currency,
-      }).amount;
+      localAccount.balance = balance.amount;
       localAccount.currency = balance.currency;
     }
     localAccount.name = account.name ?? account.accountName ?? bank.name;
@@ -511,18 +504,14 @@ export class BankSyncService implements BankProviderAdapter {
     }
     const rows = transactions.map((transaction) => {
       const currency = transaction.currency ?? localAccount.currency;
-      const money = Money.fromCurrencyCode({
-        amount: Number(transaction.amount),
-        currencyCode: currency,
-      });
       const date = /^\d{4}-\d{2}-\d{2}$/.test(transaction.date)
         ? new Date(`${transaction.date}T12:00:00.000Z`)
         : new Date(transaction.date);
       return {
         accountId: localAccount.id,
         externalId: `banksync:${mapping.user_id}:${mapping.remote_bank_id}:${mapping.remote_account_id}:${transaction.id}`,
-        amount: money.amount,
-        currency: money.currency.code,
+        amount: Number(transaction.amount),
+        currency,
         date,
         description:
           transaction.merchant ??

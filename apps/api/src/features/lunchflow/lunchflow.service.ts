@@ -11,7 +11,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Money } from '@guallet/money';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { AccountSource } from 'src/features/accounts/entities/accountSource.model';
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
@@ -158,10 +157,7 @@ export class LunchFlowService implements BankProviderAdapter {
           const createdAccount = await manager.save(Account, {
             user_id: userId,
             name: account.name,
-            balance: Money.fromCurrencyCode({
-              amount: balance.amount,
-              currencyCode: currency,
-            }).amount,
+            balance: balance.amount,
             currency,
             type: AccountType.UNKNOWN,
             source: AccountSource.IMPORTED,
@@ -270,10 +266,7 @@ export class LunchFlowService implements BankProviderAdapter {
       (await this.client.getBalance(apiKey, mapping.remote_account_id));
     const currency =
       currentBalance.currency || account.currency || localAccount.currency;
-    localAccount.balance = Money.fromCurrencyCode({
-      amount: currentBalance.amount,
-      currencyCode: currency,
-    }).amount;
+    localAccount.balance = currentBalance.amount;
     localAccount.currency = currency;
     localAccount.name = account.name;
     await this.accounts.save(localAccount);

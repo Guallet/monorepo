@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Not, Repository } from 'typeorm';
-import { Money } from '@guallet/money';
 import { createHash } from 'node:crypto';
 import { Account } from '../accounts/entities/account.entity';
 import { AccountSource } from '../accounts/entities/accountSource.model';
@@ -23,7 +22,7 @@ import {
 import { NordigenLink } from './entities/nordigen-link.entity';
 import { NordigenClient } from './nordigen.client';
 import { getAccountTypeFrom } from './dto/ExternalCashAccountType1Code.helper';
-import { getMoneyBalanceFrom } from './dto/nordigen-balances.helper';
+import { getBalanceFrom } from './dto/nordigen-balances.helper';
 
 @Injectable()
 export class NordigenService implements BankProviderAdapter {
@@ -196,7 +195,7 @@ export class NordigenService implements BankProviderAdapter {
       this.client.getBalances(token, remoteId),
       this.client.getTransactions(token, remoteId),
     ]);
-    const balance = getMoneyBalanceFrom(balances);
+    const balance = getBalanceFrom(balances);
     let link = await this.links.findOne({
       where: { user_id: userId, remote_account_id: remoteId },
     });
@@ -207,8 +206,7 @@ export class NordigenService implements BankProviderAdapter {
       : null;
     if (link && !account)
       throw new NotFoundException('Linked account not found');
-    const currency =
-      balance?.currency.code || details.currency || account?.currency;
+    const currency = balance?.currency || details.currency || account?.currency;
     if (!currency)
       throw new BadRequestException('Account currency is unavailable');
     const saved = await this.accounts.manager.transaction(async (manager) => {
@@ -244,10 +242,6 @@ export class NordigenService implements BankProviderAdapter {
       );
       if (!Number.isFinite(date.getTime()))
         throw new BadRequestException('Transaction date is invalid');
-      const money = Money.fromCurrencyCode({
-        amount: Number(transaction.transactionAmount.amount),
-        currencyCode: transaction.transactionAmount.currency,
-      });
       let id = transaction.transactionId || transaction.entryReference;
       if (!id) {
         const hash = createHash('sha256')
@@ -268,8 +262,8 @@ export class NordigenService implements BankProviderAdapter {
       return {
         accountId: account.id,
         externalId: `nordigen:${userId}:${remoteId}:${id}`,
-        amount: money.amount,
-        currency: money.currency.code,
+        amount: Number(transaction.transactionAmount.amount),
+        currency: transaction.transactionAmount.currency,
         date,
         description:
           transaction.remittanceInformationUnstructured ||

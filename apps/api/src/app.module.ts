@@ -30,6 +30,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
 import { OpenbankingModule } from './features/openbanking/openbanking.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -116,7 +117,8 @@ import { OpenbankingModule } from './features/openbanking/openbanking.module';
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
       imports: [ConfigModule, EmailModule],
-      inject: [ConfigService, EventEmitter2],
+      // Wait for TypeORM migrations before Better Auth checks its schema.
+      inject: [ConfigService, EventEmitter2, DataSource],
       useFactory: (
         configService: ConfigService<AppConfig>,
         eventEmitter: EventEmitter2,

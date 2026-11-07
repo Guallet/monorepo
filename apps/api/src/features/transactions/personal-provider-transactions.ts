@@ -1,5 +1,4 @@
 import { persistBankTransactions } from './persist-bank-transactions';
-import { Money } from '@guallet/money';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import {
@@ -98,18 +97,14 @@ export async function persistPersonalProviderTransactions({
     );
   }
   const rows = transactions.map((transaction) => {
-    const money = Money.fromCurrencyCode({
-      amount: Number(transaction.amount),
-      currencyCode: transaction.currency || currency,
-    });
     const date = /^\d{4}-\d{2}-\d{2}$/.test(transaction.date)
       ? new Date(`${transaction.date}T12:00:00.000Z`)
       : new Date(transaction.date);
     return {
       accountId,
       externalId: externalId(transaction.id),
-      amount: money.amount,
-      currency: money.currency.code,
+      amount: Number(transaction.amount),
+      currency: transaction.currency || currency,
       date,
       description:
         transaction.merchant ||

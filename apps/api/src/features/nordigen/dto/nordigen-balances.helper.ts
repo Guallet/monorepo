@@ -1,11 +1,10 @@
-import { Money } from '@guallet/money';
 import {
   BalanceTypeDto,
   NordigenAccountBalanceDto,
 } from './nordigen-account.dto';
-export function getMoneyBalanceFrom(
+export function getBalanceFrom(
   balances: NordigenAccountBalanceDto[],
-): Money | null {
+): { amount: number; currency: string } | null {
   // If there is no balance available, return null
   if (balances.length === 0) {
     return null;
@@ -14,40 +13,40 @@ export function getMoneyBalanceFrom(
   // If there is only 1 balance, then return it
   if (balances.length === 1) {
     const balance = balances[0];
-    return Money.fromCurrencyCode({
+    return {
       amount: Number(balance.balanceAmount.amount),
-      currencyCode: balance.balanceAmount.currency,
-    });
+      currency: balance.balanceAmount.currency,
+    };
   }
 
   const interim = balances.find(
     (a) => a.balanceType == BalanceTypeDto.INTERIM_AVAILABLE,
   );
   if (interim != null) {
-    return Money.fromCurrencyCode({
+    return {
       amount: Number(interim.balanceAmount.amount),
-      currencyCode: interim.balanceAmount.currency,
-    });
+      currency: interim.balanceAmount.currency,
+    };
   }
 
   const forwardAvailable = balances.find(
     (a) => a.balanceType == BalanceTypeDto.FORWARD_AVAILABLE,
   );
   if (forwardAvailable != null) {
-    return Money.fromCurrencyCode({
+    return {
       amount: Number(forwardAvailable.balanceAmount.amount),
-      currencyCode: forwardAvailable.balanceAmount.currency,
-    });
+      currency: forwardAvailable.balanceAmount.currency,
+    };
   }
 
   const interimBooked = balances.find(
     (a) => a.balanceType == BalanceTypeDto.INTERIM_BOOKED,
   );
   if (interimBooked != null) {
-    return Money.fromCurrencyCode({
+    return {
       amount: Number(interimBooked.balanceAmount.amount),
-      currencyCode: interimBooked.balanceAmount.currency,
-    });
+      currency: interimBooked.balanceAmount.currency,
+    };
   }
 
   return null;
