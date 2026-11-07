@@ -82,6 +82,14 @@ jobs:
       - name: Check formatting
         run: pnpm exec oxfmt --check apps/webapp
 
+      - name: Run API client contract tests
+        working-directory: packages/guallet-api-client
+        run: pnpm test
+
+      - name: Run API React cache contract tests
+        working-directory: packages/guallet-api-react
+        run: pnpm test
+
       - name: Run type check
         working-directory: apps/webapp
         run: pnpm typecheck

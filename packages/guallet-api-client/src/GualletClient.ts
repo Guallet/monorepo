@@ -254,8 +254,12 @@ export class GualletClientImpl implements GualletClient {
 
     const response = await fetch(`${this.baseUrl}/${path}`, requestOptions);
     this.handleHttpErrors(response);
-    const json = await response.json();
-    return json as TDto;
+    if (response.status === 204) {
+      return undefined as TDto;
+    }
+
+    const body = await response.text();
+    return (body === '' ? undefined : JSON.parse(body)) as TDto;
   }
 
   private async getAuthHeaders(requestHeaders?: HeadersInit): Promise<{

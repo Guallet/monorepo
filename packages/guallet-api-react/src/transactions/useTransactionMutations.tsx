@@ -4,8 +4,10 @@ import {
   CreateTransactionRequest,
   UpdateTransactionRequest,
 } from '@guallet/api-client';
-
-const TRANSACTIONS_QUERY_KEY = 'transactions';
+import {
+  invalidateTransactionLists,
+  updateTransactionCache,
+} from './transactionCache';
 
 export function useTransactionMutations() {
   const gualletClient = useGualletClient();
@@ -18,8 +20,7 @@ export function useTransactionMutations() {
       });
     },
     onSuccess: (data) => {
-      // Add the new transaction to the cache
-      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
+      return updateTransactionCache(queryClient, data);
     },
     onError: (error, variables) => {
       console.error(error, variables);
@@ -34,10 +35,7 @@ export function useTransactionMutations() {
       });
     },
     onSuccess: async (data) => {
-      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
-      await queryClient.invalidateQueries({
-        queryKey: [TRANSACTIONS_QUERY_KEY],
-      });
+      await updateTransactionCache(queryClient, data);
     },
     onError: (error, variables) => {
       console.error(error, variables);
@@ -57,10 +55,8 @@ export function useTransactionMutations() {
         categoryId,
       });
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [TRANSACTIONS_QUERY_KEY],
-      });
+    onSuccess: async (data) => {
+      await updateTransactionCache(queryClient, data);
     },
     onError: (error, variables) => {
       console.error(error, variables);
@@ -81,10 +77,7 @@ export function useTransactionMutations() {
       });
     },
     onSuccess: async (data) => {
-      queryClient.setQueryData([TRANSACTIONS_QUERY_KEY, data.id], data);
-      await queryClient.invalidateQueries({
-        queryKey: [TRANSACTIONS_QUERY_KEY],
-      });
+      await updateTransactionCache(queryClient, data);
     },
     onError: (error, variables) => {
       console.error(error, variables);
@@ -96,9 +89,7 @@ export function useTransactionMutations() {
       return await gualletClient.transactions.delete(id);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [TRANSACTIONS_QUERY_KEY],
-      });
+      await invalidateTransactionLists(queryClient);
     },
     onError: (error, variables) => {
       console.error(error, variables);

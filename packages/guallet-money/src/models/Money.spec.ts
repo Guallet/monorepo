@@ -161,6 +161,18 @@ describe('Money', () => {
       expect(money.round().amount).toBe(10.56);
     });
 
+    it('uses each currency’s minor-unit precision at financial boundaries', () => {
+      const jpy = Currency.fromISOCode('JPY');
+      const kwd = Currency.fromISOCode('KWD');
+
+      expect(Money.from({ amount: 1250.4, currency: jpy }).round().amount).toBe(
+        1250,
+      );
+      expect(Money.from({ amount: 1.2345, currency: kwd }).round().amount).toBe(
+        1.235,
+      );
+    });
+
     describe('rounding modes', () => {
       it('HALF_UP should round 1.005 to 1.01', () => {
         const m = Money.from({ amount: 1.005, currency: gbp });

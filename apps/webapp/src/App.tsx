@@ -11,15 +11,41 @@ import '@mantine/dropzone/styles.css';
 import { GualletThemeProvider } from '@guallet/ui-react';
 import { Notifications } from '@mantine/notifications';
 import { RouterProvider } from '@tanstack/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { GualletClientProvider } from '@guallet/api-react';
+import {
+  clearQueryCacheOnUserChange,
+  GualletClientProvider,
+} from '@guallet/api-react';
 import { router, TanStackRouterDevtools } from './router.tsx';
 import { gualletClient } from '@/api/gualletClient.ts';
 import { DatesProvider } from '@mantine/dates';
 
 import { authClient } from './auth/auth.ts';
+import { useAuth } from '@guallet/auth';
 import { AuthProvider } from '@guallet/auth';
+import { useEffect, useRef, type ReactNode } from 'react';
+
+function ClearUserQueryCacheOnIdentityChange({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const { userId } = useAuth();
+  const client = useQueryClient();
+  const previousUserId = useRef(userId);
+
+  useEffect(() => {
+    clearQueryCacheOnUserChange(client, previousUserId.current, userId);
+    previousUserId.current = userId;
+  }, [client, userId]);
+
+  return children;
+}
 
 // Init i18n
 import i18next from './i18n/i18n';
@@ -38,13 +64,15 @@ export default function App() {
         <Notifications />
         <AuthProvider authClient={authClient}>
           <QueryClientProvider client={queryClient}>
-            <GualletClientProvider client={gualletClient}>
-              <RouterProvider router={router} />
-              {/* Tanstack Dev Tools */}
-              <TanStackRouterDevtools router={router} />
-              <ReactQueryDevtools initialIsOpen={false} />
-              {/* END Tanstack Dev Tools */}
-            </GualletClientProvider>
+            <ClearUserQueryCacheOnIdentityChange>
+              <GualletClientProvider client={gualletClient}>
+                <RouterProvider router={router} />
+                {/* Tanstack Dev Tools */}
+                <TanStackRouterDevtools router={router} />
+                <ReactQueryDevtools initialIsOpen={false} />
+                {/* END Tanstack Dev Tools */}
+              </GualletClientProvider>
+            </ClearUserQueryCacheOnIdentityChange>
           </QueryClientProvider>
         </AuthProvider>
       </DatesProvider>
