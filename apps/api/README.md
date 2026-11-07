@@ -135,7 +135,8 @@ The script reads DB credentials from `apps/api/.env` (`DATABASE_HOST`, `DATABASE
 - Background jobs: BullMQ + Redis for async tasks (imports/exports/notifications).
 - Credentials: `src/user-credentials` exports `UserCredentialsModule` and
   its `UserCredentialsService` service for encrypting and decrypting sensitive
-  strings. AI and open banking import this shared module. It uses
+  strings. Feature modules such as AI and open banking import this shared
+  module as needed. It uses
   `DATABASE_CREDENTIALS_ENCRYPTION_KEY` through the
   `userCredentials.encryptionKey` configuration setting.
 - Features: implemented as Nest modules — `accounts`, `transactions`, `categories`, `budgets`, `rules`, `reports`, `ai`, `nordigen`, `data-importer`, `notifications`, `webhooks`, `email`, etc.
