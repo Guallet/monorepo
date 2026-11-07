@@ -2,7 +2,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bullmq';
-import { AiModule } from '../ai/ai.module';
+import { UserCredentialsModule } from 'src/user-credentials/user-credentials.module';
 import { BankSyncModule } from '../banksync/banksync.module';
 import { LunchFlowModule } from '../lunchflow/lunchflow.module';
 import { SynciModule } from '../synci/synci.module';
@@ -16,7 +16,7 @@ import { OpenbankingProcessor } from './openbanking.processor';
 import { OPENBANKING_QUEUE } from './openbanking.jobs';
 @Module({
   imports: [
-    AiModule,
+    UserCredentialsModule,
     NotificationsModule,
     BankSyncModule,
     LunchFlowModule,

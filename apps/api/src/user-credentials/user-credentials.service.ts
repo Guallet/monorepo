@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { AppConfig } from 'src/configuration';
 
 const ALGORITHM = 'aes-256-gcm';
@@ -9,12 +9,12 @@ const AUTH_TAG_LENGTH = 16;
 const KEY_LENGTH = 32;
 
 @Injectable()
-export class AiCredentialEncryptionService {
+export class UserCredentialsService {
   private readonly key: Buffer;
 
   constructor(configService: ConfigService<AppConfig>) {
     const configuredKey =
-      configService.get('ai.credentialsEncryptionKey', { infer: true }) ?? '';
+      configService.get('userCredentials.encryptionKey', { infer: true }) ?? '';
     this.key = this.parseKey(configuredKey);
   }
 

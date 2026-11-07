@@ -15,7 +15,7 @@ import { UpdateAiAgentDto } from './dto/update-ai-agent.dto';
 import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connection.dto';
 import { AiAgent } from './entities/ai-agent.entity';
 import { AiProviderConnection } from './entities/ai-provider-connection.entity';
-import { AiCredentialEncryptionService } from './ai-credential-encryption.service';
+import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
 import { AiProviderRegistryService } from './providers/ai-provider-registry.service';
 import { ProviderModelListError } from './providers/provider-model-list.error';
 
@@ -26,7 +26,7 @@ export class AiService {
     private readonly connectionRepository: Repository<AiProviderConnection>,
     @InjectRepository(AiAgent)
     private readonly agentRepository: Repository<AiAgent>,
-    private readonly credentialEncryption: AiCredentialEncryptionService,
+    private readonly userCredentials: UserCredentialsService,
     private readonly providerRegistry: AiProviderRegistryService,
   ) {}
 
@@ -59,7 +59,7 @@ export class AiService {
       user_id: userId,
       provider: dto.provider,
       display_name: dto.displayName,
-      encrypted_token: this.credentialEncryption.encrypt(dto.apiToken),
+      encrypted_token: this.userCredentials.encrypt(dto.apiToken),
       token_hint: this.createTokenHint(dto.apiToken),
     });
 
@@ -90,9 +90,7 @@ export class AiService {
         apiToken: dto.apiToken,
       });
 
-      connection.encrypted_token = this.credentialEncryption.encrypt(
-        dto.apiToken,
-      );
+      connection.encrypted_token = this.userCredentials.encrypt(dto.apiToken);
       connection.token_hint = this.createTokenHint(dto.apiToken);
     }
 
@@ -132,9 +130,7 @@ export class AiService {
       connectionId,
     });
     const adapter = this.providerRegistry.getAdapter(connection.provider);
-    const apiToken = this.credentialEncryption.decrypt(
-      connection.encrypted_token,
-    );
+    const apiToken = this.userCredentials.decrypt(connection.encrypted_token);
 
     try {
       return await adapter.listModels(apiToken);

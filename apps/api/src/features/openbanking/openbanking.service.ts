@@ -19,7 +19,7 @@ import {
 } from 'typeorm';
 import { Queue } from 'bullmq';
 import { createHash, randomUUID } from 'node:crypto';
-import { AiCredentialEncryptionService } from '../ai/ai-credential-encryption.service';
+import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
 import { AppConfig } from 'src/configuration';
 import { BankConnection } from './entities/bank-connection.entity';
 import { BankAuthorization } from './entities/bank-authorization.entity';
@@ -53,7 +53,7 @@ export class OpenbankingService {
     private readonly connections: Repository<BankConnection>,
     private readonly dataSource: DataSource,
     private readonly registry: BankProviderRegistry,
-    private readonly cipher: AiCredentialEncryptionService,
+    private readonly userCredentials: UserCredentialsService,
     private readonly config: ConfigService<AppConfig>,
     @InjectQueue(OPENBANKING_QUEUE) private readonly jobs: Queue<
       BankJobData,
@@ -461,14 +461,16 @@ export class OpenbankingService {
     const secret =
       providerId === 'nordigen' ? credentials.secretKey! : credentials.apiKey!;
     return {
-      encrypted_credentials: this.cipher.encrypt(
+      encrypted_credentials: this.userCredentials.encrypt(
         providerId === 'nordigen' ? JSON.stringify(credentials) : secret,
       ),
       credential_hint: secret.length > 4 ? secret.slice(-4) : '••••',
     };
   }
   private context(connection: BankConnection): ProviderContext {
-    const plaintext = this.cipher.decrypt(connection.encrypted_credentials);
+    const plaintext = this.userCredentials.decrypt(
+      connection.encrypted_credentials,
+    );
     const credentials =
       connection.provider_id === 'nordigen'
         ? this.normalizeCredentials(
