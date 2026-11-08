@@ -63,3 +63,86 @@ describe('Synci connection metadata', () => {
     });
   });
 });
+
+describe('Synci provider response mapping', () => {
+  it('requests the institution relationship used by the import wizard', async () => {
+    const http = {
+      get: vi.fn().mockReturnValue(
+        of({
+          data: {
+            data: [
+              {
+                id: 1,
+                financial_connection: {
+                  institution: { name: 'Bank', logo: 'logo' },
+                },
+              },
+            ],
+          },
+        }),
+      ),
+    };
+    const accounts = await new SynciClient(http as never).getAccounts('key');
+    expect(http.get).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        params: expect.objectContaining({
+          include: 'financial_connection.institution',
+        }),
+      }),
+    );
+    expect(accounts[0]).toMatchObject({
+      institution_name: 'Bank',
+      institution_logo: 'logo',
+    });
+  });
+  it.each(['booking_datetime', 'value_datetime'])(
+    'accepts a transaction with only %s',
+    async (field) => {
+      const http = {
+        get: vi.fn().mockReturnValue(
+          of({
+            data: {
+              data: [
+                {
+                  id: 1,
+                  amount: 10,
+                  currency: 'GBP',
+                  [field]: '2026-11-01T12:00:00Z',
+                },
+              ],
+            },
+          }),
+        ),
+      };
+      const transactions = await new SynciClient(http as never).getTransactions(
+        'key',
+        'account',
+      );
+      expect(transactions[0].date).toBe('2026-11-01T12:00:00Z');
+    },
+  );
+  it.each([{}, { booking_date: 'invalid' }])(
+    'rejects transactions without a usable date: %j',
+    async (dates) => {
+      const http = {
+        get: vi.fn().mockReturnValue(
+          of({
+            data: {
+              data: [
+                {
+                  id: 1,
+                  amount: 10,
+                  ...dates,
+                },
+              ],
+            },
+          }),
+        ),
+      };
+      await expect(
+        new SynciClient(http as never).getTransactions('key', 'account'),
+      ).rejects.toThrow('Synci transaction has no valid date');
+    },
+  );
+});

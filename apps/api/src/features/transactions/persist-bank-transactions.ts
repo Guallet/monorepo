@@ -37,9 +37,11 @@ export async function persistBankTransactions(
     });
     for (const row of existing) existingIds.add(row.externalId);
   }
-  await repository.upsert(uniqueRows, {
-    conflictPaths: ['externalId'],
-    skipUpdateIfNoValuesChanged: true,
-  });
+  for (let offset = 0; offset < uniqueRows.length; offset += 1000) {
+    await repository.upsert(uniqueRows.slice(offset, offset + 1000), {
+      conflictPaths: ['externalId'],
+      skipUpdateIfNoValuesChanged: true,
+    });
+  }
   return uniqueRows.filter((row) => !existingIds.has(row.externalId)).length;
 }

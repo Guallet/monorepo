@@ -1,3 +1,4 @@
+import { retainUnavailableAccounts } from '../retain-unavailable-accounts';
 import {
   BankProviderAdapter,
   ProviderContext,
@@ -62,7 +63,7 @@ export class SynciService implements BankProviderAdapter {
         .filter((item) => item.is_linked)
         .map((item) => [item.remote_account_id, item.guallet_account_id]),
     );
-    return accounts.map((account) => ({
+    const discovered = accounts.map((account) => ({
       raw: account.raw,
       id: String(account.id),
       name: account.name,
@@ -76,6 +77,7 @@ export class SynciService implements BankProviderAdapter {
       lastRefresh: account.lastRefresh,
       linkedAccountId: linkedByRemoteId.get(String(account.id)) ?? null,
     }));
+    return retainUnavailableAccounts(userId, discovered, linked, this.accounts);
   }
 
   async importAccounts({

@@ -36,7 +36,7 @@ export type BankSyncResponse<T> = {
   data: T;
   modified?: T;
   removed?: string[];
-  meta?: { cursor?: string | null; hasMore?: boolean };
+  meta?: { nextCursor?: string | null; hasMore?: boolean };
 };
 
 export type BankSyncRemoteBalance = {

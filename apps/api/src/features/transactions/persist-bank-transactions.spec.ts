@@ -56,6 +56,21 @@ describe('persistBankTransactions', () => {
       ]),
     ).rejects.toThrow('write failed');
   });
+  it('persists a large history in bounded writes without losing rows', async () => {
+    const repository = {
+      find: vi.fn().mockResolvedValue([{ externalId: '0' }]),
+      upsert: vi.fn().mockResolvedValue({}),
+    };
+    const rows = Array.from({ length: 10001 }, (_, index) =>
+      row(String(index)),
+    );
+    expect(
+      await persistBankTransactions(repository as never, 'local-account', rows),
+    ).toBe(10000);
+    const batches = repository.upsert.mock.calls.map(([batch]) => batch);
+    expect(batches.every((batch) => batch.length <= 1000)).toBe(true);
+    expect(batches.flat()).toEqual(rows);
+  });
   it('skips database operations for an empty batch', async () => {
     const repository = { find: vi.fn(), upsert: vi.fn() };
     expect(

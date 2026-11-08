@@ -75,6 +75,8 @@ type SynciTransactionResource = {
   currency?: string | null;
   booking_date?: string | null;
   value_date?: string | null;
+  booking_datetime?: string | null;
+  value_datetime?: string | null;
   booked?: boolean | null;
   description?: string | null;
   additional_information?: string | null;
@@ -97,6 +99,7 @@ export class SynciClient {
     const remote = await this.getAllPages<SynciAccountResource>(
       '/finance/accounts',
       apiKey,
+      { include: 'financial_connection.institution' },
     );
     const connectionIds = [
       ...new Set(
@@ -194,25 +197,33 @@ export class SynciClient {
       apiKey,
       params,
     );
-    return remote.map((transaction) => ({
-      id: transaction.id,
-      amount: transaction.amount,
-      currency: transaction.currency ?? '',
-      date:
-        transaction.mapped_fields?.date ??
-        transaction.booking_date ??
-        transaction.value_date ??
-        '',
-      merchant: transaction.mapped_fields?.payee ?? null,
-      description:
-        transaction.mapped_fields?.description ??
-        transaction.description ??
-        transaction.remittance_information?.unstructured ??
-        transaction.remittance_information?.structured ??
-        transaction.additional_information ??
-        null,
-      isPending: transaction.booked === false,
-    }));
+    return remote.map((transaction) => {
+      const date = [
+        transaction.mapped_fields?.date,
+        transaction.booking_date,
+        transaction.value_date,
+        transaction.booking_datetime,
+        transaction.value_datetime,
+      ].find((value) => value && !Number.isNaN(new Date(value).getTime()));
+      if (!date) {
+        throw new BadGatewayException('Synci transaction has no valid date');
+      }
+      return {
+        id: transaction.id,
+        amount: transaction.amount,
+        currency: transaction.currency ?? '',
+        date,
+        merchant: transaction.mapped_fields?.payee ?? null,
+        description:
+          transaction.mapped_fields?.description ??
+          transaction.description ??
+          transaction.remittance_information?.unstructured ??
+          transaction.remittance_information?.structured ??
+          transaction.additional_information ??
+          null,
+        isPending: transaction.booked === false,
+      };
+    });
   }
 
   private async getAllPages<T>(

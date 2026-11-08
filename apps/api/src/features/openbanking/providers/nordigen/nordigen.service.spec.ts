@@ -88,3 +88,61 @@ describe('Nordigen consent state', () => {
     ]);
   });
 });
+
+describe('Nordigen account names', () => {
+  it.each([true, false])(
+    'preserves a local name when an existing link is %s',
+    async (existing) => {
+      const client = {
+        getToken: vi.fn().mockResolvedValue('token'),
+        getDetails: vi
+          .fn()
+          .mockResolvedValue({
+            account: { name: 'Bank name', currency: 'GBP' },
+          }),
+        getBalances: vi.fn().mockResolvedValue([]),
+        getTransactions: vi.fn().mockResolvedValue([]),
+      };
+      const link = { remote_account_id: 'remote', guallet_account_id: 'local' };
+      const links = {
+        findOne: vi.fn().mockResolvedValue(existing ? link : null),
+        save: vi.fn().mockResolvedValue(link),
+      };
+      const save = vi
+        .fn()
+        .mockImplementation(async (_entity, value) => ({
+          id: 'local',
+          ...value,
+        }));
+      const accounts = {
+        findOne: vi
+          .fn()
+          .mockResolvedValue({
+            id: 'local',
+            name: 'My savings',
+            currency: 'GBP',
+          }),
+        manager: {
+          transaction: vi
+            .fn()
+            .mockImplementation(async (callback) => callback({ save })),
+        },
+      };
+      const service = new NordigenService(
+        client as never,
+        {
+          find: vi.fn().mockResolvedValue([{ account_ids: ['remote'] }]),
+        } as never,
+        links as never,
+        accounts as never,
+        {} as never,
+      );
+      expect(
+        await service.importAccounts({ ...context, accountIds: ['remote'] }),
+      ).toEqual(['local']);
+      expect(save.mock.calls[0][1].name).toBe(
+        existing ? 'My savings' : 'Bank name',
+      );
+    },
+  );
+});

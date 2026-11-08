@@ -287,7 +287,7 @@ export class NordigenService implements BankProviderAdapter {
         ...account,
         user_id: userId,
         name:
-          details.name || account?.name || details.ownerName || 'Bank account',
+          account?.name || details.name || details.ownerName || 'Bank account',
         currency,
         balance: balance?.amount ?? account?.balance ?? 0,
         type: account?.type ?? getAccountTypeFrom(details.cashAccountType),

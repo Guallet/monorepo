@@ -85,12 +85,12 @@ export class BankSyncClient {
           removedIds: [...removedIds],
         };
       }
-      if (!response.meta.cursor || response.meta.cursor === cursor) {
+      if (!response.meta.nextCursor || response.meta.nextCursor === cursor) {
         throw new BadGatewayException(
           'BankSync returned an invalid page cursor',
         );
       }
-      cursor = response.meta.cursor;
+      cursor = response.meta.nextCursor;
     }
     throw new BadGatewayException(
       'BankSync transaction history has too many pages',
