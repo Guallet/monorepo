@@ -1,4 +1,4 @@
-import type { NordigenTransactionDto } from '../../openbanking/providers/nordigen/dto/nordigen-transaction.dto';
+import type { NordigenTransaction } from '../../openbanking/providers/nordigen/types';
 
 export interface LunchFlowTransactionData {
   id: string | number;
@@ -34,7 +34,7 @@ export interface SynciTransactionData {
 export interface TransactionMetadata {
   provider: TransactionDataProvider;
   data:
-    | NordigenTransactionDto
+    | NordigenTransaction
     | Record<string, unknown>
     | LunchFlowTransactionData
     | BankSyncTransactionData

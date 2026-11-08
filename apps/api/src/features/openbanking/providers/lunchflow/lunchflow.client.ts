@@ -6,29 +6,12 @@ import {
 } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
+import type {
+  LunchFlowRemoteAccount,
+  LunchFlowRemoteTransaction,
+} from './types';
 
 const BASE_URL = 'https://lunchflow.app/api/v1';
-
-export type LunchFlowRemoteAccount = {
-  id: string | number;
-  connection_id?: string | number | null;
-  name: string;
-  institution_name?: string | null;
-  institution_logo?: string | null;
-  provider?: string | null;
-  currency?: string | null;
-  status?: string | null;
-};
-
-export type LunchFlowRemoteTransaction = {
-  id: string | number;
-  amount: number;
-  currency: string;
-  date: string;
-  merchant?: string | null;
-  description?: string | null;
-  isPending?: boolean;
-};
 
 @Injectable()
 export class LunchFlowClient {

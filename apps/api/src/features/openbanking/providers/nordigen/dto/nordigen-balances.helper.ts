@@ -1,10 +1,7 @@
-import {
-  BalanceTypeDto,
-  NordigenAccountBalanceDto,
-} from './nordigen-account.dto';
+import { NordigenBalanceType, NordigenAccountBalance } from '../types';
 
 export function getBalanceFrom(
-  balances: NordigenAccountBalanceDto[],
+  balances: NordigenAccountBalance[],
 ): { amount: number; currency: string } | null {
   // If there is no balance available, return null
   if (balances.length === 0) {
@@ -21,7 +18,7 @@ export function getBalanceFrom(
   }
 
   const interim = balances.find(
-    (a) => a.balanceType == BalanceTypeDto.INTERIM_AVAILABLE,
+    (a) => a.balanceType == NordigenBalanceType.INTERIM_AVAILABLE,
   );
   if (interim != null) {
     return {
@@ -31,7 +28,7 @@ export function getBalanceFrom(
   }
 
   const forwardAvailable = balances.find(
-    (a) => a.balanceType == BalanceTypeDto.FORWARD_AVAILABLE,
+    (a) => a.balanceType == NordigenBalanceType.FORWARD_AVAILABLE,
   );
   if (forwardAvailable != null) {
     return {
@@ -41,7 +38,7 @@ export function getBalanceFrom(
   }
 
   const interimBooked = balances.find(
-    (a) => a.balanceType == BalanceTypeDto.INTERIM_BOOKED,
+    (a) => a.balanceType == NordigenBalanceType.INTERIM_BOOKED,
   );
   if (interimBooked != null) {
     return {

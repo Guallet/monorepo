@@ -19,7 +19,8 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
 import { ConnectedAccount } from '../../entities/connected-account.entity';
-import { SynciClient, SynciRemoteAccount } from './synci.client';
+import { SynciClient } from './synci.client';
+import type { SynciRemoteAccount } from './types';
 
 @Injectable()
 export class SynciService implements BankProviderAdapter {

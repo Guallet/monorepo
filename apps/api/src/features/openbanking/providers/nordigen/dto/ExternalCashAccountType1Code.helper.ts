@@ -24,33 +24,7 @@
 // NFCA	NonResidentForeignCurrencyAccount	Non-Resident Individual / Entity Foreign Current held domestically.
 
 import { AccountType } from 'src/features/accounts/entities/accountType.model';
-
-export enum ExternalCashAccountType1Code {
-  CURRENT_ACCOUNT = 'CACC',
-  CREDIT_CARD_ACCOUNT = 'CARD',
-  CASH = 'CASH',
-  CHARGES = 'CHAR',
-  CASH_INCOME = 'CISH',
-  COMISSION = 'COMM',
-  CLEARING_PARTICIPANT = 'CPAC',
-  LIMITED_LIQUIDITY_SETTLEMENT = 'LLSV',
-  LOAN = 'LOAN',
-  MARGINAL_LENDING = 'MGLD',
-  MONEY_MARKET = 'MOMA',
-  NON_RESIDENT_EXTERNAL = 'NREX',
-  OVERDRAFT = 'ODFT',
-  OVER_NIGHT_DEPOSIT = 'ONDP',
-  OTHER = 'OTHR',
-  SETTLEMENT = 'SACC',
-  SALARY = 'SLRY',
-  SAVINGS = 'SVGS',
-  TAX = 'TAXE',
-  TRANSACTION = 'TRAN',
-  CASH_TRADING = 'TRAS',
-  VIRTUAL_ACCOUNT = 'VACC',
-  NON_RESIDENT_FOREIGN_CURRENCY = 'NFCA',
-  UNKNOWN = 'UNKNOWN',
-}
+import { ExternalCashAccountType1Code } from '../types';
 
 export function getAccountTypeFrom(
   type: ExternalCashAccountType1Code | undefined | null,

@@ -20,7 +20,8 @@ import { Transaction } from 'src/features/transactions/entities/transaction.enti
 import { persistPersonalProviderTransactions } from 'src/features/transactions/personal-provider-transactions';
 import { Repository } from 'typeorm';
 import { ConnectedAccount } from '../../entities/connected-account.entity';
-import { LunchFlowClient, LunchFlowRemoteAccount } from './lunchflow.client';
+import { LunchFlowClient } from './lunchflow.client';
+import type { LunchFlowRemoteAccount } from './types';
 
 @Injectable()
 export class LunchFlowService implements BankProviderAdapter {

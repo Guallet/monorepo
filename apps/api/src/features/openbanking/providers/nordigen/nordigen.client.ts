@@ -7,11 +7,18 @@ import {
 } from '@nestjs/common';
 import { isAxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
-import {
-  NordigenAccountDetailsDto,
-  NordigenAccountBalancesDto,
-} from './dto/nordigen-account.dto';
-import { NordigenTransactionsDto } from './dto/nordigen-transaction.dto';
+import type {
+  NordigenCredentials,
+  NordigenTokenResponse,
+  NordigenInstitution,
+  NordigenAuthorizationRequest,
+  NordigenAuthorizationResponse,
+  NordigenAuthorization,
+  NordigenAgreement,
+  NordigenAccountDetailsResponse,
+  NordigenAccountBalancesResponse,
+  NordigenTransactionsResponse,
+} from './types';
 
 const BASE_URL = 'https://bankaccountdata.gocardless.com/api/v2';
 
@@ -19,11 +26,8 @@ const BASE_URL = 'https://bankaccountdata.gocardless.com/api/v2';
 export class NordigenClient {
   constructor(private readonly http: HttpService) {}
 
-  async getToken(credentials: {
-    secretId: string;
-    secretKey: string;
-  }): Promise<string> {
-    const token = await this.request<{ access: string }>(
+  async getToken(credentials: NordigenCredentials): Promise<string> {
+    const token = await this.request<NordigenTokenResponse>(
       'POST',
       '/token/new/',
       undefined,
@@ -36,9 +40,11 @@ export class NordigenClient {
   }
 
   async getInstitutions(token: string, country: string) {
-    return await this.request<
-      Array<{ id: string; name: string; logo: string }>
-    >('GET', `/institutions/?country=${encodeURIComponent(country)}`, token);
+    return await this.request<NordigenInstitution[]>(
+      'GET',
+      `/institutions/?country=${encodeURIComponent(country)}`,
+      token,
+    );
   }
 
   async authorize(
@@ -47,35 +53,37 @@ export class NordigenClient {
     redirect: string,
     reference: string,
   ) {
-    return await this.request<{ id: string; link: string }>(
+    const data: NordigenAuthorizationRequest = {
+      institution_id: institutionId,
+      redirect,
+      reference,
+    };
+    return await this.request<NordigenAuthorizationResponse>(
       'POST',
       '/requisitions/',
       token,
-      {
-        institution_id: institutionId,
-        redirect,
-        reference,
-      },
+      data,
     );
   }
 
   async getAuthorization(token: string, id: string) {
-    return await this.request<{
-      status: string;
-      accounts: string[];
-      agreement?: string;
-    }>('GET', `/requisitions/${encodeURIComponent(id)}/`, token);
+    return await this.request<NordigenAuthorization>(
+      'GET',
+      `/requisitions/${encodeURIComponent(id)}/`,
+      token,
+    );
   }
 
   async getAgreement(token: string, id: string) {
-    return await this.request<{
-      accepted: string | null;
-      access_valid_for_days: number;
-    }>('GET', `/agreements/enduser/${encodeURIComponent(id)}/`, token);
+    return await this.request<NordigenAgreement>(
+      'GET',
+      `/agreements/enduser/${encodeURIComponent(id)}/`,
+      token,
+    );
   }
 
   async getDetails(token: string, id: string) {
-    return await this.request<NordigenAccountDetailsDto>(
+    return await this.request<NordigenAccountDetailsResponse>(
       'GET',
       `/accounts/${encodeURIComponent(id)}/details/`,
       token,
@@ -84,7 +92,7 @@ export class NordigenClient {
 
   async getBalances(token: string, id: string) {
     return (
-      await this.request<NordigenAccountBalancesDto>(
+      await this.request<NordigenAccountBalancesResponse>(
         'GET',
         `/accounts/${encodeURIComponent(id)}/balances/`,
         token,
@@ -94,7 +102,7 @@ export class NordigenClient {
 
   async getTransactions(token: string, id: string) {
     return (
-      await this.request<NordigenTransactionsDto>(
+      await this.request<NordigenTransactionsResponse>(
         'GET',
         `/accounts/${encodeURIComponent(id)}/transactions/`,
         token,
