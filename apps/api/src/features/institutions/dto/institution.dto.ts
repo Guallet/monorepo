@@ -4,8 +4,13 @@ import { Institution } from '../entities/institution.entity';
 export class InstitutionDto {
   @ApiProperty()
   id: string;
+
   @ApiProperty()
   name: string;
+
+  @ApiProperty({ required: false })
+  userId?: string;
+
   @ApiProperty({ required: false })
   image_src?: string;
 
@@ -14,6 +19,7 @@ export class InstitutionDto {
       id: domain.id,
       name: domain.name,
       image_src: domain.image_src,
+      userId: domain.user_id,
     };
   }
 }

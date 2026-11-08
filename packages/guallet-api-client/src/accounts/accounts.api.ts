@@ -25,8 +25,10 @@ export class AccountsApi {
     });
   }
 
-  async getAccountConnection(accountId: string): Promise<AccountConnectionDto> {
-    return await this.client.get<AccountConnectionDto>({
+  async getAccountConnection(
+    accountId: string,
+  ): Promise<AccountConnectionDto | Record<string, never>> {
+    return await this.client.get<AccountConnectionDto | Record<string, never>>({
       path: `${ACCOUNTS_PATH}/${encodeURIComponent(accountId)}/connection`,
     });
   }

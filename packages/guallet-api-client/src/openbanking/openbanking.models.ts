@@ -1,15 +1,20 @@
 export type BankProvider = 'lunchflow' | 'banksync' | 'synci' | 'nordigen';
 
-export type BankCredentials = {
+export type BankCredentialsRequestDto = {
   apiKey?: string;
   secretId?: string;
   secretKey?: string;
 };
 
+export type BankCredentialFieldDto = {
+  name: keyof BankCredentialsRequestDto;
+  secret: boolean;
+};
+
 export type BankProviderDto = {
   id: BankProvider;
   name: string;
-  credentialFields: { name: keyof BankCredentials; secret: boolean }[];
+  credentialFields: BankCredentialFieldDto[];
   supportsBankAuthorization: boolean;
   supportedCountries: string[];
 };
@@ -23,9 +28,17 @@ export type BankConnectionDto = {
   lastSyncedAt: string | null;
 };
 
-export type CreateBankConnectionRequest = {
+export type CreateBankConnectionRequestDto = {
   providerId: BankProvider;
-  credentials: BankCredentials;
+  credentials: BankCredentialsRequestDto;
+};
+
+export type ReplaceBankCredentialsRequestDto = {
+  credentials: BankCredentialsRequestDto;
+};
+
+export type ImportBankAccountsRequestDto = {
+  accountIds: string[];
 };
 
 export type BankAccountDto = {
@@ -74,7 +87,7 @@ export type BankAuthorizationDto = {
   redirectUrl: string;
 };
 
-export type AuthorizeBankRequest = {
+export type AuthorizeBankRequestDto = {
   institutionId: string;
   redirectUrl: string;
 };

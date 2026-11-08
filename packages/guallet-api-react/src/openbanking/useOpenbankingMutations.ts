@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  AuthorizeBankRequest,
-  BankCredentials,
-  BankJobOperation,
-  CreateBankConnectionRequest,
+  AuthorizeBankRequestDto,
+  ReplaceBankCredentialsRequestDto,
+  ImportBankAccountsRequestDto,
+  BankJobAcceptedDto,
+  CreateBankConnectionRequestDto,
 } from '@guallet/api-client';
 import { useGualletClient } from '../GualletClientProvider';
 import { OPENBANKING_QUERY_KEY, useBankJob } from './useOpenbanking';
@@ -19,7 +20,7 @@ export function useBankConnectionMutations() {
   };
   const create = useMutation({
     gcTime: 0,
-    mutationFn: (request: CreateBankConnectionRequest) =>
+    mutationFn: (request: CreateBankConnectionRequestDto) =>
       client.openbanking.createConnection(request),
     onSuccess: invalidate,
   });
@@ -28,10 +29,8 @@ export function useBankConnectionMutations() {
     mutationFn: ({
       id,
       credentials,
-    }: {
-      id: string;
-      credentials: BankCredentials;
-    }) => client.openbanking.replaceCredentials(id, credentials),
+    }: ReplaceBankCredentialsRequestDto & { id: string }) =>
+      client.openbanking.replaceCredentials(id, { credentials }),
     onSuccess: invalidate,
   });
   const remove = useMutation({
@@ -55,7 +54,7 @@ export function useBankConnectionMutations() {
       request,
     }: {
       id: string;
-      request: AuthorizeBankRequest;
+      request: AuthorizeBankRequestDto;
     }) => client.openbanking.authorize(id, request),
   });
   const completeAuthorization = useMutation({
@@ -78,22 +77,25 @@ export function useBankConnectionMutations() {
   };
 }
 
+type BankOperationInput =
+  | { operation: 'refresh' | 'sync' }
+  | ({ operation: 'import' } & ImportBankAccountsRequestDto);
+
 export function useBankOperation(id?: string) {
   const client = useGualletClient();
   const start = useMutation({
-    mutationFn: async ({
-      operation,
-      accountIds,
-    }: {
-      operation: BankJobOperation;
-      accountIds?: string[];
-    }) => {
+    mutationFn: async (request: BankOperationInput) => {
       if (!id) throw new Error('Select a bank connection');
-      const job = await client.openbanking.startOperation(
-        id,
-        operation,
-        accountIds,
-      );
+      let job: BankJobAcceptedDto;
+      if (request.operation === 'import') {
+        job = await client.openbanking.importAccounts(id, {
+          accountIds: request.accountIds,
+        });
+      } else if (request.operation === 'sync') {
+        job = await client.openbanking.syncAccounts(id);
+      } else {
+        job = await client.openbanking.refreshAccounts(id);
+      }
       return { ...job, connectionId: id };
     },
   });

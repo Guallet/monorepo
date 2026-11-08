@@ -11,3 +11,21 @@ export type BankJobData = {
   accountIds?: string[];
   notifyOnNewTransactions?: boolean;
 };
+
+export type BankJobAccepted = {
+  jobId: string;
+};
+
+export type BankJobResult = {
+  accountsDiscovered?: number;
+  accountIds?: string[];
+  accountsSynced?: number;
+  errors?: string[];
+};
+
+export type BankJobStatus = {
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  operation: BankJobOperation;
+  result?: BankJobResult;
+  error?: string;
+};

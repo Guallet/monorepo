@@ -34,15 +34,18 @@ import {
   requireApiKey,
   requireNordigenCredentials,
 } from './providers/bank-provider.interface';
-import {
-  AuthorizeBankRequestDto,
-  BankConnectionDto,
-  BankJobResultDto,
-  BankJobStatusDto,
-  CreateBankConnectionRequestDto,
-} from './dto/openbanking.dto';
+import type {
+  BankAccounts,
+  BankAuthorizationInput,
+  BankAuthorizationResult,
+  BankConnectionDetails,
+  CreateBankConnection,
+} from './models/openbanking.model';
 import {
   BankJobData,
+  BankJobResult,
+  BankJobStatus,
+  BankJobAccepted,
   BankJobOperation,
   OPENBANKING_QUEUE,
 } from './openbanking.jobs';
@@ -61,7 +64,7 @@ export class OpenbankingService {
     private readonly config: ConfigService<AppConfig>,
     @InjectQueue(OPENBANKING_QUEUE) private readonly jobs: Queue<
       BankJobData,
-      BankJobResultDto
+      BankJobResult
     >,
     private readonly notifications: NotificationsService,
     @InjectRepository(Account)
@@ -160,52 +163,52 @@ export class OpenbankingService {
     return this.registry.list();
   }
 
-  async list({ userId }: { userId: string }): Promise<BankConnectionDto[]> {
+  async list({ userId }: { userId: string }): Promise<BankConnectionDetails[]> {
     const connections = await this.connections.find({
       where: { user_id: userId },
       order: { created_at: 'ASC' },
     });
     return await Promise.all(
-      connections.map((connection) => this.toDto(connection)),
+      connections.map((connection) => this.connectionDetails(connection)),
     );
   }
 
-  async get(owner: ConnectionOwner): Promise<BankConnectionDto> {
-    return this.toDto(await this.find(owner));
+  async get(owner: ConnectionOwner): Promise<BankConnectionDetails> {
+    return this.connectionDetails(await this.find(owner));
   }
 
   async create({
     userId,
-    dto,
+    input,
   }: {
     userId: string;
-    dto: CreateBankConnectionRequestDto;
-  }): Promise<BankConnectionDto> {
+    input: CreateBankConnection;
+  }): Promise<BankConnectionDetails> {
     const existing = await this.connections.findOne({
-      where: { user_id: userId, provider_id: dto.providerId },
+      where: { user_id: userId, provider_id: input.providerId },
     });
     if (existing)
       throw new ConflictException(
         'A connection for this provider already exists',
       );
     const credentials = this.normalizeCredentials(
-      dto.providerId,
-      dto.credentials,
+      input.providerId,
+      input.credentials,
     );
     const id = randomUUID();
     await this.registry
-      .get(dto.providerId)
+      .get(input.providerId)
       .validateCredentials({ userId, connectionId: id, credentials });
     try {
       return await this.connections.manager.transaction(async (manager) => {
         const connection = await manager.save(BankConnection, {
           id,
           user_id: userId,
-          provider_id: dto.providerId,
+          provider_id: input.providerId,
           accounts: [],
         });
         await this.saveCredentials(connection, credentials, manager);
-        return await this.toDto(connection, manager);
+        return await this.connectionDetails(connection, manager);
       });
     } catch (error) {
       if (
@@ -238,7 +241,7 @@ export class OpenbankingService {
       connection.accounts_refreshed_at = null;
       connection.last_error = null;
       await manager.save(connection);
-      return await this.toDto(connection, manager);
+      return await this.connectionDetails(connection, manager);
     });
   }
 
@@ -258,19 +261,10 @@ export class OpenbankingService {
     });
   }
 
-  async accounts(owner: ConnectionOwner) {
+  async accounts(owner: ConnectionOwner): Promise<BankAccounts> {
     const connection = await this.find(owner);
     return {
-      accounts: connection.accounts.map((account) => ({
-        id: account.id,
-        name: account.name,
-        institutionName: account.institutionName,
-        institutionLogo: account.institutionLogo,
-        currency: account.currency,
-        balance: account.balance,
-        status: account.status,
-        linkedAccountId: account.linkedAccountId,
-      })),
+      accounts: connection.accounts,
       refreshedAt: connection.accounts_refreshed_at,
     };
   }
@@ -297,7 +291,7 @@ export class OpenbankingService {
       accountIds?: string[];
       notifyOnNewTransactions?: boolean;
     },
-  ) {
+  ): Promise<BankJobAccepted> {
     const connection = await this.find(owner);
     const credential = await this.userCredentials.getCredentialMetadata(
       this.credentialOwner(connection),
@@ -336,7 +330,7 @@ export class OpenbankingService {
 
   async jobStatus(
     owner: ConnectionOwner & { jobId: string },
-  ): Promise<BankJobStatusDto> {
+  ): Promise<BankJobStatus> {
     await this.find(owner);
     const job = await this.jobs.getJob(owner.jobId);
     if (
@@ -346,7 +340,7 @@ export class OpenbankingService {
     )
       throw new NotFoundException();
     const state = await job.getState();
-    let status: BankJobStatusDto['status'] = 'queued';
+    let status: BankJobStatus['status'] = 'queued';
     if (state === 'completed' || state === 'failed') {
       status = state;
     } else if (state === 'active') {
@@ -365,7 +359,7 @@ export class OpenbankingService {
     };
   }
 
-  async process(data: BankJobData): Promise<BankJobResultDto> {
+  async process(data: BankJobData): Promise<BankJobResult> {
     let newUncategorizedCount = 0;
     let providerOperationStarted = false;
     let connectionUpdatedAt: Date | undefined;
@@ -385,7 +379,7 @@ export class OpenbankingService {
             );
           const adapter = this.registry.get(connection.provider_id);
           connectionUpdatedAt = connection.updated_at;
-          let result: BankJobResultDto;
+          let result: BankJobResult;
           if (data.operation === 'import') {
             if (!data.accountIds?.length)
               throw new BadRequestException('Select accounts to import');
@@ -534,8 +528,10 @@ export class OpenbankingService {
     });
   }
 
-  async authorize(owner: ConnectionOwner & { dto: AuthorizeBankRequestDto }) {
-    const redirect = new URL(owner.dto.redirectUrl);
+  async authorize(
+    owner: ConnectionOwner & { input: BankAuthorizationInput },
+  ): Promise<BankAuthorizationResult> {
+    const redirect = new URL(owner.input.redirectUrl);
     const origins =
       this.config.get('auth.allowedOrigins', { infer: true }) ?? [];
     if (
@@ -555,7 +551,7 @@ export class OpenbankingService {
       redirect.searchParams.set('authorizationId', id);
       const result = await adapter.authorize({
         ...(await this.context(connection, manager)),
-        institutionId: owner.dto.institutionId,
+        institutionId: owner.input.institutionId,
         redirectUrl: redirect.toString(),
         reference: id,
       });
@@ -710,21 +706,17 @@ export class OpenbankingService {
     };
   }
 
-  private async toDto(
+  private async connectionDetails(
     connection: BankConnection,
     manager?: EntityManager,
-  ): Promise<BankConnectionDto> {
+  ): Promise<BankConnectionDetails> {
     const credential = await this.userCredentials.getCredentialMetadata(
       this.credentialOwner(connection),
       manager,
     );
     return {
-      id: connection.id,
-      providerId: connection.provider_id,
-      status: 'configured',
+      connection,
       credentialHint: credential?.hint ?? null,
-      accountsRefreshedAt: connection.accounts_refreshed_at ?? null,
-      lastSyncedAt: connection.last_synced_at ?? null,
     };
   }
 }

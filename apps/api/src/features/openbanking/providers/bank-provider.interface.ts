@@ -16,6 +16,19 @@ export type ProviderCredentials = {
   secretKey?: string;
 };
 
+export type ProviderCredentialField = {
+  name: keyof ProviderCredentials;
+  secret: boolean;
+};
+
+export type BankProviderDefinition = {
+  id: BankProvider;
+  name: string;
+  credentialFields: ProviderCredentialField[];
+  supportsBankAuthorization: boolean;
+  supportedCountries: string[];
+};
+
 export type ProviderIdentity = {
   userId: string;
   connectionId: string;

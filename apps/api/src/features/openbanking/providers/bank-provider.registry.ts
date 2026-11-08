@@ -7,8 +7,11 @@ import { BankSyncService } from './banksync/banksync.service';
 import { LunchFlowService } from './lunchflow/lunchflow.service';
 import { SynciService } from './synci/synci.service';
 import { NordigenService } from './nordigen/nordigen.service';
-import { BankProviderAdapter, BankProvider } from './bank-provider.interface';
-import { BankProviderDto } from '../dto/openbanking.dto';
+import {
+  BankProviderAdapter,
+  BankProvider,
+  BankProviderDefinition,
+} from './bank-provider.interface';
 
 @Injectable()
 export class BankProviderRegistry {
@@ -34,7 +37,7 @@ export class BankProviderRegistry {
     return adapter;
   }
 
-  list(): BankProviderDto[] {
+  list(): BankProviderDefinition[] {
     return [
       {
         id: 'lunchflow',

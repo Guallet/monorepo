@@ -1,6 +1,6 @@
 import {
   BankConnectionDto,
-  BankCredentials,
+  BankCredentialsRequestDto,
   BankProviderDto,
 } from '@guallet/api-client';
 import {
@@ -72,7 +72,7 @@ export function BankConnectionSettingsCard({
   const saving =
     mutations.create.isPending || mutations.replaceCredentials.isPending;
   async function save(values: typeof form.values) {
-    const credentials: BankCredentials = Object.fromEntries(
+    const credentials: BankCredentialsRequestDto = Object.fromEntries(
       provider.credentialFields.map((field) => [
         field.name,
         values[field.name].trim(),

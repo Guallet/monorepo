@@ -1,3 +1,4 @@
+import type { AccountConnectionDto } from '@guallet/api-client';
 import { useQuery } from '@tanstack/react-query';
 import { useGualletClient } from '../GualletClientProvider';
 
@@ -11,6 +12,6 @@ export function useAccountConnection(accountId?: string) {
 
   return {
     ...query,
-    connection: query.data?.id ? query.data : null,
+    connection: query.data?.id ? (query.data as AccountConnectionDto) : null,
   };
 }

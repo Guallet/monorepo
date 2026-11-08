@@ -1,3 +1,19 @@
+import type {
+  BankConnectionDetails,
+  BankAccounts,
+  BankAuthorizationResult,
+} from '../models/openbanking.model';
+import type {
+  BankJobAccepted,
+  BankJobResult,
+  BankJobStatus,
+} from '../openbanking.jobs';
+import type {
+  BankProviderDefinition,
+  ProviderCredentialField,
+  ProviderAccount,
+  ProviderInstitution,
+} from '../providers/bank-provider.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -102,6 +118,13 @@ export class BankCredentialFieldDto {
   name: 'apiKey' | 'secretId' | 'secretKey';
   @ApiProperty()
   secret: boolean;
+
+  static fromDomain(field: ProviderCredentialField): BankCredentialFieldDto {
+    const dto = new BankCredentialFieldDto();
+    dto.name = field.name;
+    dto.secret = field.secret;
+    return dto;
+  }
 }
 
 export class BankProviderDto {
@@ -121,6 +144,18 @@ export class BankProviderDto {
     description: 'Supported bank countries as ISO 3166-1 alpha-2 codes',
   })
   supportedCountries: string[];
+
+  static fromDomain(provider: BankProviderDefinition): BankProviderDto {
+    const dto = new BankProviderDto();
+    dto.id = provider.id;
+    dto.name = provider.name;
+    dto.credentialFields = provider.credentialFields.map((field) =>
+      BankCredentialFieldDto.fromDomain(field),
+    );
+    dto.supportsBankAuthorization = provider.supportsBankAuthorization;
+    dto.supportedCountries = [...provider.supportedCountries];
+    return dto;
+  }
 }
 
 export class BankConnectionDto {
@@ -141,6 +176,17 @@ export class BankConnectionDto {
 
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   lastSyncedAt: Date | null;
+
+  static fromDomain(details: BankConnectionDetails): BankConnectionDto {
+    const dto = new BankConnectionDto();
+    dto.id = details.connection.id;
+    dto.providerId = details.connection.provider_id;
+    dto.status = 'configured';
+    dto.credentialHint = details.credentialHint;
+    dto.accountsRefreshedAt = details.connection.accounts_refreshed_at ?? null;
+    dto.lastSyncedAt = details.connection.last_synced_at ?? null;
+    return dto;
+  }
 }
 
 export class BankAccountDto {
@@ -170,6 +216,20 @@ export class BankAccountDto {
 
   @ApiProperty({ type: String, nullable: true, format: 'uuid' })
   linkedAccountId: string | null;
+
+  static fromDomain(account: ProviderAccount): BankAccountDto {
+    const dto = new BankAccountDto();
+    dto.id = account.id;
+    dto.name = account.name;
+    dto.institutionName = account.institutionName;
+    dto.currency = account.currency;
+    dto.linkedAccountId = account.linkedAccountId;
+    if (account.institutionLogo !== undefined)
+      dto.institutionLogo = account.institutionLogo;
+    if (account.balance !== undefined) dto.balance = account.balance;
+    if (account.status !== undefined) dto.status = account.status;
+    return dto;
+  }
 }
 
 export class BankAccountsDto {
@@ -178,11 +238,26 @@ export class BankAccountsDto {
 
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   refreshedAt: Date | null;
+
+  static fromDomain(accounts: BankAccounts): BankAccountsDto {
+    const dto = new BankAccountsDto();
+    dto.accounts = accounts.accounts.map((value) =>
+      BankAccountDto.fromDomain(value),
+    );
+    dto.refreshedAt = accounts.refreshedAt;
+    return dto;
+  }
 }
 
 export class BankJobAcceptedDto {
   @ApiProperty({ format: 'uuid' })
   jobId: string;
+
+  static fromDomain(job: BankJobAccepted): BankJobAcceptedDto {
+    const dto = new BankJobAcceptedDto();
+    dto.jobId = job.jobId;
+    return dto;
+  }
 }
 
 export class BankJobResultDto {
@@ -197,6 +272,18 @@ export class BankJobResultDto {
 
   @ApiProperty({ required: false, type: [String] })
   errors?: string[];
+
+  static fromDomain(result: BankJobResult): BankJobResultDto {
+    const dto = new BankJobResultDto();
+    if (result.accountsDiscovered !== undefined)
+      dto.accountsDiscovered = result.accountsDiscovered;
+    if (result.accountsSynced !== undefined)
+      dto.accountsSynced = result.accountsSynced;
+    if (result.accountIds !== undefined)
+      dto.accountIds = [...result.accountIds];
+    if (result.errors !== undefined) dto.errors = [...result.errors];
+    return dto;
+  }
 }
 
 export class BankJobStatusDto {
@@ -211,6 +298,19 @@ export class BankJobStatusDto {
 
   @ApiProperty({ required: false })
   error?: string;
+
+  static fromDomain(job: BankJobStatus): BankJobStatusDto {
+    const dto = new BankJobStatusDto();
+    dto.status = job.status;
+    dto.operation = job.operation;
+    if (job.status === 'completed' && job.result)
+      dto.result = BankJobResultDto.fromDomain(job.result);
+    if (job.status === 'failed') {
+      dto.error =
+        'The operation failed. Check your provider connection and try again.';
+    }
+    return dto;
+  }
 }
 
 export class BankInstitutionDto {
@@ -222,6 +322,14 @@ export class BankInstitutionDto {
 
   @ApiProperty({ type: String, nullable: true })
   logo: string | null;
+
+  static fromDomain(institution: ProviderInstitution): BankInstitutionDto {
+    const dto = new BankInstitutionDto();
+    dto.id = institution.id;
+    dto.name = institution.name;
+    dto.logo = institution.logo;
+    return dto;
+  }
 }
 
 export class BankAuthorizationDto {
@@ -233,4 +341,14 @@ export class BankAuthorizationDto {
 
   @ApiProperty({ format: 'uri' })
   redirectUrl: string;
+
+  static fromDomain(
+    authorization: BankAuthorizationResult,
+  ): BankAuthorizationDto {
+    const dto = new BankAuthorizationDto();
+    dto.id = authorization.id;
+    dto.action = authorization.action;
+    dto.redirectUrl = authorization.redirectUrl;
+    return dto;
+  }
 }

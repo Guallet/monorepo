@@ -1,16 +1,16 @@
 import { GualletClientImpl } from '../GualletClient';
 import {
-  AuthorizeBankRequest,
+  AuthorizeBankRequestDto,
   BankAccountsDto,
   BankAuthorizationDto,
   BankConnectionDto,
-  BankCredentials,
+  ReplaceBankCredentialsRequestDto,
+  ImportBankAccountsRequestDto,
   BankInstitutionDto,
   BankJobAcceptedDto,
-  BankJobOperation,
   BankJobStatusDto,
   BankProviderDto,
-  CreateBankConnectionRequest,
+  CreateBankConnectionRequestDto,
 } from './openbanking.models';
 
 const OPENBANKING_PATH = 'openbanking';
@@ -31,9 +31,9 @@ export class OpenbankingApi {
   }
 
   createConnection(
-    request: CreateBankConnectionRequest,
+    request: CreateBankConnectionRequestDto,
   ): Promise<BankConnectionDto> {
-    return this.client.post({
+    return this.client.post<BankConnectionDto, CreateBankConnectionRequestDto>({
       path: `${OPENBANKING_PATH}/connections`,
       payload: request,
     });
@@ -41,12 +41,14 @@ export class OpenbankingApi {
 
   replaceCredentials(
     id: string,
-    credentials: BankCredentials,
+    request: ReplaceBankCredentialsRequestDto,
   ): Promise<BankConnectionDto> {
-    return this.client.put({
-      path: `${this.path(id)}/credentials`,
-      payload: { credentials },
-    });
+    return this.client.put<BankConnectionDto, ReplaceBankCredentialsRequestDto>(
+      {
+        path: `${this.path(id)}/credentials`,
+        payload: request,
+      },
+    );
   }
 
   deleteConnection(id: string): Promise<void> {
@@ -57,15 +59,27 @@ export class OpenbankingApi {
     return this.client.get({ path: `${this.path(id)}/accounts` });
   }
 
-  startOperation(
+  refreshAccounts(id: string): Promise<BankJobAcceptedDto> {
+    return this.client.post<BankJobAcceptedDto, Record<string, never>>({
+      path: `${this.path(id)}/accounts/refresh`,
+      payload: {},
+    });
+  }
+
+  importAccounts(
     id: string,
-    operation: BankJobOperation,
-    accountIds?: string[],
+    request: ImportBankAccountsRequestDto,
   ): Promise<BankJobAcceptedDto> {
-    const suffix = operation === 'sync' ? 'sync' : `accounts/${operation}`;
-    return this.client.post({
-      path: `${this.path(id)}/${suffix}`,
-      payload: operation === 'import' ? { accountIds } : {},
+    return this.client.post<BankJobAcceptedDto, ImportBankAccountsRequestDto>({
+      path: `${this.path(id)}/accounts/import`,
+      payload: request,
+    });
+  }
+
+  syncAccounts(id: string): Promise<BankJobAcceptedDto> {
+    return this.client.post<BankJobAcceptedDto, Record<string, never>>({
+      path: `${this.path(id)}/sync`,
+      payload: {},
     });
   }
 
@@ -94,9 +108,9 @@ export class OpenbankingApi {
 
   authorize(
     id: string,
-    request: AuthorizeBankRequest,
+    request: AuthorizeBankRequestDto,
   ): Promise<BankAuthorizationDto> {
-    return this.client.post({
+    return this.client.post<BankAuthorizationDto, AuthorizeBankRequestDto>({
       path: `${this.path(id)}/authorizations`,
       payload: request,
     });

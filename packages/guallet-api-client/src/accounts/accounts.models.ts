@@ -18,12 +18,8 @@ export type AccountDto = {
     | null;
 };
 
-/** Linked accounts return flat connection details; disconnected accounts return {}. */
-export type AccountConnectionDto =
-  | AccountConnectionDetailsDto
-  | Record<string, never>;
-
-export type AccountConnectionDetailsDto = {
+/** Connection details returned for a linked account. */
+export type AccountConnectionDto = {
   id: string;
   providerId: BankProvider;
   remoteAccountId: string;

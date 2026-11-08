@@ -380,7 +380,7 @@ describe('bank provider credential lookup', () => {
     const secret = 'provider-secret-1234';
     await service.create({
       userId: 'user',
-      dto: { providerId: 'synci', credentials: { apiKey: secret } },
+      input: { providerId: 'synci', credentials: { apiKey: secret } },
     });
     expect(manager.save).toHaveBeenCalledWith(BankConnectionEntity, {
       id: expect.any(String),
@@ -403,7 +403,7 @@ describe('bank provider credential lookup', () => {
     await expect(
       service.create({
         userId: 'user',
-        dto: { providerId: 'synci', credentials: { apiKey: 'rejected' } },
+        input: { providerId: 'synci', credentials: { apiKey: 'rejected' } },
       }),
     ).rejects.toThrow('Rejected');
     expect(manager.save).not.toHaveBeenCalled();

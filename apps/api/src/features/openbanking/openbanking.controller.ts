@@ -52,15 +52,18 @@ export class OpenbankingController {
     summary: 'List supported bank providers and credential requirements',
   })
   @ApiOkResponse({ type: BankProviderDto, isArray: true })
-  providers() {
-    return this.service.providers();
+  providers(): BankProviderDto[] {
+    return this.service
+      .providers()
+      .map((value) => BankProviderDto.fromDomain(value));
   }
 
   @Get('connections')
   @ApiOperation({ summary: 'List your bank connections' })
   @ApiOkResponse({ type: BankConnectionDto, isArray: true })
-  list(@RequestUser() user: UserPrincipal) {
-    return this.service.list({ userId: user.id });
+  async list(@RequestUser() user: UserPrincipal): Promise<BankConnectionDto[]> {
+    const connections = await this.service.list({ userId: user.id });
+    return connections.map((value) => BankConnectionDto.fromDomain(value));
   }
 
   @Post('connections')
@@ -70,22 +73,27 @@ export class OpenbankingController {
   })
   @ApiBody({ type: CreateBankConnectionRequestDto })
   @ApiCreatedResponse({ type: BankConnectionDto })
-  create(
+  async create(
     @RequestUser() user: UserPrincipal,
     @Body() dto: CreateBankConnectionRequestDto,
-  ) {
-    return this.service.create({ userId: user.id, dto });
+  ): Promise<BankConnectionDto> {
+    const connection = await this.service.create({
+      userId: user.id,
+      input: { providerId: dto.providerId, credentials: dto.credentials },
+    });
+    return BankConnectionDto.fromDomain(connection);
   }
 
   @Get('connections/:id')
   @ApiOperation({ summary: 'Get a bank connection' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiOkResponse({ type: BankConnectionDto })
-  get(
+  async get(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.service.get({ userId: user.id, id });
+  ): Promise<BankConnectionDto> {
+    const connection = await this.service.get({ userId: user.id, id });
+    return BankConnectionDto.fromDomain(connection);
   }
 
   @Put('connections/:id/credentials')
@@ -94,16 +102,17 @@ export class OpenbankingController {
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiBody({ type: ReplaceBankCredentialsRequestDto })
   @ApiOkResponse({ type: BankConnectionDto })
-  replace(
+  async replace(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: ReplaceBankCredentialsRequestDto,
-  ) {
-    return this.service.replaceCredentials({
+  ): Promise<BankConnectionDto> {
+    const connection = await this.service.replaceCredentials({
       userId: user.id,
       id,
       credentials: dto.credentials,
     });
+    return BankConnectionDto.fromDomain(connection);
   }
 
   @Delete('connections/:id')
@@ -117,7 +126,7 @@ export class OpenbankingController {
   remove(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  ): Promise<void> {
     return this.service.remove({ userId: user.id, id });
   }
 
@@ -125,11 +134,12 @@ export class OpenbankingController {
   @ApiOperation({ summary: 'List the latest discovered accounts' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiOkResponse({ type: BankAccountsDto })
-  accounts(
+  async accounts(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.service.accounts({ userId: user.id, id });
+  ): Promise<BankAccountsDto> {
+    const accounts = await this.service.accounts({ userId: user.id, id });
+    return BankAccountsDto.fromDomain(accounts);
   }
 
   @Post('connections/:id/accounts/refresh')
@@ -138,11 +148,16 @@ export class OpenbankingController {
   @ApiOperation({ summary: 'Queue a bank account refresh' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiAcceptedResponse({ type: BankJobAcceptedDto })
-  refresh(
+  async refresh(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.service.enqueue({ userId: user.id, id, operation: 'refresh' });
+  ): Promise<BankJobAcceptedDto> {
+    const job = await this.service.enqueue({
+      userId: user.id,
+      id,
+      operation: 'refresh',
+    });
+    return BankJobAcceptedDto.fromDomain(job);
   }
 
   @Post('connections/:id/accounts/import')
@@ -152,17 +167,18 @@ export class OpenbankingController {
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiBody({ type: ImportBankAccountsRequestDto })
   @ApiAcceptedResponse({ type: BankJobAcceptedDto })
-  import(
+  async import(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: ImportBankAccountsRequestDto,
-  ) {
-    return this.service.enqueue({
+  ): Promise<BankJobAcceptedDto> {
+    const job = await this.service.enqueue({
       userId: user.id,
       id,
       operation: 'import',
       accountIds: dto.accountIds,
     });
+    return BankJobAcceptedDto.fromDomain(job);
   }
 
   @Post('connections/:id/sync')
@@ -171,11 +187,16 @@ export class OpenbankingController {
   @ApiOperation({ summary: 'Queue a bank account sync' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiAcceptedResponse({ type: BankJobAcceptedDto })
-  sync(
+  async sync(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.service.enqueue({ userId: user.id, id, operation: 'sync' });
+  ): Promise<BankJobAcceptedDto> {
+    const job = await this.service.enqueue({
+      userId: user.id,
+      id,
+      operation: 'sync',
+    });
+    return BankJobAcceptedDto.fromDomain(job);
   }
 
   @Delete('connections/:id/accounts/:accountId/link')
@@ -188,7 +209,7 @@ export class OpenbankingController {
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Param('accountId') accountId: string,
-  ) {
+  ): Promise<void> {
     return this.service.unlink({ userId: user.id, id, accountId });
   }
 
@@ -197,12 +218,13 @@ export class OpenbankingController {
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiParam({ name: 'jobId', type: String, format: 'uuid' })
   @ApiOkResponse({ type: BankJobStatusDto })
-  job(
+  async job(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Param('jobId', ParseUUIDPipe) jobId: string,
-  ) {
-    return this.service.jobStatus({ userId: user.id, id, jobId });
+  ): Promise<BankJobStatusDto> {
+    const job = await this.service.jobStatus({ userId: user.id, id, jobId });
+    return BankJobStatusDto.fromDomain(job);
   }
 
   @Get('connections/:id/institutions')
@@ -212,12 +234,17 @@ export class OpenbankingController {
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiQuery({ name: 'country', type: String })
   @ApiOkResponse({ type: BankInstitutionDto, isArray: true })
-  institutions(
+  async institutions(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Query('country') country: string,
-  ) {
-    return this.service.institutions({ userId: user.id, id, country });
+  ): Promise<BankInstitutionDto[]> {
+    const institutions = await this.service.institutions({
+      userId: user.id,
+      id,
+      country,
+    });
+    return institutions.map((value) => BankInstitutionDto.fromDomain(value));
   }
 
   @Post('connections/:id/authorizations')
@@ -226,12 +253,17 @@ export class OpenbankingController {
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiBody({ type: AuthorizeBankRequestDto })
   @ApiCreatedResponse({ type: BankAuthorizationDto })
-  authorize(
+  async authorize(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: AuthorizeBankRequestDto,
-  ) {
-    return this.service.authorize({ userId: user.id, id, dto });
+  ): Promise<BankAuthorizationDto> {
+    const authorization = await this.service.authorize({
+      userId: user.id,
+      id,
+      input: { institutionId: dto.institutionId, redirectUrl: dto.redirectUrl },
+    });
+    return BankAuthorizationDto.fromDomain(authorization);
   }
 
   @Post('connections/:id/authorizations/:authorizationId/complete')
@@ -243,15 +275,16 @@ export class OpenbankingController {
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiParam({ name: 'authorizationId', type: String, format: 'uuid' })
   @ApiAcceptedResponse({ type: BankJobAcceptedDto })
-  complete(
+  async complete(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) id: string,
     @Param('authorizationId', ParseUUIDPipe) authorizationId: string,
-  ) {
-    return this.service.completeAuthorization({
+  ): Promise<BankJobAcceptedDto> {
+    const job = await this.service.completeAuthorization({
       userId: user.id,
       id,
       authorizationId,
     });
+    return BankJobAcceptedDto.fromDomain(job);
   }
 }

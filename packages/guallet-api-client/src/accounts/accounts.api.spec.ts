@@ -5,7 +5,7 @@ import { AccountConnectionDto } from './accounts.models';
 describe('account connection API', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it.each<AccountConnectionDto>([
+  it.each<AccountConnectionDto | Record<string, never>>([
     {},
     {
       id: 'connection-1',
