@@ -1,3 +1,4 @@
+import { NORDIGEN_SUPPORTED_COUNTRIES } from './countries';
 import { persistBankTransactions } from '../../../transactions/persist-bank-transactions';
 import {
   BadGatewayException,
@@ -46,6 +47,9 @@ export class NordigenService implements BankProviderAdapter {
   }
 
   async getInstitutions(context: ProviderContext & { country: string }) {
+    if (!NORDIGEN_SUPPORTED_COUNTRIES.includes(context.country)) {
+      throw new BadRequestException('Country is not supported by Nordigen');
+    }
     return await this.client.getInstitutions(
       await this.token(context),
       context.country,

@@ -10,6 +10,32 @@ Each user can have one connection per provider. The first three accept
 `credentials.apiKey` (a personal access token for Synci). Nordigen accepts
 `credentials.secretId` and `credentials.secretKey`.
 
+## Supported bank countries
+
+`GET /openbanking/providers` returns `supportedCountries` for every provider as
+ISO 3166-1 alpha-2 codes. The authorization country selector uses the selected
+provider's list. Nordigen institution requests reject countries outside its
+coverage before calling the upstream API.
+
+Bank coverage was checked on 2026-11-08. These lists describe bank connections;
+worldwide brokerage availability does not imply bank coverage in that country.
+Actual bank availability still depends on the institution and provider account.
+
+| Provider   | Bank coverage                                                                                                               | Sources                                                                                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nordigen   | 31 countries: EEA and UK                                                                                                    | [GoCardless coverage](https://docs.gocardless.com/docs/bank-account-data#coverage) and its [institution directory](https://docs.google.com/spreadsheets/d/1EZ5n7QDGaRIot5M86dwqd5UFSGEDTeTRzEq3D9uEDkM/edit)                                                                                  |
+| Synci      | 32 countries: EEA, UK, and New Zealand                                                                                      | [Supported institutions](https://feedback.synci.io/en/help/articles/1019329-supported-institutions)                                                                                                                                                                                           |
+| Lunch Flow | 41 countries: EEA, UK, US, Canada, Brazil, New Zealand, Hong Kong, Indonesia, Malaysia, Philippines, Singapore, and Vietnam | [Regional coverage](https://www.lunchflow.app/docs/guides/connections/bank-coverage), [Asia-Pacific guide](https://www.lunchflow.app/docs/guides/connections/regions/pacific-asia), and [Finverse institution directory](https://www.lunchflow.app/api/public/institutions?provider=Finverse) |
+| BankSync   | 5 live countries: Australia, Canada, New Zealand, UK, and US                                                                | [Live bank coverage](https://banksync.io/banks)                                                                                                                                                                                                                                               |
+
+BankSync's European connection guides describe EEA support, but its live coverage
+page explicitly marks the EEA as waitlisted. The catalog conservatively excludes
+those countries until live coverage is confirmed. Lunch Flow's regional guides
+explicitly exclude bank connections in Australia, India, and Switzerland; those
+countries are excluded even where brokerage accounts or international corporate
+bank portals appear in the coverage search. Asia-Pacific coverage uses the six
+markets with supported domestic banks in Lunch Flow's public Finverse directory.
+
 ## Endpoints
 
 All routes require the existing authenticated session. Connection IDs,

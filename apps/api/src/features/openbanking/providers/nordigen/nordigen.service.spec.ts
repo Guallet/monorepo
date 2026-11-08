@@ -9,6 +9,7 @@ const context = {
 function setup() {
   const client = {
     getToken: vi.fn().mockResolvedValue('token'),
+    getInstitutions: vi.fn().mockResolvedValue([]),
     getAuthorization: vi
       .fn()
       .mockResolvedValue({ status: 'LN', agreement: 'agreement' }),
@@ -48,6 +49,26 @@ function setup() {
 }
 
 describe('Nordigen consent state', () => {
+  it('loads institutions for supported countries', async () => {
+    const { service, client } = setup();
+    expect(
+      await service.getInstitutions({ ...context, country: 'GB' }),
+    ).toEqual([]);
+    expect(client.getInstitutions).toHaveBeenCalledWith('token', 'GB');
+  });
+
+  it.each(['US', 'AU', 'CH', 'XX'])(
+    'rejects unsupported country %s before contacting Nordigen',
+    async (country) => {
+      const { service, client } = setup();
+      await expect(
+        service.getInstitutions({ ...context, country }),
+      ).rejects.toThrow('Country is not supported by Nordigen');
+      expect(client.getToken).not.toHaveBeenCalled();
+      expect(client.getInstitutions).not.toHaveBeenCalled();
+    },
+  );
+
   it('derives expiry from the agreement rather than the callback deadline', async () => {
     const { service, authorizations } = setup();
     expect(await service.listAccounts(context)).toEqual([

@@ -61,7 +61,7 @@ export function BankAuthorizationForm({
         <Select
           label={t('openbanking.authorization.country', 'Country')}
           searchable
-          data={(provider.authorizationCountries ?? []).map((code) => ({
+          data={provider.supportedCountries.map((code) => ({
             value: code,
             label: names.of(code) ?? code,
           }))}

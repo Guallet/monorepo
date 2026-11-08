@@ -116,8 +116,11 @@ export class BankProviderDto {
   @ApiProperty()
   supportsBankAuthorization: boolean;
 
-  @ApiProperty({ type: [String], required: false })
-  authorizationCountries?: string[];
+  @ApiProperty({
+    type: [String],
+    description: 'Supported bank countries as ISO 3166-1 alpha-2 codes',
+  })
+  supportedCountries: string[];
 }
 
 export class BankConnectionDto {

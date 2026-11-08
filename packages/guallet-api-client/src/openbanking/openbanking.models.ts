@@ -11,7 +11,7 @@ export type BankProviderDto = {
   name: string;
   credentialFields: { name: keyof BankCredentials; secret: boolean }[];
   supportsBankAuthorization: boolean;
-  authorizationCountries?: string[];
+  supportedCountries: string[];
 };
 
 export type BankConnectionDto = {
