@@ -1,3 +1,5 @@
+import { Account } from '../accounts/entities/account.entity';
+import { ConnectedAccount } from './entities/connected-account.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,9 +24,15 @@ import { OPENBANKING_QUEUE } from './openbanking.jobs';
     LunchFlowModule,
     SynciModule,
     NordigenModule,
-    TypeOrmModule.forFeature([BankConnection, BankAuthorization]),
+    TypeOrmModule.forFeature([
+      BankConnection,
+      BankAuthorization,
+      ConnectedAccount,
+      Account,
+    ]),
     BullModule.registerQueue({ name: OPENBANKING_QUEUE }),
   ],
+  exports: [OpenbankingService],
   controllers: [OpenbankingController],
   providers: [BankProviderRegistry, OpenbankingService, OpenbankingProcessor],
 })

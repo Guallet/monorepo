@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
-import type { BankProviderId } from '../providers/bank-provider.interface';
+import type { BankProvider } from '../providers/bank-provider.interface';
 
 @Entity('connected_accounts')
 @Index(
@@ -34,7 +34,7 @@ export class ConnectedAccount extends BaseDbEntity {
   user: Relation<User>;
 
   @Column({ type: 'text' })
-  provider: BankProviderId;
+  provider: BankProvider;
 
   // BankSync uses the opaque [bankId, accountId] identifier shared by the API.
   @Column({ type: 'text' })

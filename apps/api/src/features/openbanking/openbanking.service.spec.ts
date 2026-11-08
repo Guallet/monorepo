@@ -79,6 +79,8 @@ function setup() {
     {} as never,
     jobs as never,
     notifications as never,
+    {} as never,
+    {} as never,
   );
   const data: BankJobData = {
     userId: 'user',

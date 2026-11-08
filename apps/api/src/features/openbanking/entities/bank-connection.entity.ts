@@ -10,7 +10,7 @@ import type { Relation } from 'typeorm';
 import { BaseDbEntity } from 'src/database/BaseDbEntity';
 import { User } from '../../users/entities/user.entity';
 import type {
-  BankProviderId,
+  BankProvider,
   ProviderAccount,
 } from '../providers/bank-provider.interface';
 import type { BankConnectionError } from '../models/bank-connection-state.model';
@@ -35,7 +35,7 @@ export class BankConnection extends BaseDbEntity {
   user: Relation<User>;
 
   @Column({ type: 'text' })
-  provider_id: BankProviderId;
+  provider_id: BankProvider;
 
   @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
   accounts: ProviderAccount[];

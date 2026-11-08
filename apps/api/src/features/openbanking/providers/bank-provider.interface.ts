@@ -7,19 +7,24 @@ export const BANK_PROVIDER_IDS = [
   'synci',
   'nordigen',
 ] as const;
-export type BankProviderId = (typeof BANK_PROVIDER_IDS)[number];
+
+export type BankProvider = (typeof BANK_PROVIDER_IDS)[number];
+
 export type ProviderCredentials = {
   apiKey?: string;
   secretId?: string;
   secretKey?: string;
 };
+
 export type ProviderIdentity = {
   userId: string;
   connectionId: string;
 };
+
 export type ProviderContext = ProviderIdentity & {
   credentials: ProviderCredentials;
 };
+
 export type ProviderAccount = {
   raw?: Record<string, unknown>;
   id: string;
@@ -34,30 +39,40 @@ export type ProviderAccount = {
   lastRefresh?: string | null;
   linkedAccountId: string | null;
 };
+
 export type ProviderInstitution = {
   id: string;
   name: string;
   logo: string | null;
 };
+
 export type SyncResult = {
   accountsSynced: number;
   errors: string[];
   newUncategorizedCount: number;
 };
+
 export interface BankProviderAdapter {
   validateCredentials(context: ProviderContext): Promise<void>;
+
   listAccounts(context: ProviderContext): Promise<ProviderAccount[]>;
+
   importAccounts(
     context: ProviderContext & { accountIds: string[] },
   ): Promise<string[]>;
+
   sync(context: ProviderContext): Promise<SyncResult>;
+
   unlinkAccount(
     context: ProviderIdentity & { accountId: string },
   ): Promise<void>;
+
   disconnect(context: ProviderIdentity): Promise<void>;
+
   getInstitutions?(
     context: ProviderContext & { country: string },
   ): Promise<ProviderInstitution[]>;
+
   authorize?(
     context: ProviderContext & {
       institutionId: string;
@@ -65,10 +80,12 @@ export interface BankProviderAdapter {
       reference: string;
     },
   ): Promise<{ remoteId: string; redirectUrl: string }>;
+
   completeAuthorization?(
     context: ProviderContext & { remoteId: string },
   ): Promise<string[]>;
 }
+
 export function requireApiKey(credentials: ProviderCredentials): string {
   if (
     !credentials.apiKey?.trim() ||
@@ -79,6 +96,7 @@ export function requireApiKey(credentials: ProviderCredentials): string {
   }
   return credentials.apiKey.trim();
 }
+
 export function requireNordigenCredentials(credentials: ProviderCredentials): {
   secretId: string;
   secretKey: string;

@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   BANK_PROVIDER_IDS,
-  BankProviderId,
+  BankProvider,
 } from '../../openbanking/providers/bank-provider.interface';
-import { AccountConnection } from '../models/account-connection.model';
+import { AccountConnection } from '../../openbanking/models/account-connection.model';
 import {
   BANK_CONNECTION_STATUSES,
   BankConnectionStatus,
@@ -14,7 +14,7 @@ export class AccountConnectionDto {
   id: string;
 
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
-  providerId: BankProviderId;
+  providerId: BankProvider;
 
   @ApiProperty({ description: 'Opaque provider account ID used for unlinking' })
   remoteAccountId: string;

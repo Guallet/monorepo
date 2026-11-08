@@ -37,7 +37,7 @@ import {
 } from './dto/account-charts.dto';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
-import { AccountConnectionsService } from './account-connections.service';
+import { OpenbankingService } from '../openbanking/openbanking.service';
 import { AccountConnectionDto } from './dto/account-connection.dto';
 import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
 import {
@@ -53,7 +53,7 @@ export class AccountsController {
   constructor(
     private readonly accountsService: AccountsService,
     private readonly transactionsService: TransactionsService,
-    private readonly accountConnectionsService: AccountConnectionsService,
+    private readonly openbankingService: OpenbankingService,
   ) {}
 
   @ApiOperation({ summary: 'getUserAccounts' })
@@ -118,10 +118,11 @@ export class AccountsController {
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
   ): Promise<AccountConnectionDto | Record<string, never>> {
-    const connection = await this.accountConnectionsService.getConnection(
-      user.id,
-      accountId,
-    );
+    const connection =
+      await this.openbankingService.getConnectionFoGualletAccount(
+        user.id,
+        accountId,
+      );
     if (!connection) return {};
     return AccountConnectionDto.fromDomain(connection);
   }

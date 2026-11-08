@@ -1,4 +1,4 @@
-import { BankProviderId } from '@guallet/api-client';
+import { BankProvider } from '@guallet/api-client';
 import {
   useBankAccounts,
   useBankConnections,
@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { BankAuthorizationForm } from '@/features/openbanking/components/BankAuthorizationForm';
 import { BankOperationStatus } from '@/features/openbanking/components/BankOperationStatus';
 interface StepBankImportProps {
-  providerId: BankProviderId;
+  providerId: BankProvider;
   onBack: () => void;
   onDone: () => void;
   onConfigure: () => void;

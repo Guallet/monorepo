@@ -1,4 +1,4 @@
-import { BankProviderId } from '@guallet/api-client';
+import { BankProvider } from '@guallet/api-client';
 import { useBankProviders } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
 import { Alert, Button, Stack, Text, ThemeIcon, Title } from '@mantine/core';
@@ -6,7 +6,7 @@ import { IconCloudDownload, IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { MethodCard } from './MethodCard';
 interface StepChooseMethodProps {
-  onChoose: (method: BankProviderId | 'manual') => void;
+  onChoose: (method: BankProvider | 'manual') => void;
 }
 export function StepChooseMethod({
   onChoose,

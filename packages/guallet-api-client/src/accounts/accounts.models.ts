@@ -1,4 +1,4 @@
-import type { BankProviderId } from '../openbanking/openbanking.models';
+import type { BankProvider } from '../openbanking/openbanking.models';
 
 export type AccountDto = {
   id: string;
@@ -25,7 +25,7 @@ export type AccountConnectionDto =
 
 export type AccountConnectionDetailsDto = {
   id: string;
-  providerId: BankProviderId;
+  providerId: BankProvider;
   remoteAccountId: string;
   lastRefresh: string | null;
   daysRemaining: number | null;

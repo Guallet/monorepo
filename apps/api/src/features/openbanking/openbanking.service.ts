@@ -1,3 +1,5 @@
+import { Account } from '../accounts/entities/account.entity';
+import type { AccountConnection } from './models/account-connection.model';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
 import {
@@ -26,7 +28,7 @@ import {
 } from './models/bank-connection-state.model';
 import { BankProviderRegistry } from './providers/bank-provider.registry';
 import {
-  BankProviderId,
+  BankProvider,
   ProviderContext,
   ProviderCredentials,
   requireApiKey,
@@ -46,6 +48,7 @@ import {
 } from './openbanking.jobs';
 
 type ConnectionOwner = { userId: string; id: string };
+
 @Injectable()
 export class OpenbankingService {
   private readonly logger = new Logger(OpenbankingService.name);
@@ -61,7 +64,97 @@ export class OpenbankingService {
       BankJobResultDto
     >,
     private readonly notifications: NotificationsService,
+    @InjectRepository(Account)
+    private readonly localAccounts: Repository<Account>,
+    @InjectRepository(ConnectedAccount)
+    private readonly connectedAccounts: Repository<ConnectedAccount>,
   ) {}
+
+  async getConnectionFoGualletAccount(
+    userId: string,
+    accountId: string,
+  ): Promise<AccountConnection | null> {
+    const account = await this.localAccounts.findOne({
+      where: { user_id: userId, id: accountId },
+      select: { id: true },
+    });
+    if (!account) throw new NotFoundException();
+
+    const where = {
+      user_id: userId,
+      guallet_account_id: accountId,
+      is_linked: true,
+    };
+    const links = await this.connectedAccounts.find({
+      where,
+      order: { created_at: 'ASC', id: 'ASC' },
+    });
+
+    for (const link of links) {
+      const providerId = link.provider;
+      const connection = await this.connections.findOne({
+        where: { user_id: userId, provider_id: providerId },
+        select: {
+          id: true,
+          provider_id: true,
+          accounts: true,
+          last_error: true,
+        },
+      });
+      if (!connection) continue;
+
+      const lastSyncedAt = link.last_synced_at;
+      const remoteAccountId = link.remote_account_id;
+
+      const cachedAccount = connection.accounts.find(
+        (account) => account.id === remoteAccountId,
+      );
+      const expiresAt = validDate(cachedAccount?.connectionExpiresAt);
+      const now = Date.now();
+      const providerStatus =
+        cachedAccount?.connectionStatus ??
+        connectionStatusFromProvider(cachedAccount?.status);
+      const expired =
+        providerStatus === 'expired' ||
+        (expiresAt !== null && expiresAt.getTime() <= now);
+      const hasError =
+        connection.last_error != null &&
+        (connection.last_error.accountIds === null ||
+          connection.last_error.accountIds.includes(remoteAccountId));
+      let status = providerStatus;
+      if (expired) {
+        status = 'expired';
+      } else if (hasError) {
+        status = 'connectionError';
+      }
+
+      let daysRemaining: number | null = null;
+      if (expired) {
+        daysRemaining = 0;
+      } else if (expiresAt) {
+        daysRemaining = Math.ceil((expiresAt.getTime() - now) / 86_400_000);
+      }
+      const refreshDates = [
+        validDate(cachedAccount?.lastRefresh),
+        validDate(lastSyncedAt),
+        validDate(link.created_at),
+      ].filter((date): date is Date => date !== null);
+      const lastRefresh = refreshDates.length
+        ? new Date(Math.max(...refreshDates.map((date) => date.getTime())))
+        : null;
+
+      return {
+        id: connection.id,
+        providerId,
+        remoteAccountId,
+        lastRefresh,
+        daysRemaining,
+        status,
+      };
+    }
+
+    return null;
+  }
 
   providers() {
     return this.registry.list();
@@ -80,6 +173,7 @@ export class OpenbankingService {
   async get(owner: ConnectionOwner): Promise<BankConnectionDto> {
     return this.toDto(await this.find(owner));
   }
+
   async create({
     userId,
     dto,
@@ -125,6 +219,7 @@ export class OpenbankingService {
       throw error;
     }
   }
+
   async replaceCredentials(
     owner: ConnectionOwner & { credentials: ProviderCredentials },
   ) {
@@ -146,6 +241,7 @@ export class OpenbankingService {
       return await this.toDto(connection, manager);
     });
   }
+
   async remove(owner: ConnectionOwner): Promise<void> {
     await this.locked(owner, async (connection, manager) => {
       await this.registry
@@ -161,6 +257,7 @@ export class OpenbankingService {
       });
     });
   }
+
   async accounts(owner: ConnectionOwner) {
     const connection = await this.find(owner);
     return {
@@ -177,6 +274,7 @@ export class OpenbankingService {
       refreshedAt: connection.accounts_refreshed_at,
     };
   }
+
   async unlink(owner: ConnectionOwner & { accountId: string }): Promise<void> {
     await this.locked(owner, async (connection, manager) => {
       await this.registry.get(connection.provider_id).unlinkAccount({
@@ -192,6 +290,7 @@ export class OpenbankingService {
       await manager.save(connection);
     });
   }
+
   async enqueue(
     owner: ConnectionOwner & {
       operation: BankJobOperation;
@@ -234,6 +333,7 @@ export class OpenbankingService {
     );
     return { jobId: job.id! };
   }
+
   async jobStatus(
     owner: ConnectionOwner & { jobId: string },
   ): Promise<BankJobStatusDto> {
@@ -264,6 +364,7 @@ export class OpenbankingService {
         : {}),
     };
   }
+
   async process(data: BankJobData): Promise<BankJobResultDto> {
     let newUncategorizedCount = 0;
     let providerOperationStarted = false;
@@ -416,6 +517,7 @@ export class OpenbankingService {
       }
     }
   }
+
   async institutions(owner: ConnectionOwner & { country: string }) {
     if (!/^[A-Z]{2}$/.test(owner.country))
       throw new BadRequestException('Use a two-letter country code');
@@ -431,6 +533,7 @@ export class OpenbankingService {
       });
     });
   }
+
   async authorize(owner: ConnectionOwner & { dto: AuthorizeBankRequestDto }) {
     const redirect = new URL(owner.dto.redirectUrl);
     const origins =
@@ -471,6 +574,7 @@ export class OpenbankingService {
       };
     });
   }
+
   async completeAuthorization(
     owner: ConnectionOwner & { authorizationId: string },
   ) {
@@ -498,6 +602,7 @@ export class OpenbankingService {
     });
     return await this.enqueue({ ...owner, operation: 'refresh' });
   }
+
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async syncAll(): Promise<void> {
     // System scheduler explicitly enumerates owners; every enqueued operation rechecks ownership.
@@ -517,6 +622,7 @@ export class OpenbankingService {
       }
     }
   }
+
   private async find({ id, userId }: ConnectionOwner) {
     const connection = await this.connections.findOne({
       where: { id, user_id: userId },
@@ -524,6 +630,7 @@ export class OpenbankingService {
     if (!connection) throw new NotFoundException();
     return connection;
   }
+
   private async locked<T>(
     { id, userId }: ConnectionOwner,
     operation: (
@@ -546,14 +653,16 @@ export class OpenbankingService {
       return await operation(connection, manager);
     });
   }
+
   private normalizeCredentials(
-    providerId: BankProviderId,
+    providerId: BankProvider,
     credentials: ProviderCredentials,
   ) {
     return providerId === 'nordigen'
       ? requireNordigenCredentials(credentials)
       : { apiKey: requireApiKey(credentials) };
   }
+
   private credentialOwner(connection: BankConnection): CredentialOwner {
     return {
       userId: connection.user_id,
@@ -600,6 +709,7 @@ export class OpenbankingService {
       credentialVersion: stored.version,
     };
   }
+
   private async toDto(
     connection: BankConnection,
     manager?: EntityManager,

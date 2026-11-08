@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
-import { AccountConnectionsService } from './account-connections.service';
+import { OpenbankingService } from '../openbanking/openbanking.service';
 import { TransactionsService } from '../transactions/transactions.service';
 
 describe('account chart HTTP query validation', () => {
@@ -22,7 +22,7 @@ describe('account chart HTTP query validation', () => {
       providers: [
         { provide: AccountsService, useValue: accounts },
         { provide: TransactionsService, useValue: transactions },
-        { provide: AccountConnectionsService, useValue: {} },
+        { provide: OpenbankingService, useValue: {} },
       ],
     }).compile();
     app = module.createNestApplication<INestApplication<Server>>({

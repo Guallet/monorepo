@@ -5,12 +5,12 @@ import request from 'supertest';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
-import { AccountConnectionsService } from './account-connections.service';
+import { OpenbankingService } from '../openbanking/openbanking.service';
 import { TransactionsService } from '../transactions/transactions.service';
 
 describe('account connection HTTP contract', () => {
   const accountId = '00000000-0000-4000-8000-000000000001';
-  const connections = { getConnection: vi.fn() };
+  const connections = { getConnectionFoGualletAccount: vi.fn() };
   let app: INestApplication<Server>;
 
   beforeAll(async () => {
@@ -19,7 +19,7 @@ describe('account connection HTTP contract', () => {
       providers: [
         { provide: AccountsService, useValue: {} },
         { provide: TransactionsService, useValue: {} },
-        { provide: AccountConnectionsService, useValue: connections },
+        { provide: OpenbankingService, useValue: connections },
       ],
     }).compile();
     app = module.createNestApplication<INestApplication<Server>>({
@@ -47,7 +47,7 @@ describe('account connection HTTP contract', () => {
         daysRemaining: null,
         status,
       };
-      connections.getConnection.mockResolvedValue({
+      connections.getConnectionFoGualletAccount.mockResolvedValue({
         ...expected,
         lastRefresh: new Date(expected.lastRefresh!),
       });
@@ -56,14 +56,14 @@ describe('account connection HTTP contract', () => {
         .expect(200);
       expect(response.body).toEqual(expected);
       expect(response.body).not.toHaveProperty('connection');
-      expect(connections.getConnection).toHaveBeenCalledWith(
+      expect(connections.getConnectionFoGualletAccount).toHaveBeenCalledWith(
         'owner',
         accountId,
       );
     },
   );
   it('returns an empty object for an unlinked account', async () => {
-    connections.getConnection.mockResolvedValue(null);
+    connections.getConnectionFoGualletAccount.mockResolvedValue(null);
     const response = await request(app.getHttpServer())
       .get(`/accounts/${accountId}/connection`)
       .expect(200);

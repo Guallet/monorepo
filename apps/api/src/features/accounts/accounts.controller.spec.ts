@@ -9,8 +9,8 @@ import { AccountSource } from './entities/accountSource.model';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { Transaction } from '../transactions/entities/transaction.entity';
-import { AccountConnectionsService } from './account-connections.service';
-import { AccountConnection } from './models/account-connection.model';
+import { OpenbankingService } from '../openbanking/openbanking.service';
+import { AccountConnection } from '../openbanking/models/account-connection.model';
 import { accountChartQuerySchema } from './dto/account-chart.query';
 
 describe('AccountsController', () => {
@@ -29,8 +29,8 @@ describe('AccountsController', () => {
     getAccountTransactionsSum: vi.fn(),
   };
 
-  const mockAccountConnectionsService = {
-    getConnection: vi.fn(),
+  const mockOpenbankingService = {
+    getConnectionFoGualletAccount: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -44,8 +44,8 @@ describe('AccountsController', () => {
       controllers: [AccountsController],
       providers: [
         {
-          provide: AccountConnectionsService,
-          useValue: mockAccountConnectionsService,
+          provide: OpenbankingService,
+          useValue: mockOpenbankingService,
         },
         {
           provide: AccountsService,
@@ -171,7 +171,9 @@ describe('AccountsController', () => {
 
   describe('getConnectedAccountDetails', () => {
     it('serializes disconnected accounts as an empty object', async () => {
-      mockAccountConnectionsService.getConnection.mockResolvedValue(null);
+      mockOpenbankingService.getConnectionFoGualletAccount.mockResolvedValue(
+        null,
+      );
 
       const response = await controller.getConnectedAccountDetails(
         mockUser,
@@ -179,10 +181,9 @@ describe('AccountsController', () => {
       );
 
       expect(JSON.stringify(response)).toBe('{}');
-      expect(mockAccountConnectionsService.getConnection).toHaveBeenCalledWith(
-        mockUser.id,
-        'account-1',
-      );
+      expect(
+        mockOpenbankingService.getConnectionFoGualletAccount,
+      ).toHaveBeenCalledWith(mockUser.id, 'account-1');
     });
 
     it('maps domain connection data to a response DTO', async () => {
@@ -195,7 +196,9 @@ describe('AccountsController', () => {
         daysRemaining: null,
         status: 'connected',
       };
-      mockAccountConnectionsService.getConnection.mockResolvedValue(connection);
+      mockOpenbankingService.getConnectionFoGualletAccount.mockResolvedValue(
+        connection,
+      );
 
       const response = await controller.getConnectedAccountDetails(
         mockUser,

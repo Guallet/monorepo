@@ -3,12 +3,12 @@ import { BankSyncService } from './banksync/banksync.service';
 import { LunchFlowService } from './lunchflow/lunchflow.service';
 import { SynciService } from './synci/synci.service';
 import { NordigenService } from './nordigen/nordigen.service';
-import { BankProviderAdapter, BankProviderId } from './bank-provider.interface';
+import { BankProviderAdapter, BankProvider } from './bank-provider.interface';
 import { BankProviderDto } from '../dto/openbanking.dto';
 
 @Injectable()
 export class BankProviderRegistry {
-  private readonly adapters: Record<BankProviderId, BankProviderAdapter>;
+  private readonly adapters: Record<BankProvider, BankProviderAdapter>;
   constructor(
     lunchflow: LunchFlowService,
     banksync: BankSyncService,
@@ -17,7 +17,7 @@ export class BankProviderRegistry {
   ) {
     this.adapters = { lunchflow, banksync, synci, nordigen };
   }
-  get(providerId: BankProviderId): BankProviderAdapter {
+  get(providerId: BankProvider): BankProviderAdapter {
     const adapter = Object.prototype.hasOwnProperty.call(
       this.adapters,
       providerId,

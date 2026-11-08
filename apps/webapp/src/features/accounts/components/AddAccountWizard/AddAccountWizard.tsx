@@ -1,7 +1,7 @@
 import { StepBankImport } from './StepBankImport';
 import {
   AccountTypeDto,
-  BankProviderId,
+  BankProvider,
   CreateAccountRequest,
 } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
@@ -39,7 +39,7 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
   const navigate = useNavigate();
   const defaultCurrency = useDefaultCurrency();
   const [step, setStep] = useState<WizardStep>('method');
-  const [providerId, setProviderId] = useState<BankProviderId | null>(null);
+  const [providerId, setProviderId] = useState<BankProvider | null>(null);
   const [createdAccountId, setCreatedAccountId] = useState<string | null>(null);
 
   const form = useForm<AddAccountFormData>({

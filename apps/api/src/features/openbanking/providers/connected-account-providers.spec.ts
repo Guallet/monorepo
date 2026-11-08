@@ -4,10 +4,10 @@ import { NordigenService } from './nordigen/nordigen.service';
 import { SynciService } from './synci/synci.service';
 import type {
   BankProviderAdapter,
-  BankProviderId,
+  BankProvider,
 } from './bank-provider.interface';
 
-function setup(provider: BankProviderId) {
+function setup(provider: BankProvider) {
   const links = {
     find: vi.fn().mockResolvedValue([]),
     update: vi.fn().mockResolvedValue({ affected: 1 }),
@@ -17,7 +17,7 @@ function setup(provider: BankProviderId) {
     getBanks: vi.fn().mockResolvedValue([]),
     getToken: vi.fn().mockResolvedValue('token'),
   };
-  const adapters: Record<BankProviderId, BankProviderAdapter> = {
+  const adapters: Record<BankProvider, BankProviderAdapter> = {
     banksync: new BankSyncService(
       links as never,
       {} as never,

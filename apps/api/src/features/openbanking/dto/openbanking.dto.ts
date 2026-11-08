@@ -17,7 +17,7 @@ import {
 } from 'class-validator';
 import {
   BANK_PROVIDER_IDS,
-  BankProviderId,
+  BankProvider,
 } from '../providers/bank-provider.interface';
 
 export class BankCredentialsRequestDto {
@@ -45,7 +45,7 @@ export class BankCredentialsRequestDto {
 export class CreateBankConnectionRequestDto {
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
   @IsIn(BANK_PROVIDER_IDS)
-  providerId: BankProviderId;
+  providerId: BankProvider;
 
   @ApiProperty({ type: () => BankCredentialsRequestDto })
   @IsDefined()
@@ -100,7 +100,7 @@ export class BankCredentialFieldDto {
 }
 export class BankProviderDto {
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
-  id: BankProviderId;
+  id: BankProvider;
 
   @ApiProperty()
   name: string;
@@ -118,7 +118,7 @@ export class BankConnectionDto {
   id: string;
 
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
-  providerId: BankProviderId;
+  providerId: BankProvider;
 
   @ApiProperty({ enum: ['configured'] })
   status: 'configured';
