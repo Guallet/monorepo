@@ -14,6 +14,7 @@ import {
 import { NordigenTransactionsDto } from './dto/nordigen-transaction.dto';
 
 const BASE_URL = 'https://bankaccountdata.gocardless.com/api/v2';
+
 @Injectable()
 export class NordigenClient {
   constructor(private readonly http: HttpService) {}
@@ -33,11 +34,13 @@ export class NordigenClient {
     );
     return token.access;
   }
+
   async getInstitutions(token: string, country: string) {
     return await this.request<
       Array<{ id: string; name: string; logo: string }>
     >('GET', `/institutions/?country=${encodeURIComponent(country)}`, token);
   }
+
   async authorize(
     token: string,
     institutionId: string,
@@ -55,6 +58,7 @@ export class NordigenClient {
       },
     );
   }
+
   async getAuthorization(token: string, id: string) {
     return await this.request<{
       status: string;
@@ -62,12 +66,14 @@ export class NordigenClient {
       agreement?: string;
     }>('GET', `/requisitions/${encodeURIComponent(id)}/`, token);
   }
+
   async getAgreement(token: string, id: string) {
     return await this.request<{
       accepted: string | null;
       access_valid_for_days: number;
     }>('GET', `/agreements/enduser/${encodeURIComponent(id)}/`, token);
   }
+
   async getDetails(token: string, id: string) {
     return await this.request<NordigenAccountDetailsDto>(
       'GET',
@@ -75,6 +81,7 @@ export class NordigenClient {
       token,
     );
   }
+
   async getBalances(token: string, id: string) {
     return (
       await this.request<NordigenAccountBalancesDto>(
@@ -84,6 +91,7 @@ export class NordigenClient {
       )
     ).balances;
   }
+
   async getTransactions(token: string, id: string) {
     return (
       await this.request<NordigenTransactionsDto>(
@@ -93,6 +101,7 @@ export class NordigenClient {
       )
     ).transactions.booked;
   }
+
   private async request<T>(
     method: 'GET' | 'POST',
     path: string,

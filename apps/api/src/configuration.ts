@@ -169,4 +169,5 @@ const configuration = (): AppConfig => {
     },
   };
 };
+
 export default configuration;

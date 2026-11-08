@@ -6,6 +6,7 @@ import { Transaction } from '../../../transactions/entities/transaction.entity';
 import { ConnectedAccount } from '../../entities/connected-account.entity';
 import { SynciClient } from './synci.client';
 import { SynciService } from './synci.service';
+
 @Module({
   imports: [
     HttpModule,

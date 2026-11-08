@@ -6,6 +6,7 @@ const context = {
   connectionId: 'connection',
   credentials: { apiKey: 'key' },
 };
+
 function setup() {
   const mappings = {
     find: vi.fn().mockResolvedValue([

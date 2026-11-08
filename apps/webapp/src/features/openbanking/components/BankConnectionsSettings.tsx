@@ -3,6 +3,7 @@ import { useTheme } from '@guallet/ui-react';
 import { Alert, Button, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { BankConnectionSettingsCard } from './BankConnectionSettingsCard';
+
 export function BankConnectionsSettings() {
   const { t } = useTranslation();
   const { spacing } = useTheme();

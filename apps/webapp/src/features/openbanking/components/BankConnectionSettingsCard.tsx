@@ -27,10 +27,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { BankOperationStatus } from './BankOperationStatus';
+
 interface BankConnectionSettingsCardProps {
   provider: BankProviderDto;
   connection?: BankConnectionDto;
 }
+
 export function BankConnectionSettingsCard({
   provider,
   connection,

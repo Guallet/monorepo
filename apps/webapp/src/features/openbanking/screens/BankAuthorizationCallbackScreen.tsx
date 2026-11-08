@@ -4,10 +4,12 @@ import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { BaseScreen } from '@/components/Screens/BaseScreen';
 import { BankOperationStatus } from '../components/BankOperationStatus';
+
 interface BankAuthorizationCallbackScreenProps {
   connectionId?: string;
   authorizationId?: string;
 }
+
 export function BankAuthorizationCallbackScreen({
   connectionId,
   authorizationId,

@@ -24,7 +24,9 @@ export class NordigenAccountBalanceDto {
   @ApiProperty({ required: false, type: String, format: 'date-time' })
   referenceDate?: Date;
 }
+
 type NordigenBalanceSchema = NordigenBalanceDto;
+
 export class NordigenBalanceDto {
   @ApiProperty()
   amount: string;

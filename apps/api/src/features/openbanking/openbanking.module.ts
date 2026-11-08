@@ -16,6 +16,7 @@ import { OpenbankingController } from './openbanking.controller';
 import { OpenbankingService } from './openbanking.service';
 import { OpenbankingProcessor } from './openbanking.processor';
 import { OPENBANKING_QUEUE } from './openbanking.jobs';
+
 @Module({
   imports: [
     UserCredentialsModule,

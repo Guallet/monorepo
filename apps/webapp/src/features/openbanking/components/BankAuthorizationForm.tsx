@@ -9,10 +9,12 @@ import { useForm } from '@mantine/form';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+
 interface BankAuthorizationFormProps {
   connectionId: string;
   provider: BankProviderDto;
 }
+
 export function BankAuthorizationForm({
   connectionId,
   provider,

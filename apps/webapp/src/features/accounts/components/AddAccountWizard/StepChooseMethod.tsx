@@ -5,9 +5,11 @@ import { Alert, Button, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { IconCloudDownload, IconPlus } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { MethodCard } from './MethodCard';
+
 interface StepChooseMethodProps {
   onChoose: (method: BankProvider | 'manual') => void;
 }
+
 export function StepChooseMethod({
   onChoose,
 }: Readonly<StepChooseMethodProps>) {

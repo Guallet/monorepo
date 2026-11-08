@@ -42,6 +42,7 @@ export class BankCredentialsRequestDto {
   @MaxLength(4096)
   secretKey?: string;
 }
+
 export class CreateBankConnectionRequestDto {
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
   @IsIn(BANK_PROVIDER_IDS)
@@ -54,6 +55,7 @@ export class CreateBankConnectionRequestDto {
   @Type(() => BankCredentialsRequestDto)
   credentials: BankCredentialsRequestDto;
 }
+
 export class ReplaceBankCredentialsRequestDto {
   @ApiProperty({ type: () => BankCredentialsRequestDto })
   @IsDefined()
@@ -62,6 +64,7 @@ export class ReplaceBankCredentialsRequestDto {
   @Type(() => BankCredentialsRequestDto)
   credentials: BankCredentialsRequestDto;
 }
+
 export class ImportBankAccountsRequestDto {
   @ApiProperty({ type: [String], maxItems: 100 })
   @IsArray()
@@ -73,6 +76,7 @@ export class ImportBankAccountsRequestDto {
   @MaxLength(1024, { each: true })
   accountIds: string[];
 }
+
 export class AuthorizeBankRequestDto {
   @ApiProperty()
   @IsString()
@@ -92,12 +96,14 @@ export class AuthorizeBankRequestDto {
   @MaxLength(2048)
   redirectUrl: string;
 }
+
 export class BankCredentialFieldDto {
   @ApiProperty({ enum: ['apiKey', 'secretId', 'secretKey'] })
   name: 'apiKey' | 'secretId' | 'secretKey';
   @ApiProperty()
   secret: boolean;
 }
+
 export class BankProviderDto {
   @ApiProperty({ enum: BANK_PROVIDER_IDS })
   id: BankProvider;
@@ -113,6 +119,7 @@ export class BankProviderDto {
   @ApiProperty({ type: [String], required: false })
   authorizationCountries?: string[];
 }
+
 export class BankConnectionDto {
   @ApiProperty({ format: 'uuid' })
   id: string;
@@ -132,6 +139,7 @@ export class BankConnectionDto {
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   lastSyncedAt: Date | null;
 }
+
 export class BankAccountDto {
   @ApiProperty({
     description:
@@ -160,6 +168,7 @@ export class BankAccountDto {
   @ApiProperty({ type: String, nullable: true, format: 'uuid' })
   linkedAccountId: string | null;
 }
+
 export class BankAccountsDto {
   @ApiProperty({ type: () => [BankAccountDto] })
   accounts: BankAccountDto[];
@@ -167,10 +176,12 @@ export class BankAccountsDto {
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   refreshedAt: Date | null;
 }
+
 export class BankJobAcceptedDto {
   @ApiProperty({ format: 'uuid' })
   jobId: string;
 }
+
 export class BankJobResultDto {
   @ApiProperty({ required: false })
   accountsDiscovered?: number;
@@ -184,6 +195,7 @@ export class BankJobResultDto {
   @ApiProperty({ required: false, type: [String] })
   errors?: string[];
 }
+
 export class BankJobStatusDto {
   @ApiProperty({ enum: ['queued', 'running', 'completed', 'failed'] })
   status: 'queued' | 'running' | 'completed' | 'failed';
@@ -197,6 +209,7 @@ export class BankJobStatusDto {
   @ApiProperty({ required: false })
   error?: string;
 }
+
 export class BankInstitutionDto {
   @ApiProperty()
   id: string;
@@ -207,6 +220,7 @@ export class BankInstitutionDto {
   @ApiProperty({ type: String, nullable: true })
   logo: string | null;
 }
+
 export class BankAuthorizationDto {
   @ApiProperty({ format: 'uuid' })
   id: string;

@@ -6,6 +6,7 @@ import { Transaction } from '../../../transactions/entities/transaction.entity';
 import { ConnectedAccount } from '../../entities/connected-account.entity';
 import { BankSyncClient } from './banksync.client';
 import { BankSyncService } from './banksync.service';
+
 @Module({
   imports: [
     HttpModule,

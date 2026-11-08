@@ -4,6 +4,7 @@ type NordigenTransactionGroupsSchema = NordigenTransactionGroupsDto;
 type TransactionAmountSchema = TransactionAmountDto;
 type ExternalAccountSchema = ExternalAccountDto;
 type CurrencyExchangeSchema = CurrencyExchangeDto;
+
 export class NordigenTransactionsDto {
   @ApiProperty({ type: () => NordigenTransactionGroupsDto })
   transactions: NordigenTransactionGroupsSchema;

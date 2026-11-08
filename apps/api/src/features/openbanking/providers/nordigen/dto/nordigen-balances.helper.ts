@@ -2,6 +2,7 @@ import {
   BalanceTypeDto,
   NordigenAccountBalanceDto,
 } from './nordigen-account.dto';
+
 export function getBalanceFrom(
   balances: NordigenAccountBalanceDto[],
 ): { amount: number; currency: string } | null {

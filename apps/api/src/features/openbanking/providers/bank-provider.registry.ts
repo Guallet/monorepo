@@ -9,6 +9,7 @@ import { BankProviderDto } from '../dto/openbanking.dto';
 @Injectable()
 export class BankProviderRegistry {
   private readonly adapters: Record<BankProvider, BankProviderAdapter>;
+
   constructor(
     lunchflow: LunchFlowService,
     banksync: BankSyncService,
@@ -17,6 +18,7 @@ export class BankProviderRegistry {
   ) {
     this.adapters = { lunchflow, banksync, synci, nordigen };
   }
+
   get(providerId: BankProvider): BankProviderAdapter {
     const adapter = Object.prototype.hasOwnProperty.call(
       this.adapters,
@@ -27,6 +29,7 @@ export class BankProviderRegistry {
     if (!adapter) throw new NotFoundException('Bank provider not found');
     return adapter;
   }
+
   list(): BankProviderDto[] {
     return [
       {

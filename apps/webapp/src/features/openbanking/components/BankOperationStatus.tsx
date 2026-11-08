@@ -1,12 +1,14 @@
 import { BankJobStatusDto } from '@guallet/api-client';
 import { Alert, Button, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
+
 interface BankOperationStatusProps {
   job?: BankJobStatusDto;
   busy: boolean;
   error: boolean;
   onRetry?: () => void;
 }
+
 export function BankOperationStatus({
   job,
   busy,

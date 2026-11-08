@@ -7,6 +7,7 @@ import { BankAuthorization } from '../../entities/bank-authorization.entity';
 import { ConnectedAccount } from '../../entities/connected-account.entity';
 import { NordigenClient } from './nordigen.client';
 import { NordigenService } from './nordigen.service';
+
 @Module({
   imports: [
     HttpModule,

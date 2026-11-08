@@ -7,6 +7,7 @@ import { useAccount } from '@guallet/api-react';
 interface AccountDetailsHeaderProps {
   accountId: string;
 }
+
 export function AccountDetailsHeader({
   accountId,
 }: Readonly<AccountDetailsHeaderProps>) {

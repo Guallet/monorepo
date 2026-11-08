@@ -40,15 +40,18 @@ export class NordigenService implements BankProviderAdapter {
     @InjectRepository(Transaction)
     private readonly transactions: Repository<Transaction>,
   ) {}
+
   async validateCredentials(context: ProviderContext): Promise<void> {
     await this.token(context);
   }
+
   async getInstitutions(context: ProviderContext & { country: string }) {
     return await this.client.getInstitutions(
       await this.token(context),
       context.country,
     );
   }
+
   async authorize(
     context: ProviderContext & {
       institutionId: string;
@@ -64,6 +67,7 @@ export class NordigenService implements BankProviderAdapter {
     );
     return { remoteId: result.id, redirectUrl: result.link };
   }
+
   async completeAuthorization(context: ProviderContext & { remoteId: string }) {
     const result = await this.client.getAuthorization(
       await this.token(context),
@@ -73,6 +77,7 @@ export class NordigenService implements BankProviderAdapter {
       throw new BadRequestException('Bank authorization is not complete');
     return result.accounts;
   }
+
   async listAccounts(context: ProviderContext) {
     const authorizations = await this.completedAuthorizations(context);
     const ids = [
@@ -168,6 +173,7 @@ export class NordigenService implements BankProviderAdapter {
       ];
     });
   }
+
   async importAccounts(
     context: ProviderContext & { accountIds: string[] },
   ): Promise<string[]> {
@@ -184,6 +190,7 @@ export class NordigenService implements BankProviderAdapter {
     }
     return imported;
   }
+
   async sync(context: ProviderContext) {
     const links = await this.links.find({
       where: { provider: 'nordigen', user_id: context.userId, is_linked: true },
@@ -210,6 +217,7 @@ export class NordigenService implements BankProviderAdapter {
     }
     return { accountsSynced, errors, newUncategorizedCount };
   }
+
   async unlinkAccount(
     context: ProviderIdentity & { accountId: string },
   ): Promise<void> {
@@ -223,17 +231,20 @@ export class NordigenService implements BankProviderAdapter {
     );
     if (!result.affected) throw new NotFoundException();
   }
+
   async disconnect(context: ProviderIdentity): Promise<void> {
     await this.links.update(
       { provider: 'nordigen', user_id: context.userId },
       { is_linked: false },
     );
   }
+
   private async token(context: ProviderContext) {
     return await this.client.getToken(
       requireNordigenCredentials(context.credentials),
     );
   }
+
   private async authorizedIds({ userId, connectionId }: ProviderContext) {
     const authorizations = await this.completedAuthorizations({
       userId,
@@ -241,6 +252,7 @@ export class NordigenService implements BankProviderAdapter {
     });
     return [...new Set(authorizations.flatMap((item) => item.account_ids))];
   }
+
   private async completedAuthorizations({
     userId,
     connectionId,
@@ -253,6 +265,7 @@ export class NordigenService implements BankProviderAdapter {
       },
     });
   }
+
   private async importAccount(
     userId: string,
     token: string,

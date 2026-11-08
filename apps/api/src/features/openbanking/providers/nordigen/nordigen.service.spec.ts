@@ -5,6 +5,7 @@ const context = {
   connectionId: 'connection',
   credentials: { secretId: 'id', secretKey: 'key' },
 };
+
 function setup() {
   const client = {
     getToken: vi.fn().mockResolvedValue('token'),
@@ -95,11 +96,9 @@ describe('Nordigen account names', () => {
     async (existing) => {
       const client = {
         getToken: vi.fn().mockResolvedValue('token'),
-        getDetails: vi
-          .fn()
-          .mockResolvedValue({
-            account: { name: 'Bank name', currency: 'GBP' },
-          }),
+        getDetails: vi.fn().mockResolvedValue({
+          account: { name: 'Bank name', currency: 'GBP' },
+        }),
         getBalances: vi.fn().mockResolvedValue([]),
         getTransactions: vi.fn().mockResolvedValue([]),
       };
@@ -108,20 +107,16 @@ describe('Nordigen account names', () => {
         findOne: vi.fn().mockResolvedValue(existing ? link : null),
         save: vi.fn().mockResolvedValue(link),
       };
-      const save = vi
-        .fn()
-        .mockImplementation(async (_entity, value) => ({
-          id: 'local',
-          ...value,
-        }));
+      const save = vi.fn().mockImplementation(async (_entity, value) => ({
+        id: 'local',
+        ...value,
+      }));
       const accounts = {
-        findOne: vi
-          .fn()
-          .mockResolvedValue({
-            id: 'local',
-            name: 'My savings',
-            currency: 'GBP',
-          }),
+        findOne: vi.fn().mockResolvedValue({
+          id: 'local',
+          name: 'My savings',
+          currency: 'GBP',
+        }),
         manager: {
           transaction: vi
             .fn()

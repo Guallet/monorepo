@@ -12,18 +12,24 @@ import {
   BankProviderDto,
   CreateBankConnectionRequest,
 } from './openbanking.models';
+
 const OPENBANKING_PATH = 'openbanking';
+
 export class OpenbankingApi {
   constructor(private readonly client: GualletClientImpl) {}
+
   getProviders(): Promise<BankProviderDto[]> {
     return this.client.get({ path: `${OPENBANKING_PATH}/providers` });
   }
+
   getConnections(): Promise<BankConnectionDto[]> {
     return this.client.get({ path: `${OPENBANKING_PATH}/connections` });
   }
+
   getConnection(id: string): Promise<BankConnectionDto> {
     return this.client.get({ path: this.path(id) });
   }
+
   createConnection(
     request: CreateBankConnectionRequest,
   ): Promise<BankConnectionDto> {
@@ -32,6 +38,7 @@ export class OpenbankingApi {
       payload: request,
     });
   }
+
   replaceCredentials(
     id: string,
     credentials: BankCredentials,
@@ -41,12 +48,15 @@ export class OpenbankingApi {
       payload: { credentials },
     });
   }
+
   deleteConnection(id: string): Promise<void> {
     return this.client.fetch_delete({ path: this.path(id) });
   }
+
   getAccounts(id: string): Promise<BankAccountsDto> {
     return this.client.get({ path: `${this.path(id)}/accounts` });
   }
+
   startOperation(
     id: string,
     operation: BankJobOperation,
@@ -58,6 +68,7 @@ export class OpenbankingApi {
       payload: operation === 'import' ? { accountIds } : {},
     });
   }
+
   getJob(
     id: string,
     jobId: string,
@@ -68,16 +79,19 @@ export class OpenbankingApi {
       options: { signal },
     });
   }
+
   unlinkAccount(id: string, accountId: string): Promise<void> {
     return this.client.fetch_delete({
       path: `${this.path(id)}/accounts/${encodeURIComponent(accountId)}/link`,
     });
   }
+
   getInstitutions(id: string, country: string): Promise<BankInstitutionDto[]> {
     return this.client.get({
       path: `${this.path(id)}/institutions?${new URLSearchParams({ country })}`,
     });
   }
+
   authorize(
     id: string,
     request: AuthorizeBankRequest,
@@ -87,6 +101,7 @@ export class OpenbankingApi {
       payload: request,
     });
   }
+
   completeAuthorization(
     id: string,
     authorizationId: string,
@@ -96,6 +111,7 @@ export class OpenbankingApi {
       payload: {},
     });
   }
+
   private path(id: string): string {
     return `${OPENBANKING_PATH}/connections/${encodeURIComponent(id)}`;
   }

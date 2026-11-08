@@ -6,6 +6,7 @@ import { Transaction } from '../../../transactions/entities/transaction.entity';
 import { ConnectedAccount } from '../../entities/connected-account.entity';
 import { LunchFlowClient } from './lunchflow.client';
 import { LunchFlowService } from './lunchflow.service';
+
 @Module({
   imports: [
     HttpModule,

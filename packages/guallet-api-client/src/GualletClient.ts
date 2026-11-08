@@ -35,6 +35,7 @@ export interface GualletClient {
 export interface CookieHelper {
   getCookie(): Promise<string | null> | string | null;
 }
+
 /**
  * Creates an instance of GualletClient.
  *

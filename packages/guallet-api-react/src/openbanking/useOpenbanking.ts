@@ -1,7 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useGualletClient } from '../GualletClientProvider';
+
 export const OPENBANKING_QUERY_KEY = 'openbanking';
+
 export function useBankProviders() {
   const client = useGualletClient();
   return useQuery({
@@ -10,6 +12,7 @@ export function useBankProviders() {
     staleTime: Infinity,
   });
 }
+
 export function useBankConnections() {
   const client = useGualletClient();
   return useQuery({
@@ -17,6 +20,7 @@ export function useBankConnections() {
     queryFn: () => client.openbanking.getConnections(),
   });
 }
+
 export function useBankAccounts(id?: string) {
   const client = useGualletClient();
   return useQuery({
@@ -25,6 +29,7 @@ export function useBankAccounts(id?: string) {
     enabled: Boolean(id),
   });
 }
+
 export function useBankInstitutions(id: string, country: string) {
   const client = useGualletClient();
   return useQuery({
@@ -34,6 +39,7 @@ export function useBankInstitutions(id: string, country: string) {
     staleTime: 3600_000,
   });
 }
+
 export function useBankJob(id?: string, jobId?: string) {
   const client = useGualletClient();
   const cache = useQueryClient();
