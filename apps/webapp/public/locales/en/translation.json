@@ -243,10 +243,8 @@
         },
         "chooseMethod": {
           "title": "Add an account",
-          "subtitle": "Choose how you'd like to connect your account",
           "manual": {
-            "title": "Add manually",
-            "desc": "Enter your account details by hand. Perfect for cash wallets, crypto, foreign accounts or any bank not yet supported."
+            "title": "Add manually"
           }
         },
         "fields": {
@@ -384,34 +382,50 @@
   },
   "common": {
     "back": "Back",
-    "loading": "Loading…",
     "retry": "Retry",
-    "done": "Done",
     "optional": "Optional",
     "continue": "Continue",
     "cancel": "Cancel",
+    "loading": "Loading…",
     "save": "Save"
   },
   "openbanking": {
-    "unlinkError": "Could not unlink the account. Please try again.",
-    "import": {
-      "title": "Import from {{provider}}",
-      "configure": "Add your provider credentials in Settings before importing bank accounts.",
-      "settings": "Open settings",
-      "help": "Refresh to find available accounts, then select the accounts to import. Linked accounts sync daily.",
-      "loadError": "Could not load accounts or start the operation. Please try again.",
-      "empty": "No accounts listed yet. Connect your banks with the provider, then refresh.",
-      "unavailable": "This account is unavailable. Check your bank consent or unlink it and authorize the bank again.",
-      "selected": "Import selected accounts",
-      "providerDescription": "Connect bank accounts using your own {{provider}} credentials."
-    },
     "loadError": "Could not load bank connections.",
-    "unlink": "Unlink",
-    "refresh": "Refresh accounts",
-    "providers": {
-      "error": "Could not load bank providers."
+    "import": {
+      "chooseAccounts": "Choose accounts",
+      "chooseHelp": "Choose which accounts to import into Guallet.",
+      "loadError": "Could not load accounts or start the operation. Please try again.",
+      "noAccounts": "No accounts found yet",
+      "empty": "No accounts listed yet. Connect your banks with the provider, then refresh.",
+      "alreadyLinked": "Already linked",
+      "unavailable": "This account is unavailable. Check your bank consent or unlink it and authorize the bank again.",
+      "viewAccounts": "View accounts",
+      "count_one": "Import {{count}} account",
+      "count_other": "Import {{count}} accounts",
+      "dailySync": "Linked accounts sync daily."
+    },
+    "credentials": {
+      "setup": "Set up {{provider}}",
+      "deleteError": "Could not disconnect. Please try again.",
+      "savedKey": "Saved key",
+      "hidden": "Hidden",
+      "noReveal": "Saved keys cannot be revealed.",
+      "newApiKey": "New API key",
+      "apiKey": "API key or personal access token",
+      "secretId": "Secret ID",
+      "secretKey": "Secret key",
+      "required": "Enter a valid credential.",
+      "saved": "Credentials validated and saved.",
+      "replacementHelp": "Your current key stays active until the replacement is validated.",
+      "help": "Use credentials from your own provider account. They are encrypted before being saved.",
+      "saveError": "Could not save credentials. Check your provider details and try again.",
+      "replace": "Validate and replace",
+      "continue": "Validate and continue",
+      "save": "Save and validate"
     },
     "authorization": {
+      "connectBank": "Connect a bank",
+      "redirectHelp": "Choose your bank, then authorise access on its website. You will return here to choose accounts.",
       "startError": "Could not start bank authorization. Please try again.",
       "country": "Country",
       "bank": "Bank",
@@ -423,24 +437,44 @@
       "incomplete": "Authorization could not be confirmed. Complete it with your bank, or start again.",
       "import": "Choose accounts to import"
     },
-    "credentials": {
-      "apiKey": "API key or personal access token",
-      "secretId": "Secret ID",
-      "secretKey": "Secret key",
-      "required": "Enter a valid credential.",
-      "saved": "Credentials validated and saved.",
-      "saveError": "Could not save credentials. Check your provider details and try again.",
-      "deleteError": "Could not disconnect. Please try again.",
-      "help": "Use credentials from your own provider account. They are encrypted before being saved.",
-      "configured": "Configured: ••••{{hint}}",
-      "save": "Save and validate"
+    "refresh": "Refresh accounts",
+    "connections": {
+      "manageAll": "Manage connections",
+      "empty": "No bank providers are available right now.",
+      "saved": "Credentials saved",
+      "provider": "Provider",
+      "credentials": "Credentials",
+      "accounts": "Accounts",
+      "notConfigured": "Not configured",
+      "lastSynced": "Last synced",
+      "neverSynced": "Not synced yet",
+      "manageProvider": "Manage {{provider}}",
+      "manage": "Manage",
+      "setUp": "Set up",
+      "addAccounts": "Add accounts",
+      "security": "Credentials are encrypted. Saved keys cannot be revealed.",
+      "linkedAccounts": "Linked accounts",
+      "accountsError": "Could not load linked accounts.",
+      "noLinkedAccounts": "No accounts imported yet. Choose Add accounts to get started.",
+      "title": "Connections",
+      "back": "Back to settings",
+      "description": "Manage the providers that connect your bank accounts."
+    },
+    "choose": {
+      "help": "Use a saved provider or set up a new one.",
+      "secret": "Set up with a secret ID and key",
+      "apiKey": "Set up with an API key",
+      "manualHelp": "For cash and accounts you track yourself."
+    },
+    "disconnect": {
+      "success": "Provider disconnected. Your imported data has been kept.",
+      "title": "Disconnect bank provider?",
+      "description": "Saved credentials will be deleted and syncing will stop. Imported accounts and transactions will remain in Guallet.",
+      "button": "Disconnect",
+      "provider": "Disconnect provider",
+      "summary": "Stops syncing. Imported accounts and transactions are kept."
     },
     "sync": "Sync now",
-    "disconnect": {
-      "button": "Disconnect",
-      "title": "Disconnect bank provider?",
-      "description": "Saved credentials will be deleted and syncing will stop. Imported accounts and transactions will remain in Guallet."
-    },
     "job": {
       "startError": "Could not start the operation. Please try again.",
       "requestError": "Could not check the operation. It may still be running.",
@@ -449,6 +483,10 @@
       "partial": "Some accounts could not be synced. Check their status with your provider and try again.",
       "completed": "Operation completed."
     },
+    "unlink": "Unlink",
+    "unlinkTitle": "Unlink this account?",
+    "unlinkDescription": "Syncing will stop for this account. Its imported transactions and account history will remain.",
+    "unlinkError": "Could not unlink the account. Please try again.",
     "settings": {
       "title": "Bank connections",
       "description": "Connect bank accounts using your own provider credentials."

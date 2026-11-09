@@ -5,12 +5,12 @@ import {
   CreateAccountRequest,
 } from '@guallet/api-client';
 import { useAccountMutations } from '@guallet/api-react';
-import { Box } from '@mantine/core';
+import { Card, Container } from '@mantine/core';
+import { useTheme } from '@guallet/ui-react';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useDefaultCurrency } from '@/hooks/useDefaultCurrency';
 import {
@@ -32,14 +32,22 @@ type WizardStep =
 
 interface AddAccountWizardProps {
   onDone: () => void;
+  initialProvider?: BankProvider;
 }
 
-export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
+export function AddAccountWizard({
+  onDone,
+  initialProvider,
+}: Readonly<AddAccountWizardProps>) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { spacing } = useTheme();
   const defaultCurrency = useDefaultCurrency();
-  const [step, setStep] = useState<WizardStep>('method');
-  const [providerId, setProviderId] = useState<BankProvider | null>(null);
+  const [step, setStep] = useState<WizardStep>(
+    initialProvider ? 'bank-accounts' : 'method',
+  );
+  const [providerId, setProviderId] = useState<BankProvider | null>(
+    initialProvider ?? null,
+  );
   const [createdAccountId, setCreatedAccountId] = useState<string | null>(null);
 
   const form = useForm<AddAccountFormData>({
@@ -131,50 +139,56 @@ export function AddAccountWizard({ onDone }: Readonly<AddAccountWizardProps>) {
   }
 
   return (
-    <Box maw={560} mx="auto">
-      {step === 'method' && (
-        <StepChooseMethod
-          onChoose={(method) => {
-            if (method === 'manual') setStep('m-type');
-            else {
-              setProviderId(method);
-              setStep('bank-accounts');
-            }
-          }}
-        />
-      )}
-      {step === 'm-type' && (
-        <StepManualType
-          value={form.values.account_type}
-          onChange={(type) => form.setFieldValue('account_type', type)}
-          onNext={() => setStep('m-details')}
-          onBack={() => setStep('method')}
-        />
-      )}
-      {step === 'm-details' && (
-        <StepManualDetails
-          form={form}
-          onNext={handleSaveAccount}
-          onBack={() => setStep('m-type')}
-        />
-      )}
-      {step === 'm-success' && (
-        <StepManualSuccess
-          form={form}
-          accountId={createdAccountId}
-          onDone={onDone}
-          onAddAnother={resetAndRestart}
-        />
-      )}
-      {step === 'bank-accounts' && providerId && (
-        <StepBankImport
-          key={providerId}
-          providerId={providerId}
-          onBack={() => setStep('method')}
-          onDone={onDone}
-          onConfigure={() => void navigate({ to: '/settings' })}
-        />
-      )}
-    </Box>
+    <Container size="sm" px={spacing.none}>
+      <Card
+        withBorder
+        shadow="sm"
+        radius="lg"
+        p={{ base: spacing.md, sm: spacing.lg }}
+      >
+        {step === 'method' && (
+          <StepChooseMethod
+            onChoose={(method) => {
+              if (method === 'manual') setStep('m-type');
+              else {
+                setProviderId(method);
+                setStep('bank-accounts');
+              }
+            }}
+          />
+        )}
+        {step === 'm-type' && (
+          <StepManualType
+            value={form.values.account_type}
+            onChange={(type) => form.setFieldValue('account_type', type)}
+            onNext={() => setStep('m-details')}
+            onBack={() => setStep('method')}
+          />
+        )}
+        {step === 'm-details' && (
+          <StepManualDetails
+            form={form}
+            onNext={handleSaveAccount}
+            onBack={() => setStep('m-type')}
+          />
+        )}
+        {step === 'm-success' && (
+          <StepManualSuccess
+            form={form}
+            accountId={createdAccountId}
+            onDone={onDone}
+            onAddAnother={resetAndRestart}
+          />
+        )}
+        {step === 'bank-accounts' && providerId && (
+          <StepBankImport
+            key={providerId}
+            providerId={providerId}
+            onBack={() => setStep('method')}
+            onDone={onDone}
+          />
+        )}
+      </Card>
+    </Container>
   );
 }

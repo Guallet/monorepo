@@ -2,39 +2,42 @@ import { BankProvider } from '@guallet/api-client';
 import {
   useBankAccounts,
   useBankConnections,
-  useBankConnectionMutations,
   useBankOperation,
   useBankProviders,
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
 import {
   Alert,
+  Anchor,
+  Badge,
   Button,
   Card,
   Checkbox,
+  Divider,
   Group,
+  Skeleton,
   Stack,
   Text,
   Title,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BankAuthorizationForm } from '@/features/openbanking/components/BankAuthorizationForm';
 import { BankOperationStatus } from '@/features/openbanking/components/BankOperationStatus';
+import { BankCredentialsForm } from '@/features/openbanking/components/BankCredentialsForm';
+import { BankConnectionProgress } from '@/features/openbanking/components/BankConnectionProgress';
 
 interface StepBankImportProps {
   providerId: BankProvider;
   onBack: () => void;
   onDone: () => void;
-  onConfigure: () => void;
 }
 
 export function StepBankImport({
   providerId,
   onBack,
   onDone,
-  onConfigure,
 }: Readonly<StepBankImportProps>) {
   const { t } = useTranslation();
   const { spacing } = useTheme();
@@ -46,79 +49,99 @@ export function StepBankImport({
   );
   const accounts = useBankAccounts(connection?.id);
   const operation = useBankOperation(connection?.id);
-  const { unlink } = useBankConnectionMutations();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const available = accounts.data?.accounts ?? [];
   const selected = selectedIds.filter((id) =>
-    available.some((account) => account.id === id && !account.linkedAccountId),
+    available.some(
+      (account) =>
+        account.id === id &&
+        !account.linkedAccountId &&
+        account.status !== 'unavailable',
+    ),
   );
-  async function unlinkAccount(accountId: string) {
-    if (!connection) return;
-    try {
-      await unlink.mutateAsync({ id: connection.id, accountId });
-    } catch {
-      notifications.show({
-        message: t(
-          'openbanking.unlinkError',
-          'Could not unlink the account. Please try again.',
-        ),
-        color: 'red',
-      });
-    }
-  }
-  return (
-    <Stack gap={spacing.md}>
-      <Title order={3}>
-        {t('openbanking.import.title', 'Import from {{provider}}', {
-          provider: provider?.name ?? providerId,
-        })}
-      </Title>
-      {(connections.isLoading || providers.isLoading) && (
-        <Text>{t('common.loading', 'Loading…')}</Text>
-      )}
-      {(connections.isError || providers.isError) && (
+  const locked = operation.busy || operation.job.isError;
+  const imported =
+    operation.job.data?.operation === 'import' &&
+    operation.job.data.status === 'completed' &&
+    !operation.job.data.result?.errors?.length;
+  if (providers.isLoading || connections.isLoading)
+    return <Skeleton height={spacing.xxl} />;
+  if (providers.isError || connections.isError || !provider)
+    return (
+      <Stack>
         <Alert color="red">
           {t('openbanking.loadError', 'Could not load bank connections.')}
           <Button
             variant="subtle"
             onClick={() => {
-              void connections.refetch();
               void providers.refetch();
+              void connections.refetch();
             }}
           >
             {t('common.retry', 'Retry')}
           </Button>
         </Alert>
-      )}
-      {!connections.isLoading && !connections.isError && !connection && (
-        <Alert>
-          <Text>
-            {t(
-              'openbanking.import.configure',
-              'Add your provider credentials in Settings before importing bank accounts.',
-            )}
+        <Button variant="outline" onClick={onBack}>
+          {t('common.back', 'Back')}
+        </Button>
+      </Stack>
+    );
+  return (
+    <Stack gap={spacing.lg}>
+      <Stack gap={spacing.xs}>
+        <Title order={2}>
+          {connection
+            ? t('openbanking.import.chooseAccounts', 'Choose accounts')
+            : t('openbanking.credentials.setup', 'Set up {{provider}}', {
+                provider: provider.name,
+              })}
+        </Title>
+        {connection && (
+          <Text c="dimmed" size="sm">
+            {provider.name}
           </Text>
-          <Button onClick={onConfigure}>
-            {t('openbanking.import.settings', 'Open settings')}
-          </Button>
-        </Alert>
-      )}
-      {connection && (
+        )}
+      </Stack>
+      <BankConnectionProgress active={connection ? 2 : 1} />
+      {!connection ? (
+        <BankCredentialsForm
+          provider={provider}
+          continueToAccounts
+          onSaved={() => {
+            void connections.refetch();
+          }}
+          onCancel={onBack}
+        />
+      ) : (
         <>
-          {provider?.supportsBankAuthorization && (
-            <BankAuthorizationForm
-              connectionId={connection.id}
-              provider={provider}
-            />
+          {provider.supportsBankAuthorization && (
+            <Card withBorder radius="lg" shadow="sm" p={spacing.md}>
+              <Stack gap={spacing.md}>
+                <Text fw={600}>
+                  {t('openbanking.authorization.connectBank', 'Connect a bank')}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  {t(
+                    'openbanking.authorization.redirectHelp',
+                    'Choose your bank, then authorise access on its website. You will return here to choose accounts.',
+                  )}
+                </Text>
+                <BankAuthorizationForm
+                  connectionId={connection.id}
+                  provider={provider}
+                  disabled={locked}
+                />
+              </Stack>
+            </Card>
           )}
           <Text size="sm" c="dimmed">
             {t(
-              'openbanking.import.help',
-              'Refresh to find available accounts, then select the accounts to import. Linked accounts sync daily.',
+              'openbanking.import.chooseHelp',
+              'Choose which accounts to import into Guallet.',
             )}
           </Text>
           {(accounts.isError || operation.start.isError) && (
-            <Alert color="red">
+            <Alert color="red" role="alert">
               {t(
                 'openbanking.import.loadError',
                 'Could not load accounts or start the operation. Please try again.',
@@ -128,93 +151,153 @@ export function StepBankImport({
               </Button>
             </Alert>
           )}
-          {accounts.isLoading && <Text>{t('common.loading', 'Loading…')}</Text>}
           <BankOperationStatus
             job={operation.job.data}
             busy={operation.busy}
             error={operation.job.isError}
             onRetry={() => void operation.job.refetch()}
           />
-          {available.length === 0 && !accounts.isLoading && (
-            <Text>
-              {t(
-                'openbanking.import.empty',
-                'No accounts listed yet. Connect your banks with the provider, then refresh.',
-              )}
-            </Text>
-          )}
-          <Checkbox.Group value={selected} onChange={setSelectedIds}>
-            <Stack gap={spacing.sm}>
-              {available.map((account) => (
-                <Card
-                  key={account.id}
-                  withBorder
-                  radius="lg"
-                  shadow="sm"
-                  padding={spacing.sm}
-                >
-                  <Group justify="space-between">
-                    <Checkbox
-                      value={account.id}
-                      label={account.name}
-                      description={[account.institutionName, account.currency]
-                        .filter(Boolean)
-                        .join(' · ')}
-                      disabled={
-                        Boolean(account.linkedAccountId) || operation.busy
-                      }
-                    />
-                    {account.linkedAccountId && (
-                      <Button
-                        variant="subtle"
-                        loading={unlink.isPending}
-                        disabled={operation.busy}
-                        onClick={() => void unlinkAccount(account.id)}
-                      >
-                        {t('openbanking.unlink', 'Unlink')}
-                      </Button>
-                    )}
-                  </Group>
-                  {account.status === 'unavailable' && (
-                    <Text size="sm" c="dimmed">
-                      {t(
-                        'openbanking.import.unavailable',
-                        'This account is unavailable. Check your bank consent or unlink it and authorize the bank again.',
-                      )}
-                    </Text>
+          {accounts.isLoading && <Skeleton height={spacing.xxl} />}
+          {!available.length && !accounts.isLoading && !accounts.isError && (
+            <Card withBorder radius="lg" shadow="sm" p={spacing.lg}>
+              <Stack gap={spacing.sm}>
+                <Text fw={600}>
+                  {t('openbanking.import.noAccounts', 'No accounts found yet')}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  {t(
+                    'openbanking.import.empty',
+                    'No accounts listed yet. Connect your banks with the provider, then refresh.',
                   )}
-                </Card>
-              ))}
-            </Stack>
-          </Checkbox.Group>
-          <Group>
+                </Text>
+              </Stack>
+            </Card>
+          )}
+          {available.length > 0 && (
+            <Card withBorder radius="lg" shadow="sm" p={spacing.none}>
+              <Stack gap={spacing.none}>
+                {available.map((account, index) => (
+                  <Stack key={account.id} gap={spacing.none}>
+                    {index > 0 && <Divider />}
+                    <Stack p={spacing.md} gap={spacing.sm}>
+                      <Group justify="space-between" wrap="nowrap">
+                        {account.linkedAccountId ? (
+                          <Checkbox
+                            checked
+                            disabled
+                            label={account.name}
+                            description={[
+                              account.institutionName,
+                              account.currency,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          />
+                        ) : (
+                          <Checkbox
+                            checked={selected.includes(account.id)}
+                            onChange={(event) =>
+                              setSelectedIds(
+                                event.currentTarget.checked
+                                  ? [...selected, account.id]
+                                  : selected.filter((id) => id !== account.id),
+                              )
+                            }
+                            label={account.name}
+                            description={[
+                              account.institutionName,
+                              account.currency,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                            disabled={
+                              locked || account.status === 'unavailable'
+                            }
+                          />
+                        )}
+                        {account.linkedAccountId && (
+                          <Badge
+                            variant="light"
+                            color="gray"
+                            style={{ flexShrink: 0 }}
+                          >
+                            {t(
+                              'openbanking.import.alreadyLinked',
+                              'Already linked',
+                            )}
+                          </Badge>
+                        )}
+                      </Group>
+                      {account.status === 'unavailable' && (
+                        <Text size="sm" c="dimmed">
+                          {t(
+                            'openbanking.import.unavailable',
+                            'This account is unavailable. Check your bank consent or unlink it and authorize the bank again.',
+                          )}
+                        </Text>
+                      )}
+                    </Stack>
+                  </Stack>
+                ))}
+              </Stack>
+            </Card>
+          )}
+          <Group justify="space-between">
             <Button
-              variant="outline"
-              loading={operation.busy}
+              variant="subtle"
+              loading={
+                operation.busy &&
+                operation.start.variables?.operation === 'refresh'
+              }
+              disabled={locked}
               onClick={() => operation.start.mutate({ operation: 'refresh' })}
             >
               {t('openbanking.refresh', 'Refresh accounts')}
             </Button>
-            <Button
-              disabled={!selected.length || operation.busy}
-              onClick={() =>
-                operation.start.mutate({
-                  operation: 'import',
-                  accountIds: selected,
-                })
-              }
-            >
-              {t('openbanking.import.selected', 'Import selected accounts')}
-            </Button>
+            <Anchor component={Link} to="/settings/connections" size="sm">
+              {t('openbanking.connections.manageAll', 'Manage connections')}
+            </Anchor>
           </Group>
+          <Group justify="space-between">
+            <Button variant="outline" onClick={onBack} disabled={locked}>
+              {t('common.back', 'Back')}
+            </Button>
+            {imported && !selected.length ? (
+              <Button onClick={onDone}>
+                {t('openbanking.import.viewAccounts', 'View accounts')}
+              </Button>
+            ) : (
+              <Button
+                disabled={
+                  !selected.length ||
+                  locked ||
+                  accounts.isError ||
+                  accounts.isFetching
+                }
+                loading={
+                  operation.busy &&
+                  operation.start.variables?.operation === 'import'
+                }
+                onClick={() =>
+                  operation.start.mutate({
+                    operation: 'import',
+                    accountIds: selected,
+                  })
+                }
+              >
+                {t('openbanking.import.count', {
+                  count: selected.length,
+                  defaultValue_one: 'Import {{count}} account',
+                  defaultValue_other: 'Import {{count}} accounts',
+                })}
+              </Button>
+            )}
+          </Group>
+          <Text size="sm" c="dimmed">
+            {t('openbanking.import.dailySync', 'Linked accounts sync daily.')}
+          </Text>
         </>
       )}
-      <Group justify="space-between">
-        <Button variant="outline" onClick={onBack}>
-          {t('common.back', 'Back')}
-        </Button>
-        <Button onClick={onDone}>{t('common.done', 'Done')}</Button>
-      </Group>
     </Stack>
   );
 }

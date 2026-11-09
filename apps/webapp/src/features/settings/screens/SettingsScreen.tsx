@@ -1,4 +1,3 @@
-import { BankConnectionsSettings } from '@/features/openbanking/components/BankConnectionsSettings';
 import {
   Box,
   Button,
@@ -124,9 +123,13 @@ export function SettingsScreen() {
             )}
             icon={<IconKey size={24} strokeWidth={1.5} />}
           >
-            <Box px={spacing.lg}>
-              <BankConnectionsSettings />
-            </Box>
+            <TextRow
+              label={t(
+                'openbanking.connections.manageAll',
+                'Manage connections',
+              )}
+              onClick={() => void navigate({ to: '/settings/connections' })}
+            />
           </SettingsSection>
 
           <SettingsSection

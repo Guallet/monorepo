@@ -13,11 +13,13 @@ import { z } from 'zod';
 interface BankAuthorizationFormProps {
   connectionId: string;
   provider: BankProviderDto;
+  disabled?: boolean;
 }
 
 export function BankAuthorizationForm({
   connectionId,
   provider,
+  disabled,
 }: Readonly<BankAuthorizationFormProps>) {
   const { t, i18n } = useTranslation();
   const { spacing } = useTheme();
@@ -34,6 +36,7 @@ export function BankAuthorizationForm({
   const { authorize } = useBankConnectionMutations();
   const names = new Intl.DisplayNames([i18n.language], { type: 'region' });
   async function connect(values: typeof form.values) {
+    if (disabled || authorize.isPending) return;
     try {
       const response = await authorize.mutateAsync({
         id: connectionId,
@@ -61,6 +64,8 @@ export function BankAuthorizationForm({
         <Select
           label={t('openbanking.authorization.country', 'Country')}
           searchable
+          disabled={disabled || authorize.isPending}
+          error={form.errors.country}
           data={provider.supportedCountries.map((code) => ({
             value: code,
             label: names.of(code) ?? code,
@@ -77,7 +82,12 @@ export function BankAuthorizationForm({
             value: bank.id,
             label: bank.name,
           }))}
-          disabled={institutions.isFetching || !form.values.country}
+          disabled={
+            disabled ||
+            authorize.isPending ||
+            institutions.isFetching ||
+            !form.values.country
+          }
           {...form.getInputProps('institutionId')}
         />
         {institutions.isError && (
@@ -94,7 +104,7 @@ export function BankAuthorizationForm({
         <Button
           type="submit"
           loading={authorize.isPending}
-          disabled={!form.values.institutionId}
+          disabled={disabled || !form.values.institutionId}
         >
           {t('openbanking.authorization.connect', 'Authorize a bank')}
         </Button>

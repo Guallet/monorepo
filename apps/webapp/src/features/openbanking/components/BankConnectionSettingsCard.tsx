@@ -1,120 +1,50 @@
-import {
-  BankConnectionDto,
-  BankCredentialsRequestDto,
-  BankProviderDto,
-} from '@guallet/api-client';
+import { BankConnectionDto, BankProviderDto } from '@guallet/api-client';
 import {
   useBankConnectionMutations,
   useBankOperation,
 } from '@guallet/api-react';
 import { useTheme } from '@guallet/ui-react';
-import {
-  Alert,
-  Button,
-  Card,
-  Group,
-  Modal,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { Alert, Button, Divider, Group, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
 import { BankOperationStatus } from './BankOperationStatus';
+import { BankCredentialsForm } from './BankCredentialsForm';
+import { LinkedBankAccounts } from './LinkedBankAccounts';
 
 interface BankConnectionSettingsCardProps {
   provider: BankProviderDto;
   connection?: BankConnectionDto;
+  onClose: () => void;
 }
 
 export function BankConnectionSettingsCard({
   provider,
   connection,
+  onClose,
 }: Readonly<BankConnectionSettingsCardProps>) {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
+  const { spacing, colors } = useTheme();
+  const navigate = useNavigate();
+  const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const mutations = useBankConnectionMutations();
   const operation = useBankOperation(connection?.id);
-  const labels = {
-    apiKey: t(
-      'openbanking.credentials.apiKey',
-      'API key or personal access token',
-    ),
-    secretId: t('openbanking.credentials.secretId', 'Secret ID'),
-    secretKey: t('openbanking.credentials.secretKey', 'Secret key'),
-  };
-  const schema = z
-    .object({ apiKey: z.string(), secretId: z.string(), secretKey: z.string() })
-    .superRefine((values, context) => {
-      for (const field of provider.credentialFields) {
-        if (!values[field.name].trim() || values[field.name].length > 4096)
-          context.addIssue({
-            code: 'custom',
-            path: [field.name],
-            message: t(
-              'openbanking.credentials.required',
-              'Enter a valid credential.',
-            ),
-          });
-      }
-    });
-  const form = useForm({
-    initialValues: { apiKey: '', secretId: '', secretKey: '' },
-    validate: zod4Resolver(schema),
-  });
-  const saving =
-    mutations.create.isPending || mutations.replaceCredentials.isPending;
-  async function save(values: typeof form.values) {
-    const credentials: BankCredentialsRequestDto = Object.fromEntries(
-      provider.credentialFields.map((field) => [
-        field.name,
-        values[field.name].trim(),
-      ]),
-    );
+  const locked =
+    operation.busy || operation.job.isError || mutations.remove.isPending;
+  async function disconnect() {
+    if (!connection || locked) return;
     try {
-      if (connection)
-        await mutations.replaceCredentials.mutateAsync({
-          id: connection.id,
-          credentials,
-        });
-      else
-        await mutations.create.mutateAsync({
-          providerId: provider.id,
-          credentials,
-        });
-      form.reset();
-      mutations.create.reset();
-      mutations.replaceCredentials.reset();
+      await mutations.remove.mutateAsync(connection.id);
       notifications.show({
         message: t(
-          'openbanking.credentials.saved',
-          'Credentials validated and saved.',
+          'openbanking.disconnect.success',
+          'Provider disconnected. Your imported data has been kept.',
         ),
         color: 'green',
       });
-    } catch {
-      notifications.show({
-        message: t(
-          'openbanking.credentials.saveError',
-          'Could not save credentials. Check your provider details and try again.',
-        ),
-        color: 'red',
-      });
-    }
-  }
-  async function disconnect() {
-    if (!connection) return;
-    try {
-      await mutations.remove.mutateAsync(connection.id);
-      setConfirmDelete(false);
-      operation.start.reset();
+      onClose();
     } catch {
       notifications.show({
         message: t(
@@ -126,117 +56,138 @@ export function BankConnectionSettingsCard({
     }
   }
   return (
-    <Card withBorder radius="lg" shadow="sm" padding={spacing.md}>
-      <Stack gap={spacing.md}>
-        <Title order={4}>{provider.name}</Title>
-        <Text size="sm" c="dimmed">
-          {t(
-            'openbanking.credentials.help',
-            'Use credentials from your own provider account. They are encrypted before being saved.',
-          )}
-        </Text>
-        {connection && (
-          <Text size="sm">
+    <Stack gap={spacing.lg}>
+      {connection && (
+        <Stack gap={spacing.xs}>
+          <Text size="sm" c={colors.support.dark}>
+            {t('openbanking.connections.saved', 'Credentials saved')}
+          </Text>
+          <Group justify="space-between">
+            <Text size="sm">
+              {t('openbanking.credentials.savedKey', 'Saved key')}
+            </Text>
+            <Text ff="monospace">
+              {connection.credentialHint
+                ? `••••${connection.credentialHint}`
+                : t('openbanking.credentials.hidden', 'Hidden')}
+            </Text>
+          </Group>
+          <Text size="sm" c="dimmed">
             {t(
-              'openbanking.credentials.configured',
-              'Configured: ••••{{hint}}',
-              { hint: connection.credentialHint ?? '' },
+              'openbanking.credentials.noReveal',
+              'Saved keys cannot be revealed.',
             )}
           </Text>
-        )}
-        <form onSubmit={form.onSubmit(save)}>
-          <Stack gap={spacing.sm}>
-            {provider.credentialFields.map((field) =>
-              field.secret ? (
-                <PasswordInput
-                  key={field.name}
-                  label={labels[field.name]}
-                  autoComplete="new-password"
-                  {...form.getInputProps(field.name)}
-                />
-              ) : (
-                <TextInput
-                  key={field.name}
-                  label={labels[field.name]}
-                  autoComplete="off"
-                  {...form.getInputProps(field.name)}
-                />
-              ),
-            )}
-            <Group>
-              <Button
-                type="submit"
-                loading={saving}
-                disabled={operation.busy || mutations.remove.isPending}
-              >
-                {t('openbanking.credentials.save', 'Save and validate')}
-              </Button>
-              {connection && (
-                <>
+        </Stack>
+      )}
+      <BankCredentialsForm
+        key={connection?.id ?? provider.id}
+        provider={provider}
+        connection={connection}
+        disabled={locked}
+        onSavingChange={setSaving}
+        onSaved={onClose}
+        onCancel={onClose}
+      />
+      {connection && (
+        <>
+          <Divider />
+          <Group>
+            <Button
+              variant="outline"
+              disabled={locked || saving}
+              onClick={() =>
+                void navigate({
+                  to: '/accounts/new',
+                  search: { provider: provider.id },
+                })
+              }
+            >
+              {t('openbanking.connections.addAccounts', 'Add accounts')}
+            </Button>
+            <Button
+              variant="outline"
+              loading={operation.busy}
+              disabled={locked || saving}
+              onClick={() => operation.start.mutate({ operation: 'sync' })}
+            >
+              {t('openbanking.sync', 'Sync now')}
+            </Button>
+          </Group>
+          {operation.start.isError && (
+            <Alert color="red" role="alert">
+              {t(
+                'openbanking.job.startError',
+                'Could not start the operation. Please try again.',
+              )}
+            </Alert>
+          )}
+          <BankOperationStatus
+            job={operation.job.data}
+            busy={operation.busy}
+            error={operation.job.isError}
+            onRetry={() => void operation.job.refetch()}
+          />
+          <LinkedBankAccounts
+            connectionId={connection.id}
+            disabled={locked || saving}
+          />
+          <Divider />
+          {confirmDelete ? (
+            <Alert
+              color="red"
+              title={t(
+                'openbanking.disconnect.title',
+                'Disconnect bank provider?',
+              )}
+            >
+              <Stack gap={spacing.md}>
+                <Text size="sm">
+                  {t(
+                    'openbanking.disconnect.description',
+                    'Saved credentials will be deleted and syncing will stop. Imported accounts and transactions will remain in Guallet.',
+                  )}
+                </Text>
+                <Group>
                   <Button
                     variant="outline"
-                    loading={operation.busy}
-                    disabled={saving}
-                    onClick={() =>
-                      operation.start.mutate({ operation: 'sync' })
-                    }
+                    disabled={mutations.remove.isPending}
+                    onClick={() => setConfirmDelete(false)}
                   >
-                    {t('openbanking.sync', 'Sync now')}
+                    {t('common.cancel', 'Cancel')}
                   </Button>
                   <Button
-                    variant="outline"
                     color="red"
-                    disabled={operation.busy || saving}
-                    onClick={() => setConfirmDelete(true)}
+                    loading={mutations.remove.isPending}
+                    disabled={operation.busy || operation.job.isError}
+                    onClick={() => void disconnect()}
                   >
                     {t('openbanking.disconnect.button', 'Disconnect')}
                   </Button>
-                </>
-              )}
-            </Group>
-          </Stack>
-        </form>
-        {operation.start.isError && (
-          <Alert color="red">
-            {t(
-              'openbanking.job.startError',
-              'Could not start the operation. Please try again.',
-            )}
-          </Alert>
-        )}
-        <BankOperationStatus
-          job={operation.job.data}
-          busy={operation.busy}
-          error={operation.job.isError}
-          onRetry={() => void operation.job.refetch()}
-        />
-      </Stack>
-      <Modal
-        opened={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        title={t('openbanking.disconnect.title', 'Disconnect bank provider?')}
-      >
-        <Stack gap={spacing.md}>
-          <Text>
-            {t(
-              'openbanking.disconnect.description',
-              'Saved credentials will be deleted and syncing will stop. Imported accounts and transactions will remain in Guallet.',
-            )}
-          </Text>
-          <Group justify="flex-end">
-            <Button variant="outline" onClick={() => setConfirmDelete(false)}>
-              {t('common.cancel', 'Cancel')}
-            </Button>
-            <Button
-              color="red"
-              loading={mutations.remove.isPending}
-              onClick={() => void disconnect()}
-            >
-              {t('openbanking.disconnect.button', 'Disconnect')}
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
-    </Card>
+                </Group>
+              </Stack>
+            </Alert>
+          ) : (
+            <Stack gap={spacing.sm}>
+              <Button
+                variant="outline"
+                color="red"
+                disabled={locked || saving}
+                onClick={() => setConfirmDelete(true)}
+                style={{ alignSelf: 'flex-start' }}
+              >
+                {t('openbanking.disconnect.provider', 'Disconnect provider')}
+              </Button>
+              <Text size="sm" c="dimmed">
+                {t(
+                  'openbanking.disconnect.summary',
+                  'Stops syncing. Imported accounts and transactions are kept.',
+                )}
+              </Text>
+            </Stack>
+          )}
+        </>
+      )}
+    </Stack>
   );
 }

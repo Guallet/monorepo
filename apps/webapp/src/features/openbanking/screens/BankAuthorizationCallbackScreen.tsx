@@ -1,4 +1,8 @@
-import { useBankConnectionMutations, useBankJob } from '@guallet/api-react';
+import {
+  useBankConnections,
+  useBankConnectionMutations,
+  useBankJob,
+} from '@guallet/api-react';
 import { Alert, Button, Stack, Text } from '@mantine/core';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +20,8 @@ export function BankAuthorizationCallbackScreen({
 }: Readonly<BankAuthorizationCallbackScreenProps>) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const connections = useBankConnections();
+  const connection = connections.data?.find((item) => item.id === connectionId);
   const { completeAuthorization } = useBankConnectionMutations();
   const job = useBankJob(connectionId, completeAuthorization.data?.jobId);
   const busy =
@@ -76,10 +82,24 @@ export function BankAuthorizationCallbackScreen({
         )}
         <Button
           variant="outline"
-          onClick={() => void navigate({ to: '/accounts/new' })}
+          disabled={busy || !connection || job.data?.status !== 'completed'}
+          onClick={() =>
+            void navigate({
+              to: '/accounts/new',
+              search: { provider: connection?.providerId },
+            })
+          }
         >
           {t('openbanking.authorization.import', 'Choose accounts to import')}
         </Button>
+        {(!connectionId || !authorizationId || connections.isError) && (
+          <Button
+            variant="subtle"
+            onClick={() => void navigate({ to: '/settings/connections' })}
+          >
+            {t('openbanking.connections.manageAll', 'Manage connections')}
+          </Button>
+        )}
       </Stack>
     </BaseScreen>
   );

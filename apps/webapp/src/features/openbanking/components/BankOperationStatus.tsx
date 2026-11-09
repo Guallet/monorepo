@@ -1,5 +1,5 @@
 import { BankJobStatusDto } from '@guallet/api-client';
-import { Alert, Button, Text } from '@mantine/core';
+import { Alert, Button, List, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 
 interface BankOperationStatusProps {
@@ -37,6 +37,7 @@ export function BankOperationStatus({
           'openbanking.job.failed',
           'The operation failed. Check your provider connection, then refresh and try again.',
         )}
+        {job.error && <Text size="sm">{job.error}</Text>}
       </Alert>
     );
   if (busy)
@@ -56,6 +57,11 @@ export function BankOperationStatus({
             'openbanking.job.partial',
             'Some accounts could not be synced. Check their status with your provider and try again.',
           )}
+          <List size="sm">
+            {job.result.errors.map((error, index) => (
+              <List.Item key={index}>{error}</List.Item>
+            ))}
+          </List>
         </Alert>
       );
     return (

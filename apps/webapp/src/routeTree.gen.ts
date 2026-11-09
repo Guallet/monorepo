@@ -41,6 +41,7 @@ import { Route as AppTransactionsCreateRouteImport } from './routes/_app/transac
 import { Route as AppSubscriptionsNewRouteImport } from './routes/_app/subscriptions/new'
 import { Route as AppSubscriptionsIdRouteImport } from './routes/_app/subscriptions/$id'
 import { Route as AppSettingsExportRouteImport } from './routes/_app/settings/export'
+import { Route as AppSettingsConnectionsRouteImport } from './routes/_app/settings/connections'
 import { Route as AppSettingsAiRouteImport } from './routes/_app/settings/ai'
 import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
@@ -271,6 +272,11 @@ const AppSettingsExportRoute = AppSettingsExportRouteImport.update({
   path: '/settings/export',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsConnectionsRoute = AppSettingsConnectionsRouteImport.update({
+  id: '/settings/connections',
+  path: '/settings/connections',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsAiRoute = AppSettingsAiRouteImport.update({
   id: '/settings/ai',
   path: '/settings/ai',
@@ -458,6 +464,7 @@ export interface FileRoutesByFullPath {
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/settings/ai': typeof AppSettingsAiRoute
+  '/settings/connections': typeof AppSettingsConnectionsRoute
   '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
@@ -526,6 +533,7 @@ export interface FileRoutesByTo {
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/settings/ai': typeof AppSettingsAiRoute
+  '/settings/connections': typeof AppSettingsConnectionsRoute
   '/settings/export': typeof AppSettingsExportRoute
   '/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/subscriptions/new': typeof AppSubscriptionsNewRoute
@@ -596,6 +604,7 @@ export interface FileRoutesById {
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/_app/settings/ai': typeof AppSettingsAiRoute
+  '/_app/settings/connections': typeof AppSettingsConnectionsRoute
   '/_app/settings/export': typeof AppSettingsExportRoute
   '/_app/subscriptions/$id': typeof AppSubscriptionsIdRoute
   '/_app/subscriptions/new': typeof AppSubscriptionsNewRoute
@@ -666,6 +675,7 @@ export interface FileRouteTypes {
     | '/saving-goals/$id'
     | '/saving-goals/new'
     | '/settings/ai'
+    | '/settings/connections'
     | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
@@ -734,6 +744,7 @@ export interface FileRouteTypes {
     | '/saving-goals/$id'
     | '/saving-goals/new'
     | '/settings/ai'
+    | '/settings/connections'
     | '/settings/export'
     | '/subscriptions/$id'
     | '/subscriptions/new'
@@ -803,6 +814,7 @@ export interface FileRouteTypes {
     | '/_app/saving-goals/$id'
     | '/_app/saving-goals/new'
     | '/_app/settings/ai'
+    | '/_app/settings/connections'
     | '/_app/settings/export'
     | '/_app/subscriptions/$id'
     | '/_app/subscriptions/new'
@@ -1117,6 +1129,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsExportRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/connections': {
+      id: '/_app/settings/connections'
+      path: '/settings/connections'
+      fullPath: '/settings/connections'
+      preLoaderRoute: typeof AppSettingsConnectionsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/settings/ai': {
       id: '/_app/settings/ai'
       path: '/settings/ai'
@@ -1350,6 +1369,7 @@ interface AppRouteChildren {
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
   AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
   AppSettingsAiRoute: typeof AppSettingsAiRoute
+  AppSettingsConnectionsRoute: typeof AppSettingsConnectionsRoute
   AppSettingsExportRoute: typeof AppSettingsExportRoute
   AppSubscriptionsIdRoute: typeof AppSubscriptionsIdRoute
   AppSubscriptionsNewRoute: typeof AppSubscriptionsNewRoute
@@ -1408,6 +1428,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
   AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
   AppSettingsAiRoute: AppSettingsAiRoute,
+  AppSettingsConnectionsRoute: AppSettingsConnectionsRoute,
   AppSettingsExportRoute: AppSettingsExportRoute,
   AppSubscriptionsIdRoute: AppSubscriptionsIdRoute,
   AppSubscriptionsNewRoute: AppSubscriptionsNewRoute,
