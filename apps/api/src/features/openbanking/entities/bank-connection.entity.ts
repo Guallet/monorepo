@@ -1,0 +1,51 @@
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import type { Relation } from 'typeorm';
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { User } from '../../users/entities/user.entity';
+import type {
+  BankProvider,
+  ProviderAccount,
+} from '../providers/bank-provider.interface';
+import type { BankConnectionError } from '../models/bank-connection-state.model';
+
+@Entity('bank_connections')
+@Index('bank_connections_owner_provider_unique', ['user_id', 'provider_id'], {
+  unique: true,
+})
+export class BankConnection extends BaseDbEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'text' })
+  user_id: string;
+
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'bank_connections_owner',
+  })
+  user: Relation<User>;
+
+  @Column({ type: 'text' })
+  provider_id: BankProvider;
+
+  @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
+  accounts: ProviderAccount[];
+
+  @Column({ type: 'timestamp', nullable: true })
+  accounts_refreshed_at: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  last_synced_at: Date | null;
+
+  @Column({ type: 'jsonb', nullable: true })
+  last_error: BankConnectionError | null;
+}

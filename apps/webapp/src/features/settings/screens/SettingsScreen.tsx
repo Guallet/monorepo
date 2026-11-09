@@ -116,6 +116,23 @@ export function SettingsScreen() {
           </SettingsSection>
 
           <SettingsSection
+            title={t('openbanking.settings.title', 'Bank connections')}
+            description={t(
+              'openbanking.settings.description',
+              'Connect bank accounts using your own provider credentials.',
+            )}
+            icon={<IconKey size={24} strokeWidth={1.5} />}
+          >
+            <TextRow
+              label={t(
+                'openbanking.connections.manageAll',
+                'Manage connections',
+              )}
+              onClick={() => void navigate({ to: '/settings/connections' })}
+            />
+          </SettingsSection>
+
+          <SettingsSection
             title={t('screens.settings.ai.title', 'AI')}
             description={t(
               'screens.settings.ai.description',

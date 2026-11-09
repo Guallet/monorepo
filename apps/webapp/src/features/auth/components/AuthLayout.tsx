@@ -120,7 +120,10 @@ export function AuthLayout({ children }: Readonly<AuthLayoutProps>) {
             </Box>
 
             {[
-              t('auth.layout.feature1', 'Open Banking sync — read-only'),
+              t(
+                'auth.layout.feature1',
+                'Connect with your own bank provider credentials',
+              ),
               t('auth.layout.feature2', 'Multi-currency, multi-account'),
               t('auth.layout.feature3', 'Self-host or secure cloud'),
             ].map((feature) => (

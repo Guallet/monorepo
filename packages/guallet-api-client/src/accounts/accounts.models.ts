@@ -1,3 +1,5 @@
+import type { BankProvider } from '../openbanking/openbanking.models';
+
 export type AccountDto = {
   id: string;
   name: string;
@@ -16,9 +18,14 @@ export type AccountDto = {
     | null;
 };
 
+/** Connection details returned for a linked account. */
 export type AccountConnectionDto = {
-  last_refreshed: Date;
-  status: string;
+  id: string;
+  providerId: BankProvider;
+  remoteAccountId: string;
+  lastRefresh: string | null;
+  daysRemaining: number | null;
+  status: 'connected' | 'expired' | 'connectionError';
 };
 
 export enum AccountTypeDto {
@@ -101,15 +108,6 @@ export interface LoanAccountProperties {
 export interface BalanceHistoryPoint {
   date: string;
   balance: number;
-}
-
-export interface ConnectedAccountDto {
-  id: string;
-  updated_at: string;
-}
-
-export interface ConnectedAccountResponseDto {
-  connectedAccount: ConnectedAccountDto;
 }
 
 export interface AccountChartsDto {

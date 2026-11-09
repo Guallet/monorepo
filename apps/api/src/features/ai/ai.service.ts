@@ -15,7 +15,7 @@ import { UpdateAiAgentDto } from './dto/update-ai-agent.dto';
 import { UpdateAiProviderConnectionDto } from './dto/update-ai-provider-connection.dto';
 import { AiAgent } from './entities/ai-agent.entity';
 import { AiProviderConnection } from './entities/ai-provider-connection.entity';
-import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
+import { UserCredentialsService } from 'src/features/user-credentials/user-credentials.service';
 import { AiProviderRegistryService } from './providers/ai-provider-registry.service';
 import { ProviderModelListError } from './providers/provider-model-list.error';
 

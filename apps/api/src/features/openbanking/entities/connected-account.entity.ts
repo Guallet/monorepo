@@ -1,0 +1,66 @@
+import { BaseDbEntity } from 'src/database/BaseDbEntity';
+import { Account } from '../../accounts/entities/account.entity';
+import { User } from '../../users/entities/user.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import type { Relation } from 'typeorm';
+import type { BankProvider } from '../providers/bank-provider.interface';
+
+@Entity('connected_accounts')
+@Index(
+  'connected_accounts_owner_provider_remote_unique',
+  ['user_id', 'provider', 'remote_account_id'],
+  { unique: true },
+)
+export class ConnectedAccount extends BaseDbEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'text' })
+  user_id: string;
+
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'connected_accounts_owner',
+  })
+  user: Relation<User>;
+
+  @Column({ type: 'text' })
+  provider: BankProvider;
+
+  // BankSync uses the opaque [bankId, accountId] identifier shared by the API.
+  @Column({ type: 'text' })
+  remote_account_id: string;
+
+  @Column({ type: 'text', nullable: true })
+  remote_connection_id: string | null;
+
+  @Column({ type: 'uuid' })
+  guallet_account_id: string;
+
+  @ManyToOne(() => Account, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({
+    name: 'guallet_account_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'connected_accounts_account',
+  })
+  account: Relation<Account>;
+
+  @Column({ type: 'boolean', default: true })
+  is_linked: boolean;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  last_synced_at: Date | null;
+
+  // Original provider account payload, including fields we do not normalize.
+  @Column({ type: 'jsonb', nullable: true, select: false })
+  raw: Record<string, unknown> | null;
+}

@@ -60,7 +60,7 @@ export function AccountsEmptyState({
           <Text size="sm" c="dimmed" maw={420} style={{ lineHeight: 1.6 }}>
             {t(
               'feature.accounts.list.emptyState.description',
-              "Track all your bank accounts, credit cards and savings in one place. Connect through open banking, or add an account manually if your provider isn't supported.",
+              'Track your bank accounts, credit cards and savings in one place. Import accounts from a supported provider with your own credentials, or add an account manually.',
             )}
           </Text>
           <Group justify="center" gap={spacing.xs} mt={spacing.md} wrap="wrap">

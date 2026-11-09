@@ -17,7 +17,6 @@ cp webapp.env.sample webapp.env
 
 # 2. Edit .env files and configure:
 #    - webapp.env: BETTER_AUTH_BASE_URL
-#    - api.env: NORDIGEN_SECRET_ID, NORDIGEN_SECRET_KEY
 #    - database.env: Change default passwords (optional for dev)
 
 # 3. Start all services
@@ -28,6 +27,8 @@ docker-compose up -d
 # - API: http://localhost:5000
 # - pgAdmin: http://localhost:5050
 ```
+
+Configure banking provider credentials in the signed-in user's settings.
 
 ## Default Credentials
 

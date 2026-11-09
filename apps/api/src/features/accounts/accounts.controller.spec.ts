@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
 import { TransactionsService } from '../transactions/transactions.service';
-import { OpenbankingService } from '../openbanking/openbanking.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { Account } from './entities/account.entity';
 import { AccountType } from './entities/accountType.model';
@@ -11,6 +9,9 @@ import { AccountSource } from './entities/accountSource.model';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
 import { Transaction } from '../transactions/entities/transaction.entity';
+import { OpenbankingService } from '../openbanking/openbanking.service';
+import { AccountConnection } from '../openbanking/models/account-connection.model';
+import { accountChartQuerySchema } from './dto/account-chart.query';
 
 describe('AccountsController', () => {
   let controller: AccountsController;
@@ -28,8 +29,8 @@ describe('AccountsController', () => {
     getAccountTransactionsSum: vi.fn(),
   };
 
-  const mockOpenBankingService = {
-    getLinkedAccount: vi.fn(),
+  const mockOpenbankingService = {
+    getConnectionFoGualletAccount: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -43,16 +44,16 @@ describe('AccountsController', () => {
       controllers: [AccountsController],
       providers: [
         {
+          provide: OpenbankingService,
+          useValue: mockOpenbankingService,
+        },
+        {
           provide: AccountsService,
           useValue: mockAccountsService,
         },
         {
           provide: TransactionsService,
           useValue: mockTransactionsService,
-        },
-        {
-          provide: OpenbankingService,
-          useValue: mockOpenBankingService,
         },
       ],
     }).compile();
@@ -168,6 +169,53 @@ describe('AccountsController', () => {
     });
   });
 
+  describe('getConnectedAccountDetails', () => {
+    it('serializes disconnected accounts as an empty object', async () => {
+      mockOpenbankingService.getConnectionFoGualletAccount.mockResolvedValue(
+        null,
+      );
+
+      const response = await controller.getConnectedAccountDetails(
+        mockUser,
+        'account-1',
+      );
+
+      expect(JSON.stringify(response)).toBe('{}');
+      expect(
+        mockOpenbankingService.getConnectionFoGualletAccount,
+      ).toHaveBeenCalledWith(mockUser.id, 'account-1');
+    });
+
+    it('maps domain connection data to a response DTO', async () => {
+      const lastRefresh = new Date('2026-11-07T10:00:00Z');
+      const connection: AccountConnection = {
+        id: 'connection-1',
+        providerId: 'synci',
+        remoteAccountId: 'remote-account',
+        lastRefresh,
+        daysRemaining: null,
+        status: 'connected',
+      };
+      mockOpenbankingService.getConnectionFoGualletAccount.mockResolvedValue(
+        connection,
+      );
+
+      const response = await controller.getConnectedAccountDetails(
+        mockUser,
+        'account-1',
+      );
+
+      expect(JSON.parse(JSON.stringify(response))).toEqual({
+        id: 'connection-1',
+        providerId: 'synci',
+        remoteAccountId: 'remote-account',
+        lastRefresh: lastRefresh.toISOString(),
+        daysRemaining: null,
+        status: 'connected',
+      });
+    });
+  });
+
   describe('getAccountTransactions', () => {
     it('should return transactions for current month', async () => {
       const accountId = 'account-1';
@@ -270,8 +318,10 @@ describe('AccountsController', () => {
       const result = await controller.getAccountChart(
         mockUser,
         accountId,
-        startDate.toISOString(),
-        endDate.toISOString(),
+        accountChartQuerySchema.parse({
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        }),
       );
 
       expect(result).toBeDefined();
@@ -352,142 +402,15 @@ describe('AccountsController', () => {
         0,
       );
 
-      const result = await controller.getAccountChart(mockUser, accountId);
+      const result = await controller.getAccountChart(
+        mockUser,
+        accountId,
+        accountChartQuerySchema.parse({}),
+      );
 
       expect(result.chart).toBeDefined();
       expect(result.chart.length).toBeGreaterThan(0);
       expect(result.balanceHistory).toBeDefined();
-    });
-
-    it('should throw BadRequestException for invalid date params', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Checking Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-
-      await expect(
-        controller.getAccountChart(mockUser, accountId, 'not-a-date'),
-      ).rejects.toThrow(BadRequestException);
-
-      expect(
-        mockTransactionsService.getAccountTransactions,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('should throw BadRequestException when startDate is after endDate', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Checking Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-
-      await expect(
-        controller.getAccountChart(
-          mockUser,
-          accountId,
-          '2026-04-30T00:00:00.000Z',
-          '2026-04-01T00:00:00.000Z',
-        ),
-      ).rejects.toThrow(BadRequestException);
-
-      expect(
-        mockTransactionsService.getAccountTransactions,
-      ).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('getConnectedAccountDetails', () => {
-    it('should return connected account details for synced account', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Connected Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-        source: AccountSource.SYNCED,
-      };
-
-      const mockConnectedAccount = {
-        id: 'ob-account-1',
-        accountId: accountId,
-        nordigenAccountId: 'nordigen-123',
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockOpenBankingService.getLinkedAccount.mockResolvedValue(
-        mockConnectedAccount,
-      );
-
-      const result = await controller.getConnectedAccountDetails(
-        mockUser,
-        accountId,
-      );
-
-      expect(result).toBeDefined();
-      expect(result.connectedAccount).toEqual(mockConnectedAccount);
-      expect(mockAccountsService.getUserAccount).toHaveBeenCalledWith(
-        mockUser.id,
-        accountId,
-      );
-      expect(mockOpenBankingService.getLinkedAccount).toHaveBeenCalledWith({
-        accountId: accountId,
-      });
-    });
-
-    it('should throw BadRequestException for non-synced account', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Manual Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-        source: AccountSource.MANUAL,
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-
-      await expect(
-        controller.getConnectedAccountDetails(mockUser, accountId),
-      ).rejects.toThrow(BadRequestException);
-
-      expect(mockOpenBankingService.getLinkedAccount).not.toHaveBeenCalled();
-    });
-
-    it('should throw NotFoundException when connected account not found', async () => {
-      const accountId = 'account-1';
-      const mockAccount: Partial<Account> = {
-        id: accountId,
-        user_id: mockUser.id,
-        name: 'Connected Account',
-        balance: 1000,
-        currency: 'GBP',
-        type: AccountType.CURRENT_ACCOUNT,
-        source: AccountSource.SYNCED,
-      };
-
-      mockAccountsService.getUserAccount.mockResolvedValue(mockAccount);
-      mockOpenBankingService.getLinkedAccount.mockResolvedValue(null);
-
-      await expect(
-        controller.getConnectedAccountDetails(mockUser, accountId),
-      ).rejects.toThrow(NotFoundException);
     });
   });
 

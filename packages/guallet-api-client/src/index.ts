@@ -1,6 +1,4 @@
-export * from './admin';
 export * from './accounts';
-export * from './connections';
 export * from './institutions';
 export * from './budgets';
 export * from './categories';
@@ -17,3 +15,4 @@ export * from './ai';
 
 export { ApiError, createClient } from './GualletClient';
 export type { CookieHelper, GualletClient } from './GualletClient';
+export * from './openbanking';

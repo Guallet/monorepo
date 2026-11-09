@@ -13,13 +13,9 @@ export class Institution extends BaseDbEntity {
   @Column({ nullable: true })
   image_src?: string;
 
-  // If this is not null, it's because the user created this manually. We need a UI to manage this from the user app
+  // If this is not null, it's because the user created this manually
   @Column({ nullable: true })
   user_id?: string;
-
-  // THIS IS BECAUSE NORDIGEN OPEN BANKING
-  @Column({ nullable: true, unique: true })
-  nordigen_id: string;
 
   @Column('simple-array', { nullable: true })
   countries: string[];

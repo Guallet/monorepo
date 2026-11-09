@@ -37,8 +37,6 @@ export const environmentSchema = z
     REDIS_PASSWORD: z.string().optional(),
     BETTER_AUTH_SECRET: z.string().min(1),
     BETTER_AUTH_BASE_URL: z.string().min(1),
-    NORDIGEN_SECRET_ID: z.string().min(1),
-    NORDIGEN_SECRET_KEY: z.string().min(1),
     DATABASE_CREDENTIALS_ENCRYPTION_KEY: z.string().min(1),
     NESTJS_OBSERVE_APP_KEY: z.string().optional(),
     NESTJS_OBSERVE_APP_SECRET: z.string().optional(),
@@ -79,11 +77,6 @@ export interface AuthConfig {
   };
 }
 
-export interface NordigenConfig {
-  secretId: string;
-  secretKey: string;
-}
-
 export interface RedisConfig {
   host: string;
   port: number;
@@ -117,7 +110,6 @@ export interface AppConfig {
   database: DatabaseConfig;
   logging: LoggingConfig;
   auth: AuthConfig;
-  nordigen: NordigenConfig;
   redis: RedisConfig;
   email: EmailConfig;
   userCredentials: UserCredentialsConfig;
@@ -151,10 +143,6 @@ const configuration = (): AppConfig => {
         },
       },
     },
-    nordigen: {
-      secretId: environment.NORDIGEN_SECRET_ID,
-      secretKey: environment.NORDIGEN_SECRET_KEY,
-    },
     redis: {
       host: environment.REDIS_HOST,
       port: environment.REDIS_PORT,
@@ -181,4 +169,5 @@ const configuration = (): AppConfig => {
     },
   };
 };
+
 export default configuration;

@@ -1,340 +1,722 @@
+import { Account } from '../accounts/entities/account.entity';
+import type { AccountConnection } from './models/account-connection.model';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { NordigenRequisitionDto } from 'src/features/nordigen/dto/nordigen-requisition.dto';
-import { ObConnection } from './entities/connection.entity';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NordigenService } from 'src/features/nordigen/nordigen.service';
-import { NordigenAccount } from './entities/nordigen-account.entity';
-import { Account } from 'src/features/accounts/entities/account.entity';
-import { getBalanceAmountFrom } from 'src/features/nordigen/dto/nordigen-balances.helper';
-import { getAccountTypeFrom } from 'src/features/nordigen/dto/ExternalCashAccountType1Code.helper';
-import { Institution } from 'src/features/institutions/entities/institution.entity';
-import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { supportedCountries } from './sync.service';
+import { InjectQueue } from '@nestjs/bullmq';
+import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { EntityManager, QueryFailedError, Repository } from 'typeorm';
+import { Queue } from 'bullmq';
+import { createHash, randomUUID } from 'node:crypto';
+import { UserCredentialsService } from 'src/features/user-credentials/user-credentials.service';
+import type { CredentialOwner } from 'src/features/user-credentials/types';
+import { AppConfig } from 'src/configuration';
+import { ConnectedAccount } from './entities/connected-account.entity';
+import { BankConnection } from './entities/bank-connection.entity';
+import { BankAuthorization } from './entities/bank-authorization.entity';
+import {
+  connectionStatusFromProvider,
+  validDate,
+} from './models/bank-connection-state.model';
+import { BankProviderRegistry } from './providers/bank-provider.registry';
+import {
+  BankProvider,
+  ProviderContext,
+  ProviderCredentials,
+  requireApiKey,
+  requireNordigenCredentials,
+} from './providers/bank-provider.interface';
+import type {
+  BankAccounts,
+  BankAuthorizationInput,
+  BankAuthorizationResult,
+  BankConnectionDetails,
+  CreateBankConnection,
+} from './models/openbanking.model';
+import {
+  BankJobData,
+  BankJobResult,
+  BankJobStatus,
+  BankJobAccepted,
+  BankJobOperation,
+  OPENBANKING_QUEUE,
+} from './openbanking.jobs';
+
+type ConnectionOwner = { userId: string; id: string };
 
 @Injectable()
 export class OpenbankingService {
   private readonly logger = new Logger(OpenbankingService.name);
 
   constructor(
-    @InjectRepository(ObConnection)
-    private readonly repository: Repository<ObConnection>,
-    @InjectRepository(NordigenAccount)
-    private readonly nordigenAccountsRepository: Repository<NordigenAccount>,
-    private readonly nordigenService: NordigenService,
-    // private nordigenAccountsRepository: NordigenAccountRepository,
+    @InjectRepository(BankConnection)
+    private readonly connections: Repository<BankConnection>,
+    private readonly registry: BankProviderRegistry,
+    private readonly userCredentials: UserCredentialsService,
+    private readonly config: ConfigService<AppConfig>,
+    @InjectQueue(OPENBANKING_QUEUE) private readonly jobs: Queue<
+      BankJobData,
+      BankJobResult
+    >,
+    private readonly notifications: NotificationsService,
     @InjectRepository(Account)
-    private readonly accountRepository: Repository<Account>,
-    @InjectRepository(Institution)
-    private readonly institutionRepository: Repository<Institution>,
-    @InjectRepository(Transaction)
-    private readonly transactionsRepository: Repository<Transaction>,
+    private readonly localAccounts: Repository<Account>,
+    @InjectRepository(ConnectedAccount)
+    private readonly connectedAccounts: Repository<ConnectedAccount>,
   ) {}
 
-  getAvailableCountries(locale: string) {
-    return supportedCountries.map((code) => {
-      const regionNames = new Intl.DisplayNames([locale], {
-        type: 'region',
-      });
-
-      return {
-        code: code,
-        name: regionNames.of(code),
-      };
+  async getConnectionFoGualletAccount(
+    userId: string,
+    accountId: string,
+  ): Promise<AccountConnection | null> {
+    const account = await this.localAccounts.findOne({
+      where: { user_id: userId, id: accountId },
+      select: { id: true },
     });
-  }
+    if (!account) throw new NotFoundException();
 
-  async deleteConnection(args: { user_id: string; connection_id: string }) {
-    const { user_id, connection_id } = args;
-    const connection = await this.repository.findOne({
-      where: {
-        user_id: user_id,
-        id: connection_id,
-      },
-    });
-
-    if (connection === null) {
-      throw new NotFoundException();
-    }
-
-    // TODO: Delete the OB accounts from the DB
-    const accountsToDelete = connection.accounts;
-    const deletedAccounts: string[] = [];
-    for (const accountId of accountsToDelete) {
-      await this.nordigenAccountsRepository.delete({
-        id: accountId,
-      });
-      deletedAccounts.push(accountId);
-    }
-
-    const removed = await this.repository.remove(connection);
-
-    return {
-      connection: removed,
-      accounts: deletedAccounts,
+    const where = {
+      user_id: userId,
+      guallet_account_id: accountId,
+      is_linked: true,
     };
-  }
-
-  async saveRequisition(user_id: string, dto: NordigenRequisitionDto) {
-    const connection = new ObConnection();
-    connection.id = dto.id;
-    connection.created = dto.created;
-    connection.redirect = dto.redirect;
-    connection.status = dto.status;
-    connection.institution_id = dto.institution_id;
-    connection.agreement = dto.agreement;
-    connection.reference = dto.reference;
-    connection.user_id = user_id;
-    connection.accounts = dto.accounts;
-    connection.user_language = dto.user_language;
-    connection.link = dto.link;
-    connection.ssn = dto.ssn;
-    connection.account_selection = dto.account_selection;
-    connection.redirect_immediate = dto.redirect_immediate;
-    await this.repository.save(connection);
-  }
-
-  async getConnections(user_id: string) {
-    return await this.repository.find({
-      where: {
-        user_id: user_id,
-      },
+    const links = await this.connectedAccounts.find({
+      where,
+      order: { created_at: 'ASC', id: 'ASC' },
     });
-  }
 
-  async connectToAccounts(userId: string, accountIds: string[]) {
-    try {
-      for (const accountId of accountIds) {
-        this.logger.log(`Syncing nordigen account: ${accountId}`);
-        await this.connectToAccount(userId, accountId);
-        this.logger.log(`Nordigen account synced: ${accountId}`);
-      }
-
-      return {
-        accounts_count: accountIds.length,
-      };
-    } catch (error) {
-      this.logger.error(`Error syncing accounts: ${String(error)}`);
-      throw new InternalServerErrorException();
-    }
-  }
-
-  // Should this method just deal with the "Nordigen Accounts" and
-  // leave the app accounts alone?
-  async connectToAccount(user_id: string, nordigen_accountId: string) {
-    // Get nordigen account metadata
-    // this.logger.debug(`Getting Account Metadata: ${nordigen_accountId}`);
-    const metadata =
-      await this.nordigenService.getAccountMetadata(nordigen_accountId);
-    // this.logger.debug(`Getting Account balances: ${nordigen_accountId}`);
-    const balances =
-      await this.nordigenService.getAccountBalance(nordigen_accountId);
-    // this.logger.debug(`Getting Account details: ${nordigen_accountId}`);
-    const details =
-      await this.nordigenService.getAccountDetails(nordigen_accountId);
-
-    // If there is an existing account linked to this nordigen account, don't create it again
-    const existingNordigenAccount =
-      await this.nordigenAccountsRepository.findOne({
-        where: {
-          resource_id: nordigen_accountId,
+    for (const link of links) {
+      const providerId = link.provider;
+      const connection = await this.connections.findOne({
+        where: { user_id: userId, provider_id: providerId },
+        select: {
+          id: true,
+          provider_id: true,
+          accounts: true,
+          last_error: true,
         },
       });
+      if (!connection) continue;
 
-    this.logger.debug(
-      `Existing Nordigen Account: ${existingNordigenAccount?.id}`,
+      const lastSyncedAt = link.last_synced_at;
+      const remoteAccountId = link.remote_account_id;
+
+      const cachedAccount = connection.accounts.find(
+        (account) => account.id === remoteAccountId,
+      );
+      const expiresAt = validDate(cachedAccount?.connectionExpiresAt);
+      const now = Date.now();
+      const providerStatus =
+        cachedAccount?.connectionStatus ??
+        connectionStatusFromProvider(cachedAccount?.status);
+      const expired =
+        providerStatus === 'expired' ||
+        (expiresAt !== null && expiresAt.getTime() <= now);
+      const hasError =
+        connection.last_error != null &&
+        (connection.last_error.accountIds === null ||
+          connection.last_error.accountIds.includes(remoteAccountId));
+      let status = providerStatus;
+      if (expired) {
+        status = 'expired';
+      } else if (hasError) {
+        status = 'connectionError';
+      }
+
+      let daysRemaining: number | null = null;
+      if (expired) {
+        daysRemaining = 0;
+      } else if (expiresAt) {
+        daysRemaining = Math.ceil((expiresAt.getTime() - now) / 86_400_000);
+      }
+      const refreshDates = [
+        validDate(cachedAccount?.lastRefresh),
+        validDate(lastSyncedAt),
+        validDate(link.created_at),
+      ].filter((date): date is Date => date !== null);
+      const lastRefresh = refreshDates.length
+        ? new Date(Math.max(...refreshDates.map((date) => date.getTime())))
+        : null;
+
+      return {
+        id: connection.id,
+        providerId,
+        remoteAccountId,
+        lastRefresh,
+        daysRemaining,
+        status,
+      };
+    }
+
+    return null;
+  }
+
+  providers() {
+    return this.registry.list();
+  }
+
+  async list({ userId }: { userId: string }): Promise<BankConnectionDetails[]> {
+    const connections = await this.connections.find({
+      where: { user_id: userId },
+      order: { created_at: 'ASC' },
+    });
+    return await Promise.all(
+      connections.map((connection) => this.connectionDetails(connection)),
     );
-    // If the nordigen account is null (is new) then create a new account first
-    let account = new Account();
-    account.user_id = user_id;
-    account.id = nordigen_accountId;
+  }
 
-    if (
-      existingNordigenAccount === null ||
-      existingNordigenAccount.linked_account_id === null
-    ) {
-      // Creates the app account
-      const tmpAccount = await this.accountRepository.findOne({
-        where: {
-          user_id: user_id,
-          id: nordigen_accountId,
-        },
-      });
-      if (tmpAccount !== null) {
-        this.logger.debug(
-          `Found existing app account ${tmpAccount.id} for nordigen id ${nordigen_accountId}`,
-        );
-        if (tmpAccount.id !== nordigen_accountId) {
-          throw new InternalServerErrorException(`Account id mismatch`);
-        }
-        account = tmpAccount;
-      } else {
-        // this.logger.debug(`Creating new app account`);
-        const appInstitution = await this.institutionRepository.findOne({
-          where: {
-            nordigen_id: metadata.institution_id,
-          },
-        });
-        if (appInstitution === null) {
-          throw new InternalServerErrorException(`Institution not found`);
-          // TODO: Force a sync with the server to get the latest institutions
-        }
+  async get(owner: ConnectionOwner): Promise<BankConnectionDetails> {
+    return this.connectionDetails(await this.find(owner));
+  }
 
-        account.user_id = user_id;
-        account.name =
-          details.name ??
-          details.details ??
-          details.ownerName ??
-          'Unknown Account';
-        account.currency = details.currency;
-        account.balance = getBalanceAmountFrom(balances);
-        account.institutionId = appInstitution.id;
-        account.type = getAccountTypeFrom(details.cashAccountType);
-      }
-
-      try {
-        // this.logger.debug(`Saving app account`, JSON.stringify(account));
-        account = await this.accountRepository.save(account);
-      } catch (error) {
-        this.logger.error(`Error saving app account`, error);
-        throw error;
-      }
-    }
-
-    // Creates or updates the nordigen account
-    const nordigenAccount = existingNordigenAccount ?? new NordigenAccount();
-    nordigenAccount.id = nordigen_accountId;
-    nordigenAccount.linked_account_id =
-      existingNordigenAccount?.linked_account_id ?? account.id;
-    nordigenAccount.resource_id = details.resourceId;
-    nordigenAccount.currency = details.currency;
-    nordigenAccount.institution_id = metadata.institution_id;
-    nordigenAccount.owner_name = details.ownerName;
-    nordigenAccount.cashAccountType = details.cashAccountType;
-    nordigenAccount.maskedPan = details.maskedPan;
-    nordigenAccount.details = details.details;
-    nordigenAccount.name = details.name;
-    nordigenAccount.bic = details.bic;
-    nordigenAccount.iban = details.iban;
-    nordigenAccount.status = details.status;
-    nordigenAccount.created = new Date();
-
-    // this.logger.debug(`Saving Nordigen Account`);
+  async create({
+    userId,
+    input,
+  }: {
+    userId: string;
+    input: CreateBankConnection;
+  }): Promise<BankConnectionDetails> {
+    const existing = await this.connections.findOne({
+      where: { user_id: userId, provider_id: input.providerId },
+    });
+    if (existing)
+      throw new ConflictException(
+        'A connection for this provider already exists',
+      );
+    const credentials = this.normalizeCredentials(
+      input.providerId,
+      input.credentials,
+    );
+    const id = randomUUID();
+    await this.registry
+      .get(input.providerId)
+      .validateCredentials({ userId, connectionId: id, credentials });
     try {
-      await this.nordigenAccountsRepository.save(nordigenAccount);
+      return await this.connections.manager.transaction(async (manager) => {
+        const connection = await manager.save(BankConnection, {
+          id,
+          user_id: userId,
+          provider_id: input.providerId,
+          accounts: [],
+        });
+        await this.saveCredentials(connection, credentials, manager);
+        return await this.connectionDetails(connection, manager);
+      });
     } catch (error) {
-      this.logger.error(`Error saving Nordigen Account`, error);
+      if (
+        error instanceof QueryFailedError &&
+        (error.driverError as { code?: string }).code === '23505'
+      ) {
+        throw new ConflictException(
+          'A connection for this provider already exists',
+        );
+      }
       throw error;
     }
+  }
 
-    // TODO: Trigger event to start syncing the account
-    // this.eventEmitter.emit(
-    //   ACCOUNT_ADDED,
-    //   new AccountCreatedEvent({
-    //     id: account.id,
-    //   }),
-    // );
+  async replaceCredentials(
+    owner: ConnectionOwner & { credentials: ProviderCredentials },
+  ) {
+    return await this.locked(owner, async (connection, manager) => {
+      const credentials = this.normalizeCredentials(
+        connection.provider_id,
+        owner.credentials,
+      );
+      await this.registry.get(connection.provider_id).validateCredentials({
+        userId: owner.userId,
+        connectionId: connection.id,
+        credentials,
+      });
+      await this.saveCredentials(connection, credentials, manager);
+      connection.accounts = [];
+      connection.accounts_refreshed_at = null;
+      connection.last_error = null;
+      await manager.save(connection);
+      return await this.connectionDetails(connection, manager);
+    });
+  }
 
+  async remove(owner: ConnectionOwner): Promise<void> {
+    await this.locked(owner, async (connection, manager) => {
+      await this.registry
+        .get(connection.provider_id)
+        .disconnect({ userId: owner.userId, connectionId: connection.id });
+      await this.userCredentials.removeCredentials(
+        this.credentialOwner(connection),
+        manager,
+      );
+      await manager.delete(BankConnection, {
+        id: connection.id,
+        user_id: owner.userId,
+      });
+    });
+  }
+
+  async accounts(owner: ConnectionOwner): Promise<BankAccounts> {
+    const connection = await this.find(owner);
     return {
-      account: account,
-      open_banking_account: nordigenAccount,
+      accounts: connection.accounts,
+      refreshedAt: connection.accounts_refreshed_at,
     };
   }
 
-  /**
-   * @deprecated The method should not be used as is no longer maintained. Use 'SyncService.syncNordigenAccount()' instead.
-   */
-  async syncAccountTransactions(accountId: string) {
-    this.logger.log(`Syncing Nordigen account ${accountId}`);
-    const nordigenAccount = await this.nordigenAccountsRepository.findOne({
-      where: {
-        id: accountId,
-      },
-    });
-
-    if (nordigenAccount === null) {
-      this.logger.error(`Nordigen Account with id '${accountId}' not found`);
-      throw new NotFoundException(`Account not found`);
-    }
-
-    const { linked_account_id } = nordigenAccount;
-    if (!linked_account_id) {
-      this.logger.error(
-        `Nordigen Account with id '${accountId}' doesn't have a linked account`,
-      );
-      throw new BadRequestException(`Invalid account state`);
-    }
-
-    const gualletAccount = await this.accountRepository.findOne({
-      where: {
-        id: linked_account_id,
-      },
-    });
-
-    if (gualletAccount === null) {
-      this.logger.error(`Account with id '${accountId}' not found`);
-      throw new NotFoundException(`Account mismatch: not found`);
-    }
-
-    try {
-      // Sync Account Details and metadata
-      const metadata = await this.nordigenService.getAccountMetadata(
-        nordigenAccount.id,
-      );
-      nordigenAccount.status = metadata.status;
-
-      // Sync the balances
-      const balances = await this.nordigenService.getAccountBalance(
-        nordigenAccount.id,
-      );
-      gualletAccount.balance = getBalanceAmountFrom(balances);
-      await this.accountRepository.save(gualletAccount);
-
-      // Sync the transactions
-      // TODO: As we know the last sync date, should we only sync the transactions since then?
-      const transactions = await this.nordigenService.getAccountTransactions(
-        nordigenAccount.id,
-      );
-
-      // Convert from NordigenTransaction to Guallet Transaction
-      const data = transactions.map((t) =>
-        Transaction.fromNordigenDto(linked_account_id, t),
-      );
-      await this.transactionsRepository.upsert(data, {
-        conflictPaths: ['externalId'],
-        skipUpdateIfNoValuesChanged: true,
+  async unlink(owner: ConnectionOwner & { accountId: string }): Promise<void> {
+    await this.locked(owner, async (connection, manager) => {
+      await this.registry.get(connection.provider_id).unlinkAccount({
+        userId: owner.userId,
+        connectionId: connection.id,
+        accountId: owner.accountId,
       });
+      connection.accounts = connection.accounts.map((account) =>
+        account.id === owner.accountId
+          ? { ...account, linkedAccountId: null }
+          : account,
+      );
+      await manager.save(connection);
+    });
+  }
 
-      // Update nordigen account
-      nordigenAccount.last_refreshed = new Date();
-      await this.nordigenAccountsRepository.save(nordigenAccount);
+  async enqueue(
+    owner: ConnectionOwner & {
+      operation: BankJobOperation;
+      accountIds?: string[];
+      notifyOnNewTransactions?: boolean;
+    },
+  ): Promise<BankJobAccepted> {
+    const connection = await this.find(owner);
+    const credential = await this.userCredentials.getCredentialMetadata(
+      this.credentialOwner(connection),
+    );
+    if (!credential)
+      throw new NotFoundException('Provider credentials not found');
+    const accountIds = owner.accountIds
+      ? [...new Set(owner.accountIds)].sort()
+      : undefined;
+    const selection = createHash('sha256')
+      .update(JSON.stringify(accountIds ?? []))
+      .digest('hex');
+    const job = await this.jobs.add(
+      owner.operation,
+      {
+        userId: owner.userId,
+        connectionId: connection.id,
+        credentialId: credential.id,
+        credentialVersion: credential.version,
+        operation: owner.operation,
+        accountIds,
+        notifyOnNewTransactions: owner.notifyOnNewTransactions,
+      },
+      {
+        jobId: randomUUID(),
+        deduplication: {
+          id: `${connection.id}_${credential.version}_${credential.id}_${owner.operation}_${selection}_${owner.notifyOnNewTransactions ? 'scheduled' : 'manual'}`,
+        },
+        removeOnComplete: { age: 86400, count: 1000 },
+        removeOnFail: { age: 86400, count: 1000 },
+        attempts: 1,
+      },
+    );
+    return { jobId: job.id! };
+  }
+
+  async jobStatus(
+    owner: ConnectionOwner & { jobId: string },
+  ): Promise<BankJobStatus> {
+    await this.find(owner);
+    const job = await this.jobs.getJob(owner.jobId);
+    if (
+      !job ||
+      job.data.userId !== owner.userId ||
+      job.data.connectionId !== owner.id
+    )
+      throw new NotFoundException();
+    const state = await job.getState();
+    let status: BankJobStatus['status'] = 'queued';
+    if (state === 'completed' || state === 'failed') {
+      status = state;
+    } else if (state === 'active') {
+      status = 'running';
+    }
+    return {
+      status,
+      operation: job.data.operation,
+      ...(status === 'completed' ? { result: job.returnvalue } : {}),
+      ...(status === 'failed'
+        ? {
+            error:
+              'The operation failed. Check your provider connection and try again.',
+          }
+        : {}),
+    };
+  }
+
+  async process(data: BankJobData): Promise<BankJobResult> {
+    let newUncategorizedCount = 0;
+    let providerOperationStarted = false;
+    let connectionUpdatedAt: Date | undefined;
+    let credentialOwner: CredentialOwner | undefined;
+    try {
+      return await this.locked(
+        { userId: data.userId, id: data.connectionId },
+        async (connection, manager) => {
+          credentialOwner = this.credentialOwner(connection);
+          const context = await this.context(connection, manager);
+          if (
+            context.credentialId !== data.credentialId ||
+            context.credentialVersion !== data.credentialVersion
+          )
+            throw new BadRequestException(
+              'Credentials changed; request a new operation',
+            );
+          const adapter = this.registry.get(connection.provider_id);
+          connectionUpdatedAt = connection.updated_at;
+          let result: BankJobResult;
+          if (data.operation === 'import') {
+            if (!data.accountIds?.length)
+              throw new BadRequestException('Select accounts to import');
+            const available = new Set(
+              connection.accounts.map((account) => account.id),
+            );
+            if (data.accountIds.some((id) => !available.has(id)))
+              throw new BadRequestException(
+                'Refresh available accounts before importing',
+              );
+            providerOperationStarted = true;
+            result = {
+              accountIds: await adapter.importAccounts({
+                ...context,
+                accountIds: data.accountIds,
+              }),
+            };
+          } else if (data.operation === 'sync') {
+            providerOperationStarted = true;
+            const syncResult = await adapter.sync(context);
+            newUncategorizedCount = syncResult.newUncategorizedCount;
+            result = {
+              accountsSynced: syncResult.accountsSynced,
+              errors: syncResult.errors,
+            };
+            if (!result.errors?.length) connection.last_synced_at = new Date();
+          } else {
+            result = {};
+          }
+          providerOperationStarted = true;
+          const previousAccounts = new Map(
+            connection.accounts.map((account) => [account.id, account]),
+          );
+          const discovered = await adapter.listAccounts(context);
+          const refreshedAt = new Date();
+          const failedIds = new Set(result.errors ?? []);
+          connection.accounts = discovered.map((account) => {
+            const metadata = { ...account };
+            delete metadata.raw;
+            const previous = previousAccounts.get(account.id);
+            const status =
+              account.connectionStatus ??
+              connectionStatusFromProvider(account.status);
+            const connectionExpiresAt =
+              account.connectionExpiresAt === undefined
+                ? previous?.connectionExpiresAt
+                : account.connectionExpiresAt;
+            const expiresAt = validDate(connectionExpiresAt);
+            const expired =
+              status === 'expired' ||
+              (expiresAt !== null && expiresAt <= refreshedAt);
+            const successful =
+              status === 'connected' && !expired && !failedIds.has(account.id);
+            return {
+              ...metadata,
+              connectionStatus: expired ? 'expired' : status,
+              connectionExpiresAt,
+              lastRefresh: successful
+                ? refreshedAt.toISOString()
+                : (previous?.lastRefresh ?? account.lastRefresh ?? null),
+            };
+          });
+          connection.accounts_refreshed_at = refreshedAt;
+          connection.last_error = failedIds.size
+            ? { accountIds: [...failedIds] }
+            : null;
+          if (data.operation === 'refresh')
+            result.accountsDiscovered = connection.accounts.length;
+          for (const account of discovered) {
+            if (account.raw !== undefined) {
+              await manager
+                .createQueryBuilder()
+                .update(ConnectedAccount)
+                .set({ raw: () => ':raw' })
+                .where({
+                  user_id: connection.user_id,
+                  provider: connection.provider_id,
+                  remote_account_id: account.id,
+                })
+                .andWhere('deleted_at IS NULL')
+                .setParameter('raw', JSON.stringify(account.raw))
+                .execute();
+            }
+          }
+          await manager.save(connection);
+          return result;
+        },
+      );
     } catch (error) {
-      this.logger.error(`Error syncing account`, error);
+      if (providerOperationStarted) {
+        try {
+          const current = credentialOwner
+            ? await this.userCredentials.getCredentialMetadata(credentialOwner)
+            : null;
+          if (
+            current?.id === data.credentialId &&
+            current.version === data.credentialVersion
+          ) {
+            await this.connections.update(
+              {
+                id: data.connectionId,
+                user_id: data.userId,
+                updated_at: connectionUpdatedAt,
+              },
+              { last_error: { accountIds: null } },
+            );
+          }
+        } catch {
+          this.logger.warn('Could not record bank connection failure');
+        }
+      }
       throw error;
+    } finally {
+      // Adapter writes have committed independently, even if discovery fails.
+      if (data.notifyOnNewTransactions && newUncategorizedCount > 0) {
+        try {
+          await this.notifications.createSystemNotification({
+            userId: data.userId,
+            message: `You have ${newUncategorizedCount} new transactions to categorize`,
+            icon: '👆',
+            type: NotificationType.ACTION_REQUIRED,
+            action: '/transactions/inbox',
+          });
+        } catch {
+          this.logger.warn(
+            'Could not send bank sync categorization notification',
+          );
+        }
+      }
     }
   }
 
-  async getLinkedAccount({
-    accountId,
-  }: {
-    accountId: string;
-  }): Promise<NordigenAccount> {
-    const nordigenAccount = await this.nordigenAccountsRepository.findOne({
-      where: {
-        linked_account_id: accountId,
-      },
+  async institutions(owner: ConnectionOwner & { country: string }) {
+    if (!/^[A-Z]{2}$/.test(owner.country))
+      throw new BadRequestException('Use a two-letter country code');
+    return await this.locked(owner, async (connection, manager) => {
+      const adapter = this.registry.get(connection.provider_id);
+      if (!adapter.getInstitutions)
+        throw new BadRequestException(
+          'This provider manages bank authorization externally',
+        );
+      return await adapter.getInstitutions({
+        ...(await this.context(connection, manager)),
+        country: owner.country,
+      });
     });
+  }
 
-    if (nordigenAccount === null) {
-      throw new NotFoundException(`No linked open banking account found`);
+  async authorize(
+    owner: ConnectionOwner & { input: BankAuthorizationInput },
+  ): Promise<BankAuthorizationResult> {
+    const redirect = new URL(owner.input.redirectUrl);
+    const origins =
+      this.config.get('auth.allowedOrigins', { infer: true }) ?? [];
+    if (
+      redirect.username ||
+      redirect.password ||
+      !origins.some((origin) => origin.trim() === redirect.origin)
+    )
+      throw new BadRequestException('Callback origin is not allowed');
+    return await this.locked(owner, async (connection, manager) => {
+      const adapter = this.registry.get(connection.provider_id);
+      if (!adapter.authorize)
+        throw new BadRequestException(
+          'This provider manages bank authorization externally',
+        );
+      const id = randomUUID();
+      redirect.searchParams.set('connectionId', connection.id);
+      redirect.searchParams.set('authorizationId', id);
+      const result = await adapter.authorize({
+        ...(await this.context(connection, manager)),
+        institutionId: owner.input.institutionId,
+        redirectUrl: redirect.toString(),
+        reference: id,
+      });
+      await manager.save(BankAuthorization, {
+        id,
+        user_id: owner.userId,
+        connection_id: connection.id,
+        remote_id: result.remoteId,
+        account_ids: [],
+        expires_at: new Date(Date.now() + 60 * 60 * 1000),
+      });
+      return {
+        id,
+        action: 'redirect' as const,
+        redirectUrl: result.redirectUrl,
+      };
+    });
+  }
+
+  async completeAuthorization(
+    owner: ConnectionOwner & { authorizationId: string },
+  ) {
+    await this.locked(owner, async (connection, manager) => {
+      const authorization = await manager.findOne(BankAuthorization, {
+        where: {
+          id: owner.authorizationId,
+          connection_id: owner.id,
+          user_id: owner.userId,
+        },
+      });
+      if (!authorization) throw new NotFoundException();
+      if (authorization.completed_at) return;
+      if (authorization.expires_at.getTime() < Date.now())
+        throw new BadRequestException('Authorization expired; start again');
+      const adapter = this.registry.get(connection.provider_id);
+      if (!adapter.completeAuthorization)
+        throw new BadRequestException('Authorization is not supported');
+      authorization.account_ids = await adapter.completeAuthorization({
+        ...(await this.context(connection, manager)),
+        remoteId: authorization.remote_id,
+      });
+      authorization.completed_at = new Date();
+      await manager.save(authorization);
+    });
+    return await this.enqueue({ ...owner, operation: 'refresh' });
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  async syncAll(): Promise<void> {
+    // System scheduler explicitly enumerates owners; every enqueued operation rechecks ownership.
+    const connections = await this.connections.find({
+      select: { id: true, user_id: true },
+    });
+    for (const connection of connections) {
+      try {
+        await this.enqueue({
+          id: connection.id,
+          userId: connection.user_id,
+          operation: 'sync',
+          notifyOnNewTransactions: true,
+        });
+      } catch {
+        this.logger.warn('Could not schedule a bank connection sync');
+      }
     }
+  }
 
-    return nordigenAccount;
+  private async find({ id, userId }: ConnectionOwner) {
+    const connection = await this.connections.findOne({
+      where: { id, user_id: userId },
+    });
+    if (!connection) throw new NotFoundException();
+    return connection;
+  }
+
+  private async locked<T>(
+    { id, userId }: ConnectionOwner,
+    operation: (
+      connection: BankConnection,
+      manager: EntityManager,
+    ) => Promise<T>,
+  ): Promise<T> {
+    // Serializes jobs, credential changes and disconnects across API/worker replicas.
+    return await this.connections.manager.transaction(async (manager) => {
+      const connection = await manager
+        .getRepository(BankConnection)
+        .createQueryBuilder('connection')
+        .where('connection.id = :id AND connection.user_id = :userId', {
+          id,
+          userId,
+        })
+        .setLock('pessimistic_write')
+        .getOne();
+      if (!connection) throw new NotFoundException();
+      return await operation(connection, manager);
+    });
+  }
+
+  private normalizeCredentials(
+    providerId: BankProvider,
+    credentials: ProviderCredentials,
+  ) {
+    return providerId === 'nordigen'
+      ? requireNordigenCredentials(credentials)
+      : { apiKey: requireApiKey(credentials) };
+  }
+
+  private credentialOwner(connection: BankConnection): CredentialOwner {
+    return {
+      userId: connection.user_id,
+      key: `openbanking:${connection.provider_id}`,
+    };
+  }
+
+  private async saveCredentials(
+    connection: BankConnection,
+    credentials: ProviderCredentials,
+    manager: EntityManager,
+  ): Promise<void> {
+    const secret =
+      connection.provider_id === 'nordigen'
+        ? requireNordigenCredentials(credentials).secretKey
+        : requireApiKey(credentials);
+    const hint = secret.length > 4 ? secret.slice(-4) : null;
+    await this.userCredentials.setCredentials(
+      this.credentialOwner(connection),
+      JSON.stringify(credentials),
+      hint,
+      manager,
+    );
+  }
+
+  private async context(
+    connection: BankConnection,
+    manager: EntityManager,
+  ): Promise<
+    ProviderContext & { credentialId: string; credentialVersion: number }
+  > {
+    const stored = await this.userCredentials.getCredentials(
+      this.credentialOwner(connection),
+      manager,
+    );
+    return {
+      userId: connection.user_id,
+      connectionId: connection.id,
+      credentials: this.normalizeCredentials(
+        connection.provider_id,
+        JSON.parse(stored.value) as ProviderCredentials,
+      ),
+      credentialId: stored.id,
+      credentialVersion: stored.version,
+    };
+  }
+
+  private async connectionDetails(
+    connection: BankConnection,
+    manager?: EntityManager,
+  ): Promise<BankConnectionDetails> {
+    const credential = await this.userCredentials.getCredentialMetadata(
+      this.credentialOwner(connection),
+      manager,
+    );
+    return {
+      connection,
+      credentialHint: credential?.hint ?? null,
+    };
   }
 }

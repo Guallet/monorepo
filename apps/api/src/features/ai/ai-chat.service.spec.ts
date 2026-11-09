@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { streamText } from 'ai';
 import type { Mock } from 'vitest';
 import { AiChatService } from './ai-chat.service';
-import { UserCredentialsService } from 'src/user-credentials/user-credentials.service';
+import { UserCredentialsService } from 'src/features/user-credentials/user-credentials.service';
 import { AiFinancialContextService } from './ai-financial-context.service';
 import { AiAgent } from './entities/ai-agent.entity';
 import { AiChatMessage } from './entities/ai-chat-message.entity';

@@ -1,11 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Logger,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -23,6 +21,10 @@ import {
   ApiBody,
   ApiParam,
   ApiQuery,
+  ApiNotFoundResponse,
+  ApiBadRequestResponse,
+  ApiExtraModels,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
@@ -36,21 +38,12 @@ import {
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
 import { TransactionDto } from 'src/features/transactions/dto/transaction.dto';
 import { OpenbankingService } from '../openbanking/openbanking.service';
-import { AccountSource, toAccountSource } from './entities/accountSource.model';
-import { LinkedOpenBankingAccountResponseDto } from '../openbanking/dto/openbanking-response.dto';
-
-function parseDateParam(value: string | undefined, name: string): Date | null {
-  if (!value) {
-    return null;
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    throw new BadRequestException(`Invalid ${name} query parameter`);
-  }
-
-  return parsed;
-}
+import { AccountConnectionDto } from './dto/account-connection.dto';
+import { ZodValidationPipe } from 'src/pipes/zodvalidator.pipe';
+import {
+  accountChartQuerySchema,
+  AccountChartQuery,
+} from './dto/account-chart.query';
 
 @ApiTags('Accounts')
 @Controller('accounts')
@@ -60,7 +53,7 @@ export class AccountsController {
   constructor(
     private readonly accountsService: AccountsService,
     private readonly transactionsService: TransactionsService,
-    private readonly openBankingService: OpenbankingService,
+    private readonly openbankingService: OpenbankingService,
   ) {}
 
   @ApiOperation({ summary: 'getUserAccounts' })
@@ -103,6 +96,37 @@ export class AccountsController {
     return AccountDto.fromDomain(account);
   }
 
+  @Get(':id/connection')
+  @ApiOperation({
+    summary: 'Get account connection status and provider details',
+  })
+  @ApiExtraModels(AccountConnectionDto)
+  @ApiOkResponse({
+    description:
+      'Flat connection details for linked accounts; {} when unlinked',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(AccountConnectionDto) },
+        { type: 'object', additionalProperties: false, maxProperties: 0 },
+      ],
+    },
+  })
+  @ApiNotFoundResponse({ description: 'Account not found for this user' })
+  @ApiBadRequestResponse({ description: 'Invalid account UUID' })
+  @ApiParam({ name: 'id', type: String, format: 'uuid' })
+  async getConnectedAccountDetails(
+    @RequestUser() user: UserPrincipal,
+    @Param('id', ParseUUIDPipe) accountId: string,
+  ): Promise<AccountConnectionDto | Record<string, never>> {
+    const connection =
+      await this.openbankingService.getConnectionFoGualletAccount(
+        user.id,
+        accountId,
+      );
+    if (!connection) return {};
+    return AccountConnectionDto.fromDomain(connection);
+  }
+
   @ApiOperation({ summary: 'getAccountTransactions' })
   @ApiOkResponse({ type: () => TransactionDto, isArray: true })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
@@ -133,6 +157,7 @@ export class AccountsController {
 
   @ApiOperation({ summary: 'getAccountChart' })
   @ApiOkResponse({ type: () => AccountChartsDto })
+  @ApiBadRequestResponse({ description: 'Invalid date query or date range' })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiQuery({ name: 'startDate', type: String, required: false })
   @ApiQuery({ name: 'endDate', type: String, required: false })
@@ -140,31 +165,15 @@ export class AccountsController {
   async getAccountChart(
     @RequestUser() user: UserPrincipal,
     @Param('id', ParseUUIDPipe) accountId: string,
-    @Query('startDate') startDateParam?: string,
-    @Query('endDate') endDateParam?: string,
+    @Query(new ZodValidationPipe(accountChartQuerySchema))
+    query: AccountChartQuery,
   ): Promise<AccountChartsDto> {
     const account = await this.accountsService.getUserAccount(
       user.id,
       accountId,
     );
 
-    const endDate = parseDateParam(endDateParam, 'endDate') ?? new Date();
-
-    const startDate =
-      parseDateParam(startDateParam, 'startDate') ??
-      (() => {
-        const d = new Date();
-        d.setMonth(d.getMonth() - 3);
-        d.setDate(1);
-        d.setHours(0, 0, 0, 0);
-        return d;
-      })();
-
-    if (startDate > endDate) {
-      throw new BadRequestException(
-        'startDate must be before or equal to endDate',
-      );
-    }
+    const { startDate, endDate } = query;
 
     const transactions = await this.transactionsService.getAccountTransactions({
       accountId: account.id,
@@ -188,12 +197,12 @@ export class AccountsController {
     );
 
     const accountCharts = Object.entries(transactionsByMonth).map(
-      ([key, txns]) => {
+      ([key, transaction]) => {
         const [year, month] = key.split('-');
-        const totalIn = txns
+        const totalIn = transaction
           .filter((t) => t.amount > 0)
           .reduce((acc, t) => acc + Number(t.amount), 0);
-        const totalOut = txns
+        const totalOut = transaction
           .filter((t) => t.amount < 0)
           .reduce((acc, t) => acc + Number(t.amount), 0);
         return {
@@ -218,20 +227,20 @@ export class AccountsController {
     const balanceAtRangeEnd = currentBalance - Number(postRangeSum ?? 0);
 
     // Walk transactions oldest→newest, accumulating daily balance
-    const sortedTxns = [...transactions].sort(
+    const sortedTransactions = [...transactions].sort(
       (a, b) => a.date.getTime() - b.date.getTime(),
     );
     const balanceHistory: BalanceHistoryPoint[] = [];
 
     // Work backwards to get opening balance, then forward for history
-    const reversedTxns = [...sortedTxns].reverse();
+    const reversedTransactions = [...sortedTransactions].reverse();
     let openingBalance = balanceAtRangeEnd;
-    for (const t of reversedTxns) {
+    for (const t of reversedTransactions) {
       openingBalance -= Number(t.amount);
     }
 
     const dailyMap = new Map<string, number>();
-    for (const t of sortedTxns) {
+    for (const t of sortedTransactions) {
       const dateKey = t.date.toISOString().split('T')[0];
       dailyMap.set(dateKey, (dailyMap.get(dateKey) ?? 0) + Number(t.amount));
     }
@@ -261,45 +270,6 @@ export class AccountsController {
       ),
       balanceHistory,
     );
-  }
-
-  /**
-   * Retrieves the connected Open Banking account details for a specified Guallet account.
-   * This endpoint is used to get the linked bank account information for accounts that are
-   * synchronized with external banking institutions through Open Banking.
-   *
-   * @param {UserPrincipal} user - The authenticated user making the request
-   * @param {string} accountId - UUID of the Guallet account
-   * @throws {BadRequestException} When the account is not connected to Open Banking
-   * @throws {NotFoundException} When the connected Open Banking account cannot be found
-   * @returns {Promise<{connectedAccount: OpenBankingAccount}>} Object containing the connected Open Banking account details
-   */
-  @ApiOperation({ summary: 'getConnectedAccountDetails' })
-  @ApiOkResponse({ type: LinkedOpenBankingAccountResponseDto })
-  @ApiParam({ name: 'id', type: String, format: 'uuid' })
-  @Get(':id/connection')
-  async getConnectedAccountDetails(
-    @RequestUser() user: UserPrincipal,
-    @Param('id', ParseUUIDPipe) accountId: string,
-  ): Promise<LinkedOpenBankingAccountResponseDto> {
-    const account = await this.accountsService.getUserAccount(
-      user.id,
-      accountId,
-    );
-
-    if (toAccountSource(account.source) !== AccountSource.SYNCED) {
-      throw new BadRequestException('Account is not connected');
-    }
-
-    const obAccount = await this.openBankingService.getLinkedAccount({
-      accountId: account.id,
-    });
-
-    if (!obAccount) {
-      throw new NotFoundException('Connected account not found');
-    }
-
-    return { connectedAccount: obAccount };
   }
 
   @ApiOperation({ summary: 'update' })
