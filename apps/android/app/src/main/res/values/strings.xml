@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Guallet</string>
     <string name="account">Account</string>
     <string name="account_name">Account name</string>
@@ -330,7 +330,8 @@
     <string name="use_another_email_address">Use another email address</string>
     <string name="value_band">%1$d%% band</string>
     <string name="value_monthly_budget_total">%1$s monthly budget total</string>
-    <string name="value_processed_value_failed">%1$d processed · %2$d failed</string>
+    <!-- Status participles are invariant: both "one processed" and "two processed" are grammatical. -->
+    <string name="value_processed_value_failed" tools:ignore="PluralsCandidate">%1$d processed · %2$d failed</string>
     <string name="view">View</string>
     <string name="view_account">View account</string>
     <string name="view_budget">View budget</string>
