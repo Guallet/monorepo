@@ -7,6 +7,7 @@ on:
       - develop
     paths:
       - 'apps/api/**'
+      - 'packages/guallet-money/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -20,6 +21,7 @@ on:
       - '*'
     paths:
       - 'apps/api/**'
+      - 'packages/guallet-money/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -37,6 +39,19 @@ jobs:
   build:
     name: Build API
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: guallet_test
+          POSTGRES_PASSWORD: guallet_test
+          POSTGRES_DB: guallet_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U guallet_test"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      GUALLET_TEST_DATABASE_URL: postgresql://guallet_test:guallet_test@localhost:5432/guallet_test
 
     strategy:
       matrix:
@@ -60,6 +75,9 @@ jobs:
       - name: Install dependencies
         working-directory: apps/api
         run: pnpm install --frozen-lockfile
+
+      - name: Build shared server money package
+        run: pnpm --filter @guallet/money build
 
       - name: Run linter
         working-directory: apps/api
@@ -99,5 +117,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: api-dist
-          path: apps/api/dist
+          path: |
+            apps/api/dist
+            packages/guallet-money/dist
           retention-days: 7
