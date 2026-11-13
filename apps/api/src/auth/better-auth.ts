@@ -25,9 +25,15 @@ export const createAuth = ({
 
   return betterAuth({
     appName: 'Guallet',
-    // Native Expo requests use this origin while the Expo plugin proxies OAuth
-    // callbacks back to the app's custom URL scheme.
-    trustedOrigins: [...new Set([...authConfig.allowedOrigins, 'guallet://'])],
+    // Expo and native Android use distinct origins and callback schemes.
+    // The Expo server plugin bridges browser OAuth cookies for both clients.
+    trustedOrigins: [
+      ...new Set([
+        ...authConfig.allowedOrigins,
+        'guallet://',
+        'guallet-android://',
+      ]),
+    ],
     basePath: '/auth',
     baseURL: authConfig.baseUrl,
     // DATABASE CONFIG

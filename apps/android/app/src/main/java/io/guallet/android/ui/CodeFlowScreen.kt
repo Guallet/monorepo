@@ -16,6 +16,7 @@ internal fun CodeFlowScreen(
     model: AuthViewModel,
     recovery: Boolean,
     onBack: () -> Unit,
+    onResetLink: (() -> Unit)? = null,
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var phase by rememberSaveable { mutableIntStateOf(0) }
@@ -131,6 +132,10 @@ internal fun CodeFlowScreen(
                 Text("Your password has been updated. Log in with your new password.")
             }
         }
+        if (recovery && onResetLink != null)
+            TextButton(enabled = !state.busy, onClick = onResetLink) {
+                Text("Send a password reset link instead")
+            }
         TextButton(enabled = !state.busy, onClick = onBack) { Text("Back to log in") }
     }
 }

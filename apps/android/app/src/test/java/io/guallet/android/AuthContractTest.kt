@@ -39,7 +39,7 @@ class AuthContractTest {
                 MockEngine { request ->
                     assertEquals("/auth/sign-in/email", request.url.encodedPath)
                     assertEquals(HttpMethod.Post, request.method)
-                    assertEquals("guallet://", request.headers[HttpHeaders.Origin])
+                    assertEquals("guallet-android://", request.headers[HttpHeaders.Origin])
                     val body =
                         Json.parseToJsonElement(
                                 (request.body as OutgoingContent.ByteArrayContent)

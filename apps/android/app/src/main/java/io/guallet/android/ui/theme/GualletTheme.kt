@@ -12,6 +12,9 @@ import io.guallet.android.R
 
 /** Native mapping of DESIGN.MD and packages/guallet-theme tokens. */
 object GualletTokens {
+    val chartHeight = 180.dp
+    val selectionHeight = 320.dp
+    val support = Color(0xFF009639)
     val small = 8.dp
     val gutter = 16.dp
     val large = 24.dp
@@ -46,6 +49,15 @@ fun GualletTheme(content: @Composable () -> Unit) {
             ),
         typography =
             Typography(
+                displayLarge = defaults.displayLarge.copy(fontFamily = font),
+                displayMedium = defaults.displayMedium.copy(fontFamily = font),
+                displaySmall = defaults.displaySmall.copy(fontFamily = font),
+                headlineSmall = defaults.headlineSmall.copy(fontFamily = font),
+                titleMedium = defaults.titleMedium.copy(fontFamily = font),
+                titleSmall = defaults.titleSmall.copy(fontFamily = font),
+                bodySmall = defaults.bodySmall.copy(fontFamily = font),
+                labelMedium = defaults.labelMedium.copy(fontFamily = font),
+                labelSmall = defaults.labelSmall.copy(fontFamily = font),
                 headlineLarge = defaults.headlineLarge.copy(fontFamily = font),
                 headlineMedium = defaults.headlineMedium.copy(fontFamily = font),
                 titleLarge = defaults.titleLarge.copy(fontFamily = font),

@@ -37,11 +37,11 @@ class BetterAuthRepository(private val client: HttpClient, private val cookies: 
     override suspend fun session(): AuthUser? =
         try {
             val user = client.get(Auth.Session()).body<UserResponse?>()?.user
-            if (user == null) cookies.clear()
+            if (user == null) cookies.clearSession()
             user
         } catch (error: ClientRequestException) {
             if (error.response.status != HttpStatusCode.Unauthorized) throw error
-            cookies.clear()
+            cookies.clearSession()
             null
         }
 

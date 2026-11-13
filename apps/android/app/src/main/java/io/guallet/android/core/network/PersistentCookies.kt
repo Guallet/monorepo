@@ -64,6 +64,16 @@ class PersistentCookies(private val store: CookieStore, baseUrl: String) : Cooki
             store.write(apiJson.encodeToString(cookies))
         }
 
+    /** Session restoration must not discard an in-flight browser login nonce. */
+    suspend fun clearSession() =
+        mutex.withLock {
+            cookies.removeAll { stored ->
+                val name = parse(stored)?.name?.removePrefix("__Secure-")?.removePrefix("__Host-")
+                name == "better-auth.session_token" || name == "better-auth.session_data"
+            }
+            store.write(apiJson.encodeToString(cookies))
+        }
+
     suspend fun clear() =
         mutex.withLock {
             cookies.clear()

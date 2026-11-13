@@ -1,4 +1,4 @@
-# Native Android foundation
+# Native Android app
 
 Standalone Kotlin Android project. Open this directory in Android Studio; it
 has no dependency on Expo, React Native, Node, or the pnpm build graph.
@@ -23,7 +23,7 @@ client does not weaken server cookie security or certificate validation.
 Debug application ID: `io.guallet.android.dev`. Release ID: `io.guallet.android`.
 Both coexist with the Expo application. Minimum Android version is API 26;
 compile and target SDK are 36. The release build is unsigned; store publishing,
-signing, and production environment configuration are outside this foundation.
+signing, and production environment configuration are separate release steps.
 
 ## Architecture
 
@@ -39,16 +39,17 @@ One Gradle application module, organised by feature:
 - `ui`: Compose navigation, state-driven UI, and native Guallet theme tokens.
 - `di`: Koin singleton and ViewModel definitions.
 
-Screens depend on the ViewModel; the ViewModel depends on the repository
-interface. Add future finance features alongside auth, with their own typed
-resources, models, repositories, and ViewModels. There are no finance amounts
-or migrated finance screens in this project.
+Screens depend on ViewModels; ViewModels depend on repository interfaces.
+Financial domains use typed Ktor Resources, models, repositories, and
+user-scoped state alongside authentication. The signed-in app includes the
+financial screens and workflows listed in [MIGRATION.md](MIGRATION.md).
 
 ## Better Auth integration
 
 This client calls the existing Better Auth HTTP API directly rather than
-embedding its JavaScript SDK. No backend changes, alternative token scheme,
-or duplicate authentication endpoints are required. The server already enables
+embedding its JavaScript SDK. Deploy the API trusted-origin addition for
+`guallet-android://` before connecting the native app. Existing authentication
+endpoints and server-issued sessions are reused. The server already enables
 email/password and the email OTP plugin in `apps/api/src/auth/better-auth.ts`.
 
 | Operation                | Method | Resource                                 |
@@ -62,21 +63,20 @@ email/password and the email OTP plugin in `apps/api/src/auth/better-auth.ts`.
 | Request reset code       | POST   | `/auth/email-otp/request-password-reset` |
 | Reset password with code | POST   | `/auth/email-otp/reset-password`         |
 
-Requests carry the already-trusted `Origin: guallet://`. Session credentials
+Requests carry `Origin: guallet-android://`. Session credentials
 come from `Set-Cookie` and return as HTTP cookies; the JSON token is never
-stored or treated as a JWT. OkHttp handles cookie matching and expiry, while
-Ktor's cookie plugin attaches them to requests. Cookie values are encrypted on
+stored or treated as a JWT. The persistent cookie store handles origin/path
+matching and expiry; Ktor's cookie plugin attaches cookies to requests. Cookie values are encrypted on
 disk and excluded from backups. Passwords and codes remain in memory, and the
 activity prevents screenshots and recents previews. Startup connection failures
 offer retry instead of falsely treating the user as signed out. Sign-out must
 successfully revoke the server session before local cookies are removed.
 
-The initial UI includes welcome, password login, account creation, email-code
-login, code-based password recovery, and a signed-in landing screen with
-sign-out. Login codes expire after five minutes, as configured on the server.
-Resending is subject to a thirty-second UI cooldown and server rate limits.
-Google sign-in, link callbacks, finance screens, offline storage, and
-background sync are deferred by the agreed scope.
+The app includes native dashboard, accounts, transactions, budgets, savings
+goals, recurring payments, categories, notifications, settings, CSV import,
+data export, and mortgage/loan/stamp-duty calculators. Authentication supports
+passwords, email codes, Google browser sign-in, and reset codes/links. See the
+[migration notes](MIGRATION.md) for API deployment and validation requirements.
 
 ## Validation
 
@@ -84,8 +84,9 @@ background sync are deferred by the agreed scope.
 ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
 ```
 
-JVM tests use Ktor MockEngine for REST paths and cookies, and coroutine tests
-for startup retry, validation, and duplicate-submission handling. Android CI
+JVM tests use Ktor MockEngine for REST paths and cookies, coroutine tests
+for session state, and parity fixtures for money and business calculations.
+Compose runtime tests use Robolectric for signed-in navigation and account editing. Android CI
 runs compilation, those tests, and lint when this project changes. A real
 end-to-end login needs a configured HTTPS API and a test account/email inbox.
 

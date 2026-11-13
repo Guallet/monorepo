@@ -38,6 +38,6 @@ fun createApiClient(
             url(baseUrl.trimEnd('/') + "/")
             contentType(ContentType.Application.Json)
             // This is already trusted by Guallet's Better Auth configuration.
-            headers.append("Origin", "guallet://")
+            headers.append("Origin", "guallet-android://")
         }
     }

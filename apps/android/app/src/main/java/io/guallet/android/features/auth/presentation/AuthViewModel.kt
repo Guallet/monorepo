@@ -2,6 +2,8 @@ package io.guallet.android.features.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.guallet.android.features.auth.data.BrowserAuthRepository
+import io.guallet.android.features.auth.data.parseNativeCallback
 import io.guallet.android.features.auth.domain.AuthRepository
 import io.guallet.android.features.auth.domain.AuthUser
 import io.ktor.client.plugins.ResponseException
@@ -26,9 +28,14 @@ data class AuthUiState(
     val busy: Boolean = false,
     val error: String? = null,
     val completed: Boolean = false,
+    val browserUrl: String? = null,
+    val resetToken: String? = null,
 )
 
-class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
+class AuthViewModel(
+    private val repository: AuthRepository,
+    private val browser: BrowserAuthRepository? = null,
+) : ViewModel() {
     private val mutableState = MutableStateFlow(AuthUiState())
     val state = mutableState.asStateFlow()
 
@@ -98,6 +105,74 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
         mutableState.update { it.copy(session = SessionState.SignedOut) }
     }
 
+    private var queuedCallback: String? = null
+
+    fun startGoogle() = perform {
+        val flow = java.util.UUID.randomUUID().toString()
+        val url = requireNotNull(browser).startGoogle(flow)
+        mutableState.update { it.copy(browserUrl = url) }
+    }
+
+    fun browserFailed() {
+        mutableState.update {
+            it.copy(browserUrl = null, error = "Could not open the browser. Please try again.")
+        }
+    }
+
+    fun browserOpened() {
+        mutableState.update { it.copy(browserUrl = null) }
+    }
+
+    fun handleDeepLink(value: String) {
+        val callback = parseNativeCallback(value) ?: return
+        if (callback.path == "/reset-password") {
+            val token = callback.parameters["token"]
+            if (!token.isNullOrBlank() && token.length <= 4096)
+                mutableState.update { it.copy(resetToken = token, error = null) }
+            else
+                mutableState.update {
+                    it.copy(error = "This reset link is invalid or has expired.")
+                }
+            return
+        }
+        if (mutableState.value.busy) {
+            queuedCallback = value
+            return
+        }
+        perform {
+            val flow = callback.parameters["flow"]
+            require(flow != null && requireNotNull(browser).consumeFlow(flow)) {
+                "This sign-in attempt has expired. Please try again."
+            }
+            require(callback.parameters["error"] == null) {
+                "Google sign-in could not be completed. Please try again."
+            }
+            val cookie =
+                callback.parameters["cookie"]
+                    ?: throw IllegalArgumentException("No session was returned. Please try again.")
+            signedIn(requireNotNull(browser).finishGoogle(cookie))
+        }
+    }
+
+    fun requestResetLink(email: String) = perform {
+        require(validEmail(email)) { "Enter a valid email address." }
+        requireNotNull(browser).requestResetLink(email.trim())
+        mutableState.update { it.copy(completed = true) }
+    }
+
+    fun resetWithLink(password: String) = perform {
+        require(validPassword(password)) { "Use 8 to 128 characters." }
+        val token = requireNotNull(mutableState.value.resetToken)
+        requireNotNull(browser).resetWithToken(token, password)
+        mutableState.update {
+            it.copy(resetToken = null, session = SessionState.SignedOut, completed = true)
+        }
+    }
+
+    fun dismissResetLink() {
+        mutableState.update { it.copy(resetToken = null) }
+    }
+
     private fun signedIn(user: AuthUser) {
         mutableState.update { it.copy(session = SessionState.SignedIn(user)) }
     }
@@ -128,6 +203,9 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                 mutableState.update { it.copy(error = message) }
             } finally {
                 mutableState.update { it.copy(busy = false) }
+                val queued = queuedCallback
+                queuedCallback = null
+                if (queued != null) handleDeepLink(queued)
             }
         }
     }

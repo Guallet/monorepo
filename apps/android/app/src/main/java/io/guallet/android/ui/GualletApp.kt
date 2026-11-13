@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -28,6 +29,17 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun GualletApp(model: AuthViewModel = koinViewModel()) {
     val state by model.state.collectAsStateWithLifecycle()
+    val uri = LocalUriHandler.current
+    LaunchedEffect(state.browserUrl) {
+        state.browserUrl?.let { url ->
+            uri.openUri(url)
+            model.browserOpened()
+        }
+    }
+    if (state.resetToken != null) {
+        ResetLinkScreen(state, model)
+        return
+    }
     // Prevent a form being abandoned while its request is changing session state.
     BackHandler(state.busy) {}
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -42,15 +54,7 @@ fun GualletApp(model: AuthViewModel = koinViewModel()) {
                     Action("Try again", !state.busy, model::restoreSession)
                 }
             SessionState.SignedOut -> key("signed-out") { AuthNavigation(state, model) }
-            is SessionState.SignedIn ->
-                AuthPanel("Welcome, ${session.user.name}") {
-                    Text(session.user.email)
-                    Text(
-                        "You are signed in. Your finances will be available here in a future update."
-                    )
-                    Feedback(state)
-                    Action("Sign out", !state.busy, model::signOut)
-                }
+            is SessionState.SignedIn -> NativeApp(session.user, model)
         }
     }
 }
@@ -72,6 +76,8 @@ private fun AuthNavigation(state: AuthUiState, model: AuthViewModel) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text("Your financial data stays yours.")
+                Feedback(state)
+                Action("Continue with Google", !state.busy, model::startGoogle)
                 Action("Log in", !state.busy) { navigate("login") }
                 TextButton(onClick = { navigate("signup") }) { Text("Create account") }
             }
@@ -99,8 +105,17 @@ private fun AuthNavigation(state: AuthUiState, model: AuthViewModel) {
             )
         }
         composable("code") { CodeFlowScreen(state, model, false, onBack = { navigate("login") }) }
+        composable("reset-link") {
+            ResetLinkRequestScreen(state, model, onBack = { navigate("login") })
+        }
         composable("recovery") {
-            CodeFlowScreen(state, model, true, onBack = { navigate("login") })
+            CodeFlowScreen(
+                state,
+                model,
+                true,
+                onBack = { navigate("login") },
+                onResetLink = { navigate("reset-link") },
+            )
         }
     }
 }
