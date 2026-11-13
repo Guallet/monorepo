@@ -9,10 +9,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import io.guallet.android.R
+import io.guallet.android.core.state.*
 import io.guallet.android.features.finance.presentation.FinanceViewModel
 import io.guallet.android.features.transactions.presentation.transactionDate
 import io.guallet.android.ui.components.*
+import kotlinx.coroutines.awaitCancellation
 
 @Composable
 fun ImportScreen(
@@ -21,6 +27,8 @@ fun ImportScreen(
     onBack: () -> Unit,
     result: (String) -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val data by model.data.collectAsStateWithLifecycle()
     val busy by model.busy.collectAsStateWithLifecycle()
     val error by model.error.collectAsStateWithLifecycle()
@@ -57,11 +65,14 @@ fun ImportScreen(
             mappings["category"].orEmpty(),
         )
     val rows = data?.rows.orEmpty()
-    val accountKeys =
-        (rows.map { it[fields.account].orEmpty().trim().ifBlank { "default" } }).distinct()
-    val categoryKeys =
-        rows.map { it[fields.category].orEmpty().trim() }.filter { it.isNotBlank() }.distinct()
-    val validRows = rows.filter { CsvParser.rowErrors(it, fields).isEmpty() }
+    val prepared by
+        produceState<CsvPreparation?>(null, data, fields) {
+            value = null
+            data?.let { value = model.prepare(it, fields) }
+        }
+    val accountKeys = prepared?.accountKeys.orEmpty()
+    val categoryKeys = prepared?.categoryKeys.orEmpty()
+    val validRows = prepared?.validRows.orEmpty()
     val back =
         rememberFormBackHandler(data != null, busy) {
             model.reset()
@@ -71,8 +82,8 @@ fun ImportScreen(
         step--
         validation = null
     }
-    FinancePage(
-        "Import CSV · Step ${step + 1} of 5",
+    FinanceListPage(
+        resources.getString(R.string.import_csv_step_value_of_5, step + 1),
         {
             if (!busy && step > 0) {
                 step--
@@ -80,140 +91,193 @@ fun ImportScreen(
             } else back()
         },
     ) {
-        Text("Choose file → Map columns → Accounts → Categories → Preview")
-        if (busy) LinearProgressIndicator(Modifier.fillMaxWidth())
-        error?.let { ErrorNotice(it) }
-        validation?.let { ErrorNotice(it) }
-        when (step) {
-            0 -> {
+        item("import-controls") {
+            Column(
+                verticalArrangement =
+                    Arrangement.spacedBy(io.guallet.android.ui.theme.GualletTokens.small)
+            ) {
                 Text(
-                    "Choose a CSV file up to 5 MB. Your document stays on the device until you submit the preview."
+                    resources.getString(
+                        R.string.choose_file_map_columns_accounts_categories_preview
+                    )
                 )
-                Button(
-                    enabled = !busy,
-                    onClick = {
-                        picker.launch(
-                            arrayOf("text/*", "application/csv", "application/vnd.ms-excel")
-                        )
-                    },
-                ) {
-                    Text("Choose CSV file")
-                }
-                data?.let {
-                    Text("${it.rows.size} rows · ${it.columns.size} columns")
-                    Button(
-                        enabled = !busy,
-                        onClick = {
-                            mappings = emptyMap()
-                            accountMappings = emptyMap()
-                            categoryMappings = emptyMap()
-                            step = 1
-                        },
-                    ) {
-                        Text("Map columns")
-                    }
-                }
+                if (busy || (data != null && prepared == null))
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                error?.let { ErrorNotice(it) }
+                validation?.let { ErrorNotice(it) }
             }
-            1 ->
-                data?.let { csv ->
-                    listOf(
-                            "date" to "Date (required)",
-                            "amount" to "Amount (required)",
-                            "description" to "Description (required)",
-                            "account" to "Account",
-                            "category" to "Category",
-                            "notes" to "Notes",
+        }
+        when (step) {
+            0 ->
+                item("file") {
+                    Column {
+                        Text(
+                            resources.getString(
+                                R.string
+                                    .choose_a_csv_file_up_to_5_mb_your_document_stays_on_the_device_until_you_submit_the_prev
+                            )
                         )
-                        .forEach { (key, label) ->
-                            ChoiceField(
-                                label,
-                                mappings[key],
-                                listOf("" to "Not mapped") + csv.columns.map { it to it },
-                                !busy,
+                        Button(
+                            enabled = !busy,
+                            onClick = {
+                                picker.launch(
+                                    arrayOf("text/*", "application/csv", "application/vnd.ms-excel")
+                                )
+                            },
+                        ) {
+                            Text(resources.getString(R.string.choose_csv_file))
+                        }
+                        data?.let {
+                            Text(
+                                resources.getString(
+                                    R.string.csv_dimensions,
+                                    resources.getQuantityString(
+                                        R.plurals.csv_row_count,
+                                        it.rows.size,
+                                        it.rows.size,
+                                    ),
+                                    resources.getQuantityString(
+                                        R.plurals.csv_column_count,
+                                        it.columns.size,
+                                        it.columns.size,
+                                    ),
+                                )
+                            )
+                            Button(
+                                enabled = !busy,
+                                onClick = {
+                                    mappings = emptyMap()
+                                    accountMappings = emptyMap()
+                                    categoryMappings = emptyMap()
+                                    accountNames = emptyMap()
+                                    categoryNames = emptyMap()
+                                    step = 1
+                                },
                             ) {
-                                mappings = mappings + (key to it)
-                                validation = null
+                                Text(resources.getString(R.string.map_columns))
                             }
                         }
-                    Button(
-                        enabled = !busy,
-                        onClick = {
-                            val chosen = mappings.values.filter { it.isNotBlank() }
-                            validation =
-                                when {
-                                    listOf(fields.date, fields.amount, fields.description).any {
-                                        it.isBlank()
-                                    } -> "Map date, amount and description."
-                                    chosen.distinct().size != chosen.size ->
-                                        "Map each CSV column only once."
-                                    fields.account.isNotBlank() &&
-                                        rows.any { it[fields.account].isNullOrBlank() } &&
-                                        rows.any { it[fields.account]?.trim() == "default" } ->
-                                        "Rename blank account values or the account named default in the CSV."
-                                    else -> null
+                    }
+                }
+            1 ->
+                data?.let { csv ->
+                    item("columns") {
+                        Column {
+                            listOf(
+                                    "date" to resources.getString(R.string.date_required),
+                                    "amount" to resources.getString(R.string.amount_required),
+                                    "description" to
+                                        resources.getString(R.string.description_required),
+                                    "account" to resources.getString(R.string.account),
+                                    "category" to resources.getString(R.string.category),
+                                    "notes" to resources.getString(R.string.notes),
+                                )
+                                .forEach { (key, label) ->
+                                    ChoiceField(
+                                        label,
+                                        mappings[key],
+                                        listOf("" to resources.getString(R.string.not_mapped)) +
+                                            csv.columns.map { it to it },
+                                        !busy,
+                                    ) {
+                                        mappings = mappings + (key to it)
+                                        validation = null
+                                    }
                                 }
-                            if (validation == null) step = 2
-                        },
-                    ) {
-                        Text("Continue to accounts")
+                            Button(
+                                enabled = !busy && prepared != null,
+                                onClick = {
+                                    validation = prepared?.mappingError?.resolve(resources)
+                                    if (prepared == null)
+                                        validation =
+                                            resources.getString(
+                                                R.string.preparing_csv_preview_please_wait
+                                            )
+                                    if (validation == null) step = 2
+                                },
+                            ) {
+                                Text(resources.getString(R.string.continue_to_accounts))
+                            }
+                        }
                     }
                 }
             2 ->
-                RemoteContent(accounts, finance::loadAccounts) { existing ->
-                    accountKeys.forEach { key ->
+                remoteItems(accounts, finance::loadAccounts) { existing ->
+                    items(accountKeys.size, key = { "account-${accountKeys[it]}" }) { index ->
+                        val key = accountKeys[index]
                         FinanceCard {
-                            Text(if (key == "default") "Rows without an account" else key)
+                            Text(
+                                if (key == "default")
+                                    resources.getString(R.string.rows_without_an_account)
+                                else key
+                            )
                             ChoiceField(
-                                "Account",
+                                resources.getString(R.string.account),
                                 accountMappings[key],
                                 existing.map { it.id to it.name } +
-                                    listOf("__create__" to "Create new account"),
+                                    listOf(
+                                        "__create__" to
+                                            resources.getString(R.string.create_new_account)
+                                    ),
                                 !busy,
                             ) {
                                 accountMappings = accountMappings + (key to it)
                             }
                             if (accountMappings[key] == "__create__")
                                 TextField(
-                                    "New account name",
+                                    resources.getString(R.string.new_account_name),
                                     accountNames[key]
-                                        ?: if (key == "default") "Imported account" else key,
+                                        ?: if (key == "default")
+                                            resources.getString(R.string.imported_account)
+                                        else key,
                                     !busy,
                                     onChange = { accountNames = accountNames + (key to it) },
                                 )
                         }
                     }
-                    Button(
-                        enabled = !busy,
-                        onClick = {
-                            if (
-                                accountKeys.any { key ->
-                                    accountMappings[key].isNullOrBlank() ||
-                                        (accountMappings[key] == "__create__" &&
-                                            accountNames[key]?.isBlank() == true)
+                    item("accounts-continue") {
+                        Button(
+                            enabled = !busy,
+                            onClick = {
+                                if (
+                                    accountKeys.any { key ->
+                                        accountMappings[key].isNullOrBlank() ||
+                                            (accountMappings[key] == "__create__" &&
+                                                accountNames[key]?.isBlank() == true)
+                                    }
+                                )
+                                    validation =
+                                        resources.getString(
+                                            R.string.map_every_account_before_continuing
+                                        )
+                                else {
+                                    validation = null
+                                    step = 3
                                 }
-                            )
-                                validation = "Map every account before continuing."
-                            else {
-                                validation = null
-                                step = 3
-                            }
-                        },
-                    ) {
-                        Text("Continue to categories")
+                            },
+                        ) {
+                            Text(resources.getString(R.string.continue_to_categories))
+                        }
                     }
                 }
             3 ->
-                RemoteContent(categories, finance::loadCategories) { existing ->
-                    if (categoryKeys.isEmpty()) Text("No categories to map.")
-                    categoryKeys.forEach { key ->
+                remoteItems(categories, finance::loadCategories) { existing ->
+                    if (categoryKeys.isEmpty())
+                        item("no-categories") {
+                            Text(resources.getString(R.string.no_categories_to_map))
+                        }
+                    items(categoryKeys.size, key = { "category-${categoryKeys[it]}" }) { index ->
+                        val key = categoryKeys[index]
                         FinanceCard {
                             Text(key)
                             ChoiceField(
-                                "Category",
+                                resources.getString(R.string.category),
                                 categoryMappings[key],
                                 listOf(
-                                    "__ignore__" to "Leave uncategorised",
-                                    "__create__" to "Create new category",
+                                    "__ignore__" to
+                                        resources.getString(R.string.leave_uncategorised),
+                                    "__create__" to
+                                        resources.getString(R.string.create_new_category),
                                 ) + existing.map { it.id to it.name },
                                 !busy,
                             ) {
@@ -221,128 +285,126 @@ fun ImportScreen(
                             }
                             if (categoryMappings[key] == "__create__")
                                 TextField(
-                                    "New category name",
+                                    resources.getString(R.string.new_category_name),
                                     categoryNames[key] ?: key,
                                     !busy,
                                     onChange = { categoryNames = categoryNames + (key to it) },
                                 )
                         }
                     }
-                    Button(
-                        enabled = !busy,
-                        onClick = {
-                            if (
-                                categoryKeys.any { key ->
-                                    categoryMappings[key].isNullOrBlank() ||
-                                        (categoryMappings[key] == "__create__" &&
-                                            categoryNames[key]?.isBlank() == true)
+                    item("categories-continue") {
+                        Button(
+                            enabled = !busy,
+                            onClick = {
+                                if (
+                                    categoryKeys.any { key ->
+                                        categoryMappings[key].isNullOrBlank() ||
+                                            (categoryMappings[key] == "__create__" &&
+                                                categoryNames[key]?.isBlank() == true)
+                                    }
+                                )
+                                    validation =
+                                        resources.getString(
+                                            R.string
+                                                .map_every_category_or_choose_leave_uncategorised
+                                        )
+                                else {
+                                    validation = null
+                                    step = 4
                                 }
-                            )
-                                validation = "Map every category or choose leave uncategorised."
-                            else {
-                                validation = null
-                                step = 4
-                            }
-                        },
-                    ) {
-                        Text("Preview import")
-                    }
-                }
-            4 -> {
-                Text(
-                    "${validRows.size} valid rows. ${rows.size - validRows.size} invalid rows will be skipped."
-                )
-                rows.take(5).forEachIndexed { index, row ->
-                    FinanceCard {
-                        Text("Row ${index + 1}: ${row[fields.description].orEmpty()}")
-                        Text(row[fields.date].orEmpty())
-                        val key = row[fields.account].orEmpty().trim().ifBlank { "default" }
-                        val accountId = accountMappings[key]
-                        val previewCurrency =
-                            accounts.value.orEmpty().find { it.id == accountId }?.currency
-                                ?: if (accountId == "__create__" && settings.value != null)
-                                    (settings.value!!.currencies.defaultCurrency ?: "GBP")
-                                else null
-                        val previewAmount =
-                            row[fields.amount]
-                                .orEmpty()
-                                .trim()
-                                .replace(',', '.')
-                                .toBigDecimalOrNull()
-                        if (previewCurrency != null && previewAmount != null)
-                            MoneyLabel(previewAmount, previewCurrency)
-                        else Text("Amount will use the mapped account’s currency.")
-                        CsvParser.rowErrors(row, fields).forEach {
-                            Text(it, color = MaterialTheme.colorScheme.error)
+                            },
+                        ) {
+                            Text(resources.getString(R.string.preview_import))
                         }
                     }
                 }
-                Text(
-                    "Submitting will add transactions and create any accounts or categories you selected. This may take a few minutes."
-                )
-                Button(
-                    enabled = !busy && validRows.isNotEmpty(),
-                    onClick = {
-                        val normalized =
-                            validRows.map { row ->
-                                row.mapValues { (column, value) ->
-                                    if (
-                                        column in
-                                            listOf(fields.account, fields.category, fields.date)
+            4 ->
+                item("preview") {
+                    Column(
+                        verticalArrangement =
+                            Arrangement.spacedBy(io.guallet.android.ui.theme.GualletTokens.gutter)
+                    ) {
+                        Text(
+                            resources.getString(
+                                R.string.csv_validation_summary,
+                                resources.getQuantityString(
+                                    R.plurals.valid_row_count,
+                                    validRows.size,
+                                    validRows.size,
+                                ),
+                                resources.getQuantityString(
+                                    R.plurals.invalid_row_count,
+                                    rows.size - validRows.size,
+                                    rows.size - validRows.size,
+                                ),
+                            )
+                        )
+                        rows.take(5).forEachIndexed { index, row ->
+                            FinanceCard {
+                                Text(
+                                    resources.getString(
+                                        R.string.row_value_value,
+                                        index + 1,
+                                        row[fields.description].orEmpty(),
                                     )
-                                        value.trim()
-                                    else value
-                                }
-                            }
-                        val usedAccounts =
-                            normalized
-                                .map { it[fields.account].orEmpty().ifBlank { "default" } }
-                                .distinct()
-                        val usedCategories =
-                            normalized
-                                .map { it[fields.category].orEmpty() }
-                                .filter { it.isNotBlank() }
-                                .distinct()
-                        val accountInput =
-                            usedAccounts.associateWith { key ->
-                                val selection = accountMappings.getValue(key)
-                                if (selection == "__create__")
-                                    AccountMapping(
-                                        accountNames[key]
-                                            ?: if (key == "default") "Imported account" else key,
-                                        true,
-                                    )
+                                )
+                                Text(row[fields.date].orEmpty())
+                                val key = row[fields.account].orEmpty().trim().ifBlank { "default" }
+                                val accountId = accountMappings[key]
+                                val previewCurrency =
+                                    accounts.value.orEmpty().find { it.id == accountId }?.currency
+                                        ?: if (accountId == "__create__" && settings.value != null)
+                                            (settings.value!!.currencies.defaultCurrency ?: "GBP")
+                                        else null
+                                val previewAmount =
+                                    row[fields.amount]
+                                        .orEmpty()
+                                        .trim()
+                                        .replace(',', '.')
+                                        .toBigDecimalOrNull()
+                                if (previewCurrency != null && previewAmount != null)
+                                    MoneyLabel(previewAmount, previewCurrency)
                                 else
-                                    AccountMapping(
-                                        accounts.value.orEmpty().find { it.id == selection }?.name
-                                            ?: key,
-                                        false,
-                                        selection,
-                                    )
-                            }
-                        val categoryInput =
-                            usedCategories
-                                .filter { categoryMappings[it] != "__ignore__" }
-                                .associateWith { key ->
-                                    val selection = categoryMappings.getValue(key)
-                                    if (selection == "__create__")
-                                        CategoryMapping(categoryNames[key] ?: key, true)
-                                    else
-                                        CategoryMapping(
-                                            categories.value
-                                                .orEmpty()
-                                                .find { it.id == selection }
-                                                ?.name ?: key,
-                                            false,
-                                            selection,
+                                    Text(
+                                        resources.getString(
+                                            R.string.amount_will_use_the_mapped_account_s_currency
                                         )
+                                    )
+                                prepared?.previewErrors?.getOrNull(index).orEmpty().forEach {
+                                    Text(
+                                        it.resolve(resources),
+                                        color = MaterialTheme.colorScheme.error,
+                                    )
                                 }
-                        model.submit(ImportRequest(normalized, fields, accountInput, categoryInput))
-                    },
-                ) {
-                    Text("Import valid rows")
+                            }
+                        }
+                        Text(
+                            resources.getString(
+                                R.string
+                                    .submitting_will_add_transactions_and_create_any_accounts_or_categories_you_selected_this
+                            )
+                        )
+                        Button(
+                            enabled = !busy && validRows.isNotEmpty(),
+                            onClick = {
+                                prepared?.let { preview ->
+                                    model.submit(
+                                        preview,
+                                        accountMappings,
+                                        accountNames,
+                                        categoryMappings,
+                                        categoryNames,
+                                        accounts.value.orEmpty().associate { it.id to it.name },
+                                        categories.value.orEmpty().associate { it.id to it.name },
+                                        resources.getString(R.string.imported_account),
+                                    )
+                                }
+                            },
+                        ) {
+                            Text(resources.getString(R.string.import_valid_rows))
+                        }
+                    }
                 }
-            }
         }
     }
 }
@@ -354,10 +416,21 @@ fun ImportResultScreen(
     finance: FinanceViewModel,
     onBack: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val status by model.status.collectAsStateWithLifecycle()
     val error by model.error.collectAsStateWithLifecycle()
-    LaunchedEffect(id) { model.poll(id) }
-    DisposableEffect(id) { onDispose { model.stopPolling() } }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(id, lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            model.poll(id)
+            try {
+                awaitCancellation()
+            } finally {
+                model.stopPolling()
+            }
+        }
+    }
     LaunchedEffect(status?.status) {
         if (status?.status == "completed") {
             finance.loadAccounts()
@@ -370,26 +443,43 @@ fun ImportResultScreen(
         onBack()
     }
     FinancePage(
-        "Import status",
+        resources.getString(R.string.import_status),
         {
             model.reset()
             onBack()
         },
     ) {
-        Text("Job: $id")
+        Text(resources.getString(R.string.job_value, id))
         error?.let { ErrorNotice(it) { model.poll(id) } }
         val state = status
         if (state == null && error == null) CircularProgressIndicator()
         state?.let {
-            Text(it.status.replaceFirstChar(Char::uppercaseChar))
+            Text(
+                when (it.status) {
+                    "waiting",
+                    "pending",
+                    "queued" -> resources.getString(R.string.import_queued)
+                    "active",
+                    "processing" -> resources.getString(R.string.import_processing)
+                    "completed" -> resources.getString(R.string.import_completed)
+                    "failed" -> resources.getString(R.string.import_failed)
+                    else -> it.status
+                }
+            )
             LinearProgressIndicator(
                 progress = { (it.progress / 100).toFloat().coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth(),
             )
-            Text("${it.processedCount} processed · ${it.failedCount} failed")
+            Text(
+                resources.getString(
+                    R.string.value_processed_value_failed,
+                    it.processedCount,
+                    it.failedCount,
+                )
+            )
             it.error?.let { message -> ErrorNotice(message) }
             if (it.status !in listOf("completed", "failed"))
-                Text("Leaving this screen does not cancel the import.")
+                Text(resources.getString(R.string.leaving_this_screen_does_not_cancel_the_import))
         }
         TextButton(
             onClick = {
@@ -397,13 +487,15 @@ fun ImportResultScreen(
                 onBack()
             }
         ) {
-            Text("Back to settings")
+            Text(resources.getString(R.string.back_to_settings))
         }
     }
 }
 
 @Composable
 fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBack: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val accounts by finance.accounts.state.collectAsStateWithLifecycle()
     val mutation by finance.mutation.collectAsStateWithLifecycle()
     var selected by rememberSaveable { mutableStateOf(emptyList<String>()) }
@@ -422,17 +514,26 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
             finance.clearMutation()
         }
     }
-    FinancePage("Export data", onBack) {
+    FinancePage(resources.getString(R.string.export_data), onBack) {
         if (accepted) {
             Text(
-                "Your export request was accepted. It has been queued; this does not mean the export has finished."
+                resources.getString(
+                    R.string
+                        .your_export_request_was_accepted_it_has_been_queued_this_does_not_mean_the_export_has_fi
+                )
             )
-            Button(onClick = { accepted = false }) { Text("Request another export") }
+            Button(onClick = { accepted = false }) {
+                Text(resources.getString(R.string.request_another_export))
+            }
         } else {
-            Text("Leave accounts and dates empty to export all available data.")
+            Text(
+                resources.getString(
+                    R.string.leave_accounts_and_dates_empty_to_export_all_available_data
+                )
+            )
             RemoteContent(accounts, finance::loadAccounts) { items ->
                 MultiChoice(
-                    "Accounts",
+                    resources.getString(R.string.accounts),
                     selected.toSet(),
                     items.map { it.id to it.name },
                     !mutation.busy,
@@ -441,7 +542,7 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
                 }
             }
             ChoiceField(
-                "Format",
+                resources.getString(R.string.format),
                 format,
                 listOf("csv" to "CSV", "ofe" to "OFE", "json" to "JSON"),
                 !mutation.busy,
@@ -449,7 +550,7 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
                 format = it
             }
             TextField(
-                "Start date (YYYY-MM-DD, optional)",
+                resources.getString(R.string.start_date_yyyy_mm_dd_optional),
                 start,
                 !mutation.busy,
                 onChange = {
@@ -458,7 +559,7 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
                 },
             )
             TextField(
-                "End date (YYYY-MM-DD, optional)",
+                resources.getString(R.string.end_date_yyyy_mm_dd_optional),
                 end,
                 !mutation.busy,
                 onChange = {
@@ -484,11 +585,15 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
                             )
                         finance.mutate { repository.export(request) }
                     } catch (_: Exception) {
-                        error = "Enter valid dates and an end date on or after the start date."
+                        error =
+                            resources.getString(
+                                R.string
+                                    .enter_valid_dates_and_an_end_date_on_or_after_the_start_date
+                            )
                     }
                 },
             ) {
-                Text("Request export")
+                Text(resources.getString(R.string.request_export))
             }
         }
     }

@@ -59,6 +59,7 @@ class NativeNavigationTest {
         startKoin {
             modules(
                 module {
+                    single { io.guallet.android.core.state.AppDispatchers() }
                     single<AccountsRepository> { accounts }
                     single<FinanceRepository> { KtorFinanceRepository(client) }
                     single<TransferRepository> { KtorTransferRepository(client) }
@@ -86,9 +87,7 @@ class NativeNavigationTest {
         }
         compose.onNodeWithText("Hi, Alex").assertIsDisplayed()
         compose.onNodeWithText("Accounts").performClick()
-        compose.waitUntil(10_000) {
-            compose.onAllNodesWithText("Everyday bank").fetchSemanticsNodes().isNotEmpty()
-        }
+        compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Everyday bank"))
         compose.onNodeWithText("View account").performScrollTo().performClick()
         compose.waitUntil(10_000) {
             compose.onAllNodesWithText("Edit").fetchSemanticsNodes().isNotEmpty()
@@ -104,6 +103,34 @@ class NativeNavigationTest {
             compose.onAllNodesWithText("Updated bank").fetchSemanticsNodes().isNotEmpty()
         }
         compose.onNodeWithText("Updated bank").assertIsDisplayed()
+    }
+
+    @Test
+    fun `unsolicited reset link cannot dispose a signed-in account draft`() {
+        val auth = AuthViewModel(NavigationAuth())
+        compose.setContent { GualletTheme { io.guallet.android.ui.GualletApp(auth) } }
+        compose.waitUntil(10_000) {
+            compose.onAllNodesWithText("Hi, Alex").fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNodeWithText("Accounts").performClick()
+        compose.onNodeWithText("Add account").performClick()
+        compose.onNodeWithText("Account name").performTextReplacement("Draft stays open")
+        compose.runOnIdle {
+            auth.handleDeepLink("guallet-android://login/reset-password?token=untrusted")
+        }
+        compose.onNodeWithText("Open password reset?").assertIsDisplayed()
+        compose.onNodeWithText("Continue").performClick()
+        compose.onNode(hasText("Cancel") and hasAnyAncestor(isDialog())).performClick()
+        compose.onNodeWithText("Account name").assertTextContains("Draft stays open")
+        compose.runOnIdle {
+            auth.handleDeepLink("guallet-android://login/reset-password?token=untrusted-again")
+        }
+        compose
+            .onAllNodesWithText("Cancel")
+            .filter(hasAnyAncestor(isDialog()))
+            .onFirst()
+            .performClick()
+        compose.onNodeWithText("Account name").assertTextContains("Draft stays open")
     }
 
     @Test

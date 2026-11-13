@@ -78,13 +78,30 @@ data export, and mortgage/loan/stamp-duty calculators. Authentication supports
 passwords, email codes, Google browser sign-in, and reset codes/links. See the
 [migration notes](MIGRATION.md) for API deployment and validation requirements.
 
+## Review fixes and remaining decisions
+
+List screens use lazy rows with stable keys. Selection rows expose their visible
+labels to accessibility services. UI strings and feedback use Android resources,
+with plural quantities and preference-based display dates. IO and computation
+dispatchers are injected for blocking cookie work, calculators and CSV work.
+
+See [REVIEW.md](REVIEW.md) for each fix and its evidence. Two findings still need
+an important-decision approval: a credential-safe browser callback protocol and
+a financial/CSV draft storage policy. The existing credential-bearing scheme
+callbacks and oversized saved mapping dictionaries remain release blockers.
+
+The API balance-adjustment correction also needs deployment: account/ledger
+writes now share a database transaction and recorded changes use the correct
+sign. API builds compile `@guallet/money/server`; production packaging must
+include that workspace package's compiled output, as the Dockerfile does.
+
 ## Validation
 
 ```sh
 ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
 ```
 
-JVM tests use Ktor MockEngine for REST paths and cookies, coroutine tests
+The maintained suite contains 61 tests. JVM tests use Ktor MockEngine for REST paths and cookies, coroutine tests
 for session state, and parity fixtures for money and business calculations.
 Compose runtime tests use Robolectric for signed-in navigation and account editing. Android CI
 runs compilation, those tests, and lint when this project changes. A real

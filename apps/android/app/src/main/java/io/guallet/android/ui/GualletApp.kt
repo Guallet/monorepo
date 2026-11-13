@@ -18,28 +18,32 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.*
+import io.guallet.android.R
+import io.guallet.android.core.state.*
 import io.guallet.android.features.auth.presentation.AuthUiState
 import io.guallet.android.features.auth.presentation.AuthViewModel
 import io.guallet.android.features.auth.presentation.SessionState
+import io.guallet.android.ui.components.openExternalUri
 import io.guallet.android.ui.theme.GualletTokens as Tokens
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GualletApp(model: AuthViewModel = koinViewModel()) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val state by model.state.collectAsStateWithLifecycle()
     val uri = LocalUriHandler.current
     LaunchedEffect(state.browserUrl) {
         state.browserUrl?.let { url ->
-            uri.openUri(url)
-            model.browserOpened()
+            if (openExternalUri(uri, url)) model.browserOpened() else model.browserFailed()
         }
     }
-    if (state.resetToken != null) {
-        ResetLinkScreen(state, model)
-        return
-    }
+    var financeBusy by remember { mutableStateOf(false) }
     // Prevent a form being abandoned while its request is changing session state.
     BackHandler(state.busy) {}
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -49,37 +53,101 @@ fun GualletApp(model: AuthViewModel = koinViewModel()) {
                     CircularProgressIndicator()
                 }
             SessionState.Unavailable ->
-                AuthPanel("Could not load your session") {
-                    Text("Check your connection and try again.")
-                    Action("Try again", !state.busy, model::restoreSession)
+                AuthPanel(resources.getString(R.string.could_not_load_your_session)) {
+                    Text(resources.getString(R.string.check_your_connection_and_try_again))
+                    Action(
+                        resources.getString(R.string.try_again),
+                        !state.busy,
+                        model::restoreSession,
+                    )
                 }
             SessionState.SignedOut -> key("signed-out") { AuthNavigation(state, model) }
-            is SessionState.SignedIn -> NativeApp(session.user, model)
+            is SessionState.SignedIn -> NativeApp(session.user, model) { financeBusy = it }
         }
     }
+    if (state.pendingResetToken != null)
+        AlertDialog(
+            onDismissRequest = model::dismissPendingResetLink,
+            title = { Text(resources.getString(R.string.open_password_reset)) },
+            text = {
+                Text(
+                    if (financeBusy)
+                        resources.getString(
+                            R.string
+                                .wait_for_your_current_operation_to_finish_your_work_will_stay_here
+                        )
+                    else
+                        resources.getString(
+                            R.string
+                                .your_current_work_will_stay_open_while_you_check_this_reset_link
+                        )
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = !state.busy && !financeBusy,
+                    onClick = model::acceptResetLink,
+                ) {
+                    Text(resources.getString(R.string.action_continue))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = model::dismissPendingResetLink) {
+                    Text(resources.getString(R.string.cancel))
+                }
+            },
+        )
+    if (state.resetToken != null)
+        Dialog(
+            onDismissRequest = { if (!state.busy) model.dismissResetLink() },
+            properties =
+                DialogProperties(
+                    usePlatformDefaultWidth = false,
+                    securePolicy = SecureFlagPolicy.SecureOn,
+                ),
+        ) {
+            Surface { ResetLinkScreen(state, model) }
+        }
 }
 
 @Composable
 private fun AuthNavigation(state: AuthUiState, model: AuthViewModel) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val nav = rememberNavController()
     fun navigate(route: String) {
         if (state.busy) return
         model.clearFeedback()
         nav.navigate(route) { launchSingleTop = true }
     }
+    fun backTo(route: String) {
+        if (state.busy) return
+        model.clearFeedback()
+        if (!nav.popBackStack(route, false))
+            nav.navigate(route) {
+                popUpTo(nav.graph.startDestinationId)
+                launchSingleTop = true
+            }
+    }
     NavHost(navController = nav, startDestination = "welcome") {
         composable("welcome") {
-            AuthPanel("Your finances, under control.") {
+            AuthPanel(resources.getString(R.string.your_finances_under_control)) {
                 Text(
-                    "Guallet",
+                    resources.getString(R.string.guallet),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.primary,
                 )
-                Text("Your financial data stays yours.")
+                Text(resources.getString(R.string.your_financial_data_stays_yours))
                 Feedback(state)
-                Action("Continue with Google", !state.busy, model::startGoogle)
-                Action("Log in", !state.busy) { navigate("login") }
-                TextButton(onClick = { navigate("signup") }) { Text("Create account") }
+                Action(
+                    resources.getString(R.string.continue_with_google),
+                    !state.busy,
+                    model::startGoogle,
+                )
+                Action(resources.getString(R.string.log_in), !state.busy) { navigate("login") }
+                TextButton(onClick = { navigate("signup") }) {
+                    Text(resources.getString(R.string.create_account))
+                }
             }
         }
         composable("login") {
@@ -87,7 +155,7 @@ private fun AuthNavigation(state: AuthUiState, model: AuthViewModel) {
                 state,
                 model,
                 false,
-                onBack = { navigate("welcome") },
+                onBack = { backTo("welcome") },
                 onAlternative = { navigate("signup") },
                 onCode = { navigate("code") },
                 onRecovery = { navigate("recovery") },
@@ -98,22 +166,22 @@ private fun AuthNavigation(state: AuthUiState, model: AuthViewModel) {
                 state,
                 model,
                 true,
-                onBack = { navigate("welcome") },
+                onBack = { backTo("welcome") },
                 onAlternative = { navigate("login") },
                 onCode = { navigate("code") },
                 onRecovery = { navigate("recovery") },
             )
         }
-        composable("code") { CodeFlowScreen(state, model, false, onBack = { navigate("login") }) }
+        composable("code") { CodeFlowScreen(state, model, false, onBack = { backTo("login") }) }
         composable("reset-link") {
-            ResetLinkRequestScreen(state, model, onBack = { navigate("login") })
+            ResetLinkRequestScreen(state, model, onBack = { backTo("login") })
         }
         composable("recovery") {
             CodeFlowScreen(
                 state,
                 model,
                 true,
-                onBack = { navigate("login") },
+                onBack = { backTo("login") },
                 onResetLink = { navigate("reset-link") },
             )
         }
@@ -130,6 +198,8 @@ private fun CredentialsScreen(
     onCode: () -> Unit,
     onRecovery: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     var email by rememberSaveable { mutableStateOf("") }
     var name by rememberSaveable { mutableStateOf("") }
     // Sensitive fields survive recomposition, never saved state or disk.
@@ -137,11 +207,14 @@ private fun CredentialsScreen(
     val submit = {
         if (registration) model.signUp(name, email, password) else model.signIn(email, password)
     }
-    AuthPanel(if (registration) "Create your free account" else "Log in to Guallet") {
+    AuthPanel(
+        if (registration) resources.getString(R.string.create_your_free_account)
+        else resources.getString(R.string.log_in_to_guallet)
+    ) {
         Feedback(state)
         if (registration)
             Input(
-                "Name",
+                resources.getString(R.string.name),
                 name,
                 !state.busy,
                 onChange = {
@@ -150,7 +223,7 @@ private fun CredentialsScreen(
                 },
             )
         Input(
-            "Email address",
+            resources.getString(R.string.email_address),
             email,
             !state.busy,
             KeyboardType.Email,
@@ -169,22 +242,33 @@ private fun CredentialsScreen(
             onDone = submit,
         )
         if (registration)
-            Text("Use 8 to 128 characters.", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                resources.getString(R.string.use_8_to_128_characters),
+                style = MaterialTheme.typography.bodyMedium,
+            )
         Action(
-            if (registration) "Create account" else "Log in",
+            if (registration) resources.getString(R.string.create_account)
+            else resources.getString(R.string.log_in),
             !state.busy && email.isNotBlank() && password.isNotEmpty(),
             submit,
         )
         if (!registration) {
-            TextButton(enabled = !state.busy, onClick = onRecovery) { Text("Forgot password?") }
+            TextButton(enabled = !state.busy, onClick = onRecovery) {
+                Text(resources.getString(R.string.forgot_password))
+            }
             TextButton(enabled = !state.busy, onClick = onCode) {
-                Text("Log in with an email code")
+                Text(resources.getString(R.string.log_in_with_an_email_code))
             }
         }
         TextButton(enabled = !state.busy, onClick = onAlternative) {
-            Text(if (registration) "Already have an account? Log in" else "Create account")
+            Text(
+                if (registration) resources.getString(R.string.already_have_an_account_log_in)
+                else resources.getString(R.string.create_account)
+            )
         }
-        TextButton(enabled = !state.busy, onClick = onBack) { Text("Back") }
+        TextButton(enabled = !state.busy, onClick = onBack) {
+            Text(resources.getString(R.string.back))
+        }
     }
 }
 
@@ -221,10 +305,12 @@ internal fun AuthPanel(title: String, content: @Composable ColumnScope.() -> Uni
 
 @Composable
 internal fun Feedback(state: AuthUiState) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+    state.notice?.let { Text(it.resolve(resources)) }
     if (state.busy) LinearProgressIndicator(Modifier.fillMaxWidth())
     state.error?.let {
         Text(
-            it,
+            it.resolve(resources),
             color = MaterialTheme.colorScheme.error,
             modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
         )
@@ -269,12 +355,14 @@ internal fun PasswordInput(
     onChange: (String) -> Unit,
     onDone: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     var visible by remember { mutableStateOf(false) }
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
         enabled = enabled,
-        label = { Text("Password") },
+        label = { Text(resources.getString(R.string.password)) },
         singleLine = true,
         visualTransformation =
             if (visible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -282,7 +370,12 @@ internal fun PasswordInput(
             KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { if (enabled) onDone() }),
         trailingIcon = {
-            TextButton(onClick = { visible = !visible }) { Text(if (visible) "Hide" else "Show") }
+            TextButton(onClick = { visible = !visible }) {
+                Text(
+                    if (visible) resources.getString(R.string.hide)
+                    else resources.getString(R.string.show)
+                )
+            }
         },
         modifier = Modifier.fillMaxWidth(),
     )

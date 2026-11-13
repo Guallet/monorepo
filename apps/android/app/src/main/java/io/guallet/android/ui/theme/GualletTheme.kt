@@ -12,6 +12,7 @@ import io.guallet.android.R
 
 /** Native mapping of DESIGN.MD and packages/guallet-theme tokens. */
 object GualletTokens {
+    val minimumTouchTarget = 48.dp
     val chartHeight = 180.dp
     val selectionHeight = 320.dp
     val support = Color(0xFF009639)

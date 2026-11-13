@@ -1,6 +1,8 @@
 package io.guallet.android.features.calculators
 
+import io.guallet.android.R
 import io.guallet.android.core.money.Money
+import io.guallet.android.core.state.*
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -59,7 +61,9 @@ object Calculators {
                 annualRate >= zero &&
                 annualRate <= BigDecimal(100)
         ) {
-            "Check the amount, interest rate and term."
+            throw UiMessageException(
+                uiMessage(R.string.message_check_the_amount_interest_rate_and_term)
+            )
         }
         val rate = annualRate.divide(BigDecimal(1200), context)
         val raw =
@@ -82,7 +86,11 @@ object Calculators {
         val payment = scheduled(principal, annualRate, months, currency, false)
         val rate = annualRate.divide(BigDecimal(1200), context)
         require(payment > (principal * rate).round(currency)) {
-            "Increase the amount or shorten the term so the balance can fall."
+            throw UiMessageException(
+                uiMessage(
+                    R.string.message_increase_the_amount_or_shorten_the_term_so_the_balance_can_fall
+                )
+            )
         }
         var balance = principal
         val rows = mutableListOf<PaymentRow>()
@@ -108,7 +116,9 @@ object Calculators {
     fun mortgage(input: MortgageInput, currency: String): RepaymentResult {
         require(input.monthlyExtra >= zero && input.oneOff >= zero)
         require(input.oneOff.signum() == 0 || input.oneOffMonth in 1..input.months) {
-            "Choose an overpayment month within the mortgage term."
+            throw UiMessageException(
+                uiMessage(R.string.message_choose_an_overpayment_month_within_the_mortgage_term)
+            )
         }
         val scheduled = scheduled(input.principal, input.annualRate, input.months, currency, true)
         val rate = input.annualRate.divide(BigDecimal(1200), context)
@@ -131,7 +141,11 @@ object Calculators {
                     currency
                 )
             val extra = minOf((balance - principal).round(currency), requested)
-            require(principal + extra > zero) { "Increase the payment so the balance can fall." }
+            require(principal + extra > zero) {
+                throw UiMessageException(
+                    uiMessage(R.string.message_increase_the_payment_so_the_balance_can_fall)
+                )
+            }
             balance = maxOf(zero, balance - principal - extra).round(currency)
             rows.add(
                 PaymentRow(
@@ -144,7 +158,11 @@ object Calculators {
                 )
             )
         }
-        require(balance.signum() == 0) { "The mortgage did not repay within the supported term." }
+        require(balance.signum() == 0) {
+            throw UiMessageException(
+                uiMessage(R.string.message_the_mortgage_did_not_repay_within_the_supported_term)
+            )
+        }
         return RepaymentResult(scheduled, rows)
     }
 }
@@ -159,7 +177,11 @@ data class StampBand(
 
 fun stampDuty(price: BigDecimal, buyer: String): List<StampBand> {
     require(price.signum() > 0 && price.scale() <= 0 && price <= BigDecimal("1000000000000")) {
-        "Enter a whole-pound property price from one pound to one trillion."
+        throw UiMessageException(
+            uiMessage(
+                R.string.message_enter_a_whole_pound_property_price_from_one_pound_to_one_trillion
+            )
+        )
     }
     val firstTime = buyer == "firstTimeBuyer" && price <= BigDecimal(500000)
     val extra = if (buyer == "additionalProperty" && price >= BigDecimal(40000)) 5 else 0

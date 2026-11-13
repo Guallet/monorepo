@@ -63,3 +63,6 @@ fun upcomingPayments(
     }
     return result.sortedWith(compareBy<UpcomingPayment> { it.date }.thenBy { it.payment.name })
 }
+
+fun RecurringPayment.displayAmount(): java.math.BigDecimal =
+    if (type == "regular_income") amount.abs() else -amount.abs()

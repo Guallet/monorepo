@@ -1,18 +1,24 @@
 package io.guallet.android.features.transactions.presentation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.guallet.android.R
 import io.guallet.android.core.money.Currency
 import io.guallet.android.core.money.Money
+import io.guallet.android.core.network.apiJson
+import io.guallet.android.core.state.*
 import io.guallet.android.features.finance.presentation.*
 import io.guallet.android.features.transactions.domain.*
 import io.guallet.android.ui.components.*
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlinx.serialization.encodeToString
 
 fun transactionDate(value: String, end: Boolean = false): String {
     val date = LocalDate.parse(value)
@@ -21,11 +27,26 @@ fun transactionDate(value: String, end: Boolean = false): String {
         .toString()
 }
 
+private val transactionFilterSaver =
+    Saver<TransactionFilter, String>(
+        save = { apiJson.encodeToString(it) },
+        restore = {
+            runCatching { apiJson.decodeFromString<TransactionFilter>(it) }
+                .getOrDefault(TransactionFilter())
+        },
+    )
+
 @Composable
 fun TransactionsScreen(model: FinanceViewModel, open: (String) -> Unit, create: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val state by model.transactions.state.collectAsStateWithLifecycle()
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val categories by model.categories.state.collectAsStateWithLifecycle()
+    var applied by
+        rememberSaveable(stateSaver = transactionFilterSaver) {
+            mutableStateOf(model.transactionFilter)
+        }
     var filters by rememberSaveable { mutableStateOf(false) }
     var selectedAccounts by rememberSaveable {
         mutableStateOf(model.transactionFilter.accounts?.split(',').orEmpty())
@@ -42,125 +63,164 @@ fun TransactionsScreen(model: FinanceViewModel, open: (String) -> Unit, create: 
     var error by remember { mutableStateOf<String?>(null) }
     var query by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(Unit) {
-        model.loadTransactions()
+        model.loadTransactions(applied)
         model.loadAccounts()
         model.loadCategories()
     }
-    FinancePage("Transactions") {
-        Row {
-            TextButton(onClick = { filters = !filters }) { Text("Filters") }
-            TextButton(onClick = { model.loadTransactions() }) { Text("Refresh") }
-            TextButton(onClick = create) { Text("Add") }
-        }
-        if (filters)
-            FinanceCard {
-                RemoteContent(accounts, model::loadAccounts) { list ->
-                    MultiChoice(
-                        "Accounts",
-                        selectedAccounts.toSet(),
-                        list.map { it.id to it.name },
-                    ) {
-                        selectedAccounts = it.toList()
+    FinanceListPage(resources.getString(R.string.transactions)) {
+        item("controls") {
+            Column {
+                Row {
+                    TextButton(onClick = { filters = !filters }) {
+                        Text(resources.getString(R.string.filters))
                     }
-                }
-                RemoteContent(categories, model::loadCategories) { list ->
-                    MultiChoice(
-                        "Categories",
-                        selectedCategories.toSet(),
-                        list.map { it.id to it.name },
-                    ) {
-                        selectedCategories = it.toList()
+                    TextButton(onClick = { model.loadTransactions() }) {
+                        Text(resources.getString(R.string.refresh))
                     }
+                    TextButton(onClick = create) { Text(resources.getString(R.string.add)) }
                 }
-                TextField(
-                    "Start date (YYYY-MM-DD)",
-                    start,
-                    onChange = {
-                        start = it
-                        error = null
-                    },
-                )
-                TextField(
-                    "End date (YYYY-MM-DD)",
-                    end,
-                    onChange = {
-                        end = it
-                        error = null
-                    },
-                )
-                error?.let { ErrorNotice(it) }
-                Button(
-                    onClick = {
-                        try {
-                            val from = start.takeIf { it.isNotBlank() }?.let { transactionDate(it) }
-                            val to =
-                                end.takeIf { it.isNotBlank() }?.let { transactionDate(it, true) }
-                            require(from == null || to == null || from <= to) {
-                                "Choose an end date on or after the start date."
+                if (filters)
+                    FinanceCard {
+                        RemoteContent(accounts, model::loadAccounts) { list ->
+                            MultiChoice(
+                                resources.getString(R.string.accounts),
+                                selectedAccounts.toSet(),
+                                list.map { it.id to it.name },
+                            ) {
+                                selectedAccounts = it.toList()
                             }
-                            model.loadTransactions(
-                                TransactionFilter(
-                                    accounts = selectedAccounts.joinToString(",").ifBlank { null },
-                                    categories =
-                                        selectedCategories.joinToString(",").ifBlank { null },
-                                    startDate = from,
-                                    endDate = to,
-                                )
-                            )
-                            filters = false
-                        } catch (_: Exception) {
-                            error = "Enter valid dates and an end date on or after the start date."
+                        }
+                        RemoteContent(categories, model::loadCategories) { list ->
+                            MultiChoice(
+                                resources.getString(R.string.categories),
+                                selectedCategories.toSet(),
+                                list.map { it.id to it.name },
+                            ) {
+                                selectedCategories = it.toList()
+                            }
+                        }
+                        TextField(
+                            resources.getString(R.string.start_date_yyyy_mm_dd),
+                            start,
+                            onChange = {
+                                start = it
+                                error = null
+                            },
+                        )
+                        TextField(
+                            resources.getString(R.string.end_date_yyyy_mm_dd),
+                            end,
+                            onChange = {
+                                end = it
+                                error = null
+                            },
+                        )
+                        error?.let { ErrorNotice(it) }
+                        Button(
+                            onClick = {
+                                try {
+                                    val from =
+                                        start
+                                            .takeIf { it.isNotBlank() }
+                                            ?.let { transactionDate(it) }
+                                    val to =
+                                        end.takeIf { it.isNotBlank() }
+                                            ?.let { transactionDate(it, true) }
+                                    require(from == null || to == null || from <= to) {
+                                        resources.getString(
+                                            R.string.choose_an_end_date_on_or_after_the_start_date
+                                        )
+                                    }
+                                    applied =
+                                        TransactionFilter(
+                                            accounts =
+                                                selectedAccounts.joinToString(",").ifBlank { null },
+                                            categories =
+                                                selectedCategories.joinToString(",").ifBlank {
+                                                    null
+                                                },
+                                            startDate = from,
+                                            endDate = to,
+                                        )
+                                    model.loadTransactions(applied)
+                                    filters = false
+                                } catch (_: Exception) {
+                                    error =
+                                        resources.getString(
+                                            R.string
+                                                .enter_valid_dates_and_an_end_date_on_or_after_the_start_date
+                                        )
+                                }
+                            }
+                        ) {
+                            Text(resources.getString(R.string.apply_filters))
+                        }
+                        TextButton(
+                            onClick = {
+                                selectedAccounts = emptyList()
+                                selectedCategories = emptyList()
+                                start = ""
+                                end = ""
+                                applied = TransactionFilter()
+                                model.loadTransactions(applied)
+                                filters = false
+                            }
+                        ) {
+                            Text(resources.getString(R.string.clear_filters))
                         }
                     }
-                ) {
-                    Text("Apply filters")
-                }
-                TextButton(
-                    onClick = {
-                        selectedAccounts = emptyList()
-                        selectedCategories = emptyList()
-                        start = ""
-                        end = ""
-                        model.loadTransactions(TransactionFilter())
-                        filters = false
-                    }
-                ) {
-                    Text("Clear filters")
-                }
+                TextField(
+                    resources.getString(R.string.search_this_page),
+                    query,
+                    onChange = { query = it },
+                )
             }
-        TextField("Search this page", query, onChange = { query = it })
-        RemoteContent(state, { model.loadTransactions() }) { page ->
-            Text("${page.meta.total} transactions · Page ${page.meta.page}")
+        }
+        remoteItems(state, { model.loadTransactions(applied) }) { page ->
+            item("page-summary") {
+                Text(
+                    resources.getString(
+                        R.string.transactions_page,
+                        resources.getQuantityString(
+                            R.plurals.transaction_count,
+                            page.meta.total,
+                            page.meta.total,
+                        ),
+                        page.meta.page,
+                    )
+                )
+            }
             val visible =
                 page.transactions.filter { it.description.contains(query, ignoreCase = true) }
-            if (visible.isEmpty()) Text("No transactions found.")
-            visible.forEach { transaction ->
+            if (visible.isEmpty())
+                item("empty") { Text(resources.getString(R.string.no_transactions_found)) }
+            items(visible, key = { "transaction:${it.id}" }) { transaction ->
                 TransactionCard(
                     transaction,
                     { open(transaction.id) },
                     accounts.value.orEmpty().find { it.id == transaction.accountId }?.name,
                 )
             }
-            Row {
-                TextButton(
-                    enabled = !state.loading && page.meta.page > 1,
-                    onClick = {
-                        model.loadTransactions(
-                            model.transactionFilter.copy(page = page.meta.page - 1)
-                        )
-                    },
-                ) {
-                    Text("Previous page")
-                }
-                TextButton(
-                    enabled = !state.loading && page.meta.hasMore,
-                    onClick = {
-                        model.loadTransactions(
-                            model.transactionFilter.copy(page = page.meta.page + 1)
-                        )
-                    },
-                ) {
-                    Text("Next page")
+            item("pagination") {
+                Row {
+                    TextButton(
+                        enabled = !state.loading && page.meta.page > 1,
+                        onClick = {
+                            applied = applied.copy(page = page.meta.page - 1)
+                            model.loadTransactions(applied)
+                        },
+                    ) {
+                        Text(resources.getString(R.string.previous_page))
+                    }
+                    TextButton(
+                        enabled = !state.loading && page.meta.hasMore,
+                        onClick = {
+                            applied = applied.copy(page = page.meta.page + 1)
+                            model.loadTransactions(applied)
+                        },
+                    ) {
+                        Text(resources.getString(R.string.next_page))
+                    }
                 }
             }
         }
@@ -169,6 +229,8 @@ fun TransactionsScreen(model: FinanceViewModel, open: (String) -> Unit, create: 
 
 @Composable
 fun TransactionCard(transaction: Transaction, onOpen: () -> Unit, account: String? = null) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     FinanceCard {
         Text(transaction.description, style = MaterialTheme.typography.titleLarge)
         MoneyLabel(transaction.amount, transaction.currency)
@@ -176,7 +238,7 @@ fun TransactionCard(transaction: Transaction, onOpen: () -> Unit, account: Strin
             listOfNotNull(formatPreferenceDate(transaction.date, LocalDateFormat.current), account)
                 .joinToString(" · ")
         )
-        TextButton(onClick = onOpen) { Text("View transaction") }
+        TextButton(onClick = onOpen) { Text(resources.getString(R.string.view_transaction)) }
     }
 }
 
@@ -187,6 +249,8 @@ fun TransactionScreen(
     defaultCurrency: String,
     onBack: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val state by model.transaction.state.collectAsStateWithLifecycle()
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val categories by model.categories.state.collectAsStateWithLifecycle()
@@ -203,14 +267,14 @@ fun TransactionScreen(
             onBack()
         }
     }
-    if (id != null && (state.loading || state.error != null || state.value?.id != id)) {
-        FinancePage("Transaction", onBack) {
+    if (id != null && (state.value?.id != id)) {
+        FinancePage(resources.getString(R.string.transaction), onBack) {
             RemoteContent(state, { model.loadTransaction(id) }) {}
         }
         return
     }
     if (accounts.value == null || categories.value == null) {
-        FinancePage("Transaction", onBack) {
+        FinancePage(resources.getString(R.string.transaction), onBack) {
             RemoteContent(accounts, model::loadAccounts) {}
             RemoteContent(categories, model::loadCategories) {}
         }
@@ -227,6 +291,8 @@ private fun TransactionEditor(
     defaultCurrency: String,
     onBack: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val categories by model.categories.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
@@ -255,7 +321,18 @@ private fun TransactionEditor(
     var error by remember { mutableStateOf<String?>(null) }
     var deleting by remember { mutableStateOf(false) }
     val baseline = remember {
-        listOf(description, amount, income.toString(), accountId, currency, date, notes, categoryId)
+        listOf(
+            transaction?.description.orEmpty(),
+            transaction?.amount?.abs()?.toPlainString().orEmpty(),
+            (transaction?.amount?.signum() == 1).toString(),
+            transaction?.accountId ?: accounts.value.orEmpty().firstOrNull()?.id.orEmpty(),
+            transaction?.currency
+                ?: accounts.value.orEmpty().firstOrNull()?.currency
+                ?: defaultCurrency,
+            transaction?.date?.take(10) ?: LocalDate.now().toString(),
+            transaction?.notes.orEmpty(),
+            transaction?.categoryId.orEmpty(),
+        )
     }
     val dirty =
         baseline !=
@@ -270,9 +347,18 @@ private fun TransactionEditor(
                 categoryId,
             )
     val back = rememberFormBackHandler(dirty, mutation.busy, onBack)
-    FinancePage(if (transaction == null) "Add transaction" else "Edit transaction", back) {
+    val remote by model.transaction.state.collectAsStateWithLifecycle()
+    FinancePage(
+        if (transaction == null) resources.getString(R.string.add_transaction)
+        else resources.getString(R.string.edit_transaction),
+        back,
+    ) {
+        if (transaction != null) {
+            if (remote.loading) LinearProgressIndicator()
+            remote.error?.let { ErrorNotice(it) { model.loadTransaction(transaction.id) } }
+        }
         TextField(
-            "Description",
+            resources.getString(R.string.description),
             description,
             !mutation.busy,
             onChange = {
@@ -281,15 +367,18 @@ private fun TransactionEditor(
             },
         )
         ChoiceField(
-            "Type",
+            resources.getString(R.string.type),
             if (income) "income" else "expense",
-            listOf("expense" to "Expense", "income" to "Income"),
+            listOf(
+                "expense" to resources.getString(R.string.expense),
+                "income" to resources.getString(R.string.income),
+            ),
             !mutation.busy,
         ) {
             income = it == "income"
         }
         ChoiceField(
-            "Account",
+            resources.getString(R.string.account),
             accountId,
             accounts.value.orEmpty().map { it.id to it.name },
             !mutation.busy,
@@ -298,7 +387,7 @@ private fun TransactionEditor(
             currency = accounts.value.orEmpty().find { item -> item.id == it }?.currency ?: currency
         }
         ChoiceField(
-            "Currency",
+            resources.getString(R.string.currency),
             currency,
             Currency.supported.map { it.code to it.code },
             !mutation.busy,
@@ -306,7 +395,7 @@ private fun TransactionEditor(
             currency = it
         }
         TextField(
-            "Amount",
+            resources.getString(R.string.amount),
             amount,
             !mutation.busy,
             KeyboardType.Decimal,
@@ -316,7 +405,7 @@ private fun TransactionEditor(
             },
         )
         TextField(
-            "Date (YYYY-MM-DD)",
+            resources.getString(R.string.date_yyyy_mm_dd),
             date,
             !mutation.busy,
             onChange = {
@@ -325,14 +414,21 @@ private fun TransactionEditor(
             },
         )
         ChoiceField(
-            "Category",
+            resources.getString(R.string.category),
             categoryId,
-            listOf("" to "Uncategorised") + categories.value.orEmpty().map { it.id to it.name },
+            listOf("" to resources.getString(R.string.uncategorised)) +
+                categories.value.orEmpty().map { it.id to it.name },
             !mutation.busy,
         ) {
             categoryId = it
         }
-        TextField("Notes", notes, !mutation.busy, multiline = true, onChange = { notes = it })
+        TextField(
+            resources.getString(R.string.notes),
+            notes,
+            !mutation.busy,
+            multiline = true,
+            onChange = { notes = it },
+        )
         error?.let { ErrorNotice(it) }
         MutationFeedback(mutation)
         Button(
@@ -340,10 +436,12 @@ private fun TransactionEditor(
             onClick = {
                 try {
                     require(description.isNotBlank() && accountId.isNotBlank()) {
-                        "Enter a description and choose an account."
+                        resources.getString(R.string.enter_a_description_and_choose_an_account)
                     }
                     val money = Money.parse(amount, currency)
-                    require(money.amount.signum() > 0) { "Enter an amount above zero." }
+                    require(money.amount.signum() > 0) {
+                        resources.getString(R.string.enter_an_amount_above_zero)
+                    }
                     val input =
                         TransactionInput(
                             accountId,
@@ -360,21 +458,27 @@ private fun TransactionEditor(
                     }
                 } catch (failure: Exception) {
                     error =
-                        if (failure is IllegalArgumentException) failure.message
-                        else "Enter a valid date."
+                        if (failure is IllegalArgumentException) failure.userMessage(resources)
+                        else resources.getString(R.string.enter_a_valid_date)
                 }
             },
         ) {
-            Text("Save transaction")
+            Text(resources.getString(R.string.save_transaction))
         }
         if (transaction != null)
             TextButton(enabled = !mutation.busy, onClick = { deleting = true }) {
-                Text("Delete transaction")
+                Text(resources.getString(R.string.delete_transaction))
             }
-        TextButton(enabled = !mutation.busy, onClick = back) { Text("Cancel") }
+        TextButton(enabled = !mutation.busy, onClick = back) {
+            Text(resources.getString(R.string.cancel))
+        }
     }
     if (deleting && transaction != null)
-        ConfirmDelete("Delete transaction?", mutation.busy, { deleting = false }) {
+        ConfirmDelete(
+            resources.getString(R.string.delete_transaction_a61cf3),
+            mutation.busy,
+            { deleting = false },
+        ) {
             model.mutate { model.repository.deleteTransaction(transaction.id) }
         }
 }

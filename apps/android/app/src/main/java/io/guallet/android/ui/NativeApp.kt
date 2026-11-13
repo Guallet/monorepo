@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -27,12 +28,13 @@ import io.guallet.android.features.settings.presentation.SettingsScreen
 import io.guallet.android.features.transactions.presentation.*
 import io.guallet.android.features.transfer.*
 import io.guallet.android.ui.components.LocalDateFormat
+import java.time.YearMonth
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 /** Finance ViewModels and in-memory documents are destroyed on sign-out/user changes. */
 @Composable
-fun NativeApp(user: AuthUser, auth: AuthViewModel) {
+fun NativeApp(user: AuthUser, auth: AuthViewModel, onBusyChange: (Boolean) -> Unit = {}) {
     key(user.id) {
         val session: NativeSessionScope = koinViewModel(key = "native-session-${user.id}")
         val store = session.store
@@ -47,13 +49,15 @@ fun NativeApp(user: AuthUser, auth: AuthViewModel) {
             onDispose { if (activity?.isChangingConfigurations != true) store.clear() }
         }
         CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
-            NativeNavigation(user, auth)
+            NativeNavigation(user, auth, onBusyChange)
         }
     }
 }
 
 @Composable
-private fun NativeNavigation(user: AuthUser, auth: AuthViewModel) {
+private fun NativeNavigation(user: AuthUser, auth: AuthViewModel, onBusyChange: (Boolean) -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val model: FinanceViewModel = koinViewModel()
     val accounts: AccountsViewModel = koinViewModel()
     val importer: ImportViewModel = koinViewModel()
@@ -64,21 +68,32 @@ private fun NativeNavigation(user: AuthUser, auth: AuthViewModel) {
     val accountState by accounts.state.collectAsStateWithLifecycle()
     val settings by model.settings.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
+    val importBusy by importer.busy.collectAsStateWithLifecycle()
+    LaunchedEffect(mutation.busy, accountState.saving, importBusy) {
+        onBusyChange(mutation.busy || accountState.saving || importBusy)
+    }
+    DisposableEffect(Unit) { onDispose { onBusyChange(false) } }
     LaunchedEffect(expired, accountState.unauthorized, transferExpired) {
         if (expired || accountState.unauthorized || transferExpired) auth.restoreSession()
     }
     val currency = settings.value?.currencies?.defaultCurrency ?: "GBP"
     LaunchedEffect(user.id) { model.loadSettings() }
+    var budgetMonthKey by rememberSaveable { mutableStateOf(YearMonth.now().toString()) }
+    val budgetMonth = YearMonth.parse(budgetMonthKey)
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val route = entry?.destination?.route
     val tabs =
         listOf(
-            Triple("home", "Home", R.drawable.nav_home),
-            Triple("accounts", "Accounts", R.drawable.nav_wallet),
-            Triple("transactions", "Transactions", R.drawable.nav_receipt),
-            Triple("budgets", "Budgets", R.drawable.nav_chartpie),
-            Triple("settings", "Settings", R.drawable.nav_settings),
+            Triple("home", resources.getString(R.string.home), R.drawable.nav_home),
+            Triple("accounts", resources.getString(R.string.accounts), R.drawable.nav_wallet),
+            Triple(
+                "transactions",
+                resources.getString(R.string.transactions),
+                R.drawable.nav_receipt,
+            ),
+            Triple("budgets", resources.getString(R.string.budgets), R.drawable.nav_chartpie),
+            Triple("settings", resources.getString(R.string.settings), R.drawable.nav_settings),
         )
     fun navigate(value: String) {
         if (!mutation.busy && !accountState.saving) nav.navigate(value) { launchSingleTop = true }
@@ -113,7 +128,7 @@ private fun NativeNavigation(user: AuthUser, auth: AuthViewModel) {
         CompositionLocalProvider(
             LocalDateFormat provides (settings.value?.dateFormat ?: "DD/MM/YYYY")
         ) {
-            Box(Modifier.padding(padding)) {
+            Box(Modifier.padding(padding).consumeWindowInsets(padding)) {
                 NavHost(nav, startDestination = "home") {
                     composable("home") { DashboardScreen(model, user.name, ::navigate) }
                     composable("accounts") {
@@ -175,9 +190,13 @@ private fun NativeNavigation(user: AuthUser, auth: AuthViewModel) {
                             model,
                             { navigate("budgets/${Uri.encode(it)}") },
                             { navigate("budgets/new") },
+                            month = budgetMonth,
+                            onMonthChange = { budgetMonthKey = it.toString() },
                         )
                     }
-                    composable("budgets/new") { BudgetFormScreen(null, model, currency, back) }
+                    composable("budgets/new") {
+                        BudgetFormScreen(null, model, currency, back, budgetMonth)
+                    }
                     composable("budgets/{id}") { current ->
                         val id = current.arguments!!.getString("id")!!
                         BudgetDetails(
@@ -186,6 +205,7 @@ private fun NativeNavigation(user: AuthUser, auth: AuthViewModel) {
                             back,
                             { navigate("budgets/${Uri.encode(id)}/edit") },
                             { navigate("transactions/${Uri.encode(it)}") },
+                            month = budgetMonth,
                         )
                     }
                     composable("budgets/{id}/edit") { current ->
@@ -194,6 +214,7 @@ private fun NativeNavigation(user: AuthUser, auth: AuthViewModel) {
                             model,
                             currency,
                             back,
+                            budgetMonth,
                         )
                     }
                     composable("goals") {

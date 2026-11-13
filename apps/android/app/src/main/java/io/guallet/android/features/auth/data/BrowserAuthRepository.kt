@@ -1,6 +1,8 @@
 package io.guallet.android.features.auth.data
 
+import io.guallet.android.R
 import io.guallet.android.core.network.PersistentCookies
+import io.guallet.android.core.state.*
 import io.guallet.android.features.auth.domain.AuthUser
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -79,7 +81,7 @@ class KtorBrowserAuthRepository(
                 .body<SocialResult>()
         val authorization = URI(result.url)
         require(authorization.scheme == "https" && authorization.host != null) {
-            "Invalid authentication redirect."
+            throw UiMessageException(uiMessage(R.string.message_invalid_authentication_redirect))
         }
         val state =
             cookies
@@ -115,7 +117,9 @@ class KtorBrowserAuthRepository(
     }
 
     override suspend fun finishGoogle(cookie: String): AuthUser {
-        require(cookie.length <= 32768) { "Invalid authentication callback." }
+        require(cookie.length <= 32768) {
+            throw UiMessageException(uiMessage(R.string.message_invalid_authentication_callback))
+        }
         val accepted =
             cookie
                 .split(Regex(",(?=\\s*[^;,=\\s]+=)"))
@@ -125,12 +129,16 @@ class KtorBrowserAuthRepository(
                         setOf("better-auth.session_token", "better-auth.session_data")
                 }
         require(accepted.any { it.name.endsWith("session_token") && it.value.isNotBlank() }) {
-            "No session was returned. Please try signing in again."
+            throw UiMessageException(
+                uiMessage(R.string.message_no_session_was_returned_please_try_signing_in_again)
+            )
         }
         cookies.clear()
         accepted.forEach { cookies.addCookie(Url(baseUrl), it) }
         return auth.session()
-            ?: throw IllegalArgumentException("Could not verify the returned session.")
+            ?: throw UiMessageException(
+                uiMessage(R.string.message_could_not_verify_the_returned_session)
+            )
     }
 
     override suspend fun requestResetLink(email: String) {

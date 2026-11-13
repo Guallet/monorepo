@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
+import io.guallet.android.R
 import io.guallet.android.core.money.Money
 import io.guallet.android.ui.theme.GualletTokens
 import java.math.BigDecimal
@@ -11,11 +12,13 @@ import java.util.Locale
 
 @Composable
 fun MoneyLabel(amount: BigDecimal, currency: String, locale: Locale = Locale.getDefault()) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val text =
         runCatching { Money.fromCurrencyCode(amount, currency).format(locale, includeCode = true) }
             .getOrNull()
     Text(
-        text ?: "Amount unavailable ($currency)",
+        text ?: resources.getString(R.string.amount_unavailable_value, currency),
         color =
             when {
                 text == null -> MaterialTheme.colorScheme.onSurfaceVariant

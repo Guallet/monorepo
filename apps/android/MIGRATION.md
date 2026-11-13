@@ -79,18 +79,28 @@ returns to `/callback`; password reset links return to `/reset-password`. Expo
 keeps its own scheme. API endpoints must be HTTPS with a certificate trusted by
 the device, because the backend issues secure cookies.
 
+The custom scheme still carries credentials in the existing callback protocol.
+F01 in [REVIEW.md](REVIEW.md) remains open pending a verifier-bound server handoff
+or verified HTTPS App Links; the nonce alone does not prevent interception.
+
 ## Lifecycle and transfers
 
 Financial ViewModels and CSV drafts are held in a signed-in user scope and
 cleared on sign-out or user changes. There is no persistent financial cache.
-Sensitive form values and reset tokens are not saved to disk. Cookies and the
-pending OAuth nonce use the encrypted, backup-excluded cookie store.
+Passwords, email codes and reset tokens stay in memory. Some financial editor
+values and import mapping dictionaries still use Android saved instance state;
+F09 in [REVIEW.md](REVIEW.md) tracks the pending storage-policy decision and
+Binder-size problem. Cookies and the pending OAuth nonce use the encrypted,
+backup-excluded cookie store; cookie disk/Keystore work is dispatched to IO.
 
-CSV is read and parsed off the main thread. Import submission requires the
+CSV reads/parsing, column validation, preview preparation, normalization and
+request encoding run off the main thread. Request JSON is encoded once and
+checked against the size limit. Import submission requires the
 mapping/preview confirmation. Invalid rows are counted before submission and
 skipped; no valid rows means submission is disabled. Requests larger than the
 API's 10 MB body limit are rejected locally. Job polling ends when the job
-finishes/fails, the screen is left, the session ends, or ten minutes pass. A
+finishes/fails, the screen lifecycle stops, the screen is left, the session
+ends, or ten minutes pass. Polling resumes when the screen becomes visible. A
 polling failure offers retry and does not imply the server job was cancelled.
 The import job itself continues after leaving the screen. Export acceptance
 means the API queued a job, not that a download has completed.
@@ -113,8 +123,11 @@ calculator parity fixtures, CSV edge cases, recurrence month-end behaviour,
 category hierarchy, notification route validation, planning/transfer/settings
 contracts, and OAuth state/replay handling, including callbacks after process
 recreation. Robolectric Compose tests exercise signed-in navigation, account
-edits, and navigation to CSV document selection. The suite contains 40 tests, including cache isolation between accounts and
-protection against stale request completion.
+edits, and navigation to CSV document selection. Regression tests also cover
+restoration, reset overlays, background polling,
+labelled selection controls, cookie dispatchers, prepared CSV requests and
+resource/plural/date formatting. See [REVIEW.md](REVIEW.md) for the current
+validation results and remaining findings.
 
 A successful build and JVM tests do not establish live-provider or device
 parity. Before release, run the APK on target devices and exercise a real HTTPS

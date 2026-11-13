@@ -21,7 +21,9 @@ interface CookieStore {
 // Retain the commit result check before reporting that credentials were persisted.
 @SuppressLint("UseKtx")
 class EncryptedCookieStore(context: Context) : CookieStore {
-    private val preferences = context.getSharedPreferences("auth_cookies", Context.MODE_PRIVATE)
+    private val preferences by lazy {
+        context.getSharedPreferences("auth_cookies", Context.MODE_PRIVATE)
+    }
     private val alias = "guallet.auth.cookies"
 
     private fun key(): SecretKey {

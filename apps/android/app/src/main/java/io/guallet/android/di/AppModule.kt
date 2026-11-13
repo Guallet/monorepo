@@ -25,13 +25,20 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
+    single { io.guallet.android.core.state.AppDispatchers() }
     single<CookieStore> { EncryptedCookieStore(androidContext()) }
-    single { PersistentCookies(get(), BuildConfig.API_BASE_URL) }
+    single {
+        PersistentCookies(
+            get(),
+            BuildConfig.API_BASE_URL,
+            get<io.guallet.android.core.state.AppDispatchers>().io,
+        )
+    }
     single { createApiClient(BuildConfig.API_BASE_URL, get<PersistentCookies>()) }
     single<AuthRepository> { BetterAuthRepository(get(), get()) }
     single<AccountsRepository> { KtorAccountsRepository(get()) }
     single<FinanceRepository> { KtorFinanceRepository(get()) }
-    single<TransferRepository> { KtorTransferRepository(get()) }
+    single<TransferRepository> { KtorTransferRepository(get(), get()) }
     viewModelOf(::NativeSessionScope)
     viewModelOf(::AccountsViewModel)
     viewModelOf(::FinanceViewModel)

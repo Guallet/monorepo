@@ -1,13 +1,16 @@
 package io.guallet.android.features.planning
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.guallet.android.R
 import io.guallet.android.core.money.*
+import io.guallet.android.core.state.*
 import io.guallet.android.features.budgets.domain.*
 import io.guallet.android.features.finance.presentation.FinanceViewModel
 import io.guallet.android.features.goals.domain.*
@@ -17,56 +20,75 @@ import io.guallet.android.features.transactions.presentation.transactionDate
 import io.guallet.android.ui.components.*
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
 
-val cadenceOptions =
+private val cadenceLabels =
     listOf(
-        "weekly" to "Weekly",
-        "biweekly" to "Every two weeks",
-        "monthly" to "Monthly",
-        "quarterly" to "Quarterly",
-        "yearly" to "Yearly",
+        "weekly" to R.string.weekly,
+        "biweekly" to R.string.every_two_weeks,
+        "monthly" to R.string.monthly,
+        "quarterly" to R.string.quarterly,
+        "yearly" to R.string.yearly,
     )
-val paymentOptions =
+private val paymentLabels =
     listOf(
-        "subscription" to "Subscription",
-        "regular_payment" to "Payment",
-        "regular_income" to "Income",
+        "subscription" to R.string.subscription,
+        "regular_payment" to R.string.payment,
+        "regular_income" to R.string.income,
     )
 
 @Composable
-fun BudgetsScreen(model: FinanceViewModel, open: (String) -> Unit, create: () -> Unit) {
+fun BudgetsScreen(
+    model: FinanceViewModel,
+    open: (String) -> Unit,
+    create: () -> Unit,
+    month: YearMonth,
+    onMonthChange: (YearMonth) -> Unit,
+) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val state by model.budgets.state.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) { model.loadBudgets() }
-    FinancePage("Budgets") {
-        Row {
-            TextButton(onClick = { model.loadBudgets(model.month.minusMonths(1)) }) {
-                Text("Previous month")
-            }
-            TextButton(onClick = { model.loadBudgets(model.month.plusMonths(1)) }) {
-                Text("Next month")
+    LaunchedEffect(month) { model.loadBudgets(month) }
+    FinanceListPage(resources.getString(R.string.budgets)) {
+        item("controls") {
+            Column(
+                verticalArrangement =
+                    Arrangement.spacedBy(io.guallet.android.ui.theme.GualletTokens.gutter)
+            ) {
+                Row {
+                    TextButton(onClick = { onMonthChange(month.minusMonths(1)) }) {
+                        Text(resources.getString(R.string.previous_month))
+                    }
+                    TextButton(onClick = { onMonthChange(month.plusMonths(1)) }) {
+                        Text(resources.getString(R.string.next_month))
+                    }
+                }
+                Text(month.toString(), style = MaterialTheme.typography.titleLarge)
+                Button(onClick = create) { Text(resources.getString(R.string.add_budget)) }
             }
         }
-        Text(model.month.toString(), style = MaterialTheme.typography.titleLarge)
-        Button(onClick = create) { Text("Add budget") }
-        RemoteContent(state, { model.loadBudgets() }) { budgets ->
-            if (budgets.isEmpty()) Text("No budgets yet.")
+        remoteItems(state, { model.loadBudgets(month) }) { budgets ->
+            if (budgets.isEmpty())
+                item("empty") { Text(resources.getString(R.string.no_budgets_yet)) }
             budgets
                 .groupBy { it.currency }
                 .forEach { (currency, group) ->
-                    FinanceCard {
-                        Text("${currency} monthly budget total")
-                        MoneyLabel(
-                            group.fold(BigDecimal.ZERO) { total, item -> total + item.amount },
-                            currency,
-                        )
-                        Text("Spent")
-                        MoneyLabel(
-                            group.fold(BigDecimal.ZERO) { total, item -> total + item.spent },
-                            currency,
-                        )
+                    item("summary:$currency") {
+                        FinanceCard {
+                            Text(resources.getString(R.string.value_monthly_budget_total, currency))
+                            MoneyLabel(
+                                group.fold(BigDecimal.ZERO) { total, item -> total + item.amount },
+                                currency,
+                            )
+                            Text(resources.getString(R.string.spent))
+                            MoneyLabel(
+                                group.fold(BigDecimal.ZERO) { total, item -> total + item.spent },
+                                currency,
+                            )
+                        }
                     }
                 }
-            budgets.forEach { budget ->
+            items(budgets, key = { "budget:${it.id}" }) { budget ->
                 FinanceCard {
                     CategorySymbol(budget.icon, budget.colour)
                     Text(budget.name, style = MaterialTheme.typography.titleLarge)
@@ -83,7 +105,9 @@ fun BudgetsScreen(model: FinanceViewModel, open: (String) -> Unit, create: () ->
                         },
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    TextButton(onClick = { open(budget.id) }) { Text("View budget") }
+                    TextButton(onClick = { open(budget.id) }) {
+                        Text(resources.getString(R.string.view_budget))
+                    }
                 }
             }
         }
@@ -97,15 +121,18 @@ fun BudgetDetails(
     onBack: () -> Unit,
     edit: () -> Unit,
     transaction: (String) -> Unit,
+    month: YearMonth,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val state by model.budgets.state.collectAsStateWithLifecycle()
     val transactions by model.budgetTransactions.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
     var deleting by remember { mutableStateOf(false) }
-    LaunchedEffect(id) {
+    LaunchedEffect(id, month) {
         model.clearMutation()
-        model.loadBudgets()
-        model.loadBudgetTransactions(id)
+        model.loadBudgets(month)
+        model.loadBudgetTransactions(id, month)
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
@@ -113,43 +140,64 @@ fun BudgetDetails(
             onBack()
         }
     }
-    FinancePage("Budget", onBack) {
-        RemoteContent(state, { model.loadBudgets() }) { list ->
+    FinanceListPage(resources.getString(R.string.budget), onBack) {
+        remoteItems(state, { model.loadBudgets(month) }, "budget") { list ->
             val budget = list.find { it.id == id }
-            if (budget == null) Text("This budget is no longer available.")
-            else
-                FinanceCard {
-                    CategorySymbol(budget.icon, budget.colour)
-                    Text(budget.name, style = MaterialTheme.typography.titleLarge)
-                    Text("Budget for ${model.month}")
-                    MoneyLabel(budget.amount, budget.currency)
-                    Text("Spent")
-                    MoneyLabel(budget.spent, budget.currency)
-                    Text("Remaining")
-                    MoneyLabel(budget.amount - budget.spent, budget.currency)
-                    Row {
-                        TextButton(enabled = !mutation.busy, onClick = edit) { Text("Edit") }
-                        TextButton(enabled = !mutation.busy, onClick = { deleting = true }) {
-                            Text("Delete")
+            item("details") {
+                if (budget == null)
+                    Text(resources.getString(R.string.this_budget_is_no_longer_available))
+                else
+                    FinanceCard {
+                        CategorySymbol(budget.icon, budget.colour)
+                        Text(budget.name, style = MaterialTheme.typography.titleLarge)
+                        Text(resources.getString(R.string.budget_for_value, month))
+                        MoneyLabel(budget.amount, budget.currency)
+                        Text(resources.getString(R.string.spent))
+                        MoneyLabel(budget.spent, budget.currency)
+                        Text(resources.getString(R.string.remaining))
+                        MoneyLabel(budget.amount - budget.spent, budget.currency)
+                        Row {
+                            TextButton(enabled = !mutation.busy, onClick = edit) {
+                                Text(resources.getString(R.string.edit))
+                            }
+                            TextButton(enabled = !mutation.busy, onClick = { deleting = true }) {
+                                Text(resources.getString(R.string.action_delete))
+                            }
                         }
                     }
-                }
+            }
         }
-        MutationFeedback(mutation)
-        Text("Transactions", style = MaterialTheme.typography.titleLarge)
-        RemoteContent(
+        item("feedback") {
+            Column {
+                MutationFeedback(mutation)
+                Text(
+                    resources.getString(R.string.transactions),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+        }
+        remoteItems(
             transactions.copy(
-                value =
-                    transactions.value.takeIf { transactions.requestKey == listOf(id, model.month) }
+                value = transactions.value.takeIf { transactions.requestKey == listOf(id, month) }
             ),
-            { model.loadBudgetTransactions(id) },
+            { model.loadBudgetTransactions(id, month) },
+            "transactions",
         ) { list ->
-            if (list.isEmpty()) Text("No transactions for this budget this month.")
-            list.forEach { item -> TransactionCard(item, { transaction(item.id) }) }
+            if (list.isEmpty())
+                item("empty") {
+                    Text(resources.getString(R.string.no_transactions_for_this_budget_this_month))
+                }
+            items(list, key = { "transaction:${it.id}" }) { item ->
+                TransactionCard(item, { transaction(item.id) })
+            }
         }
     }
     if (deleting)
-        ConfirmDelete("Delete budget?", mutation.busy, { deleting = false }) {
+        ConfirmDelete(
+            resources.getString(R.string.delete_budget),
+            mutation.busy,
+            { deleting = false },
+        ) {
             model.mutate { model.repository.deleteBudgets(id) }
         }
 }
@@ -160,7 +208,10 @@ fun BudgetFormScreen(
     model: FinanceViewModel,
     defaultCurrency: String,
     onBack: () -> Unit,
+    month: YearMonth,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val budgets by model.budgets.state.collectAsStateWithLifecycle()
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val categories by model.categories.state.collectAsStateWithLifecycle()
@@ -169,7 +220,7 @@ fun BudgetFormScreen(
         model.clearMutation()
         model.loadAccounts()
         model.loadCategories()
-        if (id != null) model.loadBudgets()
+        if (id != null) model.loadBudgets(month)
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
@@ -178,17 +229,13 @@ fun BudgetFormScreen(
         }
     }
     val item = budgets.value?.find { it.id == id }
-    if (
-        (id != null && (budgets.loading || budgets.error != null || item == null)) ||
-            accounts.value == null ||
-            categories.value == null
-    ) {
-        FinancePage("Budget", onBack) {
-            RemoteContent(budgets, { model.loadBudgets() }) {}
+    if ((id != null && (item == null)) || accounts.value == null || categories.value == null) {
+        FinancePage(resources.getString(R.string.budget), onBack) {
+            RemoteContent(budgets, { model.loadBudgets(month) }) {}
             RemoteContent(accounts, model::loadAccounts) {}
             RemoteContent(categories, model::loadCategories) {}
             if (id != null && !budgets.loading && budgets.value != null && item == null)
-                Text("This budget is no longer available.")
+                Text(resources.getString(R.string.this_budget_is_no_longer_available))
         }
         return
     }
@@ -213,7 +260,20 @@ fun BudgetFormScreen(
         var icon by rememberSaveable { mutableStateOf(item?.icon ?: "IconPigMoney") }
         var error by remember { mutableStateOf<String?>(null) }
         val initial = remember {
-            listOf(name, currency, amount, selected.joinToString(), colour, icon)
+            listOf(
+                item?.name.orEmpty(),
+                item?.currency
+                    ?: accounts.value.orEmpty().firstOrNull()?.currency
+                    ?: defaultCurrency,
+                item?.amount?.toPlainString().orEmpty(),
+                item
+                    ?.categories
+                    .orEmpty()
+                    .filter { id -> categories.value.orEmpty().any { it.id == id } }
+                    .joinToString(),
+                item?.colour ?: "#005EB8",
+                item?.icon ?: "IconPigMoney",
+            )
         }
         val back =
             rememberFormBackHandler(
@@ -221,9 +281,13 @@ fun BudgetFormScreen(
                 mutation.busy,
                 onBack,
             )
-        FinancePage(if (id == null) "Add budget" else "Edit budget", back) {
+        FinancePage(
+            if (id == null) resources.getString(R.string.add_budget)
+            else resources.getString(R.string.edit_budget),
+            back,
+        ) {
             TextField(
-                "Name",
+                resources.getString(R.string.name),
                 name,
                 !mutation.busy,
                 onChange = {
@@ -234,11 +298,16 @@ fun BudgetFormScreen(
             val currencies =
                 (accounts.value.orEmpty().map { it.currency } + listOfNotNull(item?.currency))
                     .distinct()
-            ChoiceField("Currency", currency, currencies.map { it to it }, !mutation.busy) {
+            ChoiceField(
+                resources.getString(R.string.currency),
+                currency,
+                currencies.map { it to it },
+                !mutation.busy,
+            ) {
                 currency = it
             }
             TextField(
-                "Monthly amount",
+                resources.getString(R.string.monthly_amount),
                 amount,
                 !mutation.busy,
                 KeyboardType.Decimal,
@@ -247,10 +316,15 @@ fun BudgetFormScreen(
                     error = null
                 },
             )
-            TextField("Colour (#RRGGBB)", colour, !mutation.busy, onChange = { colour = it })
+            TextField(
+                resources.getString(R.string.colour_rrggbb),
+                colour,
+                !mutation.busy,
+                onChange = { colour = it },
+            )
             IconChoiceField(icon, !mutation.busy) { icon = it }
             MultiChoice(
-                "Categories",
+                resources.getString(R.string.categories),
                 selected.toSet(),
                 categories.value.orEmpty().map { it.id to it.name },
                 !mutation.busy,
@@ -264,15 +338,19 @@ fun BudgetFormScreen(
                 onClick = {
                     try {
                         require(name.trim().length >= 2) {
-                            "Enter a name with at least two characters."
+                            resources.getString(R.string.enter_a_name_with_at_least_two_characters)
                         }
-                        require(currency in currencies) { "Choose a currency used by an account." }
+                        require(currency in currencies) {
+                            resources.getString(R.string.choose_a_currency_used_by_an_account)
+                        }
                         val money = Money.parse(amount, currency)
                         require(money.amount.signum() > 0 && selected.isNotEmpty()) {
-                            "Enter an amount above zero and select at least one category."
+                            resources.getString(
+                                R.string.enter_an_amount_above_zero_and_select_at_least_one_category
+                            )
                         }
                         require(Regex("#[0-9a-fA-F]{6}").matches(colour)) {
-                            "Enter a six-digit hex colour."
+                            resources.getString(R.string.enter_a_six_digit_hex_colour)
                         }
                         val input =
                             BudgetInput(name.trim(), money.amount, currency, selected, colour, icon)
@@ -281,13 +359,15 @@ fun BudgetFormScreen(
                             else model.repository.updateBudgets(id, input)
                         }
                     } catch (failure: IllegalArgumentException) {
-                        error = failure.message
+                        error = failure.userMessage(resources)
                     }
                 },
             ) {
-                Text("Save budget")
+                Text(resources.getString(R.string.save_budget))
             }
-            TextButton(enabled = !mutation.busy, onClick = back) { Text("Cancel") }
+            TextButton(enabled = !mutation.busy, onClick = back) {
+                Text(resources.getString(R.string.cancel))
+            }
         }
     }
 }
@@ -299,49 +379,59 @@ fun GoalsScreen(
     open: (String) -> Unit,
     create: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val goals by model.goals.state.collectAsStateWithLifecycle()
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         model.loadGoals()
         model.loadAccounts()
     }
-    FinancePage("Savings goals", onBack) {
-        Button(onClick = create) { Text("Add savings goal") }
-        RemoteContent(goals, model::loadGoals) { list ->
-            if (list.isEmpty()) Text("No savings goals yet.")
-            list
-                .sortedByDescending { it.priority ?: 0 }
-                .forEach { goal ->
-                    FinanceCard {
-                        Text(goal.name, style = MaterialTheme.typography.titleLarge)
-                        val currencies =
-                            accounts.value
-                                .orEmpty()
-                                .filter { it.id in goal.accounts }
-                                .map { it.currency }
-                                .distinct()
-                        if (currencies.size == 1) {
-                            MoneyLabel(goal.currentAmount, currencies.single())
-                            Text("Target")
-                            MoneyLabel(goal.targetAmount, currencies.single())
-                        } else Text("Select accounts with one currency to display goal amounts.")
-                        LinearProgressIndicator(
-                            progress = {
-                                (goal.progressPercentage / 100).toFloat().coerceIn(0f, 1f)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
+    FinanceListPage(resources.getString(R.string.savings_goals), onBack) {
+        item("create") {
+            Button(onClick = create) { Text(resources.getString(R.string.add_savings_goal)) }
+        }
+        remoteItems(goals, model::loadGoals) { list ->
+            if (list.isEmpty())
+                item("empty") { Text(resources.getString(R.string.no_savings_goals_yet)) }
+            items(list.sortedByDescending { it.priority ?: 0 }, key = { "goal:${it.id}" }) { goal ->
+                FinanceCard {
+                    Text(goal.name, style = MaterialTheme.typography.titleLarge)
+                    val currencies =
+                        accounts.value
+                            .orEmpty()
+                            .filter { it.id in goal.accounts }
+                            .map { it.currency }
+                            .distinct()
+                    if (currencies.size == 1) {
+                        MoneyLabel(goal.currentAmount, currencies.single())
+                        Text(resources.getString(R.string.target))
+                        MoneyLabel(goal.targetAmount, currencies.single())
+                    } else
+                        Text(
+                            resources.getString(
+                                R.string.select_accounts_with_one_currency_to_display_goal_amounts
+                            )
                         )
-                        if (goal.isCompleted) Text("Complete")
-                        else if (goal.isOverdue) Text("Overdue")
-                        TextButton(onClick = { open(goal.id) }) { Text("View goal") }
+                    LinearProgressIndicator(
+                        progress = { (goal.progressPercentage / 100).toFloat().coerceIn(0f, 1f) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (goal.isCompleted) Text(resources.getString(R.string.complete))
+                    else if (goal.isOverdue) Text(resources.getString(R.string.overdue))
+                    TextButton(onClick = { open(goal.id) }) {
+                        Text(resources.getString(R.string.view_goal))
                     }
                 }
+            }
         }
     }
 }
 
 @Composable
 fun GoalDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, edit: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val goals by model.goals.state.collectAsStateWithLifecycle()
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
@@ -357,45 +447,76 @@ fun GoalDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, edit: (
             onBack()
         }
     }
-    FinancePage("Savings goal", onBack) {
-        RemoteContent(goals, model::loadGoals) { list ->
+    FinanceListPage(resources.getString(R.string.savings_goal), onBack) {
+        remoteItems(goals, model::loadGoals) { list ->
             val goal = list.find { it.id == id }
-            if (goal == null) Text("This goal is no longer available.")
-            else
-                FinanceCard {
-                    Text(goal.name, style = MaterialTheme.typography.headlineMedium)
-                    goal.description?.let { Text(it) }
-                    val linked = accounts.value.orEmpty().filter { it.id in goal.accounts }
-                    val currency = linked.map { it.currency }.distinct().singleOrNull()
-                    if (currency != null) {
-                        Text("Saved")
-                        MoneyLabel(goal.currentAmount, currency)
-                        Text("Target")
-                        MoneyLabel(goal.targetAmount, currency)
-                        Text("Remaining")
-                        MoneyLabel(goal.remainingAmount, currency)
-                    } else Text("Goal currency unavailable. Mixed currencies are not converted.")
-                    goal.targetDate?.let { Text("Target date: ${it.take(10)}") }
-                    if (goal.isCompleted) Text("Complete") else if (goal.isOverdue) Text("Overdue")
-                    linked.forEach { Text(it.name) }
-                    Row {
-                        TextButton(onClick = edit, enabled = !mutation.busy) { Text("Edit") }
-                        TextButton(enabled = !mutation.busy, onClick = { deleting = true }) {
-                            Text("Delete")
+            if (goal == null)
+                item("missing") {
+                    Text(resources.getString(R.string.this_goal_is_no_longer_available))
+                }
+            else {
+                val linked = accounts.value.orEmpty().filter { it.id in goal.accounts }
+                item("goal-details") {
+                    FinanceCard {
+                        Text(goal.name, style = MaterialTheme.typography.headlineMedium)
+                        goal.description?.let { Text(it) }
+                        val currency = linked.map { it.currency }.distinct().singleOrNull()
+                        if (currency != null) {
+                            Text(resources.getString(R.string.saved))
+                            MoneyLabel(goal.currentAmount, currency)
+                            Text(resources.getString(R.string.target))
+                            MoneyLabel(goal.targetAmount, currency)
+                            Text(resources.getString(R.string.remaining))
+                            MoneyLabel(goal.remainingAmount, currency)
+                        } else
+                            Text(
+                                resources.getString(
+                                    R.string
+                                        .goal_currency_unavailable_mixed_currencies_are_not_converted
+                                )
+                            )
+                        goal.targetDate?.let {
+                            Text(
+                                resources.getString(
+                                    R.string.target_date_value,
+                                    formatPreferenceDate(
+                                        it.take(10).toString(),
+                                        LocalDateFormat.current,
+                                    ),
+                                )
+                            )
+                        }
+                        if (goal.isCompleted) Text(resources.getString(R.string.complete))
+                        else if (goal.isOverdue) Text(resources.getString(R.string.overdue))
+                        Row {
+                            TextButton(onClick = edit, enabled = !mutation.busy) {
+                                Text(resources.getString(R.string.edit))
+                            }
+                            TextButton(enabled = !mutation.busy, onClick = { deleting = true }) {
+                                Text(resources.getString(R.string.action_delete))
+                            }
                         }
                     }
                 }
+                items(linked, key = { "linked-account:${it.id}" }) { Text(it.name) }
+            }
         }
-        MutationFeedback(mutation)
+        item("mutation") { MutationFeedback(mutation) }
     }
     if (deleting)
-        ConfirmDelete("Delete savings goal?", mutation.busy, { deleting = false }) {
+        ConfirmDelete(
+            resources.getString(R.string.delete_savings_goal),
+            mutation.busy,
+            { deleting = false },
+        ) {
             model.mutate { model.repository.deleteGoals(id) }
         }
 }
 
 @Composable
 fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val goals by model.goals.state.collectAsStateWithLifecycle()
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
@@ -411,15 +532,12 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
         }
     }
     val item = goals.value?.find { it.id == id }
-    if (
-        accounts.value == null ||
-            (id != null && (goals.loading || goals.error != null || item == null))
-    ) {
-        FinancePage("Savings goal", onBack) {
+    if (accounts.value == null || (id != null && (item == null))) {
+        FinancePage(resources.getString(R.string.savings_goal), onBack) {
             RemoteContent(accounts, model::loadAccounts) {}
             RemoteContent(goals, model::loadGoals) {}
             if (id != null && !goals.loading && goals.value != null && item == null)
-                Text("This goal is no longer available.")
+                Text(resources.getString(R.string.this_goal_is_no_longer_available))
         }
         return
     }
@@ -440,7 +558,18 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
         var priority by rememberSaveable { mutableStateOf((item?.priority ?: 0).toString()) }
         var error by remember { mutableStateOf<String?>(null) }
         val initial = remember {
-            listOf(name, description, amount, selected.joinToString(), date, priority)
+            listOf(
+                item?.name.orEmpty(),
+                item?.description.orEmpty(),
+                item?.targetAmount?.toPlainString().orEmpty(),
+                item
+                    ?.accounts
+                    .orEmpty()
+                    .filter { id -> accounts.value.orEmpty().any { it.id == id } }
+                    .joinToString(),
+                item?.targetDate?.take(10).orEmpty(),
+                (item?.priority ?: 0).toString(),
+            )
         }
         val back =
             rememberFormBackHandler(
@@ -449,9 +578,13 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                 mutation.busy,
                 onBack,
             )
-        FinancePage(if (id == null) "Add savings goal" else "Edit savings goal", back) {
+        FinancePage(
+            if (id == null) resources.getString(R.string.add_savings_goal)
+            else resources.getString(R.string.edit_savings_goal),
+            back,
+        ) {
             TextField(
-                "Name",
+                resources.getString(R.string.name),
                 name,
                 !mutation.busy,
                 onChange = {
@@ -460,14 +593,14 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                 },
             )
             TextField(
-                "Description",
+                resources.getString(R.string.description),
                 description,
                 !mutation.busy,
                 multiline = true,
                 onChange = { description = it },
             )
             MultiChoice(
-                "Linked accounts",
+                resources.getString(R.string.linked_accounts),
                 selected.toSet(),
                 accounts.value.orEmpty().map { it.id to "${it.name} (${it.currency})" },
                 !mutation.busy,
@@ -475,7 +608,7 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                 selected = it.toList()
             }
             TextField(
-                "Target amount",
+                resources.getString(R.string.target_amount),
                 amount,
                 !mutation.busy,
                 KeyboardType.Decimal,
@@ -485,7 +618,7 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                 },
             )
             TextField(
-                "Target date (YYYY-MM-DD, optional)",
+                resources.getString(R.string.target_date_yyyy_mm_dd_optional),
                 date,
                 !mutation.busy,
                 onChange = {
@@ -494,7 +627,7 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                 },
             )
             TextField(
-                "Priority",
+                resources.getString(R.string.priority),
                 priority,
                 !mutation.busy,
                 KeyboardType.Number,
@@ -506,15 +639,24 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                 enabled = !mutation.busy,
                 onClick = {
                     try {
-                        require(name.isNotBlank()) { "Enter a goal name." }
+                        require(name.isNotBlank()) {
+                            resources.getString(R.string.enter_a_goal_name)
+                        }
                         val available = accounts.value.orEmpty().filter { it.id in selected }
-                        require(available.isNotEmpty()) { "Select at least one available account." }
+                        require(available.isNotEmpty()) {
+                            resources.getString(R.string.select_at_least_one_available_account)
+                        }
                         val currency = available.map { it.currency }.distinct().singleOrNull()
                         require(currency != null) {
-                            "Choose accounts with the same currency. Currency conversion is not available."
+                            resources.getString(
+                                R.string
+                                    .choose_accounts_with_the_same_currency_currency_conversion_is_not_available
+                            )
                         }
                         val money = Money.parse(amount, currency)
-                        require(money.amount.signum() > 0) { "Enter an amount above zero." }
+                        require(money.amount.signum() > 0) {
+                            resources.getString(R.string.enter_an_amount_above_zero)
+                        }
                         val input =
                             GoalInput(
                                 name.trim(),
@@ -529,13 +671,17 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
                             else model.repository.updateGoals(id, input)
                         }
                     } catch (failure: Exception) {
-                        error = failure.message ?: "Check the goal details."
+                        error =
+                            failure.userMessage(resources)
+                                ?: resources.getString(R.string.check_the_goal_details)
                     }
                 },
             ) {
-                Text("Save goal")
+                Text(resources.getString(R.string.save_goal))
             }
-            TextButton(enabled = !mutation.busy, onClick = back) { Text("Cancel") }
+            TextButton(enabled = !mutation.busy, onClick = back) {
+                Text(resources.getString(R.string.cancel))
+            }
         }
     }
 }
@@ -547,102 +693,139 @@ fun RecurringScreen(
     open: (String) -> Unit,
     create: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+    val cadenceOptions = cadenceLabels.map { it.first to resources.getString(it.second) }
+    val paymentOptions = paymentLabels.map { it.first to resources.getString(it.second) }
+
     val state by model.recurring.state.collectAsStateWithLifecycle()
     var search by rememberSaveable { mutableStateOf("") }
     var view by rememberSaveable { mutableStateOf("upcoming") }
     var type by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(Unit) { model.loadRecurring() }
-    FinancePage("Recurring payments", onBack) {
-        Button(onClick = create) { Text("Add recurring payment") }
-        TextField("Search", search, onChange = { search = it })
-        ChoiceField(
-            "View",
-            view,
-            listOf("upcoming" to "Upcoming 30 days", "all" to "All recurring payments"),
-        ) {
-            view = it
+    FinanceListPage(resources.getString(R.string.recurring_payments), onBack) {
+        item("controls") {
+            Button(onClick = create) { Text(resources.getString(R.string.add_recurring_payment)) }
+            TextField(resources.getString(R.string.search), search, onChange = { search = it })
+            ChoiceField(
+                resources.getString(R.string.view),
+                view,
+                listOf(
+                    "upcoming" to resources.getString(R.string.upcoming_30_days),
+                    "all" to resources.getString(R.string.all_recurring_payments),
+                ),
+            ) {
+                view = it
+            }
+            ChoiceField(
+                resources.getString(R.string.type),
+                type,
+                listOf("" to resources.getString(R.string.all)) + paymentOptions,
+            ) {
+                type = it
+            }
         }
-        ChoiceField("Type", type, listOf("" to "All") + paymentOptions) { type = it }
-        RemoteContent(state, model::loadRecurring) { list ->
+        remoteItems(state, model::loadRecurring) { list ->
             val visible =
                 list.filter {
                     it.name.contains(search, true) && (type.isEmpty() || it.type == type)
                 }
-            FinanceCard {
-                Text("Monthly estimates", style = MaterialTheme.typography.titleLarge)
-                visible
-                    .groupBy { it.currency }
-                    .toSortedMap()
-                    .forEach { (currency, entries) ->
-                        Text("Payments")
-                        MoneyLabel(
-                            -entries
-                                .filter { it.type != "regular_income" }
-                                .fold(BigDecimal.ZERO) { sum, entry ->
-                                    sum + monthlyEquivalent(entry)
-                                },
-                            currency,
-                        )
-                        Text("Income")
-                        MoneyLabel(
-                            entries
-                                .filter { it.type == "regular_income" }
-                                .fold(BigDecimal.ZERO) { sum, entry ->
-                                    sum + monthlyEquivalent(entry)
-                                },
-                            currency,
-                        )
-                    }
+            item("summary") {
+                FinanceCard {
+                    Text(
+                        resources.getString(R.string.monthly_estimates),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    visible
+                        .groupBy { it.currency }
+                        .toSortedMap()
+                        .forEach { (currency, entries) ->
+                            Text(resources.getString(R.string.payments))
+                            MoneyLabel(
+                                -entries
+                                    .filter { it.type != "regular_income" }
+                                    .fold(BigDecimal.ZERO) { sum, entry ->
+                                        sum + monthlyEquivalent(entry)
+                                    },
+                                currency,
+                            )
+                            Text(resources.getString(R.string.income))
+                            MoneyLabel(
+                                entries
+                                    .filter { it.type == "regular_income" }
+                                    .fold(BigDecimal.ZERO) { sum, entry ->
+                                        sum + monthlyEquivalent(entry)
+                                    },
+                                currency,
+                            )
+                        }
+                }
             }
             if (view == "upcoming") {
                 val upcoming =
                     upcomingPayments(visible, LocalDate.now(), LocalDate.now().plusDays(29))
-                if (upcoming.isEmpty()) Text("No payments due in the next 30 days.")
+                if (upcoming.isEmpty())
+                    item("no-upcoming") {
+                        Text(resources.getString(R.string.no_payments_due_in_the_next_30_days))
+                    }
                 if (visible.any { it.startDate == null })
-                    Text("Add start dates to include undated items in upcoming payments.")
-                upcoming.forEach { occurrence ->
+                    item("no-start-dates") {
+                        Text(
+                            resources.getString(
+                                R.string
+                                    .add_start_dates_to_include_undated_items_in_upcoming_payments
+                            )
+                        )
+                    }
+                items(upcoming, key = { "occurrence:${it.payment.id}:${it.date}" }) { occurrence ->
                     FinanceCard {
                         DateLabel(occurrence.date.toString())
                         Text(occurrence.payment.name)
-                        MoneyLabel(
-                            if (occurrence.payment.type == "regular_income")
-                                occurrence.payment.amount
-                            else -occurrence.payment.amount,
-                            occurrence.payment.currency,
-                        )
+                        MoneyLabel(occurrence.payment.displayAmount(), occurrence.payment.currency)
                         TextButton(onClick = { open(occurrence.payment.id) }) {
-                            Text("View recurring payment")
+                            Text(resources.getString(R.string.view_recurring_payment))
                         }
                     }
                 }
             }
-            if (visible.isEmpty()) Text("No recurring payments found.")
+            if (visible.isEmpty())
+                item("empty") { Text(resources.getString(R.string.no_recurring_payments_found)) }
             if (view == "all")
-                visible
-                    .sortedWith(
+                items(
+                    visible.sortedWith(
                         compareBy<RecurringPayment> { nextPaymentDate(it) ?: LocalDate.MAX }
                             .thenBy { it.name }
-                    )
-                    .forEach { payment ->
-                        FinanceCard {
-                            Text(payment.name, style = MaterialTheme.typography.titleLarge)
-                            MoneyLabel(payment.amount, payment.currency)
+                    ),
+                    key = { "recurring:${it.id}" },
+                ) { payment ->
+                    FinanceCard {
+                        Text(payment.name, style = MaterialTheme.typography.titleLarge)
+                        MoneyLabel(payment.displayAmount(), payment.currency)
+                        Text(
+                            "${paymentOptions.find { it.first == payment.type }?.second ?: payment.type} · ${cadenceOptions.find { it.first == payment.cadence }?.second ?: payment.cadence}"
+                        )
+                        nextPaymentDate(payment)?.let {
                             Text(
-                                "${paymentOptions.find { it.first == payment.type }?.second ?: payment.type} · ${cadenceOptions.find { it.first == payment.cadence }?.second ?: payment.cadence}"
+                                resources.getString(
+                                    R.string.next_value,
+                                    formatPreferenceDate(it.toString(), LocalDateFormat.current),
+                                )
                             )
-                            nextPaymentDate(payment)?.let { Text("Next: $it") }
-                                ?: Text("No start date")
-                            TextButton(onClick = { open(payment.id) }) {
-                                Text("View recurring payment")
-                            }
+                        } ?: Text(resources.getString(R.string.no_start_date))
+                        TextButton(onClick = { open(payment.id) }) {
+                            Text(resources.getString(R.string.view_recurring_payment))
                         }
                     }
+                }
         }
     }
 }
 
 @Composable
 fun RecurringDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, edit: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+    val cadenceOptions = cadenceLabels.map { it.first to resources.getString(it.second) }
+    val paymentOptions = paymentLabels.map { it.first to resources.getString(it.second) }
+
     val state by model.recurring.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
     var deleting by remember { mutableStateOf(false) }
@@ -656,21 +839,41 @@ fun RecurringDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, ed
             onBack()
         }
     }
-    FinancePage("Recurring payment", onBack) {
+    FinancePage(resources.getString(R.string.recurring_payment), onBack) {
         RemoteContent(state, model::loadRecurring) { list ->
             val item = list.find { it.id == id }
-            if (item == null) Text("This recurring payment is no longer available.")
+            if (item == null)
+                Text(resources.getString(R.string.this_recurring_payment_is_no_longer_available))
             else
                 FinanceCard {
                     Text(item.name, style = MaterialTheme.typography.headlineMedium)
-                    MoneyLabel(item.amount, item.currency)
+                    MoneyLabel(item.displayAmount(), item.currency)
                     Text(cadenceOptions.find { it.first == item.cadence }?.second ?: item.cadence)
-                    item.startDate?.let { Text("Starts: ${it.take(10)}") }
-                    nextPaymentDate(item)?.let { Text("Next payment: $it") }
+                    item.startDate?.let {
+                        Text(
+                            resources.getString(
+                                R.string.starts_value,
+                                formatPreferenceDate(
+                                    it.take(10).toString(),
+                                    LocalDateFormat.current,
+                                ),
+                            )
+                        )
+                    }
+                    nextPaymentDate(item)?.let {
+                        Text(
+                            resources.getString(
+                                R.string.next_payment_value,
+                                formatPreferenceDate(it.toString(), LocalDateFormat.current),
+                            )
+                        )
+                    }
                     Row {
-                        TextButton(enabled = !mutation.busy, onClick = edit) { Text("Edit") }
+                        TextButton(enabled = !mutation.busy, onClick = edit) {
+                            Text(resources.getString(R.string.edit))
+                        }
                         TextButton(enabled = !mutation.busy, onClick = { deleting = true }) {
-                            Text("Delete")
+                            Text(resources.getString(R.string.action_delete))
                         }
                     }
                 }
@@ -678,7 +881,11 @@ fun RecurringDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, ed
         MutationFeedback(mutation)
     }
     if (deleting)
-        ConfirmDelete("Delete recurring payment?", mutation.busy, { deleting = false }) {
+        ConfirmDelete(
+            resources.getString(R.string.delete_recurring_payment),
+            mutation.busy,
+            { deleting = false },
+        ) {
             model.mutate { model.repository.deleteRecurring(id) }
         }
 }
@@ -690,6 +897,10 @@ fun RecurringFormScreen(
     defaultCurrency: String,
     onBack: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+    val cadenceOptions = cadenceLabels.map { it.first to resources.getString(it.second) }
+    val paymentOptions = paymentLabels.map { it.first to resources.getString(it.second) }
+
     val state by model.recurring.state.collectAsStateWithLifecycle()
     val categories by model.categories.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
@@ -705,11 +916,11 @@ fun RecurringFormScreen(
         }
     }
     val item = state.value?.find { it.id == id }
-    if (id != null && (state.loading || state.error != null || item == null)) {
-        FinancePage("Recurring payment", onBack) {
+    if (id != null && (item == null)) {
+        FinancePage(resources.getString(R.string.recurring_payment), onBack) {
             RemoteContent(state, model::loadRecurring) {}
-            if (!state.loading && state.value != null && item == null)
-                Text("This recurring payment is no longer available.")
+            if (!state.loading && state.value != null)
+                Text(resources.getString(R.string.this_recurring_payment_is_no_longer_available))
         }
         return
     }
@@ -724,7 +935,16 @@ fun RecurringFormScreen(
         var image by rememberSaveable { mutableStateOf(item?.imageUrl.orEmpty()) }
         var error by remember { mutableStateOf<String?>(null) }
         val initial = remember {
-            listOf(name, amount, currency, cadence, type, date, category, image)
+            listOf(
+                item?.name.orEmpty(),
+                item?.amount?.toPlainString().orEmpty(),
+                item?.currency ?: defaultCurrency,
+                item?.cadence ?: "monthly",
+                item?.type ?: "subscription",
+                item?.startDate?.take(10).orEmpty(),
+                item?.categoryId.orEmpty(),
+                item?.imageUrl.orEmpty(),
+            )
         }
         val back =
             rememberFormBackHandler(
@@ -732,9 +952,13 @@ fun RecurringFormScreen(
                 mutation.busy,
                 onBack,
             )
-        FinancePage(if (id == null) "Add recurring payment" else "Edit recurring payment", back) {
+        FinancePage(
+            if (id == null) resources.getString(R.string.add_recurring_payment)
+            else resources.getString(R.string.edit_recurring_payment),
+            back,
+        ) {
             TextField(
-                "Name",
+                resources.getString(R.string.name),
                 name,
                 !mutation.busy,
                 onChange = {
@@ -742,10 +966,19 @@ fun RecurringFormScreen(
                     error = null
                 },
             )
-            ChoiceField("Type", type, paymentOptions, !mutation.busy) { type = it }
-            ChoiceField("Frequency", cadence, cadenceOptions, !mutation.busy) { cadence = it }
+            ChoiceField(resources.getString(R.string.type), type, paymentOptions, !mutation.busy) {
+                type = it
+            }
             ChoiceField(
-                "Currency",
+                resources.getString(R.string.frequency),
+                cadence,
+                cadenceOptions,
+                !mutation.busy,
+            ) {
+                cadence = it
+            }
+            ChoiceField(
+                resources.getString(R.string.currency),
                 currency,
                 Currency.supported.map { it.code to it.code },
                 !mutation.busy,
@@ -753,7 +986,7 @@ fun RecurringFormScreen(
                 currency = it
             }
             TextField(
-                "Amount",
+                resources.getString(R.string.amount),
                 amount,
                 !mutation.busy,
                 KeyboardType.Decimal,
@@ -763,7 +996,7 @@ fun RecurringFormScreen(
                 },
             )
             TextField(
-                "Start date (YYYY-MM-DD, optional)",
+                resources.getString(R.string.start_date_yyyy_mm_dd_optional),
                 date,
                 !mutation.busy,
                 onChange = {
@@ -773,16 +1006,17 @@ fun RecurringFormScreen(
             )
             RemoteContent(categories, model::loadCategories) { options ->
                 ChoiceField(
-                    "Category",
+                    resources.getString(R.string.category),
                     category,
-                    listOf("" to "None") + options.map { it.id to it.name },
+                    listOf("" to resources.getString(R.string.none)) +
+                        options.map { it.id to it.name },
                     !mutation.busy,
                 ) {
                     category = it
                 }
             }
             TextField(
-                "Image URL (HTTPS, optional)",
+                resources.getString(R.string.image_url_https_optional),
                 image,
                 !mutation.busy,
                 onChange = { image = it },
@@ -793,12 +1027,14 @@ fun RecurringFormScreen(
                 enabled = !mutation.busy,
                 onClick = {
                     try {
-                        require(name.isNotBlank()) { "Enter a name." }
+                        require(name.isNotBlank()) { resources.getString(R.string.enter_a_name) }
                         val money = Money.parse(amount, currency)
-                        require(money.amount.signum() > 0) { "Enter an amount above zero." }
+                        require(money.amount.signum() > 0) {
+                            resources.getString(R.string.enter_an_amount_above_zero)
+                        }
                         if (date.isNotBlank()) LocalDate.parse(date)
                         require(image.isBlank() || java.net.URI(image).scheme == "https") {
-                            "Use an HTTPS image URL."
+                            resources.getString(R.string.use_an_https_image_url)
                         }
                         val input =
                             RecurringInput(
@@ -816,13 +1052,17 @@ fun RecurringFormScreen(
                             else model.repository.updateRecurring(id, input)
                         }
                     } catch (failure: Exception) {
-                        error = failure.message ?: "Check the recurring payment details."
+                        error =
+                            failure.userMessage(resources)
+                                ?: resources.getString(R.string.check_the_recurring_payment_details)
                     }
                 },
             ) {
-                Text("Save recurring payment")
+                Text(resources.getString(R.string.save_recurring_payment))
             }
-            TextButton(enabled = !mutation.busy, onClick = back) { Text("Cancel") }
+            TextButton(enabled = !mutation.busy, onClick = back) {
+                Text(resources.getString(R.string.cancel))
+            }
         }
     }
 }

@@ -9,8 +9,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.guallet.android.R
 import io.guallet.android.core.money.Currency
 import io.guallet.android.core.money.Money
+import io.guallet.android.core.state.*
 import io.guallet.android.ui.components.*
 import io.guallet.android.ui.theme.GualletTokens
 import java.math.BigDecimal
@@ -22,6 +24,8 @@ fun RepaymentScreen(
     defaultCurrency: String,
     onBack: () -> Unit,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     val state by model.state.collectAsStateWithLifecycle()
     var currency by rememberSaveable { mutableStateOf(defaultCurrency) }
     var principal by rememberSaveable { mutableStateOf(if (mortgage) "250000" else "10000") }
@@ -41,9 +45,12 @@ fun RepaymentScreen(
     BackHandler(screen != "form" && !state.busy) {
         screen = if (screen == "schedule") "results" else "form"
     }
-    LaunchedEffect(mortgage) { model.clear() }
-    LaunchedEffect(state.first) {
-        if (state.first != null) screen = "results" else if (!state.busy) screen = "form"
+    var handledGeneration by rememberSaveable { mutableLongStateOf(state.generation) }
+    LaunchedEffect(state.first, state.busy) {
+        if (state.first != null && handledGeneration != state.generation) {
+            handledGeneration = state.generation
+            screen = "results"
+        } else if (state.first == null && !state.busy) screen = "form"
     }
     if (screen == "schedule" && state.first != null) {
         PaymentSchedule(if (scheduleSecond) state.second!! else state.first!!, state.currency) {
@@ -52,13 +59,18 @@ fun RepaymentScreen(
         return
     }
     FinancePage(
-        if (mortgage) "Mortgage calculator" else "Loan comparison",
+        if (mortgage) resources.getString(R.string.mortgage_calculator)
+        else resources.getString(R.string.loan_comparison),
         { if (screen == "results") screen = "form" else onBack() },
     ) {
-        Text("Estimates use the same repayment rules as the existing Guallet calculators.")
+        Text(
+            resources.getString(
+                R.string.estimates_use_the_same_repayment_rules_as_the_existing_guallet_calculators
+            )
+        )
         if (screen == "form") {
             ChoiceField(
-                "Currency",
+                resources.getString(R.string.currency),
                 currency,
                 Currency.supported.map { it.code to it.code },
                 !state.busy,
@@ -66,21 +78,23 @@ fun RepaymentScreen(
                 currency = it
             }
             TextField(
-                if (mortgage) "Mortgage balance" else "Loan A amount",
+                if (mortgage) resources.getString(R.string.mortgage_balance)
+                else resources.getString(R.string.loan_a_amount),
                 principal,
                 !state.busy,
                 KeyboardType.Decimal,
                 onChange = { principal = it },
             )
             TextField(
-                "Annual interest rate (%)",
+                resources.getString(R.string.annual_interest_rate),
                 rate,
                 !state.busy,
                 KeyboardType.Decimal,
                 onChange = { rate = it },
             )
             TextField(
-                if (mortgage) "Term (years)" else "Term (months)",
+                if (mortgage) resources.getString(R.string.term_years)
+                else resources.getString(R.string.term_months),
                 months,
                 !state.busy,
                 KeyboardType.Number,
@@ -88,28 +102,28 @@ fun RepaymentScreen(
             )
             if (mortgage) {
                 TextField(
-                    "Property value (optional)",
+                    resources.getString(R.string.property_value_optional),
                     property,
                     !state.busy,
                     KeyboardType.Decimal,
                     onChange = { property = it },
                 )
                 TextField(
-                    "Monthly overpayment",
+                    resources.getString(R.string.monthly_overpayment),
                     monthlyExtra,
                     !state.busy,
                     KeyboardType.Decimal,
                     onChange = { monthlyExtra = it },
                 )
                 TextField(
-                    "One-off overpayment",
+                    resources.getString(R.string.one_off_overpayment),
                     oneOff,
                     !state.busy,
                     KeyboardType.Decimal,
                     onChange = { oneOff = it },
                 )
                 TextField(
-                    "One-off payment month",
+                    resources.getString(R.string.one_off_payment_month),
                     oneOffMonth,
                     !state.busy,
                     KeyboardType.Number,
@@ -117,35 +131,35 @@ fun RepaymentScreen(
                 )
             } else {
                 TextField(
-                    "Loan A arrangement fee",
+                    resources.getString(R.string.loan_a_arrangement_fee),
                     fee,
                     !state.busy,
                     KeyboardType.Decimal,
                     onChange = { fee = it },
                 )
                 TextField(
-                    "Loan B amount",
+                    resources.getString(R.string.loan_b_amount),
                     secondAmount,
                     !state.busy,
                     KeyboardType.Decimal,
                     onChange = { secondAmount = it },
                 )
                 TextField(
-                    "Loan B annual interest rate (%)",
+                    resources.getString(R.string.loan_b_annual_interest_rate),
                     secondRate,
                     !state.busy,
                     KeyboardType.Decimal,
                     onChange = { secondRate = it },
                 )
                 TextField(
-                    "Loan B term (months)",
+                    resources.getString(R.string.loan_b_term_months),
                     secondMonths,
                     !state.busy,
                     KeyboardType.Number,
                     onChange = { secondMonths = it },
                 )
                 TextField(
-                    "Loan B arrangement fee",
+                    resources.getString(R.string.loan_b_arrangement_fee),
                     secondFee,
                     !state.busy,
                     KeyboardType.Decimal,
@@ -163,14 +177,18 @@ fun RepaymentScreen(
                             require(
                                 value >= BigDecimal.ZERO && value <= BigDecimal("1000000000000")
                             ) {
-                                "Use an amount from zero to one trillion."
+                                resources.getString(
+                                    R.string.use_an_amount_from_zero_to_one_trillion
+                                )
                             }
                             return value
                         }
                         val inputAmount = amount(principal)
                         if (mortgage) {
                             val term = months.toInt()
-                            require(term in 1..100) { "Choose a term from one to 100 years." }
+                            require(term in 1..100) {
+                                resources.getString(R.string.choose_a_term_from_one_to_100_years)
+                            }
                             if (property.isNotBlank()) amount(property)
                             val input =
                                 MortgageInput(
@@ -207,29 +225,41 @@ fun RepaymentScreen(
                     }
                 },
             ) {
-                Text("Calculate")
+                Text(resources.getString(R.string.calculate))
             }
         } else {
             listOfNotNull(state.first, state.second).forEachIndexed { index, result ->
                 FinanceCard {
                     Text(
                         if (mortgage) {
-                            if (index == 0) "Without overpayments" else "With overpayments"
-                        } else "Loan ${if (index == 0) "A" else "B"}",
+                            if (index == 0) resources.getString(R.string.without_overpayments)
+                            else resources.getString(R.string.with_overpayments)
+                        } else
+                            resources.getString(R.string.loan_value, if (index == 0) "A" else "B"),
                         style = MaterialTheme.typography.titleLarge,
                     )
-                    Text("Scheduled monthly payment")
+                    Text(resources.getString(R.string.scheduled_monthly_payment))
                     MoneyLabel(result.scheduled, state.currency)
-                    Text("Total interest")
+                    Text(resources.getString(R.string.total_interest))
                     MoneyLabel(result.interest, state.currency)
-                    Text("Total cost including fees")
+                    Text(resources.getString(R.string.total_cost_including_fees))
                     MoneyLabel(result.totalCost, state.currency)
-                    Text("Paid off in ${result.rows.size} months")
+                    Text(
+                        resources.getQuantityString(
+                            R.plurals.paid_off_months,
+                            result.rows.size,
+                            result.rows.size,
+                        )
+                    )
                     if (mortgage && property.isNotBlank())
                         runCatching { Money.parse(property, state.currency) }
                             .getOrNull()
                             ?.let { money ->
-                                Text("Equity at payoff (constant property value)")
+                                Text(
+                                    resources.getString(
+                                        R.string.equity_at_payoff_constant_property_value
+                                    )
+                                )
                                 MoneyLabel(money.amount, state.currency)
                             }
                     TextButton(
@@ -238,15 +268,15 @@ fun RepaymentScreen(
                             screen = "schedule"
                         }
                     ) {
-                        Text("View payment schedule")
+                        Text(resources.getString(R.string.view_payment_schedule))
                     }
                 }
             }
             if (state.first != null && state.second != null)
                 FinanceCard {
                     Text(
-                        if (mortgage) "Interest saved with overpayments"
-                        else "Loan B cost minus loan A"
+                        if (mortgage) resources.getString(R.string.interest_saved_with_overpayments)
+                        else resources.getString(R.string.loan_b_cost_minus_loan_a)
                     )
                     MoneyLabel(
                         if (mortgage) state.first!!.interest - state.second!!.interest
@@ -254,22 +284,26 @@ fun RepaymentScreen(
                         state.currency,
                     )
                 }
-            Button(onClick = { screen = "form" }) { Text("Edit inputs") }
+            Button(onClick = { screen = "form" }) {
+                Text(resources.getString(R.string.edit_inputs))
+            }
         }
     }
 }
 
 @Composable
 fun PaymentSchedule(result: RepaymentResult, currency: String, onBack: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     BackHandler { onBack() }
     var yearly by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().safeDrawingPadding().padding(GualletTokens.gutter)) {
-        TextButton(onClick = onBack) { Text("Back to results") }
-        Text("Payment schedule", style = MaterialTheme.typography.headlineMedium)
-        Row {
-            Checkbox(yearly, onCheckedChange = { yearly = it })
-            Text("Yearly breakdown")
-        }
+        TextButton(onClick = onBack) { Text(resources.getString(R.string.back_to_results)) }
+        Text(
+            resources.getString(R.string.payment_schedule),
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        LabelledCheckbox(resources.getString(R.string.yearly_breakdown), yearly) { yearly = it }
         LazyColumn(
             Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(GualletTokens.small),
@@ -280,22 +314,22 @@ fun PaymentSchedule(result: RepaymentResult, currency: String, onBack: () -> Uni
                     .forEach { (year, rows) ->
                         item(key = year) {
                             FinanceCard {
-                                Text("Year $year")
-                                Text("Interest")
+                                Text(resources.getString(R.string.year_value, year))
+                                Text(resources.getString(R.string.interest))
                                 MoneyLabel(
                                     rows.fold(BigDecimal.ZERO) { total, row ->
                                         total + row.interest
                                     },
                                     currency,
                                 )
-                                Text("Principal and overpayments")
+                                Text(resources.getString(R.string.principal_and_overpayments))
                                 MoneyLabel(
                                     rows.fold(BigDecimal.ZERO) { total, row ->
                                         total + row.principal + row.extra
                                     },
                                     currency,
                                 )
-                                Text("Remaining balance")
+                                Text(resources.getString(R.string.remaining_balance))
                                 MoneyLabel(rows.last().balance, currency)
                             }
                         }
@@ -304,18 +338,18 @@ fun PaymentSchedule(result: RepaymentResult, currency: String, onBack: () -> Uni
                 result.rows.forEach { row ->
                     item(key = row.month) {
                         FinanceCard {
-                            Text("Month ${row.month}")
-                            Text("Payment")
+                            Text(resources.getString(R.string.month_value, row.month))
+                            Text(resources.getString(R.string.payment))
                             MoneyLabel(row.payment, currency)
-                            Text("Interest")
+                            Text(resources.getString(R.string.interest))
                             MoneyLabel(row.interest, currency)
-                            Text("Principal")
+                            Text(resources.getString(R.string.principal))
                             MoneyLabel(row.principal, currency)
                             if (row.extra.signum() > 0) {
-                                Text("Overpayment")
+                                Text(resources.getString(R.string.overpayment))
                                 MoneyLabel(row.extra, currency)
                             }
-                            Text("Balance")
+                            Text(resources.getString(R.string.balance))
                             MoneyLabel(row.balance, currency)
                         }
                     }
@@ -326,6 +360,8 @@ fun PaymentSchedule(result: RepaymentResult, currency: String, onBack: () -> Uni
 
 @Composable
 fun StampDutyScreen(onBack: () -> Unit) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     var price by rememberSaveable { mutableStateOf("350000") }
     var buyer by rememberSaveable { mutableStateOf("standard") }
     var error by remember { mutableStateOf<String?>(null) }
@@ -334,13 +370,19 @@ fun StampDutyScreen(onBack: () -> Unit) {
     LaunchedEffect(bands) { if (bands == null) details = false }
     BackHandler(details) { details = false }
     FinancePage(
-        if (details) "Stamp duty bands" else "Stamp duty calculator",
+        if (details) resources.getString(R.string.stamp_duty_bands)
+        else resources.getString(R.string.stamp_duty_calculator),
         { if (details) details = false else onBack() },
     ) {
-        Text("England and Northern Ireland · April 2025 rules, matching the existing calculator.")
+        Text(
+            resources.getString(
+                R.string
+                    .england_and_northern_ireland_april_2025_rules_matching_the_existing_calculator
+            )
+        )
         if (!details) {
             TextField(
-                "Property price (whole pounds)",
+                resources.getString(R.string.property_price_whole_pounds),
                 price,
                 keyboard = KeyboardType.Number,
                 onChange = {
@@ -350,12 +392,14 @@ fun StampDutyScreen(onBack: () -> Unit) {
                 },
             )
             ChoiceField(
-                "Buyer type",
+                resources.getString(R.string.buyer_type),
                 buyer,
                 listOf(
-                    "standard" to "Standard",
-                    "firstTimeBuyer" to "First-time buyer",
-                    "additionalProperty" to "Additional property",
+                    "standard" to resources.getString(R.string.standard),
+                    resources.getString(R.string.firsttimebuyer) to
+                        resources.getString(R.string.first_time_buyer),
+                    resources.getString(R.string.additionalproperty) to
+                        resources.getString(R.string.additional_property),
                 ),
             ) {
                 buyer = it
@@ -367,33 +411,45 @@ fun StampDutyScreen(onBack: () -> Unit) {
                         bands = stampDuty(price.toBigDecimal(), buyer)
                         error = null
                     } catch (failure: Exception) {
-                        error = failure.message ?: "Enter a valid property price."
+                        error =
+                            failure.userMessage(resources)
+                                ?: resources.getString(R.string.enter_a_valid_property_price)
                     }
                 }
             ) {
-                Text("Calculate")
+                Text(resources.getString(R.string.calculate))
             }
             error?.let { ErrorNotice(it) }
             bands?.let { list ->
                 FinanceCard {
-                    Text("Stamp duty due")
+                    Text(resources.getString(R.string.stamp_duty_due))
                     MoneyLabel(list.fold(BigDecimal.ZERO) { sum, band -> sum + band.tax }, "GBP")
-                    if (buyer == "firstTimeBuyer" && price.toBigDecimal() > BigDecimal(500000))
+                    if (
+                        buyer == resources.getString(R.string.firsttimebuyer) &&
+                            price.toBigDecimal() > BigDecimal(500000)
+                    )
                         Text(
-                            "First-time buyer relief is unavailable above ${Money.fromCurrencyCode(BigDecimal(500000), "GBP").format(java.util.Locale.UK)}."
+                            resources.getString(
+                                R.string.first_time_buyer_relief_is_unavailable_above_value,
+                                Money.fromCurrencyCode(BigDecimal(500000), "GBP")
+                                    .format(java.util.Locale.UK),
+                            )
                         )
-                    TextButton(onClick = { details = true }) { Text("View tax bands") }
+                    TextButton(onClick = { details = true }) {
+                        Text(resources.getString(R.string.view_tax_bands))
+                    }
                 }
             }
         } else
             bands?.forEach { band ->
                 FinanceCard {
-                    Text("${band.rate}% band")
+                    Text(resources.getString(R.string.value_band, band.rate))
                     MoneyLabel(BigDecimal(band.from), "GBP")
-                    band.to?.let { MoneyLabel(BigDecimal(it), "GBP") } ?: Text("No upper limit")
-                    Text("Taxable amount")
+                    band.to?.let { MoneyLabel(BigDecimal(it), "GBP") }
+                        ?: Text(resources.getString(R.string.no_upper_limit))
+                    Text(resources.getString(R.string.taxable_amount))
                     MoneyLabel(band.taxable, "GBP")
-                    Text("Tax due")
+                    Text(resources.getString(R.string.tax_due))
                     MoneyLabel(band.tax, "GBP")
                 }
             }

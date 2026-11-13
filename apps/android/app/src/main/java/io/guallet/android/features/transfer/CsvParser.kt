@@ -1,5 +1,7 @@
 package io.guallet.android.features.transfer
 
+import io.guallet.android.R
+import io.guallet.android.core.state.*
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.ResolverStyle
@@ -43,14 +45,20 @@ object CsvParser {
                         endRow()
                     }
                     closed && !ch.isWhitespace() ->
-                        throw IllegalArgumentException(
-                            "Unexpected characters after a quoted CSV field."
+                        throw UiMessageException(
+                            uiMessage(
+                                R.string.message_unexpected_characters_after_a_quoted_csv_field
+                            )
                         )
                     !closed -> field.append(ch)
                 }
                 i++
             }
-            require(!quoted) { "CSV contains an unclosed quoted field." }
+            require(!quoted) {
+                throw UiMessageException(
+                    uiMessage(R.string.message_csv_contains_an_unclosed_quoted_field)
+                )
+            }
             if (field.isNotEmpty() || row.isNotEmpty()) endRow()
             return result
         }
@@ -64,13 +72,23 @@ object CsvParser {
         }
         val delimiter = counts.maxByOrNull { it.value }!!.key
         val parsed = rows(delimiter)
-        require(parsed.size >= 2) { "This CSV has no headers or transaction rows." }
+        require(parsed.size >= 2) {
+            throw UiMessageException(
+                uiMessage(R.string.message_this_csv_has_no_headers_or_transaction_rows)
+            )
+        }
         val headers = parsed.first()
         require(headers.none { it.isBlank() } && headers.distinct().size == headers.size) {
-            "CSV column names must be non-empty and unique."
+            throw UiMessageException(
+                uiMessage(R.string.message_csv_column_names_must_be_non_empty_and_unique)
+            )
         }
         require(parsed.drop(1).all { it.size == headers.size }) {
-            "CSV rows must have the same number of columns as the header."
+            throw UiMessageException(
+                uiMessage(
+                    R.string.message_csv_rows_must_have_the_same_number_of_columns_as_the_header
+                )
+            )
         }
         return CsvData(headers, parsed.drop(1).map { headers.zip(it).toMap() })
     }
@@ -114,15 +132,16 @@ object CsvParser {
             }
     }
 
-    fun rowErrors(row: Map<String, String>, fields: FieldMappings): List<String> = buildList {
-        if (!validDate(row[fields.date].orEmpty())) add("Invalid date")
+    fun rowErrors(row: Map<String, String>, fields: FieldMappings): List<UiMessage> = buildList {
+        if (!validDate(row[fields.date].orEmpty())) add(uiMessage(R.string.message_invalid_date))
         val amount = row[fields.amount].orEmpty().trim().replace(',', '.')
         val decimal = amount.toBigDecimalOrNull()
         if (
             decimal == null ||
                 decimal.abs() > java.math.BigDecimal(java.lang.Double.MAX_VALUE.toString())
         )
-            add("Invalid amount")
-        if (row[fields.description].isNullOrBlank()) add("Missing description")
+            add(uiMessage(R.string.message_invalid_amount))
+        if (row[fields.description].isNullOrBlank())
+            add(uiMessage(R.string.message_missing_description))
     }
 }

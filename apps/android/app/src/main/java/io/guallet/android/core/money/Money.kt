@@ -1,5 +1,7 @@
 package io.guallet.android.core.money
 
+import io.guallet.android.R
+import io.guallet.android.core.state.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -20,7 +22,9 @@ internal constructor(
 
         fun fromISOCode(code: String): Currency =
             currencyCatalog.firstOrNull { it.code == code.trim().uppercase(Locale.ROOT) }
-                ?: throw IllegalArgumentException("Choose a supported currency code.")
+                ?: throw UiMessageException(
+                    uiMessage(R.string.message_choose_a_supported_currency_code)
+                )
     }
 }
 
@@ -37,18 +41,29 @@ data class Money private constructor(val amount: BigDecimal, val currency: Curre
             val currency = Currency.fromISOCode(currencyCode)
             val normalized = text.trim().replace(',', '.')
             require(Regex("-?[0-9]+(?:\\.[0-9]+)?").matches(normalized)) {
-                "Enter a valid amount without grouping separators."
+                throw UiMessageException(
+                    uiMessage(R.string.message_enter_a_valid_amount_without_grouping_separators)
+                )
             }
             val value = normalized.toBigDecimal()
             require(value.scale() <= currency.decimalPlaces) {
-                "${currency.code} supports ${currency.decimalPlaces} decimal places."
+                throw UiMessageException(
+                    uiPlural(
+                        R.plurals.currency_precision,
+                        currency.decimalPlaces,
+                        currency.code,
+                        currency.decimalPlaces,
+                    )
+                )
             }
             return Money(value, currency)
         }
     }
 
     operator fun plus(other: Money): Money {
-        require(currency.code == other.currency.code) { "Amounts must use the same currency." }
+        require(currency.code == other.currency.code) {
+            throw UiMessageException(uiMessage(R.string.message_amounts_must_use_the_same_currency))
+        }
         return Money(amount + other.amount, currency)
     }
 

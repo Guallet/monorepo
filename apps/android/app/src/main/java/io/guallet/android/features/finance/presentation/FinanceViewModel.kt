@@ -2,6 +2,7 @@ package io.guallet.android.features.finance.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.guallet.android.R
 import io.guallet.android.core.state.*
 import io.guallet.android.features.accounts.domain.*
 import io.guallet.android.features.budgets.domain.*
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 
 data class MutationState(
     val busy: Boolean = false,
-    val error: String? = null,
+    val error: UiMessage? = null,
     val completed: Boolean = false,
 )
 
@@ -78,9 +79,9 @@ class FinanceViewModel(
         budgets.load(key = value) { repository.budgets(value.monthValue, value.year) }
     }
 
-    fun loadBudgetTransactions(id: String) =
-        budgetTransactions.load(key = listOf(id, month)) {
-            repository.budgetTransactions(id, month.monthValue, month.year)
+    fun loadBudgetTransactions(id: String, selectedMonth: YearMonth = month) =
+        budgetTransactions.load(key = listOf(id, selectedMonth)) {
+            repository.budgetTransactions(id, selectedMonth.monthValue, selectedMonth.year)
         }
 
     fun loadGoals() = goals.load { repository.goals() }
@@ -121,12 +122,16 @@ class FinanceViewModel(
                 val response =
                     repository.transactions(page, startDate = start, endDate = now.toString())
                 require(response.meta.page == page) {
-                    "Could not load the complete cashflow period."
+                    throw UiMessageException(
+                        uiMessage(R.string.message_could_not_load_the_complete_cashflow_period)
+                    )
                 }
                 all.addAll(response.transactions)
                 if (!response.meta.hasMore) break
                 require(response.transactions.isNotEmpty()) {
-                    "Could not load the complete cashflow period."
+                    throw UiMessageException(
+                        uiMessage(R.string.message_could_not_load_the_complete_cashflow_period)
+                    )
                 }
                 page++
             }
@@ -160,6 +165,7 @@ class FinanceViewModel(
     }
 }
 
+@kotlinx.serialization.Serializable
 data class TransactionFilter(
     val page: Int = 1,
     val accounts: String? = null,

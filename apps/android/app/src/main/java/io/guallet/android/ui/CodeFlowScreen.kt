@@ -5,6 +5,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.text.input.KeyboardType
+import io.guallet.android.R
 import io.guallet.android.features.auth.presentation.AuthUiState
 import io.guallet.android.features.auth.presentation.AuthViewModel
 import kotlinx.coroutines.delay
@@ -18,6 +19,8 @@ internal fun CodeFlowScreen(
     onBack: () -> Unit,
     onResetLink: (() -> Unit)? = null,
 ) {
+    val resources = androidx.compose.ui.platform.LocalResources.current
+
     var email by rememberSaveable { mutableStateOf("") }
     var phase by rememberSaveable { mutableIntStateOf(0) }
     var code by remember { mutableStateOf("") }
@@ -45,21 +48,27 @@ internal fun CodeFlowScreen(
     }
     val title =
         when {
-            phase == 2 -> "Password updated"
-            recovery -> "Reset your password"
-            phase == 1 -> "Check your email"
-            else -> "Log in with an email code"
+            phase == 2 -> resources.getString(R.string.password_updated)
+            recovery -> resources.getString(R.string.reset_your_password)
+            phase == 1 -> resources.getString(R.string.check_your_email)
+            else -> resources.getString(R.string.log_in_with_an_email_code)
         }
     AuthPanel(title) {
         Feedback(state)
         when (phase) {
             0 -> {
                 Text(
-                    if (recovery) "Enter your account email to request a reset code."
-                    else "We’ll send a six-digit code to your email address."
+                    if (recovery)
+                        resources.getString(
+                            R.string.enter_your_account_email_to_request_a_reset_code
+                        )
+                    else
+                        resources.getString(
+                            R.string.we_ll_send_a_six_digit_code_to_your_email_address
+                        )
                 )
                 Input(
-                    "Email address",
+                    resources.getString(R.string.email_address),
                     email,
                     !state.busy,
                     KeyboardType.Email,
@@ -68,16 +77,20 @@ internal fun CodeFlowScreen(
                         model.clearFeedback()
                     },
                 )
-                Action("Send code", !state.busy && email.isNotBlank()) {
+                Action(resources.getString(R.string.send_code), !state.busy && email.isNotBlank()) {
                     if (recovery) model.requestReset(email) else model.sendCode(email)
                 }
             }
             1 -> {
                 Text(
-                    "If an eligible account exists, a code has been sent to ${email.trim()}. Check your inbox and spam folder."
+                    resources.getString(
+                        R.string
+                            .if_an_eligible_account_exists_a_code_has_been_sent_to_value_check_your_inbox_and_spam_fo,
+                        email.trim(),
+                    )
                 )
                 Input(
-                    "Six-digit code",
+                    resources.getString(R.string.six_digit_code),
                     code,
                     !state.busy,
                     KeyboardType.Number,
@@ -96,10 +109,11 @@ internal fun CodeFlowScreen(
                         },
                         onDone = { model.resetPassword(email, code, password) },
                     )
-                    Text("Use 8 to 128 characters.")
+                    Text(resources.getString(R.string.use_8_to_128_characters))
                 }
                 Action(
-                    if (recovery) "Update password" else "Log in",
+                    if (recovery) resources.getString(R.string.update_password)
+                    else resources.getString(R.string.log_in),
                     !state.busy && code.length == 6 && (!recovery || password.length in 8..128),
                 ) {
                     if (recovery) model.resetPassword(email, code, password)
@@ -114,7 +128,15 @@ internal fun CodeFlowScreen(
                         if (recovery) model.requestReset(email) else model.sendCode(email)
                     },
                 ) {
-                    Text(if (remaining > 0) "Resend code in ${remaining}s" else "Resend code")
+                    Text(
+                        if (remaining > 0)
+                            resources.getQuantityString(
+                                R.plurals.resend_seconds,
+                                remaining,
+                                remaining,
+                            )
+                        else resources.getString(R.string.resend_code)
+                    )
                 }
                 TextButton(
                     enabled = !state.busy,
@@ -125,17 +147,23 @@ internal fun CodeFlowScreen(
                         model.clearFeedback()
                     },
                 ) {
-                    Text("Use another email address")
+                    Text(resources.getString(R.string.use_another_email_address))
                 }
             }
             else -> {
-                Text("Your password has been updated. Log in with your new password.")
+                Text(
+                    resources.getString(
+                        R.string.your_password_has_been_updated_log_in_with_your_new_password
+                    )
+                )
             }
         }
         if (recovery && onResetLink != null)
             TextButton(enabled = !state.busy, onClick = onResetLink) {
-                Text("Send a password reset link instead")
+                Text(resources.getString(R.string.send_a_password_reset_link_instead))
             }
-        TextButton(enabled = !state.busy, onClick = onBack) { Text("Back to log in") }
+        TextButton(enabled = !state.busy, onClick = onBack) {
+            Text(resources.getString(R.string.back_to_log_in))
+        }
     }
 }

@@ -4,10 +4,58 @@ Reviewed on 13 November 2026. Audited application commit:
 `005e940b171bfb67df5b617001fd248c2f3462fd`, on PR #415.
 
 **Disposition: request changes before treating this app as release-ready.**
-The Kotlin/Compose foundation is sound, but successful compilation, lint and
-the existing 40 tests do not cover several security, state-restoration and
-accessibility failures found below. Findings remain open; this is a review of
-the committed implementation.
+The original findings below describe the audited commit. Remediation is tracked
+separately here; the callback credential handoff (F01) and financial/CSV draft
+storage policy (F09) still await the user's decisions. The custom-scheme
+credential exposure and oversized saved import state remain release blockers.
+
+## Remediation status
+
+| Finding | Status            | Change                                                                                                                                                                                                                        |
+| ------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F01     | Awaiting decision | Proposed verifier-bound, single-use server handoff, or verified HTTPS App Links. Credential-bearing callbacks are unchanged.                                                                                                  |
+| F02     | Fixed             | Account refresh keeps the same editor composed. Transaction/planning refreshes keep cached forms visible; dirty baselines come from original values.                                                                          |
+| F03     | Fixed             | Shared API records new minus old balance, uses currency precision, and saves the ledger/account in one transaction with an ownership-scoped row lock. Opening balances are atomic too.                                        |
+| F04     | Fixed             | Calculator completion generations preserve results/schedule across recreation without repeating the result transition.                                                                                                        |
+| F05     | Fixed             | Auth and settings handle missing or forbidden browser handlers with recoverable feedback.                                                                                                                                     |
+| F06     | Fixed             | Cookie loading is lazy; encrypted reads/writes run on an injected IO dispatcher. Failed writes do not publish unpersisted cookie state; cancellation after a successful commit keeps memory and disk consistent.              |
+| F07     | Fixed             | Column validation, previews and import preparation run on an injected computation dispatcher. Request JSON is encoded once off Main, size-checked and sent as prepared content.                                               |
+| F08     | Fixed             | Account/history, transactions, category, notification, budget, goal and recurring lists, linked goal accounts, and CSV mapping cards use lazy rows with stable keys. Large multi-select controls use a searchable lazy sheet. |
+| F09     | Awaiting decision | Proposed user-scoped, memory-only editor/CSV drafts with small saved navigation/filter state, or encrypted draft persistence. Existing saved-state mappings remain unchanged.                                                 |
+| F10     | Fixed             | Checkbox/radio rows own selection semantics and their visible labels, with minimum touch targets.                                                                                                                             |
+| F11     | Fixed             | Reset callbacks prompt first, then overlay the existing app. Cancel/dismiss keeps the signed-in ViewModel store and financial draft alive; opening waits for current mutations.                                               |
+| F12     | Fixed             | Applied transaction filters and budget month are restored and used for subsequent fetches, including detail/editor requests.                                                                                                  |
+| F13     | Fixed             | Import polling follows the screen's STARTED lifecycle and resumes when visible; stale cancelled results cannot publish.                                                                                                       |
+| F14     | Fixed             | Recurring outflows display negative and income positive in all views.                                                                                                                                                         |
+| F15     | Fixed             | Auth Back actions pop to existing destinations.                                                                                                                                                                               |
+| F16     | Fixed             | The signed-in scaffold consumes its padding before child inset handling.                                                                                                                                                      |
+| F17     | Fixed             | UI copy and app-owned validation/network feedback use Android resources; quantities use plurals and displayed dates follow the selected preference. Wire identifiers stay untranslated.                                       |
+
+Permanent regression tests replace the relevant temporary probes. They cover
+editor/calculator restoration, restored dirty checks, labelled controls, cookie
+execution context, browser failure, reset overlays, restored filters, lifecycle
+polling, CSV preparation/dispatchers, resource formatting, focused RTL selection semantics, and plural/date rules.
+Backend tests include a real PostgreSQL schema for rollback and concurrent row
+locking, plus signed changes and zero-/three-/four-digit currency precision.
+
+Hardware Keystore behaviour, device process death, TalkBack, large fonts, RTL,
+release performance and live provider/worker flows still need device/integration
+validation. The comparison matrix and remediation recommendations below are the
+original review, not claims that those broader release checks have passed.
+
+## Remediation validation (13 November 2026)
+
+- Debug APK assembled; all **61 Android tests passed**, with zero failures,
+  errors or skips. This includes 21 additional maintained regression checks.
+- The complete API suite passed: **1,124 tests across 61 files**, including
+  eight real PostgreSQL rollback/concurrency/ownership checks.
+- API build and full TypeScript check passed. A production-layout smoke check
+  resolved `@guallet/money/server` and verified the signed ledger delta.
+  The Docker image itself was not built in this environment.
+- Repository-wide `pnpm lint` passed all 12 tasks with zero warnings/errors.
+  API/shared configuration formatting checks passed on 276 files.
+- Android lint passed with zero errors and 22 existing dependency-version
+  advisories. The rebuilt APK passed `zipalign -c -P 16 4`.
 
 ## Scope and evidence
 
@@ -17,7 +65,7 @@ Gradle configuration, dependency catalog, CI, generators, and tests. Generated
 currency/icon assets were assessed through their generators, contracts and
 packaged resources. Relevant Expo flows and API handlers were checked when
 assessing integration behaviour. Code references below describe the audited
-commit, so line numbers may change during remediation.
+commit, and source links are pinned to that snapshot.
 
 - The migration is committed and pushed to the existing PR.
 - The baseline APK build, all 40 committed tests, and Android lint passed
@@ -53,8 +101,8 @@ behaviour or maintainability improvements.
 
 ### F01 · P1 · Session credentials travel through an interceptable callback
 
-Locations: [AndroidManifest.xml:24](app/src/main/AndroidManifest.xml#L24),
-[BrowserAuthRepository.kt:117](app/src/main/java/io/guallet/android/features/auth/data/BrowserAuthRepository.kt#L117).
+Locations: [AndroidManifest.xml:24](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/AndroidManifest.xml#L24),
+[BrowserAuthRepository.kt:117](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/auth/data/BrowserAuthRepository.kt#L117).
 
 Google's callback carries Better Auth session cookies in the URL query of
 `guallet-android://login/callback`. The installed Expo server plugin explicitly
@@ -78,8 +126,8 @@ Android documents the interception risk and verified web-link mitigation in
 
 ### F02 · P1 · Recreating an account editor discards unsaved changes
 
-Locations: [AccountsScreens.kt:154](app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsScreens.kt#L154),
-[AccountsViewModel.kt:61](app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsViewModel.kt#L61).
+Locations: [AccountsScreens.kt:154](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsScreens.kt#L154),
+[AccountsViewModel.kt:61](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsViewModel.kt#L61).
 
 On recreation, `LaunchedEffect(id)` reloads the account. `loadDetails()` sets
 `selected = null`, which removes `AccountEditor` from the composition. Its
@@ -102,9 +150,9 @@ form guard. See [saving Compose UI state](https://developer.android.com/develop/
 
 ### F03 · P1 · Balance adjustments have the opposite ledger sign
 
-Locations: [AccountsScreens.kt:195](app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsScreens.kt#L195),
-[KtorAccountsRepository.kt:57](app/src/main/java/io/guallet/android/features/accounts/data/KtorAccountsRepository.kt#L57),
-[accounts.service.ts:131](../api/src/features/accounts/accounts.service.ts#L131).
+Locations: [AccountsScreens.kt:195](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsScreens.kt#L195),
+[KtorAccountsRepository.kt:57](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/accounts/data/KtorAccountsRepository.kt#L57),
+[accounts.service.ts:131](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/api/src/features/accounts/accounts.service.ts#L131).
 
 This is a pre-existing API defect exposed by the Android flow, not a defect
 introduced in Kotlin. Recording a balance transaction is enabled by default.
@@ -122,8 +170,8 @@ the payload contract, not the server's accounting result.
 
 ### F04 · P2 · Calculator results are cleared on recreation
 
-Locations: [CalculatorScreens.kt:44](app/src/main/java/io/guallet/android/features/calculators/CalculatorScreens.kt#L44),
-[CalculatorViewModel.kt:34](app/src/main/java/io/guallet/android/features/calculators/CalculatorViewModel.kt#L34).
+Locations: [CalculatorScreens.kt:44](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/calculators/CalculatorScreens.kt#L44),
+[CalculatorViewModel.kt:34](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/calculators/CalculatorViewModel.kt#L34).
 
 `LaunchedEffect(mortgage)` calls `model.clear()` whenever the screen enters a
 new composition. After recreation, the retained ViewModel's completed results
@@ -137,9 +185,9 @@ process death if that is the intended product behaviour.
 
 ### F05 · P2 · Failure to launch a browser escapes the UI coroutine
 
-Locations: [GualletApp.kt:33](app/src/main/java/io/guallet/android/ui/GualletApp.kt#L33),
-[AuthViewModel.kt:116](app/src/main/java/io/guallet/android/features/auth/presentation/AuthViewModel.kt#L116),
-[SettingsScreen.kt:142](app/src/main/java/io/guallet/android/features/settings/presentation/SettingsScreen.kt#L142).
+Locations: [GualletApp.kt:33](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/GualletApp.kt#L33),
+[AuthViewModel.kt:116](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/auth/presentation/AuthViewModel.kt#L116),
+[SettingsScreen.kt:142](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/settings/presentation/SettingsScreen.kt#L142).
 
 `uri.openUri(url)` is not guarded. If no activity can handle the URL, or a
 profile restriction prevents launching it, the exception escapes
@@ -153,9 +201,9 @@ wraps an unavailable handler in `IllegalArgumentException`.
 
 ### F06 · P2 · Cookie encryption and synchronous persistence can block Main
 
-Locations: [AppModule.kt:29](app/src/main/java/io/guallet/android/di/AppModule.kt#L29),
-[PersistentCookies.kt:18](app/src/main/java/io/guallet/android/core/network/PersistentCookies.kt#L18),
-[EncryptedCookieStore.kt:47](app/src/main/java/io/guallet/android/core/security/EncryptedCookieStore.kt#L47).
+Locations: [AppModule.kt:29](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/di/AppModule.kt#L29),
+[PersistentCookies.kt:18](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/core/network/PersistentCookies.kt#L18),
+[EncryptedCookieStore.kt:47](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/core/security/EncryptedCookieStore.kt#L47).
 
 Creating the auth dependencies reads and decrypts preferences synchronously
 from Activity startup. Cookie writes open the Keystore, perform AES-GCM and
@@ -171,9 +219,9 @@ This follows [Android coroutine main-safety guidance](https://developer.android.
 
 ### F07 · P2 · Import validation and submission preparation run on Main
 
-Locations: [TransferScreens.kt:59](app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L59),
-[TransferScreens.kt:285](app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L285),
-[TransferRepository.kt:29](app/src/main/java/io/guallet/android/features/transfer/TransferRepository.kt#L29).
+Locations: [TransferScreens.kt:59](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L59),
+[TransferScreens.kt:285](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L285),
+[TransferRepository.kt:29](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/TransferRepository.kt#L29).
 
 Reading/parsing is correctly dispatched to IO, but the composable repeatedly
 maps, deduplicates and validates the entire CSV, including before required
@@ -191,9 +239,9 @@ recorded host timing is not an ANR measurement.
 
 ### F08 · P2 · Unbounded lists are eagerly composed
 
-Locations: [FinanceComponents.kt:28](app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L28),
-[TransferScreens.kt:163](app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L163),
-[NotificationsScreen.kt:69](app/src/main/java/io/guallet/android/features/notifications/presentation/NotificationsScreen.kt#L69).
+Locations: [FinanceComponents.kt:28](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L28),
+[TransferScreens.kt:163](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L163),
+[NotificationsScreen.kt:69](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/notifications/presentation/NotificationsScreen.kt#L69).
 
 `FinancePage` uses a scrolling `Column`; accounts, notifications, categories,
 planning lists, balance history and CSV mappings emit every row through
@@ -209,7 +257,7 @@ demonstrate useful lazy patterns. See [Compose lazy-list guidance](https://devel
 
 ### F09 · P2 · Entire import mappings enter saved instance state
 
-Location: [TransferScreens.kt:36](app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L36).
+Location: [TransferScreens.kt:36](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L36).
 
 The mapping/name maps use `rememberSaveable` and grow with input cardinality.
 A representative 20,000-key map serialised to 2,228,989 bytes before Bundle
@@ -227,9 +275,9 @@ Android explains the shared transaction limit in
 
 ### F10 · P2 · Selection controls lack their visible option labels
 
-Locations: [FinanceComponents.kt:143](app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L143),
-[FinanceComponents.kt:177](app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L177),
-[AccountsScreens.kt:238](app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsScreens.kt#L238).
+Locations: [FinanceComponents.kt:143](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L143),
+[FinanceComponents.kt:177](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L177),
+[AccountsScreens.kt:238](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/accounts/presentation/AccountsScreens.kt#L238).
 
 Checkboxes are independently clickable while the label is a sibling `Text` in
 a non-toggleable row. The semantics probe found a checkbox with state and
@@ -244,9 +292,9 @@ TalkBack tests following [Android's selection-control guidance](https://develope
 
 ### F11 · P2 · An unvalidated reset link disposes signed-in work
 
-Locations: [AuthViewModel.kt:126](app/src/main/java/io/guallet/android/features/auth/presentation/AuthViewModel.kt#L126),
-[GualletApp.kt:39](app/src/main/java/io/guallet/android/ui/GualletApp.kt#L39),
-[NativeApp.kt:46](app/src/main/java/io/guallet/android/ui/NativeApp.kt#L46).
+Locations: [AuthViewModel.kt:126](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/auth/presentation/AuthViewModel.kt#L126),
+[GualletApp.kt:39](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/GualletApp.kt#L39),
+[NativeApp.kt:46](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/NativeApp.kt#L46).
 
 Any non-empty token in a reset URI immediately replaces the signed-in UI with
 the reset form, even while another operation is busy. No server validation is
@@ -264,8 +312,8 @@ also calls for checking relevant application state.
 
 ### F12 · P2 · Restored filter controls can disagree with the fetched data
 
-Locations: [TransactionsScreens.kt:29](app/src/main/java/io/guallet/android/features/transactions/presentation/TransactionsScreens.kt#L29),
-[FinanceViewModel.kt:66](app/src/main/java/io/guallet/android/features/finance/presentation/FinanceViewModel.kt#L66).
+Locations: [TransactionsScreens.kt:29](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transactions/presentation/TransactionsScreens.kt#L29),
+[FinanceViewModel.kt:66](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/finance/presentation/FinanceViewModel.kt#L66).
 
 Transaction filter controls are saved, but `transactionFilter` and the selected
 budget month are plain ViewModel properties. After process death, the controls
@@ -280,8 +328,8 @@ controls and request parameters. Rotation alone does not test process death.
 
 ### F13 · P2 · Import polling continues when the app is backgrounded
 
-Locations: [ImportResultScreen:359](app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L359),
-[ImportViewModel.kt:75](app/src/main/java/io/guallet/android/features/transfer/ImportViewModel.kt#L75).
+Locations: [ImportResultScreen:359](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/TransferScreens.kt#L359),
+[ImportViewModel.kt:75](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/transfer/ImportViewModel.kt#L75).
 
 Polling is launched in a session-scoped `viewModelScope` and is cancelled only
 when the composable is disposed, a result arrives, or ten minutes pass.
@@ -296,8 +344,8 @@ or notifications. See [lifecycle-aware coroutines](https://developer.android.com
 
 ### F14 · P2 · Recurring outflows change sign between views
 
-Locations: [PlanningScreens.kt:629](app/src/main/java/io/guallet/android/features/planning/PlanningScreens.kt#L629),
-[PlanningScreens.kt:666](app/src/main/java/io/guallet/android/features/planning/PlanningScreens.kt#L666).
+Locations: [PlanningScreens.kt:629](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/planning/PlanningScreens.kt#L629),
+[PlanningScreens.kt:666](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/planning/PlanningScreens.kt#L666).
 
 Upcoming occurrences negate subscriptions/payments before passing them to
 `MoneyLabel`, but the All list and detail screen pass the stored positive
@@ -312,7 +360,7 @@ regression, separate from the backend ledger issue in F03.
 
 ### F15 · P3 · Authentication Back buttons push new destinations
 
-Location: [GualletApp.kt:85](app/src/main/java/io/guallet/android/ui/GualletApp.kt#L85).
+Location: [GualletApp.kt:85](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/GualletApp.kt#L85).
 
 The login, signup and recovery Back callbacks call `navigate()` instead of
 popping or navigating up. For example, Welcome → Login → on-screen Back builds
@@ -326,8 +374,8 @@ the expected parent is absent. Test on-screen and system Back together. See
 
 ### F16 · P3 · Scaffold insets are applied again by child pages
 
-Locations: [NativeApp.kt:116](app/src/main/java/io/guallet/android/ui/NativeApp.kt#L116),
-[FinanceComponents.kt:29](app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L29).
+Locations: [NativeApp.kt:116](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/NativeApp.kt#L116),
+[FinanceComponents.kt:29](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L29).
 
 The graph applies `Scaffold` padding with `Modifier.padding(padding)` without
 consuming those insets. `FinancePage` then applies `safeDrawingPadding()` again.
@@ -340,9 +388,9 @@ in [Material 3 inset handling](https://developer.android.com/develop/ui/compose/
 
 ### F17 · P3 · UI strings and date presentation bypass shared resources
 
-Locations: [FinanceComponents.kt:36](app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L36),
-[PlanningScreens.kt:668](app/src/main/java/io/guallet/android/features/planning/PlanningScreens.kt#L668),
-[AndroidManifest.xml:10](app/src/main/AndroidManifest.xml#L10).
+Locations: [FinanceComponents.kt:36](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/ui/components/FinanceComponents.kt#L36),
+[PlanningScreens.kt:668](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/java/io/guallet/android/features/planning/PlanningScreens.kt#L668),
+[AndroidManifest.xml:10](https://github.com/Guallet/monorepo/blob/005e940b171bfb67df5b617001fd248c2f3462fd/apps/android/app/src/main/AndroidManifest.xml#L10).
 
 UI copy, accessibility labels, counts and the app label are embedded in Kotlin
 or the manifest rather than string/plural resources. Some dates use the saved
