@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    server: { deps: { external: [/guallet-money[\\/]dist[\\/]/] } },
     globals: true,
     environment: 'node',
     include: ['src/**/*.spec.ts'],
