@@ -7,7 +7,14 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, In, IsNull, Repository } from 'typeorm';
+import {
+  Between,
+  In,
+  IsNull,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { InboxTransaction } from './entities/inbox-transaction.model';
 import { Account } from '../accounts/entities/account.entity';
@@ -66,7 +73,7 @@ export class TransactionsService {
         account: { user_id: userId },
         ...(accounts && { accountId: In(accounts) }),
         ...(categories && { categoryId: In(categories) }),
-        ...(startDate && endDate && { date: Between(startDate, endDate) }),
+        ...dateFilter(startDate, endDate),
       },
     });
   }
@@ -170,10 +177,7 @@ export class TransactionsService {
         account: { user_id: userId },
         ...(accounts && { accountId: In(accounts) }),
         ...(categories && { categoryId: In(categories) }),
-        // ...(startDate && { date: MoreThanOrEqual(startDate) }),
-        ...(startDate && endDate && { date: Between(startDate, endDate) }),
-        // ...(endDate && { date: LessThanOrEqual(endDate) }),
-        // date: MoreThanOrEqual(startDate), // LessThanOrEqual(endDate),
+        ...dateFilter(startDate, endDate),
       },
       order: {
         date: 'DESC',
@@ -260,10 +264,11 @@ export class TransactionsService {
       accountId: dto.accountId ?? dbEntity.accountId,
       amount: dto.amount ?? dbEntity.amount,
       description: dto.description ?? dbEntity.description,
-      notes: dto.notes ?? dbEntity.notes,
+      notes: dto.notes === undefined ? dbEntity.notes : dto.notes,
       currency: dto.currency ?? dbEntity.currency,
       date: dto.date ? new Date(dto.date) : dbEntity.date,
-      categoryId: dto.categoryId ?? dbEntity.categoryId,
+      categoryId:
+        dto.categoryId === undefined ? dbEntity.categoryId : dto.categoryId,
     };
     return await this.repository.save(updatedEntity);
   }
@@ -363,11 +368,19 @@ export class TransactionsService {
       where: {
         account: { user_id: userId },
         ...(accounts && accounts.length > 0 && { accountId: In(accounts) }),
-        ...(startDate && endDate && { date: Between(startDate, endDate) }),
+        ...dateFilter(startDate, endDate),
       },
       order: {
         date: 'DESC',
       },
     });
   }
+}
+
+/** Apply the same inclusive date bounds to pages, counts and exports. */
+function dateFilter(start?: Date, end?: Date) {
+  if (start && end) return { date: Between(start, end) };
+  if (start) return { date: MoreThanOrEqual(start) };
+  if (end) return { date: LessThanOrEqual(end) };
+  return {};
 }

@@ -23,7 +23,7 @@ class FinanceContractTest {
         """{"id":"b","name":"Food","amount":"100.25","currency":"GBP","spent":20,"categories":["c"]}"""
     private val category = """{"id":"c","name":"Food","icon":null,"colour":null,"parentId":null}"""
     private val goal =
-        """{"id":"g","name":"Holiday","targetAmount":"500","accounts":["a"],"currentAmount":100,"progressPercentage":20,"isCompleted":false,"isOverdue":false,"remainingAmount":400,"daysRemaining":null}"""
+        """{"id":"g","name":"Holiday","priority":7,"targetAmount":"500","accounts":["a"],"currentAmount":100,"progressPercentage":20,"isCompleted":false,"isOverdue":false,"remainingAmount":400,"daysRemaining":null}"""
     private val payment =
         """{"id":"r","name":"Rent","amount":"250","currency":"GBP","cadence":"monthly","type":"regular_payment","startDate":null,"categoryId":null}"""
     private val notification =
@@ -74,6 +74,8 @@ class FinanceContractTest {
                                     "regular_payment",
                                     body["type"]?.jsonPrimitive?.content,
                                 )
+                            if (root == "saving-goals" && request.method == HttpMethod.Patch)
+                                assertEquals(7, body["priority"]?.jsonPrimitive?.int)
                             if (root == "notifications")
                                 assertEquals(true, body["isRead"]?.jsonPrimitive?.boolean)
                         }
@@ -87,7 +89,18 @@ class FinanceContractTest {
                 val repository = KtorFinanceRepository(client)
                 assertEquals(BigDecimal("100.25"), repository.budgets(11, 2026).single().amount)
                 assertNull(repository.categories().single().icon)
-                assertEquals("g", repository.goals().single().id)
+                val savedGoal = repository.goals().single()
+                assertEquals("g", savedGoal.id)
+                assertEquals(7, savedGoal.priority)
+                repository.updateGoals(
+                    "g",
+                    GoalInput(
+                        "Renamed",
+                        savedGoal.targetAmount,
+                        savedGoal.accounts,
+                        priority = requireNotNull(savedGoal.priority),
+                    ),
+                )
                 assertNull(repository.recurring().single().startDate)
                 repository.createBudgets(
                     BudgetInput("Food", BigDecimal("100.25"), "GBP", listOf("c"))

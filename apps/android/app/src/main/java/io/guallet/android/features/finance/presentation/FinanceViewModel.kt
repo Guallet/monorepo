@@ -148,7 +148,12 @@ class FinanceViewModel(
     }
 
     fun clearMutation() {
-        mutationMutable.value = MutationState()
+        // Entry effects may run again during recreation. Keep the request and its result.
+        mutationMutable.update { it.copy(error = null) }
+    }
+
+    fun consumeMutation() {
+        mutationMutable.update { if (it.busy) it else MutationState() }
     }
 
     fun mutate(action: suspend () -> Unit) {

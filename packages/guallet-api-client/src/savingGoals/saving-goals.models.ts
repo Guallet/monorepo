@@ -5,7 +5,7 @@ export type SavingGoalDto = {
   targetAmount: number;
   targetDate?: Date;
   accounts: string[];
-  priority?: number;
+  priority?: number | null;
   currentAmount: number;
   progressPercentage: number;
   isCompleted: boolean;

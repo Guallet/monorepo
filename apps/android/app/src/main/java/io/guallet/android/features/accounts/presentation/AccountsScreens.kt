@@ -121,7 +121,7 @@ fun AccountDetailsScreen(
     }
     LaunchedEffect(state.deleted) {
         if (state.deleted) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
@@ -229,7 +229,7 @@ fun AccountFormScreen(
     }
     LaunchedEffect(state.savedId) {
         state.savedId?.let {
-            model.clearMutation()
+            model.consumeMutation()
             onSaved(it)
         }
     }

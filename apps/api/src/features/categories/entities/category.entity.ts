@@ -27,8 +27,8 @@ export class Category extends BaseDbEntity {
   @Column({ nullable: true })
   colour?: string;
 
-  @Column({ nullable: true })
-  parentId?: string;
+  @Column({ type: 'uuid', nullable: true })
+  parentId?: string | null;
 
   // Relations
   @ManyToOne(() => Category, (category) => category.children, {

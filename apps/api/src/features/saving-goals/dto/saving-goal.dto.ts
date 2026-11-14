@@ -15,6 +15,14 @@ export class SavingGoalDto {
   })
   description?: string;
 
+  @ApiProperty({
+    type: Number,
+    required: false,
+    nullable: true,
+    description: 'The saved priority of the goal',
+  })
+  priority?: number | null;
+
   @ApiProperty({ description: 'The target amount to be saved' })
   targetAmount: number;
 
@@ -87,6 +95,7 @@ export class SavingGoalDto {
     return {
       id: domain.id,
       name: domain.name,
+      priority: domain.priority,
       description: domain.description,
       targetAmount: targetAmount,
       targetDate: domain.target_date,

@@ -89,6 +89,84 @@ class AccountsViewModelTest {
         }
 
     @Test
+    fun `save restarts an initial list read and loads history for the saved account`() =
+        runTest(dispatcher) {
+            val repository =
+                FakeAccountsRepository().apply { firstListGate = CompletableDeferred() }
+            val model = AccountsViewModel(repository)
+            runCurrent()
+            assertTrue(model.state.value.loading)
+            model.save(null, AccountInput("New", "current-account", "GBP", BigDecimal.TEN))
+            advanceUntilIdle()
+            assertEquals(setOf("1", "saved"), model.state.value.accounts.map { it.id }.toSet())
+            assertEquals("saved-history-1", model.state.value.transactions.single().id)
+            assertFalse(model.state.value.loading)
+            assertFalse(model.state.value.transactionsLoading)
+            model.clearMutation()
+            assertEquals("saved", model.state.value.savedId)
+            model.consumeMutation()
+            assertNull(model.state.value.savedId)
+        }
+
+    @Test
+    fun `delete restarts a cancelled list read without losing other server accounts`() =
+        runTest(dispatcher) {
+            val repository =
+                FakeAccountsRepository().apply {
+                    includeAccount("2")
+                    firstListGate = CompletableDeferred()
+                }
+            val model = AccountsViewModel(repository)
+            runCurrent()
+            model.delete("1")
+            advanceUntilIdle()
+            assertEquals(listOf("2"), model.state.value.accounts.map { it.id })
+            assertTrue(model.state.value.deleted)
+            assertFalse(model.state.value.loading)
+        }
+
+    @Test
+    fun `a balance edit reloads the server adjustment history`() =
+        runTest(dispatcher) {
+            val repository = FakeAccountsRepository()
+            val model = AccountsViewModel(repository)
+            advanceUntilIdle()
+            model.loadDetails("1")
+            advanceUntilIdle()
+            assertEquals("1-history-0", model.state.value.transactions.single().id)
+            model.save("1", AccountInput("Updated", "current-account", "GBP", BigDecimal.TEN))
+            advanceUntilIdle()
+            assertEquals("1-history-1", model.state.value.transactions.single().id)
+        }
+
+    @Test
+    fun `unexpected account errors never expose exception details`() =
+        runTest(dispatcher) {
+            val repository =
+                FakeAccountsRepository().apply {
+                    readError = IllegalArgumentException("PRIVATE_SERVER_DETAIL")
+                }
+            val model = AccountsViewModel(repository)
+            advanceUntilIdle()
+            assertEquals(
+                io.guallet.android.core.state.UiMessage.Resource(
+                    io.guallet.android.R.string.message_check_the_account_details
+                ),
+                model.state.value.listError,
+            )
+            repository.readError = IllegalStateException("PRIVATE_SERVER_DETAIL")
+            model.refresh()
+            advanceUntilIdle()
+            assertEquals(
+                io.guallet.android.core.state.UiMessage.Resource(
+                    io.guallet.android.R.string
+                        .message_the_server_could_not_complete_the_request_try_again
+                ),
+                model.state.value.listError,
+            )
+        }
+
+    @Test
     fun `failed deletion retains the account until server confirms success`() =
         runTest(dispatcher) {
             val repository = FakeAccountsRepository().apply { offline = true }
@@ -116,13 +194,25 @@ private class FakeAccountsRepository : AccountsRepository {
     var transactionsOffline = false
     var delayedId: String? = null
     var writes = 0
+    var firstListGate: CompletableDeferred<Unit>? = null
+    var readError: Exception? = null
 
     private fun account(id: String = "1", amount: String = "10.25") =
         Account(id, "Everyday", "GBP", "current-account", AccountBalance(BigDecimal(amount), "GBP"))
 
+    private val records = linkedMapOf("1" to account())
+
+    fun includeAccount(id: String) {
+        records[id] = account(id)
+    }
+
     override suspend fun list(): List<Account> {
+        val gate = firstListGate
+        firstListGate = null
+        gate?.await()
+        readError?.let { throw it }
         if (offline) error("offline")
-        return listOf(account())
+        return records.values.toList()
     }
 
     override suspend fun get(id: String): Account {
@@ -132,17 +222,29 @@ private class FakeAccountsRepository : AccountsRepository {
 
     override suspend fun transactions(id: String): List<AccountTransaction> {
         if (transactionsOffline) error("offline")
-        return emptyList()
+        return listOf(
+            AccountTransaction(
+                "$id-history-$writes",
+                "Adjustment",
+                BigDecimal.ONE,
+                "GBP",
+                "2026-11-14",
+            )
+        )
     }
 
     override suspend fun create(input: AccountInput): Account {
         writes++
-        return account("saved", "-100")
+        return account("saved", "-100").also { records[it.id] = it }
     }
 
-    override suspend fun update(id: String, input: AccountInput): Account = account(id)
+    override suspend fun update(id: String, input: AccountInput): Account {
+        writes++
+        return account(id).also { records[id] = it }
+    }
 
     override suspend fun delete(id: String) {
         if (offline) error("offline")
+        records.remove(id)
     }
 }

@@ -51,7 +51,7 @@ fun NotificationsScreen(model: FinanceViewModel, onBack: () -> Unit, navigate: (
         if (mutation.completed) {
             deleting = null
             model.loadNotifications()
-            model.clearMutation()
+            model.consumeMutation()
         }
     }
     FinanceListPage(resources.getString(R.string.notifications), onBack) {

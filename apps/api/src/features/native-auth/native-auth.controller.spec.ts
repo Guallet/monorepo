@@ -77,6 +77,23 @@ describe('Native handoff HTTP boundary', () => {
     }
     expect(service.exchangeGoogle).not.toHaveBeenCalled();
   });
+  it('sets a short-lived secure HttpOnly browser binding on the HTTPS entry', async () => {
+    const response = await request(server)
+      .get(`/native-auth/google/start?flowId=${flowId}`)
+      .expect(302);
+    expect(response.headers['cache-control']).toBe('no-store');
+    const binding = [response.headers['set-cookie']]
+      .flat()
+      .find((cookie: string) =>
+        cookie.startsWith('__Host-guallet.native_binding='),
+      );
+    expect(binding).toContain(
+      'Path=/; Max-Age=600; HttpOnly; Secure; SameSite=Lax',
+    );
+    expect(response.headers.location).toBe(
+      'https://accounts.google.com/o/oauth2/auth',
+    );
+  });
   it('delivers credentials only as secure cookies on a noncacheable native POST', async () => {
     const response = await request(server)
       .post('/native-auth/google/exchange')

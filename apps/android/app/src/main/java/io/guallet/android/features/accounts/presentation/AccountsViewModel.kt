@@ -116,6 +116,10 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
     }
 
     fun clearMutation() {
+        mutableState.update { it.copy(mutationError = null) }
+    }
+
+    fun consumeMutation() {
         mutableState.update { it.copy(savedId = null, deleted = false, mutationError = null) }
     }
 
@@ -139,12 +143,16 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
                         accounts = current.accounts.filterNot { it.id == account.id } + account,
                         selected = account,
                         savedId = account.id,
+                        transactions = emptyList(),
+                        transactionsError = null,
                         detailsError = null,
                         loading = false,
                         detailsLoading = false,
                         transactionsLoading = false,
                     )
                 }
+                refresh()
+                loadTransactions(account.id)
             } catch (error: Exception) {
                 val feedback = message(error)
                 mutableState.update { it.copy(mutationError = feedback) }
@@ -175,6 +183,7 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
                         transactionsLoading = false,
                     )
                 }
+                refresh()
             } catch (error: Exception) {
                 val feedback = message(error)
                 mutableState.update { it.copy(mutationError = feedback) }
@@ -188,8 +197,7 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
         if (error is CancellationException) throw error
         if (error is UiMessageException) return error.text
         if (error is IllegalArgumentException)
-            return error.message?.let(UiMessage::Text)
-                ?: uiMessage(R.string.message_check_the_account_details)
+            return uiMessage(R.string.message_check_the_account_details)
         if (error is ResponseException) {
             return when (error.response.status.value) {
                 401 -> {
@@ -209,6 +217,11 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
                     uiMessage(R.string.message_the_server_could_not_complete_the_request_try_again)
             }
         }
-        return uiMessage(R.string.message_could_not_connect_check_your_connection_and_try_again)
+        return if (
+            error is java.io.IOException ||
+                error is io.ktor.client.plugins.HttpRequestTimeoutException
+        )
+            uiMessage(R.string.message_could_not_connect_check_your_connection_and_try_again)
+        else uiMessage(R.string.message_the_server_could_not_complete_the_request_try_again)
     }
 }

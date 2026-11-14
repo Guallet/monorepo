@@ -269,7 +269,7 @@ fun TransactionScreen(
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }

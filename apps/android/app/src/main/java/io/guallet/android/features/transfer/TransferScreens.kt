@@ -525,7 +525,7 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
             accepted = true
-            finance.clearMutation()
+            finance.consumeMutation()
         }
     }
     FinancePage(resources.getString(R.string.export_data), onBack) {

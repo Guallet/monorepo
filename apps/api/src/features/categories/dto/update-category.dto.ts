@@ -22,6 +22,7 @@ export class UpdateCategoryDto {
     required: false,
     format: 'uuid',
     nullable: true,
+    description: 'Omit to retain the current value; send null to clear it',
   })
   @IsOptional()
   @IsUUID()

@@ -39,7 +39,7 @@ fun CategoriesScreen(model: FinanceViewModel, onBack: () -> Unit) {
             editingId = null
             deleting = null
             model.loadCategories()
-            model.clearMutation()
+            model.consumeMutation()
         }
     }
     val editing = state.value?.find { it.id == editingId }

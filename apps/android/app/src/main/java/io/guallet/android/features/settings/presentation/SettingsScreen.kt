@@ -41,7 +41,7 @@ fun SettingsScreen(
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
             model.loadSettings()
-            model.clearMutation()
+            model.consumeMutation()
         }
     }
     FinancePage(resources.getString(R.string.settings)) {

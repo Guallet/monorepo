@@ -136,7 +136,7 @@ fun BudgetDetails(
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
@@ -224,7 +224,7 @@ fun BudgetFormScreen(
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
@@ -450,7 +450,7 @@ fun GoalDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, edit: (
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
@@ -534,7 +534,7 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
@@ -853,7 +853,7 @@ fun RecurringDetails(id: String, model: FinanceViewModel, onBack: () -> Unit, ed
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
@@ -929,7 +929,7 @@ fun RecurringFormScreen(
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
-            model.clearMutation()
+            model.consumeMutation()
             onBack()
         }
     }
